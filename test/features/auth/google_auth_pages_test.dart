@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart';
 import 'package:sambasku_mobile/features/auth/domain/ports/google_sign_in_port.dart';
@@ -82,15 +83,23 @@ Widget _harness({
   required Widget child,
   required List<dynamic> overrides,
 }) {
+  // LoginPage membaca GoRouterState (query relogin); harus di bawah RouteBase.
+  final router = GoRouter(
+    initialLocation: '/',
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => child),
+    ],
+  );
   return ProviderScope(
     overrides: overrides.cast(),
-    child: MaterialApp(
+    child: MaterialApp.router(
       theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
-      home: FTheme(
+      routerConfig: router,
+      builder: (context, routed) => FTheme(
         data: FThemes.zinc.light.touch,
-        child: FToaster(child: child),
+        child: FToaster(child: routed ?? const SizedBox.shrink()),
       ),
     ),
   );
