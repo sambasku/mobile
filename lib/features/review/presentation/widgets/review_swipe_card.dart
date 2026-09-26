@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/swipe_decision_card.dart';
 
 /// Arah keputusan setelah swipe melewati ambang.
@@ -11,7 +13,7 @@ enum ReviewSwipeDirection { approve, reject, skip }
 /// tetap tersembunyi; `false` mengembalikan kartu ke tengah.
 ///
 /// Isi kartu boleh di-scroll; swipe-atas skip hanya diklaim saat scroll di puncak.
-/// Lewati juga lewat tombol panah di action bar.
+/// Lewati juga lewat tombol di action bar.
 class ReviewSwipeCard extends StatelessWidget {
   const ReviewSwipeCard({
     super.key,
@@ -28,6 +30,7 @@ class ReviewSwipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
     return SwipeDecisionCard(
       itemKey: itemKey,
       enabled: enabled,
@@ -37,6 +40,13 @@ class ReviewSwipeCard extends StatelessWidget {
       negativeLabel: 'Tolak',
       skipLabel: 'Lewati',
       overlayStyle: SwipeDecisionOverlayStyle.icon,
+      // Samakan afordance dengan deck kontribusi: ↑ hijau / ↓ merah / skip.
+      positiveIcon: FLucideIcons.arrowBigUp,
+      negativeIcon: FLucideIcons.arrowBigDown,
+      skipIcon: FLucideIcons.skipForward,
+      positiveColor: theme.colors.success,
+      negativeColor: theme.colors.destructive,
+      skipColor: theme.colors.mutedForeground,
       onSwiped: (direction) => onSwiped(switch (direction) {
         SwipeDecisionDirection.positive => ReviewSwipeDirection.approve,
         SwipeDecisionDirection.negative => ReviewSwipeDirection.reject,

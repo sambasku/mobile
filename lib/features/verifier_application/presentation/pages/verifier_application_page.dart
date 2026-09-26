@@ -9,9 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/pages/register_page.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
 import '../../domain/entities/verifier_application.dart';
 import '../providers/verifier_application_providers.dart';
@@ -105,6 +108,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final social = useState<List<_SocialDraft>>([
       const _SocialDraft(platform: 'instagram'),
     ]);
+    final isReLogging = useState(false);
     useListenable(phone);
     useListenable(address);
 
@@ -135,13 +139,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
     ) {
       if (next == null) return;
       showFToast(context: context, title: Text(next));
-      if (context.canPop()) context.pop();
     });
 
-    final pending = state.application?.isPending == true;
-    final rejected = state.application?.isRejected == true;
-    final approved = state.application?.isApproved == true;
-    final readOnly = pending || state.isSubmitting;
+    final application = state.application;
+    final pending = application?.isPending == true;
+    final rejected = application?.isRejected == true;
+    final approved = application?.isApproved == true;
+    final needsRevision = application?.needsRevision == true;
+    final readOnly = state.isSubmitting;
 
     final links = <SocialLink>[];
     var allReady = social.value.isNotEmpty;
@@ -165,6 +170,8 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final canSubmit =
         !readOnly &&
         !state.isLoading &&
+        !pending &&
+        !approved &&
         phone.text.trim().isNotEmpty &&
         address.text.trim().length >= 10 &&
         allReady &&
@@ -179,6 +186,24 @@ class VerifierApplicationPage extends HookConsumerWidget {
             socialLinks: links,
           );
     }
+
+    Future<void> reLogin() async {
+      if (isReLogging.value) return;
+      isReLogging.value = true;
+      try {
+        await ref.read(authStatusProvider.notifier).logout();
+        if (!context.mounted) return;
+        // Biarkan frame berikutnya baca isAuth=false sebelum masuk /login
+        // (hindari redirect balik ke HOME karena sesi lama).
+        await Future<void>.delayed(Duration.zero);
+        if (!context.mounted) return;
+        context.go('${AuthRouter.login.path}?relogin=1');
+      } finally {
+        if (context.mounted) isReLogging.value = false;
+      }
+    }
+
+    final theme = context.theme;
 
     return FScaffold(
       childPad: true,
@@ -195,18 +220,77 @@ class VerifierApplicationPage extends HookConsumerWidget {
         child: state.isLoading
             ? const Center(child: FCircularProgress())
             : ListView(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  if (approved)
-                    const FAlert(
-                      title: Text('Pengajuan disetujui'),
-                      subtitle: Text(
-                        'Pengajuan Anda disetujui. Masuk ulang agar peran baru aktif.',
+                  if (approved) ...[
+                    if (isReLogging.value) ...[
+                      const Gap(48),
+                      const Center(child: FCircularProgress()),
+                      const Gap(16),
+                      Text(
+                        'Membuka halaman masuk...',
+                        textAlign: .center,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
                       ),
-                    )
-                  else ...[
+                    ] else ...[
+                      const Gap(24),
+                      Center(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: theme.colors.success.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Icon(
+                              FLucideIcons.circleCheck,
+                              size: 64,
+                              color: theme.colors.success,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Gap(20),
+                      Text(
+                        'Pengajuan disetujui',
+                        textAlign: .center,
+                        style: theme.typography.xl.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colors.success,
+                        ),
+                      ),
+                      const Gap(8),
+                      Text(
+                        'Selamat, Anda jadi verifikator. Masuk kembali agar peran Verifikator aktif di aplikasi.',
+                        textAlign: .center,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
+                      const Gap(24),
+                      FButton(
+                        onPress: reLogin,
+                        prefix: const Icon(FLucideIcons.logIn),
+                        child: const Text('Masuk ulang'),
+                      ),
+                    ],
+                  ] else if (pending) ...[
+                    const FAlert(
+                      title: Text('Pengajuan sedang ditinjau'),
+                      subtitle: Text(
+                        'Tim admin masih meninjau data Anda. Anda akan mendapat notifikasi setelah ada keputusan.',
+                      ),
+                    ),
+                    if (state.errorMessage != null) ...[
+                      const Gap(12),
+                      FAlert(
+                        variant: .destructive,
+                        title: Text(state.errorMessage!),
+                      ),
+                    ],
+                  ] else ...[
                     const FAlert(
                       title: Text('Tentang peran verifikator'),
                       subtitle: Text(
@@ -214,24 +298,21 @@ class VerifierApplicationPage extends HookConsumerWidget {
                       ),
                     ),
                     const Gap(12),
-                    if (pending) ...[
-                      const FAlert(
-                        title: Text('Menunggu review'),
+                    if (needsRevision) ...[
+                      FAlert(
+                        variant: .destructive,
+                        title: const Text('Perlu perbaikan'),
                         subtitle: Text(
-                          'Pengajuan sedang ditinjau admin. Form terkunci sampai ada keputusan.',
+                          application!.adminComment!.trim(),
                         ),
                       ),
                       const Gap(12),
-                    ],
-                    if (rejected) ...[
-                      FAlert(
+                    ] else if (rejected) ...[
+                      const FAlert(
                         variant: .destructive,
-                        title: const Text('Pengajuan ditolak'),
+                        title: Text('Pengajuan ditolak'),
                         subtitle: Text(
-                          state.application?.adminComment?.trim().isNotEmpty ==
-                                  true
-                              ? state.application!.adminComment!
-                              : 'Perbaiki data lalu kirim ulang.',
+                          'Data kurang lengkap. Perbaiki lalu kirim ulang.',
                         ),
                       ),
                       const Gap(12),
@@ -314,20 +395,19 @@ class VerifierApplicationPage extends HookConsumerWidget {
                       ),
                     ],
                     const Gap(16),
-                    if (!pending)
-                      FButton(
-                        onPress: canSubmit ? submit : null,
-                        prefix: state.isSubmitting
-                            ? const FCircularProgress()
-                            : null,
-                        child: Text(
-                          state.isSubmitting
-                              ? 'Mengirim...'
-                              : rejected
-                              ? 'Kirim ulang'
-                              : 'Kirim pengajuan',
-                        ),
+                    FButton(
+                      onPress: canSubmit ? submit : null,
+                      prefix: state.isSubmitting
+                          ? const FCircularProgress()
+                          : null,
+                      child: Text(
+                        state.isSubmitting
+                            ? 'Mengirim...'
+                            : rejected
+                            ? 'Kirim ulang'
+                            : 'Kirim pengajuan',
                       ),
+                    ),
                     const Gap(8),
                     Text(
                       'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.',

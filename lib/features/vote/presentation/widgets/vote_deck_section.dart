@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
@@ -15,7 +16,7 @@ import 'vote_deck_swipe_card.dart';
 ///
 /// Loading / ganti kartu / action bar mengikuti pola sesi tinjau
 /// (`ReviewSessionPage`): skeleton kerangka kartu, AnimatedSwitcher,
-/// footer ikon Kurang pas · Masuk akal.
+/// footer ikon downvote · lewati · upvote · rewind.
 class VoteDeckSection extends ConsumerStatefulWidget {
   const VoteDeckSection({super.key});
 
@@ -36,34 +37,29 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Bantu nilai kamus',
+          'Bantu nilai agar arti kata lebih akurat',
           style: theme.typography.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.mutedForeground,
           ),
         ),
-        const Gap(2),
-        Text(
-          'Geser kartu - apakah arti kata ini masuk akal buat kamu?',
-          style: theme.typography.sm.copyWith(
-            color: theme.colors.mutedForeground,
-          ),
-        ),
         const Gap(12),
-        auth.when(
-          loading: () => const _VoteDeckCardPlaceholder(),
-          error: (_, _) => const _GuestDeck(),
-          data: (status) => status.isAuth
-              ? _AuthDeck(
-                  busy: _busy,
-                  onBusy: (v) => setState(() => _busy = v),
-                  onDeckVisible: () {
-                    if (_loggedView) return;
-                    _loggedView = true;
-                    AnalyticsService.instance.log(AnalyticsEvents.voteDeckView);
-                  },
-                )
-              : const _GuestDeck(),
+        Expanded(
+          child: auth.when(
+            loading: () => const _VoteDeckCardPlaceholder(),
+            error: (_, _) => const _GuestDeck(),
+            data: (status) => status.isAuth
+                ? _AuthDeck(
+                    busy: _busy,
+                    onBusy: (v) => setState(() => _busy = v),
+                    onDeckVisible: () {
+                      if (_loggedView) return;
+                      _loggedView = true;
+                      AnalyticsService.instance.log(AnalyticsEvents.voteDeckView);
+                    },
+                  )
+                : const _GuestDeck(),
+          ),
         ),
       ],
     );
@@ -93,7 +89,6 @@ class _GuestDeck extends ConsumerWidget {
                 lemma: w.lemma,
                 sense: w.sense,
                 wordType: w.wordType,
-                showHint: false,
               ),
             );
           },
@@ -151,7 +146,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
           const FAlert(
             variant: FAlertVariant.destructive,
             title: Text(
-              'Gagal memuat antrean penilaian. Tarik untuk coba lagi.',
+              'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.',
             ),
             icon: Icon(FLucideIcons.circleAlert),
           ),
@@ -185,6 +180,17 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                if (state.canRewind) ...[
+                  const Gap(16),
+                  _VoteDeckActionBar(
+                    busy: widget.busy,
+                    canRewind: true,
+                    onDisagree: null,
+                    onSkip: null,
+                    onAgree: null,
+                    onRewind: () => _rewind(context, ref),
+                  ),
+                ],
               ],
             ),
           );
@@ -208,35 +214,42 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
               ),
             ),
             const Gap(8),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              // Saat submit: kartu sudah keluar layar → isi slot dengan
-              // skeleton supaya tidak kosong diam (beda dari sesi tinjau
-              // yang preload detail berikutnya).
-              child: widget.busy
-                  ? const _VoteDeckCardPlaceholder(key: ValueKey('submitting'))
-                  : SizedBox(
-                      key: ValueKey('card-${item.id}'),
-                      height: 240,
-                      child: VoteDeckSwipeCard(
-                        itemKey: item.id,
-                        enabled: true,
-                        onSwiped: (dir) =>
-                            _cast(context, ref, item: item, direction: dir),
-                        child: _WordCardFace(
-                          lemma: item.lemma,
-                          sense: item.sense,
-                          wordType: item.wordType,
-                          showHint: true,
+            Expanded(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 220),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  // Saat submit: kartu sudah keluar layar → isi slot dengan
+                  // skeleton supaya tidak kosong diam (beda dari sesi tinjau
+                  // yang preload detail berikutnya).
+                  child: widget.busy
+                      ? const _VoteDeckCardPlaceholder(
+                          key: ValueKey('submitting'),
+                        )
+                      : SizedBox(
+                          key: ValueKey('card-${item.id}'),
+                          height: 240,
+                          child: VoteDeckSwipeCard(
+                            itemKey: item.id,
+                            enabled: true,
+                            onSwiped: (dir) =>
+                                _cast(context, ref, item: item, direction: dir),
+                            child: _WordCardFace(
+                              lemma: item.lemma,
+                              sense: item.sense,
+                              wordType: item.wordType,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                ),
+              ),
             ),
             const Gap(10),
             _VoteDeckActionBar(
               busy: widget.busy,
+              canRewind: state.canRewind,
               onDisagree: () => _cast(
                 context,
                 ref,
@@ -255,6 +268,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 item: item,
                 direction: VoteDeckSwipeDirection.agree,
               ),
+              onRewind: () => _rewind(context, ref),
             ),
           ],
         );
@@ -272,7 +286,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
 
     // Skip lokal - tanpa busy/skeleton (bukan submit server).
     if (direction == VoteDeckSwipeDirection.skip) {
-      ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item.id);
+      ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item);
       return true;
     }
 
@@ -280,7 +294,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     final value = direction == VoteDeckSwipeDirection.agree ? 1 : -1;
     final failure = await ref
         .read(voteDeckControllerProvider.notifier)
-        .castAndAdvance(wordId: item.id, value: value);
+        .castAndAdvance(item: item, value: value);
 
     if (!context.mounted) {
       widget.onBusy(false);
@@ -313,21 +327,54 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     );
     return true;
   }
+
+  Future<void> _rewind(BuildContext context, WidgetRef ref) async {
+    if (widget.busy) return;
+    widget.onBusy(true);
+    final failure =
+        await ref.read(voteDeckControllerProvider.notifier).rewind();
+    if (!context.mounted) {
+      widget.onBusy(false);
+      return;
+    }
+    widget.onBusy(false);
+    if (failure != null) {
+      showFToast(context: context, title: Text(failure.message));
+      return;
+    }
+    showFToast(
+      context: context,
+      title: const Text('Kartu sebelumnya dikembalikan.'),
+    );
+  }
 }
 
-/// Action bar: Kurang pas · Lewati · Masuk akal (lewati juga lewat swipe atas).
+/// Action bar: [undo][skip][downvote][upvote] - vote sejajar di kanan.
 class _VoteDeckActionBar extends StatelessWidget {
   const _VoteDeckActionBar({
     required this.busy,
+    required this.canRewind,
     required this.onDisagree,
     required this.onSkip,
     required this.onAgree,
+    required this.onRewind,
   });
 
   final bool busy;
-  final VoidCallback onDisagree;
-  final VoidCallback onSkip;
-  final VoidCallback onAgree;
+  final bool canRewind;
+  final VoidCallback? onDisagree;
+  final VoidCallback? onSkip;
+  final VoidCallback? onAgree;
+  final VoidCallback onRewind;
+
+  Widget _busyOr(Widget icon) {
+    if (!busy) return icon;
+    return const SizedBox(
+      width: 18,
+      height: 18,
+      child: FCircularProgress(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -343,53 +390,55 @@ class _VoteDeckActionBar extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Kanan masuk akal · kiri kurang pas · atas lewati',
+                'Pilih penilaian',
                 style: theme.typography.xs.copyWith(
                   color: theme.colors.mutedForeground,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             const Gap(8),
             FButton.icon(
-              variant: FButtonVariant.destructive,
+              variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: busy ? 'Memproses…' : 'Kurang pas',
-              onPress: busy ? null : onDisagree,
-              child: busy
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : const Icon(FLucideIcons.x),
+              semanticsLabel: 'Kembali ke kartu sebelumnya',
+              onPress: busy || !canRewind ? null : onRewind,
+              child: _busyOr(const Icon(FLucideIcons.undo)),
             ),
             const Gap(8),
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               semanticsLabel: busy ? 'Memproses…' : 'Lewati',
-              onPress: busy ? null : onSkip,
-              child: busy
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : const Icon(FLucideIcons.arrowUp),
+              onPress: busy || onSkip == null ? null : onSkip,
+              child: _busyOr(const Icon(FLucideIcons.skipForward)),
             ),
-            const Gap(8),
+            const Gap(12),
+            // Pasangan downvote / upvote sejajar (mirip VoteButtons).
             FButton.icon(
-              variant: FButtonVariant.primary,
+              variant: FButtonVariant.outline,
+              size: FButtonSizeVariant.sm,
+              semanticsLabel: busy ? 'Memproses…' : 'Kurang pas',
+              onPress: busy || onDisagree == null ? null : onDisagree,
+              child: _busyOr(
+                Icon(
+                  FLucideIcons.arrowBigDown,
+                  color: theme.colors.destructive,
+                ),
+              ),
+            ),
+            const Gap(4),
+            FButton.icon(
+              variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               semanticsLabel: busy ? 'Memproses…' : 'Masuk akal',
-              onPress: busy ? null : onAgree,
-              child: busy
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : const Icon(FLucideIcons.check),
+              onPress: busy || onAgree == null ? null : onAgree,
+              child: _busyOr(
+                Icon(
+                  FLucideIcons.arrowBigUp,
+                  color: theme.colors.success,
+                ),
+              ),
             ),
           ],
         ),
@@ -491,13 +540,11 @@ class _WordCardFace extends StatelessWidget {
     required this.lemma,
     required this.sense,
     required this.wordType,
-    this.showHint = false,
   });
 
   final String lemma;
   final String? sense;
   final String wordType;
-  final bool showHint;
 
   @override
   Widget build(BuildContext context) {
@@ -506,52 +553,37 @@ class _WordCardFace extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  lemma,
-                  style: theme.typography.xl.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                if (sense != null && sense!.trim().isNotEmpty) ...[
-                  const Gap(10),
-                  Text(
-                    sense!,
-                    style: theme.typography.md.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                if (wordType.isNotEmpty) ...[
-                  const Gap(12),
-                  Text(
-                    wordType,
-                    style: theme.typography.xs.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ],
+          Text(
+            lemma,
+            style: theme.typography.xl.copyWith(
+              fontWeight: FontWeight.w700,
             ),
+            textAlign: TextAlign.center,
           ),
-          if (showHint)
+          if (sense != null && sense!.trim().isNotEmpty) ...[
+            const Gap(10),
             Text(
-              'Kanan masuk akal · kiri kurang pas · atas lewati.',
+              sense!,
+              style: theme.typography.md.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          if (wordType.isNotEmpty) ...[
+            const Gap(12),
+            Text(
+              wordType,
               style: theme.typography.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
             ),
+          ],
         ],
       ),
     );

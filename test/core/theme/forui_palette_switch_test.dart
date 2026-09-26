@@ -39,6 +39,7 @@ class _FakeAuthRepository implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override

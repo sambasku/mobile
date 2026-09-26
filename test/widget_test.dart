@@ -134,8 +134,8 @@ void main() {
     // redirect GoRouter (getIsAuth) selesai di frame berikutnya
     await tester.pump();
 
-    // cold start langsung HOME (FScaffold shell + header Kamus Sambas)
+    // cold start langsung HOME (FScaffold shell + header SambasKu)
     expect(find.byType(FScaffold), findsWidgets);
-    expect(find.text('Kamus Sambas'), findsOneWidget);
+    expect(find.text('SambasKu'), findsOneWidget);
   });
 }

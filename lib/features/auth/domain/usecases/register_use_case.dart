@@ -15,6 +15,7 @@ class RegisterUseCase {
       phone: params.phoneNationalDigits,
       password: params.password,
       confirmPassword: params.confirmPassword,
+      consents: params.consents,
     );
   }
 }
@@ -26,6 +27,7 @@ class RegisterParams {
     this.phoneNationalDigits,
     required this.password,
     required this.confirmPassword,
+    required this.consents,
   });
 
   final String name;
@@ -35,4 +37,5 @@ class RegisterParams {
   final String? phoneNationalDigits;
   final String password;
   final String confirmPassword;
+  final List<({String documentType, String documentVersion})> consents;
 }

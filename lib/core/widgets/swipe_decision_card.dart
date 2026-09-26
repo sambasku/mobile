@@ -32,6 +32,12 @@ class SwipeDecisionCard extends StatefulWidget {
     required this.negativeLabel,
     required this.skipLabel,
     this.overlayStyle = SwipeDecisionOverlayStyle.label,
+    this.positiveIcon,
+    this.negativeIcon,
+    this.skipIcon,
+    this.positiveColor,
+    this.negativeColor,
+    this.skipColor,
     this.allowNestedVerticalScroll = false,
     this.fallbackHeight = 240,
   });
@@ -44,6 +50,17 @@ class SwipeDecisionCard extends StatefulWidget {
   final String negativeLabel;
   final String skipLabel;
   final SwipeDecisionOverlayStyle overlayStyle;
+
+  /// Ikon overlay saat [overlayStyle] == icon. Default: check / x / arrowUp.
+  final IconData? positiveIcon;
+  final IconData? negativeIcon;
+  final IconData? skipIcon;
+
+  /// Warna overlay ikon. Default: success / destructive / mutedForeground.
+  final Color? positiveColor;
+  final Color? negativeColor;
+  final Color? skipColor;
+
   final bool allowNestedVerticalScroll;
   final double fallbackHeight;
 
@@ -334,20 +351,22 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                       ] else ...[
                         _SwipeIconOverlay(
                           t: positiveT,
-                          icon: FLucideIcons.check,
-                          color: theme.colors.success,
+                          icon: widget.positiveIcon ?? FLucideIcons.check,
+                          color: widget.positiveColor ?? theme.colors.success,
                           semanticsLabel: widget.positiveLabel,
                         ),
                         _SwipeIconOverlay(
                           t: negativeT,
-                          icon: FLucideIcons.x,
-                          color: theme.colors.destructive,
+                          icon: widget.negativeIcon ?? FLucideIcons.x,
+                          color:
+                              widget.negativeColor ?? theme.colors.destructive,
                           semanticsLabel: widget.negativeLabel,
                         ),
                         _SwipeIconOverlay(
                           t: skipT,
-                          icon: FLucideIcons.arrowUp,
-                          color: theme.colors.mutedForeground,
+                          icon: widget.skipIcon ?? FLucideIcons.arrowUp,
+                          color: widget.skipColor ??
+                              theme.colors.mutedForeground,
                           semanticsLabel: widget.skipLabel,
                         ),
                       ],

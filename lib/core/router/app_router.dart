@@ -173,6 +173,7 @@ class AppRouter {
         path == AuthRouter.forgotPassword.path ||
         path == AuthRouter.verifyEmail.path ||
         path == AuthRouter.register.path ||
+        path == AuthRouter.termsWebView.path ||
         path == DeleteAccountRouter.deleteAccount.path ||
         path == '/hapus-akun') {
       return true;

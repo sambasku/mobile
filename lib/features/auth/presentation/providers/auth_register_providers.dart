@@ -23,6 +23,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     String? phoneNationalDigits,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async {
     if (_inFlight) return;
     _inFlight = true;
@@ -44,6 +45,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
             phoneNationalDigits: phoneNationalDigits,
             password: password,
             confirmPassword: confirmPassword,
+            consents: consents,
           ),
         );
 

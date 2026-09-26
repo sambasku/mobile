@@ -96,7 +96,7 @@ class HomeSearchPage extends HookConsumerWidget {
     return Column(
       children: [
         const FHeader(
-          title: Text('Kamus Sambas'),
+          title: Text('SambasKu'),
           suffixes: [ThemeToggleHeaderAction()],
         ),
         Padding(

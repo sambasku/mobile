@@ -322,6 +322,62 @@ void main() {
     expect(container.read(reviewSessionProvider), isNull);
   });
 
+  test('skipCurrent menyimpan rewindSkipId; rewindSkip mengembalikan kartu',
+      () async {
+    final container = ProviderContainer(
+      overrides: [
+        reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    container.read(reviewSessionProvider.notifier).start(
+      ids: const ['a', 'b', 'c'],
+      index: 0,
+    );
+
+    final hasNext =
+        await container.read(reviewSessionProvider.notifier).skipCurrent();
+
+    expect(hasNext, isTrue);
+    final afterSkip = container.read(reviewSessionProvider);
+    expect(afterSkip?.currentId, 'b');
+    expect(afterSkip?.canRewind, isTrue);
+    expect(afterSkip?.rewindSkipId, 'a');
+
+    final ok = container.read(reviewSessionProvider.notifier).rewindSkip();
+    expect(ok, isTrue);
+    final afterRewind = container.read(reviewSessionProvider);
+    expect(afterRewind?.currentId, 'a');
+    expect(afterRewind?.canRewind, isFalse);
+    expect(afterRewind?.ids, ['a', 'b', 'c']);
+  });
+
+  test('advanceAfterDecision menghapus rewind skip', () async {
+    final container = ProviderContainer(
+      overrides: [
+        reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    container.read(reviewSessionProvider.notifier).start(
+      ids: const ['a', 'b', 'c'],
+      index: 0,
+    );
+
+    await container.read(reviewSessionProvider.notifier).skipCurrent();
+    expect(container.read(reviewSessionProvider)?.canRewind, isTrue);
+
+    await container
+        .read(reviewSessionProvider.notifier)
+        .advanceAfterDecision('b');
+
+    final session = container.read(reviewSessionProvider);
+    expect(session?.currentId, 'c');
+    expect(session?.canRewind, isFalse);
+  });
+
   testWidgets('kontributor tidak lolos penjaga antrean', (tester) async {
     SharedPreferences.setMockInitialValues({
       'isAuth': true,
@@ -450,9 +506,9 @@ void main() {
 
     expect(find.textContaining('Tinjau · 1/2'), findsOneWidget);
     expect(find.text('kalintiak'), findsWidgets);
-    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.arrowBigUp), findsOneWidget);
     expect(
-      find.textContaining('Kanan setuju · kiri tolak · atas lewati'),
+      find.textContaining('Kanan hijau · kiri merah · atas lewati'),
       findsOneWidget,
     );
 
@@ -463,11 +519,11 @@ void main() {
     expect(find.textContaining('Koreksi · 1/2'), findsOneWidget);
     expect(find.text('Simpan dan terbitkan'), findsOneWidget);
     expect(find.text('Batal koreksi'), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.check), findsNothing);
+    expect(find.byIcon(FLucideIcons.arrowBigUp), findsNothing);
 
     await tester.tap(find.text('Batal koreksi'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.arrowBigUp), findsOneWidget);
   });
 }

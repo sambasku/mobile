@@ -54,6 +54,11 @@ class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
     if (ax >= ay) return true;
     // Vertical: only upward skip may steal; downward belongs to scroll.
     if (_accumDy >= 0) return false;
+    return _verticalSkipAllowed();
+  }
+
+  /// Gate terbuka + gerakan naik melewati slop → boleh rebut arena dari scroll.
+  bool _verticalSkipAllowed() {
     final gate = shouldClaimVertical;
     if (gate != null && !gate()) return false;
     return true;
@@ -61,7 +66,11 @@ class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
 
   @override
   void rejectGesture(int pointer) {
-    if (_claimed || _shouldClaimNow()) {
+    // Jika scrollable menang arena dulu, rebut balik saat intent naik jelas
+    // dan gate mengizinkan (Kontribusi: selalu; Tinjauan: list di atas).
+    final upwardPastSlop =
+        _accumDy < 0 && _accumDy.abs() >= claimSlop && _verticalSkipAllowed();
+    if (_claimed || _shouldClaimNow() || upwardPastSlop) {
       _claimed = true;
       acceptGesture(pointer);
     } else {

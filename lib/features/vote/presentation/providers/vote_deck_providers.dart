@@ -13,31 +13,58 @@ import '../../domain/providers/vote_domain_providers.dart';
 
 part 'vote_deck_providers.g.dart';
 
+/// Jenis aksi terakhir yang bisa di-rewind (satu langkah).
+enum VoteDeckRewindKind { skip, upvote, downvote }
+
+class VoteDeckRewindEntry {
+  const VoteDeckRewindEntry({
+    required this.item,
+    required this.kind,
+  });
+
+  final VoteDeckItem item;
+  final VoteDeckRewindKind kind;
+
+  /// Nilai toggle untuk undo vote; null jika skip.
+  int? get voteValue => switch (kind) {
+        VoteDeckRewindKind.upvote => 1,
+        VoteDeckRewindKind.downvote => -1,
+        VoteDeckRewindKind.skip => null,
+      };
+}
+
 class VoteDeckState {
   const VoteDeckState({
     this.items = const [],
     this.nextCursor,
     this.hasMore = false,
     this.isLoadingMore = false,
+    this.rewindEntry,
   });
 
   final List<VoteDeckItem> items;
   final String? nextCursor;
   final bool hasMore;
   final bool isLoadingMore;
+  final VoteDeckRewindEntry? rewindEntry;
+
+  bool get canRewind => rewindEntry != null;
 
   VoteDeckState copyWith({
     List<VoteDeckItem>? items,
     String? nextCursor,
     bool? hasMore,
     bool? isLoadingMore,
+    VoteDeckRewindEntry? rewindEntry,
     bool clearCursor = false,
+    bool clearRewind = false,
   }) {
     return VoteDeckState(
       items: items ?? this.items,
       nextCursor: clearCursor ? null : (nextCursor ?? this.nextCursor),
       hasMore: hasMore ?? this.hasMore,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      rewindEntry: clearRewind ? null : (rewindEntry ?? this.rewindEntry),
     );
   }
 }
@@ -94,6 +121,7 @@ class VoteDeckController extends _$VoteDeckController {
             items: [...latest.items, ...page.items],
             nextCursor: page.nextCursor,
             hasMore: page.hasMore,
+            rewindEntry: latest.rewindEntry,
           ),
         );
         return null;
@@ -103,10 +131,10 @@ class VoteDeckController extends _$VoteDeckController {
 
   /// Vote lalu buang kartu dari antrean lokal. Return failure jika gagal.
   Future<VoteFailure?> castAndAdvance({
-    required String wordId,
+    required VoteDeckItem item,
     required int value,
   }) async {
-    final target = VoteTarget(type: 'word', id: wordId);
+    final target = VoteTarget(type: 'word', id: item.id);
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: target,
       value: value,
@@ -119,26 +147,71 @@ class VoteDeckController extends _$VoteDeckController {
           direction: value,
         );
         ref.invalidate(myVotesListControllerProvider);
-        _dropLocal(wordId);
+        _dropLocal(
+          item.id,
+          rewind: VoteDeckRewindEntry(
+            item: item,
+            kind: value == 1
+                ? VoteDeckRewindKind.upvote
+                : VoteDeckRewindKind.downvote,
+          ),
+        );
         return null;
       },
     );
   }
 
   /// Lewati tanpa vote - hanya buang dari antrean sesi ini.
-  void skipAndAdvance(String wordId) {
+  void skipAndAdvance(VoteDeckItem item) {
     AnalyticsService.instance.log(
       AnalyticsEvents.voteDeckSwipe,
-      params: {'direction': 'skip', 'word_id': wordId},
+      params: {'direction': 'skip', 'word_id': item.id},
     );
-    _dropLocal(wordId);
+    _dropLocal(
+      item.id,
+      rewind: VoteDeckRewindEntry(
+        item: item,
+        kind: VoteDeckRewindKind.skip,
+      ),
+    );
   }
 
-  void _dropLocal(String wordId) {
+  /// Kembalikan kartu terakhir (skip lokal, atau toggle-off vote + restore).
+  Future<VoteFailure?> rewind() async {
+    final current = state.value;
+    final entry = current?.rewindEntry;
+    if (current == null || entry == null) return null;
+
+    final value = entry.voteValue;
+    if (value != null) {
+      final target = VoteTarget(type: 'word', id: entry.item.id);
+      final result = await ref.watch(toggleVoteUseCaseProvider)(
+        target: target,
+        value: value,
+      );
+      final failure = result.match((f) => f, (_) => null);
+      if (failure != null) return failure;
+      ref.invalidate(myVotesListControllerProvider);
+    }
+
+    final withoutDup =
+        current.items.where((i) => i.id != entry.item.id).toList();
+    state = AsyncData(
+      current.copyWith(
+        items: [entry.item, ...withoutDup],
+        clearRewind: true,
+      ),
+    );
+    return null;
+  }
+
+  void _dropLocal(String wordId, {VoteDeckRewindEntry? rewind}) {
     final current = state.value;
     if (current == null) return;
     final remaining = current.items.where((i) => i.id != wordId).toList();
-    state = AsyncData(current.copyWith(items: remaining));
+    state = AsyncData(
+      current.copyWith(items: remaining, rewindEntry: rewind),
+    );
     if (remaining.length <= 2 && current.hasMore) {
       loadMore();
     }

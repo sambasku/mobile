@@ -22,7 +22,13 @@ class LoginPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authLoginProvider);
     final authStatus = ref.watch(authStatusProvider);
-    final alreadyAuth = authStatus.value?.isAuth ?? false;
+    final status = authStatus.value;
+    // Jangan anggap "sudah login" saat logout masih berjalan - kalau tidak,
+    // layar cuma spinner lalu redirect HOME tanpa form masuk.
+    final alreadyAuth =
+        (status?.isAuth ?? false) && !(status?.isLoggingOut ?? false);
+    final fromVerifierRelogin =
+        GoRouterState.of(context).uri.queryParameters['relogin'] == '1';
     final email = useTextEditingController();
     final password = useTextEditingController();
     final logoLoaded = useState(false);
@@ -31,7 +37,10 @@ class LoginPage extends HookConsumerWidget {
 
     // Sudah login → jangan tampilkan form; redirect (router juga jaga)
     ref.listen(authStatusProvider, (_, next) {
-      if (next.value?.isAuth == true && context.mounted) context.go('/');
+      final nextStatus = next.value;
+      if (nextStatus == null) return;
+      if (nextStatus.isLoggingOut) return;
+      if (nextStatus.isAuth && context.mounted) context.go('/');
     });
 
     // pindah ke HOME begitu sesi tersimpan
@@ -112,6 +121,15 @@ class LoginPage extends HookConsumerWidget {
                   ),
                 ),
                 const Gap(24),
+                if (fromVerifierRelogin) ...[
+                  const FAlert(
+                    title: Text('Masuk kembali'),
+                    subtitle: Text(
+                      'Masuk dengan akun Anda agar peran Verifikator aktif.',
+                    ),
+                  ),
+                  const Gap(16),
+                ],
                 FTextField.email(
                   control: .managed(controller: email),
                   enabled: !state.isSubmitting,

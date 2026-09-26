@@ -51,6 +51,7 @@ class _FakeRepo implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async => throw UnimplementedError();
 
   @override

@@ -205,11 +205,7 @@ class ProfilePage extends ConsumerWidget {
                                     .read(authStatusProvider.notifier)
                                     .logout();
                                 if (!context.mounted) return;
-                                showFToast(
-                                  context: context,
-                                  title: const Text('Berhasil keluar'),
-                                  variant: FToastVariant.primary,
-                                );
+                                context.go('/login');
                               },
                       ),
                     ],

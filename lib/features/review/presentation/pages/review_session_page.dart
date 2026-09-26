@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
@@ -224,6 +225,17 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     return true;
   }
 
+  Future<void> _rewindSkip() async {
+    if (_busy) return;
+    final ok = ref.read(reviewSessionProvider.notifier).rewindSkip();
+    if (!ok || !mounted) return;
+    setState(() => _correctMode = false);
+    showFToast(
+      context: context,
+      title: const Text('Kartu sebelumnya dikembalikan.'),
+    );
+  }
+
   Future<String?> _askRejectReason() {
     return showModalBottomSheet<String>(
       context: context,
@@ -340,6 +352,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
               data: (detail) => _ReviewActionBar(
                 busy: _busy,
                 canCorrect: detail.contribution.entityType != 'meaning',
+                canRewind: session.canRewind,
                 onApprove: () => _approve(detail),
                 onCorrect: () => setState(() {
                   _formKeyId = detail.contribution.id;
@@ -347,6 +360,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
                 }),
                 onReject: () => _reject(detail),
                 onSkip: () => _skip(detail),
+                onRewind: _rewindSkip,
               ),
               orElse: () => null,
             )
@@ -458,7 +472,7 @@ class _ReviewViewBody extends StatelessWidget {
         if (item.isPending) ...[
           const Gap(16),
           Text(
-            'Kanan setuju · kiri tolak · atas lewati - atau pakai tombol di bawah.',
+            'Kanan hijau · kiri merah · atas lewati - atau pakai tombol di bawah.',
             style: context.theme.typography.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
@@ -762,23 +776,36 @@ class _SectionNote extends StatelessWidget {
   }
 }
 
-/// Sticky action bar: Koreksi · Tolak · Lewati · Setujui.
+/// Sticky action bar: Koreksi · [undo][skip][tolak][setuju].
 class _ReviewActionBar extends StatelessWidget {
   const _ReviewActionBar({
     required this.busy,
     required this.canCorrect,
+    required this.canRewind,
     required this.onApprove,
     required this.onCorrect,
     required this.onReject,
     required this.onSkip,
+    required this.onRewind,
   });
 
   final bool busy;
   final bool canCorrect;
+  final bool canRewind;
   final VoidCallback onApprove;
   final VoidCallback onCorrect;
   final VoidCallback onReject;
   final VoidCallback onSkip;
+  final VoidCallback onRewind;
+
+  Widget _busyOr(Widget icon) {
+    if (!busy) return icon;
+    return const SizedBox(
+      width: 18,
+      height: 18,
+      child: FCircularProgress(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -809,17 +836,11 @@ class _ReviewActionBar extends StatelessWidget {
               ] else
                 const Spacer(),
               FButton.icon(
-                variant: FButtonVariant.destructive,
+                variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: busy ? 'Memproses…' : 'Tolak',
-                onPress: busy ? null : onReject,
-                child: busy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : const Icon(FLucideIcons.x),
+                semanticsLabel: 'Kembali ke kartu sebelumnya',
+                onPress: busy || !canRewind ? null : onRewind,
+                child: _busyOr(const Icon(FLucideIcons.undo)),
               ),
               const Gap(8),
               FButton.icon(
@@ -827,27 +848,34 @@ class _ReviewActionBar extends StatelessWidget {
                 size: FButtonSizeVariant.sm,
                 semanticsLabel: busy ? 'Memproses…' : 'Lewati',
                 onPress: busy ? null : onSkip,
-                child: busy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : const Icon(FLucideIcons.arrowUp),
+                child: _busyOr(const Icon(FLucideIcons.skipForward)),
               ),
-              const Gap(8),
+              const Gap(12),
+              // Tolak / setuju sejajar (sama pola ↓↑ di kontribusi).
               FButton.icon(
-                variant: FButtonVariant.primary,
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.sm,
+                semanticsLabel: busy ? 'Memproses…' : 'Tolak',
+                onPress: busy ? null : onReject,
+                child: _busyOr(
+                  Icon(
+                    FLucideIcons.arrowBigDown,
+                    color: theme.colors.destructive,
+                  ),
+                ),
+              ),
+              const Gap(4),
+              FButton.icon(
+                variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
                 semanticsLabel: busy ? 'Memproses…' : 'Setujui',
                 onPress: busy ? null : onApprove,
-                child: busy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: FCircularProgress(),
-                      )
-                    : const Icon(FLucideIcons.check),
+                child: _busyOr(
+                  Icon(
+                    FLucideIcons.arrowBigUp,
+                    color: theme.colors.success,
+                  ),
+                ),
               ),
             ],
           ),

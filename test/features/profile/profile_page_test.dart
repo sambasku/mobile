@@ -49,6 +49,7 @@ class _FakeAuthRepository implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
@@ -142,6 +143,19 @@ void main() {
     SharedPreferences.setMockInitialValues(prefs);
     FlutterSecureStorage.setMockInitialValues(secure);
     final throwingDio = Dio()..httpClientAdapter = _ThrowingAdapter();
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const ProfilePage(),
+        ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const Text('halaman login'),
+        ),
+      ],
+    );
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -152,13 +166,14 @@ void main() {
             _FakeNotificationRepository(),
           ),
         ],
-        child: MaterialApp(
+        child: MaterialApp.router(
           theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
-          home: FTheme(
+          routerConfig: router,
+          builder: (context, child) => FTheme(
             data: FThemes.zinc.light.touch,
-            child: const FToaster(child: ProfilePage()),
+            child: FToaster(child: child ?? const SizedBox.shrink()),
           ),
         ),
       ),
@@ -179,7 +194,7 @@ void main() {
     expect(find.text('Keluar'), findsNothing);
   });
 
-  testWidgets('sudah login - tombol Keluar tampil dan logout berfungsi', (
+  testWidgets('sudah login - tombol Keluar tampil dan logout ke /login', (
     tester,
   ) async {
     // getIsAuth() = prefs isAuth + access token di secure storage.
@@ -209,21 +224,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('Belum masuk'), findsOneWidget);
-    expect(find.text('Masuk / Login'), findsOneWidget);
-    expect(find.text('Daftar'), findsOneWidget);
+    expect(find.text('halaman login'), findsOneWidget);
     expect(find.text('Keluar'), findsNothing);
-    expect(
-      find.descendant(
-        of: find.byType(FToast),
-        matching: find.text('Berhasil keluar'),
-      ),
-      findsOneWidget,
-    );
-
-    // biarkan toast auto-dismiss supaya tidak ada pending timer di teardown
-    await tester.pump(const Duration(seconds: 6));
-    await tester.pump(const Duration(milliseconds: 300));
   });
 
   testWidgets('sudah login - tile Vote dan Komentar membuka route', (tester) async {

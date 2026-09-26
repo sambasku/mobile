@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/swipe_decision_card.dart';
 
-/// Arah aksi deck: kanan = masuk akal, kiri = kurang pas, atas = lewati.
+/// Arah aksi deck: kanan = upvote, kiri = downvote, atas = lewati.
 enum VoteDeckSwipeDirection { agree, disagree, skip }
 
 /// Kartu swipe untuk deck nilai kata (bukan sesi tinjau verifikator).
@@ -40,17 +42,25 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
     return SwipeDecisionCard(
       key: _cardKey,
       itemKey: widget.itemKey,
       enabled: widget.enabled,
-      // Tab Kontribusi: deck di SliverFillRemaining (bukan ListView).
+      // Tab Kontribusi: deck di luar scroll parent (lihat ActivityPage).
       allowNestedVerticalScroll: false,
       fallbackHeight: 240,
       positiveLabel: 'Masuk akal',
       negativeLabel: 'Kurang pas',
       skipLabel: 'Lewati',
-      overlayStyle: SwipeDecisionOverlayStyle.label,
+      overlayStyle: SwipeDecisionOverlayStyle.icon,
+      positiveIcon: FLucideIcons.arrowBigUp,
+      negativeIcon: FLucideIcons.arrowBigDown,
+      // Skip pakai skipForward supaya tidak bentrok visual dengan panah vote.
+      skipIcon: FLucideIcons.skipForward,
+      positiveColor: theme.colors.success,
+      negativeColor: theme.colors.destructive,
+      skipColor: theme.colors.mutedForeground,
       onSwiped: (direction) => widget.onSwiped(switch (direction) {
         SwipeDecisionDirection.positive => VoteDeckSwipeDirection.agree,
         SwipeDecisionDirection.negative => VoteDeckSwipeDirection.disagree,

@@ -5,6 +5,11 @@ import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart'
 import 'package:sambasku_mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:sambasku_mobile/features/auth/domain/usecases/register_use_case.dart';
 
+const _consents = [
+  (documentType: 'terms', documentVersion: '2026-09-26'),
+  (documentType: 'privacy', documentVersion: '2026-09-26'),
+];
+
 class _FakeRepo implements AuthRepository {
   _FakeRepo(this.result);
 
@@ -20,6 +25,7 @@ class _FakeRepo implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async {
     receivedName = name;
     receivedEmail = email;
@@ -97,6 +103,7 @@ void main() {
         phoneNationalDigits: '81234567890',
         password: 'Password123',
         confirmPassword: 'Password123',
+        consents: _consents,
       ),
     );
 
@@ -123,6 +130,7 @@ void main() {
         email: 'budi@test.com',
         password: 'Password123',
         confirmPassword: 'Password123',
+        consents: _consents,
       ),
     );
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,6 +9,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/network/network_providers.dart';
 import '../../auth_router.dart';
 import '../../domain/failures/auth_failure.dart';
 import '../providers/auth_login_providers.dart';
@@ -19,7 +21,7 @@ import '../widgets/google_auth_button.dart';
 /// Prefix negara di-lock dulu ke +62; nanti diganti dinamis (locale/config).
 const kPhoneCountryPrefix = '+62';
 
-/// Register: nama, email, HP opsional (+62 locked), password.
+/// Register: nama, email, HP opsional (+62 locked), password + consent legal.
 /// Sukses → halaman OTP. Belum auto-login.
 class RegisterPage extends HookConsumerWidget {
   const RegisterPage({super.key});
@@ -32,11 +34,41 @@ class RegisterPage extends HookConsumerWidget {
     final phone = useTextEditingController();
     final password = useTextEditingController();
     final confirmPassword = useTextEditingController();
+    final acceptedLegal = useState(false);
+    final termsVersion = useState<String?>(null);
+    final privacyVersion = useState<String?>(null);
+    final legalLoadError = useState<String?>(null);
     useListenable(name);
     useListenable(email);
     useListenable(phone);
     useListenable(password);
     useListenable(confirmPassword);
+
+    useEffect(() {
+      var cancelled = false;
+      () async {
+        try {
+          final dio = ref.read(dioProvider);
+          final res = await dio.get<Map<String, dynamic>>('/api/v1/legal/current');
+          final data = res.data?['data'] as Map<String, dynamic>?;
+          if (cancelled || data == null) return;
+          final terms = data['terms'] as Map<String, dynamic>?;
+          final privacy = data['privacy'] as Map<String, dynamic>?;
+          termsVersion.value = terms?['version'] as String?;
+          privacyVersion.value = privacy?['version'] as String?;
+          legalLoadError.value = null;
+        } on DioException catch (e) {
+          if (!cancelled) {
+            legalLoadError.value = e.message ?? 'Gagal memuat dokumen legal';
+          }
+        } catch (_) {
+          if (!cancelled) {
+            legalLoadError.value = 'Gagal memuat dokumen legal';
+          }
+        }
+      }();
+      return () => cancelled = true;
+    }, const []);
 
     ref.listen(authRegisterProvider.select((s) => s.session), (_, next) {
       if (next != null && context.mounted) context.go('/');
@@ -61,8 +93,6 @@ class RegisterPage extends HookConsumerWidget {
       }
     });
 
-    // Register password sukses → OTP. Sesi user lama (kalau ada) di-logout dulu
-    // supaya profil/router tidak tetap menampilkan user A.
     ref.listen(authRegisterProvider.select((s) => s.success), (_, success) {
       if (success != true || !context.mounted) return;
       final pending =
@@ -83,24 +113,34 @@ class RegisterPage extends HookConsumerWidget {
         password.text.length >= 8 &&
         password.text.contains(RegExp(r'[a-zA-Z]')) &&
         password.text.contains(RegExp(r'[0-9]'));
+    final legalReady =
+        termsVersion.value != null && privacyVersion.value != null;
     final canSubmit =
         name.text.trim().isNotEmpty &&
         email.text.contains('@') &&
         passwordOk &&
         confirmPassword.text == password.text &&
+        acceptedLegal.value &&
+        legalReady &&
         !state.isSubmitting;
 
-    void submit() => ref
-        .read(authRegisterProvider.notifier)
-        .submit(
-          name: name.text,
-          email: email.text,
-          phoneNationalDigits: phone.text.trim().isEmpty
-              ? null
-              : phone.text.trim(),
-          password: password.text,
-          confirmPassword: confirmPassword.text,
-        );
+    void submit() {
+      final terms = termsVersion.value;
+      final privacy = privacyVersion.value;
+      if (terms == null || privacy == null) return;
+      ref.read(authRegisterProvider.notifier).submit(
+            name: name.text,
+            email: email.text,
+            phoneNationalDigits:
+                phone.text.trim().isEmpty ? null : phone.text.trim(),
+            password: password.text,
+            confirmPassword: confirmPassword.text,
+            consents: [
+              (documentType: 'terms', documentVersion: terms),
+              (documentType: 'privacy', documentVersion: privacy),
+            ],
+          );
+    }
 
     final theme = context.theme;
 
@@ -161,7 +201,6 @@ class RegisterPage extends HookConsumerWidget {
                   keyboardType: .phone,
                   textInputAction: .next,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  // ponytail: prefix +62 di-lock dulu; nanti dinamis dari locale/config
                   prefixBuilder: (context, style, variants) => Padding(
                     padding: const EdgeInsets.only(left: 12, right: 4),
                     child: Text(
@@ -189,6 +228,56 @@ class RegisterPage extends HookConsumerWidget {
                   textInputAction: .done,
                   onSubmit: canSubmit ? (_) => submit() : null,
                 ),
+                const Gap(16),
+                if (legalLoadError.value != null)
+                  FAlert(
+                    variant: .destructive,
+                    title: Text(legalLoadError.value!),
+                  )
+                else
+                  Row(
+                    crossAxisAlignment: .start,
+                    children: [
+                      FCheckbox(
+                        value: acceptedLegal.value,
+                        enabled: !state.isSubmitting && legalReady,
+                        onChange: (v) => acceptedLegal.value = v,
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            GestureDetector(
+                              onTap: state.isSubmitting || !legalReady
+                                  ? null
+                                  : () => acceptedLegal.value =
+                                      !acceptedLegal.value,
+                              child: Text(
+                                'Saya setuju Syarat dan Ketentuan',
+                                style: theme.typography.sm.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const Gap(2),
+                            GestureDetector(
+                              onTap: () =>
+                                  context.push(AuthRouter.termsWebView.path),
+                              child: Text(
+                                'Baca dokumen lengkap di SambasKu',
+                                style: theme.typography.xs.copyWith(
+                                  color: theme.colors.primary,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: theme.colors.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 if (state.errorMessage != null &&
                     state.errorCode != 'RATE_LIMITED' &&
                     state.errorCode != AuthFailure.googleSignInCanceled &&

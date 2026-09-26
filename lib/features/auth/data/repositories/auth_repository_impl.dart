@@ -36,6 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async {
     try {
       final response = await _remoteDatasource.register(
@@ -45,6 +46,15 @@ class AuthRepositoryImpl implements AuthRepository {
           phone: phone,
           password: password,
           confirmPassword: confirmPassword,
+          clientId: 'sambasku-mobile',
+          consents: consents
+              .map(
+                (c) => LegalConsentDto(
+                  documentType: c.documentType,
+                  documentVersion: c.documentVersion,
+                ),
+              )
+              .toList(),
         ),
       );
 

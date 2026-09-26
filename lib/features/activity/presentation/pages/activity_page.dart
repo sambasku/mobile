@@ -12,6 +12,9 @@ import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 
 /// Tab KONTRIBUSI: menu usul + deck nilai kata.
+///
+/// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
+/// bentrok dengan `CustomScrollView` / pull-to-refresh.
 class ActivityPage extends ConsumerWidget {
   const ActivityPage({super.key});
 
@@ -28,39 +31,32 @@ class ActivityPage extends ConsumerWidget {
 
     return Column(
       children: [
-        const FHeader(
-          title: Text('Kontribusi'),
-          suffixes: [ThemeToggleHeaderAction()],
+        FHeader(
+          title: const Text('Kontribusi'),
+          suffixes: [
+            FHeaderAction(
+              icon: const Icon(FLucideIcons.refreshCw),
+              onPress: () => _refresh(ref),
+            ),
+            const ThemeToggleHeaderAction(),
+          ],
         ),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => _refresh(ref),
-            // CustomScrollView + SliverFillRemaining(hasScrollBody: false)
-            // supaya deck swipe-atas tidak bentrok dengan ListView parent.
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _ContributeMenus(theme: theme),
-                        const Gap(20),
-                      ],
-                    ),
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: _ContributeMenus(theme: theme),
+              ),
+              const Gap(16),
+              const Expanded(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
+                  child: VoteDeckSection(),
                 ),
-                const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
-                    child: VoteDeckSection(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
