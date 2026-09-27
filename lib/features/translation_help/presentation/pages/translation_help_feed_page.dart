@@ -319,24 +319,34 @@ class _SortChips extends StatelessWidget {
   final String sort;
   final ValueChanged<String> onSelect;
 
+  static const _options = <({String value, String label})>[
+    (value: 'latest', label: 'Terbaru'),
+    (value: 'popular', label: 'Populer'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    Widget chip(String value, String label) {
-      final selected = sort == value;
-      return FButton(
-        variant: selected ? FButtonVariant.primary : FButtonVariant.outline,
-        onPress: selected ? null : () => onSelect(value),
-        child: Text(label),
-      );
-    }
-
     return Row(
       children: [
-        chip('latest', 'Terbaru'),
-        const Gap(8),
-        chip('popular', 'Populer'),
-        const Spacer(),
+        Expanded(
+          child: Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final opt in _options)
+                GestureDetector(
+                  onTap: sort == opt.value ? null : () => onSelect(opt.value),
+                  child: FBadge(
+                    variant: sort == opt.value
+                        ? FBadgeVariant.primary
+                        : FBadgeVariant.secondary,
+                    child: Text(opt.label),
+                  ),
+                ),
+            ],
+          ),
+        ),
         Text(
           sort == 'popular' ? 'Menurut upvote' : 'Menurut waktu',
           style: theme.typography.sm.copyWith(

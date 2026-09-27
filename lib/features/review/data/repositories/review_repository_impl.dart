@@ -11,6 +11,7 @@ ReviewItem parseReviewItem(Map<String, dynamic> json) {
   return ReviewItem(
     id: json['id']?.toString() ?? '',
     contributorUsername: json['contributor_username']?.toString(),
+    contributorDisplayName: json['contributor_display_name']?.toString(),
     entityType: json['entity_type']?.toString() ?? '',
     entityId: json['entity_id']?.toString() ?? '',
     action: json['action']?.toString() ?? '',

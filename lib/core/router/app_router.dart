@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -163,10 +165,18 @@ class AppRouter {
       return '/';
     }
 
-    final isAuth = await _tokenStorage.getIsAuth();
-    if (isAuth && loc == AuthRouter.login.path) return '/';
-    if (!isAuth && (loc == '/profile' || path == '/profile')) {
-      return AuthRouter.login.path;
+    // Jangan await getIsAuth (prefs + Keychain) di setiap pop/push.
+    // Hanya perlu saat gate login/profil - selain itu delay-nya terasa
+    // sebagai lag back dari search-miss / bantuan terjemahan.
+    final needsAuthGate = loc == AuthRouter.login.path ||
+        loc == '/profile' ||
+        path == '/profile';
+    if (needsAuthGate) {
+      final isAuth = await _tokenStorage.getIsAuth();
+      if (isAuth && loc == AuthRouter.login.path) return '/';
+      if (!isAuth && (loc == '/profile' || path == '/profile')) {
+        return AuthRouter.login.path;
+      }
     }
 
     return null;
@@ -190,6 +200,20 @@ class AppRouter {
   }
 }
 
+/// Buka tab Profil: cek token storage (sama seperti redirect), baru goBranch.
+Future<void> _openProfileBranch(
+  BuildContext context,
+  StatefulNavigationShell navigationShell,
+) async {
+  final ok = await AppRouter._tokenStorage.getIsAuth();
+  if (!context.mounted) return;
+  if (!ok) {
+    context.push(AuthRouter.login.path);
+    return;
+  }
+  navigationShell.goBranch(3);
+}
+
 /// Shell 4 tab bottom navigation (Forui).
 class _HomeShell extends ConsumerWidget {
   const _HomeShell({required this.navigationShell});
@@ -202,56 +226,76 @@ class _HomeShell extends ConsumerWidget {
     // resizeToAvoidBottomInset false: keyboard tidak dorong bottom nav
     // (nested scaffold + inset = overflow / "geser drawer")
     // footerDecoration dikosongkan - FBottomNavigationBar sudah punya top border
-    return FScaffold(
-      childPad: true,
-      resizeToAvoidBottomInset: false,
-      scaffoldStyle: .delta(footerDecoration: .value(const BoxDecoration())),
-      footer: FBottomNavigationBar(
-        index: navigationShell.currentIndex,
-        onChange: (index) {
-          // IndexedStack menyimpan fokus search → keyboard ikut "nempel"
-          // saat ganti tab / setelah hot reload. Unfocus dulu.
-          FocusManager.instance.primaryFocus?.unfocus();
-          // Tamu ketuk Profil → login, jangan buka layout guest.
-          if (index == 3) {
-            final isAuth =
-                ref.read(authStatusProvider).value?.isAuth ?? false;
-            if (!isAuth) {
-              context.push(AuthRouter.login.path);
-              return;
-            }
-          }
-          final openingHome = index == 0 && navigationShell.currentIndex != 0;
-          navigationShell.goBranch(index);
-          if (openingHome) {
-            // keepAlive + IndexedStack tidak membangun ulang Home, jadi
-            // kata yang baru disetujui tetap tersembunyi sampai di-refresh.
-            ref.invalidate(wordOfDayProvider);
-            ref.read(latestWordsProvider.notifier).load();
-          }
-        },
-        children: [
-          const FBottomNavigationBarItem(
-            icon: Icon(FLucideIcons.house),
-            label: Text('Home'),
+    //
+    // Overlay root (search-miss, translation-help, …): pause ticker shell +
+    // cache layer. ModalRoute.isCurrent sering tetap true di dalam
+    // StatefulShellRoute - pakai rootNavigator.canPop sebagai sinyal.
+    return ListenableBuilder(
+      listenable: AppRouter.router.routerDelegate,
+      builder: (context, child) {
+        final obscured =
+            AppRouter.rootNavigatorKey.currentState?.canPop() ?? false;
+        return TickerMode(
+          enabled: !obscured,
+          child: child!,
+        );
+      },
+      child: RepaintBoundary(
+        child: FScaffold(
+          childPad: true,
+          resizeToAvoidBottomInset: false,
+          scaffoldStyle: .delta(footerDecoration: .value(const BoxDecoration())),
+          footer: FBottomNavigationBar(
+            index: navigationShell.currentIndex,
+            onChange: (index) {
+              // IndexedStack menyimpan fokus search → keyboard ikut "nempel"
+              // saat ganti tab / setelah hot reload. Unfocus dulu.
+              FocusManager.instance.primaryFocus?.unfocus();
+              // Tamu ketuk Profil → login. Jangan andalkan authStatus.value saja:
+              // saat AsyncLoading value bisa null → salah kirim ke login / tab macet.
+              if (index == 3) {
+                final authed =
+                    ref.read(authStatusProvider).value?.isAuth ?? false;
+                if (authed) {
+                  navigationShell.goBranch(3);
+                  return;
+                }
+                unawaited(_openProfileBranch(context, navigationShell));
+                return;
+              }
+              final openingHome = index == 0 && navigationShell.currentIndex != 0;
+              navigationShell.goBranch(index);
+              if (openingHome) {
+                // keepAlive + IndexedStack tidak membangun ulang Home, jadi
+                // kata yang baru disetujui tetap tersembunyi sampai di-refresh.
+                ref.invalidate(wordOfDayProvider);
+                ref.read(latestWordsProvider.notifier).load();
+              }
+            },
+            children: [
+              const FBottomNavigationBarItem(
+                icon: Icon(FLucideIcons.house),
+                label: Text('Home'),
+              ),
+              const FBottomNavigationBarItem(
+                icon: Icon(FLucideIcons.compass),
+                label: Text('Eksplorasi'),
+              ),
+              const FBottomNavigationBarItem(
+                icon: Icon(FLucideIcons.circlePlus),
+                label: Text('Kontribusi'),
+              ),
+              FBottomNavigationBarItem(
+                icon: pendingReview
+                    ? const _ProfileNavIcon(showDot: true)
+                    : const Icon(FLucideIcons.userRound),
+                label: const Text('Profil'),
+              ),
+            ],
           ),
-          const FBottomNavigationBarItem(
-            icon: Icon(FLucideIcons.compass),
-            label: Text('Eksplorasi'),
-          ),
-          const FBottomNavigationBarItem(
-            icon: Icon(FLucideIcons.circlePlus),
-            label: Text('Kontribusi'),
-          ),
-          FBottomNavigationBarItem(
-            icon: pendingReview
-                ? const _ProfileNavIcon(showDot: true)
-                : const Icon(FLucideIcons.userRound),
-            label: const Text('Profil'),
-          ),
-        ],
+          child: navigationShell,
+        ),
       ),
-      child: navigationShell,
     );
   }
 }

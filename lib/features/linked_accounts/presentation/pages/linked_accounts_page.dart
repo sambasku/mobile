@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../auth/presentation/models/auth_login_state.dart';
+import '../../../auth/presentation/providers/auth_login_providers.dart';
 import '../providers/linked_accounts_providers.dart';
 
 class LinkedAccountsPage extends ConsumerWidget {
@@ -13,7 +13,7 @@ class LinkedAccountsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkedAccountsProvider);
-    final githubEnabled = isGithubAuthConfigured();
+    final githubEnabled = ref.watch(githubAuthEnabledProvider);
 
     ref.listen(linkedAccountsProvider.select((s) => s.infoMessage), (_, next) {
       if (next == null) return;

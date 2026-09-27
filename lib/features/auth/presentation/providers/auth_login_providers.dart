@@ -18,8 +18,10 @@ bool googleAuthEnabled(Ref ref) => isGoogleAuthConfigured();
 @riverpod
 bool facebookAuthEnabled(Ref ref) => false;
 
+/// Sementara dimatikan di semua flavor (staging + production).
+/// Nyalakan lagi: `=> isGithubAuthConfigured();`
 @riverpod
-bool githubAuthEnabled(Ref ref) => isGithubAuthConfigured();
+bool githubAuthEnabled(Ref ref) => false;
 
 @riverpod
 class AuthLoginNotifier extends _$AuthLoginNotifier {

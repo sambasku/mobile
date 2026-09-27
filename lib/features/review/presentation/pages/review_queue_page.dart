@@ -196,7 +196,7 @@ class _ReviewTile extends StatelessWidget with FTileMixin {
       subtitle: Text(
         [
           reviewEntityLabel(item.entityType),
-          item.contributorUsername ?? 'anonim',
+          item.contributorLabel,
           if (date.isNotEmpty) date,
         ].join(' · '),
       ),

@@ -57,6 +57,8 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
   }
 
   /// Timpa username/display_name/avatar dari server (atau JWT) ke prefs + state.
+  /// No-op jika sama dengan sesi sekarang - hindari rebuild shell saat back
+  /// dari halaman profil publik.
   Future<void> applySessionIdentity({
     required String username,
     String? displayName,
@@ -76,6 +78,13 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
         avatarUrl != null
             ? (avatarUrl.isNotEmpty ? avatarUrl : null)
             : user.avatarUrl;
+
+    final sameUsername =
+        (current.username?.trim() ?? user.username)?.toLowerCase() ==
+        trimmed.toLowerCase();
+    final sameDisplay = (current.displayName ?? user.displayName) == nextDisplay;
+    final sameAvatar = (current.avatarUrl ?? user.avatarUrl) == nextAvatar;
+    if (sameUsername && sameDisplay && sameAvatar) return;
 
     await storage.saveSessionUser(
       username: trimmed,
@@ -150,17 +159,26 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
         (profile) async {
           final storage = ref.read(authTokenStorageProvider);
           final user = await storage.getSessionUser();
+          final nextAvatar = profile.avatarUrl ?? user.avatarUrl;
+          final sameUsername =
+              current.username?.toLowerCase() == profile.username.toLowerCase();
+          final sameDisplay = current.displayName == profile.displayName;
+          final sameAvatar = current.avatarUrl == nextAvatar;
+          if (sameUsername && sameDisplay && sameAvatar) {
+            // Sudah sinkron - jangan tulis prefs / emit state baru.
+            return current;
+          }
           await storage.saveSessionUser(
             username: profile.username,
             displayName: profile.displayName,
             role: user.role ?? current.role,
             userId: user.userId ?? current.userId,
-            avatarUrl: profile.avatarUrl ?? user.avatarUrl,
+            avatarUrl: nextAvatar,
           );
           return current.copyWith(
             username: profile.username,
             displayName: profile.displayName,
-            avatarUrl: profile.avatarUrl ?? user.avatarUrl,
+            avatarUrl: nextAvatar,
           );
         },
       );
@@ -175,11 +193,17 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     if (current == null || !current.isAuth) return null;
 
     final synced = await _syncIdentityFromServer(current);
-    if (synced != null) {
+    if (synced == null) return current.username?.trim();
+
+    // Hanya emit jika benar-benar berubah (hindari jank animasi back).
+    final changed =
+        synced.username != current.username ||
+        synced.displayName != current.displayName ||
+        synced.avatarUrl != current.avatarUrl;
+    if (changed) {
       state = AsyncData(synced);
-      return synced.username?.trim();
     }
-    return current.username?.trim();
+    return synced.username?.trim();
   }
 
   Future<void> logout() async {

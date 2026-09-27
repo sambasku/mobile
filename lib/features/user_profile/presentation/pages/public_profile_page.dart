@@ -28,9 +28,16 @@ import '../providers/user_profile_providers.dart';
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
 class PublicProfilePage extends HookConsumerWidget {
-  const PublicProfilePage({super.key, required this.username});
+  const PublicProfilePage({
+    super.key,
+    required this.username,
+    this.initialDisplayName,
+  });
 
   final String username;
+
+  /// Nama dari layar sebelumnya / sesi - tampil di app bar sebelum fetch selesai.
+  final String? initialDisplayName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,10 +64,19 @@ class PublicProfilePage extends HookConsumerWidget {
       return null;
     }, [async.hasError, username, me?.isAuth]);
 
-    // Profil sendiri: pastikan prefs/session ikut username + display_name server.
+    // Profil sendiri: sync sesi hanya jika beda dari yang sudah di state
+    // (hindari rebuild IndexedStack saat animasi back).
     useEffect(() {
       final profile = async.asData?.value;
       if (profile == null || !isOwnProfile) return null;
+      final session = me;
+      final sameUsername =
+          session?.username?.toLowerCase() == profile.username.toLowerCase();
+      final sameDisplay =
+          (session?.displayName ?? '') == (profile.displayName);
+      final sameAvatar =
+          (session?.avatarUrl ?? '') == (profile.avatarUrl ?? '');
+      if (sameUsername && sameDisplay && sameAvatar) return null;
       unawaited(
         ref.read(authStatusProvider.notifier).applySessionIdentity(
               username: profile.username,
@@ -72,6 +88,7 @@ class PublicProfilePage extends HookConsumerWidget {
     }, [
       async.asData?.value.username,
       async.asData?.value.displayName,
+      async.asData?.value.avatarUrl,
       isOwnProfile,
     ]);
 
@@ -88,9 +105,11 @@ class PublicProfilePage extends HookConsumerWidget {
       childPad: true,
       header: FHeader.nested(
         title: Text(
-          async.maybeWhen(
-            data: (profile) => profile.displayName,
-            orElse: () => username,
+          _appBarTitle(
+            async: async,
+            isOwnProfile: isOwnProfile,
+            sessionDisplayName: me?.displayName,
+            initialDisplayName: initialDisplayName,
           ),
         ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
@@ -119,6 +138,28 @@ class PublicProfilePage extends HookConsumerWidget {
             ),
     );
   }
+}
+
+/// Judul app bar: display name dari server, lalu sesi auth, lalu hint navigasi.
+/// Jangan pakai handle route sebagai judul.
+String _appBarTitle({
+  required AsyncValue<PublicProfile> async,
+  required bool isOwnProfile,
+  required String? sessionDisplayName,
+  required String? initialDisplayName,
+}) {
+  final fromServer = async.asData?.value.displayName.trim();
+  if (fromServer != null && fromServer.isNotEmpty) return fromServer;
+
+  if (isOwnProfile) {
+    final fromSession = sessionDisplayName?.trim();
+    if (fromSession != null && fromSession.isNotEmpty) return fromSession;
+  }
+
+  final fromRoute = initialDisplayName?.trim();
+  if (fromRoute != null && fromRoute.isNotEmpty) return fromRoute;
+
+  return 'Profil';
 }
 
 class _ProfileBody extends ConsumerWidget {

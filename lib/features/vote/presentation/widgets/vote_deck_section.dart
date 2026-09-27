@@ -461,7 +461,7 @@ class _CardShell extends StatelessWidget {
 
 /// Kerangka kartu saat antrean masih dimuat / penilaian sedang dikirim.
 class _VoteDeckCardPlaceholder extends StatelessWidget {
-  const _VoteDeckCardPlaceholder({super.key, this.enabled = true});
+  const _VoteDeckCardPlaceholder({this.enabled = true});
 
   final bool enabled;
 

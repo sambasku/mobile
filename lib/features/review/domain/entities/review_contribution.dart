@@ -7,11 +7,13 @@ class ReviewItem {
     required this.action,
     required this.status,
     required this.createdAt,
+    this.contributorDisplayName,
     this.wordLemma,
   });
 
   final String id;
   final String? contributorUsername;
+  final String? contributorDisplayName;
   final String entityType;
   final String entityId;
   final String action;
@@ -20,6 +22,15 @@ class ReviewItem {
   final String? wordLemma;
 
   bool get isPending => status == 'pending';
+
+  /// Nama tampilan kontributor; fallback username lalu anonim.
+  String get contributorLabel {
+    final display = contributorDisplayName?.trim();
+    if (display != null && display.isNotEmpty) return display;
+    final handle = contributorUsername?.trim();
+    if (handle != null && handle.isNotEmpty) return handle;
+    return 'anonim';
+  }
 
   String get title {
     final lemma = wordLemma?.trim();

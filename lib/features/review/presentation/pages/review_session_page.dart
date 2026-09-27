@@ -477,7 +477,7 @@ class _ReviewViewBody extends StatelessWidget {
             ),
             _MetaChip(
               icon: FLucideIcons.user,
-              label: item.contributorUsername ?? 'anonim',
+              label: item.contributorLabel,
             ),
             if (when.isNotEmpty)
               _MetaChip(icon: FLucideIcons.clock, label: when),

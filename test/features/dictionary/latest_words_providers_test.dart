@@ -81,13 +81,17 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   }) async => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, WordDetail>> getWordById(String id) async =>
+  Future<Either<DictionaryFailure, WordDetail>> getWordById(
+    String id, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
-    String lemma,
-  ) async =>
+    String lemma, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override

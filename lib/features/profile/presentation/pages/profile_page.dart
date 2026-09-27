@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart' show RefreshIndicator;
+import 'package:flutter/material.dart'
+    show InkWell, Material, MaterialType, RefreshIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -8,8 +9,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/display_image_url.dart';
-import '../../../../core/widgets/theme_toggle_header_action.dart';
+import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../auth/presentation/models/auth_status_state.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../notification/notification_router.dart';
@@ -20,7 +22,7 @@ import '../../../user_profile/user_profile_router.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
-/// Tab PROFILE - identitas di atas, lalu menu terkelompok (aktivitas / akun / preferensi).
+/// Tab PROFILE - identitas di app bar + menu sectioned (FTileGroup).
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
@@ -38,17 +40,15 @@ class ProfilePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authStatus = ref.watch(authStatusProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
-    final userId = authStatus.value?.userId;
 
-    // Prefs bisa stale setelah migrate username (hyphen → underscore).
-    // Sync saat tab Profil tampil, bukan hanya saat tap kartu identitas.
+    // Sync handle sekali saat tab Profil aktif - jangan tiap rebuild auth.
     useEffect(() {
       if (!isAuth) return null;
       unawaited(
         ref.read(authStatusProvider.notifier).ensureUsernameForProfile(),
       );
       return null;
-    }, [isAuth, userId]);
+    }, [isAuth]);
 
     Future<void> refreshIdentity() async {
       if (!isAuth) return;
@@ -58,10 +58,9 @@ class ProfilePage extends HookConsumerWidget {
     return Column(
       children: [
         FHeader(
-          title: const Text('Profil'),
+          title: _ProfileHeaderTitle(status: authStatus.value),
           suffixes: [
             if (isAuth) const NotificationHeaderAction(),
-            const ThemeToggleHeaderAction(),
           ],
         ),
         Expanded(
@@ -72,10 +71,8 @@ class ProfilePage extends HookConsumerWidget {
               onRefresh: refreshIdentity,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 40),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 28),
                 children: [
-                  _IdentityCard(status: status),
-                  _sectionGap,
                   if (status.isAuth) ...[
                     FTileGroup(
                       label: const Text('Aktivitas'),
@@ -138,7 +135,7 @@ class ProfilePage extends HookConsumerWidget {
                         FTile(
                           prefix: const Icon(FLucideIcons.link),
                           title: const Text('Akun Terhubung'),
-                          subtitle: const Text('Google, GitHub, dan lainnya'),
+                          subtitle: const Text('Google dan lainnya'),
                           suffix: const Icon(FLucideIcons.chevronRight),
                           onPress: () => context.push('/linked-accounts'),
                         ),
@@ -219,9 +216,6 @@ class ProfilePage extends HookConsumerWidget {
                           title: Text(
                             status.isLoggingOut ? 'Keluar...' : 'Keluar',
                           ),
-                          subtitle: status.isLoggingOut
-                              ? null
-                              : const Text('Akhiri sesi di perangkat ini'),
                           enabled: !status.isLoggingOut,
                           onPress: status.isLoggingOut
                               ? null
@@ -242,6 +236,25 @@ class ProfilePage extends HookConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _NotificationTile extends ConsumerWidget with FTileMixin {
+  const _NotificationTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unread =
+        ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
+    return FTile(
+      prefix: const Icon(FLucideIcons.bell),
+      title: const Text('Notifikasi'),
+      subtitle: unread > 0
+          ? Text('$unread belum dibaca')
+          : const Text('Kotak masuk pemberitahuan'),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: () => context.push(NotificationRouter.list.path),
     );
   }
 }
@@ -280,175 +293,122 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
   }
 }
 
-class _NotificationTile extends ConsumerWidget with FTileMixin {
-  const _NotificationTile();
+/// Avatar + nama + peran/Verifikator di app bar (tanpa @username / chevron).
+class _ProfileHeaderTitle extends ConsumerWidget {
+  const _ProfileHeaderTitle({required this.status});
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final unread =
-        ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
-    return FTile(
-      prefix: const Icon(FLucideIcons.bell),
-      title: const Text('Notifikasi'),
-      subtitle: unread > 0
-          ? Text('$unread belum dibaca')
-          : const Text('Kotak masuk pemberitahuan'),
-      suffix: const Icon(FLucideIcons.chevronRight),
-      onPress: () => context.push(NotificationRouter.list.path),
-    );
-  }
-}
+  final AuthStatusState? status;
 
-/// Kartu identitas di atas menu: nama, handle, peran - bukan baris menu biasa.
-class _IdentityCard extends ConsumerWidget {
-  const _IdentityCard({required this.status});
-
-  final AuthStatusState status;
+  static bool _isVerifierRole(String? role) =>
+      role == 'admin' || role == 'root' || role == 'reviewer';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final username = status.username?.trim();
-    final rawDisplay = status.displayName?.trim();
-    final displayName = status.isAuth
+    final isAuth = status?.isAuth ?? false;
+    final username = status?.username?.trim();
+    final rawDisplay = status?.displayName?.trim();
+    final displayName = isAuth
         ? (rawDisplay?.isNotEmpty == true
               ? rawDisplay!
               : (username?.isNotEmpty == true ? username! : 'Pengguna'))
-        : 'Tamu';
-    final roleLabel = status.isAuth && status.role != null
-        ? (ProfilePage.roleLabels[status.role!] ?? status.role!)
+        : 'Belum masuk';
+    final role = status?.role;
+    final isVerifier = isAuth && _isVerifierRole(role);
+    final roleLabel = isAuth && role != null
+        ? (ProfilePage.roleLabels[role] ?? role)
         : null;
-    final handle = username != null && username.isNotEmpty ? '@$username' : null;
 
     Future<void> openPublicProfile() async {
-      final resolved = await ref
-          .read(authStatusProvider.notifier)
-          .ensureUsernameForProfile();
+      // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
+      final latest = ref.read(authStatusProvider).value;
+      final titleHint = latest?.displayName?.trim();
+      var handle = latest?.username?.trim();
+      if (handle == null || handle.isEmpty) {
+        handle = await ref
+            .read(authStatusProvider.notifier)
+            .ensureUsernameForProfile();
+      }
       if (!context.mounted) return;
-      if (resolved == null || resolved.isEmpty) return;
-      UserProfileRouter.open(context, resolved);
+      if (handle == null || handle.isEmpty) {
+        showFToast(
+          context: context,
+          title: const Text('Profil belum siap, coba lagi'),
+        );
+        return;
+      }
+      UserProfileRouter.open(
+        context,
+        handle,
+        displayName: (titleHint != null && titleHint.isNotEmpty)
+            ? titleHint
+            : null,
+      );
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.colors.secondary,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.colors.border),
-        ),
+    // InkWell + lebar penuh: GestureDetector di slot title FHeader sering
+    // tidak menerima tap (DefaultTextStyle/ellipsis parent).
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: isAuth ? openPublicProfile : null,
+        borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 12, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
             children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: status.isAuth ? openPublicProfile : null,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              _ProfileAvatar(
+                name: isAuth ? displayName : null,
+                imageUrl: status?.avatarUrl,
+                size: 34,
+              ),
+              const Gap(10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    _ProfileAvatar(
-                      name: status.isAuth ? displayName : null,
-                      imageUrl: status.avatarUrl,
-                      size: 56,
+                    Text(
+                      displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.md.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                      ),
                     ),
-                    const Gap(14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    if (isVerifier) ...[
+                      const Gap(1),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
+                          const VerifiedBadgeIcon(size: 12),
+                          const Gap(3),
                           Text(
-                            displayName,
-                            style: theme.typography.lg.copyWith(
-                              fontWeight: FontWeight.w700,
+                            'Verifikator',
+                            style: theme.typography.xs.copyWith(
+                              color: theme.colors.success,
+                              fontWeight: FontWeight.w600,
                               height: 1.2,
                             ),
                           ),
-                          if (status.isAuth) ...[
-                            if (handle != null) ...[
-                              const Gap(2),
-                              Text(
-                                handle,
-                                style: theme.typography.sm.copyWith(
-                                  color: theme.colors.mutedForeground,
-                                ),
-                              ),
-                            ],
-                            if (roleLabel != null) ...[
-                              const Gap(6),
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: theme.colors.primary.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 3,
-                                  ),
-                                  child: Text(
-                                    roleLabel,
-                                    style: theme.typography.xs.copyWith(
-                                      color: theme.colors.primary,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ] else ...[
-                            const Gap(4),
-                            Text(
-                              'Belum masuk',
-                              style: theme.typography.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ),
-                            const Gap(4),
-                            Text(
-                              'Cari kata tanpa akun. Masuk untuk menyimpan aktivitas.',
-                              style: theme.typography.xs.copyWith(
-                                color: theme.colors.mutedForeground,
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
                         ],
                       ),
-                    ),
-                    if (status.isAuth)
-                      Icon(
-                        FLucideIcons.chevronRight,
-                        color: theme.colors.mutedForeground,
+                    ] else if (roleLabel != null) ...[
+                      const Gap(1),
+                      Text(
+                        roleLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.xs.copyWith(
+                          color: theme.colors.mutedForeground,
+                          height: 1.2,
+                        ),
                       ),
+                    ],
                   ],
                 ),
               ),
-              if (status.isAuth) ...[
-                const Gap(14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: openPublicProfile,
-                        child: const Text('Lihat profil'),
-                      ),
-                    ),
-                    const Gap(8),
-                    Expanded(
-                      child: FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: () => context.push('/edit-profile'),
-                        child: const Text('Edit'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ],
           ),
         ),

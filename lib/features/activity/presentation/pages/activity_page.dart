@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../search_miss/search_miss_router.dart';
@@ -53,10 +54,70 @@ class ActivityPage extends ConsumerWidget {
               const Expanded(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
-                  child: VoteDeckSection(),
+                  child: _VoteDeckHost(),
                 ),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Saat overlay root (search-miss / bantuan terjemahan / …) menutupi shell,
+/// jangan paint `VoteDeckSection` (swipe + gesture). Stub murah dipakai
+/// selama transisi pop; state deck tetap di `voteDeckControllerProvider`
+/// (keepAlive).
+class _VoteDeckHost extends StatelessWidget {
+  const _VoteDeckHost();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: AppRouter.router.routerDelegate,
+      builder: (context, _) {
+        final obscured =
+            AppRouter.rootNavigatorKey.currentState?.canPop() ?? false;
+        if (obscured) {
+          return const _VoteDeckStub();
+        }
+        return const RepaintBoundary(
+          child: VoteDeckSection(),
+        );
+      },
+    );
+  }
+}
+
+class _VoteDeckStub extends StatelessWidget {
+  const _VoteDeckStub();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Bantu nilai agar arti kata lebih akurat',
+          style: theme.typography.sm.copyWith(
+            fontWeight: FontWeight.w700,
+            color: theme.colors.mutedForeground,
+          ),
+        ),
+        const Gap(12),
+        Expanded(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.background,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: theme.colors.border),
+              ),
+              child: const SizedBox(height: 240, width: double.infinity),
+            ),
           ),
         ),
       ],

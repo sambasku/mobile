@@ -187,8 +187,11 @@ void main() {
         ),
       ),
     );
+    // authStatus sync lewat Dio (timer 0) - butuh pump berdurasi.
+    // Jangan pumpAndSettle: FSelectMenuTile tema menyimpan timer/animation.
     await tester.pump();
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 50));
   }
 
   testWidgets('tamu - menampilkan ajakan masuk dan daftar tanpa tombol Keluar', (
@@ -293,9 +296,11 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Vote'), findsOneWidget);
+    await tester.ensureVisible(find.text('Vote'));
     await tester.tap(find.text('Vote'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
@@ -304,8 +309,10 @@ void main() {
 
     router.pop();
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
     await tester.pump(const Duration(milliseconds: 300));
 
+    await tester.ensureVisible(find.text('Komentar'));
     await tester.tap(find.text('Komentar'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
