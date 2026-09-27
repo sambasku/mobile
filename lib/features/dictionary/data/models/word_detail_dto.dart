@@ -46,6 +46,7 @@ abstract class WordDetailDto with _$WordDetailDto {
 abstract class WordVerifierDto with _$WordVerifierDto {
   const factory WordVerifierDto({
     required String username,
+    @JsonKey(name: 'display_name') String? displayName,
     required String role,
   }) = _WordVerifierDto;
 

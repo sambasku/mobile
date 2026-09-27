@@ -15,7 +15,8 @@ abstract class LegalConsentDto with _$LegalConsentDto {
 }
 
 /// Body POST /api/v1/auth/register (00-api-auth.md + legal consent).
-/// `phone` = digit nasional tanpa prefix (opsional); server normalisasi ke 62….
+/// `phone` = digit internasional tanpa '+' (opsional), mis. 62812… / 6012….
+/// Nasional ID lama (8… / 08…) masih diterima server (fallback 62).
 @freezed
 abstract class RegisterRequestDto with _$RegisterRequestDto {
   const factory RegisterRequestDto({

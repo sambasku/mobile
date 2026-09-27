@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +27,7 @@ import '../providers/user_profile_providers.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
-class PublicProfilePage extends ConsumerWidget {
+class PublicProfilePage extends HookConsumerWidget {
   const PublicProfilePage({super.key, required this.username});
 
   final String username;
@@ -39,10 +42,57 @@ class PublicProfilePage extends ConsumerWidget {
         me?.username != null &&
         me!.username!.toLowerCase() == username.toLowerCase();
 
+    // Handle lama (mis. hyphen) di route → sync sesi lalu ganti ke handle baru.
+    useEffect(() {
+      if (!async.hasError || me?.isAuth != true) return null;
+      unawaited(() async {
+        final fresh = await ref
+            .read(authStatusProvider.notifier)
+            .ensureUsernameForProfile();
+        if (!context.mounted) return;
+        if (fresh == null || fresh.isEmpty) return;
+        if (fresh.toLowerCase() == username.toLowerCase()) return;
+        context.replace('/users/${Uri.encodeComponent(fresh)}');
+      }());
+      return null;
+    }, [async.hasError, username, me?.isAuth]);
+
+    // Profil sendiri: pastikan prefs/session ikut username + display_name server.
+    useEffect(() {
+      final profile = async.asData?.value;
+      if (profile == null || !isOwnProfile) return null;
+      unawaited(
+        ref.read(authStatusProvider.notifier).applySessionIdentity(
+              username: profile.username,
+              displayName: profile.displayName,
+              avatarUrl: profile.avatarUrl,
+            ),
+      );
+      return null;
+    }, [
+      async.asData?.value.username,
+      async.asData?.value.displayName,
+      isOwnProfile,
+    ]);
+
+    Future<void> refresh() async {
+      ref.invalidate(publicProfileProvider(username));
+      ref.invalidate(publicActivityProvider(username));
+      if (me?.isAuth == true) {
+        await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
+      }
+      await ref.read(publicProfileProvider(username).future);
+    }
+
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(username),
+        title: Text(
+          async.maybeWhen(
+            data: (profile) => profile.displayName,
+            orElse: () => username,
+          ),
+        ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.hasError
@@ -62,6 +112,7 @@ class PublicProfilePage extends ConsumerWidget {
                 profile: profile,
                 isOwnProfile: isOwnProfile,
                 activityAsync: activityAsync,
+                onRefresh: refresh,
                 onRetryActivity: () =>
                     ref.invalidate(publicActivityProvider(username)),
               ),
@@ -75,12 +126,14 @@ class _ProfileBody extends ConsumerWidget {
     required this.profile,
     required this.isOwnProfile,
     required this.activityAsync,
+    required this.onRefresh,
     required this.onRetryActivity,
   });
 
   final PublicProfile profile;
   final bool isOwnProfile;
   final AsyncValue<List<PublicActivityItem>> activityAsync;
+  final Future<void> Function() onRefresh;
   final VoidCallback onRetryActivity;
 
   @override
@@ -94,9 +147,12 @@ class _ProfileBody extends ConsumerWidget {
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
-      children: [
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
+        children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -180,20 +236,19 @@ class _ProfileBody extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  if (isOwnProfile) ...[
-                    const Gap(6),
-                    Text(
-                      'Ketuk foto untuk mengganti',
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
           ],
         ),
+        if (isOwnProfile) ...[
+          const Gap(16),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => context.push('/edit-profile'),
+            child: const Text('Edit profil'),
+          ),
+        ],
         const Gap(20),
         Row(
           children: [
@@ -292,6 +347,7 @@ class _ProfileBody extends ConsumerWidget {
           },
         ),
       ],
+      ),
     );
   }
 

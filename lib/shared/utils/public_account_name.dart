@@ -14,3 +14,18 @@ String displayPublicUsername(String? username) {
   }
   return username;
 }
+
+/// Label orang di UI: prefer [displayName], fallback [username].
+String displayPublicAccountLabel({
+  String? displayName,
+  String? username,
+}) {
+  final trimmed = displayName?.trim();
+  if (trimmed != null &&
+      trimmed.isNotEmpty &&
+      trimmed != deletedAccountLabel &&
+      !trimmed.startsWith('dihapus-')) {
+    return trimmed;
+  }
+  return displayPublicUsername(username);
+}

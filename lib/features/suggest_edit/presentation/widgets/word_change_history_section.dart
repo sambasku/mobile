@@ -26,23 +26,46 @@ class ChangeHistoryItem {
     required this.id,
     required this.timestamp,
     required this.actorUsername,
+    required this.actorDisplayName,
     required this.type,
     required this.changes,
     this.reason,
     this.suggestedByUsername,
+    this.suggestedByDisplayName,
     this.reviewComment,
   });
 
   final String id;
   final String timestamp;
   final String? actorUsername;
+  final String? actorDisplayName;
   final String type;
   final List<ChangeHistoryFieldDiff> changes;
   final String? reason;
   final String? suggestedByUsername;
+  final String? suggestedByDisplayName;
   final String? reviewComment;
 
   bool get isSuggestEdit => type == 'suggest_edit';
+
+  String get actorLabel => _publicLabel(actorDisplayName, actorUsername) ?? 'Sistem';
+
+  String? get suggestedByLabel =>
+      _publicLabel(suggestedByDisplayName, suggestedByUsername);
+}
+
+String? _publicLabel(String? displayName, String? username) {
+  final name = displayName?.trim();
+  if (name != null && name.isNotEmpty) return name;
+  final handle = username?.trim();
+  if (handle != null && handle.isNotEmpty) return handle;
+  return null;
+}
+
+String? _personField(Map? person, String key) {
+  if (person == null) return null;
+  final value = person[key]?.toString().trim();
+  return (value != null && value.isNotEmpty) ? value : null;
 }
 
 final changeHistoryProvider =
@@ -81,14 +104,26 @@ final changeHistoryProvider =
     return ChangeHistoryItem(
       id: map['id']?.toString() ?? '',
       timestamp: map['timestamp']?.toString() ?? '',
-      actorUsername: actor is Map ? actor['username']?.toString() : null,
+      actorUsername: actor is Map ? _personField(actor, 'username') : null,
+      actorDisplayName: actor is Map ? _personField(actor, 'display_name') : null,
       type: map['type']?.toString() ?? 'direct_edit',
       changes: changes,
       reason: source is Map ? source['reason']?.toString() : null,
       suggestedByUsername: source is Map
-          ? (source['suggested_by'] is Map
-              ? (source['suggested_by'] as Map)['username']?.toString()
-              : null)
+          ? _personField(
+              source['suggested_by'] is Map
+                  ? source['suggested_by'] as Map
+                  : null,
+              'username',
+            )
+          : null,
+      suggestedByDisplayName: source is Map
+          ? _personField(
+              source['suggested_by'] is Map
+                  ? source['suggested_by'] as Map
+                  : null,
+              'display_name',
+            )
           : null,
       reviewComment:
           source is Map ? source['review_comment']?.toString() : null,
@@ -198,10 +233,8 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
   }
 
   String _subtitle(String kind, {required bool hasSummary}) {
-    final actor = (item.actorUsername != null && item.actorUsername!.isNotEmpty)
-        ? item.actorUsername!
-        : 'Sistem';
-    final suggested = item.suggestedByUsername?.trim() ?? '';
+    final actor = item.actorLabel;
+    final suggested = item.suggestedByLabel ?? '';
     final when = item.timestamp.isNotEmpty
         ? formatDateTimeIso(item.timestamp)
         : '';

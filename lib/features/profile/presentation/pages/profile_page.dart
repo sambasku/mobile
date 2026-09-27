@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -16,8 +20,8 @@ import '../../../user_profile/user_profile_router.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
-/// Tab PROFILE - identity + menu via FTileGroup.
-class ProfilePage extends ConsumerWidget {
+/// Tab PROFILE - identitas di atas, lalu menu terkelompok (aktivitas / akun / preferensi).
+class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
   static const roleLabels = <String, String>{
@@ -28,17 +32,35 @@ class ProfilePage extends ConsumerWidget {
     'contributor': 'Kontributor',
   };
 
+  static const _sectionGap = Gap(16);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authStatus = ref.watch(authStatusProvider);
+    final isAuth = authStatus.value?.isAuth ?? false;
+    final userId = authStatus.value?.userId;
+
+    // Prefs bisa stale setelah migrate username (hyphen → underscore).
+    // Sync saat tab Profil tampil, bukan hanya saat tap kartu identitas.
+    useEffect(() {
+      if (!isAuth) return null;
+      unawaited(
+        ref.read(authStatusProvider.notifier).ensureUsernameForProfile(),
+      );
+      return null;
+    }, [isAuth, userId]);
+
+    Future<void> refreshIdentity() async {
+      if (!isAuth) return;
+      await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
+    }
 
     return Column(
       children: [
         FHeader(
           title: const Text('Profil'),
           suffixes: [
-            if (authStatus.value?.isAuth ?? false)
-              const NotificationHeaderAction(),
+            if (isAuth) const NotificationHeaderAction(),
             const ThemeToggleHeaderAction(),
           ],
         ),
@@ -46,117 +68,135 @@ class ProfilePage extends ConsumerWidget {
           child: authStatus.when(
             loading: () => const Center(child: FCircularProgress()),
             error: (_, _) => const Center(child: FCircularProgress()),
-            data: (status) => ListView(
-              padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
-              children: [
-                _IdentityTileGroup(status: status),
-                const Gap(14),
-                if (status.isAuth) ...[
-                  FTileGroup(
-                    label: const Text('Saya'),
-                    children: [
-                      const _NotificationTile(),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.filePenLine),
-                        title: const Text('Kontribusi Saya'),
-                        subtitle: const Text('Riwayat & status usulan kata'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/contributions'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.bookmark),
-                        title: const Text('Bookmark'),
-                        subtitle: const Text(
-                          'Kata tersimpan untuk dibaca lagi',
-                        ),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/bookmarks'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.arrowBigUp),
-                        title: const Text('Vote'),
-                        subtitle: const Text('Kata yang pernah kamu vote'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/votes'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.messageSquare),
-                        title: const Text('Komentar'),
-                        subtitle: const Text('Komentar & status moderasi'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/comments'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.flag),
-                        title: const Text('Laporkan Masalah'),
-                        subtitle: const Text('Kirim saran atau laporkan bug'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/report-bug'),
-                      ),
-                    ],
-                  ),
-                  const Gap(14),
-                  FTileGroup(
-                    label: const Text('Akun'),
-                    children: [
-                      if (status.role == 'contributor')
+            data: (status) => RefreshIndicator(
+              onRefresh: refreshIdentity,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(0, 12, 0, 40),
+                children: [
+                  _IdentityCard(status: status),
+                  _sectionGap,
+                  if (status.isAuth) ...[
+                    FTileGroup(
+                      label: const Text('Aktivitas'),
+                      children: [
+                        const _NotificationTile(),
                         FTile(
-                          prefix: const Icon(FLucideIcons.badgeCheck),
-                          title: const Text('Jadi verifikator'),
+                          prefix: const Icon(FLucideIcons.filePenLine),
+                          title: const Text('Kontribusi Saya'),
+                          subtitle: const Text('Riwayat & status usulan kata'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/contributions'),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.bookmark),
+                          title: const Text('Bookmark'),
+                          subtitle: const Text('Kata tersimpan'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/bookmarks'),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.arrowBigUp),
+                          title: const Text('Vote'),
+                          subtitle: const Text('Kata yang pernah kamu vote'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/votes'),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.messageSquare),
+                          title: const Text('Komentar'),
+                          subtitle: const Text('Komentar & status moderasi'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/comments'),
+                        ),
+                      ],
+                    ),
+                    _sectionGap,
+                    FTileGroup(
+                      label: const Text('Akun'),
+                      children: [
+                        FTile(
+                          prefix: const Icon(FLucideIcons.userRoundPen),
+                          title: const Text('Edit profil'),
+                          subtitle: const Text('Nama tampilan dan bio'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/edit-profile'),
+                        ),
+                        if (status.role == 'contributor')
+                          FTile(
+                            prefix: const Icon(FLucideIcons.badgeCheck),
+                            title: const Text('Jadi verifikator'),
+                            subtitle: const Text(
+                              'Ajukan diri untuk meninjau kontribusi',
+                            ),
+                            suffix: const Icon(FLucideIcons.chevronRight),
+                            onPress: () =>
+                                context.push('/verifier-application'),
+                          ),
+                        if (canReviewQueue(status.role))
+                          const _ReviewQueueTile(),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.link),
+                          title: const Text('Akun Terhubung'),
+                          subtitle: const Text('Google, GitHub, dan lainnya'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/linked-accounts'),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.keyRound),
+                          title: const Text('Ubah Password'),
+                          subtitle: const Text('Ganti kata sandi akun'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/change-password'),
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.userRoundX),
+                          title: const Text('Hapus akun'),
+                          subtitle: const Text('Hapus akun dan data pribadi'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.push('/delete-account'),
+                        ),
+                      ],
+                    ),
+                    _sectionGap,
+                  ] else ...[
+                    FTileGroup(
+                      label: const Text('Masuk'),
+                      children: [
+                        FTile(
+                          prefix: const Icon(FLucideIcons.logIn),
+                          title: const Text('Masuk / Login'),
                           subtitle: const Text(
-                            'Ajukan diri untuk meninjau kontribusi',
+                            'Bookmark, vote, dan usul sebagai diri sendiri',
                           ),
                           suffix: const Icon(FLucideIcons.chevronRight),
-                          onPress: () => context.push('/verifier-application'),
+                          onPress: () => context.go('/login'),
                         ),
-                      if (canReviewQueue(status.role)) const _ReviewQueueTile(),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.userRoundPen),
-                        title: const Text('Edit profil'),
-                        subtitle: const Text('Ubah nama tampilan dan bio'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/edit-profile'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.link),
-                        title: const Text('Akun Terhubung'),
-                        subtitle: const Text('Kelola login yang terhubung ke akun'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/linked-accounts'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.keyRound),
-                        title: const Text('Ubah Password'),
-                        subtitle: const Text('Ganti password akun'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/change-password'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.userRoundX),
-                        title: const Text('Hapus akun'),
-                        subtitle: const Text('Hapus akun dan data pribadi'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push('/delete-account'),
-                      ),
-                    ],
-                  ),
-                  const Gap(14),
-                ] else
+                        FTile(
+                          prefix: const Icon(FLucideIcons.userRoundPlus),
+                          title: const Text('Daftar'),
+                          subtitle: const Text('Buat akun kontributor baru'),
+                          suffix: const Icon(FLucideIcons.chevronRight),
+                          onPress: () => context.go('/register'),
+                        ),
+                      ],
+                    ),
+                    _sectionGap,
+                  ],
                   FTileGroup(
+                    label: const Text('Tampilan'),
+                    children: [themeModeTile(ref), paletteTile(ref)],
+                  ),
+                  _sectionGap,
+                  FTileGroup(
+                    label: const Text('Bantuan'),
                     children: [
                       FTile(
-                        prefix: const Icon(FLucideIcons.logIn),
-                        title: const Text('Masuk / Login'),
-                        subtitle: const Text('Masuk untuk berkontribusi kata'),
+                        prefix: const Icon(FLucideIcons.info),
+                        title: const Text('Tentang SambasKu'),
+                        subtitle: const Text('Fitur dan versi aplikasi'),
                         suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.go('/login'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.userRoundPlus),
-                        title: const Text('Daftar'),
-                        subtitle: const Text('Buat akun kontributor baru'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.go('/register'),
+                        onPress: () => context.push('/about'),
                       ),
                       FTile(
                         prefix: const Icon(FLucideIcons.flag),
@@ -167,51 +207,37 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ],
                   ),
-                const Gap(14),
-                FTileGroup(
-                  label: const Text('Tampilan'),
-                  children: [themeModeTile(ref), paletteTile(ref)],
-                ),
-                const Gap(14),
-                FTileGroup(
-                  label: const Text('Tentang'),
-                  children: [
-                    FTile(
-                      prefix: const Icon(FLucideIcons.info),
-                      title: const Text('Tentang SambasKu'),
-                      subtitle: const Text('Fitur dan versi aplikasi'),
-                      suffix: const Icon(FLucideIcons.chevronRight),
-                      onPress: () => context.push('/about'),
+                  if (status.isAuth) ...[
+                    _sectionGap,
+                    FTileGroup(
+                      children: [
+                        FTile(
+                          variant: .destructive,
+                          prefix: status.isLoggingOut
+                              ? const FCircularProgress()
+                              : const Icon(FLucideIcons.logOut),
+                          title: Text(
+                            status.isLoggingOut ? 'Keluar...' : 'Keluar',
+                          ),
+                          subtitle: status.isLoggingOut
+                              ? null
+                              : const Text('Akhiri sesi di perangkat ini'),
+                          enabled: !status.isLoggingOut,
+                          onPress: status.isLoggingOut
+                              ? null
+                              : () async {
+                                  await ref
+                                      .read(authStatusProvider.notifier)
+                                      .logout();
+                                  if (!context.mounted) return;
+                                  context.go('/login');
+                                },
+                        ),
+                      ],
                     ),
                   ],
-                ),
-                if (status.isAuth) ...[
-                  const Gap(14),
-                  FTileGroup(
-                    children: [
-                      FTile(
-                        variant: .destructive,
-                        prefix: status.isLoggingOut
-                            ? const FCircularProgress()
-                            : const Icon(FLucideIcons.logOut),
-                        title: Text(
-                          status.isLoggingOut ? 'Keluar...' : 'Keluar',
-                        ),
-                        enabled: !status.isLoggingOut,
-                        onPress: status.isLoggingOut
-                            ? null
-                            : () async {
-                                await ref
-                                    .read(authStatusProvider.notifier)
-                                    .logout();
-                                if (!context.mounted) return;
-                                context.go('/login');
-                              },
-                      ),
-                    ],
-                  ),
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -229,7 +255,9 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
     return FTile(
       prefix: const Icon(FLucideIcons.shieldCheck),
       title: const Text('Tinjau usulan'),
-      subtitle: Text(pending ? 'Ada usulan yang menunggu' : 'Antrean review kontribusi'),
+      subtitle: pending
+          ? const Text('Ada usulan yang menunggu')
+          : const Text('Antrian kontribusi untuk ditinjau'),
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -262,55 +290,169 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
     return FTile(
       prefix: const Icon(FLucideIcons.bell),
       title: const Text('Notifikasi'),
-      subtitle: Text(
-        unread > 0 ? '$unread belum dibaca' : 'Status usulan yang sudah direview',
-      ),
+      subtitle: unread > 0
+          ? Text('$unread belum dibaca')
+          : const Text('Kotak masuk pemberitahuan'),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () => context.push(NotificationRouter.list.path),
     );
   }
 }
 
-class _IdentityTileGroup extends StatelessWidget {
-  const _IdentityTileGroup({required this.status});
+/// Kartu identitas di atas menu: nama, handle, peran - bukan baris menu biasa.
+class _IdentityCard extends ConsumerWidget {
+  const _IdentityCard({required this.status});
 
   final AuthStatusState status;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.theme;
     final username = status.username?.trim();
+    final rawDisplay = status.displayName?.trim();
     final displayName = status.isAuth
-        ? (username?.isNotEmpty == true ? username! : 'Pengguna')
-        : 'Belum masuk';
+        ? (rawDisplay?.isNotEmpty == true
+              ? rawDisplay!
+              : (username?.isNotEmpty == true ? username! : 'Pengguna'))
+        : 'Tamu';
     final roleLabel = status.isAuth && status.role != null
         ? (ProfilePage.roleLabels[status.role!] ?? status.role!)
         : null;
-    final subtitle = status.isAuth
-        ? 'Lihat profil & ganti foto'
-        : 'Masuk untuk berkontribusi kata';
+    final handle = username != null && username.isNotEmpty ? '@$username' : null;
 
-    return FTileGroup(
-      children: [
-        FTile(
-          prefix: _ProfileAvatar(
-            name: status.isAuth ? displayName : null,
-            imageUrl: status.avatarUrl,
-            size: 40,
-          ),
-          title: Text(displayName),
-          subtitle: Text(
-            status.isAuth
-                ? (roleLabel != null ? '$roleLabel · $subtitle' : subtitle)
-                : subtitle,
-          ),
-          suffix: status.isAuth
-              ? const Icon(FLucideIcons.chevronRight)
-              : null,
-          onPress: status.isAuth && username != null && username.isNotEmpty
-              ? () => UserProfileRouter.open(context, username)
-              : null,
+    Future<void> openPublicProfile() async {
+      final resolved = await ref
+          .read(authStatusProvider.notifier)
+          .ensureUsernameForProfile();
+      if (!context.mounted) return;
+      if (resolved == null || resolved.isEmpty) return;
+      UserProfileRouter.open(context, resolved);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: theme.colors.secondary,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colors.border),
         ),
-      ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 12, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: status.isAuth ? openPublicProfile : null,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _ProfileAvatar(
+                      name: status.isAuth ? displayName : null,
+                      imageUrl: status.avatarUrl,
+                      size: 56,
+                    ),
+                    const Gap(14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            style: theme.typography.lg.copyWith(
+                              fontWeight: FontWeight.w700,
+                              height: 1.2,
+                            ),
+                          ),
+                          if (status.isAuth) ...[
+                            if (handle != null) ...[
+                              const Gap(2),
+                              Text(
+                                handle,
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                            ],
+                            if (roleLabel != null) ...[
+                              const Gap(6),
+                              DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: theme.colors.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
+                                  child: Text(
+                                    roleLabel,
+                                    style: theme.typography.xs.copyWith(
+                                      color: theme.colors.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ] else ...[
+                            const Gap(4),
+                            Text(
+                              'Belum masuk',
+                              style: theme.typography.sm.copyWith(
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                            const Gap(4),
+                            Text(
+                              'Cari kata tanpa akun. Masuk untuk menyimpan aktivitas.',
+                              style: theme.typography.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    if (status.isAuth)
+                      Icon(
+                        FLucideIcons.chevronRight,
+                        color: theme.colors.mutedForeground,
+                      ),
+                  ],
+                ),
+              ),
+              if (status.isAuth) ...[
+                const Gap(14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: openPublicProfile,
+                        child: const Text('Lihat profil'),
+                      ),
+                    ),
+                    const Gap(8),
+                    Expanded(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () => context.push('/edit-profile'),
+                        child: const Text('Edit'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

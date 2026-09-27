@@ -12,6 +12,7 @@ abstract class CommentDto with _$CommentDto {
     @JsonKey(name: 'word_id') required String wordId,
     @JsonKey(name: 'user_id') required String userId,
     String? username,
+    @JsonKey(name: 'display_name') String? displayName,
     String? body,
     @JsonKey(name: 'created_at') String? createdAt,
     @Default(0) int upvotes,

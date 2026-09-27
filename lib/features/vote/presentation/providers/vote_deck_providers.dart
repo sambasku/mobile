@@ -10,6 +10,7 @@ import '../../domain/entities/vote_deck_item.dart';
 import '../../domain/entities/vote_target.dart';
 import '../../domain/failures/vote_failure.dart';
 import '../../domain/providers/vote_domain_providers.dart';
+import 'vote_submit_queue.dart';
 
 part 'vote_deck_providers.g.dart';
 
@@ -129,36 +130,24 @@ class VoteDeckController extends _$VoteDeckController {
     );
   }
 
-  /// Vote lalu buang kartu dari antrean lokal. Return failure jika gagal.
-  Future<VoteFailure?> castAndAdvance({
+  /// Optimistic: buang kartu lokal + enqueue submit background.
+  void castOptimistic({
     required VoteDeckItem item,
     required int value,
-  }) async {
-    final target = VoteTarget(type: 'word', id: item.id);
-    final result = await ref.watch(toggleVoteUseCaseProvider)(
-      target: target,
-      value: value,
+  }) {
+    _dropLocal(
+      item.id,
+      rewind: VoteDeckRewindEntry(
+        item: item,
+        kind: value == 1
+            ? VoteDeckRewindKind.upvote
+            : VoteDeckRewindKind.downvote,
+      ),
     );
-    return result.match(
-      (failure) => failure,
-      (_) {
-        AnalyticsService.instance.logVoteCast(
-          targetType: target.type,
-          direction: value,
+    ref.read(voteSubmitQueueProvider.notifier).enqueue(
+          item: item,
+          value: value,
         );
-        ref.invalidate(myVotesListControllerProvider);
-        _dropLocal(
-          item.id,
-          rewind: VoteDeckRewindEntry(
-            item: item,
-            kind: value == 1
-                ? VoteDeckRewindKind.upvote
-                : VoteDeckRewindKind.downvote,
-          ),
-        );
-        return null;
-      },
-    );
   }
 
   /// Lewati tanpa vote - hanya buang dari antrean sesi ini.
@@ -176,7 +165,22 @@ class VoteDeckController extends _$VoteDeckController {
     );
   }
 
-  /// Kembalikan kartu terakhir (skip lokal, atau toggle-off vote + restore).
+  /// Kembalikan kartu gagal submit ke depan antrean.
+  void reinsertFront(VoteDeckItem item) {
+    final current = state.value;
+    if (current == null) return;
+    final withoutDup =
+        current.items.where((i) => i.id != item.id).toList();
+    final clearRewind = current.rewindEntry?.item.id == item.id;
+    state = AsyncData(
+      current.copyWith(
+        items: [item, ...withoutDup],
+        clearRewind: clearRewind,
+      ),
+    );
+  }
+
+  /// Kembalikan kartu terakhir (skip lokal, cancel queue, atau toggle-off).
   Future<VoteFailure?> rewind() async {
     final current = state.value;
     final entry = current?.rewindEntry;
@@ -184,14 +188,20 @@ class VoteDeckController extends _$VoteDeckController {
 
     final value = entry.voteValue;
     if (value != null) {
-      final target = VoteTarget(type: 'word', id: entry.item.id);
-      final result = await ref.watch(toggleVoteUseCaseProvider)(
-        target: target,
-        value: value,
-      );
-      final failure = result.match((f) => f, (_) => null);
-      if (failure != null) return failure;
-      ref.invalidate(myVotesListControllerProvider);
+      final queue = ref.read(voteSubmitQueueProvider.notifier);
+      final cancelled = queue.cancelQueued(entry.item.id);
+      if (!cancelled) {
+        // Sudah in-flight atau selesai → tunggu settle lalu undo di server.
+        await queue.waitUntilNotInFlight(entry.item.id);
+        final target = VoteTarget(type: 'word', id: entry.item.id);
+        final result = await ref.watch(toggleVoteUseCaseProvider)(
+          target: target,
+          value: value,
+        );
+        final failure = result.match((f) => f, (_) => null);
+        if (failure != null) return failure;
+        ref.invalidate(myVotesListControllerProvider);
+      }
     }
 
     final withoutDup =
@@ -224,5 +234,8 @@ Future<List<WordSummary>> voteDeckGuestSamples(Ref ref) async {
   final result = await ref.watch(listLatestWordsUseCaseProvider)(
     const ListLatestWordsParams(limit: 2),
   );
-  return result.match((_) => <WordSummary>[], (page) => page.items.take(2).toList());
+  return result.match(
+    (_) => <WordSummary>[],
+    (page) => page.items.take(2).toList(),
+  );
 }

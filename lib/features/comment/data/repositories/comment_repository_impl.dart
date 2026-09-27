@@ -108,6 +108,7 @@ class CommentRepositoryImpl implements CommentRepository {
         wordId: dto.wordId,
         userId: dto.userId,
         username: dto.username,
+        displayName: dto.displayName,
         body: dto.body,
         createdAt: dto.createdAt,
         status: dto.status,

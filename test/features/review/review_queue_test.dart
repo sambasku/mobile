@@ -506,7 +506,8 @@ void main() {
 
     expect(find.textContaining('Tinjau · 1/2'), findsOneWidget);
     expect(find.text('kalintiak'), findsWidgets);
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.x), findsOneWidget);
     expect(
       find.textContaining('Kanan hijau · kiri merah · atas lewati'),
       findsOneWidget,
@@ -519,11 +520,13 @@ void main() {
     expect(find.textContaining('Koreksi · 1/2'), findsOneWidget);
     expect(find.text('Simpan dan terbitkan'), findsOneWidget);
     expect(find.text('Batal koreksi'), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsNothing);
+    expect(find.byIcon(FLucideIcons.check), findsNothing);
+    expect(find.byIcon(FLucideIcons.x), findsNothing);
 
     await tester.tap(find.text('Batal koreksi'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.x), findsOneWidget);
   });
 }

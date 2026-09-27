@@ -13,6 +13,7 @@ class ThreadMessageRow extends StatelessWidget {
     super.key,
     required this.username,
     required this.body,
+    this.displayName,
     this.dateLabel,
     this.metaParts = const [],
     this.isRedacted = false,
@@ -22,8 +23,11 @@ class ThreadMessageRow extends StatelessWidget {
     this.highlighted = false,
   });
 
-  /// Username mentah (nullable); ditampilkan lewat [displayPublicUsername].
+  /// Username mentah (nullable); dipakai untuk tap profil.
   final String? username;
+
+  /// Nama tampilan; fallback ke [username] lewat [displayPublicAccountLabel].
+  final String? displayName;
   final String body;
   final String? dateLabel;
 
@@ -42,7 +46,10 @@ class ThreadMessageRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final displayName = displayPublicUsername(username);
+    final label = displayPublicAccountLabel(
+      displayName: displayName,
+      username: username,
+    );
     final rest = [
       if (dateLabel != null && dateLabel!.isNotEmpty) dateLabel!,
       ...metaParts.where((p) => p.trim().isNotEmpty),
@@ -59,7 +66,7 @@ class ThreadMessageRow extends StatelessWidget {
                   Flexible(
                     child: onUsernameTap == null || isRedacted
                         ? Text(
-                            displayName,
+                            label,
                             style: theme.typography.sm.copyWith(
                               color: theme.colors.mutedForeground,
                               fontSize: 11,
@@ -69,11 +76,11 @@ class ThreadMessageRow extends StatelessWidget {
                           )
                         : Semantics(
                             button: true,
-                            label: 'Lihat profil $displayName',
+                            label: 'Lihat profil $label',
                             child: GestureDetector(
                               onTap: onUsernameTap,
                               child: Text(
-                                displayName,
+                                label,
                                 style: theme.typography.sm.copyWith(
                                   color: theme.colors.primary,
                                   fontSize: 11,

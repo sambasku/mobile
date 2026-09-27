@@ -9,6 +9,9 @@ class GetWordByIdUseCase {
 
   final DictionaryRepository _repository;
 
-  Future<Either<DictionaryFailure, WordDetail>> call(String id) =>
-      _repository.getWordById(id);
+  Future<Either<DictionaryFailure, WordDetail>> call(
+    String id, {
+    bool forceRefresh = false,
+  }) =>
+      _repository.getWordById(id, forceRefresh: forceRefresh);
 }

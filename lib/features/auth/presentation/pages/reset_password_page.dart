@@ -127,84 +127,82 @@ class ResetPasswordPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            Text(
-              hasTokenFromLink
-                  ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
-                  : email.contains('@')
-                  ? 'Masukkan kode 8 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
-                  : 'Minta kode dulu di halaman lupa password.',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          Text(
+            hasTokenFromLink
+                ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
+                : email.contains('@')
+                ? 'Masukkan kode 8 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
+                : 'Minta kode dulu di halaman lupa password.',
+            style: theme.typography.sm.copyWith(
+              color: theme.colors.mutedForeground,
             ),
-            const Gap(16),
-            if (!hasTokenFromLink) ...[
-              FTextField(
-                control: .managed(controller: code),
-                enabled: !state.isSubmitting && email.contains('@'),
-                label: const Text('Kode Reset Password'),
-                hint: '01AB-23CD',
-                keyboardType: .text,
-                textCapitalization: .characters,
-                autocorrect: false,
-                enableSuggestions: false,
-                textInputAction: .next,
-                inputFormatters: [const OtpCodeDashFormatter()],
-              ),
-              const Gap(12),
-            ],
-            FTextField.password(
-              control: .managed(controller: newPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password baru'),
-              hint: 'Minimal 8 karakter, huruf + angka',
+          ),
+          const Gap(16),
+          if (!hasTokenFromLink) ...[
+            FTextField(
+              control: .managed(controller: code),
+              enabled: !state.isSubmitting && email.contains('@'),
+              label: const Text('Kode Reset Password'),
+              hint: '01AB-23CD',
+              keyboardType: .text,
+              textCapitalization: .characters,
+              autocorrect: false,
+              enableSuggestions: false,
               textInputAction: .next,
+              inputFormatters: [const OtpCodeDashFormatter()],
             ),
             const Gap(12),
-            FTextField.password(
-              control: .managed(controller: confirmPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Konfirmasi password baru'),
-              textInputAction: .done,
-              onSubmit: canSubmit ? (_) => submit() : null,
-            ),
-            if (state.errorMessage != null) ...[
-              const Gap(12),
-              FAlert(variant: .destructive, title: Text(state.errorMessage!)),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit ? submit : null,
-              prefix: state.isSubmitting ? const FCircularProgress() : null,
-              child: Text(
-                state.isSubmitting ? 'Memproses...' : 'Simpan password',
-              ),
-            ),
-            if (!hasTokenFromLink) ...[
-              const Gap(8),
-              FButton(
-                variant: .ghost,
-                onPress: canResend
-                    ? () => ref
-                          .read(authForgotProvider.notifier)
-                          .submit(email: email)
-                    : null,
-                prefix: forgot.isSubmitting ? const FCircularProgress() : null,
-                child: Text(
-                  forgot.isSubmitting
-                      ? 'Mengirim...'
-                      : remaining.value > 0
-                      ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                      : 'Kirim ulang kode',
-                ),
-              ),
-            ],
           ],
-        ),
+          FTextField.password(
+            control: .managed(controller: newPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password baru'),
+            hint: 'Minimal 8 karakter, huruf + angka',
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: confirmPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Konfirmasi password baru'),
+            textInputAction: .done,
+            onSubmit: canSubmit ? (_) => submit() : null,
+          ),
+          if (state.errorMessage != null) ...[
+            const Gap(12),
+            FAlert(variant: .destructive, title: Text(state.errorMessage!)),
+          ],
+          const Gap(16),
+          FButton(
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(
+              state.isSubmitting ? 'Memproses...' : 'Simpan password',
+            ),
+          ),
+          if (!hasTokenFromLink) ...[
+            const Gap(8),
+            FButton(
+              variant: .ghost,
+              onPress: canResend
+                  ? () => ref
+                        .read(authForgotProvider.notifier)
+                        .submit(email: email)
+                  : null,
+              prefix: forgot.isSubmitting ? const FCircularProgress() : null,
+              child: Text(
+                forgot.isSubmitting
+                    ? 'Mengirim...'
+                    : remaining.value > 0
+                    ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
+                    : 'Kirim ulang kode',
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

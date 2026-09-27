@@ -138,140 +138,138 @@ class ReportBugPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            if (isGuest) ...[
-              const FAlert(title: Text('Laporan kamu dikirim sebagai Anonim')),
-              const Gap(12),
-            ],
-            FTextField(
-              control: FTextFieldControl.managed(controller: description),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          if (isGuest) ...[
+            const FAlert(title: Text('Laporan kamu dikirim sebagai Anonim')),
+            const Gap(12),
+          ],
+          FTextField(
+            control: FTextFieldControl.managed(controller: description),
+            enabled: !submitting.value,
+            label: const Text('Keterangan'),
+            hint:
+                'Ceritakan apa yang terjadi, langkah reproduksi, dan yang kamu harapkan',
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            minLines: 5,
+            maxLines: 10,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '${trimmed.length}/2000',
+              style: context.theme.typography.sm.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+          if (attachmentsEnabled.value) ...[
+            const Gap(8),
+            Text(
+              'Lampiran (opsional, maks 4)',
+              style: context.theme.typography.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(8),
+            AttachmentImagesField(
               enabled: !submitting.value,
-              label: const Text('Keterangan'),
-              hint:
-                  'Ceritakan apa yang terjadi, langkah reproduksi, dan yang kamu harapkan',
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              minLines: 5,
-              maxLines: 10,
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '${trimmed.length}/2000',
-                style: context.theme.typography.sm.copyWith(
-                  color: context.theme.colors.mutedForeground,
-                ),
-              ),
-            ),
-            if (attachmentsEnabled.value) ...[
-              const Gap(8),
-              Text(
-                'Lampiran (opsional, maks 4)',
-                style: context.theme.typography.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Gap(8),
-              AttachmentImagesField(
-                enabled: !submitting.value,
-                maxImages: 4,
-                maxSizeMb: 5,
-                images: images.value,
-                onChanged: (next) => images.value = next,
-                onUnavailable: () {
-                  attachmentsEnabled.value = false;
-                  images.value = const [];
-                  // Soft-fail: tawarkan kirim tanpa gambar jika sudah ada teks.
-                  if (trimmed.length >= 10) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-                      if (!context.mounted) return;
-                      final sendText = await showDialog<bool>(
-                        context: context,
-                        builder: (dialogContext) => AlertDialog(
-                          title: const Text('Gambar tidak bisa diunggah'),
-                          content: const Text(
-                            'Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(false),
-                              child: const Text('Batal'),
-                            ),
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(true),
-                              child: const Text('Kirim tanpa gambar'),
-                            ),
-                          ],
+              maxImages: 4,
+              maxSizeMb: 5,
+              images: images.value,
+              onChanged: (next) => images.value = next,
+              onUnavailable: () {
+                attachmentsEnabled.value = false;
+                images.value = const [];
+                // Soft-fail: tawarkan kirim tanpa gambar jika sudah ada teks.
+                if (trimmed.length >= 10) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    if (!context.mounted) return;
+                    final sendText = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text('Gambar tidak bisa diunggah'),
+                        content: const Text(
+                          'Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?',
                         ),
-                      );
-                      if (sendText == true && context.mounted) {
-                        await submit(skipImages: true);
-                      }
-                    });
-                  }
-                },
-                upload: (File file, {required bool isPrimary}) async {
-                  final uploader = ref.read(reportImageUploadServiceProvider);
-                  try {
-                    final refImg = await uploader.upload(file);
-                    return Either.right(
-                      AttachmentUploadedImage(
-                        url: refImg.url,
-                        providerFileId: refImg.providerFileId,
-                        isPrimary: isPrimary,
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(false),
+                            child: const Text('Batal'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(true),
+                            child: const Text('Kirim tanpa gambar'),
+                          ),
+                        ],
                       ),
                     );
-                  } on ImageUploadUnavailable {
+                    if (sendText == true && context.mounted) {
+                      await submit(skipImages: true);
+                    }
+                  });
+                }
+              },
+              upload: (File file, {required bool isPrimary}) async {
+                final uploader = ref.read(reportImageUploadServiceProvider);
+                try {
+                  final refImg = await uploader.upload(file);
+                  return Either.right(
+                    AttachmentUploadedImage(
+                      url: refImg.url,
+                      providerFileId: refImg.providerFileId,
+                      isPrimary: isPrimary,
+                    ),
+                  );
+                } on ImageUploadUnavailable {
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Penyimpanan gambar belum tersedia',
+                      errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
+                    ),
+                  );
+                } on DioException catch (e) {
+                  if (e.response?.statusCode == 503) {
                     return Either.left(
                       const AttachmentUploadFailure(
                         'Penyimpanan gambar belum tersedia',
                         errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
                       ),
                     );
-                  } on DioException catch (e) {
-                    if (e.response?.statusCode == 503) {
-                      return Either.left(
-                        const AttachmentUploadFailure(
-                          'Penyimpanan gambar belum tersedia',
-                          errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
-                        ),
-                      );
-                    }
-                    return Either.left(
-                      const AttachmentUploadFailure(
-                        'Satu gambar gagal diunggah',
-                      ),
-                    );
-                  } catch (_) {
-                    return Either.left(
-                      const AttachmentUploadFailure(
-                        'Satu gambar gagal diunggah',
-                      ),
-                    );
                   }
-                },
-              ),
-            ],
-            if (errorMessage.value != null) ...[
-              const Gap(12),
-              FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(errorMessage.value!),
-              ),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit ? () => submit() : null,
-              prefix: submitting.value ? const FCircularProgress() : null,
-              child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Satu gambar gagal diunggah',
+                    ),
+                  );
+                } catch (_) {
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Satu gambar gagal diunggah',
+                    ),
+                  );
+                }
+              },
             ),
           ],
-        ),
+          if (errorMessage.value != null) ...[
+            const Gap(12),
+            FAlert(
+              variant: FAlertVariant.destructive,
+              title: Text(errorMessage.value!),
+            ),
+          ],
+          const Gap(16),
+          FButton(
+            onPress: canSubmit ? () => submit() : null,
+            prefix: submitting.value ? const FCircularProgress() : null,
+            child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+          ),
+        ],
       ),
     );
   }

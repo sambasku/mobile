@@ -28,7 +28,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.email,
       clearErrorMessage: true,
       clearErrorCode: true,
       success: false,
@@ -52,7 +52,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     registerResult.match(
       (failure) {
         state = state.copyWith(
-          isSubmitting: false,
+          clearPendingAction: true,
           errorMessage: failure.message,
           errorCode: failure.errorCode,
           success: false,
@@ -60,7 +60,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       },
       (_) {
         state = state.copyWith(
-          isSubmitting: false,
+          clearPendingAction: true,
           success: true,
           pendingEmail: email.trim(),
         );
@@ -77,7 +77,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.google,
       clearErrorMessage: true,
       clearErrorCode: true,
       success: false,
@@ -96,7 +96,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.facebook,
       clearErrorMessage: true,
       clearErrorCode: true,
       success: false,
@@ -111,10 +111,29 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     _inFlight = false;
   }
 
+  Future<void> submitGithub() async {
+    if (_inFlight) return;
+    _inFlight = true;
+    state = state.copyWith(
+      pendingAction: AuthPendingAction.github,
+      clearErrorMessage: true,
+      clearErrorCode: true,
+      success: false,
+      clearSession: true,
+    );
+
+    final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
+    result.match(
+      (failure) => _applyGithubFailure(failure),
+      (session) => _applySocialSession(session, method: 'github'),
+    );
+    _inFlight = false;
+  }
+
   void _applyGoogleFailure(AuthFailure failure) {
     if (failure.isSocialSignInCanceled) {
       state = state.copyWith(
-        isSubmitting: false,
+        clearPendingAction: true,
         errorCode: failure.errorCode,
         clearErrorMessage: true,
         success: false,
@@ -123,7 +142,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     }
     final hide = failure.errorCode == 'GOOGLE_AUTH_UNAVAILABLE';
     state = state.copyWith(
-      isSubmitting: false,
+      clearPendingAction: true,
       errorMessage: failure.message,
       errorCode: failure.errorCode,
       googleUnavailable: hide || state.googleUnavailable,
@@ -134,7 +153,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
   void _applyFacebookFailure(AuthFailure failure) {
     if (failure.isSocialSignInCanceled) {
       state = state.copyWith(
-        isSubmitting: false,
+        clearPendingAction: true,
         errorCode: failure.errorCode,
         clearErrorMessage: true,
         success: false,
@@ -143,7 +162,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     }
     final hide = failure.errorCode == 'FACEBOOK_AUTH_UNAVAILABLE';
     state = state.copyWith(
-      isSubmitting: false,
+      clearPendingAction: true,
       errorMessage: hide ? null : failure.message,
       errorCode: failure.errorCode,
       facebookUnavailable: hide || state.facebookUnavailable,
@@ -151,9 +170,29 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     );
   }
 
+  void _applyGithubFailure(AuthFailure failure) {
+    if (failure.isSocialSignInCanceled) {
+      state = state.copyWith(
+        clearPendingAction: true,
+        errorCode: failure.errorCode,
+        clearErrorMessage: true,
+        success: false,
+      );
+      return;
+    }
+    final hide = failure.errorCode == 'GITHUB_AUTH_UNAVAILABLE';
+    state = state.copyWith(
+      clearPendingAction: true,
+      errorMessage: hide ? null : failure.message,
+      errorCode: failure.errorCode,
+      githubUnavailable: hide || state.githubUnavailable,
+      success: false,
+    );
+  }
+
   void _applySocialSession(AuthSession session, {required String method}) {
     ref.read(authStatusProvider.notifier).markLoggedIn(session);
-    state = state.copyWith(isSubmitting: false, session: session);
+    state = state.copyWith(clearPendingAction: true, session: session);
     AnalyticsService.instance.logAuthSuccess(
       event: AnalyticsEvents.authRegisterSuccess,
       method: method,

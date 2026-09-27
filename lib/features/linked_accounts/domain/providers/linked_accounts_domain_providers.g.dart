@@ -9,54 +9,56 @@ part of 'linked_accounts_domain_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(getGoogleLinkStatusUseCase)
-final getGoogleLinkStatusUseCaseProvider =
-    GetGoogleLinkStatusUseCaseProvider._();
+@ProviderFor(getLinkedAccountsStatusUseCase)
+final getLinkedAccountsStatusUseCaseProvider =
+    GetLinkedAccountsStatusUseCaseProvider._();
 
-final class GetGoogleLinkStatusUseCaseProvider
+final class GetLinkedAccountsStatusUseCaseProvider
     extends
         $FunctionalProvider<
-          GetGoogleLinkStatusUseCase,
-          GetGoogleLinkStatusUseCase,
-          GetGoogleLinkStatusUseCase
+          GetLinkedAccountsStatusUseCase,
+          GetLinkedAccountsStatusUseCase,
+          GetLinkedAccountsStatusUseCase
         >
-    with $Provider<GetGoogleLinkStatusUseCase> {
-  GetGoogleLinkStatusUseCaseProvider._()
+    with $Provider<GetLinkedAccountsStatusUseCase> {
+  GetLinkedAccountsStatusUseCaseProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getGoogleLinkStatusUseCaseProvider',
+        name: r'getLinkedAccountsStatusUseCaseProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getGoogleLinkStatusUseCaseHash();
+  String debugGetCreateSourceHash() => _$getLinkedAccountsStatusUseCaseHash();
 
   @$internal
   @override
-  $ProviderElement<GetGoogleLinkStatusUseCase> $createElement(
+  $ProviderElement<GetLinkedAccountsStatusUseCase> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  GetGoogleLinkStatusUseCase create(Ref ref) {
-    return getGoogleLinkStatusUseCase(ref);
+  GetLinkedAccountsStatusUseCase create(Ref ref) {
+    return getLinkedAccountsStatusUseCase(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetGoogleLinkStatusUseCase value) {
+  Override overrideWithValue(GetLinkedAccountsStatusUseCase value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetGoogleLinkStatusUseCase>(value),
+      providerOverride: $SyncValueProvider<GetLinkedAccountsStatusUseCase>(
+        value,
+      ),
     );
   }
 }
 
-String _$getGoogleLinkStatusUseCaseHash() =>
-    r'0eccc12e4f7528333ca4bd4b7e4094e3a53355a2';
+String _$getLinkedAccountsStatusUseCaseHash() =>
+    r'cbb3c4654bec0e9b32edc8dc25f17b8406149654';
 
 @ProviderFor(linkGoogleAccountUseCase)
 final linkGoogleAccountUseCaseProvider = LinkGoogleAccountUseCaseProvider._();
@@ -154,3 +156,100 @@ final class UnlinkGoogleAccountUseCaseProvider
 
 String _$unlinkGoogleAccountUseCaseHash() =>
     r'92c04a71d4cf73aefd05dbc2c280d6bb962d53be';
+
+@ProviderFor(linkGithubAccountUseCase)
+final linkGithubAccountUseCaseProvider = LinkGithubAccountUseCaseProvider._();
+
+final class LinkGithubAccountUseCaseProvider
+    extends
+        $FunctionalProvider<
+          LinkGithubAccountUseCase,
+          LinkGithubAccountUseCase,
+          LinkGithubAccountUseCase
+        >
+    with $Provider<LinkGithubAccountUseCase> {
+  LinkGithubAccountUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'linkGithubAccountUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$linkGithubAccountUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<LinkGithubAccountUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  LinkGithubAccountUseCase create(Ref ref) {
+    return linkGithubAccountUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LinkGithubAccountUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LinkGithubAccountUseCase>(value),
+    );
+  }
+}
+
+String _$linkGithubAccountUseCaseHash() =>
+    r'249f4aa2fb548de63f4461599da2bcdcf08cf0dd';
+
+@ProviderFor(unlinkGithubAccountUseCase)
+final unlinkGithubAccountUseCaseProvider =
+    UnlinkGithubAccountUseCaseProvider._();
+
+final class UnlinkGithubAccountUseCaseProvider
+    extends
+        $FunctionalProvider<
+          UnlinkGithubAccountUseCase,
+          UnlinkGithubAccountUseCase,
+          UnlinkGithubAccountUseCase
+        >
+    with $Provider<UnlinkGithubAccountUseCase> {
+  UnlinkGithubAccountUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'unlinkGithubAccountUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$unlinkGithubAccountUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<UnlinkGithubAccountUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UnlinkGithubAccountUseCase create(Ref ref) {
+    return unlinkGithubAccountUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UnlinkGithubAccountUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UnlinkGithubAccountUseCase>(value),
+    );
+  }
+}
+
+String _$unlinkGithubAccountUseCaseHash() =>
+    r'4410cb2cbfb4fc19d583cd92db8a97eae8b5f211';

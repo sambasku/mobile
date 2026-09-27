@@ -98,80 +98,78 @@ class VerifyEmailPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                Text(
-                  'Masukkan kode 8 karakter',
-                  textAlign: .center,
-                  style: theme.typography.xl.copyWith(
-                    fontWeight: .w600,
-                    color: theme.colors.foreground,
-                  ),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              Text(
+                'Masukkan kode 8 karakter',
+                textAlign: .center,
+                style: theme.typography.xl.copyWith(
+                  fontWeight: .w600,
+                  color: theme.colors.foreground,
                 ),
-                const Gap(8),
-                Text(
-                  email.isEmpty
-                      ? 'Email tidak ada. Kembali ke daftar atau masuk.'
-                      : 'Kode dikirim ke $email (berlaku 10 menit). Format XXXX-XXXX.',
-                  textAlign: .center,
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
+              ),
+              const Gap(8),
+              Text(
+                email.isEmpty
+                    ? 'Email tidak ada. Kembali ke daftar atau masuk.'
+                    : 'Kode dikirim ke $email (berlaku 10 menit). Format XXXX-XXXX.',
+                textAlign: .center,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
                 ),
-                const Gap(24),
-                FTextField(
-                  control: .managed(controller: code),
-                  enabled: !state.isSubmitting && email.isNotEmpty,
-                  label: const Text('Kode OTP'),
-                  hint: 'A4K9-M2XP',
-                  keyboardType: .text,
-                  textCapitalization: .characters,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  textInputAction: .done,
-                  inputFormatters: [const OtpCodeDashFormatter()],
-                  onSubmit: canSubmit ? (_) => submit() : null,
-                ),
-                if (state.errorMessage != null &&
-                    state.errorCode != 'RATE_LIMITED') ...[
-                  const Gap(12),
-                  FAlert(
-                    variant: .destructive,
-                    title: Text(state.errorMessage!),
-                  ),
-                ],
-                const Gap(16),
-                FButton(
-                  onPress: canSubmit ? submit : null,
-                  prefix: state.isSubmitting ? const FCircularProgress() : null,
-                  child: Text(
-                    state.isSubmitting ? 'Memproses...' : 'Verifikasi',
-                  ),
-                ),
-                const Gap(8),
-                FButton(
-                  variant: .ghost,
-                  onPress: canResend
-                      ? () => ref
-                            .read(authVerifyProvider.notifier)
-                            .resend(email: email)
-                      : null,
-                  prefix: state.isResending ? const FCircularProgress() : null,
-                  child: Text(
-                    state.isResending
-                        ? 'Mengirim...'
-                        : remaining.value > 0
-                        ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                        : 'Kirim ulang kode',
-                  ),
+              ),
+              const Gap(24),
+              FTextField(
+                control: .managed(controller: code),
+                enabled: !state.isSubmitting && email.isNotEmpty,
+                label: const Text('Kode OTP'),
+                hint: 'A4K9-M2XP',
+                keyboardType: .text,
+                textCapitalization: .characters,
+                autocorrect: false,
+                enableSuggestions: false,
+                textInputAction: .done,
+                inputFormatters: [const OtpCodeDashFormatter()],
+                onSubmit: canSubmit ? (_) => submit() : null,
+              ),
+              if (state.errorMessage != null &&
+                  state.errorCode != 'RATE_LIMITED') ...[
+                const Gap(12),
+                FAlert(
+                  variant: .destructive,
+                  title: Text(state.errorMessage!),
                 ),
               ],
-            ),
+              const Gap(16),
+              FButton(
+                onPress: canSubmit ? submit : null,
+                prefix: state.isSubmitting ? const FCircularProgress() : null,
+                child: Text(
+                  state.isSubmitting ? 'Memproses...' : 'Verifikasi',
+                ),
+              ),
+              const Gap(8),
+              FButton(
+                variant: .ghost,
+                onPress: canResend
+                    ? () => ref
+                          .read(authVerifyProvider.notifier)
+                          .resend(email: email)
+                    : null,
+                prefix: state.isResending ? const FCircularProgress() : null,
+                child: Text(
+                  state.isResending
+                      ? 'Mengirim...'
+                      : remaining.value > 0
+                      ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
+                      : 'Kirim ulang kode',
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -26,6 +26,7 @@ import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/failures/dictionary_failure.dart';
+import '../../domain/providers/dictionary_domain_providers.dart';
 import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -157,9 +158,15 @@ void openWordShareSheet(
   );
 }
 
-/// Pull-to-refresh: invalidate family detail (+ vote/bookmark/komentar)
-/// lalu tunggu fetch baru supaya indikator selesai tepat waktu.
+/// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
+/// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
 Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
+  final key = wordId.trim();
+  if (looksLikeUlid(key)) {
+    await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
+  } else {
+    await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+  }
   final voteTarget = VoteTarget(type: 'word', id: wordId);
   ref.invalidate(wordDetailProvider(wordId));
   ref.invalidate(voteControllerProvider(voteTarget));

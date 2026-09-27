@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/models/api_response.dart';
 import '../models/facebook_login_request_dto.dart';
+import '../models/github_login_request_dto.dart';
 import '../models/google_login_request_dto.dart';
 import '../models/login_request_dto.dart';
 import '../models/login_response_dto.dart';
@@ -38,6 +39,11 @@ abstract interface class AuthRemoteDatasource {
   @POST('/api/v1/auth/facebook')
   Future<ApiResponse<LoginResponseDto>> loginWithFacebook(
     @Body() FacebookLoginRequestDto body,
+  );
+
+  @POST('/api/v1/auth/github')
+  Future<ApiResponse<LoginResponseDto>> loginWithGithub(
+    @Body() GithubLoginRequestDto body,
   );
 
   @POST('/api/v1/auth/verify-email')

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../auth/presentation/models/auth_login_state.dart';
 import '../providers/linked_accounts_providers.dart';
 
 class LinkedAccountsPage extends ConsumerWidget {
@@ -12,6 +13,7 @@ class LinkedAccountsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(linkedAccountsProvider);
+    final githubEnabled = isGithubAuthConfigured();
 
     ref.listen(linkedAccountsProvider.select((s) => s.infoMessage), (_, next) {
       if (next == null) return;
@@ -29,72 +31,97 @@ class LinkedAccountsPage extends ConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: state.isLoading
-            ? const Center(child: FCircularProgress())
-            : ListView(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
+      child: state.isLoading
+          ? const Center(child: FCircularProgress())
+          : ListView(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+              ),
+              children: [
+                FTileGroup(
+                  label: const Text('Google'),
+                  children: [
+                    FTile(
+                      prefix: const Icon(FLucideIcons.link),
+                      title: const Text('Google'),
+                      subtitle: Text(
+                        state.googleLinked
+                            ? 'Terhubung - bisa dipakai untuk masuk'
+                            : 'Belum terhubung',
+                      ),
+                    ),
+                  ],
                 ),
-                children: [
+                const Gap(12),
+                if (state.googleLinked)
+                  FButton(
+                    onPress: state.isBusy
+                        ? null
+                        : () async {
+                            final ok = await _confirmUnlink(
+                              context,
+                              title: 'Lepas Google?',
+                              body:
+                                  'Kamu tetap bisa masuk dengan email dan password atau provider lain.',
+                            );
+                            if (ok == true) {
+                              await ref
+                                  .read(linkedAccountsProvider.notifier)
+                                  .unlinkGoogle();
+                            }
+                          },
+                    child: state.isBusy
+                        ? const FCircularProgress()
+                        : const Text('Lepas tautan Google'),
+                  )
+                else
+                  FButton(
+                    onPress: state.isBusy
+                        ? null
+                        : () => ref
+                              .read(linkedAccountsProvider.notifier)
+                              .linkGoogle(),
+                    child: state.isBusy
+                        ? const FCircularProgress()
+                        : const Text('Hubungkan Google'),
+                  ),
+                if (githubEnabled) ...[
+                  const Gap(24),
                   FTileGroup(
-                    label: const Text('Google'),
+                    label: const Text('GitHub'),
                     children: [
                       FTile(
                         prefix: const Icon(FLucideIcons.link),
-                        title: const Text('Google'),
+                        title: const Text('GitHub'),
                         subtitle: Text(
-                          state.googleLinked
+                          state.githubLinked
                               ? 'Terhubung - bisa dipakai untuk masuk'
                               : 'Belum terhubung',
                         ),
                       ),
                     ],
                   ),
-                  const Gap(16),
-                  if (state.errorMessage != null) ...[
-                    Text(
-                      state.errorMessage!,
-                      style: TextStyle(color: context.theme.colors.destructive),
-                    ),
-                    const Gap(12),
-                  ],
-                  if (state.googleLinked)
+                  const Gap(12),
+                  if (state.githubLinked)
                     FButton(
                       onPress: state.isBusy
                           ? null
                           : () async {
-                              final ok = await showDialog<bool>(
-                                context: context,
-                                builder: (dialogContext) => AlertDialog(
-                                  title: const Text('Lepas Google?'),
-                                  content: const Text(
-                                    'Kamu tetap bisa masuk dengan email dan password.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(
-                                        dialogContext,
-                                      ).pop(false),
-                                      child: const Text('Batal'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(dialogContext).pop(true),
-                                      child: const Text('Lepas'),
-                                    ),
-                                  ],
-                                ),
+                              final ok = await _confirmUnlink(
+                                context,
+                                title: 'Lepas GitHub?',
+                                body:
+                                    'Kamu tetap bisa masuk dengan email dan password atau provider lain.',
                               );
                               if (ok == true) {
                                 await ref
                                     .read(linkedAccountsProvider.notifier)
-                                    .unlinkGoogle();
+                                    .unlinkGithub();
                               }
                             },
                       child: state.isBusy
                           ? const FCircularProgress()
-                          : const Text('Lepas tautan'),
+                          : const Text('Lepas tautan GitHub'),
                     )
                   else
                     FButton(
@@ -102,13 +129,44 @@ class LinkedAccountsPage extends ConsumerWidget {
                           ? null
                           : () => ref
                                 .read(linkedAccountsProvider.notifier)
-                                .linkGoogle(),
+                                .linkGithub(),
                       child: state.isBusy
                           ? const FCircularProgress()
-                          : const Text('Hubungkan'),
+                          : const Text('Hubungkan GitHub'),
                     ),
                 ],
-              ),
+                if (state.errorMessage != null) ...[
+                  const Gap(16),
+                  Text(
+                    state.errorMessage!,
+                    style: TextStyle(color: context.theme.colors.destructive),
+                  ),
+                ],
+              ],
+            ),
+    );
+  }
+
+  Future<bool?> _confirmUnlink(
+    BuildContext context, {
+    required String title,
+    required String body,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Lepas'),
+          ),
+        ],
       ),
     );
   }

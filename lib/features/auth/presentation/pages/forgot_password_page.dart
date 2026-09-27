@@ -43,54 +43,52 @@ class ForgotPasswordPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                Text(
-                  'Atur ulang password',
-                  textAlign: .center,
-                  style: theme.typography.xl.copyWith(
-                    fontWeight: .w600,
-                    color: theme.colors.foreground,
-                  ),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              Text(
+                'Atur ulang password',
+                textAlign: .center,
+                style: theme.typography.xl.copyWith(
+                  fontWeight: .w600,
+                  color: theme.colors.foreground,
                 ),
-                const Gap(8),
-                Text(
-                  'Masukkan email akun. Kalau terdaftar, kami kirim kode 8 karakter 0-9A-Z ke email.',
-                  textAlign: .center,
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
+              ),
+              const Gap(8),
+              Text(
+                'Masukkan email akun. Kalau terdaftar, kami kirim kode 8 karakter 0-9A-Z ke email.',
+                textAlign: .center,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
                 ),
-                const Gap(24),
-                FTextField.email(
-                  control: .managed(controller: email),
-                  enabled: !state.isSubmitting,
-                  label: const Text('Email'),
-                  textInputAction: .done,
-                  onSubmit: canSubmit ? (_) => submit() : null,
-                ),
-                if (state.errorMessage != null) ...[
-                  const Gap(12),
-                  FAlert(
-                    variant: .destructive,
-                    title: Text(state.errorMessage!),
-                  ),
-                ],
-                const Gap(16),
-                FButton(
-                  onPress: canSubmit ? submit : null,
-                  prefix: state.isSubmitting ? const FCircularProgress() : null,
-                  child: Text(
-                    state.isSubmitting ? 'Mengirim...' : 'Kirim kode reset',
-                  ),
+              ),
+              const Gap(24),
+              FTextField.email(
+                control: .managed(controller: email),
+                enabled: !state.isSubmitting,
+                label: const Text('Email'),
+                textInputAction: .done,
+                onSubmit: canSubmit ? (_) => submit() : null,
+              ),
+              if (state.errorMessage != null) ...[
+                const Gap(12),
+                FAlert(
+                  variant: .destructive,
+                  title: Text(state.errorMessage!),
                 ),
               ],
-            ),
+              const Gap(16),
+              FButton(
+                onPress: canSubmit ? submit : null,
+                prefix: state.isSubmitting ? const FCircularProgress() : null,
+                child: Text(
+                  state.isSubmitting ? 'Mengirim...' : 'Kirim kode reset',
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/about/about_router.dart';
 import '../../features/activity/presentation/pages/activity_page.dart';
 import '../../features/auth/auth_router.dart';
+import '../../features/auth/presentation/providers/auth_status_providers.dart';
 import '../../features/bookmark/bookmark_router.dart';
 import '../../features/my_comments/my_comments_router.dart';
 import '../../features/my_votes/my_votes_router.dart';
@@ -134,6 +135,7 @@ class AppRouter {
   /// - onboarding belum selesai → /onboarding (kecuali deep link publik / auth)
   /// - onboarding selesai tapi masih di /onboarding → HOME
   /// - user sudah login tapi masih di /login → HOME
+  /// - tamu di /profile → /login (hindari layout guest yang membingungkan)
   /// Register, verify-email, forgot/reset tidak di-redirect: daftar akun
   /// baru boleh terjadi meski sesi lama ada, dan tautan reset dari email
   /// harus tetap bisa dibuka.
@@ -163,6 +165,9 @@ class AppRouter {
 
     final isAuth = await _tokenStorage.getIsAuth();
     if (isAuth && loc == AuthRouter.login.path) return '/';
+    if (!isAuth && (loc == '/profile' || path == '/profile')) {
+      return AuthRouter.login.path;
+    }
 
     return null;
   }
@@ -207,6 +212,15 @@ class _HomeShell extends ConsumerWidget {
           // IndexedStack menyimpan fokus search → keyboard ikut "nempel"
           // saat ganti tab / setelah hot reload. Unfocus dulu.
           FocusManager.instance.primaryFocus?.unfocus();
+          // Tamu ketuk Profil → login, jangan buka layout guest.
+          if (index == 3) {
+            final isAuth =
+                ref.read(authStatusProvider).value?.isAuth ?? false;
+            if (!isAuth) {
+              context.push(AuthRouter.login.path);
+              return;
+            }
+          }
           final openingHome = index == 0 && navigationShell.currentIndex != 0;
           navigationShell.goBranch(index);
           if (openingHome) {

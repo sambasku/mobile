@@ -26,7 +26,6 @@ FTileMixin themeModeTile(WidgetRef ref) {
   return FSelectMenuTile<ThemeMode>(
     prefix: const Icon(FLucideIcons.contrast),
     title: const Text('Mode Tema'),
-    subtitle: const Text('Terang, gelap, atau ikut sistem'),
     details: Text(_modeLabels[mode] ?? ''),
     selectControl: FMultiValueControl.managedRadio(
       initial: mode,
@@ -57,7 +56,6 @@ FTileMixin paletteTile(WidgetRef ref) {
   return FSelectMenuTile<String>(
     prefix: const Icon(FLucideIcons.palette),
     title: const Text('Warna Tema'),
-    subtitle: const Text('Skema warna bawaan forui'),
     details: Text(palette.label),
     maxHeight: menuMaxHeight,
     selectControl: FMultiValueControl.managedRadio(

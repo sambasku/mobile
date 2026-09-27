@@ -14,7 +14,9 @@ class UserProfileRouter {
   );
 
   static void open(BuildContext context, String username) {
-    context.push('/users/${Uri.encodeComponent(username)}');
+    final handle = username.trim();
+    if (handle.isEmpty) return;
+    context.push('/users/${Uri.encodeComponent(handle)}');
   }
 
   static final List<GoRoute> routes = [
@@ -22,8 +24,12 @@ class UserProfileRouter {
       path: profile.path,
       name: profile.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) =>
-          PublicProfilePage(username: state.pathParameters['username'] ?? ''),
+      builder: (context, state) {
+        final raw = state.pathParameters['username'] ?? '';
+        // go_router biasanya sudah decode; defensive untuk %20 tersisa.
+        final username = Uri.decodeComponent(raw);
+        return PublicProfilePage(username: username);
+      },
     ),
   ];
 }

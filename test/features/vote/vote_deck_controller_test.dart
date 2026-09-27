@@ -132,21 +132,45 @@ void main() {
     expect(repo.toggles, isEmpty);
   });
 
-  test('castAndAdvance + rewind memanggil toggle dua kali (vote lalu off)',
+  test('castOptimistic drop kartu segera; rewind cancel job belum terkirim',
       () async {
     final initial = await ready();
     final first = initial.items.first;
 
-    final castFailure = await container
-        .read(voteDeckControllerProvider.notifier)
-        .castAndAdvance(item: first, value: 1);
-    expect(castFailure, isNull);
-    expect(repo.toggles.length, 1);
-    expect(repo.toggles.first.value, 1);
+    container.read(voteDeckControllerProvider.notifier).castOptimistic(
+          item: first,
+          value: 1,
+        );
 
     var state = container.read(voteDeckControllerProvider).value!;
     expect(state.items.map((i) => i.id), ['b', 'c']);
     expect(state.rewindEntry?.kind, VoteDeckRewindKind.upvote);
+
+    // Rewind sebelum worker sempat POST → cancel queue, tanpa toggle.
+    final rewindFailure =
+        await container.read(voteDeckControllerProvider.notifier).rewind();
+    expect(rewindFailure, isNull);
+    expect(repo.toggles, isEmpty);
+
+    state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
+    expect(state.canRewind, isFalse);
+  });
+
+  test('castOptimistic setelah settle + rewind undo via toggle', () async {
+    final initial = await ready();
+    final first = initial.items.first;
+
+    container.read(voteDeckControllerProvider.notifier).castOptimistic(
+          item: first,
+          value: 1,
+        );
+
+    for (var i = 0; i < 40 && repo.toggles.isEmpty; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    expect(repo.toggles.length, 1);
+    expect(repo.toggles.first.value, 1);
 
     final rewindFailure =
         await container.read(voteDeckControllerProvider.notifier).rewind();
@@ -154,7 +178,7 @@ void main() {
     expect(repo.toggles.length, 2);
     expect(repo.toggles.last.value, 1);
 
-    state = container.read(voteDeckControllerProvider).value!;
+    final state = container.read(voteDeckControllerProvider).value!;
     expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
     expect(state.canRewind, isFalse);
   });

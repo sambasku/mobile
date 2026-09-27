@@ -101,6 +101,7 @@ class TranslationHelpReply {
     required this.id,
     required this.userId,
     required this.username,
+    this.displayName,
     required this.body,
     required this.status,
     required this.isVerifier,
@@ -114,6 +115,7 @@ class TranslationHelpReply {
   final String id;
   final String userId;
   final String? username;
+  final String? displayName;
   final String? body;
   final String status;
   final bool isVerifier;
@@ -138,6 +140,7 @@ class TranslationHelpReply {
       id: json['id']?.toString() ?? '',
       userId: json['user_id']?.toString() ?? '',
       username: json['username']?.toString(),
+      displayName: json['display_name']?.toString(),
       body: json['body']?.toString(),
       status: json['status']?.toString() ?? 'published',
       isVerifier: json['is_verifier'] == true,
@@ -157,6 +160,7 @@ class TranslationHelpReply {
       id: id,
       userId: userId,
       username: username,
+      displayName: displayName,
       body: body,
       status: status,
       isVerifier: isVerifier,
@@ -176,6 +180,7 @@ class TranslationHelpItem {
     required this.id,
     required this.userId,
     required this.username,
+    this.displayName,
     required this.body,
     required this.images,
     required this.status,
@@ -192,6 +197,7 @@ class TranslationHelpItem {
   final String id;
   final String userId;
   final String? username;
+  final String? displayName;
   final String? body;
   final List<TranslationHelpImage> images;
   final String status;
@@ -241,6 +247,7 @@ class TranslationHelpItem {
       id: json['id']?.toString() ?? '',
       userId: json['user_id']?.toString() ?? '',
       username: json['username']?.toString(),
+      displayName: json['display_name']?.toString(),
       body: json['body']?.toString(),
       images: imagesRaw is List
           ? [
@@ -274,6 +281,7 @@ class TranslationHelpItem {
       id: id,
       userId: userId,
       username: username,
+      displayName: displayName,
       body: body,
       images: images,
       status: status,

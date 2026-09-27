@@ -42,6 +42,8 @@ class InboxNotification {
         return 'Bantuan diturunkan';
       case 'campaign':
         return 'Pengumuman';
+      case 'word_comment':
+        return 'Komentar';
       default:
         return 'Pembaruan';
     }

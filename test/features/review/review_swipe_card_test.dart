@@ -140,7 +140,7 @@ void main() {
     expect(called, isFalse);
   });
 
-  testWidgets('drag kanan parsial menampilkan arrowBigUp', (tester) async {
+  testWidgets('drag kanan parsial menampilkan check (setujui)', (tester) async {
     await tester.pumpWidget(
       wrap(
         ReviewSwipeCard(
@@ -155,8 +155,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsNothing);
-    expect(find.byIcon(FLucideIcons.arrowBigDown), findsNothing);
+    expect(find.byIcon(FLucideIcons.check), findsNothing);
+    expect(find.byIcon(FLucideIcons.x), findsNothing);
 
     // Drag di bawah ambang (112) supaya tidak commit; tahan di tengah path.
     final gesture = await tester.startGesture(
@@ -165,14 +165,14 @@ void main() {
     await gesture.moveBy(const Offset(80, 0));
     await tester.pump();
 
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.arrowBigDown), findsNothing);
+    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.x), findsNothing);
 
     await gesture.up();
     await tester.pumpAndSettle();
   });
 
-  testWidgets('drag kiri parsial menampilkan arrowBigDown', (tester) async {
+  testWidgets('drag kiri parsial menampilkan x (tolak)', (tester) async {
     await tester.pumpWidget(
       wrap(
         ReviewSwipeCard(
@@ -193,8 +193,8 @@ void main() {
     await gesture.moveBy(const Offset(-80, 0));
     await tester.pump();
 
-    expect(find.byIcon(FLucideIcons.arrowBigDown), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.arrowBigUp), findsNothing);
+    expect(find.byIcon(FLucideIcons.x), findsOneWidget);
+    expect(find.byIcon(FLucideIcons.check), findsNothing);
 
     await gesture.up();
     await tester.pumpAndSettle();

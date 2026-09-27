@@ -30,6 +30,15 @@ class _FakeRepo implements AuthRepository {
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async =>
+      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+
+
+  @override
   Future<Either<AuthFailure, void>> register({
     required String name,
     required String email,

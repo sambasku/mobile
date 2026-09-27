@@ -28,6 +28,7 @@ class AuthTokenStorage {
   static const _refreshTokenKey = 'refreshToken';
   static const _isAuthKey = 'isAuth';
   static const _usernameKey = 'sessionUsername';
+  static const _displayNameKey = 'sessionDisplayName';
   static const _roleKey = 'sessionRole';
   static const _userIdKey = 'sessionUserId';
   static const _avatarUrlKey = 'sessionAvatarUrl';
@@ -75,6 +76,7 @@ class AuthTokenStorage {
     final prefs = await _sharedPrefs;
     await Future.wait([
       prefs.remove(_usernameKey),
+      prefs.remove(_displayNameKey),
       prefs.remove(_roleKey),
       prefs.remove(_userIdKey),
       prefs.remove(_avatarUrlKey),
@@ -89,11 +91,16 @@ class AuthTokenStorage {
     required String username,
     required String? role,
     String? userId,
+    String? displayName,
     String? avatarUrl,
   }) async {
     final prefs = await _sharedPrefs;
     await Future.wait([
       prefs.setString(_usernameKey, username),
+      if (displayName != null && displayName.isNotEmpty)
+        prefs.setString(_displayNameKey, displayName)
+      else
+        prefs.remove(_displayNameKey),
       if (role != null && role.isNotEmpty) prefs.setString(_roleKey, role),
       if (userId != null && userId.isNotEmpty) prefs.setString(_userIdKey, userId),
       if (avatarUrl != null && avatarUrl.isNotEmpty)
@@ -103,11 +110,20 @@ class AuthTokenStorage {
     ]);
   }
 
-  Future<({String? username, String? role, String? userId, String? avatarUrl})>
+  Future<
+    ({
+      String? username,
+      String? displayName,
+      String? role,
+      String? userId,
+      String? avatarUrl,
+    })
+  >
   getSessionUser() async {
     final prefs = await _sharedPrefs;
     return (
       username: prefs.getString(_usernameKey),
+      displayName: prefs.getString(_displayNameKey),
       role: prefs.getString(_roleKey),
       userId: prefs.getString(_userIdKey),
       avatarUrl: prefs.getString(_avatarUrlKey),

@@ -25,43 +25,41 @@ class AboutPage extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            final info = snapshot.data;
-            final versionLabel = info == null
-                ? '…'
-                : '${info.version} (${info.buildNumber})';
+      child: FutureBuilder<PackageInfo>(
+        future: PackageInfo.fromPlatform(),
+        builder: (context, snapshot) {
+          final info = snapshot.data;
+          final versionLabel = info == null
+              ? '…'
+              : '${info.version} (${info.buildNumber})';
 
-            return Column(
-              children: [
-                const Gap(4),
-                const BrandMark(size: 112),
-                const Gap(8),
-                Text(
-                  'Kamus Digital Sambas-Indonesia',
-                  textAlign: TextAlign.center,
-                  style: theme.typography.xs.copyWith(
-                    height: 1.2,
-                    color: theme.colors.mutedForeground,
-                  ),
+          return Column(
+            children: [
+              const Gap(4),
+              const BrandMark(size: 112),
+              const Gap(8),
+              Text(
+                'Kamus Digital Sambas-Indonesia',
+                textAlign: TextAlign.center,
+                style: theme.typography.xs.copyWith(
+                  height: 1.2,
+                  color: theme.colors.mutedForeground,
                 ),
-                const Gap(2),
-                Text(
-                  'Versi $versionLabel',
-                  textAlign: TextAlign.center,
-                  style: theme.typography.xs.copyWith(
-                    height: 1.2,
-                    color: theme.colors.mutedForeground,
-                  ),
+              ),
+              const Gap(2),
+              Text(
+                'Versi $versionLabel',
+                textAlign: TextAlign.center,
+                style: theme.typography.xs.copyWith(
+                  height: 1.2,
+                  color: theme.colors.mutedForeground,
                 ),
-                const Gap(12),
-                const Expanded(child: _AboutTabs()),
-              ],
-            );
-          },
-        ),
+              ),
+              const Gap(12),
+              const Expanded(child: _AboutTabs()),
+            ],
+          );
+        },
       ),
     );
   }

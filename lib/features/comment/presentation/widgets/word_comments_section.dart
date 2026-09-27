@@ -288,6 +288,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                           c.isOwner(auth.userId);
                       return ThreadMessageRow(
                         username: c.username,
+                        displayName: c.displayName,
                         body: c.displayBody,
                         dateLabel: formatDateTimeIso(c.createdAt),
                         metaParts: [

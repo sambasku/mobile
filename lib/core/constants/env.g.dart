@@ -29,6 +29,10 @@ final class _Env {
 
   static const String? facebookAppIdProduction = '2004759406907006';
 
+  static const String? githubClientIdStaging = 'Ov23liEGNkEDuPNAhiTj';
+
+  static const String? githubClientIdProduction = 'Ov23liuhFjUQj3bh5uWE';
+
   static const String? webAppUrlStaging =
       'https://sambasku-web-staging.iamutaki.com';
 

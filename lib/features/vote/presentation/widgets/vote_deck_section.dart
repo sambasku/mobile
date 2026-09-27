@@ -7,10 +7,15 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
+import '../../../../core/widgets/busy_aware_icon.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
+import '../providers/vote_submit_queue.dart';
 import 'vote_deck_swipe_card.dart';
+
+/// Aksi yang sedang diproses di deck vote (spinner hanya di rewind).
+enum VotePendingAction { rewind }
 
 /// Section deck nilai kata di tab Kontribusi.
 ///
@@ -25,7 +30,7 @@ class VoteDeckSection extends ConsumerStatefulWidget {
 }
 
 class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
-  bool _busy = false;
+  VotePendingAction? _pendingAction;
   bool _loggedView = false;
 
   @override
@@ -50,8 +55,9 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
             error: (_, _) => const _GuestDeck(),
             data: (status) => status.isAuth
                 ? _AuthDeck(
-                    busy: _busy,
-                    onBusy: (v) => setState(() => _busy = v),
+                    pendingAction: _pendingAction,
+                    onPendingAction: (action) =>
+                        setState(() => _pendingAction = action),
                     onDeckVisible: () {
                       if (_loggedView) return;
                       _loggedView = true;
@@ -110,13 +116,13 @@ class _GuestDeck extends ConsumerWidget {
 
 class _AuthDeck extends ConsumerStatefulWidget {
   const _AuthDeck({
-    required this.busy,
-    required this.onBusy,
+    required this.pendingAction,
+    required this.onPendingAction,
     required this.onDeckVisible,
   });
 
-  final bool busy;
-  final ValueChanged<bool> onBusy;
+  final VotePendingAction? pendingAction;
+  final ValueChanged<VotePendingAction?> onPendingAction;
   final VoidCallback onDeckVisible;
 
   @override
@@ -124,6 +130,8 @@ class _AuthDeck extends ConsumerStatefulWidget {
 }
 
 class _AuthDeckState extends ConsumerState<_AuthDeck> {
+  bool get _rewinding => widget.pendingAction == VotePendingAction.rewind;
+
   @override
   void initState() {
     super.initState();
@@ -136,6 +144,18 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(voteDeckControllerProvider);
+
+    ref.listen(voteSubmitQueueProvider, (prev, next) {
+      if (next.errorSeq == 0) return;
+      if (prev != null && prev.errorSeq == next.errorSeq) return;
+      final failed = next.failedItem;
+      if (failed != null) {
+        ref.read(voteDeckControllerProvider.notifier).reinsertFront(failed);
+      }
+      if (!context.mounted) return;
+      final message = next.errorMessage ?? 'Gagal menyimpan penilaian';
+      showFToast(context: context, title: Text(message));
+    });
 
     return async.when(
       // Kerangka kartu (bukan spinner) - sama pola sesi tinjau.
@@ -183,7 +203,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 if (state.canRewind) ...[
                   const Gap(16),
                   _VoteDeckActionBar(
-                    busy: widget.busy,
+                    pendingAction: widget.pendingAction,
                     canRewind: true,
                     onDisagree: null,
                     onSkip: null,
@@ -205,9 +225,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.busy
-                  ? 'Menyimpan penilaian…'
-                  : 'Nilai · sisa $remainingHint',
+              'Nilai · sisa $remainingHint',
               style: theme.typography.xs.copyWith(
                 color: theme.colors.mutedForeground,
                 fontWeight: FontWeight.w600,
@@ -221,53 +239,52 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                   duration: const Duration(milliseconds: 220),
                   switchInCurve: Curves.easeOutCubic,
                   switchOutCurve: Curves.easeInCubic,
-                  // Saat submit: kartu sudah keluar layar → isi slot dengan
-                  // skeleton supaya tidak kosong diam (beda dari sesi tinjau
-                  // yang preload detail berikutnya).
-                  child: widget.busy
-                      ? const _VoteDeckCardPlaceholder(
-                          key: ValueKey('submitting'),
-                        )
-                      : SizedBox(
-                          key: ValueKey('card-${item.id}'),
-                          height: 240,
-                          child: VoteDeckSwipeCard(
-                            itemKey: item.id,
-                            enabled: true,
-                            onSwiped: (dir) =>
-                                _cast(context, ref, item: item, direction: dir),
-                            child: _WordCardFace(
-                              lemma: item.lemma,
-                              sense: item.sense,
-                              wordType: item.wordType,
-                            ),
-                          ),
-                        ),
+                  child: SizedBox(
+                    key: ValueKey('card-${item.id}'),
+                    height: 240,
+                    child: VoteDeckSwipeCard(
+                      itemKey: item.id,
+                      enabled: !_rewinding,
+                      onSwiped: (dir) =>
+                          _cast(context, ref, item: item, direction: dir),
+                      child: _WordCardFace(
+                        lemma: item.lemma,
+                        sense: item.sense,
+                        wordType: item.wordType,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
             const Gap(10),
             _VoteDeckActionBar(
-              busy: widget.busy,
+              pendingAction: widget.pendingAction,
               canRewind: state.canRewind,
-              onDisagree: () => _cast(
-                context,
-                ref,
-                item: item,
-                direction: VoteDeckSwipeDirection.disagree,
-              ),
-              onSkip: () => _cast(
-                context,
-                ref,
-                item: item,
-                direction: VoteDeckSwipeDirection.skip,
-              ),
-              onAgree: () => _cast(
-                context,
-                ref,
-                item: item,
-                direction: VoteDeckSwipeDirection.agree,
-              ),
+              onDisagree: _rewinding
+                  ? null
+                  : () => _cast(
+                        context,
+                        ref,
+                        item: item,
+                        direction: VoteDeckSwipeDirection.disagree,
+                      ),
+              onSkip: _rewinding
+                  ? null
+                  : () => _cast(
+                        context,
+                        ref,
+                        item: item,
+                        direction: VoteDeckSwipeDirection.skip,
+                      ),
+              onAgree: _rewinding
+                  ? null
+                  : () => _cast(
+                        context,
+                        ref,
+                        item: item,
+                        direction: VoteDeckSwipeDirection.agree,
+                      ),
               onRewind: () => _rewind(context, ref),
             ),
           ],
@@ -282,29 +299,18 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     required VoteDeckItem item,
     required VoteDeckSwipeDirection direction,
   }) async {
-    if (widget.busy) return false;
+    if (_rewinding) return false;
 
-    // Skip lokal - tanpa busy/skeleton (bukan submit server).
     if (direction == VoteDeckSwipeDirection.skip) {
       ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item);
       return true;
     }
 
-    widget.onBusy(true);
     final value = direction == VoteDeckSwipeDirection.agree ? 1 : -1;
-    final failure = await ref
-        .read(voteDeckControllerProvider.notifier)
-        .castAndAdvance(item: item, value: value);
-
-    if (!context.mounted) {
-      widget.onBusy(false);
-      return failure == null;
-    }
-    if (failure != null) {
-      widget.onBusy(false);
-      showFToast(context: context, title: Text(failure.message));
-      return false;
-    }
+    ref.read(voteDeckControllerProvider.notifier).castOptimistic(
+          item: item,
+          value: value,
+        );
 
     AnalyticsService.instance.log(
       AnalyticsEvents.voteDeckSwipe,
@@ -315,29 +321,19 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         'word_id': item.id,
       },
     );
-
-    widget.onBusy(false);
-    showFToast(
-      context: context,
-      title: Text(
-        direction == VoteDeckSwipeDirection.agree
-            ? 'Masuk akal - tersimpan.'
-            : 'Kurang pas - tersimpan.',
-      ),
-    );
     return true;
   }
 
   Future<void> _rewind(BuildContext context, WidgetRef ref) async {
-    if (widget.busy) return;
-    widget.onBusy(true);
+    if (_rewinding) return;
+    widget.onPendingAction(VotePendingAction.rewind);
     final failure =
         await ref.read(voteDeckControllerProvider.notifier).rewind();
     if (!context.mounted) {
-      widget.onBusy(false);
+      widget.onPendingAction(null);
       return;
     }
-    widget.onBusy(false);
+    widget.onPendingAction(null);
     if (failure != null) {
       showFToast(context: context, title: Text(failure.message));
       return;
@@ -352,7 +348,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
 /// Action bar: [undo][skip][downvote][upvote] - vote sejajar di kanan.
 class _VoteDeckActionBar extends StatelessWidget {
   const _VoteDeckActionBar({
-    required this.busy,
+    required this.pendingAction,
     required this.canRewind,
     required this.onDisagree,
     required this.onSkip,
@@ -360,21 +356,14 @@ class _VoteDeckActionBar extends StatelessWidget {
     required this.onRewind,
   });
 
-  final bool busy;
+  final VotePendingAction? pendingAction;
   final bool canRewind;
   final VoidCallback? onDisagree;
   final VoidCallback? onSkip;
   final VoidCallback? onAgree;
   final VoidCallback onRewind;
 
-  Widget _busyOr(Widget icon) {
-    if (!busy) return icon;
-    return const SizedBox(
-      width: 18,
-      height: 18,
-      child: FCircularProgress(),
-    );
-  }
+  bool get _rewinding => pendingAction == VotePendingAction.rewind;
 
   @override
   Widget build(BuildContext context) {
@@ -401,43 +390,44 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Kembali ke kartu sebelumnya',
-              onPress: busy || !canRewind ? null : onRewind,
-              child: _busyOr(const Icon(FLucideIcons.undo)),
+              semanticsLabel: _rewinding
+                  ? 'Memproses…'
+                  : 'Kembali ke kartu sebelumnya',
+              onPress: _rewinding || !canRewind ? null : onRewind,
+              child: BusyAwareIcon(
+                loading: _rewinding,
+                icon: const Icon(FLucideIcons.undo),
+              ),
             ),
             const Gap(8),
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: busy ? 'Memproses…' : 'Lewati',
-              onPress: busy || onSkip == null ? null : onSkip,
-              child: _busyOr(const Icon(FLucideIcons.skipForward)),
+              semanticsLabel: 'Lewati',
+              onPress: _rewinding || onSkip == null ? null : onSkip,
+              child: const Icon(FLucideIcons.skipForward),
             ),
             const Gap(12),
             // Pasangan downvote / upvote sejajar (mirip VoteButtons).
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: busy ? 'Memproses…' : 'Kurang pas',
-              onPress: busy || onDisagree == null ? null : onDisagree,
-              child: _busyOr(
-                Icon(
-                  FLucideIcons.arrowBigDown,
-                  color: theme.colors.destructive,
-                ),
+              semanticsLabel: 'Kurang pas',
+              onPress: _rewinding || onDisagree == null ? null : onDisagree,
+              child: Icon(
+                FLucideIcons.arrowBigDown,
+                color: theme.colors.destructive,
               ),
             ),
             const Gap(4),
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: busy ? 'Memproses…' : 'Masuk akal',
-              onPress: busy || onAgree == null ? null : onAgree,
-              child: _busyOr(
-                Icon(
-                  FLucideIcons.arrowBigUp,
-                  color: theme.colors.success,
-                ),
+              semanticsLabel: 'Masuk akal',
+              onPress: _rewinding || onAgree == null ? null : onAgree,
+              child: Icon(
+                FLucideIcons.arrowBigUp,
+                color: theme.colors.success,
               ),
             ),
           ],

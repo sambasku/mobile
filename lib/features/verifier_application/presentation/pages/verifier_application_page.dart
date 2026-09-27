@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -11,9 +10,11 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
+import '../../../../shared/utils/phone_country.dart';
+import '../../../../shared/utils/phone_country_picker_sheet.dart';
+import '../../../../shared/utils/phone_national_digits_formatter.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/auth_router.dart';
-import '../../../auth/presentation/pages/register_page.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
 import '../../domain/entities/verifier_application.dart';
@@ -30,13 +31,6 @@ const _platforms = <String, String>{
 
 const _maxScreenshotMb = 5;
 const _uploadFolder = '/verifier-applications';
-
-String _nationalPhone(String raw) {
-  var digits = raw.replaceAll(RegExp(r'\D'), '');
-  if (digits.startsWith('62')) digits = digits.substring(2);
-  if (digits.startsWith('0')) digits = digits.substring(1);
-  return digits;
-}
 
 String _normalizeUsername(String raw) {
   var value = raw.trim();
@@ -105,6 +99,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final state = ref.watch(verifierApplicationProvider);
     final phone = useTextEditingController();
     final address = useTextEditingController();
+    final phoneCountry = useState(kPhoneCountryId);
     final social = useState<List<_SocialDraft>>([
       const _SocialDraft(platform: 'instagram'),
     ]);
@@ -117,7 +112,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
       next,
     ) {
       if (next == null) return;
-      phone.text = _nationalPhone(next.phone);
+      final parsed = parseStoredPhone(next.phone);
+      phoneCountry.value = parsed.country;
+      phone.text = parsed.national;
       address.text = next.address;
       social.value = next.socialLinks.isEmpty
           ? [const _SocialDraft(platform: 'instagram')]
@@ -181,7 +178,10 @@ class VerifierApplicationPage extends HookConsumerWidget {
       ref
           .read(verifierApplicationProvider.notifier)
           .submit(
-            phone: phone.text.trim(),
+            phone: toInternationalPhoneDigits(
+              phoneCountry.value,
+              phone.text.trim(),
+            ),
             address: address.text.trim(),
             socialLinks: links,
           );
@@ -216,210 +216,234 @@ class VerifierApplicationPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: state.isLoading
-            ? const Center(child: FCircularProgress())
-            : ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  if (approved) ...[
-                    if (isReLogging.value) ...[
-                      const Gap(48),
-                      const Center(child: FCircularProgress()),
-                      const Gap(16),
-                      Text(
-                        'Membuka halaman masuk...',
-                        textAlign: .center,
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ] else ...[
-                      const Gap(24),
-                      Center(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: theme.colors.success.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Icon(
-                              FLucideIcons.circleCheck,
-                              size: 64,
-                              color: theme.colors.success,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Gap(20),
-                      Text(
-                        'Pengajuan disetujui',
-                        textAlign: .center,
-                        style: theme.typography.xl.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: theme.colors.success,
-                        ),
-                      ),
-                      const Gap(8),
-                      Text(
-                        'Selamat, Anda jadi verifikator. Masuk kembali agar peran Verifikator aktif di aplikasi.',
-                        textAlign: .center,
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                      const Gap(24),
-                      FButton(
-                        onPress: reLogin,
-                        prefix: const Icon(FLucideIcons.logIn),
-                        child: const Text('Masuk ulang'),
-                      ),
-                    ],
-                  ] else if (pending) ...[
-                    const FAlert(
-                      title: Text('Pengajuan sedang ditinjau'),
-                      subtitle: Text(
-                        'Tim admin masih meninjau data Anda. Anda akan mendapat notifikasi setelah ada keputusan.',
-                      ),
-                    ),
-                    if (state.errorMessage != null) ...[
-                      const Gap(12),
-                      FAlert(
-                        variant: .destructive,
-                        title: Text(state.errorMessage!),
-                      ),
-                    ],
-                  ] else ...[
-                    const FAlert(
-                      title: Text('Tentang peran verifikator'),
-                      subtitle: Text(
-                        'Verifikator meninjau usulan kata warga sebelum tayang di kamus (setujui, tolak, atau koreksi) agar entri tetap akurat. Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong. Data ini tidak tampil di profil publik.',
-                      ),
-                    ),
-                    const Gap(12),
-                    if (needsRevision) ...[
-                      FAlert(
-                        variant: .destructive,
-                        title: const Text('Perlu perbaikan'),
-                        subtitle: Text(
-                          application!.adminComment!.trim(),
-                        ),
-                      ),
-                      const Gap(12),
-                    ] else if (rejected) ...[
-                      const FAlert(
-                        variant: .destructive,
-                        title: Text('Pengajuan ditolak'),
-                        subtitle: Text(
-                          'Data kurang lengkap. Perbaiki lalu kirim ulang.',
-                        ),
-                      ),
-                      const Gap(12),
-                    ],
-                    FTextField(
-                      control: .managed(controller: phone),
-                      enabled: !readOnly,
-                      label: const Text('No. HP'),
-                      hint: '81234567890',
-                      keyboardType: .phone,
-                      textInputAction: .next,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      prefixBuilder: (context, style, variants) => Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 4),
-                        child: Text(
-                          kPhoneCountryPrefix,
-                          style: context.theme.typography.sm.copyWith(
-                            color: context.theme.colors.mutedForeground,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Gap(12),
-                    FTextField(
-                      control: .managed(controller: address),
-                      enabled: !readOnly,
-                      label: const Text('Alamat'),
-                      hint: 'Alamat lengkap tempat tinggal/domisili',
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.newline,
-                      minLines: 3,
-                      maxLines: 6,
-                    ),
+      child: state.isLoading
+          ? const Center(child: FCircularProgress())
+          : ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                if (approved) ...[
+                  if (isReLogging.value) ...[
+                    const Gap(48),
+                    const Center(child: FCircularProgress()),
                     const Gap(16),
                     Text(
-                      'Media sosial (minimal 1)',
-                      style: context.theme.typography.sm.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Gap(8),
-                    for (var i = 0; i < social.value.length; i++) ...[
-                      if (i > 0) const Gap(16),
-                      _SocialRow(
-                        key: ValueKey('social-$i'),
-                        index: i,
-                        draft: social.value[i],
-                        enabled: !readOnly,
-                        canRemove: social.value.length > 1 && !readOnly,
-                        onChanged: (next) {
-                          final copy = [...social.value];
-                          copy[i] = next;
-                          social.value = copy;
-                        },
-                        onRemove: () {
-                          final copy = [...social.value]..removeAt(i);
-                          social.value = copy;
-                        },
-                      ),
-                    ],
-                    if (!readOnly && social.value.length < 5) ...[
-                      const Gap(12),
-                      FButton(
-                        variant: .outline,
-                        onPress: () {
-                          social.value = [
-                            ...social.value,
-                            const _SocialDraft(platform: 'instagram'),
-                          ];
-                        },
-                        child: const Text('Tambah akun'),
-                      ),
-                    ],
-                    if (state.errorMessage != null) ...[
-                      const Gap(12),
-                      FAlert(
-                        variant: .destructive,
-                        title: Text(state.errorMessage!),
-                      ),
-                    ],
-                    const Gap(16),
-                    FButton(
-                      onPress: canSubmit ? submit : null,
-                      prefix: state.isSubmitting
-                          ? const FCircularProgress()
-                          : null,
-                      child: Text(
-                        state.isSubmitting
-                            ? 'Mengirim...'
-                            : rejected
-                            ? 'Kirim ulang'
-                            : 'Kirim pengajuan',
-                      ),
-                    ),
-                    const Gap(8),
-                    Text(
-                      'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.',
+                      'Membuka halaman masuk...',
                       textAlign: .center,
-                      style: context.theme.typography.sm.copyWith(
-                        color: context.theme.colors.mutedForeground,
+                      style: theme.typography.sm.copyWith(
+                        color: theme.colors.mutedForeground,
                       ),
+                    ),
+                  ] else ...[
+                    const Gap(24),
+                    Center(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.success.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Icon(
+                            FLucideIcons.circleCheck,
+                            size: 64,
+                            color: theme.colors.success,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(20),
+                    Text(
+                      'Pengajuan disetujui',
+                      textAlign: .center,
+                      style: theme.typography.xl.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colors.success,
+                      ),
+                    ),
+                    const Gap(8),
+                    Text(
+                      'Selamat, Anda jadi verifikator. Masuk kembali agar peran Verifikator aktif di aplikasi.',
+                      textAlign: .center,
+                      style: theme.typography.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                    const Gap(24),
+                    FButton(
+                      onPress: reLogin,
+                      prefix: const Icon(FLucideIcons.logIn),
+                      child: const Text('Masuk ulang'),
                     ),
                   ],
+                ] else if (pending) ...[
+                  const FAlert(
+                    title: Text('Pengajuan sedang ditinjau'),
+                    subtitle: Text(
+                      'Tim admin masih meninjau data Anda. Anda akan mendapat notifikasi setelah ada keputusan.',
+                    ),
+                  ),
+                  if (state.errorMessage != null) ...[
+                    const Gap(12),
+                    FAlert(
+                      variant: .destructive,
+                      title: Text(state.errorMessage!),
+                    ),
+                  ],
+                ] else ...[
+                  const FAlert(
+                    title: Text('Tentang peran verifikator'),
+                    subtitle: Text(
+                      'Verifikator meninjau usulan kata warga sebelum tayang di kamus (setujui, tolak, atau koreksi) agar entri tetap akurat. Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong. Data ini tidak tampil di profil publik.',
+                    ),
+                  ),
+                  const Gap(12),
+                  if (needsRevision) ...[
+                    FAlert(
+                      variant: .destructive,
+                      title: const Text('Perlu perbaikan'),
+                      subtitle: Text(
+                        application!.adminComment!.trim(),
+                      ),
+                    ),
+                    const Gap(12),
+                  ] else if (rejected) ...[
+                    const FAlert(
+                      variant: .destructive,
+                      title: Text('Pengajuan ditolak'),
+                      subtitle: Text(
+                        'Data kurang lengkap. Perbaiki lalu kirim ulang.',
+                      ),
+                    ),
+                    const Gap(12),
+                  ],
+                  FTextField(
+                    control: .managed(controller: phone),
+                    enabled: !readOnly,
+                    label: const Text('No. HP'),
+                    hint: '81234567890',
+                    keyboardType: .phone,
+                    textInputAction: .next,
+                    inputFormatters: const [PhoneNationalDigitsFormatter()],
+                    prefixBuilder: (context, style, variants) =>
+                        GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: readOnly
+                          ? null
+                          : () async {
+                              final picked =
+                                  await showPhoneCountryPickerSheet(
+                                context,
+                                selected: phoneCountry.value,
+                              );
+                              if (picked != null) {
+                                phoneCountry.value = picked;
+                              }
+                            },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              phoneCountry.value.prefixLabel,
+                              style: context.theme.typography.sm.copyWith(
+                                color: context.theme.colors.mutedForeground,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Icon(
+                              FLucideIcons.chevronDown,
+                              size: 14,
+                              color: context.theme.colors.mutedForeground,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Gap(12),
+                  FTextField(
+                    control: .managed(controller: address),
+                    enabled: !readOnly,
+                    label: const Text('Alamat'),
+                    hint: 'Alamat lengkap tempat tinggal/domisili',
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    minLines: 3,
+                    maxLines: 6,
+                  ),
+                  const Gap(16),
+                  Text(
+                    'Media sosial (minimal 1)',
+                    style: context.theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(8),
+                  for (var i = 0; i < social.value.length; i++) ...[
+                    if (i > 0) const Gap(16),
+                    _SocialRow(
+                      key: ValueKey('social-$i'),
+                      index: i,
+                      draft: social.value[i],
+                      enabled: !readOnly,
+                      canRemove: social.value.length > 1 && !readOnly,
+                      onChanged: (next) {
+                        final copy = [...social.value];
+                        copy[i] = next;
+                        social.value = copy;
+                      },
+                      onRemove: () {
+                        final copy = [...social.value]..removeAt(i);
+                        social.value = copy;
+                      },
+                    ),
+                  ],
+                  if (!readOnly && social.value.length < 5) ...[
+                    const Gap(12),
+                    FButton(
+                      variant: .outline,
+                      onPress: () {
+                        social.value = [
+                          ...social.value,
+                          const _SocialDraft(platform: 'instagram'),
+                        ];
+                      },
+                      child: const Text('Tambah akun'),
+                    ),
+                  ],
+                  if (state.errorMessage != null) ...[
+                    const Gap(12),
+                    FAlert(
+                      variant: .destructive,
+                      title: Text(state.errorMessage!),
+                    ),
+                  ],
+                  const Gap(16),
+                  FButton(
+                    onPress: canSubmit ? submit : null,
+                    prefix: state.isSubmitting
+                        ? const FCircularProgress()
+                        : null,
+                    child: Text(
+                      state.isSubmitting
+                          ? 'Mengirim...'
+                          : rejected
+                          ? 'Kirim ulang'
+                          : 'Kirim pengajuan',
+                    ),
+                  ),
+                  const Gap(8),
+                  Text(
+                    'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.',
+                    textAlign: .center,
+                    style: context.theme.typography.sm.copyWith(
+                      color: context.theme.colors.mutedForeground,
+                    ),
+                  ),
                 ],
-              ),
-      ),
+              ],
+            ),
     );
   }
 }

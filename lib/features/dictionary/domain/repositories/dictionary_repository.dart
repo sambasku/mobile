@@ -16,10 +16,18 @@ abstract interface class DictionaryRepository {
   });
 
   /// Detail kata by id. 404 WORD_NOT_FOUND → Failure.
-  Future<Either<DictionaryFailure, WordDetail>> getWordById(String id);
+  /// [forceRefresh] = hard miss L1 (pull-to-refresh).
+  Future<Either<DictionaryFailure, WordDetail>> getWordById(
+    String id, {
+    bool forceRefresh = false,
+  });
 
   /// Detail kata published by lemma (URL publik web / deep link).
-  Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(String lemma);
+  /// [forceRefresh] = hard miss L1 (pull-to-refresh).
+  Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
+    String lemma, {
+    bool forceRefresh = false,
+  });
 
   /// Kata hari ini. Right(null) = korpus published kosong (bukan error).
   /// [forceRefresh] = hard miss L1 (pull-to-refresh).

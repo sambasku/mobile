@@ -26,6 +26,12 @@ abstract interface class AuthRepository {
     required String accessToken,
   });
 
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  });
+
   Future<Either<AuthFailure, AuthSession>> verifyEmail({
     required String email,
     required String code,

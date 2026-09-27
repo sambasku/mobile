@@ -314,6 +314,29 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
     return _advancePast(decidedId, clearRewind: true);
   }
 
+  /// Kembalikan usulan yang gagal decide ke posisi aktif (optimistic rollback).
+  void reinsertAtFront(String contributionId) {
+    final current = state;
+    if (current == null) return;
+
+    final ids = List<String>.of(current.ids);
+    final existing = ids.indexOf(contributionId);
+    if (existing >= 0) {
+      state = current.copyWith(index: existing, clearRewind: true);
+      _prefetchAround();
+      return;
+    }
+
+    final insertAt = current.index.clamp(0, ids.length);
+    ids.insert(insertAt, contributionId);
+    state = current.copyWith(
+      ids: ids,
+      index: insertAt,
+      clearRewind: true,
+    );
+    _prefetchAround();
+  }
+
   /// Lewati tanpa keputusan - usulan tetap pending di server/antrean.
   /// Hanya keluar dari sesi saat ini. Menyimpan [rewindSkipId] untuk undo.
   Future<bool> skipCurrent() async {
@@ -399,8 +422,11 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
       rewindSkipId: rewindSkipId,
       clearRewind: clearRewind,
     );
+    // Prefetch halaman berikutnya di background - jangan blok advance UI.
     if (state!.hasMore && state!.ids.length - state!.index <= 3) {
-      await _appendMore();
+      _appendMore().then((_) {
+        if (state != null) _prefetchAround();
+      });
     }
     _prefetchAround();
     return state?.currentId != null;

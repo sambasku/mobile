@@ -8,6 +8,7 @@ class WordComment {
     required this.wordId,
     required this.userId,
     this.username,
+    this.displayName,
     this.body,
     this.createdAt,
     this.status,
@@ -20,8 +21,11 @@ class WordComment {
   final String wordId;
   final String userId;
 
-  /// Nama penulis; null kalau penulis dihapus.
+  /// Handle penulis (link profil); null kalau penulis dihapus.
   final String? username;
+
+  /// Nama tampilan; fallback UI → [username].
+  final String? displayName;
 
   /// Null jika taken_down / deleted_by_author (redact server).
   final String? body;
@@ -71,6 +75,7 @@ class WordComment {
       wordId: wordId,
       userId: userId,
       username: username,
+      displayName: displayName,
       body: identical(body, _unset) ? this.body : body as String?,
       createdAt: createdAt,
       status: status ?? this.status,

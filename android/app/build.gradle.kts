@@ -36,6 +36,7 @@ android {
         // Default supaya IDE resolve ${deepLinkHost}; di-override per flavor
         // di flavorizr.gradle.kts.
         manifestPlaceholders["deepLinkHost"] = "sambasku-web-staging.iamutaki.com"
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.iamutaki.sambasku.staging"
     }
 
     if (keystorePropertiesFile.exists()) {

@@ -191,3 +191,49 @@ final class FacebookSignInPortProvider
 
 String _$facebookSignInPortHash() =>
     r'd3bffc4af7c66e3b6dd0c06d288f66c1cb76bb68';
+
+@ProviderFor(githubSignInPort)
+final githubSignInPortProvider = GithubSignInPortProvider._();
+
+final class GithubSignInPortProvider
+    extends
+        $FunctionalProvider<
+          GithubSignInPort,
+          GithubSignInPort,
+          GithubSignInPort
+        >
+    with $Provider<GithubSignInPort> {
+  GithubSignInPortProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'githubSignInPortProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$githubSignInPortHash();
+
+  @$internal
+  @override
+  $ProviderElement<GithubSignInPort> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GithubSignInPort create(Ref ref) {
+    return githubSignInPort(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GithubSignInPort value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GithubSignInPort>(value),
+    );
+  }
+}
+
+String _$githubSignInPortHash() => r'509497a6bf073386b702f482b994104ffe086db0';

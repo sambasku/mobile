@@ -4,6 +4,7 @@ class AuthStatusState {
   const AuthStatusState({
     this.isAuth = false,
     this.username,
+    this.displayName,
     this.role,
     this.userId,
     this.avatarUrl,
@@ -12,6 +13,7 @@ class AuthStatusState {
 
   final bool isAuth;
   final String? username;
+  final String? displayName;
   final String? role;
   final String? userId;
   final String? avatarUrl;
@@ -20,6 +22,8 @@ class AuthStatusState {
   AuthStatusState copyWith({
     bool? isAuth,
     String? username,
+    String? displayName,
+    bool clearDisplayName = false,
     String? role,
     String? userId,
     String? avatarUrl,
@@ -29,6 +33,9 @@ class AuthStatusState {
     return AuthStatusState(
       isAuth: isAuth ?? this.isAuth,
       username: username ?? this.username,
+      displayName: clearDisplayName
+          ? null
+          : (displayName ?? this.displayName),
       role: role ?? this.role,
       userId: userId ?? this.userId,
       avatarUrl: clearAvatarUrl ? null : (avatarUrl ?? this.avatarUrl),

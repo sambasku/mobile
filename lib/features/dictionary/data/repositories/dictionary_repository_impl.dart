@@ -261,25 +261,65 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }
 
   @override
-  Future<Either<DictionaryFailure, WordDetail>> getWordById(String id) async {
+  Future<Either<DictionaryFailure, WordDetail>> getWordById(
+    String id, {
+    bool forceRefresh = false,
+  }) async {
     try {
-      final response = await _remoteDatasource.getWordById(id);
+      final cache = _cache;
+      final dio = _dio;
+      WordDetailDto? dto;
+      String? errorMessage;
+      String? errorCode;
+      var success = true;
 
-      if (response.success == false) {
+      if (cache != null && dio != null) {
+        final key = buildCacheKey(
+          method: 'GET',
+          path: '/api/v1/words/$id',
+        );
+        final envelope = await cache.getOrFetch(
+          key: key,
+          cacheClass: CacheClass.dictionaryDetail,
+          forceRefresh: forceRefresh,
+          fetch: () async {
+            final resp = await dio.get<dynamic>('/api/v1/words/$id');
+            final body = resp.data;
+            if (body is! Map) {
+              throw StateError('Envelope detail kata tidak valid');
+            }
+            return Map<String, dynamic>.from(body);
+          },
+        );
+        success = envelope['success'] != false;
+        errorMessage = envelope['message'] as String?;
+        errorCode = envelope['error_code'] as String?;
+        final raw = envelope['data'];
+        if (raw is Map) {
+          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+        }
+      } else {
+        final response = await _remoteDatasource.getWordById(id);
+        success = response.success != false;
+        errorMessage = response.message;
+        errorCode = response.errorCode;
+        dto = response.data;
+      }
+
+      if (!success) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Kata tidak ditemukan',
-            errorCode: response.errorCode,
+            errorMessage ?? 'Kata tidak ditemukan',
+            errorCode: errorCode,
           ),
         );
       }
 
-      final dto = response.data;
       if (dto == null) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Kata tidak ditemukan',
-            errorCode: response.errorCode ?? 'WORD_NOT_FOUND',
+            errorMessage ?? 'Kata tidak ditemukan',
+            errorCode: errorCode ?? 'WORD_NOT_FOUND',
           ),
         );
       }
@@ -300,26 +340,67 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
-    String lemma,
-  ) async {
+    String lemma, {
+    bool forceRefresh = false,
+  }) async {
     try {
-      final response = await _remoteDatasource.getWordByLemma(lemma);
+      final encoded = Uri.encodeComponent(lemma);
+      final cache = _cache;
+      final dio = _dio;
+      WordDetailDto? dto;
+      String? errorMessage;
+      String? errorCode;
+      var success = true;
 
-      if (response.success == false) {
+      if (cache != null && dio != null) {
+        final key = buildCacheKey(
+          method: 'GET',
+          path: '/api/v1/words/lemma/$encoded',
+        );
+        final envelope = await cache.getOrFetch(
+          key: key,
+          cacheClass: CacheClass.dictionaryDetail,
+          forceRefresh: forceRefresh,
+          fetch: () async {
+            final resp = await dio.get<dynamic>(
+              '/api/v1/words/lemma/$encoded',
+            );
+            final body = resp.data;
+            if (body is! Map) {
+              throw StateError('Envelope detail lemma tidak valid');
+            }
+            return Map<String, dynamic>.from(body);
+          },
+        );
+        success = envelope['success'] != false;
+        errorMessage = envelope['message'] as String?;
+        errorCode = envelope['error_code'] as String?;
+        final raw = envelope['data'];
+        if (raw is Map) {
+          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+        }
+      } else {
+        final response = await _remoteDatasource.getWordByLemma(lemma);
+        success = response.success != false;
+        errorMessage = response.message;
+        errorCode = response.errorCode;
+        dto = response.data;
+      }
+
+      if (!success) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Kata tidak ditemukan',
-            errorCode: response.errorCode,
+            errorMessage ?? 'Kata tidak ditemukan',
+            errorCode: errorCode,
           ),
         );
       }
 
-      final dto = response.data;
       if (dto == null) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Kata tidak ditemukan',
-            errorCode: response.errorCode ?? 'WORD_NOT_FOUND',
+            errorMessage ?? 'Kata tidak ditemukan',
+            errorCode: errorCode ?? 'WORD_NOT_FOUND',
           ),
         );
       }
@@ -422,12 +503,20 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         ? null
         : WordVerifier(
             username: dto.verifiedBy!.username,
+            displayName:
+                (dto.verifiedBy!.displayName?.trim().isNotEmpty == true)
+                    ? dto.verifiedBy!.displayName!.trim()
+                    : dto.verifiedBy!.username,
             role: dto.verifiedBy!.role,
           ),
     createdBy: dto.createdBy == null
         ? null
         : WordVerifier(
             username: dto.createdBy!.username,
+            displayName:
+                (dto.createdBy!.displayName?.trim().isNotEmpty == true)
+                    ? dto.createdBy!.displayName!.trim()
+                    : dto.createdBy!.username,
             role: dto.createdBy!.role,
           ),
     meanings: dto.meanings

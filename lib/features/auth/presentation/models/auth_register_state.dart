@@ -1,10 +1,13 @@
 import '../../domain/entities/auth_session.dart';
+import 'auth_pending_action.dart';
+
+export 'auth_pending_action.dart';
 
 /// State halaman register. Sukses = akun dibuat, lanjut OTP (bukan auto-login).
 /// Google: session terisi, langsung home.
 class AuthRegisterState {
   const AuthRegisterState({
-    this.isSubmitting = false,
+    this.pendingAction,
     this.errorMessage,
     this.errorCode,
     this.success = false,
@@ -12,9 +15,11 @@ class AuthRegisterState {
     this.session,
     this.googleUnavailable = false,
     this.facebookUnavailable = false,
+    this.githubUnavailable = false,
   });
 
-  final bool isSubmitting;
+  /// Null = idle. Non-null = request jalan; spinner hanya di aksi ini.
+  final AuthPendingAction? pendingAction;
   final String? errorMessage;
   final String? errorCode;
 
@@ -24,9 +29,13 @@ class AuthRegisterState {
   final AuthSession? session;
   final bool googleUnavailable;
   final bool facebookUnavailable;
+  final bool githubUnavailable;
+
+  bool get isSubmitting => pendingAction != null;
 
   AuthRegisterState copyWith({
-    bool? isSubmitting,
+    AuthPendingAction? pendingAction,
+    bool clearPendingAction = false,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? errorCode,
@@ -38,9 +47,11 @@ class AuthRegisterState {
     bool clearSession = false,
     bool? googleUnavailable,
     bool? facebookUnavailable,
+    bool? githubUnavailable,
   }) {
     return AuthRegisterState(
-      isSubmitting: isSubmitting ?? this.isSubmitting,
+      pendingAction:
+          clearPendingAction ? null : pendingAction ?? this.pendingAction,
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,
@@ -52,6 +63,7 @@ class AuthRegisterState {
       session: clearSession ? null : session ?? this.session,
       googleUnavailable: googleUnavailable ?? this.googleUnavailable,
       facebookUnavailable: facebookUnavailable ?? this.facebookUnavailable,
+      githubUnavailable: githubUnavailable ?? this.githubUnavailable,
     );
   }
 }

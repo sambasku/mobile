@@ -60,58 +60,47 @@ class EditProfilePage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: state.isLoading
-            ? const Center(child: FCircularProgress())
-            : ListView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  if (state.username != null) ...[
-                    Text(
-                      'Username: ${state.username}',
-                      style: context.theme.typography.sm.copyWith(
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                    ),
-                    const Gap(12),
-                  ],
-                  FTextField(
-                    control: .managed(controller: displayName),
-                    enabled: !state.isSubmitting,
-                    label: const Text('Nama tampilan'),
-                    hint: 'Nama yang tampil di profil publik',
-                    maxLength: 100,
-                    textInputAction: .next,
-                  ),
+      child: state.isLoading
+          ? const Center(child: FCircularProgress())
+          : ListView(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                FTextField(
+                  control: .managed(controller: displayName),
+                  enabled: !state.isSubmitting,
+                  label: const Text('Nama tampilan'),
+                  hint: 'Nama yang tampil di profil publik',
+                  maxLength: 100,
+                  textInputAction: .next,
+                ),
+                const Gap(12),
+                FTextField(
+                  control: .managed(controller: bio),
+                  enabled: !state.isSubmitting,
+                  label: const Text('Bio'),
+                  hint: 'Ceritakan singkat tentangmu (opsional)',
+                  maxLength: 500,
+                  maxLines: 4,
+                  textInputAction: .done,
+                  onSubmit: canSubmit ? (_) => submit() : null,
+                ),
+                if (state.errorMessage != null) ...[
                   const Gap(12),
-                  FTextField(
-                    control: .managed(controller: bio),
-                    enabled: !state.isSubmitting,
-                    label: const Text('Bio'),
-                    hint: 'Ceritakan singkat tentangmu (opsional)',
-                    maxLength: 500,
-                    maxLines: 4,
-                    textInputAction: .done,
-                    onSubmit: canSubmit ? (_) => submit() : null,
-                  ),
-                  if (state.errorMessage != null) ...[
-                    const Gap(12),
-                    Text(
-                      state.errorMessage!,
-                      style: TextStyle(color: context.theme.colors.destructive),
-                    ),
-                  ],
-                  const Gap(20),
-                  FButton(
-                    onPress: canSubmit ? submit : null,
-                    child: state.isSubmitting
-                        ? const FCircularProgress()
-                        : const Text('Simpan'),
+                  Text(
+                    state.errorMessage!,
+                    style: TextStyle(color: context.theme.colors.destructive),
                   ),
                 ],
-              ),
-      ),
+                const Gap(20),
+                FButton(
+                  onPress: canSubmit ? submit : null,
+                  child: state.isSubmitting
+                      ? const FCircularProgress()
+                      : const Text('Simpan'),
+                ),
+              ],
+            ),
     );
   }
 }

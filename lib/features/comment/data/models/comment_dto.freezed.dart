@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CommentDto {
 
- String get id;@JsonKey(name: 'word_id') String get wordId;@JsonKey(name: 'user_id') String get userId; String? get username; String? get body;@JsonKey(name: 'created_at') String? get createdAt; int get upvotes; int get downvotes; String? get status;
+ String get id;@JsonKey(name: 'word_id') String get wordId;@JsonKey(name: 'user_id') String get userId; String? get username;@JsonKey(name: 'display_name') String? get displayName; String? get body;@JsonKey(name: 'created_at') String? get createdAt; int get upvotes; int get downvotes; String? get status;
 /// Create a copy of CommentDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CommentDtoCopyWith<CommentDto> get copyWith => _$CommentDtoCopyWithImpl<Comment
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.body, body) || other.body == body)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.body, body) || other.body == body)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,body,createdAt,upvotes,downvotes,status);
+int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,displayName,body,createdAt,upvotes,downvotes,status);
 
 @override
 String toString() {
-  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, body: $body, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
+  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, displayName: $displayName, body: $body, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CommentDtoCopyWith<$Res>  {
   factory $CommentDtoCopyWith(CommentDto value, $Res Function(CommentDto) _then) = _$CommentDtoCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'word_id') String wordId,@JsonKey(name: 'user_id') String userId, String? username, String? body,@JsonKey(name: 'created_at') String? createdAt, int upvotes, int downvotes, String? status
+ String id,@JsonKey(name: 'word_id') String wordId,@JsonKey(name: 'user_id') String userId, String? username,@JsonKey(name: 'display_name') String? displayName, String? body,@JsonKey(name: 'created_at') String? createdAt, int upvotes, int downvotes, String? status
 });
 
 
@@ -65,12 +65,13 @@ class _$CommentDtoCopyWithImpl<$Res>
 
 /// Create a copy of CommentDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? wordId = null,Object? userId = null,Object? username = freezed,Object? body = freezed,Object? createdAt = freezed,Object? upvotes = null,Object? downvotes = null,Object? status = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? wordId = null,Object? userId = null,Object? username = freezed,Object? displayName = freezed,Object? body = freezed,Object? createdAt = freezed,Object? upvotes = null,Object? downvotes = null,Object? status = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,body: freezed == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CommentDto() when $default != null:
-return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
+return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.displayName,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)  $default,) {final _that = this;
 switch (_that) {
 case _CommentDto():
-return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
+return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.displayName,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'word_id')  String wordId, @JsonKey(name: 'user_id')  String userId,  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? body, @JsonKey(name: 'created_at')  String? createdAt,  int upvotes,  int downvotes,  String? status)?  $default,) {final _that = this;
 switch (_that) {
 case _CommentDto() when $default != null:
-return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
+return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.displayName,_that.body,_that.createdAt,_that.upvotes,_that.downvotes,_that.status);case _:
   return null;
 
 }
@@ -217,13 +218,14 @@ return $default(_that.id,_that.wordId,_that.userId,_that.username,_that.body,_th
 @JsonSerializable()
 
 class _CommentDto implements CommentDto {
-  const _CommentDto({required this.id, @JsonKey(name: 'word_id') required this.wordId, @JsonKey(name: 'user_id') required this.userId, this.username, this.body, @JsonKey(name: 'created_at') this.createdAt, this.upvotes = 0, this.downvotes = 0, this.status});
+  const _CommentDto({required this.id, @JsonKey(name: 'word_id') required this.wordId, @JsonKey(name: 'user_id') required this.userId, this.username, @JsonKey(name: 'display_name') this.displayName, this.body, @JsonKey(name: 'created_at') this.createdAt, this.upvotes = 0, this.downvotes = 0, this.status});
   factory _CommentDto.fromJson(Map<String, dynamic> json) => _$CommentDtoFromJson(json);
 
 @override final  String id;
 @override@JsonKey(name: 'word_id') final  String wordId;
 @override@JsonKey(name: 'user_id') final  String userId;
 @override final  String? username;
+@override@JsonKey(name: 'display_name') final  String? displayName;
 @override final  String? body;
 @override@JsonKey(name: 'created_at') final  String? createdAt;
 @override@JsonKey() final  int upvotes;
@@ -243,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.body, body) || other.body == body)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.body, body) || other.body == body)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,body,createdAt,upvotes,downvotes,status);
+int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,displayName,body,createdAt,upvotes,downvotes,status);
 
 @override
 String toString() {
-  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, body: $body, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
+  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, displayName: $displayName, body: $body, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$CommentDtoCopyWith<$Res> implements $CommentDtoCopyWith<$
   factory _$CommentDtoCopyWith(_CommentDto value, $Res Function(_CommentDto) _then) = __$CommentDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'word_id') String wordId,@JsonKey(name: 'user_id') String userId, String? username, String? body,@JsonKey(name: 'created_at') String? createdAt, int upvotes, int downvotes, String? status
+ String id,@JsonKey(name: 'word_id') String wordId,@JsonKey(name: 'user_id') String userId, String? username,@JsonKey(name: 'display_name') String? displayName, String? body,@JsonKey(name: 'created_at') String? createdAt, int upvotes, int downvotes, String? status
 });
 
 
@@ -280,12 +282,13 @@ class __$CommentDtoCopyWithImpl<$Res>
 
 /// Create a copy of CommentDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? wordId = null,Object? userId = null,Object? username = freezed,Object? body = freezed,Object? createdAt = freezed,Object? upvotes = null,Object? downvotes = null,Object? status = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? wordId = null,Object? userId = null,Object? username = freezed,Object? displayName = freezed,Object? body = freezed,Object? createdAt = freezed,Object? upvotes = null,Object? downvotes = null,Object? status = freezed,}) {
   return _then(_CommentDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,body: freezed == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable

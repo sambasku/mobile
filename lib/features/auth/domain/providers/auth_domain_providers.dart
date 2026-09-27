@@ -4,6 +4,7 @@ import '../../data/providers/auth_data_providers.dart';
 import '../usecases/forgot_password_use_case.dart';
 import '../usecases/login_use_case.dart';
 import '../usecases/login_with_facebook_use_case.dart';
+import '../usecases/login_with_github_use_case.dart';
 import '../usecases/login_with_google_use_case.dart';
 import '../usecases/logout_use_case.dart';
 import '../usecases/register_use_case.dart';
@@ -32,6 +33,13 @@ LoginWithFacebookUseCase authLoginWithFacebookUseCase(Ref ref) =>
     LoginWithFacebookUseCase(
       ref.watch(authRepositoryProvider),
       ref.watch(facebookSignInPortProvider),
+    );
+
+@riverpod
+LoginWithGithubUseCase authLoginWithGithubUseCase(Ref ref) =>
+    LoginWithGithubUseCase(
+      ref.watch(authRepositoryProvider),
+      ref.watch(githubSignInPortProvider),
     );
 
 @riverpod

@@ -12,10 +12,15 @@ import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/review_access.dart';
 import '../providers/review_providers.dart';
+import '../providers/review_submit_queue.dart';
 import '../widgets/review_correct_form.dart';
 import '../widgets/review_entity_preview.dart';
 import '../widgets/review_swipe_card.dart';
 import 'review_forbidden_page.dart';
+
+/// Aksi yang memblokir gesture (correct form saja).
+/// Approve/reject optimistic - tidak pakai pending busy penuh.
+enum ReviewPendingAction { correct }
 
 /// Sesi tinjau satu layar: preview + aksi + koreksi inline, auto-advance.
 class ReviewSessionPage extends ConsumerStatefulWidget {
@@ -35,10 +40,12 @@ class ReviewSessionPage extends ConsumerStatefulWidget {
 }
 
 class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
-  bool _busy = false;
+  ReviewPendingAction? _pendingAction;
   bool _correctMode = false;
   bool _bootstrapped = false;
   String? _formKeyId;
+
+  bool get _busy => _pendingAction != null;
 
   ReviewQueueQuery get _query => ReviewQueueQuery(wordId: widget.wordId);
 
@@ -113,16 +120,42 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   void _exitToQueue({required bool refresh}) {
     ref.read(reviewSessionProvider.notifier).clear();
     if (refresh) invalidateReviewQueue(ref);
+    // pop menjaga history Profil di bawah antrean; go hanya untuk
+    // cold/deep-link tanpa stack (system back tidak boleh menutup app).
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
     final path = widget.wordId != null
         ? '/review?wordId=${Uri.encodeComponent(widget.wordId!)}'
         : '/review';
     context.go(path);
   }
 
+  void _onBack() {
+    if (_correctMode) {
+      setState(() => _correctMode = false);
+      return;
+    }
+    _exitToQueue(refresh: false);
+  }
+
+  /// System back = logika app bar yang sama; cegah Activity finish.
+  Widget _guardBack(Widget child) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _onBack();
+      },
+      child: child,
+    );
+  }
+
   Future<void> _afterDecision(String message, String contributionId) async {
-    // Tetap busy sampai advance selesai supaya slot kartu menampilkan
-    // skeleton (bukan ruang kosong setelah swipe) selama request + ganti item.
-    setState(() => _correctMode = false);
+    setState(() {
+      _correctMode = false;
+      _pendingAction = null;
+    });
     showFToast(context: context, title: Text(message));
     final hasNext = await ref
         .read(reviewSessionProvider.notifier)
@@ -131,13 +164,10 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     if (!hasNext) {
       showFToast(context: context, title: const Text('Antrean selesai'));
       _exitToQueue(refresh: true);
-      return;
     }
-    setState(() => _busy = false);
   }
 
   Future<void> _afterSkip(String contributionId) async {
-    setState(() => _busy = true);
     showFToast(context: context, title: const Text('Dilewati.'));
     AnalyticsService.instance.log(
       AnalyticsEvents.reviewSkip,
@@ -150,65 +180,39 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     if (!hasNext) {
       showFToast(context: context, title: const Text('Antrean selesai'));
       _exitToQueue(refresh: true);
-      return;
     }
-    setState(() => _busy = false);
   }
 
-  /// `true` = kartu boleh tetap keluar / sesi advance; `false` = kembalikan kartu.
+  /// `true` = kartu keluar / advance; `false` = kembalikan kartu.
   Future<bool> _approve(ReviewDetail detail) async {
-    if (_busy) return false;
-    setState(() => _busy = true);
-    final result = await ref
-        .read(reviewRepositoryProvider)
-        .approve(detail.contribution.id);
-    if (!mounted) return false;
-    return result.match(
-      (failure) {
-        setState(() => _busy = false);
-        return _onFailure(failure, detail.contribution.id);
-      },
-      (decision) {
-        final merged = decision.mergedIntoWordId != null;
-        AnalyticsService.instance.log(
-          AnalyticsEvents.reviewApprove,
-          params: {'contribution_id': detail.contribution.id},
-        );
-        _afterDecision(
-          merged
-              ? 'Disetujui. Makna digabung ke kata yang sudah tayang.'
-              : 'Usulan disetujui.',
-          detail.contribution.id,
-        );
-        return true;
-      },
+    if (_busy || _correctMode) return false;
+    final id = detail.contribution.id;
+    AnalyticsService.instance.log(
+      AnalyticsEvents.reviewApprove,
+      params: {'contribution_id': id},
     );
+    ref.read(reviewSubmitQueueProvider.notifier).enqueueApprove(id);
+    // Jangan await: swipe harus return segera; advance sync di hot path.
+    _afterDecision('Usulan disetujui.', id);
+    return true;
   }
 
-  /// `true` = ditolak / advance; `false` = batal alasan atau error yang bisa diulang.
+  /// `true` = ditolak / advance; `false` = batal alasan.
   Future<bool> _reject(ReviewDetail detail) async {
-    if (_busy) return false;
+    if (_busy || _correctMode) return false;
     final comment = await _askRejectReason();
     if (comment == null || !mounted) return false;
-    setState(() => _busy = true);
-    final result = await ref
-        .read(reviewRepositoryProvider)
-        .reject(detail.contribution.id, comment: comment);
-    if (!mounted) return false;
-    return result.match(
-      (failure) {
-        setState(() => _busy = false);
-        return _onFailure(failure, detail.contribution.id);
-      },
-      (_) {
-        AnalyticsService.instance.log(
-          AnalyticsEvents.reviewReject,
-          params: {'contribution_id': detail.contribution.id},
-        );
-        _afterDecision('Usulan ditolak.', detail.contribution.id);
-        return true;
-      },
+    final id = detail.contribution.id;
+    AnalyticsService.instance.log(
+      AnalyticsEvents.reviewReject,
+      params: {'contribution_id': id},
     );
+    ref.read(reviewSubmitQueueProvider.notifier).enqueueReject(
+          id,
+          comment: comment,
+        );
+    _afterDecision('Usulan ditolak.', id);
+    return true;
   }
 
   Future<bool> _onSwiped(ReviewDetail detail, ReviewSwipeDirection direction) {
@@ -220,9 +224,41 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   }
 
   Future<bool> _skip(ReviewDetail detail) async {
-    if (_busy) return false;
+    if (_busy || _correctMode) return false;
     await _afterSkip(detail.contribution.id);
     return true;
+  }
+
+  void _onSubmitQueueFailure(ReviewSubmitQueueState next) {
+    final id = next.failedContributionId;
+    if (id == null) return;
+
+    if (next.failedIsAlreadyDecided) {
+      // Sudah diputus orang lain - kartu tetap di-drop, cukup info.
+      showFToast(
+        context: context,
+        title: Text(next.errorMessage ?? 'Usulan ini sudah diproses.'),
+      );
+      return;
+    }
+
+    if (next.failedIsForbidden) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ReviewForbiddenPage(
+            message: next.errorMessage ?? 'Akses ditolak',
+          ),
+        ),
+      );
+      return;
+    }
+
+    ref.read(reviewSessionProvider.notifier).reinsertAtFront(id);
+    showFToast(
+      context: context,
+      title: Text(next.errorMessage ?? 'Gagal menyimpan keputusan'),
+      variant: FToastVariant.destructive,
+    );
   }
 
   Future<void> _rewindSkip() async {
@@ -283,7 +319,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       );
       return;
     }
-    setState(() => _busy = true);
+    setState(() => _pendingAction = ReviewPendingAction.correct);
     _afterDecision(
       'Koreksi disimpan dan usulan ditutup.',
       detail.contribution.id,
@@ -296,14 +332,16 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     final currentId = session?.currentId;
 
     if (session == null || currentId == null) {
-      return FScaffold(
-        header: FHeader.nested(
-          title: const Text('Tinjau usulan'),
-          prefixes: [
-            FHeaderAction.back(onPress: () => _exitToQueue(refresh: false)),
-          ],
+      return _guardBack(
+        FScaffold(
+          header: FHeader.nested(
+            title: const Text('Tinjau usulan'),
+            prefixes: [
+              FHeaderAction.back(onPress: _onBack),
+            ],
+          ),
+          child: const Center(child: FCircularProgress()),
         ),
-        child: const Center(child: FCircularProgress()),
       );
     }
 
@@ -316,9 +354,14 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     final pending = detailAsync.asData?.value.contribution.isPending ?? false;
     final title = _correctMode
         ? 'Koreksi · ${session.position}/${session.total}'
-        : _busy
-        ? 'Menyimpan · ${session.position}/${session.total}'
         : 'Tinjau · ${session.position}/${session.total}';
+
+    ref.listen(reviewSubmitQueueProvider, (prev, next) {
+      if (next.errorSeq == 0) return;
+      if (prev != null && prev.errorSeq == next.errorSeq) return;
+      if (!mounted) return;
+      _onSubmitQueueFailure(next);
+    });
 
     // Prefetch 1-2 kartu ke depan tetap di-watch supaya autoDispose tidak
     // membuang hasil sebelum advance (ganti kartu tanpa cold loading).
@@ -331,84 +374,75 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       ref.watch(reviewDetailProvider(session.ids[afterNext]));
     }
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(title),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () {
-              if (_correctMode) {
-                setState(() => _correctMode = false);
-                return;
-              }
-              _exitToQueue(refresh: false);
-            },
-          ),
-        ],
-      ),
-      footer: pending && !_correctMode
-          ? detailAsync.maybeWhen(
-              data: (detail) => _ReviewActionBar(
-                busy: _busy,
-                canCorrect: detail.contribution.entityType != 'meaning',
-                canRewind: session.canRewind,
-                onApprove: () => _approve(detail),
-                onCorrect: () => setState(() {
-                  _formKeyId = detail.contribution.id;
-                  _correctMode = true;
-                }),
-                onReject: () => _reject(detail),
-                onSkip: () => _skip(detail),
-                onRewind: _rewindSkip,
-              ),
-              orElse: () => null,
-            )
-          : null,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 220),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        // Saat submit: kartu sudah swipe keluar → skeleton mengisi slot
-        // sampai advance ke item berikutnya (prefetch sering instan).
-        child: _busy && !_correctMode
-            ? const _ReviewCardPlaceholder(key: ValueKey('submitting'))
-            : detailAsync.when(
-                loading: () =>
-                    const _ReviewCardPlaceholder(key: ValueKey('loading')),
-                error: (error, _) => Center(
-                  key: const ValueKey('error'),
-                  child: Text(
-                    error is ReviewFailure
-                        ? error.message
-                        : 'Gagal memuat detail',
-                  ),
+    return _guardBack(
+      FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: Text(title),
+          prefixes: [
+            FHeaderAction.back(onPress: _onBack),
+          ],
+        ),
+        footer: pending && !_correctMode
+            ? detailAsync.maybeWhen(
+                data: (detail) => _ReviewActionBar(
+                  pendingAction: _pendingAction,
+                  canCorrect: detail.contribution.entityType != 'meaning',
+                  canRewind: session.canRewind,
+                  onApprove: () => _approve(detail),
+                  onCorrect: () => setState(() {
+                    _formKeyId = detail.contribution.id;
+                    _correctMode = true;
+                  }),
+                  onReject: () => _reject(detail),
+                  onSkip: () => _skip(detail),
+                  onRewind: _rewindSkip,
                 ),
-                data: (detail) {
-                  if (_correctMode) {
-                    return ReviewCorrectForm(
-                      key: ValueKey(_formKeyId ?? detail.contribution.id),
-                      detail: detail,
-                      onCancel: () => setState(() => _correctMode = false),
-                      onSuccess: (decision) =>
-                          _onCorrectSuccess(detail, decision),
-                      onFailure: (failure) =>
-                          _onFailure(failure, detail.contribution.id),
-                    );
-                  }
-                  final canSwipe = detail.contribution.isPending && !_busy;
-                  return Padding(
-                    key: ValueKey('card-${detail.contribution.id}'),
-                    padding: const EdgeInsets.only(top: 20, bottom: 16),
-                    child: ReviewSwipeCard(
-                      itemKey: detail.contribution.id,
-                      enabled: canSwipe,
-                      onSwiped: (direction) => _onSwiped(detail, direction),
-                      child: _ReviewViewBody(detail: detail),
+                orElse: () => null,
+              )
+            : null,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 220),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          child: detailAsync.when(
+                  loading: () =>
+                      const _ReviewCardPlaceholder(key: ValueKey('loading')),
+                  error: (error, _) => Center(
+                    key: const ValueKey('error'),
+                    child: Text(
+                      error is ReviewFailure
+                          ? error.message
+                          : 'Gagal memuat detail',
                     ),
-                  );
-                },
-              ),
+                  ),
+                  data: (detail) {
+                    if (_correctMode) {
+                      return ReviewCorrectForm(
+                        key: ValueKey(_formKeyId ?? detail.contribution.id),
+                        detail: detail,
+                        onCancel: () => setState(() => _correctMode = false),
+                        onSuccess: (decision) =>
+                            _onCorrectSuccess(detail, decision),
+                        onFailure: (failure) =>
+                            _onFailure(failure, detail.contribution.id),
+                      );
+                    }
+                    final canSwipe =
+                        detail.contribution.isPending && !_busy;
+                    return Padding(
+                      key: ValueKey('card-${detail.contribution.id}'),
+                      padding: const EdgeInsets.only(top: 20, bottom: 16),
+                      child: ReviewSwipeCard(
+                        itemKey: detail.contribution.id,
+                        enabled: canSwipe,
+                        onSwiped: (direction) => _onSwiped(detail, direction),
+                        child: _ReviewViewBody(detail: detail),
+                      ),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -779,7 +813,7 @@ class _SectionNote extends StatelessWidget {
 /// Sticky action bar: Koreksi · [undo][skip][tolak][setuju].
 class _ReviewActionBar extends StatelessWidget {
   const _ReviewActionBar({
-    required this.busy,
+    required this.pendingAction,
     required this.canCorrect,
     required this.canRewind,
     required this.onApprove,
@@ -789,7 +823,7 @@ class _ReviewActionBar extends StatelessWidget {
     required this.onRewind,
   });
 
-  final bool busy;
+  final ReviewPendingAction? pendingAction;
   final bool canCorrect;
   final bool canRewind;
   final VoidCallback onApprove;
@@ -798,14 +832,7 @@ class _ReviewActionBar extends StatelessWidget {
   final VoidCallback onSkip;
   final VoidCallback onRewind;
 
-  Widget _busyOr(Widget icon) {
-    if (!busy) return icon;
-    return const SizedBox(
-      width: 18,
-      height: 18,
-      child: FCircularProgress(),
-    );
-  }
+  bool get _busy => pendingAction != null;
 
   @override
   Widget build(BuildContext context) {
@@ -827,7 +854,7 @@ class _ReviewActionBar extends StatelessWidget {
                   child: FButton(
                     variant: FButtonVariant.outline,
                     size: FButtonSizeVariant.sm,
-                    onPress: busy ? null : onCorrect,
+                    onPress: _busy ? null : onCorrect,
                     prefix: const Icon(FLucideIcons.pencil),
                     child: const Text('Koreksi'),
                   ),
@@ -839,42 +866,38 @@ class _ReviewActionBar extends StatelessWidget {
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
                 semanticsLabel: 'Kembali ke kartu sebelumnya',
-                onPress: busy || !canRewind ? null : onRewind,
-                child: _busyOr(const Icon(FLucideIcons.undo)),
+                onPress: _busy || !canRewind ? null : onRewind,
+                child: const Icon(FLucideIcons.undo),
               ),
               const Gap(8),
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: busy ? 'Memproses…' : 'Lewati',
-                onPress: busy ? null : onSkip,
-                child: _busyOr(const Icon(FLucideIcons.skipForward)),
+                semanticsLabel: 'Lewati',
+                onPress: _busy ? null : onSkip,
+                child: const Icon(FLucideIcons.skipForward),
               ),
               const Gap(12),
-              // Tolak / setuju sejajar (sama pola ↓↑ di kontribusi).
+              // Tolak / setuju: check/x (bukan ↑↓ vote).
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: busy ? 'Memproses…' : 'Tolak',
-                onPress: busy ? null : onReject,
-                child: _busyOr(
-                  Icon(
-                    FLucideIcons.arrowBigDown,
-                    color: theme.colors.destructive,
-                  ),
+                semanticsLabel: 'Tolak',
+                onPress: _busy ? null : onReject,
+                child: Icon(
+                  FLucideIcons.x,
+                  color: theme.colors.destructive,
                 ),
               ),
               const Gap(4),
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: busy ? 'Memproses…' : 'Setujui',
-                onPress: busy ? null : onApprove,
-                child: _busyOr(
-                  Icon(
-                    FLucideIcons.arrowBigUp,
-                    color: theme.colors.success,
-                  ),
+                semanticsLabel: 'Setujui',
+                onPress: _busy ? null : onApprove,
+                child: Icon(
+                  FLucideIcons.check,
+                  color: theme.colors.success,
                 ),
               ),
             ],

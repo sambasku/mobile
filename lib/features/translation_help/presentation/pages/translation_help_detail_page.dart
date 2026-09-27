@@ -282,6 +282,7 @@ class _TranslationHelpDetailPageState
                         for (final reply in replies)
                           ThreadMessageRow(
                             username: reply.username,
+                            displayName: reply.displayName,
                             body: !reply.isPublished
                                 ? (reply.status == 'taken_down'
                                       ? 'Balasan dihapus moderator'
@@ -371,7 +372,10 @@ class _HelpHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final when = formatDateTimeIso(item.createdAt);
-    final username = displayPublicUsername(item.username);
+    final username = displayPublicAccountLabel(
+      displayName: item.displayName,
+      username: item.username,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

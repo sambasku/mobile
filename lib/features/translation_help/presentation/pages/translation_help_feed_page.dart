@@ -204,7 +204,10 @@ class _FeedTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final when = formatRelative(DateTime.tryParse(item.createdAt));
-    final username = displayPublicUsername(item.username);
+    final username = displayPublicAccountLabel(
+      displayName: item.displayName,
+      username: item.username,
+    );
     final body = item.body?.trim() ?? '';
     final urls = item.imageDisplayUrls;
 

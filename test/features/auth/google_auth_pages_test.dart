@@ -37,6 +37,15 @@ class _StubRepo implements AuthRepository {
   }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async =>
+      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+
+
+  @override
   Future<Either<AuthFailure, AuthSession>> login({
     required String email,
     required String password,

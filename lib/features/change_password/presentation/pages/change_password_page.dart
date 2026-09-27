@@ -72,56 +72,54 @@ class ChangePasswordPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            FTextField.password(
-              control: .managed(controller: oldPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password Lama'),
-              textInputAction: .next,
-            ),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          FTextField.password(
+            control: .managed(controller: oldPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password Lama'),
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: newPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password Baru'),
+            hint: 'Minimal 8 karakter, huruf + angka',
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: confirmPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Konfirmasi Password Baru'),
+            textInputAction: .done,
+            onSubmit: canSubmit ? (_) => submit() : null,
+          ),
+          if (state.errorMessage != null) ...[
             const Gap(12),
-            FTextField.password(
-              control: .managed(controller: newPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password Baru'),
-              hint: 'Minimal 8 karakter, huruf + angka',
-              textInputAction: .next,
-            ),
-            const Gap(12),
-            FTextField.password(
-              control: .managed(controller: confirmPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Konfirmasi Password Baru'),
-              textInputAction: .done,
-              onSubmit: canSubmit ? (_) => submit() : null,
-            ),
-            if (state.errorMessage != null) ...[
-              const Gap(12),
-              FAlert(
-                variant: .destructive,
-                title: Text(state.errorMessage!),
-              ),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit ? submit : null,
-              prefix: state.isSubmitting ? const FCircularProgress() : null,
-              child: Text(state.isSubmitting ? 'Memproses...' : 'Simpan Password'),
-            ),
-            const Gap(8),
-            Text(
-              'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
-              'dan kamu diminta login ulang dengan password baru.',
-              textAlign: .center,
-              style: context.theme.typography.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
-              ),
+            FAlert(
+              variant: .destructive,
+              title: Text(state.errorMessage!),
             ),
           ],
-        ),
+          const Gap(16),
+          FButton(
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(state.isSubmitting ? 'Memproses...' : 'Simpan Password'),
+          ),
+          const Gap(8),
+          Text(
+            'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
+            'dan kamu diminta login ulang dengan password baru.',
+            textAlign: .center,
+            style: context.theme.typography.sm.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
+          ),
+        ],
       ),
     );
   }

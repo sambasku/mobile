@@ -40,9 +40,9 @@ class ReviewSwipeCard extends StatelessWidget {
       negativeLabel: 'Tolak',
       skipLabel: 'Lewati',
       overlayStyle: SwipeDecisionOverlayStyle.icon,
-      // Samakan afordance dengan deck kontribusi: ↑ hijau / ↓ merah / skip.
-      positiveIcon: FLucideIcons.arrowBigUp,
-      negativeIcon: FLucideIcons.arrowBigDown,
+      // Beda dari deck vote (↑↓): tinjau = setuju/tolak, bukan vote.
+      positiveIcon: FLucideIcons.check,
+      negativeIcon: FLucideIcons.x,
       skipIcon: FLucideIcons.skipForward,
       positiveColor: theme.colors.success,
       negativeColor: theme.colors.destructive,

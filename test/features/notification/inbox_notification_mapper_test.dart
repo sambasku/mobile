@@ -39,6 +39,19 @@ void main() {
     expect(item.targetKind, 'suggestion');
   });
 
+  test('typeLabel word_comment', () {
+    const item = InboxNotification(
+      id: '01H',
+      type: 'word_comment',
+      title: 'Komentar baru',
+      body: 'John juga berkomentar di "rumah": Halo',
+      targetKind: 'word',
+      targetId: '01W',
+      createdAt: '2026-09-21T00:00:00.000Z',
+    );
+    expect(item.typeLabel, 'Komentar');
+  });
+
   test('typeLabel fallback', () {
     const item = InboxNotification(
       id: '01H',

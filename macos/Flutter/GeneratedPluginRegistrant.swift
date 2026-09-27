@@ -13,6 +13,7 @@ import file_selector_macos
 import firebase_analytics
 import firebase_core
 import firebase_messaging
+import flutter_appauth
 import flutter_secure_storage_darwin
 import flutter_udid
 import gal
@@ -35,6 +36,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FirebaseAnalyticsPlugin.register(with: registry.registrar(forPlugin: "FirebaseAnalyticsPlugin"))
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
   FLTFirebaseMessagingPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseMessagingPlugin"))
+  FlutterAppauthPlugin.register(with: registry.registrar(forPlugin: "FlutterAppauthPlugin"))
   FlutterSecureStorageDarwinPlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStorageDarwinPlugin"))
   FlutterUdidPlugin.register(with: registry.registrar(forPlugin: "FlutterUdidPlugin"))
   GalPlugin.register(with: registry.registrar(forPlugin: "GalPlugin"))

@@ -165,145 +165,143 @@ class CreateTranslationHelpPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const FAlert(
-              icon: Icon(FLucideIcons.info),
-              title: Text('Diperiksa tim sebelum tayang'),
-              subtitle: Text(
-                'Kirim teks atau foto yang sulit diterjemahkan. Setelah disetujui, permintaanmu tampil dan warga bisa membalas.',
-              ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const FAlert(
+            icon: Icon(FLucideIcons.info),
+            title: Text('Diperiksa tim sebelum tayang'),
+            subtitle: Text(
+              'Kirim teks atau foto yang sulit diterjemahkan. Setelah disetujui, permintaanmu tampil dan warga bisa membalas.',
             ),
-            const Gap(16),
-            if (!isAuth) ...[
-              const FAlert(title: Text('Masuk dulu untuk mengirim permintaan')),
-              const Gap(8),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: promptLogin,
-                child: const Text('Masuk'),
-              ),
-              const Gap(12),
-            ],
-            FTextField(
-              control: FTextFieldControl.managed(controller: body),
-              enabled: !submitting.value && isAuth,
-              label: const Text('Teks (opsional jika ada gambar)'),
-              hint:
-                  'Tempel atau ketik teks yang ingin diterjemahkan / dijelaskan',
-              keyboardType: TextInputType.multiline,
-              textInputAction: TextInputAction.newline,
-              minLines: 4,
-              maxLines: 10,
+          ),
+          const Gap(16),
+          if (!isAuth) ...[
+            const FAlert(title: Text('Masuk dulu untuk mengirim permintaan')),
+            const Gap(8),
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: promptLogin,
+              child: const Text('Masuk'),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FButton(
-                    variant: FButtonVariant.ghost,
-                    onPress: submitting.value || !isAuth
-                        ? null
-                        : pasteClipboard,
-                    prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
-                    child: const Text('Tempel'),
-                  ),
-                  const Gap(4),
-                  Text(
-                    '${trimmed.length}/1000',
-                    style: context.theme.typography.sm.copyWith(
-                      color: context.theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (attachmentsEnabled.value) ...[
-              const Gap(8),
-              Text(
-                'Foto (opsional, maks 4)',
-                style: context.theme.typography.sm.copyWith(
-                  fontWeight: FontWeight.w600,
+            const Gap(12),
+          ],
+          FTextField(
+            control: FTextFieldControl.managed(controller: body),
+            enabled: !submitting.value && isAuth,
+            label: const Text('Teks (opsional jika ada gambar)'),
+            hint:
+                'Tempel atau ketik teks yang ingin diterjemahkan / dijelaskan',
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            minLines: 4,
+            maxLines: 10,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: submitting.value || !isAuth
+                      ? null
+                      : pasteClipboard,
+                  prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
+                  child: const Text('Tempel'),
                 ),
+                const Gap(4),
+                Text(
+                  '${trimmed.length}/1000',
+                  style: context.theme.typography.sm.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (attachmentsEnabled.value) ...[
+            const Gap(8),
+            Text(
+              'Foto (opsional, maks 4)',
+              style: context.theme.typography.sm.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              const Gap(8),
-              AttachmentImagesField(
-                enabled: !submitting.value && isAuth,
-                maxImages: 4,
-                maxSizeMb: 5,
-                images: images.value,
-                onChanged: (next) => images.value = next,
-                disabledHint: 'Masuk untuk lampirkan foto.',
-                disabledActionLabel: 'Masuk',
-                onDisabledAction: promptLogin,
-                onUnavailable: () {
-                  attachmentsEnabled.value = false;
-                  images.value = const [];
-                },
-                upload: (File file, {required bool isPrimary}) async {
-                  final uploader = ref.read(
-                    translationHelpImageUploadServiceProvider,
+            ),
+            const Gap(8),
+            AttachmentImagesField(
+              enabled: !submitting.value && isAuth,
+              maxImages: 4,
+              maxSizeMb: 5,
+              images: images.value,
+              onChanged: (next) => images.value = next,
+              disabledHint: 'Masuk untuk lampirkan foto.',
+              disabledActionLabel: 'Masuk',
+              onDisabledAction: promptLogin,
+              onUnavailable: () {
+                attachmentsEnabled.value = false;
+                images.value = const [];
+              },
+              upload: (File file, {required bool isPrimary}) async {
+                final uploader = ref.read(
+                  translationHelpImageUploadServiceProvider,
+                );
+                try {
+                  final refImg = await uploader.upload(file);
+                  return Either.right(
+                    AttachmentUploadedImage(
+                      url: refImg.url,
+                      providerFileId: refImg.providerFileId,
+                      isPrimary: isPrimary,
+                    ),
                   );
-                  try {
-                    final refImg = await uploader.upload(file);
-                    return Either.right(
-                      AttachmentUploadedImage(
-                        url: refImg.url,
-                        providerFileId: refImg.providerFileId,
-                        isPrimary: isPrimary,
-                      ),
-                    );
-                  } on ImageUploadUnavailable {
+                } on ImageUploadUnavailable {
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Penyimpanan gambar belum tersedia',
+                      errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
+                    ),
+                  );
+                } on DioException catch (e) {
+                  if (e.response?.statusCode == 503) {
                     return Either.left(
                       const AttachmentUploadFailure(
                         'Penyimpanan gambar belum tersedia',
                         errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
                       ),
                     );
-                  } on DioException catch (e) {
-                    if (e.response?.statusCode == 503) {
-                      return Either.left(
-                        const AttachmentUploadFailure(
-                          'Penyimpanan gambar belum tersedia',
-                          errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
-                        ),
-                      );
-                    }
-                    return Either.left(
-                      const AttachmentUploadFailure(
-                        'Satu gambar gagal diunggah',
-                      ),
-                    );
-                  } catch (_) {
-                    return Either.left(
-                      const AttachmentUploadFailure(
-                        'Satu gambar gagal diunggah',
-                      ),
-                    );
                   }
-                },
-              ),
-            ],
-            if (errorMessage.value != null) ...[
-              const Gap(12),
-              FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(errorMessage.value!),
-              ),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit
-                  ? () => submit()
-                  : (!isAuth ? promptLogin : null),
-              prefix: submitting.value ? const FCircularProgress() : null,
-              child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Satu gambar gagal diunggah',
+                    ),
+                  );
+                } catch (_) {
+                  return Either.left(
+                    const AttachmentUploadFailure(
+                      'Satu gambar gagal diunggah',
+                    ),
+                  );
+                }
+              },
             ),
           ],
-        ),
+          if (errorMessage.value != null) ...[
+            const Gap(12),
+            FAlert(
+              variant: FAlertVariant.destructive,
+              title: Text(errorMessage.value!),
+            ),
+          ],
+          const Gap(16),
+          FButton(
+            onPress: canSubmit
+                ? () => submit()
+                : (!isAuth ? promptLogin : null),
+            prefix: submitting.value ? const FCircularProgress() : null,
+            child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+          ),
+        ],
       ),
     );
   }
