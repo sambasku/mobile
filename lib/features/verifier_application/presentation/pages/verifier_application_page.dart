@@ -18,6 +18,7 @@ import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
 import '../../domain/entities/verifier_application.dart';
+import '../../verifier_application_router.dart';
 import '../providers/verifier_application_providers.dart';
 
 const _platforms = <String, String>{
@@ -293,8 +294,24 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   const FAlert(
                     title: Text('Tentang peran verifikator'),
                     subtitle: Text(
-                      'Verifikator meninjau usulan kata warga sebelum tayang di kamus (setujui, tolak, atau koreksi) agar entri tetap akurat. Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong. Data ini tidak tampil di profil publik.',
+                      'Verifikator meninjau usulan kata sebelum tayang sebagai terverifikasi.',
                     ),
+                  ),
+                  const Gap(12),
+                  FTileGroup(
+                    children: [
+                      FTile(
+                        prefix: const Icon(FLucideIcons.badgeCheck),
+                        title: const Text('Pelajari peran verifikator'),
+                        subtitle: const Text(
+                          'Apa itu verifikator dan apa saja yang dilakukan',
+                        ),
+                        suffix: const Icon(FLucideIcons.chevronRight),
+                        onPress: () => context.push(
+                          VerifierApplicationRouter.about.path,
+                        ),
+                      ),
+                    ],
                   ),
                   const Gap(12),
                   if (needsRevision) ...[
