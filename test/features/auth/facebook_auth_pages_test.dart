@@ -188,7 +188,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.tap(find.text('Masuk dengan Facebook'));
+    final facebook = find.text('Masuk dengan Facebook');
+    await tester.ensureVisible(facebook);
+    await tester.tap(facebook);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });

@@ -137,7 +137,7 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Masuk dengan Google'), findsNothing);
+    expect(find.bySemanticsLabel('Masuk dengan Google'), findsNothing);
   });
 
   testWidgets('client ID terisi → tombol Masuk dengan Google ada', (
@@ -150,7 +150,8 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Masuk dengan Google'), findsOneWidget);
+    // Icon-only: label ada di Semantics, bukan Text terlihat.
+    expect(find.bySemanticsLabel('Masuk dengan Google'), findsOneWidget);
   });
 
   testWidgets('register: tombol Daftar dengan Google ada', (tester) async {
@@ -161,7 +162,7 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Daftar dengan Google'), findsOneWidget);
+    expect(find.bySemanticsLabel('Daftar dengan Google'), findsOneWidget);
   });
 
   testWidgets('409 → FAlert berisi Email sudah terdaftar (login)', (
@@ -188,7 +189,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.tap(find.text('Masuk dengan Google'));
+    final google = find.bySemanticsLabel('Masuk dengan Google');
+    await tester.ensureVisible(google);
+    await tester.tap(google);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });
@@ -217,8 +220,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.ensureVisible(find.text('Daftar dengan Google'));
-    await tester.tap(find.text('Daftar dengan Google'));
+    final google = find.bySemanticsLabel('Daftar dengan Google');
+    await tester.ensureVisible(google);
+    await tester.tap(google);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });
