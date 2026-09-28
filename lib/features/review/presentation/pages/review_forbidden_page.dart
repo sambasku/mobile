@@ -21,7 +21,7 @@ class ReviewForbiddenPage extends StatelessWidget {
       },
       child: FScaffold(
         header: FHeader.nested(
-          title: const Text('Tinjau usulan'),
+          title: const Text('Area Verifikator'),
           prefixes: [
             FHeaderAction.back(onPress: () => leaveReview(context)),
           ],

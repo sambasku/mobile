@@ -9,6 +9,10 @@ class ReviewItem {
     required this.createdAt,
     this.contributorDisplayName,
     this.wordLemma,
+    this.reopenedBy,
+    this.reviewStatus,
+    this.reviewComment,
+    this.reviewedAt,
   });
 
   final String id;
@@ -20,6 +24,10 @@ class ReviewItem {
   final String status;
   final String createdAt;
   final String? wordLemma;
+  final String? reopenedBy;
+  final String? reviewStatus;
+  final String? reviewComment;
+  final String? reviewedAt;
 
   bool get isPending => status == 'pending';
 
@@ -49,6 +57,14 @@ String reviewFallbackTitle(String entityType) => switch (entityType) {
   _ => 'Usulan',
 };
 
+String reviewStatusLabel(String status) => switch (status) {
+  'pending' => 'Menunggu',
+  'approved' => 'Disetujui',
+  'rejected' => 'Ditolak',
+  'corrected' => 'Dikoreksi',
+  _ => status,
+};
+
 class ReviewListPage {
   const ReviewListPage({
     required this.items,
@@ -61,19 +77,44 @@ class ReviewListPage {
   final bool hasMore;
 }
 
+class ReviewPriorDecision {
+  const ReviewPriorDecision({
+    required this.status,
+    required this.createdAt,
+    this.reviewerId,
+    this.comment,
+  });
+
+  final String? reviewerId;
+  final String status;
+  final String? comment;
+  final String createdAt;
+}
+
 class ReviewDetail {
   const ReviewDetail({
     required this.contribution,
     required this.entity,
     this.reviewComment,
+    this.priorReviews = const [],
   });
 
   final ReviewItem contribution;
   final Map<String, dynamic> entity;
   final String? reviewComment;
+  final List<ReviewPriorDecision> priorReviews;
 
-  bool get wordAlreadyVerified =>
-      contribution.entityType == 'word' && entity['isVerified'] == true;
+  bool get wordAlreadyVerified {
+    if (contribution.entityType != 'word') return false;
+    return entity['isVerified'] == true || entity['is_verified'] == true;
+  }
+
+  String? get wordIdForUnverify {
+    if (contribution.entityType == 'word') {
+      return contribution.entityId;
+    }
+    return null;
+  }
 
   String? get verifierUsername {
     final verifier = entity['verifier'];
@@ -85,8 +126,13 @@ class ReviewDetail {
 }
 
 class ReviewDecisionResult {
-  const ReviewDecisionResult({required this.status, this.mergedIntoWordId});
+  const ReviewDecisionResult({
+    required this.status,
+    this.mergedIntoWordId,
+    this.reopenedBy,
+  });
 
   final String status;
   final String? mergedIntoWordId;
+  final String? reopenedBy;
 }

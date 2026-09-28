@@ -31,14 +31,31 @@ class ReviewQueuePage extends ConsumerWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) leaveReview(context);
+        if (didPop) return;
+        if (wordId != null && wordId!.isNotEmpty) {
+          leaveReview(context);
+        } else if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(ReviewRouter.list.path);
+        }
       },
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Tinjau usulan'),
+          title: const Text('Mulai tinjau'),
           prefixes: [
-            FHeaderAction.back(onPress: () => leaveReview(context)),
+            FHeaderAction.back(
+              onPress: () {
+                if (wordId != null && wordId!.isNotEmpty) {
+                  leaveReview(context);
+                } else if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go(ReviewRouter.list.path);
+                }
+              },
+            ),
           ],
         ),
         child: queue.when(

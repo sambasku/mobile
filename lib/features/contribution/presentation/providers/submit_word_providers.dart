@@ -32,6 +32,10 @@ class SubmitWordNotifier extends _$SubmitWordNotifier {
     state = state.copyWith(clearFailure: true, clearErrorMessage: true);
   }
 
+  void clearError() {
+    state = state.copyWith(clearFailure: true, clearErrorMessage: true);
+  }
+
   /// Setelah sukses + "Tambah lagi": bersihkan result/search-miss supaya
   /// form kosong siap usulan berikutnya tanpa navigate.
   void resetForAnother() {

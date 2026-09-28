@@ -24,7 +24,7 @@ class PronunciationAudioUploadService {
   Future<Either<PronunciationUploadFailure, void>> upload({
     required String wordId,
     required File audioFile,
-    required String speakerName,
+    String? speakerName,
     required int durationMs,
     String? dialectId,
     String? exampleId,
@@ -42,13 +42,15 @@ class PronunciationAudioUploadService {
                       ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
                       : (DioMediaType('audio', 'mp4'), 'recording.m4a');
 
+      final trimmedSpeaker = speakerName?.trim();
       final formData = FormData.fromMap({
         'audio': await MultipartFile.fromFile(
           audioFile.path,
           filename: filename,
           contentType: mimeType,
         ),
-        'speaker_name': speakerName.trim(),
+        if (trimmedSpeaker != null && trimmedSpeaker.isNotEmpty)
+          'speaker_name': trimmedSpeaker,
         'duration_ms': durationMs,
         if (dialectId != null && dialectId.isNotEmpty) 'dialect_id': dialectId,
         if (exampleId != null && exampleId.isNotEmpty) 'example_id': exampleId,

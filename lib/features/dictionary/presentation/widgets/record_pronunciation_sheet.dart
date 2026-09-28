@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,19 +19,32 @@ import '../providers/audio_player_controller.dart';
 import '../providers/pronunciation_providers.dart';
 import '../providers/word_detail_providers.dart';
 
-enum _RecordPhase { idle, requestingPermission, recording, trim, submitting }
+enum _RecordPhase {
+  idle,
+  requestingPermission,
+  recording,
+  trim,
+  submitting,
+}
 
 /// Durasi potongan minimum (detik) - hindari cuplikan hampir kosong.
 const _minSelectionSec = 0.3;
 
-/// Sheet rekam: izin → rekam WAV → (opsional potong) → pratinjau → kirim.
-/// Rentang awal selalu seluruh rekaman; potong diam hanya lewat "Otomatis".
+/// Di bawah ini: soft warning "terlalu singkat".
+const _minComfortSec = 0.45;
+
+/// Peak meter normalisasi di bawah ini: soft warning "terlalu pelan".
+const _quietPeakThreshold = 0.15;
+
+/// Sheet rekam: izin → rekam → potong manual (opsional) → pratinjau → kirim.
+/// Nama penutur opsional (opt-in); default anonim agar user yang malu tetap berani kirim.
 Future<void> showRecordPronunciationSheet(
   BuildContext context, {
   required WidgetRef ref,
   required String wordId,
   required String languageId,
   String? exampleId,
+  String? spokenText,
   String defaultSpeakerName = '',
 }) {
   // Hentikan audio di halaman detail sebelum sheet membuka player sendiri.
@@ -42,10 +56,14 @@ Future<void> showRecordPronunciationSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Dismiss dikontrol PopScope di dalam sheet saat merekam/mengirim.
+    isDismissible: true,
+    enableDrag: true,
     builder: (ctx) => _RecordPronunciationSheet(
       wordId: wordId,
       languageId: languageId,
       exampleId: exampleId,
+      spokenText: spokenText,
       defaultSpeakerName: defaultSpeakerName,
     ),
   );
@@ -56,12 +74,14 @@ class _RecordPronunciationSheet extends ConsumerStatefulWidget {
     required this.wordId,
     required this.languageId,
     this.exampleId,
+    this.spokenText,
     this.defaultSpeakerName = '',
   });
 
   final String wordId;
   final String languageId;
   final String? exampleId;
+  final String? spokenText;
   final String defaultSpeakerName;
 
   @override
@@ -72,33 +92,62 @@ class _RecordPronunciationSheet extends ConsumerStatefulWidget {
 class _RecordPronunciationSheetState
     extends ConsumerState<_RecordPronunciationSheet>
     with WidgetsBindingObserver {
-  static const _maxSeconds = 60;
+  /// Lemma singkat; contoh kalimat boleh lebih panjang.
+  int get _maxSeconds => widget.exampleId == null ? 15 : 30;
 
   final _recorder = AudioRecorder();
   /// Player khusus pratinjau - jangan pakai [wordDetailAudioPlayerProvider]
   /// supaya dispose sheet (hapus file temp) tidak merusak player detail.
   final _previewPlayer = AudioPlayer();
   StreamSubscription<PlayerState>? _previewSub;
-  final _speakerCtrl = TextEditingController();
+  StreamSubscription<Amplitude>? _ampSub;
   String? _dialectId;
   _RecordPhase _phase = _RecordPhase.idle;
   String? _filePath;
   int _elapsedSec = 0;
   double _totalSec = 0;
   RangeValues _range = const RangeValues(0, 1);
-  bool _trimBusy = false;
-  bool _previewPlaying = false;
   List<double> _peaks = const [];
   String? _previewTrimPath;
+  double _ampLevel = 0;
+  /// Peak tertinggi selama sesi rekam (0…1) - deteksi terlalu pelan.
+  double _peakAmpSeen = 0;
+  bool _trimBusy = false;
+  bool _previewPlaying = false;
+  bool _hasPreviewed = false;
+  /// Tekan-tahan: lepas = stop. Tap singkat = mode terkunci (ketuk lagi untuk stop).
+  bool _holdRecording = false;
+  bool _lockedRecording = false;
+  bool _releaseWhileStarting = false;
+  DateTime? _pressDownAt;
   Timer? _tick;
   String? _error;
+  /// Soft warning kualitas (tidak memblokir kirim).
+  String? _qualityHint;
   bool _stoppingForLifecycle = false;
+  /// Opt-in: cantumkan nama tampilan sebagai penutur. Default off = anonim.
+  bool _creditSpeakerName = false;
+
+  String get _accountSpeakerName => widget.defaultSpeakerName.trim();
+  String? get _speakerNameForUpload =>
+      _creditSpeakerName && _accountSpeakerName.isNotEmpty
+          ? _accountSpeakerName
+          : null;
+  String get _spoken => widget.spokenText?.trim() ?? '';
+
+  bool get _blockDismiss =>
+      _phase == _RecordPhase.requestingPermission ||
+      _phase == _RecordPhase.recording ||
+      _phase == _RecordPhase.submitting;
+
+  bool get _showSpeakerMeta =>
+      _phase != _RecordPhase.recording &&
+      _phase != _RecordPhase.requestingPermission;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _speakerCtrl.text = widget.defaultSpeakerName.trim();
     unawaited(_previewPlayer.setLoopMode(LoopMode.off));
     _previewSub = _previewPlayer.playerStateStream.listen((state) {
       if (!mounted) return;
@@ -145,8 +194,8 @@ class _RecordPronunciationSheetState
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _tick?.cancel();
+    unawaited(_ampSub?.cancel());
     unawaited(_recorder.dispose());
-    _speakerCtrl.dispose();
     // Jangan panggil ref di dispose (tidak aman di Riverpod). Player detail
     // sudah di-stop saat sheet dibuka; di sini cukup lepas preview + file.
     unawaited(_disposePreviewResources());
@@ -179,11 +228,7 @@ class _RecordPronunciationSheetState
     _filePath = null;
     _previewTrimPath = null;
     for (final p in paths) {
-      if (p == null) continue;
-      try {
-        final f = File(p);
-        if (await f.exists()) await f.delete();
-      } catch (_) {}
+      await _deleteQuietly(p);
     }
   }
 
@@ -195,12 +240,27 @@ class _RecordPronunciationSheetState
     } catch (_) {}
   }
 
-  /// Hentikan preview + hapus file trim lama (dipanggil saat range berubah).
   Future<void> _invalidatePreview() async {
     await _stopPreviewPlayer();
     final preview = _previewTrimPath;
     _previewTrimPath = null;
+    _hasPreviewed = false;
     await _deleteQuietly(preview);
+  }
+
+  Future<void> _cancelAmplitude() async {
+    try {
+      await _ampSub?.cancel();
+    } catch (_) {}
+    _ampSub = null;
+    _ampLevel = 0;
+  }
+
+  /// dBFS (−∞…0) → 0…1 untuk meter visual.
+  double _normAmp(double db) {
+    const floor = -45.0;
+    if (db.isNaN || db.isInfinite) return 0;
+    return ((db - floor) / -floor).clamp(0.0, 1.0);
   }
 
   Future<void> _startRecording() async {
@@ -212,7 +272,12 @@ class _RecordPronunciationSheetState
     final status = await Permission.microphone.request();
     if (!mounted) return;
     if (!status.isGranted) {
-      setState(() => _phase = _RecordPhase.idle);
+      setState(() {
+        _phase = _RecordPhase.idle;
+        _holdRecording = false;
+        _lockedRecording = false;
+        _releaseWhileStarting = false;
+      });
       if (status.isPermanentlyDenied && mounted) {
         showMicrophonePermissionDeniedDialog(context);
       } else if (mounted) {
@@ -229,13 +294,15 @@ class _RecordPronunciationSheetState
     if (!hasPerm) {
       setState(() {
         _phase = _RecordPhase.idle;
+        _holdRecording = false;
+        _lockedRecording = false;
+        _releaseWhileStarting = false;
         _error = 'Mikrofon tidak tersedia';
       });
       return;
     }
 
     final dir = await getTemporaryDirectory();
-    // WAV PCM → bisa dipotong di Dart tanpa FFmpeg (sama pola admin web).
     final path =
         '${dir.path}/pronunciation_${DateTime.now().millisecondsSinceEpoch}.wav';
 
@@ -249,11 +316,42 @@ class _RecordPronunciationSheetState
       AnalyticsEvents.audioRecordStart,
       params: {'word_id': widget.wordId},
     );
+
+    await _cancelAmplitude();
+    _peakAmpSeen = 0;
+    _ampSub = _recorder
+        .onAmplitudeChanged(const Duration(milliseconds: 80))
+        .listen((amp) {
+      if (!mounted || _phase != _RecordPhase.recording) return;
+      final next = _normAmp(amp.current);
+      final smoothed = _ampLevel * 0.35 + next * 0.65;
+      if (next > _peakAmpSeen) _peakAmpSeen = next;
+      if ((smoothed - _ampLevel).abs() < 0.02 && next <= _peakAmpSeen) {
+        return;
+      }
+      setState(() => _ampLevel = smoothed);
+    });
+
+    // Lepas selama meminta izin → lanjut mode terkunci (ketuk untuk stop).
+    final lockAfterRelease = _releaseWhileStarting;
+    _releaseWhileStarting = false;
+
+    unawaited(HapticFeedback.lightImpact());
     setState(() {
       _phase = _RecordPhase.recording;
       _filePath = path;
       _elapsedSec = 0;
+      _totalSec = 0;
+      _range = const RangeValues(0, 1);
+      _peaks = const [];
+      _hasPreviewed = false;
+      _ampLevel = 0;
+      _qualityHint = null;
       _stoppingForLifecycle = false;
+      if (lockAfterRelease) {
+        _holdRecording = false;
+        _lockedRecording = true;
+      }
     });
 
     _tick?.cancel();
@@ -270,8 +368,65 @@ class _RecordPronunciationSheetState
     });
   }
 
+  /// Tekan tombol rekam (mulai) atau ketuk stop saat mode terkunci.
+  Future<void> _onRecordPressDown() async {
+    if (_phase == _RecordPhase.recording && _lockedRecording) {
+      await _stopRecording();
+      return;
+    }
+    if (_phase != _RecordPhase.idle) return;
+    _pressDownAt = DateTime.now();
+    _releaseWhileStarting = false;
+    setState(() {
+      _holdRecording = true;
+      _lockedRecording = false;
+    });
+    await _startRecording();
+  }
+
+  /// Lepas: tahan lama → stop; tap singkat → kunci sampai ketuk stop.
+  Future<void> _onRecordPressUp() async {
+    if (_phase == _RecordPhase.requestingPermission ||
+        (_holdRecording && _phase == _RecordPhase.idle)) {
+      _releaseWhileStarting = true;
+      return;
+    }
+    if (_phase != _RecordPhase.recording || !_holdRecording) return;
+
+    final held = DateTime.now().difference(
+      _pressDownAt ?? DateTime.now(),
+    );
+    // Tap singkat (<280ms): kunci rekaman, perlu ketuk lagi untuk stop.
+    if (held < const Duration(milliseconds: 280)) {
+      if (!mounted) return;
+      unawaited(HapticFeedback.selectionClick());
+      setState(() {
+        _holdRecording = false;
+        _lockedRecording = true;
+      });
+      return;
+    }
+    _holdRecording = false;
+    await _stopRecording();
+  }
+
+  Future<void> _onRecordPressCancel() async {
+    if (_phase == _RecordPhase.requestingPermission) {
+      _releaseWhileStarting = true;
+      return;
+    }
+    if (_phase == _RecordPhase.recording && _holdRecording) {
+      _holdRecording = false;
+      await _stopRecording();
+    }
+  }
+
   Future<void> _stopRecording({bool fromLifecycle = false}) async {
     _tick?.cancel();
+    await _cancelAmplitude();
+    _holdRecording = false;
+    _lockedRecording = false;
+    _releaseWhileStarting = false;
     final path = await _recorder.stop();
     if (!mounted) return;
     final filePath = path ?? _filePath;
@@ -284,10 +439,12 @@ class _RecordPronunciationSheetState
       return;
     }
 
+    unawaited(HapticFeedback.mediumImpact());
     setState(() {
       _filePath = filePath;
       _phase = _RecordPhase.trim;
       _trimBusy = true;
+      _qualityHint = null;
       _error = fromLifecycle
           ? 'Rekaman dihentikan karena aplikasi tidak aktif'
           : null;
@@ -299,16 +456,28 @@ class _RecordPronunciationSheetState
       final total = await wavDurationSeconds(file);
       final peaks = await computeWavPeaks(file);
       if (!mounted) return;
-      // Rentang awal = seluruh rekaman. Pemotongan diam hanya lewat tombol
-      // "Otomatis", supaya awal/akhir ucapan tidak terpotong sendiri.
+      final totalSec = total <= 0
+          ? (_elapsedSec.clamp(1, _maxSeconds)).toDouble()
+          : total;
+      final wavPeak = peaks.isEmpty
+          ? 0.0
+          : peaks.reduce(math.max);
+      final qualityHint = _buildQualityHint(
+        totalSec: totalSec,
+        peakAmp: math.max(_peakAmpSeen, wavPeak),
+      );
+      // Rentang awal = seluruh rekaman. Potong diam hanya lewat slider manual.
       setState(() {
-        _totalSec = total <= 0
-            ? (_elapsedSec.clamp(1, _maxSeconds)).toDouble()
-            : total;
+        _totalSec = totalSec;
         _range = RangeValues(0, _totalSec);
         _peaks = peaks;
         _trimBusy = false;
+        _qualityHint = qualityHint;
       });
+      // Auto-pratinjau supaya langkah "dengar dulu" terasa alami.
+      if (!fromLifecycle) {
+        unawaited(_togglePreview());
+      }
     } catch (_) {
       if (!mounted) return;
       final total = _elapsedSec.clamp(1, _maxSeconds).toDouble();
@@ -317,8 +486,28 @@ class _RecordPronunciationSheetState
         _range = RangeValues(0, total);
         _peaks = const [];
         _trimBusy = false;
+        _qualityHint = _buildQualityHint(
+          totalSec: total,
+          peakAmp: _peakAmpSeen,
+        );
       });
+      if (!fromLifecycle) {
+        unawaited(_togglePreview());
+      }
     }
+  }
+
+  String? _buildQualityHint({
+    required double totalSec,
+    required double peakAmp,
+  }) {
+    if (totalSec < _minComfortSec) {
+      return 'Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas';
+    }
+    if (peakAmp < _quietPeakThreshold) {
+      return 'Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang';
+    }
+    return null;
   }
 
   Future<void> _discardAndRerecord() async {
@@ -332,6 +521,12 @@ class _RecordPronunciationSheetState
       _totalSec = 0;
       _range = const RangeValues(0, 1);
       _peaks = const [];
+      _ampLevel = 0;
+      _peakAmpSeen = 0;
+      _holdRecording = false;
+      _lockedRecording = false;
+      _releaseWhileStarting = false;
+      _qualityHint = null;
       _phase = _RecordPhase.idle;
       _error = null;
     });
@@ -344,7 +539,7 @@ class _RecordPronunciationSheetState
   }
 
   /// Preview = file hasil trim (bukan ClippingAudioSource) agar tidak loop.
-  Future<void> _previewClip() async {
+  Future<void> _togglePreview() async {
     final path = _filePath;
     if (path == null || _trimBusy) return;
     if (_range.end - _range.start < _minSelectionSec) {
@@ -355,7 +550,6 @@ class _RecordPronunciationSheetState
       return;
     }
 
-    // Ketuk lagi saat sedang putar → jeda.
     if (_previewPlaying) {
       await _stopPreviewPlayer();
       return;
@@ -366,7 +560,6 @@ class _RecordPronunciationSheetState
       _error = null;
     });
     try {
-      // Pakai file trim yang sudah ada jika rentang belum berubah.
       String playPath = _previewTrimPath ?? '';
       if (playPath.isEmpty || !await File(playPath).exists()) {
         final trimmed = await trimWavFile(
@@ -388,7 +581,10 @@ class _RecordPronunciationSheetState
       await _previewPlayer.setFilePath(playPath);
       await _previewPlayer.play();
       if (!mounted) return;
-      setState(() => _previewPlaying = true);
+      setState(() {
+        _previewPlaying = true;
+        _hasPreviewed = true;
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() {
@@ -402,15 +598,27 @@ class _RecordPronunciationSheetState
 
   Future<void> _submit() async {
     final path = _filePath;
-    final speaker = _speakerCtrl.text.trim();
-    if (path == null || speaker.isEmpty) {
-      setState(() => _error = 'Nama penutur wajib diisi');
+    if (path == null) {
+      setState(() => _error = 'Belum ada rekaman. Rekam dulu sebelum mengirim.');
+      return;
+    }
+    if (_creditSpeakerName && _accountSpeakerName.isEmpty) {
+      setState(
+        () => _error =
+            'Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.',
+      );
       return;
     }
     if (_range.end - _range.start < _minSelectionSec) {
       setState(
         () => _error =
             'Potongan terlalu pendek (min ${_minSelectionSec.toStringAsFixed(1)} dtk)',
+      );
+      return;
+    }
+    if (!_hasPreviewed) {
+      setState(
+        () => _error = 'Dengarkan pratinjau dulu sebelum mengirim',
       );
       return;
     }
@@ -421,7 +629,11 @@ class _RecordPronunciationSheetState
       _trimBusy = true;
     });
 
-    await _invalidatePreview();
+    // Hentikan preview + hapus cache trim; jangan reset _hasPreviewed.
+    await _stopPreviewPlayer();
+    final oldPreview = _previewTrimPath;
+    _previewTrimPath = null;
+    await _deleteQuietly(oldPreview);
 
     late final File uploadFile;
     late final int durationMs;
@@ -449,13 +661,12 @@ class _RecordPronunciationSheetState
         .upload(
           wordId: widget.wordId,
           audioFile: uploadFile,
-          speakerName: speaker,
+          speakerName: _speakerNameForUpload,
           durationMs: durationMs > 0 ? durationMs : 1000,
           dialectId: _dialectId,
           exampleId: widget.exampleId,
         );
 
-    // Hapus file trim upload setelah selesai (sukses/gagal).
     if (uploadFile.path != path) {
       unawaited(_deleteQuietly(uploadFile.path));
     }
@@ -502,9 +713,55 @@ class _RecordPronunciationSheetState
         );
         showFToast(
           context: context,
-          title: const Text('Terima kasih, rekaman menunggu tinjauan'),
+          title: const Text('Terima kasih, rekaman menunggu pengecekan'),
         );
         Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget _dialectChips(FThemeData theme, AsyncValue<List<DialectOption>> async) {
+    return async.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (items) {
+        if (items.isEmpty) return const SizedBox.shrink();
+        final locked =
+            _phase == _RecordPhase.recording ||
+            _phase == _RecordPhase.submitting;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Dialek (opsional)',
+              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const Gap(6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final d in items)
+                  GestureDetector(
+                    onTap: locked
+                        ? null
+                        : () => setState(() {
+                            _dialectId = _dialectId == d.id ? null : d.id;
+                          }),
+                    child: Opacity(
+                      opacity: locked ? 0.7 : 1,
+                      child: FBadge(
+                        variant: _dialectId == d.id
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.secondary,
+                        child: Text(d.name),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        );
       },
     );
   }
@@ -521,9 +778,26 @@ class _RecordPronunciationSheetState
     final theme = context.theme;
     final dialectsAsync = ref.watch(wordDialectsProvider(widget.languageId));
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    final isExample = widget.exampleId != null;
     final selectionSec = (_range.end - _range.start).clamp(0.0, _totalSec);
+    final hintMax = isExample
+        ? 'Maksimal $_maxSeconds detik · cukup 1–2 kali baca kalimat'
+        : 'Maksimal $_maxSeconds detik · cukup 1–2 kali ucapan';
 
-    return Padding(
+    return PopScope(
+      canPop: !_blockDismiss,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop || !_blockDismiss) return;
+        showFToast(
+          context: context,
+          title: Text(
+            _phase == _RecordPhase.submitting
+                ? 'Tunggu hingga pengiriman selesai'
+                : 'Selesaikan atau batalkan rekaman dulu',
+          ),
+        );
+      },
+      child: Padding(
       padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + bottom),
       child: SingleChildScrollView(
         child: Column(
@@ -531,19 +805,88 @@ class _RecordPronunciationSheetState
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              widget.exampleId == null
-                  ? 'Rekam pelafalan'
-                  : 'Rekam audio contoh',
+              isExample ? 'Rekam audio contoh' : 'Rekam pelafalan',
               style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(4),
             Text(
-              'Maksimal $_maxSeconds detik · WAV (bisa dipotong sebelum kirim)',
+              hintMax,
               style: theme.typography.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
-            const Gap(16),
+            if (_spoken.isNotEmpty) ...[
+              const Gap(14),
+              Text(
+                'Ucapkan',
+                style: theme.typography.sm.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+              const Gap(4),
+              Text(
+                _spoken,
+                textAlign: TextAlign.center,
+                style: theme.typography.xl.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontStyle: FontStyle.italic,
+                  height: 1.25,
+                ),
+              ),
+            ],
+            if (_showSpeakerMeta) ...[
+              const Gap(14),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text('Cantumkan nama saya sebagai penutur'),
+                  ),
+                  FSwitch(
+                    semanticsLabel: 'Cantumkan nama saya sebagai penutur',
+                    value: _creditSpeakerName,
+                    enabled: _phase != _RecordPhase.submitting,
+                    onChange: (value) =>
+                        setState(() => _creditSpeakerName = value),
+                  ),
+                ],
+              ),
+              const Gap(4),
+              Text(
+                _creditSpeakerName
+                    ? (_accountSpeakerName.isEmpty
+                        ? 'Nama tampilan belum ada di profil'
+                        : _accountSpeakerName)
+                    : 'Tanpa nama (Anonim)',
+                style: theme.typography.md.copyWith(
+                  color: _creditSpeakerName && _accountSpeakerName.isNotEmpty
+                      ? null
+                      : theme.colors.mutedForeground,
+                ),
+              ),
+              if (_creditSpeakerName) ...[
+                const Gap(2),
+                Text(
+                  'Mengikuti nama tampilan di profil Anda',
+                  style: theme.typography.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
+              const Gap(12),
+              _dialectChips(theme, dialectsAsync),
+            ],
+            if (_phase == _RecordPhase.idle) ...[
+              const Gap(12),
+              Text(
+                'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci',
+                textAlign: TextAlign.center,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ],
+            const Gap(12),
             if (_error != null) ...[
               Text(
                 _error!,
@@ -551,33 +894,63 @@ class _RecordPronunciationSheetState
               ),
               const Gap(8),
             ],
-            if (_phase == _RecordPhase.idle ||
-                _phase == _RecordPhase.requestingPermission)
-              FButton(
-                onPress: _phase == _RecordPhase.requestingPermission
-                    ? null
-                    : _startRecording,
-                prefix: const Icon(FLucideIcons.mic),
-                child: Text(
-                  _phase == _RecordPhase.requestingPermission
-                      ? 'Meminta izin…'
-                      : 'Mulai rekam',
-                ),
-              ),
-            if (_phase == _RecordPhase.recording) ...[
+            if (_qualityHint != null &&
+                (_phase == _RecordPhase.trim ||
+                    _phase == _RecordPhase.submitting)) ...[
               Text(
-                'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
-                textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
-                  fontWeight: FontWeight.w600,
+                _qualityHint!,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.primary,
                 ),
               ),
-              const Gap(12),
-              FButton(
-                variant: FButtonVariant.destructive,
-                onPress: _stopRecording,
-                prefix: const Icon(FLucideIcons.square),
-                child: const Text('Stop'),
+              const Gap(8),
+            ],
+            if (_phase == _RecordPhase.idle ||
+                _phase == _RecordPhase.requestingPermission ||
+                _phase == _RecordPhase.recording) ...[
+              if (_phase == _RecordPhase.recording) ...[
+                Text(
+                  'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
+                  textAlign: TextAlign.center,
+                  style: theme.typography.md.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Gap(10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: LinearProgressIndicator(
+                    value: _ampLevel.clamp(0.05, 1.0),
+                    minHeight: 10,
+                    backgroundColor: theme.colors.secondary,
+                    color: theme.colors.error,
+                  ),
+                ),
+                const Gap(4),
+                Text(
+                  _holdRecording
+                      ? 'Lepas untuk stop'
+                      : 'Level mikrofon · ketuk tombol untuk stop',
+                  textAlign: TextAlign.center,
+                  style: theme.typography.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(16),
+              ],
+              // Satu widget stabil agar pointer up tetap diterima setelah start.
+              _RecordRoundButton(
+                busy: _phase == _RecordPhase.requestingPermission,
+                recording: _phase == _RecordPhase.recording,
+                onPressDown: _onRecordPressDown,
+                onPressUp: _onRecordPressUp,
+                onPressCancel: _onRecordPressCancel,
+                label: switch (_phase) {
+                  _RecordPhase.requestingPermission => 'Meminta izin…',
+                  _RecordPhase.recording when _holdRecording => 'Lepas untuk stop',
+                  _RecordPhase.recording => 'Stop',
+                  _ => 'Mulai rekam',
+                },
               ),
             ],
             if (_phase == _RecordPhase.trim ||
@@ -640,112 +1013,25 @@ class _RecordPronunciationSheetState
                 ),
               ],
               const Gap(8),
-              Row(
-                children: [
-                  Expanded(
-                    child: FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: (_phase == _RecordPhase.submitting || _trimBusy)
-                          ? null
-                          : _previewClip,
-                      prefix: Icon(
-                        _previewPlaying ? FLucideIcons.pause : FLucideIcons.play,
-                      ),
-                      child: Text(_previewPlaying ? 'Jeda' : 'Pratinjau'),
-                    ),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: (_phase == _RecordPhase.submitting || _trimBusy)
+                    ? null
+                    : _togglePreview,
+                prefix: Icon(
+                  _previewPlaying ? FLucideIcons.pause : FLucideIcons.play,
+                ),
+                child: Text(_previewPlaying ? 'Jeda' : 'Pratinjau'),
+              ),
+              if (!_hasPreviewed) ...[
+                const Gap(6),
+                Text(
+                  'Dengarkan dulu sebelum mengirim',
+                  style: theme.typography.xs.copyWith(
+                    color: theme.colors.mutedForeground,
                   ),
-                  const Gap(8),
-                  Expanded(
-                    child: FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: (_phase == _RecordPhase.submitting || _trimBusy)
-                          ? null
-                          : () async {
-                              final path = _filePath;
-                              if (path == null) return;
-                              setState(() => _trimBusy = true);
-                              await _invalidatePreview();
-                              try {
-                                final bounds = await detectWavSpeechBounds(
-                                  File(path),
-                                );
-                                if (!mounted) return;
-                                setState(() {
-                                  final minEnd = math
-                                      .min(_minSelectionSec, _totalSec)
-                                      .toDouble();
-                                  final start = bounds.$1
-                                      .clamp(
-                                        0.0,
-                                        math.max(0.0, _totalSec - minEnd),
-                                      )
-                                      .toDouble();
-                                  final end = bounds.$2
-                                      .clamp(start + minEnd, _totalSec)
-                                      .toDouble();
-                                  _range = RangeValues(start, end);
-                                  _trimBusy = false;
-                                });
-                              } catch (_) {
-                                if (mounted) {
-                                  setState(() => _trimBusy = false);
-                                }
-                              }
-                            },
-                      prefix: const Icon(FLucideIcons.scissors),
-                      child: const Text('Otomatis'),
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: _speakerCtrl),
-                label: const Text('Nama penutur *'),
-                enabled: _phase != _RecordPhase.submitting,
-              ),
-              const Gap(8),
-              dialectsAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, _) => const SizedBox.shrink(),
-                data: (items) {
-                  if (items.isEmpty) return const SizedBox.shrink();
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Dialek (opsional)',
-                        style: theme.typography.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Gap(6),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          for (final d in items)
-                            GestureDetector(
-                              onTap: _phase == _RecordPhase.submitting
-                                  ? null
-                                  : () => setState(() {
-                                      _dialectId = _dialectId == d.id
-                                          ? null
-                                          : d.id;
-                                    }),
-                              child: FBadge(
-                                variant: _dialectId == d.id
-                                    ? FBadgeVariant.primary
-                                    : FBadgeVariant.secondary,
-                                child: Text(d.name),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
+                ),
+              ],
               const Gap(12),
               Row(
                 children: [
@@ -765,7 +1051,9 @@ class _RecordPronunciationSheetState
                           ? null
                           : _submit,
                       child: Text(
-                        _phase == _RecordPhase.submitting ? 'Mengirim…' : 'Kirim',
+                        _phase == _RecordPhase.submitting
+                            ? 'Mengirim…'
+                            : 'Kirim',
                       ),
                     ),
                   ),
@@ -775,19 +1063,103 @@ class _RecordPronunciationSheetState
             const Gap(8),
             FButton(
               variant: FButtonVariant.ghost,
-              onPress: _phase == _RecordPhase.submitting
-                  ? null
-                  : () => Navigator.of(context).pop(),
+              onPress: _blockDismiss ? null : () => Navigator.of(context).pop(),
               child: const Text('Batal'),
             ),
           ],
         ),
       ),
+      ),
     );
   }
 }
 
-/// Waveform batang + highlight rentang seleksi (pola editor trim admin).
+/// Tombol rekam klasik: lingkaran merah (mulai) / kotak di dalam lingkaran (stop).
+/// Mendukung tahan-lepas dan ketuk-kunci lewat pointer down/up.
+class _RecordRoundButton extends StatelessWidget {
+  const _RecordRoundButton({
+    required this.recording,
+    required this.busy,
+    required this.onPressDown,
+    required this.onPressUp,
+    required this.onPressCancel,
+    required this.label,
+  });
+
+  final bool recording;
+  final bool busy;
+  final VoidCallback? onPressDown;
+  final VoidCallback? onPressUp;
+  final VoidCallback? onPressCancel;
+  final String label;
+
+  static const _red = Color(0xFFE53935);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final enabled = !busy;
+
+    return Column(
+      children: [
+        Center(
+          child: Semantics(
+            button: true,
+            label: label,
+            child: Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerDown: enabled && onPressDown != null
+                  ? (_) => onPressDown!()
+                  : null,
+              onPointerUp: onPressUp != null ? (_) => onPressUp!() : null,
+              onPointerCancel:
+                  onPressCancel != null ? (_) => onPressCancel!() : null,
+              child: Opacity(
+                opacity: enabled ? 1 : 0.45,
+                child: Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _red.withValues(alpha: 0.35),
+                      width: 4,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: recording ? 28 : 52,
+                    height: recording ? 28 : 52,
+                    decoration: BoxDecoration(
+                      color: _red,
+                      borderRadius: BorderRadius.circular(
+                        recording ? 6 : 26,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const Gap(8),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: theme.typography.sm.copyWith(
+            fontWeight: FontWeight.w600,
+            color: enabled
+                ? theme.colors.foreground
+                : theme.colors.mutedForeground,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Waveform batang + highlight rentang seleksi.
 class _WavformPainter extends CustomPainter {
   _WavformPainter({
     required this.peaks,
@@ -816,7 +1188,7 @@ class _WavformPainter extends CustomPainter {
     if (peaks.isEmpty || size.width <= 0 || size.height <= 0) return;
 
     final n = peaks.length;
-    final gap = 1.0;
+    const gap = 1.0;
     final barW = math.max(1.0, (size.width - gap * (n - 1)) / n);
     final midY = size.height / 2;
     final maxH = size.height * 0.85;

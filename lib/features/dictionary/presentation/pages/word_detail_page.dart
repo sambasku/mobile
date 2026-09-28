@@ -37,6 +37,7 @@ import '../../application/word_clipboard.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
+import '../../../suggest_edit/domain/suggest_edit_feedback.dart';
 
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
@@ -209,7 +210,7 @@ Future<void> _openWordReview(
         context.push('/review/${page.items.first.id}');
         return;
       }
-      context.push('/review?wordId=$wordId');
+      context.push('/review/queue?wordId=$wordId');
     },
   );
 }
@@ -831,15 +832,10 @@ class _WordActionTileGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = context.theme.colors.mutedForeground;
+    final role = ref.watch(authStatusProvider).value?.role;
+    final entryCopy = suggestEditEntryTileCopy(role);
     return FTileGroup(
       children: [
-        FTile(
-          prefix: const Icon(FLucideIcons.copy),
-          title: const Text('Salin semua makna'),
-          subtitle: const Text('Lemma dan seluruh makna ke clipboard'),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () => copyWordDetailToClipboard(context, detail),
-        ),
         FTile(
           prefix: const Icon(FLucideIcons.image),
           title: const Text('Bagikan kartu'),
@@ -851,10 +847,8 @@ class _WordActionTileGroup extends ConsumerWidget {
         ),
         FTile(
           prefix: const Icon(FLucideIcons.penLine),
-          title: const Text('Usulkan perubahan'),
-          subtitle: const Text(
-            'Perbaikan kata yang sudah dicek menunggu persetujuan',
-          ),
+          title: Text(entryCopy.title),
+          subtitle: Text(entryCopy.subtitle),
           suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
           onPress: () async {
             final auth = await ref.read(authStatusProvider.future);
@@ -1069,6 +1063,7 @@ class _MeaningBlock extends StatelessWidget {
                             exampleId: e.id,
                             compact: true,
                             sectionLabel: 'Audio contoh',
+                            spokenText: e.sourceSentence,
                           ),
                         ],
                       ),

@@ -12,8 +12,8 @@ enum ReviewSwipeDirection { approve, reject, skip }
 /// [onSwiped] dipanggil setelah kartu animasi keluar. Return `true` agar kartu
 /// tetap tersembunyi; `false` mengembalikan kartu ke tengah.
 ///
-/// Isi kartu boleh di-scroll; swipe-atas skip hanya diklaim saat scroll di puncak.
-/// Lewati juga lewat tombol di action bar.
+/// Deck ala Tinder: tanpa scroll bersarang supaya swipe (termasuk atas/lewati)
+/// tidak perang gesture. Lewati juga lewat tombol di action bar.
 class ReviewSwipeCard extends StatelessWidget {
   const ReviewSwipeCard({
     super.key,
@@ -34,7 +34,7 @@ class ReviewSwipeCard extends StatelessWidget {
     return SwipeDecisionCard(
       itemKey: itemKey,
       enabled: enabled,
-      allowNestedVerticalScroll: true,
+      allowNestedVerticalScroll: false,
       fallbackHeight: MediaQuery.sizeOf(context).height * 0.6,
       positiveLabel: 'Setujui',
       negativeLabel: 'Tolak',

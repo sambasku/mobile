@@ -10,10 +10,12 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/phone_country.dart';
 import '../../../../shared/utils/phone_country_picker_sheet.dart';
 import '../../../../shared/utils/phone_national_digits_formatter.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/phone_country_flag.dart';
 import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
@@ -43,7 +45,7 @@ String _normalizeUsername(String raw) {
 
 class _SocialDraft {
   const _SocialDraft({
-    required this.platform,
+    this.platform,
     this.username = '',
     this.screenshotUrl,
     this.screenshotFileId,
@@ -52,13 +54,17 @@ class _SocialDraft {
     this.error = false,
   });
 
-  final String platform;
+  /// null = belum dipilih user (jangan default ke platform tertentu).
+  final String? platform;
   final String username;
   final String? screenshotUrl;
   final String? screenshotFileId;
   final String? localPath;
   final bool uploading;
   final bool error;
+
+  bool get platformReady =>
+      platform != null && _platforms.containsKey(platform);
 
   bool get screenshotReady =>
       (screenshotUrl ?? '').isNotEmpty &&
@@ -101,9 +107,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final phone = useTextEditingController();
     final address = useTextEditingController();
     final phoneCountry = useState(kPhoneCountryId);
-    final social = useState<List<_SocialDraft>>([
-      const _SocialDraft(platform: 'instagram'),
-    ]);
+    final social = useState<List<_SocialDraft>>([const _SocialDraft()]);
     final isReLogging = useState(false);
     useListenable(phone);
     useListenable(address);
@@ -118,7 +122,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
       phone.text = parsed.national;
       address.text = next.address;
       social.value = next.socialLinks.isEmpty
-          ? [const _SocialDraft(platform: 'instagram')]
+          ? [const _SocialDraft()]
           : next.socialLinks
                 .map(
                   (l) => _SocialDraft(
@@ -139,6 +143,18 @@ class VerifierApplicationPage extends HookConsumerWidget {
       showFToast(context: context, title: Text(next));
     });
 
+    ref.listen(verifierApplicationProvider.select((s) => s.errorMessage), (
+      _,
+      next,
+    ) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(verifierApplicationProvider.notifier).clearError();
+        }
+      });
+    });
+
     final application = state.application;
     final pending = application?.isPending == true;
     final rejected = application?.isRejected == true;
@@ -150,13 +166,17 @@ class VerifierApplicationPage extends HookConsumerWidget {
     var allReady = social.value.isNotEmpty;
     for (final row in social.value) {
       final username = _normalizeUsername(row.username);
-      if (username.length < 2 || !row.screenshotReady) {
+      final platform = row.platform;
+      if (!row.platformReady ||
+          platform == null ||
+          username.length < 2 ||
+          !row.screenshotReady) {
         allReady = false;
         continue;
       }
       links.add(
         SocialLink(
-          platform: row.platform,
+          platform: platform,
           username: username,
           screenshot: SocialScreenshot(
             url: row.screenshotUrl!,
@@ -283,21 +303,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                       'Tim admin masih meninjau data Anda. Anda akan mendapat notifikasi setelah ada keputusan.',
                     ),
                   ),
-                  if (state.errorMessage != null) ...[
-                    const Gap(12),
-                    FAlert(
-                      variant: .destructive,
-                      title: Text(state.errorMessage!),
-                    ),
-                  ],
                 ] else ...[
-                  const FAlert(
-                    title: Text('Tentang peran verifikator'),
-                    subtitle: Text(
-                      'Verifikator meninjau usulan kata sebelum tayang sebagai terverifikasi.',
-                    ),
-                  ),
-                  const Gap(12),
                   FTileGroup(
                     children: [
                       FTile(
@@ -307,9 +313,8 @@ class VerifierApplicationPage extends HookConsumerWidget {
                           'Apa itu verifikator dan apa saja yang dilakukan',
                         ),
                         suffix: const Icon(FLucideIcons.chevronRight),
-                        onPress: () => context.push(
-                          VerifierApplicationRouter.about.path,
-                        ),
+                        onPress: () =>
+                            context.push(VerifierApplicationRouter.about.path),
                       ),
                     ],
                   ),
@@ -318,9 +323,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     FAlert(
                       variant: .destructive,
                       title: const Text('Perlu perbaikan'),
-                      subtitle: Text(
-                        application!.adminComment!.trim(),
-                      ),
+                      subtitle: Text(application!.adminComment!.trim()),
                     ),
                     const Gap(12),
                   ] else if (rejected) ...[
@@ -343,40 +346,45 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     inputFormatters: const [PhoneNationalDigitsFormatter()],
                     prefixBuilder: (context, style, variants) =>
                         GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: readOnly
-                          ? null
-                          : () async {
-                              final picked =
-                                  await showPhoneCountryPickerSheet(
-                                context,
-                                selected: phoneCountry.value,
-                              );
-                              if (picked != null) {
-                                phoneCountry.value = picked;
-                              }
-                            },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 4),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              phoneCountry.value.prefixLabel,
-                              style: context.theme.typography.sm.copyWith(
-                                color: context.theme.colors.mutedForeground,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          behavior: HitTestBehavior.opaque,
+                          onTap: readOnly
+                              ? null
+                              : () async {
+                                  final picked =
+                                      await showPhoneCountryPickerSheet(
+                                        context,
+                                        selected: phoneCountry.value,
+                                      );
+                                  if (picked != null) {
+                                    phoneCountry.value = picked;
+                                  }
+                                },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12, right: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                PhoneCountryFlag.fromCountry(
+                                  phoneCountry.value,
+                                  size: 18,
+                                ),
+                                const Gap(6),
+                                Text(
+                                  phoneCountry.value.prefixLabel,
+                                  style: context.theme.typography.sm.copyWith(
+                                    color: context.theme.colors.mutedForeground,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Icon(
+                                  FLucideIcons.chevronDown,
+                                  size: 14,
+                                  color: context.theme.colors.mutedForeground,
+                                ),
+                              ],
                             ),
-                            Icon(
-                              FLucideIcons.chevronDown,
-                              size: 14,
-                              color: context.theme.colors.mutedForeground,
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
                   ),
                   const Gap(12),
                   FTextField(
@@ -421,19 +429,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     FButton(
                       variant: .outline,
                       onPress: () {
-                        social.value = [
-                          ...social.value,
-                          const _SocialDraft(platform: 'instagram'),
-                        ];
+                        social.value = [...social.value, const _SocialDraft()];
                       },
-                      child: const Text('Tambah akun'),
-                    ),
-                  ],
-                  if (state.errorMessage != null) ...[
-                    const Gap(12),
-                    FAlert(
-                      variant: .destructive,
-                      title: Text(state.errorMessage!),
+                      child: const Text('Tambah lainnya'),
                     ),
                   ],
                   const Gap(16),
@@ -641,9 +639,12 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
 
   @override
   Widget build(BuildContext context) {
-    final label = _platforms[widget.draft.platform] ?? widget.draft.platform;
+    final selected = widget.draft.platform;
+    final label = selected == null
+        ? 'Pilih platform'
+        : (_platforms[selected] ?? selected);
     final theme = context.theme;
-    final hint = widget.draft.platform == 'website'
+    final hint = selected == 'website'
         ? 'nama situs atau akun'
         : 'nama atau username';
 

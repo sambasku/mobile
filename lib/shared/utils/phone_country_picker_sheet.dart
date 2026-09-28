@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../widgets/phone_country_flag.dart';
 import 'phone_country.dart';
 
 /// Bottomsheet pilih negara: Utama (ID, MY) lalu Lainnya (+ cari).
@@ -190,7 +191,7 @@ class _CountryListTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         child: Row(
           children: [
-            Text(country.flagEmoji, style: const TextStyle(fontSize: 22)),
+            PhoneCountryFlag.fromCountry(country),
             const Gap(12),
             Expanded(
               child: Column(

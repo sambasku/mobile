@@ -248,4 +248,9 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
   void acknowledgeSocialCancel() {
     state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
   }
+
+  /// Setelah sheet error ditutup supaya error yang sama bisa memicu listen lagi.
+  void clearError() {
+    state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
+  }
 }

@@ -17,6 +17,7 @@ import '../models/auth_pending_action.dart';
 import '../widgets/facebook_auth_button.dart';
 import '../widgets/github_auth_button.dart';
 import '../widgets/google_auth_button.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 /// Halaman login (email + password). Google/Facebook: tombol di bawah Masuk.
 class LoginPage extends HookConsumerWidget {
@@ -63,8 +64,11 @@ class LoginPage extends HookConsumerWidget {
       if (code == 'RATE_LIMITED') {
         showFToast(
           context: context,
-          title: Text(state.errorMessage ?? 'Coba lagi nanti'),
+          title: Text(
+            ref.read(authLoginProvider).errorMessage ?? 'Coba lagi nanti',
+          ),
         );
+        ref.read(authLoginProvider.notifier).clearError();
         return;
       }
       if (code == AuthFailure.googleSignInCanceled ||
@@ -73,6 +77,22 @@ class LoginPage extends HookConsumerWidget {
         showFToast(context: context, title: const Text('Masuk dibatalkan'));
         ref.read(authLoginProvider.notifier).acknowledgeSocialCancel();
       }
+    });
+
+    ref.listen(authLoginProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      final code = ref.read(authLoginProvider).errorCode;
+      if (code == 'RATE_LIMITED' ||
+          code == AuthFailure.googleSignInCanceled ||
+          code == AuthFailure.facebookSignInCanceled ||
+          code == AuthFailure.githubSignInCanceled) {
+        return;
+      }
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authLoginProvider.notifier).clearError();
+        }
+      });
     });
 
     ref.listen(authLoginProvider.select((s) => s.showUnverifiedSheet), (
@@ -171,13 +191,6 @@ class LoginPage extends HookConsumerWidget {
                   child: const Text('Lupa password?'),
                 ),
               ),
-              if (state.errorMessage != null &&
-                  state.errorCode != 'RATE_LIMITED' &&
-                  state.errorCode != AuthFailure.googleSignInCanceled &&
-                  state.errorCode != AuthFailure.facebookSignInCanceled) ...[
-                const Gap(12),
-                FAlert(variant: .destructive, title: Text(state.errorMessage!)),
-              ],
               const Gap(16),
               FButton(
                 onPress: canSubmit ? submit : null,

@@ -6,9 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../search_miss/search_miss_router.dart';
-import '../../../translation_help/translation_help_router.dart';
+import '../../../discussion/discussion_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 
@@ -36,7 +37,10 @@ class ActivityPage extends ConsumerWidget {
           title: const Text('Kontribusi'),
           suffixes: [
             FHeaderAction(
-              icon: const Icon(FLucideIcons.refreshCw),
+              icon: const Icon(
+                FLucideIcons.refreshCw,
+                size: kHeaderActionIconSize,
+              ),
               onPress: () => _refresh(ref),
             ),
             const ThemeToggleHeaderAction(),
@@ -65,7 +69,7 @@ class ActivityPage extends ConsumerWidget {
   }
 }
 
-/// Saat overlay root (search-miss / bantuan terjemahan / …) menutupi shell,
+/// Saat overlay root (search-miss / ruang diskusi / …) menutupi shell,
 /// jangan paint `VoteDeckSection` (swipe + gesture). Stub murah dipakai
 /// selama transisi pop; state deck tetap di `voteDeckControllerProvider`
 /// (keepAlive).
@@ -156,10 +160,10 @@ class _ContributeMenus extends StatelessWidget {
         ),
         FTile(
           prefix: Icon(FLucideIcons.languages, color: theme.colors.primary),
-          title: const Text('Bantuan Terjemahan'),
-          subtitle: const Text('Minta bantuan teks atau foto'),
+          title: const Text('Ruang Diskusi'),
+          subtitle: const Text('Tanya bahasa, warga bantu jawab'),
           suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: () => context.push(TranslationHelpRouter.feed.path),
+          onPress: () => context.push(DiscussionRouter.feed.path),
         ),
       ],
     );

@@ -22,6 +22,9 @@ void main() {
     expect(dtos[0].wordId, '01JDWORDMAKATN0000000000A');
     expect(dtos[0].userId, '01JDCONTRIBUTOR000000000');
     expect(dtos[0].username, 'kontributor');
+    expect(dtos[0].displayName, 'Kontributor');
+    expect(dtos[0].avatarUrl, isNull);
+    expect(dtos[0].isVerifier, isFalse);
     expect(dtos[0].body, contains('Sambas'));
     expect(dtos[0].upvotes, 3);
     expect(dtos[0].downvotes, 0);
@@ -29,16 +32,18 @@ void main() {
     expect(dtos[0].status, isNull);
 
     expect(dtos[1].username, isNull);
+    expect(dtos[1].isVerifier, isFalse);
     expect(dtos[1].upvotes, 0);
     expect(dtos[1].downvotes, 1);
   });
 
-  test('create-comment.201.json → CommentDto status pending_review, counts 0',
+  test('create-comment.201.json → CommentDto status published, counts 0',
       () {
     final json = loadFixture('create-comment.201.json');
     final dto = CommentDto.fromJson(json['data'] as Map<String, dynamic>);
 
-    expect(dto.status, 'pending_review');
+    expect(dto.status, 'published');
+    expect(dto.isVerifier, isFalse);
     // response create tidak membawa count → default 0
     expect(dto.upvotes, 0);
     expect(dto.downvotes, 0);

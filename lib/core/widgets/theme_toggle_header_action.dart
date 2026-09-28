@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../theme/theme_mode_controller.dart';
+import 'header_action_icon.dart';
 
 /// Tombol app bar: sun (saat dark → ke light) / moon (saat light → ke dark).
 class ThemeToggleHeaderAction extends ConsumerWidget {
@@ -13,7 +14,10 @@ class ThemeToggleHeaderAction extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return FHeaderAction(
-      icon: Icon(isDark ? FLucideIcons.sun : FLucideIcons.moon),
+      icon: Icon(
+        isDark ? FLucideIcons.sun : FLucideIcons.moon,
+        size: kHeaderActionIconSize,
+      ),
       onPress: () => ref
           .read(themeModeControllerProvider.notifier)
           .toggle(Theme.of(context).brightness),

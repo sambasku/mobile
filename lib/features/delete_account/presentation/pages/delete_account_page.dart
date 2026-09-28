@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/delete_account_providers.dart';
 
 /// Profil → Hapus akun. Sukses mengosongkan sesi lokal karena server
@@ -41,6 +42,15 @@ class DeleteAccountPage extends HookConsumerWidget {
           ],
         ),
       );
+    });
+
+    ref.listen(deleteAccountProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(deleteAccountProvider.notifier).clearError();
+        }
+      });
     });
 
     final canSubmit = confirmation.text == 'HAPUS' && !state.isSubmitting;
@@ -87,13 +97,6 @@ class DeleteAccountPage extends HookConsumerWidget {
             textInputAction: .done,
             onSubmit: canSubmit ? (_) => submit() : null,
           ),
-          if (state.errorMessage != null) ...[
-            const Gap(12),
-            FAlert(
-              variant: .destructive,
-              title: Text(state.errorMessage!),
-            ),
-          ],
           const Gap(16),
           FButton(
             variant: .destructive,

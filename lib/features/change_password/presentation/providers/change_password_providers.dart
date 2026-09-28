@@ -43,4 +43,8 @@ class ChangePasswordNotifier extends _$ChangePasswordNotifier {
       ),
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

@@ -23,6 +23,9 @@ Future<ShareBackground?> showShareMediaExplorer(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Root navigator: aman di atas sheet lain (share / pilih sumber) dan
+    // shell GoRouter, supaya pop(item) tidak salah route.
+    useRootNavigator: true,
     builder: (_) => _MediaExplorerBody(
       backgrounds: backgrounds,
       initialVideo: photoOnly ? false : initialVideo,
@@ -270,6 +273,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
               children: [
                 for (final id in _providersForTab)
                   GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () => _selectProvider(id),
                     child: FBadge(
                       variant: _provider == id
@@ -384,7 +388,10 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
           );
         }
         final item = _items[i];
+        // opaque: default deferToChild sering gagal hit-test saat placeholder
+        // / gambar belum penuh, jadi tap diam saja.
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => Navigator.of(context).pop(item),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),

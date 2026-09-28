@@ -47,6 +47,13 @@ class ChangeHistoryItem {
   final String? reviewComment;
 
   bool get isSuggestEdit => type == 'suggest_edit';
+  bool get isDuplicateVote => type == 'duplicate_vote';
+
+  String get typeLabel {
+    if (isDuplicateVote) return 'Konfirmasi duplikat';
+    if (isSuggestEdit) return 'Dari usulan';
+    return 'Edit langsung';
+  }
 
   String get actorLabel => _publicLabel(actorDisplayName, actorUsername) ?? 'Sistem';
 
@@ -215,6 +222,8 @@ const _fieldLabels = <String, String>{
   'language_id': 'Bahasa',
   'is_verified': 'Verifikasi',
   'status': 'Status',
+  'duplicate_vote': 'Dukungan',
+  'translation_text': 'Terjemahan',
 };
 
 class _HistoryTile extends StatelessWidget with FTileMixin {
@@ -224,11 +233,126 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
-    final kind = item.isSuggestEdit ? 'Dari usulan' : 'Edit langsung';
+    final kind = item.typeLabel;
     final summary = _changeSummary();
     return FTile(
       title: Text(summary.isNotEmpty ? summary : kind),
       subtitle: Text(_subtitle(kind, hasSummary: summary.isNotEmpty)),
+      onPress: () => _showDetailSheet(context),
+    );
+  }
+
+  void _showDetailSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final theme = sheetContext.theme;
+        final when = item.timestamp.isNotEmpty
+            ? formatDateTimeIso(item.timestamp)
+            : '-';
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    item.typeLabel,
+                    style: theme.typography.lg.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(8),
+                  Text(
+                    'Oleh ${item.actorLabel}',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  Text(
+                    when,
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  if (item.reason != null && item.reason!.trim().isNotEmpty) ...[
+                    const Gap(12),
+                    Text('Alasan', style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    )),
+                    Text(item.reason!),
+                  ],
+                  if (item.reviewComment != null &&
+                      item.reviewComment!.trim().isNotEmpty) ...[
+                    const Gap(12),
+                    Text('Catatan reviewer', style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    )),
+                    Text(item.reviewComment!),
+                  ],
+                  const Gap(16),
+                  Text(
+                    'Perubahan',
+                    style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(8),
+                  if (item.changes.isEmpty)
+                    Text(
+                      'Tidak ada detail perubahan.',
+                      style: theme.typography.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    )
+                  else
+                    ...item.changes.map((diff) {
+                      final label = _labelFor(diff);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              label.isNotEmpty ? label : diff.field,
+                              style: theme.typography.sm.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (diff.displayOld.isNotEmpty &&
+                                diff.displayOld != '-')
+                              Text(
+                                'Sebelum: ${diff.displayOld}',
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                            Text(
+                              item.isDuplicateVote
+                                  ? diff.displayNew
+                                  : 'Sesudah: ${diff.displayNew}',
+                              style: theme.typography.sm,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  const Gap(8),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Tutup'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

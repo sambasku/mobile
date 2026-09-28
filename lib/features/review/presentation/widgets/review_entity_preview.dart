@@ -8,6 +8,7 @@ import 'package:just_audio/just_audio.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../contribution/domain/meaning_source.dart';
 import '../../domain/entities/review_contribution.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
@@ -47,6 +48,7 @@ const _exampleLabels = {
 const _meaningLabels = {
   'definition': 'Definisi',
   'word_class_id': 'Kelas kata',
+  'meaning_source': 'Sumber makna',
   'notes': 'Catatan',
 };
 
@@ -261,6 +263,17 @@ class _MeaningBlock extends StatelessWidget {
             ),
           ),
         ],
+        const Gap(4),
+        Text(
+          meaningSourceReviewLabel(
+            raw['meaningSource']?.toString() ??
+                raw['meaning_source']?.toString(),
+          ),
+          style: theme.typography.sm.copyWith(
+            color: theme.colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
     );
   }
@@ -475,6 +488,12 @@ class _FieldPreview extends StatelessWidget {
         if (text.isEmpty) continue;
         if (key == 'is_primary') {
           entries.add(MapEntry(labels[key] ?? 'Utama', e.value == true ? 'Ya' : 'Tidak'));
+          continue;
+        }
+        if (key == 'meaning_source') {
+          entries.add(
+            MapEntry(labels[key] ?? key, meaningSourceReviewLabel(text)),
+          );
           continue;
         }
         entries.add(MapEntry(labels[key] ?? key, text));

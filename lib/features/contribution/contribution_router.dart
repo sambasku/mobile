@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import 'presentation/pages/bulk_contribute_page.dart';
 import 'presentation/pages/contribute_page.dart';
 
 /// Router form usul kata baru (`/contribute`). Daftar + detail status
@@ -12,7 +13,17 @@ class ContributionRouter {
     name: 'ContributionRouter.contribute',
   );
 
+  static const contributeBulk = GoRouteData._(
+    path: '/contribute/bulk',
+    name: 'ContributionRouter.contributeBulk',
+  );
+
   static List<RouteBase> get routes => [
+    GoRoute(
+      path: contributeBulk.path,
+      name: contributeBulk.name,
+      builder: (context, state) => const BulkContributePage(),
+    ),
     GoRoute(
       path: contribute.path,
       name: contribute.name,

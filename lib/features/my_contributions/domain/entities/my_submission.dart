@@ -37,6 +37,8 @@ class MySubmission {
         return 'Usul pengucapan';
       case 'word_image':
         return 'Usul gambar';
+      case 'word_audio':
+        return 'Usul audio';
       case 'example':
         return 'Usul contoh';
       case 'word_suggestion':

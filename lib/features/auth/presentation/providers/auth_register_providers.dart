@@ -208,4 +208,8 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
   void acknowledgeSocialCancel() {
     state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
+  }
 }

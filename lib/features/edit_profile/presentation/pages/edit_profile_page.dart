@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/edit_profile_providers.dart';
 
 class EditProfilePage extends HookConsumerWidget {
@@ -36,6 +37,15 @@ class EditProfilePage extends HookConsumerWidget {
       } else {
         context.go('/profile');
       }
+    });
+
+    ref.listen(editProfileProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(editProfileProvider.notifier).clearError();
+        }
+      });
     });
 
     final canSubmit = displayName.text.trim().isNotEmpty &&
@@ -85,13 +95,6 @@ class EditProfilePage extends HookConsumerWidget {
                   textInputAction: .done,
                   onSubmit: canSubmit ? (_) => submit() : null,
                 ),
-                if (state.errorMessage != null) ...[
-                  const Gap(12),
-                  Text(
-                    state.errorMessage!,
-                    style: TextStyle(color: context.theme.colors.destructive),
-                  ),
-                ],
                 const Gap(20),
                 FButton(
                   onPress: canSubmit ? submit : null,

@@ -91,4 +91,8 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       clearErrorMessage: true,
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

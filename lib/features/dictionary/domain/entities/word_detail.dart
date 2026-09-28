@@ -238,6 +238,7 @@ class WordAudio {
     this.durationMs,
     this.isPrimary = false,
     this.mimeType,
+    this.isVerified = true,
   });
 
   final String id;
@@ -247,6 +248,12 @@ class WordAudio {
   final int? durationMs;
   final bool isPrimary;
   final String? mimeType;
+
+  /// false jika API mengembalikan is_verified: false.
+  /// Default true agar payload lama tanpa field tetap normal.
+  final bool isVerified;
+
+  bool get isPendingReview => !isVerified;
 
   String get displaySpeaker {
     final name = speakerName?.trim();

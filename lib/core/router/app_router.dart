@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/about/about_router.dart';
 import '../../features/activity/presentation/pages/activity_page.dart';
+import '../../features/admin_analytics/admin_analytics_router.dart';
 import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
 import '../../features/bookmark/bookmark_router.dart';
@@ -29,10 +30,10 @@ import '../../features/onboarding/data/onboarding_prefs.dart';
 import '../../features/onboarding/onboarding_router.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/report_bug/report_bug_router.dart';
-import '../../features/review/presentation/providers/review_providers.dart';
+import '../../features/review/presentation/providers/review_suggestions_providers.dart';
 import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
-import '../../features/translation_help/translation_help_router.dart';
+import '../../features/discussion/discussion_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/splash/splash_router.dart';
@@ -74,8 +75,9 @@ class AppRouter {
       ...UserProfileRouter.routes,
       ...VerifierApplicationRouter.routes,
       ...ReportBugRouter.routes,
-      ...TranslationHelpRouter.routes,
+      ...DiscussionRouter.routes,
       ...ReviewRouter.routes,
+      ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
       ...ExploreRouter.routes,
       StatefulShellRoute.indexedStack(
@@ -167,7 +169,7 @@ class AppRouter {
 
     // Jangan await getIsAuth (prefs + Keychain) di setiap pop/push.
     // Hanya perlu saat gate login/profil - selain itu delay-nya terasa
-    // sebagai lag back dari search-miss / bantuan terjemahan.
+    // sebagai lag back dari search-miss / ruang diskusi.
     final needsAuthGate = loc == AuthRouter.login.path ||
         loc == '/profile' ||
         path == '/profile';
@@ -195,7 +197,7 @@ class AppRouter {
     }
     if (path.startsWith('/words/')) return true;
     if (path.startsWith('/users/')) return true;
-    if (path.startsWith('/translation-helps')) return true;
+    if (path.startsWith('/discussions')) return true;
     return false;
   }
 }
@@ -222,12 +224,12 @@ class _HomeShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pendingReview = ref.watch(reviewQueueHasPendingProvider).value ?? false;
+    final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
     // resizeToAvoidBottomInset false: keyboard tidak dorong bottom nav
     // (nested scaffold + inset = overflow / "geser drawer")
     // footerDecoration dikosongkan - FBottomNavigationBar sudah punya top border
     //
-    // Overlay root (search-miss, translation-help, …): pause ticker shell +
+    // Overlay root (search-miss, discussion, …): pause ticker shell +
     // cache layer. ModalRoute.isCurrent sering tetap true di dalam
     // StatefulShellRoute - pakai rootNavigator.canPop sebagai sinyal.
     return ListenableBuilder(

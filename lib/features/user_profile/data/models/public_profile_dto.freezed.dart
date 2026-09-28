@@ -1052,8 +1052,8 @@ return $default(_that.items);case _:
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(explicitToJson: true)
 class _PublicActivityDto implements PublicActivityDto {
   const _PublicActivityDto({final  List<PublicActivityItemDto> items = const []}): _items = items;
   factory _PublicActivityDto.fromJson(Map<String, dynamic> json) => _$PublicActivityDtoFromJson(json);

@@ -12,7 +12,8 @@ class PhoneCountry {
   final String flagEmoji;
   final String nameId;
 
-  String get prefixLabel => '$flagEmoji +$dialCode';
+  /// Dial code untuk prefix field (`+62`). Bendera pakai [PhoneCountryFlag].
+  String get prefixLabel => '+$dialCode';
 
   @override
   bool operator ==(Object other) =>

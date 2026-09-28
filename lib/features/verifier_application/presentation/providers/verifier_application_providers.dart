@@ -73,4 +73,8 @@ class VerifierApplicationNotifier extends _$VerifierApplicationNotifier {
       },
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

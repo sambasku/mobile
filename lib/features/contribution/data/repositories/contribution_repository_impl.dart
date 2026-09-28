@@ -71,6 +71,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
             definition: m.definition,
             isHaveDefinition: m.isHaveDefinition,
             isHaveTranslation: m.isHaveTranslation,
+            meaningSource: m.meaningSource,
             orderIndex: i + 1,
             translations: m.translationTexts
                 .map(
@@ -157,6 +158,38 @@ class ContributionRepositoryImpl implements ContributionRepository {
     }
   }
 
+  @override
+  Future<Either<ContributionFailure, String>> confirmDuplicateMeaning({
+    required String wordId,
+    required String meaningId,
+    required int value,
+  }) async {
+    try {
+      final response = await _remoteDatasource.confirmDuplicateMeaning({
+        'word_id': wordId,
+        'meaning_id': meaningId,
+        'value': value,
+      });
+      if (response.success == false) {
+        return Either.left(
+          ContributionFailure(
+            response.message ?? 'Gagal mencatat dukungan',
+            errorCode: response.errorCode,
+            details: response.details ?? const <ApiErrorDetail>[],
+          ),
+        );
+      }
+      final data = response.data;
+      return Either.right(
+        data?.message ?? 'Terima kasih. Kamu tercatat di riwayat perubahan.',
+      );
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(ContributionFailure(error.toString()));
+    }
+  }
+
   ContributionFailure _mapDio(DioException error) {
     final data = error.response?.data;
     if (data is Map<String, dynamic>) {
@@ -169,14 +202,22 @@ class ContributionRepositoryImpl implements ContributionRepository {
                 .map(ApiErrorDetail.fromJson)
                 .toList(growable: false)
           : const <ApiErrorDetail>[];
+      final payload = data['data'];
+      final extra = payload is Map<String, dynamic> ? payload : null;
 
       if (message is String && message.isNotEmpty) {
-        return ContributionFailure(message, errorCode: code, details: details);
+        return ContributionFailure(
+          message,
+          errorCode: code,
+          details: details,
+          data: extra,
+        );
       }
       return ContributionFailure(
         _fallbackForStatus(error.response?.statusCode, code),
         errorCode: code,
         details: details,
+        data: extra,
       );
     }
     switch (error.type) {

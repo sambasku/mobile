@@ -89,47 +89,6 @@ Future<double> wavDurationSeconds(File file) async {
   return info.durationSec;
 }
 
-/// Deteksi rentang suara (buang diam awal/akhir) via RMS window.
-Future<(double startSec, double endSec)> detectWavSpeechBounds(
-  File file, {
-  double silenceThreshold = 0.02,
-  double paddingSec = 0.12,
-  double minSec = 0.25,
-}) async {
-  final info = _parseWav(await file.readAsBytes());
-  final data = info.bytes.buffer.asByteData();
-  final samples = info.dataSize ~/ 2; // int16
-  final window = math.max(1, (info.sampleRate * 0.02).floor()); // 20ms
-  var first = -1;
-  var last = -1;
-
-  for (var i = 0; i < samples; i += window) {
-    var sum = 0.0;
-    final end = math.min(i + window, samples);
-    for (var j = i; j < end; j++) {
-      final s = data.getInt16(info.dataOffset + j * 2, Endian.little) / 32768.0;
-      sum += s * s;
-    }
-    final rms = math.sqrt(sum / (end - i));
-    if (rms >= silenceThreshold) {
-      if (first < 0) first = i;
-      last = end;
-    }
-  }
-
-  final duration = info.durationSec;
-  if (first < 0 || last < 0) return (0.0, duration);
-
-  var startSec = math.max(0.0, first / info.sampleRate - paddingSec);
-  var endSec = math.min(duration, last / info.sampleRate + paddingSec);
-  if (endSec - startSec < minSec) {
-    final mid = (startSec + endSec) / 2;
-    startSec = math.max(0.0, mid - minSec / 2);
-    endSec = math.min(duration, startSec + minSec);
-  }
-  return (startSec, endSec);
-}
-
 /// Tulis potongan [startSec, endSec] ke file WAV baru di direktori yang sama.
 Future<WavTrimResult> trimWavFile(
   File source, {

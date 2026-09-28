@@ -7,6 +7,7 @@ import '../../domain/failures/notification_failure.dart';
 import '../../domain/repositories/notification_repository.dart';
 
 InboxNotification parseInboxNotification(Map<String, dynamic> map) {
+  final rawImage = map['image_url']?.toString();
   return InboxNotification(
     id: map['id']?.toString() ?? '',
     type: map['type']?.toString() ?? '',
@@ -16,6 +17,9 @@ InboxNotification parseInboxNotification(Map<String, dynamic> map) {
     targetId: map['target_id']?.toString() ?? '',
     createdAt: map['created_at']?.toString() ?? '',
     readAt: map['read_at']?.toString(),
+    actionKind: map['action_kind']?.toString(),
+    actionValue: map['action_value']?.toString(),
+    imageUrl: (rawImage != null && rawImage.isNotEmpty) ? rawImage : null,
   );
 }
 

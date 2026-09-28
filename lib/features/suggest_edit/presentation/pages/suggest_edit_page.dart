@@ -16,7 +16,10 @@ import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
+import '../../../review/domain/review_access.dart';
+import '../../domain/suggest_edit_feedback.dart';
 import '../widgets/suggest_edit_extras_sheet.dart';
+import '../widgets/word_change_history_section.dart';
 
 const _reasonOptions = <({String code, String label})>[
   (code: 'typo', label: 'Kesalahan penulisan'),
@@ -369,7 +372,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return;
       }
 
-      await dio.post<Map<String, dynamic>>(
+      final response = await dio.post<Map<String, dynamic>>(
         '/api/v1/words/${widget.wordId}/suggest-edit',
         data: {
           'proposed_changes': proposed,
@@ -386,17 +389,31 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           ref.read(wordDetailProvider(widget.wordId)).value?.isVerified ??
               true;
       final lemma = _lemmaCtrl.text.trim();
-      final title = verified
-          ? 'Usulan untuk "${lemma.isEmpty ? 'kata ini' : lemma}" masuk antrean. Isi yang sedang tayang belum berubah.'
-          : 'Perubahan sudah tayang di "${lemma.isEmpty ? 'kata ini' : lemma}". Statusnya tetap menunggu pengecekan.';
+      final actorRole = ref.read(authStatusProvider).value?.role;
+      final selfApplied = suggestEditWasSelfApplied(
+        responseStatus: suggestEditStatusFromResponse(response.data),
+        actorRole: actorRole,
+      );
+      final title = suggestEditSuccessToast(
+        selfApplied: selfApplied,
+        wordVerified: verified,
+        lemma: lemma,
+      );
       showFToast(
         context: context,
         title: Text(title),
       );
-      ref.invalidate(myContributionsListControllerProvider);
       final router = GoRouter.of(context);
-      router.pop();
-      router.push('/contributions');
+      if (selfApplied) {
+        // Self-apply: kembali ke detail kata dengan data segar (bukan antrean).
+        ref.invalidate(wordDetailProvider(widget.wordId));
+        ref.invalidate(changeHistoryProvider(widget.wordId));
+        router.pop();
+      } else {
+        ref.invalidate(myContributionsListControllerProvider);
+        router.pop();
+        router.push('/contributions');
+      }
     } on DioException catch (e) {
       final data = e.response?.data;
       var msg = 'Gagal mengirim usulan';
@@ -433,9 +450,14 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       );
     }
 
+    final preSubmit = suggestEditPreSubmitCopy(auth?.role);
+    final reasonLabels = suggestEditReasonLabels(auth?.role);
+    final headerTitle =
+        isVerifierRole(auth?.role) ? 'Ubah Kata' : 'Usulkan Perubahan';
+
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Usulkan Perubahan'),
+        title: Text(headerTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       footer: SafeArea(
@@ -450,7 +472,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                     if (d != null) _submit(d);
                   },
             prefix: _submitting ? const FCircularProgress() : null,
-            child: Text(_submitting ? 'Mengirim...' : 'Kirim Usulan'),
+            child: Text(_submitting ? preSubmit.ctaBusy : preSubmit.cta),
           ),
         ),
       ),
@@ -464,7 +486,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
             children: [
               Text(
-                'Ubah yang perlu saja. Admin mereview sebelum tayang.',
+                preSubmit.banner,
                 style: theme.typography.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -638,7 +660,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               ],
 
               const Gap(12),
-              const _FieldCaption('Alasan usulan *'),
+              _FieldCaption(reasonLabels.fieldCaption),
               FTile(
                 title: Text(
                   _reasonOptions
@@ -653,7 +675,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                   size: 16,
                   color: theme.colors.mutedForeground,
                 ),
-                onPress: _openReasonSheet,
+                onPress: () => _openReasonSheet(reasonLabels.sheetTitle),
               ),
               const Gap(8),
               FTextField(
@@ -682,7 +704,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
   }
 
-  Future<void> _openReasonSheet() async {
+  Future<void> _openReasonSheet(String sheetTitle) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
       useSafeArea: true,
@@ -696,7 +718,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Pilih alasan usulan',
+                  sheetTitle,
                   style: sheetTheme.typography.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

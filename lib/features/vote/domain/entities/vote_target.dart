@@ -1,7 +1,7 @@
 /// Target polymorphic operasi vote (08-api-upvote-downvote.md).
 ///
 /// `type` = salah satu dari word | meaning | example | pronunciation |
-/// word_image | comment | translation_help_reply | translation_help.
+/// word_image | comment | discussion_reply | discussion.
 /// `id` = ULID 26 karakter milik target.
 class VoteTarget {
   const VoteTarget({required this.type, required this.id});

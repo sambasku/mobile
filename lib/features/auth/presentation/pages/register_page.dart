@@ -12,6 +12,8 @@ import '../../../../core/network/network_providers.dart';
 import '../../../../shared/utils/phone_country.dart';
 import '../../../../shared/utils/phone_country_picker_sheet.dart';
 import '../../../../shared/utils/phone_national_digits_formatter.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/widgets/phone_country_flag.dart';
 import '../../auth_router.dart';
 import '../../domain/failures/auth_failure.dart';
 import '../providers/auth_login_providers.dart';
@@ -89,8 +91,11 @@ class RegisterPage extends HookConsumerWidget {
       if (code == 'RATE_LIMITED') {
         showFToast(
           context: context,
-          title: Text(state.errorMessage ?? 'Coba lagi nanti'),
+          title: Text(
+            ref.read(authRegisterProvider).errorMessage ?? 'Coba lagi nanti',
+          ),
         );
+        ref.read(authRegisterProvider.notifier).clearError();
         return;
       }
       if (code == AuthFailure.googleSignInCanceled ||
@@ -99,6 +104,22 @@ class RegisterPage extends HookConsumerWidget {
         showFToast(context: context, title: const Text('Daftar dibatalkan'));
         ref.read(authRegisterProvider.notifier).acknowledgeSocialCancel();
       }
+    });
+
+    ref.listen(authRegisterProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      final code = ref.read(authRegisterProvider).errorCode;
+      if (code == 'RATE_LIMITED' ||
+          code == AuthFailure.googleSignInCanceled ||
+          code == AuthFailure.facebookSignInCanceled ||
+          code == AuthFailure.githubSignInCanceled) {
+        return;
+      }
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authRegisterProvider.notifier).clearError();
+        }
+      });
     });
 
     ref.listen(authRegisterProvider.select((s) => s.success), (_, success) {
@@ -231,6 +252,11 @@ class RegisterPage extends HookConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        PhoneCountryFlag.fromCountry(
+                          phoneCountry.value,
+                          size: 18,
+                        ),
+                        const Gap(6),
                         Text(
                           phoneCountry.value.prefixLabel,
                           style: theme.typography.sm.copyWith(
@@ -314,14 +340,6 @@ class RegisterPage extends HookConsumerWidget {
                     ),
                   ],
                 ),
-              if (state.errorMessage != null &&
-                  state.errorCode != 'RATE_LIMITED' &&
-                  state.errorCode != AuthFailure.googleSignInCanceled &&
-                  state.errorCode != AuthFailure.facebookSignInCanceled &&
-                  state.errorCode != AuthFailure.githubSignInCanceled) ...[
-                const Gap(12),
-                FAlert(variant: .destructive, title: Text(state.errorMessage!)),
-              ],
               const Gap(16),
               FButton(
                 onPress: canSubmit ? submit : null,

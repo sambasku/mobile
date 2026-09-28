@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../shared/widgets/attachment_images_field.dart';
+import '../../../shared/utils/error_bottom_sheet.dart';
 import '../../../core/services/analytics_service.dart';
 import '../../auth/presentation/providers/auth_status_providers.dart';
 import '../data/bug_report_providers.dart';
@@ -27,7 +28,6 @@ class ReportBugPage extends HookConsumerWidget {
     final images = useState<List<AttachmentImageSlot>>(const []);
     final attachmentsEnabled = useState(true);
     final submitting = useState(false);
-    final errorMessage = useState<String?>(null);
     final isGuest = !(ref.watch(authStatusProvider).value?.isAuth ?? false);
 
     final trimmed = description.text.trim();
@@ -47,7 +47,6 @@ class ReportBugPage extends HookConsumerWidget {
       }
 
       submitting.value = true;
-      errorMessage.value = null;
       try {
         final repo = ref.read(bugReportRepositoryProvider);
         final ready = skipImages || !attachmentsEnabled.value
@@ -119,9 +118,16 @@ class ReportBugPage extends HookConsumerWidget {
         );
         context.pop();
       } on DioException catch (e) {
-        errorMessage.value = _mapDio(e);
+        if (context.mounted) {
+          await showAppErrorSheet(context, message: _mapDio(e));
+        }
       } catch (_) {
-        errorMessage.value = 'Terjadi kesalahan, coba lagi';
+        if (context.mounted) {
+          await showAppErrorSheet(
+            context,
+            message: 'Terjadi kesalahan, coba lagi',
+          );
+        }
       } finally {
         submitting.value = false;
       }
@@ -254,13 +260,6 @@ class ReportBugPage extends HookConsumerWidget {
                   );
                 }
               },
-            ),
-          ],
-          if (errorMessage.value != null) ...[
-            const Gap(12),
-            FAlert(
-              variant: FAlertVariant.destructive,
-              title: Text(errorMessage.value!),
             ),
           ],
           const Gap(16),

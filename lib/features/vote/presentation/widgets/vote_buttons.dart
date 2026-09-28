@@ -34,7 +34,7 @@ class VoteButtons extends StatefulWidget {
   final bool busy;
   final bool compact;
 
-  /// Hanya tombol upvote (mis. pertanyaan bantuan terjemahan).
+  /// Hanya tombol upvote (mis. pertanyaan ruang diskusi).
   final bool upvoteOnly;
 
   @override

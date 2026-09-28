@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../features/auth/presentation/providers/auth_status_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/change_password_providers.dart';
 
 /// Halaman ubah password (profil → menu "Ubah Password"). Sukses =
@@ -45,6 +46,15 @@ class ChangePasswordPage extends HookConsumerWidget {
           ],
         ),
       );
+    });
+
+    ref.listen(changePasswordProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(changePasswordProvider.notifier).clearError();
+        }
+      });
     });
 
     final newPasswordValid = newPassword.text.length >= 8 &&
@@ -97,13 +107,6 @@ class ChangePasswordPage extends HookConsumerWidget {
             textInputAction: .done,
             onSubmit: canSubmit ? (_) => submit() : null,
           ),
-          if (state.errorMessage != null) ...[
-            const Gap(12),
-            FAlert(
-              variant: .destructive,
-              title: Text(state.errorMessage!),
-            ),
-          ],
           const Gap(16),
           FButton(
             onPress: canSubmit ? submit : null,

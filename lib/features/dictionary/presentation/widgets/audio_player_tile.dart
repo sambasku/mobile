@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../domain/entities/word_detail.dart';
 import '../providers/audio_player_controller.dart';
+import '../../../../core/widgets/pending_review_badge_icon.dart';
 
 /// Tile audio compact (pola contoh kalimat): ikon + meta 1 baris + progress.
 class AudioPlayerTile extends ConsumerWidget {
@@ -22,8 +23,9 @@ class AudioPlayerTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final view = ref.watch(wordDetailAudioPlayerProvider(wordId));
-    final playback = view.stateFor(audio.id);
+    final WordDetailAudioView view =
+        ref.watch(wordDetailAudioPlayerProvider(wordId));
+    final AudioTilePlaybackState playback = view.stateFor(audio.id);
     final isActive = view.activeAudioId == audio.id;
     final showBar = isActive && view.showProgress;
     final canSeek = isActive && view.canSeek;
@@ -113,6 +115,17 @@ class AudioPlayerTile extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    if (audio.isPendingReview) ...[
+                      const Gap(4),
+                      Semantics(
+                        button: true,
+                        label: 'Menunggu pengecekan',
+                        child: GestureDetector(
+                          onTap: () => showPendingAudioReviewInfo(context),
+                          child: const PendingReviewBadgeIcon(size: 14),
+                        ),
+                      ),
+                    ],
                     if (timeLabel != null && timeLabel.isNotEmpty) ...[
                       const Gap(6),
                       Text(

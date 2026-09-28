@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 ///
 /// - Horizontal past slop → always claim (approve / reject).
 /// - Vertical **up** past slop → claim only if [shouldClaimVertical] is null
-///   or returns `true` (e.g. nested list is scrolled to top).
+///   or returns `true` (konten muat / list di dasar).
 /// - Vertical **down** → never claim; let the scrollable keep the drag.
 class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
   SoftEagerPanGestureRecognizer({
@@ -18,7 +18,7 @@ class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
   final double claimSlop;
 
   /// When upward vertical intent dominates, return `false` to yield to a
-  /// nested / parent scrollable (e.g. review body not at scroll offset 0).
+  /// nested / parent scrollable (mis. list masih bisa di-scroll ke bawah).
   /// Mutable so [RawGestureDetector] can refresh the gate on rebuild.
   bool Function()? shouldClaimVertical;
 
@@ -66,11 +66,17 @@ class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
 
   @override
   void rejectGesture(int pointer) {
-    // Jika scrollable menang arena dulu, rebut balik saat intent naik jelas
-    // dan gate mengizinkan (Kontribusi: selalu; Tinjauan: list di atas).
+    // Scrollable (ListView) sering menang arena sebelum slop terpenuhi.
+    // Saat gate skip terbuka dan gerakan belum jelas ke bawah, rebut balik
+    // supaya swipe-atas tidak "mati". Gate tertutup → yield ke scroll.
+    final gateOpen = _verticalSkipAllowed();
     final upwardPastSlop =
-        _accumDy < 0 && _accumDy.abs() >= claimSlop && _verticalSkipAllowed();
-    if (_claimed || _shouldClaimNow() || upwardPastSlop) {
+        _accumDy < 0 && _accumDy.abs() >= claimSlop && gateOpen;
+    final earlyWhileGateOpen = gateOpen && _accumDy <= 0;
+    if (_claimed ||
+        _shouldClaimNow() ||
+        upwardPastSlop ||
+        earlyWhileGateOpen) {
       _claimed = true;
       acceptGesture(pointer);
     } else {

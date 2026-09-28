@@ -224,7 +224,7 @@ void main() {
     );
 
     expect(find.text('budi'), findsOneWidget);
-    expect(find.text('Tinjau usulan'), findsNothing);
+    expect(find.text('Area Verifikator'), findsNothing);
     expect(find.text('Masuk / Login'), findsNothing);
     expect(find.text('Daftar'), findsNothing);
     expect(find.text('Keluar'), findsOneWidget);

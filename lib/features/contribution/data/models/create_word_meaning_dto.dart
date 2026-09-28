@@ -18,6 +18,8 @@ abstract class CreateWordMeaningDto with _$CreateWordMeaningDto {
     @JsonKey(name: 'is_have_definition') @Default(true) bool isHaveDefinition,
     // false = sengaja tanpa padanan kata Indonesia.
     @JsonKey(name: 'is_have_translation') @Default(true) bool isHaveTranslation,
+    // Provenance: manual | kbbi | kbbi_edited
+    @JsonKey(name: 'meaning_source') @Default('manual') String meaningSource,
     @JsonKey(name: 'order_index') @Default(1) int orderIndex,
     required List<CreateWordTranslationDto> translations,
     @JsonKey(includeIfNull: false) List<CreateWordExampleDto>? examples,

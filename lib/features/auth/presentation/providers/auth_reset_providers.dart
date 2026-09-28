@@ -58,4 +58,8 @@ class AuthResetNotifier extends _$AuthResetNotifier {
       ),
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

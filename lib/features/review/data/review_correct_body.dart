@@ -6,7 +6,14 @@ Map<String, dynamic> buildWordCorrectBody({
   required String lemma,
   required String? notes,
   required String wordType,
-  required List<({String definition, String translation, String? wordClassId})>
+  required List<
+    ({
+      String definition,
+      String translation,
+      String? wordClassId,
+      String meaningSource,
+    })
+  >
   meaningEdits,
   required bool publish,
   String? comment,
@@ -74,6 +81,10 @@ Map<String, dynamic> buildWordCorrectBody({
         'order_index': meaning['orderIndex'] is int ? meaning['orderIndex'] : i,
         'is_have_definition': definition.isNotEmpty && definition != '-',
         'is_have_translation': translations.isNotEmpty,
+        'meaning_source':
+            edit?.meaningSource ??
+            meaning['meaningSource']?.toString() ??
+            'manual',
         'translations': translations,
         if (examples.isNotEmpty) 'examples': examples,
       });

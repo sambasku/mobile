@@ -50,6 +50,8 @@ abstract class PublicActivityItemDto with _$PublicActivityItemDto {
 
 @freezed
 abstract class PublicActivityDto with _$PublicActivityDto {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(explicitToJson: true)
   const factory PublicActivityDto({
     @Default([]) List<PublicActivityItemDto> items,
   }) = _PublicActivityDto;

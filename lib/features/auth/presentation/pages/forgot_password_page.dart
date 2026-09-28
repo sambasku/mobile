@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../auth_router.dart';
 import '../providers/auth_forgot_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 /// Minta kode reset 8 karakter 0-9A-Z. Response API selalu sama (anti-enumeration).
 class ForgotPasswordPage extends HookConsumerWidget {
@@ -23,6 +24,15 @@ class ForgotPasswordPage extends HookConsumerWidget {
       context.go(
         '${AuthRouter.resetPassword.path}?email=${Uri.encodeComponent(email.text.trim())}&cooldown=1',
       );
+    });
+
+    ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authForgotProvider.notifier).clearError();
+        }
+      });
     });
 
     final canSubmit = email.text.contains('@') && !state.isSubmitting;
@@ -73,13 +83,6 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 textInputAction: .done,
                 onSubmit: canSubmit ? (_) => submit() : null,
               ),
-              if (state.errorMessage != null) ...[
-                const Gap(12),
-                FAlert(
-                  variant: .destructive,
-                  title: Text(state.errorMessage!),
-                ),
-              ],
               const Gap(16),
               FButton(
                 onPress: canSubmit ? submit : null,

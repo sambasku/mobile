@@ -44,6 +44,7 @@ class SubmitAnonWordUseCase {
           definition: definition,
           isHaveDefinition: isHaveDefinition,
           isHaveTranslation: isHaveTranslation,
+          meaningSource: m.meaningSource,
           translationTexts: translations,
           exampleSentences: exampleSentences,
         ),
@@ -139,6 +140,7 @@ class SubmitAnonWordMeaningParams {
     required this.definition,
     this.isHaveDefinition = true,
     this.isHaveTranslation = true,
+    this.meaningSource = 'manual',
     this.translationTexts = const [],
     this.exampleSentences = const [],
   });
@@ -147,6 +149,8 @@ class SubmitAnonWordMeaningParams {
   final String definition;
   final bool isHaveDefinition;
   final bool isHaveTranslation;
+  /// `manual` | `kbbi` | `kbbi_edited`
+  final String meaningSource;
   final List<String> translationTexts;
   final List<String> exampleSentences;
 }

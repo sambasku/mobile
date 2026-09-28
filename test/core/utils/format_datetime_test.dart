@@ -8,4 +8,29 @@ void main() {
     expect(formatDateYmd(null), '');
     expect(formatDateYmd('bukan-tanggal'), '');
   });
+
+  test('formatRelativeCompact: humanize singkat', () {
+    final now = DateTime(2026, 9, 28, 17, 0);
+    expect(formatRelativeCompact(null, now: now), '');
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(seconds: 20)), now: now),
+      'baru',
+    );
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(minutes: 12)), now: now),
+      '12m',
+    );
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(hours: 2)), now: now),
+      '2h',
+    );
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(days: 3)), now: now),
+      '3d',
+    );
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(days: 10)), now: now),
+      '18 Sep',
+    );
+  });
 }

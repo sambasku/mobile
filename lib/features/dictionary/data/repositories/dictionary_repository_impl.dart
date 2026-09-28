@@ -614,6 +614,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     durationMs: dto.durationMs,
     isPrimary: dto.isPrimary,
     mimeType: dto.mimeType,
+    isVerified: dto.isVerified,
   );
 
   DictionaryFailure _mapDio(

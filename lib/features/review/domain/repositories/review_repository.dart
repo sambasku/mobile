@@ -8,6 +8,7 @@ abstract class ReviewRepository {
     String? status,
     String? entityType,
     String? wordId,
+    bool mine = false,
     int limit = 20,
     String? cursor,
   });
@@ -28,4 +29,8 @@ abstract class ReviewRepository {
     String id,
     Map<String, dynamic> body,
   );
+
+  Future<Either<ReviewFailure, ReviewDecisionResult>> reopen(String id);
+
+  Future<Either<ReviewFailure, Unit>> unverifyWord(String wordId);
 }

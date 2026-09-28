@@ -81,6 +81,36 @@ class NotificationInboxListController extends _$NotificationInboxListController 
                 targetId: item.targetId,
                 createdAt: item.createdAt,
                 readAt: DateTime.now().toUtc().toIso8601String(),
+                actionKind: item.actionKind,
+                actionValue: item.actionValue,
+              )
+            else
+              item,
+        ],
+      ),
+    );
+  }
+
+  void markAllLocalRead() {
+    final current = state.value;
+    if (current == null) return;
+    final now = DateTime.now().toUtc().toIso8601String();
+    state = AsyncData(
+      current.copyWith(
+        items: [
+          for (final item in current.items)
+            if (item.isUnread)
+              InboxNotification(
+                id: item.id,
+                type: item.type,
+                title: item.title,
+                body: item.body,
+                targetKind: item.targetKind,
+                targetId: item.targetId,
+                createdAt: item.createdAt,
+                readAt: now,
+                actionKind: item.actionKind,
+                actionValue: item.actionValue,
               )
             else
               item,

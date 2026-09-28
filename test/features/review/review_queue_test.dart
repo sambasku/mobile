@@ -44,6 +44,7 @@ class _FakeReviewRepository implements ReviewRepository {
     String? status,
     String? entityType,
     String? wordId,
+    bool mine = false,
     int limit = 20,
     String? cursor,
   }) async {
@@ -78,6 +79,14 @@ class _FakeReviewRepository implements ReviewRepository {
     String id,
     Map<String, dynamic> body,
   ) async => Either.left(ReviewFailure('tidak dipakai'));
+
+  @override
+  Future<Either<ReviewFailure, ReviewDecisionResult>> reopen(String id) async =>
+      Either.left(ReviewFailure('tidak dipakai'));
+
+  @override
+  Future<Either<ReviewFailure, Unit>> unverifyWord(String wordId) async =>
+      Either.left(ReviewFailure('tidak dipakai'));
 }
 
 ReviewDetail _wordDetail({

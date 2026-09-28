@@ -13,7 +13,7 @@ class AvatarUploadService {
     try {
       final fileName = file.uri.pathSegments.isNotEmpty
           ? file.uri.pathSegments.last
-          : 'avatar.jpg';
+          : 'avatar.webp';
       final form = FormData.fromMap({
         'file': await MultipartFile.fromFile(file.path, filename: fileName),
       });

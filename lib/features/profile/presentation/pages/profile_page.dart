@@ -15,8 +15,10 @@ import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../auth/presentation/models/auth_status_state.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../notification/notification_router.dart';
+import '../../../admin_analytics/admin_analytics_router.dart';
+import '../../../admin_analytics/domain/admin_access.dart';
 import '../../../review/domain/review_access.dart';
-import '../../../review/presentation/providers/review_providers.dart';
+import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../widgets/appearance_tiles.dart';
@@ -130,8 +132,19 @@ class ProfilePage extends HookConsumerWidget {
                             onPress: () =>
                                 context.push('/verifier-application'),
                           ),
-                        if (canReviewQueue(status.role))
+                        if (canAccessReviewHome(status.role))
                           const _ReviewQueueTile(),
+                        if (canAccessAdminAnalytics(status.role))
+                          FTile(
+                            prefix: const Icon(FLucideIcons.chartColumn),
+                            title: const Text('Analitik'),
+                            subtitle: const Text(
+                              'KPI, aktivitas, dan antrean operasional',
+                            ),
+                            suffix: const Icon(FLucideIcons.chevronRight),
+                            onPress: () =>
+                                context.push(AdminAnalyticsRouter.home.path),
+                          ),
                         FTile(
                           prefix: const Icon(FLucideIcons.link),
                           title: const Text('Akun Terhubung'),
@@ -264,13 +277,13 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pending = ref.watch(reviewQueueHasPendingProvider).value ?? false;
+    final pending = ref.watch(reviewHubHasPendingProvider).value ?? false;
     return FTile(
       prefix: const Icon(FLucideIcons.shieldCheck),
-      title: const Text('Tinjau usulan'),
+      title: const Text('Area Verifikator'),
       subtitle: pending
           ? const Text('Ada usulan yang menunggu')
-          : const Text('Antrian kontribusi untuk ditinjau'),
+          : const Text('Antrean, usulan edit, dan riwayat'),
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

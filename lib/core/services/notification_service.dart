@@ -90,6 +90,13 @@ class NotificationService {
     final body = notification?.body ?? message.data['body'] as String?;
     if (title == null && body == null) return;
 
+    final imageUrl =
+        message.data['image_url']?.toString() ??
+        notification?.android?.imageUrl ??
+        notification?.apple?.imageUrl;
+
+    final hasImage = imageUrl != null && imageUrl.isNotEmpty;
+
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: message.hashCode.abs() % 100000,
@@ -97,7 +104,9 @@ class NotificationService {
         title: title ?? 'SambasKu',
         body: body ?? '',
         payload: message.data.map((k, v) => MapEntry(k, v.toString())),
-        notificationLayout: NotificationLayout.Default,
+        notificationLayout:
+            hasImage ? NotificationLayout.BigPicture : NotificationLayout.Default,
+        bigPicture: hasImage ? imageUrl : null,
       ),
     );
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 ShimmerEffect shareShimmerEffect(BuildContext context) {
@@ -28,6 +29,70 @@ class ShareSkeleton extends StatelessWidget {
       data: SkeletonizerConfigData(effect: shareShimmerEffect(context)),
       child: IgnorePointer(
         child: Skeletonizer(enabled: true, child: child),
+      ),
+    );
+  }
+}
+
+/// Placeholder preview kartu saat latar stok masih dimuat (buka sheet pertama).
+class ShareCardPreviewSkeleton extends StatelessWidget {
+  const ShareCardPreviewSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return ShareSkeleton(
+      child: ColoredBox(
+        color: theme.colors.muted,
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(22, 32, 22, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Bone(
+                width: 88,
+                height: 12,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              Gap(18),
+              Bone(
+                width: 220,
+                height: 34,
+                borderRadius: BorderRadius.all(Radius.circular(6)),
+              ),
+              Gap(14),
+              Bone(
+                width: 160,
+                height: 16,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              Gap(10),
+              Bone(
+                width: 260,
+                height: 12,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              Gap(8),
+              Bone(
+                width: 200,
+                height: 12,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              Gap(8),
+              Bone(
+                width: 140,
+                height: 12,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              Spacer(),
+              Bone(
+                width: 110,
+                height: 11,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

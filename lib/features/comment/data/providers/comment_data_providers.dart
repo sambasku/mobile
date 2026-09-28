@@ -12,5 +12,7 @@ CommentRemoteDatasource commentRemoteDatasource(Ref ref) =>
     CommentRemoteDatasource(ref.watch(dioProvider));
 
 @riverpod
-CommentRepository commentRepository(Ref ref) =>
-    CommentRepositoryImpl(ref.watch(commentRemoteDatasourceProvider));
+CommentRepository commentRepository(Ref ref) => CommentRepositoryImpl(
+      ref.watch(commentRemoteDatasourceProvider),
+      ref.watch(dioProvider),
+    );

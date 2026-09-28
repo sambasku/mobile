@@ -11,6 +11,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/review_access.dart';
+import '../../review_router.dart';
 import '../providers/review_providers.dart';
 import '../providers/review_submit_queue.dart';
 import '../widgets/review_correct_form.dart';
@@ -127,8 +128,8 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       return;
     }
     final path = widget.wordId != null
-        ? '/review?wordId=${Uri.encodeComponent(widget.wordId!)}'
-        : '/review';
+        ? ReviewRouter.queuePath(wordId: widget.wordId)
+        : ReviewRouter.queue.path;
     context.go(path);
   }
 
@@ -335,7 +336,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       return _guardBack(
         FScaffold(
           header: FHeader.nested(
-            title: const Text('Tinjau usulan'),
+            title: const Text('Area Verifikator'),
             prefixes: [
               FHeaderAction.back(onPress: _onBack),
             ],
@@ -457,62 +458,76 @@ class _ReviewViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = detail.contribution;
     final when = formatDateTimeIso(item.createdAt);
-    return ListView(
+    // Column (bukan ListView): deck Tinder-like harus bebas gesture swipe,
+    // termasuk atas = lewati. Overflow di-clip oleh kartu.
+    return Padding(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 24),
-      children: [
-        Text(
-          item.title,
-          style: context.theme.typography.xl.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const Gap(10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _MetaChip(
-              icon: FLucideIcons.layers,
-              label: reviewEntityLabel(item.entityType),
-            ),
-            _MetaChip(
-              icon: FLucideIcons.user,
-              label: item.contributorLabel,
-            ),
-            if (when.isNotEmpty)
-              _MetaChip(icon: FLucideIcons.clock, label: when),
-          ],
-        ),
-        if (detail.wordAlreadyVerified) ...[
-          const Gap(14),
-          FAlert(
-            title: Text(
-              detail.verifierUsername == null
-                  ? 'Sudah terverifikasi. Menyetujui hanya menutup antrean.'
-                  : 'Sudah terverifikasi oleh @${detail.verifierUsername}. Menyetujui hanya menutup antrean.',
-            ),
-          ),
-        ],
-        const Gap(18),
-        ReviewEntityPreview(detail: detail),
-        if (!item.isPending &&
-            (detail.reviewComment?.trim().isNotEmpty ?? false)) ...[
-          const Gap(16),
-          _SectionNote(
-            title: 'Catatan verifikator',
-            body: detail.reviewComment!,
-          ),
-        ],
-        if (item.isPending) ...[
-          const Gap(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           Text(
-            'Kanan hijau · kiri merah · atas lewati - atau pakai tombol di bawah.',
-            style: context.theme.typography.sm.copyWith(
-              color: context.theme.colors.mutedForeground,
+            item.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: context.theme.typography.xl.copyWith(
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const Gap(10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _MetaChip(
+                icon: FLucideIcons.layers,
+                label: reviewEntityLabel(item.entityType),
+              ),
+              _MetaChip(
+                icon: FLucideIcons.user,
+                label: item.contributorLabel,
+              ),
+              if (when.isNotEmpty)
+                _MetaChip(icon: FLucideIcons.clock, label: when),
+            ],
+          ),
+          if (detail.wordAlreadyVerified) ...[
+            const Gap(14),
+            FAlert(
+              title: Text(
+                detail.verifierUsername == null
+                    ? 'Sudah terverifikasi. Menyetujui hanya menutup antrean.'
+                    : 'Sudah terverifikasi oleh @${detail.verifierUsername}. Menyetujui hanya menutup antrean.',
+              ),
+            ),
+          ],
+          const Gap(18),
+          Expanded(
+            child: ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ReviewEntityPreview(detail: detail),
+              ),
+            ),
+          ),
+          if (!item.isPending &&
+              (detail.reviewComment?.trim().isNotEmpty ?? false)) ...[
+            const Gap(16),
+            _SectionNote(
+              title: 'Catatan verifikator',
+              body: detail.reviewComment!,
+            ),
+          ],
+          if (item.isPending) ...[
+            const Gap(16),
+            Text(
+              'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.',
+              style: context.theme.typography.sm.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -653,89 +668,98 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final bottom = MediaQuery.viewInsetsOf(context).bottom;
+    final media = MediaQuery.of(context);
+    final bottom = media.viewInsets.bottom;
     final canSubmit =
         _selected != null && (!_isOther || _controller.text.trim().isNotEmpty);
+    // Chip + field "Lainnya" + keyboard mudah melebihi tinggi layar.
+    final maxHeight = (media.size.height - bottom) * 0.9;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colors.border,
-                borderRadius: BorderRadius.circular(999),
-              ),
-            ),
-          ),
-          const Gap(16),
-          Text(
-            'Tolak usulan',
-            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const Gap(4),
-          Text(
-            'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.',
-            style: theme.typography.sm.copyWith(
-              color: theme.colors.mutedForeground,
-            ),
-          ),
-          const Gap(16),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
+      padding: EdgeInsets.only(bottom: bottom),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final reason in _rejectReasons)
-                GestureDetector(
-                  onTap: () => setState(() => _selected = reason),
-                  child: FBadge(
-                    variant: _selected == reason
-                        ? FBadgeVariant.primary
-                        : FBadgeVariant.secondary,
-                    child: Text(reason),
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.colors.border,
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
-            ],
-          ),
-          if (_isOther) ...[
-            const Gap(16),
-            FTextField(
-              control: FTextFieldControl.managed(
-                controller: _controller,
-                onChange: (_) => setState(() {}),
               ),
-              label: const Text('Alasan penolakan'),
-              hint: 'Jelaskan alasan penolakan',
-              maxLines: 4,
-              autofocus: true,
-            ),
-          ],
-          const Gap(16),
-          Row(
-            children: [
-              Expanded(
-                child: FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: () => Navigator.pop(context),
-                  child: const Text('Batal'),
+              const Gap(16),
+              Text(
+                'Tolak usulan',
+                style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const Gap(4),
+              Text(
+                'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.',
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
                 ),
               ),
-              const Gap(10),
-              Expanded(
-                child: FButton(
-                  variant: FButtonVariant.destructive,
-                  onPress: canSubmit ? _submit : null,
-                  child: const Text('Tolak'),
+              const Gap(16),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final reason in _rejectReasons)
+                    GestureDetector(
+                      onTap: () => setState(() => _selected = reason),
+                      child: FBadge(
+                        variant: _selected == reason
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.secondary,
+                        child: Text(reason),
+                      ),
+                    ),
+                ],
+              ),
+              if (_isOther) ...[
+                const Gap(16),
+                FTextField(
+                  control: FTextFieldControl.managed(
+                    controller: _controller,
+                    onChange: (_) => setState(() {}),
+                  ),
+                  label: const Text('Alasan penolakan'),
+                  hint: 'Jelaskan alasan penolakan',
+                  maxLines: 4,
+                  autofocus: true,
                 ),
+              ],
+              const Gap(16),
+              Row(
+                children: [
+                  Expanded(
+                    child: FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () => Navigator.pop(context),
+                      child: const Text('Batal'),
+                    ),
+                  ),
+                  const Gap(10),
+                  Expanded(
+                    child: FButton(
+                      variant: FButtonVariant.destructive,
+                      onPress: canSubmit ? _submit : null,
+                      child: const Text('Tolak'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

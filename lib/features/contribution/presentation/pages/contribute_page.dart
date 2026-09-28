@@ -17,14 +17,18 @@ import '../../../my_contributions/presentation/providers/my_contributions_provid
 import '../../domain/failures/contribution_failure.dart';
 import '../../domain/repositories/contribution_repository.dart';
 import '../../domain/usecases/submit_anon_word_use_case.dart';
+import '../../domain/meaning_source.dart';
 import '../models/submit_word_state.dart';
 import '../providers/submit_word_providers.dart';
 import '../widgets/contribute_images_field.dart';
 import '../widgets/contribute_relations_sheet.dart';
 import '../widgets/dialect_picker_sheet.dart';
+import '../widgets/duplicate_meaning_vote_sheet.dart';
 import '../widgets/kbbi_definition_sheet.dart';
 import '../widgets/knowledge_toggles.dart';
 import '../widgets/word_class_picker_sheet.dart';
+import '../../data/providers/contribution_data_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 class ContributePage extends ConsumerStatefulWidget {
   const ContributePage({
@@ -55,6 +59,9 @@ class _MeaningDraft {
   bool wantPadanan = false;
   String savedDefinition = '';
   String savedTranslation = '';
+  KbbiMeaningSnapshot? kbbiSnapshot;
+  /// Guard saat apply pick supaya listener tidak clear snapshot.
+  bool applyingKbbiPick = false;
 
   bool get modePicked => wantDefinition || wantPadanan;
 
@@ -81,7 +88,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   /// Definisi dan kelas kata dari pilihan KBBI. Kosong = entri tanpa definisi.
   String _standardDefinition = '';
   String? _standardWordClassId;
-  String? _standardKbbiLemma;
+  KbbiMeaningSnapshot? _standardKbbiSnapshot;
   bool _applyingKbbiPick = false;
 
   /// API `word_type`: word | idiom | peribahasa | ungkapan. Default kata.
@@ -130,7 +137,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       _standardTranslationCtrl.addListener(_onStandardTranslationEdited);
       for (final m in _meanings) {
         m.defCtrl.addListener(_onFieldEdited);
-        m.trCtrl.addListener(_onFieldEdited);
+        m.trCtrl.addListener(() => _onDraftTranslationEdited(m));
       }
     });
   }
@@ -142,13 +149,65 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   void _onStandardTranslationEdited() {
     _onFieldEdited();
     if (_applyingKbbiPick) return;
+    final snap = _standardKbbiSnapshot;
+    if (snap == null) return;
     final text = _standardTranslationCtrl.text.trim();
-    if (_standardKbbiLemma == null || text == _standardKbbiLemma) return;
-    setState(() {
-      _standardDefinition = '';
-      _standardWordClassId = null;
-      _standardKbbiLemma = null;
-    });
+    // Kosongkan padanan: biarkan definisi/kelas (kbbi_edited).
+    if (text.isEmpty) {
+      setState(() {});
+      return;
+    }
+    // Padanan diganti ke teks lain → definisi KBBI tidak lagi dipercaya.
+    if (text != snap.padanan.trim()) {
+      setState(() {
+        _standardDefinition = '';
+        _standardWordClassId = null;
+      });
+    }
+  }
+
+  void _onDraftTranslationEdited(_MeaningDraft draft) {
+    _onFieldEdited();
+    if (draft.applyingKbbiPick) return;
+    final snap = draft.kbbiSnapshot;
+    if (snap == null) return;
+    final text = draft.trCtrl.text.trim();
+    if (text.isEmpty) {
+      setState(() {});
+      return;
+    }
+    if (text != snap.padanan.trim()) {
+      setState(() {
+        draft.defCtrl.text = '';
+        draft.wordClassId = null;
+      });
+    }
+  }
+
+  MeaningSource _resolveStandardMeaningSource() {
+    final source = resolveMeaningSource(
+      snapshot: _standardKbbiSnapshot,
+      padanan: _standardTranslationCtrl.text,
+      definition: _standardDefinition,
+      wordClassId: _standardWordClassId,
+    );
+    if (source == MeaningSource.manual && _standardKbbiSnapshot != null) {
+      _standardKbbiSnapshot = null;
+    }
+    return source;
+  }
+
+  MeaningSource _resolveDraftMeaningSource(_MeaningDraft draft) {
+    final source = resolveMeaningSource(
+      snapshot: draft.kbbiSnapshot,
+      padanan: draft.wantPadanan ? draft.trCtrl.text : '',
+      definition: draft.wantDefinition ? draft.defCtrl.text : '',
+      wordClassId: draft.wordClassId,
+    );
+    if (source == MeaningSource.manual && draft.kbbiSnapshot != null) {
+      draft.kbbiSnapshot = null;
+    }
+    return source;
   }
 
   @override
@@ -186,7 +245,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       final draft = _MeaningDraft();
       draft.wordClassId = _umumWordClassId;
       draft.defCtrl.addListener(_onFieldEdited);
-      draft.trCtrl.addListener(_onFieldEdited);
+      draft.trCtrl.addListener(() => _onDraftTranslationEdited(draft));
       _meanings.add(draft);
     });
   }
@@ -203,15 +262,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   /// Form kosong di halaman yang sama setelah "Tambah lagi".
   void _resetFormForAnother() {
     for (final m in _meanings) {
-      m.defCtrl.removeListener(_onFieldEdited);
-      m.trCtrl.removeListener(_onFieldEdited);
       m.dispose();
     }
     _meanings.clear();
     final draft = _MeaningDraft();
     draft.wordClassId = _umumWordClassId;
     draft.defCtrl.addListener(_onFieldEdited);
-    draft.trCtrl.addListener(_onFieldEdited);
+    draft.trCtrl.addListener(() => _onDraftTranslationEdited(draft));
     _meanings.add(draft);
 
     _lemmaCtrl.clear();
@@ -220,7 +277,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       _advanced = false;
       _standardDefinition = '';
       _standardWordClassId = null;
-      _standardKbbiLemma = null;
+      _standardKbbiSnapshot = null;
       _applyingKbbiPick = false;
       _wordType = 'word';
       _usageLabels.clear();
@@ -309,15 +366,26 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
       final failure = next.failure;
       if (failure is ContributionFailure && prev?.failure != failure) {
-        final message = failure.isValidationError
-            ? 'Periksa kembali isian yang ditandai merah'
-            : (failure.message.isNotEmpty ? failure.message : null);
-        if (message != null) {
+        if (failure.isDuplicateMeaning) {
+          // ignore: unawaited_futures
+          _handleDuplicateMeaning(context, failure, isAuth);
+          return;
+        }
+        if (failure.isValidationError) {
           showFToast(
             context: context,
-            title: Text(message),
+            title: const Text('Periksa kembali isian yang ditandai merah'),
             variant: FToastVariant.destructive,
           );
+          return;
+        }
+        final message = failure.message.isNotEmpty ? failure.message : null;
+        if (message != null && context.mounted) {
+          showAppErrorSheet(context, message: message).whenComplete(() {
+            if (context.mounted) {
+              ref.read(submitWordProvider.notifier).clearError();
+            }
+          });
         }
       }
     });
@@ -339,13 +407,6 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (state.errorMessage != null) ...[
-                FAlert(
-                  variant: FAlertVariant.destructive,
-                  title: Text(state.errorMessage!),
-                ),
-                const Gap(6),
-              ],
               FButton(
                 onPress: state.isSubmitting ? null : _submitForm,
                 prefix: state.isSubmitting ? const FCircularProgress() : null,
@@ -367,6 +428,23 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             style: theme.typography.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
+          ),
+          const Gap(12),
+          FTileGroup(
+            children: [
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.listPlus,
+                  color: theme.colors.primary,
+                ),
+                title: const Text('Usulkan banyak sekaligus'),
+                subtitle: const Text(
+                  'Isi beberapa kata dan terjemahan dalam satu layar',
+                ),
+                suffix: const Icon(FLucideIcons.chevronRight),
+                onPress: () => context.push('/contribute/bulk'),
+              ),
+            ],
           ),
           const Gap(12),
           const _FieldCaption('Cara mengisi'),
@@ -439,7 +517,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               const _FieldCaption(
                 'Penjelasan arti',
                 info:
-                    'Muncul setelah satu makna dipilih dari KBBI. Hilang jika terjemahan diubah.',
+                    'Muncul setelah satu makna dipilih dari KBBI. Tetap jika padanan dikosongkan; hilang jika padanan diganti kata lain.',
               ),
               Text(
                 _standardDefinition.trim(),
@@ -742,12 +820,17 @@ class _ContributePageState extends ConsumerState<ContributePage> {
     setState(() {
       _applyingKbbiPick = true;
       final lemmaId = picked.lemma.trim();
+      final definition = picked.definition.trim();
       if (lemmaId.isNotEmpty) {
         _standardTranslationCtrl.text = lemmaId;
-        _standardKbbiLemma = lemmaId;
       }
-      _standardDefinition = picked.definition.trim();
+      _standardDefinition = definition;
       if (matched != null) _standardWordClassId = matched;
+      _standardKbbiSnapshot = KbbiMeaningSnapshot(
+        padanan: lemmaId,
+        definition: definition,
+        wordClassId: matched,
+      );
       _applyingKbbiPick = false;
     });
 
@@ -781,6 +864,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
     _onFieldEdited();
     setState(() {
+      draft.applyingKbbiPick = true;
       draft.wantDefinition = true;
       draft.wantPadanan = true;
       draft.defCtrl.text = picked.definition;
@@ -792,6 +876,12 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (matched != null) {
         draft.wordClassId = matched;
       }
+      draft.kbbiSnapshot = KbbiMeaningSnapshot(
+        padanan: lemmaId,
+        definition: picked.definition.trim(),
+        wordClassId: matched,
+      );
+      draft.applyingKbbiPick = false;
     });
 
     final parts = <String>['Penjelasan arti'];
@@ -878,6 +968,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 definition: m.wantDefinition ? m.defCtrl.text : '-',
                 isHaveDefinition: m.wantDefinition,
                 isHaveTranslation: m.wantPadanan,
+                meaningSource: _resolveDraftMeaningSource(m).apiValue,
                 translationTexts: m.wantPadanan ? [m.trCtrl.text] : const [],
               ),
           ]
@@ -889,6 +980,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                   : _standardDefinition.trim(),
               isHaveDefinition: _standardDefinition.trim().isNotEmpty,
               isHaveTranslation: true,
+              meaningSource: _resolveStandardMeaningSource().apiValue,
               translationTexts: [_standardTranslationCtrl.text],
             ),
           ];
@@ -920,6 +1012,85 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         message,
         style: theme.typography.sm.copyWith(color: theme.colors.error),
       ),
+    );
+  }
+
+  Future<void> _handleDuplicateMeaning(
+    BuildContext context,
+    ContributionFailure failure,
+    bool isAuth,
+  ) async {
+    final lemma = failure.duplicateLemma?.trim().isNotEmpty == true
+        ? failure.duplicateLemma!.trim()
+        : (_lemmaCtrl.text.trim().isNotEmpty
+              ? _lemmaCtrl.text.trim()
+              : 'kata ini');
+    final wordId = failure.duplicateWordId;
+    final meaningId = failure.duplicateMeaningId;
+    if (wordId == null || meaningId == null) {
+      showFToast(
+        context: context,
+        title: Text(failure.message),
+        variant: FToastVariant.destructive,
+      );
+      return;
+    }
+
+    final choice = await showDuplicateMeaningVoteSheet(
+      context: context,
+      lemma: lemma,
+      isAuthenticated: isAuth,
+    );
+    if (!context.mounted || choice == null) return;
+
+    if (choice == DuplicateMeaningVoteChoice.login) {
+      await context.push('/login');
+      return;
+    }
+
+    final value = choice == DuplicateMeaningVoteChoice.upvote ? 1 : -1;
+    final repo = ref.read(contributionRepositoryProvider);
+    final result = await repo.confirmDuplicateMeaning(
+      wordId: wordId,
+      meaningId: meaningId,
+      value: value,
+    );
+    if (!context.mounted) return;
+    await result.match(
+      (err) async {
+        showFToast(
+          context: context,
+          title: Text(err.message),
+          variant: FToastVariant.destructive,
+        );
+      },
+      (message) async {
+        final goHistory = await showFDialog<bool>(
+          context: context,
+          builder: (dialogContext, style, animation) => FDialog(
+            style: style,
+            animation: animation,
+            direction: Axis.vertical,
+            title: const Text('Tercatat di riwayat'),
+            body: Text(message),
+            actions: [
+              FButton(
+                onPress: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Lihat riwayat'),
+              ),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Tutup'),
+              ),
+            ],
+          ),
+        );
+        if (!context.mounted) return;
+        if (goHistory == true) {
+          context.push('/words/$wordId/history');
+        }
+      },
     );
   }
 

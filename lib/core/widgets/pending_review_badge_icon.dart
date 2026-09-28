@@ -30,3 +30,14 @@ void showPendingReviewInfo(BuildContext context) {
     ),
   );
 }
+
+/// Sama seperti [showPendingReviewInfo], untuk audio pelafalan.
+void showPendingAudioReviewInfo(BuildContext context) {
+  showFToast(
+    context: context,
+    title: const Text('Menunggu pengecekan'),
+    description: const Text(
+      'Audio ini belum diperiksa tim Sambasku. Pelafalannya bisa saja kurang tepat.',
+    ),
+  );
+}

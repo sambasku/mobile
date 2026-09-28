@@ -142,7 +142,7 @@ class _MicPermissionOnboardingPageState
                     title: 'Ditinjau sebelum tayang',
                     body:
                         'Rekaman dikirim ke server SambasKu dan masuk antrean '
-                        'review. Penuturnya (nama) ikut dikirim.',
+                        'review. Nama penutur opsional - boleh kirim tanpa nama.',
                   ),
                   const Gap(12),
                   const _RequirementRow(

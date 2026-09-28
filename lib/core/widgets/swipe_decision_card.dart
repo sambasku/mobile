@@ -19,8 +19,9 @@ enum SwipeDecisionOverlayStyle { label, icon }
 ///
 /// [onSwiped] return `true` = kartu tetap keluar; `false` = spring back.
 ///
-/// [allowNestedVerticalScroll]: pantau scroll anak; swipe-atas skip hanya
-/// diklaim saat offset ≈ 0 supaya isi panjang tetap bisa di-scroll.
+/// [allowNestedVerticalScroll]: pantau scroll anak; swipe-atas skip diklaim
+/// hanya saat konten muat (maxScrollExtent ≈ 0). Isi panjang di-scroll biasa;
+/// lewati lewat tombol supaya tidak perang gesture finger-up.
 class SwipeDecisionCard extends StatefulWidget {
   const SwipeDecisionCard({
     super.key,
@@ -90,6 +91,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   /// Pixels scroll anak (hanya relevan jika [allowNestedVerticalScroll]).
   double _childScrollPixels = 0;
+  double _childMaxScrollExtent = 0;
 
   @override
   void initState() {
@@ -119,6 +121,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
       _busyGesture = false;
       _hapticFired = false;
       _childScrollPixels = 0;
+      _childMaxScrollExtent = 0;
     }
   }
 
@@ -145,7 +148,10 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   bool _canClaimVerticalSkip() {
     if (!widget.allowNestedVerticalScroll) return true;
-    return _childScrollPixels <= 0.5;
+    // Konten muat → swipe atas = lewati (tidak ada scroll yang bermakna).
+    // Konten panjang → biarkan ListView; lewati lewat tombol action bar.
+    // (Klaim di puncak/dasar bertabrakan dengan arah scroll finger-up.)
+    return _childMaxScrollExtent <= 0.5;
   }
 
   Future<void> _animateTo(Offset target, {Duration? duration}) async {
@@ -259,13 +265,26 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     _springBack();
   }
 
+  void _syncChildScrollMetrics(ScrollMetrics metrics) {
+    if (metrics.axis != Axis.vertical) return;
+    final pixels = metrics.pixels;
+    final max = metrics.maxScrollExtent;
+    if ((pixels - _childScrollPixels).abs() > 0.5 ||
+        (max - _childMaxScrollExtent).abs() > 0.5) {
+      _childScrollPixels = pixels;
+      _childMaxScrollExtent = max;
+    }
+  }
+
   bool _onChildScroll(ScrollNotification notification) {
     if (!widget.allowNestedVerticalScroll) return false;
-    if (notification.metrics.axis != Axis.vertical) return false;
-    final pixels = notification.metrics.pixels;
-    if ((pixels - _childScrollPixels).abs() > 0.5) {
-      _childScrollPixels = pixels;
-    }
+    _syncChildScrollMetrics(notification.metrics);
+    return false;
+  }
+
+  bool _onChildMetrics(ScrollMetricsNotification notification) {
+    if (!widget.allowNestedVerticalScroll) return false;
+    _syncChildScrollMetrics(notification.metrics);
     return false;
   }
 
@@ -293,9 +312,12 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
         final canPan = widget.enabled && !_busyGesture;
         Widget body = widget.child;
         if (widget.allowNestedVerticalScroll) {
-          body = NotificationListener<ScrollNotification>(
-            onNotification: _onChildScroll,
-            child: body,
+          body = NotificationListener<ScrollMetricsNotification>(
+            onNotification: _onChildMetrics,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onChildScroll,
+              child: body,
+            ),
           );
         }
 
