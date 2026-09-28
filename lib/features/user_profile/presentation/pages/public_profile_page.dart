@@ -71,11 +71,11 @@ class PublicProfilePage extends HookConsumerWidget {
       if (profile == null || !isOwnProfile) return null;
       final session = me;
       final sameUsername =
-          session?.username?.toLowerCase() == profile.username.toLowerCase();
+          session.username?.toLowerCase() == profile.username.toLowerCase();
       final sameDisplay =
-          (session?.displayName ?? '') == (profile.displayName);
+          (session.displayName ?? '') == (profile.displayName);
       final sameAvatar =
-          (session?.avatarUrl ?? '') == (profile.avatarUrl ?? '');
+          (session.avatarUrl ?? '') == (profile.avatarUrl ?? '');
       if (sameUsername && sameDisplay && sameAvatar) return null;
       unawaited(
         ref.read(authStatusProvider.notifier).applySessionIdentity(
