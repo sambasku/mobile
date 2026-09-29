@@ -379,6 +379,15 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           );
           return;
         }
+        if (failure.isRateLimited) {
+          showFToast(
+            context: context,
+            title: Text(failure.message),
+            variant: FToastVariant.destructive,
+          );
+          ref.read(submitWordProvider.notifier).clearError();
+          return;
+        }
         final message = failure.message.isNotEmpty ? failure.message : null;
         if (message != null && context.mounted) {
           showAppErrorSheet(context, message: message).whenComplete(() {
