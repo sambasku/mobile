@@ -64,6 +64,21 @@ String formatRelative(DateTime? value, {DateTime? now}) {
   return formatDateTime(value);
 }
 
+/// Jarak relatif singkat: `baru saja`, `5 mnt lalu`, `2 jam lalu`,
+/// `3 hari lalu`, lalu `21 Sep 2026` (≥7 hari).
+String formatRelativeAgo(DateTime? value, {DateTime? now}) {
+  if (value == null) return '';
+  final clock = now ?? DateTime.now();
+  final local = value.toLocal();
+  var diff = clock.difference(value);
+  if (diff.isNegative) diff = Duration.zero;
+  if (diff.inMinutes < 1) return 'baru saja';
+  if (diff.inHours < 1) return '${diff.inMinutes} mnt lalu';
+  if (diff.inDays < 1) return '${diff.inHours} jam lalu';
+  if (diff.inDays < 7) return '${diff.inDays} hari lalu';
+  return '${local.day} ${_months[local.month - 1]} ${local.year}';
+}
+
 /// Humanize ultra-singkat untuk header thread: `baru`, `12m`, `2h`, `3d`,
 /// lalu `21 Sep` (≥7 hari).
 String formatRelativeCompact(DateTime? value, {DateTime? now}) {

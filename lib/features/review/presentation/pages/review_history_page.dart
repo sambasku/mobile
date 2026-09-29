@@ -20,7 +20,8 @@ class ReviewHistoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(reviewHistoryControllerProvider);
-    final filter = async.value?.statusFilter ??
+    final filter =
+        async.value?.statusFilter ??
         ref.read(reviewHistoryControllerProvider.notifier).statusFilter;
 
     final chips = Padding(
@@ -122,18 +123,21 @@ class ReviewHistoryPage extends ConsumerWidget {
                   );
                 }
 
-                return RefreshIndicator(
-                  onRefresh: refresh,
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      FTileGroup(
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          for (final item in state.items)
-                            _HistoryTile(item: item),
-                        ],
+                      Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: refresh,
+                          child: FTileGroup.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            count: state.items.length,
+                            tileBuilder: (context, index) =>
+                                _HistoryTile(item: state.items[index]),
+                          ),
+                        ),
                       ),
                       if (state.hasMore)
                         Padding(
@@ -187,10 +191,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
           children: [
             TextSpan(
               text: reviewStatusLabel(decision),
-              style: TextStyle(
-                color: statusColor,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
             ),
             if (date.isNotEmpty) TextSpan(text: ' · $date'),
           ],
@@ -230,9 +231,7 @@ class _ListSkeleton extends StatelessWidget {
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  for (var i = 0; i < 6; i++) const _SkeletonTile(),
-                ],
+                children: [for (var i = 0; i < 6; i++) const _SkeletonTile()],
               ),
             ],
           ),

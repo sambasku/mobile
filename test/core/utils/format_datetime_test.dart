@@ -9,6 +9,31 @@ void main() {
     expect(formatDateYmd('bukan-tanggal'), '');
   });
 
+  test('formatRelativeAgo: singkat bahasa Indonesia', () {
+    final now = DateTime(2026, 9, 28, 17, 0);
+    expect(formatRelativeAgo(null, now: now), '');
+    expect(
+      formatRelativeAgo(now.subtract(const Duration(seconds: 20)), now: now),
+      'baru saja',
+    );
+    expect(
+      formatRelativeAgo(now.subtract(const Duration(minutes: 5)), now: now),
+      '5 mnt lalu',
+    );
+    expect(
+      formatRelativeAgo(now.subtract(const Duration(hours: 2)), now: now),
+      '2 jam lalu',
+    );
+    expect(
+      formatRelativeAgo(now.subtract(const Duration(days: 3)), now: now),
+      '3 hari lalu',
+    );
+    expect(
+      formatRelativeAgo(now.subtract(const Duration(days: 10)), now: now),
+      '18 Sep 2026',
+    );
+  });
+
   test('formatRelativeCompact: humanize singkat', () {
     final now = DateTime(2026, 9, 28, 17, 0);
     expect(formatRelativeCompact(null, now: now), '');

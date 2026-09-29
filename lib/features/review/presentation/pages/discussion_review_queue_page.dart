@@ -29,18 +29,11 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
-        loading: () => Skeletonizer(
-          enabled: true,
-          child: ListView(
-            children: List.generate(
-              6,
-              (_) => FTile(
-                title: Text('Cuplikan diskusi'),
-                subtitle: Text('Pengirim'),
-              ),
-            ),
-          ),
-        ),
+        loading: () {
+          final viewportHeight = MediaQuery.sizeOf(context).height;
+          final skeletonPerPage = (viewportHeight ~/ 80) + 2;
+          return _ListSkeleton(itemCount: skeletonPerPage);
+        },
         error: (error, _) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -63,85 +56,191 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
             ],
           ),
         ),
-        data: (state) {
-          if (state.items.isEmpty) {
-            return Center(
-              child: Text(
-                'Tidak ada diskusi menunggu tinjauan',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
+        data: (state) => _QueueList(state: state),
+      ),
+    );
+  }
+}
+
+class _QueueList extends ConsumerWidget {
+  const _QueueList({required this.state});
+
+  final DiscussionReviewListState state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.theme;
+
+    Future<void> refresh() async {
+      ref.invalidate(discussionReviewListProvider);
+      await ref.read(discussionReviewListProvider.future);
+    }
+
+    if (state.items.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: refresh,
+        child: LayoutBuilder(
+          builder: (context, constraints) => ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                height: constraints.maxHeight,
+                child: Center(
+                  child: Text(
+                    'Tidak ada diskusi menunggu tinjauan',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            );
-          }
-          return RefreshIndicator(
-            onRefresh: () async {
-              ref.invalidate(discussionReviewListProvider);
-              await ref.read(discussionReviewListProvider.future);
-            },
-            child: ListView.builder(
-              itemCount: state.items.length + (state.hasMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= state.items.length) {
-                  if (!state.isLoadingMore) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ref.read(discussionReviewListProvider.notifier).loadMore();
-                    });
-                  }
-                  return const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(child: FCircularProgress()),
-                  );
-                }
-                final item = state.items[index];
-                final preview = (item.body ?? '').trim();
-                final name = displayPublicAccountLabel(
-                  displayName: item.displayName,
-                  username: item.username,
-                );
-                final thumb = item.images.isNotEmpty
-                    ? item.images.first.displaySource
-                    : null;
-                return FTile(
-                  prefix: thumb != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: SizedBox(
-                            width: 44,
-                            height: 44,
-                            child: CachedNetworkImageWithFallback(
-                              imageUrl: displayImageUrl(thumb) ?? thumb,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : const Icon(FLucideIcons.messageSquare),
-                  title: Text(
-                    preview.isEmpty ? '(tanpa teks)' : preview,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    [
-                      name,
-                      if (item.createdAt.isNotEmpty)
-                        formatRelativeCompact(
-                          DateTime.tryParse(item.createdAt),
-                        ),
-                      if (item.linkUrl != null && item.linkUrl!.isNotEmpty)
-                        'Ada tautan',
-                    ].where((e) => e.isNotEmpty).join(' · '),
-                  ),
-                  suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push(
-                    ReviewRouter.discussionDetailPath(item.id),
-                  ),
-                );
-              },
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: FTileGroup.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) =>
+                    _DiscussionTile(item: state.items[index]),
+              ),
             ),
-          );
-        },
+          ),
+          if (state.hasMore)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: state.isLoadingMore
+                      ? null
+                      : () => ref
+                            .read(discussionReviewListProvider.notifier)
+                            .loadMore(),
+                  prefix: state.isLoadingMore
+                      ? const FCircularProgress()
+                      : null,
+                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
+                ),
+              ),
+            ),
+        ],
       ),
+    );
+  }
+}
+
+class _DiscussionTile extends StatelessWidget with FTileMixin {
+  const _DiscussionTile({required this.item});
+
+  final DiscussionItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final preview = (item.body ?? '').trim();
+    final name = displayPublicAccountLabel(
+      displayName: item.displayName,
+      username: item.username,
+    );
+    final thumb = item.images.isNotEmpty
+        ? item.images.first.displaySource
+        : null;
+    final thumbUrl = thumb == null ? null : (displayImageUrl(thumb) ?? thumb);
+    return FTile(
+      prefix: thumbUrl != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: thumbUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : const Icon(FLucideIcons.messageSquare),
+      title: Text(
+        preview.isEmpty ? '(tanpa teks)' : preview,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        [
+          name,
+          if (item.createdAt.isNotEmpty)
+            formatRelativeCompact(DateTime.tryParse(item.createdAt)),
+          if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
+        ].where((e) => e.isNotEmpty).join(' · '),
+      ),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: () => context.push(ReviewRouter.discussionDetailPath(item.id)),
+    );
+  }
+}
+
+class _ListSkeleton extends StatelessWidget {
+  const _ListSkeleton({required this.itemCount});
+
+  final int itemCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final materialBrightness = Theme.of(context).brightness;
+    final isDark = materialBrightness == Brightness.dark;
+    final muted = context.theme.colors.muted;
+    final shimmer = ShimmerEffect(
+      baseColor: isDark
+          ? muted.withValues(alpha: 0.35)
+          : const Color(0xFFE7E7EA),
+      highlightColor: isDark
+          ? muted.withValues(alpha: 0.55)
+          : const Color(0xFFF4F4F5),
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(effect: shimmer),
+      child: IgnorePointer(
+        child: Skeletonizer(
+          enabled: true,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            children: [
+              FTileGroup(
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  for (var i = 0; i < itemCount; i++) const _SkeletonTile(),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SkeletonTile extends StatelessWidget with FTileMixin {
+  const _SkeletonTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return FTile(
+      title: Text('Cuplikan diskusi contoh'),
+      subtitle: Text('Pengirim · baru saja'),
     );
   }
 }

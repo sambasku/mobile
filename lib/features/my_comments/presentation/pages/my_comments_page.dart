@@ -202,17 +202,21 @@ class _CommentsList extends ConsumerWidget {
       children: [
         chips,
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                FTileGroup(
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    for (final item in state.items) _CommentTile(item: item),
-                  ],
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: refresh,
+                    child: FTileGroup.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      count: state.items.length,
+                      tileBuilder: (context, index) =>
+                          _CommentTile(item: state.items[index]),
+                    ),
+                  ),
                 ),
                 if (state.hasMore)
                   Padding(
@@ -224,7 +228,9 @@ class _CommentsList extends ConsumerWidget {
                         onPress: state.isLoadingMore
                             ? null
                             : () => ref
-                                  .read(myCommentsListControllerProvider.notifier)
+                                  .read(
+                                    myCommentsListControllerProvider.notifier,
+                                  )
                                   .loadMore(),
                         prefix: state.isLoadingMore
                             ? const FCircularProgress()
@@ -256,7 +262,9 @@ class _CommentTile extends StatelessWidget with FTileMixin {
       title: Text(item.title),
       subtitle: Text(item.subtitle(date)),
       suffix: item.canOpen ? const Icon(FLucideIcons.chevronRight) : null,
-      onPress: item.canOpen ? () => context.push('/words/${item.wordId}') : null,
+      onPress: item.canOpen
+          ? () => context.push('/words/${item.wordId}')
+          : null,
     );
   }
 }

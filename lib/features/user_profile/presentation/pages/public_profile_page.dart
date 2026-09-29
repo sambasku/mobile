@@ -8,14 +8,18 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../profile/data/avatar_upload_service.dart';
@@ -162,7 +166,7 @@ String _appBarTitle({
   return 'Profil';
 }
 
-class _ProfileBody extends ConsumerWidget {
+class _ProfileBody extends HookConsumerWidget {
   const _ProfileBody({
     required this.profile,
     required this.isOwnProfile,
@@ -187,6 +191,10 @@ class _ProfileBody extends ConsumerWidget {
         ? ref.watch(authStatusProvider).value?.avatarUrl
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
+    final canPreviewAvatar = !isOwnProfile &&
+        avatarSrc != null &&
+        avatarSrc.trim().isNotEmpty;
+    final uploadingAvatar = useState(false);
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -198,17 +206,28 @@ class _ProfileBody extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Semantics(
-              button: isOwnProfile,
-              label: isOwnProfile ? 'Ganti foto profil' : 'Foto profil',
+              button: (isOwnProfile && !uploadingAvatar.value) || canPreviewAvatar,
+              label: isOwnProfile
+                  ? 'Ganti foto profil'
+                  : canPreviewAvatar
+                      ? 'Lihat foto profil'
+                      : 'Foto profil',
               child: GestureDetector(
-                onTap: isOwnProfile
-                    ? () => _pickAndUploadAvatar(context, ref)
-                    : null,
+                onTap: isOwnProfile && !uploadingAvatar.value
+                    ? () => _pickAndUploadAvatar(
+                          context,
+                          ref,
+                          uploadingAvatar,
+                        )
+                    : canPreviewAvatar
+                        ? () => showImagePreview(context, urls: [avatarSrc])
+                        : null,
                 child: _Avatar(
                   name: profile.displayName,
                   imageUrl: avatarSrc,
                   size: 80,
                   showEditBadge: isOwnProfile,
+                  uploading: uploadingAvatar.value,
                 ),
               ),
             ),
@@ -399,7 +418,11 @@ class _ProfileBody extends ConsumerWidget {
     _ => kind,
   };
 
-  Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
+  Future<void> _pickAndUploadAvatar(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> uploadingAvatar,
+  ) async {
     showImageSheetDrawer(
       context,
       filePicker: false,
@@ -422,23 +445,33 @@ class _ProfileBody extends ConsumerWidget {
           return;
         }
         if (cropped == null || !context.mounted) return;
-        final result =
-            await AvatarUploadService(ref.read(dioProvider)).upload(cropped);
-        if (!context.mounted) return;
-        await result.match(
-          (err) async {
-            showFToast(context: context, title: Text(err));
-          },
-          (url) async {
-            await ref.read(authStatusProvider.notifier).setAvatarUrl(url);
-            ref.invalidate(publicProfileProvider(profile.username));
-            if (!context.mounted) return;
-            showFToast(
-              context: context,
-              title: const Text('Foto profil diperbarui'),
-            );
-          },
-        );
+        uploadingAvatar.value = true;
+        try {
+          final result = await AvatarUploadService(
+            ref.read(dioProvider),
+          ).upload(cropped);
+          if (!context.mounted) return;
+          await result.match(
+            (err) async {
+              showFToast(context: context, title: Text(err));
+            },
+            (url) async {
+              await ref.read(authStatusProvider.notifier).setAvatarUrl(url);
+              ref.invalidate(publicProfileProvider(profile.username));
+              await ref
+                  .read(responseCacheStoreProvider)
+                  .deleteByPrefix('GET|/api/v1/activity');
+              ref.invalidate(activityFeedProvider);
+              if (!context.mounted) return;
+              showFToast(
+                context: context,
+                title: const Text('Foto profil diperbarui'),
+              );
+            },
+          );
+        } finally {
+          if (context.mounted) uploadingAvatar.value = false;
+        }
       },
     );
   }
@@ -485,15 +518,24 @@ class _Avatar extends StatelessWidget {
     this.imageUrl,
     this.size = 40,
     this.showEditBadge = false,
+    this.uploading = false,
   });
 
   final String name;
   final String? imageUrl;
   final double size;
   final bool showEditBadge;
+  final bool uploading;
 
   @override
   Widget build(BuildContext context) {
+    if (uploading) {
+      return Skeletonizer(
+        enabled: true,
+        child: Bone.circle(size: size),
+      );
+    }
+
     final theme = context.theme;
     final display = displayImageUrl(imageUrl, width: 256) ?? imageUrl;
     final Widget face;

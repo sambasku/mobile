@@ -10,6 +10,8 @@ enum FeedActivityKind {
   example,
   searchMiss,
   welcome,
+  cardShare,
+  suggestion,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -34,6 +36,10 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.searchMiss;
     case 'welcome':
       return FeedActivityKind.welcome;
+    case 'card_share':
+      return FeedActivityKind.cardShare;
+    case 'suggestion':
+      return FeedActivityKind.suggestion;
     default:
       return null;
   }

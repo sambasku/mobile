@@ -27,9 +27,29 @@ class MyContributionDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(myContributionDetailProvider(kind, id));
+    final item = async.asData?.value;
+    final wordId = item != null && item.canOpenWord ? item.wordId : null;
+    final word = wordId == null ? null : ref.watch(wordDetailProvider(wordId));
+    final wordMissing = word != null &&
+        word.hasError &&
+        word.error is DictionaryFailure &&
+        (word.error! as DictionaryFailure).errorCode == 'WORD_NOT_FOUND';
+    final showOpenWord = wordId != null && word != null && !word.isLoading && !wordMissing;
 
     return FScaffold(
       childPad: true,
+      footer: !showOpenWord
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                child: FButton(
+                  onPress: () => context.push('/words/$wordId'),
+                  child: const Text('Buka kata'),
+                ),
+              ),
+            ),
       header: FHeader.nested(
         title: Text(
           async.maybeWhen(data: (d) => d.displayTitle, orElse: () => 'Usulan'),
@@ -167,35 +187,7 @@ class _DetailBody extends ConsumerWidget {
               ),
           ],
         ),
-        if (item.canOpenWord) ...[
-          const Gap(16),
-          _OpenWordButton(wordId: item.wordId!),
-        ],
       ],
-    );
-  }
-}
-
-/// Tombol Buka kata: sembunyi jika GET detail kata 404 (belum terbit).
-class _OpenWordButton extends ConsumerWidget {
-  const _OpenWordButton({required this.wordId});
-
-  final String wordId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(wordDetailProvider(wordId));
-    if (async.isLoading) return const SizedBox.shrink();
-    if (async.hasError) {
-      final error = async.error;
-      final notFound =
-          error is DictionaryFailure && error.errorCode == 'WORD_NOT_FOUND';
-      if (notFound) return const SizedBox.shrink();
-    }
-
-    return FButton(
-      onPress: () => context.push('/words/$wordId'),
-      child: const Text('Buka kata'),
     );
   }
 }

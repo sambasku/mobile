@@ -264,8 +264,16 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
 
   Future<void> _rewindSkip() async {
     if (_busy) return;
-    final ok = ref.read(reviewSessionProvider.notifier).rewindSkip();
-    if (!ok || !mounted) return;
+    final ok = await ref.read(reviewSessionProvider.notifier).rewindSkip();
+    if (!mounted) return;
+    if (!ok) {
+      showFToast(
+        context: context,
+        title: const Text('Gagal mengembalikan kartu.'),
+        variant: FToastVariant.destructive,
+      );
+      return;
+    }
     setState(() => _correctMode = false);
     showFToast(
       context: context,

@@ -10,6 +10,7 @@ import 'core/widgets/version_banner.dart';
 import 'flavors.dart';
 import 'shared/dev_tool/api_host/api_host_inspector.dart';
 import 'shared/dev_tool/dev_tool.dart';
+import 'shared/dev_tool/exception_log/exception_log_inspector.dart';
 import 'shared/dev_tool/onboarding/onboarding_inspector.dart';
 import 'shared/dev_tool/storage_inspector/response_cache_inspector.dart';
 import 'shared/dev_tool/storage_inspector/secure_storage_inspector.dart';
@@ -46,6 +47,7 @@ class App extends ConsumerWidget {
             child: VersionBanner(
               child: DevToolOverlay(
                 inspectors: [
+                  if (F.isStaging && !F.hideDevChrome) ExceptionLogInspector(),
                   NetworkMonitorInspector(),
                   ApiHostInspector(),
                   SharedPrefInspector(),

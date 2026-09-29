@@ -225,22 +225,29 @@ class WordListPage extends HookConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => ref.read(wordListProvider.notifier).load(),
-      // Satu FTileGroup: semua lemma dalam 1 kartu + divider Forui.
-      // Urutan server (lemma ASC) - TANPA grouping header huruf.
-      child: ListView(
-        controller: scroll,
-        physics: const AlwaysScrollableScrollPhysics(),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
         children: [
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              for (final item in state.items)
-                _WordTile(item: item, searchIn: state.searchIn),
-            ],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.read(wordListProvider.notifier).load(),
+              child: NotificationListener<UserScrollNotification>(
+                onNotification: (_) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  return false;
+                },
+                child: FTileGroup.builder(
+                  scrollController: scroll,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  count: state.items.length,
+                  tileBuilder: (context, index) => _WordTile(
+                    item: state.items[index],
+                    searchIn: state.searchIn,
+                  ),
+                ),
+              ),
+            ),
           ),
           if (state.isLoadingMore) const _LoadingMoreFooter(),
         ],
@@ -266,7 +273,9 @@ class _WordTile extends StatelessWidget with FTileMixin {
     String? subtitle;
     if (gloss != null && gloss.isNotEmpty) {
       subtitle = gloss;
-    } else if (searchIn == 'translation' && matched != null && matched.isNotEmpty) {
+    } else if (searchIn == 'translation' &&
+        matched != null &&
+        matched.isNotEmpty) {
       subtitle = matched;
     } else if (searchIn != 'translation' && item.wordType != 'word') {
       subtitle = item.wordTypeLabel;

@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
+import 'package:sambasku_mobile/features/vote/data/providers/vote_data_providers.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_deck_item.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_target.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_view.dart';
@@ -37,6 +38,8 @@ class _FakeDeckRepo implements VoteRepository {
 
   List<VoteDeckItem> deckItems;
   final List<({VoteTarget target, int value})> toggles = [];
+  final List<String> skipped = [];
+  final List<String> unskipped = [];
 
   @override
   Future<Either<VoteFailure, Map<String, VoteCounts>>> countMany(
@@ -68,6 +71,18 @@ class _FakeDeckRepo implements VoteRepository {
       VoteDeckPage(items: List.of(deckItems), hasMore: false),
     );
   }
+
+  @override
+  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async {
+    skipped.add(wordId);
+    return Either.right(unit);
+  }
+
+  @override
+  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async {
+    unskipped.add(wordId);
+    return Either.right(unit);
+  }
 }
 
 void main() {
@@ -88,6 +103,7 @@ void main() {
         toggleVoteUseCaseProvider.overrideWithValue(
           ToggleVoteUseCase(repo),
         ),
+        voteRepositoryProvider.overrideWithValue(repo),
       ],
     );
   });
@@ -114,6 +130,9 @@ void main() {
     expect(state.canRewind, isTrue);
     expect(state.rewindEntry?.item.id, 'a');
     expect(state.rewindEntry?.kind, VoteDeckRewindKind.skip);
+
+    await Future<void>.delayed(Duration.zero);
+    expect(repo.skipped, ['a']);
   });
 
   test('rewind skip mengembalikan kartu ke depan antrean', () async {
@@ -130,6 +149,7 @@ void main() {
     expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
     expect(state.canRewind, isFalse);
     expect(repo.toggles, isEmpty);
+    expect(repo.unskipped, repo.skipped);
   });
 
   test('castOptimistic drop kartu segera; rewind cancel job belum terkirim',

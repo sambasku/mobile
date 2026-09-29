@@ -29,7 +29,8 @@ abstract final class AnalyticsEvents {
   static const authLogout = 'auth_logout';
   static const searchMissTap = 'search_miss_tap';
   static const commentSubmit = 'comment_submit';
-  static const notificationOpen = 'notification_open';
+  /// Bukan `notification_open`: nama itu reserved Firebase (otomatis dari FCM).
+  static const inboxOpen = 'inbox_open';
   static const notificationItemTap = 'notification_item_tap';
   static const suggestEditSubmit = 'suggest_edit_submit';
   static const audioRecordStart = 'audio_record_start';

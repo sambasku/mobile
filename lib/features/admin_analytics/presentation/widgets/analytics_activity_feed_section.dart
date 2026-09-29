@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart' show Theme;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
@@ -44,7 +46,7 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
               height: _activityBodyHeight,
               child: async.when(
                 skipLoadingOnReload: true,
-                loading: () => const Center(child: FCircularProgress()),
+                loading: () => const _ActivityFeedSkeleton(),
                 error: (_, _) => AnalyticsActivityErrorRetry(
                   message: 'Gagal memuat aktivitas.',
                   onRetry: () =>
@@ -172,6 +174,54 @@ class _ActivityRow extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () => context.push(path),
       child: content,
+    );
+  }
+}
+
+const _placeholderActivity = AnalyticsActivityItem(
+  kind: AnalyticsActivityKind.comment,
+  id: 'skeleton',
+  createdAt: '2026-09-21T00:00:00.000Z',
+  actorLabel: 'Warga Sambas',
+  body: 'aktivitas singkat satu baris',
+  subtitle: 'kata',
+);
+
+class _ActivityFeedSkeleton extends StatelessWidget {
+  const _ActivityFeedSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final muted = context.theme.colors.muted;
+    final shimmer = ShimmerEffect(
+      baseColor: isDark
+          ? muted.withValues(alpha: 0.35)
+          : const Color(0xFFE7E7EA),
+      highlightColor: isDark
+          ? muted.withValues(alpha: 0.55)
+          : const Color(0xFFF4F4F5),
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(effect: shimmer),
+      child: IgnorePointer(
+        child: Skeletonizer(
+          enabled: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < _activityFeedLimit; i++)
+                const SizedBox(
+                  height: _activityRowHeight,
+                  width: double.infinity,
+                  child: _ActivityRow(item: _placeholderActivity),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

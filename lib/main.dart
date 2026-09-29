@@ -29,6 +29,7 @@ import 'features/onboarding/data/onboarding_prefs.dart';
 import 'features/verifier_application/presentation/providers/verifier_application_providers.dart';
 import 'flavors.dart';
 import 'shared/dev_tool/dev_tool_overlay.dart';
+import 'shared/dev_tool/exception_log/exception_log.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -62,6 +63,10 @@ Future<void> main() async {
     orElse: () => Flavor.staging,
   );
 
+  if (F.isStaging && !F.hideDevChrome) {
+    installStagingExceptionLog();
+  }
+
   // Daftar tier API harus siap SEBELUM dioProvider dibaca di bawah - Dio
   // mengambil baseUrl awalnya dari resolver.
   ApiHostResolver.instance.configureFromEnv();
@@ -91,9 +96,7 @@ Future<void> main() async {
   // sudah fetch token sendiri.
 
   // Container agar device repo memakai Dio yang sama (dengan AuthInterceptor).
-  final container = ProviderContainer(
-    retry: (_, _) => null,
-  );
+  final container = ProviderContainer(retry: (_, _) => null);
   final dio = container.read(dioProvider);
   final registrationService = DeviceRegistrationService(
     repository: DeviceRepositoryImpl(DeviceRemoteDatasource(dio)),
@@ -121,12 +124,7 @@ Future<void> main() async {
   // retry: null = matikan auto-retry Riverpod 3 (default: 10x backoff ~47s).
   // Failure 4xx tidak transient - retry manual via tombol "Coba lagi" di UI;
   // satu-satunya retry bermakna (401 -> refresh sekali) sudah di AuthInterceptor.
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const App(),
-    ),
-  );
+  runApp(UncontrolledProviderScope(container: container, child: const App()));
 
   // HTTP register device SETELAH frame pertama. Kalau DevTool memaksa
   // tier 3 (Render tidur), menunggu 75s di sini sebelum runApp = ANR.

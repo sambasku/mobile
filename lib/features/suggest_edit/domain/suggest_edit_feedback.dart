@@ -14,22 +14,6 @@ import '../../review/domain/review_access.dart';
   );
 }
 
-/// Label field alasan di form - berdasarkan role lokal.
-({String fieldCaption, String sheetTitle}) suggestEditReasonLabels(
-  String? role,
-) {
-  if (isVerifierRole(role)) {
-    return (
-      fieldCaption: 'Alasan perubahan *',
-      sheetTitle: 'Pilih alasan perubahan',
-    );
-  }
-  return (
-    fieldCaption: 'Alasan usulan *',
-    sheetTitle: 'Pilih alasan usulan',
-  );
-}
-
 /// Copy form sebelum submit - berdasarkan role lokal.
 ({String banner, String cta, String ctaBusy}) suggestEditPreSubmitCopy(
   String? role,

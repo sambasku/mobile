@@ -21,20 +21,6 @@ void main() {
     });
   });
 
-  group('suggestEditReasonLabels', () {
-    test('verifikator: alasan perubahan', () {
-      final labels = suggestEditReasonLabels('admin');
-      expect(labels.fieldCaption, 'Alasan perubahan *');
-      expect(labels.sheetTitle, 'Pilih alasan perubahan');
-    });
-
-    test('kontributor: alasan usulan', () {
-      final labels = suggestEditReasonLabels('contributor');
-      expect(labels.fieldCaption, 'Alasan usulan *');
-      expect(labels.sheetTitle, 'Pilih alasan usulan');
-    });
-  });
-
   group('suggestEditPreSubmitCopy', () {
     test('verifikator: banner self-apply + CTA simpan', () {
       for (final role in ['admin', 'editor', 'root', 'reviewer']) {

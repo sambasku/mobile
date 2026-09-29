@@ -352,7 +352,7 @@ class _DiscussionDetailPageState
                                       ? 'Balasan dihapus moderator'
                                       : 'Balasan dihapus penulis')
                                 : (reply.body?.trim() ?? ''),
-                            dateLabel: formatRelativeCompact(
+                            dateLabel: formatRelativeAgo(
                               DateTime.tryParse(reply.createdAt),
                             ),
                             metaParts: [

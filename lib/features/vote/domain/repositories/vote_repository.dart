@@ -31,4 +31,10 @@ abstract interface class VoteRepository {
     int limit = 10,
     String? cursor,
   });
+
+  /// Lewati kartu deck tanpa menulis vote. Idempoten.
+  Future<Either<VoteFailure, Unit>> skipWord(String wordId);
+
+  /// Batalkan skip. Idempoten.
+  Future<Either<VoteFailure, Unit>> unskipWord(String wordId);
 }

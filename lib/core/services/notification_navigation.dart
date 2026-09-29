@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,6 +10,7 @@ import '../../features/notification/notification_router.dart';
 import '../../features/discussion/discussion_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
+import '../../shared/utils/error_bottom_sheet.dart';
 import '../router/app_router.dart';
 
 /// Map payload FCM / AwesomeNotifications / inbox tile → rute atau URL eksternal.
@@ -26,13 +28,7 @@ Future<void> navigateFromNotificationPayload(
       data['url']?.trim();
 
   if (actionKind == 'url' && actionValue != null && actionValue.isNotEmpty) {
-    final opened = await openHttpsUrl(actionValue);
-    if (!opened && context != null && context.mounted) {
-      showFToast(
-        context: context,
-        title: const Text('Tidak bisa membuka tautan'),
-      );
-    }
+    await _openExternalUrl(context, actionValue);
     return;
   }
 
@@ -87,13 +83,7 @@ Future<void> navigateFromNotificationPayload(
     if (deepLinkKind == 'url' &&
         deepLinkValue != null &&
         deepLinkValue.isNotEmpty) {
-      final opened = await openHttpsUrl(deepLinkValue);
-      if (!opened && context != null && context.mounted) {
-        showFToast(
-          context: context,
-          title: const Text('Tidak bisa membuka tautan'),
-        );
-      }
+      await _openExternalUrl(context, deepLinkValue);
       return;
     }
     _go(router, NotificationRouter.list.path);
@@ -176,24 +166,92 @@ Future<void> navigateFromInboxNotification(
   );
 }
 
-/// Hanya https:// - tolak http, custom scheme, traversal (M-07).
-Future<bool> openHttpsUrl(String raw) async {
+Future<void> _openExternalUrl(BuildContext? context, String raw) async {
+  // Tap dari shade: ColorOS membatalkan startActivity saat animasi tutup
+  // (log: handleResized abandoned, lalu MainActivity langsung resume).
+  if (context == null) await _waitForShadeToClose();
+  final failure = await openHttpsUrl(raw);
+  if (failure != null) debugPrint('openHttpsUrl failed: $failure');
+  if (failure == null || context == null || !context.mounted) return;
+  await showAppErrorSheet(
+    context,
+    title: 'Tidak bisa membuka tautan',
+    message: failure,
+  );
+}
+
+/// `https://play.google.com/store/apps/details?id=pkg` → `market://details?id=pkg`.
+/// Selain listing Play Store, null (tetap dibuka sebagai https).
+Uri? playStoreMarketUri(Uri uri) {
+  if (uri.scheme.toLowerCase() != 'https') return null;
+  if (uri.host.toLowerCase() != 'play.google.com') return null;
+  final path = uri.path.endsWith('/') && uri.path.length > 1
+      ? uri.path.substring(0, uri.path.length - 1)
+      : uri.path;
+  if (path != '/store/apps/details') return null;
+  final id = uri.queryParameters['id']?.trim();
+  if (id == null || id.isEmpty) return null;
+  return Uri(scheme: 'market', host: 'details', queryParameters: {'id': id});
+}
+
+/// `null` bila tautan terbuka. Selain itu pesan gagal, termasuk teks exception.
+Future<String?> openHttpsUrl(String raw) async {
   final trimmed = raw.trim();
   Uri? uri;
   try {
     uri = Uri.parse(trimmed);
-  } catch (_) {
-    return false;
+  } catch (e) {
+    return e.toString();
   }
-  if (uri.scheme.toLowerCase() != 'https') return false;
-  if (uri.host.isEmpty) return false;
-  if (uri.hasAbsolutePath && uri.path.contains('..')) return false;
+  if (uri.scheme.toLowerCase() != 'https') {
+    return 'Tautan harus https.';
+  }
+  if (uri.host.isEmpty) return 'Tautan tidak valid.';
+  if (uri.hasAbsolutePath && uri.path.contains('..')) {
+    return 'Tautan tidak valid.';
+  }
+  final market = playStoreMarketUri(uri);
+  if (market != null) {
+    try {
+      final opened = await launchUrl(
+        market,
+        mode: LaunchMode.externalApplication,
+      );
+      if (opened) return null;
+      debugPrint('openHttpsUrl market failed, fallback https: $market');
+    } catch (e, st) {
+      debugPrint('openHttpsUrl market failed: $e\n$st');
+    }
+  }
   try {
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened) return 'Tidak ada aplikasi yang bisa membuka tautan ini.';
+    return null;
   } catch (e, st) {
     debugPrint('openHttpsUrl failed: $e\n$st');
-    return false;
+    return e.toString();
   }
+}
+
+/// ponytail: 400ms menutup animasi shade ColorOS. Upgrade: callback animasi shade.
+Future<void> _waitForShadeToClose() async {
+  final binding = WidgetsBinding.instance;
+  if (binding.lifecycleState != AppLifecycleState.resumed) {
+    final done = Completer<void>();
+    late final AppLifecycleListener listener;
+    listener = AppLifecycleListener(
+      onResume: () {
+        if (!done.isCompleted) done.complete();
+      },
+    );
+    try {
+      await done.future.timeout(const Duration(seconds: 2));
+    } on TimeoutException {
+      // Activity tidak resume; tetap coba buka.
+    }
+    listener.dispose();
+  }
+  await Future<void>.delayed(const Duration(milliseconds: 400));
 }
 
 void _go(GoRouter router, String location) {

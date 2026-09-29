@@ -75,6 +75,9 @@ class VoteDeckState {
 class VoteDeckController extends _$VoteDeckController {
   static const _pageSize = 10;
 
+  /// ID yang baru diskip di instance ini, termasuk sebelum POST selesai.
+  final Set<String> _locallySkipped = {};
+
   @override
   Future<VoteDeckState> build() async {
     final auth = ref.watch(authStatusProvider).value;
@@ -83,7 +86,10 @@ class VoteDeckController extends _$VoteDeckController {
     final result = await ref.watch(getVoteDeckUseCaseProvider)(limit: _pageSize);
     final page = result.match((failure) => throw failure, (page) => page);
     return VoteDeckState(
-      items: page.items,
+      items: [
+        for (final item in page.items)
+          if (!_locallySkipped.contains(item.id)) item,
+      ],
       nextCursor: page.nextCursor,
       hasMore: page.hasMore,
     );
@@ -116,10 +122,16 @@ class VoteDeckController extends _$VoteDeckController {
       },
       (page) {
         final latest = state.value ?? current;
+        final seen = latest.items.map((item) => item.id).toSet();
         state = AsyncData(
           VoteDeckState(
             isLoadingMore: false,
-            items: [...latest.items, ...page.items],
+            items: [
+              ...latest.items,
+              for (final item in page.items)
+                if (!seen.contains(item.id) && !_locallySkipped.contains(item.id))
+                  item,
+            ],
             nextCursor: page.nextCursor,
             hasMore: page.hasMore,
             rewindEntry: latest.rewindEntry,
@@ -150,12 +162,13 @@ class VoteDeckController extends _$VoteDeckController {
         );
   }
 
-  /// Lewati tanpa vote - hanya buang dari antrean sesi ini.
+  /// Lewati tanpa vote. Kartu tidak kembali untuk user ini.
   void skipAndAdvance(VoteDeckItem item) {
     AnalyticsService.instance.log(
       AnalyticsEvents.voteDeckSwipe,
       params: {'direction': 'skip', 'word_id': item.id},
     );
+    _locallySkipped.add(item.id);
     _dropLocal(
       item.id,
       rewind: VoteDeckRewindEntry(
@@ -163,12 +176,14 @@ class VoteDeckController extends _$VoteDeckController {
         kind: VoteDeckRewindKind.skip,
       ),
     );
+    ref.read(voteSubmitQueueProvider.notifier).enqueueSkip(item: item);
   }
 
   /// Kembalikan kartu gagal submit ke depan antrean.
   void reinsertFront(VoteDeckItem item) {
     final current = state.value;
     if (current == null) return;
+    _locallySkipped.remove(item.id);
     final withoutDup =
         current.items.where((i) => i.id != item.id).toList();
     final clearRewind = current.rewindEntry?.item.id == item.id;
@@ -187,7 +202,16 @@ class VoteDeckController extends _$VoteDeckController {
     if (current == null || entry == null) return null;
 
     final value = entry.voteValue;
-    if (value != null) {
+    if (entry.kind == VoteDeckRewindKind.skip) {
+      _locallySkipped.remove(entry.item.id);
+      final failure = await ref
+          .read(voteSubmitQueueProvider.notifier)
+          .undoSkip(entry.item.id);
+      if (failure != null) {
+        _locallySkipped.add(entry.item.id);
+        return failure;
+      }
+    } else if (value != null) {
       final queue = ref.read(voteSubmitQueueProvider.notifier);
       final cancelled = queue.cancelQueued(entry.item.id);
       if (!cancelled) {

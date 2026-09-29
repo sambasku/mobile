@@ -38,6 +38,8 @@ class _FakeReviewRepository implements ReviewRepository {
   final List<ReviewItem> items;
   final Map<String, ReviewDetail> details;
   final List<String> approvedIds = [];
+  final List<String> skippedIds = [];
+  final List<String> unskippedIds = [];
 
   @override
   Future<Either<ReviewFailure, ReviewListPage>> list({
@@ -45,6 +47,7 @@ class _FakeReviewRepository implements ReviewRepository {
     String? entityType,
     String? wordId,
     bool mine = false,
+    bool hideSkipped = false,
     int limit = 20,
     String? cursor,
   }) async {
@@ -87,6 +90,18 @@ class _FakeReviewRepository implements ReviewRepository {
   @override
   Future<Either<ReviewFailure, Unit>> unverifyWord(String wordId) async =>
       Either.left(ReviewFailure('tidak dipakai'));
+
+  @override
+  Future<Either<ReviewFailure, Unit>> skip(String id) async {
+    skippedIds.add(id);
+    return Either.right(unit);
+  }
+
+  @override
+  Future<Either<ReviewFailure, Unit>> unskip(String id) async {
+    unskippedIds.add(id);
+    return Either.right(unit);
+  }
 }
 
 ReviewDetail _wordDetail({
@@ -335,9 +350,10 @@ void main() {
 
   test('skipCurrent menyimpan rewindSkipId; rewindSkip mengembalikan kartu',
       () async {
+    final repo = _FakeReviewRepository();
     final container = ProviderContainer(
       overrides: [
-        reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
+        reviewRepositoryProvider.overrideWithValue(repo),
       ],
     );
     addTearDown(container.dispose);
@@ -356,12 +372,14 @@ void main() {
     expect(afterSkip?.canRewind, isTrue);
     expect(afterSkip?.rewindSkipId, 'a');
 
-    final ok = container.read(reviewSessionProvider.notifier).rewindSkip();
+    final ok =
+        await container.read(reviewSessionProvider.notifier).rewindSkip();
     expect(ok, isTrue);
     final afterRewind = container.read(reviewSessionProvider);
     expect(afterRewind?.currentId, 'a');
     expect(afterRewind?.canRewind, isFalse);
     expect(afterRewind?.ids, ['a', 'b', 'c']);
+    expect(repo.unskippedIds, repo.skippedIds);
   });
 
   test('advanceAfterDecision menghapus rewind skip', () async {

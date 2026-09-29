@@ -4,21 +4,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../my_votes/presentation/providers/my_votes_providers.dart';
+import '../../data/providers/vote_data_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../../domain/entities/vote_target.dart';
+import '../../domain/failures/vote_failure.dart';
 import '../../domain/providers/vote_domain_providers.dart';
 
 /// Status job submit vote di background.
 enum VoteSubmitJobStatus { queued, inFlight, done, failed, cancelled }
 
+enum VoteSubmitKind { vote, skip }
+
 class VoteSubmitJob {
   VoteSubmitJob({
     required this.item,
     required this.value,
+    this.kind = VoteSubmitKind.vote,
   }) : status = VoteSubmitJobStatus.queued;
 
   final VoteDeckItem item;
   final int value;
+  final VoteSubmitKind kind;
   VoteSubmitJobStatus status;
 
   String get wordId => item.id;
@@ -116,11 +122,30 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
     Future.microtask(_pump);
   }
 
+  void enqueueSkip({required VoteDeckItem item}) {
+    cancelQueued(item.id);
+    final job = VoteSubmitJob(item: item, value: 0, kind: VoteSubmitKind.skip);
+    _pending.addLast(job);
+    _byWordId[item.id] = job;
+    _publishCounts();
+    Future.microtask(_pump);
+  }
+
+  /// Batalkan skip yang masih antre, atau DELETE jika POST sudah jalan.
+  /// Null = berhasil (antre dibatalkan atau baris skip terhapus).
+  Future<VoteFailure?> undoSkip(String wordId) async {
+    if (cancelQueued(wordId)) return null;
+    await waitUntilNotInFlight(wordId);
+    final result = await ref.read(voteRepositoryProvider).unskipWord(wordId);
+    return result.match((failure) => failure, (_) => null);
+  }
+
   void _publishCounts({
     String? errorMessage,
     VoteDeckItem? failedItem,
     bool bumpError = false,
   }) {
+    if (!ref.mounted) return;
     // Error sticky sampai bump berikutnya - jangan di-clear oleh _pump biasa.
     state = VoteSubmitQueueState(
       pendingCount: _pending.length,
@@ -132,6 +157,7 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
   }
 
   void _pump() {
+    if (!ref.mounted) return;
     while (_inFlight.length < maxConcurrent && _pending.isNotEmpty) {
       final job = _pending.removeFirst();
       if (job.status == VoteSubmitJobStatus.cancelled) {
@@ -161,6 +187,25 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
   }
 
   Future<void> _execute(VoteSubmitJob job) async {
+    if (job.kind == VoteSubmitKind.skip) {
+      final result = await ref.read(voteRepositoryProvider).skipWord(job.wordId);
+      result.match(
+        (failure) {
+          job.status = VoteSubmitJobStatus.failed;
+          _publishCounts(
+            errorMessage: failure.message,
+            failedItem: job.item,
+            bumpError: true,
+          );
+        },
+        (_) {
+          job.status = VoteSubmitJobStatus.done;
+          _publishCounts();
+        },
+      );
+      return;
+    }
+
     final target = VoteTarget(type: 'word', id: job.wordId);
     final result = await ref.read(toggleVoteUseCaseProvider)(
       target: target,

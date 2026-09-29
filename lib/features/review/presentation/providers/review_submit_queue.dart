@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/failures/review_failure.dart';
 import 'review_providers.dart';
 
-enum ReviewSubmitKind { approve, reject }
+enum ReviewSubmitKind { approve, reject, skip }
 
 enum ReviewSubmitJobStatus { queued, inFlight, done, failed, cancelled }
 
@@ -82,6 +82,7 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
   final Queue<ReviewSubmitJob> _pending = Queue<ReviewSubmitJob>();
   final Map<String, ReviewSubmitJob> _byId = {};
   final Set<String> _inFlight = {};
+  final Map<String, Future<void>> _inFlightFutures = {};
 
   @override
   ReviewSubmitQueueState build() => const ReviewSubmitQueueState();
@@ -105,6 +106,33 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
     );
   }
 
+  void enqueueSkip(String contributionId) {
+    _enqueue(
+      ReviewSubmitJob(
+        contributionId: contributionId,
+        kind: ReviewSubmitKind.skip,
+      ),
+    );
+  }
+
+  /// Batalkan job yang belum dikirim. `true` jika berhasil dibatalkan.
+  bool cancelQueued(String contributionId) {
+    final job = _byId[contributionId];
+    if (job == null || job.status != ReviewSubmitJobStatus.queued) {
+      return false;
+    }
+    job.status = ReviewSubmitJobStatus.cancelled;
+    _pending.removeWhere((j) => j.contributionId == contributionId);
+    _byId.remove(contributionId);
+    _publishCounts();
+    return true;
+  }
+
+  Future<void> waitUntilNotInFlight(String contributionId) async {
+    final future = _inFlightFutures[contributionId];
+    if (future != null) await future;
+  }
+
   void _enqueue(ReviewSubmitJob job) {
     final existing = _byId[job.contributionId];
     if (existing != null && existing.status == ReviewSubmitJobStatus.queued) {
@@ -124,6 +152,7 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
     bool failedIsAlreadyDecided = false,
     bool bumpError = false,
   }) {
+    if (!ref.mounted) return;
     // Error sticky sampai bump berikutnya - jangan di-clear oleh _pump biasa.
     state = ReviewSubmitQueueState(
       pendingCount: _pending.length,
@@ -140,6 +169,7 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
   }
 
   void _pump() {
+    if (!ref.mounted) return;
     while (_inFlight.length < maxConcurrent && _pending.isNotEmpty) {
       final job = _pending.removeFirst();
       if (job.status == ReviewSubmitJobStatus.cancelled) continue;
@@ -153,8 +183,11 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
     _inFlight.add(job.contributionId);
     _publishCounts();
 
-    _execute(job).whenComplete(() {
+    final future = _execute(job);
+    _inFlightFutures[job.contributionId] = future;
+    future.whenComplete(() {
       _inFlight.remove(job.contributionId);
+      _inFlightFutures.remove(job.contributionId);
       if (_byId[job.contributionId] == job &&
           job.status != ReviewSubmitJobStatus.queued) {
         _byId.remove(job.contributionId);
@@ -165,12 +198,35 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
 
   Future<void> _execute(ReviewSubmitJob job) async {
     final repo = ref.read(reviewRepositoryProvider);
+    if (job.kind == ReviewSubmitKind.skip) {
+      final result = await repo.skip(job.contributionId);
+      result.match(
+        (ReviewFailure failure) {
+          job.status = ReviewSubmitJobStatus.failed;
+          _publishCounts(
+            errorMessage: failure.message,
+            failedContributionId: job.contributionId,
+            failedIsForbidden: failure.isForbidden,
+            bumpError: true,
+          );
+        },
+        (_) {
+          job.status = ReviewSubmitJobStatus.done;
+          ref.invalidate(reviewQueueHasPendingProvider);
+          _publishCounts();
+        },
+      );
+      return;
+    }
+
     final result = switch (job.kind) {
       ReviewSubmitKind.approve => await repo.approve(job.contributionId),
       ReviewSubmitKind.reject => await repo.reject(
           job.contributionId,
           comment: job.comment ?? '',
         ),
+      ReviewSubmitKind.skip =>
+        throw StateError('skip ditangani sebelum switch'),
     };
 
     result.match(

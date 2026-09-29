@@ -63,6 +63,14 @@ class _FakeVoteRepository implements VoteRepository {
   }) async {
     return Either.right(const VoteDeckPage(items: []));
   }
+
+  @override
+  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async =>
+      Either.right(unit);
+
+  @override
+  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async =>
+      Either.right(unit);
 }
 
 void main() {

@@ -177,16 +177,22 @@ class LetterWordsPage extends HookConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => ref.read(letterWordsProvider(letter).notifier).load(),
-      child: ListView(
-        controller: scroll,
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+      child: Column(
         children: [
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [for (final item in state.items) _WordTile(item: item)],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () =>
+                  ref.read(letterWordsProvider(letter).notifier).load(),
+              child: FTileGroup.builder(
+                scrollController: scroll,
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) =>
+                    _WordTile(item: state.items[index]),
+              ),
+            ),
           ),
           if (state.isLoadingMore) const _LoadingMoreFooter(),
         ],
