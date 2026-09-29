@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/comment_page.dart';
@@ -47,6 +49,14 @@ class _FakeCommentRepository implements CommentRepository {
     receivedBody = body;
     return createResult;
   }
+
+  @override
+  Future<Either<CommentFailure, WordComment>> createAudio({
+    required String wordId,
+    required File audioFile,
+    required int durationMs,
+    String? body,
+  }) async => Either.left(const CommentFailure('tidak dipakai'));
 
   @override
   Future<Either<CommentFailure, void>> delete(String commentId) async {

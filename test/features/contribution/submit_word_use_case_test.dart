@@ -55,6 +55,13 @@ class _FakeRepo implements ContributionRepository {
     this.searchMissId = searchMissId;
     return result;
   }
+
+  @override
+  Future<Either<ContributionFailure, String>> confirmDuplicateMeaning({
+    required String wordId,
+    required String meaningId,
+    required int value,
+  }) async => Either.left(const ContributionFailure('tidak dipakai'));
 }
 
 SubmitAnonWordParams _params({

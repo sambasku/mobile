@@ -29,6 +29,13 @@ class _FakeRepo implements ContributionRepository {
       const SubmitWordResult(wordId: '01TEST', status: 'pending_review'),
     );
   }
+
+  @override
+  Future<Either<ContributionFailure, String>> confirmDuplicateMeaning({
+    required String wordId,
+    required String meaningId,
+    required int value,
+  }) async => Either.left(const ContributionFailure('tidak dipakai'));
 }
 
 void main() {

@@ -153,6 +153,7 @@ void main() {
           definition: 'ikan kecil',
           translation: 'ikan kecil',
           wordClassId: null,
+          meaningSource: 'manual',
         ),
       ],
       publish: true,
@@ -197,6 +198,7 @@ void main() {
           definition: 'aktivitas memasukkan makanan ke mulut',
           translation: 'makan',
           wordClassId: '01CLASSKBBI000000000000001',
+          meaningSource: 'kbbi',
         ),
       ],
       publish: true,
@@ -518,7 +520,9 @@ void main() {
     expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     expect(find.byIcon(FLucideIcons.x), findsOneWidget);
     expect(
-      find.textContaining('Kanan hijau · kiri merah · atas lewati'),
+      find.textContaining(
+        'Kanan setujui · kiri tolak · atas lewati',
+      ),
       findsOneWidget,
     );
 
