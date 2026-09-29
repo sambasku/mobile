@@ -667,7 +667,7 @@ class _DetailBody extends HookConsumerWidget {
   }
 }
 
-const _votePrompt = 'Entri ini membantu?';
+const _votePrompt = 'Vote';
 
 class _WordVoteBar extends ConsumerWidget {
   const _WordVoteBar({required this.wordId});

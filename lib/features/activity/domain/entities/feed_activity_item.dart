@@ -9,6 +9,7 @@ enum FeedActivityKind {
   pronunciation,
   example,
   searchMiss,
+  welcome,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -31,6 +32,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.example;
     case 'search_miss':
       return FeedActivityKind.searchMiss;
+    case 'welcome':
+      return FeedActivityKind.welcome;
     default:
       return null;
   }

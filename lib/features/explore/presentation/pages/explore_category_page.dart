@@ -11,7 +11,7 @@ import '../../domain/explore_category.dart';
 import '../../domain/sambas_map_config.dart';
 import '../widgets/sambas_map_view.dart';
 
-/// Detail kategori. Peta & Akses = MapLibre; Event & Acara = kalender; lainnya segera hadir.
+/// Detail kategori. Peta & Akses = MapLibre; Bahasa & Budaya = bridge kamus; lainnya segera hadir.
 class ExploreCategoryPage extends StatelessWidget {
   const ExploreCategoryPage({super.key, required this.categoryId});
 
@@ -22,7 +22,6 @@ class ExploreCategoryPage extends StatelessWidget {
     final category = ExploreCategory.byId(categoryId);
     final isPetaAkses = categoryId == 'peta-akses';
     final isBahasaBudaya = categoryId == 'bahasa-budaya';
-    final isEventAcara = categoryId == 'event-acara';
 
     return FScaffold(
       childPad: false,
@@ -39,9 +38,7 @@ class ExploreCategoryPage extends StatelessWidget {
           ? const _PetaAksesMap()
           : isBahasaBudaya
               ? const _BahasaBudayaBridge()
-              : isEventAcara
-                  ? const _EventAcaraBody()
-                  : _ComingSoonBody(category: category),
+              : _ComingSoonBody(category: category),
     );
   }
 }
@@ -117,60 +114,6 @@ class _BahasaBudayaBridge extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Event & Acara: kalender di atas sebagai penanda tanggal beracara;
-/// daftar konten API menyusul.
-class _EventAcaraBody extends StatelessWidget {
-  const _EventAcaraBody();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      children: [
-        Center(
-          child: FCalendar(
-            control: FCalendarControl.managedDate(),
-            start: DateTime.utc(2000),
-            end: DateTime.utc(2040),
-          ),
-        ),
-        const Gap(24),
-        Center(
-          child: Icon(
-            FLucideIcons.calendarDays,
-            size: 40,
-            color: theme.colors.primary,
-          ),
-        ),
-        const Gap(12),
-        Center(
-          child: FBadge(
-            variant: FBadgeVariant.outline,
-            child: const Text('Segera hadir'),
-          ),
-        ),
-        const Gap(12),
-        Text(
-          'Daftar acara',
-          style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
-          textAlign: TextAlign.center,
-        ),
-        const Gap(8),
-        Text(
-          'Kalender di atas nanti menandai tanggal yang punya festival, '
-          'pameran, atau kegiatan. Daftar detail acara menyusul.',
-          textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
-            color: theme.colors.mutedForeground,
-          ),
-        ),
-      ],
     );
   }
 }

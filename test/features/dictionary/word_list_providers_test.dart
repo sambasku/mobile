@@ -32,6 +32,8 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async {
     calls.add((q: q, cursor: cursor));
     if (failNext) {

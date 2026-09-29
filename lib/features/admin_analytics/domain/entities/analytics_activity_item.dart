@@ -21,7 +21,7 @@ class AnalyticsActivityItem {
   /// ISO timestamp dari sumber (untuk sort).
   final String createdAt;
 
-  /// Nama tampilan: display_name, username, atau "Seseorang" untuk anonim.
+  /// Nama tampilan: display_name, username, atau "Warga" untuk anonim.
   final String actorLabel;
 
   /// Username mentah (untuk tap profil); null bila anonim / tidak ada.

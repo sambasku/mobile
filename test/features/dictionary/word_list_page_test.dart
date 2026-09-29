@@ -27,6 +27,8 @@ class _StubDictionaryRepository implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async =>
       Either.right(WordSearchPage(
         items: [_word('apam'), _word('budu'), _word("'caci")],

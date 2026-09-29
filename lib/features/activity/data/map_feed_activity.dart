@@ -12,7 +12,7 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     actor = FeedActivityActor(
       username: m['username']?.toString(),
       displayName: m['display_name']?.toString(),
-      avatarUrl: m['avatar_url']?.toString(),
+      avatarUrl: _nonEmptyUrl(m['avatar_url']),
     );
   }
 
@@ -47,4 +47,11 @@ List<FeedActivityItem> mapFeedActivityList(Object? data) {
     if (item != null) out.add(item);
   }
   return out;
+}
+
+String? _nonEmptyUrl(Object? raw) {
+  if (raw == null) return null;
+  final s = raw.toString().trim();
+  if (s.isEmpty || s == 'null') return null;
+  return s;
 }

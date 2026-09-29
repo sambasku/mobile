@@ -9,7 +9,9 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/discussion_models.dart';
 import '../../discussion_router.dart';
@@ -48,10 +50,6 @@ class DiscussionFeedPage extends HookConsumerWidget {
             icon: const Icon(FLucideIcons.history),
             onPress: () => context.push(DiscussionRouter.mine.path),
           ),
-          FHeaderAction(
-            icon: const Icon(FLucideIcons.plus),
-            onPress: () => context.push(DiscussionRouter.create.path),
-          ),
         ],
       ),
       child: RefreshIndicator(
@@ -68,7 +66,8 @@ class DiscussionFeedPage extends HookConsumerWidget {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(vertical: 24),
             children: [
-              const Gap(40),
+              const _NewThreadComposer(),
+              const Gap(24),
               Icon(
                 FLucideIcons.circleAlert,
                 size: 40,
@@ -96,8 +95,10 @@ class DiscussionFeedPage extends HookConsumerWidget {
             if (state.items.isEmpty) {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 24, 0, 32),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
                 children: [
+                  const _NewThreadComposer(),
+                  const Gap(16),
                   _SortChips(
                     sort: sort,
                     onSelect: (s) =>
@@ -125,25 +126,30 @@ class DiscussionFeedPage extends HookConsumerWidget {
                       color: context.theme.colors.mutedForeground,
                     ),
                   ),
-                  const Gap(16),
-                  FButton(
-                    onPress: () =>
-                        context.push(DiscussionRouter.create.path),
-                    child: const Text('Mulai diskusi'),
-                  ),
                 ],
               );
             }
 
+            // index 0 = composer, 1 = sort, lalu items (+ loading footer)
             return ListView.separated(
               controller: scroll,
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-              itemCount: state.items.length + 1 + (state.isLoadingMore ? 1 : 0),
-              separatorBuilder: (_, _) =>
-                  Divider(height: 1, color: context.theme.colors.border),
+              itemCount:
+                  state.items.length + 2 + (state.isLoadingMore ? 1 : 0),
+              separatorBuilder: (context, index) {
+                // Pemisah hanya antar tile feed (bukan di atas composer/sort).
+                if (index < 1) return const SizedBox.shrink();
+                return Divider(height: 1, color: context.theme.colors.border);
+              },
               itemBuilder: (context, index) {
                 if (index == 0) {
+                  return const Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: _NewThreadComposer(),
+                  );
+                }
+                if (index == 1) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: _SortChips(
@@ -154,7 +160,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                     ),
                   );
                 }
-                final itemIndex = index - 1;
+                final itemIndex = index - 2;
                 if (itemIndex >= state.items.length) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
@@ -165,6 +171,53 @@ class DiscussionFeedPage extends HookConsumerWidget {
               },
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+/// Field palsu di atas feed: tap → form buat thread + autofokus deskripsi.
+class _NewThreadComposer extends StatelessWidget {
+  const _NewThreadComposer();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () =>
+            context.push('${DiscussionRouter.create.path}?focus=1'),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: theme.colors.border),
+            color: theme.colors.secondary.withValues(alpha: 0.35),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  FLucideIcons.plus,
+                  size: 18,
+                  color: theme.colors.mutedForeground,
+                ),
+                const Gap(10),
+                Expanded(
+                  child: Text(
+                    'Mulai thread baru…',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -202,13 +255,25 @@ class _FeedTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final when = formatRelative(DateTime.tryParse(item.createdAt));
-    final username = displayPublicAccountLabel(
+    final dateLabel = formatRelativeCompact(
+      DateTime.tryParse(item.createdAt),
+    );
+    final actorLabel = displayPublicAccountLabel(
       displayName: item.displayName,
       username: item.username,
     );
+    final canOpenProfile = isLinkablePublicUsername(item.username);
     final body = item.body?.trim() ?? '';
     final images = item.images;
+    final contextMeta = [
+      'Diskusi',
+      if (images.length > 1) '${images.length} foto',
+      if (item.hasAudio) 'Suara',
+    ].join(' · ');
+
+    // Satu foto 1:1 di kanan (seperti thumb ringkas; multi-foto hanya di detail).
+    const thumbSize = 72.0;
+    final leadImage = images.isEmpty ? null : images.first;
 
     return Material(
       color: Colors.transparent,
@@ -217,60 +282,93 @@ class _FeedTile extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  UserAvatar(name: actorLabel, size: 40),
+                  const Gap(12),
                   Expanded(
-                    child: Text(
-                      username,
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
-                        fontSize: 11,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: canOpenProfile
+                                    ? () => UserProfileRouter.open(
+                                          context,
+                                          item.username!,
+                                        )
+                                    : null,
+                                child: Text(
+                                  actorLabel,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.typography.sm.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.25,
+                                    color: canOpenProfile
+                                        ? theme.colors.primary
+                                        : theme.colors.foreground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (dateLabel.isNotEmpty) ...[
+                              const Gap(8),
+                              Text(
+                                dateLabel,
+                                style: theme.typography.xs.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                  height: 1.25,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        if (body.isNotEmpty) ...[
+                          const Gap(4),
+                          Text(
+                            body,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.sm.copyWith(
+                              height: 1.35,
+                              color: theme.colors.foreground,
+                            ),
+                          ),
+                        ],
+                        const Gap(4),
+                        Text(
+                          contextMeta,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.typography.xs.copyWith(
+                            color: theme.colors.mutedForeground,
+                            height: 1.25,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  if (when.isNotEmpty)
-                    Text(
-                      when,
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
-                        fontSize: 11,
+                  if (leadImage != null) ...[
+                    const Gap(12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: DiscussionImageThumb(
+                        image: leadImage,
+                        revealed: false,
+                        width: thumbSize,
+                        height: thumbSize,
                       ),
                     ),
+                  ],
                 ],
               ),
-              if (body.isNotEmpty) ...[
-                const Gap(6),
-                Text(
-                  body,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm,
-                ),
-              ],
-              if (images.isNotEmpty) ...[
-                const Gap(8),
-                SizedBox(
-                  height: 72,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: images.length.clamp(0, 4),
-                    separatorBuilder: (_, _) => const Gap(6),
-                    itemBuilder: (context, i) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: DiscussionImageThumb(
-                          image: images[i],
-                          revealed: false,
-                          width: 72,
-                          height: 72,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
               const Gap(8),
               // GestureDetector menyerap tap vote agar tidak buka detail.
               GestureDetector(
@@ -278,6 +376,7 @@ class _FeedTile extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 child: Row(
                   children: [
+                    const Gap(52), // sejajar teks di kanan avatar (40 + 12)
                     VoteButtons(
                       upvotes: item.upvotes,
                       downvotes: 0,
@@ -290,9 +389,9 @@ class _FeedTile extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         'Saya juga ingin tahu',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.xs.copyWith(
                           color: theme.colors.mutedForeground,
-                          fontSize: 11,
+                          height: 1.25,
                         ),
                       ),
                     ),
@@ -364,13 +463,24 @@ class _FeedSkeleton extends StatelessWidget {
         itemCount: 6,
         itemBuilder: (_, _) => const Padding(
           padding: EdgeInsets.symmetric(vertical: 12),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Bone.text(words: 2),
-              Gap(8),
-              Bone.multiText(lines: 2),
-              Gap(8),
+              Bone.circle(size: 40),
+              Gap(12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Bone.text(words: 2),
+                    Gap(4),
+                    Bone.multiText(lines: 2),
+                    Gap(4),
+                    Bone.text(words: 2),
+                  ],
+                ),
+              ),
+              Gap(12),
               Bone(width: 72, height: 72),
             ],
           ),

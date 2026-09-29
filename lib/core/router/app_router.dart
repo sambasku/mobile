@@ -196,6 +196,7 @@ class AppRouter {
       return true;
     }
     if (path.startsWith('/words/')) return true;
+    if (path.startsWith('/huruf/')) return true;
     if (path.startsWith('/users/')) return true;
     if (path.startsWith('/discussions')) return true;
     return false;

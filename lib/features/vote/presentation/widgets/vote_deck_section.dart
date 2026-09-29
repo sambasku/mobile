@@ -374,12 +374,12 @@ class _VoteDeckActionBar extends StatelessWidget {
         border: Border(top: BorderSide(color: theme.colors.border)),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
         child: Row(
           children: [
             Expanded(
               child: Text(
-                'Pilih penilaian',
+                'Vote',
                 style: theme.typography.xs.copyWith(
                   color: theme.colors.mutedForeground,
                   fontWeight: FontWeight.w600,
@@ -419,7 +419,7 @@ class _VoteDeckActionBar extends StatelessWidget {
                 color: theme.colors.destructive,
               ),
             ),
-            const Gap(4),
+            const Gap(8),
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,

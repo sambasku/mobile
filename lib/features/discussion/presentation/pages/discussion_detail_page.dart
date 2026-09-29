@@ -495,54 +495,123 @@ class _ImageRow extends StatefulWidget {
 }
 
 class _ImageRowState extends State<_ImageRow> {
+  static const _maxPages = 10;
+
   var _violenceRevealed = false;
+  var _page = 0;
+
+  List<DiscussionImage> get _pages =>
+      widget.images.take(_maxPages).toList(growable: false);
+
+  List<String> get _previewUrls => [
+        for (final u in _pages)
+          if (u.displaySource != null)
+            displayImageUrl(u.displaySource!, width: 1200) ?? u.displaySource!,
+      ];
+
+  void _openPreview(int index) {
+    final pages = _pages;
+    if (index < 0 || index >= pages.length) return;
+    final img = pages[index];
+    if (img.hasViolenceWarning && !_violenceRevealed) {
+      setState(() => _violenceRevealed = true);
+      return;
+    }
+    final urls = _previewUrls;
+    if (urls.isEmpty) return;
+    showImagePreview(
+      context,
+      urls: urls,
+      initialIndex: index.clamp(0, urls.length - 1),
+    );
+  }
+
+  Widget _photoPage(DiscussionImage img, int index) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _openPreview(index),
+      child: SizedBox.expand(
+        child: DiscussionImageThumb(
+          image: img,
+          revealed: _violenceRevealed,
+          fit: BoxFit.cover,
+          onRequestReveal: () => setState(() => _violenceRevealed = true),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final images = widget.images;
-    return SizedBox(
-      height: 96,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: images.length,
-        separatorBuilder: (_, _) => const Gap(8),
-        itemBuilder: (context, i) {
-          final img = images[i];
-          final src = img.displaySource;
-          return GestureDetector(
-            onTap: () {
-              if (img.hasViolenceWarning && !_violenceRevealed) {
-                setState(() => _violenceRevealed = true);
-                return;
-              }
-              if (src == null) return;
-              final urls = [
-                for (final u in images)
-                  if (u.displaySource != null)
-                    displayImageUrl(u.displaySource!, width: 1200) ??
-                        u.displaySource!,
-              ];
-              if (urls.isEmpty) return;
-              showImagePreview(
-                context,
-                urls: urls,
-                initialIndex: i.clamp(0, urls.length - 1),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: DiscussionImageThumb(
-                image: img,
-                revealed: _violenceRevealed,
-                width: 96,
-                height: 96,
-                onRequestReveal: () =>
-                    setState(() => _violenceRevealed = true),
+    final theme = context.theme;
+    final pages = _pages;
+    if (pages.isEmpty) return const SizedBox.shrink();
+
+    final multi = pages.length > 1;
+    final screenW = MediaQuery.sizeOf(context).width;
+
+    // Bleed ke lebar layar (keluar dari padding FScaffold childPad).
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bleed =
+            ((screenW - constraints.maxWidth) / 2).clamp(0.0, 48.0);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Transform.translate(
+              offset: Offset(-bleed, 0),
+              child: SizedBox(
+                width: screenW,
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: ClipRect(
+                    child: multi
+                        ? PageView.builder(
+                            itemCount: pages.length,
+                            onPageChanged: (i) => setState(() => _page = i),
+                            itemBuilder: (context, i) =>
+                                _photoPage(pages[i], i),
+                          )
+                        : _photoPage(pages.first, 0),
+                  ),
+                ),
               ),
             ),
-          );
-        },
-      ),
+            const Gap(8),
+            Text(
+              multi
+                  ? 'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain'
+                  : 'Ketuk foto untuk melihat ukuran penuh',
+              textAlign: TextAlign.center,
+              style: theme.typography.xs.copyWith(
+                color: theme.colors.mutedForeground,
+                height: 1.3,
+              ),
+            ),
+            if (multi) ...[
+              const Gap(8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < pages.length; i++)
+                    Container(
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: i == _page
+                            ? theme.colors.primary
+                            : theme.colors.mutedForeground
+                                .withValues(alpha: 0.35),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -560,7 +629,9 @@ class _DetailSkeleton extends StatelessWidget {
           Gap(12),
           Bone.multiText(lines: 3),
           Gap(12),
-          Bone(width: 96, height: 96),
+          AspectRatio(aspectRatio: 4 / 3, child: Bone()),
+          Gap(8),
+          Bone.text(words: 4),
           Gap(20),
           Bone.text(words: 2),
           Gap(8),

@@ -6,6 +6,18 @@ import '../../../core/cache/cached_json_client.dart';
 import '../domain/entities/feed_activity_item.dart';
 import 'map_feed_activity.dart';
 
+class ActivityFeedPage {
+  const ActivityFeedPage({
+    required this.items,
+    this.nextCursor,
+    this.hasMore = false,
+  });
+
+  final List<FeedActivityItem> items;
+  final String? nextCursor;
+  final bool hasMore;
+}
+
 class ActivityFeedRepository {
   ActivityFeedRepository(this._dio, {CachedJsonClient? cache}) : _cache = cache;
 
@@ -14,12 +26,17 @@ class ActivityFeedRepository {
 
   static const path = '/api/v1/activity';
 
-  Future<List<FeedActivityItem>> list({
+  Future<ActivityFeedPage> list({
     int limit = 20,
+    String? cursor,
     bool forceRefresh = false,
   }) async {
-    final query = <String, dynamic>{'limit': limit};
+    final query = <String, dynamic>{
+      'limit': limit,
+      if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+    };
     final cache = _cache;
+    final isFirstPage = cursor == null || cursor.isEmpty;
 
     Future<Map<String, dynamic>> fetchEnvelope() async {
       final res = await _dio.get<dynamic>(path, queryParameters: query);
@@ -31,7 +48,7 @@ class ActivityFeedRepository {
     }
 
     final Map<String, dynamic> envelope;
-    if (cache != null) {
+    if (cache != null && isFirstPage) {
       final key = buildCacheKey(method: 'GET', path: path, query: query);
       envelope = await cache.getOrFetch(
         key: key,
@@ -43,6 +60,11 @@ class ActivityFeedRepository {
       envelope = await fetchEnvelope();
     }
 
-    return mapFeedActivityList(envelope['data']);
+    final meta = envelope['meta'];
+    return ActivityFeedPage(
+      items: mapFeedActivityList(envelope['data']),
+      nextCursor: meta is Map ? meta['next_cursor']?.toString() : null,
+      hasMore: meta is Map && meta['has_more'] == true,
+    );
   }
 }

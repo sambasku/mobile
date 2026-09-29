@@ -43,7 +43,9 @@ class DiscussionRouter {
       path: create.path,
       name: create.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => const CreateDiscussionPage(),
+      builder: (context, state) => CreateDiscussionPage(
+        autofocus: state.uri.queryParameters['focus'] == '1',
+      ),
     ),
     GoRoute(
       path: mine.path,

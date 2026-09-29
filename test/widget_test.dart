@@ -63,6 +63,8 @@ class _EmptyLatestRepository implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async =>
       throw UnimplementedError();
 

@@ -21,7 +21,10 @@ import '../providers/discussion_list_providers.dart';
 
 /// Form kirim diskusi (wajib login).
 class CreateDiscussionPage extends HookConsumerWidget {
-  const CreateDiscussionPage({super.key});
+  const CreateDiscussionPage({super.key, this.autofocus = false});
+
+  /// true saat dibuka dari composer feed (`?focus=1`).
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,6 +33,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
 
     final body = useTextEditingController();
     final link = useTextEditingController();
+    final bodyFocus = useFocusNode();
     useListenable(body);
     useListenable(link);
     final images = useState<List<AttachmentImageSlot>>(const []);
@@ -37,6 +41,14 @@ class CreateDiscussionPage extends HookConsumerWidget {
     final shareSocialLink = useState(false);
     final pendingAudio = useState<RecordedThreadAudio?>(null);
     final submitting = useState(false);
+
+    useEffect(() {
+      if (!autofocus || !isAuth) return null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (bodyFocus.canRequestFocus) bodyFocus.requestFocus();
+      });
+      return null;
+    }, [autofocus, isAuth]);
 
     final trimmed = body.text.trim();
     final linkTrimmed =
@@ -278,6 +290,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           ],
           FTextField(
             control: FTextFieldControl.managed(controller: body),
+            focusNode: bodyFocus,
             enabled: !submitting.value && isAuth,
             label: const Text('Deskripsi'),
             hint: 'Jelaskan pertanyaan atau konteks bahasa yang ingin didiskusikan',

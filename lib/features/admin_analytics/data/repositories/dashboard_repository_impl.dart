@@ -213,9 +213,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
             createdAt: map['created_at']?.toString() ??
                 map['last_searched_at']?.toString() ??
                 '',
-            actorLabel: 'Seseorang',
+            actorLabel: 'Warga',
             body: searchMissActivityBody(term),
-            subtitle: 'Pencarian kosong',
+            subtitle: 'Kata tidak ditemukan',
             navigatePath: '/contribute?$q',
           ),
         );

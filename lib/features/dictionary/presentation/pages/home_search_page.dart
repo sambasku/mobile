@@ -11,9 +11,9 @@ import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../../shared/utils/public_account_name.dart';
-import '../../../../shared/widgets/user_avatar.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
+import '../../../activity/presentation/widgets/activity_kind_avatar.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../discussion/presentation/widgets/discussion_home_banner.dart';
@@ -51,6 +51,18 @@ class HomeSearchPage extends HookConsumerWidget {
       ref.read(activityFeedProvider.notifier).load();
     });
 
+    useEffect(() {
+      void listener() {
+        if (!scroll.hasClients) return;
+        if (scroll.position.maxScrollExtent - scroll.position.pixels < 200) {
+          ref.read(activityFeedProvider.notifier).loadMore();
+        }
+      }
+
+      scroll.addListener(listener);
+      return () => scroll.removeListener(listener);
+    }, [scroll]);
+
     return Column(
       children: [
         const FHeader(
@@ -59,22 +71,38 @@ class HomeSearchPage extends HookConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-          child: GestureDetector(
-            onTap: () => context.push('${DictionaryRouter.list.path}?focus=1'),
-            child: AbsorbPointer(
-              child: FTextField(
-                size: .sm,
-                readOnly: true,
-                hint: 'Cari kata Sambas...',
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FLucideIcons.search),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () =>
+                      context.push('${DictionaryRouter.list.path}?focus=1'),
+                  child: AbsorbPointer(
+                    child: FTextField(
+                      size: .sm,
+                      readOnly: true,
+                      hint: 'Cari kata Sambas...',
+                      prefixBuilder: (context, style, variants) =>
+                          FTextField.prefixIconBuilder(
+                            context,
+                            style,
+                            variants,
+                            const Icon(FLucideIcons.search),
+                          ),
                     ),
+                  ),
+                ),
               ),
-            ),
+              const Gap(8),
+              FButton(
+                size: .sm,
+                variant: FButtonVariant.outline,
+                onPress: () => context.push(
+                  DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
+                ),
+                child: const Text('A-Z'),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -132,12 +160,18 @@ class HomeSearchPage extends HookConsumerWidget {
             const _FeedListSkeleton()
           else if (items.isEmpty && state.errorMessage == null)
             const _EmptyFeed()
-          else
+          else ...[
             for (var i = 0; i < items.length; i++) ...[
               _ActivityFeedRow(item: items[i]),
               if (i != items.length - 1)
                 Divider(height: 1, color: context.theme.colors.border),
             ],
+            if (state.isLoadingMore) ...[
+              const Gap(12),
+              const Center(child: FCircularProgress()),
+              const Gap(8),
+            ],
+          ],
         ],
       ),
     );
@@ -191,7 +225,7 @@ class _ActivityFeedRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final actorLabel = item.actor == null
-        ? 'Seseorang'
+        ? 'Warga'
         : displayPublicAccountLabel(
             displayName: item.actor!.displayName,
             username: item.actor!.username,
@@ -200,25 +234,25 @@ class _ActivityFeedRow extends StatelessWidget {
     final dateLabel = formatRelativeCompact(
       DateTime.tryParse(item.createdAt),
     );
-    final trailingMeta = [
-      if (dateLabel.isNotEmpty) dateLabel,
-      if (item.subtitle != null && item.subtitle!.trim().isNotEmpty)
-        item.subtitle!.trim(),
+    final kindLabel = _friendlyKindLabel(item.kind);
+    final subtitle = item.subtitle?.trim();
+    final contextMeta = [
+      ?kindLabel,
+      if (subtitle != null && subtitle.isNotEmpty) subtitle,
     ].join(' · ');
 
     final content = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        UserAvatar(
-          name: actorLabel,
+        ActivityKindAvatar(
+          kind: item.kind,
           imageUrl: item.actor?.avatarUrl,
-          size: 28,
+          size: 40,
         ),
-        const Gap(8),
+        const Gap(12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 children: [
@@ -237,7 +271,7 @@ class _ActivityFeedRow extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
                           fontWeight: FontWeight.w700,
-                          height: 1.2,
+                          height: 1.25,
                           color: canOpenProfile
                               ? theme.colors.primary
                               : theme.colors.foreground,
@@ -245,24 +279,40 @@ class _ActivityFeedRow extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (trailingMeta.isNotEmpty) ...[
-                    const Gap(6),
+                  if (dateLabel.isNotEmpty) ...[
+                    const Gap(8),
                     Text(
-                      trailingMeta,
+                      dateLabel,
                       style: theme.typography.xs.copyWith(
                         color: theme.colors.mutedForeground,
-                        height: 1.2,
+                        height: 1.25,
                       ),
                     ),
                   ],
                 ],
               ),
+              const Gap(4),
               Text(
                 item.body,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(height: 1.2),
+                style: theme.typography.sm.copyWith(
+                  height: 1.35,
+                  color: theme.colors.foreground,
+                ),
               ),
+              if (contextMeta.isNotEmpty) ...[
+                const Gap(4),
+                Text(
+                  contextMeta,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.25,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -280,11 +330,27 @@ class _ActivityFeedRow extends StatelessWidget {
                 context.push(path);
               },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           child: content,
         ),
       ),
     );
+  }
+
+  /// Label singkat non-teknis di meta (bukan entity_type mentah).
+  static String? _friendlyKindLabel(FeedActivityKind kind) {
+    return switch (kind) {
+      FeedActivityKind.word => 'Kata',
+      FeedActivityKind.comment => 'Komentar',
+      FeedActivityKind.vote => 'Nilai',
+      FeedActivityKind.discussion => 'Diskusi',
+      FeedActivityKind.wordImage => 'Foto',
+      FeedActivityKind.wordAudio => 'Suara',
+      FeedActivityKind.pronunciation => 'Cara baca',
+      FeedActivityKind.example => 'Contoh',
+      FeedActivityKind.searchMiss => 'Kata tidak ditemukan',
+      FeedActivityKind.welcome => 'Bergabung',
+    };
   }
 
   String? _navigatePath(FeedActivityItem item) {
@@ -295,6 +361,17 @@ class _ActivityFeedRow extends StatelessWidget {
         return DictionaryRouter.detail.path.replaceFirst(':id', target.id);
       case 'discussion':
         return DiscussionRouter.detailPath(target.id);
+      case 'user':
+        final username = item.actor?.username?.trim();
+        if (username == null ||
+            username.isEmpty ||
+            !isLinkablePublicUsername(username)) {
+          return null;
+        }
+        return UserProfileRouter.profile.path.replaceFirst(
+          ':username',
+          Uri.encodeComponent(username),
+        );
       case 'search_miss':
         final term = _searchMissTerm(item);
         final q = Uri(
@@ -310,8 +387,12 @@ class _ActivityFeedRow extends StatelessWidget {
   }
 
   String? _searchMissTerm(FeedActivityItem item) {
-    // body: "mencari {term} tapi tidak terdapat. Bantu isi."
+    // Baru: Mencari "term" - belum ada...
+    // Lama: mencari term tapi tidak terdapat...
     final body = item.body;
+    final quoted = RegExp(r'Mencari "([^"]+)"').firstMatch(body);
+    if (quoted != null) return quoted.group(1)?.trim();
+
     const prefix = 'mencari ';
     const suffix = ' tapi tidak terdapat';
     if (!body.startsWith(prefix) || !body.contains(suffix)) return null;

@@ -97,12 +97,16 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async {
     try {
       final response = await _remoteDatasource.listWords({
         'q': q,
         'limit': limit,
         'cursor': ?cursor,
+        'letter': ?letter,
+        'is_verified': ?isVerified,
       });
 
       if (response.success == false) {

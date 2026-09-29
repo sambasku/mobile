@@ -36,12 +36,14 @@ abstract interface class DictionaryRepository {
   });
 
   /// Daftar semua kata A-Z (18-api-list-words.md). Cursor komposit
-  /// opaque; [q] = filter server-side (bukan pencarian - tanpa
-  /// search-miss).
+  /// opaque; [q] = filter contains server-side; [letter] = prefix A-Z;
+  /// [isVerified] diteruskan ke query bila diisi (browse huruf = true).
   Future<Either<DictionaryFailure, WordSearchPage>> listWords({
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   });
 
   /// Feed beranda: kata published urut waktu persetujuan.

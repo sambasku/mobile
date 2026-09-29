@@ -30,8 +30,8 @@ void main() {
         'kind': 'search_miss',
         'created_at': '2026-09-28T12:00:00.000Z',
         'actor': null,
-        'body': 'mencari x tapi tidak terdapat. Bantu isi.',
-        'subtitle': 'Pencarian kosong',
+        'body': 'Mencari "kalintiak" - belum ada di kamus. Bantu isi.',
+      'subtitle': null,
         'target': {'type': 'search_miss', 'id': '01'},
       });
       expect(item, isNotNull);

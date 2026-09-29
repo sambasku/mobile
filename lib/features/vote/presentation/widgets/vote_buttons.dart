@@ -82,7 +82,7 @@ class _VoteButtonsState extends State<VoteButtons> {
             onTap: () => _vote(1),
           ),
           if (!widget.upvoteOnly) ...[
-            Gap(widget.compact ? 6 : 10),
+            Gap(widget.compact ? 8 : 12),
             _SideButton(
               icon: FLucideIcons.arrowBigDown,
               count: widget.downvotes,
@@ -112,7 +112,7 @@ class VoteButtonsSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final h = compact ? 24.0 : 28.0;
     final w = compact ? 52.0 : 64.0;
-    final gap = compact ? 6.0 : 10.0;
+    final gap = compact ? 8.0 : 12.0;
     final radius = BorderRadius.circular(8);
 
     return Row(
@@ -169,14 +169,14 @@ class _SideButton extends StatelessWidget {
             opacity: disabled ? 0.5 : 1,
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: compact ? 8 : 12,
-                vertical: compact ? 4 : 6,
+                horizontal: compact ? 10 : 12,
+                vertical: compact ? 6 : 8,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(icon, size: compact ? 14 : 16, color: color),
-                  const Gap(4),
+                  const Gap(6),
                   Text(
                     '$count',
                     style: theme.typography.sm.copyWith(

@@ -18,6 +18,8 @@ class ListWordsUseCase {
       q: params.q.trim(),
       limit: params.limit,
       cursor: params.cursor,
+      letter: params.letter,
+      isVerified: params.isVerified,
     );
   }
 }
@@ -27,9 +29,17 @@ class ListWordsParams {
     required this.q,
     this.limit = 20,
     this.cursor,
+    this.letter,
+    this.isVerified,
   });
 
   final String q;
   final int limit;
   final String? cursor;
+
+  /// Prefix lemma satu karakter A-Z (browse /huruf/:letter).
+  final String? letter;
+
+  /// Bila true, hanya kata terverifikasi (selaras web browse huruf).
+  final bool? isVerified;
 }

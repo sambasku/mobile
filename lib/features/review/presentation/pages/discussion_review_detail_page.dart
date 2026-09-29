@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../discussion/data/discussion_providers.dart';
@@ -417,25 +418,73 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                   ),
                 ),
                 const Gap(12),
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: _censoredPreviews[active] != null
-                        ? Image(
-                            image: _censoredPreviews[active]!,
-                            fit: BoxFit.contain,
-                          )
-                        : item.images[active].displaySource != null
-                            ? CachedNetworkImageWithFallback(
-                                imageUrl: displayImageUrl(
-                                      item.images[active].displaySource!,
-                                    ) ??
-                                    item.images[active].displaySource!,
-                                fit: BoxFit.contain,
-                              )
-                            : const ColoredBox(color: Color(0x11000000)),
-                  ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final screenW = MediaQuery.sizeOf(context).width;
+                    final sideInset =
+                        ((screenW - constraints.maxWidth) / 2).clamp(0.0, 48.0);
+                    final src = item.images[active].displaySource;
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: -sideInset),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 4 / 3,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                final urls = [
+                                  for (final img in item.images)
+                                    if (img.displaySource != null)
+                                      displayImageUrl(
+                                            img.displaySource!,
+                                            width: 1200,
+                                          ) ??
+                                          img.displaySource!,
+                                ];
+                                if (urls.isEmpty) return;
+                                showImagePreview(
+                                  context,
+                                  urls: urls,
+                                  initialIndex: active.clamp(0, urls.length - 1),
+                                );
+                              },
+                              child: ColoredBox(
+                                color: const Color(0x11000000),
+                                child: _censoredPreviews[active] != null
+                                    ? Image(
+                                        image: _censoredPreviews[active]!,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      )
+                                    : src != null
+                                        ? CachedNetworkImageWithFallback(
+                                            imageUrl:
+                                                displayImageUrl(src) ?? src,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const SizedBox.expand(),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsets.fromLTRB(sideInset, 8, sideInset, 0),
+                            child: Text(
+                              'Ketuk foto untuk melihat ukuran penuh',
+                              textAlign: TextAlign.center,
+                              style: theme.typography.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                height: 1.3,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
                 if (_isPending) ...[
                   const Gap(12),

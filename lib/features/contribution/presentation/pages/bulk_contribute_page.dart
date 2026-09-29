@@ -131,7 +131,10 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
         languages.where((e) => e.code.toUpperCase() == 'IDN').firstOrNull?.id ??
         '';
     final wordClassId =
-        wordClasses.where((e) => e.code.toLowerCase() == 'umum').firstOrNull?.id ??
+        wordClasses
+            .where((e) => e.code.toLowerCase() == 'umum')
+            .firstOrNull
+            ?.id ??
         wordClasses.firstOrNull?.id ??
         '';
 
@@ -235,25 +238,25 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
       },
     );
 
-    ref.listen<String?>(
-      bulkSubmitWordProvider.select((s) => s.errorMessage),
-      (_, next) {
-        if (next == null || !context.mounted) return;
-        showAppErrorSheet(context, message: next).whenComplete(() {
-          if (context.mounted) notifier.clearError();
-        });
-      },
-    );
+    ref.listen<String?>(bulkSubmitWordProvider.select((s) => s.errorMessage), (
+      _,
+      next,
+    ) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) notifier.clearError();
+      });
+    });
 
-    ref.listen<bool>(
-      bulkSubmitWordProvider.select((s) => s.batchFinished),
-      (prev, next) {
-        if (next != true || prev == true) return;
-        if (!context.mounted) return;
-        final latest = ref.read(bulkSubmitWordProvider);
-        _showBatchResultDialog(latest);
-      },
-    );
+    ref.listen<bool>(bulkSubmitWordProvider.select((s) => s.batchFinished), (
+      prev,
+      next,
+    ) {
+      if (next != true || prev == true) return;
+      if (!context.mounted) return;
+      final latest = ref.read(bulkSubmitWordProvider);
+      _showBatchResultDialog(latest);
+    });
 
     // Prefetch dialek setelah bahasa SBS diketahui.
     final languagesAsync = ref.watch(_bulkLanguagesProvider);
@@ -266,11 +269,14 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
     }
     ref.watch(_bulkWordClassesProvider);
 
-    final sendingNow =
-        state.rows.any((r) => r.status == BulkRowSubmitStatus.sending);
+    final sendingNow = state.rows.any(
+      (r) => r.status == BulkRowSubmitStatus.sending,
+    );
     final progressCurrent = state.isSubmitting
-        ? (state.progressDone + (sendingNow ? 1 : 0))
-            .clamp(0, state.progressTotal)
+        ? (state.progressDone + (sendingNow ? 1 : 0)).clamp(
+            0,
+            state.progressTotal,
+          )
         : state.progressDone;
     final footerLabel = state.isSubmitting
         ? 'Mengirim $progressCurrent/${state.progressTotal}...'
@@ -319,21 +325,14 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
               color: theme.colors.mutedForeground,
             ),
           ),
-          const Gap(16),
-          for (var i = 0; i < state.rows.length; i++) ...[
-            if (i > 0) const Gap(12),
-            _BulkRowCard(
-              index: i,
-              row: state.rows[i],
-              ctrls: _ctrls[state.rows[i].id],
-              canRemove:
-                  state.rows.length > 1 &&
-                  state.rows[i].canRemove &&
-                  !state.isSubmitting,
-              onRemove: () => notifier.removeRow(state.rows[i].id),
-            ),
-          ],
-          const Gap(12),
+          const Gap(10),
+          _BulkTable(
+            rows: state.rows,
+            ctrls: _ctrls,
+            isSubmitting: state.isSubmitting,
+            onRemove: notifier.removeRow,
+          ),
+          const Gap(10),
           if (state.rows.length < BulkSubmitWordState.maxRows)
             FButton(
               variant: FButtonVariant.outline,
@@ -354,95 +353,48 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
   }
 }
 
-class _BulkRowCard extends StatelessWidget {
-  const _BulkRowCard({
-    required this.index,
-    required this.row,
+const _bulkActionWidth = 36.0;
+
+class _BulkTable extends StatelessWidget {
+  const _BulkTable({
+    required this.rows,
     required this.ctrls,
-    required this.canRemove,
+    required this.isSubmitting,
     required this.onRemove,
   });
 
-  final int index;
-  final BulkContributeRow row;
-  final _RowControllers? ctrls;
-  final bool canRemove;
-  final VoidCallback onRemove;
+  final List<BulkContributeRow> rows;
+  final Map<String, _RowControllers> ctrls;
+  final bool isSubmitting;
+  final ValueChanged<String> onRemove;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final locked = !row.isEditable || row.status == BulkRowSubmitStatus.sending;
-    final lemmaCtrl = ctrls?.lemmaCtrl;
-    final trCtrl = ctrls?.translationCtrl;
+    final border = theme.colors.border;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colors.border),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: border),
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Kata ${index + 1}',
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                _RowStatusBadge(status: row.status),
-                if (canRemove) ...[
-                  const Gap(4),
-                  FButton.icon(
-                    variant: FButtonVariant.ghost,
-                    onPress: onRemove,
-                    child: Icon(
-                      FLucideIcons.trash2,
-                      color: theme.colors.mutedForeground,
-                      semanticLabel: 'Hapus baris',
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const Gap(8),
-            if (lemmaCtrl != null)
-              FTextField(
-                control: FTextFieldControl.managed(controller: lemmaCtrl),
-                label: const Text('Kata / ungkapan Sambas *'),
-                hint: 'Contoh: ngupi',
-                enabled: !locked,
-                readOnly: locked,
-                textInputAction: TextInputAction.next,
-              )
-            else
-              const SizedBox(height: 48),
-            const Gap(10),
-            if (trCtrl != null)
-              FTextField(
-                control: FTextFieldControl.managed(controller: trCtrl),
-                label: const Text('Terjemahan Indonesia *'),
-                hint: 'Contoh: minum kopi',
-                enabled: !locked,
-                readOnly: locked,
-                textInputAction: TextInputAction.done,
-              )
-            else
-              const SizedBox(height: 48),
-            if (row.errorMessage != null &&
-                row.errorMessage!.trim().isNotEmpty) ...[
-              const Gap(6),
-              Text(
-                row.errorMessage!,
-                style: theme.typography.sm.copyWith(color: theme.colors.error),
+            _BulkTableHeader(borderColor: border),
+            for (var i = 0; i < rows.length; i++)
+              _BulkTableRow(
+                index: i,
+                row: rows[i],
+                ctrls: ctrls[rows[i].id],
+                cellStyle: _bulkCellStyle(theme.colors.primary),
+                borderColor: border,
+                canRemove:
+                    rows.length > 1 && rows[i].canRemove && !isSubmitting,
+                onRemove: () => onRemove(rows[i].id),
               ),
-            ],
           ],
         ),
       ),
@@ -450,78 +402,211 @@ class _BulkRowCard extends StatelessWidget {
   }
 }
 
-class _RowStatusBadge extends StatelessWidget {
-  const _RowStatusBadge({required this.status});
+class _BulkTableHeader extends StatelessWidget {
+  const _BulkTableHeader({required this.borderColor});
 
-  final BulkRowSubmitStatus status;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    switch (status) {
-      case BulkRowSubmitStatus.idle:
-        return const SizedBox.shrink();
-      case BulkRowSubmitStatus.sending:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 14,
-              height: 14,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: theme.colors.primary,
+    final style = theme.typography.xs.copyWith(
+      fontWeight: FontWeight.w600,
+      color: theme.colors.mutedForeground,
+    );
+    final divider = Border(left: BorderSide(color: borderColor));
+
+    return ColoredBox(
+      color: theme.colors.secondary,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Text('Sambas', style: style),
+            ),
+          ),
+          Expanded(
+            child: DecoratedBox(
+              decoration: BoxDecoration(border: divider),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Text('Indonesia', style: style),
               ),
             ),
-            const Gap(6),
-            Text(
-              'Mengirim...',
-              style: theme.typography.sm.copyWith(color: theme.colors.primary),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(border: divider),
+            child: const SizedBox(width: _bulkActionWidth, height: 32),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BulkTableRow extends StatelessWidget {
+  const _BulkTableRow({
+    required this.index,
+    required this.row,
+    required this.ctrls,
+    required this.cellStyle,
+    required this.borderColor,
+    required this.canRemove,
+    required this.onRemove,
+  });
+
+  final int index;
+  final BulkContributeRow row;
+  final _RowControllers? ctrls;
+  final FTextFieldStyleDelta cellStyle;
+  final Color borderColor;
+  final bool canRemove;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final locked = !row.isEditable || row.status == BulkRowSubmitStatus.sending;
+    final n = index + 1;
+    final error = row.errorMessage?.trim();
+    final failed = row.status == BulkRowSubmitStatus.failed;
+    final divider = Border(left: BorderSide(color: borderColor));
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: failed ? theme.colors.error.withValues(alpha: 0.06) : null,
+        border: Border(top: BorderSide(color: borderColor)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: _cell(
+                  controller: ctrls?.lemmaCtrl,
+                  hint: index == 0 ? 'ngupi' : null,
+                  semanticsLabel: 'Kata Sambas baris $n',
+                  locked: locked,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(border: divider),
+                  child: _cell(
+                    controller: ctrls?.translationCtrl,
+                    hint: index == 0 ? 'minum kopi' : null,
+                    semanticsLabel: 'Terjemahan Indonesia baris $n',
+                    locked: locked,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(border: divider),
+                child: SizedBox(
+                  width: _bulkActionWidth,
+                  height: 40,
+                  child: Center(child: _action(theme)),
+                ),
+              ),
+            ],
+          ),
+          if (error != null && error.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: Text(
+                error,
+                style: theme.typography.xs.copyWith(color: theme.colors.error),
+              ),
             ),
-          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _cell({
+    required TextEditingController? controller,
+    required String? hint,
+    required String semanticsLabel,
+    required bool locked,
+    required TextInputAction textInputAction,
+  }) {
+    if (controller == null) return const SizedBox(height: 40);
+    return Semantics(
+      label: semanticsLabel,
+      child: FTextField(
+        control: FTextFieldControl.managed(controller: controller),
+        size: FTextFieldSizeVariant.sm,
+        style: cellStyle,
+        hint: hint,
+        enabled: !locked,
+        readOnly: locked,
+        textInputAction: textInputAction,
+      ),
+    );
+  }
+
+  Widget _action(FThemeData theme) {
+    final failed = row.status == BulkRowSubmitStatus.failed;
+    switch (row.status) {
+      case BulkRowSubmitStatus.sending:
+        return Center(
+          child: SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: theme.colors.primary,
+            ),
+          ),
         );
       case BulkRowSubmitStatus.sent:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              FLucideIcons.circleCheck,
-              size: 16,
-              color: theme.colors.primary,
-              semanticLabel: 'Terkirim',
-            ),
-            const Gap(4),
-            Text(
-              'Terkirim',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        return Icon(
+          FLucideIcons.circleCheck,
+          size: 16,
+          color: theme.colors.primary,
+          semanticLabel: 'Terkirim',
         );
+      case BulkRowSubmitStatus.idle:
       case BulkRowSubmitStatus.failed:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              FLucideIcons.circleAlert,
-              size: 16,
-              color: theme.colors.error,
-              semanticLabel: 'Gagal',
-            ),
-            const Gap(4),
-            Text(
-              'Gagal',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.error,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        if (!canRemove) return const SizedBox.shrink();
+        return FButton.icon(
+          variant: FButtonVariant.ghost,
+          size: FButtonSizeVariant.xs,
+          onPress: onRemove,
+          child: Icon(
+            FLucideIcons.trash2,
+            size: 16,
+            color: failed ? theme.colors.error : theme.colors.mutedForeground,
+            semanticLabel: 'Hapus baris ${index + 1}',
+          ),
         );
     }
   }
+}
+
+FTextFieldStyleDelta _bulkCellStyle(Color focusColor) {
+  return FTextFieldStyleDelta.delta(
+    border: FVariantsValueDelta.delta([
+      FVariantValueDeltaOperation.all(InputBorder.none),
+      FVariantValueDeltaOperation.exact(
+        {FTextFieldVariant.focused},
+        UnderlineInputBorder(
+          borderSide: BorderSide(color: focusColor, width: 2),
+        ),
+      ),
+    ]),
+    color: FVariantsValueDelta.delta([
+      FVariantValueDeltaOperation.all(const Color(0x00000000)),
+    ]),
+    contentPadding: EdgeInsetsGeometryDelta.value(
+      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    ),
+  );
 }
 
 class _BulkOption {
@@ -604,43 +689,45 @@ final _bulkWordClassesProvider = FutureProvider<List<_BulkOption>>((ref) async {
       .toList(growable: false);
 });
 
-final _bulkDialectsProvider =
-    FutureProvider.family<List<_BulkOption>, String>((ref, languageId) async {
-      final cache = ref.watch(cachedJsonClientProvider);
-      final dio = ref.watch(dioProvider);
-      final query = <String, dynamic>{'language_id': languageId};
-      final key = buildCacheKey(
-        method: 'GET',
-        path: '/api/v1/dialects',
-        query: query,
+final _bulkDialectsProvider = FutureProvider.family<List<_BulkOption>, String>((
+  ref,
+  languageId,
+) async {
+  final cache = ref.watch(cachedJsonClientProvider);
+  final dio = ref.watch(dioProvider);
+  final query = <String, dynamic>{'language_id': languageId};
+  final key = buildCacheKey(
+    method: 'GET',
+    path: '/api/v1/dialects',
+    query: query,
+  );
+  final data = await cache.getOrFetch(
+    key: key,
+    cacheClass: CacheClass.referenceStatic,
+    fetch: () async {
+      final resp = await dio.get<dynamic>(
+        '/api/v1/dialects',
+        queryParameters: query,
       );
-      final data = await cache.getOrFetch(
-        key: key,
-        cacheClass: CacheClass.referenceStatic,
-        fetch: () async {
-          final resp = await dio.get<dynamic>(
-            '/api/v1/dialects',
-            queryParameters: query,
-          );
-          final body = resp.data;
-          if (body is! Map) {
-            throw StateError('Envelope dialects tidak valid');
-          }
-          return Map<String, dynamic>.from(body);
-        },
-      );
-      final arr = data['data'];
-      if (arr is! List) return [];
-      return arr
-          .whereType<Map>()
-          .map(
-            (e) => _BulkOption(
-              id: e['id']?.toString() ?? '',
-              name: e['name']?.toString() ?? '(?)',
-              code: e['code']?.toString() ?? '',
-              isDefault: e['is_default'] == true,
-            ),
-          )
-          .where((e) => e.id.isNotEmpty)
-          .toList(growable: false);
-    });
+      final body = resp.data;
+      if (body is! Map) {
+        throw StateError('Envelope dialects tidak valid');
+      }
+      return Map<String, dynamic>.from(body);
+    },
+  );
+  final arr = data['data'];
+  if (arr is! List) return [];
+  return arr
+      .whereType<Map>()
+      .map(
+        (e) => _BulkOption(
+          id: e['id']?.toString() ?? '',
+          name: e['name']?.toString() ?? '(?)',
+          code: e['code']?.toString() ?? '',
+          isDefault: e['is_default'] == true,
+        ),
+      )
+      .where((e) => e.id.isNotEmpty)
+      .toList(growable: false);
+});
