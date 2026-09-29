@@ -92,13 +92,15 @@ lib/
 ## Deploy
 
 CI staging: `.github/workflows/deploy-staging.yml` (push branch
-`staging`) → APK flavor staging + GitHub Release `staging-v*`.
+`staging`) menjalankan analyze dan test. Tidak membangun APK dan tidak
+mengunggah ke Play.
 
 CI production: `.github/workflows/deploy-production.yml` (push tag
-`v0.1.1`, bukan rilis `SambasKu (Staging) v*`) → **AAB** flavor
-production (API `https://api.sambasku.com`) + **draft upload** ke Play
-Console track `production` (package `com.iamutaki.sambasku`). Tidak
-auto-publish.
+`v1.1.1`, pola `vMAJOR.MINOR.PATCH`) → **AAB** flavor production
+(API `https://api.sambasku.com`) + **draft upload** ke Play Console
+track `production` (package `com.iamutaki.sambasku`) + GitHub Release
+pada tag itu. `versionName` dari tag, `versionCode` dari Play (max + 1).
+Tidak auto-publish.
 
 Setup Play API: `docs/env/google_play_console/credential.md`.
 Secret GitHub: `PLAY_STORE_SERVICE_ACCOUNT_JSON` (+ `KEYSTORE_*`).

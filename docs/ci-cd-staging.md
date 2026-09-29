@@ -1,7 +1,14 @@
 # CI/CD Staging (Android)
 
-Pola sama seperti `jnn_mobile`: push branch `staging` → analyze/test →
-build APK flavor `staging` → GitHub Release.
+Push branch `staging` menjalankan `.github/workflows/deploy-staging.yml`:
+`flutter analyze` dan `flutter test`. Workflow ini tidak membangun APK
+dan tidak mengunggah ke Play.
+
+Rilis production: tag `v1.1.1` (pola `vMAJOR.MINOR.PATCH`) memicu
+`.github/workflows/deploy-production.yml`. `versionName` diambil dari tag.
+`versionCode` = 1 + angka tertinggi yang sudah ada di Play (semua track,
+termasuk draft). Hasilnya AAB flavor production, draft di track
+`production`, plus GitHub Release pada tag yang sama.
 
 ## Prerequisites
 
@@ -17,7 +24,8 @@ keytool -genkey -v -keystore upload-keystore.jks \
 base64 -i upload-keystore.jks | pbcopy   # macOS
 ```
 
-4. **GitHub Secrets** (Settings → Secrets → Actions):
+4. **GitHub Secrets** (Settings → Secrets → Actions). Dipakai workflow
+   production, bukan test staging:
 
 | Secret | Isi |
 | --- | --- |
@@ -38,5 +46,6 @@ Tanpa `key.properties`, release otomatis pakai debug signing.
 
 ## Versioning
 
-- `major.minor` di `pubspec.yaml` diubah manual bila perlu.
-- CI mengisi `patch` + `buildNumber` = jumlah commit (`git rev-list --count`).
+- Staging CI tidak mengubah versi.
+- Production: `versionName` = tag tanpa `v` (`v1.1.1` → `1.1.1`).
+  `versionCode` diisi CI dari Play, bukan dari `pubspec.yaml`.

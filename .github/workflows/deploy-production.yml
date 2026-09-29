@@ -1,14 +1,13 @@
 name: Deploy (Production)
 
-# Build flavor `production` → draft ke track production.
-# Rollout tetap manual di Play Console (draft, bukan auto-publish).
-# Track internal diisi workflow deploy-staging.yml dari branch staging.
-# Trigger: push branch `main` (atau workflow_dispatch).
+# Build flavor `production` → draft ke track production, plus GitHub Release
+# pada tag yang memicu workflow. Rollout tetap manual di Play Console.
+# Trigger: push tag `vMAJOR.MINOR.PATCH` (contoh `v1.1.1`).
 #
+# versionName = tag tanpa awalan `v`.
 # versionCode = 1 + versionCode tertinggi yang sudah ada di package Play
-# yang sama (semua track, termasuk draft). Staging dan production berbagi
-# satu deret. Job build-and-release mengantri di group yang sama supaya
-# dua workflow tidak mengambil angka yang sama.
+# yang sama (semua track, termasuk draft). Job build-and-release mengantri
+# supaya dua tag tidak mengambil angka yang sama.
 #
 # Secrets GitHub (Settings → Secrets → Actions):
 #   KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
@@ -19,9 +18,8 @@ name: Deploy (Production)
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    tags:
+      - "v*.*.*"
 
 permissions:
   contents: write
@@ -37,6 +35,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+
+      - name: Reject tag that is not vMAJOR.MINOR.PATCH
+        run: |
+          if ! printf '%s' "$GITHUB_REF_NAME" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "tag must be vMAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
 
       - name: Test Play version-code resolver
         run: node --test scripts/next-play-version-code.test.mjs
@@ -92,22 +97,24 @@ jobs:
           printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=upload-keystore.jks\n' \
             "$KEYSTORE_PASSWORD" "$KEY_PASSWORD" "$KEY_ALIAS" > android/key.properties
 
-      - name: Resolve production version (Play versionCode + 1)
+      - name: Resolve production version (tag + Play versionCode + 1)
         id: version
-        # major.minor dari pubspec.yaml. versionCode dari Play, bukan git.
         env:
           PLAY_STORE_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           PLAY_PACKAGE_NAME: ${{ env.PLAY_PACKAGE_NAME }}
         run: |
-          BASE=$(grep '^version:' pubspec.yaml | sed 's/version: *//' | cut -d+ -f1)
-          MAJOR_MINOR=$(printf '%s' "$BASE" | awk -F. '{print $1"."$2}')
+          if ! printf '%s' "$GITHUB_REF_NAME" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "tag must be vMAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
+          NAME="${GITHUB_REF_NAME#v}"
           N=$(node scripts/next-play-version-code.mjs)
           case "$N" in
             ''|*[!0-9]*) echo "invalid version code: '$N'" >&2; exit 1 ;;
           esac
-          echo "name=${MAJOR_MINOR}.${N}" >> "$GITHUB_OUTPUT"
-          echo "code=${N}"              >> "$GITHUB_OUTPUT"
-          echo "Production version: ${MAJOR_MINOR}.${N}+${N}"
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+          echo "code=${N}"    >> "$GITHUB_OUTPUT"
+          echo "Production version: ${NAME}+${N}"
 
       - name: Write resolved version into pubspec.yaml
         env:
@@ -120,25 +127,11 @@ jobs:
       - name: Resolve Flutter dependencies
         run: flutter pub get
 
-      # - name: Build release APKs (GitHub Release / sideload)
-      #   run: >
-      #     flutter build apk --release --obfuscate
-      #     --split-per-abi --split-debug-info=./debug-info
-      #     --flavor "$FLAVOR" -t lib/main.dart
-
-      # Play Console hanya menerima AAB untuk rilis baru.
       - name: Build App Bundle (Play Console)
         run: >
           flutter build appbundle --release --obfuscate
           --split-debug-info=./debug-info
           --flavor "$FLAVOR" -t lib/main.dart
-
-      # - name: Upload APKs as workflow artifact
-      #   uses: actions/upload-artifact@v7
-      #   with:
-      #     name: production-apks
-      #     path: build/app/outputs/flutter-apk/*.apk
-      #     if-no-files-found: error
 
       - name: Upload AAB as workflow artifact
         uses: actions/upload-artifact@v7
@@ -146,19 +139,6 @@ jobs:
           name: production-aab
           path: build/app/outputs/bundle/productionRelease/*.aab
           if-no-files-found: error
-
-      # - name: Create GitHub Release
-      #   uses: softprops/action-gh-release@v3
-      #   with:
-      #     tag_name: v${{ steps.version.outputs.name }}
-      #     name: SambasKu v${{ steps.version.outputs.name }}
-      #     generate_release_notes: true
-      #     files: |
-      #       build/app/outputs/flutter-apk/app-armeabi-v7a-production-release.apk
-      #       build/app/outputs/flutter-apk/app-arm64-v8a-production-release.apk
-      #       build/app/outputs/bundle/productionRelease/app-production-release.aab
-      #     fail_on_unmatched_files: true
-      #     make_latest: "true"
 
       # Draft di track production - tidak auto-publish. Rollout tetap
       # manual di Play Console.
@@ -174,3 +154,13 @@ jobs:
           tracks: production
           status: draft
           releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ steps.version.outputs.name }}
+          name: SambasKu v${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+          generate_release_notes: true
+          files: build/app/outputs/bundle/productionRelease/app-production-release.aab
+          fail_on_unmatched_files: true
+          make_latest: "true"
