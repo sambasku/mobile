@@ -12,6 +12,7 @@ import '../../otp_code.dart';
 import '../otp_code_formatter.dart';
 import '../providers/auth_forgot_providers.dart';
 import '../providers/auth_reset_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 const _resendCooldown = Duration(minutes: 2);
 
@@ -39,10 +40,9 @@ class ResetPasswordPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authResetProvider);
     final forgot = ref.watch(authForgotProvider);
-    final code = useTextEditingController();
+    final code = useState('');
     final newPassword = useTextEditingController();
     final confirmPassword = useTextEditingController();
-    useListenable(code);
     useListenable(newPassword);
     useListenable(confirmPassword);
     final remaining = useState(startCooldown ? _resendCooldown.inSeconds : 0);
@@ -86,7 +86,25 @@ class ResetPasswordPage extends HookConsumerWidget {
       );
     });
 
-    final digits = normalizeOtpInput(code.text);
+    ref.listen(authResetProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authResetProvider.notifier).clearError();
+        }
+      });
+    });
+
+    ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authForgotProvider.notifier).clearError();
+        }
+      });
+    });
+
+    final digits = code.value;
     final newPasswordValid =
         newPassword.text.length >= 8 &&
         newPassword.text.contains(RegExp(r'[a-zA-Z]')) &&
@@ -127,84 +145,84 @@ class ResetPasswordPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            Text(
-              hasTokenFromLink
-                  ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
-                  : email.contains('@')
-                  ? 'Masukkan kode 8 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
-                  : 'Minta kode dulu di halaman lupa password.',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          Text(
+            hasTokenFromLink
+                ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
+                : email.contains('@')
+                ? 'Masukkan kode 8 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
+                : 'Minta kode dulu di halaman lupa password.',
+            style: theme.typography.sm.copyWith(
+              color: theme.colors.mutedForeground,
             ),
-            const Gap(16),
-            if (!hasTokenFromLink) ...[
-              FTextField(
-                control: .managed(controller: code),
-                enabled: !state.isSubmitting && email.contains('@'),
-                label: const Text('Kode Reset Password'),
-                hint: '01AB-23CD',
-                keyboardType: .text,
-                textCapitalization: .characters,
-                autocorrect: false,
-                enableSuggestions: false,
-                textInputAction: .next,
-                inputFormatters: [const OtpCodeDashFormatter()],
+          ),
+          const Gap(16),
+          if (!hasTokenFromLink) ...[
+            FOtpField(
+              control: .managed(
+                children: otpFieldChildren,
+                onChange: (value) {
+                  code.value = normalizeOtpInput(value.text);
+                },
               ),
-              const Gap(12),
-            ],
-            FTextField.password(
-              control: .managed(controller: newPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password baru'),
-              hint: 'Minimal 8 karakter, huruf + angka',
+              style: otpFieldStyle(),
+              builder: (context, style, variants, child) =>
+                  Center(child: child),
+              enabled: !state.isSubmitting && email.contains('@'),
+              label: const Center(child: Text('Kode Reset Password')),
+              autofocus: email.contains('@'),
+              keyboardType: .text,
+              textCapitalization: .characters,
               textInputAction: .next,
+              inputFormatters: const [OtpCodeAlphanumericFormatter()],
             ),
             const Gap(12),
-            FTextField.password(
-              control: .managed(controller: confirmPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Konfirmasi password baru'),
-              textInputAction: .done,
-              onSubmit: canSubmit ? (_) => submit() : null,
-            ),
-            if (state.errorMessage != null) ...[
-              const Gap(12),
-              FAlert(variant: .destructive, title: Text(state.errorMessage!)),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit ? submit : null,
-              prefix: state.isSubmitting ? const FCircularProgress() : null,
-              child: Text(
-                state.isSubmitting ? 'Memproses...' : 'Simpan password',
-              ),
-            ),
-            if (!hasTokenFromLink) ...[
-              const Gap(8),
-              FButton(
-                variant: .ghost,
-                onPress: canResend
-                    ? () => ref
-                          .read(authForgotProvider.notifier)
-                          .submit(email: email)
-                    : null,
-                prefix: forgot.isSubmitting ? const FCircularProgress() : null,
-                child: Text(
-                  forgot.isSubmitting
-                      ? 'Mengirim...'
-                      : remaining.value > 0
-                      ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                      : 'Kirim ulang kode',
-                ),
-              ),
-            ],
           ],
-        ),
+          FTextField.password(
+            control: .managed(controller: newPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password baru'),
+            hint: 'Minimal 8 karakter, huruf + angka',
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: confirmPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Konfirmasi password baru'),
+            textInputAction: .done,
+            onSubmit: canSubmit ? (_) => submit() : null,
+          ),
+          const Gap(16),
+          FButton(
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(
+              state.isSubmitting ? 'Memproses...' : 'Simpan password',
+            ),
+          ),
+          if (!hasTokenFromLink) ...[
+            const Gap(8),
+            FButton(
+              variant: .ghost,
+              onPress: canResend
+                  ? () => ref
+                        .read(authForgotProvider.notifier)
+                        .submit(email: email)
+                  : null,
+              prefix: forgot.isSubmitting ? const FCircularProgress() : null,
+              child: Text(
+                forgot.isSubmitting
+                    ? 'Mengirim...'
+                    : remaining.value > 0
+                    ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
+                    : 'Kirim ulang kode',
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

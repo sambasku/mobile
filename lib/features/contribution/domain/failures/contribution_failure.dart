@@ -13,11 +13,14 @@ class ContributionFailure {
     this.message, {
     this.errorCode,
     this.details = const <ApiErrorDetail>[],
+    this.data,
   });
 
   final String message;
   final String? errorCode;
   final List<ApiErrorDetail> details;
+  /// Payload opsional (mis. DUPLICATE_MEANING: word_id / meaning_id / lemma).
+  final Map<String, dynamic>? data;
 
   /// Cari error inline untuk field tertentu. Kosong = tidak ada error.
   /// Dipakai UI: `Text(failure.errorFor('lemma') ?? '')` di bawah input.
@@ -75,4 +78,9 @@ class ContributionFailure {
 
   bool get isRateLimited => errorCode == 'RATE_LIMITED';
   bool get isValidationError => errorCode == 'VALIDATION_ERROR';
+  bool get isDuplicateMeaning => errorCode == 'DUPLICATE_MEANING';
+
+  String? get duplicateWordId => data?['word_id']?.toString();
+  String? get duplicateMeaningId => data?['meaning_id']?.toString();
+  String? get duplicateLemma => data?['lemma']?.toString();
 }

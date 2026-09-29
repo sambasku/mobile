@@ -63,17 +63,23 @@ class _EmptyLatestRepository implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async =>
       throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, WordDetail>> getWordById(String id) async =>
+  Future<Either<DictionaryFailure, WordDetail>> getWordById(
+    String id, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
-    String lemma,
-  ) async =>
+    String lemma, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override
@@ -134,8 +140,8 @@ void main() {
     // redirect GoRouter (getIsAuth) selesai di frame berikutnya
     await tester.pump();
 
-    // cold start langsung HOME (FScaffold shell + header Kamus Sambas)
+    // cold start langsung HOME (FScaffold shell + header SambasKu)
     expect(find.byType(FScaffold), findsWidgets);
-    expect(find.text('Kamus Sambas'), findsOneWidget);
+    expect(find.text('SambasKu'), findsOneWidget);
   });
 }

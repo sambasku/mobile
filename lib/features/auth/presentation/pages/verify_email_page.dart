@@ -11,6 +11,7 @@ import '../../auth_router.dart';
 import '../../otp_code.dart';
 import '../otp_code_formatter.dart';
 import '../providers/auth_verify_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 const _resendCooldown = Duration(minutes: 2);
 
@@ -33,8 +34,7 @@ class VerifyEmailPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authVerifyProvider);
-    final code = useTextEditingController();
-    useListenable(code);
+    final code = useState('');
     final remaining = useState(startCooldown ? _resendCooldown.inSeconds : 0);
 
     // Provider autoDispose + ValueKey(email) di router sudah state baru per email.
@@ -59,18 +59,23 @@ class VerifyEmailPage extends HookConsumerWidget {
       showFToast(context: context, title: Text(next));
     });
 
-    ref.listen(authVerifyProvider.select((s) => s.errorCode), (_, code) {
-      if (code != 'RATE_LIMITED' || !context.mounted) return;
-      remaining.value = _resendCooldown.inSeconds;
-      showFToast(
-        context: context,
-        title: Text(
-          ref.read(authVerifyProvider).errorMessage ?? 'Coba lagi nanti',
-        ),
-      );
+    ref.listen(authVerifyProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      final code = ref.read(authVerifyProvider).errorCode;
+      if (code == 'RATE_LIMITED') {
+        remaining.value = _resendCooldown.inSeconds;
+        showFToast(context: context, title: Text(next));
+        ref.read(authVerifyProvider.notifier).clearError();
+        return;
+      }
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authVerifyProvider.notifier).clearError();
+        }
+      });
     });
 
-    final digits = normalizeOtpInput(code.text);
+    final digits = code.value;
     final canSubmit =
         email.contains('@') &&
         digits.length == otpCodeLength &&
@@ -98,80 +103,76 @@ class VerifyEmailPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                Text(
-                  'Masukkan kode 8 karakter',
-                  textAlign: .center,
-                  style: theme.typography.xl.copyWith(
-                    fontWeight: .w600,
-                    color: theme.colors.foreground,
-                  ),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              Text(
+                'Masukkan kode 8 karakter',
+                textAlign: .center,
+                style: theme.typography.xl.copyWith(
+                  fontWeight: .w600,
+                  color: theme.colors.foreground,
                 ),
-                const Gap(8),
-                Text(
-                  email.isEmpty
-                      ? 'Email tidak ada. Kembali ke daftar atau masuk.'
-                      : 'Kode dikirim ke $email (berlaku 10 menit). Format XXXX-XXXX.',
-                  textAlign: .center,
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
+              ),
+              const Gap(8),
+              Text(
+                email.isEmpty
+                    ? 'Email tidak ada. Kembali ke daftar atau masuk.'
+                    : 'Kode dikirim ke $email (berlaku 10 menit).',
+                textAlign: .center,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
                 ),
-                const Gap(24),
-                FTextField(
-                  control: .managed(controller: code),
-                  enabled: !state.isSubmitting && email.isNotEmpty,
-                  label: const Text('Kode OTP'),
-                  hint: 'A4K9-M2XP',
-                  keyboardType: .text,
-                  textCapitalization: .characters,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  textInputAction: .done,
-                  inputFormatters: [const OtpCodeDashFormatter()],
-                  onSubmit: canSubmit ? (_) => submit() : null,
+              ),
+              const Gap(24),
+              FOtpField(
+                control: .managed(
+                  children: otpFieldChildren,
+                  onChange: (value) {
+                    code.value = normalizeOtpInput(value.text);
+                  },
                 ),
-                if (state.errorMessage != null &&
-                    state.errorCode != 'RATE_LIMITED') ...[
-                  const Gap(12),
-                  FAlert(
-                    variant: .destructive,
-                    title: Text(state.errorMessage!),
-                  ),
-                ],
-                const Gap(16),
-                FButton(
-                  onPress: canSubmit ? submit : null,
-                  prefix: state.isSubmitting ? const FCircularProgress() : null,
-                  child: Text(
-                    state.isSubmitting ? 'Memproses...' : 'Verifikasi',
-                  ),
+                style: otpFieldStyle(),
+                builder: (context, style, variants, child) =>
+                    Center(child: child),
+                enabled: !state.isSubmitting && email.isNotEmpty,
+                label: const Center(child: Text('Kode OTP')),
+                autofocus: email.isNotEmpty,
+                keyboardType: .text,
+                textCapitalization: .characters,
+                textInputAction: .done,
+                inputFormatters: const [OtpCodeAlphanumericFormatter()],
+                onSubmit: canSubmit ? (_) => submit() : null,
+              ),
+              const Gap(16),
+              FButton(
+                onPress: canSubmit ? submit : null,
+                prefix: state.isSubmitting ? const FCircularProgress() : null,
+                child: Text(
+                  state.isSubmitting ? 'Memproses...' : 'Verifikasi',
                 ),
-                const Gap(8),
-                FButton(
-                  variant: .ghost,
-                  onPress: canResend
-                      ? () => ref
-                            .read(authVerifyProvider.notifier)
-                            .resend(email: email)
-                      : null,
-                  prefix: state.isResending ? const FCircularProgress() : null,
-                  child: Text(
-                    state.isResending
-                        ? 'Mengirim...'
-                        : remaining.value > 0
-                        ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                        : 'Kirim ulang kode',
-                  ),
+              ),
+              const Gap(8),
+              FButton(
+                variant: .ghost,
+                onPress: canResend
+                    ? () => ref
+                          .read(authVerifyProvider.notifier)
+                          .resend(email: email)
+                    : null,
+                prefix: state.isResending ? const FCircularProgress() : null,
+                child: Text(
+                  state.isResending
+                      ? 'Mengirim...'
+                      : remaining.value > 0
+                      ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
+                      : 'Kirim ulang kode',
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

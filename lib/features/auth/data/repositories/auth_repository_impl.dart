@@ -9,6 +9,7 @@ import '../../domain/failures/auth_failure.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../models/facebook_login_request_dto.dart';
+import '../models/github_login_request_dto.dart';
 import '../models/google_login_request_dto.dart';
 import '../models/login_request_dto.dart';
 import '../models/login_response_dto.dart';
@@ -36,6 +37,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async {
     try {
       final response = await _remoteDatasource.register(
@@ -45,6 +47,15 @@ class AuthRepositoryImpl implements AuthRepository {
           phone: phone,
           password: password,
           confirmPassword: confirmPassword,
+          clientId: 'sambasku-mobile',
+          consents: consents
+              .map(
+                (c) => LegalConsentDto(
+                  documentType: c.documentType,
+                  documentVersion: c.documentVersion,
+                ),
+              )
+              .toList(),
         ),
       );
 
@@ -136,6 +147,39 @@ class AuthRepositoryImpl implements AuthRepository {
         return Either.left(
           AuthFailure(
             response.message ?? 'Tidak bisa masuk dengan Facebook.',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return _persistSession(payload);
+    } on DioException catch (error) {
+      return Either.left(
+        AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
+      );
+    } catch (error) {
+      return Either.left(AuthFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async {
+    try {
+      final response = await _remoteDatasource.loginWithGithub(
+        GithubLoginRequestDto(
+          code: code,
+          redirectUri: redirectUri,
+          codeVerifier: codeVerifier,
+        ),
+      );
+      final payload = response.data;
+      if (payload == null) {
+        return Either.left(
+          AuthFailure(
+            response.message ?? 'Tidak bisa masuk dengan GitHub.',
             errorCode: response.errorCode,
           ),
         );
@@ -260,6 +304,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
     await _tokenStorage.saveSessionUser(
       username: payload.user.username,
+      displayName: payload.user.displayName,
       role: payload.user.role,
       userId: payload.user.id,
       avatarUrl: payload.user.avatarUrl,
@@ -270,6 +315,7 @@ class AuthRepositoryImpl implements AuthRepository {
       AuthSession(
         userId: payload.user.id,
         username: payload.user.username,
+        displayName: payload.user.displayName,
         role: payload.user.role,
         avatarUrl: payload.user.avatarUrl,
       ),

@@ -38,4 +38,8 @@ class DeleteAccountNotifier extends _$DeleteAccountNotifier {
       ),
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

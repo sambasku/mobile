@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/delete_account_providers.dart';
 
 /// Profil → Hapus akun. Sukses mengosongkan sesi lokal karena server
@@ -43,6 +44,15 @@ class DeleteAccountPage extends HookConsumerWidget {
       );
     });
 
+    ref.listen(deleteAccountProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(deleteAccountProvider.notifier).clearError();
+        }
+      });
+    });
+
     final canSubmit = confirmation.text == 'HAPUS' && !state.isSubmitting;
 
     void submit() => ref.read(deleteAccountProvider.notifier).submit(
@@ -60,50 +70,41 @@ class DeleteAccountPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            Text(
-              'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token '
-              'notifikasi akan dihapus. Entri kamus yang sudah tayang tetap ada '
-              'tanpa namamu.',
-              style: context.theme.typography.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
-              ),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          Text(
+            'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token '
+            'notifikasi akan dihapus. Entri kamus yang sudah tayang tetap ada '
+            'tanpa namamu.',
+            style: context.theme.typography.sm.copyWith(
+              color: context.theme.colors.mutedForeground,
             ),
-            const Gap(16),
-            FTextField.password(
-              control: .managed(controller: password),
-              enabled: !state.isSubmitting,
-              label: const Text('Kata sandi'),
-              hint: 'Kosongkan jika akun masuk lewat Google',
-              textInputAction: .next,
-            ),
-            const Gap(12),
-            FTextField(
-              control: .managed(controller: confirmation),
-              enabled: !state.isSubmitting,
-              label: const Text('Ketik HAPUS'),
-              textInputAction: .done,
-              onSubmit: canSubmit ? (_) => submit() : null,
-            ),
-            if (state.errorMessage != null) ...[
-              const Gap(12),
-              FAlert(
-                variant: .destructive,
-                title: Text(state.errorMessage!),
-              ),
-            ],
-            const Gap(16),
-            FButton(
-              variant: .destructive,
-              onPress: canSubmit ? submit : null,
-              prefix: state.isSubmitting ? const FCircularProgress() : null,
-              child: Text(state.isSubmitting ? 'Menghapus...' : 'Hapus akun'),
-            ),
-          ],
-        ),
+          ),
+          const Gap(16),
+          FTextField.password(
+            control: .managed(controller: password),
+            enabled: !state.isSubmitting,
+            label: const Text('Kata sandi'),
+            hint: 'Kosongkan jika akun masuk lewat Google',
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField(
+            control: .managed(controller: confirmation),
+            enabled: !state.isSubmitting,
+            label: const Text('Ketik HAPUS'),
+            textInputAction: .done,
+            onSubmit: canSubmit ? (_) => submit() : null,
+          ),
+          const Gap(16),
+          FButton(
+            variant: .destructive,
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(state.isSubmitting ? 'Menghapus...' : 'Hapus akun'),
+          ),
+        ],
       ),
     );
   }

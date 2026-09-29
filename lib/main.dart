@@ -26,6 +26,7 @@ import 'features/device/data/datasources/device_remote_datasource.dart';
 import 'features/device/data/repositories/device_repository_impl.dart';
 import 'features/notification/presentation/providers/notification_providers.dart';
 import 'features/onboarding/data/onboarding_prefs.dart';
+import 'features/verifier_application/presentation/providers/verifier_application_providers.dart';
 import 'flavors.dart';
 import 'shared/dev_tool/dev_tool_overlay.dart';
 
@@ -106,6 +107,8 @@ Future<void> main() async {
   NotificationService.onNotificationsMayHaveChanged = () {
     container.invalidate(unreadNotificationCountControllerProvider);
     container.invalidate(notificationInboxListControllerProvider);
+    // Status pengajuan verifikator ikut refresh saat approve/reject push masuk.
+    container.invalidate(verifierApplicationProvider);
   };
   NotificationService.onNotificationOpened = (payload) {
     // Tunggu frame supaya GoRouter sudah punya navigator.

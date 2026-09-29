@@ -41,7 +41,7 @@ final class AuthResetNotifierProvider
   }
 }
 
-String _$authResetNotifierHash() => r'9b1c5cfa8e878f4e1ad8ee8b0ddab453c2e42801';
+String _$authResetNotifierHash() => r'4bfd48cc3ef5d60356cb2854d2eb8f0d4a68c75c';
 
 abstract class _$AuthResetNotifier extends $Notifier<AuthResetState> {
   AuthResetState build();

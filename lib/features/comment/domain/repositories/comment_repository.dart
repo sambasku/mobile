@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/comment_page.dart';
@@ -14,10 +16,18 @@ abstract interface class CommentRepository {
     String? cursor,
   });
 
-  /// Tulis komentar (login) - langsung `pending_review` (pre-moderation).
+  /// Tulis komentar (login) - langsung `published` (post-moderation).
   Future<Either<CommentFailure, WordComment>> create({
     required String wordId,
     required String body,
+  });
+
+  /// Komentar suara (login) - multipart; caption opsional.
+  Future<Either<CommentFailure, WordComment>> createAudio({
+    required String wordId,
+    required File audioFile,
+    required int durationMs,
+    String? body,
   });
 
   /// Soft-delete komentar sendiri (atau oleh admin/root/reviewer).

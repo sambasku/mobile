@@ -1,20 +1,25 @@
 import '../../../../core/constants/env.dart';
 import '../../domain/entities/auth_session.dart';
+import 'auth_pending_action.dart';
+
+export 'auth_pending_action.dart';
 
 /// State halaman login (pola jnn_mobile): copyWith manual dengan flag
 /// clearX supaya null bisa DISET, bukan hanya ditimpa.
 class AuthLoginState {
   const AuthLoginState({
-    this.isSubmitting = false,
+    this.pendingAction,
     this.errorMessage,
     this.errorCode,
     this.session,
     this.showUnverifiedSheet = false,
     this.googleUnavailable = false,
     this.facebookUnavailable = false,
+    this.githubUnavailable = false,
   });
 
-  final bool isSubmitting;
+  /// Null = idle. Non-null = request jalan; spinner hanya di aksi ini.
+  final AuthPendingAction? pendingAction;
   final String? errorMessage;
   final String? errorCode;
   final AuthSession? session;
@@ -28,8 +33,14 @@ class AuthLoginState {
   /// 503 FACEBOOK_AUTH_UNAVAILABLE - sembunyikan tombol Facebook.
   final bool facebookUnavailable;
 
+  /// 503 GITHUB_AUTH_UNAVAILABLE - sembunyikan tombol GitHub.
+  final bool githubUnavailable;
+
+  bool get isSubmitting => pendingAction != null;
+
   AuthLoginState copyWith({
-    bool? isSubmitting,
+    AuthPendingAction? pendingAction,
+    bool clearPendingAction = false,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? errorCode,
@@ -39,9 +50,11 @@ class AuthLoginState {
     bool? showUnverifiedSheet,
     bool? googleUnavailable,
     bool? facebookUnavailable,
+    bool? githubUnavailable,
   }) {
     return AuthLoginState(
-      isSubmitting: isSubmitting ?? this.isSubmitting,
+      pendingAction:
+          clearPendingAction ? null : pendingAction ?? this.pendingAction,
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,
@@ -50,6 +63,7 @@ class AuthLoginState {
       showUnverifiedSheet: showUnverifiedSheet ?? this.showUnverifiedSheet,
       googleUnavailable: googleUnavailable ?? this.googleUnavailable,
       facebookUnavailable: facebookUnavailable ?? this.facebookUnavailable,
+      githubUnavailable: githubUnavailable ?? this.githubUnavailable,
     );
   }
 }
@@ -61,5 +75,10 @@ bool isGoogleAuthConfigured() {
 
 bool isFacebookAuthConfigured() {
   final id = Env.facebookAppId;
+  return id != null && id.trim().isNotEmpty;
+}
+
+bool isGithubAuthConfigured() {
+  final id = Env.githubClientId;
   return id != null && id.trim().isNotEmpty;
 }

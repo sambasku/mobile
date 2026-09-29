@@ -10,6 +10,7 @@ _LoginUserDto _$LoginUserDtoFromJson(Map<String, dynamic> json) =>
     _LoginUserDto(
       id: json['id'] as String,
       username: json['username'] as String,
+      displayName: json['display_name'] as String?,
       role: json['role'] as String,
       avatarUrl: json['avatar_url'] as String?,
     );
@@ -18,6 +19,7 @@ Map<String, dynamic> _$LoginUserDtoToJson(_LoginUserDto instance) =>
     <String, dynamic>{
       'id': instance.id,
       'username': instance.username,
+      'display_name': instance.displayName,
       'role': instance.role,
       'avatar_url': instance.avatarUrl,
     };

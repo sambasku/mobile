@@ -42,7 +42,7 @@ final class AuthForgotNotifierProvider
 }
 
 String _$authForgotNotifierHash() =>
-    r'c6036569dc041f5da33b8bd4a0bb6a7c83cb3be0';
+    r'97ee302968564fcd38bc22fc9193dce086f271ae';
 
 abstract class _$AuthForgotNotifier extends $Notifier<AuthForgotState> {
   AuthForgotState build();

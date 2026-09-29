@@ -42,6 +42,7 @@ class SubmitWordMeaning {
     required this.definition,
     this.isHaveDefinition = true,
     this.isHaveTranslation = true,
+    this.meaningSource = 'manual',
     this.translationTexts = const [],
     this.exampleSentences = const [],
   });
@@ -50,6 +51,8 @@ class SubmitWordMeaning {
   final String definition;
   final bool isHaveDefinition;
   final bool isHaveTranslation;
+  /// `manual` | `kbbi` | `kbbi_edited`
+  final String meaningSource;
   final List<String> translationTexts;
 
   /// Kalimat contoh bahasa sumber. Kosong = tidak dikirim.
@@ -84,5 +87,12 @@ abstract interface class ContributionRepository {
     required String translationLanguageId,
     List<SubmitWordImage> images = const [],
     String? searchMissId,
+  });
+
+  /// Vote + catat riwayat saat makna exact sudah ada (409 DUPLICATE_MEANING).
+  Future<Either<ContributionFailure, String>> confirmDuplicateMeaning({
+    required String wordId,
+    required String meaningId,
+    required int value,
   });
 }

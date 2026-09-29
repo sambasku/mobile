@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../contribution/domain/meaning_source.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../data/review_correct_body.dart';
 import '../../domain/entities/review_contribution.dart';
@@ -34,16 +35,30 @@ class _MeaningEdit {
     required String definition,
     required String translation,
     this.wordClassId,
+    this.initialMeaningSource = 'manual',
   }) : definitionCtrl = TextEditingController(text: definition),
        translationCtrl = TextEditingController(text: translation);
 
   final TextEditingController definitionCtrl;
   final TextEditingController translationCtrl;
   String? wordClassId;
+  /// Source tersimpan di server (pertahankan jika tidak sentuh KBBI).
+  final String initialMeaningSource;
+  KbbiMeaningSnapshot? kbbiSnapshot;
 
   void dispose() {
     definitionCtrl.dispose();
     translationCtrl.dispose();
+  }
+
+  String resolveSource() {
+    if (kbbiSnapshot == null) return initialMeaningSource;
+    return resolveMeaningSource(
+      snapshot: kbbiSnapshot,
+      padanan: translationCtrl.text,
+      definition: definitionCtrl.text,
+      wordClassId: wordClassId,
+    ).apiValue;
   }
 }
 
@@ -129,6 +144,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
               definition: raw['definition']?.toString() ?? '',
               translation: first,
               wordClassId: wordClassId,
+              initialMeaningSource:
+                  raw['meaningSource']?.toString() ??
+                  raw['meaning_source']?.toString() ??
+                  'manual',
             ),
           );
         }
@@ -177,6 +196,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
             definition: meaning.definitionCtrl.text,
             translation: meaning.translationCtrl.text,
             wordClassId: meaning.wordClassId,
+            meaningSource: meaning.resolveSource(),
           ),
       ],
       publish: _publish,
@@ -425,6 +445,11 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       final lemma = picked.lemma.trim();
       if (lemma.isNotEmpty) meaning.translationCtrl.text = lemma;
       if (matched != null) meaning.wordClassId = matched;
+      meaning.kbbiSnapshot = KbbiMeaningSnapshot(
+        padanan: lemma,
+        definition: picked.definition.trim(),
+        wordClassId: matched,
+      );
     });
     showFToast(
       context: context,

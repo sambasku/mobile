@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -24,10 +27,17 @@ import '../providers/user_profile_providers.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
-class PublicProfilePage extends ConsumerWidget {
-  const PublicProfilePage({super.key, required this.username});
+class PublicProfilePage extends HookConsumerWidget {
+  const PublicProfilePage({
+    super.key,
+    required this.username,
+    this.initialDisplayName,
+  });
 
   final String username;
+
+  /// Nama dari layar sebelumnya / sesi - tampil di app bar sebelum fetch selesai.
+  final String? initialDisplayName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,10 +49,69 @@ class PublicProfilePage extends ConsumerWidget {
         me?.username != null &&
         me!.username!.toLowerCase() == username.toLowerCase();
 
+    // Handle lama (mis. hyphen) di route → sync sesi lalu ganti ke handle baru.
+    useEffect(() {
+      if (!async.hasError || me?.isAuth != true) return null;
+      unawaited(() async {
+        final fresh = await ref
+            .read(authStatusProvider.notifier)
+            .ensureUsernameForProfile();
+        if (!context.mounted) return;
+        if (fresh == null || fresh.isEmpty) return;
+        if (fresh.toLowerCase() == username.toLowerCase()) return;
+        context.replace('/users/${Uri.encodeComponent(fresh)}');
+      }());
+      return null;
+    }, [async.hasError, username, me?.isAuth]);
+
+    // Profil sendiri: sync sesi hanya jika beda dari yang sudah di state
+    // (hindari rebuild IndexedStack saat animasi back).
+    useEffect(() {
+      final profile = async.asData?.value;
+      if (profile == null || !isOwnProfile) return null;
+      final session = me;
+      final sameUsername =
+          session.username?.toLowerCase() == profile.username.toLowerCase();
+      final sameDisplay =
+          (session.displayName ?? '') == (profile.displayName);
+      final sameAvatar =
+          (session.avatarUrl ?? '') == (profile.avatarUrl ?? '');
+      if (sameUsername && sameDisplay && sameAvatar) return null;
+      unawaited(
+        ref.read(authStatusProvider.notifier).applySessionIdentity(
+              username: profile.username,
+              displayName: profile.displayName,
+              avatarUrl: profile.avatarUrl,
+            ),
+      );
+      return null;
+    }, [
+      async.asData?.value.username,
+      async.asData?.value.displayName,
+      async.asData?.value.avatarUrl,
+      isOwnProfile,
+    ]);
+
+    Future<void> refresh() async {
+      ref.invalidate(publicProfileProvider(username));
+      ref.invalidate(publicActivityProvider(username));
+      if (me?.isAuth == true) {
+        await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
+      }
+      await ref.read(publicProfileProvider(username).future);
+    }
+
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(username),
+        title: Text(
+          _appBarTitle(
+            async: async,
+            isOwnProfile: isOwnProfile,
+            sessionDisplayName: me?.displayName,
+            initialDisplayName: initialDisplayName,
+          ),
+        ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.hasError
@@ -62,6 +131,7 @@ class PublicProfilePage extends ConsumerWidget {
                 profile: profile,
                 isOwnProfile: isOwnProfile,
                 activityAsync: activityAsync,
+                onRefresh: refresh,
                 onRetryActivity: () =>
                     ref.invalidate(publicActivityProvider(username)),
               ),
@@ -70,17 +140,41 @@ class PublicProfilePage extends ConsumerWidget {
   }
 }
 
+/// Judul app bar: display name dari server, lalu sesi auth, lalu hint navigasi.
+/// Jangan pakai handle route sebagai judul.
+String _appBarTitle({
+  required AsyncValue<PublicProfile> async,
+  required bool isOwnProfile,
+  required String? sessionDisplayName,
+  required String? initialDisplayName,
+}) {
+  final fromServer = async.asData?.value.displayName.trim();
+  if (fromServer != null && fromServer.isNotEmpty) return fromServer;
+
+  if (isOwnProfile) {
+    final fromSession = sessionDisplayName?.trim();
+    if (fromSession != null && fromSession.isNotEmpty) return fromSession;
+  }
+
+  final fromRoute = initialDisplayName?.trim();
+  if (fromRoute != null && fromRoute.isNotEmpty) return fromRoute;
+
+  return 'Profil';
+}
+
 class _ProfileBody extends ConsumerWidget {
   const _ProfileBody({
     required this.profile,
     required this.isOwnProfile,
     required this.activityAsync,
+    required this.onRefresh,
     required this.onRetryActivity,
   });
 
   final PublicProfile profile;
   final bool isOwnProfile;
   final AsyncValue<List<PublicActivityItem>> activityAsync;
+  final Future<void> Function() onRefresh;
   final VoidCallback onRetryActivity;
 
   @override
@@ -94,9 +188,12 @@ class _ProfileBody extends ConsumerWidget {
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
-      children: [
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
+        children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -180,20 +277,19 @@ class _ProfileBody extends ConsumerWidget {
                       ),
                     ),
                   ],
-                  if (isOwnProfile) ...[
-                    const Gap(6),
-                    Text(
-                      'Ketuk foto untuk mengganti',
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
           ],
         ),
+        if (isOwnProfile) ...[
+          const Gap(16),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => context.push('/edit-profile'),
+            child: const Text('Edit profil'),
+          ),
+        ],
         const Gap(20),
         Row(
           children: [
@@ -292,6 +388,7 @@ class _ProfileBody extends ConsumerWidget {
           },
         ),
       ],
+      ),
     );
   }
 

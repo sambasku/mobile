@@ -19,8 +19,9 @@ enum SwipeDecisionOverlayStyle { label, icon }
 ///
 /// [onSwiped] return `true` = kartu tetap keluar; `false` = spring back.
 ///
-/// [allowNestedVerticalScroll]: pantau scroll anak; swipe-atas skip hanya
-/// diklaim saat offset ≈ 0 supaya isi panjang tetap bisa di-scroll.
+/// [allowNestedVerticalScroll]: pantau scroll anak; swipe-atas skip diklaim
+/// hanya saat konten muat (maxScrollExtent ≈ 0). Isi panjang di-scroll biasa;
+/// lewati lewat tombol supaya tidak perang gesture finger-up.
 class SwipeDecisionCard extends StatefulWidget {
   const SwipeDecisionCard({
     super.key,
@@ -32,6 +33,12 @@ class SwipeDecisionCard extends StatefulWidget {
     required this.negativeLabel,
     required this.skipLabel,
     this.overlayStyle = SwipeDecisionOverlayStyle.label,
+    this.positiveIcon,
+    this.negativeIcon,
+    this.skipIcon,
+    this.positiveColor,
+    this.negativeColor,
+    this.skipColor,
     this.allowNestedVerticalScroll = false,
     this.fallbackHeight = 240,
   });
@@ -44,6 +51,17 @@ class SwipeDecisionCard extends StatefulWidget {
   final String negativeLabel;
   final String skipLabel;
   final SwipeDecisionOverlayStyle overlayStyle;
+
+  /// Ikon overlay saat [overlayStyle] == icon. Default: check / x / arrowUp.
+  final IconData? positiveIcon;
+  final IconData? negativeIcon;
+  final IconData? skipIcon;
+
+  /// Warna overlay ikon. Default: success / destructive / mutedForeground.
+  final Color? positiveColor;
+  final Color? negativeColor;
+  final Color? skipColor;
+
   final bool allowNestedVerticalScroll;
   final double fallbackHeight;
 
@@ -73,6 +91,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   /// Pixels scroll anak (hanya relevan jika [allowNestedVerticalScroll]).
   double _childScrollPixels = 0;
+  double _childMaxScrollExtent = 0;
 
   @override
   void initState() {
@@ -102,6 +121,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
       _busyGesture = false;
       _hapticFired = false;
       _childScrollPixels = 0;
+      _childMaxScrollExtent = 0;
     }
   }
 
@@ -128,7 +148,10 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   bool _canClaimVerticalSkip() {
     if (!widget.allowNestedVerticalScroll) return true;
-    return _childScrollPixels <= 0.5;
+    // Konten muat → swipe atas = lewati (tidak ada scroll yang bermakna).
+    // Konten panjang → biarkan ListView; lewati lewat tombol action bar.
+    // (Klaim di puncak/dasar bertabrakan dengan arah scroll finger-up.)
+    return _childMaxScrollExtent <= 0.5;
   }
 
   Future<void> _animateTo(Offset target, {Duration? duration}) async {
@@ -242,13 +265,26 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     _springBack();
   }
 
+  void _syncChildScrollMetrics(ScrollMetrics metrics) {
+    if (metrics.axis != Axis.vertical) return;
+    final pixels = metrics.pixels;
+    final max = metrics.maxScrollExtent;
+    if ((pixels - _childScrollPixels).abs() > 0.5 ||
+        (max - _childMaxScrollExtent).abs() > 0.5) {
+      _childScrollPixels = pixels;
+      _childMaxScrollExtent = max;
+    }
+  }
+
   bool _onChildScroll(ScrollNotification notification) {
     if (!widget.allowNestedVerticalScroll) return false;
-    if (notification.metrics.axis != Axis.vertical) return false;
-    final pixels = notification.metrics.pixels;
-    if ((pixels - _childScrollPixels).abs() > 0.5) {
-      _childScrollPixels = pixels;
-    }
+    _syncChildScrollMetrics(notification.metrics);
+    return false;
+  }
+
+  bool _onChildMetrics(ScrollMetricsNotification notification) {
+    if (!widget.allowNestedVerticalScroll) return false;
+    _syncChildScrollMetrics(notification.metrics);
     return false;
   }
 
@@ -276,9 +312,12 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
         final canPan = widget.enabled && !_busyGesture;
         Widget body = widget.child;
         if (widget.allowNestedVerticalScroll) {
-          body = NotificationListener<ScrollNotification>(
-            onNotification: _onChildScroll,
-            child: body,
+          body = NotificationListener<ScrollMetricsNotification>(
+            onNotification: _onChildMetrics,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: _onChildScroll,
+              child: body,
+            ),
           );
         }
 
@@ -334,20 +373,22 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                       ] else ...[
                         _SwipeIconOverlay(
                           t: positiveT,
-                          icon: FLucideIcons.check,
-                          color: theme.colors.success,
+                          icon: widget.positiveIcon ?? FLucideIcons.check,
+                          color: widget.positiveColor ?? theme.colors.success,
                           semanticsLabel: widget.positiveLabel,
                         ),
                         _SwipeIconOverlay(
                           t: negativeT,
-                          icon: FLucideIcons.x,
-                          color: theme.colors.destructive,
+                          icon: widget.negativeIcon ?? FLucideIcons.x,
+                          color:
+                              widget.negativeColor ?? theme.colors.destructive,
                           semanticsLabel: widget.negativeLabel,
                         ),
                         _SwipeIconOverlay(
                           t: skipT,
-                          icon: FLucideIcons.arrowUp,
-                          color: theme.colors.mutedForeground,
+                          icon: widget.skipIcon ?? FLucideIcons.arrowUp,
+                          color: widget.skipColor ??
+                              theme.colors.mutedForeground,
                           semanticsLabel: widget.skipLabel,
                         ),
                       ],

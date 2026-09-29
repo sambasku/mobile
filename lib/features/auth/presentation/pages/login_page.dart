@@ -7,12 +7,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
+import '../../../about/about_router.dart';
+import '../../../report_bug/report_bug_router.dart';
 import '../../auth_router.dart';
 import '../../domain/failures/auth_failure.dart';
 import '../providers/auth_login_providers.dart';
 import '../providers/auth_status_providers.dart';
+import '../models/auth_pending_action.dart';
 import '../widgets/facebook_auth_button.dart';
+import '../widgets/github_auth_button.dart';
 import '../widgets/google_auth_button.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 
 /// Halaman login (email + password). Google/Facebook: tombol di bawah Masuk.
 class LoginPage extends HookConsumerWidget {
@@ -22,16 +27,31 @@ class LoginPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authLoginProvider);
     final authStatus = ref.watch(authStatusProvider);
-    final alreadyAuth = authStatus.value?.isAuth ?? false;
+    final status = authStatus.value;
+    // Jangan anggap "sudah login" saat logout masih berjalan - kalau tidak,
+    // layar cuma spinner lalu redirect HOME tanpa form masuk.
+    final alreadyAuth =
+        (status?.isAuth ?? false) && !(status?.isLoggingOut ?? false);
+    final fromVerifierRelogin =
+        GoRouterState.of(context).uri.queryParameters['relogin'] == '1';
     final email = useTextEditingController();
     final password = useTextEditingController();
     final logoLoaded = useState(false);
     useListenable(email);
     useListenable(password);
 
+    final busy = state.isSubmitting;
+    final emailLoading = state.pendingAction == AuthPendingAction.email;
+    final googleLoading = state.pendingAction == AuthPendingAction.google;
+    final facebookLoading = state.pendingAction == AuthPendingAction.facebook;
+    final githubLoading = state.pendingAction == AuthPendingAction.github;
+
     // Sudah login → jangan tampilkan form; redirect (router juga jaga)
     ref.listen(authStatusProvider, (_, next) {
-      if (next.value?.isAuth == true && context.mounted) context.go('/');
+      final nextStatus = next.value;
+      if (nextStatus == null) return;
+      if (nextStatus.isLoggingOut) return;
+      if (nextStatus.isAuth && context.mounted) context.go('/');
     });
 
     // pindah ke HOME begitu sesi tersimpan
@@ -44,18 +64,35 @@ class LoginPage extends HookConsumerWidget {
       if (code == 'RATE_LIMITED') {
         showFToast(
           context: context,
-          title: Text(state.errorMessage ?? 'Coba lagi nanti'),
+          title: Text(
+            ref.read(authLoginProvider).errorMessage ?? 'Coba lagi nanti',
+          ),
         );
+        ref.read(authLoginProvider.notifier).clearError();
         return;
       }
       if (code == AuthFailure.googleSignInCanceled ||
-          code == AuthFailure.facebookSignInCanceled) {
-        showFToast(
-          context: context,
-          title: const Text('Masuk dibatalkan'),
-        );
+          code == AuthFailure.facebookSignInCanceled ||
+          code == AuthFailure.githubSignInCanceled) {
+        showFToast(context: context, title: const Text('Masuk dibatalkan'));
         ref.read(authLoginProvider.notifier).acknowledgeSocialCancel();
       }
+    });
+
+    ref.listen(authLoginProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      final code = ref.read(authLoginProvider).errorCode;
+      if (code == 'RATE_LIMITED' ||
+          code == AuthFailure.googleSignInCanceled ||
+          code == AuthFailure.facebookSignInCanceled ||
+          code == AuthFailure.githubSignInCanceled) {
+        return;
+      }
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(authLoginProvider.notifier).clearError();
+        }
+      });
     });
 
     ref.listen(authLoginProvider.select((s) => s.showUnverifiedSheet), (
@@ -77,7 +114,7 @@ class LoginPage extends HookConsumerWidget {
     final canSubmit =
         email.text.contains('@') &&
         password.text.length >= 8 &&
-        !state.isSubmitting;
+        !busy;
 
     void submit() => ref
         .read(authLoginProvider.notifier)
@@ -85,124 +122,195 @@ class LoginPage extends HookConsumerWidget {
 
     return FScaffold(
       childPad: true,
-      child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              mainAxisAlignment: .center,
-              crossAxisAlignment: .stretch,
-              children: [
-                Skeletonizer(
-                  enabled: !logoLoaded.value,
-                  child: Center(
-                    child: BrandMark(
-                      size: 148,
-                      frameBuilder:
-                          (context, child, frame, wasSynchronouslyLoaded) {
-                            if ((wasSynchronouslyLoaded || frame != null) &&
-                                !logoLoaded.value) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                if (context.mounted) logoLoaded.value = true;
-                              });
-                            }
-                            return child;
-                          },
-                    ),
+      header: FHeader(
+        title: const SizedBox.shrink(),
+        suffixes: [
+          FHeaderAction(
+            icon: const Icon(FLucideIcons.info),
+            onPress: busy
+                ? null
+                : () => context.push(AboutRouter.about.path),
+          ),
+        ],
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: .center,
+            crossAxisAlignment: .stretch,
+            children: [
+              Skeletonizer(
+                enabled: !logoLoaded.value,
+                child: Center(
+                  child: BrandMark(
+                    size: 148,
+                    frameBuilder:
+                        (context, child, frame, wasSynchronouslyLoaded) {
+                          if ((wasSynchronouslyLoaded || frame != null) &&
+                              !logoLoaded.value) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (context.mounted) logoLoaded.value = true;
+                            });
+                          }
+                          return child;
+                        },
                   ),
                 ),
-                const Gap(24),
-                FTextField.email(
-                  control: .managed(controller: email),
-                  enabled: !state.isSubmitting,
-                  label: const Text('Email'),
-                ),
-                const Gap(12),
-                FTextField.password(
-                  control: .managed(controller: password),
-                  enabled: !state.isSubmitting,
-                  label: const Text('Password'),
-                  textInputAction: .done,
-                  onSubmit: canSubmit ? (_) => submit() : null,
-                ),
-                const Gap(4),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FButton(
-                    variant: .ghost,
-                    onPress: state.isSubmitting
-                        ? null
-                        : () => context.go(AuthRouter.forgotPassword.path),
-                    child: const Text('Lupa password?'),
+              ),
+              const Gap(24),
+              if (fromVerifierRelogin) ...[
+                const FAlert(
+                  title: Text('Masuk kembali'),
+                  subtitle: Text(
+                    'Masuk dengan akun Anda agar peran Verifikator aktif.',
                   ),
                 ),
-                if (state.errorMessage != null &&
-                    state.errorCode != 'RATE_LIMITED' &&
-                    state.errorCode != AuthFailure.googleSignInCanceled &&
-                    state.errorCode != AuthFailure.facebookSignInCanceled) ...[
-                  const Gap(12),
-                  FAlert(
-                    variant: .destructive,
-                    title: Text(state.errorMessage!),
-                  ),
-                ],
                 const Gap(16),
-                FButton(
-                  onPress: canSubmit ? submit : null,
-                  prefix: state.isSubmitting ? const FCircularProgress() : null,
-                  child: Text(state.isSubmitting ? 'Memproses...' : 'Masuk'),
-                ),
-                if ((ref.watch(googleAuthEnabledProvider) &&
-                        !state.googleUnavailable) ||
-                    (ref.watch(facebookAuthEnabledProvider) &&
-                        !state.facebookUnavailable)) ...[
-                  const Gap(16),
-                  const GoogleAuthDivider(),
-                  if (ref.watch(googleAuthEnabledProvider) &&
-                      !state.googleUnavailable) ...[
-                    const Gap(16),
-                    GoogleAuthButton(
-                      label: 'Masuk dengan Google',
-                      isLoading: state.isSubmitting,
-                      onPress: state.isSubmitting
-                          ? null
-                          : () => ref
-                                .read(authLoginProvider.notifier)
-                                .submitGoogle(),
-                    ),
-                  ],
-                  if (ref.watch(facebookAuthEnabledProvider) &&
-                      !state.facebookUnavailable) ...[
-                    const Gap(16),
-                    FacebookAuthButton(
-                      label: 'Masuk dengan Facebook',
-                      isLoading: state.isSubmitting,
-                      onPress: state.isSubmitting
-                          ? null
-                          : () => ref
-                                .read(authLoginProvider.notifier)
-                                .submitFacebook(),
-                    ),
-                  ],
-                ],
-                const Gap(8),
-                FButton(
-                  variant: .ghost,
-                  onPress: state.isSubmitting
-                      ? null
-                      : () => context.go('/register'),
-                  child: const Text('Belum punya akun? Daftar'),
-                ),
-                const Gap(4),
-                FButton(
-                  variant: .ghost,
-                  onPress: state.isSubmitting
-                      ? null
-                      : () => context.go('/'), // lanjut sebagai tamu
-                  child: const Text('Lanjut tanpa login (tamu)'),
-                ),
               ],
-            ),
+              FTextField.email(
+                control: .managed(controller: email),
+                enabled: !busy,
+                label: const Text('Email'),
+              ),
+              const Gap(12),
+              FTextField.password(
+                control: .managed(controller: password),
+                enabled: !busy,
+                label: const Text('Password'),
+                textInputAction: .done,
+                onSubmit: canSubmit ? (_) => submit() : null,
+              ),
+              const Gap(4),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FButton(
+                  variant: .ghost,
+                  onPress: busy
+                      ? null
+                      : () => context.go(AuthRouter.forgotPassword.path),
+                  child: const Text('Lupa password?'),
+                ),
+              ),
+              const Gap(16),
+              FButton(
+                onPress: canSubmit ? submit : null,
+                prefix: emailLoading ? const FCircularProgress() : null,
+                child: Text(emailLoading ? 'Memproses...' : 'Masuk'),
+              ),
+              if ((ref.watch(googleAuthEnabledProvider) &&
+                      !state.googleUnavailable) ||
+                  (ref.watch(githubAuthEnabledProvider) &&
+                      !state.githubUnavailable) ||
+                  (ref.watch(facebookAuthEnabledProvider) &&
+                      !state.facebookUnavailable)) ...[
+                const Gap(16),
+                const GoogleAuthDivider(),
+                const Gap(16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (ref.watch(googleAuthEnabledProvider) &&
+                        !state.googleUnavailable)
+                      GoogleAuthButton(
+                        isLoading: googleLoading,
+                        onPress: busy
+                            ? null
+                            : () => ref
+                                  .read(authLoginProvider.notifier)
+                                  .submitGoogle(),
+                      ),
+                    if (ref.watch(googleAuthEnabledProvider) &&
+                        !state.googleUnavailable &&
+                        ref.watch(githubAuthEnabledProvider) &&
+                        !state.githubUnavailable)
+                      const Gap(12),
+                    if (ref.watch(githubAuthEnabledProvider) &&
+                        !state.githubUnavailable)
+                      GithubAuthButton(
+                        isLoading: githubLoading,
+                        onPress: busy
+                            ? null
+                            : () => ref
+                                  .read(authLoginProvider.notifier)
+                                  .submitGithub(),
+                      ),
+                  ],
+                ),
+                if (ref.watch(facebookAuthEnabledProvider) &&
+                    !state.facebookUnavailable) ...[
+                  const Gap(16),
+                  FacebookAuthButton(
+                    label: 'Masuk dengan Facebook',
+                    isLoading: facebookLoading,
+                    onPress: busy
+                        ? null
+                        : () => ref
+                              .read(authLoginProvider.notifier)
+                              .submitFacebook(),
+                  ),
+                ],
+              ],
+              const Gap(16),
+              Center(
+                child: Column(
+                  spacing: 3,
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: busy
+                          ? null
+                          : () => context.go('/register'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text.rich(
+                          TextSpan(
+                            style: context.theme.typography.sm.copyWith(
+                              color: context.theme.colors.foreground,
+                            ),
+                            children: const [
+                              TextSpan(text: 'Belum punya akun? '),
+                              TextSpan(
+                                text: 'Daftar',
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: busy ? null : () => context.go('/'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          'Lanjut tanpa akun (Anonim)',
+                          style: context.theme.typography.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: busy
+                          ? null
+                          : () => context.push(ReportBugRouter.reportBug.path),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          'Laporkan masalah',
+                          style: context.theme.typography.xs.copyWith(
+                            color: context.theme.colors.destructive,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/forgot_password_page.dart';
+import 'presentation/pages/legal_webview_page.dart';
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/register_page.dart';
 import 'presentation/pages/reset_password_page.dart';
@@ -28,6 +30,13 @@ class AuthRouter {
     path: '/reset-password',
     name: 'AuthRouter.resetPassword',
   );
+  static const termsWebView = RouteDefiner(
+    path: '/syarat-ketentuan',
+    name: 'AuthRouter.termsWebView',
+  );
+
+  /// URL publik Syarat dan Ketentuan (web).
+  static const termsDocumentUrl = 'https://sambasku.com/id/syarat-ketentuan';
 
   static final List<GoRoute> routes = [
     GoRoute(
@@ -39,6 +48,15 @@ class AuthRouter {
       path: register.path,
       name: register.name,
       builder: (context, state) => const RegisterPage(),
+    ),
+    GoRoute(
+      path: termsWebView.path,
+      name: termsWebView.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const LegalWebViewPage(
+        url: termsDocumentUrl,
+        title: 'Syarat dan Ketentuan',
+      ),
     ),
     GoRoute(
       path: verifyEmail.path,

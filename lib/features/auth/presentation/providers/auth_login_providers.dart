@@ -18,6 +18,11 @@ bool googleAuthEnabled(Ref ref) => isGoogleAuthConfigured();
 @riverpod
 bool facebookAuthEnabled(Ref ref) => false;
 
+/// Sementara dimatikan di semua flavor (staging + production).
+/// Nyalakan lagi: `=> isGithubAuthConfigured();`
+@riverpod
+bool githubAuthEnabled(Ref ref) => false;
+
 @riverpod
 class AuthLoginNotifier extends _$AuthLoginNotifier {
   var _inFlight = false;
@@ -29,7 +34,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.email,
       clearErrorMessage: true,
       clearErrorCode: true,
       clearSession: true,
@@ -44,7 +49,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       (failure) {
         if (failure.isEmailNotVerified) {
           state = state.copyWith(
-            isSubmitting: false,
+            clearPendingAction: true,
             clearErrorMessage: true,
             clearErrorCode: true,
             clearSession: true,
@@ -54,7 +59,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
           return;
         }
         state = state.copyWith(
-          isSubmitting: false,
+          clearPendingAction: true,
           errorMessage: failure.message,
           errorCode: failure.errorCode,
           clearSession: true,
@@ -71,7 +76,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       (session) {
         ref.read(authStatusProvider.notifier).markLoggedIn(session);
         state = state.copyWith(
-          isSubmitting: false,
+          clearPendingAction: true,
           session: session,
           showUnverifiedSheet: false,
         );
@@ -88,7 +93,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.google,
       clearErrorMessage: true,
       clearErrorCode: true,
       clearSession: true,
@@ -107,7 +112,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
-      isSubmitting: true,
+      pendingAction: AuthPendingAction.facebook,
       clearErrorMessage: true,
       clearErrorCode: true,
       clearSession: true,
@@ -122,10 +127,29 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     _inFlight = false;
   }
 
+  Future<void> submitGithub() async {
+    if (_inFlight) return;
+    _inFlight = true;
+    state = state.copyWith(
+      pendingAction: AuthPendingAction.github,
+      clearErrorMessage: true,
+      clearErrorCode: true,
+      clearSession: true,
+      showUnverifiedSheet: false,
+    );
+
+    final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
+    result.match(
+      (failure) => _applyGithubFailure(failure),
+      (session) => _applySocialSession(session, method: 'github'),
+    );
+    _inFlight = false;
+  }
+
   void _applyGoogleFailure(AuthFailure failure) {
     if (failure.isSocialSignInCanceled) {
       state = state.copyWith(
-        isSubmitting: false,
+        clearPendingAction: true,
         errorCode: failure.errorCode,
         clearErrorMessage: true,
         clearSession: true,
@@ -134,7 +158,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     }
     final hide = failure.errorCode == 'GOOGLE_AUTH_UNAVAILABLE';
     state = state.copyWith(
-      isSubmitting: false,
+      clearPendingAction: true,
       errorMessage: failure.message,
       errorCode: failure.errorCode,
       googleUnavailable: hide || state.googleUnavailable,
@@ -152,7 +176,7 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
   void _applyFacebookFailure(AuthFailure failure) {
     if (failure.isSocialSignInCanceled) {
       state = state.copyWith(
-        isSubmitting: false,
+        clearPendingAction: true,
         errorCode: failure.errorCode,
         clearErrorMessage: true,
         clearSession: true,
@@ -161,8 +185,8 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     }
     final hide = failure.errorCode == 'FACEBOOK_AUTH_UNAVAILABLE';
     state = state.copyWith(
-      isSubmitting: false,
-      errorMessage: hide ? null : failure.message,
+      clearPendingAction: true,
+      errorMessage: failure.message,
       errorCode: failure.errorCode,
       facebookUnavailable: hide || state.facebookUnavailable,
       clearSession: true,
@@ -176,13 +200,40 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
     );
   }
 
+  void _applyGithubFailure(AuthFailure failure) {
+    if (failure.isSocialSignInCanceled) {
+      state = state.copyWith(
+        clearPendingAction: true,
+        errorCode: failure.errorCode,
+        clearErrorMessage: true,
+        clearSession: true,
+      );
+      return;
+    }
+    final hide = failure.errorCode == 'GITHUB_AUTH_UNAVAILABLE';
+    state = state.copyWith(
+      clearPendingAction: true,
+      errorMessage: failure.message,
+      errorCode: failure.errorCode,
+      githubUnavailable: hide || state.githubUnavailable,
+      clearSession: true,
+    );
+    AnalyticsService.instance.log(
+      AnalyticsEvents.authLoginFail,
+      params: {
+        'method': 'github',
+        if (failure.errorCode != null) 'error_code': failure.errorCode!,
+      },
+    );
+  }
+
   void _applyGoogleSession(AuthSession session) {
     _applySocialSession(session, method: 'google');
   }
 
   void _applySocialSession(AuthSession session, {required String method}) {
     ref.read(authStatusProvider.notifier).markLoggedIn(session);
-    state = state.copyWith(isSubmitting: false, session: session);
+    state = state.copyWith(clearPendingAction: true, session: session);
     AnalyticsService.instance.logAuthSuccess(
       event: AnalyticsEvents.authLoginSuccess,
       method: method,
@@ -195,6 +246,11 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
 
   /// Setelah toast "Masuk dibatalkan" supaya cancel kedua tetap memicu listen.
   void acknowledgeSocialCancel() {
+    state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
+  }
+
+  /// Setelah sheet error ditutup supaya error yang sama bisa memicu listen lagi.
+  void clearError() {
     state = state.copyWith(clearErrorCode: true, clearErrorMessage: true);
   }
 }

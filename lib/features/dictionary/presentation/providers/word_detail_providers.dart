@@ -10,9 +10,10 @@ part 'word_detail_providers.g.dart';
 /// Error object = [DictionaryFailure] (termasuk 404).
 ///
 /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-/// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-/// `.future` supaya data segar.
+/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+/// supaya cold start / kill process masih bisa HIT dalam TTL.
+/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 @Riverpod(keepAlive: true)
 Future<WordDetail> wordDetail(Ref ref, String wordIdOrLemma) async {
   final key = wordIdOrLemma.trim();

@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart';
 import 'package:sambasku_mobile/features/auth/domain/ports/google_sign_in_port.dart';
@@ -36,6 +37,15 @@ class _StubRepo implements AuthRepository {
   }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async =>
+      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+
+
+  @override
   Future<Either<AuthFailure, AuthSession>> login({
     required String email,
     required String password,
@@ -48,6 +58,7 @@ class _StubRepo implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
@@ -81,15 +92,23 @@ Widget _harness({
   required Widget child,
   required List<dynamic> overrides,
 }) {
+  // LoginPage membaca GoRouterState (query relogin); harus di bawah RouteBase.
+  final router = GoRouter(
+    initialLocation: '/',
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => child),
+    ],
+  );
   return ProviderScope(
     overrides: overrides.cast(),
-    child: MaterialApp(
+    child: MaterialApp.router(
       theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
-      home: FTheme(
+      routerConfig: router,
+      builder: (context, routed) => FTheme(
         data: FThemes.zinc.light.touch,
-        child: FToaster(child: child),
+        child: FToaster(child: routed ?? const SizedBox.shrink()),
       ),
     ),
   );
@@ -118,7 +137,7 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Masuk dengan Google'), findsNothing);
+    expect(find.bySemanticsLabel('Masuk dengan Google'), findsNothing);
   });
 
   testWidgets('client ID terisi → tombol Masuk dengan Google ada', (
@@ -131,7 +150,8 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Masuk dengan Google'), findsOneWidget);
+    // Icon-only: label ada di Semantics, bukan Text terlihat.
+    expect(find.bySemanticsLabel('Masuk dengan Google'), findsOneWidget);
   });
 
   testWidgets('register: tombol Daftar dengan Google ada', (tester) async {
@@ -142,7 +162,7 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    expect(find.text('Daftar dengan Google'), findsOneWidget);
+    expect(find.bySemanticsLabel('Daftar dengan Google'), findsOneWidget);
   });
 
   testWidgets('409 → FAlert berisi Email sudah terdaftar (login)', (
@@ -169,7 +189,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.tap(find.text('Masuk dengan Google'));
+    final google = find.bySemanticsLabel('Masuk dengan Google');
+    await tester.ensureVisible(google);
+    await tester.tap(google);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });
@@ -198,8 +220,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.ensureVisible(find.text('Daftar dengan Google'));
-    await tester.tap(find.text('Daftar dengan Google'));
+    final google = find.bySemanticsLabel('Daftar dengan Google');
+    await tester.ensureVisible(google);
+    await tester.tap(google);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });

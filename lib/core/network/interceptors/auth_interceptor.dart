@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../auth_token_storage.dart';
 import '../failover/api_host_resolver.dart';
+import '../jwt_payload.dart';
 
 /// Key di [RequestOptions.extra] untuk melewati refresh+retry pada 401.
 const kSkipAuthRefreshExtra = 'skipAuthRefresh';
@@ -176,6 +177,9 @@ class AuthInterceptor extends Interceptor {
             ? rotatedRefresh
             : refreshToken,
       );
+      // JWT refresh memuat username terkini dari DB - sync prefs agar
+      // navigasi profil tidak memakai handle lama pra-migrate.
+      await _syncUsernameFromAccessToken(accessToken);
       return _RefreshOutcome.success;
     } on DioException catch (e) {
       final code = e.response?.statusCode;
@@ -184,6 +188,20 @@ class AuthInterceptor extends Interceptor {
     } catch (_) {
       return _RefreshOutcome.transient;
     }
+  }
+
+  Future<void> _syncUsernameFromAccessToken(String accessToken) async {
+    final username = usernameFromAccessToken(accessToken);
+    if (username == null) return;
+    final user = await _tokenStorage.getSessionUser();
+    if (user.username == username) return;
+    await _tokenStorage.saveSessionUser(
+      username: username,
+      displayName: user.displayName,
+      role: user.role,
+      userId: user.userId,
+      avatarUrl: user.avatarUrl,
+    );
   }
 }
 

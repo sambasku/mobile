@@ -76,6 +76,27 @@
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/users" />
             </intent-filter>
         </activity>
+        <!-- AppAuth: callback GitHub HTTPS (GitHub OAuth App menolak custom scheme).
+             Path ini JANGAN di MainActivity supaya intent ke receiver AppAuth. -->
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Translucent.NoTitleBar"
+            tools:node="replace">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="${deepLinkHost}"
+                    android:path="/oauth/github" />
+                <data
+                    android:scheme="https"
+                    android:host="${deepLinkHost}"
+                    android:pathPrefix="/oauth/github/" />
+            </intent-filter>
+        </activity>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

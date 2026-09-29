@@ -8,6 +8,7 @@ abstract class LoginUserDto with _$LoginUserDto {
   const factory LoginUserDto({
     required String id,
     required String username,
+    @JsonKey(name: 'display_name') String? displayName,
     required String role,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
   }) = _LoginUserDto;

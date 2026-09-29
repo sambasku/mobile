@@ -740,57 +740,62 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                   children: [
                     Expanded(
                       child: Center(
-                        child: GestureDetector(
-                          onTap: _openCardFullscreen,
-                          child: AspectRatio(
-                            aspectRatio: _ratio.width / _ratio.height,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: RepaintBoundary(
-                                  key: _repaintKey,
-                                  child: ShareCardCanvas(
-                                    data: _cardData,
-                                    template: _template,
-                                    ratio: _ratio,
-                                    settings: _settings,
-                                    imageProvider: _imageProvider,
-                                    videoUrl: _videoUrl,
-                                    videoIsFile: _videoIsFile,
+                        child: AspectRatio(
+                          aspectRatio: _ratio.width / _ratio.height,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: _loadingBg
+                                ? const ShareCardPreviewSkeleton()
+                                : GestureDetector(
+                                    onTap: _openCardFullscreen,
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: RepaintBoundary(
+                                        key: _repaintKey,
+                                        child: ShareCardCanvas(
+                                          data: _cardData,
+                                          template: _template,
+                                          ratio: _ratio,
+                                          settings: _settings,
+                                          imageProvider: _imageProvider,
+                                          videoUrl: _videoUrl,
+                                          videoIsFile: _videoIsFile,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
                           ),
                         ),
                       ),
                     ),
-                    _OffscreenCaptureBox(
-                      boundaryKey: _overlayKey,
-                      ratio: _ratio,
-                      child: ShareCardCanvas(
-                        data: _cardData,
-                        template: _template,
+                    if (!_loadingBg) ...[
+                      _OffscreenCaptureBox(
+                        boundaryKey: _overlayKey,
                         ratio: _ratio,
-                        settings: _settings,
-                        transparentBackdrop: true,
+                        child: ShareCardCanvas(
+                          data: _cardData,
+                          template: _template,
+                          ratio: _ratio,
+                          settings: _settings,
+                          transparentBackdrop: true,
+                        ),
                       ),
-                    ),
-                    _OffscreenCaptureBox(
-                      boundaryKey: _pngFallbackKey,
-                      ratio: _ratio,
-                      child: ShareCardCanvas(
-                        data: _cardData,
-                        template: _template,
+                      _OffscreenCaptureBox(
+                        boundaryKey: _pngFallbackKey,
                         ratio: _ratio,
-                        settings: _settings,
-                        imageProvider: _imageProvider,
+                        child: ShareCardCanvas(
+                          data: _cardData,
+                          template: _template,
+                          ratio: _ratio,
+                          settings: _settings,
+                          imageProvider: _imageProvider,
+                        ),
                       ),
-                    ),
+                    ],
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
+                      enabled: !_loadingBg,
                       leading: Icon(
                         Icons.open_with,
                         color: theme.colors.foreground,
@@ -814,7 +819,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         Icons.chevron_right,
                         color: chipMuted,
                       ),
-                      onTap: _openLayoutEditor,
+                      onTap: _loadingBg ? null : _openLayoutEditor,
                     ),
                   ],
                 ),
@@ -1293,7 +1298,9 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         Expanded(
                           child: FButton(
                             variant: FButtonVariant.outline,
-                            onPress: (_saving || _sharing) ? null : _onSave,
+                            onPress: (_saving || _sharing || _loadingBg)
+                                ? null
+                                : _onSave,
                             prefix: _saving ? const FCircularProgress() : null,
                             child: const Text('Simpan'),
                           ),
@@ -1301,7 +1308,9 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         const Gap(12),
                         Expanded(
                           child: FButton(
-                            onPress: (_sharing || _saving) ? null : _onShare,
+                            onPress: (_sharing || _saving || _loadingBg)
+                                ? null
+                                : _onShare,
                             prefix: _sharing ? const FCircularProgress() : null,
                             child: const Text('Bagikan'),
                           ),

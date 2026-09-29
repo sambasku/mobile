@@ -5,6 +5,7 @@ import '../../domain/failures/linked_accounts_failure.dart';
 import '../../domain/repositories/linked_accounts_repository.dart';
 import '../datasources/linked_accounts_remote_datasource.dart';
 import '../models/auth_providers_dto.dart';
+import '../models/github_link_request_dto.dart';
 
 class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
   LinkedAccountsRepositoryImpl(this._remote);
@@ -12,7 +13,8 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
   final LinkedAccountsRemoteDatasource _remote;
 
   @override
-  Future<Either<LinkedAccountsFailure, bool>> isGoogleLinked() async {
+  Future<Either<LinkedAccountsFailure, LinkedAccountsStatus>>
+  getLinkStatus() async {
     try {
       final response = await _remote.listProviders();
       if (response.success == false || response.data == null) {
@@ -23,8 +25,13 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
           ),
         );
       }
-      final linked = response.data!.providers.any((p) => p.provider == 'google');
-      return Either.right(linked);
+      final providers = response.data!.providers;
+      return Either.right(
+        LinkedAccountsStatus(
+          googleLinked: providers.any((p) => p.provider == 'google'),
+          githubLinked: providers.any((p) => p.provider == 'github'),
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
@@ -58,6 +65,58 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
   Future<Either<LinkedAccountsFailure, String>> unlinkGoogle() async {
     try {
       final response = await _remote.unlinkGoogle();
+      if (response.success == false) {
+        return Either.left(
+          LinkedAccountsFailure(
+            response.message ?? 'Gagal melepas dari akun terhubung',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return Either.right(
+        response.data?.message ?? 'Berhasil dilepas dari akun terhubung.',
+      );
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(LinkedAccountsFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<LinkedAccountsFailure, void>> linkGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async {
+    try {
+      final response = await _remote.linkGithub(
+        GithubLinkRequestDto(
+          code: code,
+          redirectUri: redirectUri,
+          codeVerifier: codeVerifier,
+        ),
+      );
+      if (response.success == false) {
+        return Either.left(
+          LinkedAccountsFailure(
+            response.message ?? 'Gagal menambahkan ke akun terhubung',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return Either.right(null);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(LinkedAccountsFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<LinkedAccountsFailure, String>> unlinkGithub() async {
+    try {
+      final response = await _remote.unlinkGithub();
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(

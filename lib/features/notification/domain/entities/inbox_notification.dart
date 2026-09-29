@@ -8,6 +8,9 @@ class InboxNotification {
     required this.targetId,
     required this.createdAt,
     this.readAt,
+    this.actionKind,
+    this.actionValue,
+    this.imageUrl,
   });
 
   final String id;
@@ -18,6 +21,11 @@ class InboxNotification {
   final String targetId;
   final String createdAt;
   final String? readAt;
+  /// CTA tap (#19): word | contribution | suggestion | discussion | url
+  final String? actionKind;
+  final String? actionValue;
+  /// Opsional - thumbnail / rich push (campaign).
+  final String? imageUrl;
 
   bool get isUnread => readAt == null || readAt!.isEmpty;
 
@@ -34,14 +42,26 @@ class InboxNotification {
         return 'Dikoreksi';
       case 'word_taken_down':
         return 'Ditarik';
-      case 'translation_help_approved':
-        return 'Bantuan disetujui';
-      case 'translation_help_rejected':
-        return 'Bantuan ditolak';
-      case 'translation_help_taken_down':
-        return 'Bantuan diturunkan';
+      case 'discussion_pending_review':
+        return 'Diskusi menunggu';
+      case 'discussion_approved':
+        return 'Diskusi disetujui';
+      case 'discussion_rejected':
+        return 'Diskusi ditolak';
+      case 'discussion_taken_down':
+        return 'Diskusi diturunkan';
+      case 'discussion_reply':
+        return 'Balasan diskusi';
       case 'campaign':
         return 'Pengumuman';
+      case 'word_comment':
+        return 'Komentar';
+      case 'word_vote':
+        return 'Vote';
+      case 'verifier_application_approved':
+        return 'Disetujui';
+      case 'verifier_application_rejected':
+        return 'Ditolak';
       default:
         return 'Pembaruan';
     }

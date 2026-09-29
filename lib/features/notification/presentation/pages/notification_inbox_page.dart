@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -7,10 +9,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/services/notification_navigation.dart';
+import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
-import '../../../my_contributions/my_contributions_router.dart';
-import '../../../translation_help/translation_help_router.dart';
 import '../../domain/entities/inbox_notification.dart';
 import '../../domain/failures/notification_failure.dart';
 import '../../domain/providers/notification_domain_providers.dart';
@@ -80,13 +83,16 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _InboxList extends ConsumerWidget {
+class _InboxList extends HookConsumerWidget {
   const _InboxList();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(notificationInboxListControllerProvider);
+    final unreadCount =
+        ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
+    final markingAll = useState(false);
 
     if (async.hasError) {
       final error = async.error!;
@@ -134,6 +140,26 @@ class _InboxList extends ConsumerWidget {
       ref.invalidate(notificationInboxListControllerProvider);
       ref.invalidate(unreadNotificationCountControllerProvider);
       await ref.read(notificationInboxListControllerProvider.future);
+    }
+
+    Future<void> markAllRead() async {
+      if (markingAll.value || unreadCount <= 0) return;
+      markingAll.value = true;
+      final result = await ref.read(markAllNotificationsReadUseCaseProvider)();
+      if (!context.mounted) return;
+      result.match(
+        (failure) {
+          markingAll.value = false;
+          showFToast(context: context, title: Text(failure.message));
+        },
+        (_) {
+          ref
+              .read(notificationInboxListControllerProvider.notifier)
+              .markAllLocalRead();
+          ref.read(unreadNotificationCountControllerProvider.notifier).clear();
+          markingAll.value = false;
+        },
+      );
     }
 
     final state = async.requireValue;
@@ -188,6 +214,20 @@ class _InboxList extends ConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
         children: [
+          if (unreadCount > 0)
+            Align(
+              alignment: Alignment.centerRight,
+              child: FButton(
+                variant: FButtonVariant.ghost,
+                onPress: markingAll.value ? null : markAllRead,
+                prefix: markingAll.value ? const FCircularProgress() : null,
+                child: Text(
+                  markingAll.value
+                      ? 'Menandai...'
+                      : 'Tandai semua telah dibaca',
+                ),
+              ),
+            ),
           FTileGroup(
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -230,6 +270,7 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final date = formatDateTimeIso(item.createdAt);
     final theme = context.theme;
+    final thumbUrl = displayImageUrl(item.imageUrl, width: 96, height: 96);
     return FTile(
       title: Text(item.title),
       subtitle: Text(
@@ -239,10 +280,24 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
           item.body,
         ].join(' · '),
       ),
-      prefix: Icon(
-        item.isUnread ? FLucideIcons.bell : FLucideIcons.bellOff,
-        color: item.isUnread ? theme.colors.primary : theme.colors.mutedForeground,
-      ),
+      prefix: thumbUrl != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: thumbUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : Icon(
+              item.isUnread ? FLucideIcons.bell : FLucideIcons.bellOff,
+              color: item.isUnread
+                  ? theme.colors.primary
+                  : theme.colors.mutedForeground,
+            ),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () async {
         AnalyticsService.instance.log(
@@ -252,47 +307,19 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
             'target_kind': item.targetKind,
           },
         );
+        // Optimistic: UI + navigasi dulu; mark-read API di belakang
+        // supaya tap tidak terasa lag menunggu jaringan.
         if (item.isUnread) {
-          await ref.read(markNotificationReadUseCaseProvider)(item.id);
           ref
               .read(notificationInboxListControllerProvider.notifier)
               .markLocalRead(item.id);
-          ref.read(unreadNotificationCountControllerProvider.notifier).decrement();
+          ref
+              .read(unreadNotificationCountControllerProvider.notifier)
+              .decrement();
+          unawaited(ref.read(markNotificationReadUseCaseProvider)(item.id));
         }
         if (!context.mounted) return;
-        if (item.type == 'campaign' || item.targetKind == 'campaign') {
-          // Campaign tanpa deep link word/contribution → tetap di inbox.
-          return;
-        }
-        if (item.targetKind == 'word') {
-          if (item.targetId.isEmpty) {
-            showFToast(
-              context: context,
-              title: Text(item.body),
-            );
-            return;
-          }
-          await context.push('/words/${item.targetId}');
-          return;
-        }
-        if (item.targetKind == 'translation_help' ||
-            item.type.startsWith('translation_help')) {
-          if (item.targetId.isEmpty) {
-            await context.push(TranslationHelpRouter.mine.path);
-            return;
-          }
-          await context.push(
-            TranslationHelpRouter.detailPath(item.targetId),
-          );
-          return;
-        }
-        if (item.targetId.isEmpty) return;
-        await context.push(
-          MyContributionsRouter.detailPath(
-            kind: item.targetKind,
-            id: item.targetId,
-          ),
-        );
+        await navigateFromInboxNotification(context, item);
       },
     );
   }

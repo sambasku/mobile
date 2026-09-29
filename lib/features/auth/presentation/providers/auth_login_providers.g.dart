@@ -100,6 +100,55 @@ final class FacebookAuthEnabledProvider
 String _$facebookAuthEnabledHash() =>
     r'424948d76984687d69736c98a75d6c8af3fad0bb';
 
+/// Sementara dimatikan di semua flavor (staging + production).
+/// Nyalakan lagi: `=> isGithubAuthConfigured();`
+
+@ProviderFor(githubAuthEnabled)
+final githubAuthEnabledProvider = GithubAuthEnabledProvider._();
+
+/// Sementara dimatikan di semua flavor (staging + production).
+/// Nyalakan lagi: `=> isGithubAuthConfigured();`
+
+final class GithubAuthEnabledProvider
+    extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Sementara dimatikan di semua flavor (staging + production).
+  /// Nyalakan lagi: `=> isGithubAuthConfigured();`
+  GithubAuthEnabledProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'githubAuthEnabledProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$githubAuthEnabledHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return githubAuthEnabled(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$githubAuthEnabledHash() => r'3da003f7c8332fcb55c79120ca0d9da8bbe3466b';
+
 @ProviderFor(AuthLoginNotifier)
 final authLoginProvider = AuthLoginNotifierProvider._();
 
@@ -132,7 +181,7 @@ final class AuthLoginNotifierProvider
   }
 }
 
-String _$authLoginNotifierHash() => r'9a33f390323d487c7327dd6ab7b652e65d676cf2';
+String _$authLoginNotifierHash() => r'dd0cff97ce58f598be4fcdd17ed6481b67f92db8';
 
 abstract class _$AuthLoginNotifier extends $Notifier<AuthLoginState> {
   AuthLoginState build();

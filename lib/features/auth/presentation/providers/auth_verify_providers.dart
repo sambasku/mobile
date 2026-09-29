@@ -67,4 +67,9 @@ class AuthVerifyNotifier extends _$AuthVerifyNotifier {
       },
     );
   }
+
+  /// Setelah sheet error ditutup supaya error yang sama bisa memicu listen lagi.
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true, clearErrorCode: true);
+  }
 }

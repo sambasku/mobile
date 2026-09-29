@@ -11,6 +11,7 @@ import '../../domain/failures/review_failure.dart';
 import '../../domain/review_access.dart';
 import '../../review_router.dart';
 import '../providers/review_providers.dart';
+import '../utils/leave_review.dart';
 import 'review_forbidden_page.dart';
 
 class ReviewQueuePage extends ConsumerWidget {
@@ -27,35 +28,50 @@ class ReviewQueuePage extends ConsumerWidget {
       return ReviewForbiddenPage(message: failure.message);
     }
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: const Text('Tinjau usulan'),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/');
-              }
-            },
-          ),
-        ],
-      ),
-      child: queue.when(
-        loading: () {
-          final viewportHeight = MediaQuery.sizeOf(context).height;
-          final skeletonPerPage = (viewportHeight ~/ 80) + 2;
-          return _ListSkeleton(itemCount: skeletonPerPage);
-        },
-        error: (error, _) => _ErrorState(
-          message: error is ReviewFailure
-              ? error.message
-              : 'Gagal memuat antrean',
-          onRetry: () => ref.invalidate(reviewQueueProvider(query)),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (wordId != null && wordId!.isNotEmpty) {
+          leaveReview(context);
+        } else if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(ReviewRouter.list.path);
+        }
+      },
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: const Text('Mulai tinjau'),
+          prefixes: [
+            FHeaderAction.back(
+              onPress: () {
+                if (wordId != null && wordId!.isNotEmpty) {
+                  leaveReview(context);
+                } else if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go(ReviewRouter.list.path);
+                }
+              },
+            ),
+          ],
         ),
-        data: (state) => _QueueList(query: query, state: state),
+        child: queue.when(
+          loading: () {
+            final viewportHeight = MediaQuery.sizeOf(context).height;
+            final skeletonPerPage = (viewportHeight ~/ 80) + 2;
+            return _ListSkeleton(itemCount: skeletonPerPage);
+          },
+          error: (error, _) => _ErrorState(
+            message: error is ReviewFailure
+                ? error.message
+                : 'Gagal memuat antrean',
+            onRetry: () => ref.invalidate(reviewQueueProvider(query)),
+          ),
+          data: (state) => _QueueList(query: query, state: state),
+        ),
       ),
     );
   }
@@ -197,7 +213,7 @@ class _ReviewTile extends StatelessWidget with FTileMixin {
       subtitle: Text(
         [
           reviewEntityLabel(item.entityType),
-          item.contributorUsername ?? 'anonim',
+          item.contributorLabel,
           if (date.isNotEmpty) date,
         ].join(' · '),
       ),

@@ -8,7 +8,13 @@ class WordComment {
     required this.wordId,
     required this.userId,
     this.username,
+    this.displayName,
+    this.avatarUrl,
+    this.isVerifier = false,
     this.body,
+    this.audioUrl,
+    this.audioMimeType,
+    this.audioDurationMs,
     this.createdAt,
     this.status,
     this.upvotes = 0,
@@ -20,11 +26,24 @@ class WordComment {
   final String wordId;
   final String userId;
 
-  /// Nama penulis; null kalau penulis dihapus.
+  /// Handle penulis (link profil); null kalau penulis dihapus.
   final String? username;
+
+  /// Nama tampilan; fallback UI → [username].
+  final String? displayName;
+
+  /// Avatar publik; null → inisial di UI.
+  final String? avatarUrl;
+
+  /// true jika role verifikator (admin|editor|root|reviewer).
+  final bool isVerifier;
 
   /// Null jika taken_down / deleted_by_author (redact server).
   final String? body;
+
+  final String? audioUrl;
+  final String? audioMimeType;
+  final int? audioDurationMs;
 
   final String? createdAt;
 
@@ -45,6 +64,9 @@ class WordComment {
 
   bool get isDeletedByAuthor => status == 'deleted_by_author';
 
+  bool get hasAudio =>
+      audioUrl != null && audioUrl!.trim().isNotEmpty;
+
   String get displayBody {
     if (isTakenDown) {
       return 'Komentar ini dihapus karena tidak memenuhi standar komunitas.';
@@ -52,8 +74,8 @@ class WordComment {
     if (isDeletedByAuthor) {
       return 'Komentar ini dihapus oleh penulis.';
     }
-    // body null tanpa status jelas → treat sebagai redacted aman
-    if (body == null) {
+    if (body == null || body!.trim().isEmpty) {
+      if (hasAudio && isPublished) return '';
       return 'Komentar ini tidak tersedia.';
     }
     return body!;
@@ -71,7 +93,13 @@ class WordComment {
       wordId: wordId,
       userId: userId,
       username: username,
+      displayName: displayName,
+      avatarUrl: avatarUrl,
+      isVerifier: isVerifier,
       body: identical(body, _unset) ? this.body : body as String?,
+      audioUrl: audioUrl,
+      audioMimeType: audioMimeType,
+      audioDurationMs: audioDurationMs,
       createdAt: createdAt,
       status: status ?? this.status,
       upvotes: upvotes ?? this.upvotes,

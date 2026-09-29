@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'file_persist_helper.dart';
+import 'compress_image_for_upload.dart';
 import 'permission_helper.dart';
 import 'photo_pick_constants.dart';
 
@@ -28,7 +29,7 @@ void showImageSheetDrawer(
   bool filePicker = true,
   bool mediaExplorerPicker = false,
   bool requireGpsForCamera = false,
-  // Kompresi picker (mobile-base-stack §9.2) - tanpa paket ekstra.
+  // Resize picker + post-pick WebP (mobile-base-stack §9.2).
   double maxWidth = kPhotoPickMaxWidth,
   double maxHeight = kPhotoPickMaxHeight,
   int imageQuality = kPhotoPickQuality,
@@ -141,8 +142,15 @@ void showImageSheetDrawer(
                           icon: Icons.travel_explore_outlined,
                           label: 'Explorer',
                           onTap: () {
+                            // Pop dulu, baru buka Media Explorer setelah animasi
+                            // sheet sumber selesai. Kalau showModal langsung di
+                            // frame yang sama, sheet baru sering langsung hilang
+                            // / hasil pilih jadi null.
                             Navigator.of(sheetContext).pop();
-                            onMediaExplorer();
+                            Future<void>.delayed(
+                              const Duration(milliseconds: 300),
+                              onMediaExplorer,
+                            );
                           },
                         ),
                       _SourceButton(
@@ -194,12 +202,19 @@ Future<void> openCamera(
       source: ImageSource.camera,
       maxWidth: maxWidth,
       maxHeight: maxHeight,
+      // Intermediate JPEG ringan; encode final WebP di compressImageForUpload.
       imageQuality: imageQuality,
     );
     if (picked == null) return;
 
     final persisted = await copyToUniqueTempPath(File(picked.path));
-    onSuccess(XFile(persisted.path));
+    final compressed = await compressImageForUpload(
+      persisted,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+      quality: imageQuality,
+    );
+    onSuccess(XFile(compressed.path));
     if (context.mounted) Navigator.of(context).pop();
   } catch (e, st) {
     debugPrint('[Camera] $e\n$st');
@@ -229,7 +244,13 @@ Future<void> pickImageFromGallery(
     if (picked == null) return;
 
     final persisted = await copyToUniqueTempPath(File(picked.path));
-    onSuccess(XFile(persisted.path));
+    final compressed = await compressImageForUpload(
+      persisted,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+      quality: imageQuality,
+    );
+    onSuccess(XFile(compressed.path));
     if (context.mounted) Navigator.of(context).pop();
   } catch (e, st) {
     debugPrint('[Gallery] $e\n$st');
@@ -267,7 +288,8 @@ Future<void> pickImageFromFile(
     }
 
     final persisted = await copyToUniqueTempPath(source);
-    onSuccess(persisted);
+    final compressed = await compressImageForUpload(persisted);
+    onSuccess(compressed);
     if (context.mounted) Navigator.of(context).pop();
   } catch (e, st) {
     debugPrint('[ImageSheet] file pick $e\n$st');

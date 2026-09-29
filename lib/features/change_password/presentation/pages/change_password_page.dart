@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../features/auth/presentation/providers/auth_status_providers.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/change_password_providers.dart';
 
 /// Halaman ubah password (profil → menu "Ubah Password"). Sukses =
@@ -47,6 +48,15 @@ class ChangePasswordPage extends HookConsumerWidget {
       );
     });
 
+    ref.listen(changePasswordProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(changePasswordProvider.notifier).clearError();
+        }
+      });
+    });
+
     final newPasswordValid = newPassword.text.length >= 8 &&
         newPassword.text.contains(RegExp(r'[a-zA-Z]')) &&
         newPassword.text.contains(RegExp(r'[0-9]'));
@@ -72,56 +82,47 @@ class ChangePasswordPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            FTextField.password(
-              control: .managed(controller: oldPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password Lama'),
-              textInputAction: .next,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          FTextField.password(
+            control: .managed(controller: oldPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password Lama'),
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: newPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Password Baru'),
+            hint: 'Minimal 8 karakter, huruf + angka',
+            textInputAction: .next,
+          ),
+          const Gap(12),
+          FTextField.password(
+            control: .managed(controller: confirmPassword),
+            enabled: !state.isSubmitting,
+            label: const Text('Konfirmasi Password Baru'),
+            textInputAction: .done,
+            onSubmit: canSubmit ? (_) => submit() : null,
+          ),
+          const Gap(16),
+          FButton(
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(state.isSubmitting ? 'Memproses...' : 'Simpan Password'),
+          ),
+          const Gap(8),
+          Text(
+            'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
+            'dan kamu diminta login ulang dengan password baru.',
+            textAlign: .center,
+            style: context.theme.typography.sm.copyWith(
+              color: context.theme.colors.mutedForeground,
             ),
-            const Gap(12),
-            FTextField.password(
-              control: .managed(controller: newPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Password Baru'),
-              hint: 'Minimal 8 karakter, huruf + angka',
-              textInputAction: .next,
-            ),
-            const Gap(12),
-            FTextField.password(
-              control: .managed(controller: confirmPassword),
-              enabled: !state.isSubmitting,
-              label: const Text('Konfirmasi Password Baru'),
-              textInputAction: .done,
-              onSubmit: canSubmit ? (_) => submit() : null,
-            ),
-            if (state.errorMessage != null) ...[
-              const Gap(12),
-              FAlert(
-                variant: .destructive,
-                title: Text(state.errorMessage!),
-              ),
-            ],
-            const Gap(16),
-            FButton(
-              onPress: canSubmit ? submit : null,
-              prefix: state.isSubmitting ? const FCircularProgress() : null,
-              child: Text(state.isSubmitting ? 'Memproses...' : 'Simpan Password'),
-            ),
-            const Gap(8),
-            Text(
-              'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
-              'dan kamu diminta login ulang dengan password baru.',
-              textAlign: .center,
-              style: context.theme.typography.sm.copyWith(
-                color: context.theme.colors.mutedForeground,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

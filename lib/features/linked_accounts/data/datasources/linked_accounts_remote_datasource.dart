@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/models/api_response.dart';
 import '../models/auth_providers_dto.dart';
+import '../models/github_link_request_dto.dart';
 
 part 'linked_accounts_remote_datasource.g.dart';
 
@@ -24,4 +25,12 @@ abstract interface class LinkedAccountsRemoteDatasource {
 
   @DELETE('/api/v1/auth/google/link')
   Future<ApiResponse<UnlinkMessageDto>> unlinkGoogle();
+
+  @POST('/api/v1/auth/github/link')
+  Future<ApiResponse<GithubLinkResponseDto>> linkGithub(
+    @Body() GithubLinkRequestDto body,
+  );
+
+  @DELETE('/api/v1/auth/github/link')
+  Future<ApiResponse<UnlinkMessageDto>> unlinkGithub();
 }

@@ -66,7 +66,7 @@ final class CommentListControllerProvider
 }
 
 String _$commentListControllerHash() =>
-    r'4b67d3d739e0f14144b337d2aad7a829582fa127';
+    r'fe233502a345938b71e5ea0e633d28abb9a8385d';
 
 /// State list komentar per kata (1 keluarga = 1 wordId). Load halaman
 /// pertama; saat login, seed `myVote` per komentar dari GET /votes/my

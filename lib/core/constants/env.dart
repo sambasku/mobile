@@ -41,6 +41,14 @@ abstract final class Env {
   @EnviedField(varName: 'FACEBOOK_APP_ID_PRODUCTION', optional: true)
   static const String? facebookAppIdProduction = _Env.facebookAppIdProduction;
 
+  /// GitHub OAuth App Client ID per env (sama dengan API `GITHUB_CLIENT_ID`).
+  /// Secret hanya di backend (tukar code).
+  @EnviedField(varName: 'GITHUB_CLIENT_ID_STAGING', optional: true)
+  static const String? githubClientIdStaging = _Env.githubClientIdStaging;
+
+  @EnviedField(varName: 'GITHUB_CLIENT_ID_PRODUCTION', optional: true)
+  static const String? githubClientIdProduction = _Env.githubClientIdProduction;
+
   /// Domain web publik (share URL + dokumentasi deep link). Staging vs prod.
   @EnviedField(varName: 'SAMBASKU_WEB_APP_URL_STAGING', optional: true)
   static const String? webAppUrlStaging = _Env.webAppUrlStaging;
@@ -90,6 +98,15 @@ abstract final class Env {
       return _nonEmpty(facebookAppIdStaging);
     }
     return _nonEmpty(facebookAppIdProduction) ?? _nonEmpty(facebookAppIdStaging);
+  }
+
+  /// Client ID GitHub mengikuti backend yang sedang dihubungi (`apiHost`).
+  static String? get githubClientId {
+    if (F.isStaging || apiHostProduction == null) {
+      return _nonEmpty(githubClientIdStaging);
+    }
+    return _nonEmpty(githubClientIdProduction) ??
+        _nonEmpty(githubClientIdStaging);
   }
 
   static String? _nonEmpty(String? value) {

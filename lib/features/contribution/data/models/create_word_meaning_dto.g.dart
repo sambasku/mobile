@@ -13,6 +13,7 @@ _CreateWordMeaningDto _$CreateWordMeaningDtoFromJson(
   definition: json['definition'] as String,
   isHaveDefinition: json['is_have_definition'] as bool? ?? true,
   isHaveTranslation: json['is_have_translation'] as bool? ?? true,
+  meaningSource: json['meaning_source'] as String? ?? 'manual',
   orderIndex: (json['order_index'] as num?)?.toInt() ?? 1,
   translations: (json['translations'] as List<dynamic>)
       .map((e) => CreateWordTranslationDto.fromJson(e as Map<String, dynamic>))
@@ -29,6 +30,7 @@ Map<String, dynamic> _$CreateWordMeaningDtoToJson(
   'definition': instance.definition,
   'is_have_definition': instance.isHaveDefinition,
   'is_have_translation': instance.isHaveTranslation,
+  'meaning_source': instance.meaningSource,
   'order_index': instance.orderIndex,
   'translations': instance.translations,
   'examples': ?instance.examples,

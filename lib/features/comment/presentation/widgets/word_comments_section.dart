@@ -6,6 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/record_thread_audio_sheet.dart';
+import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
@@ -157,6 +159,35 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     }
   }
 
+  Future<void> _recordAudioComment() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final caption = _bodyCtrl.text.trim();
+    await showRecordThreadAudioSheet(
+      context,
+      title: 'Rekam komentar suara',
+      subtitle:
+          'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
+      submitLabel: 'Kirim rekaman',
+      onSubmit: ({required audioFile, required durationMs}) async {
+        final failure = await ref
+            .read(commentListControllerProvider(widget.wordId).notifier)
+            .createAudio(
+              audioFile: audioFile,
+              durationMs: durationMs,
+              body: caption.isEmpty ? null : caption,
+            );
+        if (failure == null) {
+          if (mounted) _bodyCtrl.clear();
+          return null;
+        }
+        return failure.message;
+      },
+    );
+  }
+
   Future<void> _toggleVote(WordComment comment, int value) async {
     if (!_isAuth()) {
       _promptLogin();
@@ -288,8 +319,13 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                           c.isOwner(auth.userId);
                       return ThreadMessageRow(
                         username: c.username,
+                        displayName: c.displayName,
+                        avatarUrl: c.avatarUrl,
+                        isVerifier: c.isVerifier,
                         body: c.displayBody,
-                        dateLabel: formatDateTimeIso(c.createdAt),
+                        dateLabel: formatRelativeCompact(
+                          DateTime.tryParse(c.createdAt ?? ''),
+                        ),
                         metaParts: [
                           if (c.isTakenDown) 'dihapus moderator',
                           if (c.isDeletedByAuthor) 'dihapus penulis',
@@ -298,6 +334,12 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                         onDelete: canDelete ? () => _deleteComment(c) : null,
                         onUsernameTap: isLinkablePublicUsername(c.username)
                             ? () => UserProfileRouter.open(context, c.username!)
+                            : null,
+                        media: c.isPublished && c.hasAudio
+                            ? ThreadAudioPlayer(
+                                url: c.audioUrl!,
+                                durationMs: c.audioDurationMs,
+                              )
                             : null,
                         footer: c.isPublished
                             ? VoteButtons(
@@ -350,6 +392,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                   controller: _bodyCtrl,
                   isSubmitting: listState?.isSubmitting ?? false,
                   onSubmit: _sendComment,
+                  onRecordAudio: _recordAudioComment,
                 ),
         ),
       ],
@@ -369,11 +412,8 @@ class _CommentsSkeleton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < 2; i++) ...[
-            Text(
-              'nama · 1 Jan 2026',
-              style: theme.typography.sm.copyWith(fontSize: 11),
-            ),
-            const Gap(2),
+            Text('Nama pengguna  2h', style: theme.typography.sm),
+            const Gap(3),
             Text(
               'isi komentar skeleton beberapa kata',
               style: theme.typography.sm,

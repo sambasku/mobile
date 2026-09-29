@@ -92,6 +92,40 @@ void main() {
     expect(got, ReviewSwipeDirection.reject);
   });
 
+  testWidgets('swipe atas melewati ambang memanggil onSwiped skip', (
+    tester,
+  ) async {
+    ReviewSwipeDirection? got;
+
+    await tester.pumpWidget(
+      wrap(
+        ReviewSwipeCard(
+          itemKey: 'up',
+          enabled: true,
+          onSwiped: (direction) async {
+            got = direction;
+            return true;
+          },
+          child: const SizedBox.expand(
+            child: Center(child: Text('kartu')),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Ambang 28% dari tinggi 600 = 168; drag naik 240 melewati ambang.
+    final card = find.byType(ReviewSwipeCard);
+    await tester.timedDrag(
+      card,
+      const Offset(0, -240),
+      const Duration(milliseconds: 120),
+    );
+    await tester.pumpAndSettle();
+
+    expect(got, ReviewSwipeDirection.skip);
+  });
+
   testWidgets('batal (onSwiped false) mengembalikan kartu ke tengah', (
     tester,
   ) async {
@@ -140,7 +174,7 @@ void main() {
     expect(called, isFalse);
   });
 
-  testWidgets('drag kanan parsial menampilkan ikon check', (tester) async {
+  testWidgets('drag kanan parsial menampilkan check (setujui)', (tester) async {
     await tester.pumpWidget(
       wrap(
         ReviewSwipeCard(
@@ -172,7 +206,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('drag kiri parsial menampilkan ikon x', (tester) async {
+  testWidgets('drag kiri parsial menampilkan x (tolak)', (tester) async {
     await tester.pumpWidget(
       wrap(
         ReviewSwipeCard(

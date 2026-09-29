@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -10,9 +12,10 @@ import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
-  CommentRepositoryImpl(this._remoteDatasource);
+  CommentRepositoryImpl(this._remoteDatasource, this._dio);
 
   final CommentRemoteDatasource _remoteDatasource;
+  final Dio _dio;
 
   @override
   Future<Either<CommentFailure, CommentPage>> listByWord({
@@ -83,6 +86,72 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<Either<CommentFailure, WordComment>> createAudio({
+    required String wordId,
+    required File audioFile,
+    required int durationMs,
+    String? body,
+  }) async {
+    try {
+      final name = audioFile.path.split(Platform.pathSeparator).last;
+      final lower = name.toLowerCase();
+      final (mimeType, filename) = lower.endsWith('.wav')
+          ? (
+              DioMediaType('audio', 'wav'),
+              name.endsWith('.wav') ? name : 'recording.wav',
+            )
+          : lower.endsWith('.webm')
+          ? (DioMediaType('audio', 'webm'), 'recording.webm')
+          : lower.endsWith('.ogg')
+          ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
+          : lower.endsWith('.mp3')
+          ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
+          : (DioMediaType('audio', 'mp4'), 'recording.m4a');
+
+      final caption = body?.trim();
+      final formData = FormData.fromMap({
+        'audio': await MultipartFile.fromFile(
+          audioFile.path,
+          filename: filename,
+          contentType: mimeType,
+        ),
+        'duration_ms': durationMs,
+        if (caption != null && caption.isNotEmpty) 'body': caption,
+      });
+
+      final res = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/words/$wordId/comments/audio',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      final envelope = res.data;
+      if (envelope == null || envelope['success'] != true) {
+        return Either.left(
+          CommentFailure(
+            (envelope?['message'] as String?) ?? 'Gagal mengirim rekaman suara',
+            errorCode: envelope?['error_code'] as String?,
+          ),
+        );
+      }
+      final data = envelope['data'];
+      if (data is! Map) {
+        return Either.left(
+          const CommentFailure('Balasan suara tidak lengkap'),
+        );
+      }
+      return Either.right(
+        _toEntity(CommentDto.fromJson(Map<String, dynamic>.from(data))),
+      );
+    } on DioException catch (error) {
+      return Either.left(
+        _mapDio(error, fallback: 'Gagal mengirim rekaman suara'),
+      );
+    } catch (error) {
+      return Either.left(CommentFailure(error.toString()));
+    }
+  }
+
+  @override
   Future<Either<CommentFailure, void>> delete(String commentId) async {
     try {
       final response = await _remoteDatasource.delete(commentId);
@@ -108,7 +177,13 @@ class CommentRepositoryImpl implements CommentRepository {
         wordId: dto.wordId,
         userId: dto.userId,
         username: dto.username,
+        displayName: dto.displayName,
+        avatarUrl: dto.avatarUrl,
+        isVerifier: dto.isVerifier,
         body: dto.body,
+        audioUrl: dto.audioUrl,
+        audioMimeType: dto.audioMimeType,
+        audioDurationMs: dto.audioDurationMs,
         createdAt: dto.createdAt,
         status: dto.status,
         upvotes: dto.upvotes,

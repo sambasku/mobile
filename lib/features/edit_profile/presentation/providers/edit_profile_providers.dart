@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../domain/providers/edit_profile_domain_providers.dart';
 import '../models/edit_profile_state.dart';
 
@@ -31,6 +35,14 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           username: profile.username,
           clearErrorMessage: true,
         );
+        // Sync handle ke sesi lokal (bisa stale setelah migrate slug).
+        unawaited(
+          ref.read(authStatusProvider.notifier).applySessionIdentity(
+                username: profile.username,
+                displayName: profile.displayName,
+                avatarUrl: profile.avatarUrl,
+              ),
+        );
         return (displayName: profile.displayName, bio: profile.bio ?? '');
       },
     );
@@ -51,16 +63,36 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           bio: bio.trim().isEmpty ? null : bio.trim(),
         );
 
-    result.match(
-      (failure) => state = state.copyWith(
-        isSubmitting: false,
-        errorMessage: failure.message,
-      ),
-      (_) => state = state.copyWith(
-        isSubmitting: false,
-        successMessage: 'Profil berhasil disimpan.',
-        clearErrorMessage: true,
-      ),
+    final outcome = result.match(
+      (failure) => failure,
+      (_) => null,
     );
+    if (outcome != null) {
+      state = state.copyWith(
+        isSubmitting: false,
+        errorMessage: outcome.message,
+      );
+      return;
+    }
+
+    await ref
+        .read(authStatusProvider.notifier)
+        .setDisplayName(displayName.trim());
+
+    final username = state.username;
+    if (username != null && username.isNotEmpty) {
+      ref.invalidate(publicProfileProvider(username));
+      ref.invalidate(publicActivityProvider(username));
+    }
+
+    state = state.copyWith(
+      isSubmitting: false,
+      successMessage: 'Profil berhasil disimpan.',
+      clearErrorMessage: true,
+    );
+  }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
   }
 }

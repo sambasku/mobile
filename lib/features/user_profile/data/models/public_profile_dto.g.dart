@@ -81,4 +81,4 @@ _PublicActivityDto _$PublicActivityDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PublicActivityDtoToJson(_PublicActivityDto instance) =>
-    <String, dynamic>{'items': instance.items};
+    <String, dynamic>{'items': instance.items.map((e) => e.toJson()).toList()};

@@ -72,107 +72,105 @@ class _MicPermissionOnboardingPageState
         ],
       ),
       childPad: true,
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Gap(8),
-                    Center(
-                      child: Container(
-                        width: 88,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: theme.colors.primary.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          FLucideIcons.mic,
-                          size: 40,
-                          color: theme.colors.primary,
-                        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(8),
+                  Center(
+                    child: Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        color: theme.colors.primary.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        FLucideIcons.mic,
+                        size: 40,
+                        color: theme.colors.primary,
                       ),
                     ),
-                    const Gap(24),
-                    Text(
-                      'Rekam pelafalan butuh akses mikrofon',
-                      style: theme.typography.xl.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                  ),
+                  const Gap(24),
+                  Text(
+                    'Rekam pelafalan butuh akses mikrofon',
+                    style: theme.typography.xl.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                    const Gap(10),
-                    Text(
-                      'Sebelum merekam, SambasKu meminta izin mikrofon. '
-                      'Ini hanya dipakai untuk fitur pelafalan - bukan untuk '
-                      'menyadap atau merekam di latar belakang.',
-                      style: theme.typography.md.copyWith(
-                        color: theme.colors.mutedForeground,
-                        height: 1.45,
-                      ),
+                  ),
+                  const Gap(10),
+                  Text(
+                    'Sebelum merekam, SambasKu meminta izin mikrofon. '
+                    'Ini hanya dipakai untuk fitur pelafalan - bukan untuk '
+                    'menyadap atau merekam di latar belakang.',
+                    style: theme.typography.md.copyWith(
+                      color: theme.colors.mutedForeground,
+                      height: 1.45,
                     ),
-                    const Gap(24),
-                    Text(
-                      'Yang perlu Anda ketahui',
-                      style: theme.typography.md.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                  ),
+                  const Gap(24),
+                  Text(
+                    'Yang perlu Anda ketahui',
+                    style: theme.typography.md.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                    const Gap(12),
-                    const _RequirementRow(
-                      icon: FLucideIcons.mic,
-                      title: 'Izin mikrofon wajib',
-                      body:
-                          'Tanpa izin, tombol rekam tidak bisa mulai. Anda bisa '
-                          'mencabut izin kapan saja di Pengaturan perangkat.',
-                    ),
-                    const Gap(12),
-                    const _RequirementRow(
-                      icon: FLucideIcons.timer,
-                      title: 'Maksimal 60 detik',
-                      body:
-                          'Cukup untuk lemma atau contoh kalimat. Format suara '
-                          'AAC/m4a - tanpa video.',
-                    ),
-                    const Gap(12),
-                    const _RequirementRow(
-                      icon: FLucideIcons.shieldCheck,
-                      title: 'Ditinjau sebelum tayang',
-                      body:
-                          'Rekaman dikirim ke server SambasKu dan masuk antrean '
-                          'review. Penuturnya (nama) ikut dikirim.',
-                    ),
-                    const Gap(12),
-                    const _RequirementRow(
-                      icon: FLucideIcons.volume2,
-                      title: 'Hanya saat Anda rekam',
-                      body:
-                          'Mikrofon aktif hanya selama sesi rekam di layar ini. '
-                          'Tidak merekam diam-diam.',
-                    ),
-                  ],
-                ),
+                  ),
+                  const Gap(12),
+                  const _RequirementRow(
+                    icon: FLucideIcons.mic,
+                    title: 'Izin mikrofon wajib',
+                    body:
+                        'Tanpa izin, tombol rekam tidak bisa mulai. Anda bisa '
+                        'mencabut izin kapan saja di Pengaturan perangkat.',
+                  ),
+                  const Gap(12),
+                  const _RequirementRow(
+                    icon: FLucideIcons.timer,
+                    title: 'Maksimal 60 detik',
+                    body:
+                        'Cukup untuk lemma atau contoh kalimat. Format suara '
+                        'AAC/m4a - tanpa video.',
+                  ),
+                  const Gap(12),
+                  const _RequirementRow(
+                    icon: FLucideIcons.shieldCheck,
+                    title: 'Ditinjau sebelum tayang',
+                    body:
+                        'Rekaman dikirim ke server SambasKu dan masuk antrean '
+                        'review. Nama penutur opsional - boleh kirim tanpa nama.',
+                  ),
+                  const Gap(12),
+                  const _RequirementRow(
+                    icon: FLucideIcons.volume2,
+                    title: 'Hanya saat Anda rekam',
+                    body:
+                        'Mikrofon aktif hanya selama sesi rekam di layar ini. '
+                        'Tidak merekam diam-diam.',
+                  ),
+                ],
               ),
             ),
-            const Gap(12),
-            FButton(
-              onPress: _busy ? null : _continue,
-              prefix: _busy ? null : const Icon(FLucideIcons.mic),
-              child: Text(
-                _busy ? 'Meminta izin…' : 'Lanjutkan & izinkan mikrofon',
-              ),
+          ),
+          const Gap(12),
+          FButton(
+            onPress: _busy ? null : _continue,
+            prefix: _busy ? null : const Icon(FLucideIcons.mic),
+            child: Text(
+              _busy ? 'Meminta izin…' : 'Lanjutkan & izinkan mikrofon',
             ),
-            const Gap(8),
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: _busy ? null : () => Navigator.of(context).pop(false),
-              child: const Text('Nanti saja'),
-            ),
-          ],
-        ),
+          ),
+          const Gap(8),
+          FButton(
+            variant: FButtonVariant.ghost,
+            onPress: _busy ? null : () => Navigator.of(context).pop(false),
+            child: const Text('Nanti saja'),
+          ),
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart';
 import 'package:sambasku_mobile/features/auth/domain/ports/facebook_sign_in_port.dart';
@@ -31,6 +32,15 @@ class _StubRepo implements AuthRepository {
   }) async => facebookResult;
 
   @override
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
+  }) async =>
+      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+
+
+  @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
   }) async => Either.left(const AuthFailure('tidak dipakai'));
@@ -48,6 +58,7 @@ class _StubRepo implements AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
@@ -81,15 +92,23 @@ Widget _harness({
   required Widget child,
   required List<dynamic> overrides,
 }) {
+  // LoginPage membaca GoRouterState (query relogin); harus di bawah RouteBase.
+  final router = GoRouter(
+    initialLocation: '/',
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => child),
+    ],
+  );
   return ProviderScope(
     overrides: overrides.cast(),
-    child: MaterialApp(
+    child: MaterialApp.router(
       theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
-      home: FTheme(
+      routerConfig: router,
+      builder: (context, routed) => FTheme(
         data: FThemes.zinc.light.touch,
-        child: FToaster(child: child),
+        child: FToaster(child: routed ?? const SizedBox.shrink()),
       ),
     ),
   );
@@ -169,7 +188,9 @@ void main() {
       ),
     );
     await _pumpUi(tester);
-    await tester.tap(find.text('Masuk dengan Facebook'));
+    final facebook = find.text('Masuk dengan Facebook');
+    await tester.ensureVisible(facebook);
+    await tester.tap(facebook);
     await _pumpUi(tester);
     expect(find.textContaining('Email sudah terdaftar'), findsOneWidget);
   });

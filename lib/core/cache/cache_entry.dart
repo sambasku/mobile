@@ -21,7 +21,7 @@ enum CacheClass {
   /// words/search (transitional)
   search,
 
-  /// translation-help published
+  /// discussion published
   socialPublic,
 
   /// 404 lemma/id singkat

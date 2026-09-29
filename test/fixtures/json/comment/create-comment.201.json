@@ -3,10 +3,14 @@
   "data": {
     "id": "01JDCOMMENTMAKATN00000000A",
     "word_id": "01JDWORDMAKATN0000000000A",
+    "word_lemma": null,
     "user_id": "01JDCONTRIBUTOR000000000",
     "username": "kontributor",
+    "display_name": "Kontributor",
+    "avatar_url": null,
+    "is_verifier": false,
     "body": "Kata ini juga sering saya dengar di daerah Sambas",
-    "status": "pending_review",
+    "status": "published",
     "created_at": "2026-09-18T10:00:00.000Z"
   }
 }

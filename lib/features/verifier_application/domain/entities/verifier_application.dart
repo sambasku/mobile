@@ -43,4 +43,11 @@ class VerifierApplication {
   bool get isPending => status == 'pending';
   bool get isRejected => status == 'rejected';
   bool get isApproved => status == 'approved';
+
+  /// Rejected dengan catatan admin → copy "perlu perbaikan".
+  bool get needsRevision =>
+      isRejected && (adminComment?.trim().isNotEmpty ?? false);
+
+  /// Rejected tanpa catatan → copy "ditolak, data kurang lengkap".
+  bool get isHardRejected => isRejected && !needsRevision;
 }

@@ -191,6 +191,55 @@ final class AuthLoginWithFacebookUseCaseProvider
 String _$authLoginWithFacebookUseCaseHash() =>
     r'9ca1a4fbb3b3a61aae1d5161a1cd76dca0be2ef3';
 
+@ProviderFor(authLoginWithGithubUseCase)
+final authLoginWithGithubUseCaseProvider =
+    AuthLoginWithGithubUseCaseProvider._();
+
+final class AuthLoginWithGithubUseCaseProvider
+    extends
+        $FunctionalProvider<
+          LoginWithGithubUseCase,
+          LoginWithGithubUseCase,
+          LoginWithGithubUseCase
+        >
+    with $Provider<LoginWithGithubUseCase> {
+  AuthLoginWithGithubUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authLoginWithGithubUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authLoginWithGithubUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<LoginWithGithubUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  LoginWithGithubUseCase create(Ref ref) {
+    return authLoginWithGithubUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LoginWithGithubUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LoginWithGithubUseCase>(value),
+    );
+  }
+}
+
+String _$authLoginWithGithubUseCaseHash() =>
+    r'd0c9befb8ab2aabac51cfc90e481942bdf5ceac0';
+
 @ProviderFor(authLogoutUseCase)
 final authLogoutUseCaseProvider = AuthLogoutUseCaseProvider._();
 

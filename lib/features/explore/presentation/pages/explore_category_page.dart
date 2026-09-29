@@ -11,7 +11,7 @@ import '../../domain/explore_category.dart';
 import '../../domain/sambas_map_config.dart';
 import '../widgets/sambas_map_view.dart';
 
-/// Detail kategori. Peta & Akses = MapLibre fullscreen; lainnya segera hadir.
+/// Detail kategori. Peta & Akses = MapLibre; Bahasa & Budaya = bridge kamus; lainnya segera hadir.
 class ExploreCategoryPage extends StatelessWidget {
   const ExploreCategoryPage({super.key, required this.categoryId});
 

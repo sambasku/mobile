@@ -6,8 +6,8 @@ import '../usecases/linked_accounts_use_cases.dart';
 part 'linked_accounts_domain_providers.g.dart';
 
 @riverpod
-GetGoogleLinkStatusUseCase getGoogleLinkStatusUseCase(Ref ref) =>
-    GetGoogleLinkStatusUseCase(ref.watch(linkedAccountsRepositoryProvider));
+GetLinkedAccountsStatusUseCase getLinkedAccountsStatusUseCase(Ref ref) =>
+    GetLinkedAccountsStatusUseCase(ref.watch(linkedAccountsRepositoryProvider));
 
 @riverpod
 LinkGoogleAccountUseCase linkGoogleAccountUseCase(Ref ref) =>
@@ -16,3 +16,11 @@ LinkGoogleAccountUseCase linkGoogleAccountUseCase(Ref ref) =>
 @riverpod
 UnlinkGoogleAccountUseCase unlinkGoogleAccountUseCase(Ref ref) =>
     UnlinkGoogleAccountUseCase(ref.watch(linkedAccountsRepositoryProvider));
+
+@riverpod
+LinkGithubAccountUseCase linkGithubAccountUseCase(Ref ref) =>
+    LinkGithubAccountUseCase(ref.watch(linkedAccountsRepositoryProvider));
+
+@riverpod
+UnlinkGithubAccountUseCase unlinkGithubAccountUseCase(Ref ref) =>
+    UnlinkGithubAccountUseCase(ref.watch(linkedAccountsRepositoryProvider));

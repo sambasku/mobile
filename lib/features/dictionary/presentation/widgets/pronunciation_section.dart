@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/word_detail.dart';
 import '../providers/pronunciation_providers.dart';
@@ -22,8 +23,7 @@ class PronunciationSection extends ConsumerWidget {
     this.exampleId,
     this.compact = false,
     this.sectionLabel = 'Pelafalan',
-    /// Teks yang dilafalkan: lemma (audio kata). Contoh biasanya sudah
-    /// punya kalimat di luar section.
+    /// Teks yang dilafalkan: lemma (audio kata) atau kalimat contoh.
     this.spokenText,
   });
 
@@ -43,8 +43,9 @@ class PronunciationSection extends ConsumerWidget {
     final canRecord = !uploadUnavailable;
     final sorted = sortWordAudios(audios);
     final spoken = spokenText?.trim();
+    final emptyAudios = sorted.isEmpty;
 
-    if (sorted.isEmpty && !canRecord) {
+    if (emptyAudios && !canRecord) {
       return const SizedBox.shrink();
     }
 
@@ -68,7 +69,7 @@ class PronunciationSection extends ConsumerWidget {
           ),
           const Gap(6),
         ],
-        if (spoken != null && spoken.isNotEmpty) ...[
+        if (spoken != null && spoken.isNotEmpty && !compact) ...[
           Text(
             spoken,
             maxLines: 2,
@@ -106,12 +107,17 @@ class PronunciationSection extends ConsumerWidget {
         if (canRecord) ...[
           if (sorted.isNotEmpty) const Gap(2),
           FButton(
-            variant: FButtonVariant.ghost,
+            // Kosong + section kata: CTA utama. Sudah ada audio: aksi sekunder.
+            variant: emptyAudios && !compact
+                ? FButtonVariant.primary
+                : FButtonVariant.ghost,
             onPress: () => _openRecord(context, ref),
             prefix: Icon(
               FLucideIcons.mic,
               size: 16,
-              color: context.theme.colors.primary,
+              color: emptyAudios && !compact
+                  ? null
+                  : context.theme.colors.primary,
             ),
             child: Text(compact ? 'Rekam audio contoh' : 'Rekam pelafalan'),
           ),
@@ -141,7 +147,12 @@ class PronunciationSection extends ConsumerWidget {
       wordId: wordId,
       languageId: languageId,
       exampleId: exampleId,
-      defaultSpeakerName: auth.username ?? '',
+      spokenText: spokenText,
+      // Atribusi = identitas akun (nama tampilan), bukan handle username.
+      defaultSpeakerName: displayPublicAccountLabel(
+        displayName: auth.displayName,
+        username: auth.username,
+      ),
     );
   }
 }

@@ -104,15 +104,15 @@ class WordDetail {
   };
 
   String? get creatorAttributionLabel {
-    final username = createdBy?.username;
-    if (username == null || username.isEmpty) return null;
-    return 'Dibuat oleh ${displayPublicUsername(username)}';
+    final person = createdBy;
+    if (person == null || person.username.isEmpty) return null;
+    return 'Dibuat oleh ${_attributionLabel(person)}';
   }
 
   String? get verifierAttributionLabel {
-    final username = verifiedBy?.username;
-    if (username == null || username.isEmpty) return null;
-    return 'Diverifikasi oleh ${displayPublicUsername(username)}';
+    final person = verifiedBy;
+    if (person == null || person.username.isEmpty) return null;
+    return 'Diverifikasi oleh ${_attributionLabel(person)}';
   }
 
   /// Satu kalimat kalau orangnya sama, supaya nama tidak tertulis dua kali.
@@ -127,9 +127,16 @@ class WordDetail {
 
   String? get combinedAttributionLabel {
     if (!authoredAndVerifiedBySamePerson) return null;
-    final name = verifiedBy?.username ?? createdBy?.username;
-    if (name == null || name.isEmpty) return null;
-    return 'Dibuat dan diverifikasi oleh ${displayPublicUsername(name)}';
+    final person = verifiedBy ?? createdBy;
+    if (person == null || person.username.isEmpty) return null;
+    return 'Dibuat dan diverifikasi oleh ${_attributionLabel(person)}';
+  }
+
+  static String _attributionLabel(WordVerifier person) {
+    final name = person.displayName.trim().isNotEmpty
+        ? person.displayName.trim()
+        : person.username;
+    return displayPublicUsername(name);
   }
 
   /// Orang yang sama dan perannya tim verifikator, bukan kontributor.
@@ -144,9 +151,15 @@ class WordDetail {
 }
 
 class WordVerifier {
-  const WordVerifier({required this.username, required this.role});
+  const WordVerifier({
+    required this.username,
+    required this.displayName,
+    required this.role,
+  });
 
   final String username;
+  /// Nama tampilan untuk label atribusi; fallback ke [username] di mapper.
+  final String displayName;
   final String role;
 }
 
@@ -225,6 +238,7 @@ class WordAudio {
     this.durationMs,
     this.isPrimary = false,
     this.mimeType,
+    this.isVerified = true,
   });
 
   final String id;
@@ -234,6 +248,12 @@ class WordAudio {
   final int? durationMs;
   final bool isPrimary;
   final String? mimeType;
+
+  /// false jika API mengembalikan is_verified: false.
+  /// Default true agar payload lama tanpa field tetap normal.
+  final bool isVerified;
+
+  bool get isPendingReview => !isVerified;
 
   String get displaySpeaker {
     final name = speakerName?.trim();

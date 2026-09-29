@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -113,6 +115,41 @@ class CommentListController extends _$CommentListController {
         AnalyticsService.instance.log(
           AnalyticsEvents.commentSubmit,
           params: {'word_id': wordId},
+        );
+        return null;
+      },
+    );
+  }
+
+  /// Kirim komentar suara; caption teks opsional.
+  Future<CommentFailure?> createAudio({
+    required File audioFile,
+    required int durationMs,
+    String? body,
+  }) async {
+    final current = state.value;
+    if (current == null) return null;
+    if (current.isSubmitting) return null;
+
+    state = AsyncData(current.copyWith(isSubmitting: true, clearSubmitFailure: true));
+
+    final result = await ref.watch(createCommentAudioUseCaseProvider)(
+      wordId: wordId,
+      audioFile: audioFile,
+      durationMs: durationMs,
+      body: body,
+    );
+    return result.match(
+      (failure) {
+        final s = state.value ?? current;
+        state = AsyncData(s.copyWith(isSubmitting: false, submitFailure: failure));
+        return failure;
+      },
+      (_) {
+        ref.invalidateSelf();
+        AnalyticsService.instance.log(
+          AnalyticsEvents.commentSubmit,
+          params: {'word_id': wordId, 'has_audio': '1'},
         );
         return null;
       },

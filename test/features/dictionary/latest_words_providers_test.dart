@@ -78,16 +78,22 @@ class _FakeDictionaryRepository implements DictionaryRepository {
     required String q,
     required int limit,
     String? cursor,
+    String? letter,
+    bool? isVerified,
   }) async => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, WordDetail>> getWordById(String id) async =>
+  Future<Either<DictionaryFailure, WordDetail>> getWordById(
+    String id, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
-    String lemma,
-  ) async =>
+    String lemma, {
+    bool forceRefresh = false,
+  }) async =>
       throw UnimplementedError();
 
   @override

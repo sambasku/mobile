@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/edit_profile_providers.dart';
 
 class EditProfilePage extends HookConsumerWidget {
@@ -38,6 +39,15 @@ class EditProfilePage extends HookConsumerWidget {
       }
     });
 
+    ref.listen(editProfileProvider.select((s) => s.errorMessage), (_, next) {
+      if (next == null || !context.mounted) return;
+      showAppErrorSheet(context, message: next).whenComplete(() {
+        if (context.mounted) {
+          ref.read(editProfileProvider.notifier).clearError();
+        }
+      });
+    });
+
     final canSubmit = displayName.text.trim().isNotEmpty &&
         displayName.text.trim().length <= 100 &&
         bio.text.trim().length <= 500 &&
@@ -60,58 +70,40 @@ class EditProfilePage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        child: state.isLoading
-            ? const Center(child: FCircularProgress())
-            : ListView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  if (state.username != null) ...[
-                    Text(
-                      'Username: ${state.username}',
-                      style: context.theme.typography.sm.copyWith(
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                    ),
-                    const Gap(12),
-                  ],
-                  FTextField(
-                    control: .managed(controller: displayName),
-                    enabled: !state.isSubmitting,
-                    label: const Text('Nama tampilan'),
-                    hint: 'Nama yang tampil di profil publik',
-                    maxLength: 100,
-                    textInputAction: .next,
-                  ),
-                  const Gap(12),
-                  FTextField(
-                    control: .managed(controller: bio),
-                    enabled: !state.isSubmitting,
-                    label: const Text('Bio'),
-                    hint: 'Ceritakan singkat tentangmu (opsional)',
-                    maxLength: 500,
-                    maxLines: 4,
-                    textInputAction: .done,
-                    onSubmit: canSubmit ? (_) => submit() : null,
-                  ),
-                  if (state.errorMessage != null) ...[
-                    const Gap(12),
-                    Text(
-                      state.errorMessage!,
-                      style: TextStyle(color: context.theme.colors.destructive),
-                    ),
-                  ],
-                  const Gap(20),
-                  FButton(
-                    onPress: canSubmit ? submit : null,
-                    child: state.isSubmitting
-                        ? const FCircularProgress()
-                        : const Text('Simpan'),
-                  ),
-                ],
-              ),
-      ),
+      child: state.isLoading
+          ? const Center(child: FCircularProgress())
+          : ListView(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                FTextField(
+                  control: .managed(controller: displayName),
+                  enabled: !state.isSubmitting,
+                  label: const Text('Nama tampilan'),
+                  hint: 'Nama yang tampil di profil publik',
+                  maxLength: 100,
+                  textInputAction: .next,
+                ),
+                const Gap(12),
+                FTextField(
+                  control: .managed(controller: bio),
+                  enabled: !state.isSubmitting,
+                  label: const Text('Bio'),
+                  hint: 'Ceritakan singkat tentangmu (opsional)',
+                  maxLength: 500,
+                  maxLines: 4,
+                  textInputAction: .done,
+                  onSubmit: canSubmit ? (_) => submit() : null,
+                ),
+                const Gap(20),
+                FButton(
+                  onPress: canSubmit ? submit : null,
+                  child: state.isSubmitting
+                      ? const FCircularProgress()
+                      : const Text('Simpan'),
+                ),
+              ],
+            ),
     );
   }
 }

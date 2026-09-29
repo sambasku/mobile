@@ -12,9 +12,10 @@ part of 'word_detail_providers.dart';
 /// Error object = [DictionaryFailure] (termasuk 404).
 ///
 /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-/// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-/// `.future` supaya data segar.
+/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+/// supaya cold start / kill process masih bisa HIT dalam TTL.
+/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 @ProviderFor(wordDetail)
 final wordDetailProvider = WordDetailFamily._();
@@ -23,9 +24,10 @@ final wordDetailProvider = WordDetailFamily._();
 /// Error object = [DictionaryFailure] (termasuk 404).
 ///
 /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-/// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-/// `.future` supaya data segar.
+/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+/// supaya cold start / kill process masih bisa HIT dalam TTL.
+/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 final class WordDetailProvider
     extends
@@ -39,9 +41,10 @@ final class WordDetailProvider
   /// Error object = [DictionaryFailure] (termasuk 404).
   ///
   /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-  /// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-  /// `.future` supaya data segar.
+  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+  /// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+  /// supaya cold start / kill process masih bisa HIT dalam TTL.
+  /// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
   WordDetailProvider._({
     required WordDetailFamily super.from,
     required String super.argument,
@@ -91,9 +94,10 @@ String _$wordDetailHash() => r'42dcb13eb996b23cd2e75a0a23467a76b99cd39f';
 /// Error object = [DictionaryFailure] (termasuk 404).
 ///
 /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-/// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-/// `.future` supaya data segar.
+/// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+/// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+/// supaya cold start / kill process masih bisa HIT dalam TTL.
+/// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
 final class WordDetailFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<WordDetail>, String> {
@@ -110,9 +114,10 @@ final class WordDetailFamily extends $Family
   /// Error object = [DictionaryFailure] (termasuk 404).
   ///
   /// keepAlive: family per kunci tetap di cache saat pop detail → buka
-  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch.
-  /// Pull-to-refresh di halaman detail memanggil `invalidate` + await
-  /// `.future` supaya data segar.
+  /// lagi / navigasi antar kata yang sudah pernah dibuka tidak refetch
+  /// Riverpod. Repository juga menulis L1 (`CacheClass.dictionaryDetail`)
+  /// supaya cold start / kill process masih bisa HIT dalam TTL.
+  /// Pull-to-refresh: hard miss L1 (`forceRefresh: true`) lalu invalidate.
 
   WordDetailProvider call(String wordIdOrLemma) =>
       WordDetailProvider._(argument: wordIdOrLemma, from: this);

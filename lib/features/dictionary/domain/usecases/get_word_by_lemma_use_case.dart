@@ -9,6 +9,9 @@ class GetWordByLemmaUseCase {
 
   final DictionaryRepository _repository;
 
-  Future<Either<DictionaryFailure, WordDetail>> call(String lemma) =>
-      _repository.getWordByLemma(lemma);
+  Future<Either<DictionaryFailure, WordDetail>> call(
+    String lemma, {
+    bool forceRefresh = false,
+  }) =>
+      _repository.getWordByLemma(lemma, forceRefresh: forceRefresh);
 }

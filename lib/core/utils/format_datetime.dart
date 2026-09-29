@@ -63,3 +63,18 @@ String formatRelative(DateTime? value, {DateTime? now}) {
   if (diff.inDays < 7) return '${diff.inDays} hr';
   return formatDateTime(value);
 }
+
+/// Humanize ultra-singkat untuk header thread: `baru`, `12m`, `2h`, `3d`,
+/// lalu `21 Sep` (≥7 hari).
+String formatRelativeCompact(DateTime? value, {DateTime? now}) {
+  if (value == null) return '';
+  final clock = now ?? DateTime.now();
+  final local = value.toLocal();
+  var diff = clock.difference(value);
+  if (diff.isNegative) diff = Duration.zero;
+  if (diff.inMinutes < 1) return 'baru';
+  if (diff.inHours < 1) return '${diff.inMinutes}m';
+  if (diff.inDays < 1) return '${diff.inHours}h';
+  if (diff.inDays < 7) return '${diff.inDays}d';
+  return '${local.day} ${_months[local.month - 1]}';
+}

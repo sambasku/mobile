@@ -34,4 +34,8 @@ class AuthForgotNotifier extends _$AuthForgotNotifier {
       ),
     );
   }
+
+  void clearError() {
+    state = state.copyWith(clearErrorMessage: true);
+  }
 }

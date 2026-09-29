@@ -105,6 +105,54 @@ final class CreateCommentUseCaseProvider
 String _$createCommentUseCaseHash() =>
     r'bac6ec42c4e16979184ca8937b6296cae550815a';
 
+@ProviderFor(createCommentAudioUseCase)
+final createCommentAudioUseCaseProvider = CreateCommentAudioUseCaseProvider._();
+
+final class CreateCommentAudioUseCaseProvider
+    extends
+        $FunctionalProvider<
+          CreateCommentAudioUseCase,
+          CreateCommentAudioUseCase,
+          CreateCommentAudioUseCase
+        >
+    with $Provider<CreateCommentAudioUseCase> {
+  CreateCommentAudioUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'createCommentAudioUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$createCommentAudioUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<CreateCommentAudioUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CreateCommentAudioUseCase create(Ref ref) {
+    return createCommentAudioUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CreateCommentAudioUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CreateCommentAudioUseCase>(value),
+    );
+  }
+}
+
+String _$createCommentAudioUseCaseHash() =>
+    r'5205cb2764460262475127768448d49e08278ec5';
+
 @ProviderFor(deleteCommentUseCase)
 final deleteCommentUseCaseProvider = DeleteCommentUseCaseProvider._();
 

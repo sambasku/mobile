@@ -26,23 +26,53 @@ class ChangeHistoryItem {
     required this.id,
     required this.timestamp,
     required this.actorUsername,
+    required this.actorDisplayName,
     required this.type,
     required this.changes,
     this.reason,
     this.suggestedByUsername,
+    this.suggestedByDisplayName,
     this.reviewComment,
   });
 
   final String id;
   final String timestamp;
   final String? actorUsername;
+  final String? actorDisplayName;
   final String type;
   final List<ChangeHistoryFieldDiff> changes;
   final String? reason;
   final String? suggestedByUsername;
+  final String? suggestedByDisplayName;
   final String? reviewComment;
 
   bool get isSuggestEdit => type == 'suggest_edit';
+  bool get isDuplicateVote => type == 'duplicate_vote';
+
+  String get typeLabel {
+    if (isDuplicateVote) return 'Konfirmasi duplikat';
+    if (isSuggestEdit) return 'Dari usulan';
+    return 'Edit langsung';
+  }
+
+  String get actorLabel => _publicLabel(actorDisplayName, actorUsername) ?? 'Sistem';
+
+  String? get suggestedByLabel =>
+      _publicLabel(suggestedByDisplayName, suggestedByUsername);
+}
+
+String? _publicLabel(String? displayName, String? username) {
+  final name = displayName?.trim();
+  if (name != null && name.isNotEmpty) return name;
+  final handle = username?.trim();
+  if (handle != null && handle.isNotEmpty) return handle;
+  return null;
+}
+
+String? _personField(Map? person, String key) {
+  if (person == null) return null;
+  final value = person[key]?.toString().trim();
+  return (value != null && value.isNotEmpty) ? value : null;
 }
 
 final changeHistoryProvider =
@@ -81,14 +111,26 @@ final changeHistoryProvider =
     return ChangeHistoryItem(
       id: map['id']?.toString() ?? '',
       timestamp: map['timestamp']?.toString() ?? '',
-      actorUsername: actor is Map ? actor['username']?.toString() : null,
+      actorUsername: actor is Map ? _personField(actor, 'username') : null,
+      actorDisplayName: actor is Map ? _personField(actor, 'display_name') : null,
       type: map['type']?.toString() ?? 'direct_edit',
       changes: changes,
       reason: source is Map ? source['reason']?.toString() : null,
       suggestedByUsername: source is Map
-          ? (source['suggested_by'] is Map
-              ? (source['suggested_by'] as Map)['username']?.toString()
-              : null)
+          ? _personField(
+              source['suggested_by'] is Map
+                  ? source['suggested_by'] as Map
+                  : null,
+              'username',
+            )
+          : null,
+      suggestedByDisplayName: source is Map
+          ? _personField(
+              source['suggested_by'] is Map
+                  ? source['suggested_by'] as Map
+                  : null,
+              'display_name',
+            )
           : null,
       reviewComment:
           source is Map ? source['review_comment']?.toString() : null,
@@ -180,6 +222,8 @@ const _fieldLabels = <String, String>{
   'language_id': 'Bahasa',
   'is_verified': 'Verifikasi',
   'status': 'Status',
+  'duplicate_vote': 'Dukungan',
+  'translation_text': 'Terjemahan',
 };
 
 class _HistoryTile extends StatelessWidget with FTileMixin {
@@ -189,19 +233,132 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
-    final kind = item.isSuggestEdit ? 'Dari usulan' : 'Edit langsung';
+    final kind = item.typeLabel;
     final summary = _changeSummary();
     return FTile(
       title: Text(summary.isNotEmpty ? summary : kind),
       subtitle: Text(_subtitle(kind, hasSummary: summary.isNotEmpty)),
+      onPress: () => _showDetailSheet(context),
+    );
+  }
+
+  void _showDetailSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final theme = sheetContext.theme;
+        final when = item.timestamp.isNotEmpty
+            ? formatDateTimeIso(item.timestamp)
+            : '-';
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    item.typeLabel,
+                    style: theme.typography.lg.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(8),
+                  Text(
+                    'Oleh ${item.actorLabel}',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  Text(
+                    when,
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  if (item.reason != null && item.reason!.trim().isNotEmpty) ...[
+                    const Gap(12),
+                    Text('Alasan', style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    )),
+                    Text(item.reason!),
+                  ],
+                  if (item.reviewComment != null &&
+                      item.reviewComment!.trim().isNotEmpty) ...[
+                    const Gap(12),
+                    Text('Catatan reviewer', style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    )),
+                    Text(item.reviewComment!),
+                  ],
+                  const Gap(16),
+                  Text(
+                    'Perubahan',
+                    style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(8),
+                  if (item.changes.isEmpty)
+                    Text(
+                      'Tidak ada detail perubahan.',
+                      style: theme.typography.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    )
+                  else
+                    ...item.changes.map((diff) {
+                      final label = _labelFor(diff);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              label.isNotEmpty ? label : diff.field,
+                              style: theme.typography.sm.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (diff.displayOld.isNotEmpty &&
+                                diff.displayOld != '-')
+                              Text(
+                                'Sebelum: ${diff.displayOld}',
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                            Text(
+                              item.isDuplicateVote
+                                  ? diff.displayNew
+                                  : 'Sesudah: ${diff.displayNew}',
+                              style: theme.typography.sm,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  const Gap(8),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Tutup'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   String _subtitle(String kind, {required bool hasSummary}) {
-    final actor = (item.actorUsername != null && item.actorUsername!.isNotEmpty)
-        ? item.actorUsername!
-        : 'Sistem';
-    final suggested = item.suggestedByUsername?.trim() ?? '';
+    final actor = item.actorLabel;
+    final suggested = item.suggestedByLabel ?? '';
     final when = item.timestamp.isNotEmpty
         ? formatDateTimeIso(item.timestamp)
         : '';

@@ -152,6 +152,7 @@ class ReviewSessionState {
     this.query = const ReviewQueueQuery(),
     this.hasMore = false,
     this.nextCursor,
+    this.rewindSkipId,
   });
 
   final List<String> ids;
@@ -159,6 +160,9 @@ class ReviewSessionState {
   final ReviewQueueQuery query;
   final bool hasMore;
   final String? nextCursor;
+
+  /// ID item yang baru di-lewati (satu langkah rewind). Null = tidak bisa rewind.
+  final String? rewindSkipId;
 
   String? get currentId {
     if (ids.isEmpty || index < 0 || index >= ids.length) return null;
@@ -178,13 +182,17 @@ class ReviewSessionState {
 
   bool get isExhausted => currentId == null;
 
+  bool get canRewind => rewindSkipId != null;
+
   ReviewSessionState copyWith({
     List<String>? ids,
     int? index,
     ReviewQueueQuery? query,
     bool? hasMore,
     String? nextCursor,
+    String? rewindSkipId,
     bool clearCursor = false,
+    bool clearRewind = false,
   }) {
     return ReviewSessionState(
       ids: ids ?? this.ids,
@@ -192,6 +200,8 @@ class ReviewSessionState {
       query: query ?? this.query,
       hasMore: hasMore ?? this.hasMore,
       nextCursor: clearCursor ? null : (nextCursor ?? this.nextCursor),
+      rewindSkipId:
+          clearRewind ? null : (rewindSkipId ?? this.rewindSkipId),
     );
   }
 }
@@ -293,6 +303,7 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
 
   /// Setelah approve / reject / correct yang menutup usulan.
   /// `true` = masih ada item berikutnya; `false` = sesi habis.
+  /// Keputusan server tidak bisa di-rewind - hapus entri rewind skip.
   Future<bool> advanceAfterDecision(String decidedId) async {
     final current = state;
     if (current == null) return false;
@@ -300,19 +311,73 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
     ref.read(reviewQueueProvider(current.query).notifier).drop(decidedId);
     ref.invalidate(reviewQueueHasPendingProvider);
 
-    return _advancePast(decidedId);
+    return _advancePast(decidedId, clearRewind: true);
+  }
+
+  /// Kembalikan usulan yang gagal decide ke posisi aktif (optimistic rollback).
+  void reinsertAtFront(String contributionId) {
+    final current = state;
+    if (current == null) return;
+
+    final ids = List<String>.of(current.ids);
+    final existing = ids.indexOf(contributionId);
+    if (existing >= 0) {
+      state = current.copyWith(index: existing, clearRewind: true);
+      _prefetchAround();
+      return;
+    }
+
+    final insertAt = current.index.clamp(0, ids.length);
+    ids.insert(insertAt, contributionId);
+    state = current.copyWith(
+      ids: ids,
+      index: insertAt,
+      clearRewind: true,
+    );
+    _prefetchAround();
   }
 
   /// Lewati tanpa keputusan - usulan tetap pending di server/antrean.
-  /// Hanya keluar dari sesi saat ini.
+  /// Hanya keluar dari sesi saat ini. Menyimpan [rewindSkipId] untuk undo.
   Future<bool> skipCurrent() async {
     final current = state;
     final id = current?.currentId;
     if (current == null || id == null) return false;
-    return _advancePast(id);
+    return _advancePast(id, rewindSkipId: id);
   }
 
-  Future<bool> _advancePast(String id) async {
+  /// Kembalikan item yang baru di-lewati ke posisi aktif.
+  /// Hanya untuk skip (approve/reject tidak punya reverse API).
+  bool rewindSkip() {
+    final current = state;
+    final id = current?.rewindSkipId;
+    if (current == null || id == null) return false;
+
+    final ids = List<String>.of(current.ids);
+    // Sudah di antrean (race) → cukup pindah index ke sana.
+    final existing = ids.indexOf(id);
+    if (existing >= 0) {
+      state = current.copyWith(index: existing, clearRewind: true);
+      _prefetchAround();
+      return true;
+    }
+
+    final insertAt = current.index.clamp(0, ids.length);
+    ids.insert(insertAt, id);
+    state = current.copyWith(
+      ids: ids,
+      index: insertAt,
+      clearRewind: true,
+    );
+    _prefetchAround();
+    return true;
+  }
+
+  Future<bool> _advancePast(
+    String id, {
+    String? rewindSkipId,
+    bool clearRewind = false,
+  }) async {
     final current = state;
     if (current == null) return false;
 
@@ -329,7 +394,7 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
     }
 
     if (ids.isEmpty) {
-      state = current.copyWith(ids: const [], index: 0);
+      state = current.copyWith(ids: const [], index: 0, clearRewind: true);
       final appended = await _appendMore();
       if (appended && state != null && state!.ids.isNotEmpty) {
         // Skip: jangan tampilkan ulang item yang baru dilewati dari page yang sama.
@@ -338,7 +403,12 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
           state = null;
           return false;
         }
-        state = state!.copyWith(ids: filtered, index: 0);
+        state = state!.copyWith(
+          ids: filtered,
+          index: 0,
+          rewindSkipId: rewindSkipId,
+          clearRewind: clearRewind,
+        );
         _prefetchAround();
         return true;
       }
@@ -346,9 +416,17 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
       return false;
     }
 
-    state = current.copyWith(ids: ids, index: newIndex);
+    state = current.copyWith(
+      ids: ids,
+      index: newIndex,
+      rewindSkipId: rewindSkipId,
+      clearRewind: clearRewind,
+    );
+    // Prefetch halaman berikutnya di background - jangan blok advance UI.
     if (state!.hasMore && state!.ids.length - state!.index <= 3) {
-      await _appendMore();
+      _appendMore().then((_) {
+        if (state != null) _prefetchAround();
+      });
     }
     _prefetchAround();
     return state?.currentId != null;

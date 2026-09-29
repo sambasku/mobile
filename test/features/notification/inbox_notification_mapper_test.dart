@@ -39,6 +39,70 @@ void main() {
     expect(item.targetKind, 'suggestion');
   });
 
+  test('typeLabel word_comment', () {
+    const item = InboxNotification(
+      id: '01H',
+      type: 'word_comment',
+      title: 'Komentar baru',
+      body: 'John juga berkomentar di "rumah": Halo',
+      targetKind: 'word',
+      targetId: '01W',
+      createdAt: '2026-09-21T00:00:00.000Z',
+    );
+    expect(item.typeLabel, 'Komentar');
+  });
+
+  test('typeLabel word_vote + action fields', () {
+    final item = parseInboxNotification({
+      'id': '01HNOTIF000000000000000003',
+      'type': 'word_vote',
+      'title': 'Vote baru',
+      'body': 'Budi memberi upvote pada "kete".',
+      'target_kind': 'word',
+      'target_id': '01W',
+      'action_kind': 'word',
+      'action_value': '01W',
+      'read_at': null,
+      'created_at': '2026-09-21T00:00:00.000Z',
+    });
+    expect(item.typeLabel, 'Vote');
+    expect(item.actionKind, 'word');
+    expect(item.actionValue, '01W');
+  });
+
+  test('parseInboxNotification campaign image_url', () {
+    final item = parseInboxNotification({
+      'id': '01HNOTIF000000000000000004',
+      'type': 'campaign',
+      'title': 'Pengumuman',
+      'body': 'Ada kabar baru',
+      'image_url': 'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/campaigns/x.webp',
+      'target_kind': 'campaign',
+      'target_id': '01HCAMP',
+      'read_at': null,
+      'created_at': '2026-09-21T00:00:00.000Z',
+    });
+    expect(item.typeLabel, 'Pengumuman');
+    expect(
+      item.imageUrl,
+      'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/campaigns/x.webp',
+    );
+  });
+
+  test('parseInboxNotification empty image_url → null', () {
+    final item = parseInboxNotification({
+      'id': '01HNOTIF000000000000000005',
+      'type': 'campaign',
+      'title': 'Tanpa gambar',
+      'body': 'Isi',
+      'image_url': '',
+      'target_kind': 'campaign',
+      'target_id': '01HCAMP',
+      'created_at': '2026-09-21T00:00:00.000Z',
+    });
+    expect(item.imageUrl, isNull);
+  });
+
   test('typeLabel fallback', () {
     const item = InboxNotification(
       id: '01H',

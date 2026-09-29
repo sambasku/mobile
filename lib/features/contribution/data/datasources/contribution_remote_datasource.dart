@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/models/api_response.dart';
 import '../models/create_word_request_dto.dart';
+import '../models/duplicate_confirm_response_dto.dart';
 import '../models/submit_word_response_dto.dart';
 
 part 'contribution_remote_datasource.g.dart';
@@ -22,5 +23,11 @@ abstract interface class ContributionRemoteDatasource {
   @POST('/api/v1/contributions/words')
   Future<ApiResponse<SubmitWordResponseDto>> submitWord(
     @Body() CreateWordRequestDto body,
+  );
+
+  /// Konfirmasi makna duplikat (vote + riwayat) - POST duplicate-confirm.
+  @POST('/api/v1/contributions/duplicate-confirm')
+  Future<ApiResponse<DuplicateConfirmResponseDto>> confirmDuplicateMeaning(
+    @Body() Map<String, dynamic> body,
   );
 }

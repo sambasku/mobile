@@ -10,6 +10,7 @@ abstract interface class AuthRepository {
     String? phone,
     required String password,
     required String confirmPassword,
+    required List<({String documentType, String documentVersion})> consents,
   });
 
   Future<Either<AuthFailure, AuthSession>> login({
@@ -23,6 +24,12 @@ abstract interface class AuthRepository {
 
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+  });
+
+  Future<Either<AuthFailure, AuthSession>> loginWithGithub({
+    required String code,
+    required String redirectUri,
+    String? codeVerifier,
   });
 
   Future<Either<AuthFailure, AuthSession>> verifyEmail({

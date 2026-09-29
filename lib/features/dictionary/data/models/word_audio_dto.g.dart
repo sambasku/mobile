@@ -15,6 +15,7 @@ _WordAudioDto _$WordAudioDtoFromJson(Map<String, dynamic> json) =>
       durationMs: (json['duration_ms'] as num?)?.toInt(),
       isPrimary: json['is_primary'] as bool? ?? false,
       mimeType: json['mime_type'] as String?,
+      isVerified: json['is_verified'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$WordAudioDtoToJson(_WordAudioDto instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$WordAudioDtoToJson(_WordAudioDto instance) =>
       'duration_ms': instance.durationMs,
       'is_primary': instance.isPrimary,
       'mime_type': instance.mimeType,
+      'is_verified': instance.isVerified,
     };

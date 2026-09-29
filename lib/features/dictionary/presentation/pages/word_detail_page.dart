@@ -26,6 +26,7 @@ import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/failures/dictionary_failure.dart';
+import '../../domain/providers/dictionary_domain_providers.dart';
 import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -36,6 +37,7 @@ import '../../application/word_clipboard.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
+import '../../../suggest_edit/domain/suggest_edit_feedback.dart';
 
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
@@ -157,9 +159,15 @@ void openWordShareSheet(
   );
 }
 
-/// Pull-to-refresh: invalidate family detail (+ vote/bookmark/komentar)
-/// lalu tunggu fetch baru supaya indikator selesai tepat waktu.
+/// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
+/// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
 Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
+  final key = wordId.trim();
+  if (looksLikeUlid(key)) {
+    await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
+  } else {
+    await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+  }
   final voteTarget = VoteTarget(type: 'word', id: wordId);
   ref.invalidate(wordDetailProvider(wordId));
   ref.invalidate(voteControllerProvider(voteTarget));
@@ -202,7 +210,7 @@ Future<void> _openWordReview(
         context.push('/review/${page.items.first.id}');
         return;
       }
-      context.push('/review?wordId=$wordId');
+      context.push('/review/queue?wordId=$wordId');
     },
   );
 }
@@ -659,7 +667,7 @@ class _DetailBody extends HookConsumerWidget {
   }
 }
 
-const _votePrompt = 'Entri ini membantu?';
+const _votePrompt = 'Vote';
 
 class _WordVoteBar extends ConsumerWidget {
   const _WordVoteBar({required this.wordId});
@@ -824,15 +832,10 @@ class _WordActionTileGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = context.theme.colors.mutedForeground;
+    final role = ref.watch(authStatusProvider).value?.role;
+    final entryCopy = suggestEditEntryTileCopy(role);
     return FTileGroup(
       children: [
-        FTile(
-          prefix: const Icon(FLucideIcons.copy),
-          title: const Text('Salin semua makna'),
-          subtitle: const Text('Lemma dan seluruh makna ke clipboard'),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () => copyWordDetailToClipboard(context, detail),
-        ),
         FTile(
           prefix: const Icon(FLucideIcons.image),
           title: const Text('Bagikan kartu'),
@@ -844,10 +847,8 @@ class _WordActionTileGroup extends ConsumerWidget {
         ),
         FTile(
           prefix: const Icon(FLucideIcons.penLine),
-          title: const Text('Usulkan perubahan'),
-          subtitle: const Text(
-            'Perbaikan kata yang sudah dicek menunggu persetujuan',
-          ),
+          title: Text(entryCopy.title),
+          subtitle: Text(entryCopy.subtitle),
           suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
           onPress: () async {
             final auth = await ref.read(authStatusProvider.future);
@@ -1062,6 +1063,7 @@ class _MeaningBlock extends StatelessWidget {
                             exampleId: e.id,
                             compact: true,
                             sectionLabel: 'Audio contoh',
+                            spokenText: e.sourceSentence,
                           ),
                         ],
                       ),
