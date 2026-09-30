@@ -339,7 +339,7 @@ void _showEmailNotVerifiedSheet(BuildContext context, String email) {
                 ),
                 const Gap(8),
                 Text(
-                  'Cek kotak masuk untuk kode OTP 8 karakter 0-9A-Z, lalu verifikasi sebelum masuk.',
+                  'Cek kotak masuk untuk kode OTP 6 karakter 0-9A-Z, lalu verifikasi sebelum masuk.',
                   style: theme.typography.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),

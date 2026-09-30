@@ -163,14 +163,19 @@ void main() {
       lemma: 'kalintiak',
       notes: '',
       wordType: 'word',
-      meaningEdits: [
+      meanings: [
         (
+          sourceIndex: 0,
           definition: 'ikan kecil',
           translation: 'ikan kecil',
+          translationLanguageId: null,
           wordClassId: null,
           meaningSource: 'manual',
+          examples: const [],
         ),
       ],
+      relatedWords: const [],
+      variants: const [],
       publish: true,
     );
 
@@ -208,14 +213,19 @@ void main() {
       lemma: 'makan',
       notes: '',
       wordType: 'peribahasa',
-      meaningEdits: [
+      meanings: [
         (
+          sourceIndex: 0,
           definition: 'aktivitas memasukkan makanan ke mulut',
           translation: 'makan',
+          translationLanguageId: null,
           wordClassId: '01CLASSKBBI000000000000001',
           meaningSource: 'kbbi',
+          examples: const [],
         ),
       ],
+      relatedWords: const [],
+      variants: const [],
       publish: true,
     );
 

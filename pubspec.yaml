@@ -72,6 +72,13 @@ dev_dependencies:
   flutter_flavorizr: ^2.5.0
   flutter_launcher_icons: ^0.14.4
 
+# riverpod 3.3.2 me-resume subscription saat TickerMode overlay menyala
+# di tengah build, lalu setState pada ProviderScope. Patch lokal:
+# third_party/riverpod (flush sebelum reactivate + jangan schedule saat flush).
+dependency_overrides:
+  riverpod:
+    path: third_party/riverpod
+
 flutter_launcher_icons:
   android: true
   ios: true

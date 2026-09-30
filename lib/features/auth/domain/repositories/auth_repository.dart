@@ -43,7 +43,7 @@ abstract interface class AuthRepository {
   /// (anti-enumeration). Return pesan sukses dari backend.
   Future<Either<AuthFailure, String>> forgotPassword({required String email});
 
-  /// POST /api/v1/auth/reset-password. Kode 8 karakter 0-9A-Z atau token tautan,
+  /// POST /api/v1/auth/reset-password. Kode 6 karakter 0-9A-Z atau token tautan,
   /// sekali pakai.
   Future<Either<AuthFailure, String>> resetPassword({
     String? token,

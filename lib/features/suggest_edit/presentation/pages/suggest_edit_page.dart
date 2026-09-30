@@ -16,7 +16,6 @@ import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
-import '../../../review/domain/review_access.dart';
 import '../../domain/suggest_category.dart';
 import '../../domain/suggest_edit_feedback.dart';
 import '../widgets/word_change_history_section.dart';
@@ -24,9 +23,18 @@ import '../widgets/word_change_history_section.dart';
 /// Form usul perubahan: pilih kategori dulu, lalu isi field kategori itu saja.
 /// Draft tiap kategori tetap di memori selama halaman terbuka.
 class SuggestEditPage extends ConsumerStatefulWidget {
-  const SuggestEditPage({super.key, required this.wordId});
+  const SuggestEditPage({
+    super.key,
+    required this.wordId,
+    this.initialCategory,
+  });
 
   final String wordId;
+
+  /// Kategori yang langsung terpilih, mis. saat dibuka dari form tinjau
+  /// dengan `?category=add_meaning`. Kalau kategori ini tidak tersedia untuk
+  /// kata tersebut, daftar kategori tetap ditampilkan.
+  final SuggestCategory? initialCategory;
 
   @override
   ConsumerState<SuggestEditPage> createState() => _SuggestEditPageState();
@@ -113,6 +121,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     _notesCtrl.text = detail.notes ?? '';
     final first = detail.meanings.firstOrNull;
     if (first != null) _selectMeaning(first);
+    _applyInitialCategory(detail);
+  }
+
+  void _applyInitialCategory(WordDetail detail) {
+    final requested = widget.initialCategory;
+    if (requested == null) return;
+    // Kalau kategori tidak punya sasaran di kata ini (mis. "Ubah foto"
+    // pada kata tanpa foto), tetap tampilkan daftar - jangan buka form
+    // yang tidak pernah bisa dipilih dari daftar.
+    final available = availableSuggestCategories(
+      hasMeaning: detail.meanings.isNotEmpty,
+      hasImage: detail.images.isNotEmpty,
+    );
+    if (!available.contains(requested)) return;
+    _category = requested;
   }
 
   Future<String?> _resolveLemmaId(Dio dio, String lemma, String excludeId) async {
@@ -473,7 +496,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     }
 
     final preSubmit = suggestEditPreSubmitCopy(auth?.role);
-    final headerTitle = isVerifierRole(auth?.role) ? 'Ubah Kata' : 'Usulkan Perubahan';
+    // Judul halaman ikut tile detail kata - satu sumber, supaya "Lengkapi
+    // kata" di tile tidak membuka halaman bertajuk "Ubah Kata".
+    final headerTitle = suggestEditEntryTileCopy(auth?.role).title;
     final isExample = _category == SuggestCategory.addExample;
 
     return FScaffold(

@@ -22,6 +22,21 @@ bool isVerifierRole(String? role) =>
     role == 'root' ||
     role == 'reviewer';
 
+/// Tipe entity yang punya form koreksi. Cerminan varian di
+/// `correctContributionSchema` API - kalau kedua sisi tidak sama, koreksi
+/// ditolak server setelah formnya terbuka, jadi harus dijaga bareng.
+const correctableEntityTypes = <String>{
+  'word',
+  'meaning',
+  'pronunciation',
+  'word_image',
+  'word_audio',
+  'example',
+};
+
+bool canCorrectEntityType(String entityType) =>
+    correctableEntityTypes.contains(entityType);
+
 const reviewEntityLabels = <String, String>{
   'word': 'Kata',
   'pronunciation': 'Pelafalan',

@@ -38,7 +38,8 @@ const _quietPeakThreshold = 0.15;
 
 /// Sheet rekam: izin → rekam → potong manual (opsional) → pratinjau → kirim.
 /// Nama penutur opsional (opt-in); default anonim agar user yang malu tetap berani kirim.
-Future<void> showRecordPronunciationSheet(
+/// Selesai dengan `true` bila rekaman terkirim.
+Future<bool?> showRecordPronunciationSheet(
   BuildContext context, {
   required WidgetRef ref,
   required String wordId,
@@ -52,7 +53,7 @@ Future<void> showRecordPronunciationSheet(
     ref.read(wordDetailAudioPlayerProvider(wordId).notifier).stop();
   } catch (_) {}
 
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -715,7 +716,7 @@ class _RecordPronunciationSheetState
           context: context,
           title: const Text('Terima kasih, rekaman menunggu pengecekan'),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       },
     );
   }
@@ -781,8 +782,8 @@ class _RecordPronunciationSheetState
     final isExample = widget.exampleId != null;
     final selectionSec = (_range.end - _range.start).clamp(0.0, _totalSec);
     final hintMax = isExample
-        ? 'Maksimal $_maxSeconds detik · cukup 1–2 kali baca kalimat'
-        : 'Maksimal $_maxSeconds detik · cukup 1–2 kali ucapan';
+        ? 'Maksimal $_maxSeconds detik · cukup 1-2 kali baca kalimat'
+        : 'Maksimal $_maxSeconds detik · cukup 1-2 kali ucapan';
 
     return PopScope(
       canPop: !_blockDismiss,

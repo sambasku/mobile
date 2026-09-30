@@ -16,6 +16,9 @@ class F {
   /// `flutter run --flavor staging --dart-define=SCREENSHOT_MODE=true`
   static const hideDevChrome = bool.fromEnvironment('SCREENSHOT_MODE');
 
+  /// Label "BETA" di samping wordmark header. Matikan saat rilis stabil.
+  static const isBeta = true;
+
   static String get title => isStaging ? 'SambasKu' : 'SambasKu';
 
   /// Path aset logo in-app + sumber ikon launcher (pola jnn_mobile).

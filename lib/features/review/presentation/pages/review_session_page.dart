@@ -401,7 +401,9 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
             ? detailAsync.maybeWhen(
                 data: (detail) => _ReviewActionBar(
                   pendingAction: _pendingAction,
-                  canCorrect: detail.contribution.entityType != 'meaning',
+                  canCorrect: correctableEntityTypes.contains(
+                    detail.contribution.entityType,
+                  ),
                   canRewind: session.canRewind,
                   onApprove: () => _approve(detail),
                   onCorrect: () => setState(() {

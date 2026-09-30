@@ -230,19 +230,12 @@ class _HomeShell extends ConsumerWidget {
     // (nested scaffold + inset = overflow / "geser drawer")
     // footerDecoration dikosongkan - FBottomNavigationBar sudah punya top border
     //
-    // Overlay root (search-miss, discussion, …): pause ticker shell +
-    // cache layer. ModalRoute.isCurrent sering tetap true di dalam
-    // StatefulShellRoute - pakai rootNavigator.canPop sebagai sinyal.
-    return ListenableBuilder(
-      listenable: AppRouter.router.routerDelegate,
-      builder: (context, child) {
-        final obscured =
-            AppRouter.rootNavigatorKey.currentState?.canPop() ?? false;
-        return TickerMode(
-          enabled: !obscured,
-          child: child!,
-        );
-      },
+    // Overlay root (search-miss, discussion, …): pause ticker shell.
+    // ModalRoute.isCurrent sering tetap true di dalam StatefulShellRoute,
+    // jadi sinyalnya rootNavigator.canPop.
+    // Jangan flip TickerMode di build overlay: resume subscription Riverpod
+    // di situ memanggil setState pada ProviderScope (markNeedsBuild).
+    return _DeferredShellTicker(
       child: RepaintBoundary(
         child: FScaffold(
           childPad: true,
@@ -300,6 +293,55 @@ class _HomeShell extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Ticker shell ikut route root, tapi perubahan `enabled` ditunda ke frame
+/// berikut. `routerDelegate` memberitahu listener di tengah rebuild overlay;
+/// flip sinkron di situ me-resume provider yang sedang di-pause dan
+/// Riverpod 3 memanggil setState pada [UncontrolledProviderScope].
+class _DeferredShellTicker extends StatefulWidget {
+  const _DeferredShellTicker({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_DeferredShellTicker> createState() => _DeferredShellTickerState();
+}
+
+class _DeferredShellTickerState extends State<_DeferredShellTicker> {
+  var _enabled = true;
+  var _queued = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AppRouter.router.routerDelegate.addListener(_onRouter);
+    _onRouter();
+  }
+
+  @override
+  void dispose() {
+    AppRouter.router.routerDelegate.removeListener(_onRouter);
+    super.dispose();
+  }
+
+  void _onRouter() {
+    if (_queued) return;
+    _queued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _queued = false;
+      if (!mounted) return;
+      final obscured =
+          AppRouter.rootNavigatorKey.currentState?.canPop() ?? false;
+      final next = !obscured;
+      if (next != _enabled) setState(() => _enabled = next);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TickerMode(enabled: _enabled, child: widget.child);
   }
 }
 

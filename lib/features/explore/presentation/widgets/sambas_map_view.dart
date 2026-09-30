@@ -10,7 +10,8 @@ import 'explore_map_poster.dart';
 
 /// MapLibre view fokus Sambas - hero (gesture off) atau fullscreen (gesture on).
 ///
-/// Style mengikuti tema (Liberty / Dark). Gagal load → [ExploreMapPoster].
+/// Style mengikuti tema (Liberty / Dark). Selama belum tampil, poster mode
+/// loading menutupi map lalu fade out. Gagal load → [ExploreMapPoster].
 class SambasMapView extends StatefulWidget {
   const SambasMapView({
     super.key,
@@ -39,10 +40,14 @@ class SambasMapView extends StatefulWidget {
 
 class _SambasMapViewState extends State<SambasMapView> {
   static const _loadTimeout = Duration(seconds: 12);
+  static const _fadeDuration = Duration(milliseconds: 250);
 
   bool _usePoster = false;
   Timer? _timeout;
   bool _styleReady = false;
+
+  /// Tiles viewport sudah tergambar (idle pertama) - placeholder boleh hilang.
+  bool _mapReady = false;
   Brightness? _lastBrightness;
 
   @override
@@ -58,7 +63,9 @@ class _SambasMapViewState extends State<SambasMapView> {
     if (_lastBrightness != null &&
         _lastBrightness != brightness &&
         !_usePoster) {
+      // Style di-remount lewat ValueKey; tampilkan placeholder lagi.
       _styleReady = false;
+      _mapReady = false;
       _armTimeout();
     }
     _lastBrightness = brightness;
@@ -73,7 +80,13 @@ class _SambasMapViewState extends State<SambasMapView> {
   void _armTimeout() {
     _timeout?.cancel();
     _timeout = Timer(_loadTimeout, () {
-      if (!mounted || _styleReady || _usePoster) return;
+      if (!mounted || _mapReady || _usePoster) return;
+      if (_styleReady) {
+        // Style ada tapi idle tidak pernah datang (tiles lambat sebagian):
+        // buka map apa adanya daripada placeholder menggantung.
+        _markReady();
+        return;
+      }
       _showPoster('offline');
     });
   }
@@ -91,7 +104,12 @@ class _SambasMapViewState extends State<SambasMapView> {
 
   void _onStyleLoaded() {
     _styleReady = true;
+  }
+
+  void _markReady() {
     _timeout?.cancel();
+    if (!mounted || _mapReady) return;
+    setState(() => _mapReady = true);
   }
 
   @override
@@ -106,6 +124,27 @@ class _SambasMapViewState extends State<SambasMapView> {
     final brightness = Theme.of(context).brightness;
     final styleUrl = SambasMapConfig.styleUrlFor(brightness);
 
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        _buildMap(styleUrl, brightness),
+        IgnorePointer(
+          ignoring: _mapReady,
+          child: AnimatedOpacity(
+            opacity: _mapReady ? 0 : 1,
+            duration: _fadeDuration,
+            curve: Curves.easeOut,
+            child: ExploreMapPoster(
+              compact: !widget.interactive,
+              loading: true,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMap(String styleUrl, Brightness brightness) {
     return MapLibreMap(
       key: ValueKey('sambas-map-$styleUrl'),
       styleString: styleUrl,
@@ -114,6 +153,8 @@ class _SambasMapViewState extends State<SambasMapView> {
         widget.onMapCreated?.call(controller);
       },
       onStyleLoadedCallback: _onStyleLoaded,
+      // Style loaded terpicu sebelum tiles tampil; idle = viewport tergambar.
+      onMapIdle: _markReady,
       onMapClick: widget.onMapClick,
       compassEnabled: widget.interactive,
       rotateGesturesEnabled: widget.interactive,
@@ -127,7 +168,7 @@ class _SambasMapViewState extends State<SambasMapView> {
       attributionButtonPosition: AttributionButtonPosition.bottomLeft,
       attributionButtonMargins: const math.Point(8, 8),
       annotationOrder: const [],
-      foregroundLoadColor: Theme.of(context).colorScheme.surface,
+      foregroundLoadColor: ExploreMapPoster.baseColor(brightness),
     );
   }
 }
