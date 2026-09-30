@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/reference/reference_data.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/review_access.dart';
@@ -65,6 +66,10 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
   }
 
   Future<void> _bootstrap() async {
+    // Panaskan data referensi (kelas kata, bahasa) sebelum kartu pertama
+    // dirender supaya preview tidak sempat menampilkan id mentah.
+    prefetchReferenceData(ref);
+
     final session = ref.read(reviewSessionProvider);
     final startId = widget.startId;
 

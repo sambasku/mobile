@@ -3,54 +3,93 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../shared/reference/reference_data.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../domain/entities/review_contribution.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
-class ReviewEntityPreview extends StatelessWidget {
+class ReviewEntityPreview extends ConsumerWidget {
   const ReviewEntityPreview({super.key, required this.detail});
 
   final ReviewDetail detail;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final type = detail.contribution.entityType;
     return switch (type) {
       'word' => _WordPreview(entity: detail.entity),
       'word_image' => _ImagePreview(entity: detail.entity),
       'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
       'pronunciation' => _PronunciationPreview(entity: detail.entity),
-      'example' => _FieldPreview(
-          entity: detail.entity,
-          labels: _exampleLabels,
-        ),
-      'meaning' => _FieldPreview(
-          entity: detail.entity,
-          labels: _meaningLabels,
-        ),
-      _ => _FieldPreview(entity: detail.entity, labels: const {}),
+      'example' => _ExamplePreview(entity: detail.entity),
+      'meaning' => _MeaningPreview(entity: detail.entity),
+      _ => _FieldPreview(entity: detail.entity),
     };
   }
 }
 
-const _exampleLabels = {
-  'sentence_sambas': 'Kalimat Sambas',
-  'sentence_translation': 'Terjemahan',
-  'source': 'Sumber',
-  'notes': 'Catatan',
+/// Kunci yang isinya id referensi - tidak pernah ditampilkan mentah, dan tidak
+/// boleh ikutDibaca user jadi text field (bisa rusak kalau diketik).
+const _referenceIdSuffixes = {
+  '_id',
+  '_ids',
+  'provider_file_id',
 };
 
-const _meaningLabels = {
-  'definition': 'Definisi',
-  'word_class_id': 'Kelas kata',
-  'meaning_source': 'Sumber makna',
-  'notes': 'Catatan',
-};
+bool _isReferenceIdKey(String key) =>
+    _referenceIdSuffixes.any(key.endsWith) || key == 'provider_file_id';
+
+/// Kunci boolean internal - dipakai untuk membentuk state (mis. definisi
+/// placeholder), tidak ditampilkan sebagai "true"/"false".
+bool _isFlagKey(String key) =>
+    key == 'is_primary' ||
+    key == 'is_verified' ||
+    key == 'is_corrected' ||
+    key == 'is_have_definition' ||
+    key == 'is_have_translation';
+
+/// Tampilan netral untuk field yang memang tidak ada isinya.
+const _emptyValueLabel = 'Belum diisi';
+
+/// Shimmer saat data referensi (kelas kata/bahasa) masih dimuat.
+///
+/// Membungkus [child] yang sama dengan bentuk最终 akhir, jadi tinggi baris
+/// tidak bergeser ketika nama id ter-resolve. Id mentah tidak pernah
+/// ditampilkan selama proses ini - barisnya ber shimmer, bukan ULID.
+class _Skeletonized extends StatelessWidget {
+  const _Skeletonized({required this.loading, required this.child});
+
+  final bool loading;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!loading) return child;
+    final theme = context.theme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final muted = theme.colors.muted;
+    final shimmer = ShimmerEffect(
+      baseColor: isDark
+          ? muted.withValues(alpha: 0.35)
+          : const Color(0xFFE7E7EA),
+      highlightColor: isDark
+          ? muted.withValues(alpha: 0.55)
+          : const Color(0xFFF4F4F5),
+      duration: const Duration(milliseconds: 1500),
+    );
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(effect: shimmer),
+      child: IgnorePointer(child: Skeletonizer(enabled: true, child: child)),
+    );
+  }
+}
 
 Map<String, dynamic>? _childData(Map<String, dynamic> entity) {
   final data = entity['data'];
@@ -133,10 +172,25 @@ class _SectionCard extends StatelessWidget {
 }
 
 class _MetaRow extends StatelessWidget {
-  const _MetaRow({required this.label, required this.value});
+  const _MetaRow({
+    required this.label,
+    required this.value,
+    this.muted = false,
+    this.emphasize = false,
+    this.loading = false,
+  });
 
   final String label;
   final String value;
+
+  /// Nilai kosong ("Belum diisi") - tampil redup, bukan seperti isi sungguhan.
+  final bool muted;
+
+  /// Baris yang jadi penanda utama (mis. sumber makna KBBI vs manual).
+  final bool emphasize;
+
+  /// Nama referensi sedang dimuat - nilai ditampilkan sebagai shimmer.
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -156,9 +210,16 @@ class _MetaRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w500),
+            child: _Skeletonized(
+              loading: loading,
+              child: Text(
+                value,
+                style: theme.typography.sm.copyWith(
+                  fontWeight: emphasize ? FontWeight.w700 : FontWeight.w500,
+                  color: muted ? theme.colors.mutedForeground : null,
+                  fontStyle: muted ? FontStyle.italic : null,
+                ),
+              ),
             ),
           ),
         ],
@@ -243,21 +304,21 @@ class _MeaningBlock extends StatelessWidget {
     final theme = context.theme;
     final definition = raw['definition']?.toString() ?? '-';
     final translations = raw['translations'];
-    String? padanan;
+    String? terjemahan;
     if (translations is List && translations.isNotEmpty) {
       final first = translations.first;
       if (first is Map) {
-        padanan = first['translationText']?.toString();
+        terjemahan = first['translationText']?.toString();
       }
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(definition, style: theme.typography.sm),
-        if (padanan != null && padanan.trim().isNotEmpty) ...[
+        if (terjemahan != null && terjemahan.trim().isNotEmpty) ...[
           const Gap(4),
           Text(
-            'Padanan: $padanan',
+            'Terjemahan: $terjemahan',
             style: theme.typography.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -468,36 +529,368 @@ class _PronunciationPreview extends StatelessWidget {
   }
 }
 
-class _FieldPreview extends StatelessWidget {
-  const _FieldPreview({required this.entity, required this.labels});
+/// Baris "Untuk kata X" - dipakai semua preview entity anak.
+class _LemmaHeader extends StatelessWidget {
+  const _LemmaHeader(this.lemma);
+
+  final String? lemma;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = lemma?.trim();
+    if (text == null || text.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        'Untuk kata “$text”',
+        style: context.theme.typography.sm.copyWith(
+          color: context.theme.colors.mutedForeground,
+        ),
+      ),
+    );
+  }
+}
+
+/// Preview makna: definisi, kelas kata (nama), sumber makna, dan daftar
+/// terjemahan. Id bahasa/kelas kata selalu diganti label; kalau tidak ketemu,
+/// baris disembunyikan - ULID mentah tidak boleh sampai ke user.
+class _MeaningPreview extends ConsumerWidget {
+  const _MeaningPreview({required this.entity});
 
   final Map<String, dynamic> entity;
-  final Map<String, String> labels;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.theme;
+    final data = _childData(entity) ?? const <String, dynamic>{};
+    final classesAsync = ref.watch(referenceWordClassesProvider);
+    final languagesAsync = ref.watch(referenceLanguagesProvider);
+    final classes = classesAsync.value ?? const [];
+    final languages = languagesAsync.value ?? const [];
+    // "Belum ketemu" (sudah selesai load) beda dari "sedang dimuat" - yang
+    // kedua ini shimmering, bukan disembunyikan supaya tinggi tidak bergeser.
+    final classLoading = classesAsync.isLoading && _str(data, 'word_class_id') != null;
+    final languagesLoading = languagesAsync.isLoading;
+
+    final rawDefinition = _str(data, 'definition');
+    final isHaveDefinition = _bool(data, 'is_have_definition');
+    // is_have_definition=false artinya definisi memang sengaja dikosongkan.
+    final definitionMissing =
+        isHaveDefinition == false ||
+        rawDefinition == null ||
+        rawDefinition == '-' ||
+        rawDefinition.isEmpty;
+
+    final className = wordClassNameFrom(classes, _str(data, 'word_class_id'));
+    final sourceLabel = meaningSourceReviewLabel(_str(data, 'meaning_source'));
+
+    final translations = <_TranslationRow>[];
+    final rawTranslations = data['translations'];
+    if (rawTranslations is List) {
+      for (final raw in rawTranslations.whereType<Map>()) {
+        final text = _str(_asMap(raw), 'translation_text');
+        if (text == null) continue;
+        final languageId = _str(_asMap(raw), 'language_id');
+        translations.add(
+          _TranslationRow(
+            language: languageId == null
+                ? null
+                : languageNameFrom(languages, languageId),
+            languageLoading: languageId != null && languagesLoading,
+            text: text,
+          ),
+        );
+      }
+    }
+    final isHaveTranslation = _bool(data, 'is_have_translation');
+    final notes = _str(data, 'notes');
+
+    return _SectionCard(
+      title: 'Makna yang diusulkan',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _LemmaHeader(entity['wordLemma']?.toString()),
+          _MetaRow(
+            label: 'Definisi',
+            value: definitionMissing ? _emptyValueLabel : rawDefinition,
+            muted: definitionMissing,
+          ),
+          if (className != null)
+            _MetaRow(label: 'Kelas kata', value: className)
+          else if (classLoading)
+            const _MetaRow(label: 'Kelas kata', value: '', loading: true),
+          _MetaRow(label: 'Sumber makna', value: sourceLabel, emphasize: true),
+          const Gap(4),
+          Text(
+            'Terjemahan',
+            style: theme.typography.sm.copyWith(
+              fontWeight: FontWeight.w700,
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          const Gap(6),
+          if (translations.isEmpty)
+            _MeaningTranslationsEmpty(isHaveTranslation: isHaveTranslation)
+          else
+            for (final t in translations)
+              _TranslationRowView(row: t, theme: theme),
+          if (notes != null) ...[
+            const Gap(4),
+            _MetaRow(label: 'Catatan', value: notes),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+Map<String, dynamic> _asMap(Map<dynamic, dynamic> raw) =>
+    Map<String, dynamic>.from(raw);
+
+class _TranslationRow {
+  const _TranslationRow({
+    required this.language,
+    required this.text,
+    this.languageLoading = false,
+  });
+
+  final String? language;
+  final String text;
+  final bool languageLoading;
+}
+
+class _TranslationRowView extends StatelessWidget {
+  const _TranslationRowView({required this.row, required this.theme});
+
+  final _TranslationRow row;
+  final FThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (row.language != null || row.languageLoading)
+            _Skeletonized(
+              loading: row.languageLoading,
+              child: Text(
+                row.language ?? '',
+                style: theme.typography.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          Text(row.text, style: theme.typography.sm),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bedakan "tidak ada terjemahan" (wajar) dari "ditandai ada tapi kosong"
+/// (inkonsistensi data yang perlu dilihat verifier).
+class _MeaningTranslationsEmpty extends StatelessWidget {
+  const _MeaningTranslationsEmpty({required this.isHaveTranslation});
+
+  final bool? isHaveTranslation;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final (text, isWarning) = switch (isHaveTranslation) {
+      false => ('Kontributor sengaja tidak mengisi terjemahan.', false),
+      true => ('Ditandai ada terjemahan, tetapi belum diisi.', true),
+      null => ('Belum ada terjemahan.', false),
+    };
+    return Text(
+      text,
+      style: theme.typography.sm.copyWith(
+        color: isWarning ? theme.colors.error : theme.colors.mutedForeground,
+        fontWeight: isWarning ? FontWeight.w600 : null,
+      ),
+    );
+  }
+}
+
+/// Preview contoh kalimat. Kunci payload API adalah `source_sentence` /
+/// `target_sentence` - bukan `sentence_sambas`, jadi label dipetakan eksplisit.
+class _ExamplePreview extends ConsumerWidget {
+  const _ExamplePreview({required this.entity});
+
+  final Map<String, dynamic> entity;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = _childData(entity) ?? const <String, dynamic>{};
+    final languagesAsync = ref.watch(referenceLanguagesProvider);
+    final languages = languagesAsync.value ?? const [];
+    final languagesLoading = languagesAsync.isLoading;
+
+    final source = _str(data, 'source_sentence');
+    final target = _str(data, 'target_sentence');
+    final sourceType = _str(data, 'source_type');
+    final notes = _str(data, 'notes');
+    final sourceLangId = _str(data, 'source_language_id');
+    final targetLangId = _str(data, 'target_language_id');
+    final sourceLang = sourceLangId == null
+        ? null
+        : languageNameFrom(languages, sourceLangId);
+    final targetLang = targetLangId == null
+        ? null
+        : languageNameFrom(languages, targetLangId);
+
+    return _SectionCard(
+      title: 'Contoh kalimat yang diusulkan',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _LemmaHeader(entity['wordLemma']?.toString()),
+          if (source == null)
+            _MetaRow(label: 'Kalimat sambas', value: _emptyValueLabel, muted: true)
+          else
+            _SentenceBlock(
+              label: 'Kalimat sambas',
+              language: sourceLang,
+              languageLoading: sourceLangId != null && languagesLoading,
+              text: source,
+            ),
+          const Gap(8),
+          if (target == null)
+            _MetaRow(
+              label: 'Kalimat terjemahan',
+              value: _emptyValueLabel,
+              muted: true,
+            )
+          else
+            _SentenceBlock(
+              label: 'Kalimat terjemahan',
+              language: targetLang,
+              languageLoading: targetLangId != null && languagesLoading,
+              text: target,
+            ),
+          if (sourceType != null) ...[
+            const Gap(8),
+            _MetaRow(label: 'Jenis sumber', value: sourceType),
+          ],
+          if (notes != null) ...[
+            const Gap(4),
+            _MetaRow(label: 'Catatan', value: notes),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Satu blok kalimat: label peran (sambas/terjemahan) selalu tampil supaya
+/// reviewer tahu mana yang mana, nama bahasa jadi info tambahan.
+class _SentenceBlock extends StatelessWidget {
+  const _SentenceBlock({
+    required this.label,
+    required this.language,
+    required this.text,
+    this.languageLoading = false,
+  });
+
+  final String label;
+  final String? language;
+  final String text;
+  final bool languageLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.typography.xs.copyWith(
+            color: theme.colors.mutedForeground,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (language != null || languageLoading)
+          _Skeletonized(
+            loading: languageLoading,
+            child: Text(
+              language ?? '',
+              style: theme.typography.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+        const Gap(2),
+        Text(text, style: theme.typography.sm),
+      ],
+    );
+  }
+}
+
+/// Fallback untuk entity tanpa preview khusus (dan untuk tipe baru dari server).
+///
+/// Prinsipnya ketat agar bug lama tidak kembali diam-diam:
+/// - id referensi, flag boolean, dan nilai null/kosong tidak pernah dirender;
+/// - `List`/`Map` dirender per baris, bukan lewat `toString()`;
+/// - kunci tanpa label Mapping dilewati, bukan ditampilkan mentah.
+class _FieldPreview extends StatelessWidget {
+  const _FieldPreview({required this.entity});
+
+  final Map<String, dynamic> entity;
+
+  static const _labels = {
+    'definition': 'Definisi',
+    'value': 'Nilai',
+    'notation': 'Notasi',
+    'audio_url': 'URL audio',
+    'speaker_name': 'Penutur',
+    'notes': 'Catatan',
+    'url': 'URL',
+    'alt_text': 'Teks alternatif',
+    'source_sentence': 'Kalimat sambas',
+    'target_sentence': 'Kalimat terjemahan',
+    'source_type': 'Jenis sumber',
+    'duration_ms': 'Durasi',
+    'file_size': 'Ukuran',
+    'mime_type': 'Tipe',
+  };
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final data = _childData(entity);
-    final lemma = entity['wordLemma']?.toString();
-    final entries = <MapEntry<String, String>>[];
-    if (data != null) {
-      for (final e in data.entries) {
-        final key = e.key.toString();
-        if (e.value == null) continue;
-        final text = e.value.toString().trim();
-        if (text.isEmpty) continue;
-        if (key == 'is_primary') {
-          entries.add(MapEntry(labels[key] ?? 'Utama', e.value == true ? 'Ya' : 'Tidak'));
-          continue;
-        }
-        if (key == 'meaning_source') {
-          entries.add(
-            MapEntry(labels[key] ?? key, meaningSourceReviewLabel(text)),
-          );
-          continue;
-        }
-        entries.add(MapEntry(labels[key] ?? key, text));
+    final rows = <Widget>[];
+
+    for (final e in data?.entries ?? const <MapEntry<String, dynamic>>[]) {
+      final key = e.key.toString();
+      if (e.value == null) continue;
+      if (_isReferenceIdKey(key) || _isFlagKey(key)) continue;
+      if (key == 'meaning_source') {
+        rows.add(
+          _MetaRow(
+            label: 'Sumber makna',
+            value: meaningSourceReviewLabel(e.value.toString()),
+            emphasize: true,
+          ),
+        );
+        continue;
       }
+      if (e.value is List || e.value is Map) {
+        // Nilaimajemuk: satu baris per elemen, tidak pernah via toString().
+        for (final line in _flattenComplex(e.value)) {
+          rows.add(_MetaRow(label: _labels[key] ?? 'Detail', value: line));
+        }
+        continue;
+      }
+      final text = e.value.toString().trim();
+      if (text.isEmpty) continue;
+      final label = _labels[key];
+      if (label == null) continue; // kunci tak dikenal: lewati, jangan raw
+      rows.add(_MetaRow(label: label, value: text));
     }
 
     return _SectionCard(
@@ -505,17 +898,8 @@ class _FieldPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (lemma != null && lemma.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                'Untuk kata “$lemma”',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ),
-          if (entries.isEmpty)
+          _LemmaHeader(entity['wordLemma']?.toString()),
+          if (rows.isEmpty)
             Text(
               'Tidak ada detail.',
               style: theme.typography.sm.copyWith(
@@ -523,11 +907,40 @@ class _FieldPreview extends StatelessWidget {
               ),
             )
           else
-            for (final e in entries) _MetaRow(label: e.key, value: e.value),
+            ...rows,
         ],
       ),
     );
   }
+}
+
+/// Rflatten nilai List/Map menjadi baris-baris teks yang bisa dibaca.
+List<String> _flattenComplex(Object? value) {
+  final out = <String>[];
+  void walk(Object? node) {
+    if (node is Map) {
+      final scalars = node.values
+          .map((v) => v is Map || v is List ? null : v?.toString().trim())
+          .whereType<String>()
+          .where((s) => s.isNotEmpty)
+          .toList();
+      if (scalars.isNotEmpty) {
+        out.add(scalars.join(' - '));
+        return;
+      }
+      node.values.forEach(walk);
+      return;
+    }
+    if (node is List) {
+      node.forEach(walk);
+      return;
+    }
+    final text = node?.toString().trim();
+    if (text != null && text.isNotEmpty) out.add(text);
+  }
+
+  walk(value);
+  return out;
 }
 
 /// Player audio ringkas khusus layar review (satu URL, tanpa Riverpod wordId).

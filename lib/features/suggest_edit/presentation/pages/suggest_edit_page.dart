@@ -719,7 +719,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const _FieldCaption(
-          'Padanan Indonesia',
+          'Terjemahan Indonesia',
           info: 'Satu kata/frasa setara dengan lemma.\n\nContoh: "makan". Beda dari definisi.',
         ),
         FTextField(
