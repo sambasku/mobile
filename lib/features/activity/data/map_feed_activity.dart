@@ -1,9 +1,18 @@
+import '../../../core/utils/format_datetime.dart';
 import '../domain/entities/feed_activity_item.dart';
 
 FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
   final id = map['id']?.toString() ?? '';
   final kind = parseFeedActivityKind(map['kind']?.toString() ?? '');
   if (id.isEmpty || kind == null) return null;
+
+  // `created_at` harus jadi waktu aksi yang masuk akal. Kalau tidak, baris ini
+  // dibuang. Server sudah menyaringnya, jadi kemunculan di sini berarti ada
+  // jalur tulis lain yang belum dijaga (#47). Membuang lebih baik daripada
+  // menampilkan aktivitas salah urutan yang dirender "baru".
+  final createdAt = map['created_at']?.toString() ?? '';
+  final parsed = DateTime.tryParse(createdAt);
+  if (parsed == null || !isPlausibleInstant(parsed)) return null;
 
   final actorRaw = map['actor'];
   FeedActivityActor? actor;
@@ -30,7 +39,7 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
   return FeedActivityItem(
     id: id,
     kind: kind,
-    createdAt: map['created_at']?.toString() ?? '',
+    createdAt: createdAt,
     body: map['body']?.toString() ?? '',
     actor: actor,
     subtitle: map['subtitle']?.toString(),

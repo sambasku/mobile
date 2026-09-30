@@ -56,6 +56,70 @@ void main() {
       );
     });
 
+    test('created_at mustahil (epoch ms) dibuang, bukan dirender "baru" (#47)', () {
+      // Bentuk yang sempat ada di produksi: kolom `mode: 'timestamp'` diisi
+      // epoch milidetik lalu dibaca sebagai detik -> tahun 50.000-an.
+      final corrupt = mapFeedActivityItem({
+        'id': 'word:01',
+        'kind': 'word',
+        'created_at': '+058716-09-15T00:00:00.000Z',
+        'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
+        'body': 'pengimpor_data_csv',
+        'subtitle': 'Kata baru',
+        'target': {'type': 'word', 'id': '01'},
+      });
+      expect(corrupt, isNull);
+
+      // created_at tidak bisa diparse / kosong juga dibuang.
+      expect(
+        mapFeedActivityItem({
+          'id': 'word:02',
+          'kind': 'word',
+          'created_at': 'bukan-tanggal',
+          'body': 'x',
+        }),
+        isNull,
+      );
+      expect(
+        mapFeedActivityItem({'id': 'word:03', 'kind': 'word', 'body': 'x'}),
+        isNull,
+      );
+    });
+
+    test('map list membuang hanya baris korup, sisanya tetap urut', () {
+      final items = mapFeedActivityList([
+        {
+          'id': 'word:1',
+          'kind': 'word',
+          'created_at': '2026-09-28T12:00:00.000Z',
+          'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
+          'body': 'sah',
+          'subtitle': null,
+          'target': {'type': 'word', 'id': '1'},
+        },
+        {
+          'id': 'word:2',
+          'kind': 'word',
+          'created_at': '+058716-09-15T00:00:00.000Z',
+          'actor': {'username': 'b', 'display_name': 'B', 'avatar_url': null},
+          'body': 'korup',
+          'subtitle': null,
+          'target': {'type': 'word', 'id': '2'},
+        },
+        {
+          'id': 'word:3',
+          'kind': 'word',
+          'created_at': '2026-09-27T12:00:00.000Z',
+          'actor': {'username': 'c', 'display_name': 'C', 'avatar_url': null},
+          'body': 'sah juga',
+          'subtitle': null,
+          'target': {'type': 'word', 'id': '3'},
+        },
+      ]);
+
+      expect(items.map((i) => i.id), ['word:1', 'word:3']);
+    });
+
     test('map list', () {
       final items = mapFeedActivityList([
         {

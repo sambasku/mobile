@@ -58,4 +58,34 @@ void main() {
       '18 Sep',
     );
   });
+
+  test('isPlausibleInstant: tolak tanggal jauh di masa depan (#47)', () {
+    final now = DateTime(2026, 9, 28, 17, 0);
+    expect(isPlausibleInstant(now.subtract(const Duration(hours: 3)), now: now), isTrue);
+    expect(isPlausibleInstant(now, now: now), isTrue);
+    // Kemiringan jam sedikit masih wajar.
+    expect(isPlausibleInstant(now.add(const Duration(hours: 2)), now: now), isTrue);
+    // Epoch ms terbaca sebagai detik -> tahun 50.000-an.
+    expect(
+      isPlausibleInstant(DateTime.parse('+058716-09-15T00:00:00.000Z'), now: now),
+      isFalse,
+    );
+    expect(isPlausibleInstant(null, now: now), isFalse);
+  });
+
+  test('formatRelative* tidak merender "baru" untuk timestamp mustahil (#47)', () {
+    final now = DateTime(2026, 9, 28, 17, 0);
+    final corrupt = DateTime.parse('+058716-09-15T00:00:00.000Z');
+
+    // Tanpa guard, selisih negatif di-clamp jadi nol -> "baru saja"/"baru".
+    expect(formatRelative(corrupt, now: now), '');
+    expect(formatRelativeAgo(corrupt, now: now), '');
+    expect(formatRelativeCompact(corrupt, now: now), '');
+
+    // Nilai yang sah tetap berfungsi.
+    expect(
+      formatRelativeCompact(now.subtract(const Duration(minutes: 5)), now: now),
+      '5m',
+    );
+  });
 }

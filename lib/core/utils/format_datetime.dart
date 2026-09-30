@@ -22,6 +22,25 @@ const _months = [
 
 String _pad2(int n) => n.toString().padLeft(2, '0');
 
+/// Toleransi kemiringan jam zwischen server dan perangkat.
+const _clockSkewTolerance = Duration(hours: 24);
+
+/// Apakah [value] masuk akal sebagai "sesuatu yang sudah terjadi".
+///
+/// Feed menampilkan kejadian historis, jadi tidak ada aktivitas yang sah
+/// berada di masa depan. Tanggal yang jauh di depan hampir selalu berarti ada
+/// yang salah satuan: kolom `mode: 'timestamp'` di Drizzle menyimpan epoch
+/// SECONDS, dan kalau diisi epoch MILLISECONDS nilainya dibaca sebagai
+/// tahun 50.000-an (#47). Tanpa guard ini, selisih negatif di-clamp jadi nol
+/// lalu dirender "baru" - dan baris korupnya terlihat seperti aktivitas
+/// paling baru.
+bool isPlausibleInstant(DateTime? value, {DateTime? now}) {
+  if (value == null) return false;
+  final clock = now ?? DateTime.now();
+  if (value.isAfter(clock.add(_clockSkewTolerance))) return false;
+  return true;
+}
+
 /// Format [DateTime] lokal: `17 Nov 2026 21:00`.
 String formatDateTime(DateTime? value) {
   if (value == null) return '';
@@ -55,6 +74,7 @@ String formatDateYmd(String? ymd) {
 String formatRelative(DateTime? value, {DateTime? now}) {
   if (value == null) return '';
   final clock = now ?? DateTime.now();
+  if (!isPlausibleInstant(value, now: clock)) return '';
   var diff = clock.difference(value);
   if (diff.isNegative) diff = Duration.zero;
   if (diff.inMinutes < 1) return 'baru saja';
@@ -69,6 +89,7 @@ String formatRelative(DateTime? value, {DateTime? now}) {
 String formatRelativeAgo(DateTime? value, {DateTime? now}) {
   if (value == null) return '';
   final clock = now ?? DateTime.now();
+  if (!isPlausibleInstant(value, now: clock)) return '';
   final local = value.toLocal();
   var diff = clock.difference(value);
   if (diff.isNegative) diff = Duration.zero;
@@ -84,6 +105,7 @@ String formatRelativeAgo(DateTime? value, {DateTime? now}) {
 String formatRelativeCompact(DateTime? value, {DateTime? now}) {
   if (value == null) return '';
   final clock = now ?? DateTime.now();
+  if (!isPlausibleInstant(value, now: clock)) return '';
   final local = value.toLocal();
   var diff = clock.difference(value);
   if (diff.isNegative) diff = Duration.zero;
