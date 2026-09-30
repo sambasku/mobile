@@ -47,8 +47,8 @@ class App extends ConsumerWidget {
             child: VersionBanner(
               child: DevToolOverlay(
                 inspectors: [
-                  if (F.isStaging && !F.hideDevChrome) ExceptionLogInspector(),
                   NetworkMonitorInspector(),
+                  if (F.isStaging && !F.hideDevChrome) ExceptionLogInspector(),
                   ApiHostInspector(),
                   SharedPrefInspector(),
                   SecureStorageInspector(),

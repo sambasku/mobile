@@ -1,7 +1,8 @@
 name: Deploy (Production)
 
-# Build flavor `production` → draft ke track production, plus GitHub Release
-# pada tag yang memicu workflow. Rollout tetap manual di Play Console.
+# Build flavor `production`. Play Console menerima AAB (draft). GitHub
+# Release pada tag yang sama menerima AAB plus APK universal (unduh manual).
+# Rollout Play tetap manual.
 # Trigger: push tag `vMAJOR.MINOR.PATCH` (contoh `v1.1.1`).
 #
 # versionName = tag tanpa awalan `v`.
@@ -133,11 +134,26 @@ jobs:
           --split-debug-info=./debug-info
           --flavor "$FLAVOR" -t lib/main.dart
 
+      # APK universal untuk unduh manual di web.
+      # debug-info terpisah supaya simbol AAB tidak tertimpa.
+      - name: Build APK (sideload)
+        run: >
+          flutter build apk --release --obfuscate
+          --split-debug-info=./debug-info-apk
+          --flavor "$FLAVOR" -t lib/main.dart
+
       - name: Upload AAB as workflow artifact
         uses: actions/upload-artifact@v7
         with:
           name: production-aab
           path: build/app/outputs/bundle/productionRelease/*.aab
+          if-no-files-found: error
+
+      - name: Upload APK as workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-apk
+          path: build/app/outputs/flutter-apk/app-production-release.apk
           if-no-files-found: error
 
       # Draft di track production - tidak auto-publish. Rollout tetap
@@ -161,6 +177,8 @@ jobs:
           tag_name: v${{ steps.version.outputs.name }}
           name: SambasKu v${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
           generate_release_notes: true
-          files: build/app/outputs/bundle/productionRelease/app-production-release.aab
+          files: |
+            build/app/outputs/bundle/productionRelease/app-production-release.aab
+            build/app/outputs/flutter-apk/app-production-release.apk
           fail_on_unmatched_files: true
           make_latest: "true"

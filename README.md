@@ -98,8 +98,9 @@ mengunggah ke Play.
 CI production: `.github/workflows/deploy-production.yml` (push tag
 `v1.1.1`, pola `vMAJOR.MINOR.PATCH`) → **AAB** flavor production
 (API `https://api.sambasku.com`) + **draft upload** ke Play Console
-track `production` (package `com.iamutaki.sambasku`) + GitHub Release
-pada tag itu. `versionName` dari tag, `versionCode` dari Play (max + 1).
+track `production` (package `com.iamutaki.sambasku`). GitHub Release pada
+tag itu melampirkan **APK split per ABI** (bukan AAB). `versionName` dari
+tag, `versionCode` dari Play (max + 1).
 Tidak auto-publish.
 
 Setup Play API: `docs/env/google_play_console/credential.md`.
