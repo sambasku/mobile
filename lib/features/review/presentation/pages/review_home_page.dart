@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../dictionary/dictionary_router.dart';
 import '../../domain/review_access.dart';
 import '../../review_router.dart';
 import '../providers/discussion_review_providers.dart';
@@ -11,7 +12,7 @@ import '../providers/review_providers.dart';
 import '../providers/review_suggestions_providers.dart';
 import '../utils/leave_review.dart';
 
-/// Hub Area Verifikator: Mulai tinjau | Usulan edit | Tinjauan Diskusi | Riwayat.
+/// Hub Area Verifikator: Mulai tinjau | Lengkapi kata | Usulan edit | Diskusi | Riwayat.
 class ReviewHomePage extends ConsumerWidget {
   const ReviewHomePage({super.key});
 
@@ -62,6 +63,20 @@ class ReviewHomePage extends ConsumerWidget {
                     ],
                   ),
                   onPress: () => context.push(ReviewRouter.queue.path),
+                ),
+              // Diletakkan tepat setelah CTA utama: kemampuan enriching
+              // adalah bagian dari pekerjaan verifikator, tapi bukan
+              // antrean, jadi tidak boleh mendominasi posisi pertama.
+              if (showContribution)
+                FTile(
+                  prefix: const Icon(FLucideIcons.sparkles),
+                  title: const Text('Lengkapi kata'),
+                  subtitle: const Text(
+                    'Tambah makna, relasi, variasi penulisan, contoh, '
+                    'dan rekam pelafalan',
+                  ),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push(DictionaryRouter.complete.path),
                 ),
               if (showContribution)
                 FTile(

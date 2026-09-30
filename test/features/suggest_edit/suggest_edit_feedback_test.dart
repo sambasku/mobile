@@ -3,11 +3,14 @@ import 'package:sambasku_mobile/features/suggest_edit/domain/suggest_edit_feedba
 
 void main() {
   group('suggestEditEntryTileCopy', () {
-    test('verifikator: ubah kata tanpa antrean', () {
+    test('verifikator: lengkapi kata tanpa antrean', () {
       for (final role in ['admin', 'editor', 'root', 'reviewer']) {
         final copy = suggestEditEntryTileCopy(role);
-        expect(copy.title, 'Ubah kata');
-        expect(copy.subtitle, contains('langsung diterapkan'));
+        expect(copy.title, 'Lengkapi kata');
+        // Nama kapabilitas yang bisa ditambahkan, bukan sekadar "ubah".
+        expect(copy.subtitle, contains('makna'));
+        expect(copy.subtitle, contains('pelafalan'));
+        expect(copy.subtitle, contains('langsung terbit'));
         expect(copy.subtitle, isNot(contains('persetujuan')));
       }
     });

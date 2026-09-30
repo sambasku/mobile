@@ -36,6 +36,7 @@ class ReviewSwipeCard extends StatelessWidget {
       enabled: enabled,
       allowNestedVerticalScroll: false,
       fallbackHeight: MediaQuery.sizeOf(context).height * 0.6,
+      hintId: 'review-session',
       positiveLabel: 'Setujui',
       negativeLabel: 'Tolak',
       skipLabel: 'Lewati',

@@ -122,20 +122,20 @@ void main() {
     expect(result.getRight().toNullable(), 'Password berhasil direset');
   });
 
-  test('sukses - jalur aplikasi email+kode 8 karakter', () async {
+  test('sukses - jalur aplikasi email+kode 6 karakter', () async {
     final repo = _FakeRepo(Either.right('Password berhasil direset'));
     final usecase = ResetPasswordUseCase(repo);
 
     await usecase(
       const ResetPasswordParams(
         email: '  budi@test.com  ',
-        code: 'a4k9-m2xp',
+        code: 'a4k-9m2',
         newPassword: 'Password123',
       ),
     );
 
     expect(repo.receivedEmail, 'budi@test.com');
-    expect(repo.receivedCode, 'A4K9M2XP');
+    expect(repo.receivedCode, 'A4K9M2');
     expect(repo.receivedToken, isNull);
   });
 

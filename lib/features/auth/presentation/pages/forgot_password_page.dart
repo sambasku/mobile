@@ -9,7 +9,7 @@ import '../../auth_router.dart';
 import '../providers/auth_forgot_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 
-/// Minta kode reset 8 karakter 0-9A-Z. Response API selalu sama (anti-enumeration).
+/// Minta kode reset 6 karakter 0-9A-Z. Response API selalu sama (anti-enumeration).
 class ForgotPasswordPage extends HookConsumerWidget {
   const ForgotPasswordPage({super.key});
 
@@ -69,7 +69,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               ),
               const Gap(8),
               Text(
-                'Masukkan email akun. Kalau terdaftar, kami kirim kode 8 karakter 0-9A-Z ke email.',
+                'Masukkan email akun. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.',
                 textAlign: .center,
                 style: theme.typography.sm.copyWith(
                   color: theme.colors.mutedForeground,

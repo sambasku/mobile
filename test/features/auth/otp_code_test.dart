@@ -4,14 +4,14 @@ import 'package:sambasku_mobile/features/auth/otp_code.dart';
 void main() {
   group('otp_code', () {
     test('normalize huruf kecil dan tanda hubung', () {
-      expect(normalizeOtpInput('a4k9-m2xp'), 'A4K9M2XP');
-      expect(normalizeOtpInput('A4K9M2XP'), 'A4K9M2XP');
+      expect(normalizeOtpInput('a4k-9m2'), 'A4K9M2');
+      expect(normalizeOtpInput('A4K9M2'), 'A4K9M2');
     });
 
-    test('format tampilan XXXX-XXXX', () {
-      expect(formatOtpDisplay('a4k9m2xp'), 'A4K9-M2XP');
-      expect(formatOtpDisplay('A4K9'), 'A4K9');
-      expect(formatOtpDisplay('A4K9M2XPZZ'), 'A4K9-M2XP');
+    test('format tampilan XXX-YYY', () {
+      expect(formatOtpDisplay('a4k9m2'), 'A4K-9M2');
+      expect(formatOtpDisplay('A4K'), 'A4K');
+      expect(formatOtpDisplay('A4K9M2ZZ'), 'A4K-9M2');
     });
   });
 }

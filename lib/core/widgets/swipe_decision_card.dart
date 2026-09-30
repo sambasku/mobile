@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class SwipeDecisionCard extends StatefulWidget {
     this.skipColor,
     this.allowNestedVerticalScroll = false,
     this.fallbackHeight = 240,
+    this.hintId,
   });
 
   final Object itemKey;
@@ -65,6 +67,10 @@ class SwipeDecisionCard extends StatefulWidget {
   final bool allowNestedVerticalScroll;
   final double fallbackHeight;
 
+  /// Isi = kartu goyang kanan-kiri (+ haptic) sekali per sesi app per id,
+  /// supaya user sadar kartu bisa digeser.
+  final String? hintId;
+
   @override
   State<SwipeDecisionCard> createState() => SwipeDecisionCardState();
 }
@@ -79,7 +85,13 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
   static const _overlayMaxScale = 1.08;
   static const _overlayVisibleFloor = 0.05;
 
+  // ponytail: hanya per proses app (hint muncul lagi tiap buka app). Kalau
+  // terasa mengganggu, simpan hitungan di SharedPreferences dan batasi N kali.
+  static final _hinted = <String>{};
+
   late final AnimationController _anim;
+  Timer? _hintTimer;
+  bool _nudging = false;
   double _dx = 0;
   double _dy = 0;
   double _width = 1;
@@ -107,12 +119,61 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
           _dy = t.value.dy;
         });
       });
+    final id = widget.hintId;
+    if (id != null && !_hinted.contains(id)) {
+      _hintTimer = Timer(const Duration(milliseconds: 700), _playHint);
+    }
+  }
+
+  void _playHint() {
+    final id = widget.hintId;
+    if (!mounted || id == null || !widget.enabled || _busyGesture) return;
+    if (_dx != 0 || _dy != 0 || MediaQuery.disableAnimationsOf(context)) return;
+    _hinted.add(id);
+    _nudging = true;
+
+    // Berhenti di 0.2 lebar (ambang commit 0.28): overlay terlihat, belum lepas.
+    final a = _width * 0.2;
+    TweenSequenceItem<Offset> step(double from, double to, double weight) =>
+        TweenSequenceItem(
+          tween: Tween(begin: Offset(from, 0), end: Offset(to, 0))
+              .chain(CurveTween(curve: Curves.easeInOutCubic)),
+          weight: weight,
+        );
+    _tween = TweenSequence([
+      step(0, a, 20),
+      step(a, a, 12),
+      step(a, 0, 16),
+      step(0, -a, 20),
+      step(-a, -a, 12),
+      step(-a, 0, 20),
+    ]).animate(_anim);
+
+    // Haptic di awal tiap jeda puncak (bobot 20/100 dan 68/100).
+    var peaks = 0;
+    void onTick() {
+      if (!_nudging || peaks == 2) {
+        _anim.removeListener(onTick);
+        return;
+      }
+      if (_anim.value >= (peaks == 0 ? 0.2 : 0.68)) {
+        peaks++;
+        HapticFeedback.lightImpact();
+      }
+    }
+
+    _anim
+      ..duration = const Duration(milliseconds: 1800)
+      ..addListener(onTick)
+      ..reset();
+    _anim.forward().whenComplete(() => _nudging = false);
   }
 
   @override
   void didUpdateWidget(covariant SwipeDecisionCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.itemKey != widget.itemKey) {
+      _nudging = false;
       _anim.stop();
       _tween = null;
       _dx = 0;
@@ -127,6 +188,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   @override
   void dispose() {
+    _hintTimer?.cancel();
     _anim.dispose();
     super.dispose();
   }
@@ -155,6 +217,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
   }
 
   Future<void> _animateTo(Offset target, {Duration? duration}) async {
+    _nudging = false;
     _anim.duration = duration ?? const Duration(milliseconds: 220);
     _tween = Tween<Offset>(begin: Offset(_dx, _dy), end: target).animate(
       CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic),
@@ -177,6 +240,12 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     if (_busyGesture) return;
     if (!widget.enabled) return;
     setState(() => _busyGesture = true);
+    // Fling cepat bisa commit tanpa pernah lewat ambang: getar di sini juga.
+    if (direction == SwipeDecisionDirection.skip) {
+      HapticFeedback.lightImpact();
+    } else {
+      HapticFeedback.heavyImpact();
+    }
 
     final target = switch (direction) {
       SwipeDecisionDirection.positive => Offset(_width * 1.35, 0),
@@ -197,6 +266,11 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (!widget.enabled || _busyGesture) return;
+    _hintTimer?.cancel();
+    if (_nudging) {
+      _nudging = false;
+      _anim.stop();
+    }
     final d = details.delta;
     setState(() {
       if (_lock == _AxisLock.none) {
@@ -225,7 +299,8 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
           : _vProgress >= 1.0;
       if (crossed && !_hapticFired) {
         _hapticFired = true;
-        HapticFeedback.selectionClick();
+        // Bukan selectionClick: di Android itu CLOCK_TICK, nyaris tak terasa.
+        HapticFeedback.mediumImpact();
       } else if (!crossed) {
         _hapticFired = false;
       }
@@ -375,21 +450,21 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                           t: positiveT,
                           icon: widget.positiveIcon ?? FLucideIcons.check,
                           color: widget.positiveColor ?? theme.colors.success,
-                          semanticsLabel: widget.positiveLabel,
+                          label: widget.positiveLabel,
                         ),
                         _SwipeIconOverlay(
                           t: negativeT,
                           icon: widget.negativeIcon ?? FLucideIcons.x,
                           color:
                               widget.negativeColor ?? theme.colors.destructive,
-                          semanticsLabel: widget.negativeLabel,
+                          label: widget.negativeLabel,
                         ),
                         _SwipeIconOverlay(
                           t: skipT,
                           icon: widget.skipIcon ?? FLucideIcons.arrowUp,
                           color: widget.skipColor ??
                               theme.colors.mutedForeground,
-                          semanticsLabel: widget.skipLabel,
+                          label: widget.skipLabel,
                         ),
                       ],
                     ],
@@ -462,13 +537,13 @@ class _SwipeIconOverlay extends StatelessWidget {
     required this.t,
     required this.icon,
     required this.color,
-    required this.semanticsLabel,
+    required this.label,
   });
 
   final double t;
   final IconData icon;
   final Color color;
-  final String semanticsLabel;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -483,14 +558,23 @@ class _SwipeIconOverlay extends StatelessWidget {
     )!;
     return Positioned.fill(
       child: IgnorePointer(
-        child: Semantics(
-          label: semanticsLabel,
-          child: Center(
-            child: Opacity(
-              opacity: opacity,
-              child: Transform.scale(
-                scale: scale,
-                child: Icon(icon, size: 96, color: color),
+        child: Center(
+          child: Opacity(
+            opacity: opacity,
+            child: Transform.scale(
+              scale: scale,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 96, color: color),
+                  Text(
+                    label,
+                    style: context.theme.typography.lg.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

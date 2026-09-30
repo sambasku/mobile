@@ -1,11 +1,16 @@
 import '../../review/domain/review_access.dart';
 
 /// Copy tile di detail kata - berdasarkan role lokal.
+///
+/// Verifikator diberi label "Lengkapi kata", bukan "Ubah kata": halaman ini
+/// bukan hanya mengubah, tapi juga menambah (makna, relasi, contoh,
+/// pelafalan). Subtitle menyebut kapabilitasnya sekaligus menegaskan
+/// bahwa perubahan langsung terbit tanpa antrean.
 ({String title, String subtitle}) suggestEditEntryTileCopy(String? role) {
   if (isVerifierRole(role)) {
     return (
-      title: 'Ubah kata',
-      subtitle: 'Perubahan langsung diterapkan, tanpa antrean',
+      title: 'Lengkapi kata',
+      subtitle: 'Tambah makna, relasi, contoh, pelafalan - langsung terbit',
     );
   }
   return (

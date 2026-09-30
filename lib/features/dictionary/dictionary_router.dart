@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/letter_words_page.dart';
+import 'presentation/pages/word_complete_page.dart';
 import 'presentation/pages/word_detail_page.dart';
 import 'presentation/pages/word_list_page.dart';
 import 'presentation/providers/letter_words_providers.dart';
+import '../suggest_edit/domain/suggest_category.dart';
 import '../suggest_edit/presentation/pages/suggest_edit_page.dart';
 import '../suggest_edit/presentation/pages/word_change_history_page.dart';
 
@@ -23,6 +25,12 @@ class DictionaryRouter {
   static const letter = RouteDefiner(
     path: '/huruf/:letter',
     name: 'DictionaryRouter.letter',
+  );
+
+  /// Pemilih kata untuk entri "Lengkapi kata" dari Area Verifikator.
+  static const complete = RouteDefiner(
+    path: '/words/complete',
+    name: 'DictionaryRouter.complete',
   );
 
   static const detail = RouteDefiner(
@@ -79,6 +87,15 @@ class DictionaryRouter {
         wordId: state.pathParameters['id']!,
       ),
     ),
+    // Spesifik dulu. '/words/complete' harus di atas '/words/:id' supaya
+    // tidak tertelan sebagai wordId - pola yang sama seperti changeHistory
+    // di atas ini.
+    GoRoute(
+      path: complete.path,
+      name: complete.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const WordCompletePage(),
+    ),
     GoRoute(
       path: detail.path,
       name: detail.name,
@@ -93,7 +110,21 @@ class DictionaryRouter {
       parentNavigatorKey: AppRouter.rootNavigatorKey,
       builder: (context, state) => SuggestEditPage(
         wordId: state.pathParameters['wordId']!,
+        initialCategory: parseSuggestCategory(
+          state.uri.queryParameters['category'],
+        ),
       ),
     ),
   ];
+}
+
+/// `?category=` dibaca dari URL, bukan lewat `extra`, supaya tautannya bisa
+/// dibuka ulang / di-bookmark dan tidak perlu casting di sisi router.
+/// Nilai tak dikenal diabaikan - SuggestEditPage jatuh ke daftar kategori.
+SuggestCategory? parseSuggestCategory(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  for (final category in SuggestCategory.values) {
+    if (category.code == raw) return category;
+  }
+  return null;
 }

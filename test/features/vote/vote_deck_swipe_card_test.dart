@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_swipe_card.dart';
@@ -115,4 +116,83 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
   });
+
+  testWidgets('fling cepat di bawah ambang tetap commit dan bergetar', (
+    tester,
+  ) async {
+    final haptics = _recordHaptics(tester);
+    VoteDeckSwipeDirection? got;
+    await tester.pumpWidget(
+      wrap(
+        VoteDeckSwipeCard(
+          itemKey: 'f',
+          enabled: true,
+          onSwiped: (direction) async {
+            got = direction;
+            return true;
+          },
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+
+    // 60px < ambang 112px (28% dari 400), tapi kecepatan > 700px/s.
+    await tester.fling(
+      find.byType(VoteDeckSwipeCard),
+      const Offset(60, 0),
+      2000,
+    );
+    await tester.pumpAndSettle();
+
+    expect(got, VoteDeckSwipeDirection.agree);
+    expect(haptics, contains('HapticFeedbackType.heavyImpact'));
+  });
+
+  // Harus test pertama yang membiarkan hint jalan: hint sekali per proses.
+  testWidgets('hint goyang sekali: label terlihat, 2 haptic, lalu kembali', (
+    tester,
+  ) async {
+    final haptics = _recordHaptics(tester);
+
+    Widget card(String id) => wrap(
+          VoteDeckSwipeCard(
+            key: ValueKey(id),
+            itemKey: id,
+            enabled: true,
+            onSwiped: (_) async => true,
+            child: const SizedBox.expand(),
+          ),
+        );
+
+    await tester.pumpWidget(card('h1'));
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Setuju'), findsOneWidget);
+
+    await tester.pumpAndSettle();
+    expect(find.text('Setuju'), findsNothing);
+    expect(find.text('Kurang setuju'), findsNothing);
+    expect(haptics, hasLength(2));
+
+    await tester.pumpWidget(card('h2'));
+    await tester.pump(const Duration(seconds: 3));
+    expect(haptics, hasLength(2));
+  });
+}
+
+List<Object?> _recordHaptics(WidgetTester tester) {
+  final haptics = <Object?>[];
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    SystemChannels.platform,
+    (call) async {
+      if (call.method == 'HapticFeedback.vibrate') haptics.add(call.arguments);
+      return null;
+    },
+  );
+  addTearDown(
+    () => tester.binding.defaultBinaryMessenger
+        .setMockMethodCallHandler(SystemChannels.platform, null),
+  );
+  return haptics;
 }

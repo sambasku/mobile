@@ -152,7 +152,7 @@ class ResetPasswordPage extends HookConsumerWidget {
             hasTokenFromLink
                 ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
                 : email.contains('@')
-                ? 'Masukkan kode 8 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
+                ? 'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
                 : 'Minta kode dulu di halaman lupa password.',
             style: theme.typography.sm.copyWith(
               color: theme.colors.mutedForeground,

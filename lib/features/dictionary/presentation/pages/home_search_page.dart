@@ -9,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
@@ -66,7 +67,7 @@ class HomeSearchPage extends HookConsumerWidget {
     return Column(
       children: [
         const FHeader(
-          title: Text('SambasKu'),
+          title: BrandWordmark(),
           suffixes: [ThemeToggleHeaderAction()],
         ),
         Padding(

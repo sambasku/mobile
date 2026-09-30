@@ -9,7 +9,7 @@ import '../../domain/entities/search_miss.dart';
 import '../providers/search_miss_list_providers.dart';
 import '../widgets/search_miss_skeleton_list.dart';
 
-/// Halaman list “Kata yang sering dicari” (ex-tab Kontribusi).
+/// Halaman list "Dicari warga" (ex-tab Kontribusi).
 class SearchMissListPage extends ConsumerWidget {
   const SearchMissListPage({super.key});
 
@@ -28,7 +28,7 @@ class SearchMissListPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Kata yang sering dicari'),
+        title: const Text('Dicari warga'),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: RefreshIndicator(
