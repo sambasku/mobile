@@ -8,6 +8,7 @@ import 'package:sambasku_mobile/app.dart';
 import 'package:sambasku_mobile/core/services/analytics_service.dart';
 import 'package:sambasku_mobile/core/theme/forui_palette_controller.dart';
 import 'package:sambasku_mobile/core/theme/theme_mode_controller.dart';
+import 'package:sambasku_mobile/core/widgets/brand_logo.dart';
 import 'package:sambasku_mobile/features/onboarding/data/onboarding_prefs.dart';
 import 'package:sambasku_mobile/features/search_miss/domain/entities/search_miss.dart';
 import 'package:sambasku_mobile/features/search_miss/domain/failures/search_miss_failure.dart';
@@ -140,8 +141,8 @@ void main() {
     // redirect GoRouter (getIsAuth) selesai di frame berikutnya
     await tester.pump();
 
-    // cold start langsung HOME (FScaffold shell + header SambasKu)
+    // cold start langsung HOME (FScaffold shell + header wordmark SVG)
     expect(find.byType(FScaffold), findsWidgets);
-    expect(find.text('SambasKu'), findsOneWidget);
+    expect(find.byType(BrandWordmark), findsOneWidget);
   });
 }
