@@ -702,63 +702,74 @@ class _UnsplashCard extends StatelessWidget {
               ),
             ),
             child: ClipRect(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Spacer(),
-                  _laidOut(
-                    id: ShareTextElementId.lemma,
-                    settings: settings,
-                    layout: layout,
-                    child: Text(
-                      data.lemma,
-                      style: _lemmaStyle(
-                        pair: pair,
-                        size: lemmaSize,
-                        color: lemmaColor,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.bottomLeft,
+                    child: SizedBox(
+                      width: constraints.maxWidth,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _laidOut(
+                            id: ShareTextElementId.lemma,
+                            settings: settings,
+                            layout: layout,
+                            child: Text(
+                              data.lemma,
+                              style: _lemmaStyle(
+                                pair: pair,
+                                size: lemmaSize,
+                                color: lemmaColor,
+                              ),
+                            ),
+                          ),
+                          _variantsUnderLemma(
+                            data: data,
+                            pair: pair,
+                            color: lemmaColor,
+                            size: 28 * settings.bodyFontScale,
+                          ),
+                          const SizedBox(height: 20),
+                          _meaningCopyBlock(
+                            data: data,
+                            settings: settings,
+                            layout: layout,
+                            pair: pair,
+                            lemmaColor: lemmaColor,
+                            bodyColor: bodyColor,
+                            padananSize: 44 * settings.bodyFontScale,
+                            definitionSize: bodySize,
+                            definitionMaxLines: 6,
+                          ),
+                          if (settings.showExample &&
+                              data.exampleSentence != null &&
+                              data.exampleSentence!.isNotEmpty) ...[
+                            const SizedBox(height: 20),
+                            _laidOut(
+                              id: ShareTextElementId.example,
+                              settings: settings,
+                              layout: layout,
+                              child: Text(
+                                '"${data.exampleSentence}"',
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                style: _bodyStyle(
+                                  pair: pair,
+                                  size: 32 * settings.bodyFontScale,
+                                  color: bodyColor,
+                                ).copyWith(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                  ),
-                  _variantsUnderLemma(
-                    data: data,
-                    pair: pair,
-                    color: lemmaColor,
-                    size: 28 * settings.bodyFontScale,
-                  ),
-                  const SizedBox(height: 20),
-                  _meaningCopyBlock(
-                    data: data,
-                    settings: settings,
-                    layout: layout,
-                    pair: pair,
-                    lemmaColor: lemmaColor,
-                    bodyColor: bodyColor,
-                    padananSize: 44 * settings.bodyFontScale,
-                    definitionSize: bodySize,
-                    definitionMaxLines: 6,
-                  ),
-                  if (settings.showExample &&
-                      data.exampleSentence != null &&
-                      data.exampleSentence!.isNotEmpty) ...[
-                    const SizedBox(height: 20),
-                    _laidOut(
-                      id: ShareTextElementId.example,
-                      settings: settings,
-                      layout: layout,
-                      child: Text(
-                        '"${data.exampleSentence}"',
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: _bodyStyle(
-                          pair: pair,
-                          size: 32 * settings.bodyFontScale,
-                          color: bodyColor,
-                        ).copyWith(fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                  ],
-                ],
+                  );
+                },
               ),
             ),
           ),
