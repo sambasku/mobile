@@ -4,12 +4,39 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../shared/reference/reference_data.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../data/review_correct_body.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../providers/review_providers.dart';
+
+/// Field id referensi yang diteruskan apa adanya saat submit - bukan input.
+const carriedChildKeys = {'dialect_id', 'provider_file_id'};
+
+/// Field yang boleh diedit user per tipe entity. Sengaja allowlist (bukan
+/// "semua kunci dari payload") supaya payload baru tidak otomatis jadi input
+/// mentah, dan id tidak pernah bisa diketik ulang.
+Set<String> editableChildKeys(String entityType) => switch (entityType) {
+  'pronunciation' => {'notation', 'value', 'audio_url', 'speaker_name', 'notes'},
+  'word_image' => {'url', 'alt_text'},
+  'word_audio' => {'speaker_name'},
+  _ => {'source_sentence', 'target_sentence', 'source_type', 'notes'},
+};
+
+const _childFieldLabels = <String, String>{
+  'notation': 'Notasi',
+  'value': 'Pelafalan',
+  'audio_url': 'URL audio',
+  'speaker_name': 'Penutur',
+  'notes': 'Catatan',
+  'url': 'URL gambar',
+  'alt_text': 'Teks alternatif',
+  'source_sentence': 'Kalimat sambas',
+  'target_sentence': 'Kalimat terjemahan',
+  'source_type': 'Jenis sumber',
+};
 
 /// Form koreksi inline (dipakai di sesi review, bukan halaman terpisah).
 class ReviewCorrectForm extends ConsumerStatefulWidget {
@@ -67,6 +94,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
   final _notes = TextEditingController();
   final _comment = TextEditingController();
   final _childFields = <String, TextEditingController>{};
+
+  /// Field id referensi yang dibawa apa adanya saat submit. Tidak pernah jadi
+  /// text field: kalau user mengetik ULID, nilainya bisa rusak permanen.
+  final _carriedChildFields = <String, String>{};
   final _meanings = <_MeaningEdit>[];
   String _wordType = 'word';
   bool _publish = true;
@@ -102,6 +133,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       controller.dispose();
     }
     _childFields.clear();
+    _carriedChildFields.clear();
     for (final meaning in _meanings) {
       meaning.dispose();
     }
@@ -156,15 +188,26 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     }
     final data = detail.entity['data'];
     if (data is Map) {
+      final editable = editableChildKeys(detail.contribution.entityType);
       for (final entry in data.entries) {
-        if (entry.key == 'is_primary') {
+        final key = entry.key.toString();
+        if (key == 'is_primary') {
           _hasPrimary = true;
           _childPrimary = entry.value == true;
           continue;
         }
-        _childFields[entry.key.toString()] = TextEditingController(
-          text: entry.value?.toString() ?? '',
-        );
+        if (editable.contains(key)) {
+          _childFields[key] = TextEditingController(
+            text: entry.value?.toString() ?? '',
+          );
+          continue;
+        }
+        // Field id (dialect_id, provider_file_id) dan kunci yang tidak dikenal
+        // tidak diedit user; id dibawa apa adanya agar tidak bisa rusak.
+        if (carriedChildKeys.contains(key)) {
+          final raw = entry.value?.toString().trim();
+          if (raw != null && raw.isNotEmpty) _carriedChildFields[key] = raw;
+        }
       }
     }
   }
@@ -210,6 +253,12 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       return value.isEmpty ? null : value;
     }
 
+    // Id diteruskan apa adanya - tidak pernah melewati text field.
+    String? carried(String key) {
+      final value = _carriedChildFields[key];
+      return (value == null || value.isEmpty) ? null : value;
+    }
+
     final comment = _comment.text.trim();
     final shared = <String, dynamic>{
       'entity_type': entityType,
@@ -221,7 +270,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         ...shared,
         'notation': text('notation') ?? 'ipa',
         'value': text('value') ?? '',
-        if (text('dialect_id') != null) 'dialect_id': text('dialect_id'),
+        if (carried('dialect_id') != null) 'dialect_id': carried('dialect_id'),
         if (text('audio_url') != null) 'audio_url': text('audio_url'),
         if (text('speaker_name') != null) 'speaker_name': text('speaker_name'),
         if (text('notes') != null) 'notes': text('notes'),
@@ -229,14 +278,14 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       'word_image' => {
         ...shared,
         'url': text('url') ?? '',
-        'provider_file_id': text('provider_file_id') ?? '',
+        'provider_file_id': carried('provider_file_id') ?? '',
         if (text('alt_text') != null) 'alt_text': text('alt_text'),
         'is_primary': _childPrimary,
       },
       'word_audio' => {
         ...shared,
         'is_primary': _childPrimary,
-        if (text('dialect_id') != null) 'dialect_id': text('dialect_id'),
+        if (carried('dialect_id') != null) 'dialect_id': carried('dialect_id'),
         if (text('speaker_name') != null) 'speaker_name': text('speaker_name'),
       },
       _ => {
@@ -392,7 +441,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
             controller: _meanings[i].translationCtrl,
           ),
           enabled: !_busy,
-          label: const Text('Padanan'),
+          label: const Text('Terjemahan'),
           description: const Text(
             'Tekan icon buku untuk mencari definisi di KBBI',
           ),
@@ -433,13 +482,12 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       initialLemma: current == '-' ? '' : current,
     );
     if (!mounted || picked == null) return;
-    final classes = await _loadWordClasses();
+    final classes = await ref.read(referenceWordClassesProvider.future);
     if (!mounted) return;
-    final matched = _matchReviewWordClass(
-      classes,
-      picked.wordClassCode,
-      picked.wordClassLabel,
-    );
+    var matched = _matchReviewWordClass(classes, picked.wordClassCode);
+    if (matched == null && (picked.wordClassLabel?.trim().isNotEmpty ?? false)) {
+      matched = findReferenceItem(classes, picked.wordClassLabel)?.id;
+    }
     setState(() {
       meaning.definitionCtrl.text = picked.definition;
       final lemma = picked.lemma.trim();
@@ -457,45 +505,15 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     );
   }
 
-  Future<List<_ReviewWordClass>> _loadWordClasses() async {
-    final dio = ref.read(dioProvider);
-    final resp = await dio.get<dynamic>('/api/v1/word-classes');
-    final data = resp.data;
-    if (data is! Map) return const [];
-    final arr = data['data'];
-    if (arr is! List) return const [];
-    return [
-      for (final raw in arr)
-        if (raw is Map)
-          _ReviewWordClass(
-            id: raw['id']?.toString() ?? '',
-            code: raw['code']?.toString() ?? '',
-            name: raw['name']?.toString() ?? '',
-          ),
-    ].where((item) => item.id.isNotEmpty).toList(growable: false);
-  }
-
   List<Widget> _childForm() {
-    const labels = <String, String>{
-      'notation': 'Notasi',
-      'value': 'Pelafalan',
-      'dialect_id': 'Dialek',
-      'audio_url': 'URL audio',
-      'speaker_name': 'Penutur',
-      'notes': 'Catatan',
-      'url': 'URL gambar',
-      'provider_file_id': 'Berkas gambar',
-      'alt_text': 'Teks alternatif',
-      'source_sentence': 'Kalimat sumber',
-      'target_sentence': 'Kalimat terjemahan',
-      'source_type': 'Sumber',
-    };
     return [
       for (final entry in _childFields.entries) ...[
         FTextField(
           control: FTextFieldControl.managed(controller: entry.value),
           enabled: !_busy,
-          label: Text(labels[entry.key] ?? entry.key),
+          // Kunci tak dikenal tidak akan muncul: _childFields dibangun dari
+          // allowlist, dan label selalu ada untuk tiap kunci therein.
+          label: Text(_childFieldLabels[entry.key] ?? entry.key),
         ),
         const Gap(12),
       ],
@@ -522,40 +540,12 @@ const _reviewWordTypes = <({String value, String label})>[
   (value: 'ungkapan', label: 'Ungkapan'),
 ];
 
-class _ReviewWordClass {
-  const _ReviewWordClass({
-    required this.id,
-    required this.code,
-    required this.name,
-  });
-
-  final String id;
-  final String code;
-  final String name;
-}
-
-String? _matchReviewWordClass(
-  List<_ReviewWordClass> classes,
-  String? code,
-  String? label,
-) {
-  final normalizedCode = code?.trim().toLowerCase();
-  if (normalizedCode != null && normalizedCode.isNotEmpty) {
-    final byCode = classes
-        .where((item) => item.code.toLowerCase() == normalizedCode)
-        .firstOrNull;
-    if (byCode != null) return byCode.id;
-    if (normalizedCode == 'a') {
-      final adj = classes
-          .where((item) => item.code.toLowerCase() == 'adj')
-          .firstOrNull;
-      if (adj != null) return adj.id;
-    }
-  }
-  final normalizedLabel = label?.trim().toLowerCase();
-  if (normalizedLabel == null || normalizedLabel.isEmpty) return null;
-  return classes
-      .where((item) => item.name.toLowerCase() == normalizedLabel)
-      .firstOrNull
-      ?.id;
+/// KBBI menulis adjektiva sebagai "a", sedangkan kode internal memakai "adj".
+String? _matchReviewWordClass(List<ReferenceItem> classes, String? code) {
+  final normalized = code?.trim().toLowerCase();
+  if (normalized == null || normalized.isEmpty) return null;
+  final direct = findReferenceItem(classes, normalized);
+  if (direct != null) return direct.id;
+  if (normalized == 'a') return findReferenceItem(classes, 'adj')?.id;
+  return null;
 }

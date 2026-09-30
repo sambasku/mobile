@@ -1,7 +1,7 @@
 /// Kategori usulan perubahan. [code] = `reason_code` API, kecuali
 /// [addExample] yang lewat POST /api/v1/meanings/:id/examples.
 enum SuggestCategory {
-  changeMeaning('change_meaning', 'Ubah makna', 'Perbaiki definisi atau padanan'),
+  changeMeaning('change_meaning', 'Ubah makna', 'Perbaiki definisi atau terjemahan'),
   changeWordClass('change_word_class', 'Ubah kelas kata', 'Nomina, verba, adjektiva, dsb.'),
   addMeaning('add_meaning', 'Tambah makna', 'Arti lain dari kata ini'),
   addExample('add_example', 'Tambah contoh', 'Contoh kalimat untuk satu makna'),
@@ -47,7 +47,7 @@ Map<String, dynamic>? buildChangeMeaning({
   final padChanged = pad.isNotEmpty && pad != originalPadanan.trim();
   if (!defChanged && !padChanged) return null;
   if (padChanged && padananLanguageId == null) {
-    throw StateError('Bahasa padanan belum diketahui');
+    throw StateError('Bahasa terjemahan belum diketahui');
   }
   return {
     'meanings': [

@@ -509,7 +509,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
                     ),
                     Gap(12),
                     Text(
-                      'Ringkasan arti atau padanan agar kerangka kartu mendekati layout asli.',
+                      'Ringkasan arti atau terjemahan agar kerangka kartu mendekati layout asli.',
                       textAlign: TextAlign.center,
                     ),
                     Gap(10),

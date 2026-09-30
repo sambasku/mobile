@@ -178,7 +178,7 @@ class WordListPage extends HookConsumerWidget {
               const Gap(8),
               Text(
                 askIndonesia
-                    ? 'Ketik kata Indonesia untuk mencari padanannya di Sambas.'
+                    ? 'Ketik kata Indonesia untuk mencari terjemahannya di Sambas.'
                     : query.isEmpty
                     ? 'Belum ada kata terbit.'
                     : 'Tidak ada kata untuk "$query"',

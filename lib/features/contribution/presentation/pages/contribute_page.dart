@@ -526,7 +526,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               const _FieldCaption(
                 'Penjelasan arti',
                 info:
-                    'Muncul setelah satu makna dipilih dari KBBI. Tetap jika padanan dikosongkan; hilang jika padanan diganti kata lain.',
+                    'Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.',
               ),
               Text(
                 _standardDefinition.trim(),
