@@ -28,7 +28,8 @@ class MyVotesPage extends ConsumerWidget {
       child: auth.when(
         loading: () => const Center(child: FCircularProgress()),
         error: (_, _) => const _GuestState(),
-        data: (status) => status.isAuth ? const _VotesList() : const _GuestState(),
+        data: (status) =>
+            status.isAuth ? const _VotesList() : const _GuestState(),
       ),
     );
   }
@@ -46,7 +47,11 @@ class _GuestState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(FLucideIcons.arrowBigUp, size: 40, color: theme.colors.mutedForeground),
+            Icon(
+              FLucideIcons.arrowBigUp,
+              size: 40,
+              color: theme.colors.mutedForeground,
+            ),
             const Gap(10),
             Text(
               'Masuk dulu untuk melihat vote kamu',
@@ -82,11 +87,17 @@ class _VotesList extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(FLucideIcons.circleAlert, size: 40, color: theme.colors.mutedForeground),
+              Icon(
+                FLucideIcons.circleAlert,
+                size: 40,
+                color: theme.colors.mutedForeground,
+              ),
               const Gap(10),
               Text(
                 error is MyVoteFailure ? error.message : 'Gagal memuat vote',
-                style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
                 textAlign: TextAlign.center,
               ),
               const Gap(16),
@@ -125,15 +136,21 @@ class _VotesList extends ConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [for (final item in state.items) _VoteTile(item: item)],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: FTileGroup.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) =>
+                    _VoteTile(item: state.items[index]),
+              ),
+            ),
           ),
           if (state.hasMore)
             Padding(
@@ -144,8 +161,12 @@ class _VotesList extends ConsumerWidget {
                   variant: FButtonVariant.ghost,
                   onPress: state.isLoadingMore
                       ? null
-                      : () => ref.read(myVotesListControllerProvider.notifier).loadMore(),
-                  prefix: state.isLoadingMore ? const FCircularProgress() : null,
+                      : () => ref
+                            .read(myVotesListControllerProvider.notifier)
+                            .loadMore(),
+                  prefix: state.isLoadingMore
+                      ? const FCircularProgress()
+                      : null,
                   child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
                 ),
               ),
@@ -168,7 +189,9 @@ class _VoteTile extends StatelessWidget with FTileMixin {
       title: Text(item.title),
       subtitle: Text(item.subtitle(date)),
       suffix: item.canOpen ? const Icon(FLucideIcons.chevronRight) : null,
-      onPress: item.canOpen ? () => context.push('/words/${item.word!.id}') : null,
+      onPress: item.canOpen
+          ? () => context.push('/words/${item.word!.id}')
+          : null,
     );
   }
 }
@@ -185,8 +208,12 @@ class _ListSkeleton extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       effect: ShimmerEffect(
-        baseColor: isDark ? muted.withValues(alpha: 0.35) : const Color(0xFFE7E7EA),
-        highlightColor: isDark ? muted.withValues(alpha: 0.55) : const Color(0xFFF4F4F5),
+        baseColor: isDark
+            ? muted.withValues(alpha: 0.35)
+            : const Color(0xFFE7E7EA),
+        highlightColor: isDark
+            ? muted.withValues(alpha: 0.55)
+            : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
       child: ListView(

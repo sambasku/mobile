@@ -12,9 +12,11 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_navigation.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/inbox_notification.dart';
+import '../../notification_router.dart';
 import '../../domain/failures/notification_failure.dart';
 import '../../domain/providers/notification_domain_providers.dart';
 import '../providers/notification_providers.dart';
@@ -25,7 +27,7 @@ class NotificationInboxPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
-      AnalyticsService.instance.log(AnalyticsEvents.notificationOpen);
+      AnalyticsService.instance.log(AnalyticsEvents.inboxOpen);
       return null;
     }, const []);
 
@@ -208,11 +210,10 @@ class _InboxList extends HookConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (unreadCount > 0)
             Align(
@@ -228,11 +229,16 @@ class _InboxList extends HookConsumerWidget {
                 ),
               ),
             ),
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              for (final item in state.items) _NotificationTile(item: item),
-            ],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: FTileGroup.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) =>
+                    _NotificationTile(item: state.items[index]),
+              ),
+            ),
           ),
           if (state.hasMore)
             Padding(
@@ -270,42 +276,67 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final date = formatDateTimeIso(item.createdAt);
     final theme = context.theme;
+    final isCampaign = item.type == 'campaign' || item.targetKind == 'campaign';
     final thumbUrl = displayImageUrl(item.imageUrl, width: 96, height: 96);
+    final rawImage = item.imageUrl?.trim();
     return FTile(
-      title: Text(item.title),
-      subtitle: Text(
-        [
-          item.typeLabel,
-          if (date.isNotEmpty) date,
-          item.body,
-        ].join(' · '),
+      title: Text(
+        item.title,
+        style: TextStyle(
+          color: item.isUnread
+              ? theme.colors.foreground
+              : theme.colors.mutedForeground,
+          fontWeight: item.isUnread ? FontWeight.w600 : FontWeight.w400,
+        ),
       ),
-      prefix: thumbUrl != null
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SizedBox(
-                width: 48,
-                height: 48,
-                child: CachedNetworkImageWithFallback(
-                  imageUrl: thumbUrl,
-                  fit: BoxFit.cover,
+      subtitle: Text(
+        [item.typeLabel, if (date.isNotEmpty) date, item.body].join(' · '),
+      ),
+      prefix: Badge(
+        isLabelVisible: item.isUnread,
+        backgroundColor: theme.colors.destructive,
+        smallSize: 8,
+        child: Icon(
+          FLucideIcons.bell,
+          color: item.isUnread
+              ? theme.colors.foreground
+              : theme.colors.mutedForeground,
+        ),
+      ),
+      suffix: thumbUrl == null
+          ? const Icon(FLucideIcons.chevronRight)
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Semantics(
+                  button: true,
+                  label: 'Lihat gambar',
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: rawImage == null || rawImage.isEmpty
+                        ? null
+                        : () => showImagePreview(context, urls: [rawImage]),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CachedNetworkImageWithFallback(
+                          imageUrl: thumbUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            )
-          : Icon(
-              item.isUnread ? FLucideIcons.bell : FLucideIcons.bellOff,
-              color: item.isUnread
-                  ? theme.colors.primary
-                  : theme.colors.mutedForeground,
+                const Gap(8),
+                const Icon(FLucideIcons.chevronRight),
+              ],
             ),
-      suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () async {
         AnalyticsService.instance.log(
           AnalyticsEvents.notificationItemTap,
-          params: {
-            'type': item.type,
-            'target_kind': item.targetKind,
-          },
+          params: {'type': item.type, 'target_kind': item.targetKind},
         );
         // Optimistic: UI + navigasi dulu; mark-read API di belakang
         // supaya tap tidak terasa lag menunggu jaringan.
@@ -319,6 +350,10 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
           unawaited(ref.read(markNotificationReadUseCaseProvider)(item.id));
         }
         if (!context.mounted) return;
+        if (isCampaign) {
+          context.push(NotificationRouter.detailPath(item.id), extra: item);
+          return;
+        }
         await navigateFromInboxNotification(context, item);
       },
     );

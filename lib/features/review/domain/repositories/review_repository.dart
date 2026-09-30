@@ -9,6 +9,7 @@ abstract class ReviewRepository {
     String? entityType,
     String? wordId,
     bool mine = false,
+    bool hideSkipped = false,
     int limit = 20,
     String? cursor,
   });
@@ -31,6 +32,10 @@ abstract class ReviewRepository {
   );
 
   Future<Either<ReviewFailure, ReviewDecisionResult>> reopen(String id);
+
+  Future<Either<ReviewFailure, Unit>> skip(String id);
+
+  Future<Either<ReviewFailure, Unit>> unskip(String id);
 
   Future<Either<ReviewFailure, Unit>> unverifyWord(String wordId);
 }

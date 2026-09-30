@@ -147,8 +147,6 @@ class DiscussionReply {
   VoteTarget get voteTarget =>
       VoteTarget(type: 'discussion_reply', id: id);
 
-  int get netScore => upvotes - downvotes;
-
   bool get isPublished => status == 'published';
 
   bool get hasAudio =>
@@ -263,15 +261,14 @@ class DiscussionItem {
     _ => status,
   };
 
-  /// Balasan: pinned → net score desc → created_at desc (sinkron API).
+  /// Balasan: created_at naik, seri dipecah id naik (sinkron API).
   List<DiscussionReply> get orderedReplies {
     if (replies.isEmpty) return const [];
     final copy = [...replies];
     copy.sort((a, b) {
-      if (a.isPinned != b.isPinned) return a.isPinned ? -1 : 1;
-      final netCmp = b.netScore.compareTo(a.netScore);
-      if (netCmp != 0) return netCmp;
-      return b.createdAt.compareTo(a.createdAt);
+      final timeCmp = a.createdAt.compareTo(b.createdAt);
+      if (timeCmp != 0) return timeCmp;
+      return a.id.compareTo(b.id);
     });
     return copy;
   }

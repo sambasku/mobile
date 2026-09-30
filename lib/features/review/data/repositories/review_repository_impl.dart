@@ -59,6 +59,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     String? entityType,
     String? wordId,
     bool mine = false,
+    bool hideSkipped = false,
     int limit = 20,
     String? cursor,
   }) async {
@@ -70,6 +71,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
           'status': ?status,
           'entity_type': ?entityType,
           if (mine) 'mine': true,
+          if (hideSkipped) 'hide_skipped': true,
           if (wordId != null && wordId.isNotEmpty) 'word_id': wordId,
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         },
@@ -158,6 +160,30 @@ class ReviewRepositoryImpl implements ReviewRepository {
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error, 'Gagal membuka ulang keputusan'));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ReviewFailure, Unit>> skip(String id) async {
+    try {
+      await _dio.post<Map<String, dynamic>>('$_base/$id/skip');
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, 'Gagal melewati usulan'));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<ReviewFailure, Unit>> unskip(String id) async {
+    try {
+      await _dio.delete<Map<String, dynamic>>('$_base/$id/skip');
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, 'Gagal mengembalikan usulan'));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }

@@ -23,10 +23,12 @@ import 'widgets/share_card_canvas.dart';
 import 'widgets/share_skeleton.dart';
 
 /// Buka sheet share kartu dari detail kata.
+/// [onShared]: share sheet tidak dibatalkan (bukan simpan ke galeri).
 Future<void> showWordShareSheet(
   BuildContext context, {
   required WordDetail detail,
   required ShareBackgroundRepository backgrounds,
+  VoidCallback? onShared,
 }) {
   AnalyticsService.instance.log(
     AnalyticsEvents.shareStart,
@@ -38,7 +40,11 @@ Future<void> showWordShareSheet(
     useSafeArea: true,
     clipBehavior: Clip.none,
     builder: (sheetContext) {
-      return _WordShareSheetBody(detail: detail, backgrounds: backgrounds);
+      return _WordShareSheetBody(
+        detail: detail,
+        backgrounds: backgrounds,
+        onShared: onShared,
+      );
     },
   );
 }
@@ -137,10 +143,12 @@ class _WordShareSheetBody extends StatefulWidget {
   const _WordShareSheetBody({
     required this.detail,
     required this.backgrounds,
+    this.onShared,
   });
 
   final WordDetail detail;
   final ShareBackgroundRepository backgrounds;
+  final VoidCallback? onShared;
 
   @override
   State<_WordShareSheetBody> createState() => _WordShareSheetBodyState();
@@ -468,9 +476,11 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
       final origin = box != null
           ? box.localToGlobal(Offset.zero) & box.size
           : const Rect.fromLTWH(0, 0, 1, 1);
+      final bool shared;
       if (_isVideoBackground && _videoUrl != null) {
+        bool videoShared;
         try {
-          await shareCardAsVideo(
+          videoShared = await shareCardAsVideo(
             overlayKey: _overlayKey,
             videoUrl: _videoUrl!,
             videoIsFile: _videoIsFile,
@@ -487,14 +497,15 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
               ),
             );
           }
-          await shareCardAsPng(
+          videoShared = await shareCardAsPng(
             repaintKey: _pngFallbackKey,
             caption: _cardData.caption,
             sharePositionOrigin: origin,
           );
         }
+        shared = videoShared;
       } else {
-        await shareCardAsPng(
+        shared = await shareCardAsPng(
           repaintKey: _repaintKey,
           caption: _cardData.caption,
           sharePositionOrigin: origin,
@@ -504,6 +515,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         AnalyticsEvents.shareComplete,
         params: {'word_id': widget.detail.id},
       );
+      if (shared) widget.onShared?.call();
     } catch (e) {
       if (!mounted) return;
       showFToast(

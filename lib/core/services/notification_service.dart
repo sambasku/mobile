@@ -145,16 +145,40 @@ class NotificationService {
   }
 }
 
+/// Shade/dialog hanya [AppLifecycleState.inactive]. Refresh inbox hanya
+/// setelah app benar-benar background ([AppLifecycleState.paused] atau
+/// [AppLifecycleState.hidden]).
+///
+/// ponytail: OEM yang mengirim `paused` saat shade tetap refetch.
+/// Upgrade: abaikan background yang lebih singkat dari ~1 detik.
+class NotificationResumeTracker {
+  bool _backgrounded = false;
+
+  /// True bila inbox perlu di-invalidate.
+  bool onLifecycle(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+        _backgrounded = true;
+        return false;
+      case AppLifecycleState.resumed:
+        final refresh = _backgrounded;
+        _backgrounded = false;
+        return refresh;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+        return false;
+    }
+  }
+}
+
 class _NotificationLifecycleObserver with WidgetsBindingObserver {
-  AppLifecycleState? _previous;
+  final _tracker = NotificationResumeTracker();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final previous = _previous;
-    _previous = state;
-    // Sama pola home feed: hanya saat benar-benar kembali dari non-resumed.
-    if (state != AppLifecycleState.resumed) return;
-    if (previous == null || previous == AppLifecycleState.resumed) return;
-    NotificationService.onNotificationsMayHaveChanged?.call();
+    if (_tracker.onLifecycle(state)) {
+      NotificationService.onNotificationsMayHaveChanged?.call();
+    }
   }
 }

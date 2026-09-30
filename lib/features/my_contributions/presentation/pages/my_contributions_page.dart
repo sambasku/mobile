@@ -175,17 +175,21 @@ class _ContributionsList extends ConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              for (final item in state.items) _SubmissionTile(item: item),
-            ],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: FTileGroup.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) =>
+                    _SubmissionTile(item: state.items[index]),
+              ),
+            ),
           ),
           if (state.hasMore)
             Padding(

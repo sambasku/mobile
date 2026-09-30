@@ -138,41 +138,59 @@ class HomeSearchPage extends HookConsumerWidget {
           ]
         : const <FeedActivityItem>[];
 
+    final hasError = state.errorMessage != null;
+    final showPlaceholder =
+        !feedReady || (items.isEmpty && state.errorMessage == null);
+    // 0 Kata Hari Ini, 1 spanduk, 2 judul, lalu opsional peringatan.
+    final headerCount = 3 + (hasError ? 1 : 0);
+    final bodyCount = showPlaceholder
+        ? 1
+        : items.length + (state.isLoadingMore ? 1 : 0);
+
     return RefreshIndicator(
       onRefresh: () => _refresh(ref),
-      child: ListView(
+      child: ListView.builder(
         controller: scroll,
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-        children: [
-          const WordOfDayCard(),
-          const DiscussionHomeBanner(),
-          const _FeedHeading(),
-          if (state.errorMessage != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(state.errorMessage!),
-              ),
-            ),
-          if (!feedReady)
-            const _FeedListSkeleton()
-          else if (items.isEmpty && state.errorMessage == null)
-            const _EmptyFeed()
-          else ...[
-            for (var i = 0; i < items.length; i++) ...[
-              _ActivityFeedRow(item: items[i]),
-              if (i != items.length - 1)
+        itemCount: headerCount + bodyCount,
+        itemBuilder: (context, index) {
+          if (index == 0) return const WordOfDayCard();
+          if (index == 1) return const DiscussionHomeBanner();
+          if (index == 2) return const _FeedHeading();
+          var cursor = 3;
+          if (hasError) {
+            if (index == cursor) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: FAlert(
+                  variant: FAlertVariant.destructive,
+                  title: Text(state.errorMessage!),
+                ),
+              );
+            }
+            cursor++;
+          }
+          final bodyIndex = index - cursor;
+          if (!feedReady) return const _FeedListSkeleton();
+          if (items.isEmpty && state.errorMessage == null) {
+            return const _EmptyFeed();
+          }
+          if (bodyIndex >= items.length) {
+            return const Padding(
+              padding: EdgeInsets.only(top: 12, bottom: 8),
+              child: Center(child: FCircularProgress()),
+            );
+          }
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _ActivityFeedRow(item: items[bodyIndex]),
+              if (bodyIndex != items.length - 1)
                 Divider(height: 1, color: context.theme.colors.border),
             ],
-            if (state.isLoadingMore) ...[
-              const Gap(12),
-              const Center(child: FCircularProgress()),
-              const Gap(8),
-            ],
-          ],
-        ],
+          );
+        },
       ),
     );
   }
@@ -231,9 +249,7 @@ class _ActivityFeedRow extends StatelessWidget {
             username: item.actor!.username,
           );
     final canOpenProfile = isLinkablePublicUsername(item.actor?.username);
-    final dateLabel = formatRelativeCompact(
-      DateTime.tryParse(item.createdAt),
-    );
+    final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
     final kindLabel = _friendlyKindLabel(item.kind);
     final subtitle = item.subtitle?.trim();
     final contextMeta = [
@@ -247,6 +263,12 @@ class _ActivityFeedRow extends StatelessWidget {
         ActivityKindAvatar(
           kind: item.kind,
           imageUrl: item.actor?.avatarUrl,
+          name: actorLabel,
+          // ponytail: arah dari awalan body. Plafon: copy berubah, ikon salah.
+          // Upgrade: field value di payload GET /activity.
+          voteUp: item.kind == FeedActivityKind.vote
+              ? !item.body.startsWith('Kurang setuju')
+              : null,
           size: 40,
         ),
         const Gap(12),
@@ -261,9 +283,9 @@ class _ActivityFeedRow extends StatelessWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: canOpenProfile
                           ? () => UserProfileRouter.open(
-                                context,
-                                item.actor!.username!,
-                              )
+                              context,
+                              item.actor!.username!,
+                            )
                           : null,
                       child: Text(
                         actorLabel,
@@ -350,6 +372,8 @@ class _ActivityFeedRow extends StatelessWidget {
       FeedActivityKind.example => 'Contoh',
       FeedActivityKind.searchMiss => 'Kata tidak ditemukan',
       FeedActivityKind.welcome => 'Bergabung',
+      FeedActivityKind.cardShare => 'Bagikan',
+      FeedActivityKind.suggestion => 'Usulan',
     };
   }
 

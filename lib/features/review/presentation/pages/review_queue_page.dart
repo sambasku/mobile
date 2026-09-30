@@ -138,11 +138,9 @@ class _QueueList extends ConsumerWidget {
     }
 
     void openSession({String? startId}) {
-      ref.read(reviewSessionProvider.notifier).startFromQueue(
-        state,
-        query: query,
-        startId: startId,
-      );
+      ref
+          .read(reviewSessionProvider.notifier)
+          .startFromQueue(state, query: query, startId: startId);
       context.push(
         ReviewRouter.sessionPath(
           startId: startId ?? state.items.first.id,
@@ -151,27 +149,34 @@ class _QueueList extends ConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FButton(
             onPress: () => openSession(),
             prefix: const Icon(FLucideIcons.play),
-            child: Text('Mulai tinjau (${state.items.length}${state.hasMore ? '+' : ''})'),
+            child: Text(
+              'Mulai tinjau (${state.items.length}${state.hasMore ? '+' : ''})',
+            ),
           ),
           const Gap(12),
-          FTileGroup(
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              for (final item in state.items)
-                _ReviewTile(
-                  item: item,
-                  onPress: () => openSession(startId: item.id),
-                ),
-            ],
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: refresh,
+              child: FTileGroup.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                count: state.items.length,
+                tileBuilder: (context, index) {
+                  final item = state.items[index];
+                  return _ReviewTile(
+                    item: item,
+                    onPress: () => openSession(startId: item.id),
+                  );
+                },
+              ),
+            ),
           ),
           if (state.hasMore)
             Padding(
@@ -217,10 +222,7 @@ class _ReviewTile extends StatelessWidget with FTileMixin {
           if (date.isNotEmpty) date,
         ].join(' · '),
       ),
-      prefix: Icon(
-        FLucideIcons.clipboardList,
-        color: theme.colors.primary,
-      ),
+      prefix: Icon(FLucideIcons.clipboardList, color: theme.colors.primary),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: onPress,
     );

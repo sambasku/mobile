@@ -39,6 +39,11 @@ void main() {
       expect(item.kind, FeedActivityKind.searchMiss);
     });
 
+    test('card_share dan suggestion dikenali', () {
+      expect(parseFeedActivityKind('card_share'), FeedActivityKind.cardShare);
+      expect(parseFeedActivityKind('suggestion'), FeedActivityKind.suggestion);
+    });
+
     test('kind tidak dikenal diabaikan', () {
       expect(
         mapFeedActivityItem({

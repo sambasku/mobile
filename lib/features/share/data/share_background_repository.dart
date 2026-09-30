@@ -7,6 +7,13 @@ class ShareBackgroundRepository {
 
   final Dio _dio;
 
+  /// Catat share sukses untuk feed. Fire-and-forget: gagal tidak mengganggu user.
+  void recordCardShare(String wordId) {
+    _dio
+        .post<void>('/api/v1/words/${Uri.encodeComponent(wordId)}/card-shares')
+        .catchError((_) => Response<void>(requestOptions: RequestOptions()));
+  }
+
   /// [sort] `relevant` butuh [query]; `popular` boleh query kosong (Image Explorer).
   Future<ShareBackgroundsResult> listBackgrounds(
     String query, {

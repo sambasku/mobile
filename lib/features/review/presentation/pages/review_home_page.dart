@@ -20,18 +20,15 @@ class ReviewHomePage extends ConsumerWidget {
     final role = ref.watch(authStatusProvider).value?.role;
     final showContribution = canReviewQueue(role);
     final showDiscussion = canModerateDiscussions(role);
-    final contribPending =
-        showContribution
-            ? (ref.watch(reviewQueueHasPendingProvider).value ?? false)
-            : false;
-    final suggestionsPending =
-        showContribution
-            ? (ref.watch(reviewSuggestionsHasPendingProvider).value ?? false)
-            : false;
-    final discussionPending =
-        showDiscussion
-            ? (ref.watch(discussionReviewHasPendingProvider).value ?? false)
-            : false;
+    final contribPending = showContribution
+        ? (ref.watch(reviewQueueHasPendingProvider).value ?? false)
+        : false;
+    final suggestionsPending = showContribution
+        ? (ref.watch(reviewSuggestionsHasPendingProvider).value ?? false)
+        : false;
+    final discussionPending = showDiscussion
+        ? (ref.watch(discussionReviewHasPendingProvider).value ?? false)
+        : false;
 
     return PopScope(
       canPop: false,
@@ -42,69 +39,72 @@ class ReviewHomePage extends ConsumerWidget {
         childPad: true,
         header: FHeader.nested(
           title: const Text('Area Verifikator'),
-          prefixes: [
-            FHeaderAction.back(onPress: () => leaveReview(context)),
-          ],
+          prefixes: [FHeaderAction.back(onPress: () => leaveReview(context))],
         ),
-        child: FTileGroup(
-          children: [
-            if (showContribution)
-              FTile(
-                prefix: const Icon(FLucideIcons.play),
-                title: const Text('Mulai tinjau'),
-                subtitle: contribPending
-                    ? const Text('Ada usulan yang menunggu')
-                    : const Text('Antrean kontribusi untuk ditinjau'),
-                suffix: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (contribPending) const _PendingDot(),
-                    const Icon(FLucideIcons.chevronRight),
-                  ],
+        // Align mengendurkan tinggi. Tanpa ini FScaffold memaksa FTileGroup
+        // mengisi layar, kartu memanjang, dan border bawah tidak ketat di item.
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: FTileGroup(
+            children: [
+              if (showContribution)
+                FTile(
+                  prefix: const Icon(FLucideIcons.play),
+                  title: const Text('Mulai tinjau'),
+                  subtitle: contribPending
+                      ? const Text('Ada usulan yang menunggu')
+                      : const Text('Antrean kontribusi untuk ditinjau'),
+                  suffix: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (contribPending) const _PendingDot(),
+                      const Icon(FLucideIcons.chevronRight),
+                    ],
+                  ),
+                  onPress: () => context.push(ReviewRouter.queue.path),
                 ),
-                onPress: () => context.push(ReviewRouter.queue.path),
-              ),
-            if (showContribution)
-              FTile(
-                prefix: const Icon(FLucideIcons.pencilLine),
-                title: const Text('Usulan edit'),
-                subtitle: suggestionsPending
-                    ? const Text('Ada usulan edit yang menunggu')
-                    : const Text('Antrean usulan perubahan kata'),
-                suffix: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (suggestionsPending) const _PendingDot(),
-                    const Icon(FLucideIcons.chevronRight),
-                  ],
+              if (showContribution)
+                FTile(
+                  prefix: const Icon(FLucideIcons.pencilLine),
+                  title: const Text('Usulan edit'),
+                  subtitle: suggestionsPending
+                      ? const Text('Ada usulan edit yang menunggu')
+                      : const Text('Antrean usulan perubahan kata'),
+                  suffix: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (suggestionsPending) const _PendingDot(),
+                      const Icon(FLucideIcons.chevronRight),
+                    ],
+                  ),
+                  onPress: () => context.push(ReviewRouter.suggestions.path),
                 ),
-                onPress: () => context.push(ReviewRouter.suggestions.path),
-              ),
-            if (showDiscussion)
-              FTile(
-                prefix: const Icon(FLucideIcons.messagesSquare),
-                title: const Text('Tinjauan Diskusi'),
-                subtitle: discussionPending
-                    ? const Text('Ada diskusi yang menunggu')
-                    : const Text('Antrean Ruang Diskusi untuk ditinjau'),
-                suffix: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (discussionPending) const _PendingDot(),
-                    const Icon(FLucideIcons.chevronRight),
-                  ],
+              if (showDiscussion)
+                FTile(
+                  prefix: const Icon(FLucideIcons.messagesSquare),
+                  title: const Text('Tinjauan Diskusi'),
+                  subtitle: discussionPending
+                      ? const Text('Ada diskusi yang menunggu')
+                      : const Text('Antrean Ruang Diskusi untuk ditinjau'),
+                  suffix: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (discussionPending) const _PendingDot(),
+                      const Icon(FLucideIcons.chevronRight),
+                    ],
+                  ),
+                  onPress: () => context.push(ReviewRouter.discussions.path),
                 ),
-                onPress: () => context.push(ReviewRouter.discussions.path),
-              ),
-            if (showContribution)
-              FTile(
-                prefix: const Icon(FLucideIcons.history),
-                title: const Text('Riwayat tinjauan'),
-                subtitle: const Text('Keputusan yang sudah Anda berikan'),
-                suffix: const Icon(FLucideIcons.chevronRight),
-                onPress: () => context.push(ReviewRouter.history.path),
-              ),
-          ],
+              if (showContribution)
+                FTile(
+                  prefix: const Icon(FLucideIcons.history),
+                  title: const Text('Riwayat tinjauan'),
+                  subtitle: const Text('Keputusan yang sudah Anda berikan'),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push(ReviewRouter.history.path),
+                ),
+            ],
+          ),
         ),
       ),
     );

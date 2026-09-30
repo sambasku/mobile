@@ -36,8 +36,12 @@ Future<Uint8List> captureShareCardPngBytes(GlobalKey repaintKey) async {
   return byteData.buffer.asUint8List();
 }
 
+/// `unavailable` (platform tidak melapor hasil) dihitung sukses.
+bool _notDismissed(ShareResult r) => r.status != ShareResultStatus.dismissed;
+
 /// Render [RepaintBoundary] → PNG temp → native share sheet.
-Future<void> shareCardAsPng({
+/// Returns `false` jika user menutup share sheet tanpa memilih tujuan.
+Future<bool> shareCardAsPng({
   required GlobalKey repaintKey,
   required String caption,
   required Rect sharePositionOrigin,
@@ -50,13 +54,14 @@ Future<void> shareCardAsPng({
   );
   await file.writeAsBytes(bytes, flush: true);
 
-  await SharePlus.instance.share(
+  final result = await SharePlus.instance.share(
     ShareParams(
       files: [XFile(file.path, mimeType: 'image/png')],
       text: caption,
       sharePositionOrigin: sharePositionOrigin,
     ),
   );
+  return _notDismissed(result);
 }
 
 /// Render [RepaintBoundary] → simpan PNG ke galeri perangkat.
@@ -93,7 +98,7 @@ Future<String> _downloadToTemp(String url) async {
   return file.path;
 }
 
-Future<void> shareCardAsVideo({
+Future<bool> shareCardAsVideo({
   required GlobalKey overlayKey,
   required String videoUrl,
   required bool videoIsFile,
@@ -113,13 +118,14 @@ Future<void> shareCardAsVideo({
     overlayPngPath: overlay.path,
   );
 
-  await SharePlus.instance.share(
+  final result = await SharePlus.instance.share(
     ShareParams(
       files: [XFile(outPath, mimeType: 'video/mp4')],
       text: caption,
       sharePositionOrigin: sharePositionOrigin,
     ),
   );
+  return _notDismissed(result);
 }
 
 Future<bool> saveCardVideoToGallery({

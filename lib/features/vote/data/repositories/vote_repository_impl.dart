@@ -175,6 +175,33 @@ class VoteRepositoryImpl implements VoteRepository {
     }
   }
 
+  @override
+  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async {
+    try {
+      await _dio.post<Map<String, dynamic>>(
+        '/api/v1/votes/skips',
+        data: {'word_id': wordId},
+      );
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(VoteFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async {
+    try {
+      await _dio.delete<Map<String, dynamic>>('/api/v1/votes/skips/$wordId');
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(VoteFailure(error.toString()));
+    }
+  }
+
   /// Query param `targets` = daftar "type:id" dipisah koma (max 50 pasang,
   /// validator backend yang menegakkan).
   Map<String, dynamic> _targetsQuery(List<VoteTarget> targets) => {

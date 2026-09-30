@@ -6,6 +6,7 @@ import '../../data/repositories/review_repository_impl.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/repositories/review_repository.dart';
 import '../../domain/review_access.dart';
+import 'review_submit_queue.dart';
 
 final reviewRepositoryProvider = Provider<ReviewRepository>(
   (ref) => ReviewRepositoryImpl(ref.watch(dioProvider)),
@@ -18,6 +19,7 @@ final reviewQueueHasPendingProvider = FutureProvider<bool>((ref) async {
   final page = await ref.watch(reviewRepositoryProvider).list(
     status: 'pending',
     limit: 1,
+    hideSkipped: true,
   );
   return page.match((_) => false, (value) => value.items.isNotEmpty);
 });
@@ -85,6 +87,7 @@ class ReviewQueueController extends AsyncNotifier<ReviewQueueState> {
       entityType: query.entityType,
       wordId: query.wordId,
       limit: _pageSize,
+      hideSkipped: true,
     );
     return page.match(
       (failure) => throw failure,
@@ -106,6 +109,7 @@ class ReviewQueueController extends AsyncNotifier<ReviewQueueState> {
       wordId: query.wordId,
       limit: _pageSize,
       cursor: current.nextCursor,
+      hideSkipped: true,
     );
     page.match(
       (failure) {
@@ -281,6 +285,7 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
         entityType: query.entityType,
         wordId: query.wordId,
         limit: _pageSize,
+        hideSkipped: true,
       );
       page.match((_) {}, (value) {
         if (value.items.isEmpty) return;
@@ -337,21 +342,34 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
     _prefetchAround();
   }
 
-  /// Lewati tanpa keputusan - usulan tetap pending di server/antrean.
-  /// Hanya keluar dari sesi saat ini. Menyimpan [rewindSkipId] untuk undo.
+  /// Lewati tanpa keputusan - usulan tetap pending untuk verifikator lain.
+  /// Mencatat skip di server supaya tidak kembali ke user ini.
   Future<bool> skipCurrent() async {
     final current = state;
     final id = current?.currentId;
     if (current == null || id == null) return false;
+    ref.read(reviewQueueProvider(current.query).notifier).drop(id);
+    ref.read(reviewSubmitQueueProvider.notifier).enqueueSkip(id);
     return _advancePast(id, rewindSkipId: id);
   }
 
   /// Kembalikan item yang baru di-lewati ke posisi aktif.
-  /// Hanya untuk skip (approve/reject tidak punya reverse API).
-  bool rewindSkip() {
+  /// Membatalkan POST skip yang masih antre, atau DELETE jika sudah terkirim.
+  Future<bool> rewindSkip() async {
     final current = state;
     final id = current?.rewindSkipId;
     if (current == null || id == null) return false;
+
+    final queue = ref.read(reviewSubmitQueueProvider.notifier);
+    final cancelled = queue.cancelQueued(id);
+    if (!cancelled) {
+      await queue.waitUntilNotInFlight(id);
+      final result = await ref.read(reviewRepositoryProvider).unskip(id);
+      final failed = result.match((_) => true, (_) => false);
+      if (failed) return false;
+    }
+    ref.invalidate(reviewQueueHasPendingProvider);
+    ref.invalidate(reviewQueueProvider(current.query));
 
     final ids = List<String>.of(current.ids);
     // Sudah di antrean (race) → cukup pindah index ke sana.
@@ -442,6 +460,7 @@ class ReviewSessionController extends Notifier<ReviewSessionState?> {
       wordId: current.query.wordId,
       limit: _pageSize,
       cursor: current.nextCursor,
+      hideSkipped: true,
     );
 
     return page.match(

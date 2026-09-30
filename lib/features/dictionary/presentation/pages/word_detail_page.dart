@@ -152,10 +152,13 @@ void openWordShareSheet(
   WidgetRef ref,
   WordDetail detail,
 ) {
+  final repo = ShareBackgroundRepository(ref.read(dioProvider));
+  final isAuth = ref.read(authStatusProvider).value?.isAuth ?? false;
   showWordShareSheet(
     context,
     detail: detail,
-    backgrounds: ShareBackgroundRepository(ref.read(dioProvider)),
+    backgrounds: repo,
+    onShared: isAuth ? () => repo.recordCardShare(detail.id) : null,
   );
 }
 
