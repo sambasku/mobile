@@ -47,11 +47,13 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
       key: _cardKey,
       itemKey: widget.itemKey,
       enabled: widget.enabled,
-      // Tab Kontribusi: deck di luar scroll parent (lihat ActivityPage).
-      allowNestedVerticalScroll: false,
+      // Isi kartu (detail kata) bisa panjang: swipe-atas lewati hanya saat
+      // isi muat, selain itu lewati lewat tombol.
+      allowNestedVerticalScroll: true,
       fallbackHeight: 240,
-      positiveLabel: 'Masuk akal',
-      negativeLabel: 'Kurang pas',
+      hintId: 'vote-deck',
+      positiveLabel: 'Setuju',
+      negativeLabel: 'Kurang setuju',
       skipLabel: 'Lewati',
       overlayStyle: SwipeDecisionOverlayStyle.icon,
       positiveIcon: FLucideIcons.arrowBigUp,

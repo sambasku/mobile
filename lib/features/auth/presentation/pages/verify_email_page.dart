@@ -110,7 +110,7 @@ class VerifyEmailPage extends HookConsumerWidget {
             crossAxisAlignment: .stretch,
             children: [
               Text(
-                'Masukkan kode 8 karakter',
+                'Masukkan kode 6 karakter',
                 textAlign: .center,
                 style: theme.typography.xl.copyWith(
                   fontWeight: .w600,

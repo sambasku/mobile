@@ -5,14 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../otp_code.dart';
 
-/// Slot [FOtpField] untuk OTP 8 karakter: XXXX | XXXX.
+/// Slot [FOtpField] untuk OTP 6 karakter: XXX | YYY.
 const otpFieldChildren = <Widget>[
   FOtpItem(),
   FOtpItem(),
   FOtpItem(),
-  FOtpItem(),
   FOtpDivider(),
-  FOtpItem(),
   FOtpItem(),
   FOtpItem(),
   FOtpItem(),
@@ -42,7 +40,7 @@ FOtpFieldStyleDelta otpFieldStyle() {
   );
 }
 
-/// Input OTP 8 karakter 0-9A-Z, tampilan XXXX-XXXX (untuk [FTextField]).
+/// Input OTP 6 karakter 0-9A-Z, tampilan XXX-YYY (untuk [FTextField]).
 class OtpCodeDashFormatter extends TextInputFormatter {
   const OtpCodeDashFormatter();
 
@@ -59,7 +57,7 @@ class OtpCodeDashFormatter extends TextInputFormatter {
   }
 }
 
-/// Input OTP 8 karakter 0-9A-Z tanpa dash (divider visual di [FOtpField]).
+/// Input OTP 6 karakter 0-9A-Z tanpa dash (divider visual di [FOtpField]).
 class OtpCodeAlphanumericFormatter extends TextInputFormatter {
   const OtpCodeAlphanumericFormatter();
 

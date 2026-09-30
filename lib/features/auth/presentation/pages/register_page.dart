@@ -206,7 +206,7 @@ class RegisterPage extends HookConsumerWidget {
               ),
               const Gap(8),
               Text(
-                'Kami kirim kode 8 karakter 0-9A-Z ke email. Verifikasi dulu sebelum masuk.',
+                'Kami kirim kode 6 karakter 0-9A-Z ke email. Verifikasi dulu sebelum masuk.',
                 textAlign: .center,
                 style: theme.typography.sm.copyWith(
                   color: theme.colors.mutedForeground,

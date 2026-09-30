@@ -1582,12 +1582,11 @@ packages:
     source: hosted
     version: "10.2.9"
   riverpod:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: riverpod
-      sha256: "17100416c51db7810c71a7bb2c34d1f881faa0074fd452afb0c4db6f8f126c76"
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/riverpod"
+      relative: true
+    source: path
     version: "3.3.2"
   riverpod_analyzer_utils:
     dependency: transitive

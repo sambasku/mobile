@@ -109,6 +109,20 @@ class ReviewDetail {
     return entity['isVerified'] == true || entity['is_verified'] == true;
   }
 
+  /// Id kata induk dari kontribusi ini.
+  ///
+  /// Kontribusi `word` memakai kata itu sendiri sebagai entity. Untuk anak
+  /// (makna, contoh, gambar, audio, pelafalan) payload detail sudah membawa
+  /// `wordId` induk, jadi aksi yang butuh "kata yang sedang ditinjau" -
+  /// misalnya menambah makna - tidak perlu lookup kedua.
+  String? get wordId {
+    if (contribution.entityType == 'word') return contribution.entityId;
+    final raw = entity['wordId'];
+    if (raw == null) return null;
+    final id = raw.toString().trim();
+    return id.isEmpty ? null : id;
+  }
+
   String? get wordIdForUnverify {
     if (contribution.entityType == 'word') {
       return contribution.entityId;

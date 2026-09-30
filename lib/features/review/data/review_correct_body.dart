@@ -1,153 +1,162 @@
-/// Body POST correct untuk entity kata. Replace semantics di server:
-/// field yang tidak dikirim ikut terhapus, jadi gambar, relasi, variasi,
-/// dan pelafalan pertama dibawa ulang dari entity detail (camelCase).
+/// Contoh kalimat di form koreksi. [sourceIndex] = posisi contoh asal di
+/// `meanings[i].examples` entity (null = contoh baru dari verifikator).
+typedef CorrectExampleEdit = ({String source, String target, int? sourceIndex});
+
+/// Makna di form koreksi. [sourceIndex] = posisi makna asal di
+/// `entity['meanings']` (null = makna baru). Dipakai untuk membawa
+/// terjemahan lain dan metadata contoh yang tidak diedit form.
+typedef CorrectMeaningEdit = ({
+  int? sourceIndex,
+  String definition,
+  String translation,
+  String? translationLanguageId,
+  String? wordClassId,
+  String meaningSource,
+  List<CorrectExampleEdit> examples,
+});
+
+typedef CorrectRelationEdit = ({String wordId, String relationType});
+
+/// Body POST correct untuk entity kata. Replace semantics di server: field
+/// yang tidak dikirim ikut terhapus, jadi daftar makna, relasi, dan variasi
+/// dikirim utuh dari form, sedangkan gambar, kategori, dan pelafalan pertama
+/// dibawa ulang dari entity detail (camelCase).
 Map<String, dynamic> buildWordCorrectBody({
   required Map<String, dynamic> entity,
   required String lemma,
   required String? notes,
   required String wordType,
-  required List<
-    ({
-      String definition,
-      String translation,
-      String? wordClassId,
-      String meaningSource,
-    })
-  >
-  meaningEdits,
+  required List<CorrectMeaningEdit> meanings,
+  required List<CorrectRelationEdit> relatedWords,
+  required List<String> variants,
   required bool publish,
   String? comment,
 }) {
-  final meaningsRaw = entity['meanings'];
-  final meanings = <Map<String, dynamic>>[];
-  if (meaningsRaw is List) {
-    for (var i = 0; i < meaningsRaw.length; i++) {
-      final meaning = _map(meaningsRaw[i]);
-      final edit = i < meaningEdits.length ? meaningEdits[i] : null;
-      final definition =
-          (edit?.definition ?? meaning['definition']?.toString() ?? '').trim();
-      final wordClass = _map(meaning['wordClass']);
-      final editedClass = edit?.wordClassId?.trim() ?? '';
-      final wordClassId = editedClass.isNotEmpty
-          ? editedClass
-          : (wordClass['id']?.toString() ?? '');
-      final translations = <Map<String, dynamic>>[];
-      final existing = meaning['translations'];
-      if (existing is List && existing.isNotEmpty) {
-        for (var t = 0; t < existing.length; t++) {
-          final row = _map(existing[t]);
-          final text = t == 0 && edit != null
-              ? edit.translation.trim()
-              : (row['translationText']?.toString() ?? '').trim();
-          if (text.isEmpty) continue;
-          final languageId = row['languageId']?.toString();
-          if (languageId == null || languageId.isEmpty) continue;
-          translations.add({
-            'language_id': languageId,
-            'translation_text': text,
-            'translation_type': row['translationType']?.toString() ?? 'direct',
-          });
-        }
-      }
-      final examples = <Map<String, dynamic>>[];
-      final exampleRaw = meaning['examples'];
-      if (exampleRaw is List) {
-        for (final raw in exampleRaw) {
-          final example = _map(raw);
-          final source = example['sourceSentence']?.toString().trim() ?? '';
-          final sourceLanguageId = example['sourceLanguageId']?.toString();
-          if (source.isEmpty ||
-              sourceLanguageId == null ||
-              sourceLanguageId.isEmpty) {
-            continue;
-          }
-          examples.add({
-            'source_language_id': sourceLanguageId,
-            'source_sentence': source,
-            if (example['targetLanguageId'] != null)
-              'target_language_id': example['targetLanguageId'],
-            if ((example['targetSentence']?.toString().trim().isNotEmpty ??
-                false))
-              'target_sentence': example['targetSentence'],
-            if (example['sourceType'] != null)
-              'source_type': example['sourceType'],
-          });
-        }
-      }
-      if (wordClassId.isEmpty) continue;
-      meanings.add({
-        'word_class_id': wordClassId,
-        'definition': definition.isEmpty ? '-' : definition,
-        'order_index': meaning['orderIndex'] is int ? meaning['orderIndex'] : i,
-        'is_have_definition': definition.isNotEmpty && definition != '-',
-        'is_have_translation': translations.isNotEmpty,
-        'meaning_source':
-            edit?.meaningSource ??
-            meaning['meaningSource']?.toString() ??
-            'manual',
-        'translations': translations,
-        if (examples.isNotEmpty) 'examples': examples,
+  final sourceMeanings = _list(entity['meanings']);
+  final wordLanguageId = entity['languageId']?.toString();
+  final meaningBodies = <Map<String, dynamic>>[];
+  for (final edit in meanings) {
+    final source = _at(sourceMeanings, edit.sourceIndex);
+    final editedClass = edit.wordClassId?.trim() ?? '';
+    final wordClassId = editedClass.isNotEmpty
+        ? editedClass
+        : (_map(source['wordClass'])['id']?.toString() ?? '');
+    if (wordClassId.isEmpty) continue;
+
+    final sourceTranslations = _list(source['translations']);
+    final firstSource = _at(sourceTranslations, 0);
+    final translationLanguageId =
+        edit.translationLanguageId ?? firstSource['languageId']?.toString();
+    final translations = <Map<String, dynamic>>[];
+    final translation = edit.translation.trim();
+    if (translation.isNotEmpty &&
+        translationLanguageId != null &&
+        translationLanguageId.isNotEmpty) {
+      translations.add({
+        'language_id': translationLanguageId,
+        'translation_text': translation,
+        'translation_type': firstSource['translationType']?.toString() ?? 'direct',
       });
     }
+    for (var t = 1; t < sourceTranslations.length; t++) {
+      final row = _map(sourceTranslations[t]);
+      final text = row['translationText']?.toString().trim() ?? '';
+      final languageId = row['languageId']?.toString();
+      if (text.isEmpty || languageId == null || languageId.isEmpty) continue;
+      translations.add({
+        'language_id': languageId,
+        'translation_text': text,
+        'translation_type': row['translationType']?.toString() ?? 'direct',
+      });
+    }
+
+    final sourceExamples = _list(source['examples']);
+    final examples = <Map<String, dynamic>>[];
+    for (final example in edit.examples) {
+      final sentence = example.source.trim();
+      if (sentence.isEmpty) continue;
+      final original = _at(sourceExamples, example.sourceIndex);
+      final sourceLanguageId =
+          original['sourceLanguageId']?.toString() ?? wordLanguageId;
+      if (sourceLanguageId == null || sourceLanguageId.isEmpty) continue;
+      final target = example.target.trim();
+      final targetLanguageId =
+          original['targetLanguageId']?.toString() ?? translationLanguageId;
+      examples.add({
+        'source_language_id': sourceLanguageId,
+        'source_sentence': sentence,
+        if (target.isNotEmpty && targetLanguageId != null) ...{
+          'target_language_id': targetLanguageId,
+          'target_sentence': target,
+        },
+        if (original['sourceType'] != null) 'source_type': original['sourceType'],
+      });
+    }
+
+    final definition = edit.definition.trim();
+    meaningBodies.add({
+      'word_class_id': wordClassId,
+      'definition': definition.isEmpty ? '-' : definition,
+      'order_index': meaningBodies.length,
+      'is_have_definition': definition.isNotEmpty && definition != '-',
+      'is_have_translation': translations.isNotEmpty,
+      'meaning_source': edit.meaningSource,
+      'translations': translations,
+      if (examples.isNotEmpty) 'examples': examples,
+    });
   }
 
   final images = <Map<String, dynamic>>[];
-  final imageRaw = entity['images'];
-  if (imageRaw is List) {
-    for (final raw in imageRaw) {
-      final image = _map(raw);
-      final url = image['url']?.toString() ?? '';
-      final fileId = image['providerFileId']?.toString() ?? '';
-      if (url.isEmpty || fileId.isEmpty) continue;
-      images.add({
-        'url': url,
-        'provider_file_id': fileId,
-        if ((image['altText']?.toString().trim().isNotEmpty ?? false))
-          'alt_text': image['altText'],
-        'is_primary': image['isPrimary'] == true,
-      });
-    }
+  for (final raw in _list(entity['images'])) {
+    final image = _map(raw);
+    final url = image['url']?.toString() ?? '';
+    final fileId = image['providerFileId']?.toString() ?? '';
+    if (url.isEmpty || fileId.isEmpty) continue;
+    images.add({
+      'url': url,
+      'provider_file_id': fileId,
+      if ((image['altText']?.toString().trim().isNotEmpty ?? false))
+        'alt_text': image['altText'],
+      'is_primary': image['isPrimary'] == true,
+    });
   }
 
   final related = <Map<String, dynamic>>[];
-  final relatedRaw = entity['relatedWords'];
-  if (relatedRaw is List) {
-    for (final raw in relatedRaw) {
-      final row = _map(raw);
-      final wordId = row['wordId']?.toString();
-      final relation = row['relationType']?.toString();
-      if (wordId == null ||
-          wordId.isEmpty ||
-          relation == null ||
-          relation.isEmpty) {
-        continue;
-      }
-      related.add({'word_id': wordId, 'relation_type': relation});
+  final seenRelations = <String>{};
+  for (final relation in relatedWords) {
+    if (relation.wordId.isEmpty || relation.relationType.isEmpty) continue;
+    if (!seenRelations.add('${relation.relationType}:${relation.wordId}')) {
+      continue;
     }
+    related.add({
+      'word_id': relation.wordId,
+      'relation_type': relation.relationType,
+    });
   }
 
-  final variants = <Map<String, dynamic>>[];
-  final variantRaw = entity['variants'];
-  if (variantRaw is List) {
-    for (final raw in variantRaw) {
-      final row = _map(raw);
-      final form = row['form']?.toString().trim() ?? '';
-      final type = row['variantType']?.toString();
-      if (form.isEmpty || type == null || type.isEmpty) continue;
-      variants.add({
-        'form': form,
-        'variant_type': type,
-        if (row['affixType'] != null) 'affix_type': row['affixType'],
-        if ((row['affixValue']?.toString().trim().isNotEmpty ?? false))
-          'affix_value': row['affixValue'],
-        if (row['dialectId'] != null) 'dialect_id': row['dialectId'],
-      });
-    }
+  final sourceVariants = _list(entity['variants']).map(_map).toList();
+  final variantBodies = <Map<String, dynamic>>[];
+  final seenForms = <String>{};
+  for (final raw in variants) {
+    final form = raw.trim();
+    if (form.isEmpty || !seenForms.add(form.toLowerCase())) continue;
+    final row = sourceVariants.firstWhere(
+      (v) => v['form']?.toString().trim().toLowerCase() == form.toLowerCase(),
+      orElse: () => const {},
+    );
+    variantBodies.add({
+      'form': form,
+      'variant_type': row['variantType']?.toString() ?? 'alternative',
+      if (row['affixType'] != null) 'affix_type': row['affixType'],
+      if ((row['affixValue']?.toString().trim().isNotEmpty ?? false))
+        'affix_value': row['affixValue'],
+      if (row['dialectId'] != null) 'dialect_id': row['dialectId'],
+    });
   }
 
-  final pronunciations = entity['pronunciations'];
+  final pronunciations = _list(entity['pronunciations']);
   Map<String, dynamic>? pronunciation;
-  if (pronunciations is List && pronunciations.isNotEmpty) {
+  if (pronunciations.isNotEmpty) {
     final first = _map(pronunciations.first);
     final value = first['value']?.toString().trim() ?? '';
     if (value.isNotEmpty) {
@@ -159,12 +168,9 @@ Map<String, dynamic> buildWordCorrectBody({
   }
 
   final categories = <String>[];
-  final categoryRaw = entity['categories'];
-  if (categoryRaw is List) {
-    for (final raw in categoryRaw) {
-      final id = _map(raw)['id']?.toString();
-      if (id != null && id.isNotEmpty) categories.add(id);
-    }
+  for (final raw in _list(entity['categories'])) {
+    final id = _map(raw)['id']?.toString();
+    if (id != null && id.isNotEmpty) categories.add(id);
   }
 
   final trimmedNotes = notes?.trim();
@@ -176,10 +182,10 @@ Map<String, dynamic> buildWordCorrectBody({
     'lemma': lemma.trim(),
     'word_type': wordType,
     if (trimmedNotes != null && trimmedNotes.isNotEmpty) 'notes': trimmedNotes,
-    'meanings': meanings,
+    'meanings': meaningBodies,
     'category_ids': categories,
     if (related.isNotEmpty) 'related_words': related,
-    if (variants.isNotEmpty) 'variants': variants,
+    if (variantBodies.isNotEmpty) 'variants': variantBodies,
     if (images.isNotEmpty) 'images': images,
     'pronunciation': ?pronunciation,
     'publish': publish,
@@ -192,3 +198,10 @@ Map<String, dynamic> _map(Object? raw) {
   if (raw is Map) return Map<String, dynamic>.from(raw);
   return const {};
 }
+
+List<Object?> _list(Object? raw) => raw is List ? raw : const [];
+
+Map<String, dynamic> _at(List<Object?> list, int? index) =>
+    index != null && index >= 0 && index < list.length
+    ? _map(list[index])
+    : const {};

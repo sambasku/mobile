@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../flavors.dart';
+import 'beta_badge.dart';
 
 const kBrandMarkDarkAsset = 'assets/icons/logo_alpha_dark.png';
 const kBrandMarkLightAsset = 'assets/icons/logo_alpha_light.png';
-const kBrandWordmarkDarkAsset = 'assets/icons/logo_horizontal_dark.png';
-const kBrandWordmarkLightAsset = 'assets/icons/logo_horizontal_light.png';
+const kBrandWordmarkDarkAsset = 'assets/svg/sambasku_header_dark.svg';
+const kBrandWordmarkLightAsset = 'assets/svg/sambasku_header_light.svg';
 
 /// Logo stacked (perisai + wordmark) adaptif terang/gelap.
 /// Login, onboarding, about. Teks "SambasKu" sudah di aset.
@@ -92,25 +94,27 @@ class BrandLogo extends StatelessWidget {
 }
 
 /// Wordmark landscape adaptif (putih di gelap / navy-gold di terang).
+/// App bar tab Home.
 class BrandWordmark extends StatelessWidget {
-  const BrandWordmark({super.key, this.height = 32, this.frameBuilder});
+  const BrandWordmark({super.key, this.height = 28});
 
   final double height;
-  final ImageFrameBuilder? frameBuilder;
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Image.asset(
+    final wordmark = SvgPicture.asset(
       dark ? kBrandWordmarkDarkAsset : kBrandWordmarkLightAsset,
       height: height,
       fit: BoxFit.contain,
-      frameBuilder: frameBuilder,
-      errorBuilder: (context, error, stackTrace) => Icon(
-        Icons.menu_book_rounded,
-        size: height,
-        color: Colors.grey.shade400,
-      ),
+      alignment: Alignment.centerLeft,
+      semanticsLabel: 'SambasKu',
+    );
+    if (!F.isBeta) return wordmark;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [wordmark, const SizedBox(width: 4), const BetaBadge()],
     );
   }
 }

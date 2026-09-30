@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../domain/explore_category.dart';
@@ -40,7 +41,7 @@ class ExplorePage extends StatelessWidget {
     return Column(
       children: [
         const FHeader(
-          title: Text('Eksplorasi'),
+          title: BrandWordmark(),
           suffixes: [ThemeToggleHeaderAction()],
         ),
         // Expanded + LayoutBuilder: hero map di-clamp ke ruang tersisa supaya

@@ -9,10 +9,13 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/busy_aware_icon.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../dictionary/presentation/providers/audio_player_controller.dart';
+import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
 import '../providers/vote_submit_queue.dart';
 import 'vote_deck_swipe_card.dart';
+import 'vote_deck_word_card.dart';
 
 /// Aksi yang sedang diproses di deck vote (spinner hanya di rewind).
 enum VotePendingAction { rewind }
@@ -37,18 +40,40 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider);
+    final deck = ref.watch(voteDeckControllerProvider).value;
+    final remaining = deck == null || deck.items.isEmpty
+        ? null
+        : 'sisa ${deck.items.length}${deck.hasMore ? '+' : ''}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Bantu nilai agar arti kata lebih akurat',
-          style: theme.typography.sm.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colors.mutedForeground,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Bantu nilai agar arti kata lebih akurat',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ),
+            if (remaining != null) ...[
+              const Gap(8),
+              Text(
+                remaining,
+                style: theme.typography.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
         ),
-        const Gap(12),
+        const Gap(8),
         Expanded(
           child: auth.when(
             loading: () => const _VoteDeckCardPlaceholder(),
@@ -82,22 +107,24 @@ class _GuestDeck extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        samples.when(
-          loading: () => const _VoteDeckCardPlaceholder(),
-          error: (_, _) => const _VoteDeckCardPlaceholder(),
-          data: (items) {
-            if (items.isEmpty) {
-              return const _VoteDeckCardPlaceholder(enabled: false);
-            }
-            final w = items.first;
-            return _CardShell(
-              child: _WordCardFace(
-                lemma: w.lemma,
-                sense: w.sense,
-                wordType: w.wordType,
-              ),
-            );
-          },
+        Expanded(
+          child: samples.when(
+            loading: () => const _VoteDeckCardPlaceholder(),
+            error: (_, _) => const _VoteDeckCardPlaceholder(),
+            data: (items) {
+              if (items.isEmpty) {
+                return const _VoteDeckCardPlaceholder(enabled: false);
+              }
+              final w = items.first;
+              return _CardShell(
+                child: VoteDeckWordFace(
+                  lemma: w.lemma,
+                  sense: w.sense,
+                  wordType: w.wordType,
+                ),
+              );
+            },
+          ),
         ),
         const Gap(12),
         const FAlert(
@@ -109,6 +136,7 @@ class _GuestDeck extends ConsumerWidget {
           onPress: () => context.push('/login'),
           child: const Text('Masuk'),
         ),
+        const Gap(12),
       ],
     );
   }
@@ -217,47 +245,30 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         }
 
         final item = state.items.first;
-        final remainingHint = state.hasMore
-            ? '${state.items.length}+'
-            : '${state.items.length}';
+        if (state.items.length > 1) _prefetchDetail(state.items[1].id);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Nilai · sisa $remainingHint',
-              style: theme.typography.xs.copyWith(
-                color: theme.colors.mutedForeground,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Gap(8),
             Expanded(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 220),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: SizedBox(
-                    key: ValueKey('card-${item.id}'),
-                    height: 240,
-                    child: VoteDeckSwipeCard(
-                      itemKey: item.id,
-                      enabled: !_rewinding,
-                      onSwiped: (dir) =>
-                          _cast(context, ref, item: item, direction: dir),
-                      child: _WordCardFace(
-                        lemma: item.lemma,
-                        sense: item.sense,
-                        wordType: item.wordType,
-                      ),
-                    ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                // expand: Stack AnimatedSwitcher memberi constraint longgar.
+                child: SizedBox.expand(
+                  key: ValueKey('card-${item.id}'),
+                  child: VoteDeckSwipeCard(
+                    itemKey: item.id,
+                    enabled: !_rewinding,
+                    onSwiped: (dir) =>
+                        _cast(context, ref, item: item, direction: dir),
+                    child: VoteDeckWordCard(item: item),
                   ),
                 ),
               ),
             ),
-            const Gap(10),
+            const Gap(8),
             _VoteDeckActionBar(
               pendingAction: widget.pendingAction,
               canRewind: state.canRewind,
@@ -286,11 +297,22 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                         direction: VoteDeckSwipeDirection.agree,
                       ),
               onRewind: () => _rewind(context, ref),
+              // Kartu tidak digeser: deck keepAlive, kembali ke kata yang sama.
+              onFix: () => context.push('/suggest-edit/${item.id}'),
             ),
           ],
         );
       },
     );
+  }
+
+  // ponytail: wordDetailProvider keepAlive, jadi cache tumbuh satu entri per
+  // kata yang dinilai selama sesi. Kalau memori jadi masalah, pakai varian
+  // autoDispose khusus deck.
+  void _prefetchDetail(String wordId) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(wordDetailProvider(wordId).future).ignore();
+    });
   }
 
   Future<bool> _cast(
@@ -300,6 +322,8 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     required VoteDeckSwipeDirection direction,
   }) async {
     if (_rewinding) return false;
+    // AnimatedSwitcher menahan kartu lama ~220ms; audio berhenti saat swipe.
+    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
 
     if (direction == VoteDeckSwipeDirection.skip) {
       ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item);
@@ -345,7 +369,8 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   }
 }
 
-/// Action bar: [undo][skip][downvote][upvote] - vote sejajar di kanan.
+/// Action bar: [Perbaiki] [undo][skip][downvote][upvote] - pola sama dengan
+/// action bar sesi tinjau (Koreksi di kiri, vote sejajar di kanan).
 class _VoteDeckActionBar extends StatelessWidget {
   const _VoteDeckActionBar({
     required this.pendingAction,
@@ -354,10 +379,14 @@ class _VoteDeckActionBar extends StatelessWidget {
     required this.onSkip,
     required this.onAgree,
     required this.onRewind,
+    this.onFix,
   });
 
   final VotePendingAction? pendingAction;
   final bool canRewind;
+
+  /// Buka form usul perubahan untuk kartu aktif; null = tombol disembunyikan.
+  final VoidCallback? onFix;
   final VoidCallback? onDisagree;
   final VoidCallback? onSkip;
   final VoidCallback? onAgree;
@@ -378,13 +407,30 @@ class _VoteDeckActionBar extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                'Vote',
-                style: theme.typography.xs.copyWith(
-                  color: theme.colors.mutedForeground,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: onFix == null
+                  ? const SizedBox.shrink()
+                  // Layar sempit (sekitar 320dp): ikon saja, bukan "P...".
+                  : LayoutBuilder(
+                      builder: (context, constraints) => constraints.maxWidth < 100
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: FButton.icon(
+                                variant: FButtonVariant.outline,
+                                size: FButtonSizeVariant.sm,
+                                semanticsLabel: 'Perbaiki kata ini',
+                                onPress: _rewinding ? null : onFix,
+                                child: const Icon(FLucideIcons.pencil),
+                              ),
+                            )
+                          : FButton(
+                              variant: FButtonVariant.outline,
+                              size: FButtonSizeVariant.sm,
+                              semanticsLabel: 'Perbaiki kata ini',
+                              onPress: _rewinding ? null : onFix,
+                              prefix: const Icon(FLucideIcons.pencil),
+                              child: const Text('Perbaiki'),
+                            ),
+                    ),
             ),
             const Gap(8),
             FButton.icon(
@@ -412,7 +458,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Kurang pas',
+              semanticsLabel: 'Kurang setuju',
               onPress: _rewinding || onDisagree == null ? null : onDisagree,
               child: Icon(
                 FLucideIcons.arrowBigDown,
@@ -423,7 +469,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Masuk akal',
+              semanticsLabel: 'Setuju',
               onPress: _rewinding || onAgree == null ? null : onAgree,
               child: Icon(
                 FLucideIcons.arrowBigUp,
@@ -453,7 +499,7 @@ class _CardShell extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: SizedBox(height: 200, child: child),
+        child: SizedBox.expand(child: child),
       ),
     );
   }
@@ -486,8 +532,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: theme.colors.border),
       ),
-      child: SizedBox(
-        height: 240,
+      child: SizedBox.expand(
         child: SkeletonizerConfig(
           data: SkeletonizerConfigData(effect: shimmer),
           child: IgnorePointer(
@@ -520,61 +565,6 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _WordCardFace extends StatelessWidget {
-  const _WordCardFace({
-    required this.lemma,
-    required this.sense,
-    required this.wordType,
-  });
-
-  final String lemma;
-  final String? sense;
-  final String wordType;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            lemma,
-            style: theme.typography.xl.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          if (sense != null && sense!.trim().isNotEmpty) ...[
-            const Gap(10),
-            Text(
-              sense!,
-              style: theme.typography.md.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-          if (wordType.isNotEmpty) ...[
-            const Gap(12),
-            Text(
-              wordType,
-              style: theme.typography.xs.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ],
       ),
     );
   }

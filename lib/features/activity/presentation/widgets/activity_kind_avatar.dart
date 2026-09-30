@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -45,19 +46,28 @@ class ActivityKindAvatar extends StatelessWidget {
           Positioned(
             right: -1,
             bottom: -1,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: style.foreground,
-                shape: BoxShape.circle,
-                border: Border.all(color: theme.colors.background, width: 1.5),
-              ),
-              child: SizedBox(
-                width: badge,
-                height: badge,
-                child: Icon(
-                  style.icon,
-                  size: badge * 0.55,
-                  color: theme.colors.background,
+            // Icon digambar sebagai glyph. Skeletonizer menggantinya dengan
+            // tulang dari baseline font, bukan dari kotak ikon, jadi di badge
+            // ~16px tulang itu geser dari pusat lingkaran. Leaf memaksa satu
+            // tulang lingkaran dan tidak menggambar glyph-nya.
+            child: Skeleton.leaf(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: style.foreground,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.colors.background,
+                    width: 1.5,
+                  ),
+                ),
+                child: SizedBox(
+                  width: badge,
+                  height: badge,
+                  child: Icon(
+                    style.icon,
+                    size: badge * 0.55,
+                    color: theme.colors.background,
+                  ),
                 ),
               ),
             ),

@@ -23,15 +23,22 @@ class ReviewEntityPreview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = detail.contribution.entityType;
-    return switch (type) {
-      'word' => _WordPreview(entity: detail.entity),
-      'word_image' => _ImagePreview(entity: detail.entity),
-      'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
-      'pronunciation' => _PronunciationPreview(entity: detail.entity),
-      'example' => _ExamplePreview(entity: detail.entity),
-      'meaning' => _MeaningPreview(entity: detail.entity),
-      _ => _FieldPreview(entity: detail.entity),
-    };
+    // Semua preview digulir: tinggi kartu berubah-ubah (jumlah baris action
+    // bar ikut menentukan sisa ruang), dan isinya berasal dari DB - kata
+    // dengan banyak makna atau definisi panjang akan lebih tinggi dari
+    // kartu. Column telanjang meluap jadi error di dalam stack, bukan sekadar
+    // terpotong.
+    return SingleChildScrollView(
+      child: switch (type) {
+        'word' => _WordPreview(entity: detail.entity),
+        'word_image' => _ImagePreview(entity: detail.entity),
+        'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
+        'pronunciation' => _PronunciationPreview(entity: detail.entity),
+        'example' => _ExamplePreview(entity: detail.entity),
+        'meaning' => _MeaningPreview(entity: detail.entity),
+        _ => _FieldPreview(entity: detail.entity),
+      },
+    );
   }
 }
 
@@ -240,6 +247,7 @@ class _WordPreview extends StatelessWidget {
     final wordType = entity['wordType']?.toString();
     final notes = entity['notes']?.toString().trim();
     final meanings = entity['meanings'];
+    final extras = _extras();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -289,10 +297,57 @@ class _WordPreview extends StatelessWidget {
                   ],
                 ),
         ),
+        if (extras.isNotEmpty) ...[
+          const Gap(12),
+          _SectionCard(
+            title: 'Kelengkapan',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final (label, values) in extras)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '$label: ',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          TextSpan(text: values.join(', ')),
+                        ],
+                      ),
+                      style: theme.typography.sm,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
+
+  /// Baris sinonim/antonim/variasi yang punya isi saja.
+  List<(String, List<String>)> _extras() {
+    List<String> lemmas(String type) => [
+      for (final r in _mapsOf(entity['relatedWords']))
+        if (r['relationType'] == type && '${r['lemma'] ?? ''}'.isNotEmpty)
+          '${r['lemma']}',
+    ];
+    final variants = [
+      for (final v in _mapsOf(entity['variants']))
+        if ('${v['form'] ?? ''}'.trim().isNotEmpty) '${v['form']}'.trim(),
+    ];
+    return [
+      ('Sinonim', lemmas('synonym')),
+      ('Antonim', lemmas('antonym')),
+      ('Variasi', variants),
+    ].where((row) => row.$2.isNotEmpty).toList();
+  }
 }
+
+Iterable<Map> _mapsOf(Object? raw) => raw is List ? raw.whereType<Map>() : const [];
 
 class _MeaningBlock extends StatelessWidget {
   const _MeaningBlock({required this.raw});
@@ -335,6 +390,27 @@ class _MeaningBlock extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+        for (final example in _mapsOf(raw['examples']))
+          if ('${example['sourceSentence'] ?? ''}'.trim().isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 6, left: 8),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '"${example['sourceSentence']}"',
+                      style: const TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                    if ('${example['targetSentence'] ?? ''}'.trim().isNotEmpty)
+                      TextSpan(
+                        text: ' - ${example['targetSentence']}',
+                        style: TextStyle(color: theme.colors.mutedForeground),
+                      ),
+                  ],
+                ),
+                style: theme.typography.sm,
+              ),
+            ),
       ],
     );
   }

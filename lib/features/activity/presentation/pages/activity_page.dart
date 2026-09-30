@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../search_miss/search_miss_router.dart';
@@ -34,7 +35,7 @@ class ActivityPage extends ConsumerWidget {
     return Column(
       children: [
         FHeader(
-          title: const Text('Kontribusi'),
+          title: const BrandWordmark(),
           suffixes: [
             FHeaderAction(
               icon: const Icon(
@@ -52,15 +53,11 @@ class ActivityPage extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: _ContributeMenus(theme: theme),
+                child: _ContributeMenu(theme: theme),
               ),
-              const Gap(16),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
-                  child: _VoteDeckHost(),
-                ),
-              ),
+              const Gap(12),
+              // Tanpa padding bawah: action bar deck menempel di atas bottom nav.
+              const Expanded(child: _VoteDeckHost()),
             ],
           ),
         ),
@@ -110,18 +107,15 @@ class _VoteDeckStub extends StatelessWidget {
             color: theme.colors.mutedForeground,
           ),
         ),
-        const Gap(12),
+        const Gap(8),
         Expanded(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.colors.background,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: theme.colors.border),
-              ),
-              child: const SizedBox(height: 240, width: double.infinity),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colors.background,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: theme.colors.border),
             ),
+            child: const SizedBox.expand(),
           ),
         ),
       ],
@@ -129,43 +123,73 @@ class _VoteDeckStub extends StatelessWidget {
   }
 }
 
-class _ContributeMenus extends StatelessWidget {
-  const _ContributeMenus({required this.theme});
+/// Satu tombol setinggi pill; isi menu (label lengkap) ada di bottom sheet
+/// supaya tinggi deck tidak berkurang.
+class _ContributeMenu extends StatelessWidget {
+  const _ContributeMenu({required this.theme});
 
   final FThemeData theme;
 
+  void _open(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        void go(String path) {
+          Navigator.of(sheetContext).pop();
+          context.push(path);
+        }
+
+        FTile tile(IconData icon, String title, String subtitle, VoidCallback onPress) => FTile(
+              prefix: Icon(icon, color: theme.colors.primary),
+              title: Text(title),
+              subtitle: Text(subtitle),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: onPress,
+            );
+
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: FTileGroup(
+              label: const Text('Menu kontribusi'),
+              children: [
+                tile(FLucideIcons.plusCircle, 'Usul kata baru', 'Tambah kata yang belum ada', () {
+                  AnalyticsService.instance.log(
+                    AnalyticsEvents.contributeStart,
+                    params: {'from': 'blank'},
+                  );
+                  go('/contribute');
+                }),
+                tile(
+                  FLucideIcons.search,
+                  'Dicari warga',
+                  'Dicari, tapi belum ada di kamus',
+                  () => go(SearchMissRouter.list.path),
+                ),
+                tile(
+                  FLucideIcons.languages,
+                  'Ruang diskusi',
+                  'Bahas kata bersama warga',
+                  () => go(DiscussionRouter.feed.path),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FTileGroup(
-      children: [
-        FTile(
-          prefix: Icon(FLucideIcons.plusCircle, color: theme.colors.primary),
-          title: const Text('Usul kata baru'),
-          subtitle: const Text('Isi form kosong dari awal'),
-          suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: () {
-            AnalyticsService.instance.log(
-              AnalyticsEvents.contributeStart,
-              params: {'from': 'blank'},
-            );
-            context.push('/contribute');
-          },
-        ),
-        FTile(
-          prefix: Icon(FLucideIcons.search, color: theme.colors.primary),
-          title: const Text('Kata yang sering dicari'),
-          subtitle: const Text('Pilih kata yang warga cari tapi belum ada'),
-          suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: () => context.push(SearchMissRouter.list.path),
-        ),
-        FTile(
-          prefix: Icon(FLucideIcons.languages, color: theme.colors.primary),
-          title: const Text('Ruang Diskusi'),
-          subtitle: const Text('Tanya bahasa, warga bantu jawab'),
-          suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: () => context.push(DiscussionRouter.feed.path),
-        ),
-      ],
+    return FButton(
+      variant: FButtonVariant.outline,
+      size: FButtonSizeVariant.sm,
+      onPress: () => _open(context),
+      prefix: Icon(FLucideIcons.layoutGrid, color: theme.colors.primary),
+      suffix: const Icon(FLucideIcons.chevronUp),
+      child: const Text('Menu kontribusi'),
     );
   }
 }
