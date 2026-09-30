@@ -1,8 +1,9 @@
 name: Deploy (Production)
 
-# Build flavor `production`. Play Console menerima AAB (draft). GitHub
-# Release pada tag yang sama menerima AAB plus APK universal (unduh manual).
-# Rollout Play tetap manual.
+# Build flavor `production`. Play Console menerima AAB sebagai draft di
+# track closed testing (nama API: alpha).
+# Build APK dan GitHub Release ditunda (langkahnya dikomentari).
+# Rollout Play tetap manual. Track production belum dipakai.
 # Trigger: push tag `vMAJOR.MINOR.PATCH` (contoh `v1.1.1`).
 #
 # versionName = tag tanpa awalan `v`.
@@ -134,13 +135,13 @@ jobs:
           --split-debug-info=./debug-info
           --flavor "$FLAVOR" -t lib/main.dart
 
-      # APK universal untuk unduh manual di web.
+      # APK universal untuk unduh manual di web. Ditunda.
       # debug-info terpisah supaya simbol AAB tidak tertimpa.
-      - name: Build APK (sideload)
-        run: >
-          flutter build apk --release --obfuscate
-          --split-debug-info=./debug-info-apk
-          --flavor "$FLAVOR" -t lib/main.dart
+      # - name: Build APK (sideload)
+      #   run: >
+      #     flutter build apk --release --obfuscate
+      #     --split-debug-info=./debug-info-apk
+      #     --flavor "$FLAVOR" -t lib/main.dart
 
       - name: Upload AAB as workflow artifact
         uses: actions/upload-artifact@v7
@@ -149,36 +150,36 @@ jobs:
           path: build/app/outputs/bundle/productionRelease/*.aab
           if-no-files-found: error
 
-      - name: Upload APK as workflow artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: production-apk
-          path: build/app/outputs/flutter-apk/app-production-release.apk
-          if-no-files-found: error
+      # - name: Upload APK as workflow artifact
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: production-apk
+      #     path: build/app/outputs/flutter-apk/app-production-release.apk
+      #     if-no-files-found: error
 
-      # Draft di track production - tidak auto-publish. Rollout tetap
-      # manual di Play Console.
+      # Draft di track closed testing (API: alpha) - tidak auto-publish.
+      # Rollout tetap manual di Play Console.
       - name: Assert AAB has no advertising ID permission
         run: node scripts/assert-no-ad-id.mjs
 
-      - name: Upload draft ke Google Play production
+      - name: Upload draft ke Google Play closed testing
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.PLAY_PACKAGE_NAME }}
           releaseFiles: build/app/outputs/bundle/productionRelease/app-production-release.aab
-          tracks: production
+          tracks: alpha
           status: draft
           releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          tag_name: v${{ steps.version.outputs.name }}
-          name: SambasKu v${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
-          generate_release_notes: true
-          files: |
-            build/app/outputs/bundle/productionRelease/app-production-release.aab
-            build/app/outputs/flutter-apk/app-production-release.apk
-          fail_on_unmatched_files: true
-          make_latest: "true"
+      # - name: Create GitHub Release
+      #   uses: softprops/action-gh-release@v3
+      #   with:
+      #     tag_name: v${{ steps.version.outputs.name }}
+      #     name: SambasKu v${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+      #     generate_release_notes: true
+      #     files: |
+      #       build/app/outputs/bundle/productionRelease/app-production-release.aab
+      #       build/app/outputs/flutter-apk/app-production-release.apk
+      #     fail_on_unmatched_files: true
+      #     make_latest: "true"
