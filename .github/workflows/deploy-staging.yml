@@ -1,20 +1,25 @@
-name: Test (Staging)
+name: Test
 
-# Push branch `staging` (atau workflow_dispatch): analyze + test.
-# Tidak membangun APK/AAB dan tidak mengunggah ke Play.
+# Pull request ke staging/main, push branch staging, atau workflow_dispatch:
+# analyze + test. Tidak membangun APK/AAB dan tidak mengunggah ke Play.
 # Rilis production ada di deploy-production.yml, dipicu tag vMAJOR.MINOR.PATCH.
+# Nama job flutter-test dipakai ruleset required status check.
 
 on:
   push:
     branches:
       - staging
+  pull_request:
+    branches:
+      - staging
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: test-staging-${{ github.ref }}
+  group: flutter-test-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -22,6 +27,7 @@ env:
 
 jobs:
   test:
+    name: flutter-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
