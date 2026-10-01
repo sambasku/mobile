@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -39,6 +40,7 @@ import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/splash/splash_router.dart';
 import '../network/auth_token_storage.dart';
 import '../services/analytics_route_observer.dart';
+import '../utils/tabfreeze_log.dart';
 
 /// Router utama (pola jnn_mobile):
 /// - redirect onboarding first-install + auth
@@ -143,7 +145,24 @@ class AppRouter {
   /// Register, verify-email, forgot/reset tidak di-redirect: daftar akun
   /// baru boleh terjadi meski sesi lama ada, dan tautan reset dari email
   /// harus tetap bisa dibuka.
+  /// Deadline global: await apa pun di redirect yang macet (storage,
+  /// jaringan) tidak boleh mengunci GoRouter selamanya - semua navigasi
+  /// berikutnya diabaikan selama redirect pending. Fail-open (null) =
+  /// navigasi tetap jalan.
   static Future<String?> _redirect(
+    BuildContext context,
+    GoRouterState state,
+  ) {
+    return _redirectInner(context, state).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        tfLog('redirect timeout ${state.uri.path} -> null (dilanjutkan)');
+        return null;
+      },
+    );
+  }
+
+  static Future<String?> _redirectInner(
     BuildContext context,
     GoRouterState state,
   ) async {
@@ -174,9 +193,13 @@ class AppRouter {
         loc == '/profile' ||
         path == '/profile';
     if (needsAuthGate) {
-      final isAuth = await _tokenStorage.getIsAuth();
-      if (isAuth && loc == AuthRouter.login.path) return '/';
+      final isAuth = await _tokenStorage.getIsAuthForGate();
+      if (isAuth && loc == AuthRouter.login.path) {
+        tfLog('redirect $loc -> / auth=true');
+        return '/';
+      }
       if (!isAuth && (loc == '/profile' || path == '/profile')) {
+        tfLog('redirect $loc -> ${AuthRouter.login.path} auth=false');
         return AuthRouter.login.path;
       }
     }
@@ -208,7 +231,7 @@ Future<void> _openProfileBranch(
   BuildContext context,
   StatefulNavigationShell navigationShell,
 ) async {
-  final ok = await AppRouter._tokenStorage.getIsAuth();
+  final ok = await AppRouter._tokenStorage.getIsAuthForGate();
   if (!context.mounted) return;
   if (!ok) {
     context.push(AuthRouter.login.path);
@@ -329,13 +352,21 @@ class _DeferredShellTickerState extends State<_DeferredShellTicker> {
   void _onRouter() {
     if (_queued) return;
     _queued = true;
+    // addPostFrameCallback TIDAK menjadwalkan frame: notifikasi delegate
+    // saat app idle bisa meninggalkan _enabled stale (shell ter-pause
+    // permanen) sampai frame lain datang secara kebetulan.
+    SchedulerBinding.instance.scheduleFrame();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _queued = false;
       if (!mounted) return;
       final obscured =
           AppRouter.rootNavigatorKey.currentState?.canPop() ?? false;
       final next = !obscured;
-      if (next != _enabled) setState(() => _enabled = next);
+      if (next != _enabled) {
+        final loc = AppRouter.router.routerDelegate.currentConfiguration.uri;
+        tfLog('ticker enabled=$next canPop=$obscured loc=$loc');
+        setState(() => _enabled = next);
+      }
     });
   }
 

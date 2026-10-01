@@ -1191,6 +1191,16 @@ $this''',
       // No state change, so do nothing
     }
 
+    // Fork: invalidasi yang tiba saat pause/inaktif tidak menjadwalkan
+    // refresh (lihat invalidateSelf). Saat elemen kembali aktif - resume,
+    // reactivate, atau listener baru - dan state masih pending,
+    // jadwalkan sekarang. Idempoten: resume() mem-flush SEBELUM transisi
+    // aktif, jadi _mustRecomputeState sudah terkonsumsi di jalur itu;
+    // task scheduler juga cek ulang isActive saat dijalankan.
+    if (!wasActive && isActive && _mustRecomputeState && !_isFlushing) {
+      container.scheduler.scheduleProviderRefresh(this);
+    }
+
     if (listenerCount < previousListenerCount) {
       _runCallbacks(container, ref?._onRemoveListeners);
       mayNeedDispose();

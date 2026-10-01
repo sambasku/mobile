@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/tabfreeze_log.dart';
+
 /// Penyimpanan token sesi (pola jnn_mobile): access/refresh di
 /// flutter_secure_storage (Keychain/Keystore), flag isAuth di
 /// shared_preferences untuk redirect router yang cepat.
@@ -137,8 +139,41 @@ class AuthTokenStorage {
     return await getAccessToken() != null;
   }
 
+  DateTime? _isAuthGateCachedAt;
+  bool? _isAuthGateCached;
+
+  /// getIsAuth untuk gerbang router (redirect /profile, tab Profil):
+  /// platform channel yang macet tidak boleh mengunci GoRouter selamanya.
+  /// Cache singkat + timeout. Timeout = fail-closed (tamu -> /login);
+  /// hasil timeout sengaja tidak di-cache.
+  Future<bool> getIsAuthForGate({
+    Duration ttl = const Duration(seconds: 2),
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    final cached = _isAuthGateCached;
+    final at = _isAuthGateCachedAt;
+    if (cached != null && at != null && DateTime.now().difference(at) < ttl) {
+      return cached;
+    }
+    tfLog('isAuth start');
+    final sw = Stopwatch()..start();
+    try {
+      final v = await getIsAuth().timeout(timeout);
+      _isAuthGateCached = v;
+      _isAuthGateCachedAt = DateTime.now();
+      tfLog('isAuth ok v=$v ms=${sw.elapsedMilliseconds}');
+      return v;
+    } on TimeoutException {
+      tfLog('isAuth timeout');
+      return false;
+    }
+  }
+
   Future<void> setIsAuth(bool value) async {
     await (await _sharedPrefs).setBool(_isAuthKey, value);
+    // Refresh cache gate supaya login/logout tidak pernah serve stale.
+    _isAuthGateCached = value;
+    _isAuthGateCachedAt = DateTime.now();
     _authStateController.add(value);
   }
 
