@@ -51,13 +51,12 @@ class ActivityPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: _ContributeMenu(theme: theme),
-              ),
-              const Gap(12),
-              // Tanpa padding bawah: action bar deck menempel di atas bottom nav.
+              const Gap(8),
               const Expanded(child: _VoteDeckHost()),
+              // Di bawah action bar deck: dekat jempol.
+              const Gap(8),
+              _ContributeMenu(theme: theme),
+              const Gap(8),
             ],
           ),
         ),
@@ -134,6 +133,11 @@ class _ContributeMenu extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
+      // Navigator tab ada di dalam padding shell (childPad): tanpa root,
+      // barrier + sheet terpotong dan sisi kiri/kanan tidak tertutup.
+      useRootNavigator: true,
+      backgroundColor: theme.colors.background,
+      clipBehavior: Clip.antiAlias,
       builder: (sheetContext) {
         void go(String path) {
           Navigator.of(sheetContext).pop();

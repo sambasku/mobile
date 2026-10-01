@@ -46,6 +46,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
               altText: img.altText,
               isPrimary: img.isPrimary,
               contentWarnings: List<String>.from(img.contentWarnings),
+              attribution: img.attribution?.toJson(),
             ),
           )
           .toList(growable: false);

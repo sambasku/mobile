@@ -59,6 +59,7 @@ void main() {
       lemma: 'kalintiak',
       notes: '',
       wordType: 'word',
+      usageLabels: const ['kasar', 'seksual'],
       meanings: [
         (
           sourceIndex: 0,
@@ -142,6 +143,7 @@ void main() {
     expect(body['images'], hasLength(1));
     expect(body['pronunciation'], {'notation': 'ipa', 'value': 'ka.lin.tiak'});
     expect(body['category_ids'], ['C1']);
+    expect(body['usage_labels'], ['kasar', 'seksual']);
   });
 
   test('relasi dan variasi kosong tidak dikirim (server mengosongkan)', () {
@@ -150,6 +152,7 @@ void main() {
       lemma: 'kalintiak',
       notes: null,
       wordType: 'word',
+      usageLabels: const [],
       meanings: const [],
       relatedWords: const [],
       variants: const [],
@@ -158,5 +161,6 @@ void main() {
     expect(body.containsKey('related_words'), isFalse);
     expect(body.containsKey('variants'), isFalse);
     expect(body['publish'], isFalse);
+    expect(body['usage_labels'], isEmpty);
   });
 }

@@ -73,7 +73,9 @@ class _ShareVideoLayerState extends State<ShareVideoLayer> {
   @override
   Widget build(BuildContext context) {
     final controller = _controller;
-    if (_error != null || controller == null || !controller.value.isInitialized) {
+    if (_error != null ||
+        controller == null ||
+        !controller.value.isInitialized) {
       if (widget.fallback != null) {
         return Image(
           image: widget.fallback!,

@@ -530,6 +530,7 @@ void main() {
         lemma: 'kalintiak',
         notes: '',
         wordType: 'word',
+        usageLabels: const [],
         meanings: const [],
         relatedWords: const [],
         variants: const [],

@@ -10,6 +10,7 @@ import '../../domain/entities/vote_deck_item.dart';
 import '../../domain/entities/vote_target.dart';
 import '../../domain/failures/vote_failure.dart';
 import '../../domain/providers/vote_domain_providers.dart';
+import 'vote_providers.dart';
 import 'vote_submit_queue.dart';
 
 part 'vote_deck_providers.g.dart';
@@ -179,6 +180,37 @@ class VoteDeckController extends _$VoteDeckController {
     ref.read(voteSubmitQueueProvider.notifier).enqueueSkip(item: item);
   }
 
+  /// Buka detail dari kartu. Vote di detail = kartu dianggap sudah dinilai
+  /// (dibuang + bisa di-undo). Return true kalau kartu dibuang.
+  ///
+  /// Di controller (keepAlive), bukan widget: detail = route root, selama
+  /// terbuka widget deck diganti stub dan ikut dispose.
+  Future<bool> openDetail(
+    VoteDeckItem item,
+    Future<Object?> Function() push,
+  ) async {
+    final target = VoteTarget(type: 'word', id: item.id);
+    // VoteController autoDispose: tahan hidup supaya myVote terbaca setelah pop.
+    final sub = ref.listen(voteControllerProvider(target), (_, _) {});
+    try {
+      await push();
+      final my = sub.read().value?.myVote;
+      if (my == null) return false;
+      _dropLocal(
+        item.id,
+        rewind: VoteDeckRewindEntry(
+          item: item,
+          kind: my == 1
+              ? VoteDeckRewindKind.upvote
+              : VoteDeckRewindKind.downvote,
+        ),
+      );
+      return true;
+    } finally {
+      sub.close();
+    }
+  }
+
   /// Kembalikan kartu gagal submit ke depan antrean.
   void reinsertFront(VoteDeckItem item) {
     final current = state.value;
@@ -225,6 +257,7 @@ class VoteDeckController extends _$VoteDeckController {
         final failure = result.match((f) => f, (_) => null);
         if (failure != null) return failure;
         ref.invalidate(myVotesListControllerProvider);
+        ref.invalidate(voteControllerProvider(target));
       }
     }
 

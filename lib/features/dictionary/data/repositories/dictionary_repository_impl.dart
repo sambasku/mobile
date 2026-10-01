@@ -5,6 +5,7 @@ import '../../../../core/cache/cache_entry.dart';
 import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cached_json_client.dart';
 import '../../../../core/models/api_response.dart';
+import '../../../../core/models/image_attribution.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/entities/word_of_day.dart';
 import '../../domain/entities/word_summary.dart';
@@ -576,6 +577,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
             isPrimary: i.isPrimary,
             isVerified: i.isVerified,
             contentWarnings: List<String>.from(i.contentWarnings),
+            attribution: ImageAttribution.fromJson(i.attribution),
           ),
         )
         .toList(),

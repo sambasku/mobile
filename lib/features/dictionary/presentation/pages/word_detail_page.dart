@@ -19,6 +19,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/domain/entities/vote_target.dart';
 import '../../../vote/domain/failures/vote_failure.dart';
@@ -368,6 +369,9 @@ class _DetailBody extends HookConsumerWidget {
       await showImagePreview(
         context,
         urls: previewImages.map((i) => i.url).toList(growable: false),
+        credits: previewImages
+            .map((i) => i.attribution)
+            .toList(growable: false),
         initialIndex: idx < 0 ? 0 : idx,
       );
     }
@@ -506,6 +510,11 @@ class _DetailBody extends HookConsumerWidget {
                     ),
                   ],
                 ),
+                if (primaryImage?.attribution case final credit?
+                    when !primaryImage!.isPendingReview) ...[
+                  const Gap(6),
+                  ImageCredit(attribution: credit, fontSize: 11),
+                ],
 
                 const Gap(10),
                 PronunciationSection(

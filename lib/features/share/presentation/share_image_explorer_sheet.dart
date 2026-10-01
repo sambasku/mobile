@@ -4,10 +4,10 @@ import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../shared/widgets/image_credit.dart';
 import '../data/share_background_repository.dart';
 import '../domain/share_models.dart';
 import 'widgets/share_skeleton.dart';
-
 const _photoProviders = ['pixabay', 'openverse', 'unsplash'];
 const _videoProviders = ['pixabay'];
 
@@ -76,9 +76,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
     _tabs = TabController(
       length: widget.photoOnly ? 1 : 2,
       vsync: this,
-      initialIndex: widget.photoOnly
-          ? 0
-          : (widget.initialVideo ? 1 : 0),
+      initialIndex: widget.photoOnly ? 0 : (widget.initialVideo ? 1 : 0),
     );
     if (!widget.photoOnly) {
       _tabs.addListener(_onTab);
@@ -110,7 +108,9 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
   }
 
   void _onScroll() {
-    if (!_hasMore || _loadingMore || _loading) return;
+    if (!_hasMore || _loadingMore || _loading || !_scrollCtrl.hasClients) {
+      return;
+    }
     if (_scrollCtrl.position.pixels >=
         _scrollCtrl.position.maxScrollExtent - 240) {
       _loadMore();
@@ -145,6 +145,16 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
       _hasMore = result.items.length >= 12;
       _mode = isSearch ? 'relevant' : 'popular';
     });
+    _fillViewport();
+  }
+
+  /// 12 item (4 baris) sering muat di layar tanpa scroll, jadi _onScroll tidak
+  /// pernah terpicu. Cek setelah frame: kalau grid belum penuh, muat halaman
+  /// berikutnya sampai bisa di-scroll atau data habis.
+  void _fillViewport() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _onScroll();
+    });
   }
 
   Future<void> _loadMore() async {
@@ -171,6 +181,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
         _hasMore = result.items.length >= 12;
       }
     });
+    _fillViewport();
   }
 
   void _onSearch() {
@@ -350,9 +361,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
             crossAxisSpacing: 8,
           ),
           itemCount: 9,
-          itemBuilder: (_, _) => Bone(
-            borderRadius: BorderRadius.circular(10),
-          ),
+          itemBuilder: (_, _) => Bone(borderRadius: BorderRadius.circular(10)),
         ),
       );
     }
@@ -374,6 +383,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
     }
     return GridView.builder(
       controller: _scrollCtrl,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -390,28 +400,67 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
         final item = _items[i];
         // opaque: default deferToChild sering gagal hit-test saat placeholder
         // / gambar belum penuh, jadi tap diam saja.
+        final isUnsplash = item.provider == 'unsplash';
+        final isOpenverse = item.provider == 'openverse';
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => Navigator.of(context).pop(item),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CachedNetworkImageWithFallback(
-                  imageUrl: item.thumbUrl,
-                  fit: BoxFit.cover,
-                ),
-                if (item.isVideo)
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.play_circle_fill,
-                      color: Colors.white,
-                      size: 28,
-                    ),
+          onTap: () {
+            if (isUnsplash) widget.backgrounds.trackUnsplashDownload(item.id);
+            Navigator.of(context).pop(item);
+          },
+          // Dasar gelap: tile tetap "berbobot" saat gambar masih dimuat.
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1C1917),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedNetworkImageWithFallback(
+                    imageUrl: item.thumbUrl,
+                    fit: BoxFit.cover,
                   ),
-              ],
+                  if (isUnsplash || isOpenverse)
+                    Positioned(
+                      left: 5,
+                      right: 5,
+                      bottom: 5,
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            child: ImageCredit(
+                              attribution: item.attribution,
+                              color: Colors.white,
+                              fontSize: 11.5,
+                              compact: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (item.isVideo)
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.play_circle_fill,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );

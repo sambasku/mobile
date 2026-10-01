@@ -168,11 +168,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Setuju'), findsOneWidget);
+    expect(find.text('Sudah pas'), findsOneWidget);
 
     await tester.pumpAndSettle();
-    expect(find.text('Setuju'), findsNothing);
-    expect(find.text('Kurang setuju'), findsNothing);
+    expect(find.text('Sudah pas'), findsNothing);
+    expect(find.text('Perlu dicek ulang'), findsNothing);
     expect(haptics, hasLength(2));
 
     await tester.pumpWidget(card('h2'));

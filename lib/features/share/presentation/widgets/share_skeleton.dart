@@ -7,9 +7,7 @@ ShimmerEffect shareShimmerEffect(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final muted = context.theme.colors.muted;
   return ShimmerEffect(
-    baseColor: isDark
-        ? muted.withValues(alpha: 0.35)
-        : const Color(0xFFE7E7EA),
+    baseColor: isDark ? muted.withValues(alpha: 0.35) : const Color(0xFFE7E7EA),
     highlightColor: isDark
         ? muted.withValues(alpha: 0.55)
         : const Color(0xFFF4F4F5),
@@ -27,9 +25,7 @@ class ShareSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SkeletonizerConfig(
       data: SkeletonizerConfigData(effect: shareShimmerEffect(context)),
-      child: IgnorePointer(
-        child: Skeletonizer(enabled: true, child: child),
-      ),
+      child: IgnorePointer(child: Skeletonizer(enabled: true, child: child)),
     );
   }
 }
@@ -49,42 +45,54 @@ class ShareCardPreviewSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Bone(
-                width: 88,
-                height: 12,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              Gap(18),
-              Bone(
-                width: 220,
-                height: 34,
-                borderRadius: BorderRadius.all(Radius.circular(6)),
-              ),
-              Gap(14),
-              Bone(
-                width: 160,
-                height: 16,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              Gap(10),
-              Bone(
-                width: 260,
-                height: 12,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
+              // Tinggi preview ikut layar (Expanded); di layar pendek bone
+              // atas dipotong, bukan overflow. Footer tetap di bawah.
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Bone(
+                        width: 88,
+                        height: 12,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      Gap(18),
+                      Bone(
+                        width: 220,
+                        height: 34,
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                      ),
+                      Gap(14),
+                      Bone(
+                        width: 160,
+                        height: 16,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      Gap(10),
+                      Bone(
+                        width: 260,
+                        height: 12,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      Gap(8),
+                      Bone(
+                        width: 200,
+                        height: 12,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      Gap(8),
+                      Bone(
+                        width: 140,
+                        height: 12,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Gap(8),
-              Bone(
-                width: 200,
-                height: 12,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              Gap(8),
-              Bone(
-                width: 140,
-                height: 12,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              Spacer(),
               Bone(
                 width: 110,
                 height: 11,

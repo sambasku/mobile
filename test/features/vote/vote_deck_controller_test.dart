@@ -13,6 +13,7 @@ import 'package:sambasku_mobile/features/vote/domain/repositories/vote_repositor
 import 'package:sambasku_mobile/features/vote/domain/usecases/get_vote_deck_use_case.dart';
 import 'package:sambasku_mobile/features/vote/domain/usecases/toggle_vote_use_case.dart';
 import 'package:sambasku_mobile/features/vote/presentation/providers/vote_deck_providers.dart';
+import 'package:sambasku_mobile/features/vote/presentation/providers/vote_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 VoteDeckItem _item(String id) => VoteDeckItem(
@@ -198,6 +199,44 @@ void main() {
     expect(repo.toggles.length, 2);
     expect(repo.toggles.last.value, 1);
 
+    final state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
+    expect(state.canRewind, isFalse);
+  });
+
+  test('openDetail: vote di detail = kartu dibuang + bisa di-undo', () async {
+    final initial = await ready();
+    final first = initial.items.first;
+    final target = VoteTarget(type: 'word', id: first.id);
+
+    final dropped = await container
+        .read(voteDeckControllerProvider.notifier)
+        .openDetail(first, () async {
+      // Halaman detail: muat state vote lalu user menekan upvote.
+      await container.read(voteControllerProvider(target).future);
+      await container.read(voteControllerProvider(target).notifier).toggle(1);
+      return null;
+    });
+
+    expect(dropped, isTrue);
+    final state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items.map((i) => i.id), ['b', 'c']);
+    expect(state.rewindEntry?.kind, VoteDeckRewindKind.upvote);
+  });
+
+  test('openDetail: kembali tanpa vote = kartu tetap di depan', () async {
+    final initial = await ready();
+    final first = initial.items.first;
+    final target = VoteTarget(type: 'word', id: first.id);
+
+    final dropped = await container
+        .read(voteDeckControllerProvider.notifier)
+        .openDetail(first, () async {
+      await container.read(voteControllerProvider(target).future);
+      return null;
+    });
+
+    expect(dropped, isFalse);
     final state = container.read(voteDeckControllerProvider).value!;
     expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
     expect(state.canRewind, isFalse);

@@ -18,7 +18,7 @@ void main() {
     );
     expect(
       formatRelativeAgo(now.subtract(const Duration(minutes: 5)), now: now),
-      '5 mnt lalu',
+      '5 menit lalu',
     );
     expect(
       formatRelativeAgo(now.subtract(const Duration(hours: 2)), now: now),
@@ -34,24 +34,25 @@ void main() {
     );
   });
 
-  test('formatRelativeCompact: humanize singkat', () {
+  // Tanpa singkatan Inggris: "1h" dibaca "1 hari", "1d" dibaca "1 detik".
+  test('formatRelativeCompact: kata Indonesia utuh', () {
     final now = DateTime(2026, 9, 28, 17, 0);
     expect(formatRelativeCompact(null, now: now), '');
     expect(
       formatRelativeCompact(now.subtract(const Duration(seconds: 20)), now: now),
-      'baru',
+      'baru saja',
     );
     expect(
       formatRelativeCompact(now.subtract(const Duration(minutes: 12)), now: now),
-      '12m',
+      '12 menit',
     );
     expect(
-      formatRelativeCompact(now.subtract(const Duration(hours: 2)), now: now),
-      '2h',
+      formatRelativeCompact(now.subtract(const Duration(hours: 11)), now: now),
+      '11 jam',
     );
     expect(
-      formatRelativeCompact(now.subtract(const Duration(days: 3)), now: now),
-      '3d',
+      formatRelativeCompact(now.subtract(const Duration(days: 1)), now: now),
+      '1 hari',
     );
     expect(
       formatRelativeCompact(now.subtract(const Duration(days: 10)), now: now),
@@ -73,19 +74,18 @@ void main() {
     expect(isPlausibleInstant(null, now: now), isFalse);
   });
 
-  test('formatRelative* tidak merender "baru" untuk timestamp mustahil (#47)', () {
+  test('formatRelative* tidak merender "baru saja" untuk timestamp mustahil (#47)', () {
     final now = DateTime(2026, 9, 28, 17, 0);
     final corrupt = DateTime.parse('+058716-09-15T00:00:00.000Z');
 
-    // Tanpa guard, selisih negatif di-clamp jadi nol -> "baru saja"/"baru".
-    expect(formatRelative(corrupt, now: now), '');
+    // Tanpa guard, selisih negatif di-clamp jadi nol -> "baru saja".
     expect(formatRelativeAgo(corrupt, now: now), '');
     expect(formatRelativeCompact(corrupt, now: now), '');
 
     // Nilai yang sah tetap berfungsi.
     expect(
       formatRelativeCompact(now.subtract(const Duration(minutes: 5)), now: now),
-      '5m',
+      '5 menit',
     );
   });
 }

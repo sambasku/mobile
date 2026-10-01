@@ -438,7 +438,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               color: theme.colors.mutedForeground,
             ),
           ),
-          const Gap(12),
+          const Gap(16),
           FTileGroup(
             children: [
               FTile(
@@ -455,9 +455,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               ),
             ],
           ),
-          const Gap(12),
+          const Gap(16),
           const _FieldCaption('Cara mengisi'),
-          const Gap(6),
           _ContributeModeChips(
             advanced: _advanced,
             onChanged: (advanced) {
@@ -484,7 +483,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               });
             },
           ),
-          const Gap(12),
+          const Gap(16),
 
           FTextField(
             control: FTextFieldControl.managed(controller: _lemmaCtrl),
@@ -496,7 +495,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           _inlineError(notifier.errorFor('lemma')),
 
           if (!_advanced) ...[
-            const Gap(12),
+            const Gap(16),
             FTextField(
               control: FTextFieldControl.managed(
                 controller: _standardTranslationCtrl,
@@ -522,7 +521,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             _inlineError(notifier.errorForMeaning(0, 'translation_texts')),
             _inlineError(notifier.errorForMeaning(0, 'definition')),
             if (_standardDefinition.trim().isNotEmpty) ...[
-              const Gap(12),
+              const Gap(16),
               const _FieldCaption(
                 'Penjelasan arti',
                 info:
@@ -533,25 +532,23 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 style: theme.typography.sm.copyWith(height: 1.4),
               ),
             ],
-            const Gap(12),
+            const Gap(16),
             const _FieldCaption(
               'Register',
               info:
                   'Opsional. Gaya atau pantangan berbahasa. '
                   'Halus dan Kasar tidak bisa dipilih bersamaan.',
             ),
-            const Gap(6),
             _UsageLabelChips(
               options: kRegisterUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
             ),
-            const Gap(12),
+            const Gap(16),
             const _FieldCaption(
               'Peringatan',
               info: 'Opsional. Sensitivitas isi makna.',
             ),
-            const Gap(6),
             _UsageLabelChips(
               options: kWarningUsageLabels,
               selected: _usageLabels,
@@ -559,9 +556,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             ),
             _inlineError(notifier.errorFor('usage_labels')),
           ] else ...[
-            const Gap(12),
+            const Gap(16),
             const _FieldCaption('Jenis'),
-            const Gap(6),
             _WordTypeChips(
               value: _wordType,
               onChanged: (v) {
@@ -570,33 +566,30 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               },
             ),
             _inlineError(notifier.errorFor('word_type')),
-            const Gap(12),
+            const Gap(16),
             const _FieldCaption(
               'Register',
               info:
                   'Opsional. Gaya atau pantangan berbahasa. '
                   'Halus dan Kasar tidak bisa dipilih bersamaan.',
             ),
-            const Gap(6),
             _UsageLabelChips(
               options: kRegisterUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
             ),
-            const Gap(12),
+            const Gap(16),
             const _FieldCaption(
               'Peringatan',
               info: 'Opsional. Sensitivitas isi makna.',
             ),
-            const Gap(6),
             _UsageLabelChips(
               options: kWarningUsageLabels,
               selected: _usageLabels,
               onToggle: _toggleUsageLabel,
             ),
             _inlineError(notifier.errorFor('usage_labels')),
-            const Gap(8),
-
+            const Gap(16),
             const _FieldCaption('Dialek'),
             if (sambasLanguageId == null)
               const _SelectFieldSkeleton()
@@ -631,7 +624,6 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                   'Satu kata bisa punya beberapa arti.\n\n'
                   'Tiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.',
             ),
-            const Gap(8),
             for (var i = 0; i < _meanings.length; i++) ...[
               _MeaningBlock(
                 index: i,
@@ -667,8 +659,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                   color: theme.colors.mutedForeground,
                 ),
               ),
-            const Gap(12),
-
+            const Gap(16),
             const _FieldCaption(
               'Kelengkapan',
               info:
@@ -681,16 +672,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               hint: 'Tambah variasi, sinonim, antonim…',
               onTap: _openRelationsSheet,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: Text(
-                'Opsional',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ),
-
+            const Gap(16),
             const _FieldCaption(
               'Gambar',
               info:
@@ -1238,7 +1220,6 @@ class _MeaningBlock extends StatelessWidget {
                   '• Terjemahan - satu kata/frasa setara.\n\n'
                   'Form di bawah muncul sesuai centangan.',
             ),
-            const Gap(8),
             KnowledgeToggles(
               wantDefinition: draft.wantDefinition,
               wantPadanan: draft.wantPadanan,
@@ -1434,7 +1415,7 @@ class _FieldCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
           Flexible(

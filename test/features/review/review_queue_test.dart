@@ -107,6 +107,7 @@ class _FakeReviewRepository implements ReviewRepository {
 ReviewDetail _wordDetail({
   required String id,
   required String lemma,
+  List<String> usageLabels = const [],
 }) {
   return ReviewDetail(
     contribution: ReviewItem(
@@ -125,6 +126,7 @@ ReviewDetail _wordDetail({
       'isVerified': false,
       'meanings': const <Map<String, dynamic>>[],
       'images': const <Map<String, dynamic>>[],
+      if (usageLabels.isNotEmpty) 'usageLabels': usageLabels,
     },
   );
 }
@@ -163,6 +165,7 @@ void main() {
       lemma: 'kalintiak',
       notes: '',
       wordType: 'word',
+      usageLabels: const [],
       meanings: [
         (
           sourceIndex: 0,
@@ -213,6 +216,7 @@ void main() {
       lemma: 'makan',
       notes: '',
       wordType: 'peribahasa',
+      usageLabels: const [],
       meanings: [
         (
           sourceIndex: 0,
@@ -507,7 +511,11 @@ void main() {
 
     const idA = '01REVIEWITEM0000000000000A';
     const idB = '01REVIEWITEM0000000000000B';
-    final detailA = _wordDetail(id: idA, lemma: 'kalintiak');
+    final detailA = _wordDetail(
+      id: idA,
+      lemma: 'kalintiak',
+      usageLabels: const ['kasar', 'seksual'],
+    );
     final detailB = _wordDetail(id: idB, lemma: 'bujak');
     final repo = _FakeReviewRepository(
       items: [detailA.contribution, detailB.contribution],
@@ -545,6 +553,8 @@ void main() {
 
     expect(find.textContaining('Tinjau · 1/2'), findsOneWidget);
     expect(find.text('kalintiak'), findsWidgets);
+    expect(find.text('Kasar'), findsOneWidget);
+    expect(find.text('Seksual'), findsOneWidget);
     expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     expect(find.byIcon(FLucideIcons.x), findsOneWidget);
     expect(
@@ -559,6 +569,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.textContaining('Koreksi · 1/2'), findsOneWidget);
+    expect(find.text('Register'), findsOneWidget);
+    expect(find.text('Peringatan'), findsOneWidget);
     expect(find.text('Simpan dan terbitkan'), findsOneWidget);
     expect(find.text('Batal koreksi'), findsOneWidget);
     expect(find.byIcon(FLucideIcons.check), findsNothing);

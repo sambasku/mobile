@@ -69,22 +69,7 @@ String formatDateYmd(String? ymd) {
   return '$day ${_months[month - 1]} $year';
 }
 
-/// Jarak singkat untuk feed: `baru saja`, `12 mnt`, `3 jam`, `2 hr`,
-/// lalu tanggal-waktu penuh.
-String formatRelative(DateTime? value, {DateTime? now}) {
-  if (value == null) return '';
-  final clock = now ?? DateTime.now();
-  if (!isPlausibleInstant(value, now: clock)) return '';
-  var diff = clock.difference(value);
-  if (diff.isNegative) diff = Duration.zero;
-  if (diff.inMinutes < 1) return 'baru saja';
-  if (diff.inHours < 1) return '${diff.inMinutes} mnt';
-  if (diff.inDays < 1) return '${diff.inHours} jam';
-  if (diff.inDays < 7) return '${diff.inDays} hr';
-  return formatDateTime(value);
-}
-
-/// Jarak relatif singkat: `baru saja`, `5 mnt lalu`, `2 jam lalu`,
+/// Jarak relatif singkat: `baru saja`, `5 menit lalu`, `2 jam lalu`,
 /// `3 hari lalu`, lalu `21 Sep 2026` (≥7 hari).
 String formatRelativeAgo(DateTime? value, {DateTime? now}) {
   if (value == null) return '';
@@ -94,14 +79,15 @@ String formatRelativeAgo(DateTime? value, {DateTime? now}) {
   var diff = clock.difference(value);
   if (diff.isNegative) diff = Duration.zero;
   if (diff.inMinutes < 1) return 'baru saja';
-  if (diff.inHours < 1) return '${diff.inMinutes} mnt lalu';
+  if (diff.inHours < 1) return '${diff.inMinutes} menit lalu';
   if (diff.inDays < 1) return '${diff.inHours} jam lalu';
   if (diff.inDays < 7) return '${diff.inDays} hari lalu';
   return '${local.day} ${_months[local.month - 1]} ${local.year}';
 }
 
-/// Humanize ultra-singkat untuk header thread: `baru`, `12m`, `2h`, `3d`,
-/// lalu `21 Sep` (≥7 hari).
+/// Jarak singkat untuk feed / header thread: `baru saja`, `12 menit`,
+/// `2 jam`, `3 hari`, lalu `21 Sep` (≥7 hari). Tanpa singkatan Inggris:
+/// `1h` dibaca "1 hari", `1d` dibaca "1 detik".
 String formatRelativeCompact(DateTime? value, {DateTime? now}) {
   if (value == null) return '';
   final clock = now ?? DateTime.now();
@@ -109,9 +95,9 @@ String formatRelativeCompact(DateTime? value, {DateTime? now}) {
   final local = value.toLocal();
   var diff = clock.difference(value);
   if (diff.isNegative) diff = Duration.zero;
-  if (diff.inMinutes < 1) return 'baru';
-  if (diff.inHours < 1) return '${diff.inMinutes}m';
-  if (diff.inDays < 1) return '${diff.inHours}h';
-  if (diff.inDays < 7) return '${diff.inDays}d';
+  if (diff.inMinutes < 1) return 'baru saja';
+  if (diff.inHours < 1) return '${diff.inMinutes} menit';
+  if (diff.inDays < 1) return '${diff.inHours} jam';
+  if (diff.inDays < 7) return '${diff.inDays} hari';
   return '${local.day} ${_months[local.month - 1]}';
 }

@@ -1,9 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/dictionary/data/models/word_detail_dto.dart';
+import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 
 /// Cuplikan GET /words/:id untuk "somet": contoh kedua punya target_sentence null.
 /// Sebelumnya `as String` melempar dan seluruh halaman detail gagal.
 void main() {
+  test('knownUsageLabels membuang kode asing dan menjaga urutan enum', () {
+    expect(
+      knownUsageLabels(['bukan_label', 'diskriminatif', 'kasar', 'kasar']),
+      ['kasar', 'diskriminatif'],
+    );
+    expect(knownUsageLabels(null), isEmpty);
+  });
+
   test('WordDetailDto menerima target_sentence dan notes null', () {
     final dto = WordDetailDto.fromJson(sometDetail);
 

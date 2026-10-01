@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/models/image_attribution.dart';
 import 'word_public_url.dart';
 
-String shareProviderLabel(String id) => switch (id) {
-      'pixabay' => 'Pixabay',
-      'openverse' => 'Openverse',
-      'unsplash' => 'Unsplash',
-      // Legacy atribusi gambar kata / share lama
-      'pexels' => 'Pexels',
-      'wikimedia' => 'Wikimedia',
-      _ => id,
-    };
+export '../../../core/models/image_attribution.dart';
 
 /// Kandidat latar dari GET /api/v1/share/backgrounds.
 class ShareBackground {
@@ -26,6 +19,9 @@ class ShareBackground {
     this.width = 0,
     this.height = 0,
     this.durationSeconds = 0,
+    this.license,
+    this.licenseUrl,
+    this.source,
   });
 
   final String id;
@@ -40,8 +36,36 @@ class ShareBackground {
   final int height;
   final int durationSeconds;
 
+  /// Openverse (CC): label lisensi, mis. `CC BY 2.0`.
+  final String? license;
+  final String? licenseUrl;
+
+  /// Openverse: sumber asli, mis. `flickr`.
+  final String? source;
+
   /// Alias lama.
   String get unsplashUrl => attributionUrl;
+
+  /// Kredit wajib (tile Explorer, kartu share, gambar kata).
+  ImageAttribution get attribution {
+    final lic = license?.trim() ?? '';
+    final src = source?.trim() ?? '';
+    final name = photographer.trim().isNotEmpty
+        ? photographer.trim()
+        : username.trim().isNotEmpty
+        ? username.trim()
+        : shareProviderLabel(provider);
+    return ImageAttribution(
+      name: name,
+      provider: provider,
+      url: provider == 'unsplash' && username.isNotEmpty
+          ? unsplashProfileUri(username).toString()
+          : attributionUrl,
+      license: lic.isEmpty ? null : lic,
+      licenseUrl: licenseUrl,
+      source: src.isEmpty ? null : src,
+    );
+  }
 
   String get thumbUrl {
     final preview = previewUrl;
@@ -110,6 +134,8 @@ class ShareCardData {
     this.exampleSentence,
     this.photographer,
     this.provider,
+    this.license,
+    this.source,
     this.isVideo = false,
     this.variantsLine,
     this.isVerified = true,
@@ -128,6 +154,10 @@ class ShareCardData {
   final String? exampleSentence;
   final String? photographer;
   final String? provider;
+
+  /// Openverse (CC): label lisensi + sumber asli untuk kredit wajib.
+  final String? license;
+  final String? source;
   final bool isVideo;
   final String? variantsLine;
   final bool isVerified;
@@ -146,6 +176,17 @@ class ShareCardData {
     if (name == null || name.isEmpty) return null;
     final kind = isVideo ? 'Video' : 'Foto';
     final id = provider?.trim() ?? '';
+    final lic = license?.trim() ?? '';
+    if (lic.isNotEmpty) {
+      // Kredit CC wajib ikut gambar. BY 4.0 minta tanda perubahan
+      // (foto dipotong / ditimpa teks), jadi "diubah" untuk semua CC BY.
+      final changed = lic.startsWith('CC BY') ? ', diubah' : '';
+      final src = source?.trim() ?? '';
+      final from = src.isNotEmpty
+          ? shareSourceLabel(src)
+          : shareProviderLabel(id.isEmpty ? 'openverse' : id);
+      return '$kind: $name ($lic$changed) / $from';
+    }
     if (id.isEmpty) return '$kind: $name';
     return '$kind: $name / ${shareProviderLabel(id)}';
   }

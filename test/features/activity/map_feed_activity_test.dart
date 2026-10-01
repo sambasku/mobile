@@ -30,7 +30,7 @@ void main() {
         'kind': 'search_miss',
         'created_at': '2026-09-28T12:00:00.000Z',
         'actor': null,
-        'body': 'Mencari "kalintiak" - belum ada di kamus. Bantu isi.',
+        'body': 'Mencari "kalintiak" - belum ada di kamus.',
       'subtitle': null,
         'target': {'type': 'search_miss', 'id': '01'},
       });
