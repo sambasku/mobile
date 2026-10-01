@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/models/image_attribution.dart';
 import '../entities/submit_word_result.dart';
 import '../failures/contribution_failure.dart';
 
@@ -13,6 +14,7 @@ class SubmitWordImage {
     this.altText,
     this.isPrimary = false,
     this.contentWarnings = const [],
+    this.attribution,
   });
 
   final String url;
@@ -24,6 +26,8 @@ class SubmitWordImage {
   final bool isPrimary;
   /// Peringatan konten dipilih kontributor. V1: 'kekerasan'. Kosong = [].
   final List<String> contentWarnings;
+  /// Kredit foto stock Media Explorer; upload: null.
+  final ImageAttribution? attribution;
 }
 
 /// Relasi inline (Form B) - sinonim/antonim lemma baru ikut makna induk.

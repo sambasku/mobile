@@ -6,8 +6,10 @@ import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../core/models/image_attribution.dart';
 import '../utils/image_sheet_drawer.dart';
 import 'cached_network_image_with_fallback.dart';
+import 'image_credit.dart';
 
 /// Hasil upload CDN ATAU referensi stock Media Explorer.
 class AttachmentUploadedImage {
@@ -19,6 +21,7 @@ class AttachmentUploadedImage {
     this.altText,
     this.isPrimary = false,
     this.contentWarnings = const [],
+    this.attribution,
   });
 
   final String url;
@@ -30,6 +33,8 @@ class AttachmentUploadedImage {
   final bool isPrimary;
   /// Peringatan konten yang dipilih oleh kontributor. V1: 'kekerasan'.
   final List<String> contentWarnings;
+  /// Kredit foto stock Media Explorer; upload kamera/galeri: null.
+  final ImageAttribution? attribution;
 }
 
 /// Gagal upload lampiran (token/CDN/jaringan).
@@ -201,6 +206,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         sha: uploaded.sha,
         altText: uploaded.altText,
         isPrimary: isPrimary,
+        attribution: uploaded.attribution,
       ),
     );
     widget.onChanged([...widget.images, slot]);
@@ -527,6 +533,10 @@ class _Thumb extends StatelessWidget {
                     fontSize: 10,
                   ),
                 ),
+                if (slot.uploaded?.attribution case final credit?) ...[
+                  const Gap(6),
+                  ImageCredit(attribution: credit, fontSize: 11),
+                ],
               ],
             ),
           ),

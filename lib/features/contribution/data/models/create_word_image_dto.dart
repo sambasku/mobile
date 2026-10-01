@@ -16,6 +16,8 @@ abstract class CreateWordImageDto with _$CreateWordImageDto {
     @JsonKey(name: 'is_primary') @Default(false) bool isPrimary,
     /// Peringatan konten dipilih kontributor. V1: 'kekerasan'. Kosong = [].
     @JsonKey(name: 'content_warnings') @Default([]) List<String> contentWarnings,
+    /// Kredit foto stock (`ImageAttribution.toJson`); upload: null.
+    @JsonKey(includeIfNull: false) Map<String, dynamic>? attribution,
   }) = _CreateWordImageDto;
 
   factory CreateWordImageDto.fromJson(Map<String, dynamic> json) =>

@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 
 import '../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../shared/widgets/image_credit.dart';
+import '../models/image_attribution.dart';
 import '../utils/display_image_url.dart';
 
 /// Buka preview fullscreen dengan pinch-zoom.
 ///
 /// [urls] boleh satu atau banyak; [initialIndex] memilih halaman awal.
+/// [credits] sejajar dengan [urls] (null = tanpa kredit).
 /// Dipakai lintas fitur (detail kata, kontribusi, dll.).
 Future<void> showImagePreview(
   BuildContext context, {
   required List<String> urls,
+  List<ImageAttribution?> credits = const [],
   int initialIndex = 0,
 }) {
-  final cleaned = urls.where((u) => u.trim().isNotEmpty).toList(growable: false);
+  final keep = [
+    for (var i = 0; i < urls.length; i++)
+      if (urls[i].trim().isNotEmpty) i,
+  ];
+  final cleaned = [for (final i in keep) urls[i]];
   if (cleaned.isEmpty) return Future.value();
 
   final index = initialIndex.clamp(0, cleaned.length - 1);
@@ -27,6 +35,9 @@ Future<void> showImagePreview(
         opacity: animation,
         child: ImagePreview(
           urls: cleaned,
+          credits: [
+            for (final i in keep) i < credits.length ? credits[i] : null,
+          ],
           initialIndex: index,
         ),
       ),
@@ -40,10 +51,12 @@ class ImagePreview extends StatefulWidget {
   const ImagePreview({
     super.key,
     required this.urls,
+    this.credits = const [],
     this.initialIndex = 0,
   });
 
   final List<String> urls;
+  final List<ImageAttribution?> credits;
   final int initialIndex;
 
   @override
@@ -72,6 +85,9 @@ class _ImagePreviewState extends State<ImagePreview> {
   @override
   Widget build(BuildContext context) {
     final multi = widget.urls.length > 1;
+    final credit = _index < widget.credits.length
+        ? widget.credits[_index]
+        : null;
 
     return Material(
       type: MaterialType.transparency,
@@ -93,6 +109,30 @@ class _ImagePreviewState extends State<ImagePreview> {
                 icon: const Icon(Icons.close, color: Colors.white),
               ),
             ),
+            if (credit != null)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: multi ? 40 : 12,
+                child: Center(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: ImageCredit(
+                        attribution: credit,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (multi)
               Positioned(
                 left: 0,

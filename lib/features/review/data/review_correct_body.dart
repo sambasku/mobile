@@ -20,12 +20,15 @@ typedef CorrectRelationEdit = ({String wordId, String relationType});
 /// Body POST correct untuk entity kata. Replace semantics di server: field
 /// yang tidak dikirim ikut terhapus, jadi daftar makna, relasi, dan variasi
 /// dikirim utuh dari form, sedangkan gambar, kategori, dan pelafalan pertama
-/// dibawa ulang dari entity detail (camelCase).
+/// dibawa ulang dari entity detail (camelCase). `usage_labels` selalu
+/// dikirim, termasuk daftar kosong: absen di schema berarti `[]` dan
+/// menghapus penanda yang sudah ada.
 Map<String, dynamic> buildWordCorrectBody({
   required Map<String, dynamic> entity,
   required String lemma,
   required String? notes,
   required String wordType,
+  required List<String> usageLabels,
   required List<CorrectMeaningEdit> meanings,
   required List<CorrectRelationEdit> relatedWords,
   required List<String> variants,
@@ -181,6 +184,7 @@ Map<String, dynamic> buildWordCorrectBody({
     if (dialectId != null && dialectId.isNotEmpty) 'dialect_id': dialectId,
     'lemma': lemma.trim(),
     'word_type': wordType,
+    'usage_labels': usageLabels,
     if (trimmedNotes != null && trimmedNotes.isNotEmpty) 'notes': trimmedNotes,
     'meanings': meaningBodies,
     'category_ids': categories,

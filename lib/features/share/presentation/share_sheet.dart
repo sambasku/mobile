@@ -12,6 +12,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/file_persist_helper.dart';
 import '../../../../shared/utils/permission_helper.dart';
+import '../../../shared/widgets/image_credit.dart';
 import '../../dictionary/domain/entities/word_detail.dart';
 import '../data/share_background_repository.dart';
 import '../domain/share_models.dart';
@@ -21,7 +22,6 @@ import 'share_image_explorer_sheet.dart';
 import 'share_solid_color_sheet.dart';
 import 'widgets/share_card_canvas.dart';
 import 'widgets/share_skeleton.dart';
-
 /// Buka sheet share kartu dari detail kata.
 /// [onShared]: share sheet tidak dibatalkan (bukan simpan ke galeri).
 Future<void> showWordShareSheet(
@@ -101,6 +101,8 @@ ShareCardData buildCardData({
   required ShareEditorSettings settings,
   String? photographer,
   String? provider,
+  String? license,
+  String? source,
   bool isVideo = false,
 }) {
   final senses = senseLinesForCard(
@@ -120,6 +122,8 @@ ShareCardData buildCardData({
         : null,
     photographer: photographer,
     provider: provider,
+    license: license,
+    source: source,
     isVideo: isVideo,
     variantsLine: spellingVariantsLine(detail),
     isVerified: detail.isVerified,
@@ -243,25 +247,40 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
   bool get _videoIsFile =>
       _bgSource == ShareBgSource.device && _localVideoFile != null;
 
-  String? get _photographer {
+  /// Kredit latar: foto stock terpilih, atau gambar kata dari Media Explorer.
+  ImageAttribution? get _bgCredit {
+    if (_bgSource == ShareBgSource.wordImage) {
+      return widget.detail.images
+          .where((img) => img.url == _wordImageUrl)
+          .firstOrNull
+          ?.attribution;
+    }
     if (_bgSource != ShareBgSource.stock) return null;
     final i = _selectedBgIndex;
     if (i == null || i < 0 || i >= _bgItems.length) return null;
-    final name = _bgItems[i].photographer;
-    return name.isEmpty ? null : name;
+    final item = _bgItems[i];
+    return item.photographer.isEmpty ? null : item.attribution;
   }
 
-  String? get _stockProvider {
-    if (_photographer == null) return null;
-    return _selectedStock?.provider;
-  }
+  String? get _photographer => _bgCredit?.name;
+
+  String? get _stockProvider => _bgCredit?.provider;
+
+  /// Creative Commons: kredit wajib ikut tercetak, jadi watermark dikunci.
+  bool get _mustCredit => _stockProvider == 'openverse';
+
+  ShareEditorSettings get _effectiveSettings => _mustCredit
+      ? _settings.copyWith(showWatermark: true)
+      : _settings;
 
   ShareCardData get _cardData => buildCardData(
     detail: widget.detail,
     meaning: _meaning,
-    settings: _settings,
+    settings: _effectiveSettings,
     photographer: _photographer,
     provider: _stockProvider,
+    license: _bgCredit?.license,
+    source: _bgCredit?.source,
     isVideo: _isVideoBackground && _bgSource == ShareBgSource.stock,
   );
 
@@ -603,17 +622,24 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         settings: settings,
         photographer: _photographer,
         provider: _stockProvider,
+        license: _bgCredit?.license,
+        source: _bgCredit?.source,
         isVideo: _isVideoBackground && _bgSource == ShareBgSource.stock,
       ),
       template: _template,
       ratio: _ratio,
-      settings: _settings,
+      settings: _effectiveSettings,
       imageProvider: _imageProvider,
       videoUrl: _videoUrl,
       videoIsFile: _videoIsFile,
     );
     if (!mounted || updated == null) return;
-    setState(() => _settings = updated);
+    // Watermark paksa CC jangan menimpa pilihan user sendiri.
+    setState(
+      () => _settings = updated.copyWith(
+        showWatermark: _settings.showWatermark,
+      ),
+    );
   }
 
   void _openCardFullscreen() {
@@ -622,7 +648,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
       data: _cardData,
       template: _template,
       ratio: _ratio,
-      settings: _settings,
+      settings: _effectiveSettings,
       imageProvider: _imageProvider,
       videoUrl: _videoUrl,
       videoIsFile: _videoIsFile,
@@ -768,7 +794,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                                           data: _cardData,
                                           template: _template,
                                           ratio: _ratio,
-                                          settings: _settings,
+                                          settings: _effectiveSettings,
                                           imageProvider: _imageProvider,
                                           videoUrl: _videoUrl,
                                           videoIsFile: _videoIsFile,
@@ -788,7 +814,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           data: _cardData,
                           template: _template,
                           ratio: _ratio,
-                          settings: _settings,
+                          settings: _effectiveSettings,
                           transparentBackdrop: true,
                         ),
                       ),
@@ -799,7 +825,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           data: _cardData,
                           template: _template,
                           ratio: _ratio,
-                          settings: _settings,
+                          settings: _effectiveSettings,
                           imageProvider: _imageProvider,
                         ),
                       ),
@@ -978,6 +1004,16 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             const Gap(8),
                           ],
                         ],
+                      ),
+                    ),
+                  if (_bgSource == ShareBgSource.stock &&
+                      !_template.forcesNoPhoto &&
+                      (_selectedStock?.provider == 'unsplash' ||
+                          _selectedStock?.provider == 'openverse'))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: ImageCredit(
+                        attribution: _selectedStock!.attribution,
                       ),
                     ),
                   if (_degraded && _bgItems.isEmpty)
@@ -1288,8 +1324,11 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                   ),
                   const Gap(8),
                   settingsSwitchRow(
-                    label: 'Tampilkan watermark SambasKu',
-                    value: _settings.showWatermark,
+                    label: _mustCredit
+                        ? 'Watermark SambasKu (wajib untuk foto Creative Commons)'
+                        : 'Tampilkan watermark SambasKu',
+                    value: _effectiveSettings.showWatermark,
+                    enabled: !_mustCredit,
                     onChange: (v) => setState(() {
                       _settings = _settings.copyWith(showWatermark: v);
                     }),

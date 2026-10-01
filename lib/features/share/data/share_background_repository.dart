@@ -14,6 +14,17 @@ class ShareBackgroundRepository {
         .catchError((_) => Response<void>(requestOptions: RequestOptions()));
   }
 
+  /// Unsplash API Guidelines: catat download saat user memilih foto.
+  /// Fire-and-forget: gagal tidak mengganggu user.
+  void trackUnsplashDownload(String id) {
+    _dio
+        .post<void>(
+          '/api/v1/share/backgrounds/unsplash/download',
+          data: {'id': id},
+        )
+        .catchError((_) => Response<void>(requestOptions: RequestOptions()));
+  }
+
   /// [sort] `relevant` butuh [query]; `popular` boleh query kosong (Image Explorer).
   Future<ShareBackgroundsResult> listBackgrounds(
     String query, {
@@ -82,6 +93,9 @@ class ShareBackgroundRepository {
               width: (m['width'] as num?)?.toInt() ?? 0,
               height: (m['height'] as num?)?.toInt() ?? 0,
               durationSeconds: (m['duration_seconds'] as num?)?.toInt() ?? 0,
+              license: m['license']?.toString(),
+              licenseUrl: m['license_url']?.toString(),
+              source: m['source']?.toString(),
             ),
           );
         }

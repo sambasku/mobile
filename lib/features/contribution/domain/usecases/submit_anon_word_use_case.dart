@@ -97,6 +97,8 @@ class SubmitAnonWordUseCase {
           sha: img.sha,
           altText: img.altText,
           isPrimary: primary,
+          contentWarnings: img.contentWarnings,
+          attribution: img.attribution,
         ),
       );
     }
@@ -109,6 +111,8 @@ class SubmitAnonWordUseCase {
         sha: first.sha,
         altText: first.altText,
         isPrimary: true,
+        contentWarnings: first.contentWarnings,
+        attribution: first.attribution,
       );
     }
 
