@@ -9,6 +9,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
+import '../../../../core/utils/tabfreeze_log.dart';
 import '../../../search_miss/search_miss_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
@@ -129,8 +130,12 @@ class _ContributeMenu extends StatelessWidget {
 
   final FThemeData theme;
 
-  void _open(BuildContext context) {
-    showModalBottomSheet<void>(
+  Future<void> _open(BuildContext context) {
+    tfLog('sheet open');
+    // Single-flight: tile masih bisa di-tap saat animasi pop (~250ms);
+    // tanpa ini tap kedua mempop route yang baru saja di-push.
+    var handled = false;
+    return showModalBottomSheet<String>(
       context: context,
       useSafeArea: true,
       // Navigator tab ada di dalam padding shell (childPad): tanpa root,
@@ -139,9 +144,15 @@ class _ContributeMenu extends StatelessWidget {
       backgroundColor: theme.colors.background,
       clipBehavior: Clip.antiAlias,
       builder: (sheetContext) {
+        // Jangan push dari dalam sheet: pop + push di navigator root yang
+        // sama saling balapan (route baru bisa terpop / barrier desync =
+        // semua tap tertelan). Path jadi pop result; push jalan setelah
+        // sheet benar-benar tertutup.
         void go(String path) {
-          Navigator.of(sheetContext).pop();
-          context.push(path);
+          if (handled) return;
+          handled = true;
+          tfLog('sheet pick $path');
+          Navigator.of(sheetContext).pop(path);
         }
 
         FTile tile(IconData icon, String title, String subtitle, VoidCallback onPress) => FTile(
@@ -182,7 +193,12 @@ class _ContributeMenu extends StatelessWidget {
           ),
         );
       },
-    );
+    ).then((path) {
+      tfLog('sheet dismissed path=$path');
+      if (path case final p?) {
+        if (context.mounted) context.push(p);
+      }
+    });
   }
 
   @override

@@ -22,6 +22,7 @@ import 'core/services/notification_navigation.dart';
 import 'core/services/analytics_service.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
+import 'core/utils/tabfreeze_log.dart';
 import 'features/device/data/datasources/device_remote_datasource.dart';
 import 'features/device/data/repositories/device_repository_impl.dart';
 import 'features/notification/presentation/providers/notification_providers.dart';
@@ -125,6 +126,16 @@ Future<void> main() async {
   // Failure 4xx tidak transient - retry manual via tombol "Coba lagi" di UI;
   // satu-satunya retry bermakna (401 -> refresh sekali) sudah di AuthInterceptor.
   runApp(UncontrolledProviderScope(container: container, child: const App()));
+
+  // Watchdog diagnostik tab-freeze (staging/debug): heartbeat di logcat
+  // tiap 2 detik. Saat freeze terjadi lagi: heartbeat jalan = Dart hidup,
+  // input diblokir barrier/navigator (keluarga sheet race); heartbeat
+  // berhenti = event loop Dart wedged.
+  if (devToolsEnabled) {
+    Timer.periodic(const Duration(seconds: 2), (_) {
+      tfLog('hb ${DateTime.now().millisecondsSinceEpoch}');
+    });
+  }
 
   // HTTP register device SETELAH frame pertama. Kalau DevTool memaksa
   // tier 3 (Render tidur), menunggu 75s di sini sebelum runApp = ANR.
