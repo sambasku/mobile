@@ -93,14 +93,13 @@ class ContributeImagesField extends ConsumerWidget {
     if (selected == null || selected.kind != ShareMediaKind.photo) {
       return null;
     }
-    final photographer = selected.photographer.trim().isEmpty
-        ? shareProviderLabel(selected.provider)
-        : selected.photographer.trim();
+    final attribution = selected.attribution;
     return AttachmentUploadedImage(
       url: selected.url,
       providerFileId: selected.id,
       provider: selected.provider,
-      altText: 'Foto: $photographer / ${selected.provider}',
+      altText: 'Foto: ${attribution.name} / ${selected.provider}',
+      attribution: attribution,
     );
   }
 }
@@ -120,6 +119,7 @@ List<SubmitWordImage> readySubmitImages(List<AttachmentImageSlot> slots) {
           // contentWarnings diambil dari slot (dipilih user via checkbox),
           // bukan dari uploaded (respons server tidak menyertakannya).
           contentWarnings: List<String>.from(s.contentWarnings),
+          attribution: s.uploaded!.attribution,
         ),
   ];
 }
@@ -135,5 +135,6 @@ CreateWordImageDto? contributeDtoOf(AttachmentImageSlot slot) {
     sha: u.sha,
     altText: u.altText,
     isPrimary: u.isPrimary,
+    attribution: u.attribution?.toJson(),
   );
 }

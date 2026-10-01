@@ -68,21 +68,10 @@ class _VoteButtonsState extends State<VoteButtons> {
       fit: BoxFit.scaleDown,
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        // Reddit-style: panah tebal atas/bawah (bukan thumbs).
+        // Urutan wajib (mobile-base-stack 5f): turun kiri, naik kanan.
         children: [
-          // Reddit-style: panah tebal atas/bawah (bukan thumbs).
-          _SideButton(
-            icon: FLucideIcons.arrowBigUp,
-            count: widget.upvotes,
-            active: widget.myVote == 1,
-            activeColor: enabled,
-            idleColor: idle,
-            compact: widget.compact,
-            disabled: _disabled,
-            label: 'Upvote',
-            onTap: () => _vote(1),
-          ),
           if (!widget.upvoteOnly) ...[
-            Gap(widget.compact ? 8 : 12),
             _SideButton(
               icon: FLucideIcons.arrowBigDown,
               count: widget.downvotes,
@@ -94,7 +83,19 @@ class _VoteButtonsState extends State<VoteButtons> {
               label: 'Downvote',
               onTap: () => _vote(-1),
             ),
+            Gap(widget.compact ? 8 : 12),
           ],
+          _SideButton(
+            icon: FLucideIcons.arrowBigUp,
+            count: widget.upvotes,
+            active: widget.myVote == 1,
+            activeColor: enabled,
+            idleColor: idle,
+            compact: widget.compact,
+            disabled: _disabled,
+            label: 'Upvote',
+            onTap: () => _vote(1),
+          ),
         ],
       ),
     );

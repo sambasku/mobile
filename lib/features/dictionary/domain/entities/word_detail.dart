@@ -1,3 +1,4 @@
+import '../../../../core/models/image_attribution.dart';
 import '../../../../shared/utils/public_account_name.dart';
 
 /// Closed enum `usage_labels` (sinkron API / console).
@@ -33,6 +34,19 @@ bool isProminentUsageLabel(String code) =>
     code == 'tabu' ||
     code == 'seksual' ||
     code == 'diskriminatif';
+
+/// Kode `usage_labels` yang dikenal, urutan enum. Payload review camelCase.
+List<String> knownUsageLabels(Object? raw) {
+  if (raw is! List) return const [];
+  final present = <String>{
+    for (final item in raw)
+      if (item != null) item.toString(),
+  };
+  return [
+    for (final code in kUsageLabels)
+      if (present.contains(code)) code,
+  ];
+}
 
 /// `halus` dan `kasar` saling bertentangan.
 bool hasConflictingUsageLabels(Iterable<String> labels) {
@@ -301,12 +315,16 @@ class WordImage {
     required this.isPrimary,
     this.isVerified = true,
     this.contentWarnings = const [],
+    this.attribution,
   });
 
   final String id;
   final String url;
   final String? altText;
   final bool isPrimary;
+
+  /// Kredit foto stock Media Explorer; null = upload / data lama.
+  final ImageAttribution? attribution;
 
   /// false jika API mengembalikan is_verified: false (gambar staging belum
   /// disetujui). Default true agar payload lama yang tidak menyertakan

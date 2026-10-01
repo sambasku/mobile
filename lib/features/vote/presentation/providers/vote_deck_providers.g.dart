@@ -37,7 +37,7 @@ final class VoteDeckControllerProvider
 }
 
 String _$voteDeckControllerHash() =>
-    r'27ea64c1ca98324fa8c7cc1085f985004f22d159';
+    r'005eff22cb8e9379f4c6eae468ccaa82b9b6640b';
 
 /// Antrean deck nilai kata (login). keepAlive + watch auth.
 

@@ -45,12 +45,21 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
   }
 }
 
+/// Potong body feed jadi `(teks, lemma?)`. API mengutip lemma: `"kumis" sudah pas`.
+List<(String, bool)> splitQuotedLemma(String body) {
+  final out = <(String, bool)>[];
+  var i = 0;
+  for (final m in RegExp(r'"[^"]+"').allMatches(body)) {
+    if (m.start > i) out.add((body.substring(i, m.start), false));
+    out.add((m[0]!, true));
+    i = m.end;
+  }
+  if (i < body.length) out.add((body.substring(i), false));
+  return out;
+}
+
 class FeedActivityActor {
-  const FeedActivityActor({
-    this.username,
-    this.displayName,
-    this.avatarUrl,
-  });
+  const FeedActivityActor({this.username, this.displayName, this.avatarUrl});
 
   final String? username;
   final String? displayName;

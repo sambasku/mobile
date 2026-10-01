@@ -12,6 +12,7 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/reference/reference_data.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../contribution/domain/meaning_source.dart';
+import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../domain/entities/review_contribution.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
@@ -246,6 +247,7 @@ class _WordPreview extends StatelessWidget {
     final lemma = entity['lemma']?.toString() ?? '-';
     final wordType = entity['wordType']?.toString();
     final notes = entity['notes']?.toString().trim();
+    final usageLabels = knownUsageLabels(entity['usageLabels']);
     final meanings = entity['meanings'];
     final extras = _extras();
 
@@ -268,6 +270,22 @@ class _WordPreview extends StatelessWidget {
                   style: theme.typography.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
+                ),
+              ],
+              if (usageLabels.isNotEmpty) ...[
+                const Gap(8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final code in usageLabels)
+                      FBadge(
+                        variant: isProminentUsageLabel(code)
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.secondary,
+                        child: Text(usageLabelLabel(code)),
+                      ),
+                  ],
                 ),
               ],
               if (notes != null && notes.isNotEmpty) ...[

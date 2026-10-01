@@ -10,6 +10,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
+import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/utils/ensure_microphone_ready.dart';
 import '../../../dictionary/presentation/widgets/record_pronunciation_sheet.dart';
 import '../../data/review_correct_body.dart';
@@ -150,6 +151,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
   /// Rekaman pelafalan yang terkirim dari form ini (langsung tersimpan).
   int _recordedCount = 0;
   String _wordType = 'word';
+  final _usageLabels = <String>{};
   bool _publish = true;
   bool _seeded = false;
   bool _busy = false;
@@ -197,6 +199,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     _relations = [];
     _variants = [];
     _recordedCount = 0;
+    _usageLabels.clear();
     _lemma.clear();
     _notes.clear();
     _comment.clear();
@@ -216,6 +219,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       _lemma.text = detail.entity['lemma']?.toString() ?? '';
       _notes.text = detail.entity['notes']?.toString() ?? '';
       _wordType = detail.entity['wordType']?.toString() ?? 'word';
+      _usageLabels
+        ..clear()
+        ..addAll(knownUsageLabels(detail.entity['usageLabels']));
       final meanings = detail.entity['meanings'];
       if (meanings is List) {
         for (var i = 0; i < meanings.length; i++) {
@@ -381,6 +387,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       lemma: _lemma.text,
       notes: _notes.text,
       wordType: _wordType,
+      usageLabels: [
+        for (final code in kUsageLabels)
+          if (_usageLabels.contains(code)) code,
+      ],
       meanings: [
         for (final meaning in _meanings)
           meaning.toEdit(
@@ -563,7 +573,25 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     );
   }
 
+  void _toggleUsageLabel(String code) {
+    if (_busy) return;
+    final selected = _usageLabels.contains(code);
+    if (!selected) {
+      if (hasConflictingUsageLabels({..._usageLabels, code})) {
+        showFToast(
+          context: context,
+          title: const Text('Halus dan Kasar tidak bisa dipilih bersamaan'),
+        );
+        return;
+      }
+      setState(() => _usageLabels.add(code));
+      return;
+    }
+    setState(() => _usageLabels.remove(code));
+  }
+
   List<Widget> _wordFields() {
+    final theme = context.theme;
     return [
       FTextField(
         control: FTextFieldControl.managed(controller: _lemma),
@@ -594,6 +622,34 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         control: FTextFieldControl.managed(controller: _notes),
         enabled: !_busy,
         label: const Text('Catatan kata'),
+      ),
+      const Gap(12),
+      const Text('Register'),
+      const Gap(4),
+      Text(
+        'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.',
+        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+      ),
+      const Gap(6),
+      _UsageLabelChips(
+        options: kRegisterUsageLabels,
+        selected: _usageLabels,
+        enabled: !_busy,
+        onToggle: _toggleUsageLabel,
+      ),
+      const Gap(12),
+      const Text('Peringatan'),
+      const Gap(4),
+      Text(
+        'Sensitivitas isi makna.',
+        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+      ),
+      const Gap(6),
+      _UsageLabelChips(
+        options: kWarningUsageLabels,
+        selected: _usageLabels,
+        enabled: !_busy,
+        onToggle: _toggleUsageLabel,
       ),
       const Gap(20),
       const _SectionLabel('Makna'),
@@ -786,11 +842,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           padding: style.clearButtonPadding,
           child: FButton.icon(
             style: style.clearButtonStyle,
+            semanticsLabel: 'Ambil dari KBBI',
             onPress: _busy ? null : () => _openKbbi(meaning),
-            child: Icon(
-              FLucideIcons.bookOpen,
-              semanticLabel: 'Ambil dari KBBI',
-            ),
+            child: const Icon(FLucideIcons.bookOpen),
           ),
         ),
       ),
@@ -885,6 +939,40 @@ class _SectionLabel extends StatelessWidget {
         fontWeight: FontWeight.w600,
         color: theme.colors.foreground,
       ),
+    );
+  }
+}
+
+class _UsageLabelChips extends StatelessWidget {
+  const _UsageLabelChips({
+    required this.options,
+    required this.selected,
+    required this.enabled,
+    required this.onToggle,
+  });
+
+  final List<String> options;
+  final Set<String> selected;
+  final bool enabled;
+  final ValueChanged<String> onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final code in options)
+          GestureDetector(
+            onTap: enabled ? () => onToggle(code) : null,
+            child: FBadge(
+              variant: selected.contains(code)
+                  ? FBadgeVariant.primary
+                  : FBadgeVariant.secondary,
+              child: Text(usageLabelLabel(code)),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/busy_aware_icon.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../dictionary/dictionary_router.dart';
 import '../../../dictionary/presentation/providers/audio_player_controller.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
@@ -263,7 +265,12 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                     enabled: !_rewinding,
                     onSwiped: (dir) =>
                         _cast(context, ref, item: item, direction: dir),
-                    child: VoteDeckWordCard(item: item),
+                    child: VoteDeckWordCard(
+                      item: item,
+                      onOpenDetail: _rewinding
+                          ? null
+                          : () => _openDetail(context, item),
+                    ),
                   ),
                 ),
               ),
@@ -313,6 +320,28 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) ref.read(wordDetailProvider(wordId).future).ignore();
     });
+  }
+
+  /// Detail kata (komentar, riwayat, …). Vote di detail = kartu dianggap
+  /// sudah dinilai; logikanya di controller karena widget ini dispose
+  /// selama route root terbuka.
+  Future<void> _openDetail(BuildContext context, VoteDeckItem item) async {
+    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
+    final deck = ref.read(voteDeckControllerProvider.notifier);
+    final dropped = await deck.openDetail(
+      item,
+      () => context.push(
+        DictionaryRouter.detail.path.replaceFirst(':id', item.id),
+      ),
+    );
+    // Context widget ini mungkin sudah dispose: toast lewat navigator root
+    // (di bawah FToaster).
+    final root = AppRouter.rootNavigatorKey.currentContext;
+    if (!dropped || root == null || !root.mounted) return;
+    showFToast(
+      context: root,
+      title: const Text('Penilaian dari detail tersimpan'),
+    );
   }
 
   Future<bool> _cast(
@@ -403,7 +432,8 @@ class _VoteDeckActionBar extends StatelessWidget {
         border: Border(top: BorderSide(color: theme.colors.border)),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+        // Horizontal 0: sejajar tepi kartu dan tombol Menu kontribusi.
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 8),
         child: Row(
           children: [
             Expanded(
@@ -458,7 +488,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Kurang setuju',
+              semanticsLabel: 'Perlu dicek ulang',
               onPress: _rewinding || onDisagree == null ? null : onDisagree,
               child: Icon(
                 FLucideIcons.arrowBigDown,
@@ -469,7 +499,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Setuju',
+              semanticsLabel: 'Sudah pas',
               onPress: _rewinding || onAgree == null ? null : onAgree,
               child: Icon(
                 FLucideIcons.arrowBigUp,

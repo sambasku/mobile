@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
@@ -72,36 +73,55 @@ class HomeSearchPage extends HookConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () =>
-                      context.push('${DictionaryRouter.list.path}?focus=1'),
-                  child: AbsorbPointer(
-                    child: FTextField(
-                      size: .sm,
-                      readOnly: true,
-                      hint: 'Cari kata Sambas...',
-                      prefixBuilder: (context, style, variants) =>
-                          FTextField.prefixIconBuilder(
-                            context,
-                            style,
-                            variants,
-                            const Icon(FLucideIcons.search),
-                          ),
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () =>
+                          context.push('${DictionaryRouter.list.path}?focus=1'),
+                      child: AbsorbPointer(
+                        child: FTextField(
+                          size: .sm,
+                          readOnly: true,
+                          hint: 'Cari kata Sambas...',
+                          prefixBuilder: (context, style, variants) =>
+                              FTextField.prefixIconBuilder(
+                                context,
+                                style,
+                                variants,
+                                const Icon(FLucideIcons.search),
+                              ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const Gap(8),
+                  FButton(
+                    size: .sm,
+                    variant: FButtonVariant.outline,
+                    onPress: () => context.push(
+                      DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
+                    ),
+                    child: const Text('A-Z'),
+                  ),
+                ],
               ),
               const Gap(8),
-              FButton(
-                size: .sm,
-                variant: FButtonVariant.outline,
-                onPress: () => context.push(
-                  DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
+              SizedBox(
+                width: double.infinity,
+                child: FButton(
+                  prefix: const Icon(FLucideIcons.plus),
+                  onPress: () {
+                    AnalyticsService.instance.log(
+                      AnalyticsEvents.contributeStart,
+                      params: {'from': 'home'},
+                    );
+                    context.push(ContributionRouter.contribute.path);
+                  },
+                  child: const Text('Usul kata baru'),
                 ),
-                child: const Text('A-Z'),
               ),
             ],
           ),
@@ -257,6 +277,7 @@ class _ActivityFeedRow extends StatelessWidget {
       ?kindLabel,
       if (subtitle != null && subtitle.isNotEmpty) subtitle,
     ].join(' · ');
+    final path = _navigatePath(item);
 
     final content = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,10 +286,10 @@ class _ActivityFeedRow extends StatelessWidget {
           kind: item.kind,
           imageUrl: item.actor?.avatarUrl,
           name: actorLabel,
-          // ponytail: arah dari awalan body. Plafon: copy berubah, ikon salah.
+          // ponytail: arah dari akhiran body. Plafon: copy berubah, ikon salah.
           // Upgrade: field value di payload GET /activity.
           voteUp: item.kind == FeedActivityKind.vote
-              ? !item.body.startsWith('Kurang setuju')
+              ? !item.body.endsWith('perlu dicek ulang')
               : null,
           size: 40,
         ),
@@ -315,8 +336,23 @@ class _ActivityFeedRow extends StatelessWidget {
                 ],
               ),
               const Gap(4),
-              Text(
-                item.body,
+              Text.rich(
+                TextSpan(
+                  children: [
+                    // Komentar/diskusi = teks bebas user; kutipannya bukan lemma.
+                    for (final (text, lemma) in switch (item.kind) {
+                      FeedActivityKind.comment ||
+                      FeedActivityKind.discussion => [(item.body, false)],
+                      _ => splitQuotedLemma(item.body),
+                    })
+                      TextSpan(
+                        text: text,
+                        style: lemma
+                            ? const TextStyle(fontWeight: FontWeight.w700)
+                            : null,
+                      ),
+                  ],
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.typography.sm.copyWith(
@@ -324,16 +360,40 @@ class _ActivityFeedRow extends StatelessWidget {
                   color: theme.colors.foreground,
                 ),
               ),
-              if (contextMeta.isNotEmpty) ...[
+              if (contextMeta.isNotEmpty || path != null) ...[
                 const Gap(4),
-                Text(
-                  contextMeta,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                    height: 1.25,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        contextMeta,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.xs.copyWith(
+                          color: theme.colors.mutedForeground,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                    // CTA hanya label; tap ditangani InkWell baris (tujuan sama).
+                    // Sengaja muted: fokus visual tetap di lemma, bukan CTA.
+                    if (path != null) ...[
+                      const Gap(8),
+                      Text(
+                        _ctaLabel(item.kind),
+                        style: theme.typography.xs.copyWith(
+                          color: theme.colors.mutedForeground,
+                          fontWeight: FontWeight.w500,
+                          height: 1.25,
+                        ),
+                      ),
+                      Icon(
+                        FLucideIcons.chevronRight,
+                        size: 14,
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ],
@@ -342,7 +402,6 @@ class _ActivityFeedRow extends StatelessWidget {
       ],
     );
 
-    final path = _navigatePath(item);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -365,7 +424,7 @@ class _ActivityFeedRow extends StatelessWidget {
     return switch (kind) {
       FeedActivityKind.word => 'Kata',
       FeedActivityKind.comment => 'Komentar',
-      FeedActivityKind.vote => 'Nilai',
+      FeedActivityKind.vote => 'Penilaian',
       FeedActivityKind.discussion => 'Diskusi',
       FeedActivityKind.wordImage => 'Foto',
       FeedActivityKind.wordAudio => 'Suara',
@@ -375,6 +434,23 @@ class _ActivityFeedRow extends StatelessWidget {
       FeedActivityKind.welcome => 'Bergabung',
       FeedActivityKind.cardShare => 'Bagikan',
       FeedActivityKind.suggestion => 'Usulan',
+    };
+  }
+
+  static String _ctaLabel(FeedActivityKind kind) {
+    return switch (kind) {
+      FeedActivityKind.vote => 'Ikut menilai',
+      FeedActivityKind.word => 'Lihat arti',
+      FeedActivityKind.comment => 'Balas',
+      FeedActivityKind.discussion => 'Ikut diskusi',
+      FeedActivityKind.wordImage => 'Lihat foto',
+      FeedActivityKind.wordAudio => 'Dengarkan',
+      FeedActivityKind.pronunciation => 'Lihat cara baca',
+      FeedActivityKind.example => 'Lihat contoh',
+      FeedActivityKind.searchMiss => 'Bantu isi',
+      FeedActivityKind.welcome => 'Lihat profil',
+      FeedActivityKind.cardShare => 'Lihat kartu',
+      FeedActivityKind.suggestion => 'Lihat usulan',
     };
   }
 

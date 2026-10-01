@@ -19,6 +19,7 @@ _CreateWordImageDto _$CreateWordImageDtoFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      attribution: json['attribution'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$CreateWordImageDtoToJson(_CreateWordImageDto instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$CreateWordImageDtoToJson(_CreateWordImageDto instance) =>
       'alt_text': ?instance.altText,
       'is_primary': instance.isPrimary,
       'content_warnings': instance.contentWarnings,
+      'attribution': ?instance.attribution,
     };

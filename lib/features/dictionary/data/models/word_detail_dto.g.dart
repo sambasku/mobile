@@ -237,6 +237,7 @@ _WordImageDto _$WordImageDtoFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      attribution: json['attribution'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$WordImageDtoToJson(_WordImageDto instance) =>
@@ -247,6 +248,7 @@ Map<String, dynamic> _$WordImageDtoToJson(_WordImageDto instance) =>
       'is_primary': instance.isPrimary,
       'is_verified': instance.isVerified,
       'content_warnings': instance.contentWarnings,
+      'attribution': instance.attribution,
     };
 
 _RelatedWordDto _$RelatedWordDtoFromJson(Map<String, dynamic> json) =>

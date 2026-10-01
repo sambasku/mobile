@@ -212,14 +212,16 @@ class ReviewMeaningCard extends ConsumerWidget {
                     description: const Text(
                       'Tekan icon buku untuk mencari definisi di KBBI',
                     ),
-                    suffixBuilder: (context, style, _) => Padding(
-                      padding: style.clearButtonPadding,
-                      child: FButton.icon(
-                        style: style.clearButtonStyle,
-                        onPress: busy ? null : onKbbi,
-                        child: Icon(
-                          FLucideIcons.bookOpen,
-                          semanticLabel: 'Ambil dari KBBI',
+                    // Label aksesibilitas ada di description field. Node tombol
+                    // sendiri, saat kartu masih di bawah lipatan, dapat rect
+                    // terbalik dari clip viewport dan menjatuhkan tes semantik.
+                    suffixBuilder: (context, style, _) => ExcludeSemantics(
+                      child: Padding(
+                        padding: style.clearButtonPadding,
+                        child: FButton.icon(
+                          style: style.clearButtonStyle,
+                          onPress: busy ? null : onKbbi,
+                          child: const Icon(FLucideIcons.bookOpen),
                         ),
                       ),
                     ),

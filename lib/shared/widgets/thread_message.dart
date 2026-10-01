@@ -49,7 +49,7 @@ class ThreadMessageRow extends StatelessWidget {
 
   final String body;
 
-  /// Humanize singkat di header (mis. `2h` dari [formatRelativeCompact]).
+  /// Humanize singkat di header (mis. `2 jam` dari [formatRelativeCompact]).
   final String? dateLabel;
 
   /// Bagian meta setelah tanggal (status, "Disematkan", dsb.).

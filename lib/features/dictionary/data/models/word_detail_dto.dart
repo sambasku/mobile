@@ -154,6 +154,8 @@ abstract class WordImageDto with _$WordImageDto {
     @JsonKey(name: 'is_verified') @Default(true) bool isVerified,
     /// Peringatan konten visual per gambar. V1: ['kekerasan'].
     @JsonKey(name: 'content_warnings') @Default([]) List<String> contentWarnings,
+    /// Kredit foto stock (+ `provider`); null = upload / data lama.
+    Map<String, dynamic>? attribution,
   }) = _WordImageDto;
 
   factory WordImageDto.fromJson(Map<String, dynamic> json) =>

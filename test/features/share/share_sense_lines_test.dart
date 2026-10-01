@@ -94,4 +94,31 @@ void main() {
       contains('1 [n] → kumis\nbulu di atas bibir\n2 [v]\ndimarahi'),
     );
   });
+
+  test('creditLine: stok biasa vs Creative Commons', () {
+    expect(
+      const ShareCardData(lemma: 'x', photographer: 'Jane', provider: 'pixabay')
+          .creditLine,
+      'Foto: Jane / Pixabay',
+    );
+    expect(
+      const ShareCardData(
+        lemma: 'x',
+        photographer: 'Ada',
+        provider: 'openverse',
+        license: 'CC BY 2.0',
+        source: 'flickr',
+      ).creditLine,
+      'Foto: Ada (CC BY 2.0, diubah) / Flickr',
+    );
+    expect(
+      const ShareCardData(
+        lemma: 'x',
+        photographer: 'Ada',
+        provider: 'openverse',
+        license: 'CC0 1.0',
+      ).creditLine,
+      'Foto: Ada (CC0 1.0) / Openverse',
+    );
+  });
 }

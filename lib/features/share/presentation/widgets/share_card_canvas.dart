@@ -422,11 +422,7 @@ Widget _senseRow({
       ? TextAlign.center
       : TextAlign.start;
 
-  final padStyle = _bodyStyle(
-    pair: pair,
-    size: padananSize,
-    color: lemmaColor,
-  );
+  final padStyle = _bodyStyle(pair: pair, size: padananSize, color: lemmaColor);
   final defStyle = _bodyStyle(
     pair: pair,
     size: definitionSize,
@@ -486,8 +482,8 @@ Widget _variantsUnderLemma({
     crossAxisAlignment: align == TextAlign.center
         ? CrossAxisAlignment.center
         : align == TextAlign.end
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start,
     children: [
       chip,
       Padding(
