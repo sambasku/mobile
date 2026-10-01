@@ -130,10 +130,37 @@ Future<void> main() async {
   // Watchdog diagnostik tab-freeze (staging/debug): heartbeat di logcat
   // tiap 2 detik. Saat freeze terjadi lagi: heartbeat jalan = Dart hidup,
   // input diblokir barrier/navigator (keluarga sheet race); heartbeat
-  // berhenti = event loop Dart wedged.
+  // berhenti = event loop Dart wedged. Jeda >8s saat resumed (bukan
+  // background/doze) tercatat ke ExceptionLog - terlihat di panel
+  // DevTool tanpa perlu logcat.
   if (devToolsEnabled) {
+    DateTime? lastBeat;
+    DateTime? lastNonResumed;
+    AppLifecycleListener(
+      onStateChange: (s) {
+        if (s != AppLifecycleState.resumed) lastNonResumed = DateTime.now();
+      },
+    );
     Timer.periodic(const Duration(seconds: 2), (_) {
-      tfLog('hb ${DateTime.now().millisecondsSinceEpoch}');
+      final now = DateTime.now();
+      final last = lastBeat;
+      lastBeat = now;
+      tfLog('hb ${now.millisecondsSinceEpoch}');
+      if (last == null) return;
+      final gap = now.difference(last);
+      if (gap <= const Duration(seconds: 8)) return;
+      // Jeda yang tumpang tindih periode non-resumed bukan wedge.
+      final nonResumed = lastNonResumed;
+      if (nonResumed != null && nonResumed.isAfter(last)) return;
+      if (WidgetsBinding.instance.lifecycleState !=
+          AppLifecycleState.resumed) {
+        return;
+      }
+      tfLog('wedge gap=${gap.inSeconds}s');
+      ExceptionLog.buffer.add(
+        StateError('UI wedged ${gap.inSeconds}s (event loop Dart tertahan)'),
+        StackTrace.current,
+      );
     });
   }
 

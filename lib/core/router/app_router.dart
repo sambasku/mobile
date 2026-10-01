@@ -145,7 +145,24 @@ class AppRouter {
   /// Register, verify-email, forgot/reset tidak di-redirect: daftar akun
   /// baru boleh terjadi meski sesi lama ada, dan tautan reset dari email
   /// harus tetap bisa dibuka.
+  /// Deadline global: await apa pun di redirect yang macet (storage,
+  /// jaringan) tidak boleh mengunci GoRouter selamanya - semua navigasi
+  /// berikutnya diabaikan selama redirect pending. Fail-open (null) =
+  /// navigasi tetap jalan.
   static Future<String?> _redirect(
+    BuildContext context,
+    GoRouterState state,
+  ) {
+    return _redirectInner(context, state).timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        tfLog('redirect timeout ${state.uri.path} -> null (dilanjutkan)');
+        return null;
+      },
+    );
+  }
+
+  static Future<String?> _redirectInner(
     BuildContext context,
     GoRouterState state,
   ) async {
