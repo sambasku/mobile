@@ -51,7 +51,7 @@ final class MentionSuggestControllerProvider
 }
 
 String _$mentionSuggestControllerHash() =>
-    r'43a12c104b2b327b39fa3a517e23275515bd4d1f';
+    r'04c7a5804eea780b34b6bf46221d9ac019df4a0a';
 
 /// Autocomplete mention @username: debounce 300ms, hanya query >= 2 char.
 /// Gagal fetch = diam (suggestion disembunyikan), bukan error block.

@@ -209,6 +209,7 @@ class DiscussionItem {
     required this.userId,
     required this.username,
     this.displayName,
+    this.avatarUrl,
     required this.body,
     this.linkUrl,
     required this.images,
@@ -230,6 +231,7 @@ class DiscussionItem {
   final String userId;
   final String? username;
   final String? displayName;
+  final String? avatarUrl;
   final String? body;
   final String? linkUrl;
   final List<DiscussionImage> images;
@@ -286,6 +288,7 @@ class DiscussionItem {
       userId: json['user_id']?.toString() ?? '',
       username: json['username']?.toString(),
       displayName: json['display_name']?.toString(),
+      avatarUrl: json['avatar_url']?.toString(),
       body: json['body']?.toString(),
       linkUrl: json['link_url']?.toString(),
       images: imagesRaw is List

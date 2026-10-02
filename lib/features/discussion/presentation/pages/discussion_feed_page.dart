@@ -287,7 +287,7 @@ class _FeedTile extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UserAvatar(name: actorLabel, size: 40),
+                  UserAvatar(name: actorLabel, imageUrl: item.avatarUrl, size: 40),
                   const Gap(12),
                   Expanded(
                     child: Column(
