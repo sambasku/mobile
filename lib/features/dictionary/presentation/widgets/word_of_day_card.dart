@@ -141,17 +141,24 @@ class _WordOfDayBody extends StatelessWidget {
                                   ),
                                 ),
                                 if (dateLabel.isNotEmpty)
-                                  Text(
-                                    dateLabel,
-                                    style: theme.typography.xs.copyWith(
-                                      color: Colors.white.withValues(alpha: 0.75),
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withValues(alpha: 0.4),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 1),
+                                  DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withValues(alpha: 0.35),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      child: Text(
+                                        dateLabel,
+                                        style: theme.typography.xs.copyWith(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.9,
+                                          ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                               ],
