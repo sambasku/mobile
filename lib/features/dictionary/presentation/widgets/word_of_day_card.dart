@@ -110,7 +110,7 @@ class _WordOfDayBody extends StatelessWidget {
                               children: [
                                 DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: accent.withValues(alpha: 0.14),
+                                    color: Colors.white.withValues(alpha: 0.22),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Padding(
@@ -118,7 +118,7 @@ class _WordOfDayBody extends StatelessWidget {
                                     child: Icon(
                                       FLucideIcons.sun,
                                       size: 14,
-                                      color: accent,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -128,7 +128,14 @@ class _WordOfDayBody extends StatelessWidget {
                                     'Kata hari ini',
                                     style: theme.typography.xs.copyWith(
                                       fontWeight: FontWeight.w700,
-                                      color: accent,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(alpha: 0.4),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
