@@ -41,7 +41,10 @@ class _WordOfDayBody extends StatelessWidget {
     final sense = item.firstSense;
     final dateLabel = formatDateYmd(item.date);
 
-    final accent = theme.colors.primary;
+    // Scrim lebih pekat di dark mode (kontras teks + ketenangan malam).
+    final scrimAlpha = Theme.of(context).brightness == Brightness.dark
+        ? 0.45
+        : 0.30;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -50,7 +53,6 @@ class _WordOfDayBody extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: accent.withValues(alpha: 0.35)),
         ),
         child: Stack(
           fit: StackFit.passthrough,
@@ -67,19 +69,19 @@ class _WordOfDayBody extends StatelessWidget {
                 ),
               ),
             ),
-            // 2. Overlay gradient dari kiri-atas (biar teks terbaca, soft)
+            // 2. Overlay gradient: atas terang, bawah gelap (area teks utama)
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withValues(alpha: 0.35),
-                      Colors.black.withValues(alpha: 0.08),
                       Colors.transparent,
+                      Colors.black.withValues(alpha: 0.10),
+                      Colors.black.withValues(alpha: scrimAlpha),
                     ],
-                    stops: const [0.0, 0.45, 0.8],
+                    stops: const [0.0, 0.35, 1.0],
                   ),
                 ),
               ),
@@ -100,7 +102,6 @@ class _WordOfDayBody extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ColoredBox(color: accent, child: const SizedBox(width: 4)),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
@@ -262,8 +263,6 @@ class _WordOfDaySkeleton extends StatelessWidget {
       duration: const Duration(milliseconds: 1500),
     );
 
-    final accent = context.theme.colors.primary;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: SkeletonizerConfig(
@@ -274,7 +273,6 @@ class _WordOfDaySkeleton extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: accent.withValues(alpha: 0.35)),
             ),
             child: Stack(
               fit: StackFit.passthrough,
@@ -296,14 +294,14 @@ class _WordOfDaySkeleton extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withValues(alpha: 0.35),
-                          Colors.black.withValues(alpha: 0.08),
                           Colors.transparent,
+                          Colors.black.withValues(alpha: 0.10),
+                          Colors.black.withValues(alpha: 0.30),
                         ],
-                        stops: const [0.0, 0.45, 0.8],
+                        stops: const [0.0, 0.35, 1.0],
                       ),
                     ),
                   ),
