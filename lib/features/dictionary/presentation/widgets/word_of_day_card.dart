@@ -144,7 +144,14 @@ class _WordOfDayBody extends StatelessWidget {
                                   Text(
                                     dateLabel,
                                     style: theme.typography.xs.copyWith(
-                                      color: theme.colors.mutedForeground,
+                                      color: Colors.white.withValues(alpha: 0.75),
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(alpha: 0.4),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ],
                                     ),
                                   ),
                               ],
@@ -186,21 +193,33 @@ class _WordOfDayBody extends StatelessWidget {
                               ),
                             ],
                             const Gap(4),
-                            Text(
-                              item.isNewThisWeek
-                                  ? 'Ditampilkan hari ini · baru minggu ini'
-                                  : 'Ditampilkan hari ini, berganti setiap hari',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.xs.copyWith(
-                                color: Colors.white.withValues(alpha: 0.8),
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black.withValues(alpha: 0.4),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 1),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                child: Text(
+                                  item.isNewThisWeek
+                                      ? 'Ditampilkan hari ini · baru minggu ini'
+                                      : 'Ditampilkan hari ini, berganti setiap hari',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.typography.xs.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.85),
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black.withValues(alpha: 0.4),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ],
