@@ -62,7 +62,7 @@ class _WordOfDayBody extends StatelessWidget {
                   image: DecorationImage(
                     image: const AssetImage('assets/images/wotd_cover.webp'),
                     fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.bottomCenter,
                   ),
                 ),
               ),
@@ -260,7 +260,7 @@ class _WordOfDaySkeleton extends StatelessWidget {
                       image: DecorationImage(
                         image: const AssetImage('assets/images/wotd_cover.webp'),
                         fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
+                        alignment: Alignment.bottomCenter,
                       ),
                     ),
                   ),
