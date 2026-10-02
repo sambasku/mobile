@@ -9,6 +9,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_of_day.dart';
+import '../providers/card_images_providers.dart';
 import '../providers/word_of_day_providers.dart';
 
 /// Kartu Kata Hari Ini. Soft-fail: loading = shimmer; null/error = hilang.
@@ -30,13 +31,13 @@ class WordOfDayCard extends ConsumerWidget {
   }
 }
 
-class _WordOfDayBody extends StatelessWidget {
+class _WordOfDayBody extends ConsumerWidget {
   const _WordOfDayBody({required this.item});
 
   final WordOfDay item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final sense = item.firstSense;
     final dateLabel = formatDateYmd(item.date);
@@ -45,6 +46,11 @@ class _WordOfDayBody extends StatelessWidget {
     final scrimAlpha = Theme.of(context).brightness == Brightness.dark
         ? 0.45
         : 0.30;
+
+    // Background dinamis dari CDN (home.json). Null → asset bundled.
+    final config = ref.watch(cardImagesProvider).value;
+    final wotdImage = config?.entryOf('wotd');
+    final bgAlignment = wotdImage?.alignmentValue ?? Alignment.bottomCenter;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -57,17 +63,24 @@ class _WordOfDayBody extends StatelessWidget {
         child: Stack(
           fit: StackFit.passthrough,
           children: [
-            // 1. Background image
+            // 1. Background image (CDN config, fallback asset bundled)
             Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: const AssetImage('assets/images/wotd_cover.webp'),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.bottomCenter,
-                  ),
-                ),
-              ),
+              child: wotdImage == null
+                  ? Image.asset(
+                      'assets/images/wotd_cover.webp',
+                      fit: BoxFit.cover,
+                      alignment: bgAlignment,
+                    )
+                  : Image.network(
+                      wotdImage.imageUrl,
+                      fit: BoxFit.cover,
+                      alignment: bgAlignment,
+                      errorBuilder: (_, _, _) => Image.asset(
+                        'assets/images/wotd_cover.webp',
+                        fit: BoxFit.cover,
+                        alignment: bgAlignment,
+                      ),
+                    ),
             ),
             // 2. Overlay gradient: atas terang, bawah gelap (area teks utama)
             Positioned.fill(
