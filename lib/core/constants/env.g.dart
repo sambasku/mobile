@@ -37,4 +37,10 @@ final class _Env {
       'https://sambasku-web-staging.iamutaki.com';
 
   static const String? webAppUrlProduction = 'https://sambasku.com';
+
+  static const String? cardConfigUrlStaging =
+      'https://cdn.jsdelivr.net/gh/sambasku/data@main/mobile/home.json';
+
+  static const String? cardConfigUrlProduction =
+      'https://cdn.jsdelivr.net/gh/sambasku/data@main/mobile/home.json';
 }
