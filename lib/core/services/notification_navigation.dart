@@ -28,7 +28,7 @@ Future<void> navigateFromNotificationPayload(
       data['url']?.trim();
 
   if (actionKind == 'url' && actionValue != null && actionValue.isNotEmpty) {
-    await _openExternalUrl(context, actionValue);
+    await _openNotificationUrl(context, actionValue);
     return;
   }
 
@@ -83,7 +83,7 @@ Future<void> navigateFromNotificationPayload(
     if (deepLinkKind == 'url' &&
         deepLinkValue != null &&
         deepLinkValue.isNotEmpty) {
-      await _openExternalUrl(context, deepLinkValue);
+      await _openNotificationUrl(context, deepLinkValue);
       return;
     }
     _go(router, NotificationRouter.list.path);
@@ -148,6 +148,30 @@ Future<void> navigateFromNotificationPayload(
     _go(router, NotificationRouter.list.path);
   }
 }
+
+/// Payload url notifikasi: hanya host whitelist. Selain itu fallback
+/// inbox - payload rusak bukan salah user, jangan error sheet.
+Future<void> _openNotificationUrl(BuildContext? context, String raw) async {
+  final uri = Uri.tryParse(raw.trim());
+  if (uri != null && isAllowedNotificationHost(uri)) {
+    await _openExternalUrl(context, raw);
+    return;
+  }
+  debugPrint('notification url rejected (host not allowed): $raw');
+  _go(AppRouter.router, NotificationRouter.list.path);
+}
+
+/// Host yang boleh dibuka dari payload notifikasi. Exact match, bukan
+/// suffix - `sambasku.com.evil.io` / `evilsambasku.com` tetap ditolak.
+/// Sinkron dengan api: campaign.validator.ts - ALLOWED_DEEP_LINK_HOSTS.
+const Set<String> kAllowedNotificationHosts = {
+  'sambasku.com',
+  'sambasku-web-staging.iamutaki.com',
+  'play.google.com',
+};
+
+bool isAllowedNotificationHost(Uri uri) =>
+    kAllowedNotificationHosts.contains(uri.host.toLowerCase());
 
 /// Navigasi dari tile inbox (satu helper dengan FCM).
 Future<void> navigateFromInboxNotification(
