@@ -1,5 +1,7 @@
 import 'package:flutter/painting.dart';
 
+import '../../domain/entities/card_images.dart';
+
 /// Exception config card tidak sesuai schema (`data/mobile/home.json`).
 class CardImagesException implements Exception {
   const CardImagesException(this.message);
@@ -44,7 +46,7 @@ class CardImagesDto {
     );
   }
 
-  /// Entry tanpa `imageUrl` valid dibuang di sini.
+  /// Entry tanpa `imageUrl` valid sudah dibuang saat parse.
   CardImagesConfig toEntity() => CardImagesConfig(
         cards: cards.map((key, entry) => MapEntry(key, entry.toEntity())),
       );
@@ -92,20 +94,3 @@ class CardImageEntryDto {
       );
 }
 
-/// Entity domain: card siap render (URL + alignment bertipe).
-class CardImagesConfig {
-  const CardImagesConfig({required this.cards});
-
-  final Map<String, CardImageEntry> cards;
-
-  CardImageEntry? entryOf(String key) => cards[key];
-}
-
-class CardImageEntry {
-  const CardImageEntry({required this.imageUrl, required this.alignmentValue});
-
-  final String imageUrl;
-
-  /// Sudah whitelist — aman dipakai langsung widget.
-  final Alignment alignmentValue;
-}
