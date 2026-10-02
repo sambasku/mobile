@@ -25,6 +25,10 @@ import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
 
 /// Tab HOME: feed lintas aktivitas publik + Kata Hari Ini.
+///
+/// Header konten (search, tombol usul, WOTD, banner) hidup di dalam
+/// CustomScrollView supaya tergulung mulus saat scroll ke bawah dan
+/// muncul lagi saat scroll ke atas (perilaku native SliverAppBar).
 class HomeSearchPage extends HookConsumerWidget {
   const HomeSearchPage({super.key});
 
@@ -65,93 +69,37 @@ class HomeSearchPage extends HookConsumerWidget {
       return () => scroll.removeListener(listener);
     }, [scroll]);
 
-    return Column(
-      children: [
-        const FHeader(
-          title: BrandWordmark(),
-          suffixes: [ThemeToggleHeaderAction()],
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () =>
-                          context.push('${DictionaryRouter.list.path}?focus=1'),
-                      child: AbsorbPointer(
-                        child: FTextField(
-                          size: .sm,
-                          readOnly: true,
-                          hint: 'Cari kata Sambas...',
-                          prefixBuilder: (context, style, variants) =>
-                              FTextField.prefixIconBuilder(
-                                context,
-                                style,
-                                variants,
-                                const Icon(FLucideIcons.search),
-                              ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Gap(8),
-                  FButton(
-                    size: .sm,
-                    variant: FButtonVariant.outline,
-                    onPress: () => context.push(
-                      DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
-                    ),
-                    child: const Text('A-Z'),
-                  ),
-                ],
-              ),
-              const Gap(8),
-              SizedBox(
-                width: double.infinity,
-                child: FButton(
-                  prefix: const Icon(FLucideIcons.plus),
-                  onPress: () {
-                    AnalyticsService.instance.log(
-                      AnalyticsEvents.contributeStart,
-                      params: {'from': 'home'},
-                    );
-                    context.push(ContributionRouter.contribute.path);
-                  },
-                  child: const Text('Usul kata baru'),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: _buildBody(
+    return RefreshIndicator(
+      onRefresh: () => _refresh(ref),
+      child: CustomScrollView(
+        controller: scroll,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          _HomeAppBar(),
+          _SearchBarSliver(),
+          const SliverToBoxAdapter(child: _ContributeButton()),
+          const SliverToBoxAdapter(child: WordOfDayCard()),
+          const SliverToBoxAdapter(child: DiscussionHomeBanner()),
+          const SliverToBoxAdapter(child: _FeedHeading()),
+          ..._buildBody(
             context,
             ref,
             state,
-            scroll,
             dayId: dayId,
             feedReady: feedReady,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildBody(
+  List<Widget> _buildBody(
     BuildContext context,
     WidgetRef ref,
-    ActivityFeedState state,
-    ScrollController scroll, {
+    ActivityFeedState state, {
     required String? dayId,
     required bool feedReady,
   }) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const _FeedSkeleton();
-    }
-
     final items = feedReady
         ? [
             for (final item in state.items)
@@ -160,44 +108,26 @@ class HomeSearchPage extends HookConsumerWidget {
         : const <FeedActivityItem>[];
 
     final hasError = state.errorMessage != null;
-    final showPlaceholder =
-        !feedReady || (items.isEmpty && state.errorMessage == null);
-    // 0 Kata Hari Ini, 1 spanduk, 2 judul, lalu opsional peringatan.
-    final headerCount = 3 + (hasError ? 1 : 0);
-    final bodyCount = showPlaceholder
+    final bodyCount = items.isEmpty
         ? 1
         : items.length + (state.isLoadingMore ? 1 : 0);
 
-    return RefreshIndicator(
-      onRefresh: () => _refresh(ref),
-      child: ListView.builder(
-        controller: scroll,
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-        itemCount: headerCount + bodyCount,
+    return [
+      if (hasError)
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _FeedErrorAlert(message: state.errorMessage!),
+          ),
+        ),
+      SliverList.builder(
+        itemCount: bodyCount,
         itemBuilder: (context, index) {
-          if (index == 0) return const WordOfDayCard();
-          if (index == 1) return const DiscussionHomeBanner();
-          if (index == 2) return const _FeedHeading();
-          var cursor = 3;
-          if (hasError) {
-            if (index == cursor) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: FAlert(
-                  variant: FAlertVariant.destructive,
-                  title: Text(state.errorMessage!),
-                ),
-              );
-            }
-            cursor++;
-          }
-          final bodyIndex = index - cursor;
           if (!feedReady) return const _FeedListSkeleton();
           if (items.isEmpty && state.errorMessage == null) {
             return const _EmptyFeed();
           }
-          if (bodyIndex >= items.length) {
+          if (index >= items.length) {
             return const Padding(
               padding: EdgeInsets.only(top: 12, bottom: 8),
               child: Center(child: FCircularProgress()),
@@ -206,14 +136,14 @@ class HomeSearchPage extends HookConsumerWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _ActivityFeedRow(item: items[bodyIndex]),
-              if (bodyIndex != items.length - 1)
+              _ActivityFeedRow(item: items[index]),
+              if (index != items.length - 1)
                 Divider(height: 1, color: context.theme.colors.border),
             ],
           );
         },
       ),
-    );
+    ];
   }
 
   static bool _isWordOfDayDuplicate(FeedActivityItem item, String? dayId) {
@@ -251,6 +181,124 @@ class _FeedHeading extends StatelessWidget {
           color: theme.colors.foreground,
         ),
       ),
+    );
+  }
+}
+
+/// App bar pinned: brand + toggle tema. Tergulung? Tidak, tetap terlihat.
+///
+/// Actions dibungkus FHeaderData manual karena FHeaderAction menuntut
+/// ancestor FHeaderData, dan di sini tidak ada FHeader (SliverAppBar).
+class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _HomeAppBar();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final headerStyle = theme.headerStyles.root;
+    return SliverAppBar(
+      pinned: true,
+      centerTitle: false,
+      title: const BrandWordmark(),
+      actions: [
+        FHeaderData(
+          actionStyle: headerStyle.actionStyle,
+          child: const ThemeToggleHeaderAction(),
+        ),
+      ],
+      backgroundColor: theme.colors.background,
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+    );
+  }
+}
+
+/// Search bar + A-Z: tadinya padding shell horizontal 12 yang meng-cover,
+/// sekarang child sliver, jadi padding di bawa sendiri.
+class _SearchBarRow extends StatelessWidget {
+  const _SearchBarRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () =>
+                  context.push('${DictionaryRouter.list.path}?focus=1'),
+              child: AbsorbPointer(
+                child: FTextField(
+                  size: .sm,
+                  readOnly: true,
+                  hint: 'Cari kata Sambas...',
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FLucideIcons.search),
+                      ),
+                ),
+              ),
+            ),
+          ),
+          const Gap(8),
+          FButton(
+            size: .sm,
+            variant: FButtonVariant.outline,
+            onPress: () => context.push(
+              DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
+            ),
+            child: const Text('A-Z'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tombol "Usul kata baru": sama, bawa padding horizontal sendiri.
+class _ContributeButton extends StatelessWidget {
+  const _ContributeButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: FButton(
+          prefix: const Icon(FLucideIcons.plus),
+          onPress: () {
+            AnalyticsService.instance.log(
+              AnalyticsEvents.contributeStart,
+              params: {'from': 'home'},
+            );
+            context.push(ContributionRouter.contribute.path);
+          },
+          child: const Text('Usul kata baru'),
+        ),
+      ),
+    );
+  }
+}
+
+/// Error feed: teksnya statis dari state halaman, jadi cukup param biasa.
+class _FeedErrorAlert extends StatelessWidget {
+  const _FeedErrorAlert({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return FAlert(
+      variant: FAlertVariant.destructive,
+      title: Text(message),
     );
   }
 }
@@ -574,23 +622,6 @@ class _FeedListSkeleton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _FeedSkeleton extends StatelessWidget {
-  const _FeedSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-      children: const [
-        WordOfDayCard(),
-        DiscussionHomeBanner(),
-        _FeedHeading(),
-        _FeedListSkeleton(),
-      ],
     );
   }
 }
