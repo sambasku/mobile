@@ -109,29 +109,9 @@ abstract final class Env {
         _nonEmpty(githubClientIdStaging);
   }
 
-  /// URL config card dinamis (background WOTD dll) sesuai flavor.
-  /// Di-host di repo `data` via jsDelivr, bukan API worker.
-  @EnviedField(varName: 'SAMBASKU_CARD_CONFIG_URL_STAGING', optional: true)
-  static const String? cardConfigUrlStaging = _Env.cardConfigUrlStaging;
-
-  @EnviedField(varName: 'SAMBASKU_CARD_CONFIG_URL_PRODUCTION', optional: true)
-  static const String? cardConfigUrlProduction = _Env.cardConfigUrlProduction;
-
-  static String? get cardConfigUrl {
-    if (F.isStaging || cardConfigUrlProduction == null) {
-      return _nonEmpty(cardConfigUrlStaging);
-    }
-    return _nonEmpty(cardConfigUrlProduction) ??
-        _nonEmpty(cardConfigUrlStaging);
-  }
-
   static String? _nonEmpty(String? value) {
     final trimmed = value?.trim();
     if (trimmed == null || trimmed.isEmpty) return null;
     return trimmed;
   }
 }
-
-/// URL config card dinamis. Prioritas: env flavor → fallback konstanta.
-const kDefaultCardConfigUrl =
-    'https://cdn.jsdelivr.net/gh/sambasku/data@main/mobile/home.json';
