@@ -66,18 +66,19 @@ class _WordOfDayBody extends StatelessWidget {
                 ),
               ),
             ),
-            // 2. Scrim gelap kiri (biar teks putih terbaca di light/dark)
+            // 2. Overlay gradient dari kiri-atas (biar teks terbaca, soft)
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      Colors.black.withValues(alpha: 0.45),
+                      Colors.black.withValues(alpha: 0.35),
+                      Colors.black.withValues(alpha: 0.08),
                       Colors.transparent,
                     ],
-                    stops: const [0.0, 0.55],
+                    stops: const [0.0, 0.45, 0.8],
                   ),
                 ),
               ),
@@ -149,6 +150,13 @@ class _WordOfDayBody extends StatelessWidget {
                                 fontWeight: FontWeight.w700,
                                 height: 1.15,
                                 color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
                               ),
                             ),
                             if (sense.isNotEmpty) ...[
@@ -159,6 +167,13 @@ class _WordOfDayBody extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.typography.sm.copyWith(
                                   color: Colors.white.withValues(alpha: 0.9),
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: 0.4),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -171,6 +186,13 @@ class _WordOfDayBody extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: theme.typography.xs.copyWith(
                                 color: Colors.white.withValues(alpha: 0.8),
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withValues(alpha: 0.4),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -234,18 +256,19 @@ class _WordOfDaySkeleton extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Scrim
+                // Overlay
                 Positioned.fill(
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                         colors: [
-                          Colors.black.withValues(alpha: 0.45),
+                          Colors.black.withValues(alpha: 0.35),
+                          Colors.black.withValues(alpha: 0.08),
                           Colors.transparent,
                         ],
-                        stops: const [0.0, 0.55],
+                        stops: const [0.0, 0.45, 0.8],
                       ),
                     ),
                   ),
