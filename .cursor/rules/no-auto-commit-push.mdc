@@ -1,0 +1,17 @@
+---
+description: Jangan pernah commit atau push otomatis. Git commit dan push adalah keputusan user.
+alwaysApply: true
+---
+
+# Git: dilarang commit dan push otomatis
+
+**JANGAN PERNAH** menjalankan `git commit` atau `git push` kecuali user secara eksplisit memintanya di chat. Termasuk:
+
+- Commit perubahan, walau task sudah selesai dan semua test pass.
+- Push ke branch manapun, termasuk `staging` atau `main`.
+- Commit submodule pointer (misal `api`, `mobile`) di root repo.
+- Alasan "biar CI jalan" atau "biar rapi" bukan alasan yang valid.
+
+Commit dan push adalah keputusan user. Tugasku berhenti di: edit file, jalankan test/lint, lalu laporkan hasil.
+
+Kalau user minta commit/push, boleh eksekusi persis permintaannya, jangan tambah commit lain di luar itu.

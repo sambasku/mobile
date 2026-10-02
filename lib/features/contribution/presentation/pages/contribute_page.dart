@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -20,6 +22,7 @@ import '../../domain/usecases/submit_anon_word_use_case.dart';
 import '../../domain/meaning_source.dart';
 import '../models/submit_word_state.dart';
 import '../providers/submit_word_providers.dart';
+import '../utils/invalidate_word_detail.dart';
 import '../widgets/contribute_images_field.dart';
 import '../widgets/contribute_relations_sheet.dart';
 import '../widgets/dialect_picker_sheet.dart';
@@ -359,6 +362,18 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
     ref.listen<SubmitWordState>(submitWordProvider, (prev, next) {
       if (next.result != null && prev?.result == null) {
+        // Issue #28: buang cache detail kata sebelum apa pun (feed, detail
+        // via deep link) sempat membaca data lama tanpa label pending.
+        final success = next.successResult;
+        if (success != null) {
+          unawaited(
+            invalidateWordDetailCaches(
+              ref,
+              success.wordId,
+              _lemmaCtrl.text.trim(),
+            ),
+          );
+        }
         // ponytail: show lemma user typed, not server ULID (useless to contributors)
         _showSuccessDialog(context, _lemmaCtrl.text.trim());
         return;
@@ -432,8 +447,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         children: [
           Text(
             isAuth
-                ? 'Kata langsung tayang dengan label Menunggu pengecekan. Tim akan memeriksanya.'
-                : 'Dikirim sebagai tamu. Kata belum tayang. Tim akan memeriksanya dulu.',
+                ? 'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'
+                : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.',
             style: theme.typography.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -1089,9 +1104,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
     final isAuth = ref.read(authStatusProvider).value?.isAuth ?? false;
     final successText = isAuth
         ? (lemma.isNotEmpty
-              ? '"$lemma" sudah tayang dengan label Menunggu pengecekan. Tim akan memeriksanya.'
-              : 'Kata sudah tayang dengan label Menunggu pengecekan. Tim akan memeriksanya.')
-        : 'Dikirim sebagai tamu. Kata belum tayang. Tim akan memeriksanya dulu.';
+              ? '"$lemma" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'
+              : 'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.')
+        : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
 
     final choice = await showFDialog<String>(
       context: context,

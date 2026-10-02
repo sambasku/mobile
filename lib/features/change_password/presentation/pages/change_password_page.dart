@@ -32,7 +32,7 @@ class ChangePasswordPage extends HookConsumerWidget {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Password Berhasil Diubah'),
+          title: const Text('Password berhasil diubah'),
           content: Text(next),
           actions: [
             TextButton(
@@ -41,7 +41,7 @@ class ChangePasswordPage extends HookConsumerWidget {
                 await ref.read(authStatusProvider.notifier).logout();
                 if (context.mounted) context.go('/login');
               },
-              child: const Text('Login Ulang'),
+              child: const Text('Login ulang'),
             ),
           ],
         ),

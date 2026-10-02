@@ -161,7 +161,7 @@ class _ComingSoonBody extends StatelessWidget {
             ),
             const Gap(12),
             Text(
-              'Kami sedang menyiapkan konten untuk menjelajahi Sambas lebih dalam.',
+              'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.',
               textAlign: TextAlign.center,
               style: theme.typography.sm.copyWith(
                 color: theme.colors.mutedForeground,

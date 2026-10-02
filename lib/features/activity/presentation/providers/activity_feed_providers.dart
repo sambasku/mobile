@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/activity_feed_repository.dart';
 import '../../domain/entities/feed_activity_item.dart';
 
@@ -10,6 +11,19 @@ final activityFeedRepositoryProvider = Provider<ActivityFeedRepository>((ref) {
     ref.watch(dioProvider),
     cache: ref.watch(cachedJsonClientProvider),
   );
+});
+
+/// Feed beranda menyembunyikan karya sendiri - HANYA saat login.
+final excludeSelfFeedProvider = Provider<bool>((ref) {
+  final auth = ref.watch(authStatusProvider).value;
+  if (!(auth?.isAuth ?? false)) return false;
+  // `isAuth` true tapi `userId` masih null (prefs belum terisi, sync
+  // `GET /users/me` gagal) → jangan sembunyikan apa pun. Saat tidak yakin siapa
+  // dirinya, menampilkan semua lebih aman daripada feed kosong tanpa penjelasan.
+  //
+  // Ini juga mencegah flag terkirim tanpa viewer: server mengabaikan
+  // `exclude_self` kalau tidak ada Bearer sah, jadi hasilnya tetap utuh.
+  return (auth?.userId ?? '').trim().isNotEmpty;
 });
 
 class ActivityFeedState {
@@ -62,6 +76,12 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
 
   @override
   ActivityFeedState build() {
+    // Login/logout → muat ulang. Tanpa ini feed tamu yang sudah ter-cache tetap
+    // tampil di layar setelah user login. Sengaja hanya `isAuth` + `userId`:
+    // ganti avatar atau display name tidak boleh memanggil ulang feed.
+    ref.listen(excludeSelfFeedProvider, (prev, next) {
+      if (prev != null && prev != next) Future.microtask(load);
+    });
     Future.microtask(load);
     return const ActivityFeedState(isLoading: true);
   }
@@ -84,6 +104,7 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
       final page = await ref.read(activityFeedRepositoryProvider).list(
             limit: _pageSize,
             forceRefresh: forceRefresh,
+            excludeSelf: ref.read(excludeSelfFeedProvider),
           );
       if (!ref.mounted || reqId != _loadReqId) return;
       state = state.copyWith(
@@ -126,6 +147,9 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
       final page = await ref.read(activityFeedRepositoryProvider).list(
             limit: _pageSize,
             cursor: current.nextCursor,
+            // Wajib ikut di loadMore: cursor halaman berikutnya tanpa flag akan
+            // mengembalikan karya sendiri dan bocor ke ekor feed.
+            excludeSelf: ref.read(excludeSelfFeedProvider),
           );
       if (!ref.mounted || reqId != _loadMoreReqId) return;
       state = state.copyWith(

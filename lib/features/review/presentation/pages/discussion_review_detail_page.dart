@@ -175,7 +175,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                 ),
                 const Gap(8),
                 Text(
-                  'Anda menyetujui $_n foto ($m tersensor · $k ber-flag kekerasan).',
+                  'Kamu menyetujui $_n foto ($m tersensor · $k ber-flag kekerasan).',
                 ),
                 const Gap(8),
                 Text(

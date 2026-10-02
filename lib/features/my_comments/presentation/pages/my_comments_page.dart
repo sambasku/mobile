@@ -3,15 +3,20 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_comment_item.dart';
 import '../../domain/failures/my_comment_failure.dart';
 import '../providers/my_comments_providers.dart';
 
 /// Komentar milik user login - GET /api/v1/comments/my.
+///
+/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// ekor, tanpa tombol "Muat lagi".
 class MyCommentsPage extends ConsumerWidget {
   const MyCommentsPage({super.key});
 
@@ -71,11 +76,41 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _CommentsList extends ConsumerWidget {
+class _CommentsList extends ConsumerStatefulWidget {
   const _CommentsList();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_CommentsList> createState() => _CommentsListState();
+}
+
+class _CommentsListState extends ConsumerState<_CommentsList> {
+  late final PagingController<int, MyCommentItem> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<MyCommentItem>(
+      loadMore: () async {
+        final failure =
+            await ref.read(myCommentsListControllerProvider.notifier).loadMore();
+        if (failure != null) throw failure;
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(myCommentsListControllerProvider);
+    await ref.read(myCommentsListControllerProvider.future);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
     final selected = ref.watch(myCommentsStatusFilterProvider);
     final async = ref.watch(myCommentsListControllerProvider);
@@ -169,79 +204,65 @@ class _CommentsList extends ConsumerWidget {
       );
     }
 
-    Future<void> refresh() async {
-      ref.invalidate(myCommentsListControllerProvider);
-      await ref.read(myCommentsListControllerProvider.future);
-    }
-
     final state = async.requireValue;
-    if (state.items.isEmpty) {
-      final message = selected == null
-          ? 'Belum ada komentar'
-          : 'Tidak ada komentar dengan status ini';
-      return Column(
-        children: [
-          chips,
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: refresh,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                children: [
-                  const SizedBox(height: 120),
-                  Center(child: Text(message)),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
+
+    // Sinkron snapshot list Riverpod -> PagingController.
+    _pagingController.value = buildPagingState<MyCommentItem>(
+      items: state.items,
+      hasMore: state.hasMore,
+    );
+
+    final emptyMessage = selected == null
+        ? 'Belum ada komentar'
+        : 'Tidak ada komentar dengan status ini';
 
     return Column(
       children: [
         chips,
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: refresh,
-                    child: FTileGroup.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      count: state.items.length,
-                      tileBuilder: (context, index) =>
-                          _CommentTile(item: state.items[index]),
-                    ),
-                  ),
+          child: RefreshIndicator(
+            onRefresh: _refresh,
+            child: PagedListView<int, MyCommentItem>.separated(
+              state: _pagingController.value,
+              fetchNextPage: _pagingController.fetchNextPage,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              builderDelegate: PagedChildBuilderDelegate<MyCommentItem>(
+                itemBuilder: (context, item, index) =>
+                    _CommentTile(item: item),
+                noItemsFoundIndicatorBuilder: (context) => ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    const SizedBox(height: 120),
+                    Center(child: Text(emptyMessage)),
+                  ],
                 ),
-                if (state.hasMore)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: FButton(
-                        variant: FButtonVariant.ghost,
-                        onPress: state.isLoadingMore
-                            ? null
-                            : () => ref
-                                  .read(
-                                    myCommentsListControllerProvider.notifier,
-                                  )
-                                  .loadMore(),
-                        prefix: state.isLoadingMore
-                            ? const FCircularProgress()
-                            : null,
-                        child: Text(
-                          state.isLoadingMore ? 'Memuat...' : 'Muat lagi',
+                newPageProgressIndicatorBuilder: (context) => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: FCircularProgress()),
+                ),
+                newPageErrorIndicatorBuilder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Gagal memuat halaman berikutnya',
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
                         ),
                       ),
-                    ),
+                      const Gap(10),
+                      FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: _pagingController.fetchNextPage,
+                        child: const Text('Coba lagi'),
+                      ),
+                    ],
                   ),
-              ],
+                ),
+              ),
             ),
           ),
         ),

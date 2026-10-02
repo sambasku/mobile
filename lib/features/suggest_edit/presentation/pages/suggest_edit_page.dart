@@ -402,7 +402,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final sentence = _sentenceCtrl.text.trim();
     final translation = _sentenceTranslationCtrl.text.trim();
     if (sentence.isEmpty) {
-      setState(() => _fieldErrors = {'sentence': 'Contoh kalimat wajib diisi'});
+      setState(
+        () => _fieldErrors = {'sentence': 'Contoh kalimatnya diisi dulu ya'},
+      );
       return;
     }
     final targetLang = translation.isEmpty ? null : await _resolveIdnLanguageId(dio, meaning);

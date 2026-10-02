@@ -3,21 +3,53 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../review_router.dart';
 import '../providers/review_history_providers.dart';
 
 /// Riwayat keputusan verifikasi milik user auth (GET mine=true).
-class ReviewHistoryPage extends ConsumerWidget {
+///
+/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// ekor, tanpa tombol "Muat lagi".
+class ReviewHistoryPage extends ConsumerStatefulWidget {
   const ReviewHistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReviewHistoryPage> createState() => _ReviewHistoryPageState();
+}
+
+class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
+  late final PagingController<int, ReviewItem> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<ReviewItem>(
+      loadMore: () =>
+          ref.read(reviewHistoryControllerProvider.notifier).loadMore(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(reviewHistoryControllerProvider);
+    await ref.read(reviewHistoryControllerProvider.future);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(reviewHistoryControllerProvider);
     final filter =
@@ -95,67 +127,71 @@ class ReviewHistoryPage extends ConsumerWidget {
                 ),
               ),
               data: (state) {
-                Future<void> refresh() async {
-                  ref.invalidate(reviewHistoryControllerProvider);
-                  await ref.read(reviewHistoryControllerProvider.future);
-                }
+                // Sinkron snapshot list Riverpod -> PagingController.
+                // build() adalah satu-satunya penulis value setelah initState,
+                // jadi tidak ada konflik dengan update internal controller.
+                _pagingController.value = buildPagingState<ReviewItem>(
+                  items: state.items,
+                  hasMore: state.hasMore,
+                );
 
-                if (state.items.isEmpty) {
-                  final message = filter == null
-                      ? 'Belum ada keputusan verifikasi'
-                      : 'Tidak ada keputusan dengan status ini';
-                  return RefreshIndicator(
-                    onRefresh: refresh,
-                    child: ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        const SizedBox(height: 120),
-                        Center(
-                          child: Text(
-                            message,
-                            style: theme.typography.sm.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                final emptyMessage = filter == null
+                    ? 'Belum ada keputusan verifikasi'
+                    : 'Tidak ada keputusan dengan status ini';
 
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: refresh,
-                          child: FTileGroup.builder(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            count: state.items.length,
-                            tileBuilder: (context, index) =>
-                                _HistoryTile(item: state.items[index]),
+                return RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: PagedListView<int, ReviewItem>.separated(
+                    state: _pagingController.value,
+                    fetchNextPage: _pagingController.fetchNextPage,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    builderDelegate: PagedChildBuilderDelegate<ReviewItem>(
+                      itemBuilder: (context, item, index) =>
+                          _HistoryTile(item: item),
+                      noItemsFoundIndicatorBuilder: (context) => Center(
+                        child: Text(
+                          emptyMessage,
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
                           ),
                         ),
                       ),
-                      if (state.hasMore)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FButton(
-                              variant: FButtonVariant.ghost,
-                              onPress: () => ref
-                                  .read(
-                                    reviewHistoryControllerProvider.notifier,
-                                  )
-                                  .loadMore(),
-                              child: const Text('Muat lagi'),
+                      newPageProgressIndicatorBuilder: (context) =>
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
                             ),
                           ),
+                      newPageErrorIndicatorBuilder: (context) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Gagal memuat halaman berikutnya',
+                              style: theme.typography.sm.copyWith(
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                            const Gap(10),
+                            FButton(
+                              variant: FButtonVariant.outline,
+                              onPress: _pagingController.fetchNextPage,
+                              child: const Text('Coba lagi'),
+                            ),
+                          ],
                         ),
-                    ],
+                      ),
+                    ),
                   ),
                 );
               },

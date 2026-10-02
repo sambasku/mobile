@@ -185,7 +185,7 @@ class _ContributeMenu extends StatelessWidget {
                 tile(
                   FLucideIcons.languages,
                   'Ruang diskusi',
-                  'Bahas kata bersama warga',
+                  'Ngobrol bareng warga di Ruang Diskusi',
                   () => go(DiscussionRouter.feed.path),
                 ),
               ],

@@ -58,7 +58,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     void promptLogin() {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk memulai diskusi'),
+        title: const Text('Masuk dulu ya sebelum mulai diskusi'),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -135,7 +135,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           if (context.mounted) {
             await showAppErrorSheet(
               context,
-              message: 'Deskripsi wajib diisi',
+              message: 'Tulis dulu pertanyaan atau cerita kamu ya',
             );
           }
           return;
@@ -258,7 +258,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Mulai Diskusi'),
+              title: const Text('Mulai diskusi'),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -272,14 +272,14 @@ class CreateDiscussionPage extends HookConsumerWidget {
         children: [
           const FAlert(
             icon: Icon(FLucideIcons.info),
-            title: Text('Diperiksa tim sebelum tayang'),
-            subtitle: Text(
-              'Tulis deskripsi (wajib). Foto dan suara opsional. Setelah disetujui, threadmu tampil dan warga bisa membalas.',
-            ),
+              title: Text('Thread kamu dicek dulu sebelum tayang'),
+              subtitle: Text(
+                'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.',
+              ),
           ),
           const Gap(16),
           if (!isAuth) ...[
-            const FAlert(title: Text('Masuk dulu untuk mengirim permintaan')),
+            const FAlert(title: Text('Masuk dulu ya sebelum mulai diskusi')),
             const Gap(8),
             FButton(
               variant: FButtonVariant.outline,
@@ -293,7 +293,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
             focusNode: bodyFocus,
             enabled: !submitting.value && isAuth,
             label: const Text('Deskripsi'),
-            hint: 'Jelaskan pertanyaan atau konteks bahasa yang ingin didiskusikan',
+            hint: 'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.',
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             minLines: 4,
@@ -345,7 +345,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
                           if (!next) link.clear();
                         },
                   child: Text(
-                    'Aku ingin membagikan link dari sosial media',
+                    'Sertakan link dari sosial media',
                     style: context.theme.typography.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -360,7 +360,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
               control: FTextFieldControl.managed(controller: link),
               enabled: !submitting.value && isAuth,
               label: const Text('Tautan'),
-              hint: 'https://… dari Instagram, TikTok, YouTube, dll.',
+              hint: 'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://',
               keyboardType: TextInputType.url,
               textInputAction: TextInputAction.done,
             ),

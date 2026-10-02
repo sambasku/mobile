@@ -3,15 +3,20 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_vote_item.dart';
 import '../../domain/failures/my_vote_failure.dart';
 import '../providers/my_votes_providers.dart';
 
 /// Riwayat vote milik user login - GET /api/v1/votes/history.
+///
+/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// ekor, tanpa tombol "Muat lagi".
 class MyVotesPage extends ConsumerWidget {
   const MyVotesPage({super.key});
 
@@ -71,11 +76,41 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _VotesList extends ConsumerWidget {
+class _VotesList extends ConsumerStatefulWidget {
   const _VotesList();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_VotesList> createState() => _VotesListState();
+}
+
+class _VotesListState extends ConsumerState<_VotesList> {
+  late final PagingController<int, MyVoteItem> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<MyVoteItem>(
+      loadMore: () async {
+        final failure =
+            await ref.read(myVotesListControllerProvider.notifier).loadMore();
+        if (failure != null) throw failure;
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(myVotesListControllerProvider);
+    await ref.read(myVotesListControllerProvider.future);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(myVotesListControllerProvider);
 
@@ -117,61 +152,53 @@ class _VotesList extends ConsumerWidget {
       return _ListSkeleton(itemCount: skeletonPerPage);
     }
 
-    Future<void> refresh() async {
-      ref.invalidate(myVotesListControllerProvider);
-      await ref.read(myVotesListControllerProvider.future);
-    }
-
     final state = async.requireValue;
-    if (state.items.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: refresh,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: const [
-            SizedBox(height: 160),
-            Center(child: Text('Belum ada vote')),
-          ],
-        ),
-      );
-    }
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: refresh,
-              child: FTileGroup.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _VoteTile(item: state.items[index]),
-              ),
+    // Sinkron snapshot list Riverpod -> PagingController.
+    _pagingController.value = buildPagingState<MyVoteItem>(
+      items: state.items,
+      hasMore: state.hasMore,
+    );
+
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: PagedListView<int, MyVoteItem>.separated(
+        state: _pagingController.value,
+        fetchNextPage: _pagingController.fetchNextPage,
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        builderDelegate: PagedChildBuilderDelegate<MyVoteItem>(
+          itemBuilder: (context, item, index) => _VoteTile(item: item),
+          noItemsFoundIndicatorBuilder: (context) => SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.6,
+            child: const Center(child: Text('Belum ada vote')),
+          ),
+          newPageProgressIndicatorBuilder: (context) => const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: FCircularProgress()),
+          ),
+          newPageErrorIndicatorBuilder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Gagal memuat halaman berikutnya',
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(10),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: _pagingController.fetchNextPage,
+                  child: const Text('Coba lagi'),
+                ),
+              ],
             ),
           ),
-          if (state.hasMore)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: state.isLoadingMore
-                      ? null
-                      : () => ref
-                            .read(myVotesListControllerProvider.notifier)
-                            .loadMore(),
-                  prefix: state.isLoadingMore
-                      ? const FCircularProgress()
-                      : null,
-                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

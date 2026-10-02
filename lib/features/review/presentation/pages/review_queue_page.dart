@@ -3,9 +3,11 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/review_access.dart';
@@ -77,15 +79,39 @@ class ReviewQueuePage extends ConsumerWidget {
   }
 }
 
-class _QueueList extends ConsumerWidget {
+class _QueueList extends ConsumerStatefulWidget {
   const _QueueList({required this.query, required this.state});
 
   final ReviewQueueQuery query;
   final ReviewQueueState state;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_QueueList> createState() => _QueueListState();
+}
+
+class _QueueListState extends ConsumerState<_QueueList> {
+  late final PagingController<int, ReviewItem> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<ReviewItem>(
+      loadMore: () =>
+          ref.read(reviewQueueProvider(widget.query).notifier).loadMore(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
+    final query = widget.query;
+    final state = widget.state;
 
     Future<void> refresh() async {
       ref.invalidate(reviewQueueProvider(query));
@@ -137,6 +163,13 @@ class _QueueList extends ConsumerWidget {
       );
     }
 
+    // Sinkron snapshot list Riverpod -> PagingController (autoload di ekor
+    // list, tanpa tombol "Muat lagi").
+    _pagingController.value = buildPagingState<ReviewItem>(
+      items: state.items,
+      hasMore: state.hasMore,
+    );
+
     void openSession({String? startId}) {
       ref
           .read(reviewSessionProvider.notifier)
@@ -165,38 +198,47 @@ class _QueueList extends ConsumerWidget {
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
-              child: FTileGroup.builder(
+              child: PagedListView<int, ReviewItem>.separated(
+                state: _pagingController.value,
+                fetchNextPage: _pagingController.fetchNextPage,
                 physics: const AlwaysScrollableScrollPhysics(),
-                count: state.items.length,
-                tileBuilder: (context, index) {
-                  final item = state.items[index];
-                  return _ReviewTile(
-                    item: item,
-                    onPress: () => openSession(startId: item.id),
-                  );
-                },
-              ),
-            ),
-          ),
-          if (state.hasMore)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: state.isLoadingMore
-                      ? null
-                      : () => ref
-                            .read(reviewQueueProvider(query).notifier)
-                            .loadMore(),
-                  prefix: state.isLoadingMore
-                      ? const FCircularProgress()
-                      : null,
-                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
+                separatorBuilder: (_, _) => const Divider(height: 1),
+                builderDelegate: PagedChildBuilderDelegate<ReviewItem>(
+                  itemBuilder: (context, item, index) {
+                    return _ReviewTile(
+                      item: item,
+                      onPress: () => openSession(startId: item.id),
+                    );
+                  },
+                  newPageProgressIndicatorBuilder: (context) =>
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: FCircularProgress()),
+                      ),
+                  newPageErrorIndicatorBuilder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Gagal memuat halaman berikutnya',
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                        const Gap(10),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: _pagingController.fetchNextPage,
+                          child: const Text('Coba lagi'),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

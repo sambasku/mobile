@@ -127,8 +127,8 @@ Future<void> main() async {
   // satu-satunya retry bermakna (401 -> refresh sekali) sudah di AuthInterceptor.
   runApp(UncontrolledProviderScope(container: container, child: const App()));
 
-  // Watchdog diagnostik tab-freeze (staging/debug): heartbeat di logcat
-  // tiap 2 detik. Saat freeze terjadi lagi: heartbeat jalan = Dart hidup,
+  // Watchdog diagnostik tab-freeze (staging/debug): heartbeat internal tiap
+  // 2 detik (tanpa log per detak). Saat freeze terjadi lagi: heartbeat jalan = Dart hidup,
   // input diblokir barrier/navigator (keluarga sheet race); heartbeat
   // berhenti = event loop Dart wedged. Jeda >8s saat resumed (bukan
   // background/doze) tercatat ke ExceptionLog - terlihat di panel
@@ -145,7 +145,6 @@ Future<void> main() async {
       final now = DateTime.now();
       final last = lastBeat;
       lastBeat = now;
-      tfLog('hb ${now.millisecondsSinceEpoch}');
       if (last == null) return;
       final gap = now.difference(last);
       if (gap <= const Duration(seconds: 8)) return;

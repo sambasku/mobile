@@ -120,7 +120,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal memuat vote Anda',
+            response.message ?? 'Gagal memuat vote kamu',
             errorCode: response.errorCode,
           ),
         );

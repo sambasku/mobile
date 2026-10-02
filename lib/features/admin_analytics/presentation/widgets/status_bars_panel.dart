@@ -45,7 +45,7 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
           value: byStatus['pending_review'] ?? 0,
           attention: (byStatus['pending_review'] ?? 0) > 0,
         ),
-        _StatusItem(label: 'Draft', value: byStatus['draft'] ?? 0),
+        _StatusItem(label: 'Draft (tidak tayang)', value: byStatus['draft'] ?? 0),
         _StatusItem(label: 'Tayang', value: byStatus['published'] ?? 0),
         _StatusItem(label: 'Ditolak', value: byStatus['rejected'] ?? 0),
       ],

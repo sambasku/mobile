@@ -43,7 +43,7 @@ class DiscussionHomeBanner extends StatelessWidget {
                       ),
                       const Gap(2),
                       Text(
-                        'Tanya bahasa lewat teks, foto, atau tautan. Warga bantu jawab.',
+                        'Cerita apa saja lewat teks, foto, atau tautan. Warga bantu jawab.',
                         style: theme.typography.sm.copyWith(
                           color: theme.colors.mutedForeground,
                           fontSize: 12,

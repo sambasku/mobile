@@ -20,6 +20,8 @@ import '../providers/discussion_list_providers.dart';
 import '../widgets/discussion_image_thumb.dart';
 import '../widgets/discussion_reply_audio_player.dart';
 import '../widgets/record_discussion_reply_sheet.dart';
+import '../../../comment/presentation/providers/mention_suggest_providers.dart';
+import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
 
 /// Detail diskusi + thread balasan.
 class DiscussionDetailPage extends ConsumerStatefulWidget {
@@ -40,12 +42,28 @@ class _DiscussionDetailPageState
   void initState() {
     super.initState();
     _replyCtrl = TextEditingController();
+    _replyCtrl.addListener(_onReplyChanged);
   }
 
   @override
   void dispose() {
+    _replyCtrl.removeListener(_onReplyChanged);
     _replyCtrl.dispose();
     super.dispose();
+  }
+
+  void _onReplyChanged() {
+    ref
+        .read(mentionSuggestControllerProvider.notifier)
+        .onTextChanged(_replyCtrl.text, _replyCtrl.selection.baseOffset);
+  }
+
+  Widget _buildReplyMentionSuggest(BuildContext context) {
+    return MentionSuggestOverlay(
+      onSelect: (username) {
+        insertIntoComposer(_replyCtrl, username);
+      },
+    );
   }
 
   bool _isAuth() => ref.read(authStatusProvider).value?.isAuth ?? false;
@@ -379,6 +397,11 @@ class _DiscussionDetailPageState
                                     reply.username!,
                                   )
                                 : null,
+                            onMentionTap: (mentionedUsername) =>
+                                UserProfileRouter.open(
+                                  context,
+                                  mentionedUsername,
+                                ),
                             footer: reply.isPublished
                                 ? Row(
                                     children: [
@@ -424,6 +447,7 @@ class _DiscussionDetailPageState
                             onSubmit: _sendReply,
                             onRecordAudio: _recordAudioReply,
                             hint: 'Tulis balasan…',
+                            suggestBuilder: _buildReplyMentionSuggest,
                           ),
                   ),
                 ),

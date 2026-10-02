@@ -92,8 +92,12 @@ final class PublicProfileFamily extends $Family
   String toString() => r'publicProfileProvider';
 }
 
+/// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
+
 @ProviderFor(publicActivity)
 final publicActivityProvider = PublicActivityFamily._();
+
+/// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
 
 final class PublicActivityProvider
     extends
@@ -105,6 +109,7 @@ final class PublicActivityProvider
     with
         $FutureModifier<List<PublicActivityItem>>,
         $FutureProvider<List<PublicActivityItem>> {
+  /// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
   PublicActivityProvider._({
     required PublicActivityFamily super.from,
     required String super.argument,
@@ -149,7 +154,9 @@ final class PublicActivityProvider
   }
 }
 
-String _$publicActivityHash() => r'fa37e0690a884798376a1bd863125a2a362d26de';
+String _$publicActivityHash() => r'178655bc089e83b6700272b5f263b1cfbd77e622';
+
+/// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
 
 final class PublicActivityFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<PublicActivityItem>>, String> {
@@ -162,9 +169,118 @@ final class PublicActivityFamily extends $Family
         isAutoDispose: true,
       );
 
+  /// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
+
   PublicActivityProvider call(String username) =>
       PublicActivityProvider._(argument: username, from: this);
 
   @override
   String toString() => r'publicActivityProvider';
+}
+
+/// Provider family per kategori (kind: contribution|comment|verification|vote).
+/// Pagination manual via parameter `cursor` - dipakai di bottom sheet.
+
+@ProviderFor(publicActivityByKind)
+final publicActivityByKindProvider = PublicActivityByKindFamily._();
+
+/// Provider family per kategori (kind: contribution|comment|verification|vote).
+/// Pagination manual via parameter `cursor` - dipakai di bottom sheet.
+
+final class PublicActivityByKindProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PublicActivityCategoryState>,
+          PublicActivityCategoryState,
+          FutureOr<PublicActivityCategoryState>
+        >
+    with
+        $FutureModifier<PublicActivityCategoryState>,
+        $FutureProvider<PublicActivityCategoryState> {
+  /// Provider family per kategori (kind: contribution|comment|verification|vote).
+  /// Pagination manual via parameter `cursor` - dipakai di bottom sheet.
+  PublicActivityByKindProvider._({
+    required PublicActivityByKindFamily super.from,
+    required (String, String, {String? cursor}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'publicActivityByKindProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$publicActivityByKindHash();
+
+  @override
+  String toString() {
+    return r'publicActivityByKindProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<PublicActivityCategoryState> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<PublicActivityCategoryState> create(Ref ref) {
+    final argument = this.argument as (String, String, {String? cursor});
+    return publicActivityByKind(
+      ref,
+      argument.$1,
+      argument.$2,
+      cursor: argument.cursor,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PublicActivityByKindProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$publicActivityByKindHash() =>
+    r'a7887d150784c3bb8795b59c940515b306e29ebf';
+
+/// Provider family per kategori (kind: contribution|comment|verification|vote).
+/// Pagination manual via parameter `cursor` - dipakai di bottom sheet.
+
+final class PublicActivityByKindFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          FutureOr<PublicActivityCategoryState>,
+          (String, String, {String? cursor})
+        > {
+  PublicActivityByKindFamily._()
+    : super(
+        retry: null,
+        name: r'publicActivityByKindProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Provider family per kategori (kind: contribution|comment|verification|vote).
+  /// Pagination manual via parameter `cursor` - dipakai di bottom sheet.
+
+  PublicActivityByKindProvider call(
+    String username,
+    String kind, {
+    String? cursor,
+  }) => PublicActivityByKindProvider._(
+    argument: (username, kind, cursor: cursor),
+    from: this,
+  );
+
+  @override
+  String toString() => r'publicActivityByKindProvider';
 }

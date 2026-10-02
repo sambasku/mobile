@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -29,6 +30,7 @@ class ThreadMessageRow extends StatelessWidget {
     this.metaParts = const [],
     this.isRedacted = false,
     this.onUsernameTap,
+    this.onMentionTap,
     this.onDelete,
     this.media,
     this.footer,
@@ -57,6 +59,9 @@ class ThreadMessageRow extends StatelessWidget {
   final bool isRedacted;
   final VoidCallback? onUsernameTap;
   final VoidCallback? onDelete;
+
+  /// Tap `@username` di body → callback (navigasi profil).
+  final ValueChanged<String>? onMentionTap;
 
   /// Konten di bawah body (mis. player audio balasan).
   final Widget? media;
@@ -167,8 +172,10 @@ class ThreadMessageRow extends StatelessWidget {
               ),
               const Gap(3),
               if (body.trim().isNotEmpty)
-                Text(
-                  body,
+                MentionBodyText(
+                  body: body,
+                  isRedacted: isRedacted,
+                  onMentionTap: onMentionTap,
                   style: theme.typography.sm.copyWith(
                     height: 1.35,
                     fontStyle: isRedacted ? FontStyle.italic : FontStyle.normal,
@@ -211,6 +218,7 @@ class ThreadMessageRow extends StatelessWidget {
 
 /// Composer thread kanonik: field multi-baris + kirim.
 /// Opsional [onRecordAudio] menampilkan chip berlabel "Rekam suara".
+/// [suggestBuilder] dipasang di atas field (mis. autocomplete mention).
 class ThreadComposer extends StatelessWidget {
   const ThreadComposer({
     super.key,
@@ -218,6 +226,7 @@ class ThreadComposer extends StatelessWidget {
     required this.isSubmitting,
     required this.onSubmit,
     this.onRecordAudio,
+    this.suggestBuilder,
     this.hint = 'Tulis komentar…',
   });
 
@@ -226,6 +235,8 @@ class ThreadComposer extends StatelessWidget {
   final VoidCallback onSubmit;
   /// Jika diisi, tampilkan chip "Rekam suara" di bawah field.
   final VoidCallback? onRecordAudio;
+  /// Builder opsional untuk overlay suggestion (mis. mention autocomplete).
+  final Widget Function(BuildContext)? suggestBuilder;
   final String hint;
 
   @override
@@ -235,6 +246,10 @@ class ThreadComposer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (suggestBuilder != null) ...[
+          suggestBuilder!(context),
+          const Gap(4),
+        ],
         if (onRecordAudio != null) ...[
           Align(
             alignment: Alignment.centerLeft,
@@ -372,6 +387,72 @@ class ThreadLoginPrompt extends StatelessWidget {
           child: const Text('Masuk'),
         ),
       ],
+    );
+  }
+}
+
+/// Teks body thread dengan deteksi `@username`: mention dirender bold +
+/// warna primer, tap → [onMentionTap] (navigasi profil).
+class MentionBodyText extends StatelessWidget {
+  const MentionBodyText({
+    super.key,
+    required this.body,
+    required this.style,
+    this.isRedacted = false,
+    this.onMentionTap,
+  });
+
+  final String body;
+  final TextStyle style;
+  final bool isRedacted;
+
+  /// Callback dengan username yang di-tap (tanpa `@`).
+  final ValueChanged<String>? onMentionTap;
+
+  static final RegExp _mentionRe =
+      RegExp(r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])');
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final mentionStyle = style.copyWith(
+      color: isRedacted ? null : theme.colors.primary,
+      fontWeight: isRedacted ? null : FontWeight.w600,
+    );
+
+    return RichText(
+      text: _buildTextSpan(body, mentionStyle),
+    );
+  }
+
+  TextSpan _buildTextSpan(String text, TextStyle mentionStyle) {
+    final spans = <TextSpan>[];
+    var lastEnd = 0;
+
+    for (final match in _mentionRe.allMatches(text)) {
+      if (match.start > lastEnd) {
+        spans.add(TextSpan(text: text.substring(lastEnd, match.start)));
+      }
+      final username = match.group(1)!;
+      // `anonim` = akun sistem, dirender sebagai teks biasa.
+      final isRealMention = username.toLowerCase() != 'anonim';
+      spans.add(TextSpan(
+        text: match.group(0),
+        style: isRealMention ? mentionStyle : null,
+        recognizer: isRealMention && onMentionTap != null
+            ? (TapGestureRecognizer()
+              ..onTap = () => onMentionTap!(username))
+            : null,
+      ));
+      lastEnd = match.end;
+    }
+    if (lastEnd < text.length) {
+      spans.add(TextSpan(text: text.substring(lastEnd)));
+    }
+
+    return TextSpan(
+      children: spans,
+      style: style,
     );
   }
 }
