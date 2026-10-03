@@ -3,20 +3,54 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../review_router.dart';
 import '../providers/review_suggestions_providers.dart';
 
 /// Antrean usulan edit kata (GET admin/word-suggestions?status=pending).
-class ReviewSuggestionsPage extends ConsumerWidget {
+///
+/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// ekor, tanpa tombol "Muat lagi".
+class ReviewSuggestionsPage extends ConsumerStatefulWidget {
   const ReviewSuggestionsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReviewSuggestionsPage> createState() =>
+      _ReviewSuggestionsPageState();
+}
+
+class _ReviewSuggestionsPageState
+    extends ConsumerState<ReviewSuggestionsPage> {
+  late final PagingController<int, WordSuggestionSummary> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<WordSuggestionSummary>(
+      loadMore: () =>
+          ref.read(reviewSuggestionsListProvider.notifier).loadMore(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(reviewSuggestionsListProvider);
+    await ref.read(reviewSuggestionsListProvider.future);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(reviewSuggestionsListProvider);
 
@@ -54,36 +88,26 @@ class ReviewSuggestionsPage extends ConsumerWidget {
             ],
           ),
         ),
-        data: (state) => _SuggestionsList(state: state),
-      ),
-    );
-  }
-}
+        data: (state) {
+          // Sinkron snapshot list Riverpod -> PagingController.
+          _pagingController.value = buildPagingState<WordSuggestionSummary>(
+            items: state.items,
+            hasMore: state.hasMore,
+          );
 
-class _SuggestionsList extends ConsumerWidget {
-  const _SuggestionsList({required this.state});
-
-  final ReviewSuggestionsListState state;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-
-    Future<void> refresh() async {
-      ref.invalidate(reviewSuggestionsListProvider);
-      await ref.read(reviewSuggestionsListProvider.future);
-    }
-
-    if (state.items.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: refresh,
-        child: LayoutBuilder(
-          builder: (context, constraints) => ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            children: [
-              SizedBox(
-                height: constraints.maxHeight,
-                child: Center(
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            child: PagedListView<int, WordSuggestionSummary>.separated(
+              state: _pagingController.value,
+              fetchNextPage: _pagingController.fetchNextPage,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              builderDelegate:
+                  PagedChildBuilderDelegate<WordSuggestionSummary>(
+                itemBuilder: (context, item, index) =>
+                    _SuggestionTile(item: item),
+                noItemsFoundIndicatorBuilder: (context) => Center(
                   child: Text(
                     'Tidak ada usulan edit menunggu',
                     style: theme.typography.sm.copyWith(
@@ -92,49 +116,36 @@ class _SuggestionsList extends ConsumerWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: refresh,
-              child: FTileGroup.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _SuggestionTile(item: state.items[index]),
-              ),
-            ),
-          ),
-          if (state.hasMore)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: state.isLoadingMore
-                      ? null
-                      : () => ref
-                            .read(reviewSuggestionsListProvider.notifier)
-                            .loadMore(),
-                  prefix: state.isLoadingMore
-                      ? const FCircularProgress()
-                      : null,
-                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
+                newPageProgressIndicatorBuilder: (context) => const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: FCircularProgress(),
+                  ),
+                ),
+                newPageErrorIndicatorBuilder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Gagal memuat halaman berikutnya',
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
+                      const Gap(10),
+                      FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: _pagingController.fetchNextPage,
+                        child: const Text('Coba lagi'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-        ],
+          );
+        },
       ),
     );
   }

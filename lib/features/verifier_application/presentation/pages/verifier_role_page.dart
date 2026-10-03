@@ -54,7 +54,7 @@ class VerifierRolePage extends StatelessWidget {
           const _RoleBlock(
             title: 'Yang tidak berubah',
             body:
-                'Anda tetap bisa mengusulkan kata seperti biasa. Data kontak '
+                  'Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak '
                 'dan bukti sosial pada pengajuan tidak tampil di profil publik.',
           ),
           const Gap(16),
@@ -70,9 +70,9 @@ class VerifierRolePage extends StatelessWidget {
           const _RoleBlock(
             title: 'Setelah disetujui',
             body:
-                'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean '
-                'tinjau kemudian muncul di Profil. Anda akan mendapat '
-                'notifikasi saat pengajuan diputuskan.',
+                  'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean '
+                  'tinjau kemudian muncul di Profil. Kamu akan mendapat '
+                  'notifikasi saat pengajuan diputuskan.',
           ),
         ],
       ),

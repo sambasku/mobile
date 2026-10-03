@@ -175,6 +175,12 @@ class AppRouter {
       return query.isEmpty ? '/delete-account' : '/delete-account?$query';
     }
 
+    // Link share tempat: /wisata/<slug> → detail Place (entry analytics: link).
+    if (path.startsWith('/wisata/')) {
+      final slug = path.substring('/wisata/'.length);
+      if (slug.isNotEmpty) return '/explore/place/$slug?entry=link';
+    }
+
     final onboardingDone = OnboardingPrefs.done;
     final isOnboarding = loc == OnboardingRouter.onboarding.path;
     final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
@@ -221,6 +227,8 @@ class AppRouter {
     if (path.startsWith('/words/')) return true;
     if (path.startsWith('/huruf/')) return true;
     if (path.startsWith('/users/')) return true;
+    if (path.startsWith('/wisata/')) return true;
+    if (path.startsWith('/explore/place/')) return true;
     if (path.startsWith('/discussions')) return true;
     return false;
   }

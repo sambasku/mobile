@@ -8,10 +8,8 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/theme/f_colors_x.dart';
-import '../../../../core/utils/display_image_url.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../auth/presentation/models/auth_status_state.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../notification/notification_router.dart';
@@ -20,7 +18,12 @@ import '../../../admin_analytics/domain/admin_access.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../../notification/presentation/providers/notification_providers.dart';
+import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/use_scroll_collapse.dart';
+import '../../../../shared/widgets/profile_stat_inline.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
@@ -28,20 +31,14 @@ import '../widgets/notification_header_action.dart';
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
-  static const roleLabels = <String, String>{
-    'root': 'Root',
-    'admin': 'Admin',
-    'editor': 'Editor',
-    'reviewer': 'Reviewer',
-    'contributor': 'Kontributor',
-  };
-
-  static const _sectionGap = Gap(16);
+  static const _sectionGap = Gap(8);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authStatus = ref.watch(authStatusProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
+    final scroll = useScrollController();
+    final collapseProgress = useScrollCollapse(scroll);
 
     // Sync handle sekali saat tab Profil aktif - jangan tiap rebuild auth.
     useEffect(() {
@@ -60,10 +57,10 @@ class ProfilePage extends HookConsumerWidget {
     return Column(
       children: [
         FHeader(
-          title: _ProfileHeaderTitle(status: authStatus.value),
-          suffixes: [
-            if (isAuth) const NotificationHeaderAction(),
-          ],
+          title: _ProfileHeaderTitle(
+            status: authStatus.value,
+            collapseProgress: collapseProgress,
+          ),
         ),
         Expanded(
           child: authStatus.when(
@@ -72,121 +69,146 @@ class ProfilePage extends HookConsumerWidget {
             data: (status) => RefreshIndicator(
               onRefresh: refreshIdentity,
               child: ListView(
+                controller: scroll,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 28),
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 16),
                 children: [
                   if (status.isAuth) ...[
                     FTileGroup(
-                      label: const Text('Aktivitas'),
+                      label: const Text('Aktivitas saya'),
                       children: [
                         const _NotificationTile(),
                         FTile(
-                          prefix: const Icon(FLucideIcons.filePenLine),
+                          prefix: const Icon(
+                            FLucideIcons.filePenLine,
+                            size: 18,
+                          ),
                           title: const Text('Kontribusi Saya'),
-                          subtitle: const Text('Riwayat & status usulan kata'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/contributions'),
                         ),
                         FTile(
-                          prefix: const Icon(FLucideIcons.bookmark),
+                          prefix: const Icon(FLucideIcons.bookmark, size: 18),
                           title: const Text('Bookmark'),
-                          subtitle: const Text('Kata tersimpan'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/bookmarks'),
                         ),
                         FTile(
-                          prefix: const Icon(FLucideIcons.arrowBigUp),
+                          prefix: const Icon(FLucideIcons.arrowBigUp, size: 18),
                           title: const Text('Vote'),
-                          subtitle: const Text('Kata yang pernah kamu vote'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/votes'),
                         ),
                         FTile(
-                          prefix: const Icon(FLucideIcons.messageSquare),
+                          prefix: const Icon(
+                            FLucideIcons.messageSquare,
+                            size: 18,
+                          ),
                           title: const Text('Komentar'),
-                          subtitle: const Text('Komentar & status moderasi'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/comments'),
                         ),
                       ],
                     ),
                     _sectionGap,
+                    if (status.role == 'contributor' ||
+                        canAccessReviewHome(status.role) ||
+                        canAccessAdminAnalytics(status.role)) ...[
+                      FTileGroup(
+                        label: const Text('Peran'),
+                        children: [
+                          if (status.role == 'contributor')
+                            FTile(
+                              prefix: const Icon(
+                                FLucideIcons.badgeCheck,
+                                size: 18,
+                              ),
+                              title: const Text('Jadi verifikator'),
+                              suffix: const Icon(
+                                FLucideIcons.chevronRight,
+                                size: 16,
+                              ),
+                              onPress: () =>
+                                  context.push('/verifier-application'),
+                            ),
+                          if (canAccessReviewHome(status.role))
+                            const _ReviewQueueTile(),
+                          if (canAccessAdminAnalytics(status.role))
+                            FTile(
+                              prefix: const Icon(
+                                FLucideIcons.chartColumn,
+                                size: 18,
+                              ),
+                              title: const Text('Analitik'),
+                              suffix: const Icon(
+                                FLucideIcons.chevronRight,
+                                size: 16,
+                              ),
+                              onPress: () =>
+                                  context.push(AdminAnalyticsRouter.home.path),
+                            ),
+                        ],
+                      ),
+                      _sectionGap,
+                    ],
                     FTileGroup(
                       label: const Text('Akun'),
                       children: [
                         FTile(
-                          prefix: const Icon(FLucideIcons.userRoundPen),
-                          title: const Text('Edit profil'),
-                          subtitle: const Text('Nama tampilan dan bio'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
-                          onPress: () => context.push('/edit-profile'),
-                        ),
-                        if (status.role == 'contributor')
-                          FTile(
-                            prefix: const Icon(FLucideIcons.badgeCheck),
-                            title: const Text('Jadi verifikator'),
-                            subtitle: const Text(
-                              'Ajukan diri untuk meninjau kontribusi',
-                            ),
-                            suffix: const Icon(FLucideIcons.chevronRight),
-                            onPress: () =>
-                                context.push('/verifier-application'),
-                          ),
-                        if (canAccessReviewHome(status.role))
-                          const _ReviewQueueTile(),
-                        if (canAccessAdminAnalytics(status.role))
-                          FTile(
-                            prefix: const Icon(FLucideIcons.chartColumn),
-                            title: const Text('Analitik'),
-                            subtitle: const Text(
-                              'KPI, aktivitas, dan antrean operasional',
-                            ),
-                            suffix: const Icon(FLucideIcons.chevronRight),
-                            onPress: () =>
-                                context.push(AdminAnalyticsRouter.home.path),
-                          ),
-                        FTile(
-                          prefix: const Icon(FLucideIcons.link),
+                          prefix: const Icon(FLucideIcons.link, size: 18),
                           title: const Text('Akun Terhubung'),
-                          subtitle: const Text('Google dan lainnya'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/linked-accounts'),
                         ),
                         FTile(
-                          prefix: const Icon(FLucideIcons.keyRound),
+                          prefix: const Icon(FLucideIcons.keyRound, size: 18),
                           title: const Text('Ubah Password'),
-                          subtitle: const Text('Ganti kata sandi akun'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.push('/change-password'),
-                        ),
-                        FTile(
-                          prefix: const Icon(FLucideIcons.userRoundX),
-                          title: const Text('Hapus akun'),
-                          subtitle: const Text('Hapus akun dan data pribadi'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
-                          onPress: () => context.push('/delete-account'),
                         ),
                       ],
                     ),
                     _sectionGap,
                   ] else ...[
                     FTileGroup(
-                      label: const Text('Masuk'),
                       children: [
                         FTile(
-                          prefix: const Icon(FLucideIcons.logIn),
+                          prefix: const Icon(FLucideIcons.logIn, size: 18),
                           title: const Text('Masuk / Login'),
-                          subtitle: const Text(
-                            'Bookmark, vote, dan usul sebagai diri sendiri',
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
                           ),
-                          suffix: const Icon(FLucideIcons.chevronRight),
                           onPress: () => context.go('/login'),
                         ),
                         FTile(
-                          prefix: const Icon(FLucideIcons.userRoundPlus),
+                          prefix: const Icon(
+                            FLucideIcons.userRoundPlus,
+                            size: 18,
+                          ),
                           title: const Text('Daftar'),
-                          subtitle: const Text('Buat akun kontributor baru'),
-                          suffix: const Icon(FLucideIcons.chevronRight),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
                           onPress: () => context.go('/register'),
                         ),
                       ],
@@ -194,25 +216,26 @@ class ProfilePage extends HookConsumerWidget {
                     _sectionGap,
                   ],
                   FTileGroup(
-                    label: const Text('Tampilan'),
-                    children: [themeModeTile(ref), paletteTile(ref)],
-                  ),
-                  _sectionGap,
-                  FTileGroup(
-                    label: const Text('Bantuan'),
+                    label: const Text('Tampilan & bantuan'),
                     children: [
+                      themeModeTile(ref),
+                      paletteTile(ref),
                       FTile(
-                        prefix: const Icon(FLucideIcons.info),
+                        prefix: const Icon(FLucideIcons.info, size: 18),
                         title: const Text('Tentang SambasKu'),
-                        subtitle: const Text('Fitur dan versi aplikasi'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
+                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
                         onPress: () => context.push('/about'),
                       ),
                       FTile(
-                        prefix: const Icon(FLucideIcons.flag),
+                        prefix: const Icon(FLucideIcons.award, size: 18),
+                        title: const Text('Atribusi & Kredit'),
+                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                        onPress: () => context.push('/about'),
+                      ),
+                      FTile(
+                        prefix: const Icon(FLucideIcons.flag, size: 18),
                         title: const Text('Laporkan Masalah'),
-                        subtitle: const Text('Kirim saran atau laporkan bug'),
-                        suffix: const Icon(FLucideIcons.chevronRight),
+                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
                         onPress: () => context.push('/report-bug'),
                       ),
                     ],
@@ -221,6 +244,16 @@ class ProfilePage extends HookConsumerWidget {
                     _sectionGap,
                     FTileGroup(
                       children: [
+                        FTile(
+                          variant: .destructive,
+                          prefix: const Icon(FLucideIcons.userRoundX),
+                          title: const Text('Hapus akun'),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: () => context.push('/delete-account'),
+                        ),
                         FTile(
                           variant: .destructive,
                           prefix: status.isLoggingOut
@@ -261,12 +294,10 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
     final unread =
         ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
     return FTile(
-      prefix: const Icon(FLucideIcons.bell),
+      prefix: const Icon(FLucideIcons.bell, size: 18),
       title: const Text('Notifikasi'),
-      subtitle: unread > 0
-          ? Text('$unread belum dibaca')
-          : const Text('Kotak masuk pemberitahuan'),
-      suffix: const Icon(FLucideIcons.chevronRight),
+      subtitle: unread > 0 ? Text('$unread belum dibaca') : null,
+      suffix: const Icon(FLucideIcons.chevronRight, size: 16),
       onPress: () => context.push(NotificationRouter.list.path),
     );
   }
@@ -279,11 +310,9 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final pending = ref.watch(reviewHubHasPendingProvider).value ?? false;
     return FTile(
-      prefix: const Icon(FLucideIcons.shieldCheck),
+      prefix: const Icon(FLucideIcons.shieldCheck, size: 18),
       title: const Text('Area Verifikator'),
-      subtitle: pending
-          ? const Text('Ada usulan yang menunggu')
-          : const Text('Antrean, usulan edit, dan riwayat'),
+      subtitle: pending ? const Text('Ada usulan yang menunggu') : null,
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -298,7 +327,7 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
                 child: SizedBox(width: 8, height: 8),
               ),
             ),
-          const Icon(FLucideIcons.chevronRight),
+          const Icon(FLucideIcons.chevronRight, size: 16),
         ],
       ),
       onPress: () => context.push('/review'),
@@ -306,14 +335,18 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
   }
 }
 
-/// Avatar + nama + peran/Verifikator di app bar (tanpa @username / chevron).
+/// Header kaya ala Threads: avatar + nama + handle + bio + stat + meta.
+/// Tap seluruh blok membuka profil publik. Slot FHeader.title.
 class _ProfileHeaderTitle extends ConsumerWidget {
-  const _ProfileHeaderTitle({required this.status});
+  const _ProfileHeaderTitle({
+    required this.status,
+    required this.collapseProgress,
+  });
 
   final AuthStatusState? status;
 
-  static bool _isVerifierRole(String? role) =>
-      role == 'admin' || role == 'root' || role == 'reviewer';
+  /// 0 = blok stat terbuka, 1 = tertutup (dari [useScrollCollapse]).
+  final double collapseProgress;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -326,11 +359,16 @@ class _ProfileHeaderTitle extends ConsumerWidget {
               ? rawDisplay!
               : (username?.isNotEmpty == true ? username! : 'Pengguna'))
         : 'Belum masuk';
-    final role = status?.role;
-    final isVerifier = isAuth && _isVerifierRole(role);
-    final roleLabel = isAuth && role != null
-        ? (ProfilePage.roleLabels[role] ?? role)
+
+    // Detail profil publik (bio, stat, bergabung). Tamu tidak watch.
+    final usernameLower = username?.toLowerCase();
+    final profileAsync =
+        isAuth && usernameLower != null && usernameLower.isNotEmpty
+        ? ref.watch(publicProfileProvider(usernameLower))
         : null;
+    final profile = profileAsync?.asData?.value;
+    final loadingProfile =
+        profile == null && (profileAsync?.isLoading ?? false);
 
     Future<void> openPublicProfile() async {
       // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
@@ -359,159 +397,125 @@ class _ProfileHeaderTitle extends ConsumerWidget {
       );
     }
 
-    // InkWell + lebar penuh: GestureDetector di slot title FHeader sering
-    // tidak menerima tap (DefaultTextStyle/ellipsis parent).
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: isAuth ? openPublicProfile : null,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Row(
-            children: [
-              _ProfileAvatar(
-                name: isAuth ? displayName : null,
-                imageUrl: status?.avatarUrl,
-                size: 34,
-              ),
-              const Gap(10),
-              Expanded(
-                child: Column(
+    // Label semantik + hint agar tap-header diketahui pengguna screen reader.
+    return Semantics(
+      button: true,
+      enabled: isAuth,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: isAuth ? openPublicProfile : null,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.md.copyWith(
-                        fontWeight: FontWeight.w700,
-                        height: 1.15,
-                      ),
+                    UserAvatar(
+                      name: isAuth ? displayName : null,
+                      imageUrl: status?.avatarUrl,
+                      size: 56,
                     ),
-                    if (isVerifier) ...[
-                      const Gap(1),
-                      Row(
+                    const Gap(12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const VerifiedBadgeIcon(size: 12),
-                          const Gap(3),
                           Text(
-                            'Verifikator',
-                            style: theme.typography.xs.copyWith(
-                              color: theme.colors.success,
-                              fontWeight: FontWeight.w600,
+                            displayName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.lg.copyWith(
+                              fontWeight: FontWeight.w700,
                               height: 1.2,
                             ),
                           ),
+                          if (isAuth &&
+                              username != null &&
+                              username.isNotEmpty) ...[
+                            const Gap(1),
+                            Text(
+                              '@$username',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.sm.copyWith(
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                          ],
+                          if (profile?.bio?.trim().isNotEmpty == true) ...[
+                            const Gap(4),
+                            Text(
+                              profile!.bio!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.sm,
+                            ),
+                          ],
                         ],
                       ),
-                    ] else if (roleLabel != null) ...[
-                      const Gap(1),
-                      Text(
-                        roleLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          height: 1.2,
-                        ),
+                    ),
+                    if (isAuth) ...[
+                      const Gap(8),
+                      // FHeader memusatkan suffix secara vertikal terhadap
+                      // title yang tinggi; taruh di sini agar tetap di atas.
+                      FHeaderData(
+                        actionStyle: theme.headerStyles.resolve({
+                          FHeaderVariant.root,
+                          context.platformVariant,
+                        }).actionStyle,
+                        child: const NotificationHeaderAction(),
                       ),
                     ],
                   ],
                 ),
-              ),
-            ],
+                if (profile != null || loadingProfile)
+                  // Collaps ikut scroll, sama seperti blok search di Home.
+                  Align(
+                    alignment: Alignment.topLeft,
+                    heightFactor: 1 - collapseProgress,
+                    child: ClipRect(
+                      child: Opacity(
+                        opacity: (1 - collapseProgress * 1.4).clamp(0.0, 1.0),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Skeletonizer(
+                            enabled: loadingProfile,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ProfileStatRow(
+                                  contributions:
+                                      profile?.contributionsApproved ?? 0,
+                                  verifications:
+                                      profile?.verificationsDone ?? 0,
+                                  comments: profile?.commentsPublished ?? 0,
+                                ),
+                                const Gap(4),
+                                ProfileMetaRow(
+                                  joinedLabel: profile == null
+                                      ? '1 Januari 2026'
+                                      : formatDateTimeIso(profile.joinedAt),
+                                  isVerifier: profile?.isVerifier ?? false,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-}
-
-class _ProfileAvatar extends StatelessWidget {
-  const _ProfileAvatar({required this.name, this.imageUrl, this.size = 40});
-
-  final String? name;
-  final String? imageUrl;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final display = displayImageUrl(imageUrl, width: 256) ?? imageUrl;
-    if (display != null && display.isNotEmpty) {
-      return ClipOval(
-        child: Image.network(
-          display,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) {
-            if (imageUrl != null &&
-                imageUrl!.isNotEmpty &&
-                imageUrl != display) {
-              return Image.network(
-                imageUrl!,
-                width: size,
-                height: size,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    _InitialsOrIcon(name: name, size: size),
-              );
-            }
-            return _InitialsOrIcon(name: name, size: size);
-          },
-        ),
-      );
-    }
-    return _InitialsOrIcon(name: name, size: size);
-  }
-}
-
-class _InitialsOrIcon extends StatelessWidget {
-  const _InitialsOrIcon({required this.name, required this.size});
-
-  final String? name;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final initials = _initials(name);
-
-    return FAvatar.raw(
-      size: size,
-      style: .delta(
-        backgroundColor: initials != null
-            ? theme.colors.primary.withValues(alpha: 0.12)
-            : theme.colors.muted,
-      ),
-      child: initials != null
-          ? Text(
-              initials,
-              style: theme.typography.sm.copyWith(
-                fontWeight: FontWeight.w700,
-                color: theme.colors.primary,
-                height: 1,
-              ),
-            )
-          : Icon(
-              FLucideIcons.userRound,
-              size: size * 0.42,
-              color: theme.colors.mutedForeground,
-            ),
-    );
-  }
-
-  static String? _initials(String? name) {
-    if (name == null || name.trim().isEmpty) return null;
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    final word = parts.first;
-    if (word.length >= 2) return word.substring(0, 2).toUpperCase();
-    return word.toUpperCase();
   }
 }

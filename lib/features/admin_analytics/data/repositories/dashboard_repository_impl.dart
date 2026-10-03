@@ -116,6 +116,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
         final id = map['id']?.toString() ?? '';
         if (id.isEmpty) continue;
         final username = map['voter_username']?.toString();
+        final displayName = map['voter_display_name']?.toString();
+        final avatarUrl = map['voter_avatar_url']?.toString();
         final value = _asInt(map['value']);
         final targetType = map['target_type']?.toString() ?? '';
         final targetId = map['target_id']?.toString() ?? '';
@@ -129,8 +131,12 @@ class DashboardRepositoryImpl implements DashboardRepository {
             kind: AnalyticsActivityKind.vote,
             id: id,
             createdAt: map['created_at']?.toString() ?? '',
-            actorLabel: displayPublicAccountLabel(username: username),
+            actorLabel: displayPublicAccountLabel(
+              displayName: displayName,
+              username: username,
+            ),
             actorUsername: username,
+            avatarUrl: avatarUrl,
             body: '$voteLabel · $targetLabel',
             subtitle: targetType.isEmpty ? null : targetType,
             navigatePath: targetType == 'word' && targetId.isNotEmpty
@@ -157,6 +163,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
         if (id.isEmpty) continue;
         final username = map['username']?.toString();
         final displayName = map['display_name']?.toString();
+        final avatarUrl = map['avatar_url']?.toString();
         final bodyRaw = map['body']?.toString().trim() ?? '';
         items.add(
           AnalyticsActivityItem(
@@ -168,6 +175,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
               username: username,
             ),
             actorUsername: username,
+            avatarUrl: avatarUrl,
             body: bodyRaw.isEmpty ? '(diskusi tanpa teks)' : bodyRaw,
             subtitle: 'Diskusi',
             navigatePath: '/discussions/$id',

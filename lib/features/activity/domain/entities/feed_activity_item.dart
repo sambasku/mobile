@@ -45,13 +45,16 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
   }
 }
 
-/// Potong body feed jadi `(teks, lemma?)`. API mengutip lemma: `"kumis" sudah pas`.
+/// Potong body feed jadi `(teks, lemma?)`. API mengutip lemma di body
+/// (`"kumis" sudah pas`) sebagai penanda parsing; kutipnya dibuang di sini
+/// supaya tampilannya cukup bold tanpa tanda kutip (kosakata Sambas sering
+/// memakai `'`). Kutip tak berpasangan bukan lemma.
 List<(String, bool)> splitQuotedLemma(String body) {
   final out = <(String, bool)>[];
   var i = 0;
   for (final m in RegExp(r'"[^"]+"').allMatches(body)) {
     if (m.start > i) out.add((body.substring(i, m.start), false));
-    out.add((m[0]!, true));
+    out.add((m[0]!.substring(1, m[0]!.length - 1), true));
     i = m.end;
   }
   if (i < body.length) out.add((body.substring(i), false));

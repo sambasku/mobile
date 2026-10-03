@@ -11,7 +11,7 @@ import '../providers/change_password_providers.dart';
 
 /// Halaman ubah password (profil → menu "Ubah Password"). Sukses =
 /// SEMUA session ter-revoke backend: tampilkan dialog lalu logout paksa
-/// dan kembali ke /login (docs/api/10-api-ubah-password.md).
+/// dan kembali ke /login .
 class ChangePasswordPage extends HookConsumerWidget {
   const ChangePasswordPage({super.key});
 
@@ -32,7 +32,7 @@ class ChangePasswordPage extends HookConsumerWidget {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Password Berhasil Diubah'),
+          title: const Text('Password berhasil diubah'),
           content: Text(next),
           actions: [
             TextButton(
@@ -41,7 +41,7 @@ class ChangePasswordPage extends HookConsumerWidget {
                 await ref.read(authStatusProvider.notifier).logout();
                 if (context.mounted) context.go('/login');
               },
-              child: const Text('Login Ulang'),
+              child: const Text('Login ulang'),
             ),
           ],
         ),

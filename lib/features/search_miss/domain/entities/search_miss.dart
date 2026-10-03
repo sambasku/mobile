@@ -9,7 +9,7 @@ part 'search_miss.g.dart';
 ///
 /// Server HANYA mengembalikan miss yang admin sudah izinkan tayang
 /// (`is_visible=true`) dan belum fulfilled - lihat
-/// `docs/api/14-api-search-miss-moderation.md`. Client tidak perlu
+/// Client tidak perlu
 /// filter visibility sendiri.
 @freezed
 abstract class SearchMiss with _$SearchMiss {

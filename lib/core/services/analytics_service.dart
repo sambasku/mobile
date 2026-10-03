@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../flavors.dart';
 
-/// Nama event kanonik (docs/mobile/mobile-base-stack.md Section 14).
+/// Nama event kanonik .
 abstract final class AnalyticsEvents {
   static const screenView = 'screen_view';
   static const searchSubmit = 'search_submit';
@@ -45,6 +45,7 @@ abstract final class AnalyticsEvents {
   static const reviewCorrect = 'review_correct';
   static const reviewSkip = 'review_skip';
   static const verifierApplySubmit = 'verifier_apply_submit';
+  static const poiOpen = 'poi_open';
 }
 
 /// Abstraksi Firebase Analytics. Page/notifier memanggil ini, bukan
@@ -220,4 +221,19 @@ class AnalyticsService {
     required String method,
   }) =>
       log(event, params: {'method': method});
+
+  /// Pin peta / kartu detail Place dibuka. `entry`: list | map | pin.
+  Future<void> logPoiOpen({
+    required String slug,
+    required String category,
+    required String entry,
+  }) =>
+      log(
+        AnalyticsEvents.poiOpen,
+        params: {
+          'slug': slug,
+          'category': category,
+          'entry': entry,
+        },
+      );
 }

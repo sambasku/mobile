@@ -1,4 +1,4 @@
-/// Item `related_words[]` Form B (inline) - docs/api/04-api-sinonim-inline.md.
+/// Item `related_words[]` Form B (inline)- Form B
 ///
 /// Mobile hanya mengirim lemma baru yang ikut makna induk
 /// (`inherit_meanings: true`). Form A (link `word_id`) menyusul bila

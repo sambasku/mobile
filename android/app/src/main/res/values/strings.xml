@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">SambasKu</string>
     <!-- Facebook Login: isi App ID + Client Token dari Meta Developer Console
-         (docs/mobile/19-mobile-auth-facebook.md). Placeholder 0 = SDK tidak
+         Placeholder 0 = SDK tidak
          crash saat App ID belum diisi; tombol tetap disembunyikan lewat envied. -->
     <string name="facebook_app_id">0</string>
     <string name="fb_login_protocol_scheme">fb0</string>

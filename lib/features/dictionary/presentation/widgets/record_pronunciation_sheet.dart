@@ -37,7 +37,7 @@ const _minComfortSec = 0.45;
 const _quietPeakThreshold = 0.15;
 
 /// Sheet rekam: izin → rekam → potong manual (opsional) → pratinjau → kirim.
-/// Nama penutur opsional (opt-in); default anonim agar user yang malu tetap berani kirim.
+/// Nama penutur: default mencantumkan nama saat login, bisa dimatikan (anonim).
 /// Selesai dengan `true` bila rekaman terkirim.
 Future<bool?> showRecordPronunciationSheet(
   BuildContext context, {
@@ -126,7 +126,7 @@ class _RecordPronunciationSheetState
   /// Soft warning kualitas (tidak memblokir kirim).
   String? _qualityHint;
   bool _stoppingForLifecycle = false;
-  /// Opt-in: cantumkan nama tampilan sebagai penutur. Default off = anonim.
+  /// Default ON saat login (nama tampilan tersedia); user bisa matikan untuk anonim.
   bool _creditSpeakerName = false;
 
   String get _accountSpeakerName => widget.defaultSpeakerName.trim();
@@ -148,6 +148,7 @@ class _RecordPronunciationSheetState
   @override
   void initState() {
     super.initState();
+    _creditSpeakerName = _accountSpeakerName.isNotEmpty;
     WidgetsBinding.instance.addObserver(this);
     unawaited(_previewPlayer.setLoopMode(LoopMode.off));
     _previewSub = _previewPlayer.playerStateStream.listen((state) {
@@ -868,7 +869,7 @@ class _RecordPronunciationSheetState
               if (_creditSpeakerName) ...[
                 const Gap(2),
                 Text(
-                  'Mengikuti nama tampilan di profil Anda',
+                  'Mengikuti nama tampilan di profilmu',
                   style: theme.typography.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),

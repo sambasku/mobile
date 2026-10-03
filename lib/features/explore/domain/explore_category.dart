@@ -25,6 +25,7 @@ class ExploreCategory {
       title: 'Wisata & Kuliner',
       subtitle: 'Destinasi dan makanan khas Sambas',
       icon: FLucideIcons.utensilsCrossed,
+      comingSoon: false,
     ),
     ExploreCategory(
       id: 'bisnis-jasa',

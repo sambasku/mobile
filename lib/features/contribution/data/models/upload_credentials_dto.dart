@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'upload_credentials_dto.freezed.dart';
 part 'upload_credentials_dto.g.dart';
 
-/// Data GET /api/v1/admin/images/upload-token (docs/json/image).
+/// Data GET /api/v1/admin/images/upload-token.
 @freezed
 abstract class UploadCredentialsDto with _$UploadCredentialsDto {
   const factory UploadCredentialsDto({

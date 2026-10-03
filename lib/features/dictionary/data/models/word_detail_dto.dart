@@ -5,7 +5,7 @@ import 'word_audio_dto.dart';
 part 'word_detail_dto.freezed.dart';
 part 'word_detail_dto.g.dart';
 
-/// Response data GET /api/v1/words/:id (docs/json/word/get-word-detail.200.json).
+/// Response data GET /api/v1/words/:id.
 @freezed
 abstract class WordDetailDto with _$WordDetailDto {
   const factory WordDetailDto({

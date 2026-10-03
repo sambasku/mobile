@@ -6,7 +6,7 @@ import 'package:sambasku_mobile/features/vote/data/models/my_vote_dto.dart';
 import 'package:sambasku_mobile/features/vote/data/models/vote_count_dto.dart';
 import 'package:sambasku_mobile/features/vote/data/models/vote_toggle_response_dto.dart';
 
-/// Fixture dari docs/json/vote (repo mandiri, snapshot lokal).
+/// Fixture snapshot lokal.
 void main() {
   Map<String, dynamic> loadFixture(String name) {
     final file = File('test/fixtures/json/vote/$name');

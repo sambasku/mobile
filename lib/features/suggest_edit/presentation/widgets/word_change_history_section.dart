@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -6,6 +8,64 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
+
+/// Cek apakah field berisi metadata teknis yang tidak perlu ditampilkan ke user.
+bool isTechnicalChangeField(String field) {
+  final f = field.trim().toLowerCase();
+  if (f.endsWith('_id') || f.endsWith('_ids') || f.endsWith('_by')) return true;
+  const bookkeeping = {
+    'comma_split',
+    'created',
+    'merged_on_create',
+    'merged_on_update',
+    'self_applied',
+    'source_word_id',
+    'split_from_word_id',
+    'meaning_ids',
+    'merged_word_ids',
+    'reopened_by',
+  };
+  return bookkeeping.contains(f);
+}
+
+/// Bersihkan value mentah agar user-friendly.
+/// - ULID polos → null (sembunyikan)
+/// - JSON dengan kunci added/removed → "Ditambah N, dihapus M"
+/// - JSON object lain → null (sembunyikan dump teknis)
+/// - JSON array/primitive → null (sembunyikan)
+/// - Selain itu (string biasa) → kembalikan apa adanya
+String? friendlyChangeValue(String value) {
+  final v = value.trim();
+  if (v.isEmpty) return null;
+
+  // ULID Crockford base32 (26 chars) - case insensitive
+  if (RegExp(r'^[0-9A-HJKMNP-TV-Z]{26}$', caseSensitive: false).hasMatch(v)) return null;
+
+  // Coba parse JSON
+  try {
+    final decoded = jsonDecode(v);
+    if (decoded is Map) {
+      // relations/variants/images audit format: {added: [...], removed: [...], set_primary: [...]}
+      final added = (decoded['added'] is List) ? (decoded['added'] as List).length : 0;
+      final removed = (decoded['removed'] is List) ? (decoded['removed'] as List).length : 0;
+      final setPrimary = (decoded['set_primary'] is List) ? (decoded['set_primary'] as List).length : 0;
+      if (added > 0 || removed > 0 || setPrimary > 0) {
+        final parts = <String>[];
+        if (added > 0) parts.add('Ditambah $added');
+        if (removed > 0) parts.add('Dihapus $removed');
+        if (setPrimary > 0) parts.add('Dijadikan utama $setPrimary');
+        return parts.join(', ');
+      }
+      // JSON object lain (contoh: {status: "published", reason_code: "spam"}) → sembunyikan
+      return null;
+    }
+    // JSON array atau primitive lain (boolean, number) → sembunyikan
+    return null;
+  } catch (_) {
+    // Bukan JSON valid → biarkan apa adanya (string biasa)
+  }
+  return v;
+}
 
 class ChangeHistoryFieldDiff {
   const ChangeHistoryFieldDiff({
@@ -47,6 +107,7 @@ class ChangeHistoryItem {
   final String? reviewComment;
 
   bool get isSuggestEdit => type == 'suggest_edit';
+
   bool get isDuplicateVote => type == 'duplicate_vote';
 
   String get typeLabel {
@@ -57,8 +118,7 @@ class ChangeHistoryItem {
 
   String get actorLabel => _publicLabel(actorDisplayName, actorUsername) ?? 'Sistem';
 
-  String? get suggestedByLabel =>
-      _publicLabel(suggestedByDisplayName, suggestedByUsername);
+  String? get suggestedByLabel => _publicLabel(suggestedByDisplayName, suggestedByUsername);
 }
 
 String? _publicLabel(String? displayName, String? username) {
@@ -75,8 +135,7 @@ String? _personField(Map? person, String key) {
   return (value != null && value.isNotEmpty) ? value : null;
 }
 
-final changeHistoryProvider =
-    FutureProvider.autoDispose.family<List<ChangeHistoryItem>, String>((
+final changeHistoryProvider = FutureProvider.autoDispose.family<List<ChangeHistoryItem>, String>((
   ref,
   wordId,
 ) async {
@@ -117,23 +176,12 @@ final changeHistoryProvider =
       changes: changes,
       reason: source is Map ? source['reason']?.toString() : null,
       suggestedByUsername: source is Map
-          ? _personField(
-              source['suggested_by'] is Map
-                  ? source['suggested_by'] as Map
-                  : null,
-              'username',
-            )
+          ? _personField(source['suggested_by'] as Map?, 'username')
           : null,
       suggestedByDisplayName: source is Map
-          ? _personField(
-              source['suggested_by'] is Map
-                  ? source['suggested_by'] as Map
-                  : null,
-              'display_name',
-            )
+          ? _personField(source['suggested_by'] as Map?, 'display_name')
           : null,
-      reviewComment:
-          source is Map ? source['review_comment']?.toString() : null,
+      reviewComment: source is Map ? source['review_comment']?.toString() : null,
     );
   }).toList(growable: false);
 });
@@ -147,7 +195,6 @@ class WordChangeHistorySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(changeHistoryProvider(wordId));
-
     return async.when(
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 48),
@@ -218,12 +265,25 @@ const _fieldLabels = <String, String>{
   'images': 'Gambar',
   'pronunciation': 'Pengucapan',
   'pronunciations': 'Pengucapan',
-  'word_type': 'Jenis',
+  'word_type': 'Jenis kata',
   'language_id': 'Bahasa',
-  'is_verified': 'Verifikasi',
+  'is_verified': 'Status verifikasi',
   'status': 'Status',
   'duplicate_vote': 'Dukungan',
   'translation_text': 'Terjemahan',
+  // Teknis: label hanya untuk fallback, tetap disembunyikan lewat isTechnicalChangeField
+  'comment': 'Catatan',
+  'reason_code': 'Alasan',
+  'is_corrected': 'Dikoreksi',
+  'comma_split': 'Pisah koma',
+  'created': 'Dibuat',
+  'merged_on_create': 'Digabung saat buat',
+  'merged_on_update': 'Digabung saat edit',
+  'self_applied': 'Terapkan sendiri',
+  'source_word_id': 'ID sumber',
+  'split_from_word_id': 'ID asal pisah',
+  'meaning_ids': 'ID makna',
+  'merged_word_ids': 'ID kata digabung',
 };
 
 class _HistoryTile extends StatelessWidget with FTileMixin {
@@ -249,9 +309,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
       isScrollControlled: true,
       builder: (sheetContext) {
         final theme = sheetContext.theme;
-        final when = item.timestamp.isNotEmpty
-            ? formatDateTimeIso(item.timestamp)
-            : '-';
+        final when = item.timestamp.isNotEmpty ? formatDateTimeIso(item.timestamp) : '-';
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -311,7 +369,18 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                     )
                   else
                     ...item.changes.map((diff) {
+                      // Sembunyikan field teknis (ID internal, bookkeeping)
+                      if (isTechnicalChangeField(diff.field)) return const SizedBox.shrink();
+
                       final label = _labelFor(diff);
+
+                      // Bersihkan value displayOld / displayNew
+                      final oldVal = friendlyChangeValue(diff.displayOld);
+                      final newVal = friendlyChangeValue(diff.displayNew);
+
+                      // Jika keduanya disembunyikan (mis. ULID), skip baris ini
+                      if (oldVal == null && newVal == null) return const SizedBox.shrink();
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Column(
@@ -323,20 +392,18 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            if (diff.displayOld.isNotEmpty &&
-                                diff.displayOld != '-')
+                            if (oldVal != null)
                               Text(
-                                'Sebelum: ${diff.displayOld}',
+                                'Sebelum: $oldVal',
                                 style: theme.typography.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                               ),
-                            Text(
-                              item.isDuplicateVote
-                                  ? diff.displayNew
-                                  : 'Sesudah: ${diff.displayNew}',
-                              style: theme.typography.sm,
-                            ),
+                            if (newVal != null)
+                              Text(
+                                item.isDuplicateVote ? newVal : 'Sesudah: $newVal',
+                                style: theme.typography.sm,
+                              ),
                           ],
                         ),
                       );
@@ -378,6 +445,9 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
     final seen = <String>{};
     final labels = <String>[];
     for (final diff in item.changes) {
+      // Sembunyikan field teknis dari summary
+      if (isTechnicalChangeField(diff.field)) continue;
+
       final label = _labelFor(diff);
       if (label.isEmpty || !seen.add(label)) continue;
       if (labels.length < 3) labels.add(label);

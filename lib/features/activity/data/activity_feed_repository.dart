@@ -30,10 +30,18 @@ class ActivityFeedRepository {
     int limit = 20,
     String? cursor,
     bool forceRefresh = false,
+    bool excludeSelf = false,
   }) async {
     final query = <String, dynamic>{
       'limit': limit,
       if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+      // Penyaringan terjadi di API (SQL, sebelum cap per jenis). Tanpa token
+      // sah server mengabaikannya dan tetap mengembalikan feed publik penuh.
+      //
+      // `buildCacheKey` sengaja tidak memuat Authorization, tapi memuat query -
+      // jadi feed login dan feed tamu punya entri cache terpisah dan tidak
+      // saling menimpa.
+      if (excludeSelf) 'exclude_self': '1',
     };
     final cache = _cache;
     final isFirstPage = cursor == null || cursor.isEmpty;

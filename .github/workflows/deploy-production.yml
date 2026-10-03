@@ -15,6 +15,8 @@ name: Deploy (Production)
 #   KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
 #   PLAY_STORE_SERVICE_ACCOUNT_JSON  - JSON service account Play Developer API
 #     (lihat docs/env/google_play_console/credential.md)
+#   HUAWEI_CLIENT_ID / HUAWEI_CLIENT_SECRET / HUAWEI_APP_ID - API client
+#     AppGallery Connect. Kosong = langkah Huawei dilewati (skip, tidak fail).
 #
 # Host API: env.g.dart → https://api.sambasku.com
 
@@ -47,6 +49,9 @@ jobs:
 
       - name: Test Play version-code resolver
         run: node --test scripts/next-play-version-code.test.mjs
+
+      - name: Test Huawei AppGallery uploader
+        run: node --test scripts/upload-huawei-appgallery.test.mjs
 
       - uses: subosito/flutter-action@v2
         with:
@@ -171,6 +176,17 @@ jobs:
           tracks: alpha
           status: draft
           releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
+
+      # Draft di AppGallery Connect. Submit review manual di AGC, konsisten
+      # dengan Play (draft + rollout manual). Tanpa secrets Huawei, step ini
+      # skip (exit 0) supaya workflow tidak fail.
+      - name: Upload draft ke Huawei AppGallery
+        env:
+          HUAWEI_CLIENT_ID: ${{ secrets.HUAWEI_CLIENT_ID }}
+          HUAWEI_CLIENT_SECRET: ${{ secrets.HUAWEI_CLIENT_SECRET }}
+          HUAWEI_APP_ID: ${{ secrets.HUAWEI_APP_ID }}
+        run: node scripts/upload-huawei-appgallery.mjs
+          build/app/outputs/bundle/productionRelease/app-production-release.aab
 
       # - name: Create GitHub Release
       #   uses: softprops/action-gh-release@v3

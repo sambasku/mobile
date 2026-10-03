@@ -244,7 +244,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
       return 'Terlalu banyak usulan dikirim. Coba lagi nanti.';
     }
     if (statusCode == 400) {
-      return 'Periksa kembali input Anda (beberapa kolom invalid).';
+        return 'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
     }
     if (statusCode != null && statusCode >= 500) {
       return 'Server sedang gangguan. Coba lagi nanti.';

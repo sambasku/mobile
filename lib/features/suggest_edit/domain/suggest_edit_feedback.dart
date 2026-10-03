@@ -15,7 +15,7 @@ import '../../review/domain/review_access.dart';
   }
   return (
     title: 'Usulkan perubahan',
-    subtitle: 'Perbaikan kata yang sudah dicek menunggu persetujuan',
+    subtitle: 'Perbaikan kata yang sudah tayang menunggu persetujuan admin',
   );
 }
 

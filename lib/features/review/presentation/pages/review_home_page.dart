@@ -114,7 +114,7 @@ class ReviewHomePage extends ConsumerWidget {
                 FTile(
                   prefix: const Icon(FLucideIcons.history),
                   title: const Text('Riwayat tinjauan'),
-                  subtitle: const Text('Keputusan yang sudah Anda berikan'),
+                  subtitle: const Text('Keputusan yang sudah kamu berikan'),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => context.push(ReviewRouter.history.path),
                 ),

@@ -120,7 +120,7 @@ class VerifyEmailPage extends HookConsumerWidget {
               const Gap(8),
               Text(
                 email.isEmpty
-                    ? 'Email tidak ada. Kembali ke daftar atau masuk.'
+                    ? 'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.'
                     : 'Kode dikirim ke $email (berlaku 10 menit).',
                 textAlign: .center,
                 style: theme.typography.sm.copyWith(

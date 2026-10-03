@@ -21,8 +21,8 @@ void showPermissionDeniedDialog(BuildContext context) {
       return AlertDialog(
         title: const Text('Izin Ditolak'),
         content: const Text(
-          'Untuk menggunakan fitur ini, Anda perlu mengizinkan akses '
-          'ke galeri atau kamera dari pengaturan aplikasi.',
+            'Biar fitur ini jalan, izinkan akses '
+            'ke galeri atau kamera dari pengaturan aplikasi.',
         ),
         actions: [
           TextButton(

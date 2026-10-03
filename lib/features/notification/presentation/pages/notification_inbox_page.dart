@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -13,12 +14,13 @@ import '../../../../core/services/notification_navigation.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/inbox_notification.dart';
-import '../../notification_router.dart';
 import '../../domain/failures/notification_failure.dart';
 import '../../domain/providers/notification_domain_providers.dart';
+import '../../notification_router.dart';
 import '../providers/notification_providers.dart';
 
 class NotificationInboxPage extends HookConsumerWidget {
@@ -85,16 +87,42 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _InboxList extends HookConsumerWidget {
+class _InboxList extends ConsumerStatefulWidget {
   const _InboxList();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_InboxList> createState() => _InboxListState();
+}
+
+class _InboxListState extends ConsumerState<_InboxList> {
+  late final PagingController<int, InboxNotification> _pagingController;
+  bool _markingAll = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<InboxNotification>(
+      loadMore: () async {
+        final failure = await ref
+            .read(notificationInboxListControllerProvider.notifier)
+            .loadMore();
+        if (failure != null) throw failure;
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(notificationInboxListControllerProvider);
     final unreadCount =
         ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
-    final markingAll = useState(false);
 
     if (async.hasError) {
       final error = async.error!;
@@ -145,13 +173,13 @@ class _InboxList extends HookConsumerWidget {
     }
 
     Future<void> markAllRead() async {
-      if (markingAll.value || unreadCount <= 0) return;
-      markingAll.value = true;
+      if (_markingAll || unreadCount <= 0) return;
+      setState(() => _markingAll = true);
       final result = await ref.read(markAllNotificationsReadUseCaseProvider)();
-      if (!context.mounted) return;
+      if (!mounted) return;
       result.match(
         (failure) {
-          markingAll.value = false;
+          setState(() => _markingAll = false);
           showFToast(context: context, title: Text(failure.message));
         },
         (_) {
@@ -159,12 +187,20 @@ class _InboxList extends HookConsumerWidget {
               .read(notificationInboxListControllerProvider.notifier)
               .markAllLocalRead();
           ref.read(unreadNotificationCountControllerProvider.notifier).clear();
-          markingAll.value = false;
+          setState(() => _markingAll = false);
         },
       );
     }
 
     final state = async.requireValue;
+
+    // Sinkron snapshot list Riverpod -> PagingController (autoload di ekor
+    // list, tanpa tombol "Muat lagi").
+    _pagingController.value = buildPagingState<InboxNotification>(
+      items: state.items,
+      hasMore: state.hasMore,
+    );
+
     if (state.items.isEmpty) {
       return RefreshIndicator(
         onRefresh: refresh,
@@ -220,10 +256,10 @@ class _InboxList extends HookConsumerWidget {
               alignment: Alignment.centerRight,
               child: FButton(
                 variant: FButtonVariant.ghost,
-                onPress: markingAll.value ? null : markAllRead,
-                prefix: markingAll.value ? const FCircularProgress() : null,
+                onPress: _markingAll ? null : markAllRead,
+                prefix: _markingAll ? const FCircularProgress() : null,
                 child: Text(
-                  markingAll.value
+                  _markingAll
                       ? 'Menandai...'
                       : 'Tandai semua telah dibaca',
                 ),
@@ -232,35 +268,43 @@ class _InboxList extends HookConsumerWidget {
           Expanded(
             child: RefreshIndicator(
               onRefresh: refresh,
-              child: FTileGroup.builder(
+              child: PagedListView<int, InboxNotification>.separated(
+                state: _pagingController.value,
+                fetchNextPage: _pagingController.fetchNextPage,
                 physics: const AlwaysScrollableScrollPhysics(),
-                count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _NotificationTile(item: state.items[index]),
-              ),
-            ),
-          ),
-          if (state.hasMore)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: state.isLoadingMore
-                      ? null
-                      : () => ref
-                            .read(
-                              notificationInboxListControllerProvider.notifier,
-                            )
-                            .loadMore(),
-                  prefix: state.isLoadingMore
-                      ? const FCircularProgress()
-                      : null,
-                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
+                separatorBuilder: (_, _) => const Divider(height: 1),
+                builderDelegate:
+                    PagedChildBuilderDelegate<InboxNotification>(
+                  itemBuilder: (context, item, index) =>
+                      _NotificationTile(item: item),
+                  newPageProgressIndicatorBuilder: (context) => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: FCircularProgress()),
+                  ),
+                  newPageErrorIndicatorBuilder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Gagal memuat halaman berikutnya',
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                        const Gap(10),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: _pagingController.fetchNextPage,
+                          child: const Text('Coba lagi'),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

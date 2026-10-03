@@ -40,7 +40,7 @@ class SearchMissListPage extends ConsumerWidget {
             header: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Pilih kata yang warga cari tapi belum ada untuk mengisi form usulan.',
+                'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.',
                 style: theme.typography.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -65,7 +65,7 @@ class SearchMissListPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
                 children: [
                   Text(
-                    'Belum ada antrian dari pencarian warga. Coba lagi nanti, atau usul kata baru dari menu di atas.',
+                    'Belum ada kata yang dicari warga. Coba lagi nanti, atau usulkan kata baru dari menu di atas.',
                     style: theme.typography.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -79,7 +79,7 @@ class SearchMissListPage extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
               children: [
                 Text(
-                  'Pilih kata yang warga cari tapi belum ada untuk mengisi form usulan.',
+                  'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.',
                   style: theme.typography.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),

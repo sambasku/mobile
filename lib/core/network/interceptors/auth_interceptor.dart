@@ -20,7 +20,7 @@ const kSkipAuthRefreshExtra = 'skipAuthRefresh';
 /// - `/device/revoke` (detach FCM; 401 di sini tidak boleh memicu refresh)
 /// - request dengan `extra[kSkipAuthRefreshExtra] == true`
 ///
-/// Refresh memakai varian mobile (`docs/api/00-api-auth.md`):
+/// Refresh memakai varian mobile varian mobile:
 /// `POST /api/v1/auth/refresh` body `{ refresh_token }`
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({

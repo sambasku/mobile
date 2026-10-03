@@ -28,19 +28,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
     (
       title: 'Selamat datang di SambasKu',
       body:
-          'Kamus digital Sambas-Indonesia. Temukan arti kata, pelajari bahasa setempat, dan ikut menjaga warisan kata.',
+          'Kamus digital Sambas-Indonesia. Temukan arti kata, kenali cara bicara warga Sambas, dan ikut menjaga warisan kata.',
       icon: FLucideIcons.bookOpen,
     ),
     (
       title: 'Cari, usulkan, simpan',
       body:
-          'Cari lemma dengan cepat, usulkan kata baru atau perbaikan, dan bookmark entri favorit untuk dibaca ulang.',
+          'Cari kata dengan cepat, usulkan kata baru atau perbaikan, dan simpan kata favorit biar gampang dibaca ulang.',
       icon: FLucideIcons.search,
     ),
     (
       title: 'Aktifkan notifikasi',
       body:
-          'Kami beri tahu saat usulan kontribusi Anda disetujui. Izinkan notifikasi agar kabar penting tidak terlewat.',
+          'Kamu dapat kabar saat usulanmu disetujui. Izinkan notifikasi biar tidak ketinggalan.',
       icon: FLucideIcons.bell,
     ),
   ];

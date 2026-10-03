@@ -51,6 +51,7 @@ Map<String, dynamic> _$PublicProfileStatsDtoToJson(
 _PublicActivityItemDto _$PublicActivityItemDtoFromJson(
   Map<String, dynamic> json,
 ) => _PublicActivityItemDto(
+  id: json['id'] as String,
   kind: json['kind'] as String,
   occurredAt: json['occurred_at'] as String,
   wordId: json['word_id'] as String?,
@@ -61,11 +62,28 @@ _PublicActivityItemDto _$PublicActivityItemDtoFromJson(
 Map<String, dynamic> _$PublicActivityItemDtoToJson(
   _PublicActivityItemDto instance,
 ) => <String, dynamic>{
+  'id': instance.id,
   'kind': instance.kind,
   'occurred_at': instance.occurredAt,
   'word_id': instance.wordId,
   'lemma': instance.lemma,
   'summary': instance.summary,
+};
+
+_PublicActivityMetaDto _$PublicActivityMetaDtoFromJson(
+  Map<String, dynamic> json,
+) => _PublicActivityMetaDto(
+  limit: (json['limit'] as num).toInt(),
+  nextCursor: json['next_cursor'] as String?,
+  hasMore: json['has_more'] as bool,
+);
+
+Map<String, dynamic> _$PublicActivityMetaDtoToJson(
+  _PublicActivityMetaDto instance,
+) => <String, dynamic>{
+  'limit': instance.limit,
+  'next_cursor': instance.nextCursor,
+  'has_more': instance.hasMore,
 };
 
 _PublicActivityDto _$PublicActivityDtoFromJson(Map<String, dynamic> json) =>
@@ -77,8 +95,49 @@ _PublicActivityDto _$PublicActivityDtoFromJson(Map<String, dynamic> json) =>
                     PublicActivityItemDto.fromJson(e as Map<String, dynamic>),
               )
               .toList() ??
-          const [],
+          const <PublicActivityItemDto>[],
+      meta: json['meta'] == null
+          ? null
+          : PublicActivityMetaDto.fromJson(
+              json['meta'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$PublicActivityDtoToJson(_PublicActivityDto instance) =>
+    <String, dynamic>{
+      'items': instance.items.map((e) => e.toJson()).toList(),
+      'meta': instance.meta?.toJson(),
+    };
+
+_MentionSuggestItemDto _$MentionSuggestItemDtoFromJson(
+  Map<String, dynamic> json,
+) => _MentionSuggestItemDto(
+  id: json['id'] as String,
+  username: json['username'] as String,
+  displayName: json['display_name'] as String?,
+  avatarUrl: json['avatar_url'] as String?,
+);
+
+Map<String, dynamic> _$MentionSuggestItemDtoToJson(
+  _MentionSuggestItemDto instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'username': instance.username,
+  'display_name': instance.displayName,
+  'avatar_url': instance.avatarUrl,
+};
+
+_MentionSuggestDto _$MentionSuggestDtoFromJson(Map<String, dynamic> json) =>
+    _MentionSuggestDto(
+      items:
+          (json['items'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    MentionSuggestItemDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const <MentionSuggestItemDto>[],
+    );
+
+Map<String, dynamic> _$MentionSuggestDtoToJson(_MentionSuggestDto instance) =>
     <String, dynamic>{'items': instance.items.map((e) => e.toJson()).toList()};

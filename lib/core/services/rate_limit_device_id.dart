@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// ULID-like opaque id untuk header X-Device-Id (docs/api/06-api-x-device-id.md).
+/// ULID-like opaque id untuk header X-Device-Id .
 /// Bukan FCM UDID (`DeviceIdService`) - jangan digabung.
 class RateLimitDeviceIdService {
   RateLimitDeviceIdService({SharedPreferences? prefs}) : _prefs = prefs;

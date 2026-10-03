@@ -30,7 +30,7 @@ Uri withUnsplashUtm(Uri uri) {
   return uri.replace(queryParameters: {...uri.queryParameters, ..._unsplashUtm});
 }
 
-/// Kredit foto stock (API `word_images.attribution`, docs/api/01).
+/// Kredit foto stock (API `word_images.attribution`).
 /// Upload kamera/galeri tidak punya atribusi.
 class ImageAttribution {
   const ImageAttribution({

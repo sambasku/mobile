@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/comment/data/models/comment_dto.dart';
 
-/// Fixture dari docs/json/comment (repo mandiri, snapshot lokal).
+/// Fixture snapshot lokal.
 void main() {
   Map<String, dynamic> loadFixture(String name) {
     final file = File('test/fixtures/json/comment/$name');

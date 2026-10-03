@@ -149,6 +149,13 @@ class ReportBugPage extends HookConsumerWidget {
         children: [
           if (isGuest) ...[
             const FAlert(title: Text('Laporan kamu dikirim sebagai Anonim')),
+            const Gap(4),
+            Text(
+              'Login untuk bisa melampirkan screenshot',
+              style: context.theme.typography.sm.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
+            ),
             const Gap(12),
           ],
           FTextField(
@@ -171,7 +178,7 @@ class ReportBugPage extends HookConsumerWidget {
               ),
             ),
           ),
-          if (attachmentsEnabled.value) ...[
+          if (attachmentsEnabled.value && !isGuest) ...[
             const Gap(8),
             Text(
               'Lampiran (opsional, maks 4)',

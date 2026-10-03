@@ -286,18 +286,19 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
                     ),
                   ),
                 )
-              : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, _) => const Gap(6),
-                  itemBuilder: (context, index) {
-                    final meta = filtered[index];
-                    return _CacheTile(
-                      meta: meta,
-                      onPress: () => _openDetail(meta),
-                      onDelete: () => _deleteKey(meta.key),
-                    );
-                  },
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: FTileGroup.builder(
+                    count: filtered.length,
+                    tileBuilder: (context, index) {
+                      final meta = filtered[index];
+                      return _CacheTile(
+                        meta: meta,
+                        onPress: () => _openDetail(meta),
+                        onDelete: () => _deleteKey(meta.key),
+                      );
+                    },
+                  ),
                 ),
         ),
       ],

@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'word_summary_dto.freezed.dart';
 part 'word_summary_dto.g.dart';
 
-/// Item hasil GET /api/v1/words/search (docs/json/word/search-*.200.json).
+/// Item hasil GET /api/v1/words/search.
 @freezed
 abstract class WordSummaryDto with _$WordSummaryDto {
   const factory WordSummaryDto({

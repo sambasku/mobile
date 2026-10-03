@@ -115,7 +115,7 @@ class _MicPermissionOnboardingPageState
                   ),
                   const Gap(24),
                   Text(
-                    'Yang perlu Anda ketahui',
+                    'Yang perlu kamu tahu',
                     style: theme.typography.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -125,7 +125,7 @@ class _MicPermissionOnboardingPageState
                     icon: FLucideIcons.mic,
                     title: 'Izin mikrofon wajib',
                     body:
-                        'Tanpa izin, tombol rekam tidak bisa mulai. Anda bisa '
+                        'Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa '
                         'mencabut izin kapan saja di Pengaturan perangkat.',
                   ),
                   const Gap(12),
@@ -147,7 +147,7 @@ class _MicPermissionOnboardingPageState
                   const Gap(12),
                   const _RequirementRow(
                     icon: FLucideIcons.volume2,
-                    title: 'Hanya saat Anda rekam',
+                    title: 'Hanya saat kamu merekam',
                     body:
                         'Mikrofon aktif hanya selama sesi rekam di layar ini. '
                         'Tidak merekam diam-diam.',

@@ -19,6 +19,9 @@ class SambasMapView extends StatefulWidget {
     this.interactive = true,
     this.onMapClick,
     this.onMapCreated,
+    this.onStyleLoaded,
+    this.onCameraMove,
+    this.annotationOrder = const [],
     this.onFallbackTap,
     this.analyticsEntry = 'category',
   });
@@ -27,6 +30,15 @@ class SambasMapView extends StatefulWidget {
   final bool interactive;
   final OnMapClickCallback? onMapClick;
   final MapCreatedCallback? onMapCreated;
+
+  /// Terpanggil tiap kamera bergerak (pan/zoom/rotate oleh user).
+  final OnCameraMoveCallback? onCameraMove;
+
+  /// Annotation (addSymbol dst.) hanya aman setelah ini terpanggil.
+  final VoidCallback? onStyleLoaded;
+
+  /// Kosong = semua annotation mati (hemat untuk peta tanpa pin).
+  final List<AnnotationType> annotationOrder;
 
   /// Dipakai poster fallback (biasanya buka Peta & Akses).
   final VoidCallback? onFallbackTap;
@@ -97,13 +109,12 @@ class _SambasMapViewState extends State<SambasMapView> {
     setState(() {
       _usePoster = true;
     });
-    unawaited(
-      AnalyticsService.instance.logMapFallback(reason: reason),
-    );
+    unawaited(AnalyticsService.instance.logMapFallback(reason: reason));
   }
 
   void _onStyleLoaded() {
     _styleReady = true;
+    widget.onStyleLoaded?.call();
   }
 
   void _markReady() {
@@ -156,6 +167,7 @@ class _SambasMapViewState extends State<SambasMapView> {
       // Style loaded terpicu sebelum tiles tampil; idle = viewport tergambar.
       onMapIdle: _markReady,
       onMapClick: widget.onMapClick,
+      onCameraMove: widget.onCameraMove,
       compassEnabled: widget.interactive,
       rotateGesturesEnabled: widget.interactive,
       scrollGesturesEnabled: widget.interactive,
@@ -167,7 +179,7 @@ class _SambasMapViewState extends State<SambasMapView> {
       logoEnabled: false,
       attributionButtonPosition: AttributionButtonPosition.bottomLeft,
       attributionButtonMargins: const math.Point(8, 8),
-      annotationOrder: const [],
+      annotationOrder: widget.annotationOrder,
       foregroundLoadColor: ExploreMapPoster.baseColor(brightness),
     );
   }

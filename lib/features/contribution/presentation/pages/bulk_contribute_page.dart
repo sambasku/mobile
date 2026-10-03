@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -15,6 +17,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../models/bulk_submit_word_state.dart';
 import '../providers/bulk_submit_word_providers.dart';
+import '../utils/invalidate_word_detail.dart';
 
 class BulkContributePage extends ConsumerStatefulWidget {
   const BulkContributePage({super.key});
@@ -255,6 +258,13 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
       if (next != true || prev == true) return;
       if (!context.mounted) return;
       final latest = ref.read(bulkSubmitWordProvider);
+      // Issue #28: buang cache detail untuk tiap kata yang baru terkirim.
+      for (final row
+          in latest.rows.where((r) => r.wordId?.isNotEmpty == true)) {
+        unawaited(
+          invalidateWordDetailCaches(ref, row.wordId!, row.lemma),
+        );
+      }
       _showBatchResultDialog(latest);
     });
 

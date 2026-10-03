@@ -10,6 +10,7 @@ abstract class MyProfileDto with _$MyProfileDto {
     @JsonKey(name: 'display_name') required String displayName,
     String? bio,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
+    @JsonKey(name: 'has_read_contribution_guide') @Default(false) bool hasReadContributionGuide,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>
@@ -21,6 +22,7 @@ abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
   const factory UpdateMyProfileRequestDto({
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
+    @JsonKey(name: 'has_read_contribution_guide') bool? hasReadContributionGuide,
   }) = _UpdateMyProfileRequestDto;
 
   factory UpdateMyProfileRequestDto.fromJson(Map<String, dynamic> json) =>

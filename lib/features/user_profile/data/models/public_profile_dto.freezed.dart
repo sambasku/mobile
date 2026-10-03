@@ -586,7 +586,7 @@ as int,
 /// @nodoc
 mixin _$PublicActivityItemDto {
 
- String get kind;@JsonKey(name: 'occurred_at') String get occurredAt;@JsonKey(name: 'word_id') String? get wordId; String? get lemma; String get summary;
+ String get id; String get kind;@JsonKey(name: 'occurred_at') String get occurredAt;@JsonKey(name: 'word_id') String? get wordId; String? get lemma; String get summary;
 /// Create a copy of PublicActivityItemDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -599,16 +599,16 @@ $PublicActivityItemDtoCopyWith<PublicActivityItemDto> get copyWith => _$PublicAc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityItemDto&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,kind,occurredAt,wordId,lemma,summary);
+int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,wordId,lemma,summary);
 
 @override
 String toString() {
-  return 'PublicActivityItemDto(kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
+  return 'PublicActivityItemDto(id: $id, kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
 }
 
 
@@ -619,7 +619,7 @@ abstract mixin class $PublicActivityItemDtoCopyWith<$Res>  {
   factory $PublicActivityItemDtoCopyWith(PublicActivityItemDto value, $Res Function(PublicActivityItemDto) _then) = _$PublicActivityItemDtoCopyWithImpl;
 @useResult
 $Res call({
- String kind,@JsonKey(name: 'occurred_at') String occurredAt,@JsonKey(name: 'word_id') String? wordId, String? lemma, String summary
+ String id, String kind,@JsonKey(name: 'occurred_at') String occurredAt,@JsonKey(name: 'word_id') String? wordId, String? lemma, String summary
 });
 
 
@@ -636,9 +636,10 @@ class _$PublicActivityItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicActivityItemDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? kind = null,Object? occurredAt = null,Object? wordId = freezed,Object? lemma = freezed,Object? summary = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? wordId = freezed,Object? lemma = freezed,Object? summary = null,}) {
   return _then(_self.copyWith(
-kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
 as String,wordId: freezed == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String?,lemma: freezed == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
@@ -728,10 +729,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublicActivityItemDto() when $default != null:
-return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
   return orElse();
 
 }
@@ -749,10 +750,10 @@ return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)  $default,) {final _that = this;
 switch (_that) {
 case _PublicActivityItemDto():
-return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -769,10 +770,10 @@ return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String kind, @JsonKey(name: 'occurred_at')  String occurredAt, @JsonKey(name: 'word_id')  String? wordId,  String? lemma,  String summary)?  $default,) {final _that = this;
 switch (_that) {
 case _PublicActivityItemDto() when $default != null:
-return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
+return $default(_that.id,_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summary);case _:
   return null;
 
 }
@@ -784,9 +785,10 @@ return $default(_that.kind,_that.occurredAt,_that.wordId,_that.lemma,_that.summa
 @JsonSerializable()
 
 class _PublicActivityItemDto implements PublicActivityItemDto {
-  const _PublicActivityItemDto({required this.kind, @JsonKey(name: 'occurred_at') required this.occurredAt, @JsonKey(name: 'word_id') this.wordId, this.lemma, required this.summary});
+  const _PublicActivityItemDto({required this.id, required this.kind, @JsonKey(name: 'occurred_at') required this.occurredAt, @JsonKey(name: 'word_id') this.wordId, this.lemma, required this.summary});
   factory _PublicActivityItemDto.fromJson(Map<String, dynamic> json) => _$PublicActivityItemDtoFromJson(json);
 
+@override final  String id;
 @override final  String kind;
 @override@JsonKey(name: 'occurred_at') final  String occurredAt;
 @override@JsonKey(name: 'word_id') final  String? wordId;
@@ -806,16 +808,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityItemDto&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,kind,occurredAt,wordId,lemma,summary);
+int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,wordId,lemma,summary);
 
 @override
 String toString() {
-  return 'PublicActivityItemDto(kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
+  return 'PublicActivityItemDto(id: $id, kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
 }
 
 
@@ -826,7 +828,7 @@ abstract mixin class _$PublicActivityItemDtoCopyWith<$Res> implements $PublicAct
   factory _$PublicActivityItemDtoCopyWith(_PublicActivityItemDto value, $Res Function(_PublicActivityItemDto) _then) = __$PublicActivityItemDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String kind,@JsonKey(name: 'occurred_at') String occurredAt,@JsonKey(name: 'word_id') String? wordId, String? lemma, String summary
+ String id, String kind,@JsonKey(name: 'occurred_at') String occurredAt,@JsonKey(name: 'word_id') String? wordId, String? lemma, String summary
 });
 
 
@@ -843,9 +845,10 @@ class __$PublicActivityItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicActivityItemDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? kind = null,Object? occurredAt = null,Object? wordId = freezed,Object? lemma = freezed,Object? summary = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? wordId = freezed,Object? lemma = freezed,Object? summary = null,}) {
   return _then(_PublicActivityItemDto(
-kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
 as String,wordId: freezed == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String?,lemma: freezed == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
@@ -859,9 +862,278 @@ as String,
 
 
 /// @nodoc
+mixin _$PublicActivityMetaDto {
+
+ int get limit;@JsonKey(name: 'next_cursor') String? get nextCursor;@JsonKey(name: 'has_more') bool get hasMore;
+/// Create a copy of PublicActivityMetaDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PublicActivityMetaDtoCopyWith<PublicActivityMetaDto> get copyWith => _$PublicActivityMetaDtoCopyWithImpl<PublicActivityMetaDto>(this as PublicActivityMetaDto, _$identity);
+
+  /// Serializes this PublicActivityMetaDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityMetaDto&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,limit,nextCursor,hasMore);
+
+@override
+String toString() {
+  return 'PublicActivityMetaDto(limit: $limit, nextCursor: $nextCursor, hasMore: $hasMore)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PublicActivityMetaDtoCopyWith<$Res>  {
+  factory $PublicActivityMetaDtoCopyWith(PublicActivityMetaDto value, $Res Function(PublicActivityMetaDto) _then) = _$PublicActivityMetaDtoCopyWithImpl;
+@useResult
+$Res call({
+ int limit,@JsonKey(name: 'next_cursor') String? nextCursor,@JsonKey(name: 'has_more') bool hasMore
+});
+
+
+
+
+}
+/// @nodoc
+class _$PublicActivityMetaDtoCopyWithImpl<$Res>
+    implements $PublicActivityMetaDtoCopyWith<$Res> {
+  _$PublicActivityMetaDtoCopyWithImpl(this._self, this._then);
+
+  final PublicActivityMetaDto _self;
+  final $Res Function(PublicActivityMetaDto) _then;
+
+/// Create a copy of PublicActivityMetaDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? limit = null,Object? nextCursor = freezed,Object? hasMore = null,}) {
+  return _then(_self.copyWith(
+limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int,nextCursor: freezed == nextCursor ? _self.nextCursor : nextCursor // ignore: cast_nullable_to_non_nullable
+as String?,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PublicActivityMetaDto].
+extension PublicActivityMetaDtoPatterns on PublicActivityMetaDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PublicActivityMetaDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PublicActivityMetaDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PublicActivityMetaDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int limit, @JsonKey(name: 'next_cursor')  String? nextCursor, @JsonKey(name: 'has_more')  bool hasMore)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto() when $default != null:
+return $default(_that.limit,_that.nextCursor,_that.hasMore);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int limit, @JsonKey(name: 'next_cursor')  String? nextCursor, @JsonKey(name: 'has_more')  bool hasMore)  $default,) {final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto():
+return $default(_that.limit,_that.nextCursor,_that.hasMore);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int limit, @JsonKey(name: 'next_cursor')  String? nextCursor, @JsonKey(name: 'has_more')  bool hasMore)?  $default,) {final _that = this;
+switch (_that) {
+case _PublicActivityMetaDto() when $default != null:
+return $default(_that.limit,_that.nextCursor,_that.hasMore);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _PublicActivityMetaDto implements PublicActivityMetaDto {
+  const _PublicActivityMetaDto({required this.limit, @JsonKey(name: 'next_cursor') this.nextCursor, @JsonKey(name: 'has_more') required this.hasMore});
+  factory _PublicActivityMetaDto.fromJson(Map<String, dynamic> json) => _$PublicActivityMetaDtoFromJson(json);
+
+@override final  int limit;
+@override@JsonKey(name: 'next_cursor') final  String? nextCursor;
+@override@JsonKey(name: 'has_more') final  bool hasMore;
+
+/// Create a copy of PublicActivityMetaDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PublicActivityMetaDtoCopyWith<_PublicActivityMetaDto> get copyWith => __$PublicActivityMetaDtoCopyWithImpl<_PublicActivityMetaDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PublicActivityMetaDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityMetaDto&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,limit,nextCursor,hasMore);
+
+@override
+String toString() {
+  return 'PublicActivityMetaDto(limit: $limit, nextCursor: $nextCursor, hasMore: $hasMore)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PublicActivityMetaDtoCopyWith<$Res> implements $PublicActivityMetaDtoCopyWith<$Res> {
+  factory _$PublicActivityMetaDtoCopyWith(_PublicActivityMetaDto value, $Res Function(_PublicActivityMetaDto) _then) = __$PublicActivityMetaDtoCopyWithImpl;
+@override @useResult
+$Res call({
+ int limit,@JsonKey(name: 'next_cursor') String? nextCursor,@JsonKey(name: 'has_more') bool hasMore
+});
+
+
+
+
+}
+/// @nodoc
+class __$PublicActivityMetaDtoCopyWithImpl<$Res>
+    implements _$PublicActivityMetaDtoCopyWith<$Res> {
+  __$PublicActivityMetaDtoCopyWithImpl(this._self, this._then);
+
+  final _PublicActivityMetaDto _self;
+  final $Res Function(_PublicActivityMetaDto) _then;
+
+/// Create a copy of PublicActivityMetaDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? limit = null,Object? nextCursor = freezed,Object? hasMore = null,}) {
+  return _then(_PublicActivityMetaDto(
+limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
+as int,nextCursor: freezed == nextCursor ? _self.nextCursor : nextCursor // ignore: cast_nullable_to_non_nullable
+as String?,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$PublicActivityDto {
 
- List<PublicActivityItemDto> get items;
+ List<PublicActivityItemDto> get items; PublicActivityMetaDto? get meta;
 /// Create a copy of PublicActivityDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -874,16 +1146,16 @@ $PublicActivityDtoCopyWith<PublicActivityDto> get copyWith => _$PublicActivityDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityDto&&const DeepCollectionEquality().equals(other.items, items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.meta, meta) || other.meta == meta));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),meta);
 
 @override
 String toString() {
-  return 'PublicActivityDto(items: $items)';
+  return 'PublicActivityDto(items: $items, meta: $meta)';
 }
 
 
@@ -894,11 +1166,11 @@ abstract mixin class $PublicActivityDtoCopyWith<$Res>  {
   factory $PublicActivityDtoCopyWith(PublicActivityDto value, $Res Function(PublicActivityDto) _then) = _$PublicActivityDtoCopyWithImpl;
 @useResult
 $Res call({
- List<PublicActivityItemDto> items
+ List<PublicActivityItemDto> items, PublicActivityMetaDto? meta
 });
 
 
-
+$PublicActivityMetaDtoCopyWith<$Res>? get meta;
 
 }
 /// @nodoc
@@ -911,13 +1183,26 @@ class _$PublicActivityDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicActivityDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? meta = freezed,}) {
   return _then(_self.copyWith(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<PublicActivityItemDto>,
+as List<PublicActivityItemDto>,meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as PublicActivityMetaDto?,
   ));
 }
+/// Create a copy of PublicActivityDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PublicActivityMetaDtoCopyWith<$Res>? get meta {
+    if (_self.meta == null) {
+    return null;
+  }
 
+  return $PublicActivityMetaDtoCopyWith<$Res>(_self.meta!, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
 }
 
 
@@ -999,9 +1284,564 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<PublicActivityItemDto> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<PublicActivityItemDto> items,  PublicActivityMetaDto? meta)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublicActivityDto() when $default != null:
+return $default(_that.items,_that.meta);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<PublicActivityItemDto> items,  PublicActivityMetaDto? meta)  $default,) {final _that = this;
+switch (_that) {
+case _PublicActivityDto():
+return $default(_that.items,_that.meta);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<PublicActivityItemDto> items,  PublicActivityMetaDto? meta)?  $default,) {final _that = this;
+switch (_that) {
+case _PublicActivityDto() when $default != null:
+return $default(_that.items,_that.meta);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(explicitToJson: true)
+class _PublicActivityDto implements PublicActivityDto {
+  const _PublicActivityDto({final  List<PublicActivityItemDto> items = const <PublicActivityItemDto>[], this.meta}): _items = items;
+  factory _PublicActivityDto.fromJson(Map<String, dynamic> json) => _$PublicActivityDtoFromJson(json);
+
+ final  List<PublicActivityItemDto> _items;
+@override@JsonKey() List<PublicActivityItemDto> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+@override final  PublicActivityMetaDto? meta;
+
+/// Create a copy of PublicActivityDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PublicActivityDtoCopyWith<_PublicActivityDto> get copyWith => __$PublicActivityDtoCopyWithImpl<_PublicActivityDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PublicActivityDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.meta, meta) || other.meta == meta));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),meta);
+
+@override
+String toString() {
+  return 'PublicActivityDto(items: $items, meta: $meta)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PublicActivityDtoCopyWith<$Res> implements $PublicActivityDtoCopyWith<$Res> {
+  factory _$PublicActivityDtoCopyWith(_PublicActivityDto value, $Res Function(_PublicActivityDto) _then) = __$PublicActivityDtoCopyWithImpl;
+@override @useResult
+$Res call({
+ List<PublicActivityItemDto> items, PublicActivityMetaDto? meta
+});
+
+
+@override $PublicActivityMetaDtoCopyWith<$Res>? get meta;
+
+}
+/// @nodoc
+class __$PublicActivityDtoCopyWithImpl<$Res>
+    implements _$PublicActivityDtoCopyWith<$Res> {
+  __$PublicActivityDtoCopyWithImpl(this._self, this._then);
+
+  final _PublicActivityDto _self;
+  final $Res Function(_PublicActivityDto) _then;
+
+/// Create a copy of PublicActivityDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? meta = freezed,}) {
+  return _then(_PublicActivityDto(
+items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<PublicActivityItemDto>,meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as PublicActivityMetaDto?,
+  ));
+}
+
+/// Create a copy of PublicActivityDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PublicActivityMetaDtoCopyWith<$Res>? get meta {
+    if (_self.meta == null) {
+    return null;
+  }
+
+  return $PublicActivityMetaDtoCopyWith<$Res>(_self.meta!, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$MentionSuggestItemDto {
+
+ String get id; String get username;@JsonKey(name: 'display_name') String? get displayName;@JsonKey(name: 'avatar_url') String? get avatarUrl;
+/// Create a copy of MentionSuggestItemDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MentionSuggestItemDtoCopyWith<MentionSuggestItemDto> get copyWith => _$MentionSuggestItemDtoCopyWithImpl<MentionSuggestItemDto>(this as MentionSuggestItemDto, _$identity);
+
+  /// Serializes this MentionSuggestItemDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl);
+
+@override
+String toString() {
+  return 'MentionSuggestItemDto(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MentionSuggestItemDtoCopyWith<$Res>  {
+  factory $MentionSuggestItemDtoCopyWith(MentionSuggestItemDto value, $Res Function(MentionSuggestItemDto) _then) = _$MentionSuggestItemDtoCopyWithImpl;
+@useResult
+$Res call({
+ String id, String username,@JsonKey(name: 'display_name') String? displayName,@JsonKey(name: 'avatar_url') String? avatarUrl
+});
+
+
+
+
+}
+/// @nodoc
+class _$MentionSuggestItemDtoCopyWithImpl<$Res>
+    implements $MentionSuggestItemDtoCopyWith<$Res> {
+  _$MentionSuggestItemDtoCopyWithImpl(this._self, this._then);
+
+  final MentionSuggestItemDto _self;
+  final $Res Function(MentionSuggestItemDto) _then;
+
+/// Create a copy of MentionSuggestItemDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? displayName = freezed,Object? avatarUrl = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MentionSuggestItemDto].
+extension MentionSuggestItemDtoPatterns on MentionSuggestItemDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MentionSuggestItemDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MentionSuggestItemDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MentionSuggestItemDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto() when $default != null:
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl)  $default,) {final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto():
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl)?  $default,) {final _that = this;
+switch (_that) {
+case _MentionSuggestItemDto() when $default != null:
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _MentionSuggestItemDto implements MentionSuggestItemDto {
+  const _MentionSuggestItemDto({required this.id, required this.username, @JsonKey(name: 'display_name') this.displayName, @JsonKey(name: 'avatar_url') this.avatarUrl});
+  factory _MentionSuggestItemDto.fromJson(Map<String, dynamic> json) => _$MentionSuggestItemDtoFromJson(json);
+
+@override final  String id;
+@override final  String username;
+@override@JsonKey(name: 'display_name') final  String? displayName;
+@override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
+
+/// Create a copy of MentionSuggestItemDto
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MentionSuggestItemDtoCopyWith<_MentionSuggestItemDto> get copyWith => __$MentionSuggestItemDtoCopyWithImpl<_MentionSuggestItemDto>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$MentionSuggestItemDtoToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl);
+
+@override
+String toString() {
+  return 'MentionSuggestItemDto(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MentionSuggestItemDtoCopyWith<$Res> implements $MentionSuggestItemDtoCopyWith<$Res> {
+  factory _$MentionSuggestItemDtoCopyWith(_MentionSuggestItemDto value, $Res Function(_MentionSuggestItemDto) _then) = __$MentionSuggestItemDtoCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String username,@JsonKey(name: 'display_name') String? displayName,@JsonKey(name: 'avatar_url') String? avatarUrl
+});
+
+
+
+
+}
+/// @nodoc
+class __$MentionSuggestItemDtoCopyWithImpl<$Res>
+    implements _$MentionSuggestItemDtoCopyWith<$Res> {
+  __$MentionSuggestItemDtoCopyWithImpl(this._self, this._then);
+
+  final _MentionSuggestItemDto _self;
+  final $Res Function(_MentionSuggestItemDto) _then;
+
+/// Create a copy of MentionSuggestItemDto
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? displayName = freezed,Object? avatarUrl = freezed,}) {
+  return _then(_MentionSuggestItemDto(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$MentionSuggestDto {
+
+ List<MentionSuggestItemDto> get items;
+/// Create a copy of MentionSuggestDto
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MentionSuggestDtoCopyWith<MentionSuggestDto> get copyWith => _$MentionSuggestDtoCopyWithImpl<MentionSuggestDto>(this as MentionSuggestDto, _$identity);
+
+  /// Serializes this MentionSuggestDto to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestDto&&const DeepCollectionEquality().equals(other.items, items));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
+
+@override
+String toString() {
+  return 'MentionSuggestDto(items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MentionSuggestDtoCopyWith<$Res>  {
+  factory $MentionSuggestDtoCopyWith(MentionSuggestDto value, $Res Function(MentionSuggestDto) _then) = _$MentionSuggestDtoCopyWithImpl;
+@useResult
+$Res call({
+ List<MentionSuggestItemDto> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$MentionSuggestDtoCopyWithImpl<$Res>
+    implements $MentionSuggestDtoCopyWith<$Res> {
+  _$MentionSuggestDtoCopyWithImpl(this._self, this._then);
+
+  final MentionSuggestDto _self;
+  final $Res Function(MentionSuggestDto) _then;
+
+/// Create a copy of MentionSuggestDto
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
+  return _then(_self.copyWith(
+items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as List<MentionSuggestItemDto>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [MentionSuggestDto].
+extension MentionSuggestDtoPatterns on MentionSuggestDto {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MentionSuggestDto value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _MentionSuggestDto() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MentionSuggestDto value)  $default,){
+final _that = this;
+switch (_that) {
+case _MentionSuggestDto():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MentionSuggestDto value)?  $default,){
+final _that = this;
+switch (_that) {
+case _MentionSuggestDto() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<MentionSuggestItemDto> items)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _MentionSuggestDto() when $default != null:
 return $default(_that.items);case _:
   return orElse();
 
@@ -1020,9 +1860,9 @@ return $default(_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<PublicActivityItemDto> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<MentionSuggestItemDto> items)  $default,) {final _that = this;
 switch (_that) {
-case _PublicActivityDto():
+case _MentionSuggestDto():
 return $default(_that.items);case _:
   throw StateError('Unexpected subclass');
 
@@ -1040,9 +1880,9 @@ return $default(_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<PublicActivityItemDto> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<MentionSuggestItemDto> items)?  $default,) {final _that = this;
 switch (_that) {
-case _PublicActivityDto() when $default != null:
+case _MentionSuggestDto() when $default != null:
 return $default(_that.items);case _:
   return null;
 
@@ -1054,32 +1894,32 @@ return $default(_that.items);case _:
 /// @nodoc
 
 @JsonSerializable(explicitToJson: true)
-class _PublicActivityDto implements PublicActivityDto {
-  const _PublicActivityDto({final  List<PublicActivityItemDto> items = const []}): _items = items;
-  factory _PublicActivityDto.fromJson(Map<String, dynamic> json) => _$PublicActivityDtoFromJson(json);
+class _MentionSuggestDto implements MentionSuggestDto {
+  const _MentionSuggestDto({final  List<MentionSuggestItemDto> items = const <MentionSuggestItemDto>[]}): _items = items;
+  factory _MentionSuggestDto.fromJson(Map<String, dynamic> json) => _$MentionSuggestDtoFromJson(json);
 
- final  List<PublicActivityItemDto> _items;
-@override@JsonKey() List<PublicActivityItemDto> get items {
+ final  List<MentionSuggestItemDto> _items;
+@override@JsonKey() List<MentionSuggestItemDto> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
 }
 
 
-/// Create a copy of PublicActivityDto
+/// Create a copy of MentionSuggestDto
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$PublicActivityDtoCopyWith<_PublicActivityDto> get copyWith => __$PublicActivityDtoCopyWithImpl<_PublicActivityDto>(this, _$identity);
+_$MentionSuggestDtoCopyWith<_MentionSuggestDto> get copyWith => __$MentionSuggestDtoCopyWithImpl<_MentionSuggestDto>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$PublicActivityDtoToJson(this, );
+  return _$MentionSuggestDtoToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityDto&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestDto&&const DeepCollectionEquality().equals(other._items, _items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1088,18 +1928,18 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'PublicActivityDto(items: $items)';
+  return 'MentionSuggestDto(items: $items)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$PublicActivityDtoCopyWith<$Res> implements $PublicActivityDtoCopyWith<$Res> {
-  factory _$PublicActivityDtoCopyWith(_PublicActivityDto value, $Res Function(_PublicActivityDto) _then) = __$PublicActivityDtoCopyWithImpl;
+abstract mixin class _$MentionSuggestDtoCopyWith<$Res> implements $MentionSuggestDtoCopyWith<$Res> {
+  factory _$MentionSuggestDtoCopyWith(_MentionSuggestDto value, $Res Function(_MentionSuggestDto) _then) = __$MentionSuggestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<PublicActivityItemDto> items
+ List<MentionSuggestItemDto> items
 });
 
 
@@ -1107,19 +1947,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$PublicActivityDtoCopyWithImpl<$Res>
-    implements _$PublicActivityDtoCopyWith<$Res> {
-  __$PublicActivityDtoCopyWithImpl(this._self, this._then);
+class __$MentionSuggestDtoCopyWithImpl<$Res>
+    implements _$MentionSuggestDtoCopyWith<$Res> {
+  __$MentionSuggestDtoCopyWithImpl(this._self, this._then);
 
-  final _PublicActivityDto _self;
-  final $Res Function(_PublicActivityDto) _then;
+  final _MentionSuggestDto _self;
+  final $Res Function(_MentionSuggestDto) _then;
 
-/// Create a copy of PublicActivityDto
+/// Create a copy of MentionSuggestDto
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? items = null,}) {
-  return _then(_PublicActivityDto(
+  return _then(_MentionSuggestDto(
 items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<PublicActivityItemDto>,
+as List<MentionSuggestItemDto>,
   ));
 }
 

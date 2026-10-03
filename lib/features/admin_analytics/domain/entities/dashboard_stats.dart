@@ -133,7 +133,7 @@ class DashboardStats {
 }
 
 const wordStatusLabels = <String, String>{
-  'draft': 'Draft',
+  'draft': 'Draft (tidak tayang)',
   'pending_review': 'Menunggu Review',
   'published': 'Published',
   'rejected': 'Ditolak',
