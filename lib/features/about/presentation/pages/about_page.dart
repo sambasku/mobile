@@ -14,13 +14,17 @@ import '../../data/datasources/sponsors_remote_datasource.dart';
 import '../providers/contributors_providers.dart';
 import '../providers/sponsors_providers.dart';
 
-/// Halaman About: identitas app, lalu tab Tentang dan Tim Kami.
+/// Halaman About: identitas app + blok info & fitur. Data Sponsor/Mitra
+/// dan Tim Kami pindah ke [SponsorshipTeamPage] supaya tidak duplikat.
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   static final Uri organizationUri = Uri.parse(
     'https://github.com/sambasku#organisasi',
   );
+
+  /// Root organisasi: daftar repo publik (kode sumber).
+  static final Uri sourceCodeUri = Uri.parse('https://github.com/sambasku');
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +49,9 @@ class AboutPage extends StatelessWidget {
               ? '…'
               : '${info.version} (${info.buildNumber})';
 
-          return Column(
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
             children: [
-              const Gap(4),
               const BrandMark(size: 112),
               const Gap(8),
               Text(
@@ -67,8 +71,80 @@ class AboutPage extends StatelessWidget {
                   color: theme.colors.mutedForeground,
                 ),
               ),
-              const Gap(12),
-              const Expanded(child: _AboutTabs()),
+              const Gap(16),
+              _AboutLinkBlock(
+                title: 'Sponsor & Tim Kami',
+                body:
+                    'Para pendukung operasional dan orang-orang yang '
+                    'merawat kamus ini.',
+                actionLabel: 'Lihat Sponsor & Tim Kami',
+                onPress: () => context.push('/about/sponsorship'),
+              ),
+              const Gap(16),
+              _AboutLinkBlock(
+                title: 'Kode Sumber & Lisensi',
+                body:
+                    'SambasKu adalah proyek open source. Kode sumbernya '
+                    'tersedia di GitHub dan dirilis di bawah lisensi GPLv3. '
+                    'Kamu bebas mempelajari, memodifikasi, dan '
+                    'mendistribusikan kodenya sesuai ketentuan lisensi.',
+                actionLabel: 'Lihat di GitHub',
+                onPress: () => launchUrl(
+                  AboutPage.sourceCodeUri,
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+              const Gap(16),
+              _AboutLinkBlock(
+                title: 'Organisasi di GitHub',
+                body:
+                    'Identitas organisasi, cara ikut serta, sponsor, dan '
+                    'saluran komunitas.',
+                actionLabel: 'Buka di GitHub',
+                onPress: () => launchUrl(
+                  AboutPage.organizationUri,
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+              const Gap(16),
+              const _AboutBlock(
+                title: 'Apa itu SambasKu?',
+                body:
+                    'Kamus digital Sambas-Indonesia. Cari arti, baca contoh, '
+                    'usulkan kata, bookmark, dan bagikan kartu. Entri tayang '
+                    'setelah verifikasi.',
+              ),
+              const Gap(16),
+              const _AboutBlock(
+                title: 'Cari kosakata',
+                body:
+                    'Ketik lemma atau terjemahan. Setiap entri menampilkan '
+                    'kelas kata, definisi, contoh kalimat, dan variasi '
+                    'penulisan.',
+              ),
+              const Gap(16),
+              const _AboutBlock(
+                title: 'Simpan',
+                body:
+                    'Bookmark kata dari halaman detail, lalu buka lagi '
+                    'dari Profil.',
+              ),
+              const Gap(16),
+              const _AboutBlock(
+                title: 'Usulkan',
+                body:
+                    'Warga mengusulkan kata baru atau perbaikan. Usulan '
+                    'langsung tayang dengan label Menunggu pengecekan. '
+                    'Kontributor bisa mengajukan diri jadi verifikator.',
+              ),
+              const Gap(16),
+              const _AboutBlock(
+                title: 'Bagikan kartu',
+                body:
+                    'Dari detail kata, atur gaya dan latar (foto, video, '
+                    'atau warna polos), lalu Simpan ke galeri atau Bagikan '
+                    'ke aplikasi lain.',
+              ),
             ],
           );
         },
@@ -77,106 +153,64 @@ class AboutPage extends StatelessWidget {
   }
 }
 
-class _AboutTabs extends StatelessWidget {
-  const _AboutTabs();
+/// Halaman khusus dengan dua tab: Sponsor & Mitra, dan Tim Kami.
+/// Isi datanya tidak ditampilkan di halaman Tentang supaya tidak duplikat.
+class SponsorshipTeamPage extends StatelessWidget {
+  const SponsorshipTeamPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FTabs(
-      expands: true,
-      children: const [
-        FTabEntry.entry(label: Text('Tentang'), child: _AboutTab()),
-        FTabEntry.entry(label: Text('Tim Kami'), child: _TeamTab()),
-      ],
+    return FScaffold(
+      childPad: true,
+      header: FHeader.nested(
+        title: const Text('Sponsor & Tim Kami'),
+        prefixes: [
+          FHeaderAction.back(
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go('/about'),
+          ),
+        ],
+      ),
+      child: FTabs(
+        expands: true,
+        children: const [
+          FTabEntry.entry(
+            label: Text('Sponsor & Mitra'),
+            child: _SponsorsTab(),
+          ),
+          FTabEntry.entry(label: Text('Tim Kami'), child: _TeamTab()),
+        ],
+      ),
     );
   }
 }
 
-class _AboutTab extends ConsumerWidget {
-  const _AboutTab();
+class _SponsorsTab extends StatelessWidget {
+  const _SponsorsTab();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
       children: [
         const _SponsorsSection(),
         const Gap(16),
-        _AboutLinkBlock(
-          title: 'Kode Sumber & Lisensi',
-          body:
-              'SambasKu adalah proyek open source. Kode sumbernya '
-              'tersedia di GitHub dan dirilis di bawah lisensi GPLv3. '
-              'Kamu bebas mempelajari, memodifikasi, dan mendistribusikan '
-              'kodenya sesuai ketentuan lisensi.',
-          actionLabel: 'Lihat di GitHub',
-          onPress: () => launchUrl(
-            AboutPage.organizationUri,
-            mode: LaunchMode.externalApplication,
-          ),
-        ),
-        const Gap(16),
-        _AboutLinkBlock(
-          title: 'Organisasi di GitHub',
-          body:
-              'Identitas organisasi, cara ikut serta, sponsor, dan '
-              'saluran komunitas.',
-          actionLabel: 'Buka di GitHub',
-          onPress: () => launchUrl(
-            AboutPage.organizationUri,
-            mode: LaunchMode.externalApplication,
-          ),
-        ),
-        const Gap(16),
         const _AboutBlock(
-          title: 'Apa itu SambasKu?',
+          title: 'Ingin ikut mendukung?',
           body:
-              'Kamus digital Sambas-Indonesia. Cari arti, baca contoh, '
-              'usulkan kata, bookmark, dan bagikan kartu. Entri tayang '
-              'setelah verifikasi.',
+              'Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail '
+              'kerja sama ada di profil organisasi kami di GitHub.',
         ),
-        const Gap(16),
-        const _AboutBlock(
-          title: 'Cari kosakata',
-          body:
-              'Ketik lemma atau terjemahan. Setiap entri menampilkan '
-              'kelas kata, definisi, contoh kalimat, dan variasi '
-              'penulisan.',
-        ),
-        const Gap(16),
-        const _AboutBlock(
-          title: 'Simpan',
-          body:
-              'Bookmark kata dari halaman detail, lalu buka lagi '
-              'dari Profil.',
-        ),
-        const Gap(16),
-        const _AboutBlock(
-          title: 'Usulkan',
-          body:
-              'Warga mengusulkan kata baru atau perbaikan. Usulan '
-              'langsung tayang dengan label Menunggu pengecekan. '
-              'Kontributor bisa mengajukan diri jadi verifikator.',
-        ),
-        const Gap(16),
-        const _AboutBlock(
-          title: 'Bagikan kartu',
-          body:
-              'Dari detail kata, atur gaya dan latar (foto, video, '
-              'atau warna polos), lalu Simpan ke galeri atau Bagikan '
-              'ke aplikasi lain.',
-        ),
-        const Gap(16),
       ],
     );
   }
 }
 
-class _TeamTab extends ConsumerWidget {
+class _TeamTab extends StatelessWidget {
   const _TeamTab();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
       children: const [
@@ -190,9 +224,10 @@ class _TeamTab extends ConsumerWidget {
         ),
         Gap(16),
         _AboutBlock(
-          title: 'Pengusul',
+          title: 'Kontributor',
           body:
-              'Mengirim kata baru atau perbaikan. Entri tayang setelah '
+              'Mengirim kata baru atau perbaikan, dan merekam cara '
+              'mengucapkan kata agar bisa didengar. Entri tayang setelah '
               'verifikasi.',
         ),
         Gap(16),
@@ -200,18 +235,13 @@ class _TeamTab extends ConsumerWidget {
           title: 'Verifikator',
           body: 'Memeriksa usulan sebelum masuk kamus.',
         ),
-        Gap(16),
-        _AboutBlock(
-          title: 'Kontributor pelafalan',
-          body: 'Merekam cara mengucapkan kata agar bisa didengar.',
-        ),
       ],
     );
   }
 }
 
 /// Daftar kontributor langsung project dari CDN. Null/kosong/gagal fetch =
-/// section hilang (soft-fail, halaman About tetap utuh).
+/// section hilang (soft-fail, halaman tetap utuh).
 class _ContributorsSection extends ConsumerWidget {
   const _ContributorsSection();
 
@@ -258,10 +288,10 @@ class _ContributorTile extends StatelessWidget {
         if (contributor.avatarUrl case final avatar?)
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: ClipOval(
+            child: ClipOval(
+              child: SizedBox(
+                width: 40,
+                height: 40,
                 child: CachedNetworkImageWithFallback(
                   imageUrl: avatar,
                   fallback: const ImagePlaceholder256(),
@@ -306,7 +336,7 @@ class _ContributorTile extends StatelessWidget {
 }
 
 /// Daftar sponsor dari CDN. Null/kosong/gagal fetch = section hilang
-/// (soft-fail, halaman About tetap utuh).
+/// (soft-fail, halaman tetap utuh).
 class _SponsorsSection extends ConsumerWidget {
   const _SponsorsSection();
 
@@ -334,11 +364,12 @@ class _SponsorsSection extends ConsumerWidget {
                   'Sponsor: pemberi dana atau barang untuk biaya '
                   'operasional (domain, server, honorarium). Mitra: rekan '
                   'kerja sama yang berkontribusi dana, tenaga, materi, atau '
-                  'data. Pencantuman nama keduanya gratis.',
+                  'data. Nama semua pendukung kami cantumkan sebagai '
+                  'apresiasi atas dukungannya.',
               triggerMode: TooltipTriggerMode.tap,
               showDuration: const Duration(seconds: 6),
               child: Icon(
-                Icons.info_outline,
+                FLucideIcons.info,
                 size: 14,
                 color: theme.colors.mutedForeground,
               ),
@@ -350,7 +381,6 @@ class _SponsorsSection extends ConsumerWidget {
           _SponsorTile(sponsor: sponsor),
           const Gap(8),
         ],
-
       ],
     );
   }
@@ -364,10 +394,11 @@ class _SponsorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final subtitle = [
+    final subtitleParts = [
       ?sponsor.description,
-      sponsor.note,
-    ].join(' - ');
+      if (sponsor.note.trim().isNotEmpty) sponsor.note,
+    ];
+    final subtitle = subtitleParts.join(' - ');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,11 +406,11 @@ class _SponsorTile extends StatelessWidget {
         if (sponsor.logoUrl case final logo?)
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                width: 40,
+                height: 40,
                 child: CachedNetworkImageWithFallback(
                   imageUrl: logo,
                   fallback: const ImagePlaceholder256(),
@@ -399,14 +430,16 @@ class _SponsorTile extends StatelessWidget {
                   color: theme.colors.foreground,
                 ),
               ),
-              const Gap(2),
-              Text(
-                subtitle,
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                  height: 1.4,
+              if (subtitleParts.isNotEmpty) ...[
+                const Gap(2),
+                Text(
+                  subtitle,
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.4,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

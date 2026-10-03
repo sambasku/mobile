@@ -43,7 +43,7 @@ class ExplorePage extends HookConsumerWidget {
     final scroll = useScrollController();
     final landscape =
         MediaQuery.widthOf(context) > MediaQuery.heightOf(context);
-    final maxHero = landscape ? 120.0 : 160.0;
+    final maxHero = landscape ? 140.0 : 200.0;
     final minHero = landscape ? 50.0 : 70.0;
     final collapseDistance = maxHero - minHero;
 
@@ -117,23 +117,23 @@ class _CategoryCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(category.icon, size: 26, color: theme.colors.primary),
+                  Icon(category.icon, size: 20, color: theme.colors.primary),
                   if (category.comingSoon) ...[
-                    const Gap(8),
+                    const Gap(6),
                     Expanded(
                       child: Text(
-                        'Segera hadir',
+                        'Segera',
                         textAlign: TextAlign.right,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
-                          fontSize: 11,
+                          fontSize: 9,
                           fontWeight: FontWeight.w500,
                           color: theme.colors.mutedForeground,
                         ),
@@ -154,16 +154,17 @@ class _CategoryCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const Gap(4),
+                      const Gap(2),
                       Text(
                         category.subtitle,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
-                          fontSize: 11,
+                          fontSize: 9,
                           color: theme.colors.mutedForeground,
                         ),
                       ),

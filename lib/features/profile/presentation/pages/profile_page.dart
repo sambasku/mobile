@@ -227,12 +227,6 @@ class ProfilePage extends HookConsumerWidget {
                         onPress: () => context.push('/about'),
                       ),
                       FTile(
-                        prefix: const Icon(FLucideIcons.award, size: 18),
-                        title: const Text('Atribusi & Kredit'),
-                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-                        onPress: () => context.push('/about'),
-                      ),
-                      FTile(
                         prefix: const Icon(FLucideIcons.flag, size: 18),
                         title: const Text('Laporkan Masalah'),
                         suffix: const Icon(FLucideIcons.chevronRight, size: 16),

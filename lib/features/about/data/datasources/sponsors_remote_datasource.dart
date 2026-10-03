@@ -45,7 +45,9 @@ class SponsorEntry {
     return SponsorEntry(
       id: id,
       name: name,
-      description: json['description'] is String ? json['description'] as String : null,
+      description: json['description'] is String
+          ? json['description'] as String
+          : null,
       logoUrl: json['logoUrl'] is String ? json['logoUrl'] as String : null,
       url: json['url'] is String ? json['url'] as String : null,
       since: since,
@@ -61,7 +63,7 @@ class SponsorEntry {
 /// section).
 class SponsorsRemoteDatasource {
   SponsorsRemoteDatasource(this._dio, {String? configUrl})
-      : _configUrl = configUrl ?? kSponsorsDataUrl;
+    : _configUrl = configUrl ?? kSponsorsDataUrl;
 
   final Dio _dio;
 
@@ -84,9 +86,7 @@ class SponsorsRemoteDatasource {
     final parsed = <SponsorEntry>[];
     for (final item in rawList) {
       if (item is! Map) continue;
-      final entry = SponsorEntry.fromJson(
-        Map<String, dynamic>.from(item),
-      );
+      final entry = SponsorEntry.fromJson(Map<String, dynamic>.from(item));
       if (entry != null) parsed.add(entry);
     }
     // Terlama dulu; tie = urutan file dipertahankan (sort stabil Dart).

@@ -234,8 +234,8 @@ void main() {
       // Label role lama tidak boleh tampil lagi.
       expect(find.text('Reviewer'), findsNothing);
       expect(find.text('Kontributor'), findsNothing);
-      // Edit profil via tile grup Akun; header hanya chevron affordance.
-      expect(find.text('Edit profil'), findsOneWidget);
+      // Desain baru: edit profil dari profil publik (tap header), bukan tile.
+      expect(find.text('Edit profil'), findsNothing);
     },
   );
 

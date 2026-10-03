@@ -51,7 +51,9 @@ class ContributorEntry {
       id: id,
       name: name,
       roles: List<String>.from(rawRoles),
-      avatarUrl: json['avatarUrl'] is String ? json['avatarUrl'] as String : null,
+      avatarUrl: json['avatarUrl'] is String
+          ? json['avatarUrl'] as String
+          : null,
       url: json['url'] is String ? json['url'] as String : null,
       since: since,
       note: note,
@@ -66,7 +68,7 @@ class ContributorEntry {
 /// section).
 class ContributorsRemoteDatasource {
   ContributorsRemoteDatasource(this._dio, {String? configUrl})
-      : _configUrl = configUrl ?? kContributorsDataUrl;
+    : _configUrl = configUrl ?? kContributorsDataUrl;
 
   final Dio _dio;
 
@@ -89,9 +91,7 @@ class ContributorsRemoteDatasource {
     final parsed = <ContributorEntry>[];
     for (final item in rawList) {
       if (item is! Map) continue;
-      final entry = ContributorEntry.fromJson(
-        Map<String, dynamic>.from(item),
-      );
+      final entry = ContributorEntry.fromJson(Map<String, dynamic>.from(item));
       if (entry != null) parsed.add(entry);
     }
     // Terlama dulu; tie = urutan file dipertahankan (sort stabil Dart).

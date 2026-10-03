@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:sambasku_mobile/features/activity/presentation/providers/contribution_guide_providers.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/app.dart';
@@ -132,6 +133,8 @@ void main() {
           listLatestWordsUseCaseProvider.overrideWithValue(
             _EmptyLatestUseCase(),
           ),
+          // Guide sudah dibaca -> overlay tidak blokir tap di stress test.
+          contributionGuideUnreadProvider.overrideWith((ref) async => false),
         ],
         child: const App(),
       ),
