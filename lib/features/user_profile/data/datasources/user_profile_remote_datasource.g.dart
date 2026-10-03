@@ -50,9 +50,19 @@ class _UserProfileRemoteDatasource implements UserProfileRemoteDatasource {
   }
 
   @override
-  Future<ApiResponse<PublicActivityDto>> getActivity(String username) async {
+  Future<ApiResponse<PublicActivityDto>> getActivity(
+    String username, {
+    String? kind,
+    int? limit,
+    String? cursor,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'kind': kind,
+      r'limit': limit,
+      r'cursor': cursor,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<ApiResponse<PublicActivityDto>>(
@@ -71,6 +81,36 @@ class _UserProfileRemoteDatasource implements UserProfileRemoteDatasource {
       _value = ApiResponse<PublicActivityDto>.fromJson(
         _result.data!,
         (json) => PublicActivityDto.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<MentionSuggestDto>> suggestMentions(String query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'q': query};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<MentionSuggestDto>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/users/suggest',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<MentionSuggestDto> _value;
+    try {
+      _value = ApiResponse<MentionSuggestDto>.fromJson(
+        _result.data!,
+        (json) => MentionSuggestDto.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

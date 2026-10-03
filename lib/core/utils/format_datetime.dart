@@ -1,7 +1,7 @@
 /// Format tanggal-waktu UI Indonesia.
 /// Contoh: `17 Nov 2026 21:00`
 ///
-/// Pola baku mobile (lihat docs/mobile/mobile-base-stack.md).
+/// Pola baku mobile .
 /// Bulan singkat: Jan Feb Mar Apr Mei Jun Jul Agu Sep Okt Nov Des.
 library;
 

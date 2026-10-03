@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 ///
 /// Jangan pakai untuk `RATE_LIMITED` (toast), validasi per-field (inline),
 /// atau empty/load list (FAlert di body). Lihat
-/// `docs/mobile/mobile-base-stack.md` Section 11.
+/// Pola baku error sheet.
 Future<void> showAppErrorSheet(
   BuildContext context, {
   required String message,

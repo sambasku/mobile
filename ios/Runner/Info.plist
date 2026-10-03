@@ -34,14 +34,13 @@
 		</dict>
 	</array>
 	<!-- Google Sign-In: tambah GIDClientID + URL scheme reversed iOS client ID.
-	     Jangan timpa scheme sambasku di atas (reset password).
-	     Lihat docs/mobile/13-mobile-auth-google.md -->
+	     Jangan timpa scheme sambasku di atas (reset password). -->
 	<!-- GitHub OAuth: callback HTTPS Universal Link /oauth/github
 	     (apple-app-site-association). Bukan custom scheme - GitHub menolak. -->
 	<!-- Facebook Login: isi FacebookAppID + FacebookClientToken + URL scheme
 	     fb{APP_ID} (array terpisah, jangan timpa sambasku).
 	     LSApplicationQueriesSchemes: fbapi, fb-messenger-share-api.
-	     Lihat docs/mobile/19-mobile-auth-facebook.md -->
+	     -->
 	<key>FacebookAppID</key>
 	<string>0</string>
 	<key>FacebookClientToken</key>

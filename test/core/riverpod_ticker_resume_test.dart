@@ -46,9 +46,74 @@ void main() {
 
     expect(container.read(top).asData?.value, 4);
   });
+
+  testWidgets('invalidate saat pause terlihat setelah resume', (tester) async {
+    final container = ProviderContainer.test();
+    addTearDown(container.dispose);
+
+    final counter = NotifierProvider<Counter, int>(Counter.new);
+
+    Widget app({required bool enabled}) {
+      return UncontrolledProviderScope(
+        container: container,
+        child: TickerMode(
+          enabled: enabled,
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: Consumer(
+              builder: (context, ref, _) => Text('v${ref.watch(counter)}'),
+            ),
+          ),
+        ),
+      );
+    }
+
+    await tester.pumpWidget(app(enabled: true));
+    expect(find.text('v0'), findsOneWidget);
+
+    await tester.pumpWidget(app(enabled: false));
+    container.read(counter.notifier).bump();
+    await tester.pumpWidget(app(enabled: true));
+    await tester.pump();
+    expect(find.text('v1'), findsOneWidget);
+  });
+
+  testWidgets('element di-invalidate saat inaktif refresh saat ditonton lagi', (
+    tester,
+  ) async {
+    final container = ProviderContainer.test();
+    addTearDown(container.dispose);
+
+    final counter = NotifierProvider<Counter, int>(Counter.new);
+
+    // Buat element, invalidate saat belum ada listener aktif - fork tidak
+    // menjadwalkan refresh untuk element inaktif (invalidateSelf).
+    container.read(counter.notifier).bump();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Consumer(
+            builder: (context, ref, _) => Text('v${ref.watch(counter)}'),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('v1'), findsOneWidget);
+  });
 }
 
 class Seed extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void bump() => state++;
+}
+
+class Counter extends Notifier<int> {
   @override
   int build() => 0;
 

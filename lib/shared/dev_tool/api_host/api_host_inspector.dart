@@ -173,37 +173,75 @@ class _ApiHostPageState extends State<_ApiHostPage> {
           style: TextStyle(fontSize: 11, color: Colors.grey),
         ),
         const Gap(20),
-        const Text(
-          'MODE',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+        FTileGroup(
+          label: const Text('Mode'),
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _modeTile(
+              label: 'Otomatis',
+              subtitle: 'Mulai di tier 1, pindah hanya saat gagal',
+              index: null,
+            ),
+            for (final tier in tiers)
+              _modeTile(
+                label: 'Tier ${tier.number}',
+                subtitle: tier.host,
+                index: tier.index,
+              ),
+          ],
         ),
-        const Gap(8),
-        _ModeTile(
-          label: 'Otomatis',
-          subtitle: 'Mulai di tier 1, pindah hanya saat gagal',
-          selected: _resolver.forcedTierIndex == null,
-          onTap: () => _setMode(null),
-        ),
-        for (final tier in tiers)
-          _ModeTile(
-            label: 'Tier ${tier.number}',
-            subtitle: tier.host,
-            selected: _resolver.forcedTierIndex == tier.index,
-            onTap: () => _setMode(tier.index),
-          ),
         const Gap(20),
-        const Text(
-          'TIER',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+        FTileGroup(
+          label: const Text('Tier'),
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            for (final tier in tiers)
+              _tierTile(
+                tier: tier,
+                isActive: tier.index == active.index,
+                probeResult: _probeResults[tier.host],
+              ),
+          ],
         ),
-        const Gap(8),
-        for (final tier in tiers)
-          _TierTile(
-            tier: tier,
-            isActive: tier.index == active.index,
-            probeResult: _probeResults[tier.host],
-          ),
       ],
+    );
+  }
+
+  FTile _modeTile({
+    required String label,
+    required String subtitle,
+    required int? index,
+  }) {
+    final selected = _resolver.forcedTierIndex == index;
+    return FTile(
+      title: Text(label),
+      subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+      selected: selected,
+      suffix: selected ? const Icon(FLucideIcons.check) : null,
+      onPress: () => _setMode(index),
+    );
+  }
+
+  FTile _tierTile({
+    required ApiTier tier,
+    required bool isActive,
+    String? probeResult,
+  }) {
+    return FTile(
+      prefix: Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive ? Colors.green : Colors.grey.shade400,
+        ),
+      ),
+      title: Text('Tier ${tier.number} - timeout ${tier.timeout.inSeconds}s'),
+      subtitle: Text(
+        probeResult == null ? tier.host : '${tier.host}\n$probeResult',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }
@@ -262,113 +300,6 @@ class _StatusCard extends StatelessWidget {
                 : 'Pin tersisa ${left.inMinutes}m ${left.inSeconds % 60}s, '
                       'lalu tier 1 dicoba lagi.',
             style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ModeTile extends StatelessWidget {
-  const _ModeTile({
-    required this.label,
-    required this.subtitle,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final String subtitle;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            Icon(
-              selected ? Icons.radio_button_checked : Icons.radio_button_off,
-              size: 18,
-              color: selected ? Colors.green : Colors.grey,
-            ),
-            const Gap(12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 11, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TierTile extends StatelessWidget {
-  const _TierTile({
-    required this.tier,
-    required this.isActive,
-    this.probeResult,
-  });
-
-  final ApiTier tier;
-  final bool isActive;
-  final String? probeResult;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isActive ? Colors.green : Colors.grey.shade400,
-            ),
-          ),
-          const Gap(12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Tier ${tier.number} - timeout ${tier.timeout.inSeconds}s',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  tier.host,
-                  style: const TextStyle(fontSize: 11, color: Colors.grey),
-                ),
-                if (probeResult != null)
-                  Text(
-                    probeResult!,
-                    style: const TextStyle(fontSize: 11, color: Colors.blue),
-                  ),
-              ],
-            ),
           ),
         ],
       ),

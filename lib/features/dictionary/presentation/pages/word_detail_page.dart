@@ -284,7 +284,7 @@ void showPendingReviewSheet(
                   ],
                 ),
                 Text(
-                  'Kata ini belum diperiksa tim Sambasku. Makna atau terjemahannya bisa saja kurang tepat.',
+                  'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas.',
                   style: theme.typography.sm,
                 ),
                 const Gap(12),

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -48,6 +51,7 @@ class _VoteButtonsState extends State<VoteButtons> {
 
   Future<void> _vote(int value) async {
     if (_disabled) return;
+    unawaited(HapticFeedback.lightImpact());
     setState(() => _inFlight = true);
     try {
       await widget.onVote(value);
@@ -115,7 +119,6 @@ class VoteButtonsSkeleton extends StatelessWidget {
     final w = compact ? 52.0 : 64.0;
     final gap = compact ? 8.0 : 12.0;
     final radius = BorderRadius.circular(8);
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -127,7 +130,7 @@ class VoteButtonsSkeleton extends StatelessWidget {
   }
 }
 
-class _SideButton extends StatelessWidget {
+class _SideButton extends StatefulWidget {
   const _SideButton({
     required this.icon,
     required this.count,
@@ -151,41 +154,74 @@ class _SideButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<_SideButton> createState() => _SideButtonState();
+}
+
+class _SideButtonState extends State<_SideButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _punch = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 180),
+    value: 1.0,
+  );
+
+  @override
+  void didUpdateWidget(covariant _SideButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Punch hanya saat jadi aktif (vote), bukan un-vote atau build pertama.
+    if (widget.active && !oldWidget.active) {
+      if (!MediaQuery.disableAnimationsOf(context)) _punch.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _punch.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final color = active ? activeColor : idleColor;
-
+    final w = widget;
+    final color = w.active ? w.activeColor : w.idleColor;
     return Semantics(
       button: true,
-      label: label,
-      value: '$count',
+      label: w.label,
+      value: '${w.count}',
       // FScaffold/FCard forui tidak menyediakan ancestor Material - bungkus
       // sendiri supaya InkWell (dan ripple-nya) jalan di host mana pun.
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: disabled ? null : onTap,
+          onTap: w.disabled ? null : w.onTap,
           child: Opacity(
-            opacity: disabled ? 0.5 : 1,
+            opacity: w.disabled ? 0.5 : 1,
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: compact ? 10 : 12,
-                vertical: compact ? 6 : 8,
+                horizontal: w.compact ? 10 : 12,
+                vertical: w.compact ? 6 : 8,
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: compact ? 14 : 16, color: color),
-                  const Gap(6),
-                  Text(
-                    '$count',
-                    style: theme.typography.sm.copyWith(
-                      color: color,
-                      fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 1.18, end: 1.0).animate(
+                  CurvedAnimation(parent: _punch, curve: Curves.easeOutCubic),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(w.icon, size: w.compact ? 14 : 16, color: color),
+                    const Gap(6),
+                    Text(
+                      '${w.count}',
+                      style: theme.typography.sm.copyWith(
+                        color: color,
+                        fontWeight:
+                            w.active ? FontWeight.w700 : FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

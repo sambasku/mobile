@@ -43,60 +43,30 @@ class _ExceptionLogPage extends StatelessWidget {
         if (records.isEmpty) {
           return const _EmptyExceptions();
         }
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-          itemCount: records.length,
-          separatorBuilder: (_, _) => const Gap(8),
-          itemBuilder: (context, index) {
-            final record = records[index];
-            return _ExceptionTile(record: record);
-          },
+        return FTileGroup.builder(
+          count: records.length,
+          tileBuilder: (context, index) =>
+              _ExceptionTile(record: records[index]),
         );
       },
     );
   }
 }
 
-class _ExceptionTile extends StatelessWidget {
+class _ExceptionTile extends StatelessWidget with FTileMixin {
   const _ExceptionTile({required this.record});
 
   final ExceptionLogRecord record;
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => _ExceptionDetailPage(record: record),
-            ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                record.message,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Gap(4),
-              Text(
-                _subtitle(record),
-                style: theme.typography.xs.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ],
-          ),
+    return FTile(
+      title: Text(record.message, maxLines: 2, overflow: TextOverflow.ellipsis),
+      subtitle: Text(_subtitle(record)),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => _ExceptionDetailPage(record: record),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'public_profile_dto.freezed.dart';
 part 'public_profile_dto.g.dart';
 
@@ -23,9 +22,7 @@ abstract class PublicProfileDto with _$PublicProfileDto {
 @freezed
 abstract class PublicProfileStatsDto with _$PublicProfileStatsDto {
   const factory PublicProfileStatsDto({
-    @JsonKey(name: 'contributions_approved')
-    @Default(0)
-    int contributionsApproved,
+    @JsonKey(name: 'contributions_approved') @Default(0) int contributionsApproved,
     @JsonKey(name: 'verifications_done') @Default(0) int verificationsDone,
     @JsonKey(name: 'comments_published') @Default(0) int commentsPublished,
   }) = _PublicProfileStatsDto;
@@ -37,6 +34,7 @@ abstract class PublicProfileStatsDto with _$PublicProfileStatsDto {
 @freezed
 abstract class PublicActivityItemDto with _$PublicActivityItemDto {
   const factory PublicActivityItemDto({
+    required String id,
     required String kind,
     @JsonKey(name: 'occurred_at') required String occurredAt,
     @JsonKey(name: 'word_id') String? wordId,
@@ -49,13 +47,49 @@ abstract class PublicActivityItemDto with _$PublicActivityItemDto {
 }
 
 @freezed
+abstract class PublicActivityMetaDto with _$PublicActivityMetaDto {
+  const factory PublicActivityMetaDto({
+    required int limit,
+    @JsonKey(name: 'next_cursor') String? nextCursor,
+    @JsonKey(name: 'has_more') required bool hasMore,
+  }) = _PublicActivityMetaDto;
+
+  factory PublicActivityMetaDto.fromJson(Map<String, dynamic> json) =>
+      _$PublicActivityMetaDtoFromJson(json);
+}
+
+@freezed
 abstract class PublicActivityDto with _$PublicActivityDto {
-  // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   const factory PublicActivityDto({
-    @Default([]) List<PublicActivityItemDto> items,
+    @Default(<PublicActivityItemDto>[]) List<PublicActivityItemDto> items,
+    PublicActivityMetaDto? meta,
   }) = _PublicActivityDto;
 
   factory PublicActivityDto.fromJson(Map<String, dynamic> json) =>
       _$PublicActivityDtoFromJson(json);
+}
+
+@freezed
+abstract class MentionSuggestItemDto with _$MentionSuggestItemDto {
+  const factory MentionSuggestItemDto({
+    required String id,
+    required String username,
+    @JsonKey(name: 'display_name') String? displayName,
+    @JsonKey(name: 'avatar_url') String? avatarUrl,
+  }) = _MentionSuggestItemDto;
+
+  factory MentionSuggestItemDto.fromJson(Map<String, dynamic> json) =>
+      _$MentionSuggestItemDtoFromJson(json);
+}
+
+@freezed
+abstract class MentionSuggestDto with _$MentionSuggestDto {
+  @JsonSerializable(explicitToJson: true)
+  const factory MentionSuggestDto({
+    @Default(<MentionSuggestItemDto>[]) List<MentionSuggestItemDto> items,
+  }) = _MentionSuggestDto;
+
+  factory MentionSuggestDto.fromJson(Map<String, dynamic> json) =>
+      _$MentionSuggestDtoFromJson(json);
 }

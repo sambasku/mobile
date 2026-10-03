@@ -27,7 +27,7 @@ bool isKnownPendingPlaceholderUrl(String url) {
 ///    di-set true oleh parent; widget ini tidak menyimpan state reveal.
 ///
 /// State reveal kekerasan hidup di halaman detail (reset saat ganti kata,
-/// tidak dipersist). Lihat docs/mobile/BLUR_IMAGE_MOBILE.md.
+/// tidak dipersist).
 class WordImageView extends StatelessWidget {
   const WordImageView({
     super.key,

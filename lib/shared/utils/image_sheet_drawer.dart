@@ -202,8 +202,9 @@ Future<void> openCamera(
       source: ImageSource.camera,
       maxWidth: maxWidth,
       maxHeight: maxHeight,
-      // Intermediate JPEG ringan; encode final WebP di compressImageForUpload.
-      imageQuality: imageQuality,
+      // Intermediate hampir lossless; satu-satunya encode lossy di
+      // compressImageForUpload.
+      imageQuality: 100,
     );
     if (picked == null) return;
 
@@ -239,7 +240,7 @@ Future<void> pickImageFromGallery(
       source: ImageSource.gallery,
       maxWidth: maxWidth,
       maxHeight: maxHeight,
-      imageQuality: imageQuality,
+      imageQuality: 100,
     );
     if (picked == null) return;
 
@@ -288,6 +289,9 @@ Future<void> pickImageFromFile(
     }
 
     final persisted = await copyToUniqueTempPath(source);
+    // ponytail: flutter_image_compress memperlakukan min* sebagai batas sisi
+    // pendek, jadi 4000x3000 jadi ~1600x1200 (kamera/galeri sudah di-cap
+    // image_picker). Upgrade: hitung target sisi panjang sebelum compress.
     final compressed = await compressImageForUpload(persisted);
     onSuccess(compressed);
     if (context.mounted) Navigator.of(context).pop();

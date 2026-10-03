@@ -36,10 +36,15 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
     String? displayName,
     String? bio,
+    bool? hasReadContributionGuide,
   }) async {
     try {
       final response = await _remote.updateMyProfile(
-        UpdateMyProfileRequestDto(displayName: displayName, bio: bio),
+        UpdateMyProfileRequestDto(
+          displayName: displayName,
+          bio: bio,
+          hasReadContributionGuide: hasReadContributionGuide,
+        ),
       );
       if (response.success == false || response.data == null) {
         return Either.left(
@@ -62,6 +67,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
         displayName: dto.displayName,
         bio: dto.bio,
         avatarUrl: dto.avatarUrl,
+        hasReadContributionGuide: dto.hasReadContributionGuide,
       );
 
   EditProfileFailure _mapDio(DioException error) {

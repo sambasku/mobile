@@ -21,10 +21,6 @@ kirim kontribusi dari ponsel.
 | Push | Firebase Messaging |
 | Env compile-time | envied (baca `.env`) |
 
-Acuan tetap: `docs/mobile/mobile-base-stack.md` di repo
-[sambasku-docs](https://github.com/iamutaki/sambasku-docs).
-Kontrak API mengikuti `docs/api/*`.
-
 ## Flavor
 
 | Flavor | Logo aset | Host API |
@@ -103,8 +99,5 @@ tag itu melampirkan **APK split per ABI** (bukan AAB). `versionName` dari
 tag, `versionCode` dari Play (max + 1).
 Tidak auto-publish.
 
-Setup Play API: `docs/env/google_play_console/credential.md`.
-Secret GitHub: `PLAY_STORE_SERVICE_ACCOUNT_JSON` (+ `KEYSTORE_*`).
-
-Detail flavor Android/iOS dan launcher icons ada di
-`docs/mobile/mobile-base-stack.md` Section 8.
+Setup Play API: secret GitHub
+`PLAY_STORE_SERVICE_ACCOUNT_JSON` (+ `KEYSTORE_*`).

@@ -2,15 +2,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/activity/domain/entities/feed_activity_item.dart';
 
 void main() {
-  test('lemma berkutip ditandai, sisanya teks biasa', () {
+  test('lemma berkutip ditandai, kutip dibuang, sisanya teks biasa', () {
     expect(splitQuotedLemma('Menandai "kumis" sudah pas'), [
       ('Menandai ', false),
-      ('"kumis"', true),
+      ('kumis', true),
       (' sudah pas', false),
     ]);
     expect(splitQuotedLemma('Membagikan kartu · "lading"'), [
       ('Membagikan kartu · ', false),
-      ('"lading"', true),
+      ('lading', true),
     ]);
   });
 

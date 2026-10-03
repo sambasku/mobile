@@ -8,7 +8,14 @@ abstract interface class UserProfileRepository {
     String username,
   );
 
-  Future<Either<UserProfileFailure, List<PublicActivityItem>>> getActivity(
-    String username,
+  Future<Either<UserProfileFailure, ({List<PublicActivityItem> items, String? nextCursor})>> getActivity(
+    String username, {
+    String? kind,
+    int? limit,
+    String? cursor,
+  });
+
+  Future<Either<UserProfileFailure, List<MentionSuggestion>>> suggestMentions(
+    String query,
   );
 }

@@ -82,10 +82,10 @@ abstract interface class ContributionRepository {
     List<String> categoryIds = const [],
     List<String> usageLabels = const [],
     String? notes,
-    // Ejaan alternatif (variasi penulisan, docs/api/11) - dikirim sebagai
+    // Ejaan alternatif (variasi penulisan) - dikirim sebagai
     // variants[] variant_type 'alternative'.
     List<String> spellingVariants = const [],
-    // Sinonim/antonim inline Form B (docs/api/04).
+    // Sinonim/antonim inline Form B .
     List<SubmitWordRelation> relatedWords = const [],
     // Bahasa target terjemahan = Indonesia (IDN), di-resolve dari page.
     required String translationLanguageId,

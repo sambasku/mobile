@@ -20,36 +20,45 @@ import 'package:sambasku_mobile/features/notification/domain/entities/inbox_noti
 import 'package:sambasku_mobile/features/notification/domain/failures/notification_failure.dart';
 import 'package:sambasku_mobile/features/notification/domain/repositories/notification_repository.dart';
 import 'package:sambasku_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
+import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+const _profile = PublicProfile(
+  username: 'budi',
+  displayName: 'Budi',
+  role: 'reviewer',
+  isVerifier: true,
+  bio: 'Bio percobaan',
+  joinedAt: '2026-08-01T00:00:00.000Z',
+  contributionsApproved: 2,
+  verificationsDone: 5,
+  commentsPublished: 1,
+);
 
 class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> login({
     required String email,
     required String password,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
-
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, void>> register({
@@ -59,8 +68,7 @@ class _FakeAuthRepository implements AuthRepository {
     required String password,
     required String confirmPassword,
     required List<({String documentType, String documentVersion})> consents,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, void>> logout() async => Either.right(null);
@@ -69,8 +77,7 @@ class _FakeAuthRepository implements AuthRepository {
   Future<Either<AuthFailure, AuthSession>> verifyEmail({
     required String email,
     required String code,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, void>> resendOtp({required String email}) async =>
@@ -79,8 +86,7 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, String>> forgotPassword({
     required String email,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, String>> resetPassword({
@@ -88,8 +94,7 @@ class _FakeAuthRepository implements AuthRepository {
     String? email,
     String? code,
     required String newPassword,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 }
 
 class _FakeNotificationRepository implements NotificationRepository {
@@ -97,8 +102,7 @@ class _FakeNotificationRepository implements NotificationRepository {
   Future<Either<NotificationFailure, InboxNotificationPage>> listMine({
     int limit = 20,
     String? cursor,
-  }) async =>
-      Either.right(const InboxNotificationPage(items: []));
+  }) async => Either.right(const InboxNotificationPage(items: []));
 
   @override
   Future<Either<NotificationFailure, int>> unreadCount() async =>
@@ -120,11 +124,10 @@ class _ThrowingAdapter implements HttpClientAdapter {
     RequestOptions options,
     Stream<Uint8List>? requestStream,
     Future<void>? cancelFuture,
-  ) async =>
-      throw DioException.connectionError(
-        requestOptions: options,
-        reason: 'mock offline',
-      );
+  ) async => throw DioException.connectionError(
+    requestOptions: options,
+    reason: 'mock offline',
+  );
 
   @override
   void close({bool force = false}) {}
@@ -140,6 +143,9 @@ void main() {
     WidgetTester tester, {
     Map<String, Object> prefs = const {},
     Map<String, String> secure = const {},
+    // ponytail: List<Object> + cast dynamic karena Override tidak diekspor
+    // publik dari package:flutter_riverpod (hanya lewat riverpod/misc.dart).
+    List<Object> extraOverrides = const [],
   }) async {
     // Viewport default 800x600: tile Notifikasi + menu tema mendorong
     // Keluar ke luar cacheExtent. Scrollable.first lalu kena nested
@@ -155,10 +161,7 @@ void main() {
     final router = GoRouter(
       initialLocation: '/',
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => const ProfilePage(),
-        ),
+        GoRoute(path: '/', builder: (context, state) => const ProfilePage()),
         GoRoute(
           path: '/login',
           builder: (context, state) => const Text('halaman login'),
@@ -174,6 +177,7 @@ void main() {
           notificationRepositoryProvider.overrideWithValue(
             _FakeNotificationRepository(),
           ),
+          ...extraOverrides.cast<dynamic>(),
         ],
         child: MaterialApp.router(
           theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
@@ -194,17 +198,46 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
   }
 
-  testWidgets('tamu - menampilkan ajakan masuk dan daftar tanpa tombol Keluar', (
-    tester,
-  ) async {
-    await pumpProfile(tester);
+  testWidgets(
+    'tamu - menampilkan ajakan masuk dan daftar tanpa tombol Keluar',
+    (tester) async {
+      await pumpProfile(tester);
 
-    expect(find.text('Belum masuk'), findsOneWidget);
-    expect(find.text('Masuk / Login'), findsOneWidget);
-    expect(find.text('Daftar'), findsOneWidget);
-    expect(find.text('Laporkan Masalah'), findsOneWidget);
-    expect(find.text('Keluar'), findsNothing);
-  });
+      expect(find.text('Belum masuk'), findsOneWidget);
+      expect(find.text('Masuk / Login'), findsOneWidget);
+      expect(find.text('Daftar'), findsOneWidget);
+      expect(find.text('Laporkan Masalah'), findsOneWidget);
+      expect(find.text('Keluar'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'sudah login - header kaya: bio, stat, verifikator, tanpa label role',
+    (tester) async {
+      await pumpProfile(
+        tester,
+        prefs: {
+          'isAuth': true,
+          'sessionUsername': 'budi',
+          'sessionRole': 'reviewer',
+        },
+        secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
+        extraOverrides: [
+          publicProfileProvider('budi').overrideWith((ref) async => _profile),
+        ],
+      );
+
+      expect(find.text('@budi'), findsOneWidget);
+      expect(find.text('Bio percobaan'), findsOneWidget);
+      expect(find.textContaining('kontribusi'), findsWidgets);
+      expect(find.text('Verifikator'), findsOneWidget);
+      // Label role lama tidak boleh tampil lagi.
+      expect(find.text('Reviewer'), findsNothing);
+      expect(find.text('Kontributor'), findsNothing);
+      // Desain baru: edit profil dari profil publik (tap header), bukan tile.
+      expect(find.text('Edit profil'), findsNothing);
+    },
+  );
 
   testWidgets('sudah login - tombol Keluar tampil dan logout ke /login', (
     tester,
@@ -217,10 +250,7 @@ void main() {
         'sessionUsername': 'budi',
         'sessionRole': 'contributor',
       },
-      secure: {
-        'accessToken': 'test-access',
-        'refreshToken': 'test-refresh',
-      },
+      secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
     );
 
     expect(find.text('budi'), findsOneWidget);
@@ -240,7 +270,9 @@ void main() {
     expect(find.text('Keluar'), findsNothing);
   });
 
-  testWidgets('sudah login - tile Vote dan Komentar membuka route', (tester) async {
+  testWidgets('sudah login - tile Vote dan Komentar membuka route', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -260,23 +292,40 @@ void main() {
       initialLocation: '/',
       routes: [
         GoRoute(path: '/', builder: (context, state) => const ProfilePage()),
-        GoRoute(path: '/votes', builder: (context, state) => const Text('halaman vote')),
+        GoRoute(
+          path: '/votes',
+          builder: (context, state) => const Text('halaman vote'),
+        ),
         GoRoute(
           path: '/comments',
           builder: (context, state) => const Text('halaman komentar'),
         ),
         GoRoute(path: '/login', builder: (context, state) => const SizedBox()),
-        GoRoute(path: '/contributions', builder: (context, state) => const SizedBox()),
-        GoRoute(path: '/bookmarks', builder: (context, state) => const SizedBox()),
-        GoRoute(path: '/report-bug', builder: (context, state) => const SizedBox()),
-        GoRoute(path: '/notifications', builder: (context, state) => const SizedBox()),
+        GoRoute(
+          path: '/contributions',
+          builder: (context, state) => const SizedBox(),
+        ),
+        GoRoute(
+          path: '/bookmarks',
+          builder: (context, state) => const SizedBox(),
+        ),
+        GoRoute(
+          path: '/report-bug',
+          builder: (context, state) => const SizedBox(),
+        ),
+        GoRoute(
+          path: '/notifications',
+          builder: (context, state) => const SizedBox(),
+        ),
       ],
     );
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          dioProvider.overrideWithValue(Dio()..httpClientAdapter = _ThrowingAdapter()),
+          dioProvider.overrideWithValue(
+            Dio()..httpClientAdapter = _ThrowingAdapter(),
+          ),
           authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
           authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
           notificationRepositoryProvider.overrideWithValue(
@@ -288,10 +337,8 @@ void main() {
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
-          builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
-            child: child!,
-          ),
+          builder: (context, child) =>
+              FTheme(data: FThemes.zinc.light.touch, child: child!),
         ),
       ),
     );

@@ -75,8 +75,8 @@ class DeleteAccountPage extends HookConsumerWidget {
         children: [
           Text(
             'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token '
-            'notifikasi akan dihapus. Entri kamus yang sudah tayang tetap ada '
-            'tanpa namamu.',
+            'notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, '
+            'tapi tanpa namamu.',
             style: context.theme.typography.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),

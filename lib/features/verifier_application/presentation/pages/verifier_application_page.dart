@@ -283,7 +283,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     ),
                     const Gap(8),
                     Text(
-                      'Selamat, Anda jadi verifikator. Masuk kembali agar peran Verifikator aktif di aplikasi.',
+                      'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.',
                       textAlign: .center,
                       style: theme.typography.sm.copyWith(
                         color: theme.colors.mutedForeground,
@@ -300,7 +300,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   const FAlert(
                     title: Text('Pengajuan sedang ditinjau'),
                     subtitle: Text(
-                      'Tim admin masih meninjau data Anda. Anda akan mendapat notifikasi setelah ada keputusan.',
+                      'Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.',
                     ),
                   ),
                 ] else ...[

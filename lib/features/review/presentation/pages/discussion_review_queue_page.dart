@@ -3,10 +3,12 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../discussion/domain/discussion_models.dart';
@@ -14,6 +16,9 @@ import '../../review_router.dart';
 import '../providers/discussion_review_providers.dart';
 
 /// Antrean diskusi pending_review untuk verifikator.
+///
+/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// ekor, tanpa tombol "Muat lagi".
 class DiscussionReviewQueuePage extends ConsumerWidget {
   const DiscussionReviewQueuePage({super.key});
 
@@ -62,14 +67,37 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
   }
 }
 
-class _QueueList extends ConsumerWidget {
+class _QueueList extends ConsumerStatefulWidget {
   const _QueueList({required this.state});
 
   final DiscussionReviewListState state;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_QueueList> createState() => _QueueListState();
+}
+
+class _QueueListState extends ConsumerState<_QueueList> {
+  late final PagingController<int, DiscussionItem> _pagingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController = createPagingController<DiscussionItem>(
+      loadMore: () =>
+          ref.read(discussionReviewListProvider.notifier).loadMore(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = context.theme;
+    final state = widget.state;
 
     Future<void> refresh() async {
       ref.invalidate(discussionReviewListProvider);
@@ -101,42 +129,50 @@ class _QueueList extends ConsumerWidget {
       );
     }
 
+    // Sinkron snapshot list Riverpod -> PagingController (autoload di ekor
+    // list, tanpa tombol "Muat lagi").
+    _pagingController.value = buildPagingState<DiscussionItem>(
+      items: state.items,
+      hasMore: state.hasMore,
+    );
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: refresh,
-              child: FTileGroup.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                count: state.items.length,
-                tileBuilder: (context, index) =>
-                    _DiscussionTile(item: state.items[index]),
+      child: RefreshIndicator(
+        onRefresh: refresh,
+        child: PagedListView<int, DiscussionItem>.separated(
+          state: _pagingController.value,
+          fetchNextPage: _pagingController.fetchNextPage,
+          physics: const AlwaysScrollableScrollPhysics(),
+          separatorBuilder: (_, _) => const Divider(height: 1),
+          builderDelegate: PagedChildBuilderDelegate<DiscussionItem>(
+            itemBuilder: (context, item, index) => _DiscussionTile(item: item),
+            newPageProgressIndicatorBuilder: (context) => const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(child: FCircularProgress()),
+            ),
+            newPageErrorIndicatorBuilder: (context) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Gagal memuat halaman berikutnya',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  const Gap(10),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: _pagingController.fetchNextPage,
+                    child: const Text('Coba lagi'),
+                  ),
+                ],
               ),
             ),
           ),
-          if (state.hasMore)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: state.isLoadingMore
-                      ? null
-                      : () => ref
-                            .read(discussionReviewListProvider.notifier)
-                            .loadMore(),
-                  prefix: state.isLoadingMore
-                      ? const FCircularProgress()
-                      : null,
-                  child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lagi'),
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -281,7 +284,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
               canRewind: state.canRewind,
               onDisagree: _rewinding
                   ? null
-                  : () => _cast(
+                  : () => _castBar(
                         context,
                         ref,
                         item: item,
@@ -289,7 +292,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       ),
               onSkip: _rewinding
                   ? null
-                  : () => _cast(
+                  : () => _castBar(
                         context,
                         ref,
                         item: item,
@@ -297,7 +300,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       ),
               onAgree: _rewinding
                   ? null
-                  : () => _cast(
+                  : () => _castBar(
                         context,
                         ref,
                         item: item,
@@ -342,6 +345,19 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
       context: root,
       title: const Text('Penilaian dari detail tersimpan'),
     );
+  }
+
+  /// Tap action bar: getar dulu, lalu jalankan cast yang sama dengan swipe.
+  /// Bukan haptic di dalam [_cast]: jalur swipe sudah dapat getar di
+  /// [SwipeDecisionCard._commit] - dua-duanya jalan = getar ganda.
+  void _castBar(
+    BuildContext context,
+    WidgetRef ref, {
+    required VoteDeckItem item,
+    required VoteDeckSwipeDirection direction,
+  }) {
+    unawaited(HapticFeedback.lightImpact());
+    _cast(context, ref, item: item, direction: direction);
   }
 
   Future<bool> _cast(

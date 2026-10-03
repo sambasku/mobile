@@ -22,10 +22,9 @@ class ExploreMapPoster extends StatelessWidget {
 
   /// Warna dasar gradient, dipakai juga sebagai warna load native MapLibre
   /// supaya frame pertama platform view tidak kedip beda warna.
-  static Color baseColor(Brightness brightness) =>
-      brightness == Brightness.dark
-          ? const Color(0xFF1C1917)
-          : const Color(0xFFE0F2FE);
+  static Color baseColor(Brightness brightness) => brightness == Brightness.dark
+      ? const Color(0xFF1C1917)
+      : const Color(0xFFE0F2FE);
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +100,7 @@ class ExploreMapPoster extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: child,
-      ),
+      child: InkWell(onTap: onTap, child: child),
     );
   }
 }

@@ -3,8 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
@@ -14,6 +12,8 @@ import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../providers/comment_providers.dart';
+import '../providers/mention_suggest_providers.dart';
+import '../widgets/mention_suggest_overlay.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 
@@ -47,14 +47,10 @@ class WordCommentEntryBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(commentListControllerProvider(wordId));
-    final state = async.value;
-    final count = state?.items.length ?? 0;
-    final label = count == 0
-        ? 'Komentar'
-        : state!.hasMore
-            ? 'Komentar · $count+'
-            : 'Komentar · $count';
+    final count = async.value?.items.length ?? 0;
 
+    // FScaffold Forui tidak menyediakan ancestor Material - bungkus sendiri
+    // agar InkWell (splash) tidak throw "No Material widget found".
     return Material(
       color: theme.colors.background,
       child: SafeArea(
@@ -68,25 +64,14 @@ class WordCommentEntryBar extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Row(
               children: [
-                Icon(
-                  FLucideIcons.messageSquare,
-                  size: 18,
-                  color: theme.colors.foreground,
+                Icon(FLucideIcons.messageSquare, size: 18, color: theme.colors.foreground),
+                const Gap(8),
+                Text(
+                  '$count Komentar',
+                  style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Icon(
-                  FLucideIcons.chevronUp,
-                  size: 16,
-                  color: theme.colors.mutedForeground,
-                ),
+                Icon(FLucideIcons.chevronUp, size: 16, color: theme.colors.mutedForeground),
               ],
             ),
           ),
@@ -96,34 +81,49 @@ class WordCommentEntryBar extends ConsumerWidget {
   }
 }
 
-/// Thread komentar di dalam sheet (09-api-comment.md).
-/// Layout baris/composer: [ThreadMessageRow] / [ThreadComposer] (shared).
+/// (09-api-comment.md).
+/// baris/composer: [ThreadMessageRow] [ThreadComposer]
 class WordCommentsSection extends ConsumerStatefulWidget {
   const WordCommentsSection({super.key, required this.wordId});
 
   final String wordId;
 
   @override
-  ConsumerState<WordCommentsSection> createState() =>
-      _WordCommentsSectionState();
+  ConsumerState<WordCommentsSection> createState() => _WordCommentsSectionState();
 }
 
 class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
-  late final TextEditingController _bodyCtrl;
+  final _bodyCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _bodyCtrl = TextEditingController();
+    _bodyCtrl.addListener(_onBodyChanged);
   }
 
   @override
   void dispose() {
+    _bodyCtrl.removeListener(_onBodyChanged);
     _bodyCtrl.dispose();
     super.dispose();
   }
 
-  bool _isAuth() => ref.read(authStatusProvider).value?.isAuth ?? false;
+  void _onBodyChanged() {
+    ref.read(mentionSuggestControllerProvider.notifier).onTextChanged(
+      _bodyCtrl.text,
+      _bodyCtrl.selection.baseOffset,
+    );
+  }
+
+  Widget _buildMentionSuggest(BuildContext context) {
+    return MentionSuggestOverlay(
+      onSelect: (username) => insertIntoComposer(_bodyCtrl, username),
+    );
+  }
+
+  bool _isAuth() {
+    return ref.read(authStatusProvider).value?.isAuth ?? false;
+  }
 
   void _promptLogin() {
     showFToast(
@@ -134,7 +134,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     context.push('/login');
   }
 
-  Future<void> _sendComment() async {
+  Future<void> _submitText() async {
     if (!_isAuth()) {
       _promptLogin();
       return;
@@ -168,8 +168,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     await showRecordThreadAudioSheet(
       context,
       title: 'Rekam komentar suara',
-      subtitle:
-          'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
+      subtitle: 'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
       submitLabel: 'Kirim rekaman',
       onSubmit: ({required audioFile, required durationMs}) async {
         final failure = await ref
@@ -209,14 +208,9 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Hapus komentar?'),
-        content: const Text(
-          'Komentar akan ditandai sebagai dihapus oleh penulis.',
-        ),
+        content: const Text('Komentar akan ditandai sebagai dihapus oleh penulis.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Batal'),
-          ),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Batal')),
           FButton(
             variant: FButtonVariant.destructive,
             onPress: () => Navigator.of(ctx).pop(true),
@@ -225,8 +219,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
         ],
       ),
     );
-    if (confirmed != true || !mounted) return;
-
+    if (confirmed != true) return;
     final failure = await ref
         .read(commentListControllerProvider(widget.wordId).notifier)
         .delete(comment);
@@ -234,9 +227,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     showFToast(
       context: context,
       title: Text(failure == null ? 'Komentar dihapus' : failure.message),
-      variant: failure == null
-          ? FToastVariant.primary
-          : FToastVariant.destructive,
+      variant: failure == null ? FToastVariant.primary : FToastVariant.destructive,
     );
   }
 
@@ -244,41 +235,34 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider).value;
-    final isAuth = auth?.isAuth ?? false;
-    final listState = ref
-        .watch(commentListControllerProvider(widget.wordId))
-        .value;
+    final async = ref.watch(commentListControllerProvider(widget.wordId));
+    final listState = async.value;
     final count = listState?.items.length ?? 0;
-    final title = count == 0
-        ? 'Komentar'
-        : (listState?.hasMore ?? false)
-            ? 'Komentar · $count+'
-            : 'Komentar · $count';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Gap(8),
+        // Drag handle terpisah (bukan dalam container tinggi tetap - IconButton
+        // butuh min 48px, paksa container 36px overflow).
         Center(
           child: Container(
             width: 36,
             height: 4,
+            margin: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: theme.colors.border,
+              color: theme.colors.mutedForeground,
               borderRadius: BorderRadius.circular(999),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 8, 8),
+          padding: const EdgeInsets.fromLTRB(16, 4, 8, 8),
           child: Row(
             children: [
               Expanded(
                 child: Text(
-                  title,
-                  style: theme.typography.md.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  'Komentar ($count)',
+                  style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               IconButton(
@@ -291,15 +275,11 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: ref.watch(commentListControllerProvider(widget.wordId)).when(
+            child: async.when(
               loading: () => const _CommentsSkeleton(),
               error: (error, _) => _CommentsError(
-                message: error is CommentFailure
-                    ? error.message
-                    : 'Gagal memuat komentar',
-                onRetry: () => ref.invalidate(
-                  commentListControllerProvider(widget.wordId),
-                ),
+                message: error is CommentFailure ? error.message : 'Gagal memuat komentar',
+                onRetry: () => ref.invalidate(commentListControllerProvider(widget.wordId)),
               ),
               data: (state) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,9 +287,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                   if (state.items.isEmpty)
                     Text(
                       'Belum ada komentar.',
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
-                      ),
+                      style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
                     )
                   else
                     ...state.items.map((c) {
@@ -335,6 +313,8 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                         onUsernameTap: isLinkablePublicUsername(c.username)
                             ? () => UserProfileRouter.open(context, c.username!)
                             : null,
+                        onMentionTap: (mentionedUsername) =>
+                            UserProfileRouter.open(context, mentionedUsername),
                         media: c.isPublished && c.hasAudio
                             ? ThreadAudioPlayer(
                                 url: c.audioUrl!,
@@ -352,30 +332,23 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                             : null,
                       );
                     }),
-                  if (state.hasMore) ...[
-                    const Gap(4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: FButton(
-                        variant: FButtonVariant.ghost,
-                        onPress: state.isLoadingMore
-                            ? null
-                            : () => ref
-                                  .read(
-                                    commentListControllerProvider(
-                                      widget.wordId,
-                                    ).notifier,
-                                  )
+                  if (state.hasMore)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: FButton(
+                          variant: FButtonVariant.ghost,
+                          onPress: state.isLoadingMore
+                              ? null
+                              : () => ref
+                                  .read(commentListControllerProvider(widget.wordId).notifier)
                                   .loadMore(),
-                        prefix: state.isLoadingMore
-                            ? const FCircularProgress()
-                            : null,
-                        child: Text(
-                          state.isLoadingMore ? 'Memuat...' : 'Muat lainnya',
+                          prefix: state.isLoadingMore ? const FCircularProgress() : null,
+                          child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lainnya'),
                         ),
                       ),
                     ),
-                  ],
                 ],
               ),
             ),
@@ -383,7 +356,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: !isAuth
+          child: !_isAuth()
               ? ThreadLoginPrompt(
                   message: 'Masuk untuk menulis komentar',
                   onLogin: _promptLogin,
@@ -391,8 +364,9 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
               : ThreadComposer(
                   controller: _bodyCtrl,
                   isSubmitting: listState?.isSubmitting ?? false,
-                  onSubmit: _sendComment,
+                  onSubmit: _submitText,
                   onRecordAudio: _recordAudioComment,
+                  suggestBuilder: _buildMentionSuggest,
                 ),
         ),
       ],
@@ -405,25 +379,20 @@ class _CommentsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Skeletonizer(
-      enabled: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (var i = 0; i < 2; i++) ...[
-            Text('Nama pengguna  2h', style: theme.typography.sm),
-            const Gap(3),
-            Text(
-              'isi komentar skeleton beberapa kata',
-              style: theme.typography.sm,
-            ),
-            const Gap(4),
-            const VoteButtonsSkeleton(compact: true),
-            const Gap(10),
-          ],
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < 2; i++)
+          ThreadMessageRow(
+            username: 'username',
+            displayName: 'Nama Pengguna',
+            avatarUrl: null,
+            isVerifier: false,
+            body: 'Cuplikan komentar contoh untuk skeleton.',
+            dateLabel: 'baru saja',
+            footer: const VoteButtonsSkeleton(compact: true),
+          ),
+      ],
     );
   }
 }

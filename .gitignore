@@ -44,3 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .env
+
+android/app/pepk.jar
+android/app/sign.zip

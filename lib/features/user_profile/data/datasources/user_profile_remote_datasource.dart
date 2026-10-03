@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-
 import '../../../../core/models/api_response.dart';
 import '../models/public_profile_dto.dart';
 
@@ -22,6 +21,15 @@ abstract interface class UserProfileRemoteDatasource {
 
   @GET('/api/v1/users/{username}/activity')
   Future<ApiResponse<PublicActivityDto>> getActivity(
-    @Path('username') String username,
+    @Path('username') String username, {
+    @Query('kind') String? kind,
+    @Query('limit') int? limit,
+    @Query('cursor') String? cursor,
+  });
+
+  /// GET /api/v1/users/suggest?q= - autocomplete mention @username (publik).
+  @GET('/api/v1/users/suggest')
+  Future<ApiResponse<MentionSuggestDto>> suggestMentions(
+    @Query('q') String query,
   );
 }

@@ -12,6 +12,11 @@ abstract final class SambasMapConfig {
   /// Zoom layar penuh: sedikit lebih dekat untuk dijelajahi.
   static const double fullscreenZoom = 11.0;
 
+  /// Zoom saat fokus satu Place (dari detail "Lihat di peta"): level jalan.
+  /// Tempat di kompleks keraton cuma berjarak sekitar 90 m; di bawah 16 pin
+  /// tetangga jatuh di bawah label.
+  static const double placeZoom = 16.5;
+
   static const CameraPosition heroCamera = CameraPosition(
     target: center,
     zoom: heroZoom,

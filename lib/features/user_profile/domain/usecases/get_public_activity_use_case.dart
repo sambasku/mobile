@@ -9,8 +9,16 @@ class GetPublicActivityUseCase {
 
   final UserProfileRepository _repository;
 
-  Future<Either<UserProfileFailure, List<PublicActivityItem>>> call(
-    String username,
-  ) =>
-      _repository.getActivity(username);
+  Future<Either<UserProfileFailure, ({List<PublicActivityItem> items, String? nextCursor})>> call(
+    String username, {
+    String? kind,
+    int? limit,
+    String? cursor,
+  }) =>
+      _repository.getActivity(
+        username,
+        kind: kind,
+        limit: limit,
+        cursor: cursor,
+      );
 }

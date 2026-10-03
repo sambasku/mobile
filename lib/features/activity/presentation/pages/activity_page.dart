@@ -9,19 +9,29 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
+import '../../../../core/utils/tabfreeze_log.dart';
 import '../../../search_miss/search_miss_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
+import '../providers/contribution_guide_providers.dart';
+import '../widgets/contribution_guide_sheet.dart';
 
 /// Tab KONTRIBUSI: menu usul + deck nilai kata.
 ///
 /// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
 /// bentrok dengan `CustomScrollView` / pull-to-refresh.
-class ActivityPage extends ConsumerWidget {
+class ActivityPage extends ConsumerStatefulWidget {
   const ActivityPage({super.key});
 
-  Future<void> _refresh(WidgetRef ref) async {
+  @override
+  ConsumerState<ActivityPage> createState() => _ActivityPageState();
+}
+
+class _ActivityPageState extends ConsumerState<ActivityPage> {
+  bool _guideChecked = false;
+
+  Future<void> _refresh() async {
     await Future.wait([
       ref.read(voteDeckControllerProvider.notifier).refresh(),
       ref.refresh(voteDeckGuestSamplesProvider.future),
@@ -29,8 +39,14 @@ class ActivityPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = context.theme;
+
+    // Guide sekali di kunjungan pertama: cek unread pasca frame pertama.
+    if (!_guideChecked) {
+      _guideChecked = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowGuide());
+    }
 
     return Column(
       children: [
@@ -42,7 +58,7 @@ class ActivityPage extends ConsumerWidget {
                 FLucideIcons.refreshCw,
                 size: kHeaderActionIconSize,
               ),
-              onPress: () => _refresh(ref),
+              onPress: _refresh,
             ),
             const ThemeToggleHeaderAction(),
           ],
@@ -62,6 +78,16 @@ class ActivityPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  /// Tampilkan guide hanya jika unread. Guard sesi app: maks sekali per
+  /// sesi meski user bolak-balik tab. Persist hanya lewat tap "Mengerti".
+  Future<void> _maybeShowGuide() async {
+    final unread = await ref.read(contributionGuideUnreadProvider.future);
+    if (!mounted || !unread) return;
+    await showContributionGuideSheet(context);
+    if (!mounted) return;
+    ref.invalidate(contributionGuideUnreadProvider);
   }
 }
 
@@ -129,8 +155,12 @@ class _ContributeMenu extends StatelessWidget {
 
   final FThemeData theme;
 
-  void _open(BuildContext context) {
-    showModalBottomSheet<void>(
+  Future<void> _open(BuildContext context) {
+    tfLog('sheet open');
+    // Single-flight: tile masih bisa di-tap saat animasi pop (~250ms);
+    // tanpa ini tap kedua mempop route yang baru saja di-push.
+    var handled = false;
+    return showModalBottomSheet<String>(
       context: context,
       useSafeArea: true,
       // Navigator tab ada di dalam padding shell (childPad): tanpa root,
@@ -139,9 +169,15 @@ class _ContributeMenu extends StatelessWidget {
       backgroundColor: theme.colors.background,
       clipBehavior: Clip.antiAlias,
       builder: (sheetContext) {
+        // Jangan push dari dalam sheet: pop + push di navigator root yang
+        // sama saling balapan (route baru bisa terpop / barrier desync =
+        // semua tap tertelan). Path jadi pop result; push jalan setelah
+        // sheet benar-benar tertutup.
         void go(String path) {
-          Navigator.of(sheetContext).pop();
-          context.push(path);
+          if (handled) return;
+          handled = true;
+          tfLog('sheet pick $path');
+          Navigator.of(sheetContext).pop(path);
         }
 
         FTile tile(IconData icon, String title, String subtitle, VoidCallback onPress) => FTile(
@@ -174,7 +210,7 @@ class _ContributeMenu extends StatelessWidget {
                 tile(
                   FLucideIcons.languages,
                   'Ruang diskusi',
-                  'Bahas kata bersama warga',
+                  'Ngobrol bareng warga di Ruang Diskusi',
                   () => go(DiscussionRouter.feed.path),
                 ),
               ],
@@ -182,7 +218,12 @@ class _ContributeMenu extends StatelessWidget {
           ),
         );
       },
-    );
+    ).then((path) {
+      tfLog('sheet dismissed path=$path');
+      if (path case final p?) {
+        if (context.mounted) context.push(p);
+      }
+    });
   }
 
   @override

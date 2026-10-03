@@ -20,12 +20,8 @@ class ExploreMapHero extends StatelessWidget {
   final double height;
 
   void _openPetaAkses(BuildContext context, {required String mode}) {
-    unawaited(
-      AnalyticsService.instance.logMapOpen(entry: 'hero', mode: mode),
-    );
-    context.push(
-      ExploreRouter.category.path.replaceFirst(':id', 'peta-akses'),
-    );
+    unawaited(AnalyticsService.instance.logMapOpen(entry: 'hero', mode: mode));
+    context.push(ExploreRouter.category.path.replaceFirst(':id', 'peta-akses'));
   }
 
   @override
@@ -45,8 +41,7 @@ class ExploreMapHero extends StatelessWidget {
               initialCameraPosition: SambasMapConfig.heroCamera,
               interactive: false,
               analyticsEntry: 'hero',
-              onFallbackTap: () =>
-                  _openPetaAkses(context, mode: 'poster'),
+              onFallbackTap: () => _openPetaAkses(context, mode: 'poster'),
             ),
             // Gradient agar teks overlay terbaca di atas tiles.
             Positioned(

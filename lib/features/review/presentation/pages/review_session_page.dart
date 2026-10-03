@@ -199,7 +199,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     );
     ref.read(reviewSubmitQueueProvider.notifier).enqueueApprove(id);
     // Jangan await: swipe harus return segera; advance sync di hot path.
-    _afterDecision('Usulan disetujui.', id);
+    _afterDecision('Usulan disetujui', id);
     return true;
   }
 
@@ -217,7 +217,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
           id,
           comment: comment,
         );
-    _afterDecision('Usulan ditolak.', id);
+    _afterDecision('Usulan ditolak', id);
     return true;
   }
 
@@ -282,7 +282,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     setState(() => _correctMode = false);
     showFToast(
       context: context,
-      title: const Text('Kartu sebelumnya dikembalikan.'),
+      title: const Text('Kartu sebelumnya dikembalikan'),
     );
   }
 

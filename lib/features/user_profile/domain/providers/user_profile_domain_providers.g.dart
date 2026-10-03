@@ -104,3 +104,51 @@ final class GetPublicActivityUseCaseProvider
 
 String _$getPublicActivityUseCaseHash() =>
     r'6cbc5534238c40c21090a36382c39415c98c59c1';
+
+@ProviderFor(suggestMentionsUseCase)
+final suggestMentionsUseCaseProvider = SuggestMentionsUseCaseProvider._();
+
+final class SuggestMentionsUseCaseProvider
+    extends
+        $FunctionalProvider<
+          SuggestMentionsUseCase,
+          SuggestMentionsUseCase,
+          SuggestMentionsUseCase
+        >
+    with $Provider<SuggestMentionsUseCase> {
+  SuggestMentionsUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'suggestMentionsUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$suggestMentionsUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<SuggestMentionsUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SuggestMentionsUseCase create(Ref ref) {
+    return suggestMentionsUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SuggestMentionsUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SuggestMentionsUseCase>(value),
+    );
+  }
+}
+
+String _$suggestMentionsUseCaseHash() =>
+    r'f97a3e4e21a7432d27c15e20d56ff19b47cbcaf7';
