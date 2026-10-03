@@ -12,21 +12,21 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
-import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../../shared/widgets/profile_stat_inline.dart';
+import '../../../../shared/widgets/small_button.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
+import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
-import '../../../dictionary/dictionary_router.dart';
 import '../../../profile/data/avatar_upload_service.dart';
 import '../../../profile/presentation/crop_profile_photo.dart';
-import '../../../profile/presentation/pages/profile_page.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
+import '../../domain/public_activity_mapper.dart';
 import '../providers/user_profile_providers.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
@@ -70,31 +70,36 @@ class PublicProfilePage extends HookConsumerWidget {
 
     // Profil sendiri: sync sesi hanya jika beda dari yang sudah di state
     // (hindari rebuild IndexedStack saat animasi back).
-    useEffect(() {
-      final profile = async.asData?.value;
-      if (profile == null || !isOwnProfile) return null;
-      final session = me;
-      final sameUsername =
-          session.username?.toLowerCase() == profile.username.toLowerCase();
-      final sameDisplay =
-          (session.displayName ?? '') == (profile.displayName);
-      final sameAvatar =
-          (session.avatarUrl ?? '') == (profile.avatarUrl ?? '');
-      if (sameUsername && sameDisplay && sameAvatar) return null;
-      unawaited(
-        ref.read(authStatusProvider.notifier).applySessionIdentity(
-              username: profile.username,
-              displayName: profile.displayName,
-              avatarUrl: profile.avatarUrl,
-            ),
-      );
-      return null;
-    }, [
-      async.asData?.value.username,
-      async.asData?.value.displayName,
-      async.asData?.value.avatarUrl,
-      isOwnProfile,
-    ]);
+    useEffect(
+      () {
+        final profile = async.asData?.value;
+        if (profile == null || !isOwnProfile) return null;
+        final session = me;
+        final sameUsername =
+            session.username?.toLowerCase() == profile.username.toLowerCase();
+        final sameDisplay =
+            (session.displayName ?? '') == (profile.displayName);
+        final sameAvatar =
+            (session.avatarUrl ?? '') == (profile.avatarUrl ?? '');
+        if (sameUsername && sameDisplay && sameAvatar) return null;
+        unawaited(
+          ref
+              .read(authStatusProvider.notifier)
+              .applySessionIdentity(
+                username: profile.username,
+                displayName: profile.displayName,
+                avatarUrl: profile.avatarUrl,
+              ),
+        );
+        return null;
+      },
+      [
+        async.asData?.value.username,
+        async.asData?.value.displayName,
+        async.asData?.value.avatarUrl,
+        isOwnProfile,
+      ],
+    );
 
     Future<void> refresh() async {
       ref.invalidate(publicProfileProvider(username));
@@ -184,16 +189,14 @@ class _ProfileBody extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final roleLabel = ProfilePage.roleLabels[profile.role] ?? profile.role;
     final joined = formatDateTimeIso(profile.joinedAt);
     // Prefer avatar dari sesi setelah upload lokal (sebelum invalidate selesai).
     final sessionAvatar = isOwnProfile
         ? ref.watch(authStatusProvider).value?.avatarUrl
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
-    final canPreviewAvatar = !isOwnProfile &&
-        avatarSrc != null &&
-        avatarSrc.trim().isNotEmpty;
+    final canPreviewAvatar =
+        !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
 
     return RefreshIndicator(
@@ -202,221 +205,149 @@ class _ProfileBody extends HookConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
         children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Semantics(
-              button: (isOwnProfile && !uploadingAvatar.value) || canPreviewAvatar,
-              label: isOwnProfile
-                  ? 'Ganti foto profil'
-                  : canPreviewAvatar
-                      ? 'Lihat foto profil'
-                      : 'Foto profil',
-              child: GestureDetector(
-                onTap: isOwnProfile && !uploadingAvatar.value
-                    ? () => _pickAndUploadAvatar(
-                          context,
-                          ref,
-                          uploadingAvatar,
-                        )
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                button:
+                    (isOwnProfile && !uploadingAvatar.value) ||
+                    canPreviewAvatar,
+                label: isOwnProfile
+                    ? 'Ganti foto profil'
                     : canPreviewAvatar
-                        ? () => showImagePreview(context, urls: [avatarSrc])
-                        : null,
-                child: _Avatar(
-                  name: profile.displayName,
-                  imageUrl: avatarSrc,
-                  size: 80,
-                  showEditBadge: isOwnProfile,
-                  uploading: uploadingAvatar.value,
+                    ? 'Lihat foto profil'
+                    : 'Foto profil',
+                child: GestureDetector(
+                  onTap: isOwnProfile && !uploadingAvatar.value
+                      ? () =>
+                            _pickAndUploadAvatar(context, ref, uploadingAvatar)
+                      : canPreviewAvatar
+                      ? () => showImagePreview(context, urls: [avatarSrc])
+                      : null,
+                  child: _Avatar(
+                    name: profile.displayName,
+                    imageUrl: avatarSrc,
+                    size: 56,
+                    showEditBadge: isOwnProfile,
+                    uploading: uploadingAvatar.value,
+                  ),
                 ),
               ),
-            ),
-            const Gap(14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    profile.displayName,
-                    style: theme.typography.xl.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  if (profile.displayName != profile.username) ...[
-                    const Gap(2),
+              const Gap(12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      '@${profile.username}',
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                      profile.displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.lg.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
                       ),
                     ),
-                  ],
-                  if (profile.bio != null && profile.bio!.trim().isNotEmpty) ...[
-                    const Gap(8),
-                    Text(
-                      profile.bio!,
-                      style: theme.typography.sm,
-                    ),
-                  ],
-                  const Gap(4),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
+                    if (profile.displayName != profile.username) ...[
+                      const Gap(1),
                       Text(
-                        roleLabel,
+                        '@${profile.username}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
-                      if (profile.isVerifier)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const VerifiedBadgeIcon(size: 14),
-                            const Gap(4),
-                            Text(
-                              'Verifikator',
-                              style: theme.typography.sm.copyWith(
-                                color: theme.colors.success,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
                     ],
-                  ),
-                  if (joined.isNotEmpty) ...[
-                    const Gap(4),
-                    Text(
-                      'Bergabung $joined',
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                    if (profile.bio != null &&
+                        profile.bio!.trim().isNotEmpty) ...[
+                      const Gap(6),
+                      Text(
+                        profile.bio!,
+                        style: theme.typography.sm,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                    ],
                   ],
-                ],
-              ),
-            ),
-          ],
-        ),
-        if (isOwnProfile) ...[
-          const Gap(16),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: () => context.push('/edit-profile'),
-            child: const Text('Edit profil'),
-          ),
-        ],
-        const Gap(20),
-        Row(
-          children: [
-            Expanded(
-              child: _StatChip(
-                label: 'Kontribusi',
-                value: '${profile.contributionsApproved}',
-              ),
-            ),
-            const Gap(8),
-            Expanded(
-              child: _StatChip(
-                label: 'Verifikasi',
-                value: '${profile.verificationsDone}',
-              ),
-            ),
-            const Gap(8),
-            Expanded(
-              child: _StatChip(
-                label: 'Komentar',
-                value: '${profile.commentsPublished}',
-              ),
-            ),
-          ],
-        ),
-        const Gap(24),
-        Text(
-          'Aktivitas terbaru',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const Gap(8),
-        activityAsync.when(
-          loading: () => const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: FCircularProgress()),
-          ),
-          error: (err, _) => Column(
-            children: [
-              FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(
-                  err is UserProfileFailure
-                      ? err.message
-                      : 'Gagal memuat aktivitas',
                 ),
               ),
-              const Gap(8),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: onRetryActivity,
-                child: const Text('Coba lagi'),
-              ),
+              if (isOwnProfile) ...[
+                const Gap(8),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: SmallButton(
+                    label: 'Edit',
+                    onPress: () => context.push('/edit-profile'),
+                  ),
+                ),
+              ],
             ],
           ),
-          data: (items) {
-            if (items.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Belum ada aktivitas publik.',
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
+          const Gap(10),
+          ProfileStatRow(
+            contributions: profile.contributionsApproved,
+            verifications: profile.verificationsDone,
+            comments: profile.commentsPublished,
+          ),
+          const Gap(6),
+          ProfileMetaRow(joinedLabel: joined, isVerifier: profile.isVerifier),
+          const Gap(16),
+          Text(
+            'Aktivitas terbaru',
+            style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const Gap(8),
+          activityAsync.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: FCircularProgress()),
+            ),
+            error: (err, _) => Column(
+              children: [
+                FAlert(
+                  variant: FAlertVariant.destructive,
+                  title: Text(
+                    err is UserProfileFailure
+                        ? err.message
+                        : 'Gagal memuat aktivitas',
                   ),
                 ),
-              );
-            }
-            return FTileGroup(
-              children: [
-                for (final item in items)
-                  FTile(
-                    title: Text(item.summary),
-                    subtitle: Text(
-                      [
-                        _kindLabel(item.kind),
-                        if (item.lemma != null && item.lemma!.isNotEmpty)
-                          item.lemma!,
-                        formatDateTimeIso(item.occurredAt),
-                      ].where((s) => s.isNotEmpty).join(' · '),
-                    ),
-                    suffix: item.wordId != null
-                        ? const Icon(FLucideIcons.chevronRight)
-                        : null,
-                    onPress: item.wordId == null
-                        ? null
-                        : () {
-                            context.push(
-                              DictionaryRouter.detail.path.replaceFirst(
-                                ':id',
-                                item.wordId!,
-                              ),
-                            );
-                          },
-                  ),
+                const Gap(8),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: onRetryActivity,
+                  child: const Text('Coba lagi'),
+                ),
               ],
-            );
-          },
-        ),
-      ],
+            ),
+            data: (items) {
+              if (items.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Belum ada aktivitas publik.',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  for (final item in items)
+                    ActivityFeedTile(
+                      item: mapPublicActivityToFeed(item, profile),
+                      // Aksi/CTA ke karya sendiri tidak relevan di profil sendiri.
+                      showCta: !isOwnProfile,
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
-
-  static String _kindLabel(String kind) => switch (kind) {
-    'contribution' => 'Kontribusi',
-    'comment' => 'Komentar',
-    'verification' => 'Verifikasi',
-    _ => kind,
-  };
 
   Future<void> _pickAndUploadAvatar(
     BuildContext context,
@@ -477,41 +408,6 @@ class _ProfileBody extends HookConsumerWidget {
   }
 }
 
-class _StatChip extends StatelessWidget {
-  const _StatChip({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      decoration: BoxDecoration(
-        color: theme.colors.muted,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const Gap(2),
-          Text(
-            label,
-            style: theme.typography.xs.copyWith(
-              color: theme.colors.mutedForeground,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _Avatar extends StatelessWidget {
   const _Avatar({
     required this.name,
@@ -530,10 +426,7 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (uploading) {
-      return Skeletonizer(
-        enabled: true,
-        child: Bone.circle(size: size),
-      );
+      return Skeletonizer(enabled: true, child: Bone.circle(size: size));
     }
 
     final theme = context.theme;
@@ -609,9 +502,7 @@ class _InitialsAvatar extends StatelessWidget {
     final initials = _initials(name);
     return FAvatar.raw(
       size: size,
-      style: .delta(
-        backgroundColor: t.colors.primary.withValues(alpha: 0.12),
-      ),
+      style: .delta(backgroundColor: t.colors.primary.withValues(alpha: 0.12)),
       child: Text(
         initials,
         style: t.typography.md.copyWith(

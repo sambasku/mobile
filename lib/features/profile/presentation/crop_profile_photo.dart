@@ -9,7 +9,7 @@ import '../../../shared/utils/compress_image_for_upload.dart';
 import '../../../shared/utils/photo_pick_constants.dart';
 
 /// Crop 1:1 di dalam Flutter supaya warna ikut [FTheme] (terang/gelap + palet).
-/// Batal → null. Berkas yang diunggah WebP persegi [kPhotoPickMaxWidth]×sama
+/// Batal → null. Berkas yang diunggah WebP persegi [kAvatarExportSize]×sama
 /// (fallback JPEG); avatar ditampilkan lingkaran.
 Future<File?> cropProfilePhoto(BuildContext context, String sourcePath) {
   return Navigator.of(context).push<File?>(
@@ -111,7 +111,7 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
         scale: _scale,
         offset: _offset,
       );
-      final out = kPhotoPickMaxWidth;
+      final out = kAvatarExportSize;
       final recorder = ui.PictureRecorder();
       Canvas(recorder).drawImageRect(
         image,
@@ -127,7 +127,11 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
         '${Directory.systemTemp.path}/avatar_crop_${DateTime.now().microsecondsSinceEpoch}.png',
       );
       await png.writeAsBytes(data.buffer.asUint8List(), flush: true);
-      final file = await compressImageForUpload(png);
+      final file = await compressImageForUpload(
+        png,
+        maxWidth: kAvatarExportSize,
+        maxHeight: kAvatarExportSize,
+      );
       if (!mounted) return;
       Navigator.of(context).pop(file);
     } finally {

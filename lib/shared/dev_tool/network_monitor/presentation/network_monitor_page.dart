@@ -51,16 +51,14 @@ class NetworkMonitorPage extends StatelessWidget {
                 return const _EmptyNetworkMonitorState();
               }
 
-              return ListView.separated(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-                itemCount: records.length,
-                separatorBuilder: (_, _) => const Gap(8),
-                itemBuilder: (context, index) {
+              return FTileGroup.builder(
+                count: records.length,
+                tileBuilder: (context, index) {
                   final record = records[index];
 
-                  return _NetworkRecordCard(
+                  return _NetworkRecordTile(
                     record: record,
-                    onTap: () => Navigator.of(context).push(
+                    onPress: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) =>
                             NetworkRequestDetailPage(record: record),
@@ -77,11 +75,11 @@ class NetworkMonitorPage extends StatelessWidget {
   }
 }
 
-class _NetworkRecordCard extends StatelessWidget {
-  const _NetworkRecordCard({required this.record, required this.onTap});
+class _NetworkRecordTile extends StatelessWidget with FTileMixin {
+  const _NetworkRecordTile({required this.record, required this.onPress});
 
   final NetworkRequestRecord record;
-  final VoidCallback onTap;
+  final VoidCallback onPress;
 
   @override
   Widget build(BuildContext context) {
@@ -94,112 +92,62 @@ class _NetworkRecordCard extends StatelessWidget {
     final statusColors = _statusColors(theme, record);
     final cacheSource = record.cacheSource;
 
-    return Material(
-      color: theme.colors.secondary,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: theme.colors.border),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Path penuh dulu - jangan diperebutkan badge.
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      record.path,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.xs.copyWith(
-                        fontFamily: 'monospace',
-                        fontWeight: FontWeight.w600,
-                        color: theme.colors.foreground,
-                        height: 1.3,
-                      ),
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    durationText,
-                    style: theme.typography.xs.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(8),
-              // Badge di baris sendiri, boleh wrap.
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  _Badge(
-                    label: record.method,
-                    textColor: theme.colors.primaryForeground,
-                    backgroundColor: theme.colors.primary,
-                  ),
-                  _Badge(
-                    label: statusText,
-                    textColor: statusColors.$1,
-                    backgroundColor: statusColors.$2,
-                  ),
-                  if (cacheSource != null)
-                    _Badge(
-                      label: cacheSource,
-                      textColor: _cacheBadgeColors(theme, cacheSource).$1,
-                      backgroundColor: _cacheBadgeColors(theme, cacheSource).$2,
-                      tooltip: cacheSourcePlainExplanation(cacheSource),
-                    ),
-                ],
-              ),
-              if (host.isNotEmpty) ...[
-                const Gap(8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        host,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      FLucideIcons.chevronRight,
-                      size: 14,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ],
-                ),
-              ],
-              if (record.errorMessage != null) ...[
-                const Gap(6),
-                Text(
-                  record.errorMessage!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.xs.copyWith(
-                    color: theme.colors.destructive,
-                    height: 1.3,
-                  ),
-                ),
-              ],
-            ],
-          ),
+    return FTile(
+      title: Text(
+        record.path,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: theme.typography.xs.copyWith(
+          fontFamily: 'monospace',
+          fontWeight: FontWeight.w600,
+          height: 1.3,
         ),
       ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Gap(4),
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              _Badge(
+                label: record.method,
+                textColor: theme.colors.primaryForeground,
+                backgroundColor: theme.colors.primary,
+              ),
+              _Badge(
+                label: statusText,
+                textColor: statusColors.$1,
+                backgroundColor: statusColors.$2,
+              ),
+              if (cacheSource != null)
+                _Badge(
+                  label: cacheSource,
+                  textColor: _cacheBadgeColors(theme, cacheSource).$1,
+                  backgroundColor: _cacheBadgeColors(theme, cacheSource).$2,
+                  tooltip: cacheSourcePlainExplanation(cacheSource),
+                ),
+              if (host.isNotEmpty)
+                Text(host, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ],
+          ),
+          if (record.errorMessage != null) ...[
+            const Gap(4),
+            Text(
+              record.errorMessage!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: theme.colors.destructive),
+            ),
+          ],
+        ],
+      ),
+      details: Text(durationText),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: onPress,
     );
   }
 

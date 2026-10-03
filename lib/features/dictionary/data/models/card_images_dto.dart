@@ -2,7 +2,7 @@ import 'package:flutter/painting.dart';
 
 import '../../domain/entities/card_images.dart';
 
-/// Exception config card tidak sesuai schema (`data/mobile/home.json`).
+/// Exception config card tidak sesuai schema (`data/home.json`).
 class CardImagesException implements Exception {
   const CardImagesException(this.message);
 

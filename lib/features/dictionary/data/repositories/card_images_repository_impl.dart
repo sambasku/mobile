@@ -20,7 +20,7 @@ class CardImagesRepositoryImpl implements CardImagesRepository {
   final Dio _dio;
   final CachedJsonClient _cache;
 
-  static const _cacheKey = '/cdn/mobile/home.json';
+  static const _cacheKey = '/cdn/home.json';
 
   @override
   Future<CardImagesConfig?> getCardImages({bool forceRefresh = false}) async {

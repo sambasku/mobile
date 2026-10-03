@@ -14,9 +14,13 @@ import 'activity_kind_avatar.dart';
 
 /// Satu baris feed "Aktivitas terbaru" (home + profil publik).
 class ActivityFeedTile extends StatelessWidget {
-  const ActivityFeedTile({super.key, required this.item});
+  const ActivityFeedTile({super.key, required this.item, this.showCta = true});
 
   final FeedActivityItem item;
+
+  /// false = sembunyikan label CTA + chevron di kanan (mis. profil sendiri,
+  /// aksi ke karya sendiri tidak relevan). Tap baris tetap navigasi.
+  final bool showCta;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +168,7 @@ class ActivityFeedTile extends StatelessWidget {
                     ),
                     // CTA hanya label; tap ditangani InkWell baris (tujuan sama).
                     // Sengaja muted: fokus visual tetap di lemma, bukan CTA.
-                    if (path != null) ...[
+                    if (showCta && path != null) ...[
                       const Gap(8),
                       Text(
                         _ctaLabel(item.kind),

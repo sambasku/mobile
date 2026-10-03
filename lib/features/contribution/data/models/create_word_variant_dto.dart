@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'create_word_variant_dto.freezed.dart';
 part 'create_word_variant_dto.g.dart';
 
-/// Item `variants[]` body usul kata (docs/api/11). Form mobile hanya
+/// Item `variants[]` body usul kata - Form mobile hanya
 /// mengirim ejaan alternatif - `variant_type` selalu 'alternative'.
 @freezed
 abstract class CreateWordVariantDto with _$CreateWordVariantDto {

@@ -1,4 +1,4 @@
-// Flavor aplikasi (docs/mobile/mobile-base-stack.md Section 8)
+// Flavor aplikasi
 enum Flavor { staging, production }
 
 class F {

@@ -11,7 +11,7 @@ import '../providers/change_password_providers.dart';
 
 /// Halaman ubah password (profil → menu "Ubah Password"). Sukses =
 /// SEMUA session ter-revoke backend: tampilkan dialog lalu logout paksa
-/// dan kembali ke /login (docs/api/10-api-ubah-password.md).
+/// dan kembali ke /login .
 class ChangePasswordPage extends HookConsumerWidget {
   const ChangePasswordPage({super.key});
 

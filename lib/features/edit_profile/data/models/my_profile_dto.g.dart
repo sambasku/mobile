@@ -12,6 +12,8 @@ _MyProfileDto _$MyProfileDtoFromJson(Map<String, dynamic> json) =>
       displayName: json['display_name'] as String,
       bio: json['bio'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      hasReadContributionGuide:
+          json['has_read_contribution_guide'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
@@ -20,6 +22,7 @@ Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
       'display_name': instance.displayName,
       'bio': instance.bio,
       'avatar_url': instance.avatarUrl,
+      'has_read_contribution_guide': instance.hasReadContributionGuide,
     };
 
 _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
@@ -27,6 +30,7 @@ _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
 ) => _UpdateMyProfileRequestDto(
   displayName: json['display_name'] as String?,
   bio: json['bio'] as String?,
+  hasReadContributionGuide: json['has_read_contribution_guide'] as bool?,
 );
 
 Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
@@ -34,4 +38,5 @@ Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
 ) => <String, dynamic>{
   'display_name': instance.displayName,
   'bio': instance.bio,
+  'has_read_contribution_guide': instance.hasReadContributionGuide,
 };

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/bookmark/data/models/bookmark_item_dto.dart';
 import 'package:sambasku_mobile/features/bookmark/data/models/toggle_bookmark_response_dto.dart';
 
-/// Fixture dari docs/json/bookmark (repo mandiri, snapshot lokal).
+/// Fixture snapshot lokal.
 void main() {
   Map<String, dynamic> loadFixture(String name) {
     final file = File('test/fixtures/json/bookmark/$name');

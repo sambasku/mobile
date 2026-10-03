@@ -14,15 +14,24 @@ import '../../../search_miss/search_miss_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
+import '../providers/contribution_guide_providers.dart';
+import '../widgets/contribution_guide_sheet.dart';
 
 /// Tab KONTRIBUSI: menu usul + deck nilai kata.
 ///
 /// Deck sengaja **di luar** scroll view supaya swipe-atas (lewati) tidak
 /// bentrok dengan `CustomScrollView` / pull-to-refresh.
-class ActivityPage extends ConsumerWidget {
+class ActivityPage extends ConsumerStatefulWidget {
   const ActivityPage({super.key});
 
-  Future<void> _refresh(WidgetRef ref) async {
+  @override
+  ConsumerState<ActivityPage> createState() => _ActivityPageState();
+}
+
+class _ActivityPageState extends ConsumerState<ActivityPage> {
+  bool _guideChecked = false;
+
+  Future<void> _refresh() async {
     await Future.wait([
       ref.read(voteDeckControllerProvider.notifier).refresh(),
       ref.refresh(voteDeckGuestSamplesProvider.future),
@@ -30,8 +39,14 @@ class ActivityPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = context.theme;
+
+    // Guide sekali di kunjungan pertama: cek unread pasca frame pertama.
+    if (!_guideChecked) {
+      _guideChecked = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowGuide());
+    }
 
     return Column(
       children: [
@@ -43,7 +58,7 @@ class ActivityPage extends ConsumerWidget {
                 FLucideIcons.refreshCw,
                 size: kHeaderActionIconSize,
               ),
-              onPress: () => _refresh(ref),
+              onPress: _refresh,
             ),
             const ThemeToggleHeaderAction(),
           ],
@@ -63,6 +78,16 @@ class ActivityPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  /// Tampilkan guide hanya jika unread. Guard sesi app: maks sekali per
+  /// sesi meski user bolak-balik tab. Persist hanya lewat tap "Mengerti".
+  Future<void> _maybeShowGuide() async {
+    final unread = await ref.read(contributionGuideUnreadProvider.future);
+    if (!mounted || !unread) return;
+    await showContributionGuideSheet(context);
+    if (!mounted) return;
+    ref.invalidate(contributionGuideUnreadProvider);
   }
 }
 

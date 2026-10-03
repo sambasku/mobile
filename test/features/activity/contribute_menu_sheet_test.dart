@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/core/network/auth_token_storage.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/pages/activity_page.dart';
+import 'package:sambasku_mobile/features/activity/presentation/providers/contribution_guide_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Menu kontribusi (bottom sheet di navigator root) tidak boleh balapan
@@ -39,6 +40,8 @@ void main() {
       ProviderScope(
         overrides: [
           authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
+          // Guide sudah dibaca -> sheet tidak muncul
+          contributionGuideUnreadProvider.overrideWith((ref) async => false),
         ],
         child: MaterialApp.router(
           theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
@@ -56,7 +59,7 @@ void main() {
   }
 
   Future<void> openSheet(WidgetTester tester) async {
-    await tester.tap(find.text('Menu kontribusi'));
+    await tester.tap(find.text('Menu kontribusi'), warnIfMissed: false);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.text('Usul kata baru'), findsOneWidget);

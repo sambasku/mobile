@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'create_word_image_dto.freezed.dart';
 part 'create_word_image_dto.g.dart';
 
-/// Item `images[]` body usul kata (docs/api/01 + 03).
+/// Item `images[]` body usul kata .
 @freezed
 abstract class CreateWordImageDto with _$CreateWordImageDto {
   const factory CreateWordImageDto({

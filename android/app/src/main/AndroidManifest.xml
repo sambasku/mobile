@@ -61,6 +61,7 @@
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/reset-password" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/words" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/users" />
+                <data android:scheme="sambasku" android:host="app" android:pathPrefix="/wisata" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/hapus-akun" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/delete-account" />
             </intent-filter>
@@ -74,6 +75,7 @@
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/reset-password" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/hapus-akun" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/users" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/wisata" />
             </intent-filter>
         </activity>
         <!-- AppAuth: callback GitHub HTTPS (GitHub OAuth App menolak custom scheme).
