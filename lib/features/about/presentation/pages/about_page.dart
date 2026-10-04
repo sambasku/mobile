@@ -19,12 +19,8 @@ import '../providers/sponsors_providers.dart';
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
-  static final Uri organizationUri = Uri.parse(
-    'https://github.com/sambasku#organisasi',
-  );
-
-  /// Root organisasi: daftar repo publik (kode sumber).
-  static final Uri sourceCodeUri = Uri.parse('https://github.com/sambasku');
+  /// Profil organisasi sekaligus daftar repo publik (kode sumber).
+  static final Uri githubUri = Uri.parse('https://github.com/sambasku');
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +68,17 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               const Gap(16),
+              const _AboutBlock(
+                title: 'Apa itu SambasKu?',
+                body:
+                    'Kamus digital Melayu Sambas-Indonesia yang dirawat '
+                    'bersama warga. Kamu bisa mencari arti kata, membaca '
+                    'contoh kalimat, menyimpan kata, mengusulkan kata baru, '
+                    'dan membagikan kartu kata. Usulan dari akun yang sudah '
+                    'masuk langsung tayang dengan label Menunggu pengecekan, '
+                    'lalu diperiksa verifikator.',
+              ),
+              const Gap(16),
               _AboutLinkBlock(
                 title: 'Sponsor & Tim Kami',
                 body:
@@ -82,68 +89,21 @@ class AboutPage extends StatelessWidget {
               ),
               const Gap(16),
               _AboutLinkBlock(
-                title: 'Kode Sumber & Lisensi',
+                title: 'Kode Sumber & Organisasi',
                 body:
                     'SambasKu adalah proyek open source. Kode sumbernya '
-                    'tersedia di GitHub dan dirilis di bawah lisensi GPLv3. '
-                    'Kamu bebas mempelajari, memodifikasi, dan '
-                    'mendistribusikan kodenya sesuai ketentuan lisensi.',
-                actionLabel: 'Lihat di GitHub',
-                onPress: () => launchUrl(
-                  AboutPage.sourceCodeUri,
-                  mode: LaunchMode.externalApplication,
-                ),
-              ),
-              const Gap(16),
-              _AboutLinkBlock(
-                title: 'Organisasi di GitHub',
-                body:
-                    'Identitas organisasi, cara ikut serta, sponsor, dan '
-                    'saluran komunitas.',
+                    'dirilis dengan lisensi GPLv3, jadi kamu bebas '
+                    'mempelajari, mengubah, dan membagikannya sesuai '
+                    'ketentuan lisensi. Konten kamus dan datanya dirilis '
+                    'dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan '
+                    'sumber dan membagikan hasilnya dengan lisensi yang '
+                    'sama. Di GitHub juga ada profil organisasi, cara '
+                    'ikut serta, info sponsor, dan saluran komunitas.',
                 actionLabel: 'Buka di GitHub',
                 onPress: () => launchUrl(
-                  AboutPage.organizationUri,
+                  AboutPage.githubUri,
                   mode: LaunchMode.externalApplication,
                 ),
-              ),
-              const Gap(16),
-              const _AboutBlock(
-                title: 'Apa itu SambasKu?',
-                body:
-                    'Kamus digital Sambas-Indonesia. Cari arti, baca contoh, '
-                    'usulkan kata, bookmark, dan bagikan kartu. Entri tayang '
-                    'setelah verifikasi.',
-              ),
-              const Gap(16),
-              const _AboutBlock(
-                title: 'Cari kosakata',
-                body:
-                    'Ketik lemma atau terjemahan. Setiap entri menampilkan '
-                    'kelas kata, definisi, contoh kalimat, dan variasi '
-                    'penulisan.',
-              ),
-              const Gap(16),
-              const _AboutBlock(
-                title: 'Simpan',
-                body:
-                    'Bookmark kata dari halaman detail, lalu buka lagi '
-                    'dari Profil.',
-              ),
-              const Gap(16),
-              const _AboutBlock(
-                title: 'Usulkan',
-                body:
-                    'Warga mengusulkan kata baru atau perbaikan. Usulan '
-                    'langsung tayang dengan label Menunggu pengecekan. '
-                    'Kontributor bisa mengajukan diri jadi verifikator.',
-              ),
-              const Gap(16),
-              const _AboutBlock(
-                title: 'Bagikan kartu',
-                body:
-                    'Dari detail kata, atur gaya dan latar (foto, video, '
-                    'atau warna polos), lalu Simpan ke galeri atau Bagikan '
-                    'ke aplikasi lain.',
               ),
             ],
           );

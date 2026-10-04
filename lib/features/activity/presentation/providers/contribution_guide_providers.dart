@@ -9,8 +9,15 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 
 part 'contribution_guide_providers.g.dart';
 
-/// Key SharedPreferences flag guide tab Kontribusi.
+/// Key SharedPreferences flag guide tamu (pra-per-user, dipakai bersama).
 const kContribGuideReadPrefsKey = 'contrib_guide_read_at';
+
+/// Prefiks flag per-user: `contrib_guide_read_at:<userId>`.
+///
+/// ponytail: per-user, bukan hapus-flag-saat-login - dua akun yang bolak-balik
+/// login di HP yang sama tidak saling menimpa "sudah baca". Server flag
+/// `has_read_contribution_guide` tetap sumber kebenaran lintas device.
+const kContribGuideReadPrefsKeyPrefix = 'contrib_guide_read_at:';
 
 /// Provider prefs ter-inject (test bisa override dengan SharedPreferences.setMockInitialValues).
 @Riverpod(keepAlive: true)
@@ -19,21 +26,44 @@ Future<SharedPreferences> contributionGuidePrefs(Ref ref) =>
 
 /// Apakah guide swipe tab Kontribusi masih perlu ditampilkan.
 ///
-/// Unread = belum ada flag lokal DAN flag server false. Tamu (belum login)
-/// dianggap unread: sheet hanya tips UI, aman tampil.
+/// Unread = belum ada flag lokal (per-user / tamu) DAN flag server false.
+/// Tamu (belum login) dianggap unread: sheet hanya tips UI, aman tampil.
 @Riverpod(keepAlive: true)
 Future<bool> contributionGuideUnread(Ref ref) async {
   final prefs = await ref.watch(contributionGuidePrefsProvider.future);
-  if (prefs.getString(kContribGuideReadPrefsKey) != null) return false;
-
   final auth = ref.watch(authStatusProvider).value;
-  if (auth == null || !auth.isAuth) return true;
 
+  print('[GUIDE DEBUG] auth.isAuth=${auth?.isAuth} userId=${auth?.userId}');
+  print('[GUIDE DEBUG] prefs keys=${prefs.getKeys().toList()}');
+
+  if (auth == null || !auth.isAuth) {
+    // Tamu: cek key legacy
+    final legacyVal = prefs.getString(kContribGuideReadPrefsKey);
+    print('[GUIDE DEBUG] guest branch: legacyVal=$legacyVal');
+    if (legacyVal != null) return false;
+    return true;
+  }
+
+  // Login: cek key per-user
+  final userKey = '$kContribGuideReadPrefsKeyPrefix${auth.userId}';
+  final userVal = prefs.getString(userKey);
+  print('[GUIDE DEBUG] user branch: userKey=$userKey userVal=$userVal');
+  if (userVal != null) return false;
+
+  // Tidak ada key per-user -> cek server
   final profile = await ref.watch(getMyProfileUseCaseProvider).call();
-  return profile.fold(
-    (failure) => true,
-    (profile) => !profile.hasReadContributionGuide,
+  final result = profile.fold(
+    (failure) {
+      print('[GUIDE DEBUG] server error -> true');
+      return true;
+    },
+    (profile) {
+      final unread = !profile.hasReadContributionGuide;
+      print('[GUIDE DEBUG] server hasRead=${profile.hasReadContributionGuide} -> unread=$unread');
+      return unread;
+    },
   );
+  return result;
 }
 
 /// Tandai guide sudah dibaca. Prefs lokal dulu (instant), PATCH server
@@ -41,13 +71,13 @@ Future<bool> contributionGuideUnread(Ref ref) async {
 /// guide muncul lagi.
 Future<void> markContributionGuideRead(WidgetRef ref) async {
   final prefs = await ref.read(contributionGuidePrefsProvider.future);
-  await prefs.setString(
-    kContribGuideReadPrefsKey,
-    DateTime.now().toIso8601String(),
-  );
+  final auth = ref.read(authStatusProvider).value;
+  final localKey = auth != null && auth.isAuth
+      ? '$kContribGuideReadPrefsKeyPrefix${auth.userId}'
+      : kContribGuideReadPrefsKey;
+  await prefs.setString(localKey, DateTime.now().toIso8601String());
   ref.invalidate(contributionGuideUnreadProvider);
 
-  final auth = ref.read(authStatusProvider).value;
   if (auth == null || !auth.isAuth) return;
   unawaited(
     ref

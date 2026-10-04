@@ -87,6 +87,15 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     if (!mounted || !unread) return;
     await showContributionGuideSheet(context);
     if (!mounted) return;
+    // Pop dialog TIDAK men-notify routerDelegate. Kalau selama guide
+    // terbuka ada notifikasi router nyasar (deep link, goBranch),
+    // _VoteDeckHost + _DeferredShellTicker tercatat canPop=true: deck
+    // tertukar stub + ticker pause = konten tab tidak terload selamanya.
+    // router.refresh() tidak cukup: setNewRoutePath early-return karena
+    // konfigurasi identik, widget const di-skip; notify delegate langsung
+    // satu-satunya cara membangunkan ListenableBuilder.
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    AppRouter.router.routerDelegate.notifyListeners();
     ref.invalidate(contributionGuideUnreadProvider);
   }
 }
@@ -115,7 +124,6 @@ class _VoteDeckHost extends StatelessWidget {
     );
   }
 }
-
 class _VoteDeckStub extends StatelessWidget {
   const _VoteDeckStub();
 

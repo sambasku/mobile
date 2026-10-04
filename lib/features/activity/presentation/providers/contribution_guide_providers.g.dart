@@ -57,24 +57,24 @@ String _$contributionGuidePrefsHash() =>
 
 /// Apakah guide swipe tab Kontribusi masih perlu ditampilkan.
 ///
-/// Unread = belum ada flag lokal DAN flag server false. Tamu (belum login)
-/// dianggap unread: sheet hanya tips UI, aman tampil.
+/// Unread = belum ada flag lokal (per-user / tamu) DAN flag server false.
+/// Tamu (belum login) dianggap unread: sheet hanya tips UI, aman tampil.
 
 @ProviderFor(contributionGuideUnread)
 final contributionGuideUnreadProvider = ContributionGuideUnreadProvider._();
 
 /// Apakah guide swipe tab Kontribusi masih perlu ditampilkan.
 ///
-/// Unread = belum ada flag lokal DAN flag server false. Tamu (belum login)
-/// dianggap unread: sheet hanya tips UI, aman tampil.
+/// Unread = belum ada flag lokal (per-user / tamu) DAN flag server false.
+/// Tamu (belum login) dianggap unread: sheet hanya tips UI, aman tampil.
 
 final class ContributionGuideUnreadProvider
     extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
     with $FutureModifier<bool>, $FutureProvider<bool> {
   /// Apakah guide swipe tab Kontribusi masih perlu ditampilkan.
   ///
-  /// Unread = belum ada flag lokal DAN flag server false. Tamu (belum login)
-  /// dianggap unread: sheet hanya tips UI, aman tampil.
+  /// Unread = belum ada flag lokal (per-user / tamu) DAN flag server false.
+  /// Tamu (belum login) dianggap unread: sheet hanya tips UI, aman tampil.
   ContributionGuideUnreadProvider._()
     : super(
         from: null,
@@ -101,4 +101,4 @@ final class ContributionGuideUnreadProvider
 }
 
 String _$contributionGuideUnreadHash() =>
-    r'05efa2a869275b40253d4ec0a4988d96d82f51fc';
+    r'bc55808f95490ff062ec3b199620b8fb27a4cfec';

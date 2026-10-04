@@ -73,7 +73,7 @@ class PlaceDto {
     final rawImages = json['images'];
     if (rawImages is List) {
       for (final raw in rawImages.whereType<Map>()) {
-        final img = _imageFromJson(Map<String, dynamic>.from(raw));
+        final img = imageFromJson(Map<String, dynamic>.from(raw));
         if (img == null) continue;
         final hasMain = images.any((e) => e.isMain);
         // Normalisasi: tepat satu main - true pertama menang;
@@ -105,7 +105,7 @@ class PlaceDto {
     final rawSources = json['sources'];
     if (rawSources is List) {
       for (final raw in rawSources.whereType<Map>()) {
-        final s = _sourceFromJson(Map<String, dynamic>.from(raw));
+        final s = sourceFromJson(Map<String, dynamic>.from(raw));
         if (s != null) sources.add(s);
       }
     }
@@ -127,8 +127,9 @@ class PlaceDto {
     );
   }
 
+  /// Publik: dipakai juga CuisineDto (skema images cuisines.json sama).
   /// Null = entry gambar tidak valid (URL absen/bukan https) → di-skip.
-  static PlaceImage? _imageFromJson(Map<String, dynamic> json) {
+  static PlaceImage? imageFromJson(Map<String, dynamic> json) {
     final url = json['url'];
     if (url is! String || !url.startsWith('https://')) return null;
     return PlaceImage(
@@ -138,7 +139,8 @@ class PlaceDto {
     );
   }
 
-  static PlaceSource? _sourceFromJson(Map<String, dynamic> json) {
+  /// Publik: dipakai juga CuisineDto (skema sources cuisines.json sama).
+  static PlaceSource? sourceFromJson(Map<String, dynamic> json) {
     String? str(Object? key) {
       final v = json[key];
       return v is String && v.trim().isNotEmpty ? v.trim() : null;

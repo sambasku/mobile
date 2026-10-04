@@ -37,9 +37,29 @@ class App extends ConsumerWidget {
       supportedLocales: FLocalizations.supportedLocales,
       builder: (context, child) {
         // Forui tidak auto-switch brightness - pilih variant dari Theme Material
-        final fTheme = Theme.of(context).brightness == Brightness.dark
-            ? palette.dark.touch
-            : palette.light.touch;
+        final fTheme =
+            (Theme.of(context).brightness == Brightness.dark
+                ? palette.dark.touch
+                : palette.light.touch)
+            // Header lebih pendek dari default Forui (minHeight 62,
+            // padding atas 8 bawah 10): hemat ~12px vertikal per layar.
+            .copyWith(
+              headerStyles: FVariantsDelta.delta([
+                FVariantOperation.all(
+                  FHeaderStyleDelta.delta(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    padding: EdgeInsetsGeometryDelta.value(
+                      const EdgeInsets.fromLTRB(12, 4, 12, 6),
+                    ),
+                    actionStyle: FHeaderActionStyleDelta.delta(
+                      padding: EdgeInsetsGeometryDelta.value(
+                        const EdgeInsets.all(5),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            );
 
         return FTheme(
           data: fTheme,

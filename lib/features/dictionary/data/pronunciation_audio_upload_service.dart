@@ -25,6 +25,7 @@ class PronunciationAudioUploadService {
     required String wordId,
     required File audioFile,
     String? speakerName,
+    required bool speakerConsent,
     required int durationMs,
     String? dialectId,
     String? exampleId,
@@ -51,6 +52,7 @@ class PronunciationAudioUploadService {
         ),
         if (trimmedSpeaker != null && trimmedSpeaker.isNotEmpty)
           'speaker_name': trimmedSpeaker,
+        'speaker_consent': speakerConsent ? 'true' : 'false',
         'duration_ms': durationMs,
         if (dialectId != null && dialectId.isNotEmpty) 'dialect_id': dialectId,
         if (exampleId != null && exampleId.isNotEmpty) 'example_id': exampleId,

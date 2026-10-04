@@ -35,7 +35,9 @@ Future<void> _pump(WidgetTester tester) async {
       child: MaterialApp(
         home: FTheme(
           data: FThemes.zinc.light.touch,
-          child: const FToaster(child: PlaceListPage()),
+          child: const FToaster(
+            child: PlaceListPage(mode: PlacePageMode.wisata),
+          ),
         ),
       ),
     ),
@@ -68,12 +70,40 @@ void main() {
     expect(find.text('Pantai Temajuk'), findsNothing);
 
     await tester.enterText(find.byType(EditableText), '');
-    final kulinerChip = find.text('Kuliner').first;
+    await tester.pumpAndSettle();
+    final kulinerChip = find.descendant(
+      of: find.byType(FBadge),
+      matching: find.text('Kuliner'),
+    ).first;
     await tester.ensureVisible(kulinerChip);
     await tester.pumpAndSettle();
     await tester.tap(kulinerChip);
     await tester.pumpAndSettle();
     expect(find.text('Bubur Pedas'), findsOneWidget);
     expect(find.text('Pantai Temajuk'), findsNothing);
+  });
+
+  testWidgets('mode kuliner: tanpa chip, hanya entri kuliner', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [placesProvider.overrideWith((ref) async => _places)],
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.light.touch,
+            child: const FToaster(
+              child: PlaceListPage(mode: PlacePageMode.kuliner),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kuliner'), findsWidgets); // judul header + label kartu
+    expect(find.text('Bubur Pedas'), findsOneWidget);
+    expect(find.text('Pantai Temajuk'), findsNothing);
+    expect(find.text('Istana Alwatzikoebillah'), findsNothing);
+    // Baris chip filter tidak dirender di mode kuliner.
+    expect(find.text('Semua'), findsNothing);
   });
 }

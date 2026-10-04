@@ -59,7 +59,7 @@ void main() {
     return prefs.getString(kContribGuideReadPrefsKey);
   }
 
-  testWidgets('tap Mengerti menulis flag lokal', (tester) async {
+  testWidgets('tap Mengerti tanpa login menulis flag legacy tamu', (tester) async {
     await pump(tester);
 
     await tester.tap(find.text('Mengerti'));

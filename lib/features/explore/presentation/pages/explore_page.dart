@@ -29,8 +29,8 @@ class ExplorePage extends HookConsumerWidget {
       ),
     );
 
-    // Jembatan ke kamus: daftar kata A-Z (bukan coming-soon).
-    if (cat.id == 'bahasa-budaya') {
+    // Jembatan ke kamus: kosakata di tab kamus (bukan coming-soon).
+    if (cat.id == 'tradisi') {
       context.push(DictionaryRouter.list.path);
       return;
     }
@@ -112,7 +112,10 @@ class _CategoryCard extends StatelessWidget {
 
     return Material(
       color: theme.colors.secondary,
-      borderRadius: BorderRadius.circular(14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: theme.colors.border),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
@@ -127,15 +130,31 @@ class _CategoryCard extends StatelessWidget {
                   if (category.comingSoon) ...[
                     const Gap(6),
                     Expanded(
-                      child: Text(
-                        'Segera',
-                        textAlign: TextAlign.right,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colors.mutedForeground,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        // ponytail: FittedBox mengecilkan chip sampai muat;
+                        // kalau nanti copy lebih panjang, ganti jadi 2 kata lain.
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colors.primary,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              'Segera hadir',
+                              maxLines: 1,
+                              style: theme.typography.sm.copyWith(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: theme.colors.primaryForeground,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -161,7 +180,7 @@ class _CategoryCard extends StatelessWidget {
                       const Gap(2),
                       Text(
                         category.subtitle,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
                           fontSize: 9,

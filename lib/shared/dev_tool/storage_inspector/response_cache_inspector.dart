@@ -479,7 +479,6 @@ CacheClass? _guessCacheClass(String key) {
   if (k.contains('/words/today')) return CacheClass.wordOfDay;
   if (k.contains('/words/latest')) return CacheClass.feedList;
   if (k.contains('/words/search')) return CacheClass.search;
-  if (k.contains('/discussions')) return CacheClass.socialPublic;
   if (k.contains('/words/')) return CacheClass.dictionaryDetail;
   return null;
 }
