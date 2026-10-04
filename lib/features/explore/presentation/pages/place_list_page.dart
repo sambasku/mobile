@@ -9,6 +9,7 @@ import '../../../../core/utils/display_image_url.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
@@ -87,76 +88,79 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     final theme = context.theme;
     final placesAsync = ref.watch(placesProvider);
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(_pageTitle[_mode] ?? 'Eksplorasi'),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go('/explore'),
-          ),
-        ],
-      ),
-      child: placesAsync.when(
-        loading: () => const _SkeletonList(),
-        error: (_, _) => _ErrorBody(onRetry: _reload),
-        data: (places) {
-          if (places == null) return _ErrorBody(onRetry: _reload);
-          if (places.isEmpty) return const _EmptyBody();
-          final filtered = _applyFilter(places);
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FTextField(
-                control: FTextFieldControl.managed(
-                  onChange: _onSearchChanged,
+    return ExcludeSemanticsOnExit(
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: Text(_pageTitle[_mode] ?? 'Eksplorasi'),
+          prefixes: [
+            FHeaderAction.back(
+              onPress: () =>
+                  context.canPop() ? context.pop() : context.go('/explore'),
+            ),
+          ],
+        ),
+        child: placesAsync.when(
+          loading: () => const _SkeletonList(),
+          error: (_, _) => _ErrorBody(onRetry: _reload),
+          data: (places) {
+            if (places == null) return _ErrorBody(onRetry: _reload);
+            if (places.isEmpty) return const _EmptyBody();
+            final filtered = _applyFilter(places);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FTextField(
+                  control: FTextFieldControl.managed(
+                    onChange: _onSearchChanged,
+                  ),
+                  hint: 'Cari destinasi...',
+                  textInputAction: TextInputAction.search,
+                  clearable: (value) => value.text.isNotEmpty,
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FLucideIcons.search),
+                      ),
                 ),
-                hint: 'Cari destinasi...',
-                textInputAction: TextInputAction.search,
-                clearable: (value) => value.text.isNotEmpty,
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FLucideIcons.search),
-                    ),
-              ),
-              const Gap(12),
-              if (_mode == PlacePageMode.wisata) ...[
-                _PlaceFilterBar(
-                  selected: _filter,
-                  onSelect: (f) => setState(() => _filter = f),
-                ),
-                const Gap(4),
-              ],
-              if (filtered.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'Belum ada destinasi yang cocok.',
-                      textAlign: TextAlign.center,
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                const Gap(12),
+                if (_mode == PlacePageMode.wisata) ...[
+                  _PlaceFilterBar(
+                    selected: _filter,
+                    onSelect: (f) => setState(() => _filter = f),
+                  ),
+                  const Gap(4),
+                ],
+                if (filtered.isEmpty)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Belum ada destinasi yang cocok.',
+                        textAlign: TextAlign.center,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
                       ),
                     ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, _) => const Divider(height: 1),
+                      itemBuilder: (context, i) =>
+                          _PlaceCard(place: filtered[i]),
+                    ),
                   ),
-                )
-              else
-                Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemCount: filtered.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, i) => _PlaceCard(place: filtered[i]),
-                  ),
-                ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

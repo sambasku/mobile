@@ -9,6 +9,7 @@ import '../../../../core/utils/display_image_url.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/cuisine.dart';
 import '../providers/cuisine_providers.dart';
 
@@ -49,75 +50,75 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
     final theme = context.theme;
     final cuisineAsync = ref.watch(cuisineProvider);
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: const Text('Cuisine'),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go('/explore'),
-          ),
-        ],
-      ),
-      child: cuisineAsync.when(
-        loading: () => const _SkeletonList(),
-        error: (_, _) => _ErrorBody(onRetry: _reload),
-        data: (items) {
-          if (items == null) return _ErrorBody(onRetry: _reload);
-          if (items.isEmpty) return const _EmptyBody();
-          final q = _query.trim().toLowerCase();
-          final filtered = q.isEmpty
-              ? items
-              : items
-                    .where((k) => k.name.toLowerCase().contains(q))
-                    .toList();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FTextField(
-                control: FTextFieldControl.managed(
-                  onChange: _onSearchChanged,
+    return ExcludeSemanticsOnExit(
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: const Text('Cuisine'),
+          prefixes: [
+            FHeaderAction.back(
+              onPress: () =>
+                  context.canPop() ? context.pop() : context.go('/explore'),
+            ),
+          ],
+        ),
+        child: cuisineAsync.when(
+          loading: () => const _SkeletonList(),
+          error: (_, _) => _ErrorBody(onRetry: _reload),
+          data: (items) {
+            if (items == null) return _ErrorBody(onRetry: _reload);
+            if (items.isEmpty) return const _EmptyBody();
+            final q = _query.trim().toLowerCase();
+            final filtered = q.isEmpty
+                ? items
+                : items.where((k) => k.name.toLowerCase().contains(q)).toList();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FTextField(
+                  control: FTextFieldControl.managed(
+                    onChange: _onSearchChanged,
+                  ),
+                  hint: 'Cari cuisine...',
+                  textInputAction: TextInputAction.search,
+                  clearable: (value) => value.text.isNotEmpty,
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FLucideIcons.search),
+                      ),
                 ),
-                hint: 'Cari cuisine...',
-                textInputAction: TextInputAction.search,
-                clearable: (value) => value.text.isNotEmpty,
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FLucideIcons.search),
-                    ),
-              ),
-              const Gap(12),
-              if (filtered.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'Belum ada cuisine yang cocok.',
-                      textAlign: TextAlign.center,
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                const Gap(12),
+                if (filtered.isEmpty)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Belum ada cuisine yang cocok.',
+                        textAlign: TextAlign.center,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
                       ),
                     ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, _) => const Divider(height: 1),
+                      itemBuilder: (context, i) =>
+                          _CuisineCard(cuisine: filtered[i]),
+                    ),
                   ),
-                )
-              else
-                Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemCount: filtered.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, i) =>
-                        _CuisineCard(cuisine: filtered[i]),
-                  ),
-                ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
