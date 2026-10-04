@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -60,6 +61,21 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
   }
 
   String _query = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(TextEditingValue value) {
+    final text = value.text;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => _query = text);
+    });
+  }
 
   Future<void> _reload() async {
     ref.invalidate(placesProvider);
@@ -94,7 +110,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
             children: [
               FTextField(
                 control: FTextFieldControl.managed(
-                  onChange: (value) => setState(() => _query = value.text),
+                  onChange: _onSearchChanged,
                 ),
                 hint: 'Cari destinasi...',
                 textInputAction: TextInputAction.search,
@@ -145,9 +161,8 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     );
   }
 
-  // ponytail: filter lokal per ketikan tanpa debounce, aman selama katalog
-  // puluhan item. Kalau search pindah ke API atau ribuan item, tambah
-  // debounce ~300ms (pola `_debounce` di kbbi_definition_sheet.dart).
+  // Debounce 300ms: tahan setState per ketikan. Filter tetap lokal; kalau
+  // search pindah ke API, debounce ini sudah jadi.
   // Mode kuliner: hanya kategori kuliner, tanpa filter type.
   // Mode wisata: kategori wisata, difilter per type kalau chip dipilih.
   List<Place> _applyFilter(List<Place> places) {

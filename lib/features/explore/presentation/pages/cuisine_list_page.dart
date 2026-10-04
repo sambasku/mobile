@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +23,21 @@ class CuisineListPage extends ConsumerStatefulWidget {
 
 class _CuisineListPageState extends ConsumerState<CuisineListPage> {
   String _query = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(TextEditingValue value) {
+    final text = value.text;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => _query = text);
+    });
+  }
 
   Future<void> _reload() async {
     ref.invalidate(cuisineProvider);
@@ -61,7 +77,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
             children: [
               FTextField(
                 control: FTextFieldControl.managed(
-                  onChange: (value) => setState(() => _query = value.text),
+                  onChange: _onSearchChanged,
                 ),
                 hint: 'Cari cuisine...',
                 textInputAction: TextInputAction.search,
