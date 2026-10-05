@@ -11,7 +11,9 @@ import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/word_list_state.dart';
+import '../providers/search_history_provider.dart';
 import '../providers/word_list_providers.dart';
+import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
 /// Daftar kata. q kosong di mode Sambas = A-Z (`GET /words`).
 /// q terisi, atau mode Indonesia, memakai `GET /words/search` supaya
@@ -29,6 +31,12 @@ class WordListPage extends HookConsumerWidget {
     final controller = useTextEditingController(text: state.q);
     final focusNode = useFocusNode();
     final scroll = useScrollController();
+    final history = ref.watch(searchHistoryControllerProvider);
+    final showHistory =
+        state.q.trim().isEmpty &&
+        !state.isLoading &&
+        state.items.isEmpty &&
+        history.isNotEmpty;
 
     useEffect(() {
       if (!autofocus) return null;
@@ -79,70 +87,86 @@ class WordListPage extends HookConsumerWidget {
 
     final theme = context.theme;
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: const Text('Daftar Kata A-Z'),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 4, 0, 6),
-            child: Row(
-              children: [
-                Expanded(
-                  child: FButton(
-                    size: .sm,
-                    variant: state.searchIn == 'lemma'
-                        ? FButtonVariant.primary
-                        : FButtonVariant.outline,
-                    onPress: () => notifier.onSearchInChanged('lemma'),
-                    child: const Text('Sambas'),
-                  ),
-                ),
-                const Gap(8),
-                Expanded(
-                  child: FButton(
-                    size: .sm,
-                    variant: state.searchIn == 'translation'
-                        ? FButtonVariant.primary
-                        : FButtonVariant.outline,
-                    onPress: () => notifier.onSearchInChanged('translation'),
-                    child: const Text('Indonesia'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          FTextField(
-            control: FTextFieldControl.managed(
-              controller: controller,
-              onChange: (value) => notifier.onQueryChanged(value.text),
-            ),
-            focusNode: focusNode,
-            hint: state.searchIn == 'translation'
-                ? 'Cari kata Indonesia...'
-                : 'Cari atau saring kata Sambas...',
-            clearable: (value) => value.text.isNotEmpty,
-            prefixBuilder: (context, style, variants) =>
-                FTextField.prefixIconBuilder(
-                  context,
-                  style,
-                  variants,
-                  const Icon(FLucideIcons.search),
-                ),
-          ),
-          if (state.errorMessage != null)
+    return ExcludeSemanticsOnExit(
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: const Text('Daftar Kata A-Z'),
+          prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+        ),
+        child: Column(
+          children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
-              child: FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(state.errorMessage!),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FButton(
+                      size: .sm,
+                      variant: state.searchIn == 'lemma'
+                          ? FButtonVariant.primary
+                          : FButtonVariant.outline,
+                      onPress: () => notifier.onSearchInChanged('lemma'),
+                      child: const Text('Sambas'),
+                    ),
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: FButton(
+                      size: .sm,
+                      variant: state.searchIn == 'translation'
+                          ? FButtonVariant.primary
+                          : FButtonVariant.outline,
+                      onPress: () => notifier.onSearchInChanged('translation'),
+                      child: const Text('Indonesia'),
+                    ),
+                  ),
+                ],
               ),
             ),
-          Expanded(child: _buildBody(context, ref, theme, state, scroll)),
-        ],
+            FTextField(
+              control: FTextFieldControl.managed(
+                controller: controller,
+                onChange: (value) => notifier.onQueryChanged(value.text),
+              ),
+              focusNode: focusNode,
+              hint: state.searchIn == 'translation'
+                  ? 'Cari kata Indonesia...'
+                  : 'Cari atau saring kata Sambas...',
+              clearable: (value) => value.text.isNotEmpty,
+              prefixBuilder: (context, style, variants) =>
+                  FTextField.prefixIconBuilder(
+                    context,
+                    style,
+                    variants,
+                    const Icon(FLucideIcons.search),
+                  ),
+            ),
+            if (state.errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                child: FAlert(
+                  variant: FAlertVariant.destructive,
+                  title: Text(state.errorMessage!),
+                ),
+              ),
+            if (showHistory)
+              _SearchHistorySection(
+                history: history,
+                onPick: (q) {
+                  controller.text = q;
+                  notifier.onQueryChanged(q);
+                },
+                onRemove: (q) => ref
+                    .read(searchHistoryControllerProvider.notifier)
+                    .remove(q),
+                onClear: () =>
+                    ref.read(searchHistoryControllerProvider.notifier).clear(),
+              )
+            else
+              Expanded(child: _buildBody(context, ref, theme, state, scroll)),
+          ],
+        ),
       ),
     );
   }
@@ -226,7 +250,7 @@ class WordListPage extends HookConsumerWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         children: [
           Expanded(
@@ -321,7 +345,7 @@ class _ListSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            padding: const EdgeInsets.only(bottom: 24),
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
@@ -375,6 +399,82 @@ class _LoadingMoreFooter extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Riwayat pencarian: tampil saat field kosong. Tap = jalankan query itu,
+/// ikon x = hapus satu, "Hapus" = bersihkan semua. Data lokal di HP
+/// (shared_preferences), tidak dikirim ke server.
+class _SearchHistorySection extends StatelessWidget {
+  const _SearchHistorySection({
+    required this.history,
+    required this.onPick,
+    required this.onRemove,
+    required this.onClear,
+  });
+
+  final List<String> history;
+  final ValueChanged<String> onPick;
+  final ValueChanged<String> onRemove;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Gap(8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Riwayat pencarian',
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: onClear,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    'Hapus',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Gap(4),
+          Expanded(
+            child: ListView.builder(
+              itemCount: history.length,
+              itemBuilder: (context, index) {
+                final q = history[index];
+                return FTile(
+                  prefix: const Icon(FLucideIcons.history, size: 16),
+                  title: Text(q),
+                  suffix: GestureDetector(
+                    onTap: () => onRemove(q),
+                    child: const Icon(FLucideIcons.x, size: 16),
+                  ),
+                  onPress: () => onPick(q),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

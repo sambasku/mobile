@@ -6,6 +6,7 @@ import 'place.dart';
 /// [ingredients] dan [servingSuggestion]. [PlaceImage] dipakai langsung
 /// dari place.dart karena skemanya identik.
 export 'place.dart' show PlaceImage;
+
 class Cuisine {
   const Cuisine({
     required this.id,

@@ -3,12 +3,11 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/paged_list_bridge.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../review_router.dart';
@@ -16,8 +15,8 @@ import '../providers/review_history_providers.dart';
 
 /// Riwayat keputusan verifikasi milik user auth (GET mine=true).
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
-/// ekor, tanpa tombol "Muat lagi".
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
+/// tanpa tombol "Muat lagi".
 class ReviewHistoryPage extends ConsumerStatefulWidget {
   const ReviewHistoryPage({super.key});
 
@@ -26,28 +25,6 @@ class ReviewHistoryPage extends ConsumerStatefulWidget {
 }
 
 class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
-  late final PagingController<int, ReviewItem> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<ReviewItem>(
-      loadMore: () =>
-          ref.read(reviewHistoryControllerProvider.notifier).loadMore(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _refresh() async {
-    ref.invalidate(reviewHistoryControllerProvider);
-    await ref.read(reviewHistoryControllerProvider.future);
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -80,6 +57,11 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
         ),
       ),
     );
+
+    Future<void> refresh() async {
+      ref.invalidate(reviewHistoryControllerProvider);
+      await ref.read(reviewHistoryControllerProvider.future);
+    }
 
     return FScaffold(
       childPad: true,
@@ -127,71 +109,44 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
                 ),
               ),
               data: (state) {
-                // Sinkron snapshot list Riverpod -> PagingController.
-                // build() adalah satu-satunya penulis value setelah initState,
-                // jadi tidak ada konflik dengan update internal controller.
-                _pagingController.value = buildPagingState<ReviewItem>(
-                  items: state.items,
-                  hasMore: state.hasMore,
-                );
-
                 final emptyMessage = filter == null
                     ? 'Belum ada keputusan verifikasi'
                     : 'Tidak ada keputusan dengan status ini';
 
-                return RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: PagedListView<int, ReviewItem>.separated(
-                    state: _pagingController.value,
-                    fetchNextPage: _pagingController.fetchNextPage,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    builderDelegate: PagedChildBuilderDelegate<ReviewItem>(
-                      itemBuilder: (context, item, index) =>
-                          _HistoryTile(item: item),
-                      noItemsFoundIndicatorBuilder: (context) => Center(
-                        child: Text(
-                          emptyMessage,
-                          style: theme.typography.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                      newPageProgressIndicatorBuilder: (context) =>
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                if (state.items.isEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: refresh,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: constraints.maxHeight,
                             child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                              child: Text(
+                                emptyMessage,
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                      newPageErrorIndicatorBuilder: (context) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Gagal memuat halaman berikutnya',
-                              style: theme.typography.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ),
-                            const Gap(10),
-                            FButton(
-                              variant: FButtonVariant.outline,
-                              onPress: _pagingController.fetchNextPage,
-                              child: const Text('Coba lagi'),
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: refresh,
+                  child: TileGroupList<ReviewItem>(
+                    items: state.items,
+                    hasMore: state.hasMore,
+                    onLoadMore: () => ref
+                        .read(reviewHistoryControllerProvider.notifier)
+                        .loadMore(),
+                    tileBuilder: (context, item) => _HistoryTile(item: item),
                   ),
                 );
               },
@@ -263,11 +218,13 @@ class _ListSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            padding: const EdgeInsets.only(bottom: 24),
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
-                children: [for (var i = 0; i < 6; i++) const _SkeletonTile()],
+                children: [
+                  for (var i = 0; i < 6; i++) const _SkeletonTile(),
+                ],
               ),
             ],
           ),

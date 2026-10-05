@@ -420,69 +420,62 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                 const Gap(12),
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final screenW = MediaQuery.sizeOf(context).width;
-                    final sideInset =
-                        ((screenW - constraints.maxWidth) / 2).clamp(0.0, 48.0);
                     final src = item.images[active].displaySource;
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: -sideInset),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                final urls = [
-                                  for (final img in item.images)
-                                    if (img.displaySource != null)
-                                      displayImageUrl(
-                                            img.displaySource!,
-                                            width: 1200,
-                                          ) ??
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 4 / 3,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              final urls = [
+                                for (final img in item.images)
+                                  if (img.displaySource != null)
+                                    displayImageUrl(
                                           img.displaySource!,
-                                ];
-                                if (urls.isEmpty) return;
-                                showImagePreview(
-                                  context,
-                                  urls: urls,
-                                  initialIndex: active.clamp(0, urls.length - 1),
-                                );
-                              },
-                              child: ColoredBox(
-                                color: const Color(0x11000000),
-                                child: _censoredPreviews[active] != null
-                                    ? Image(
-                                        image: _censoredPreviews[active]!,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                      )
-                                    : src != null
-                                        ? CachedNetworkImageWithFallback(
-                                            imageUrl:
-                                                displayImageUrl(src) ?? src,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : const SizedBox.expand(),
-                              ),
+                                          width: 1200,
+                                        ) ??
+                                        img.displaySource!,
+                              ];
+                              if (urls.isEmpty) return;
+                              showImagePreview(
+                                context,
+                                urls: urls,
+                                initialIndex: active.clamp(0, urls.length - 1),
+                              );
+                            },
+                            child: ColoredBox(
+                              color: const Color(0x11000000),
+                              child: _censoredPreviews[active] != null
+                                  ? Image(
+                                      image: _censoredPreviews[active]!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                    )
+                                  : src != null
+                                      ? CachedNetworkImageWithFallback(
+                                          imageUrl:
+                                              displayImageUrl(src) ?? src,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : const SizedBox.expand(),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsets.fromLTRB(sideInset, 8, sideInset, 0),
-                            child: Text(
-                              'Ketuk foto untuk melihat ukuran penuh',
-                              textAlign: TextAlign.center,
-                              style: theme.typography.xs.copyWith(
-                                color: theme.colors.mutedForeground,
-                                height: 1.3,
-                              ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            'Ketuk foto untuk melihat ukuran penuh',
+                            textAlign: TextAlign.center,
+                            style: theme.typography.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.3,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -519,11 +512,13 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                     subtitle: const Text(
                       'Centang jika foto menunjukkan kekerasan',
                     ),
-                    suffix: Switch.adaptive(
+                    suffix: FSwitch(
+                      semanticsLabel:
+                          'Gambar ${active + 1} berisi kekerasan',
                       value: _violenceByIndex[active],
-                      onChanged: _busy
-                          ? null
-                          : (v) => setState(() => _violenceByIndex[active] = v),
+                      enabled: !_busy,
+                      onChange: (v) =>
+                          setState(() => _violenceByIndex[active] = v),
                     ),
                   ),
                 ],

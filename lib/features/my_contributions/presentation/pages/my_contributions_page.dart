@@ -3,13 +3,12 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_submission.dart';
 import '../../domain/failures/my_contribution_failure.dart';
@@ -18,8 +17,8 @@ import '../providers/my_contributions_providers.dart';
 
 /// Daftar usulan milik user login - GET /api/v1/contributions/my.
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
-/// ekor, tanpa tombol "Muat lagi".
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
+/// tanpa tombol "Muat lagi".
 class MyContributionsPage extends ConsumerWidget {
   const MyContributionsPage({super.key});
 
@@ -79,42 +78,16 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _ContributionsList extends ConsumerStatefulWidget {
+class _ContributionsList extends ConsumerWidget {
   const _ContributionsList();
 
-  @override
-  ConsumerState<_ContributionsList> createState() => _ContributionsListState();
-}
-
-class _ContributionsListState extends ConsumerState<_ContributionsList> {
-  late final PagingController<int, MySubmission> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<MySubmission>(
-      loadMore: () async {
-        final failure = await ref
-            .read(myContributionsListControllerProvider.notifier)
-            .loadMore();
-        if (failure != null) throw failure;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _refresh() async {
+  Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(myContributionsListControllerProvider);
     await ref.read(myContributionsListControllerProvider.future);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(myContributionsListControllerProvider);
 
@@ -162,24 +135,16 @@ class _ContributionsListState extends ConsumerState<_ContributionsList> {
 
     final state = async.requireValue;
 
-    // Sinkron snapshot list Riverpod -> PagingController (autoload di ekor
-    // list, tanpa tombol "Muat lagi").
-    _pagingController.value = buildPagingState<MySubmission>(
-      items: state.items,
-      hasMore: state.hasMore,
-    );
-
     if (state.items.isEmpty) {
       return RefreshIndicator(
-        onRefresh: _refresh,
+        onRefresh: () => _refresh(ref),
         child: LayoutBuilder(
           builder: (context, constraints) => ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
               SizedBox(
                 height: constraints.maxHeight,
-                child: Padding(
-                  padding: EdgeInsets.zero,
+                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -214,43 +179,15 @@ class _ContributionsListState extends ConsumerState<_ContributionsList> {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-      child: RefreshIndicator(
-        onRefresh: _refresh,
-        child: PagedListView<int, MySubmission>.separated(
-          state: _pagingController.value,
-          fetchNextPage: _pagingController.fetchNextPage,
-          physics: const AlwaysScrollableScrollPhysics(),
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          builderDelegate: PagedChildBuilderDelegate<MySubmission>(
-            itemBuilder: (context, item, index) => _SubmissionTile(item: item),
-            newPageProgressIndicatorBuilder: (context) => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: FCircularProgress()),
-            ),
-            newPageErrorIndicatorBuilder: (context) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Gagal memuat halaman berikutnya',
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                  const Gap(10),
-                  FButton(
-                    variant: FButtonVariant.outline,
-                    onPress: _pagingController.fetchNextPage,
-                    child: const Text('Coba lagi'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+    return RefreshIndicator(
+      onRefresh: () => _refresh(ref),
+      child: TileGroupList<MySubmission>(
+        items: state.items,
+        hasMore: state.hasMore,
+        onLoadMore: () => ref
+            .read(myContributionsListControllerProvider.notifier)
+            .loadMore(),
+        tileBuilder: (context, item) => _SubmissionTile(item: item),
       ),
     );
   }
@@ -330,7 +267,7 @@ class _ListSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            padding: const EdgeInsets.only(bottom: 24),
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),

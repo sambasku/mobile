@@ -105,14 +105,18 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   )
                 else
                   Expanded(
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      itemCount: filtered.length,
-                      separatorBuilder: (_, _) => const Divider(height: 1),
-                      itemBuilder: (context, i) =>
-                          _CuisineCard(cuisine: filtered[i]),
+                    child: RefreshIndicator(
+                      onRefresh: _reload,
+                      child: ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (context, i) =>
+                            _CuisineCard(cuisine: filtered[i]),
+                      ),
                     ),
                   ),
               ],

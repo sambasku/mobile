@@ -47,6 +47,10 @@ class ExplorePage extends HookConsumerWidget {
     final minHero = landscape ? 50.0 : 70.0;
     final collapseDistance = maxHero - minHero;
 
+    // Coming-soon disembunyikan default: tab Eksplorasi tampil 100% konten
+    // aktif. Toggle sesi-lokal (tidak persist) - kesan pertama yang penting.
+    final showComingSoon = useState(false);
+
     final collapseProgress = useScrollCollapse(
       scroll,
       distance: collapseDistance,
@@ -54,6 +58,9 @@ class ExplorePage extends HookConsumerWidget {
     );
 
     final heroHeight = maxHero - collapseProgress * collapseDistance;
+    final categories = showComingSoon.value
+        ? ExploreCategory.all
+        : ExploreCategory.all.where((c) => !c.comingSoon).toList();
 
     return Column(
       children: [
@@ -84,12 +91,38 @@ class ExplorePage extends HookConsumerWidget {
                   childAspectRatio: landscape ? 1.15 : 0.98,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final cat = ExploreCategory.all[index];
+                  final cat = categories[index];
                   return _CategoryCard(
                     category: cat,
                     onTap: () => _openCategory(context, cat),
                   );
-                }, childCount: ExploreCategory.all.length),
+                }, childCount: categories.length),
+              ),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        AnalyticsService.instance.log(
+                          'explore_coming_soon_toggle',
+                          params: {'show': showComingSoon.value ? 0 : 1},
+                        );
+                        showComingSoon.value = !showComingSoon.value;
+                      },
+                      child: FBadge(
+                        variant: showComingSoon.value
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.outline,
+                        child: Text(
+                          showComingSoon.value
+                              ? 'Sembunyikan yang segera hadir'
+                              : 'Lihat yang segera hadir',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
             ],

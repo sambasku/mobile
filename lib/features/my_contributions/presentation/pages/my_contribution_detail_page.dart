@@ -134,7 +134,7 @@ class _DetailBody extends ConsumerWidget {
     final reasonCode = item.reasonCode?.trim();
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      padding: const EdgeInsets.only(bottom: 24),
       children: [
         FTileGroup(
           children: [

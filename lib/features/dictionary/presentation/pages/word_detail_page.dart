@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -15,6 +17,7 @@ import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
@@ -830,7 +833,10 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
         title: Text(failure.message),
         variant: FToastVariant.destructive,
       );
+      return;
     }
+    // Bookmark sukses = momen positif; service memutuskan kapan prompt.
+    unawaited(InAppReviewService.maybePrompt());
   }
 }
 

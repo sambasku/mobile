@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/forui_palettes.dart';
+import 'core/theme/font_scale_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
 import 'core/widgets/version_banner.dart';
 import 'flavors.dart';
@@ -15,6 +16,7 @@ import 'shared/dev_tool/onboarding/onboarding_inspector.dart';
 import 'shared/dev_tool/storage_inspector/response_cache_inspector.dart';
 import 'shared/dev_tool/storage_inspector/secure_storage_inspector.dart';
 import 'shared/dev_tool/storage_inspector/shared_pref_inspector.dart';
+import 'shared/widgets/offline_banner.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -26,6 +28,8 @@ class App extends ConsumerWidget {
     final palette =
         foruiPalettes[ref.watch(foruiPaletteControllerProvider)] ??
         foruiPalettes[defaultPalette]!;
+    // Skala teks pilihan user (aksesibilitas) - default 1.0.
+    final fontScale = ref.watch(fontScaleControllerProvider);
 
     return MaterialApp.router(
       title: F.title,
@@ -63,25 +67,38 @@ class App extends ConsumerWidget {
 
         return FTheme(
           data: fTheme,
-          child: FToaster(
-            child: VersionBanner(
-              child: DevToolOverlay(
-                inspectors: [
-                  NetworkMonitorInspector(),
-                  if (F.isStaging && !F.hideDevChrome) ExceptionLogInspector(),
-                  ApiHostInspector(),
-                  SharedPrefInspector(),
-                  SecureStorageInspector(),
-                  ResponseCacheInspector(),
-                  DevToolGroup(
-                    name: 'UI',
-                    description: 'Tool UI lainnya',
-                    icon: FLucideIcons.layoutDashboard,
-                    color: const Color(0xFF7C3AED),
-                    children: [OnboardingInspector()],
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(fontScale),
+            ),
+            child: FToaster(
+              child: Column(
+                children: [
+                  const OfflineBanner(),
+                  Expanded(
+                    child: VersionBanner(
+                      child: DevToolOverlay(
+                        inspectors: [
+                          NetworkMonitorInspector(),
+                          if (F.isStaging && !F.hideDevChrome)
+                            ExceptionLogInspector(),
+                          ApiHostInspector(),
+                          SharedPrefInspector(),
+                          SecureStorageInspector(),
+                          ResponseCacheInspector(),
+                          DevToolGroup(
+                            name: 'UI',
+                            description: 'Tool UI lainnya',
+                            icon: FLucideIcons.layoutDashboard,
+                            color: const Color(0xFF7C3AED),
+                            children: [OnboardingInspector()],
+                          ),
+                        ],
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 ],
-                child: child ?? const SizedBox.shrink(),
               ),
             ),
           ),

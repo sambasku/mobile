@@ -13,6 +13,7 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/services/in_app_review_service.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
@@ -376,6 +377,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         }
         // ponytail: show lemma user typed, not server ULID (useless to contributors)
         _showSuccessDialog(context, _lemmaCtrl.text.trim());
+        // Momen sukses: kandidat prompt rating (service cek count+cooldown).
+        unawaited(InAppReviewService.maybePrompt());
         return;
       }
 

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../domain/explore_category.dart';
 import '../pages/cuisine_list_page.dart';
 import '../pages/place_list_page.dart';
+import '../pages/wilayah_page.dart';
 
 /// Detail kategori. Wisata/Cuisine = daftar Place; lainnya segera hadir.
 class ExploreCategoryPage extends StatelessWidget {
@@ -22,6 +23,8 @@ class ExploreCategoryPage extends StatelessWidget {
         ? const PlaceListPage(mode: PlacePageMode.wisata)
         : categoryId == 'kuliner'
         ? const CuisineListPage()
+        : categoryId == 'wilayah'
+        ? const WilayahPage()
         : FScaffold(
             childPad: false,
             header: FHeader.nested(

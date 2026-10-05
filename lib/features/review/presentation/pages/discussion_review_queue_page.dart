@@ -3,22 +3,21 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../discussion/domain/discussion_models.dart';
 import '../../review_router.dart';
 import '../providers/discussion_review_providers.dart';
 
 /// Antrean diskusi pending_review untuk verifikator.
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
-/// ekor, tanpa tombol "Muat lagi".
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
+/// tanpa tombol "Muat lagi".
 class DiscussionReviewQueuePage extends ConsumerWidget {
   const DiscussionReviewQueuePage({super.key});
 
@@ -67,37 +66,14 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
   }
 }
 
-class _QueueList extends ConsumerStatefulWidget {
+class _QueueList extends ConsumerWidget {
   const _QueueList({required this.state});
 
   final DiscussionReviewListState state;
 
   @override
-  ConsumerState<_QueueList> createState() => _QueueListState();
-}
-
-class _QueueListState extends ConsumerState<_QueueList> {
-  late final PagingController<int, DiscussionItem> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<DiscussionItem>(
-      loadMore: () =>
-          ref.read(discussionReviewListProvider.notifier).loadMore(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final state = widget.state;
 
     Future<void> refresh() async {
       ref.invalidate(discussionReviewListProvider);
@@ -129,50 +105,14 @@ class _QueueListState extends ConsumerState<_QueueList> {
       );
     }
 
-    // Sinkron snapshot list Riverpod -> PagingController (autoload di ekor
-    // list, tanpa tombol "Muat lagi").
-    _pagingController.value = buildPagingState<DiscussionItem>(
-      items: state.items,
-      hasMore: state.hasMore,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-      child: RefreshIndicator(
-        onRefresh: refresh,
-        child: PagedListView<int, DiscussionItem>.separated(
-          state: _pagingController.value,
-          fetchNextPage: _pagingController.fetchNextPage,
-          physics: const AlwaysScrollableScrollPhysics(),
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          builderDelegate: PagedChildBuilderDelegate<DiscussionItem>(
-            itemBuilder: (context, item, index) => _DiscussionTile(item: item),
-            newPageProgressIndicatorBuilder: (context) => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: FCircularProgress()),
-            ),
-            newPageErrorIndicatorBuilder: (context) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Gagal memuat halaman berikutnya',
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                  const Gap(10),
-                  FButton(
-                    variant: FButtonVariant.outline,
-                    onPress: _pagingController.fetchNextPage,
-                    child: const Text('Coba lagi'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child: TileGroupList<DiscussionItem>(
+        items: state.items,
+        hasMore: state.hasMore,
+        onLoadMore: () =>
+            ref.read(discussionReviewListProvider.notifier).loadMore(),
+        tileBuilder: (context, item) => _DiscussionTile(item: item),
       ),
     );
   }
@@ -195,19 +135,7 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
         : null;
     final thumbUrl = thumb == null ? null : (displayImageUrl(thumb) ?? thumb);
     return FTile(
-      prefix: thumbUrl != null
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SizedBox(
-                width: 48,
-                height: 48,
-                child: CachedNetworkImageWithFallback(
-                  imageUrl: thumbUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-          : const Icon(FLucideIcons.messageSquare),
+      prefix: const Icon(FLucideIcons.messageSquare),
       title: Text(
         preview.isEmpty ? '(tanpa teks)' : preview,
         maxLines: 2,
@@ -221,7 +149,26 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
           if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
         ].where((e) => e.isNotEmpty).join(' · '),
       ),
-      suffix: const Icon(FLucideIcons.chevronRight),
+      suffix: thumbUrl != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CachedNetworkImageWithFallback(
+                      imageUrl: thumbUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const Gap(8),
+                const Icon(FLucideIcons.chevronRight),
+              ],
+            )
+          : const Icon(FLucideIcons.chevronRight),
       onPress: () => context.push(ReviewRouter.discussionDetailPath(item.id)),
     );
   }
@@ -253,7 +200,7 @@ class _ListSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            padding: const EdgeInsets.only(bottom: 24),
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),

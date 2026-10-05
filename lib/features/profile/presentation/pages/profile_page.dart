@@ -220,6 +220,7 @@ class ProfilePage extends HookConsumerWidget {
                     children: [
                       themeModeTile(ref),
                       paletteTile(ref),
+                      fontScaleTile(ref),
                       FTile(
                         prefix: const Icon(FLucideIcons.info, size: 18),
                         title: const Text('Tentang SambasKu'),

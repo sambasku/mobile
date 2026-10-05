@@ -3,11 +3,10 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/paged_list_bridge.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_vote_item.dart';
 import '../../domain/failures/my_vote_failure.dart';
@@ -15,8 +14,8 @@ import '../providers/my_votes_providers.dart';
 
 /// Riwayat vote milik user login - GET /api/v1/votes/history.
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
-/// ekor, tanpa tombol "Muat lagi".
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
+/// tanpa tombol "Muat lagi".
 class MyVotesPage extends ConsumerWidget {
   const MyVotesPage({super.key});
 
@@ -76,41 +75,16 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _VotesList extends ConsumerStatefulWidget {
+class _VotesList extends ConsumerWidget {
   const _VotesList();
 
-  @override
-  ConsumerState<_VotesList> createState() => _VotesListState();
-}
-
-class _VotesListState extends ConsumerState<_VotesList> {
-  late final PagingController<int, MyVoteItem> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<MyVoteItem>(
-      loadMore: () async {
-        final failure =
-            await ref.read(myVotesListControllerProvider.notifier).loadMore();
-        if (failure != null) throw failure;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _refresh() async {
+  Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(myVotesListControllerProvider);
     await ref.read(myVotesListControllerProvider.future);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(myVotesListControllerProvider);
 
@@ -154,51 +128,31 @@ class _VotesListState extends ConsumerState<_VotesList> {
 
     final state = async.requireValue;
 
-    // Sinkron snapshot list Riverpod -> PagingController.
-    _pagingController.value = buildPagingState<MyVoteItem>(
-      items: state.items,
-      hasMore: state.hasMore,
-    );
-
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      child: PagedListView<int, MyVoteItem>.separated(
-        state: _pagingController.value,
-        fetchNextPage: _pagingController.fetchNextPage,
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        builderDelegate: PagedChildBuilderDelegate<MyVoteItem>(
-          itemBuilder: (context, item, index) => _VoteTile(item: item),
-          noItemsFoundIndicatorBuilder: (context) => SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.6,
-            child: const Center(child: Text('Belum ada vote')),
-          ),
-          newPageProgressIndicatorBuilder: (context) => const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Center(child: FCircularProgress()),
-          ),
-          newPageErrorIndicatorBuilder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Gagal memuat halaman berikutnya',
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-                const Gap(10),
-                FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: _pagingController.fetchNextPage,
-                  child: const Text('Coba lagi'),
-                ),
-              ],
-            ),
+    if (state.items.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () => _refresh(ref),
+        child: LayoutBuilder(
+          builder: (context, constraints) => ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                height: constraints.maxHeight,
+                child: const Center(child: Text('Belum ada vote')),
+              ),
+            ],
           ),
         ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => _refresh(ref),
+      child: TileGroupList<MyVoteItem>(
+        items: state.items,
+        hasMore: state.hasMore,
+        onLoadMore: () =>
+            ref.read(myVotesListControllerProvider.notifier).loadMore(),
+        tileBuilder: (context, item) => _VoteTile(item: item),
       ),
     );
   }
@@ -244,7 +198,7 @@ class _ListSkeleton extends StatelessWidget {
         duration: const Duration(milliseconds: 1500),
       ),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+        padding: const EdgeInsets.only(bottom: 24),
         children: [
           FTileGroup(
             physics: const NeverScrollableScrollPhysics(),

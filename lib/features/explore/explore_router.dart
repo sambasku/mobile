@@ -6,6 +6,7 @@ import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_detail_page.dart';
+import 'presentation/pages/region_detail_page.dart';
 
 class ExploreRouter {
   ExploreRouter._();
@@ -41,6 +42,17 @@ class ExploreRouter {
     name: 'ExploreRouter.pins',
   );
 
+  /// Detail kecamatan (slug = id) dan desa (slug = kode BPS).
+  static const kecamatan = RouteDefiner(
+    path: '/explore/kecamatan/:slug',
+    name: 'ExploreRouter.kecamatan',
+  );
+
+  static const desa = RouteDefiner(
+    path: '/explore/desa/:slug',
+    name: 'ExploreRouter.desa',
+  );
+
   /// Route detail di luar shell (push penuh). `pins` wajib sebelum `place`:
   /// GoRouter cocokkan berurutan, `/explore/place/:slug` menelan "pins".
   static final List<GoRoute> routes = [
@@ -58,6 +70,19 @@ class ExploreRouter {
       builder: (context, state) {
         return PinsPage(focusSlug: state.uri.queryParameters['slug']);
       },
+    ),
+    GoRoute(
+      path: kecamatan.path,
+      name: kecamatan.name,
+      builder: (context, state) =>
+          RegionDetailPage.kecamatan(slug: state.pathParameters['slug'] ?? ''),
+    ),
+    GoRoute(
+      path: desa.path,
+      name: desa.name,
+      builder: (context, state) => RegionDetailPage.desa(
+        slug: Uri.decodeComponent(state.pathParameters['slug'] ?? ''),
+      ),
     ),
     GoRoute(
       path: cuisineList.path,

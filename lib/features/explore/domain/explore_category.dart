@@ -22,6 +22,13 @@ class ExploreCategory {
   static const List<ExploreCategory> all = [
     // Aktif
     ExploreCategory(
+      id: 'wilayah',
+      title: 'Wilayah',
+      subtitle: 'Kecamatan dan desa di Sambas',
+      icon: FLucideIcons.signpost,
+      comingSoon: false,
+    ),
+    ExploreCategory(
       id: 'wisata',
       title: 'Wisata',
       subtitle: 'Destinasi di Sambas',
@@ -41,12 +48,6 @@ class ExploreCategory {
       title: 'Usaha',
       subtitle: 'UMKM dan jasa lokal',
       icon: FLucideIcons.store,
-    ),
-    ExploreCategory(
-      id: 'wilayah',
-      title: 'Wilayah',
-      subtitle: 'Kecamatan dan desa di Sambas',
-      icon: FLucideIcons.signpost,
     ),
     ExploreCategory(
       id: 'acara',

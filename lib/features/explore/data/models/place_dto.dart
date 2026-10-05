@@ -16,6 +16,7 @@ class PlaceDto {
     required this.lat,
     required this.lng,
     required this.shortDescription,
+    this.regionId,
     required this.images,
     required this.hours,
     required this.contact,
@@ -31,6 +32,7 @@ class PlaceDto {
   final double lat;
   final double lng;
   final String shortDescription;
+  final String? regionId;
   final List<PlaceImage> images;
   final String? hours;
   final String? contact;
@@ -119,6 +121,7 @@ class PlaceDto {
       lat: lat,
       lng: lng,
       shortDescription: short,
+      regionId: str('regionId'),
       images: images,
       hours: str('hours'),
       contact: str('contact'),
@@ -167,6 +170,7 @@ class PlaceDto {
     lat: lat,
     lng: lng,
     shortDescription: shortDescription,
+    regionId: regionId,
     images: images,
     hours: hours,
     contact: contact,

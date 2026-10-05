@@ -3,11 +3,10 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/paged_list_bridge.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../review_router.dart';
@@ -15,8 +14,8 @@ import '../providers/review_suggestions_providers.dart';
 
 /// Antrean usulan edit kata (GET admin/word-suggestions?status=pending).
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
-/// ekor, tanpa tombol "Muat lagi".
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
+/// tanpa tombol "Muat lagi".
 class ReviewSuggestionsPage extends ConsumerStatefulWidget {
   const ReviewSuggestionsPage({super.key});
 
@@ -27,32 +26,15 @@ class ReviewSuggestionsPage extends ConsumerStatefulWidget {
 
 class _ReviewSuggestionsPageState
     extends ConsumerState<ReviewSuggestionsPage> {
-  late final PagingController<int, WordSuggestionSummary> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<WordSuggestionSummary>(
-      loadMore: () =>
-          ref.read(reviewSuggestionsListProvider.notifier).loadMore(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _refresh() async {
-    ref.invalidate(reviewSuggestionsListProvider);
-    await ref.read(reviewSuggestionsListProvider.future);
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final async = ref.watch(reviewSuggestionsListProvider);
+
+    Future<void> refresh() async {
+      ref.invalidate(reviewSuggestionsListProvider);
+      await ref.read(reviewSuggestionsListProvider.future);
+    }
 
     return FScaffold(
       childPad: true,
@@ -89,60 +71,40 @@ class _ReviewSuggestionsPageState
           ),
         ),
         data: (state) {
-          // Sinkron snapshot list Riverpod -> PagingController.
-          _pagingController.value = buildPagingState<WordSuggestionSummary>(
-            items: state.items,
-            hasMore: state.hasMore,
-          );
-
-          return RefreshIndicator(
-            onRefresh: _refresh,
-            child: PagedListView<int, WordSuggestionSummary>.separated(
-              state: _pagingController.value,
-              fetchNextPage: _pagingController.fetchNextPage,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              builderDelegate:
-                  PagedChildBuilderDelegate<WordSuggestionSummary>(
-                itemBuilder: (context, item, index) =>
-                    _SuggestionTile(item: item),
-                noItemsFoundIndicatorBuilder: (context) => Center(
-                  child: Text(
-                    'Tidak ada usulan edit menunggu',
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                newPageProgressIndicatorBuilder: (context) => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Center(
-                    child: FCircularProgress(),
-                  ),
-                ),
-                newPageErrorIndicatorBuilder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Gagal memuat halaman berikutnya',
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
+          if (state.items.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: refresh,
+              child: LayoutBuilder(
+                builder: (context, constraints) => ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(
+                      height: constraints.maxHeight,
+                      child: Center(
+                        child: Text(
+                          'Tidak ada usulan edit menunggu',
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      const Gap(10),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: _pagingController.fetchNextPage,
-                        child: const Text('Coba lagi'),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: refresh,
+            child: TileGroupList<WordSuggestionSummary>(
+              items: state.items,
+              hasMore: state.hasMore,
+              onLoadMore: () => ref
+                  .read(reviewSuggestionsListProvider.notifier)
+                  .loadMore(),
+              tileBuilder: (context, item) => _SuggestionTile(item: item),
             ),
           );
         },
@@ -197,7 +159,7 @@ class _ListSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            padding: const EdgeInsets.only(bottom: 24),
             children: [
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),

@@ -21,10 +21,12 @@ import 'core/services/notification_service.dart';
 import 'core/services/notification_navigation.dart';
 import 'core/services/analytics_service.dart';
 import 'core/theme/forui_palette_controller.dart';
+import 'core/theme/font_scale_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
 import 'core/utils/tabfreeze_log.dart';
 import 'features/device/data/datasources/device_remote_datasource.dart';
 import 'features/device/data/repositories/device_repository_impl.dart';
+import 'features/dictionary/presentation/providers/search_history_provider.dart';
 import 'features/notification/presentation/providers/notification_providers.dart';
 import 'features/onboarding/data/onboarding_prefs.dart';
 import 'features/verifier_application/presentation/providers/verifier_application_providers.dart';
@@ -80,6 +82,8 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   await ThemeModeController.preload(prefs);
   await ForuiPaletteController.preload(prefs);
+  await FontScaleController.preload(prefs);
+  await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
 
   // L1 response cache (hive_ce) sebelum frame pertama - cold start
