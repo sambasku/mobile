@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../auth/presentation/models/auth_status_state.dart';
@@ -38,6 +39,8 @@ class ProfilePage extends HookConsumerWidget {
     final authStatus = ref.watch(authStatusProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
     final scroll = useScrollController();
+    // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
+    final versionFuture = useMemoized(PackageInfo.fromPlatform);
     // Animation, bukan double: ListView menu tidak rebuild tiap frame scroll.
     // Yang rebuild hanya title header + blok stat (AnimatedBuilder).
     final collapse = useScrollCollapse(scroll);
@@ -276,6 +279,23 @@ class ProfilePage extends HookConsumerWidget {
                       ],
                     ),
                   ],
+                  const Gap(16),
+                  // Label versi paling bawah. Gagal load = label hilang.
+                  FutureBuilder<PackageInfo>(
+                    future: versionFuture,
+                    builder: (context, snapshot) {
+                      final info = snapshot.data;
+                      if (info == null) return const SizedBox.shrink();
+                      return Center(
+                        child: Text(
+                          'v${info.version}(${info.buildNumber})',
+                          style: context.theme.typography.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

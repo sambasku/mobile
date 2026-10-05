@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:forui/forui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sambasku_mobile/core/network/auth_token_storage.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/core/services/analytics_service.dart';
@@ -137,6 +138,15 @@ class _ThrowingAdapter implements HttpClientAdapter {
 /// tamu menentukan tombol "Keluar" / "Masuk / Login", dan logout berfungsi.
 void main() {
   setUp(AnalyticsService.debugReset);
+  setUp(() {
+    PackageInfo.setMockInitialValues(
+      appName: 'SambasKu',
+      packageName: 'id.sambasku.mobile',
+      version: '0.1.0',
+      buildNumber: '42',
+      buildSignature: '',
+    );
+  });
   tearDown(AnalyticsService.debugReset);
 
   Future<void> pumpProfile(
@@ -364,5 +374,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('halaman komentar'), findsOneWidget);
+  });
+
+  testWidgets('label versi tampil paling bawah profil', (tester) async {
+    await pumpProfile(tester);
+
+    await tester.ensureVisible(find.text('v0.1.0(42)'));
+    expect(find.text('v0.1.0(42)'), findsOneWidget);
   });
 }

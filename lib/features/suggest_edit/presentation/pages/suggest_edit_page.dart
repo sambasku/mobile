@@ -756,10 +756,16 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           error: _errorText('padanan'),
           suffixBuilder: (context, style, _) => Padding(
             padding: style.clearButtonPadding,
-            child: FButton.icon(
-              style: style.clearButtonStyle,
-              onPress: () => _openKbbiSheet(forAdd: forAdd),
-              child: const Icon(FLucideIcons.bookOpen, semanticLabel: 'Ambil dari KBBI'),
+            // ponytail: ExcludeSemantics - SemanticsNode suffix bawaan
+            // MergeSemantics forui 0.22 bisa ber-rect terbalik saat subtree
+            // diswap (assert "Invisible SemanticsNodes",
+            // duobaseio/forui#1160). Makna tombol ada di description field.
+            child: ExcludeSemantics(
+              child: FButton.icon(
+                style: style.clearButtonStyle,
+                onPress: () => _openKbbiSheet(forAdd: forAdd),
+                child: const Icon(FLucideIcons.bookOpen),
+              ),
             ),
           ),
         ),
