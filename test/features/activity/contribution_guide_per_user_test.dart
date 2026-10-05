@@ -62,23 +62,27 @@ void main() {
     container.invalidate(contributionGuideUnreadProvider);
   }
 
-  void login(String userId) {
+  /// markLoggedIn set state sinkron, tapi build() awal authStatusProvider
+  /// (keepAlive, async) bisa masih in-flight dan menimpa state balik jadi
+  /// tamu setelahnya. Tunggu build awal selesai dulu sebelum set state.
+  Future<void> login(String userId) async {
+    await container.read(authStatusProvider.future);
     container
         .read(authStatusProvider.notifier)
         .markLoggedIn(_session(userId));
-    // Tunggu state stabil, lalu invalidasi guide supaya watch authStatus jalan
+    // Invalidasi guide supaya watch authStatus jalan
     container.invalidate(contributionGuideUnreadProvider);
   }
 
   test('user A read, login user B -> unread lagi', () async {
-    login('user-a');
+    await login('user-a');
     expect(await unread(), isTrue);
 
     await markRead('user-a');
     expect(await unread(), isFalse, reason: 'user A sudah tap Mengerti');
 
     // Login akun lain di HP yang sama.
-    login('user-b');
+    await login('user-b');
     expect(
       await unread(),
       isTrue,
@@ -87,11 +91,11 @@ void main() {
   });
 
   test('user A bolak-balik login tetap read, tidak ditanya ulang', () async {
-    login('user-a');
+    await login('user-a');
     await markRead('user-a');
 
-    login('user-b');
-    login('user-a');
+    await login('user-b');
+    await login('user-a');
     expect(await unread(), isFalse);
   });
 
@@ -99,14 +103,7 @@ void main() {
     await markRead(null);
     expect(await unread(), isFalse);
 
-    login('user-a');
-    // Debug: baca key prefs langsung
-    final prefs = await container.read(contributionGuidePrefsProvider.future);
-    print('prefs keys: ${prefs.getKeys()}');
-    final userKey = '${kContribGuideReadPrefsKeyPrefix}${container.read(authStatusProvider).value?.userId}';
-    print('key user-a: ${prefs.getString(userKey)}');
-    print('key guest: ${prefs.getString(kContribGuideReadPrefsKey)}');
-
+    await login('user-a');
     expect(await unread(), isTrue);
   });
 }

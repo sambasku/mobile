@@ -33,13 +33,9 @@ Future<bool> contributionGuideUnread(Ref ref) async {
   final prefs = await ref.watch(contributionGuidePrefsProvider.future);
   final auth = ref.watch(authStatusProvider).value;
 
-  print('[GUIDE DEBUG] auth.isAuth=${auth?.isAuth} userId=${auth?.userId}');
-  print('[GUIDE DEBUG] prefs keys=${prefs.getKeys().toList()}');
-
   if (auth == null || !auth.isAuth) {
     // Tamu: cek key legacy
     final legacyVal = prefs.getString(kContribGuideReadPrefsKey);
-    print('[GUIDE DEBUG] guest branch: legacyVal=$legacyVal');
     if (legacyVal != null) return false;
     return true;
   }
@@ -47,23 +43,14 @@ Future<bool> contributionGuideUnread(Ref ref) async {
   // Login: cek key per-user
   final userKey = '$kContribGuideReadPrefsKeyPrefix${auth.userId}';
   final userVal = prefs.getString(userKey);
-  print('[GUIDE DEBUG] user branch: userKey=$userKey userVal=$userVal');
   if (userVal != null) return false;
 
   // Tidak ada key per-user -> cek server
   final profile = await ref.watch(getMyProfileUseCaseProvider).call();
-  final result = profile.fold(
-    (failure) {
-      print('[GUIDE DEBUG] server error -> true');
-      return true;
-    },
-    (profile) {
-      final unread = !profile.hasReadContributionGuide;
-      print('[GUIDE DEBUG] server hasRead=${profile.hasReadContributionGuide} -> unread=$unread');
-      return unread;
-    },
+  return profile.fold(
+    (failure) => true,
+    (profile) => !profile.hasReadContributionGuide,
   );
-  return result;
 }
 
 /// Tandai guide sudah dibaca. Prefs lokal dulu (instant), PATCH server

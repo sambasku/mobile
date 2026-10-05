@@ -78,7 +78,9 @@ class WordDetailPage extends HookConsumerWidget {
     return StopAudioOnLeave(
       wordId: resolvedId,
       child: FScaffold(
-        childPad: true,
+        // childPad false: carousel foto full-bleed selebar layar; padding
+        // horizontal konten lain di-handle [_DetailBody].
+        childPad: false,
         header: FHeader.nested(
           title: Text(
             async.maybeWhen(data: (d) => d.lemma, orElse: () => 'Detail kata'),
@@ -323,17 +325,17 @@ class _DetailBody extends HookConsumerWidget {
       return null;
     }, [wordId]);
 
-    final primaryImage =
-        detail.images.where((i) => i.isPrimary).firstOrNull ??
-        detail.images.firstOrNull;
+    // Foto utama dulu, sisanya urutan API.
+    final orderedImages = [
+      ...detail.images.where((i) => i.isPrimary),
+      ...detail.images.where((i) => !i.isPrimary),
+    ];
     final allSpelling = detail.variants.every((v) => v.isSpellingVariant);
     // Ejaan alternatif hanya form pendek, tanpa afiks. Badge-nya mengalir
     // horizontal. Catatan (jarang) tetap satu baris supaya teksnya tidak hilang.
     final compactSpelling =
         allSpelling &&
-        detail.variants.every(
-          (v) => v.notes == null || v.notes!.isEmpty,
-        );
+        detail.variants.every((v) => v.notes == null || v.notes!.isEmpty);
 
     Future<void> requestRevealViolence() async {
       final ok = await confirmRevealViolenceImage(context);
@@ -363,8 +365,7 @@ class _DetailBody extends HookConsumerWidget {
       // Preview list: exclude pending images (no valid URL).
       final previewImages = detail.images
           .where(
-            (i) =>
-                !i.isPendingReview && !isKnownPendingPlaceholderUrl(i.url),
+            (i) => !i.isPendingReview && !isKnownPendingPlaceholderUrl(i.url),
           )
           .toList(growable: false);
       if (previewImages.isEmpty) return;
@@ -413,234 +414,208 @@ class _DetailBody extends HookConsumerWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
               children: [
-                // Header compact: thumb + meta
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (primaryImage != null) ...[
-                      Semantics(
-                        button: true,
-                        label: primaryImage.isPendingReview
-                            ? 'Gambar menunggu tinjauan'
-                            : primaryImage.hasViolenceWarning &&
-                                !violenceRevealed.value
-                            ? 'Foto berisi kekerasan, ketuk untuk menampilkan'
-                            : 'Pratinjau gambar',
-                        child: GestureDetector(
-                          onTap: () => openPreview(primaryImage),
-                          onLongPress:
-                              primaryImage.isPendingReview ||
-                                  isKnownPendingPlaceholderUrl(primaryImage.url)
-                              ? null
-                              : () => reportImageViolence(primaryImage),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: WordImageView(
-                              image: primaryImage,
-                              width: 72,
-                              height: 72,
-                              revealed: violenceRevealed.value,
-                              onRequestReveal: requestRevealViolence,
+                if (orderedImages.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _WordImageCarousel(
+                      images: orderedImages,
+                      revealed: violenceRevealed.value,
+                      onRequestReveal: requestRevealViolence,
+                      onOpenPreview: openPreview,
+                      onReportImage: reportImageViolence,
+                    ),
+                  ),
+                ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header meta: lemma + badge + tipe + pelafalan.
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              detail.lemma,
+                              style: theme.typography.xl.copyWith(
+                                fontWeight: FontWeight.w700,
+                                height: 1.15,
+                              ),
                             ),
                           ),
+                          if (detail.isVerified)
+                            Semantics(
+                              button: true,
+                              label: 'Lihat verifikator',
+                              child: GestureDetector(
+                                onTap: () => showVerifierAttributionSheet(
+                                  context,
+                                  detail,
+                                ),
+                                child: const VerifiedBadgeIcon(),
+                              ),
+                            )
+                          else
+                            _PendingStatusBadge(
+                              offerReview:
+                                  detail.status == 'published' &&
+                                  canReviewQueue(
+                                    ref.watch(authStatusProvider).value?.role,
+                                  ),
+                              onReview: () =>
+                                  _openWordReview(context, ref, wordId),
+                            ),
+                        ],
+                      ),
+                      const Gap(2),
+                      Text(
+                        detail.wordTypeLabel,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
                         ),
                       ),
-                      const Gap(12),
-                    ],
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  detail.lemma,
-                                  style: theme.typography.xl.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.15,
-                                  ),
-                                ),
+                      if (detail.pronunciations.isNotEmpty) ...[
+                        const Gap(4),
+                        Text(
+                          detail.pronunciations
+                              .map((p) => '${p.notation} ${p.value}')
+                              .join(' · '),
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+
+                      const Gap(10),
+                      PronunciationSection(
+                        wordId: wordId,
+                        languageId: detail.languageId,
+                        audios: detail.audios,
+                        spokenText: detail.lemma,
+                      ),
+
+                      if (detail.notes != null && detail.notes!.isNotEmpty) ...[
+                        const Gap(8),
+                        Text(
+                          detail.notes!,
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                      ],
+
+                      if (detail.usageLabels.isNotEmpty ||
+                          detail.categories.isNotEmpty) ...[
+                        const Gap(8),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            for (final code in detail.usageLabels)
+                              FBadge(
+                                variant: isProminentUsageLabel(code)
+                                    ? FBadgeVariant.primary
+                                    : FBadgeVariant.secondary,
+                                child: Text(usageLabelLabel(code)),
                               ),
-                              if (detail.isVerified)
-                                Semantics(
-                                  button: true,
-                                  label: 'Lihat verifikator',
-                                  child: GestureDetector(
-                                    onTap: () => showVerifierAttributionSheet(
-                                      context,
-                                      detail,
-                                    ),
-                                    child: const VerifiedBadgeIcon(),
-                                  ),
-                                )
-                              else
-                                _PendingStatusBadge(
-                                  offerReview:
-                                      detail.status == 'published' &&
-                                      canReviewQueue(
-                                        ref
-                                            .watch(authStatusProvider)
-                                            .value
-                                            ?.role,
-                                      ),
-                                  onReview: () =>
-                                      _openWordReview(context, ref, wordId),
+                            for (final c in detail.categories)
+                              FBadge(
+                                variant: FBadgeVariant.secondary,
+                                child: Text(c.name),
+                              ),
+                          ],
+                        ),
+                      ],
+
+                      const Gap(10),
+                      _WordVoteBar(wordId: wordId),
+
+                      if (detail.meanings.isNotEmpty) ...[
+                        const Gap(16),
+                        const _SectionLabel('Makna'),
+                        const Gap(6),
+                        ...detail.meanings.asMap().entries.map(
+                          (e) => _MeaningBlock(
+                            index: e.key + 1,
+                            lemma: detail.lemma,
+                            meaning: e.value,
+                            wordId: wordId,
+                            languageId: detail.languageId,
+                          ),
+                        ),
+                      ],
+
+                      if (detail.variants.isNotEmpty) ...[
+                        const Gap(14),
+                        _SectionLabel(
+                          allSpelling
+                              ? 'Variasi penulisan'
+                              : 'Variasi & bentuk turunan',
+                        ),
+                        const Gap(6),
+                        if (compactSpelling)
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: [
+                              for (final variant in detail.variants)
+                                FBadge(
+                                  variant: FBadgeVariant.secondary,
+                                  child: Text(variant.form),
                                 ),
                             ],
+                          )
+                        else
+                          ...detail.variants.map(
+                            (v) => _VariantRow(variant: v),
                           ),
-                          const Gap(2),
-                          Text(
-                            detail.wordTypeLabel,
-                            style: theme.typography.sm.copyWith(
-                              color: theme.colors.mutedForeground,
+                      ],
+
+                      ..._relatedSections(detail.relatedWords),
+
+                      if (detail.appearsIn.isNotEmpty) ...[
+                        const Gap(14),
+                        const _SectionLabel('Muncul dalam'),
+                        const Gap(4),
+                        ...detail.appearsIn.map((r) => _RelatedRow(related: r)),
+                      ],
+
+                      if (detail.combinedAttributionLabel != null ||
+                          detail.creatorAttributionLabel != null ||
+                          detail.verifierAttributionLabel != null) ...[
+                        const Gap(18),
+                        if (detail.combinedAttributionLabel != null)
+                          _AttributionLine(
+                            label: detail.combinedAttributionLabel!,
+                            username:
+                                detail.verifiedBy?.username ??
+                                detail.createdBy!.username,
+                            badge: detail.combinedByVerifier
+                                ? 'Verifikator'
+                                : null,
+                          )
+                        else ...[
+                          if (detail.creatorAttributionLabel != null)
+                            _AttributionLine(
+                              label: detail.creatorAttributionLabel!,
+                              username: detail.createdBy!.username,
                             ),
-                          ),
-                          if (detail.pronunciations.isNotEmpty) ...[
-                            const Gap(4),
-                            Text(
-                              detail.pronunciations
-                                  .map((p) => '${p.notation} ${p.value}')
-                                  .join(' · '),
-                              style: theme.typography.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                                fontStyle: FontStyle.italic,
-                              ),
+                          if (detail.verifierAttributionLabel != null) ...[
+                            const Gap(2),
+                            _AttributionLine(
+                              label: detail.verifierAttributionLabel!,
+                              username: detail.verifiedBy!.username,
                             ),
                           ],
                         ],
-                      ),
-                    ),
-                  ],
-                ),
-                if (primaryImage?.attribution case final credit?
-                    when !primaryImage!.isPendingReview) ...[
-                  const Gap(6),
-                  ImageCredit(attribution: credit, fontSize: 11),
-                ],
-
-                const Gap(10),
-                PronunciationSection(
-                  wordId: wordId,
-                  languageId: detail.languageId,
-                  audios: detail.audios,
-                  spokenText: detail.lemma,
-                ),
-
-                if (detail.notes != null && detail.notes!.isNotEmpty) ...[
-                  const Gap(8),
-                  Text(
-                    detail.notes!,
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-
-                if (detail.usageLabels.isNotEmpty ||
-                    detail.categories.isNotEmpty) ...[
-                  const Gap(8),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: [
-                      for (final code in detail.usageLabels)
-                        FBadge(
-                          variant: isProminentUsageLabel(code)
-                              ? FBadgeVariant.primary
-                              : FBadgeVariant.secondary,
-                          child: Text(usageLabelLabel(code)),
-                        ),
-                      for (final c in detail.categories)
-                        FBadge(
-                          variant: FBadgeVariant.secondary,
-                          child: Text(c.name),
-                        ),
-                    ],
-                  ),
-                ],
-
-                const Gap(10),
-                _WordVoteBar(wordId: wordId),
-
-                if (detail.meanings.isNotEmpty) ...[
-                  const Gap(16),
-                  const _SectionLabel('Makna'),
-                  const Gap(6),
-                  ...detail.meanings.asMap().entries.map(
-                    (e) => _MeaningBlock(
-                      index: e.key + 1,
-                      lemma: detail.lemma,
-                      meaning: e.value,
-                      wordId: wordId,
-                      languageId: detail.languageId,
-                    ),
-                  ),
-                ],
-
-                if (detail.variants.isNotEmpty) ...[
-                  const Gap(14),
-                  _SectionLabel(
-                    allSpelling
-                        ? 'Variasi penulisan'
-                        : 'Variasi & bentuk turunan',
-                  ),
-                  const Gap(6),
-                  if (compactSpelling)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        for (final variant in detail.variants)
-                          FBadge(
-                            variant: FBadgeVariant.secondary,
-                            child: Text(variant.form),
-                          ),
                       ],
-                    )
-                  else
-                    ...detail.variants.map((v) => _VariantRow(variant: v)),
-                ],
 
-                ..._relatedSections(detail.relatedWords),
-
-                if (detail.appearsIn.isNotEmpty) ...[
-                  const Gap(14),
-                  const _SectionLabel('Muncul dalam'),
-                  const Gap(4),
-                  ...detail.appearsIn.map((r) => _RelatedRow(related: r)),
-                ],
-
-                if (detail.combinedAttributionLabel != null ||
-                    detail.creatorAttributionLabel != null ||
-                    detail.verifierAttributionLabel != null) ...[
-                  const Gap(18),
-                  if (detail.combinedAttributionLabel != null)
-                    _AttributionLine(
-                      label: detail.combinedAttributionLabel!,
-                      username:
-                          detail.verifiedBy?.username ??
-                          detail.createdBy!.username,
-                      badge: detail.combinedByVerifier ? 'Verifikator' : null,
-                    )
-                  else ...[
-                    if (detail.creatorAttributionLabel != null)
-                      _AttributionLine(
-                        label: detail.creatorAttributionLabel!,
-                        username: detail.createdBy!.username,
-                      ),
-                    if (detail.verifierAttributionLabel != null) ...[
-                      const Gap(2),
-                      _AttributionLine(
-                        label: detail.verifierAttributionLabel!,
-                        username: detail.verifiedBy!.username,
-                      ),
+                      const Gap(16),
+                      _WordActionTileGroup(detail: detail, wordId: wordId),
                     ],
-                  ],
-                ],
-
-                const Gap(16),
-                _WordActionTileGroup(detail: detail, wordId: wordId),
+                  ),
+                ),
               ],
             ),
           ),
@@ -679,6 +654,124 @@ class _DetailBody extends HookConsumerWidget {
         ...grouped[key]!.map((r) => _RelatedRow(related: r)),
       ],
     ];
+  }
+}
+
+/// Carousel foto selebar layar di atas detail kata. Kredit per foto mengikuti
+/// foto yang sedang tampil; pending review tampil sebagai placeholder, foto
+/// kekerasan di-blur sampai di-reveal.
+class _WordImageCarousel extends StatefulWidget {
+  const _WordImageCarousel({
+    required this.images,
+    required this.revealed,
+    required this.onRequestReveal,
+    required this.onOpenPreview,
+    required this.onReportImage,
+  });
+
+  final List<WordImage> images;
+  final bool revealed;
+  final Future<void> Function() onRequestReveal;
+  final Future<void> Function(WordImage) onOpenPreview;
+  final Future<void> Function(WordImage) onReportImage;
+
+  @override
+  State<_WordImageCarousel> createState() => _WordImageCarouselState();
+}
+
+class _WordImageCarouselState extends State<_WordImageCarousel> {
+  final _controller = PageController();
+  int _index = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final images = widget.images;
+    final current = images[_index.clamp(0, images.length - 1)];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            aspectRatio: 16 / 10,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                PageView.builder(
+                  controller: _controller,
+                  itemCount: images.length,
+                  onPageChanged: (i) => setState(() => _index = i),
+                  itemBuilder: (context, i) {
+                    final img = images[i];
+                    final pending =
+                        img.isPendingReview ||
+                        isKnownPendingPlaceholderUrl(img.url);
+                    return Semantics(
+                      button: !pending,
+                      label: pending
+                          ? 'Gambar menunggu tinjauan'
+                          : img.hasViolenceWarning && !widget.revealed
+                          ? 'Foto berisi kekerasan, ketuk untuk menampilkan'
+                          : 'Pratinjau gambar',
+                      child: GestureDetector(
+                        onTap: () => widget.onOpenPreview(img),
+                        onLongPress: pending
+                            ? null
+                            : () => widget.onReportImage(img),
+                        child: WordImageView(
+                          image: img,
+                          fit: BoxFit.cover,
+                          revealed: widget.revealed,
+                          onRequestReveal: widget.onRequestReveal,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                if (images.length > 1)
+                  Positioned(
+                    right: 12,
+                    bottom: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.45),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        '${_index + 1}/${images.length}',
+                        style: theme.typography.xs.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (current.attribution case final credit?
+            when !current.isPendingReview) ...[
+          const Gap(6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ImageCredit(attribution: credit, fontSize: 11),
+          ),
+        ],
+      ],
+    );
   }
 }
 
@@ -913,9 +1006,9 @@ class _WordActionTileGroup extends ConsumerWidget {
         if (detail.images.isNotEmpty)
           FTile(
             prefix: const Icon(FLucideIcons.imageOff),
-            title: const Text('Laporkan foto ini berisi kekerasan'),
+            title: const Text('Laporkan foto'),
             subtitle: const Text(
-              'Foto ditandai agar orang lain harus ketuk dulu sebelum melihat',
+              'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat',
             ),
             suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
             onPress: () async {
@@ -941,9 +1034,7 @@ class _WordActionTileGroup extends ConsumerWidget {
               if (!context.mounted || !sent) return;
               showFToast(
                 context: context,
-                title: const Text(
-                  'Laporan foto terkirim. Terima kasih.',
-                ),
+                title: const Text('Laporan foto terkirim. Terima kasih.'),
               );
             },
           ),
@@ -1207,7 +1298,8 @@ class _DetailSkeleton extends StatelessWidget {
       duration: const Duration(milliseconds: 1500),
     );
 
-    // Mirror struktur [_DetailBody]: thumb+meta → vote → makna. Komentar ada di bar bawah.
+    // Mirror struktur [_DetailBody]: carousel full-bleed → meta → vote → makna.
+    // Komentar ada di bar bawah.
     return SkeletonizerConfig(
       data: SkeletonizerConfigData(effect: shimmer),
       child: IgnorePointer(
@@ -1216,97 +1308,107 @@ class _DetailSkeleton extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Bone(
-                    width: 72,
-                    height: 72,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  const Gap(12),
-                  Expanded(
-                    child: Column(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 10,
+                  child: Bone(width: double.infinity, height: double.infinity),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'lemma contoh kata',
-                          style: theme.typography.xl.copyWith(
-                            fontWeight: FontWeight.w700,
-                            height: 1.15,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'lemma contoh kata',
+                                style: theme.typography.xl.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.15,
+                                ),
+                              ),
+                              const Gap(2),
+                              Text(
+                                'Nomina',
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                              const Gap(4),
+                              Text(
+                                '/ma.kan/',
+                                style: theme.typography.sm.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const Gap(2),
-                        Text(
-                          'Nomina',
-                          style: theme.typography.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
+                        Bone.circle(size: 24),
+                      ],
+                    ),
+                    const Gap(8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        Bone(
+                          width: 56,
+                          height: 22,
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        const Gap(4),
-                        Text(
-                          '/ma.kan/',
-                          style: theme.typography.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                            fontStyle: FontStyle.italic,
-                          ),
+                        Bone(
+                          width: 72,
+                          height: 22,
+                          borderRadius: BorderRadius.circular(6),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const Gap(8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  Bone(
-                    width: 56,
-                    height: 22,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  Bone(
-                    width: 72,
-                    height: 22,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ],
-              ),
-              const Gap(10),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _votePrompt,
+                    const Gap(10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _votePrompt,
+                            style: theme.typography.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ),
+                        const Gap(8),
+                        const VoteButtonsSkeleton(compact: true),
+                      ],
+                    ),
+                    const Gap(16),
+                    const _SectionLabel('Makna'),
+                    const Gap(6),
+                    const _MeaningSkeletonBlock(index: 1),
+                    const _MeaningSkeletonBlock(index: 2),
+                    const Gap(16),
+                    Text(
+                      'Komentar',
                       style: theme.typography.sm.copyWith(
+                        fontWeight: FontWeight.w700,
                         color: theme.colors.mutedForeground,
+                        fontSize: 11,
+                        letterSpacing: 0.06,
                       ),
                     ),
-                  ),
-                  const Gap(8),
-                  const VoteButtonsSkeleton(compact: true),
-                ],
-              ),
-              const Gap(16),
-              const _SectionLabel('Makna'),
-              const Gap(6),
-              const _MeaningSkeletonBlock(index: 1),
-              const _MeaningSkeletonBlock(index: 2),
-              const Gap(16),
-              Text(
-                'Komentar',
-                style: theme.typography.sm.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colors.mutedForeground,
-                  fontSize: 11,
-                  letterSpacing: 0.06,
+                    const Gap(8),
+                    const _CommentSkeletonCard(),
+                    const Gap(8),
+                    const _CommentSkeletonCard(),
+                  ],
                 ),
               ),
-              const Gap(8),
-              const _CommentSkeletonCard(),
-              const Gap(8),
-              const _CommentSkeletonCard(),
             ],
           ),
         ),

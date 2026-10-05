@@ -142,6 +142,7 @@ class WordListPage extends HookConsumerWidget {
                     const Icon(FLucideIcons.search),
                   ),
             ),
+            const Gap(10),
             if (state.errorMessage != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),

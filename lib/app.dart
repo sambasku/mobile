@@ -21,6 +21,16 @@ import 'shared/widgets/offline_banner.dart';
 class App extends ConsumerWidget {
   const App({super.key});
 
+  // ponytail: Forui kasih shape rounded ke bottom sheet tapi clipBehavior null
+  // (= Clip.none), jadi Material anak full-bleed nutup sudut -> keliatan kotak.
+  // Set antiAlias sekali di sini biar semua showModalBottomSheet seragam.
+  static ThemeData _materialTheme(FThemeData f) {
+    final theme = f.toApproximateMaterialTheme();
+    return theme.copyWith(
+      bottomSheetTheme: theme.bottomSheetTheme.copyWith(clipBehavior: Clip.antiAlias),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeControllerProvider);
@@ -35,8 +45,8 @@ class App extends ConsumerWidget {
       title: F.title,
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
-      theme: palette.light.touch.toApproximateMaterialTheme(),
-      darkTheme: palette.dark.touch.toApproximateMaterialTheme(),
+      theme: _materialTheme(palette.light.touch),
+      darkTheme: _materialTheme(palette.dark.touch),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
       builder: (context, child) {

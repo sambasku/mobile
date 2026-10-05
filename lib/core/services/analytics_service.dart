@@ -51,6 +51,7 @@ abstract final class AnalyticsEvents {
   static const reviewSkip = 'review_skip';
   static const verifierApplySubmit = 'verifier_apply_submit';
   static const poiOpen = 'poi_open';
+  static const cuisineOpen = 'cuisine_open';
 }
 
 /// Abstraksi Firebase Analytics. Page/notifier memanggil ini, bukan
@@ -208,4 +209,8 @@ class AnalyticsService {
     AnalyticsEvents.poiOpen,
     params: {'slug': slug, 'category': category, 'entry': entry},
   );
+
+  /// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
+  Future<void> logCuisineOpen({required String slug}) =>
+      log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
 }

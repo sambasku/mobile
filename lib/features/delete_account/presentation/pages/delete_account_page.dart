@@ -22,24 +22,39 @@ class DeleteAccountPage extends HookConsumerWidget {
     useListenable(password);
     useListenable(confirmation);
 
-    ref.listen(deleteAccountProvider.select((s) => s.successMessage), (_, next) {
-      if (next == null) return;
-      showDialog<void>(
+    ref.listen(deleteAccountProvider.select((s) => s.successMessage), (_, next) async {
+      if (next == null || !context.mounted) return;
+      await showModalBottomSheet<void>(
         context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Akun dihapus'),
-          content: Text(next),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Navigator.of(dialogContext).pop();
-                await ref.read(authStatusProvider.notifier).logout();
-                if (context.mounted) context.go('/');
-              },
-              child: const Text('Tutup'),
-            ),
-          ],
+        useRootNavigator: true,
+        isScrollControlled: true,
+        barrierColor: Colors.black54,
+        builder: (sheetContext) => Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FTileGroup(
+                children: [
+                  FTile(
+                    title: const Text('Akun dihapus'),
+                    subtitle: Text(next),
+                  ),
+                  FTile(
+                    title: const Text(''),
+                    suffix: FButton(
+                      onPress: () async {
+                        Navigator.of(sheetContext).pop();
+                        await ref.read(authStatusProvider.notifier).logout();
+                        if (context.mounted) context.go('/');
+                      },
+                      child: const Text('Tutup'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });

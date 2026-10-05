@@ -164,23 +164,41 @@ class CreateDiscussionPage extends HookConsumerWidget {
             trimmed.isNotEmpty) {
           submitting.value = false;
           if (!context.mounted) return;
-          final sendText = await showDialog<bool>(
+          final sendText = await showModalBottomSheet<bool>(
             context: context,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('Semua gambar gagal'),
-              content: const Text(
-                'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?',
+            useRootNavigator: true,
+            isScrollControlled: true,
+            barrierColor: Colors.black54,
+            builder: (sheetContext) => Padding(
+              padding: MediaQuery.of(sheetContext).viewInsets,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FTileGroup(
+                    children: [
+                      FTile(
+                        title: const Text('Semua gambar gagal'),
+                        subtitle: const Text('Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?'),
+                      ),
+                      FTile(
+                        title: const Text(''),
+                        suffix: FButton(
+                          variant: FButtonVariant.destructive,
+                          onPress: () => Navigator.of(sheetContext).pop(true),
+                          child: const Text('Kirim tanpa gambar'),
+                        ),
+                      ),
+                      FTile(
+                        title: const Text(''),
+                        suffix: FButton(
+                          onPress: () => Navigator.of(sheetContext).pop(false),
+                          child: const Text('Batal'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: const Text('Batal'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: const Text('Kirim tanpa gambar'),
-                ),
-              ],
             ),
           );
           if (sendText == true) {

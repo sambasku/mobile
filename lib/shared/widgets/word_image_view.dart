@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
 
 import '../../core/utils/display_image_url.dart';
 import '../../features/dictionary/domain/entities/word_detail.dart';
@@ -36,11 +37,13 @@ class WordImageView extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.width,
     this.height,
+
     /// Dipanggil ketika user mengetuk CTA blur (thumb). Null = tap diabaikan.
     this.onRequestReveal,
   });
 
   final WordImage image;
+
   /// true = gambar kekerasan sudah di-unlock untuk sesi ini.
   final bool revealed;
   final BoxFit fit;
@@ -87,20 +90,18 @@ class _PendingPlaceholder extends StatelessWidget {
 
   final BoxFit fit;
 
+  static const _darkGif = 'assets/gif/pending_review_dark.gif';
+  static const _lightGif = 'assets/gif/pending_review_light.gif';
+
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: 'Menunggu tinjauan',
-      child: ColoredBox(
-        color: theme.colors.muted,
-        child: Center(
-          child: Icon(
-            FLucideIcons.clock,
-            size: 20,
-            color: theme.colors.mutedForeground,
-          ),
-        ),
+      child: Image.asset(
+        dark ? _darkGif : _lightGif,
+        fit: fit,
+        gaplessPlayback: true,
       ),
     );
   }
@@ -187,26 +188,55 @@ class _BlurredViolenceThumb extends StatelessWidget {
 
 /// Dialog konfirmasi sebelum menampilkan foto kekerasan.
 Future<bool> confirmRevealViolenceImage(BuildContext context) async {
-  final theme = context.theme;
-  final result = await showDialog<bool>(
+  final result = await showModalBottomSheet<bool>(
     context: context,
-    builder: (ctx) {
-      return AlertDialog(
-        title: Text('Lihat foto ini?', style: theme.typography.lg),
-        content: Text(
-          'Foto ini memperlihatkan kekerasan. Kalau ada orang di dekatmu, mereka juga bisa melihat.',
-          style: theme.typography.sm,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (sheetContext) {
+      final theme = sheetContext.theme;
+      return Material(
+        color: Theme.of(sheetContext).colorScheme.surface,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Lihat foto ini?',
+                  style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const Gap(8),
+                Text(
+                  'Foto ini memperlihatkan kekerasan. Kalau ada orang di dekatmu, mereka juga bisa melihat.',
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: () => Navigator.of(sheetContext).pop(false),
+                        child: const Text('Jangan dulu'),
+                      ),
+                    ),
+                    const Gap(12),
+                    Expanded(
+                      child: FButton(
+                        onPress: () => Navigator.of(sheetContext).pop(true),
+                        child: const Text('Lihat'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Jangan dulu'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Lihat'),
-          ),
-        ],
       );
     },
   );

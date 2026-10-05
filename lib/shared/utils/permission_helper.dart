@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:gal/gal.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -15,58 +16,86 @@ Future<bool> requestGalleryWriteAccess() async {
 }
 
 void showPermissionDeniedDialog(BuildContext context) {
-  showDialog<void>(
+  showModalBottomSheet<void>(
     context: context,
-    builder: (innerContext) {
-      return AlertDialog(
-        title: const Text('Izin Ditolak'),
-        content: const Text(
-            'Biar fitur ini jalan, izinkan akses '
-            'ke galeri atau kamera dari pengaturan aplikasi.',
-        ),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () => Navigator.of(innerContext).pop(),
-          ),
-          TextButton(
-            child: const Text('Pengaturan'),
-            onPressed: () {
-              openAppSettings();
-              Navigator.of(innerContext).pop();
-            },
+    useRootNavigator: true,
+    isScrollControlled: true,
+    barrierColor: Colors.black54,
+    builder: (sheetContext) => Padding(
+      padding: MediaQuery.of(sheetContext).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              FTile(
+                title: const Text('Izin Ditolak'),
+                subtitle: const Text('Biar fitur ini jalan, izinkan akses ke galeri atau kamera dari pengaturan aplikasi.'),
+              ),
+              FTile(
+                title: const Text(''),
+                suffix: FButton(
+                  onPress: () {
+                    openAppSettings();
+                    Navigator.of(sheetContext).pop();
+                  },
+                  child: const Text('Pengaturan'),
+                ),
+              ),
+              FTile(
+                title: const Text(''),
+                suffix: FButton(
+                  onPress: () => Navigator.of(sheetContext).pop(),
+                  child: const Text('OK'),
+                ),
+              ),
+            ],
           ),
         ],
-      );
-    },
+      ),
+    ),
   );
 }
 
 /// Dialog khusus saat izin mikrofon ditolak permanen (buka Pengaturan).
 void showMicrophonePermissionDeniedDialog(BuildContext context) {
-  showDialog<void>(
+  showModalBottomSheet<void>(
     context: context,
-    builder: (innerContext) {
-      return AlertDialog(
-        title: const Text('Izin mikrofon diperlukan'),
-        content: const Text(
-          'Akses mikrofon dimatikan untuk SambasKu. Aktifkan di Pengaturan '
-          'perangkat agar bisa merekam pelafalan kata.',
-        ),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () => Navigator.of(innerContext).pop(),
-          ),
-          TextButton(
-            child: const Text('Pengaturan'),
-            onPressed: () {
-              openAppSettings();
-              Navigator.of(innerContext).pop();
-            },
+    useRootNavigator: true,
+    isScrollControlled: true,
+    barrierColor: Colors.black54,
+    builder: (sheetContext) => Padding(
+      padding: MediaQuery.of(sheetContext).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              FTile(
+                title: const Text('Izin mikrofon diperlukan'),
+                subtitle: const Text('Akses mikrofon dimatikan untuk SambasKu. Aktifkan di Pengaturan perangkat agar bisa merekam pelafalan kata.'),
+              ),
+              FTile(
+                title: const Text(''),
+                suffix: FButton(
+                  onPress: () {
+                    openAppSettings();
+                    Navigator.of(sheetContext).pop();
+                  },
+                  child: const Text('Pengaturan'),
+                ),
+              ),
+              FTile(
+                title: const Text(''),
+                suffix: FButton(
+                  onPress: () => Navigator.of(sheetContext).pop(),
+                  child: const Text('OK'),
+                ),
+              ),
+            ],
           ),
         ],
-      );
-    },
+      ),
+    ),
   );
 }

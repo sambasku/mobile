@@ -60,23 +60,41 @@ class ReportBugPage extends HookConsumerWidget {
             ready.isEmpty) {
           submitting.value = false;
           if (!context.mounted) return;
-          final sendText = await showDialog<bool>(
+          final sendText = await showModalBottomSheet<bool>(
             context: context,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('Semua gambar gagal'),
-              content: const Text(
-                'Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?',
+            useRootNavigator: true,
+            isScrollControlled: true,
+            barrierColor: Colors.black54,
+            builder: (sheetContext) => Padding(
+              padding: MediaQuery.of(sheetContext).viewInsets,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FTileGroup(
+                    children: [
+                      FTile(
+                        title: const Text('Semua gambar gagal'),
+                        subtitle: const Text('Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?'),
+                      ),
+                      FTile(
+                        title: const Text(''),
+                        suffix: FButton(
+                          variant: FButtonVariant.destructive,
+                          onPress: () => Navigator.of(sheetContext).pop(true),
+                          child: const Text('Kirim tanpa gambar'),
+                        ),
+                      ),
+                      FTile(
+                        title: const Text(''),
+                        suffix: FButton(
+                          onPress: () => Navigator.of(sheetContext).pop(false),
+                          child: const Text('Batal'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: const Text('Batal'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: const Text('Kirim tanpa gambar'),
-                ),
-              ],
             ),
           );
           if (sendText == true) {
@@ -200,25 +218,41 @@ class ReportBugPage extends HookConsumerWidget {
                 if (trimmed.length >= 10) {
                   WidgetsBinding.instance.addPostFrameCallback((_) async {
                     if (!context.mounted) return;
-                    final sendText = await showDialog<bool>(
+                    final sendText = await showModalBottomSheet<bool>(
                       context: context,
-                      builder: (dialogContext) => AlertDialog(
-                        title: const Text('Gambar tidak bisa diunggah'),
-                        content: const Text(
-                          'Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?',
+                      useRootNavigator: true,
+                      isScrollControlled: true,
+                      barrierColor: Colors.black54,
+                      builder: (sheetContext) => Padding(
+                        padding: MediaQuery.of(sheetContext).viewInsets,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FTileGroup(
+                              children: [
+                                FTile(
+                                  title: const Text('Gambar tidak bisa diunggah'),
+                                  subtitle: const Text('Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?'),
+                                ),
+                                FTile(
+                                  title: const Text(''),
+                                  suffix: FButton(
+                                    variant: FButtonVariant.destructive,
+                                    onPress: () => Navigator.of(sheetContext).pop(true),
+                                    child: const Text('Kirim tanpa gambar'),
+                                  ),
+                                ),
+                                FTile(
+                                  title: const Text(''),
+                                  suffix: FButton(
+                                    onPress: () => Navigator.of(sheetContext).pop(false),
+                                    child: const Text('Batal'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.of(dialogContext).pop(false),
-                            child: const Text('Batal'),
-                          ),
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.of(dialogContext).pop(true),
-                            child: const Text('Kirim tanpa gambar'),
-                          ),
-                        ],
                       ),
                     );
                     if (sendText == true && context.mounted) {

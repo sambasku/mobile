@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../domain/entities/cuisine.dart';
 import '../providers/cuisine_providers.dart';
@@ -25,7 +28,14 @@ class CuisineDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cuisineAsync = ref.watch(cuisineProvider);
     final item = cuisineAsync.value?.where((k) => k.slug == slug).firstOrNull;
-    if (item != null) return _Body(item: item);
+    if (item != null) {
+      // Log cuisine_open sekali saat detail tampil (bukan di build stateless
+      // kartu list - bisa multi-fire).
+      unawaited(
+        AnalyticsService.instance.logCuisineOpen(slug: item.slug),
+      );
+      return _Body(item: item);
+    }
 
     return FScaffold(
       childPad: false,

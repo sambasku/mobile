@@ -51,13 +51,31 @@ class ExplorePage extends HookConsumerWidget {
     // aktif. Toggle sesi-lokal (tidak persist) - kesan pertama yang penting.
     final showComingSoon = useState(false);
 
-    final collapseProgress = useScrollCollapse(
+    // Animation, bukan double: grid kategori tidak rebuild tiap frame scroll.
+    // Hanya hero (AnimatedBuilder) yang ikut nilai collapse.
+    final collapse = useScrollCollapse(
       scroll,
       distance: collapseDistance,
       duration: const Duration(milliseconds: 200),
     );
 
-    final heroHeight = maxHero - collapseProgress * collapseDistance;
+    // ponytail: heightFn di-invoke per frame di AnimatedBuilder, tanpa
+    // AnimatedContainer (restart tween tiap tick scroll = jitter).
+    Widget hero() => AnimatedBuilder(
+      animation: collapse,
+      builder: (context, _) {
+        final t = collapse.value;
+        final heroHeight = maxHero - t * collapseDistance;
+        return SizedBox(
+          height: heroHeight,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: ExploreMapHero(height: heroHeight),
+          ),
+        );
+      },
+    );
+
     final categories = showComingSoon.value
         ? ExploreCategory.all
         : ExploreCategory.all.where((c) => !c.comingSoon).toList();
@@ -69,16 +87,10 @@ class ExplorePage extends HookConsumerWidget {
           suffixes: [ThemeToggleHeaderAction()],
         ),
         // Hero map yang mengecil saat scroll; di luar CustomScrollView
-        // agar platform view MapLibre tidak ikut di-scroll.
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          height: heroHeight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: ExploreMapHero(height: heroHeight),
-          ),
-        ),
+        // agar platform view MapLibre tidak ikut di-scroll. Tanpa
+        // AnimatedContainer: nilai sudah scroll-proportional, tween tambahan
+        // hanya bikin gerak mengejar dan platform view resize dobel.
+        hero(),
         Expanded(
           child: CustomScrollView(
             controller: scroll,

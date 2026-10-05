@@ -108,17 +108,18 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 220),
-    )..addListener(() {
-        final t = _tween;
-        if (t == null) return;
-        setState(() {
-          _dx = t.value.dx;
-          _dy = t.value.dy;
+    _anim =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 220),
+        )..addListener(() {
+          final t = _tween;
+          if (t == null) return;
+          setState(() {
+            _dx = t.value.dx;
+            _dy = t.value.dy;
+          });
         });
-      });
     final id = widget.hintId;
     if (id != null && !_hinted.contains(id)) {
       _hintTimer = Timer(const Duration(milliseconds: 700), _playHint);
@@ -136,8 +137,10 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     final a = _width * 0.2;
     TweenSequenceItem<Offset> step(double from, double to, double weight) =>
         TweenSequenceItem(
-          tween: Tween(begin: Offset(from, 0), end: Offset(to, 0))
-              .chain(CurveTween(curve: Curves.easeInOutCubic)),
+          tween: Tween(
+            begin: Offset(from, 0),
+            end: Offset(to, 0),
+          ).chain(CurveTween(curve: Curves.easeInOutCubic)),
           weight: weight,
         );
     _tween = TweenSequence([
@@ -219,9 +222,10 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
   Future<void> _animateTo(Offset target, {Duration? duration}) async {
     _nudging = false;
     _anim.duration = duration ?? const Duration(milliseconds: 220);
-    _tween = Tween<Offset>(begin: Offset(_dx, _dy), end: target).animate(
-      CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic),
-    );
+    _tween = Tween<Offset>(
+      begin: Offset(_dx, _dy),
+      end: target,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic));
     _anim.reset();
     await _anim.forward();
   }
@@ -241,11 +245,8 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
     if (!widget.enabled) return;
     setState(() => _busyGesture = true);
     // Fling cepat bisa commit tanpa pernah lewat ambang: getar di sini juga.
-    if (direction == SwipeDecisionDirection.skip) {
-      HapticFeedback.lightImpact();
-    } else {
-      HapticFeedback.heavyImpact();
-    }
+    // Medium di semua jalur commit - konsisten dengan haptic ambang drag.
+    HapticFeedback.mediumImpact();
 
     final target = switch (direction) {
       SwipeDecisionDirection.positive => Offset(_width * 1.35, 0),
@@ -398,20 +399,22 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
         return RawGestureDetector(
           gestures: {
-            SoftEagerPanGestureRecognizer: GestureRecognizerFactoryWithHandlers<
-                SoftEagerPanGestureRecognizer>(
-              () => SoftEagerPanGestureRecognizer(
-                claimSlop: _axisLockSlop,
-                shouldClaimVertical: _canClaimVerticalSkip,
-              ),
-              (instance) {
-                instance
-                  ..shouldClaimVertical = _canClaimVerticalSkip
-                  ..onUpdate = canPan ? _onPanUpdate : null
-                  ..onEnd = canPan ? _onPanEnd : null
-                  ..onCancel = canPan ? () => _springBack() : null;
-              },
-            ),
+            SoftEagerPanGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<
+                  SoftEagerPanGestureRecognizer
+                >(
+                  () => SoftEagerPanGestureRecognizer(
+                    claimSlop: _axisLockSlop,
+                    shouldClaimVertical: _canClaimVerticalSkip,
+                  ),
+                  (instance) {
+                    instance
+                      ..shouldClaimVertical = _canClaimVerticalSkip
+                      ..onUpdate = canPan ? _onPanUpdate : null
+                      ..onEnd = canPan ? _onPanEnd : null
+                      ..onCancel = canPan ? () => _springBack() : null;
+                  },
+                ),
           },
           behavior: HitTestBehavior.translucent,
           child: Transform.translate(
@@ -429,7 +432,8 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                   child: Stack(
                     children: [
                       body,
-                      if (widget.overlayStyle == SwipeDecisionOverlayStyle.label) ...[
+                      if (widget.overlayStyle ==
+                          SwipeDecisionOverlayStyle.label) ...[
                         _SwipeLabelOverlay(
                           t: positiveT,
                           label: widget.positiveLabel,
@@ -462,8 +466,8 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                         _SwipeIconOverlay(
                           t: skipT,
                           icon: widget.skipIcon ?? FLucideIcons.arrowUp,
-                          color: widget.skipColor ??
-                              theme.colors.mutedForeground,
+                          color:
+                              widget.skipColor ?? theme.colors.mutedForeground,
                           label: widget.skipLabel,
                         ),
                       ],
@@ -495,8 +499,10 @@ class _SwipeLabelOverlay extends StatelessWidget {
     if (t < SwipeDecisionCardState._overlayVisibleFloor) {
       return const SizedBox.shrink();
     }
-    final opacity = (t * SwipeDecisionCardState._overlayMaxOpacity)
-        .clamp(0.0, SwipeDecisionCardState._overlayMaxOpacity);
+    final opacity = (t * SwipeDecisionCardState._overlayMaxOpacity).clamp(
+      0.0,
+      SwipeDecisionCardState._overlayMaxOpacity,
+    );
     final scale = lerpDouble(
       SwipeDecisionCardState._overlayMinScale,
       SwipeDecisionCardState._overlayMaxScale,
@@ -510,8 +516,10 @@ class _SwipeLabelOverlay extends StatelessWidget {
             scale: scale,
             child: Center(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.92),
                   borderRadius: BorderRadius.circular(10),
