@@ -1,8 +1,9 @@
-/// Reproduksi assert "Invisible SemanticsNodes should not be added to the
-/// tree" saat toggle chip Sederhana -> Lengkap di form kontribusi.
-///
-/// Node yang dilaporkan: suffix icon "Ambil dari KBBI" (FTextField
-/// suffixBuilder) di bawah MergeSemantics bawaan forui 0.22.x.
+// Reproduksi assert "Invisible SemanticsNodes should not be added to the
+// tree" saat toggle chip Sederhana -> Lengkap di form kontribusi.
+//
+// Node yang dilaporkan: suffix icon "Ambil dari KBBI" (FTextField
+// suffixBuilder) di bawah MergeSemantics bawaan forui 0.22.x.
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -13,7 +14,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
-import 'package:sambasku_mobile/features/contribution/domain/providers/contribution_domain_providers.dart';
 import 'package:sambasku_mobile/features/contribution/presentation/pages/contribute_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

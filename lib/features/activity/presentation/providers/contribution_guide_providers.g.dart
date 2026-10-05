@@ -101,4 +101,4 @@ final class ContributionGuideUnreadProvider
 }
 
 String _$contributionGuideUnreadHash() =>
-    r'bc55808f95490ff062ec3b199620b8fb27a4cfec';
+    r'a7ec4283475e9c1177285c8e0668811294fd641f';

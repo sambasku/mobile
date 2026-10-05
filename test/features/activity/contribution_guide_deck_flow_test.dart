@@ -1,5 +1,6 @@
 import 'dart:ui' show Size;
 
+import 'package:flutter/material.dart' show debugDumpApp;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +12,6 @@ import 'package:sambasku_mobile/core/services/analytics_service.dart';
 import 'package:sambasku_mobile/core/theme/forui_palette_controller.dart';
 import 'package:sambasku_mobile/core/theme/theme_mode_controller.dart';
 import 'package:sambasku_mobile/features/onboarding/data/onboarding_prefs.dart';
-import 'package:sambasku_mobile/features/activity/presentation/widgets/contribution_guide_sheet.dart';
-import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_section.dart';
 import 'package:sambasku_mobile/features/search_miss/domain/entities/search_miss.dart';
 import 'package:sambasku_mobile/features/search_miss/domain/failures/search_miss_failure.dart';
 import 'package:sambasku_mobile/features/search_miss/domain/providers/search_miss_domain_providers.dart';
@@ -25,10 +24,8 @@ import 'package:sambasku_mobile/features/dictionary/domain/providers/dictionary_
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/usecases/list_latest_words_use_case.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sambasku_mobile/flavors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Integrasi guide Kontribusi + deck: setelah tap "Mengerti", konten deck
 /// HARUS kembali. Race tertutup: notifikasi routerDelegate nyasar saat

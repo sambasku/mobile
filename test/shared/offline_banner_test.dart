@@ -10,12 +10,13 @@ import 'package:sambasku_mobile/shared/widgets/offline_banner.dart';
 
 void main() {
   test('connectivity: semua none = offline, ada wifi = online', () {
-    final allNone = [ConnectivityResult.none];
-    final hasWifi = [ConnectivityResult.wifi, ConnectivityResult.none];
-    final offlineFn = (List<ConnectivityResult> r) =>
+    bool offlineFn(List<ConnectivityResult> r) =>
         r.isEmpty || r.every((x) => x == ConnectivityResult.none);
-    expect(offlineFn(allNone), isTrue);
-    expect(offlineFn(hasWifi), isFalse);
+    expect(offlineFn([ConnectivityResult.none]), isTrue);
+    expect(
+      offlineFn([ConnectivityResult.wifi, ConnectivityResult.none]),
+      isFalse,
+    );
   });
 
   testWidgets('banner: tampil saat offline, hilang saat online', (tester) async {

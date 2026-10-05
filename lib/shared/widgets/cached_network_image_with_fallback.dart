@@ -103,7 +103,7 @@ class _CachedNetworkImageWithFallbackState
       width: double.infinity,
       height: double.infinity,
       placeholder: (_, _) => const Skeletonizer(child: Bone()),
-      errorWidget: (_, _, _) => _errorChild(),
+      errorBuilder: (_, _, _) => _errorChild(),
     );
   }
 }

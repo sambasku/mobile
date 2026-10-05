@@ -54,7 +54,7 @@ final class SearchHistoryControllerProvider
 }
 
 String _$searchHistoryControllerHash() =>
-    r'e4e7207f6d87057a898f043d04c4bc2d09d2b74a';
+    r'8b90eb734e39426d20f997a3c463dd3f8ff72771';
 
 /// Riwayat pencarian kata: maksimal 10 query terakhir, tersimpan lokal di
 /// SharedPreferences (tidak dikirim ke server). Dedup case-insensitive,

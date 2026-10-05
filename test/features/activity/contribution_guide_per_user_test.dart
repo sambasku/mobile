@@ -56,7 +56,7 @@ void main() {
   Future<void> markRead(String? userId) async {
     final prefs = await container.read(contributionGuidePrefsProvider.future);
     final key = userId != null
-        ? '${kContribGuideReadPrefsKeyPrefix}$userId'
+        ? '$kContribGuideReadPrefsKeyPrefix$userId'
         : kContribGuideReadPrefsKey;
     await prefs.setString(key, DateTime.now().toIso8601String());
     container.invalidate(contributionGuideUnreadProvider);
