@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+/// Mode basemap peta. Nilai = style OpenFreeMap terkait.
+enum MapBasemap {
+  street('liberty', ''),
+  satellite('dark', ''),
+  terrain('positron', '');
+
+  const MapBasemap(this.styleKey, this.attribution);
+
+  final String styleKey;
+  final String attribution;
+
+  String get label => switch (this) {
+    MapBasemap.street => 'Jalan',
+    MapBasemap.satellite => 'Satelit',
+    MapBasemap.terrain => 'Terain',
+  };
+}
+
 /// Kamera & style default untuk peta fokus Kabupaten Sambas.
 abstract final class SambasMapConfig {
   /// Pusat Kabupaten Sambas (sekitar pusat kota Sambas).
@@ -16,6 +34,9 @@ abstract final class SambasMapConfig {
   /// Tempat di kompleks keraton cuma berjarak sekitar 90 m; di bawah 16 pin
   /// tetangga jatuh di bawah label.
   static const double placeZoom = 16.5;
+
+  /// Zoom saat satu kecamatan terpilih di halaman Wilayah.
+  static const double kecamatanZoom = 10.8;
 
   static const CameraPosition heroCamera = CameraPosition(
     target: center,

@@ -44,7 +44,9 @@ class HomeSearchPage extends HookConsumerWidget {
     final state = ref.watch(activityFeedProvider);
     final scroll = useScrollController();
 
-    final collapseProgress = useScrollCollapse(
+    // Animation, bukan double: halaman tidak rebuild tiap frame scroll.
+    // Yang rebuild hanya blok collaps di bawah (AnimatedBuilder).
+    final collapse = useScrollCollapse(
       scroll,
       distance: _headerCollapseDistance,
       duration: _headerAnimDuration,
@@ -89,86 +91,99 @@ class HomeSearchPage extends HookConsumerWidget {
           suffixes: [ThemeToggleHeaderAction()],
         ),
         // Search + tombol usul: satu blok collaps scroll-proportional.
-        // Transform dihitung dari collapseProgress (0 terbuka, 1 tertutup):
+        // Transform dihitung dari collapse.value (0 terbuka, 1 tertutup):
         // tinggi menyusut, fade. ClipRect menjaga isi tidak bocor saat
         // tinggi < tinggi konten. IgnorePointer menutup tap saat blok
         // hampir tertutup supaya tidak menangkap gesture feed.
-        Align(
-          key: _headerCollapseKey,
-          alignment: Alignment.topCenter,
-          heightFactor: 1 - collapseProgress,
-          child: ClipRect(
-            child: IgnorePointer(
-              ignoring: collapseProgress > 0.5,
-              child: Opacity(
-                opacity: (1 - collapseProgress * 1.4).clamp(0.0, 1.0),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => context.push(
-                                '${DictionaryRouter.list.path}?focus=1',
-                              ),
-                              child: AbsorbPointer(
-                                child: FTextField(
-                                  size: .sm,
-                                  readOnly: true,
-                                  hint: 'Cari kata Sambas...',
-                                  prefixBuilder: (context, style, variants) =>
-                                      FTextField.prefixIconBuilder(
-                                        context,
-                                        style,
-                                        variants,
-                                        const Icon(FLucideIcons.search),
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const Gap(8),
-                          FButton(
-                            size: .sm,
-                            variant: FButtonVariant.outline,
-                            onPress: () => context.push(
-                              DictionaryRouter.letter.path.replaceFirst(
-                                ':letter',
-                                'a',
-                              ),
-                            ),
-                            child: const Text('A-Z'),
-                          ),
-                        ],
-                      ),
-                      const Gap(8),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: FButton(
-                          size: .sm,
-                          variant: FButtonVariant.outline,
-                          prefix: const Icon(FLucideIcons.plus),
-                          onPress: () {
-                            AnalyticsService.instance.log(
-                              AnalyticsEvents.contributeStart,
-                              params: {'from': 'home'},
-                            );
-                            context.push(ContributionRouter.contribute.path);
-                          },
-                          child: const Text('Usul kata baru'),
-                        ),
-                      ),
-                    ],
+        // Rebuild dibatasi ke blok ini saja (AnimatedBuilder) agar scroll
+        // feed tidak rebuild row per frame.
+        AnimatedBuilder(
+          animation: collapse,
+          builder: (context, child) {
+            final t = collapse.value;
+            return Align(
+              key: _headerCollapseKey,
+              alignment: Alignment.topCenter,
+              heightFactor: 1 - t,
+              child: ClipRect(
+                child: IgnorePointer(
+                  ignoring: t > 0.5,
+                  child: Opacity(
+                    opacity: (1 - t * 1.4).clamp(0.0, 1.0),
+                    child: child,
                   ),
                 ),
               ),
+            );
+          },
+          // child di-cache: tidak rebuild saat animasi jalan.
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => context.push(
+                          '${DictionaryRouter.list.path}?focus=1',
+                        ),
+                        child: AbsorbPointer(
+                          child: FTextField(
+                            size: .sm,
+                            readOnly: true,
+                            hint: 'Cari kata Sambas...',
+                            prefixBuilder: (context, style, variants) =>
+                                FTextField.prefixIconBuilder(
+                                  context,
+                                  style,
+                                  variants,
+                                  const Icon(FLucideIcons.search),
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(8),
+                    FButton(
+                      size: .sm,
+                      variant: FButtonVariant.outline,
+                      onPress: () => context.push(
+                        DictionaryRouter.letter.path.replaceFirst(
+                          ':letter',
+                          'a',
+                        ),
+                      ),
+                      child: const Text('A-Z'),
+                    ),
+                  ],
+                ),
+                const Gap(8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FButton(
+                    size: .sm,
+                    variant: FButtonVariant.outline,
+                    prefix: const Icon(FLucideIcons.plus),
+                    onPress: () {
+                      AnalyticsService.instance.log(
+                        AnalyticsEvents.contributeStart,
+                        params: {'from': 'home'},
+                      );
+                      context.push(ContributionRouter.contribute.path);
+                    },
+                    child: const Text('Usul kata baru'),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
         // Jarak blok collaps ke feed; ikut menyusut saat blok hilang.
-        SizedBox(height: 4 * (1 - collapseProgress)),
+        AnimatedBuilder(
+          animation: collapse,
+          builder: (context, _) => SizedBox(height: 4 * (1 - collapse.value)),
+        ),
         Expanded(
           child: _buildBody(
             context,

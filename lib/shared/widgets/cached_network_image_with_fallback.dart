@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -103,7 +103,7 @@ class _CachedNetworkImageWithFallbackState
       width: double.infinity,
       height: double.infinity,
       placeholder: (_, _) => const Skeletonizer(child: Bone()),
-      errorWidget: (_, _, _) => _errorChild(),
+      errorBuilder: (_, _, _) => _errorChild(),
     );
   }
 }

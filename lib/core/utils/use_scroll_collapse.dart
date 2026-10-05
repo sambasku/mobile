@@ -1,18 +1,23 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-/// Progress collaps blok header yang ngikutin scroll: 0 terbuka, 1 tertutup.
+/// Controller collaps blok header yang ngikutin scroll: 0 terbuka, 1 tertutup.
+///
+/// Return [Animation] (bukan nilai double) supaya halaman TIDAK rebuild tiap
+/// frame scroll. Yang rebuild hanya subtree yang dibungkus [AnimatedBuilder]
+/// di sekitar blok collaps. Dulu hook ini pakai useListenableSelector di
+/// level build halaman: seluruh ListView/grid ikut rebuild per frame dan
+/// scroll jadi berat.
 ///
 /// Scroll-proportional: header ngikutin jari 1:1 sejauh [distance], bukan
 /// biner show/hide. Saat jari lepas, snap mulus ke 0 atau 1. Di paling atas
 /// (pixels <= 0) selalu 0 (terbuka).
-double useScrollCollapse(
+Animation<double> useScrollCollapse(
   ScrollController scroll, {
   double distance = 90,
   Duration duration = const Duration(milliseconds: 280),
 }) {
   final collapse = useAnimationController(duration: duration, initialValue: 0);
-  final progress = useListenableSelector(collapse, () => collapse.value);
   final lastPixels = useRef<double>(0);
 
   useEffect(() {
@@ -61,5 +66,5 @@ double useScrollCollapse(
     };
   }, [scroll]);
 
-  return progress;
+  return collapse;
 }

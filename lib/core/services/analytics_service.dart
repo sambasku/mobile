@@ -17,6 +17,10 @@ abstract final class AnalyticsEvents {
   static const exploreCategoryTap = 'explore_category_tap';
   static const mapOpen = 'map_open';
   static const mapFallbackShown = 'map_fallback_shown';
+  static const wilayahKecDetailOpen = 'wilayah_kec_detail_open';
+  static const wilayahDesaDetailOpen = 'wilayah_desa_detail_open';
+  static const wilayahDesaSelect = 'wilayah_desa_select';
+  static const wilayahKecSelect = 'wilayah_kec_select';
   static const voteCast = 'vote_cast';
   static const voteDeckView = 'vote_deck_view';
   static const voteDeckSwipe = 'vote_deck_swipe';
@@ -29,6 +33,7 @@ abstract final class AnalyticsEvents {
   static const authLogout = 'auth_logout';
   static const searchMissTap = 'search_miss_tap';
   static const commentSubmit = 'comment_submit';
+
   /// Bukan `notification_open`: nama itu reserved Firebase (otomatis dari FCM).
   static const inboxOpen = 'inbox_open';
   static const notificationItemTap = 'notification_item_tap';
@@ -46,6 +51,7 @@ abstract final class AnalyticsEvents {
   static const reviewSkip = 'review_skip';
   static const verifierApplySubmit = 'verifier_apply_submit';
   static const poiOpen = 'poi_open';
+  static const cuisineOpen = 'cuisine_open';
 }
 
 /// Abstraksi Firebase Analytics. Page/notifier memanggil ini, bukan
@@ -55,8 +61,7 @@ class AnalyticsService {
 
   static AnalyticsService? _instance;
 
-  static AnalyticsService get instance =>
-      _instance ??= AnalyticsService._();
+  static AnalyticsService get instance => _instance ??= AnalyticsService._();
 
   /// Untuk tes: inject mock / reset singleton.
   @visibleForTesting
@@ -90,10 +95,7 @@ class AnalyticsService {
     }
   }
 
-  Future<void> log(
-    String name, {
-    Map<String, Object>? params,
-  }) async {
+  Future<void> log(String name, {Map<String, Object>? params}) async {
     if (!_ready) return;
     try {
       final cleaned = params == null
@@ -121,119 +123,94 @@ class AnalyticsService {
     required int queryLen,
     required String searchIn,
     required bool hasResults,
-  }) =>
-      log(
-        AnalyticsEvents.searchSubmit,
-        params: {
-          'query_len': queryLen,
-          'search_in': searchIn,
-          'has_results': hasResults ? 1 : 0,
-        },
-      );
+  }) => log(
+    AnalyticsEvents.searchSubmit,
+    params: {
+      'query_len': queryLen,
+      'search_in': searchIn,
+      'has_results': hasResults ? 1 : 0,
+    },
+  );
 
-  Future<void> logWordOpen({
-    required String wordId,
-    required String source,
-  }) =>
+  Future<void> logWordOpen({required String wordId, required String source}) =>
       log(
         AnalyticsEvents.wordOpen,
         params: {'word_id': wordId, 'source': source},
       );
 
-  Future<void> logContributeSubmit({required bool guest}) => log(
-        AnalyticsEvents.contributeSubmit,
-        params: {'guest': guest ? 1 : 0},
-      );
+  Future<void> logContributeSubmit({required bool guest}) =>
+      log(AnalyticsEvents.contributeSubmit, params: {'guest': guest ? 1 : 0});
 
-  Future<void> logContributeSuccess({
-    required bool guest,
-    String? wordId,
-  }) =>
+  Future<void> logContributeSuccess({required bool guest, String? wordId}) =>
       log(
         AnalyticsEvents.contributeSuccess,
-        params: {
-          'guest': guest ? 1 : 0,
-          'word_id': ?wordId,
-        },
+        params: {'guest': guest ? 1 : 0, 'word_id': ?wordId},
       );
 
-  Future<void> logContributeFail({
-    required bool guest,
-    String? errorCode,
-  }) =>
+  Future<void> logContributeFail({required bool guest, String? errorCode}) =>
       log(
         AnalyticsEvents.contributeFail,
-        params: {
-          'guest': guest ? 1 : 0,
-          'error_code': ?errorCode,
-        },
+        params: {'guest': guest ? 1 : 0, 'error_code': ?errorCode},
       );
 
   Future<void> logExploreCategoryTap({
     required String categoryId,
     required bool comingSoon,
-  }) =>
-      log(
-        AnalyticsEvents.exploreCategoryTap,
-        params: {
-          'category_id': categoryId,
-          'coming_soon': comingSoon ? 1 : 0,
-        },
-      );
+  }) => log(
+    AnalyticsEvents.exploreCategoryTap,
+    params: {'category_id': categoryId, 'coming_soon': comingSoon ? 1 : 0},
+  );
 
-  Future<void> logMapOpen({
-    required String entry,
-    required String mode,
-  }) =>
-      log(
-        AnalyticsEvents.mapOpen,
-        params: {'entry': entry, 'mode': mode},
-      );
+  Future<void> logWilayahKecDetailOpen({required String slug}) =>
+      log(AnalyticsEvents.wilayahKecDetailOpen, params: {'slug': slug});
 
-  Future<void> logMapFallback({required String reason}) => log(
-        AnalyticsEvents.mapFallbackShown,
-        params: {'reason': reason},
-      );
+  Future<void> logWilayahDesaDetailOpen({required String slug}) =>
+      log(AnalyticsEvents.wilayahDesaDetailOpen, params: {'slug': slug});
+
+  Future<void> logWilayahDesaSelect({required String desaId}) =>
+      log(AnalyticsEvents.wilayahDesaSelect, params: {'desa_id': desaId});
+
+  Future<void> logWilayahKecSelect({required String kecId}) =>
+      log(AnalyticsEvents.wilayahKecSelect, params: {'kec_id': kecId});
+
+  Future<void> logMapOpen({required String entry, required String mode}) =>
+      log(AnalyticsEvents.mapOpen, params: {'entry': entry, 'mode': mode});
+
+  Future<void> logMapFallback({required String reason}) =>
+      log(AnalyticsEvents.mapFallbackShown, params: {'reason': reason});
 
   Future<void> logVoteCast({
     required String targetType,
     required int direction,
-  }) =>
-      log(
-        AnalyticsEvents.voteCast,
-        params: {
-          'target_type': targetType,
-          'direction': direction,
-        },
-      );
+  }) => log(
+    AnalyticsEvents.voteCast,
+    params: {'target_type': targetType, 'direction': direction},
+  );
 
   Future<void> logBookmarkToggle({
     required String wordId,
     required String action,
-  }) =>
-      log(
-        AnalyticsEvents.bookmarkToggle,
-        params: {'word_id': wordId, 'action': action},
-      );
+  }) => log(
+    AnalyticsEvents.bookmarkToggle,
+    params: {'word_id': wordId, 'action': action},
+  );
 
   Future<void> logAuthSuccess({
     required String event,
     required String method,
-  }) =>
-      log(event, params: {'method': method});
+  }) => log(event, params: {'method': method});
 
   /// Pin peta / kartu detail Place dibuka. `entry`: list | map | pin.
   Future<void> logPoiOpen({
     required String slug,
     required String category,
     required String entry,
-  }) =>
-      log(
-        AnalyticsEvents.poiOpen,
-        params: {
-          'slug': slug,
-          'category': category,
-          'entry': entry,
-        },
-      );
+  }) => log(
+    AnalyticsEvents.poiOpen,
+    params: {'slug': slug, 'category': category, 'entry': entry},
+  );
+
+  /// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
+  Future<void> logCuisineOpen({required String slug}) =>
+      log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
 }

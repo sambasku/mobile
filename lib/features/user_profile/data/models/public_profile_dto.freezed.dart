@@ -1337,8 +1337,8 @@ return $default(_that.items,_that.meta);case _:
 }
 
 /// @nodoc
+@JsonSerializable()
 
-@JsonSerializable(explicitToJson: true)
 class _PublicActivityDto implements PublicActivityDto {
   const _PublicActivityDto({final  List<PublicActivityItemDto> items = const <PublicActivityItemDto>[], this.meta}): _items = items;
   factory _PublicActivityDto.fromJson(Map<String, dynamic> json) => _$PublicActivityDtoFromJson(json);
@@ -1892,8 +1892,8 @@ return $default(_that.items);case _:
 }
 
 /// @nodoc
+@JsonSerializable()
 
-@JsonSerializable(explicitToJson: true)
 class _MentionSuggestDto implements MentionSuggestDto {
   const _MentionSuggestDto({final  List<MentionSuggestItemDto> items = const <MentionSuggestItemDto>[]}): _items = items;
   factory _MentionSuggestDto.fromJson(Map<String, dynamic> json) => _$MentionSuggestDtoFromJson(json);

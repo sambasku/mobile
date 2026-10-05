@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -8,35 +9,74 @@ import '../../../../core/utils/display_image_url.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
 
-/// Filter list satu baris: type wisata + Kuliner sebagai satu chip.
-enum _Filter { semua, alam, budaya, pantai, sejarah, belanja, kuliner }
+/// Filter list satu baris. Publik karena dipakai juga dari
+/// ExploreCategoryPage (kartu Wisata / Kuliner di tab Eksplorasi).
+enum PlaceListFilter { semua, alam, budaya, pantai, sejarah, belanja, kuliner }
 
 const _filterLabels = {
-  _Filter.semua: 'Semua',
-  _Filter.alam: 'Alam',
-  _Filter.budaya: 'Budaya',
-  _Filter.pantai: 'Pantai',
-  _Filter.sejarah: 'Sejarah',
-  _Filter.belanja: 'Belanja',
-  _Filter.kuliner: 'Kuliner',
+  PlaceListFilter.semua: 'Semua',
+  PlaceListFilter.alam: 'Alam',
+  PlaceListFilter.budaya: 'Budaya',
+  PlaceListFilter.pantai: 'Pantai',
+  PlaceListFilter.sejarah: 'Sejarah',
+  PlaceListFilter.belanja: 'Belanja',
+  PlaceListFilter.kuliner: 'Kuliner',
 };
 
-/// Daftar Place (Wisata & Kuliner). Data CDN soft-fail: gagal = tombol coba lagi.
+/// Mode halaman daftar Place. Wisata dan Kuliner punya halaman sendiri,
+/// tapi sumber datanya tetap satu `places.json` (dibedakan `category`).
+enum PlacePageMode { wisata, kuliner }
+
+const _pageTitle = {
+  PlacePageMode.wisata: 'Wisata',
+  PlacePageMode.kuliner: 'Kuliner',
+};
+
+/// Daftar Place. Data CDN soft-fail: gagal = tombol coba lagi.
 class PlaceListPage extends ConsumerStatefulWidget {
-  const PlaceListPage({super.key});
+  const PlaceListPage({super.key, required this.mode});
+
+  final PlacePageMode mode;
 
   @override
   ConsumerState<PlaceListPage> createState() => _PlaceListPageState();
 }
 
 class _PlaceListPageState extends ConsumerState<PlaceListPage> {
-  _Filter _filter = _Filter.semua;
+  late PlaceListFilter _filter;
+  late PlacePageMode _mode;
+
+  @override
+  void initState() {
+    super.initState();
+    _mode = widget.mode;
+    _filter = _mode == PlacePageMode.kuliner
+        ? PlaceListFilter.kuliner
+        : PlaceListFilter.semua;
+  }
+
   String _query = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(TextEditingValue value) {
+    final text = value.text;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => _query = text);
+    });
+  }
 
   Future<void> _reload() async {
     ref.invalidate(placesProvider);
@@ -48,103 +88,119 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     final theme = context.theme;
     final placesAsync = ref.watch(placesProvider);
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: const Text('Wisata & Kuliner'),
-        prefixes: [
-          FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go('/explore'),
-          ),
-        ],
-      ),
-      child: placesAsync.when(
-        loading: () => const _SkeletonList(),
-        error: (_, _) => _ErrorBody(onRetry: _reload),
-        data: (places) {
-          if (places == null) return _ErrorBody(onRetry: _reload);
-          if (places.isEmpty) return const _EmptyBody();
-          final filtered = _applyFilter(places);
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FTextField(
-                control: FTextFieldControl.managed(
-                  onChange: (value) => setState(() => _query = value.text),
+    return ExcludeSemanticsOnExit(
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: Text(_pageTitle[_mode] ?? 'Eksplorasi'),
+          prefixes: [
+            FHeaderAction.back(
+              onPress: () =>
+                  context.canPop() ? context.pop() : context.go('/explore'),
+            ),
+          ],
+        ),
+        child: placesAsync.when(
+          loading: () => const _SkeletonList(),
+          error: (_, _) => _ErrorBody(onRetry: _reload),
+          data: (places) {
+            if (places == null) return _ErrorBody(onRetry: _reload);
+            if (places.isEmpty) return const _EmptyBody();
+            final filtered = _applyFilter(places);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FTextField(
+                  control: FTextFieldControl.managed(
+                    onChange: _onSearchChanged,
+                  ),
+                  hint: 'Cari destinasi...',
+                  textInputAction: TextInputAction.search,
+                  clearable: (value) => value.text.isNotEmpty,
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FLucideIcons.search),
+                      ),
                 ),
-                hint: 'Cari destinasi...',
-                textInputAction: TextInputAction.search,
-                clearable: (value) => value.text.isNotEmpty,
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FLucideIcons.search),
+                const Gap(12),
+                if (_mode == PlacePageMode.wisata) ...[
+                  _PlaceFilterBar(
+                    selected: _filter,
+                    onSelect: (f) => setState(() => _filter = f),
+                  ),
+                  const Gap(4),
+                ],
+                if (filtered.isEmpty)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Belum ada destinasi yang cocok.',
+                        textAlign: TextAlign.center,
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
                     ),
-              ),
-              const Gap(12),
-              _FilterBar(
-                selected: _filter,
-                onSelect: (f) => setState(() => _filter = f),
-              ),
-              const Gap(4),
-              if (filtered.isEmpty)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'Belum ada destinasi yang cocok.',
-                      textAlign: TextAlign.center,
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                  )
+                else
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: _reload,
+                      child: ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (context, i) =>
+                            _PlaceCard(place: filtered[i]),
                       ),
                     ),
                   ),
-                )
-              else
-                Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    itemCount: filtered.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, i) => _PlaceCard(place: filtered[i]),
-                  ),
-                ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  // ponytail: filter lokal per ketikan tanpa debounce, aman selama katalog
-  // puluhan item. Kalau search pindah ke API atau ribuan item, tambah
-  // debounce ~300ms (pola `_debounce` di kbbi_definition_sheet.dart).
+  // Debounce 300ms: tahan setState per ketikan. Filter tetap lokal; kalau
+  // search pindah ke API, debounce ini sudah jadi.
+  // Mode kuliner: hanya kategori kuliner, tanpa filter type.
+  // Mode wisata: kategori wisata, difilter per type kalau chip dipilih.
   List<Place> _applyFilter(List<Place> places) {
     final q = _query.trim().toLowerCase();
+    if (_mode == PlacePageMode.kuliner) {
+      return places
+          .where(
+            (p) =>
+                p.category == PlaceCategory.kuliner &&
+                p.name.toLowerCase().contains(q),
+          )
+          .toList();
+    }
     return places.where((p) {
       if (q.isNotEmpty && !p.name.toLowerCase().contains(q)) return false;
-      switch (_filter) {
-        case _Filter.semua:
-          return true;
-        case _Filter.kuliner:
-          return p.category == PlaceCategory.kuliner;
-        default:
-          return p.category == PlaceCategory.wisata &&
-              p.type?.name == _filter.name;
+      // Chip "Kuliner" di mode wisata tetap menyaring entri kuliner.
+      if (_filter == PlaceListFilter.kuliner) {
+        return p.category == PlaceCategory.kuliner;
       }
+      if (p.category != PlaceCategory.wisata) return false;
+      return _filter == PlaceListFilter.semua || p.type?.name == _filter.name;
     }).toList();
   }
 }
 
-class _FilterBar extends StatelessWidget {
-  const _FilterBar({required this.selected, required this.onSelect});
+class _PlaceFilterBar extends StatelessWidget {
+  const _PlaceFilterBar({required this.selected, required this.onSelect});
 
-  final _Filter selected;
-  final ValueChanged<_Filter> onSelect;
+  final PlaceListFilter selected;
+  final ValueChanged<PlaceListFilter> onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +208,8 @@ class _FilterBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          for (final f in _Filter.values) ...[
-            if (f != _Filter.semua) const Gap(6),
+          for (final f in PlaceListFilter.values) ...[
+            if (f != PlaceListFilter.semua) const Gap(6),
             GestureDetector(
               onTap: () => onSelect(f),
               child: FBadge(

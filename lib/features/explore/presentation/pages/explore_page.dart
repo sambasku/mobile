@@ -29,8 +29,8 @@ class ExplorePage extends HookConsumerWidget {
       ),
     );
 
-    // Jembatan ke kamus: daftar kata A-Z (bukan coming-soon).
-    if (cat.id == 'bahasa-budaya') {
+    // Jembatan ke kamus: kosakata di tab kamus (bukan coming-soon).
+    if (cat.id == 'tradisi') {
       context.push(DictionaryRouter.list.path);
       return;
     }
@@ -47,13 +47,38 @@ class ExplorePage extends HookConsumerWidget {
     final minHero = landscape ? 50.0 : 70.0;
     final collapseDistance = maxHero - minHero;
 
-    final collapseProgress = useScrollCollapse(
+    // Coming-soon disembunyikan default: tab Eksplorasi tampil 100% konten
+    // aktif. Toggle sesi-lokal (tidak persist) - kesan pertama yang penting.
+    final showComingSoon = useState(false);
+
+    // Animation, bukan double: grid kategori tidak rebuild tiap frame scroll.
+    // Hanya hero (AnimatedBuilder) yang ikut nilai collapse.
+    final collapse = useScrollCollapse(
       scroll,
       distance: collapseDistance,
       duration: const Duration(milliseconds: 200),
     );
 
-    final heroHeight = maxHero - collapseProgress * collapseDistance;
+    // ponytail: heightFn di-invoke per frame di AnimatedBuilder, tanpa
+    // AnimatedContainer (restart tween tiap tick scroll = jitter).
+    Widget hero() => AnimatedBuilder(
+      animation: collapse,
+      builder: (context, _) {
+        final t = collapse.value;
+        final heroHeight = maxHero - t * collapseDistance;
+        return SizedBox(
+          height: heroHeight,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: ExploreMapHero(height: heroHeight),
+          ),
+        );
+      },
+    );
+
+    final categories = showComingSoon.value
+        ? ExploreCategory.all
+        : ExploreCategory.all.where((c) => !c.comingSoon).toList();
 
     return Column(
       children: [
@@ -62,16 +87,10 @@ class ExplorePage extends HookConsumerWidget {
           suffixes: [ThemeToggleHeaderAction()],
         ),
         // Hero map yang mengecil saat scroll; di luar CustomScrollView
-        // agar platform view MapLibre tidak ikut di-scroll.
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-          height: heroHeight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: ExploreMapHero(height: heroHeight),
-          ),
-        ),
+        // agar platform view MapLibre tidak ikut di-scroll. Tanpa
+        // AnimatedContainer: nilai sudah scroll-proportional, tween tambahan
+        // hanya bikin gerak mengejar dan platform view resize dobel.
+        hero(),
         Expanded(
           child: CustomScrollView(
             controller: scroll,
@@ -84,12 +103,38 @@ class ExplorePage extends HookConsumerWidget {
                   childAspectRatio: landscape ? 1.15 : 0.98,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final cat = ExploreCategory.all[index];
+                  final cat = categories[index];
                   return _CategoryCard(
                     category: cat,
                     onTap: () => _openCategory(context, cat),
                   );
-                }, childCount: ExploreCategory.all.length),
+                }, childCount: categories.length),
+              ),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        AnalyticsService.instance.log(
+                          'explore_coming_soon_toggle',
+                          params: {'show': showComingSoon.value ? 0 : 1},
+                        );
+                        showComingSoon.value = !showComingSoon.value;
+                      },
+                      child: FBadge(
+                        variant: showComingSoon.value
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.outline,
+                        child: Text(
+                          showComingSoon.value
+                              ? 'Sembunyikan yang segera hadir'
+                              : 'Lihat yang segera hadir',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
             ],
@@ -112,7 +157,10 @@ class _CategoryCard extends StatelessWidget {
 
     return Material(
       color: theme.colors.secondary,
-      borderRadius: BorderRadius.circular(14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: theme.colors.border),
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
@@ -127,15 +175,31 @@ class _CategoryCard extends StatelessWidget {
                   if (category.comingSoon) ...[
                     const Gap(6),
                     Expanded(
-                      child: Text(
-                        'Segera',
-                        textAlign: TextAlign.right,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colors.mutedForeground,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        // ponytail: FittedBox mengecilkan chip sampai muat;
+                        // kalau nanti copy lebih panjang, ganti jadi 2 kata lain.
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colors.primary,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              'Segera hadir',
+                              maxLines: 1,
+                              style: theme.typography.sm.copyWith(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: theme.colors.primaryForeground,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -161,7 +225,7 @@ class _CategoryCard extends StatelessWidget {
                       const Gap(2),
                       Text(
                         category.subtitle,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.sm.copyWith(
                           fontSize: 9,

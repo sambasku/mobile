@@ -21,8 +21,6 @@ abstract final class CachePolicy {
         return untilMidnight < cap ? untilMidnight : cap;
       case CacheClass.search:
         return const Duration(minutes: 1);
-      case CacheClass.socialPublic:
-        return const Duration(minutes: 1);
       case CacheClass.negative404:
         return const Duration(minutes: 2);
     }
@@ -39,8 +37,6 @@ abstract final class CachePolicy {
       case CacheClass.wordOfDay:
         return const Duration(hours: 24);
       case CacheClass.search:
-        return const Duration(minutes: 30);
-      case CacheClass.socialPublic:
         return const Duration(minutes: 30);
       case CacheClass.negative404:
         // Tanpa SWR: staleMax = fresh.

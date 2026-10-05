@@ -55,6 +55,7 @@ class Place {
     required this.lat,
     required this.lng,
     required this.shortDescription,
+    this.regionId,
     required this.images,
     required this.hours,
     required this.contact,
@@ -70,6 +71,9 @@ class Place {
   final double lat;
   final double lng;
   final String shortDescription;
+
+  /// Id kecamatan (Region.id) tempat place ini berada; null = belum dipetakan.
+  final String? regionId;
 
   /// Sudah dinormalisasi DTO: entry `isMain` pertama yang menang,
   /// tanpa true = pertama dianggap main.

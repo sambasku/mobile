@@ -204,19 +204,41 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   }
 
   Future<void> _deleteComment(WordComment comment) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Hapus komentar?'),
-        content: const Text('Komentar akan ditandai sebagai dihapus oleh penulis.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Batal')),
-          FButton(
-            variant: FButtonVariant.destructive,
-            onPress: () => Navigator.of(ctx).pop(true),
-            child: const Text('Hapus'),
-          ),
-        ],
+      useRootNavigator: true,
+      isScrollControlled: true,
+      barrierColor: Colors.black54,
+      builder: (sheetContext) => Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: const Text('Hapus komentar?'),
+                  subtitle: const Text('Komentar akan ditandai sebagai dihapus oleh penulis.'),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    variant: FButtonVariant.destructive,
+                    onPress: () => Navigator.of(sheetContext).pop(true),
+                    child: const Text('Hapus'),
+                  ),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    onPress: () => Navigator.of(sheetContext).pop(false),
+                    child: const Text('Batal'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
     if (confirmed != true) return;

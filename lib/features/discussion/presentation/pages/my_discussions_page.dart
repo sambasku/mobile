@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/discussion_models.dart';
 import '../../discussion_router.dart';
@@ -119,15 +120,17 @@ class _MineList extends ConsumerWidget {
       ),
     );
 
+    Future<void> refresh() async {
+      ref.invalidate(myDiscussionsProvider);
+      await ref.read(myDiscussionsProvider.future);
+    }
+
     return Column(
       children: [
         chips,
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () async {
-              ref.invalidate(myDiscussionsProvider);
-              await ref.read(myDiscussionsProvider.future);
-            },
+            onRefresh: refresh,
             child: async.when(
               loading: () => const _MineSkeleton(),
               error: (error, _) => ListView(
@@ -154,88 +157,89 @@ class _MineList extends ConsumerWidget {
               ),
               data: (state) {
                 if (state.items.isEmpty) {
-                  return ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    children: [
-                      const Gap(40),
-                      Text(
-                        'Belum ada diskusi',
-                        textAlign: TextAlign.center,
-                        style: theme.typography.md.copyWith(
-                          fontWeight: FontWeight.w600,
+                  return LayoutBuilder(
+                    builder: (context, constraints) => ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                          height: constraints.maxHeight,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Belum ada diskusi',
+                                  textAlign: TextAlign.center,
+                                  style: theme.typography.md.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Gap(8),
+                                Text(
+                                  'Kirim teks atau foto yang sulit diterjemahkan.',
+                                  textAlign: TextAlign.center,
+                                  style: theme.typography.sm.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                  ),
+                                ),
+                                const Gap(16),
+                                FButton(
+                                  onPress: () =>
+                                      context.push(DiscussionRouter.create.path),
+                                  child: const Text('Mulai diskusi'),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      const Gap(8),
-                      Text(
-                        'Kirim teks atau foto yang sulit diterjemahkan.',
-                        textAlign: TextAlign.center,
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                      const Gap(16),
-                      FButton(
-                        onPress: () =>
-                            context.push(DiscussionRouter.create.path),
-                        child: const Text('Mulai diskusi'),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }
 
-                return ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
-                  itemCount:
-                      state.items.length + (state.isLoadingMore ? 1 : 0),
-                  separatorBuilder: (_, _) =>
-                      Divider(height: 1, color: theme.colors.border),
-                  itemBuilder: (context, index) {
-                    if (index >= state.items.length) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: FCircularProgress()),
-                      );
-                    }
-                    if (index == state.items.length - 3 && state.hasMore) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        ref
-                            .read(myDiscussionsProvider.notifier)
-                            .loadMore();
-                      });
-                    }
-                    final item = state.items[index];
-                    final when = formatDateTimeIso(item.createdAt);
-                    final preview = item.body?.trim().isNotEmpty == true
-                        ? item.body!.trim()
-                        : (item.images.isEmpty
-                              ? 'Tanpa teks'
-                              : '${item.images.length} foto');
-                    return FTile(
-                      title: Text(
-                        preview,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        [
-                          item.statusLabel,
-                          if (when.isNotEmpty) when,
-                        ].join(' · '),
-                      ),
-                      suffix: const Icon(FLucideIcons.chevronRight),
-                      onPress: () => context.push(
-                        DiscussionRouter.detailPath(item.id),
-                      ),
-                    );
-                  },
+                return TileGroupList<DiscussionItem>(
+                  items: state.items,
+                  hasMore: state.hasMore,
+                  onLoadMore: () =>
+                      ref.read(myDiscussionsProvider.notifier).loadMore(),
+                  tileBuilder: (context, item) => _DiscussionTile(item: item),
                 );
               },
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DiscussionTile extends StatelessWidget with FTileMixin {
+  const _DiscussionTile({required this.item});
+
+  final DiscussionItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final when = formatDateTimeIso(item.createdAt);
+    final preview = item.body?.trim().isNotEmpty == true
+        ? item.body!.trim()
+        : (item.images.isEmpty ? 'Tanpa teks' : '${item.images.length} foto');
+    return FTile(
+      title: Text(
+        preview,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Text(
+        [
+          item.statusLabel,
+          if (when.isNotEmpty) when,
+        ].join(' · '),
+      ),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: () => context.push(
+        DiscussionRouter.detailPath(item.id),
+      ),
     );
   }
 }
@@ -247,7 +251,7 @@ class _MineSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.only(bottom: 16),
         itemCount: 6,
         itemBuilder: (_, _) => const Padding(
           padding: EdgeInsets.only(bottom: 12),

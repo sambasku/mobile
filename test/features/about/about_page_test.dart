@@ -6,20 +6,18 @@ import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dar
 import 'package:sambasku_mobile/flavors.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
-        home: FTheme(data: FThemes.zinc.light.touch, child: child),
-      ),
-    );
+  child: MaterialApp(
+    theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+    localizationsDelegates: FLocalizations.localizationsDelegates,
+    supportedLocales: FLocalizations.supportedLocales,
+    home: FTheme(data: FThemes.zinc.light.touch, child: child),
+  ),
+);
 
 void main() {
   setUpAll(() => F.appFlavor = Flavor.production);
 
-  testWidgets('menampilkan fitur tanpa seksi pengembang', (tester) async {
-    // Logo + blok fitur lebih tinggi dari viewport default 800×600;
-    // ListView tidak membangun blok di bawah fold.
+  testWidgets('blok ringkas: Apa itu, Sponsor & Tim, GitHub', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -33,33 +31,22 @@ void main() {
     expect(find.text('Ibnul Mutaki'), findsNothing);
     expect(find.text('Tentang'), findsWidgets);
     expect(find.text('Apa itu SambasKu?'), findsOneWidget);
-    expect(find.text('Cari kosakata'), findsOneWidget);
-    expect(find.text('Simpan'), findsOneWidget);
+    expect(find.text('Sponsor & Tim Kami'), findsOneWidget);
+    expect(find.text('Kode Sumber & Organisasi'), findsOneWidget);
+    expect(find.text('Buka di GitHub'), findsOneWidget);
+
+    // Blok fitur lama dan blok Organisasi terpisah sudah dilebur.
+    expect(find.text('Cari kosakata'), findsNothing);
+    expect(find.text('Bagikan kartu'), findsNothing);
+    expect(find.text('Organisasi di GitHub'), findsNothing);
 
     // Data sponsor/tim tidak lagi di halaman Tentang (pindah ke halaman
     // Sponsorship & Tim) - tidak boleh ada duplikasi.
     expect(find.text('Sponsor & Mitra'), findsNothing);
     expect(find.text('Pengusul'), findsNothing);
 
-    // Blok baru Sponsor & Tim Kami tersedia sebagai pintasan.
-    expect(find.text('Sponsor & Tim Kami'), findsOneWidget);
-
-    final aboutList = find.descendant(
-      of: find.byType(ListView),
-      matching: find.byType(Scrollable),
-    );
-    await tester.scrollUntilVisible(
-      find.text('Usulkan'),
-      200,
-      scrollable: aboutList.first,
-    );
-    expect(find.text('Usulkan'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text('Bagikan kartu'),
-      200,
-      scrollable: aboutList.first,
-    );
-    expect(find.text('Bagikan kartu'), findsOneWidget);
+    double y(String t) => tester.getTopLeft(find.text(t)).dy;
+    expect(y('Apa itu SambasKu?'), lessThan(y('Sponsor & Tim Kami')));
   });
 
   testWidgets('halaman Sponsorship & Tim punya dua tab', (tester) async {

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gal/gal.dart';
@@ -22,6 +22,7 @@ import 'share_image_explorer_sheet.dart';
 import 'share_solid_color_sheet.dart';
 import 'widgets/share_card_canvas.dart';
 import 'widgets/share_skeleton.dart';
+
 /// Buka sheet share kartu dari detail kata.
 /// [onShared]: share sheet tidak dibatalkan (bukan simpan ke galeri).
 Future<void> showWordShareSheet(
@@ -54,10 +55,10 @@ String buildShareQuery(WordDetail detail, WordMeaning meaning) {
   final category = detail.categories.isNotEmpty
       ? detail.categories.first.name
       : '';
-  final parts = [padanan, category]
-      .map((s) => s.trim())
-      .where((s) => s.isNotEmpty)
-      .toList();
+  final parts = [
+    padanan,
+    category,
+  ].map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
   if (parts.isEmpty) return 'indonesia culture';
   return parts.join(' ');
 }
@@ -212,9 +213,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         return f != null ? FileImage(f) : null;
       case ShareBgSource.wordImage:
         final u = _wordImageUrl;
-        return u != null && u.isNotEmpty
-            ? CachedNetworkImageProvider(u)
-            : null;
+        return u != null && u.isNotEmpty ? CachedNetworkImageProvider(u) : null;
       case ShareBgSource.stock:
         final item = _selectedStock;
         if (item == null) return null;
@@ -269,9 +268,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
   /// Creative Commons: kredit wajib ikut tercetak, jadi watermark dikunci.
   bool get _mustCredit => _stockProvider == 'openverse';
 
-  ShareEditorSettings get _effectiveSettings => _mustCredit
-      ? _settings.copyWith(showWatermark: true)
-      : _settings;
+  ShareEditorSettings get _effectiveSettings =>
+      _mustCredit ? _settings.copyWith(showWatermark: true) : _settings;
 
   ShareCardData get _cardData => buildCardData(
     detail: widget.detail,
@@ -326,11 +324,9 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
     ]);
     if (!mounted) return;
 
-    final items = [
-      for (final r in results) ...r.items,
-    ];
-    final degraded = results.every((r) => r.degraded || r.items.isEmpty) &&
-        items.isEmpty;
+    final items = [for (final r in results) ...r.items];
+    final degraded =
+        results.every((r) => r.degraded || r.items.isEmpty) && items.isEmpty;
 
     setState(() {
       _loadingBg = false;
@@ -586,10 +582,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         showPermissionDeniedDialog(context);
         return;
       }
-      showFToast(
-        context: context,
-        title: const Text('Tersimpan di galeri'),
-      );
+      showFToast(context: context, title: const Text('Tersimpan di galeri'));
     } on GalException catch (e) {
       if (!mounted) return;
       if (e.type == GalExceptionType.accessDenied) {
@@ -636,9 +629,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
     if (!mounted || updated == null) return;
     // Watermark paksa CC jangan menimpa pilihan user sendiri.
     setState(
-      () => _settings = updated.copyWith(
-        showWatermark: _settings.showWatermark,
-      ),
+      () =>
+          _settings = updated.copyWith(showWatermark: _settings.showWatermark),
     );
   }
 
@@ -674,9 +666,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
       return GestureDetector(
         onTap: () => onSelected(true),
         child: FBadge(
-          variant: selected
-              ? FBadgeVariant.primary
-              : FBadgeVariant.secondary,
+          variant: selected ? FBadgeVariant.primary : FBadgeVariant.secondary,
           child: Text(label),
         ),
       );
@@ -740,424 +730,522 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
 
     final canExplore = !_template.forcesNoPhoto;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
-      child: SizedBox(
-        height: media.size.height * 0.94,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Bagikan kartu',
-                      style: theme.typography.lg.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(
-                      Icons.close,
-                      color: theme.colors.foreground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Preview-first: ambil ruang utama
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
+    // ListTile Material butuh ancestor Material; sheet ini full-Forui.
+    return Material(
+      type: MaterialType.transparency,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+        child: SizedBox(
+          height: media.size.height * 0.94,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
+                child: Row(
                   children: [
                     Expanded(
-                      child: Center(
-                        child: AspectRatio(
-                          aspectRatio: _ratio.width / _ratio.height,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: _loadingBg
-                                ? const ShareCardPreviewSkeleton()
-                                : GestureDetector(
-                                    onTap: _openCardFullscreen,
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: RepaintBoundary(
-                                        key: _repaintKey,
-                                        child: ShareCardCanvas(
-                                          data: _cardData,
-                                          template: _template,
-                                          ratio: _ratio,
-                                          settings: _effectiveSettings,
-                                          imageProvider: _imageProvider,
-                                          videoUrl: _videoUrl,
-                                          videoIsFile: _videoIsFile,
+                      child: Text(
+                        'Bagikan kartu',
+                        style: theme.typography.lg.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(Icons.close, color: theme.colors.foreground),
+                    ),
+                  ],
+                ),
+              ),
+              // Preview-first: ambil ruang utama
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: AspectRatio(
+                            aspectRatio: _ratio.width / _ratio.height,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: _loadingBg
+                                  ? const ShareCardPreviewSkeleton()
+                                  : GestureDetector(
+                                      onTap: _openCardFullscreen,
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: RepaintBoundary(
+                                          key: _repaintKey,
+                                          child: ShareCardCanvas(
+                                            data: _cardData,
+                                            template: _template,
+                                            ratio: _ratio,
+                                            settings: _effectiveSettings,
+                                            imageProvider: _imageProvider,
+                                            videoUrl: _videoUrl,
+                                            videoIsFile: _videoIsFile,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    if (!_loadingBg) ...[
-                      _OffscreenCaptureBox(
-                        boundaryKey: _overlayKey,
-                        ratio: _ratio,
-                        child: ShareCardCanvas(
-                          data: _cardData,
-                          template: _template,
+                      if (!_loadingBg) ...[
+                        _OffscreenCaptureBox(
+                          boundaryKey: _overlayKey,
                           ratio: _ratio,
-                          settings: _effectiveSettings,
-                          transparentBackdrop: true,
+                          child: ShareCardCanvas(
+                            data: _cardData,
+                            template: _template,
+                            ratio: _ratio,
+                            settings: _effectiveSettings,
+                            transparentBackdrop: true,
+                          ),
                         ),
-                      ),
-                      _OffscreenCaptureBox(
-                        boundaryKey: _pngFallbackKey,
-                        ratio: _ratio,
-                        child: ShareCardCanvas(
-                          data: _cardData,
-                          template: _template,
+                        _OffscreenCaptureBox(
+                          boundaryKey: _pngFallbackKey,
                           ratio: _ratio,
-                          settings: _effectiveSettings,
-                          imageProvider: _imageProvider,
+                          child: ShareCardCanvas(
+                            data: _cardData,
+                            template: _template,
+                            ratio: _ratio,
+                            settings: _effectiveSettings,
+                            imageProvider: _imageProvider,
+                          ),
                         ),
+                      ],
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        enabled: !_loadingBg,
+                        leading: Icon(
+                          Icons.open_with,
+                          color: theme.colors.foreground,
+                        ),
+                        title: Text(
+                          'Atur posisi',
+                          style: theme.typography.sm.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          _template.allowsMediaPan
+                              ? 'Geser teks atau crop gambar / video'
+                              : 'Buka fullscreen untuk geser / putar teks',
+                          style: theme.typography.sm.copyWith(
+                            color: chipMuted,
+                            fontSize: 11,
+                          ),
+                        ),
+                        trailing: Icon(Icons.chevron_right, color: chipMuted),
+                        onTap: _loadingBg ? null : _openLayoutEditor,
                       ),
                     ],
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      dense: true,
-                      enabled: !_loadingBg,
-                      leading: Icon(
-                        Icons.open_with,
-                        color: theme.colors.foreground,
+                  ),
+                ),
+              ),
+              // Kontrol + editor (selalu terbuka)
+              Expanded(
+                flex: 6,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  children: [
+                    Text(
+                      'Latar',
+                      style: theme.typography.sm.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                      title: Text(
-                        'Atur posisi',
-                        style: theme.typography.sm.copyWith(
-                          fontWeight: FontWeight.w600,
+                    ),
+                    const Gap(8),
+                    if (_loadingBg)
+                      SizedBox(
+                        height: 76,
+                        child: ShareSkeleton(
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              for (var i = 0; i < 6; i++) ...[
+                                Bone(
+                                  width: 72,
+                                  height: 72,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                if (i < 5) const Gap(8),
+                              ],
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        height: 76,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            _SourceChip(
+                              label: 'Tanpa\nlatar',
+                              selected:
+                                  _bgSource == ShareBgSource.none ||
+                                  _template.forcesNoPhoto,
+                              selectedBorder: chipSelected,
+                              gradient: _settings.backdropColors,
+                              onTap: () => setState(() {
+                                _bgSource = ShareBgSource.none;
+                              }),
+                            ),
+                            const Gap(8),
+                            _SourceChip(
+                              label: 'Explorer',
+                              selected: false,
+                              selectedBorder: chipSelected,
+                              icon: Icons.travel_explore,
+                              onTap: canExplore ? _openImageExplorer : null,
+                            ),
+                            const Gap(8),
+                            _SourceChip(
+                              label: 'Galeri',
+                              selected:
+                                  _bgSource == ShareBgSource.device &&
+                                  (_localImageFile != null ||
+                                      _localVideoFile != null),
+                              selectedBorder: chipSelected,
+                              icon: _localVideoFile != null
+                                  ? Icons.videocam_outlined
+                                  : Icons.photo_outlined,
+                              onTap: _template.forcesNoPhoto
+                                  ? null
+                                  : () => _pickFromSource(ImageSource.gallery),
+                              onLongPress: _localImageFile != null
+                                  ? () => _openImageFullscreen(
+                                      FileImage(_localImageFile!),
+                                    )
+                                  : null,
+                              preview: _localImageFile != null
+                                  ? FileImage(_localImageFile!)
+                                  : null,
+                            ),
+                            const Gap(8),
+                            _SourceChip(
+                              label: 'Kamera',
+                              selected: false,
+                              selectedBorder: chipSelected,
+                              icon: Icons.camera_alt_outlined,
+                              onTap: _template.forcesNoPhoto
+                                  ? null
+                                  : () => _pickFromSource(ImageSource.camera),
+                            ),
+                            const Gap(8),
+                            for (final img in _wordImages) ...[
+                              _SourceChip(
+                                label: 'Kata',
+                                selected:
+                                    _bgSource == ShareBgSource.wordImage &&
+                                    _wordImageUrl == img.url,
+                                selectedBorder: chipSelected,
+                                preview: CachedNetworkImageProvider(img.url),
+                                onTap: _template.forcesNoPhoto
+                                    ? null
+                                    : () => setState(() {
+                                        _bgSource = ShareBgSource.wordImage;
+                                        _wordImageUrl = img.url;
+                                        _localImageFile = null;
+                                        _localVideoFile = null;
+                                      }),
+                                onLongPress: () => _openImageFullscreen(
+                                  CachedNetworkImageProvider(img.url),
+                                ),
+                              ),
+                              const Gap(8),
+                            ],
+                            for (var i = 0; i < _bgItems.length; i++) ...[
+                              _SourceChip(
+                                label: _bgItems[i].isVideo
+                                    ? 'Video'
+                                    : shareProviderLabel(_bgItems[i].provider),
+                                selected:
+                                    _bgSource == ShareBgSource.stock &&
+                                    _selectedBgIndex == i &&
+                                    !_template.forcesNoPhoto,
+                                selectedBorder: chipSelected,
+                                preview: CachedNetworkImageProvider(
+                                  _bgItems[i].thumbUrl,
+                                ),
+                                showPlay: _bgItems[i].isVideo,
+                                onTap: _template.forcesNoPhoto
+                                    ? null
+                                    : () => setState(() {
+                                        _bgSource = ShareBgSource.stock;
+                                        _selectedBgIndex = i;
+                                        _localImageFile = null;
+                                        _localVideoFile = null;
+                                        _wordImageUrl = null;
+                                      }),
+                                onLongPress: () => _openImageFullscreen(
+                                  CachedNetworkImageProvider(
+                                    _bgItems[i].thumbUrl,
+                                  ),
+                                ),
+                              ),
+                              const Gap(8),
+                            ],
+                          ],
                         ),
                       ),
-                      subtitle: Text(
-                        _template.allowsMediaPan
-                            ? 'Geser teks atau crop gambar / video'
-                            : 'Buka fullscreen untuk geser / putar teks',
+                    if (_bgSource == ShareBgSource.stock &&
+                        !_template.forcesNoPhoto &&
+                        (_selectedStock?.provider == 'unsplash' ||
+                            _selectedStock?.provider == 'openverse'))
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: ImageCredit(
+                          attribution: _selectedStock!.attribution,
+                        ),
+                      ),
+                    if (_degraded && _bgItems.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.',
+                          style: theme.typography.sm.copyWith(color: chipMuted),
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video',
                         style: theme.typography.sm.copyWith(
                           color: chipMuted,
                           fontSize: 11,
                         ),
                       ),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        color: chipMuted,
-                      ),
-                      onTap: _loadingBg ? null : _openLayoutEditor,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            // Kontrol + editor (selalu terbuka)
-            Expanded(
-              flex: 6,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                children: [
-                  Text(
-                    'Latar',
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Gap(8),
-                  if (_loadingBg)
-                    SizedBox(
-                      height: 76,
-                      child: ShareSkeleton(
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            for (var i = 0; i < 6; i++) ...[
-                              Bone(
-                                width: 72,
-                                height: 72,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              if (i < 5) const Gap(8),
-                            ],
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    SizedBox(
-                      height: 76,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _SourceChip(
-                            label: 'Tanpa\nlatar',
-                            selected: _bgSource == ShareBgSource.none ||
-                                _template.forcesNoPhoto,
-                            selectedBorder: chipSelected,
-                            gradient: _settings.backdropColors,
-                            onTap: () => setState(() {
-                              _bgSource = ShareBgSource.none;
-                            }),
-                          ),
-                          const Gap(8),
-                          _SourceChip(
-                            label: 'Explorer',
-                            selected: false,
-                            selectedBorder: chipSelected,
-                            icon: Icons.travel_explore,
-                            onTap: canExplore ? _openImageExplorer : null,
-                          ),
-                          const Gap(8),
-                          _SourceChip(
-                            label: 'Galeri',
-                            selected: _bgSource == ShareBgSource.device &&
-                                (_localImageFile != null ||
-                                    _localVideoFile != null),
-                            selectedBorder: chipSelected,
-                            icon: _localVideoFile != null
-                                ? Icons.videocam_outlined
-                                : Icons.photo_outlined,
-                            onTap: _template.forcesNoPhoto
-                                ? null
-                                : () => _pickFromSource(ImageSource.gallery),
-                            onLongPress: _localImageFile != null
-                                ? () => _openImageFullscreen(
-                                      FileImage(_localImageFile!),
-                                    )
-                                : null,
-                            preview: _localImageFile != null
-                                ? FileImage(_localImageFile!)
-                                : null,
-                          ),
-                          const Gap(8),
-                          _SourceChip(
-                            label: 'Kamera',
-                            selected: false,
-                            selectedBorder: chipSelected,
-                            icon: Icons.camera_alt_outlined,
-                            onTap: _template.forcesNoPhoto
-                                ? null
-                                : () => _pickFromSource(ImageSource.camera),
-                          ),
-                          const Gap(8),
-                          for (final img in _wordImages) ...[
-                            _SourceChip(
-                              label: 'Kata',
-                              selected: _bgSource == ShareBgSource.wordImage &&
-                                  _wordImageUrl == img.url,
-                              selectedBorder: chipSelected,
-                              preview: CachedNetworkImageProvider(img.url),
-                              onTap: _template.forcesNoPhoto
-                                  ? null
-                                  : () => setState(() {
-                                      _bgSource = ShareBgSource.wordImage;
-                                      _wordImageUrl = img.url;
-                                      _localImageFile = null;
-                                      _localVideoFile = null;
-                                    }),
-                              onLongPress: () => _openImageFullscreen(
-                                CachedNetworkImageProvider(img.url),
-                              ),
-                            ),
-                            const Gap(8),
-                          ],
-                          for (var i = 0; i < _bgItems.length; i++) ...[
-                            _SourceChip(
-                              label: _bgItems[i].isVideo
-                                  ? 'Video'
-                                  : shareProviderLabel(_bgItems[i].provider),
-                              selected: _bgSource == ShareBgSource.stock &&
-                                  _selectedBgIndex == i &&
-                                  !_template.forcesNoPhoto,
-                              selectedBorder: chipSelected,
-                              preview: CachedNetworkImageProvider(
-                                _bgItems[i].thumbUrl,
-                              ),
-                              showPlay: _bgItems[i].isVideo,
-                              onTap: _template.forcesNoPhoto
-                                  ? null
-                                  : () => setState(() {
-                                      _bgSource = ShareBgSource.stock;
-                                      _selectedBgIndex = i;
-                                      _localImageFile = null;
-                                      _localVideoFile = null;
-                                      _wordImageUrl = null;
-                                    }),
-                              onLongPress: () => _openImageFullscreen(
-                                CachedNetworkImageProvider(
-                                  _bgItems[i].thumbUrl,
-                                ),
-                              ),
-                            ),
-                            const Gap(8),
-                          ],
-                        ],
-                      ),
-                    ),
-                  if (_bgSource == ShareBgSource.stock &&
-                      !_template.forcesNoPhoto &&
-                      (_selectedStock?.provider == 'unsplash' ||
-                          _selectedStock?.provider == 'openverse'))
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: ImageCredit(
-                        attribution: _selectedStock!.attribution,
-                      ),
-                    ),
-                  if (_degraded && _bgItems.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.',
-                        style: theme.typography.sm.copyWith(color: chipMuted),
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video',
-                      style: theme.typography.sm.copyWith(
-                        color: chipMuted,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ),
-                  const Gap(12),
-                  labeledChipRow(
-                    title: 'Gaya',
-                    chips: ShareTemplateId.values.map((t) {
-                      return styleChip(
-                        label: t.label,
-                        selected: _template == t,
-                        onSelected: (_) {
-                          setState(() {
-                            _template = t;
-                            if (t.forcesNoPhoto) {
-                              _bgSource = ShareBgSource.none;
-                            } else if (_bgSource == ShareBgSource.none &&
-                                _bgItems.isNotEmpty) {
-                              _bgSource = ShareBgSource.stock;
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const Gap(8),
-                  labeledChipRow(
-                    title: 'Rasio',
-                    chips: ShareRatioId.values.map((r) {
-                      return styleChip(
-                        label: r.label,
-                        selected: _ratio == r,
-                        onSelected: (_) => setState(() => _ratio = r),
-                      );
-                    }).toList(),
-                  ),
-                  if (widget.detail.meanings.length > 1) ...[
-                    const Gap(8),
+                    const Gap(12),
                     labeledChipRow(
-                      title: 'Makna',
-                      chips: [
-                        styleChip(
-                          label: 'Semua',
-                          selected: _settings.showAllMeanings,
+                      title: 'Gaya',
+                      chips: ShareTemplateId.values.map((t) {
+                        return styleChip(
+                          label: t.label,
+                          selected: _template == t,
                           onSelected: (_) {
                             setState(() {
-                              _settings = _settings.copyWith(
-                                showAllMeanings: true,
-                              );
+                              _template = t;
+                              if (t.forcesNoPhoto) {
+                                _bgSource = ShareBgSource.none;
+                              } else if (_bgSource == ShareBgSource.none &&
+                                  _bgItems.isNotEmpty) {
+                                _bgSource = ShareBgSource.stock;
+                              }
                             });
                           },
-                        ),
-                        for (var i = 0; i < widget.detail.meanings.length; i++)
+                        );
+                      }).toList(),
+                    ),
+                    const Gap(8),
+                    labeledChipRow(
+                      title: 'Rasio',
+                      chips: ShareRatioId.values.map((r) {
+                        return styleChip(
+                          label: r.label,
+                          selected: _ratio == r,
+                          onSelected: (_) => setState(() => _ratio = r),
+                        );
+                      }).toList(),
+                    ),
+                    if (widget.detail.meanings.length > 1) ...[
+                      const Gap(8),
+                      labeledChipRow(
+                        title: 'Makna',
+                        chips: [
                           styleChip(
-                            label: widget.detail.meanings[i].wordClassBracket ??
-                                widget.detail.meanings[i].wordClassName ??
-                                'Makna ${i + 1}',
-                            selected: !_settings.showAllMeanings &&
-                                _meaningIndex == i,
+                            label: 'Semua',
+                            selected: _settings.showAllMeanings,
                             onSelected: (_) {
                               setState(() {
-                                _meaningIndex = i;
                                 _settings = _settings.copyWith(
-                                  showAllMeanings: false,
+                                  showAllMeanings: true,
                                 );
                               });
-                              _loadBackgrounds(1);
                             },
                           ),
-                      ],
+                          for (
+                            var i = 0;
+                            i < widget.detail.meanings.length;
+                            i++
+                          )
+                            styleChip(
+                              label:
+                                  widget.detail.meanings[i].wordClassBracket ??
+                                  widget.detail.meanings[i].wordClassName ??
+                                  'Makna ${i + 1}',
+                              selected:
+                                  !_settings.showAllMeanings &&
+                                  _meaningIndex == i,
+                              onSelected: (_) {
+                                setState(() {
+                                  _meaningIndex = i;
+                                  _settings = _settings.copyWith(
+                                    showAllMeanings: false,
+                                  );
+                                });
+                                _loadBackgrounds(1);
+                              },
+                            ),
+                        ],
+                      ),
+                    ],
+                    const Gap(16),
+                    Text(
+                      'Editor',
+                      style: theme.typography.sm.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ],
-                  const Gap(16),
-                  Text(
-                    'Editor',
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w600,
+                    const Gap(8),
+                    labeledChipRow(
+                      title: 'Font',
+                      chips: ShareFontPair.values.map((f) {
+                        return styleChip(
+                          label: f.label,
+                          selected: _settings.fontPair == f,
+                          onSelected: (_) => setState(() {
+                            _settings = _settings.copyWith(fontPair: f);
+                          }),
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  const Gap(8),
-                  labeledChipRow(
-                    title: 'Font',
-                    chips: ShareFontPair.values.map((f) {
-                      return styleChip(
-                        label: f.label,
-                        selected: _settings.fontPair == f,
-                        onSelected: (_) => setState(() {
-                          _settings = _settings.copyWith(fontPair: f);
-                        }),
-                      );
-                    }).toList(),
-                  ),
-                  const Gap(8),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 44,
-                        child: Text(
-                          'Warna',
-                          style: theme.typography.sm.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                    const Gap(8),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 44,
+                          child: Text(
+                            'Warna',
+                            style: theme.typography.sm.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              for (final c in ShareTextColorId.values) ...[
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (final c in ShareTextColorId.values) ...[
+                                  GestureDetector(
+                                    onTap: () => setState(() {
+                                      _settings = _settings.copyWith(
+                                        textColorId: c,
+                                      );
+                                    }),
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      margin: const EdgeInsets.only(right: 8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: c.lemma,
+                                        border: Border.all(
+                                          color: _settings.textColorId == c
+                                              ? chipSelected
+                                              : theme.colors.border,
+                                          width: _settings.textColorId == c
+                                              ? 2.5
+                                              : 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(8),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 44,
+                          child: Text(
+                            'Gradasi',
+                            style: theme.typography.sm.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                for (final g in ShareGradientId.values) ...[
+                                  GestureDetector(
+                                    onTap: () => setState(() {
+                                      _settings = _settings.copyWith(
+                                        gradientId: g,
+                                        backdropKind:
+                                            ShareBackdropKind.gradient,
+                                      );
+                                    }),
+                                    child: Container(
+                                      width: 40,
+                                      height: 32,
+                                      margin: const EdgeInsets.only(right: 8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        gradient: LinearGradient(
+                                          colors: g.colors,
+                                        ),
+                                        border: Border.all(
+                                          color:
+                                              _settings.backdropKind ==
+                                                      ShareBackdropKind
+                                                          .gradient &&
+                                                  _settings.gradientId == g
+                                              ? chipSelected
+                                              : theme.colors.border,
+                                          width:
+                                              _settings.backdropKind ==
+                                                      ShareBackdropKind
+                                                          .gradient &&
+                                                  _settings.gradientId == g
+                                              ? 2.5
+                                              : 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                                 GestureDetector(
-                                  onTap: () => setState(() {
-                                    _settings =
-                                        _settings.copyWith(textColorId: c);
-                                  }),
+                                  onTap: _pickSolidColor,
                                   child: Container(
                                     width: 32,
                                     height: 32,
                                     margin: const EdgeInsets.only(right: 8),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: c.lemma,
+                                      color: _settings.solidColor,
                                       border: Border.all(
-                                        color: _settings.textColorId == c
+                                        color:
+                                            _settings.backdropKind ==
+                                                ShareBackdropKind.solid
                                             ? chipSelected
                                             : theme.colors.border,
-                                        width: _settings.textColorId == c
+                                        width:
+                                            _settings.backdropKind ==
+                                                ShareBackdropKind.solid
                                             ? 2.5
                                             : 1,
                                       ),
@@ -1165,214 +1253,139 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                                   ),
                                 ),
                               ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(8),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 44,
-                        child: Text(
-                          'Gradasi',
-                          style: theme.typography.sm.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              for (final g in ShareGradientId.values) ...[
-                                GestureDetector(
-                                  onTap: () => setState(() {
-                                    _settings = _settings.copyWith(
-                                      gradientId: g,
-                                      backdropKind: ShareBackdropKind.gradient,
-                                    );
-                                  }),
-                                  child: Container(
-                                    width: 40,
-                                    height: 32,
-                                    margin: const EdgeInsets.only(right: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      gradient: LinearGradient(
-                                        colors: g.colors,
-                                      ),
-                                      border: Border.all(
-                                        color: _settings.backdropKind ==
-                                                    ShareBackdropKind.gradient &&
-                                                _settings.gradientId == g
-                                            ? chipSelected
-                                            : theme.colors.border,
-                                        width: _settings.backdropKind ==
-                                                    ShareBackdropKind.gradient &&
-                                                _settings.gradientId == g
-                                            ? 2.5
-                                            : 1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              GestureDetector(
-                                onTap: _pickSolidColor,
-                                child: Container(
-                                  width: 32,
-                                  height: 32,
-                                  margin: const EdgeInsets.only(right: 8),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _settings.solidColor,
-                                    border: Border.all(
-                                      color: _settings.backdropKind ==
-                                              ShareBackdropKind.solid
-                                          ? chipSelected
-                                          : theme.colors.border,
-                                      width: _settings.backdropKind ==
-                                              ShareBackdropKind.solid
-                                          ? 2.5
-                                          : 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Gap(8),
-                  Text('Ukuran lemma', style: theme.typography.sm),
-                  Slider(
-                    value: _settings.lemmaFontScale.clamp(0.7, 1.8),
-                    min: 0.7,
-                    max: 1.8,
-                    divisions: 5,
-                    activeColor: chipSelected,
-                    label: _settings.lemmaFontScale.toStringAsFixed(2),
-                    onChanged: (v) => setState(() {
-                      _settings = _settings.copyWith(lemmaFontScale: v);
-                    }),
-                  ),
-                  Text('Ukuran teks deskripsi', style: theme.typography.sm),
-                  Slider(
-                    value: _settings.bodyFontScale.clamp(0.7, 1.6),
-                    min: 0.7,
-                    max: 1.6,
-                    divisions: 5,
-                    activeColor: chipSelected,
-                    label: _settings.bodyFontScale.toStringAsFixed(2),
-                    onChanged: (v) => setState(() {
-                      _settings = _settings.copyWith(bodyFontScale: v);
-                    }),
-                  ),
-                  if (_template.usesOverlay) ...[
-                    Text('Ketebalan overlay', style: theme.typography.sm),
-                    Slider(
-                      value: _settings.overlayStrength,
-                      min: 0,
-                      max: 1,
-                      divisions: 20,
-                      activeColor: chipSelected,
-                      label: _settings.overlayStrength.toStringAsFixed(2),
-                      onChanged: (v) => setState(() {
-                        _settings = _settings.copyWith(overlayStrength: v);
-                      }),
-                    ),
-                  ],
-                  settingsSwitchRow(
-                    label: 'Tampilkan kelas kata',
-                    value: _settings.showWordClass,
-                    onChange: (v) => setState(() {
-                      _settings = _settings.copyWith(showWordClass: v);
-                    }),
-                  ),
-                  const Gap(8),
-                  settingsSwitchRow(
-                    label: 'Tampilkan terjemahan',
-                    value: _settings.showPadanan,
-                    onChange: (v) => setState(() {
-                      _settings = _settings.copyWith(showPadanan: v);
-                    }),
-                  ),
-                  const Gap(8),
-                  settingsSwitchRow(
-                    label: 'Tampilkan definisi',
-                    value: _settings.showDefinition,
-                    onChange: (v) => setState(() {
-                      _settings = _settings.copyWith(showDefinition: v);
-                    }),
-                  ),
-                  const Gap(8),
-                  settingsSwitchRow(
-                    label: 'Tampilkan contoh kalimat',
-                    value:
-                        _settings.showExample && _meaning.examples.isNotEmpty,
-                    enabled: _meaning.examples.isNotEmpty,
-                    onChange: (v) => setState(() {
-                      _settings = _settings.copyWith(showExample: v);
-                    }),
-                  ),
-                  const Gap(8),
-                  settingsSwitchRow(
-                    label: _mustCredit
-                        ? 'Watermark SambasKu (wajib untuk foto Creative Commons)'
-                        : 'Tampilkan watermark SambasKu',
-                    value: _effectiveSettings.showWatermark,
-                    enabled: !_mustCredit,
-                    onChange: (v) => setState(() {
-                      _settings = _settings.copyWith(showWatermark: v);
-                    }),
-                  ),
-                ],
-              ),
-            ),
-            SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Divider(height: 1, color: theme.colors.border),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: FButton(
-                            variant: FButtonVariant.outline,
-                            onPress: (_saving || _sharing || _loadingBg)
-                                ? null
-                                : _onSave,
-                            prefix: _saving ? const FCircularProgress() : null,
-                            child: const Text('Simpan'),
-                          ),
-                        ),
-                        const Gap(12),
-                        Expanded(
-                          child: FButton(
-                            onPress: (_sharing || _saving || _loadingBg)
-                                ? null
-                                : _onShare,
-                            prefix: _sharing ? const FCircularProgress() : null,
-                            child: const Text('Bagikan'),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const Gap(8),
+                    Text('Ukuran lemma', style: theme.typography.sm),
+                    Slider(
+                      value: _settings.lemmaFontScale.clamp(0.7, 1.8),
+                      min: 0.7,
+                      max: 1.8,
+                      divisions: 5,
+                      activeColor: chipSelected,
+                      label: _settings.lemmaFontScale.toStringAsFixed(2),
+                      onChanged: (v) => setState(() {
+                        _settings = _settings.copyWith(lemmaFontScale: v);
+                      }),
+                    ),
+                    Text('Ukuran teks deskripsi', style: theme.typography.sm),
+                    Slider(
+                      value: _settings.bodyFontScale.clamp(0.7, 1.6),
+                      min: 0.7,
+                      max: 1.6,
+                      divisions: 5,
+                      activeColor: chipSelected,
+                      label: _settings.bodyFontScale.toStringAsFixed(2),
+                      onChanged: (v) => setState(() {
+                        _settings = _settings.copyWith(bodyFontScale: v);
+                      }),
+                    ),
+                    if (_template.usesOverlay) ...[
+                      Text('Ketebalan overlay', style: theme.typography.sm),
+                      Slider(
+                        value: _settings.overlayStrength,
+                        min: 0,
+                        max: 1,
+                        divisions: 20,
+                        activeColor: chipSelected,
+                        label: _settings.overlayStrength.toStringAsFixed(2),
+                        onChanged: (v) => setState(() {
+                          _settings = _settings.copyWith(overlayStrength: v);
+                        }),
+                      ),
+                    ],
+                    settingsSwitchRow(
+                      label: 'Tampilkan kelas kata',
+                      value: _settings.showWordClass,
+                      onChange: (v) => setState(() {
+                        _settings = _settings.copyWith(showWordClass: v);
+                      }),
+                    ),
+                    const Gap(8),
+                    settingsSwitchRow(
+                      label: 'Tampilkan terjemahan',
+                      value: _settings.showPadanan,
+                      onChange: (v) => setState(() {
+                        _settings = _settings.copyWith(showPadanan: v);
+                      }),
+                    ),
+                    const Gap(8),
+                    settingsSwitchRow(
+                      label: 'Tampilkan definisi',
+                      value: _settings.showDefinition,
+                      onChange: (v) => setState(() {
+                        _settings = _settings.copyWith(showDefinition: v);
+                      }),
+                    ),
+                    const Gap(8),
+                    settingsSwitchRow(
+                      label: 'Tampilkan contoh kalimat',
+                      value:
+                          _settings.showExample && _meaning.examples.isNotEmpty,
+                      enabled: _meaning.examples.isNotEmpty,
+                      onChange: (v) => setState(() {
+                        _settings = _settings.copyWith(showExample: v);
+                      }),
+                    ),
+                    const Gap(8),
+                    settingsSwitchRow(
+                      label: _mustCredit
+                          ? 'Watermark SambasKu (wajib untuk foto Creative Commons)'
+                          : 'Tampilkan watermark SambasKu',
+                      value: _effectiveSettings.showWatermark,
+                      enabled: !_mustCredit,
+                      onChange: (v) => setState(() {
+                        _settings = _settings.copyWith(showWatermark: v);
+                      }),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Divider(height: 1, color: theme.colors.border),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: FButton(
+                              variant: FButtonVariant.outline,
+                              onPress: (_saving || _sharing || _loadingBg)
+                                  ? null
+                                  : _onSave,
+                              prefix: _saving
+                                  ? const FCircularProgress()
+                                  : null,
+                              child: const Text('Simpan'),
+                            ),
+                          ),
+                          const Gap(12),
+                          Expanded(
+                            child: FButton(
+                              onPress: (_sharing || _saving || _loadingBg)
+                                  ? null
+                                  : _onShare,
+                              prefix: _sharing
+                                  ? const FCircularProgress()
+                                  : null,
+                              child: const Text('Bagikan'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1490,10 +1503,7 @@ class _OffscreenCaptureBox extends StatelessWidget {
         child: Transform.translate(
           offset: const Offset(-10000, 0),
           child: IgnorePointer(
-            child: RepaintBoundary(
-              key: boundaryKey,
-              child: child,
-            ),
+            child: RepaintBoundary(key: boundaryKey, child: child),
           ),
         ),
       ),

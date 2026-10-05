@@ -165,7 +165,7 @@ class ActivityCategorySheet extends HookConsumerWidget {
                     controller: scrollController,
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                     itemCount: items.length + (hasMore || isLoadingMore ? 1 : 0),
-                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (_, index) {
                       if (index >= items.length) {
                         return const Padding(

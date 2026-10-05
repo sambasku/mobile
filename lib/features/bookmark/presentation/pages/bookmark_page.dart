@@ -3,11 +3,10 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../../../core/widgets/paged_list_bridge.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/bookmark_item.dart';
 import '../../domain/failures/bookmark_failure.dart';
@@ -16,7 +15,7 @@ import '../providers/bookmark_providers.dart';
 /// Halaman daftar kata tersimpan milik user login - GET /api/v1/bookmarks/my
 /// (16-api-bookmark.md). Diakses dari tile Bookmark di Profil.
 ///
-/// List pakai infinite_scroll_pagination: autoload saat scroll mendekati
+/// List pakai TileGroupList: autoload saat scroll mendekati ekor,
 /// ekor, tanpa tombol "Muat lagi".
 class BookmarkPage extends ConsumerWidget {
   const BookmarkPage({super.key});
@@ -80,42 +79,16 @@ class _GuestState extends StatelessWidget {
   }
 }
 
-class _BookmarkList extends ConsumerStatefulWidget {
+class _BookmarkList extends ConsumerWidget {
   const _BookmarkList();
 
-  @override
-  ConsumerState<_BookmarkList> createState() => _BookmarkListState();
-}
-
-class _BookmarkListState extends ConsumerState<_BookmarkList> {
-  late final PagingController<int, BookmarkItem> _pagingController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController = createPagingController<BookmarkItem>(
-      loadMore: () async {
-        final failure = await ref
-            .read(bookmarkListControllerProvider.notifier)
-            .loadMore();
-        if (failure != null) throw failure;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _refresh() async {
+  Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(bookmarkListControllerProvider);
     await ref.read(bookmarkListControllerProvider.future);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final async = ref.watch(bookmarkListControllerProvider);
 
@@ -163,62 +136,59 @@ class _BookmarkListState extends ConsumerState<_BookmarkList> {
     }
 
     final state = async.requireValue;
-    // Snapshot Riverpod → PagingController (jembatan UI, lihat
-    // mobile-base-stack.md section Pagination).
-    _pagingController.value = buildPagingState<BookmarkItem>(
-      items: state.items,
-      hasMore: state.hasMore,
-    );
-    return RefreshIndicator(
-      onRefresh: () => _refresh(),
-      child: PagedListView<int, BookmarkItem>.separated(
-        state: _pagingController.value,
-        fetchNextPage: _pagingController.fetchNextPage,
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 24),
-        separatorBuilder: (_, _) => const Gap(6),
-        builderDelegate: PagedChildBuilderDelegate<BookmarkItem>(
-          itemBuilder: (context, item, index) => _BookmarkRow(item: item),
-          noItemsFoundIndicatorBuilder: (context) => SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.6,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  FLucideIcons.bookmark,
-                  size: 40,
-                  color: theme.colors.mutedForeground,
-                ),
-                const Gap(10),
-                Text(
-                  'Belum ada kata tersimpan.',
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
+
+    if (state.items.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () => _refresh(ref),
+        child: LayoutBuilder(
+          builder: (context, constraints) => ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                height: constraints.maxHeight,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        FLucideIcons.bookmark,
+                        size: 40,
+                        color: theme.colors.mutedForeground,
+                      ),
+                      const Gap(10),
+                      Text(
+                        'Belum ada kata tersimpan.',
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Gap(4),
+                      Text(
+                        'Tekan ikon bookmark di halaman detail kata.',
+                        style: theme.typography.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                const Gap(4),
-                Text(
-                  'Tekan ikon bookmark di halaman detail kata.',
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          newPageErrorIndicatorBuilder: (context) => Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => _pagingController.fetchNextPage(),
-                child: const Text('Coba lagi'),
               ),
-            ),
+            ],
           ),
         ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => _refresh(ref),
+      child: TileGroupList<BookmarkItem>(
+        items: state.items,
+        hasMore: state.hasMore,
+        onLoadMore: () =>
+            ref.read(bookmarkListControllerProvider.notifier).loadMore(),
+        tileBuilder: (context, item) => _BookmarkRow(item: item),
       ),
     );
   }

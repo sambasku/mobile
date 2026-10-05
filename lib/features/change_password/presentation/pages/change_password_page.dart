@@ -25,25 +25,40 @@ class ChangePasswordPage extends HookConsumerWidget {
     useListenable(newPassword);
     useListenable(confirmPassword);
 
-    // Sukses → dialog → logout paksa → login ulang dengan password baru
-    ref.listen(changePasswordProvider.select((s) => s.successMessage), (_, next) {
-      if (next == null) return;
-      showDialog<void>(
+    // Sukses → bottom sheet → logout paksa → login ulang dengan password baru
+    ref.listen(changePasswordProvider.select((s) => s.successMessage), (_, next) async {
+      if (next == null || !context.mounted) return;
+      await showModalBottomSheet<void>(
         context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Password berhasil diubah'),
-          content: Text(next),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Navigator.of(dialogContext).pop();
-                await ref.read(authStatusProvider.notifier).logout();
-                if (context.mounted) context.go('/login');
-              },
-              child: const Text('Login ulang'),
-            ),
-          ],
+        useRootNavigator: true,
+        isScrollControlled: true,
+        barrierColor: Colors.black54,
+        builder: (sheetContext) => Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FTileGroup(
+                children: [
+                  FTile(
+                    title: const Text('Password berhasil diubah'),
+                    subtitle: Text(next),
+                  ),
+                  FTile(
+                    title: const Text(''),
+                    suffix: FButton(
+                      onPress: () async {
+                        Navigator.of(sheetContext).pop();
+                        await ref.read(authStatusProvider.notifier).logout();
+                        if (context.mounted) context.go('/login');
+                      },
+                      child: const Text('Login ulang'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });

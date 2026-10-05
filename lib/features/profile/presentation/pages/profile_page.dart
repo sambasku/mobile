@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../auth/presentation/models/auth_status_state.dart';
@@ -38,7 +39,11 @@ class ProfilePage extends HookConsumerWidget {
     final authStatus = ref.watch(authStatusProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
     final scroll = useScrollController();
-    final collapseProgress = useScrollCollapse(scroll);
+    // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
+    final versionFuture = useMemoized(PackageInfo.fromPlatform);
+    // Animation, bukan double: ListView menu tidak rebuild tiap frame scroll.
+    // Yang rebuild hanya title header + blok stat (AnimatedBuilder).
+    final collapse = useScrollCollapse(scroll);
 
     // Sync handle sekali saat tab Profil aktif - jangan tiap rebuild auth.
     useEffect(() {
@@ -56,10 +61,13 @@ class ProfilePage extends HookConsumerWidget {
 
     return Column(
       children: [
-        FHeader(
-          title: _ProfileHeaderTitle(
-            status: authStatus.value,
-            collapseProgress: collapseProgress,
+        AnimatedBuilder(
+          animation: collapse,
+          builder: (context, _) => FHeader(
+            title: _ProfileHeaderTitle(
+              status: authStatus.value,
+              collapse: collapse,
+            ),
           ),
         ),
         Expanded(
@@ -220,6 +228,7 @@ class ProfilePage extends HookConsumerWidget {
                     children: [
                       themeModeTile(ref),
                       paletteTile(ref),
+                      fontScaleTile(ref),
                       FTile(
                         prefix: const Icon(FLucideIcons.info, size: 18),
                         title: const Text('Tentang SambasKu'),
@@ -270,6 +279,23 @@ class ProfilePage extends HookConsumerWidget {
                       ],
                     ),
                   ],
+                  const Gap(16),
+                  // Label versi paling bawah. Gagal load = label hilang.
+                  FutureBuilder<PackageInfo>(
+                    future: versionFuture,
+                    builder: (context, snapshot) {
+                      final info = snapshot.data;
+                      if (info == null) return const SizedBox.shrink();
+                      return Center(
+                        child: Text(
+                          'v${info.version}(${info.buildNumber})',
+                          style: context.theme.typography.xs.copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -332,15 +358,12 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
 /// Header kaya ala Threads: avatar + nama + handle + bio + stat + meta.
 /// Tap seluruh blok membuka profil publik. Slot FHeader.title.
 class _ProfileHeaderTitle extends ConsumerWidget {
-  const _ProfileHeaderTitle({
-    required this.status,
-    required this.collapseProgress,
-  });
+  const _ProfileHeaderTitle({required this.status, required this.collapse});
 
   final AuthStatusState? status;
 
   /// 0 = blok stat terbuka, 1 = tertutup (dari [useScrollCollapse]).
-  final double collapseProgress;
+  final Animation<double> collapse;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -470,37 +493,44 @@ class _ProfileHeaderTitle extends ConsumerWidget {
                 ),
                 if (profile != null || loadingProfile)
                   // Collaps ikut scroll, sama seperti blok search di Home.
-                  Align(
-                    alignment: Alignment.topLeft,
-                    heightFactor: 1 - collapseProgress,
-                    child: ClipRect(
-                      child: Opacity(
-                        opacity: (1 - collapseProgress * 1.4).clamp(0.0, 1.0),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Skeletonizer(
-                            enabled: loadingProfile,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ProfileStatRow(
-                                  contributions:
-                                      profile?.contributionsApproved ?? 0,
-                                  verifications:
-                                      profile?.verificationsDone ?? 0,
-                                  comments: profile?.commentsPublished ?? 0,
-                                ),
-                                const Gap(4),
-                                ProfileMetaRow(
-                                  joinedLabel: profile == null
-                                      ? '1 Januari 2026'
-                                      : formatDateTimeIso(profile.joinedAt),
-                                  isVerifier: profile?.isVerifier ?? false,
-                                ),
-                              ],
-                            ),
+                  // Rebuild dibatasi ke blok stat saja (AnimatedBuilder).
+                  AnimatedBuilder(
+                    animation: collapse,
+                    builder: (context, child) {
+                      final t = collapse.value;
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        heightFactor: 1 - t,
+                        child: ClipRect(
+                          child: Opacity(
+                            opacity: (1 - t * 1.4).clamp(0.0, 1.0),
+                            child: child,
                           ),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Skeletonizer(
+                        enabled: loadingProfile,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ProfileStatRow(
+                              contributions:
+                                  profile?.contributionsApproved ?? 0,
+                              verifications: profile?.verificationsDone ?? 0,
+                              comments: profile?.commentsPublished ?? 0,
+                            ),
+                            const Gap(4),
+                            ProfileMetaRow(
+                              joinedLabel: profile == null
+                                  ? '1 Januari 2026'
+                                  : formatDateTimeIso(profile.joinedAt),
+                              isVerifier: profile?.isVerifier ?? false,
+                            ),
+                          ],
                         ),
                       ),
                     ),

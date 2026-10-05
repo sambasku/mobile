@@ -36,7 +36,7 @@ class SearchMissListPage extends ConsumerWidget {
         child: missesAsync.when(
           loading: () => SearchMissSkeletonList(
             itemCount: 8,
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+            padding: const EdgeInsets.only(bottom: 32),
             header: Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
@@ -49,7 +49,7 @@ class SearchMissListPage extends ConsumerWidget {
           ),
           error: (_, _) => ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+            padding: const EdgeInsets.only(bottom: 32),
             children: const [
               FAlert(
                 variant: FAlertVariant.destructive,
@@ -76,7 +76,7 @@ class SearchMissListPage extends ConsumerWidget {
 
             return ListView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+              padding: const EdgeInsets.only(bottom: 32),
               children: [
                 Text(
                   'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.',

@@ -4,17 +4,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
-import '../../../core/cache/cache_entry.dart';
-import '../../../core/cache/cache_key.dart';
-import '../../../core/cache/cached_json_client.dart';
 import '../domain/discussion_models.dart';
 
 class DiscussionRepository {
-  DiscussionRepository(this._dio, {CachedJsonClient? cache})
-    : _cache = cache;
+  DiscussionRepository(this._dio);
 
   final Dio _dio;
-  final CachedJsonClient? _cache;
 
   static const _base = '/api/v1/discussions';
 
@@ -116,7 +111,6 @@ class DiscussionRepository {
     int limit = 20,
     String? cursor,
     String sort = 'latest',
-    bool forceRefresh = false,
   }) async {
     try {
       final query = <String, dynamic>{
@@ -124,38 +118,11 @@ class DiscussionRepository {
         'sort': sort,
         if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
       };
-      final cache = _cache;
-      Map<String, dynamic>? envelope;
-      if (cache != null) {
-        final key = buildCacheKey(
-          method: 'GET',
-          path: _base,
-          query: query,
-        );
-        envelope = await cache.getOrFetch(
-          key: key,
-          cacheClass: CacheClass.socialPublic,
-          forceRefresh: forceRefresh && (cursor == null || cursor.isEmpty),
-          fetch: () async {
-            final res = await _dio.get<Map<String, dynamic>>(
-              _base,
-              queryParameters: query,
-            );
-            final data = res.data;
-            if (data == null) {
-              throw StateError('Envelope discussion kosong');
-            }
-            return data;
-          },
-        );
-      } else {
-        final res = await _dio.get<Map<String, dynamic>>(
-          _base,
-          queryParameters: query,
-        );
-        envelope = res.data;
-      }
-      return Either.right(_parsePage(envelope));
+      final res = await _dio.get<Map<String, dynamic>>(
+        _base,
+        queryParameters: query,
+      );
+      return Either.right(_parsePage(res.data));
     } on DioException catch (e) {
       return Either.left(_mapDio(e, 'Gagal memuat diskusi'));
     } catch (e) {
@@ -185,38 +152,11 @@ class DiscussionRepository {
     }
   }
 
-  Future<Either<DiscussionFailure, DiscussionItem>> getDetail(
-    String id, {
-    bool forceRefresh = false,
-  }) async {
+  Future<Either<DiscussionFailure, DiscussionItem>> getDetail(String id) async {
     try {
-      final cache = _cache;
-      Map<String, dynamic>? data;
-      if (cache != null) {
-        final key = buildCacheKey(
-          method: 'GET',
-          path: '$_base/$id',
-        );
-        final envelope = await cache.getOrFetch(
-          key: key,
-          cacheClass: CacheClass.socialPublic,
-          forceRefresh: forceRefresh,
-          fetch: () async {
-            final res = await _dio.get<Map<String, dynamic>>('$_base/$id');
-            final body = res.data;
-            if (body == null) {
-              throw StateError('Envelope detail diskusi kosong');
-            }
-            return body;
-          },
-        );
-        final raw = envelope['data'];
-        if (raw is Map) data = Map<String, dynamic>.from(raw);
-      } else {
-        final res = await _dio.get<Map<String, dynamic>>('$_base/$id');
-        final raw = res.data?['data'];
-        if (raw is Map) data = Map<String, dynamic>.from(raw);
-      }
+      final res = await _dio.get<Map<String, dynamic>>('$_base/$id');
+      final raw = res.data?['data'];
+      final data = (raw is Map) ? Map<String, dynamic>.from(raw) : null;
       if (data == null) {
         return Either.left(
           const DiscussionFailure('Detail diskusi tidak lengkap'),

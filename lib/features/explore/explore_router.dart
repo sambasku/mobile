@@ -2,8 +2,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/explore_category_page.dart';
+import 'presentation/pages/cuisine_detail_page.dart';
+import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_detail_page.dart';
+import 'presentation/pages/region_detail_page.dart';
 
 class ExploreRouter {
   ExploreRouter._();
@@ -22,10 +25,32 @@ class ExploreRouter {
     name: 'ExploreRouter.place',
   );
 
+  /// Daftar + detail Cuisine (cuisines.json, bukan places.json).
+  static const cuisineList = RouteDefiner(
+    path: '/explore/cuisine',
+    name: 'ExploreRouter.cuisineList',
+  );
+
+  static const cuisineDetail = RouteDefiner(
+    path: '/explore/cuisine/:slug',
+    name: 'ExploreRouter.cuisineDetail',
+  );
+
   /// Peta semua Place (pin, tap → detail).
   static const pins = RouteDefiner(
     path: '/explore/place/pins',
     name: 'ExploreRouter.pins',
+  );
+
+  /// Detail kecamatan (slug = id) dan desa (slug = kode BPS).
+  static const kecamatan = RouteDefiner(
+    path: '/explore/kecamatan/:slug',
+    name: 'ExploreRouter.kecamatan',
+  );
+
+  static const desa = RouteDefiner(
+    path: '/explore/desa/:slug',
+    name: 'ExploreRouter.desa',
   );
 
   /// Route detail di luar shell (push penuh). `pins` wajib sebelum `place`:
@@ -44,6 +69,32 @@ class ExploreRouter {
       name: pins.name,
       builder: (context, state) {
         return PinsPage(focusSlug: state.uri.queryParameters['slug']);
+      },
+    ),
+    GoRoute(
+      path: kecamatan.path,
+      name: kecamatan.name,
+      builder: (context, state) =>
+          RegionDetailPage.kecamatan(slug: state.pathParameters['slug'] ?? ''),
+    ),
+    GoRoute(
+      path: desa.path,
+      name: desa.name,
+      builder: (context, state) => RegionDetailPage.desa(
+        slug: Uri.decodeComponent(state.pathParameters['slug'] ?? ''),
+      ),
+    ),
+    GoRoute(
+      path: cuisineList.path,
+      name: cuisineList.name,
+      builder: (context, state) => const CuisineListPage(),
+    ),
+    GoRoute(
+      path: cuisineDetail.path,
+      name: cuisineDetail.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return CuisineDetailPage(slug: slug);
       },
     ),
     GoRoute(

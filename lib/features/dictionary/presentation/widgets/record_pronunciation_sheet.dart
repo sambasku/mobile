@@ -128,6 +128,8 @@ class _RecordPronunciationSheetState
   bool _stoppingForLifecycle = false;
   /// Default ON saat login (nama tampilan tersedia); user bisa matikan untuk anonim.
   bool _creditSpeakerName = false;
+  /// PDP Pasal 8: wajib setuju sebelum kirim (chip hijau).
+  bool _speakerConsent = false;
 
   String get _accountSpeakerName => widget.defaultSpeakerName.trim();
   String? get _speakerNameForUpload =>
@@ -598,6 +600,58 @@ class _RecordPronunciationSheetState
     }
   }
 
+  /// Sheet persetujuan publikasi + lisensi (PDP Pasal 8). Hasil true = setuju.
+  Future<void> _showConsentSheet() async {
+    final theme = FTheme.of(context);
+    final agreed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetCtx) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Publikasi & Lisensi Rekaman',
+              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const Gap(12),
+            Text(
+              'Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) '
+              'di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.\n\n'
+              'Pastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. '
+              'Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. '
+              'Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.',
+              style: theme.typography.sm.copyWith(
+                color: theme.colors.mutedForeground,
+                height: 1.5,
+              ),
+            ),
+            const Gap(24),
+            FButton(
+              onPress: () => Navigator.of(sheetCtx).pop(true),
+              child: const Text('Saya setuju'),
+            ),
+            const Gap(8),
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(sheetCtx).pop(false),
+              child: const Text('Batal'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (agreed == true && mounted) {
+      setState(() {
+        _speakerConsent = true;
+        _error = null;
+      });
+    }
+  }
+
   Future<void> _submit() async {
     final path = _filePath;
     if (path == null) {
@@ -621,6 +675,12 @@ class _RecordPronunciationSheetState
     if (!_hasPreviewed) {
       setState(
         () => _error = 'Dengarkan pratinjau dulu sebelum mengirim',
+      );
+      return;
+    }
+    if (!_speakerConsent) {
+      setState(
+        () => _error = 'Setujui publikasi & lisensi dulu, ya',
       );
       return;
     }
@@ -664,6 +724,7 @@ class _RecordPronunciationSheetState
           wordId: widget.wordId,
           audioFile: uploadFile,
           speakerName: _speakerNameForUpload,
+          speakerConsent: _speakerConsent,
           durationMs: durationMs > 0 ? durationMs : 1000,
           dialectId: _dialectId,
           exampleId: widget.exampleId,
@@ -1034,6 +1095,63 @@ class _RecordPronunciationSheetState
                   ),
                 ),
               ],
+              const Gap(12),
+              FTappable(
+                onPress: _phase == _RecordPhase.submitting
+                    ? null
+                    : _showConsentSheet,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _speakerConsent
+                        ? theme.colors.primaryForeground.withValues(alpha: 0.1)
+                        : theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: _speakerConsent
+                          ? theme.colors.primary
+                          : theme.colors.border,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _speakerConsent
+                            ? FLucideIcons.badgeCheck
+                            : FLucideIcons.shieldAlert,
+                        size: 16,
+                        color: _speakerConsent
+                            ? theme.colors.primary
+                            : theme.colors.mutedForeground,
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: Text(
+                          _speakerConsent
+                              ? 'Publik, CC BY-SA - penutur setuju'
+                              : 'Publikasi & Lisensi: perlu setuju',
+                          style: theme.typography.xs.copyWith(
+                            color: _speakerConsent
+                                ? theme.colors.primary
+                                : theme.colors.mutedForeground,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      if (!_speakerConsent)
+                        Icon(
+                          FLucideIcons.chevronRight,
+                          size: 14,
+                          color: theme.colors.mutedForeground,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
               const Gap(12),
               Row(
                 children: [

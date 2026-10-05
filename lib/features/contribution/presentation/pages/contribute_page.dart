@@ -13,6 +13,7 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/services/in_app_review_service.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
@@ -376,6 +377,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         }
         // ponytail: show lemma user typed, not server ULID (useless to contributors)
         _showSuccessDialog(context, _lemmaCtrl.text.trim());
+        // Momen sukses: kandidat prompt rating (service cek count+cooldown).
+        unawaited(InAppReviewService.maybePrompt());
         return;
       }
 
@@ -476,25 +479,37 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             advanced: _advanced,
             onChanged: (advanced) {
               _onFieldEdited();
-              setState(() {
-                final turningOn = advanced && !_advanced;
-                _advanced = advanced;
-                if (!turningOn) return;
-                final text = _standardTranslationCtrl.text.trim();
-                final first = _meanings.first;
-                if (first.modePicked) return;
-                if (text.isNotEmpty) {
-                  first.wantPadanan = true;
-                  first.trCtrl.text = text;
-                }
-                final definition = _standardDefinition.trim();
-                if (definition.isNotEmpty) {
-                  first.wantDefinition = true;
-                  first.defCtrl.text = definition;
-                }
-                if (_standardWordClassId != null) {
-                  first.wordClassId = _standardWordClassId;
-                }
+              // Unfocus sebelum swap: matikan composing-rect callback
+              // EditableText (assert "attached: is not true").
+              FocusManager.instance.primaryFocus?.unfocus();
+              // ponytail: tunda swap 1 tick event loop - frame berjalan
+              // selesai normal dulu, swap kejadian di frame berikutnya.
+              // Swap sinkron di frame yang sama meninggalkan SemanticsNode
+              // basi ber-rect terbalik dari suffix "Ambil dari KBBI"
+              // (MergeSemantics FTextField forui 0.22, duobaseio/forui#1160;
+              // naikkan forui 0.26+ kalau SDK >= 3.47).
+              Future<void>.delayed(Duration.zero, () {
+                if (!mounted || advanced == _advanced) return;
+                setState(() {
+                  final turningOn = advanced && !_advanced;
+                  _advanced = advanced;
+                  if (!turningOn) return;
+                  final text = _standardTranslationCtrl.text.trim();
+                  final first = _meanings.first;
+                  if (first.modePicked) return;
+                  if (text.isNotEmpty) {
+                    first.wantPadanan = true;
+                    first.trCtrl.text = text;
+                  }
+                  final definition = _standardDefinition.trim();
+                  if (definition.isNotEmpty) {
+                    first.wantDefinition = true;
+                    first.defCtrl.text = definition;
+                  }
+                  if (_standardWordClassId != null) {
+                    first.wordClassId = _standardWordClassId;
+                  }
+                });
               });
             },
           ),
@@ -521,14 +536,19 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 'Tekan icon buku untuk mencari definisi di KBBI',
               ),
               textInputAction: TextInputAction.done,
+              // ponytail: FButton.icon di suffixBuilder menghasilkan
+              // SemanticsNode ber-transform basi di bawah MergeSemantics
+              // forui 0.22 -> assert "Invisible SemanticsNodes" saat swap
+              // subtree (duobaseio/forui#1160, fix di forui 0.26+ yang
+              // butuh Flutter >= 3.47). ExcludeSemantics mencegah node itu
+              // masuk tree; label tombol sudah tersirat di description.
               suffixBuilder: (context, style, _) => Padding(
                 padding: style.clearButtonPadding,
-                child: FButton.icon(
-                  style: style.clearButtonStyle,
-                  onPress: _openStandardKbbiSheet,
-                  child: Icon(
-                    FLucideIcons.bookOpen,
-                    semanticLabel: 'Ambil dari KBBI',
+                child: ExcludeSemantics(
+                  child: FButton.icon(
+                    style: style.clearButtonStyle,
+                    onPress: _openStandardKbbiSheet,
+                    child: const Icon(FLucideIcons.bookOpen),
                   ),
                 ),
               ),
@@ -1277,14 +1297,16 @@ class _MeaningBlock extends StatelessWidget {
                           'Tekan icon buku untuk mencari definisi di KBBI',
                         ),
                   textInputAction: TextInputAction.next,
+                  // ponytail: sama seperti suffix KBBI di atas - sembunyikan
+                  // SemanticsNode suffix dari tree (bug MergeSemantics
+                  // forui 0.22).
                   suffixBuilder: (context, style, _) => Padding(
                     padding: style.clearButtonPadding,
-                    child: FButton.icon(
-                      style: style.clearButtonStyle,
-                      onPress: onOpenKbbi,
-                      child: Icon(
-                        FLucideIcons.bookOpen,
-                        semanticLabel: 'Ambil dari KBBI',
+                    child: ExcludeSemantics(
+                      child: FButton.icon(
+                        style: style.clearButtonStyle,
+                        onPress: onOpenKbbi,
+                        child: const Icon(FLucideIcons.bookOpen),
                       ),
                     ),
                   ),

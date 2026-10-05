@@ -65,23 +65,38 @@ class ResetPasswordPage extends HookConsumerWidget {
       );
     });
 
-    ref.listen(authResetProvider.select((s) => s.successMessage), (_, next) {
+    ref.listen(authResetProvider.select((s) => s.successMessage), (_, next) async {
       if (next == null || !context.mounted) return;
-      showDialog<void>(
+      await showModalBottomSheet<void>(
         context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          title: const Text('Password berhasil direset'),
-          content: Text(next),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                context.go(AuthRouter.login.path);
-              },
-              child: const Text('Masuk'),
-            ),
-          ],
+        useRootNavigator: true,
+        isScrollControlled: true,
+        barrierColor: Colors.black54,
+        builder: (sheetContext) => Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FTileGroup(
+                children: [
+                  FTile(
+                    title: const Text('Password berhasil direset'),
+                    subtitle: Text(next),
+                  ),
+                  FTile(
+                    title: const Text(''),
+                    suffix: FButton(
+                      onPress: () {
+                        Navigator.of(sheetContext).pop();
+                        context.go(AuthRouter.login.path);
+                      },
+                      child: const Text('Masuk'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });

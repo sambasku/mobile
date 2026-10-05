@@ -840,11 +840,16 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
               ),
         suffixBuilder: (context, style, _) => Padding(
           padding: style.clearButtonPadding,
-          child: FButton.icon(
-            style: style.clearButtonStyle,
-            semanticsLabel: 'Ambil dari KBBI',
-            onPress: _busy ? null : () => _openKbbi(meaning),
-            child: const Icon(FLucideIcons.bookOpen),
+          // ponytail: ExcludeSemantics - SemanticsNode suffix bawaan
+          // MergeSemantics forui 0.22 bisa ber-rect terbalik saat subtree
+          // diswap (assert "Invisible SemanticsNodes",
+          // duobaseio/forui#1160). Makna tombol ada di description field.
+          child: ExcludeSemantics(
+            child: FButton.icon(
+              style: style.clearButtonStyle,
+              onPress: _busy ? null : () => _openKbbi(meaning),
+              child: const Icon(FLucideIcons.bookOpen),
+            ),
           ),
         ),
       ),

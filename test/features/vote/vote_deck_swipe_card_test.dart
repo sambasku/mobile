@@ -145,7 +145,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(got, VoteDeckSwipeDirection.agree);
-    expect(haptics, contains('HapticFeedbackType.heavyImpact'));
+    expect(haptics, contains('HapticFeedbackType.mediumImpact'));
   });
 
   // Harus test pertama yang membiarkan hint jalan: hint sekali per proses.

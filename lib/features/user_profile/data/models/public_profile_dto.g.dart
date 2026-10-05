@@ -104,10 +104,7 @@ _PublicActivityDto _$PublicActivityDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PublicActivityDtoToJson(_PublicActivityDto instance) =>
-    <String, dynamic>{
-      'items': instance.items.map((e) => e.toJson()).toList(),
-      'meta': instance.meta?.toJson(),
-    };
+    <String, dynamic>{'items': instance.items, 'meta': instance.meta};
 
 _MentionSuggestItemDto _$MentionSuggestItemDtoFromJson(
   Map<String, dynamic> json,
@@ -140,4 +137,4 @@ _MentionSuggestDto _$MentionSuggestDtoFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$MentionSuggestDtoToJson(_MentionSuggestDto instance) =>
-    <String, dynamic>{'items': instance.items.map((e) => e.toJson()).toList()};
+    <String, dynamic>{'items': instance.items};

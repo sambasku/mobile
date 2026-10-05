@@ -60,7 +60,7 @@ class _GuideContent extends ConsumerWidget {
                         'Gunakan jari untuk menggeser kartu kata:\n'
                         '• Geser kanan → "Sudah pas" (arti sudah benar)\n'
                         '• Geser kiri → "Perlu dicek ulang" (arti kurang tepat)\n'
-                        '• Geser ke atas → "Lewati" (raju / belum yakin)',
+                        '• Geser ke atas → "Lewati" (ragu / belum yakin)',
                         textAlign: TextAlign.center,
                         style: theme.typography.md.copyWith(
                           color: theme.colors.mutedForeground,

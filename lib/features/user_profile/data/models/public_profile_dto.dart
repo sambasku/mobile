@@ -60,7 +60,6 @@ abstract class PublicActivityMetaDto with _$PublicActivityMetaDto {
 
 @freezed
 abstract class PublicActivityDto with _$PublicActivityDto {
-  @JsonSerializable(explicitToJson: true)
   const factory PublicActivityDto({
     @Default(<PublicActivityItemDto>[]) List<PublicActivityItemDto> items,
     PublicActivityMetaDto? meta,
@@ -85,7 +84,6 @@ abstract class MentionSuggestItemDto with _$MentionSuggestItemDto {
 
 @freezed
 abstract class MentionSuggestDto with _$MentionSuggestDto {
-  @JsonSerializable(explicitToJson: true)
   const factory MentionSuggestDto({
     @Default(<MentionSuggestItemDto>[]) List<MentionSuggestItemDto> items,
   }) = _MentionSuggestDto;

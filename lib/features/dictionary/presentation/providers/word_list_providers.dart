@@ -9,6 +9,7 @@ import '../../domain/providers/dictionary_domain_providers.dart';
 import '../../domain/usecases/list_words_use_case.dart';
 import '../../domain/usecases/search_words_use_case.dart';
 import '../models/word_list_state.dart';
+import '../providers/search_history_provider.dart';
 
 part 'word_list_providers.g.dart';
 
@@ -212,6 +213,14 @@ class WordListNotifier extends _$WordListNotifier {
         searchIn: state.searchIn,
         hasResults: page.items.isNotEmpty,
       );
+      // Riwayat hanya untuk query bermakna (bukan browse A-Z) dan ada
+      // hasilnya - menyimpan query tanpa hasil menumpuk riwayat dengan
+      // ketikan yang salah.
+      if (page.items.isNotEmpty) {
+        unawaited(ref.read(searchHistoryControllerProvider.notifier).record(
+              state.q,
+            ));
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/constants/contributors_data_url.dart';
 
-/// Exception data kontributor tidak sesuai schema (`data/contributor.json`).
+/// Exception data kontributor tidak sesuai schema (`data/contributors.json`).
 class ContributorsException implements Exception {
   const ContributorsException(this.message);
 
@@ -74,7 +74,7 @@ class ContributorsRemoteDatasource {
 
   final String _configUrl;
 
-  /// Fetch + parse `contributor.json`, sudah ter-sort `since` ascending.
+  /// Fetch + parse `contributors.json`, sudah ter-sort `since` ascending.
   Future<List<ContributorEntry>> fetchContributors() async {
     final resp = await _dio.get<dynamic>(
       _configUrl,
@@ -82,7 +82,7 @@ class ContributorsRemoteDatasource {
     );
     final body = resp.data;
     if (body is! Map) {
-      throw const ContributorsException('Body contributor.json bukan object');
+      throw const ContributorsException('Body contributors.json bukan object');
     }
     final rawList = body['contributors'];
     if (rawList is! List) {

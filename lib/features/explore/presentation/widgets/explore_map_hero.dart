@@ -21,7 +21,7 @@ class ExploreMapHero extends StatelessWidget {
 
   void _openPetaAkses(BuildContext context, {required String mode}) {
     unawaited(AnalyticsService.instance.logMapOpen(entry: 'hero', mode: mode));
-    context.push(ExploreRouter.category.path.replaceFirst(':id', 'peta-akses'));
+    context.push(ExploreRouter.pins.path);
   }
 
   @override

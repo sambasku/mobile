@@ -17,13 +17,18 @@ const _reasons = <(String, String)>[
 ];
 
 /// Alasan khusus pelaporan gambar. Ditampilkan ketika [imageId] diisi.
+/// `reason_code` tetap `violent_image` (kontrak API); pilihan user
+/// ditambahkan ke note supaya verifikator tahu keluhannya.
 const _imageReasons = <(String, String)>[
-  ('violent_image', 'Laporkan foto ini berisi kekerasan'),
+  ('kekerasan', 'Foto berisi kekerasan'),
+  ('seksual', 'Foto berisi konten seksual'),
+  ('tidak_pantas', 'Foto tidak pantas'),
 ];
 
 Future<bool> showReportWordSheet(
   BuildContext context,
   String wordId, {
+
   /// Saat diisi, sheet menampilkan alasan khusus gambar (mis. kekerasan).
   String? imageId,
 }) async {
@@ -41,6 +46,7 @@ class _ReportWordSheet extends ConsumerStatefulWidget {
   const _ReportWordSheet({required this.wordId, this.imageId});
 
   final String wordId;
+
   /// Saat diisi, laporan merujuk ke gambar tertentu.
   final String? imageId;
 
@@ -57,7 +63,7 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
   void initState() {
     super.initState();
     // Saat imageId ada, mulai dari alasan kekerasan gambar.
-    _reason = widget.imageId != null ? 'violent_image' : 'inappropriate';
+    _reason = widget.imageId != null ? 'kekerasan' : 'inappropriate';
   }
 
   @override
@@ -79,10 +85,22 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
     }
     setState(() => _sending = true);
     try {
-      await ref.read(wordReportRepositoryProvider).submit(
+      // Laporan foto: keluhan chip ditambahkan ke catatan; reason_code yang
+      // dikirim tetap violent_image sesuai kontrak API.
+      final isImage = widget.imageId != null;
+      final chipNote = isImage
+          ? _imageReasons.firstWhere((r) => r.$1 == _reason).$2
+          : null;
+      await ref
+          .read(wordReportRepositoryProvider)
+          .submit(
             wordId: widget.wordId,
-            reasonCode: _reason,
-            note: note,
+            reasonCode: isImage ? 'violent_image' : _reason,
+            note: chipNote == null
+                ? note
+                : note.isEmpty
+                ? chipNote
+                : '$chipNote. Catatan: $note',
             imageId: widget.imageId,
           );
       if (!mounted) return;
@@ -122,7 +140,9 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
             widget.imageId != null
                 ? 'Laporkan foto ini ke tim Sambasku untuk ditinjau.'
                 : 'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.',
-            style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+            style: theme.typography.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
           ),
           const Gap(12),
           Wrap(

@@ -152,21 +152,41 @@ class LinkedAccountsPage extends ConsumerWidget {
     required String title,
     required String body,
   }) {
-    return showDialog<bool>(
+    return showModalBottomSheet<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Lepas'),
-          ),
-        ],
+      useRootNavigator: true,
+      isScrollControlled: true,
+      barrierColor: Colors.black54,
+      builder: (sheetContext) => Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(title),
+                  subtitle: Text(body),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    variant: FButtonVariant.destructive,
+                    onPress: () => Navigator.of(sheetContext).pop(true),
+                    child: const Text('Lepas'),
+                  ),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    onPress: () => Navigator.of(sheetContext).pop(false),
+                    child: const Text('Batal'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

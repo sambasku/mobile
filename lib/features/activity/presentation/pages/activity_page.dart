@@ -64,16 +64,34 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
           ],
         ),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Gap(8),
-              const Expanded(child: _VoteDeckHost()),
-              // Di bawah action bar deck: dekat jempol.
-              const Gap(8),
-              _ContributeMenu(theme: theme),
-              const Gap(8),
-            ],
+          child: RefreshIndicator(
+            onRefresh: _refresh,
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  // Minimal setinggi viewport agar pull-to-refresh tetap
+                  // jalan meski konten tidak meluap.
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Gap(8),
+                      // Deck mengisi sisa viewport minus menu kontribusi
+                      // (perilaku lama Expanded), bukan tinggi hardcoded.
+                      SizedBox(
+                        height: constraints.maxHeight - 64,
+                        child: _VoteDeckHost(),
+                      ),
+                      // Di bawah action bar deck: dekat jempol.
+                      const Gap(8),
+                      _ContributeMenu(theme: theme),
+                      const Gap(8),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -87,6 +105,15 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     if (!mounted || !unread) return;
     await showContributionGuideSheet(context);
     if (!mounted) return;
+    // Pop dialog TIDAK men-notify routerDelegate. Kalau selama guide
+    // terbuka ada notifikasi router nyasar (deep link, goBranch),
+    // _VoteDeckHost + _DeferredShellTicker tercatat canPop=true: deck
+    // tertukar stub + ticker pause = konten tab tidak terload selamanya.
+    // router.refresh() tidak cukup: setNewRoutePath early-return karena
+    // konfigurasi identik, widget const di-skip; notify delegate langsung
+    // satu-satunya cara membangunkan ListenableBuilder.
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    AppRouter.router.routerDelegate.notifyListeners();
     ref.invalidate(contributionGuideUnreadProvider);
   }
 }
@@ -108,9 +135,7 @@ class _VoteDeckHost extends StatelessWidget {
         if (obscured) {
           return const _VoteDeckStub();
         }
-        return const RepaintBoundary(
-          child: VoteDeckSection(),
-        );
+        return const RepaintBoundary(child: VoteDeckSection());
       },
     );
   }
@@ -180,13 +205,18 @@ class _ContributeMenu extends StatelessWidget {
           Navigator.of(sheetContext).pop(path);
         }
 
-        FTile tile(IconData icon, String title, String subtitle, VoidCallback onPress) => FTile(
-              prefix: Icon(icon, color: theme.colors.primary),
-              title: Text(title),
-              subtitle: Text(subtitle),
-              suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: onPress,
-            );
+        FTile tile(
+          IconData icon,
+          String title,
+          String subtitle,
+          VoidCallback onPress,
+        ) => FTile(
+          prefix: Icon(icon, color: theme.colors.primary),
+          title: Text(title),
+          subtitle: Text(subtitle),
+          suffix: const Icon(FLucideIcons.chevronRight),
+          onPress: onPress,
+        );
 
         return SafeArea(
           child: Padding(
@@ -194,13 +224,18 @@ class _ContributeMenu extends StatelessWidget {
             child: FTileGroup(
               label: const Text('Menu kontribusi'),
               children: [
-                tile(FLucideIcons.plusCircle, 'Usul kata baru', 'Tambah kata yang belum ada', () {
-                  AnalyticsService.instance.log(
-                    AnalyticsEvents.contributeStart,
-                    params: {'from': 'blank'},
-                  );
-                  go('/contribute');
-                }),
+                tile(
+                  FLucideIcons.plusCircle,
+                  'Usul kata baru',
+                  'Tambah kata yang belum ada',
+                  () {
+                    AnalyticsService.instance.log(
+                      AnalyticsEvents.contributeStart,
+                      params: {'from': 'blank'},
+                    );
+                    go('/contribute');
+                  },
+                ),
                 tile(
                   FLucideIcons.search,
                   'Dicari warga',
