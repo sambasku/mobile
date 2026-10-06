@@ -12,6 +12,7 @@ enum FeedActivityKind {
   welcome,
   cardShare,
   suggestion,
+  contribution,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -40,6 +41,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.cardShare;
     case 'suggestion':
       return FeedActivityKind.suggestion;
+    case 'contribution':
+      return FeedActivityKind.contribution;
     default:
       return null;
   }
