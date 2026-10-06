@@ -18,6 +18,7 @@ import '../../domain/entities/region.dart';
 import '../../domain/region_geometry.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
+import '../place_ui.dart';
 import '../providers/places_providers.dart';
 import '../providers/regions_providers.dart';
 import '../widgets/sambas_map_view.dart';
@@ -807,7 +808,7 @@ class _BottomPanel extends StatelessWidget {
               if (placesOfKec.isNotEmpty) ...[
                 const Gap(12),
                 Text(
-                  'Wisata dan kuliner di sini',
+                  'Tempat menarik di sini',
                   style: theme.typography.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -835,6 +836,15 @@ class _BottomPanel extends StatelessWidget {
                           Expanded(
                             child: Text(p.name, style: theme.typography.sm),
                           ),
+                          // Flagging type per item: kategori spesifik tempat
+                          // (Kuliner, Sejarah, Alam, ...) - bukan hanya ikon.
+                          Text(
+                            placeLabel(p),
+                            style: theme.typography.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                          const Gap(4),
                           Icon(
                             FLucideIcons.chevronRight,
                             size: 14,
