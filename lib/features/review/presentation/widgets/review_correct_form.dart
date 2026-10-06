@@ -27,7 +27,13 @@ const carriedChildKeys = {'dialect_id', 'provider_file_id'};
 /// "semua kunci dari payload") supaya payload baru tidak otomatis jadi input
 /// mentah, dan id tidak pernah bisa diketik ulang.
 Set<String> editableChildKeys(String entityType) => switch (entityType) {
-  'pronunciation' => {'notation', 'value', 'audio_url', 'speaker_name', 'notes'},
+  'pronunciation' => {
+    'notation',
+    'value',
+    'audio_url',
+    'speaker_name',
+    'notes',
+  },
   'word_image' => {'url', 'alt_text'},
   'word_audio' => {'speaker_name'},
   _ => {'source_sentence', 'target_sentence', 'source_type', 'notes'},
@@ -314,8 +320,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
             _CarriedTranslation(
               languageId: languageId,
               translationText: text,
-              translationType:
-                  raw['translation_type']?.toString() ?? 'direct',
+              translationType: raw['translation_type']?.toString() ?? 'direct',
               translationAllowsComma: allowsComma is bool ? allowsComma : null,
             ),
           );
@@ -366,9 +371,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       return;
     }
     setState(() => _busy = true);
-    final body = type == 'word'
-        ? await _wordBody(detail)
-        : _childBody(type);
+    final body = type == 'word' ? await _wordBody(detail) : _childBody(type);
     final result = await ref
         .read(reviewRepositoryProvider)
         .correct(detail.contribution.id, body);
@@ -553,8 +556,8 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
                       _busy
                           ? 'Memproses…'
                           : _publish
-                              ? 'Simpan dan terbitkan'
-                              : 'Simpan, tetap menunggu',
+                          ? 'Simpan dan terbitkan'
+                          : 'Simpan, tetap menunggu',
                     ),
                   ),
                   const Gap(8),
@@ -627,7 +630,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       const Gap(4),
       Text(
         'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.',
-        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+        style: theme.typography.sm.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
       ),
       const Gap(6),
       _UsageLabelChips(
@@ -641,7 +646,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       const Gap(4),
       Text(
         'Sensitivitas isi makna.',
-        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+        style: theme.typography.sm.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
       ),
       const Gap(6),
       _UsageLabelChips(
@@ -728,8 +735,12 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       r.relationType == 'synonym' || r.relationType == 'antonym';
 
   String _relationSummary() {
-    final synonyms = _relations.where((r) => r.relationType == 'synonym').length;
-    final antonyms = _relations.where((r) => r.relationType == 'antonym').length;
+    final synonyms = _relations
+        .where((r) => r.relationType == 'synonym')
+        .length;
+    final antonyms = _relations
+        .where((r) => r.relationType == 'antonym')
+        .length;
     if (synonyms == 0 && antonyms == 0) return 'Belum ada';
     return [
       if (synonyms > 0) '$synonyms sinonim',
@@ -758,7 +769,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
   Future<void> _openRecord() async {
     final languageId = widget.detail.entity['languageId']?.toString();
     if (languageId == null || languageId.isEmpty) {
-      showFToast(context: context, title: const Text('Bahasa kata tidak diketahui'));
+      showFToast(
+        context: context,
+        title: const Text('Bahasa kata tidak diketahui'),
+      );
       return;
     }
     final micReady = await ensureMicrophoneReady(context);
@@ -794,7 +808,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       classes = await ref.read(referenceWordClassesProvider.future);
     } catch (_) {
       if (mounted) {
-        showFToast(context: context, title: const Text('Gagal memuat kelas kata'));
+        showFToast(
+          context: context,
+          title: const Text('Gagal memuat kelas kata'),
+        );
       }
       return;
     }
@@ -877,7 +894,8 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     final classes = await ref.read(referenceWordClassesProvider.future);
     if (!mounted) return;
     var matched = _matchReviewWordClass(classes, picked.wordClassCode);
-    if (matched == null && (picked.wordClassLabel?.trim().isNotEmpty ?? false)) {
+    if (matched == null &&
+        (picked.wordClassLabel?.trim().isNotEmpty ?? false)) {
       matched = findReferenceItem(classes, picked.wordClassLabel)?.id;
     }
     setState(() {
@@ -891,10 +909,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         wordClassId: matched,
       );
     });
-    showFToast(
-      context: context,
-      title: const Text('Definisi diisi dari KBBI'),
-    );
+    showFToast(context: context, title: const Text('Definisi diisi dari KBBI'));
   }
 
   List<Widget> _childForm() {

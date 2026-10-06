@@ -58,7 +58,8 @@ Map<String, dynamic> buildWordCorrectBody({
       translations.add({
         'language_id': translationLanguageId,
         'translation_text': translation,
-        'translation_type': firstSource['translationType']?.toString() ?? 'direct',
+        'translation_type':
+            firstSource['translationType']?.toString() ?? 'direct',
       });
     }
     for (var t = 1; t < sourceTranslations.length; t++) {
@@ -92,7 +93,8 @@ Map<String, dynamic> buildWordCorrectBody({
           'target_language_id': targetLanguageId,
           'target_sentence': target,
         },
-        if (original['sourceType'] != null) 'source_type': original['sourceType'],
+        if (original['sourceType'] != null)
+          'source_type': original['sourceType'],
       });
     }
 
@@ -224,7 +226,9 @@ Map<String, dynamic> buildMeaningCorrectBody({
     if (trimmedComment != null && trimmedComment.isNotEmpty)
       'comment': trimmedComment,
     'definition': definition.trim(),
-    'word_class_id': (wordClass == null || wordClass.isEmpty) ? null : wordClass,
+    'word_class_id': (wordClass == null || wordClass.isEmpty)
+        ? null
+        : wordClass,
     'translations': translations,
   };
 }
