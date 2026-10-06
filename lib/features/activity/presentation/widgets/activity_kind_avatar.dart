@@ -142,6 +142,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.pencilLine,
           foreground: primary,
         );
+      case FeedActivityKind.contribution:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.filePlus2,
+          foreground: primary,
+        );
     }
   }
 }

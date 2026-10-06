@@ -16,8 +16,16 @@ final _entity = <String, dynamic>{
       'definition': 'ikan kecil',
       'wordClass': {'id': _nomina},
       'translations': [
-        {'languageId': _idn, 'translationText': 'ikan', 'translationType': 'direct'},
-        {'languageId': _eng, 'translationText': 'small fish', 'translationType': 'idiomatic'},
+        {
+          'languageId': _idn,
+          'translationText': 'ikan',
+          'translationType': 'direct',
+        },
+        {
+          'languageId': _eng,
+          'translationText': 'small fish',
+          'translationType': 'idiomatic',
+        },
       ],
       'examples': [
         {
@@ -42,7 +50,11 @@ final _entity = <String, dynamic>{
     {'form': 'klintiak', 'variantType': 'regional', 'dialectId': 'D1'},
   ],
   'images': [
-    {'url': 'https://cdn.example/a.png', 'providerFileId': 'f1', 'isPrimary': true},
+    {
+      'url': 'https://cdn.example/a.png',
+      'providerFileId': 'f1',
+      'isPrimary': true,
+    },
   ],
   'pronunciations': [
     {'notation': 'ipa', 'value': 'ka.lin.tiak'},
@@ -69,8 +81,16 @@ void main() {
           wordClassId: null,
           meaningSource: 'manual',
           examples: [
-            (source: 'Kalintiak di sungai', target: 'Ikan kecil di sungai', sourceIndex: 0),
-            (source: 'Kalintiak goreng', target: 'Ikan goreng', sourceIndex: null),
+            (
+              source: 'Kalintiak di sungai',
+              target: 'Ikan kecil di sungai',
+              sourceIndex: 0,
+            ),
+            (
+              source: 'Kalintiak goreng',
+              target: 'Ikan goreng',
+              sourceIndex: null,
+            ),
             (source: '   ', target: 'diabaikan', sourceIndex: null),
           ],
         ),
@@ -105,10 +125,18 @@ void main() {
     expect(meanings, hasLength(2));
 
     final first = meanings[0] as Map<String, dynamic>;
-    expect(first['order_index'], 0);
+    expect(first['order_index'], 1);
     expect(first['translations'], [
-      {'language_id': _idn, 'translation_text': 'ikan teri', 'translation_type': 'direct'},
-      {'language_id': _eng, 'translation_text': 'small fish', 'translation_type': 'idiomatic'},
+      {
+        'language_id': _idn,
+        'translation_text': 'ikan teri',
+        'translation_type': 'direct',
+      },
+      {
+        'language_id': _eng,
+        'translation_text': 'small fish',
+        'translation_type': 'idiomatic',
+      },
     ]);
     expect(first['examples'], [
       {
@@ -127,7 +155,7 @@ void main() {
     ]);
 
     final added = meanings[1] as Map<String, dynamic>;
-    expect(added['order_index'], 1);
+    expect(added['order_index'], 2);
     expect(added['word_class_id'], _nomina);
     expect(added['definition'], '-');
     expect(added['is_have_definition'], isFalse);
@@ -163,4 +191,44 @@ void main() {
     expect(body['publish'], isFalse);
     expect(body['usage_labels'], isEmpty);
   });
+
+  test(
+    'koreksi makna: word_class_id kosong dikirim null, bukan string kosong',
+    () {
+      final body = buildMeaningCorrectBody(
+        definition: 'Bagian kepala untuk melihat',
+        wordClassId: null,
+        translations: [
+          {
+            'language_id': _idn,
+            'translation_text': 'mata',
+            'translation_type': 'direct',
+          },
+        ],
+        publish: true,
+        comment: 'Perbaiki definisi',
+      );
+      expect(body['entity_type'], 'meaning');
+      expect(body['word_class_id'], isNull);
+      expect(body['definition'], 'Bagian kepala untuk melihat');
+      expect(body['publish'], isTrue);
+      expect(body['comment'], 'Perbaiki definisi');
+      expect(body.containsKey('meaning_source'), isFalse);
+    },
+  );
+
+  test(
+    'koreksi makna: word_class_id terisi dikirim apa adanya, comment kosong tidak dikirim',
+    () {
+      final body = buildMeaningCorrectBody(
+        definition: 'mata',
+        wordClassId: _nomina,
+        translations: const [],
+        publish: false,
+      );
+      expect(body['word_class_id'], _nomina);
+      expect(body['publish'], isFalse);
+      expect(body.containsKey('comment'), isFalse);
+    },
+  );
 }

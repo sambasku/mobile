@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../core/models/image_attribution.dart';
 import '../../domain/entities/place.dart';
@@ -338,10 +339,18 @@ class _CarouselState extends State<_Carousel> {
             onPageChanged: (i) => setState(() => _index = i),
             itemBuilder: (context, i) {
               final img = widget.images[i];
-              return CachedNetworkImageWithFallback(
-                imageUrl: displayImageUrl(img.url, width: 1200) ?? img.url,
-                fallbackUrl: img.url,
-                fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: () => showImagePreview(
+                  context,
+                  urls: [for (final im in widget.images) im.url],
+                  credits: [for (final im in widget.images) im.attribution],
+                  initialIndex: i,
+                ),
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(img.url, width: 1200) ?? img.url,
+                  fallbackUrl: img.url,
+                  fit: BoxFit.cover,
+                ),
               );
             },
           ),

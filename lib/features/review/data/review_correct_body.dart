@@ -100,7 +100,9 @@ Map<String, dynamic> buildWordCorrectBody({
     meaningBodies.add({
       'word_class_id': wordClassId,
       'definition': definition.isEmpty ? '-' : definition,
-      'order_index': meaningBodies.length,
+      // 1-based, konsisten create-word (kontribusi_repository i+1); skema
+      // correct mewarisi order_index min(1) - 0 ditolak (issue #89).
+      'order_index': meaningBodies.length + 1,
       'is_have_definition': definition.isNotEmpty && definition != '-',
       'is_have_translation': translations.isNotEmpty,
       'meaning_source': edit.meaningSource,
@@ -201,6 +203,30 @@ Map<String, dynamic> _map(Object? raw) {
   if (raw is Map<String, dynamic>) return raw;
   if (raw is Map) return Map<String, dynamic>.from(raw);
   return const {};
+}
+
+/// Body POST correct untuk entity makna. `word_class_id` nullable di API:
+/// string kosong DITOLAK choiceId (min 1), jadi kosong dikirim sebagai null.
+/// `meaning_source` tidak ada di skema correct-meaning (server strip) - tidak
+/// dikirim; server mempertahankan source yang tersimpan.
+Map<String, dynamic> buildMeaningCorrectBody({
+  required String definition,
+  String? wordClassId,
+  required List<Map<String, dynamic>> translations,
+  required bool publish,
+  String? comment,
+}) {
+  final trimmedComment = comment?.trim();
+  final wordClass = wordClassId?.trim();
+  return {
+    'entity_type': 'meaning',
+    'publish': publish,
+    if (trimmedComment != null && trimmedComment.isNotEmpty)
+      'comment': trimmedComment,
+    'definition': definition.trim(),
+    'word_class_id': (wordClass == null || wordClass.isEmpty) ? null : wordClass,
+    'translations': translations,
+  };
 }
 
 List<Object?> _list(Object? raw) => raw is List ? raw : const [];

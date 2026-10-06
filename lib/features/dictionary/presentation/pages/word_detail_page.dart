@@ -1308,11 +1308,17 @@ class _DetailSkeleton extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 16 / 10,
-                  child: Bone(width: double.infinity, height: double.infinity),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 10,
+                    child: Bone(
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  ),
                 ),
               ),
               Padding(

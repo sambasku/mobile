@@ -65,6 +65,7 @@ List<ActivityDailyPoint> ensureDailyActivityLast30Days(
         votes: _asInt(map['votes']),
         comments: _asInt(map['comments']),
         newUsers: _asInt(map['new_users']),
+        searches: _asInt(map['searches']),
       );
     }
   }
@@ -81,6 +82,7 @@ List<ActivityDailyPoint> ensureDailyActivityLast30Days(
             votes: 0,
             comments: 0,
             newUsers: 0,
+            searches: 0,
           ),
     );
   }

@@ -45,7 +45,9 @@ class _FakeReviewRepository implements ReviewRepository {
     bool hideSkipped = false,
     int limit = 20,
     String? cursor,
-  }) async => Either.right(ReviewListPage(items: details.values.map((d) => d.contribution).toList()));
+  }) async => Either.right(
+    ReviewListPage(items: details.values.map((d) => d.contribution).toList()),
+  );
 
   @override
   Future<Either<ReviewFailure, ReviewDetail>> detail(String id) async {
@@ -65,19 +67,24 @@ class _FakeReviewRepository implements ReviewRepository {
   }
 
   @override
-  Future<Either<ReviewFailure, ReviewDecisionResult>> approve(String id, {String? comment}) async =>
-      Either.right(const ReviewDecisionResult(status: 'approved'));
+  Future<Either<ReviewFailure, ReviewDecisionResult>> approve(
+    String id, {
+    String? comment,
+  }) async => Either.right(const ReviewDecisionResult(status: 'approved'));
 
   @override
-  Future<Either<ReviewFailure, ReviewDecisionResult>> reject(String id, {required String comment}) async =>
-      Either.left(ReviewFailure('tidak dipakai'));
+  Future<Either<ReviewFailure, ReviewDecisionResult>> reject(
+    String id, {
+    required String comment,
+  }) async => Either.left(ReviewFailure('tidak dipakai'));
 
   @override
   Future<Either<ReviewFailure, ReviewDecisionResult>> reopen(String id) async =>
       Either.left(ReviewFailure('tidak dipakai'));
 
   @override
-  Future<Either<ReviewFailure, Unit>> skip(String id) async => Either.right(unit);
+  Future<Either<ReviewFailure, Unit>> skip(String id) async =>
+      Either.right(unit);
 
   @override
   Future<Either<ReviewFailure, Unit>> unskip(String id) async =>
@@ -301,7 +308,9 @@ void main() {
   }
 
   group('lengkapi kata dari form Koreksi', () {
-    testWidgets('action bar tetap satu baris tanpa tombol Tambah makna', (tester) async {
+    testWidgets('action bar tetap satu baris tanpa tombol Tambah makna', (
+      tester,
+    ) async {
       final repo = _FakeReviewRepository(details: {_idA: _wordDetail()});
       final container = ProviderContainer(
         overrides: [
@@ -310,12 +319,15 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
-      container.read(reviewSessionProvider.notifier).start(
-        ids: const [_idA, _idB],
-        index: 0,
-      );
+      container
+          .read(reviewSessionProvider.notifier)
+          .start(ids: const [_idA, _idB], index: 0);
 
-      await bootSession(container, tester, const ReviewSessionPage(startId: _idA));
+      await bootSession(
+        container,
+        tester,
+        const ReviewSessionPage(startId: _idA),
+      );
 
       expect(find.text('Tambah makna'), findsNothing);
       expect(find.text('Koreksi'), findsOneWidget);
@@ -323,76 +335,95 @@ void main() {
       expect(find.byIcon(FLucideIcons.x), findsOneWidget);
     });
 
-    testWidgets('Koreksi -> Tambah makna -> pilih kelas -> Simpan mengirim 2 makna', (tester) async {
-      final repo = _FakeReviewRepository(details: {_idA: _wordDetailWithMeaning()});
-      final container = ProviderContainer(
-        overrides: [
-          authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
-          reviewRepositoryProvider.overrideWithValue(repo),
-          referenceWordClassesProvider.overrideWith((ref) async => _classes),
-        ],
-      );
-      addTearDown(container.dispose);
-      container.read(reviewSessionProvider.notifier).start(
-        ids: const [_idA],
-        index: 0,
-      );
+    testWidgets(
+      'Koreksi -> Tambah makna -> pilih kelas -> Simpan mengirim 2 makna',
+      (tester) async {
+        final repo = _FakeReviewRepository(
+          details: {_idA: _wordDetailWithMeaning()},
+        );
+        final container = ProviderContainer(
+          overrides: [
+            authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
+            reviewRepositoryProvider.overrideWithValue(repo),
+            referenceWordClassesProvider.overrideWith((ref) async => _classes),
+          ],
+        );
+        addTearDown(container.dispose);
+        container
+            .read(reviewSessionProvider.notifier)
+            .start(ids: const [_idA], index: 0);
 
-      await bootSession(container, tester, const ReviewSessionPage(startId: _idA));
+        await bootSession(
+          container,
+          tester,
+          const ReviewSessionPage(startId: _idA),
+        );
 
-      await tester.tap(find.text('Koreksi'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+        await tester.tap(find.text('Koreksi'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
-      // relasi & variasi lama terbaca di section Kelengkapan
-      final formScroll = find
-          .descendant(of: find.byType(ReviewCorrectForm), matching: find.byType(Scrollable))
-          .first;
-      await tester.scrollUntilVisible(find.text('Sinonim & antonim'), 200, scrollable: formScroll);
-      expect(find.text('1 sinonim'), findsOneWidget);
-      expect(find.text('kalintik'), findsOneWidget);
+        // relasi & variasi lama terbaca di section Kelengkapan
+        final formScroll = find
+            .descendant(
+              of: find.byType(ReviewCorrectForm),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        await tester.scrollUntilVisible(
+          find.text('Sinonim & antonim'),
+          200,
+          scrollable: formScroll,
+        );
+        expect(find.text('1 sinonim'), findsOneWidget);
+        expect(find.text('kalintik'), findsOneWidget);
 
-      await tester.scrollUntilVisible(find.text('Tambah makna'), -200, scrollable: formScroll);
-      await tester.tap(find.text('Tambah makna'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+        await tester.scrollUntilVisible(
+          find.text('Tambah makna'),
+          -200,
+          scrollable: formScroll,
+        );
+        await tester.tap(find.text('Tambah makna'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
 
-      await tester.tap(find.text('Verba'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+        await tester.tap(find.text('Verba'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
 
-      await tester.enterText(
-        find.descendant(
-          of: find.widgetWithText(FTextField, 'Terjemahan').last,
-          matching: find.byType(EditableText),
-        ),
-        'melompat',
-      );
-      await tester.pump();
+        await tester.enterText(
+          find.descendant(
+            of: find.widgetWithText(FTextField, 'Terjemahan').last,
+            matching: find.byType(EditableText),
+          ),
+          'melompat',
+        );
+        await tester.pump();
 
-      await tester.tap(find.text('Simpan dan terbitkan'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+        await tester.tap(find.text('Simpan dan terbitkan'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
 
-      expect(repo.correctedBodies, hasLength(1));
-      final body = repo.correctedBodies.single;
-      final meanings = body['meanings'] as List;
-      expect(meanings, hasLength(2));
-      expect(meanings[0]['word_class_id'], _classId);
-      expect(meanings[1]['word_class_id'], _verbId);
-      expect(meanings[1]['translations'], [
-        {
-          'language_id': _idnLang,
-          'translation_text': 'melompat',
-          'translation_type': 'direct',
-        },
-      ]);
-      // replace semantics: relasi & variasi lama wajib ikut terkirim
-      expect(body['related_words'], [
-        {'word_id': _synonymId, 'relation_type': 'synonym'},
-      ]);
-      expect((body['variants'] as List).single['form'], 'kalintik');
-    });
+        expect(repo.correctedBodies, hasLength(1));
+        final body = repo.correctedBodies.single;
+        final meanings = body['meanings'] as List;
+        expect(meanings, hasLength(2));
+        expect(meanings[0]['word_class_id'], _classId);
+        expect(meanings[1]['word_class_id'], _verbId);
+        expect(meanings[1]['translations'], [
+          {
+            'language_id': _idnLang,
+            'translation_text': 'melompat',
+            'translation_type': 'direct',
+          },
+        ]);
+        // replace semantics: relasi & variasi lama wajib ikut terkirim
+        expect(body['related_words'], [
+          {'word_id': _synonymId, 'relation_type': 'synonym'},
+        ]);
+        expect((body['variants'] as List).single['form'], 'kalintik');
+      },
+    );
   });
 
   group('koreksi makna', () {
@@ -406,17 +437,22 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
-      container.read(reviewSessionProvider.notifier).start(
-        ids: const [_idB],
-        index: 0,
-      );
+      container
+          .read(reviewSessionProvider.notifier)
+          .start(ids: const [_idB], index: 0);
 
-      await bootSession(container, tester, const ReviewSessionPage(startId: _idB));
+      await bootSession(
+        container,
+        tester,
+        const ReviewSessionPage(startId: _idB),
+      );
 
       expect(find.text('Koreksi'), findsOneWidget);
     });
 
-    testWidgets('form terisi dari payload makna dan mengirim SEMUA terjemahan', (tester) async {
+    testWidgets('form terisi dari payload makna dan mengirim SEMUA terjemahan', (
+      tester,
+    ) async {
       final detail = _meaningDetail();
       final repo = _FakeReviewRepository(details: {_idB: detail});
       final container = ProviderContainer(
@@ -426,12 +462,15 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
-      container.read(reviewSessionProvider.notifier).start(
-        ids: const [_idB],
-        index: 0,
-      );
+      container
+          .read(reviewSessionProvider.notifier)
+          .start(ids: const [_idB], index: 0);
 
-      await bootSession(container, tester, const ReviewSessionPage(startId: _idB));
+      await bootSession(
+        container,
+        tester,
+        const ReviewSessionPage(startId: _idB),
+      );
 
       await tester.tap(find.text('Koreksi'));
       await tester.pump();
@@ -443,12 +482,17 @@ void main() {
         findsNothing,
       );
       // preview kartu tetap di tree; cek label field di form saja
-      Finder inForm(String text) =>
-          find.descendant(of: find.byType(ReviewCorrectForm), matching: find.text(text));
+      Finder inForm(String text) => find.descendant(
+        of: find.byType(ReviewCorrectForm),
+        matching: find.text(text),
+      );
       expect(inForm('Definisi'), findsOneWidget);
       expect(inForm('Terjemahan'), findsOneWidget);
       // terjemahan kedua tidak jadi text field, tapi tetap dihitung
-      expect(find.textContaining('Terjemahan lain milik makna ini (1)'), findsOneWidget);
+      expect(
+        find.textContaining('Terjemahan lain milik makna ini (1)'),
+        findsOneWidget,
+      );
 
       // prefill: definisi & terjemahan pertama dari payload
       expect(find.text('ikan kecil'), findsWidgets);
@@ -462,7 +506,9 @@ void main() {
       expect(body['entity_type'], 'meaning');
       expect(body['definition'], 'ikan kecil');
       expect(body['word_class_id'], _classId);
-      expect(body['meaning_source'], 'kbbi');
+      // meaning_source tidak dikirim ke endpoint correct-meaning (server strip).
+      // Server mempertahankan source yang sudah tersimpan.
+      expect(body.containsKey('meaning_source'), isFalse);
       expect(body['publish'], isTrue);
 
       final translations = body['translations'] as List;
@@ -481,39 +527,45 @@ void main() {
       });
     });
 
-    testWidgets('koreksi tanpa terbit tetap mengirim daftar terjemahan lengkap', (tester) async {
-      final detail = _meaningDetail();
-      final repo = _FakeReviewRepository(details: {_idB: detail});
-      final container = ProviderContainer(
-        overrides: [
-          authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
-          reviewRepositoryProvider.overrideWithValue(repo),
-        ],
-      );
-      addTearDown(container.dispose);
-      container.read(reviewSessionProvider.notifier).start(
-        ids: const [_idB],
-        index: 0,
-      );
+    testWidgets(
+      'koreksi tanpa terbit tetap mengirim daftar terjemahan lengkap',
+      (tester) async {
+        final detail = _meaningDetail();
+        final repo = _FakeReviewRepository(details: {_idB: detail});
+        final container = ProviderContainer(
+          overrides: [
+            authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
+            reviewRepositoryProvider.overrideWithValue(repo),
+          ],
+        );
+        addTearDown(container.dispose);
+        container
+            .read(reviewSessionProvider.notifier)
+            .start(ids: const [_idB], index: 0);
 
-      await bootSession(container, tester, const ReviewSessionPage(startId: _idB));
+        await bootSession(
+          container,
+          tester,
+          const ReviewSessionPage(startId: _idB),
+        );
 
-      await tester.tap(find.text('Koreksi'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+        await tester.tap(find.text('Koreksi'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
-      await tester.tap(find.byType(FSwitch).last);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
+        await tester.tap(find.byType(FSwitch).last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
 
-      await tester.tap(find.text('Simpan, tetap menunggu'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
+        await tester.tap(find.text('Simpan, tetap menunggu'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
 
-      expect(repo.correctedBodies, hasLength(1));
-      expect(repo.correctedBodies.single['publish'], isFalse);
-      expect(repo.correctedBodies.single['translations'], hasLength(2));
-    });
+        expect(repo.correctedBodies, hasLength(1));
+        expect(repo.correctedBodies.single['publish'], isFalse);
+        expect(repo.correctedBodies.single['translations'], hasLength(2));
+      },
+    );
 
     test('buildWordCorrectBody tidak ikut berubah oleh jalur makna', () {
       // regression: edit makna tidak boleh menggeser bentuk payload

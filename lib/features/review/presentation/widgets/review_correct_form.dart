@@ -86,12 +86,11 @@ class _MeaningEdit extends ReviewMeaningDraft {
   final List<_CarriedTranslation> carriedTranslations;
 
   /// Daftar lengkap translations[] untuk payload koreksi makna: yang diedit
-  /// dulu, lalu yang dibawa apa adanya.
+  /// dulu, lalu yang dibawa apa adanya. Payload tanpa language_id terjemahan
+  /// (data tidak lengkap) dikirim kosong - server memvalidasi minimal 1.
   List<Map<String, dynamic>> toTranslationPayload() {
     final id = languageId;
-    if (id == null) {
-      throw StateError('Koreksi makna butuh languageId terjemahan yang diedit');
-    }
+    if (id == null) return const [];
     return [
       {
         'language_id': id,
@@ -474,13 +473,13 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       },
       // Replace, bukan merge: daftar lengkap wajib dikirim. Terjemahan yang
       // tidak diedit ikut [_MeaningEdit.carriedTranslations].
-      'meaning' => {
-        ...shared,
-        'definition': _childMeaning?.definitionCtrl.text.trim() ?? '',
-        'word_class_id': _childMeaning?.wordClassId ?? '',
-        'meaning_source': _childMeaning?.resolveSource() ?? 'manual',
-        'translations': _childMeaning?.toTranslationPayload() ?? const [],
-      },
+      'meaning' => buildMeaningCorrectBody(
+        definition: _childMeaning?.definitionCtrl.text ?? '',
+        wordClassId: _childMeaning?.wordClassId,
+        translations: _childMeaning?.toTranslationPayload() ?? const [],
+        publish: _publish,
+        comment: comment,
+      ),
       _ => {
         ...shared,
         'source_sentence': text('source_sentence') ?? '',

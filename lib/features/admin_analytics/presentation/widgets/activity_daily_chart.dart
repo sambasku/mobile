@@ -29,6 +29,7 @@ class _AnalyticsActivityDailyChartState
     (key: 'votes', short: 'Vote', color: Color(0xFF16A34A)),
     (key: 'comments', short: 'Komentar', color: Color(0xFFF59E0B)),
     (key: 'newUsers', short: 'User', color: Color(0xFF0EA5E9)),
+    (key: 'searches', short: 'Cari', color: Color(0xFF8B5CF6)),
   ];
 
   /// Tinggi area plot tetap - jangan biarkan fl_chart / ringkasan mengubah layout.
@@ -67,6 +68,7 @@ class _AnalyticsActivityDailyChartState
     'votes' => point.votes,
     'comments' => point.comments,
     'newUsers' => point.newUsers,
+    'searches' => point.searches,
     _ => 0,
   };
 
@@ -106,6 +108,7 @@ class _AnalyticsActivityDailyChartState
         p.votes,
         p.comments,
         p.newUsers,
+        p.searches,
       ],
     ].fold<int>(0, (a, b) => a > b ? a : b);
     final chartMaxY = _stableMaxY(rawMax);
