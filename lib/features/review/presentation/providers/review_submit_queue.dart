@@ -133,6 +133,22 @@ class ReviewSubmitQueue extends Notifier<ReviewSubmitQueueState> {
     if (future != null) await future;
   }
 
+  /// Tunggu sampai job [contributionId] tuntas: masih antre (queued) maupun
+  /// sudah terkirim (in-flight). Dipakai caller yang perlu refetch state
+  /// TERBARU dari server setelah keputusan — kalau invalidate dijalankan
+  /// saat job masih antre, server belum menyimpan keputusan.
+  Future<void> waitUntilDone(String contributionId) async {
+    while (_byId.containsKey(contributionId) ||
+        _inFlightFutures.containsKey(contributionId)) {
+      final future = _inFlightFutures[contributionId];
+      if (future != null) {
+        await future;
+      } else {
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+    }
+  }
+
   void _enqueue(ReviewSubmitJob job) {
     final existing = _byId[job.contributionId];
     if (existing != null && existing.status == ReviewSubmitJobStatus.queued) {

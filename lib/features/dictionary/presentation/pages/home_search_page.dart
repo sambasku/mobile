@@ -9,18 +9,14 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/services/analytics_service.dart';
-import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
-import '../../../../shared/utils/public_account_name.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
-import '../../../activity/presentation/widgets/activity_kind_avatar.dart';
+import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../contribution/contribution_router.dart';
-import '../../../discussion/discussion_router.dart';
 import '../../../discussion/presentation/widgets/discussion_home_banner.dart';
-import '../../../user_profile/user_profile_router.dart';
 import '../../dictionary_router.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
@@ -264,7 +260,7 @@ class HomeSearchPage extends HookConsumerWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _ActivityFeedRow(item: items[bodyIndex]),
+              ActivityFeedTile(item: items[bodyIndex]),
               if (bodyIndex != items.length - 1)
                 Divider(height: 1, color: context.theme.colors.border),
             ],
@@ -313,253 +309,6 @@ class _FeedHeading extends StatelessWidget {
   }
 }
 
-class _ActivityFeedRow extends StatelessWidget {
-  const _ActivityFeedRow({required this.item});
-
-  final FeedActivityItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final actorLabel = item.actor == null
-        ? 'Warga'
-        : displayPublicAccountLabel(
-            displayName: item.actor!.displayName,
-            username: item.actor!.username,
-          );
-    final canOpenProfile = isLinkablePublicUsername(item.actor?.username);
-    final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
-    final kindLabel = _friendlyKindLabel(item.kind);
-    final subtitle = item.subtitle?.trim();
-    final contextMeta = [
-      ?kindLabel,
-      if (subtitle != null && subtitle.isNotEmpty) subtitle,
-    ].join(' · ');
-    final path = _navigatePath(item);
-
-    final content = Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ActivityKindAvatar(
-          kind: item.kind,
-          imageUrl: item.actor?.avatarUrl,
-          name: actorLabel,
-          // ponytail: arah dari akhiran body. Plafon: copy berubah, ikon salah.
-          // Upgrade: field value di payload GET /activity.
-          voteUp: item.kind == FeedActivityKind.vote
-              ? !item.body.endsWith('perlu dicek ulang')
-              : null,
-          size: 40,
-        ),
-        const Gap(12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: canOpenProfile
-                          ? () => UserProfileRouter.open(
-                              context,
-                              item.actor!.username!,
-                            )
-                          : null,
-                      child: Text(
-                        actorLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          fontWeight: FontWeight.w700,
-                          height: 1.25,
-                          color: canOpenProfile
-                              ? theme.colors.primary
-                              : theme.colors.foreground,
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (dateLabel.isNotEmpty) ...[
-                    const Gap(8),
-                    Text(
-                      dateLabel,
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.mutedForeground,
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              const Gap(4),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    // Komentar/diskusi = teks bebas user; kutipannya bukan lemma.
-                    for (final (text, lemma) in switch (item.kind) {
-                      FeedActivityKind.comment ||
-                      FeedActivityKind.discussion => [(item.body, false)],
-                      _ => splitQuotedLemma(item.body),
-                    })
-                      TextSpan(
-                        text: text,
-                        style: lemma
-                            ? const TextStyle(fontWeight: FontWeight.w700)
-                            : null,
-                      ),
-                  ],
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
-                  height: 1.35,
-                  color: theme.colors.foreground,
-                ),
-              ),
-              if (contextMeta.isNotEmpty || path != null) ...[
-                const Gap(4),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        contextMeta,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          height: 1.25,
-                        ),
-                      ),
-                    ),
-                    // CTA hanya label; tap ditangani InkWell baris (tujuan sama).
-                    // Sengaja muted: fokus visual tetap di lemma, bukan CTA.
-                    if (path != null) ...[
-                      const Gap(8),
-                      Text(
-                        _ctaLabel(item.kind),
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.mutedForeground,
-                          fontWeight: FontWeight.w500,
-                          height: 1.25,
-                        ),
-                      ),
-                      Icon(
-                        FLucideIcons.chevronRight,
-                        size: 14,
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
-      ],
-    );
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: path == null
-            ? null
-            : () {
-                FocusManager.instance.primaryFocus?.unfocus();
-                context.push(path);
-              },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: content,
-        ),
-      ),
-    );
-  }
-
-  /// Label singkat non-teknis di meta (bukan entity_type mentah).
-  static String? _friendlyKindLabel(FeedActivityKind kind) {
-    return switch (kind) {
-      FeedActivityKind.word => 'Kata',
-      FeedActivityKind.comment => 'Komentar',
-      FeedActivityKind.vote => 'Penilaian',
-      FeedActivityKind.discussion => 'Diskusi',
-      FeedActivityKind.wordImage => 'Foto',
-      FeedActivityKind.wordAudio => 'Suara',
-      FeedActivityKind.pronunciation => 'Cara baca',
-      FeedActivityKind.example => 'Contoh',
-      FeedActivityKind.searchMiss => 'Kata tidak ditemukan',
-      FeedActivityKind.welcome => 'Bergabung',
-      FeedActivityKind.cardShare => 'Bagikan',
-      FeedActivityKind.suggestion => 'Usulan',
-      FeedActivityKind.contribution => 'Usulan kata baru',
-    };
-  }
-
-  static String _ctaLabel(FeedActivityKind kind) {
-    return switch (kind) {
-      FeedActivityKind.vote => 'Ikut menilai',
-      FeedActivityKind.word => 'Lihat arti',
-      FeedActivityKind.comment => 'Balas',
-      FeedActivityKind.discussion => 'Ikut diskusi',
-      FeedActivityKind.wordImage => 'Lihat foto',
-      FeedActivityKind.wordAudio => 'Dengarkan',
-      FeedActivityKind.pronunciation => 'Lihat cara baca',
-      FeedActivityKind.example => 'Lihat contoh',
-      FeedActivityKind.searchMiss => 'Bantu isi',
-      FeedActivityKind.welcome => 'Lihat profil',
-      FeedActivityKind.cardShare => 'Lihat kartu',
-      FeedActivityKind.suggestion => 'Lihat usulan',
-      FeedActivityKind.contribution => 'Lihat kata',
-    };
-  }
-
-  String? _navigatePath(FeedActivityItem item) {
-    final target = item.target;
-    if (target == null) return null;
-    switch (target.type) {
-      case 'word':
-        return DictionaryRouter.detail.path.replaceFirst(':id', target.id);
-      case 'discussion':
-        return DiscussionRouter.detailPath(target.id);
-      case 'user':
-        final username = item.actor?.username?.trim();
-        if (username == null ||
-            username.isEmpty ||
-            !isLinkablePublicUsername(username)) {
-          return null;
-        }
-        return UserProfileRouter.profile.path.replaceFirst(
-          ':username',
-          Uri.encodeComponent(username),
-        );
-      case 'search_miss':
-        final term = _searchMissTerm(item);
-        final q = Uri(
-          queryParameters: <String, String>{
-            if (term != null && term.isNotEmpty) 'lemma': term,
-            'miss_id': target.id,
-          },
-        ).query;
-        return '${ContributionRouter.contribute.path}?$q';
-      default:
-        return null;
-    }
-  }
-
-  String? _searchMissTerm(FeedActivityItem item) {
-    // Baru: Mencari "term" - belum ada...
-    // Lama: mencari term tapi tidak terdapat...
-    final body = item.body;
-    final quoted = RegExp(r'Mencari "([^"]+)"').firstMatch(body);
-    if (quoted != null) return quoted.group(1)?.trim();
-
-    const prefix = 'mencari ';
-    const suffix = ' tapi tidak terdapat';
-    if (!body.startsWith(prefix) || !body.contains(suffix)) return null;
-    return body.substring(prefix.length, body.indexOf(suffix)).trim();
-  }
-}
 
 class _EmptyFeed extends StatelessWidget {
   const _EmptyFeed();
@@ -626,7 +375,7 @@ class _FeedListSkeleton extends StatelessWidget {
           child: Column(
             children: [
               for (var i = 0; i < 4; i++) ...[
-                _ActivityFeedRow(item: placeholder),
+                ActivityFeedTile(item: placeholder),
                 if (i != 3)
                   Divider(height: 1, color: context.theme.colors.border),
               ],
