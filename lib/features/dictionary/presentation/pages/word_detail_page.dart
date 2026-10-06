@@ -12,6 +12,8 @@ import '../../../../core/utils/ulid.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_providers.dart';
+import '../../../review/presentation/providers/review_submit_queue.dart';
+import '../../../review/presentation/widgets/reject_reason_sheet.dart';
 import '../../../bookmark/presentation/providers/bookmark_providers.dart';
 import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
@@ -224,16 +226,109 @@ Future<void> _openWordReview(
   );
 }
 
+Future<void> _approveInPlace(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final connection = await ref.read(reviewRepositoryProvider).list(
+        status: 'pending',
+        wordId: wordId,
+        limit: 20,
+      );
+  if (!context.mounted) return;
+  final pendingId = connection.match(
+    (failure) {
+      showFToast(
+        context: context,
+        title: Text(failure.message),
+        variant: FToastVariant.destructive,
+      );
+      return null;
+    },
+    (page) => page.items.firstOrNull?.id,
+  );
+  if (pendingId == null) return;
+  final queue = ref.read(reviewSubmitQueueProvider.notifier);
+  queue.enqueueApprove(pendingId);
+  await queue.waitUntilDone(pendingId);
+  if (!context.mounted) return;
+  showFToast(
+    context: context,
+    title: const Text('Usulan disetujui'),
+    variant: FToastVariant.primary,
+  );
+  await _refreshDetailAfterDecision(ref, wordId);
+}
+
+Future<void> _rejectInPlace(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final comment = await showRejectReasonSheet(context);
+  if (comment == null || !context.mounted) return;
+  final connection = await ref.read(reviewRepositoryProvider).list(
+        status: 'pending',
+        wordId: wordId,
+        limit: 20,
+      );
+  if (!context.mounted) return;
+  final pendingId = connection.match(
+    (failure) {
+      showFToast(
+        context: context,
+        title: Text(failure.message),
+        variant: FToastVariant.destructive,
+      );
+      return null;
+    },
+    (page) => page.items.firstOrNull?.id,
+  );
+  if (pendingId == null) return;
+  final queue = ref.read(reviewSubmitQueueProvider.notifier);
+  queue.enqueueReject(pendingId, comment: comment);
+  await queue.waitUntilDone(pendingId);
+  if (!context.mounted) return;
+  showFToast(
+    context: context,
+    title: const Text('Usulan ditolak'),
+    variant: FToastVariant.primary,
+  );
+  await _refreshDetailAfterDecision(ref, wordId);
+}
+
+/// Bypass L1 cache (forceRefresh) lalu invalidate family + await — persis
+/// pola `_refreshWordDetail` tapi tanpa invalidasi provider lain (vote/
+/// bookmark/komentar) yang bukan bagian dari keputusan review.
+Future<void> _refreshDetailAfterDecision(
+  WidgetRef ref,
+  String wordId,
+) async {
+  final key = wordId.trim();
+  if (looksLikeUlid(key)) {
+    await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
+  } else {
+    await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
+  }
+  ref.invalidate(wordDetailProvider(wordId));
+  await ref.read(wordDetailProvider(wordId).future);
+}
+
 /// Ikon menunggu pengecekan. Untuk verifikator, aksi Tinjau ada di bottom
 /// sheet yang sama polanya dengan [showVerifierAttributionSheet].
 class _PendingStatusBadge extends StatelessWidget {
   const _PendingStatusBadge({
     required this.offerReview,
     required this.onReview,
+    required this.onApprove,
+    required this.onReject,
   });
 
   final bool offerReview;
   final VoidCallback onReview;
+  final VoidCallback onApprove;
+  final VoidCallback onReject;
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +338,12 @@ class _PendingStatusBadge extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           if (offerReview) {
-            showPendingReviewSheet(context, onReview: onReview);
+            showPendingReviewSheet(
+              context,
+              onReview: onReview,
+              onApprove: onApprove,
+              onReject: onReject,
+            );
             return;
           }
           showPendingReviewInfo(context);
@@ -257,6 +357,8 @@ class _PendingStatusBadge extends StatelessWidget {
 void showPendingReviewSheet(
   BuildContext context, {
   required VoidCallback onReview,
+  VoidCallback? onApprove,
+  VoidCallback? onReject,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -293,6 +395,33 @@ void showPendingReviewSheet(
                   style: theme.typography.sm,
                 ),
                 const Gap(12),
+                if (onApprove != null && onReject != null) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: () {
+                            Navigator.of(sheetContext).pop();
+                            onReject();
+                          },
+                          child: const Text('Tolak'),
+                        ),
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: FButton(
+                          onPress: () {
+                            Navigator.of(sheetContext).pop();
+                            onApprove();
+                          },
+                          child: const Text('Setujui'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(8),
+                ],
                 FButton(
                   onPress: () {
                     Navigator.of(sheetContext).pop();
@@ -464,6 +593,16 @@ class _DetailBody extends HookConsumerWidget {
                                   ),
                               onReview: () =>
                                   _openWordReview(context, ref, wordId),
+                              onApprove: () => _approveInPlace(
+                                context,
+                                ref,
+                                wordId,
+                              ),
+                              onReject: () => _rejectInPlace(
+                                context,
+                                ref,
+                                wordId,
+                              ),
                             ),
                         ],
                       ),
