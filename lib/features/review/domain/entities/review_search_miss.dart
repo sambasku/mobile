@@ -31,8 +31,8 @@ class ReviewSearchMiss {
 }
 
 /// Satu halaman hasil list admin.
-class ReviewSearchMissPage {
-  const ReviewSearchMissPage({
+class ReviewSearchMissPageData {
+  const ReviewSearchMissPageData({
     required this.items,
     this.nextCursor,
     this.hasMore = false,

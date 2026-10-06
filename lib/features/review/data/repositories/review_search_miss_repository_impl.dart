@@ -25,7 +25,7 @@ class ReviewSearchMissRepositoryImpl {
   final Dio _dio;
 
   /// `fulfilled=false` = default panel: miss yang belum jadi kata.
-  Future<Either<ReviewFailure, ReviewSearchMissPage>> list({
+  Future<Either<ReviewFailure,ReviewSearchMissPageData>> list({
     bool? fulfilled,
     bool? visible,
     int limit = 50,
@@ -45,7 +45,7 @@ class ReviewSearchMissRepositoryImpl {
       final data = body['data'];
       final meta = body['meta'];
       return Either.right(
-        ReviewSearchMissPage(
+        ReviewSearchMissPageData(
           items: [
             if (data is List)
               for (final raw in data)
