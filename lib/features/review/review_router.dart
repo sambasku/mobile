@@ -8,6 +8,7 @@ import 'presentation/pages/review_history_detail_page.dart';
 import 'presentation/pages/review_history_page.dart';
 import 'presentation/pages/review_home_page.dart';
 import 'presentation/pages/review_queue_page.dart';
+import 'presentation/pages/review_search_miss_page.dart';
 import 'presentation/pages/review_session_page.dart';
 import 'presentation/pages/review_suggestion_detail_page.dart';
 import 'presentation/pages/review_suggestions_page.dart';
@@ -45,6 +46,10 @@ class ReviewRouter {
   static const historyDetail = RouteDefiner(
     path: '/review/history/:id',
     name: 'ReviewRouter.historyDetail',
+  );
+  static const searchMisses = RouteDefiner(
+    path: '/review/search-misses',
+    name: 'ReviewRouter.searchMisses',
   );
   static const session = RouteDefiner(
     path: '/review/session',
@@ -186,6 +191,15 @@ class ReviewRouter {
       },
     ),
     // Harus sebelum /review/:id supaya "session" / "queue" tidak tertangkap sebagai id.
+    GoRoute(
+      path: searchMisses.path,
+      name: searchMisses.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const ReviewGate(
+        mode: ReviewGateMode.contribution,
+        child: ReviewSearchMissPage(),
+      ),
+    ),
     GoRoute(
       path: session.path,
       name: session.name,
