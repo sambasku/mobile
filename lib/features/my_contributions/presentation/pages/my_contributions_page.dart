@@ -7,13 +7,13 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_submission.dart';
 import '../../domain/failures/my_contribution_failure.dart';
 import '../../my_contributions_router.dart';
 import '../providers/my_contributions_providers.dart';
+import '../widgets/submission_status_icon.dart';
 
 /// Daftar usulan milik user login - GET /api/v1/contributions/my.
 ///
@@ -184,9 +184,8 @@ class _ContributionsList extends ConsumerWidget {
       child: TileGroupList<MySubmission>(
         items: state.items,
         hasMore: state.hasMore,
-        onLoadMore: () => ref
-            .read(myContributionsListControllerProvider.notifier)
-            .loadMore(),
+        onLoadMore: () =>
+            ref.read(myContributionsListControllerProvider.notifier).loadMore(),
         tileBuilder: (context, item) => _SubmissionTile(item: item),
       ),
     );
@@ -230,9 +229,7 @@ class _SubmissionTile extends StatelessWidget with FTileMixin {
     return FTile(
       title: Text(item.displayTitle),
       subtitle: Text.rich(TextSpan(children: subtitleSpans)),
-      prefix: item.isPendingReview
-          ? const PendingReviewBadgeIcon(size: 16)
-          : null,
+      prefix: SubmissionStatusIcon(status: item.status),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () => context.push(
         MyContributionsRouter.detailPath(kind: item.kind, id: item.id),
