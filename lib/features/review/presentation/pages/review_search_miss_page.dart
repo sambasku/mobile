@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/swipe_decision_card.dart';
+import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../search_miss/presentation/widgets/search_miss_skeleton_list.dart';
 import '../../domain/entities/review_search_miss.dart';
 import '../../domain/failures/review_failure.dart';
@@ -39,8 +40,11 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
   List<ReviewSearchMiss>? _deck;
   int _pos = 0;
 
-  bool get _deckDone =>
-      _deck != null && _pos >= _deck!.length;
+  /// false = daftar (pintu masuk, pola "Mulai tinjau"), true = sesi swipe.
+  /// Tap tombol/tile di daftar → masuk sesi; back dari sesi → kembali daftar.
+  bool _session = false;
+
+  bool get _deckDone => _deck != null && _pos >= _deck!.length;
 
   Future<void> _refresh() async {
     setState(() {
@@ -57,42 +61,47 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
     final missesAsync = ref.watch(reviewSearchMissProvider);
 
     return missesAsync.when(
-      loading: () => _scaffold(SearchMissSkeletonList(
-        itemCount: 8,
-        padding: const EdgeInsets.only(bottom: 32),
-      )),
-      error: (error, _) => _scaffold(ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.only(bottom: 32),
-        children: [
-          const FAlert(
-            variant: FAlertVariant.destructive,
-            title: Text('Gagal memuat pencarian kosong'),
-            icon: Icon(FLucideIcons.circleAlert),
-          ),
-          const Gap(12),
-          Center(
-            child: FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => ref.invalidate(reviewSearchMissProvider),
-              child: const Text('Coba lagi'),
+      loading: () => _scaffold(
+        SearchMissSkeletonList(
+          itemCount: 8,
+          padding: const EdgeInsets.only(bottom: 32),
+        ),
+      ),
+      error: (error, _) => _scaffold(
+        ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 32),
+          children: [
+            const FAlert(
+              variant: FAlertVariant.destructive,
+              title: Text('Gagal memuat pencarian kosong'),
+              icon: Icon(FLucideIcons.circleAlert),
             ),
-          ),
-        ],
-      )),
+            const Gap(12),
+            Center(
+              child: FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => ref.invalidate(reviewSearchMissProvider),
+                child: const Text('Coba lagi'),
+              ),
+            ),
+          ],
+        ),
+      ),
       data: (items) {
         _deck ??= List.of(items);
 
         if (items.isEmpty) {
-          return _scaffold(_emptyText(
-            'Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akan muncul di sini.',
-          ));
+          return _scaffold(
+            _emptyText(
+              'Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akan muncul di sini.',
+            ),
+          );
         }
-        if (_deckDone) {
-          return _scaffold(_emptyText(
-            'Selesai — semua pencarian kosong sudah ditangani.',
-            onRefresh: _refresh,
-          ));
+
+        // Sesi selesai / belum masuk sesi → daftar.
+        if (!_session || _deckDone) {
+          return _scaffold(_list(_deckDone));
         }
 
         final item = _deck![_pos];
@@ -102,8 +111,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
             children: [
               Text(
                 'Kanan tayang · kiri singkirkan · atas lewati — atau ketuk kartu untuk mengusulkan.',
-                style: theme.typography.sm
-                    .copyWith(color: theme.colors.mutedForeground),
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
               ),
               const Gap(12),
               Expanded(
@@ -135,38 +145,100 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
     );
   }
 
-  Widget _scaffold(Widget child, {Widget? footer}) => FScaffold(
-        childPad: true,
-        footer: footer,
-        header: FHeader.nested(
-          title: const Text('Pencarian kosong'),
-          prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-        ),
-        child: child,
-      );
-
-  Widget _emptyText(String message, {VoidCallback? onRefresh}) => ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
-        children: [
-          Text(
-            message,
-            style: context.theme.typography.sm
-                .copyWith(color: context.theme.colors.mutedForeground),
+  /// Daftar (pintu masuk): tombol "Mulai tinjau" + tile per item —
+  /// pola sama dengan antrean usulan (ReviewQueuePage).
+  Widget _list(bool done) {
+    final items = _deck!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (done)
+          // ListView butuh tinggi terbatas — ada di dalam Column.
+          Expanded(
+            child: _emptyText(
+              'Selesai — semua pencarian kosong sudah ditangani.',
+              onRefresh: _refresh,
+            ),
+          )
+        else ...[
+          FButton(
+            onPress: items.isEmpty
+                ? null
+                : () => setState(() {
+                    _session = true;
+                    _pos = 0;
+                  }),
+            // Tanpa prefix icon: icon+spacing+label melebihi lebar layar
+            // 320px (overflow 6px).
+            child: Text('Mulai tinjau (${items.length})'),
           ),
-          if (onRefresh != null) ...[
-            const Gap(16),
-            Center(
-              child: FButton(
-                variant: FButtonVariant.outline,
-                onPress: onRefresh,
-                prefix: const Icon(FLucideIcons.refreshCw),
-                child: const Text('Muat ulang'),
+          const Gap(12),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: TileGroupList<ReviewSearchMiss>(
+                items: items,
+                hasMore: false,
+                onLoadMore: () async {},
+                tileBuilder: (context, item) => _MissTile(
+                  item: item,
+                  onPress: () => setState(() {
+                    _session = true;
+                    _pos = items.indexOf(item);
+                  }),
+                ),
               ),
             ),
-          ],
+          ),
         ],
-      );
+      ],
+    );
+  }
+
+  Widget _scaffold(Widget child, {Widget? footer}) => FScaffold(
+    childPad: true,
+    footer: footer,
+    header: FHeader.nested(
+      title: const Text('Pencarian kosong'),
+      prefixes: [
+        FHeaderAction.back(
+          onPress: () {
+            // Masih di sesi swipe → kembali ke daftar dulu.
+            if (_session) {
+              setState(() => _session = false);
+            } else {
+              context.pop();
+            }
+          },
+        ),
+      ],
+    ),
+    child: child,
+  );
+
+  Widget _emptyText(String message, {VoidCallback? onRefresh}) => ListView(
+    physics: const AlwaysScrollableScrollPhysics(),
+    padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
+    children: [
+      Text(
+        message,
+        style: context.theme.typography.sm.copyWith(
+          color: context.theme.colors.mutedForeground,
+        ),
+      ),
+      if (onRefresh != null) ...[
+        const Gap(16),
+        Center(
+          child: FButton(
+            variant: FButtonVariant.outline,
+            onPress: onRefresh,
+            prefix: const Icon(FLucideIcons.refreshCw),
+            child: const Text('Muat ulang'),
+          ),
+        ),
+      ],
+    ],
+  );
 
   Widget _actionBar(ReviewSearchMiss item) {
     final theme = context.theme;
@@ -176,42 +248,38 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: Row(
           children: [
+            // Ikon-only, pola sama dengan action bar Area Verifikator —
+            // label + prefix muat cuma di layar lebar (overflow di 320px).
             Expanded(
-              child: FButton(
+              child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
+                semanticsLabel: 'Lewati',
                 onPress: () => _decide(item, SwipeDecisionDirection.skip),
-                prefix: const Icon(FLucideIcons.skipForward),
-                child: const Text('Lewati'),
+                child: const Icon(FLucideIcons.skipForward),
               ),
             ),
             const Gap(8),
             Expanded(
-              child: FButton(
+              child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
+                semanticsLabel: 'Singkirkan',
                 onPress: () => _decide(item, SwipeDecisionDirection.negative),
-                prefix: Icon(
-                  FLucideIcons.x,
-                  color: theme.colors.destructive,
-                ),
-                child: const Text('Singkirkan'),
+                child: Icon(FLucideIcons.x, color: theme.colors.destructive),
               ),
             ),
             const Gap(8),
             Expanded(
-              child: FButton(
+              child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
+                semanticsLabel: 'Tayang',
                 // Sudah tayang → tanpa aksi (kartu spring back saat swipe).
                 onPress: item.isVisible
                     ? null
                     : () => _decide(item, SwipeDecisionDirection.positive),
-                prefix: Icon(
-                  FLucideIcons.eye,
-                  color: theme.colors.success,
-                ),
-                child: const Text('Tayang'),
+                child: Icon(FLucideIcons.eye, color: theme.colors.success),
               ),
             ),
           ],
@@ -244,15 +312,12 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
       SwipeDecisionDirection.skip => repo.skip(item.id),
     };
     future.then((result) {
-      result.match(
-        (failure) => _onFailure(item, failure),
-        (_) {
-          if (!mounted) return;
-          if (direction == SwipeDecisionDirection.positive) {
-            _toast('"${item.term}" tayang di beranda publik');
-          }
-        },
-      );
+      result.match((failure) => _onFailure(item, failure), (_) {
+        if (!mounted) return;
+        if (direction == SwipeDecisionDirection.positive) {
+          _toast('"${item.term}" tayang di beranda publik');
+        }
+      });
     });
   }
 
@@ -297,6 +362,35 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
   }
 }
 
+/// Tile daftar: ketuk → masuk sesi swipe mulai item ini.
+class _MissTile extends StatelessWidget with FTileMixin {
+  const _MissTile({required this.item, required this.onPress});
+
+  final ReviewSearchMiss item;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final direction = item.searchIn == 'translation'
+        ? 'Indonesia → Sambas'
+        : 'Sambas → Indonesia';
+    return FTile(
+      prefix: Icon(
+        item.isVisible ? FLucideIcons.eye : FLucideIcons.search,
+        color: theme.colors.primary,
+      ),
+      title: Text(item.term),
+      subtitle: Text(
+        '$direction · ${item.hitCount}× dicari'
+        '${item.isVisible ? ' · tayang' : ' · belum tayang'}',
+      ),
+      suffix: const Icon(FLucideIcons.chevronRight),
+      onPress: onPress,
+    );
+  }
+}
+
 /// Isi kartu: term besar, meta chip, hint. Ketuk → form usulan.
 class _MissCardBody extends StatelessWidget {
   const _MissCardBody({required this.item, required this.onTap});
@@ -324,8 +418,7 @@ class _MissCardBody extends StatelessWidget {
               item.term,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.xl
-                  .copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(10),
             Wrap(
@@ -335,9 +428,7 @@ class _MissCardBody extends StatelessWidget {
                 _MetaChip(icon: FLucideIcons.languages, label: direction),
                 _MetaChip(icon: FLucideIcons.search, label: '$hits dicari'),
                 _MetaChip(
-                  icon: item.isVisible
-                      ? FLucideIcons.eye
-                      : FLucideIcons.eyeOff,
+                  icon: item.isVisible ? FLucideIcons.eye : FLucideIcons.eyeOff,
                   label: status,
                 ),
               ],
@@ -345,8 +436,9 @@ class _MissCardBody extends StatelessWidget {
             const Gap(18),
             Text(
               'Ketuk untuk mengusulkan kata ini.',
-              style: theme.typography.sm
-                  .copyWith(color: theme.colors.mutedForeground),
+              style: theme.typography.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
             ),
           ],
         ),
@@ -375,10 +467,16 @@ class _MetaChip extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: theme.colors.mutedForeground),
           const Gap(4),
-          Text(
-            label,
-            style: theme.typography.xs
-                .copyWith(color: theme.colors.mutedForeground),
+          // Flexible + ellipsis: Wrap membatasi lebar chip; label panjang
+          // dipotong rapi, bukan overflow.
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
           ),
         ],
       ),

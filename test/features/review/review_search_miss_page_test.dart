@@ -13,6 +13,14 @@ import 'package:sambasku_mobile/features/review/domain/failures/review_failure.d
 import 'package:sambasku_mobile/features/review/presentation/pages/review_search_miss_page.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_search_miss_providers.dart';
 
+Finder _fbtnByIcon(IconData icon) =>
+    find.ancestor(of: find.byIcon(icon), matching: find.byType(FButton));
+
+/// Tombol action bar deck (ikon-only, semantik 'Lewati'/'Singkirkan'/'Tayang').
+final _lewatiBtn = _fbtnByIcon(FLucideIcons.skipForward);
+final _singkirkanBtn = _fbtnByIcon(FLucideIcons.x);
+final _tayangBtn = _fbtnByIcon(FLucideIcons.eye);
+
 void main() {
   const missBaru = ReviewSearchMiss(
     id: 'miss-baru',
@@ -39,38 +47,41 @@ void main() {
     isFulfilled: false,
   );
 
-  testWidgets('deck menampilkan kartu pertama, kartu berikutnya disembunyikan', (
-    tester,
-  ) async {
-    await _pumpPanel(tester, items: [missBaru, missKedua]);
+  testWidgets(
+    'deck menampilkan kartu pertama, kartu berikutnya disembunyikan',
+    (tester) async {
+      await _pumpPanel(tester, items: [missBaru, missKedua]);
 
-    expect(find.text('kepayang'), findsOneWidget);
-    expect(find.textContaining('belum tayang'), findsOneWidget);
-    expect(find.text('nandor'), findsNothing);
-    expect(find.text('Lewati'), findsOneWidget);
-    expect(find.text('Singkirkan'), findsOneWidget);
-    expect(find.text('Tayang'), findsOneWidget);
-  });
+      expect(find.text('kepayang'), findsOneWidget);
+      expect(find.textContaining('belum tayang'), findsOneWidget);
+      expect(find.text('nandor'), findsNothing);
+      // Action bar ikon-only (pola verif): assert via ikon tombol.
+      expect(_lewatiBtn, findsOneWidget);
+      expect(_singkirkanBtn, findsOneWidget);
+      expect(_tayangBtn, findsOneWidget);
+    },
+  );
 
-  testWidgets('swipe kanan tayang + pindah kartu optimis (tanpa tunggu request)', (
-    tester,
-  ) async {
-    final repo = _FakeRepo()..holdVisible = true;
-    await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
+  testWidgets(
+    'swipe kanan tayang + pindah kartu optimis (tanpa tunggu request)',
+    (tester) async {
+      final repo = _FakeRepo()..holdVisible = true;
+      await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
 
-    await tester.fling(find.text('kepayang'), const Offset(400, 0), 800);
-    await tester.pumpAndSettle();
+      await tester.fling(find.text('kepayang'), const Offset(400, 0), 800);
+      await tester.pumpAndSettle();
 
-    expect(repo.setVisibleCalls, [(missBaru.id, true)]);
-    // Kartu berikutnya sudah tampil; request pertama belum selesai
-    // (Completer masih tertahan) — ini bukti advance optimis.
-    expect(find.text('nandor'), findsOneWidget);
-    expect(find.text('kepayang'), findsNothing);
+      expect(repo.setVisibleCalls, [(missBaru.id, true)]);
+      // Kartu berikutnya sudah tampil; request pertama belum selesai
+      // (Completer masih tertahan) — ini bukti advance optimis.
+      expect(find.text('nandor'), findsOneWidget);
+      expect(find.text('kepayang'), findsNothing);
 
-    repo.completePending(Either.right(unit));
-    await tester.pumpAndSettle();
-    expect(find.text('nandor'), findsOneWidget);
-  });
+      repo.completePending(Either.right(unit));
+      await tester.pumpAndSettle();
+      expect(find.text('nandor'), findsOneWidget);
+    },
+  );
 
   testWidgets('swipe kiri singkirkan + lanjut ke kartu berikutnya', (
     tester,
@@ -93,7 +104,11 @@ void main() {
     await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
 
     final card = find.byWidgetPredicate((w) => w is SwipeDecisionCard);
-    await tester.timedDrag(card, const Offset(0, -300), const Duration(milliseconds: 120));
+    await tester.timedDrag(
+      card,
+      const Offset(0, -300),
+      const Duration(milliseconds: 120),
+    );
     await tester.pumpAndSettle();
 
     expect(repo.skipCalls, [missBaru.id]);
@@ -105,7 +120,7 @@ void main() {
     final repo = _FakeRepo();
     await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
 
-    await tester.tap(find.text('Lewati'));
+    await tester.tap(_lewatiBtn);
     await tester.pumpAndSettle();
 
     expect(repo.skipCalls, [missBaru.id]);
@@ -132,7 +147,7 @@ void main() {
     final repo = _FakeRepo()..skipFails = true;
     await _pumpPanel(tester, items: [missBaru], repo: repo);
 
-    await tester.tap(find.text('Lewati'));
+    await tester.tap(_lewatiBtn);
     await tester.pumpAndSettle();
 
     expect(find.text('Gagal melewati'), findsOneWidget);
@@ -148,10 +163,7 @@ void main() {
     expect(find.text('kalumpe'), findsOneWidget);
     expect(find.text('tayang'), findsOneWidget);
     // Tombol Tayang dinonaktifkan untuk kartu sudah tayang.
-    final tayangText = find.text('Tayang');
-    final tayangBtn = tester.widget<FButton>(
-      find.ancestor(of: tayangText, matching: find.byType(FButton)).first,
-    );
+    final tayangBtn = tester.widget<FButton>(_tayangBtn);
     expect(tayangBtn.onPress, isNull);
 
     await tester.fling(find.text('kalumpe'), const Offset(400, 0), 800);
@@ -159,6 +171,27 @@ void main() {
 
     expect(repo.setVisibleCalls, isEmpty);
     expect(find.text('kalumpe'), findsOneWidget);
+  });
+
+  testWidgets('viewport sempit (320px) tanpa RenderFlex overflow', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await _pumpPanel(tester, items: [missBaru, missKedua], enterSession: false);
+    expect(tester.takeException(), isNull);
+    expect(find.text('kepayang'), findsOneWidget);
+
+    // Masuk sesi juga bebas overflow.
+    await tester.tap(find.text('Mulai tinjau (2)'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(
+      find.byWidgetPredicate((w) => w is SwipeDecisionCard),
+      findsOneWidget,
+    );
   });
 
   testWidgets('ketuk kartu → form usulan (prefill)', (tester) async {
@@ -173,11 +206,39 @@ void main() {
   testWidgets('deck habis → pesan selesai + muat ulang', (tester) async {
     await _pumpPanel(tester, items: [missBaru]);
 
-    await tester.tap(find.text('Lewati'));
+    await tester.tap(_lewatiBtn);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Selesai — semua pencarian kosong'), findsOneWidget);
+    expect(
+      find.textContaining('Selesai — semua pencarian kosong'),
+      findsOneWidget,
+    );
     expect(find.text('Muat ulang'), findsOneWidget);
+  });
+
+  testWidgets('daftar dulu: tombol Mulai tinjau + tile, tap → sesi swipe', (
+    tester,
+  ) async {
+    await _pumpPanel(tester, items: [missBaru, missKedua], enterSession: false);
+
+    // Masih di daftar — kartu swipe belum ada.
+    expect(find.byWidgetPredicate((w) => w is SwipeDecisionCard), findsNothing);
+    expect(find.text('Mulai tinjau (2)'), findsOneWidget);
+    expect(find.text('kepayang'), findsOneWidget);
+
+    // Tap tile pertama → masuk sesi, kartu pertama tampil.
+    await tester.tap(find.text('kepayang'));
+    await tester.pumpAndSettle();
+    expect(
+      find.byWidgetPredicate((w) => w is SwipeDecisionCard),
+      findsOneWidget,
+    );
+
+    // Back dari sesi → kembali ke daftar (bukan keluar halaman).
+    await tester.tap(find.byType(FHeaderAction).first);
+    await tester.pumpAndSettle();
+    expect(find.byWidgetPredicate((w) => w is SwipeDecisionCard), findsNothing);
+    expect(find.text('Mulai tinjau (2)'), findsOneWidget);
   });
 
   testWidgets('list kosong → pesan kosong, tanpa kartu', (tester) async {
@@ -192,6 +253,7 @@ Future<void> _pumpPanel(
   WidgetTester tester, {
   required List<ReviewSearchMiss> items,
   _FakeRepo? repo,
+  bool enterSession = true,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -219,16 +281,17 @@ Future<void> _pumpPanel(
           ],
         ),
         builder: (context, child) => FToaster(
-          child: FTheme(
-            data: FThemes.zinc.light.touch,
-            child: child!,
-          ),
+          child: FTheme(data: FThemes.zinc.light.touch, child: child!),
         ),
       ),
     ),
   );
   await tester.pump();
   await tester.pump();
+  if (enterSession && items.isNotEmpty) {
+    await tester.tap(find.text('Mulai tinjau (${items.length})'));
+    await tester.pumpAndSettle();
+  }
 }
 
 class _FakeRepo implements ReviewSearchMissRepositoryImpl {
@@ -252,7 +315,10 @@ class _FakeRepo implements ReviewSearchMissRepositoryImpl {
   }
 
   @override
-  Future<Either<ReviewFailure, Unit>> setVisible(String id, bool visible) async {
+  Future<Either<ReviewFailure, Unit>> setVisible(
+    String id,
+    bool visible,
+  ) async {
     setVisibleCalls.add((id, visible));
     if (setVisibleFails) {
       return Either.left(ReviewFailure('Gagal menayangkan'));

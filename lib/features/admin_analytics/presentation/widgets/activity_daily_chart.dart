@@ -34,7 +34,11 @@ class _AnalyticsActivityDailyChartState
 
   /// Tinggi area plot tetap - jangan biarkan fl_chart / ringkasan mengubah layout.
   static const _chartHeight = 140.0;
-  static const _summaryHeight = 36.0;
+
+  /// 36px ternyata 1px kurang untuk 2 baris ringkasan (label 10px + angka
+  /// sm) → RenderFlex overflow. 40px lega; tetap konstan supaya layout
+  /// tidak melompat saat ganti hari.
+  static const _summaryHeight = 40.0;
 
   late int _selectedIndex;
 
@@ -113,8 +117,9 @@ class _AnalyticsActivityDailyChartState
     ].fold<int>(0, (a, b) => a > b ? a : b);
     final chartMaxY = _stableMaxY(rawMax);
     final lastIndex = data.isEmpty ? 0.0 : (data.length - 1).toDouble();
-    final selected =
-        data.isEmpty ? null : data[_selectedIndex.clamp(0, data.length - 1)];
+    final selected = data.isEmpty
+        ? null
+        : data[_selectedIndex.clamp(0, data.length - 1)];
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -159,6 +164,7 @@ class _AnalyticsActivityDailyChartState
                         for (final s in _series)
                           Expanded(
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -169,7 +175,10 @@ class _AnalyticsActivityDailyChartState
                                         color: s.color,
                                         shape: BoxShape.circle,
                                       ),
-                                      child: const SizedBox(width: 6, height: 6),
+                                      child: const SizedBox(
+                                        width: 6,
+                                        height: 6,
+                                      ),
                                     ),
                                     const SizedBox(width: 4),
                                     Flexible(
@@ -297,11 +306,12 @@ class _AnalyticsActivityDailyChartState
                                   show: true,
                                   getDotPainter: (spot, percent, bar, index) =>
                                       FlDotCirclePainter(
-                                    radius: 3.5,
-                                    color: bar.color ?? theme.colors.primary,
-                                    strokeWidth: 1.5,
-                                    strokeColor: theme.colors.background,
-                                  ),
+                                        radius: 3.5,
+                                        color:
+                                            bar.color ?? theme.colors.primary,
+                                        strokeWidth: 1.5,
+                                        strokeColor: theme.colors.background,
+                                      ),
                                 ),
                               ),
                           ],
