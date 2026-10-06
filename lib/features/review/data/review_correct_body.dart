@@ -100,7 +100,9 @@ Map<String, dynamic> buildWordCorrectBody({
     meaningBodies.add({
       'word_class_id': wordClassId,
       'definition': definition.isEmpty ? '-' : definition,
-      'order_index': meaningBodies.length,
+      // 1-based, konsisten create-word (kontribusi_repository i+1); skema
+      // correct mewarisi order_index min(1) - 0 ditolak (issue #89).
+      'order_index': meaningBodies.length + 1,
       'is_have_definition': definition.isNotEmpty && definition != '-',
       'is_have_translation': translations.isNotEmpty,
       'meaning_source': edit.meaningSource,

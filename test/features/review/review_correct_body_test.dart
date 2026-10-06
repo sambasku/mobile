@@ -105,7 +105,7 @@ void main() {
     expect(meanings, hasLength(2));
 
     final first = meanings[0] as Map<String, dynamic>;
-    expect(first['order_index'], 0);
+    expect(first['order_index'], 1);
     expect(first['translations'], [
       {'language_id': _idn, 'translation_text': 'ikan teri', 'translation_type': 'direct'},
       {'language_id': _eng, 'translation_text': 'small fish', 'translation_type': 'idiomatic'},
@@ -127,7 +127,7 @@ void main() {
     ]);
 
     final added = meanings[1] as Map<String, dynamic>;
-    expect(added['order_index'], 1);
+    expect(added['order_index'], 2);
     expect(added['word_class_id'], _nomina);
     expect(added['definition'], '-');
     expect(added['is_have_definition'], isFalse);
