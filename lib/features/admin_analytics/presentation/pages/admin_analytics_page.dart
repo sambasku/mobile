@@ -151,6 +151,7 @@ const _placeholderStats = DashboardStats(
         votes: 4,
         comments: 1,
         newUsers: 1,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-25',
@@ -158,6 +159,7 @@ const _placeholderStats = DashboardStats(
         votes: 2,
         comments: 2,
         newUsers: 0,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-26',
@@ -165,6 +167,7 @@ const _placeholderStats = DashboardStats(
         votes: 5,
         comments: 1,
         newUsers: 2,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-27',
@@ -172,6 +175,7 @@ const _placeholderStats = DashboardStats(
         votes: 1,
         comments: 3,
         newUsers: 1,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-28',
@@ -179,6 +183,7 @@ const _placeholderStats = DashboardStats(
         votes: 3,
         comments: 2,
         newUsers: 0,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-29',
@@ -186,6 +191,7 @@ const _placeholderStats = DashboardStats(
         votes: 2,
         comments: 1,
         newUsers: 1,
+        searches: 0,
       ),
       ActivityDailyPoint(
         date: '2026-09-30',
@@ -193,6 +199,7 @@ const _placeholderStats = DashboardStats(
         votes: 1,
         comments: 2,
         newUsers: 0,
+        searches: 0,
       ),
     ],
   ),

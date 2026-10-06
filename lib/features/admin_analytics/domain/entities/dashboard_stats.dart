@@ -13,6 +13,7 @@ class ActivityDailyPoint {
     required this.votes,
     required this.comments,
     required this.newUsers,
+    required this.searches,
   });
 
   /// 'YYYY-MM-DD' WIB
@@ -21,6 +22,9 @@ class ActivityDailyPoint {
   final int votes;
   final int comments;
   final int newUsers;
+
+  /// pencarian (hit + miss) hari itu
+  final int searches;
 }
 
 class ProblemSourceCounts {

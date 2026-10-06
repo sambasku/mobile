@@ -72,4 +72,49 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('Bookmark tempat belum bisa dipakai'), findsOneWidget);
   });
+
+  testWidgets('tap gambar hero membuka preview fullscreen', (tester) async {
+    tester.view
+      ..physicalSize = const Size(1170, 2532)
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final places = [
+      Place(
+        id: 'istana',
+        slug: 'istana',
+        name: 'Istana',
+        category: PlaceCategory.wisata,
+        type: PlaceType.sejarah,
+        lat: 1.36,
+        lng: 109.31,
+        shortDescription: 'Deskripsi',
+        images: const [
+          PlaceImage(url: 'https://img.example/a.jpg', isMain: true),
+          PlaceImage(url: 'https://img.example/b.jpg', isMain: false),
+        ],
+        hours: null,
+        contact: null,
+        related: const [],
+        sources: const [],
+      ),
+    ];
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [placesProvider.overrideWith((ref) async => places)],
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.light.touch,
+            child: const FToaster(child: PlaceDetailPage(slug: 'istana')),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(PageView).first);
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Tutup'), findsOneWidget);
+    expect(find.text('1 / 2'), findsOneWidget);
+  });
 }

@@ -30,6 +30,7 @@ void main() {
       int votes = 0,
       int comments = 0,
       int newUsers = 0,
+      int searches = 0,
     }) {
       return ActivityDailyPoint(
         date: date,
@@ -37,6 +38,7 @@ void main() {
         votes: votes,
         comments: comments,
         newUsers: newUsers,
+        searches: searches,
       );
     }
 
@@ -144,6 +146,7 @@ void main() {
             'votes': 0,
             'comments': 2,
             'new_users': 1,
+            'searches': 3,
           },
           {
             'date': '2026-09-27',
@@ -151,6 +154,7 @@ void main() {
             'votes': 5,
             'comments': 0,
             'new_users': 0,
+            'searches': 4,
           },
         ],
       },
@@ -185,6 +189,8 @@ void main() {
       expect(sep20.contributions, 1);
       expect(sep20.comments, 2);
       expect(sep20.newUsers, 1);
+      expect(sep20.searches, 3);
+      expect(stats.activity.dailyLast30Days.last.searches, 4);
       expect(stats.problems.open, 3);
       expect(stats.problems.bySource.bugReports.open, 1);
       expect(stats.verifierApplications.pending, 2);
