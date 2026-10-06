@@ -225,6 +225,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.welcome => 'Bergabung',
       FeedActivityKind.cardShare => 'Bagikan',
       FeedActivityKind.suggestion => 'Usulan',
+      FeedActivityKind.contribution => 'Usulan kata baru',
     };
   }
 
@@ -242,6 +243,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.welcome => 'Lihat profil',
       FeedActivityKind.cardShare => 'Lihat kartu',
       FeedActivityKind.suggestion => 'Lihat usulan',
+      FeedActivityKind.contribution => 'Lihat kata',
     };
   }
 
