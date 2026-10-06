@@ -62,7 +62,6 @@ class LetterWordsNotifier extends _$LetterWordsNotifier {
         ListWordsParams(
           q: '',
           letter: letter,
-          isVerified: true,
           limit: 50,
         ),
       );
@@ -116,7 +115,6 @@ class LetterWordsNotifier extends _$LetterWordsNotifier {
         ListWordsParams(
           q: '',
           letter: letter,
-          isVerified: true,
           limit: 50,
           cursor: state.nextCursor,
         ),
