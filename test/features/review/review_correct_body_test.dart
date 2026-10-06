@@ -163,4 +163,38 @@ void main() {
     expect(body['publish'], isFalse);
     expect(body['usage_labels'], isEmpty);
   });
+
+  test('koreksi makna: word_class_id kosong dikirim null, bukan string kosong', () {
+    final body = buildMeaningCorrectBody(
+      definition: 'Bagian kepala untuk melihat',
+      wordClassId: null,
+      translations: [
+        {
+          'language_id': _idn,
+          'translation_text': 'mata',
+          'translation_type': 'direct',
+        },
+      ],
+      publish: true,
+      comment: 'Perbaiki definisi',
+    );
+    expect(body['entity_type'], 'meaning');
+    expect(body['word_class_id'], isNull);
+    expect(body['definition'], 'Bagian kepala untuk melihat');
+    expect(body['publish'], isTrue);
+    expect(body['comment'], 'Perbaiki definisi');
+    expect(body.containsKey('meaning_source'), isFalse);
+  });
+
+  test('koreksi makna: word_class_id terisi dikirim apa adanya, comment kosong tidak dikirim', () {
+    final body = buildMeaningCorrectBody(
+      definition: 'mata',
+      wordClassId: _nomina,
+      translations: const [],
+      publish: false,
+    );
+    expect(body['word_class_id'], _nomina);
+    expect(body['publish'], isFalse);
+    expect(body.containsKey('comment'), isFalse);
+  });
 }
