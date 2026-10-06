@@ -79,6 +79,31 @@ class ReviewSearchMissRepositoryImpl {
     }
   }
 
+  /// Singkirkan miss (soft delete) — spam / tidak layak. Swipe kiri.
+  Future<Either<ReviewFailure, Unit>> dismiss(String id) async {
+    try {
+      await _dio.post<Map<String, dynamic>>('$_base/$id/dismiss');
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, 'Gagal menyingkirkan'));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
+  /// Pass (lewati) — miss hilang dari panel user ini saja, per-user,
+  /// idempotent (#88). Verifikator lain tetap melihatnya.
+  Future<Either<ReviewFailure, Unit>> skip(String id) async {
+    try {
+      await _dio.post<Map<String, dynamic>>('$_base/$id/skip');
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, 'Gagal melewati'));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
   ReviewFailure _mapDio(DioException error, String fallback) {
     final data = error.response?.data;
     if (data is Map) {

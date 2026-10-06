@@ -58,6 +58,27 @@ void main() {
     expect(req.data['is_visible'], true);
   });
 
+  test('skip mengirim POST /:id/skip ke path benar', () async {
+    final requests = <RequestOptions>[];
+    final dio = _dio({'success': true, 'data': null})
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            requests.add(options);
+            handler.next(options);
+          },
+        ),
+      );
+
+    final repo = ReviewSearchMissRepositoryImpl(dio);
+    final result = await repo.skip('01HXAMPLE000000000000000A');
+
+    result.getOrElse((l) => throw StateError('harus sukses'));
+    final req = requests.single;
+    expect(req.path, contains('/api/v1/admin/search-misses/01HXAMPLE000000000000000A/skip'));
+    expect(req.method, 'POST');
+  });
+
   test('error DioException dipetakan jadi ReviewFailure', () async {
     final dio = Dio(BaseOptions())..httpClientAdapter = _ErrorAdapter();
     final repo = ReviewSearchMissRepositoryImpl(dio);
