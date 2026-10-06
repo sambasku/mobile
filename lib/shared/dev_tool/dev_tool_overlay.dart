@@ -10,11 +10,17 @@ import 'dev_tool_page.dart';
 
 /// Apakah perkakas dev boleh muncul / berpengaruh.
 ///
-/// Production release/profile: mati. Local debug (semua flavor): hidup.
-/// Dipakai overlay ini DAN bootstrap di `main.dart`, supaya override paksa-tier
-/// yang tersimpan tidak pernah aktif di build production milik pengguna.
+/// Debug build (semua flavor): hidup. Profile/release: mati — build
+/// profile di-sign release dan bisa dipasang siapa saja, jadi gate-nya
+/// mode, bukan flavor (#68). Dipakai overlay ini DAN bootstrap di
+/// `main.dart`, supaya override paksa-tier yang tersimpan tidak pernah
+/// aktif di build milik pengguna.
+@visibleForTesting
+bool devToolsEnabledFor({required bool debug, required bool hideDevChrome}) =>
+    !hideDevChrome && debug;
+
 bool get devToolsEnabled =>
-    !(F.hideDevChrome || (F.appFlavor == Flavor.production && !kDebugMode));
+    devToolsEnabledFor(debug: kDebugMode, hideDevChrome: F.hideDevChrome);
 
 class DevToolOverlay extends StatefulWidget {
   const DevToolOverlay({
