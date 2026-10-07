@@ -13,6 +13,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/busy_aware_icon.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../domain/failures/vote_failure.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../dictionary/presentation/providers/audio_player_controller.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
@@ -24,6 +25,15 @@ import 'vote_deck_word_card.dart';
 
 /// Aksi yang sedang diproses di deck vote (spinner hanya di rewind).
 enum VotePendingAction { rewind }
+
+/// #109: detail pesan error deck - VoteFailure pakai message asli
+/// (errorCode menyusul), exception lain teks generik (bukan toString()
+/// yang bocor nama class ter-obfuscate).
+String _deckErrorDetail(Object error) => switch (error) {
+      VoteFailure(:final message, :final errorCode) =>
+        errorCode != null ? '$message ($errorCode)' : message,
+      _ => '',
+    };
 
 /// Section deck nilai kata di tab Kontribusi.
 ///
@@ -203,10 +213,13 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
             ),
             icon: Icon(FLucideIcons.circleAlert),
           ),
-          if (error.toString().isNotEmpty) ...[
+          // #109: pesan failure backend, atau teks generik utk exception
+          // tak dikenal - jangan toString() mentah (bocor nama class
+          // ter-obfuscate seperti "Instance of 'tTb'").
+          if (_deckErrorDetail(error).isNotEmpty) ...[
             const Gap(6),
             Text(
-              error.toString(),
+              _deckErrorDetail(error),
               style: theme.typography.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
