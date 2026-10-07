@@ -91,11 +91,17 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: secondary,
         );
       case FeedActivityKind.vote:
-        // #99: vote = panah naik hijau. Arah up/down tak ada di wire -
-        // check (badgeCheck) tetap eksklusif verifikasi reviewer.
+      case FeedActivityKind.voteUp:
+        // #99: vote naik = panah naik hijau.
         return _KindAvatarStyle(
           icon: FLucideIcons.arrowUp,
           foreground: theme.colors.success,
+        );
+      case FeedActivityKind.voteDown:
+        // #99: vote turun = panah turun merah.
+        return _KindAvatarStyle(
+          icon: FLucideIcons.arrowDown,
+          foreground: theme.colors.destructive,
         );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
@@ -142,9 +148,10 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: primary,
         );
       case FeedActivityKind.verification:
-        // #99: verifikasi reviewer = check, BUKAN panah vote.
+        // #99: verifikasi reviewer = lencana check, beda jelas dari
+        // panah vote (arrowUp). Keduanya hijau, bentak membedakan makna.
         return _KindAvatarStyle(
-          icon: FLucideIcons.check,
+          icon: FLucideIcons.badgeCheck,
           foreground: theme.colors.success,
         );
     }

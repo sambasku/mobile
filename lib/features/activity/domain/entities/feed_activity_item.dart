@@ -14,6 +14,8 @@ enum FeedActivityKind {
   suggestion,
   contribution,
   verification,
+  voteUp,
+  voteDown,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -46,6 +48,10 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.contribution;
     case 'verification':
       return FeedActivityKind.verification;
+    case 'vote_up':
+      return FeedActivityKind.voteUp;
+    case 'vote_down':
+      return FeedActivityKind.voteDown;
     default:
       return null;
   }

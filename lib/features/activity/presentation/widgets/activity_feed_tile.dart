@@ -211,6 +211,8 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.word => 'Kata',
       FeedActivityKind.comment => 'Komentar',
       FeedActivityKind.vote => 'Penilaian',
+      FeedActivityKind.voteUp => 'Penilaian',
+      FeedActivityKind.voteDown => 'Penilaian',
       FeedActivityKind.discussion => 'Diskusi',
       FeedActivityKind.wordImage => 'Foto',
       FeedActivityKind.wordAudio => 'Suara',
@@ -228,6 +230,8 @@ class ActivityFeedTile extends StatelessWidget {
   static String _ctaLabel(FeedActivityKind kind) {
     return switch (kind) {
       FeedActivityKind.vote => 'Ikut menilai',
+      FeedActivityKind.voteUp => 'Ikut menilai',
+      FeedActivityKind.voteDown => 'Ikut menilai',
       FeedActivityKind.word => 'Lihat arti',
       FeedActivityKind.comment => 'Balas',
       FeedActivityKind.discussion => 'Ikut diskusi',
