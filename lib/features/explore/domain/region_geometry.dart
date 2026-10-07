@@ -38,6 +38,33 @@ class RegionGeometry {
       [(p as List)[0] as double, p[1] as double],
   ];
 
+  /// Ring luar per id desa, difilter satu kecamatan (ADM4 punya parentId).
+  /// Parse sekali dari geojson hasil cache caller - dipakai load & sync.
+  static Map<String, List<List<List<double>>>> ringsFor(
+    Map<String, dynamic> geojson,
+    String kecSlug,
+  ) {
+    final out = <String, List<List<List<double>>>>{};
+    final feats = geojson['features'];
+    if (feats is! List) return out;
+    for (final f in feats) {
+      if (f is! Map || f['properties'] is! Map) continue;
+      final props = f['properties'] as Map;
+      if (props['parentId'] != kecSlug) continue;
+      final id = props['id'];
+      final g = f['geometry'];
+      if (id is! String || g is! Map) continue;
+      if (g['type'] == 'Polygon') {
+        out[id] = [_outerRing(g['coordinates'] as List)];
+      } else if (g['type'] == 'MultiPolygon') {
+        out[id] = [
+          for (final poly in g['coordinates'] as List) _outerRing(poly as List),
+        ];
+      }
+    }
+    return out;
+  }
+
   /// Point-in-polygon ray casting (koordinat: lat, lng; ring: [lng, lat]).
   static bool pointInRing(double lat, double lng, List<List<double>> ring) {
     var inside = false;
