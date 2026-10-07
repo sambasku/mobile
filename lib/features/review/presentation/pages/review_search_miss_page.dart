@@ -117,22 +117,27 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               ),
               const Gap(12),
               Expanded(
-                child: Center(
-                  child: SwipeDecisionCard(
-                    itemKey: item.id,
-                    enabled: true,
-                    onSwiped: (direction) => _onSwiped(item, direction),
-                    positiveLabel: 'Tayang',
-                    negativeLabel: 'Singkirkan',
-                    skipLabel: 'Lewati',
-                    positiveIcon: FLucideIcons.eye,
-                    negativeIcon: FLucideIcons.x,
-                    skipIcon: FLucideIcons.skipForward,
-                    positiveColor: theme.colors.success,
-                    negativeColor: theme.colors.destructive,
-                    child: _MissCardBody(
-                      item: item,
-                      onTap: () => _openContribute(item),
+                // Jarak minimum card ↔ action bar (#97: tanpa padding ini
+                // card menempel footer + bottomNav, terasa padat).
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Center(
+                    child: SwipeDecisionCard(
+                      itemKey: item.id,
+                      enabled: true,
+                      onSwiped: (direction) => _onSwiped(item, direction),
+                      positiveLabel: 'Tayang',
+                      negativeLabel: 'Singkirkan',
+                      skipLabel: 'Lewati',
+                      positiveIcon: FLucideIcons.eye,
+                      negativeIcon: FLucideIcons.x,
+                      skipIcon: FLucideIcons.skipForward,
+                      positiveColor: theme.colors.success,
+                      negativeColor: theme.colors.destructive,
+                      child: _MissCardBody(
+                        item: item,
+                        onTap: () => _openContribute(item),
+                      ),
                     ),
                   ),
                 ),
@@ -372,9 +377,8 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               child: const Text('Batal'),
             ),
             FButton(
-              onPress: () => Navigator.of(dialogContext).pop(
-                controller.text.trim(),
-              ),
+              onPress: () =>
+                  Navigator.of(dialogContext).pop(controller.text.trim()),
               child: const Text('Simpan'),
             ),
           ],
@@ -387,25 +391,22 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
         .read(reviewSearchMissRepositoryProvider)
         .updateTerm(item.id, term);
     if (!mounted) return;
-    res.match(
-      (failure) => _toast(failure.message, destructive: true),
-      (_) {
-        setState(() {
-          final i = _deck!.indexOf(item);
-          if (i >= 0) {
-            _deck![i] = ReviewSearchMiss(
-              id: item.id,
-              term: term,
-              searchIn: item.searchIn,
-              hitCount: item.hitCount,
-              isVisible: item.isVisible,
-              isFulfilled: item.isFulfilled,
-            );
-          }
-        });
-        _toast('"$term" dikoreksi');
-      },
-    );
+    res.match((failure) => _toast(failure.message, destructive: true), (_) {
+      setState(() {
+        final i = _deck!.indexOf(item);
+        if (i >= 0) {
+          _deck![i] = ReviewSearchMiss(
+            id: item.id,
+            term: term,
+            searchIn: item.searchIn,
+            hitCount: item.hitCount,
+            isVisible: item.isVisible,
+            isFulfilled: item.isFulfilled,
+          );
+        }
+      });
+      _toast('"$term" dikoreksi');
+    });
   }
 
   void _openContribute(ReviewSearchMiss item) {
