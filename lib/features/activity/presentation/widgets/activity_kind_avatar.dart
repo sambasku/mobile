@@ -16,7 +16,6 @@ class ActivityKindAvatar extends StatelessWidget {
     required this.kind,
     this.imageUrl,
     this.name,
-    this.voteUp,
     this.size = 36,
   });
 
@@ -26,14 +25,12 @@ class ActivityKindAvatar extends StatelessWidget {
   /// Diteruskan ke [UserAvatar] sebagai label semantics.
   final String? name;
 
-  /// Arah vote. `true` panah naik, `false` panah turun. Diabaikan selain vote.
-  final bool? voteUp;
   final double size;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final style = _styleFor(kind, theme, voteUp: voteUp);
+    final style = _styleFor(kind, theme);
     final badge = size * 0.4;
 
     return SizedBox(
@@ -77,11 +74,7 @@ class ActivityKindAvatar extends StatelessWidget {
     );
   }
 
-  static _KindAvatarStyle _styleFor(
-    FeedActivityKind kind,
-    FThemeData theme, {
-    bool? voteUp,
-  }) {
+  static _KindAvatarStyle _styleFor(FeedActivityKind kind, FThemeData theme) {
     final primary = theme.colors.primary;
     final secondary = theme.colors.secondaryForeground;
     final mutedFg = theme.colors.mutedForeground;
@@ -98,10 +91,17 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: secondary,
         );
       case FeedActivityKind.vote:
-        final up = voteUp ?? true;
+      case FeedActivityKind.voteUp:
+        // #99: vote naik = panah naik hijau.
         return _KindAvatarStyle(
-          icon: up ? FLucideIcons.arrowBigUp : FLucideIcons.arrowBigDown,
-          foreground: up ? theme.colors.success : theme.colors.destructive,
+          icon: FLucideIcons.arrowUp,
+          foreground: theme.colors.success,
+        );
+      case FeedActivityKind.voteDown:
+        // #99: vote turun = panah turun merah.
+        return _KindAvatarStyle(
+          icon: FLucideIcons.arrowDown,
+          foreground: theme.colors.destructive,
         );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
@@ -146,6 +146,13 @@ class ActivityKindAvatar extends StatelessWidget {
         return _KindAvatarStyle(
           icon: FLucideIcons.filePlus2,
           foreground: primary,
+        );
+      case FeedActivityKind.verification:
+        // Verifikasi = centang simple. Konteks datang dari label
+        // "memverifikasi" di sebelahnya; badgeCheck dirasa terlalu ramai.
+        return _KindAvatarStyle(
+          icon: FLucideIcons.check,
+          foreground: theme.colors.success,
         );
     }
   }

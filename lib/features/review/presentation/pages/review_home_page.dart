@@ -110,6 +110,17 @@ class ReviewHomePage extends ConsumerWidget {
                   ),
                   onPress: () => context.push(ReviewRouter.discussions.path),
                 ),
+              // #88: gerbang tayang pencarian kosong + peluang usul langsung.
+              if (showContribution)
+                FTile(
+                  prefix: const Icon(FLucideIcons.search),
+                  title: const Text('Pencarian kosong'),
+                  subtitle: const Text(
+                    'Tayangkan ke publik atau usulkan sendiri',
+                  ),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push(ReviewRouter.searchMisses.path),
+                ),
               if (showContribution)
                 FTile(
                   prefix: const Icon(FLucideIcons.history),

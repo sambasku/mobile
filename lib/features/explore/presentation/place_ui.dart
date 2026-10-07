@@ -53,10 +53,25 @@ CameraPosition? decodeMapCamera(String? raw) {
 }
 
 /// Titik tempat di Google Maps; rute dan navigasi diurus aplikasi Maps.
-Uri placeGoogleMapsUri(Place place) => Uri.https(
-  'www.google.com',
-  '/maps/search/',
-  {'api': '1', 'query': '${place.lat},${place.lng}'},
+/// Tanpa koordinat: cari berdasarkan nama (hasil bisa kurang presisi).
+Uri placeGoogleMapsUri(Place place) => place.hasCoordinates
+    ? Uri.https(
+        'www.google.com',
+        '/maps/search/',
+        {'api': '1', 'query': '${place.lat},${place.lng}'},
+      )
+    : Uri.https('www.google.com', '/maps/search/', {
+        'api': '1',
+        'query': place.name,
+      });
+
+/// Toast info tempat tanpa koordinat (belum bisa dipetakan).
+void showPlaceNoCoordinates(BuildContext context) => showFToast(
+  context: context,
+  title: const Text('Lokasi tempat ini belum tersedia'),
+  description: const Text(
+    'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.',
+  ),
 );
 
 const placeTypeLabels = {

@@ -139,17 +139,22 @@ void main() {
 
     test('item rusak (field wajib absen) → null, di-skip', () {
       expect(PlaceDto.fromJson(const {'name': 'tanpa id'}), isNull);
-      expect(
-        PlaceDto.fromJson(const {
-          'id': 'X',
-          'slug': 's',
-          'name': 'n',
-          'category': 'kuliner',
-          // lat/lng absen
-          'shortDescription': 'd',
-        }),
-        isNull,
-      );
+    });
+
+    test('item tanpa lat/lng tetap lolos (koordinat opsional)', () {
+      final dto = PlaceDto.fromJson(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'kuliner',
+        // lat/lng absen
+        'shortDescription': 'd',
+      });
+      expect(dto, isNotNull);
+      final place = dto!.toEntity();
+      expect(place.hasCoordinates, isFalse);
+      expect(place.lat, isNull);
+      expect(place.lng, isNull);
     });
 
     test(

@@ -11,7 +11,9 @@ FeedActivityItem mapPublicActivityToFeed(
 ) {
   final kind = switch (item.kind) {
     'comment' => FeedActivityKind.comment,
-    'vote' || 'verification' => FeedActivityKind.vote,
+    'vote' => FeedActivityKind.vote,
+    // #99: kategori verification profil = event word_verified - check, bukan panah vote
+    'verification' => FeedActivityKind.verification,
     _ => FeedActivityKind.word,
   };
   return FeedActivityItem(

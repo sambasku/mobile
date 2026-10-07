@@ -52,12 +52,7 @@ class ActivityFeedTile extends StatelessWidget {
           child: ActivityKindAvatar(
             kind: item.kind,
             imageUrl: item.actor?.avatarUrl,
-          name: actorLabel,
-          // ponytail: arah dari akhiran body. Plafon: copy berubah, ikon salah.
-          // Upgrade: field value di payload GET /activity.
-          voteUp: item.kind == FeedActivityKind.vote
-              ? !item.body.endsWith('perlu dicek ulang')
-              : null,
+            name: actorLabel,
             size: 40,
           ),
         ),
@@ -216,6 +211,8 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.word => 'Kata',
       FeedActivityKind.comment => 'Komentar',
       FeedActivityKind.vote => 'Penilaian',
+      FeedActivityKind.voteUp => 'Penilaian',
+      FeedActivityKind.voteDown => 'Penilaian',
       FeedActivityKind.discussion => 'Diskusi',
       FeedActivityKind.wordImage => 'Foto',
       FeedActivityKind.wordAudio => 'Suara',
@@ -226,12 +223,15 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.cardShare => 'Bagikan',
       FeedActivityKind.suggestion => 'Usulan',
       FeedActivityKind.contribution => 'Usulan kata baru',
+      FeedActivityKind.verification => 'Verifikasi',
     };
   }
 
   static String _ctaLabel(FeedActivityKind kind) {
     return switch (kind) {
       FeedActivityKind.vote => 'Ikut menilai',
+      FeedActivityKind.voteUp => 'Ikut menilai',
+      FeedActivityKind.voteDown => 'Ikut menilai',
       FeedActivityKind.word => 'Lihat arti',
       FeedActivityKind.comment => 'Balas',
       FeedActivityKind.discussion => 'Ikut diskusi',
@@ -244,6 +244,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.cardShare => 'Lihat kartu',
       FeedActivityKind.suggestion => 'Lihat usulan',
       FeedActivityKind.contribution => 'Lihat kata',
+      FeedActivityKind.verification => 'Lihat kata',
     };
   }
 

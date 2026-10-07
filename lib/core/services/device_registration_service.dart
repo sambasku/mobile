@@ -22,7 +22,10 @@ class DeviceRegistrationService {
   final DeviceRepository _repository;
   final AuthTokenStorage _tokenStorage;
   final DeviceIdService _deviceIdService;
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  /// Lazy: di web preview (tanpa Firebase.initializeApp) akses getter ini
+  /// tidak dieksekusi di konstruktor — [FirebaseMessaging.instance] throw
+  /// kalau Firebase belum di-init.
+  FirebaseMessaging get _messaging => FirebaseMessaging.instance;
 
   String _lastFcmToken;
   bool _revoking = false;

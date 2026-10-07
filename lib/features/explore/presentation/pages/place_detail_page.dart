@@ -226,9 +226,15 @@ class _BodyState extends State<_Body> {
                       const Gap(16),
                       FButton(
                         prefix: const Icon(FLucideIcons.map),
-                        onPress: () => context.push(
-                          '${ExploreRouter.pins.path}?slug=${place.slug}',
-                        ),
+                        onPress: () {
+                          if (!place.hasCoordinates) {
+                            showPlaceNoCoordinates(context);
+                            return;
+                          }
+                          context.push(
+                            '${ExploreRouter.pins.path}?slug=${place.slug}',
+                          );
+                        },
                         child: const Text('Lihat di peta'),
                       ),
                       if (relatedPlaces.isNotEmpty)

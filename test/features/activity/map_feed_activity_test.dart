@@ -136,5 +136,42 @@ void main() {
       expect(items, hasLength(1));
       expect(items.first.kind, FeedActivityKind.vote);
     });
+
+    test('parse kind verification (#99: verifikasi != vote)', () {
+      final item = mapFeedActivityItem({
+        'id': 'verification:01ACTVER000000000000000001',
+        'kind': 'verification',
+        'created_at': '2026-10-07T10:00:00.000Z',
+        'body': 'Memverifikasi kata',
+        'actor': {
+          'username': 'reviewer1',
+          'display_name': 'Reviewer Satu',
+          'avatar_url': null,
+        },
+      });
+      expect(item, isNotNull);
+      expect(item!.kind, FeedActivityKind.verification);
+      expect(item.body, 'Memverifikasi kata');
+    });
+
+    test('parse kind vote_up / vote_down (#99: arah vote terpisah)', () {
+      final up = mapFeedActivityItem({
+        'id': 'vote_up:01ACTVUP00000000000000001',
+        'kind': 'vote_up',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'body': '"kumis" sudah pas',
+        'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
+      });
+      expect(up!.kind, FeedActivityKind.voteUp);
+
+      final down = mapFeedActivityItem({
+        'id': 'vote_down:01ACTVDN00000000000000001',
+        'kind': 'vote_down',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'body': '"kumis" perlu dicek ulang',
+        'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
+      });
+      expect(down!.kind, FeedActivityKind.voteDown);
+    });
   });
 }
