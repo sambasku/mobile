@@ -91,11 +91,11 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: secondary,
         );
       case FeedActivityKind.vote:
-        // #99: ikon netral plus (kontribusi/menilai). Arah naik/turun tidak
-        // dibedakan lagi - check hijau khusus verifikasi reviewer.
+        // #99: vote = panah naik hijau. Arah up/down tak ada di wire -
+        // check (badgeCheck) tetap eksklusif verifikasi reviewer.
         return _KindAvatarStyle(
-          icon: FLucideIcons.plus,
-          foreground: theme.colors.primary,
+          icon: FLucideIcons.arrowUp,
+          foreground: theme.colors.success,
         );
       case FeedActivityKind.discussion:
         return _KindAvatarStyle(
