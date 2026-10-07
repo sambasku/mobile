@@ -52,10 +52,7 @@ class ActivityFeedTile extends StatelessWidget {
           child: ActivityKindAvatar(
             kind: item.kind,
             imageUrl: item.actor?.avatarUrl,
-          name: actorLabel,
-          // Arah panah hanya relevan utk kind vote (#99: verifikasi
-          // sekarang kind sendiri, ikon check; body tak lagi dipakai).
-          voteUp: item.kind == FeedActivityKind.vote ? true : null,
+            name: actorLabel,
             size: 40,
           ),
         ),
