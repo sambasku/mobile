@@ -84,6 +84,10 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   /// Hasil decode ADM4 (file besar): decode sekali, load & sync berbagi.
   Map<String, dynamic>? _adm4Cache;
 
+  /// Asset ADM4 pernah gagal decode/korup: jangan retry tiap build
+  /// (decode 67K per frame = jank loop). Hardening #106.
+  bool _adm4Failed = false;
+
   /// Pilih desa dari hasil pencarian: set kecamatan induk + desa, buka
   /// panel desa, load polygon, kamera fokus ke centroid desa.
   Future<void> _pickSearchedDesa(Region desa, Region kec) async {
@@ -216,6 +220,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     final token = ++_desaLoadToken;
     try {
       final geojson = await _loadAdm4();
+      if (geojson == null) return;
       final rings = RegionGeometry.ringsFor(geojson, kecSlug);
 
       // Request lama sudah tergantikan (tap kecamatan cepat): jangan
@@ -233,16 +238,26 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   }
 
   /// Decode ADM4 sekali - dipakai _loadDesaGeoJson & _syncDesaLayers.
-  Future<Map<String, dynamic>> _loadAdm4() async {
+  Future<Map<String, dynamic>?> _loadAdm4() async {
+    if (_adm4Failed) return null;
     final cached = _adm4Cache;
     if (cached != null) return cached;
-    final raw = await rootBundle.loadString('assets/data/regions-adm4.geojson');
-    final geojson = jsonDecode(raw);
-    if (geojson is! Map<String, dynamic>) {
-      throw const FormatException('regions-adm4.geojson bukan object');
+    try {
+      final raw = await rootBundle.loadString(
+        'assets/data/regions-adm4.geojson',
+      );
+      final geojson = jsonDecode(raw);
+      if (geojson is! Map<String, dynamic>) {
+        throw const FormatException('regions-adm4.geojson bukan object');
+      }
+      _adm4Cache = geojson;
+      return geojson;
+    } catch (_) {
+      // Korup/hilang sekali = korup selamanya di sesi ini: list desa tetap
+      // jalan tanpa polygon, tanpa decode ulang per build.
+      _adm4Failed = true;
+      return null;
     }
-    _adm4Cache = geojson;
-    return geojson;
   }
 
   /// Ganti isi source desa: remove layer+source lama lalu add ulang bila
@@ -271,7 +286,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
       if (_desaRings.isEmpty) return;
 
       final geojson = await _loadAdm4();
-      if (token != _desaLoadToken) return;
+      if (geojson == null || token != _desaLoadToken) return;
       final feats = geojson['features'];
       if (feats is! List) return;
 
@@ -789,6 +804,8 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                   _selectedDesaId != null
                       ? 'Desa ${desaOfSelected.where((d) => d.id == _selectedDesaId).firstOrNull?.name ?? _selectedDesaId}'
                       : 'Kecamatan ${kec.name}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.typography.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -959,6 +976,8 @@ class _CompactPanel extends StatelessWidget {
                     selectedDesaId != null
                         ? 'Desa ${desaOfSelected.where((d) => d.id == selectedDesaId).firstOrNull?.name ?? selectedDesaId}'
                         : 'Kecamatan ${kec.name}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: theme.typography.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
