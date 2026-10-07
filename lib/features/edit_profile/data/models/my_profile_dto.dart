@@ -22,7 +22,10 @@ abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
   const factory UpdateMyProfileRequestDto({
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
-    @JsonKey(name: 'has_read_contribution_guide') bool? hasReadContributionGuide,
+    // #98: kirim key ini hanya saat true - null ikut ter-serialize
+    // (includeIfNull default) dan ditolak validasi backend.
+    @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)
+    bool? hasReadContributionGuide,
   }) = _UpdateMyProfileRequestDto;
 
   factory UpdateMyProfileRequestDto.fromJson(Map<String, dynamic> json) =>
