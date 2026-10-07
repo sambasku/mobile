@@ -274,6 +274,16 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
+                semanticsLabel: 'Koreksi term',
+                onPress: () => _openEditTerm(item),
+                child: const Icon(FLucideIcons.pencil),
+              ),
+            ),
+            const Gap(8),
+            Expanded(
+              child: FButton.icon(
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.sm,
                 semanticsLabel: 'Tayang',
                 // Sudah tayang → tanpa aksi (kartu spring back saat swipe).
                 onPress: item.isVisible
@@ -329,6 +339,73 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
       _pos = at;
     });
     _toast(failure.message, destructive: true);
+  }
+
+  /// Koreksi term salah ketik (tombol pensil): dialog prefilled term lama →
+  /// PATCH /:id {term} — kartu tetap (bukan aksi deck), deck di-update lokal.
+  Future<void> _openEditTerm(ReviewSearchMiss item) async {
+    final controller = TextEditingController(text: item.term);
+    final result = await showFDialog<String>(
+      context: context,
+      builder: (dialogContext, style, animation) {
+        return FDialog(
+          style: style,
+          animation: animation,
+          title: const Text('Koreksi term'),
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text('Perbaiki salah ketik warga sebelum ditayangkan.'),
+              const Gap(12),
+              FTextField(
+                control: FTextFieldControl.managed(controller: controller),
+                label: const Text('Term'),
+                autofocus: true,
+              ),
+            ],
+          ),
+          actions: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Batal'),
+            ),
+            FButton(
+              onPress: () => Navigator.of(dialogContext).pop(
+                controller.text.trim(),
+              ),
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+    final term = result;
+    if (term == null || term.isEmpty || term == item.term) return;
+    final res = await ref
+        .read(reviewSearchMissRepositoryProvider)
+        .updateTerm(item.id, term);
+    if (!mounted) return;
+    res.match(
+      (failure) => _toast(failure.message, destructive: true),
+      (_) {
+        setState(() {
+          final i = _deck!.indexOf(item);
+          if (i >= 0) {
+            _deck![i] = ReviewSearchMiss(
+              id: item.id,
+              term: term,
+              searchIn: item.searchIn,
+              hitCount: item.hitCount,
+              isVisible: item.isVisible,
+              isFulfilled: item.isFulfilled,
+            );
+          }
+        });
+        _toast('"$term" dikoreksi');
+      },
+    );
   }
 
   void _openContribute(ReviewSearchMiss item) {

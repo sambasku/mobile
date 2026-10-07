@@ -127,6 +127,59 @@ void main() {
     expect(find.text('nandor'), findsOneWidget);
   });
 
+  testWidgets('tombol pensil → dialog koreksi term → PATCH + kartu ter-update', (
+    tester,
+  ) async {
+    final repo = _FakeRepo();
+    await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
+
+    await tester.tap(_fbtnByIcon(FLucideIcons.pencil));
+    await tester.pumpAndSettle();
+
+    // Dialog terbuka, prefilled term lama.
+    expect(find.text('Koreksi term'), findsOneWidget);
+    expect(find.widgetWithText(FTextField, 'Term'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'kepayah');
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+
+    expect(repo.updateTermCalls, [(missBaru.id, 'kepayah')]);
+    // Kartu tetap (tidak advance) — term baru tampil.
+    expect(find.text('kepayah'), findsOneWidget);
+    expect(find.text('kepayang'), findsNothing);
+    expect(find.text('nandor'), findsNothing);
+  });
+
+  testWidgets('koreksi term batal → tanpa PATCH, kartu tetap', (tester) async {
+    final repo = _FakeRepo();
+    await _pumpPanel(tester, items: [missBaru], repo: repo);
+
+    await tester.tap(_fbtnByIcon(FLucideIcons.pencil));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Batal'));
+    await tester.pumpAndSettle();
+
+    expect(repo.updateTermCalls, isEmpty);
+    expect(find.text('kepayang'), findsOneWidget);
+  });
+
+  testWidgets('koreksi term gagal → toast destructive, term tetap lama', (
+    tester,
+  ) async {
+    final repo = _FakeRepo()..updateTermFails = true;
+    await _pumpPanel(tester, items: [missBaru], repo: repo);
+
+    await tester.tap(_fbtnByIcon(FLucideIcons.pencil));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'kepayah');
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gagal mengoreksi term'), findsOneWidget);
+    expect(find.text('kepayang'), findsOneWidget);
+  });
+
   testWidgets('gagal tayang → kartu kembali ke depan + toast destructive', (
     tester,
   ) async {
@@ -298,10 +351,12 @@ class _FakeRepo implements ReviewSearchMissRepositoryImpl {
   List<(String, bool)> setVisibleCalls = [];
   List<String> dismissCalls = [];
   List<String> skipCalls = [];
+  List<(String, String)> updateTermCalls = [];
 
   bool setVisibleFails = false;
   bool dismissFails = false;
   bool skipFails = false;
+  bool updateTermFails = false;
 
   /// Kalau [holdVisible] true, setVisible menunggu [completePending] —
   /// dipakai bukti pindah kartu optimis.
@@ -344,6 +399,15 @@ class _FakeRepo implements ReviewSearchMissRepositoryImpl {
     skipCalls.add(id);
     if (skipFails) {
       return Either.left(ReviewFailure('Gagal melewati'));
+    }
+    return Either.right(unit);
+  }
+
+  @override
+  Future<Either<ReviewFailure, Unit>> updateTerm(String id, String term) async {
+    updateTermCalls.add((id, term));
+    if (updateTermFails) {
+      return Either.left(ReviewFailure('Gagal mengoreksi term'));
     }
     return Either.right(unit);
   }

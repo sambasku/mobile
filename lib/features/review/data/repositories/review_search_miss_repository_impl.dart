@@ -79,6 +79,22 @@ class ReviewSearchMissRepositoryImpl {
     }
   }
 
+  /// Koreksi term salah ketik warga (mis. "awdwdwa"). Gate verifikator;
+  /// bentrok term lain → 409 dari API.
+  Future<Either<ReviewFailure, Unit>> updateTerm(String id, String term) async {
+    try {
+      await _dio.patch<Map<String, dynamic>>(
+        '$_base/$id',
+        data: {'term': term},
+      );
+      return Either.right(unit);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, 'Gagal mengoreksi term'));
+    } catch (error) {
+      return Either.left(ReviewFailure(error.toString()));
+    }
+  }
+
   /// Singkirkan miss (soft delete) — spam / tidak layak. Swipe kiri.
   Future<Either<ReviewFailure, Unit>> dismiss(String id) async {
     try {
