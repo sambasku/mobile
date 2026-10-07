@@ -148,10 +148,10 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: primary,
         );
       case FeedActivityKind.verification:
-        // #99: verifikasi reviewer = lencana check, beda jelas dari
-        // panah vote (arrowUp). Keduanya hijau, bentak membedakan makna.
+        // Verifikasi = centang simple. Konteks datang dari label
+        // "memverifikasi" di sebelahnya; badgeCheck dirasa terlalu ramai.
         return _KindAvatarStyle(
-          icon: FLucideIcons.badgeCheck,
+          icon: FLucideIcons.check,
           foreground: theme.colors.success,
         );
     }
