@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker_android/image_picker_android.dart';
@@ -45,6 +46,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 /// - atau `--dart-define=FLAVOR=...` (fallback lokal)
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint('MILESTONE main-start'); // ignore: avoid_print
 
   // Photo Picker di semua API (default hanya API 33+). Tanpa READ_MEDIA_*.
   final imagePickerImplementation = ImagePickerPlatform.instance;
@@ -79,7 +81,9 @@ Future<void> main() async {
 
   // Prefs sebelum runApp: frame pertama = preferensi tersimpan, bukan
   // ThemeMode.system (ikut device) yang lalu jump setelah hydrate async.
+  debugPrint('MILESTONE before-prefs'); // ignore: avoid_print
   final prefs = await SharedPreferences.getInstance();
+  debugPrint('MILESTONE after-prefs'); // ignore: avoid_print
   await ThemeModeController.preload(prefs);
   await ForuiPaletteController.preload(prefs);
   await FontScaleController.preload(prefs);
@@ -88,19 +92,27 @@ Future<void> main() async {
 
   // L1 response cache (hive_ce) sebelum frame pertama - cold start
   // boleh menyajikan reference/WOTD dari disk.
+  debugPrint('MILESTONE before-cache'); // ignore: avoid_print
   await initResponseCacheStore();
+  debugPrint('MILESTONE after-cache'); // ignore: avoid_print
 
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // Izin notifikasi diminta di onboarding slide 3, bukan di cold start.
-  await NotificationService.init();
-  await AnalyticsService.instance.init();
+  // ponytail: web = preview UI saja (dev). Firebase/FCM/awesome_notifications
+  // butuh options native & tak dipakai di web — initializeApp() tanpa options
+  // malah throw [core/no-options] sebelum runApp (layar blank).
+  if (!kIsWeb) {
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // Izin notifikasi diminta di onboarding slide 3, bukan di cold start.
+    await NotificationService.init();
+    await AnalyticsService.instance.init();
+  }
 
   // getToken() bisa beberapa detik di OEM tertentu. Jangan ditunggu sebelum
   // frame pertama - DeviceRegistrationService.start() (setelah frame)
   // sudah fetch token sendiri.
 
   // Container agar device repo memakai Dio yang sama (dengan AuthInterceptor).
+  debugPrint('MILESTONE after-firebase'); // ignore: avoid_print
   final container = ProviderContainer(retry: (_, _) => null);
   final dio = container.read(dioProvider);
   final registrationService = DeviceRegistrationService(
@@ -129,6 +141,7 @@ Future<void> main() async {
   // retry: null = matikan auto-retry Riverpod 3 (default: 10x backoff ~47s).
   // Failure 4xx tidak transient - retry manual via tombol "Coba lagi" di UI;
   // satu-satunya retry bermakna (401 -> refresh sekali) sudah di AuthInterceptor.
+  debugPrint('MILESTONE before-runApp'); // ignore: avoid_print
   runApp(UncontrolledProviderScope(container: container, child: const App()));
 
   // Watchdog diagnostik tab-freeze (staging/debug): heartbeat internal tiap
@@ -170,6 +183,7 @@ Future<void> main() async {
   // HTTP register device SETELAH frame pertama. Kalau DevTool memaksa
   // tier 3 (Render tidur), menunggu 75s di sini sebelum runApp = ANR.
   WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (kIsWeb) return; // preview web: tanpa Firebase, jangan sentuh FCM
     unawaited(registrationService.start());
     unawaited(NotificationService.handleInitialMessage());
   });
