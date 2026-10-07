@@ -72,7 +72,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
@@ -104,7 +106,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
@@ -135,7 +139,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
@@ -171,7 +177,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
@@ -186,7 +194,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
@@ -198,7 +208,9 @@ class VoteRepositoryImpl implements VoteRepository {
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
-      return Either.left(VoteFailure(error.toString()));
+      // #109: jangan pakai toString() mentah - hasilnya 'Instance of X'
+      // yang tak berguna utk user.
+      return Either.left(const VoteFailure('Terjadi kesalahan'));
     }
   }
 
