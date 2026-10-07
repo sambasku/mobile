@@ -36,9 +36,10 @@ void main() {
       mapPublicActivityToFeed(item('comment'), profile).kind,
       FeedActivityKind.comment,
     );
+    // #99: verification sekarang kind sendiri (check), bukan vote
     expect(
       mapPublicActivityToFeed(item('verification'), profile).kind,
-      FeedActivityKind.vote,
+      FeedActivityKind.verification,
     );
     expect(
       mapPublicActivityToFeed(item('vote'), profile).kind,

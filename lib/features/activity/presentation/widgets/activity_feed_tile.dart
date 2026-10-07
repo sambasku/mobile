@@ -53,11 +53,9 @@ class ActivityFeedTile extends StatelessWidget {
             kind: item.kind,
             imageUrl: item.actor?.avatarUrl,
           name: actorLabel,
-          // ponytail: arah dari akhiran body. Plafon: copy berubah, ikon salah.
-          // Upgrade: field value di payload GET /activity.
-          voteUp: item.kind == FeedActivityKind.vote
-              ? !item.body.endsWith('perlu dicek ulang')
-              : null,
+          // Arah panah hanya relevan utk kind vote (#99: verifikasi
+          // sekarang kind sendiri, ikon check; body tak lagi dipakai).
+          voteUp: item.kind == FeedActivityKind.vote ? true : null,
             size: 40,
           ),
         ),
@@ -226,6 +224,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.cardShare => 'Bagikan',
       FeedActivityKind.suggestion => 'Usulan',
       FeedActivityKind.contribution => 'Usulan kata baru',
+      FeedActivityKind.verification => 'Verifikasi',
     };
   }
 
@@ -244,6 +243,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.cardShare => 'Lihat kartu',
       FeedActivityKind.suggestion => 'Lihat usulan',
       FeedActivityKind.contribution => 'Lihat kata',
+      FeedActivityKind.verification => 'Lihat kata',
     };
   }
 

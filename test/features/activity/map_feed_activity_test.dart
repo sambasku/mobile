@@ -136,5 +136,22 @@ void main() {
       expect(items, hasLength(1));
       expect(items.first.kind, FeedActivityKind.vote);
     });
+
+    test('parse kind verification (#99: verifikasi != vote)', () {
+      final item = mapFeedActivityItem({
+        'id': 'verification:01ACTVER000000000000000001',
+        'kind': 'verification',
+        'created_at': '2026-10-07T10:00:00.000Z',
+        'body': 'Memverifikasi kata',
+        'actor': {
+          'username': 'reviewer1',
+          'display_name': 'Reviewer Satu',
+          'avatar_url': null,
+        },
+      });
+      expect(item, isNotNull);
+      expect(item!.kind, FeedActivityKind.verification);
+      expect(item.body, 'Memverifikasi kata');
+    });
   });
 }

@@ -147,6 +147,12 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.filePlus2,
           foreground: primary,
         );
+      case FeedActivityKind.verification:
+        // #99: verifikasi reviewer = check, BUKAN panah vote.
+        return _KindAvatarStyle(
+          icon: FLucideIcons.check,
+          foreground: theme.colors.success,
+        );
     }
   }
 }
