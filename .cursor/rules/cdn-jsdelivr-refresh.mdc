@@ -1,0 +1,40 @@
+---
+description: Data dari CDN jsdelivr (CachedJsonClient) — refresh wajib forceRefresh + skeletonizer, jangan cuma invalidate
+alwaysApply: true
+---
+
+# Refresh data CDN jsdelivr (Wisata/dataset statis)
+
+Konteks: dataset mobile (places, cuisine, regions, sponsors, contributors,
+wisata cards, display image) dimuat dari raw.githubusercontent / cdn.jsdelivr
+via `CachedJsonClient` dengan cache lokal **L1** (`ResponseCacheStore`).
+
+## Masalah (issue #104)
+
+`ref.invalidate(provider)` setelah `await provider.future` **tidak melewati
+L1** — provider future baru dibaca dari cache fresh-cache-nya sendiri (TTL), jadi
+pull-to-refresh tetap menyajikan data lama dan user tidak pernah fetch ulang.
+
+## Wajib untuk SEMUA data jsdelivr
+
+Saat user memicu refresh (pull-to-refresh / tombol refresh):
+
+1. **Hard miss L1**: panggil provider `*RefreshProvider` yang memanggil
+   repository dengan `forceRefresh: true` (`CachedJsonClient.fetchJson`), bukan
+   `invalidate` saja.
+2. **Tampilkan skeletonizer** selama fetch: set state loading lokal
+   (mis. `_refreshing = true`) dan pakai `_SkeletonList(refreshing: true)`
+   sebagai `loading:` builder — jangan layar statis penuh.
+3. **Setelah selesai**: `ref.invalidate(provider)` → rebuild data → skeleton
+   hilang (try/finally + `mounted` guard).
+
+Pola yang sudah dipakai (conturnya, jangan ubah pola):
+`place_list_page.dart`, `cuisine_list_page.dart`, `pins_page.dart`.
+
+## Checklist
+
+- [ ] Ada `*RefreshProvider` dengan `forceRefresh: true` (bila belum → buat,
+      satu per dataset jsdelivr)
+- [ ] `_reload` memakai refresh provider, bukan invalidate langsung
+- [ ] Skeleton tampil selama fetch refresh (`refreshing` flag)
+- [ ] Test: pull-to-refresh memicu `refreshCalls == 1` pada refresh provider

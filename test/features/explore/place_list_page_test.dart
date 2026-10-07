@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -105,5 +107,44 @@ void main() {
     expect(find.text('Istana Alwatzikoebillah'), findsNothing);
     // Baris chip filter tidak dirender di mode kuliner.
     expect(find.text('Semua'), findsNothing);
+  });
+
+  // #104: pull-to-refresh harus hard-miss L1 (forceRefresh fetch CDN),
+  // bukan invalidate yang cuma baca cache fresh lagi + skeleton tampil.
+  testWidgets('pull-to-refresh memanggil placesRefreshProvider (forceRefresh) + skeleton', (tester) async {
+    var refreshCalls = 0;
+    final refreshCompleter = Completer<void>();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          placesProvider.overrideWith((ref) async => _places),
+          placesRefreshProvider.overrideWith((ref) async {
+            refreshCalls++;
+            await refreshCompleter.future;
+            return _places;
+          }),
+        ],
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.light.touch,
+            child: const FToaster(
+              child: PlaceListPage(mode: PlacePageMode.wisata),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(refreshCalls, 0, reason: 'refresh tidak dipanggil sebelum pull');
+
+    await tester.drag(find.byType(RefreshIndicator), const Offset(0, 320));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(refreshCalls, 1, reason: 'pull-to-refresh memicu fetch forceRefresh');
+    expect(find.byType(RefreshIndicator), findsOneWidget);
+    refreshCompleter.complete();
+    await tester.pumpAndSettle();
+    expect(find.text('Pantai Temajuk'), findsOneWidget);
   });
 }
