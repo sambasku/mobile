@@ -38,5 +38,5 @@ Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
 ) => <String, dynamic>{
   'display_name': instance.displayName,
   'bio': instance.bio,
-  'has_read_contribution_guide': instance.hasReadContributionGuide,
+  'has_read_contribution_guide': ?instance.hasReadContributionGuide,
 };
