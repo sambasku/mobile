@@ -78,10 +78,19 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     });
   }
 
+  // #104: hard miss L1 (forceRefresh → fetch CDN) + skeleton selama fetch,
+  // bukan invalidate saja yang cuma baca cache fresh lagi.
   Future<void> _reload() async {
-    ref.invalidate(placesProvider);
-    await ref.read(placesProvider.future);
+    setState(() => _refreshing = true);
+    try {
+      await ref.read(placesRefreshProvider.future);
+      ref.invalidate(placesProvider);
+    } finally {
+      if (mounted) setState(() => _refreshing = false);
+    }
   }
+
+  bool _refreshing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +110,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
           ],
         ),
         child: placesAsync.when(
-          loading: () => const _SkeletonList(),
+          loading: () => _SkeletonList(refreshing: _refreshing),
           error: (_, _) => _ErrorBody(onRetry: _reload),
           data: (places) {
             if (places == null) return _ErrorBody(onRetry: _reload);
@@ -362,7 +371,11 @@ class _ErrorBody extends StatelessWidget {
 /// Skeleton kartu Place saat loading - bentuknya mirip konten asli supaya
 /// transisi loading → konten/gagal tidak "loncat".
 class _SkeletonList extends StatelessWidget {
-  const _SkeletonList();
+  /// #104: true saat pull-to-refresh (muat ulang dari CDN) - label
+  /// semantics membedakan "menyegarkan" dari loading awal.
+  const _SkeletonList({this.refreshing = false});
+
+  final bool refreshing;
 
   @override
   Widget build(BuildContext context) {

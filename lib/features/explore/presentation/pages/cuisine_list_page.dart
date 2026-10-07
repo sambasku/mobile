@@ -41,9 +41,17 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
   }
 
   Future<void> _reload() async {
-    ref.invalidate(cuisineProvider);
-    await ref.read(cuisineProvider.future);
+    // #104: hard miss L1 (forceRefresh → fetch CDN) + skeleton selama fetch.
+    setState(() => _refreshing = true);
+    try {
+      await ref.read(cuisineRefreshProvider.future);
+      ref.invalidate(cuisineProvider);
+    } finally {
+      if (mounted) setState(() => _refreshing = false);
+    }
   }
+
+  bool _refreshing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +71,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
           ],
         ),
         child: cuisineAsync.when(
-          loading: () => const _SkeletonList(),
+          loading: () => _SkeletonList(refreshing: _refreshing),
           error: (_, _) => _ErrorBody(onRetry: _reload),
           data: (items) {
             if (items == null) return _ErrorBody(onRetry: _reload);
@@ -266,7 +274,11 @@ class _ErrorBody extends StatelessWidget {
 /// Skeleton kartu cuisine - bentuk mirip konten asli supaya transisi
 /// loading → konten/gagal tidak "loncat".
 class _SkeletonList extends StatelessWidget {
-  const _SkeletonList();
+  /// #104: true saat pull-to-refresh (muat ulang dari CDN) - label
+  /// semantics membedakan "menyegarkan" dari loading awal.
+  const _SkeletonList({this.refreshing = false});
+
+  final bool refreshing;
 
   @override
   Widget build(BuildContext context) {
