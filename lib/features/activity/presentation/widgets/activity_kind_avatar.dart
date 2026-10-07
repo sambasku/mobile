@@ -154,6 +154,12 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.check,
           foreground: theme.colors.success,
         );
+      case FeedActivityKind.announcement:
+        // #102: pengumuman resmi dari admin - megaphone warna primary.
+        return _KindAvatarStyle(
+          icon: FLucideIcons.megaphone,
+          foreground: primary,
+        );
     }
   }
 }

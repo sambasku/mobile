@@ -9,6 +9,7 @@ import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../activity_router.dart';
 import '../../domain/entities/feed_activity_item.dart';
 import 'activity_kind_avatar.dart';
 
@@ -63,52 +64,52 @@ class ActivityFeedTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: canOpenProfile
-                      ? () => UserProfileRouter.open(
-                            context,
-                            item.actor!.username!,
-                          )
-                      : null,
-                  child: Text(
-                    actorLabel,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w700,
-                      height: 1.25,
-                      color: canOpenProfile
-                          ? theme.colors.primary
-                          : theme.colors.foreground,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: canOpenProfile
+                              ? () => UserProfileRouter.open(
+                                  context,
+                                  item.actor!.username!,
+                                )
+                              : null,
+                          child: Text(
+                            actorLabel,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.sm.copyWith(
+                              fontWeight: FontWeight.w700,
+                              height: 1.25,
+                              color: canOpenProfile
+                                  ? theme.colors.primary
+                                  : theme.colors.foreground,
+                            ),
+                          ),
+                        ),
+                        if (canOpenProfile)
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => UserProfileRouter.open(
+                              context,
+                              item.actor!.username!,
+                            ),
+                            child: Text(
+                              '@${item.actor!.username}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontWeight: FontWeight.w500,
+                                height: 1.25,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                ),
-                if (canOpenProfile)
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => UserProfileRouter.open(
-                      context,
-                      item.actor!.username!,
-                    ),
-                    child: Text(
-                      '@${item.actor!.username}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.mutedForeground,
-                        fontWeight: FontWeight.w500,
-                        height: 1.25,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
                   if (dateLabel.isNotEmpty) ...[
                     const Gap(8),
                     Text(
@@ -195,7 +196,8 @@ class ActivityFeedTile extends StatelessWidget {
             ? null
             : () {
                 FocusManager.instance.primaryFocus?.unfocus();
-                context.push(path);
+                // #102: pengumuman bawa payload beku (detail tanpa fetch ulang).
+                context.push(path, extra: item.announcement);
               },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -224,6 +226,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.suggestion => 'Usulan',
       FeedActivityKind.contribution => 'Usulan kata baru',
       FeedActivityKind.verification => 'Verifikasi',
+      FeedActivityKind.announcement => 'Pengumuman',
     };
   }
 
@@ -245,6 +248,7 @@ class ActivityFeedTile extends StatelessWidget {
       FeedActivityKind.suggestion => 'Lihat usulan',
       FeedActivityKind.contribution => 'Lihat kata',
       FeedActivityKind.verification => 'Lihat kata',
+      FeedActivityKind.announcement => 'Baca pengumuman',
     };
   }
 
@@ -254,6 +258,12 @@ class ActivityFeedTile extends StatelessWidget {
     switch (target.type) {
       case 'word':
         return DictionaryRouter.detail.path.replaceFirst(':id', target.id);
+      case 'announcement':
+        // #102: payload beku diteruskan via extra - detail tanpa fetch ulang.
+        return ActivityRouter.announcementDetail.path.replaceFirst(
+          ':id',
+          target.id,
+        );
       case 'discussion':
         return DiscussionRouter.detailPath(target.id);
       case 'user':

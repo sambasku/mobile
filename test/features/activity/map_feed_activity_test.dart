@@ -31,7 +31,7 @@ void main() {
         'created_at': '2026-09-28T12:00:00.000Z',
         'actor': null,
         'body': 'Mencari "kalintiak" - belum ada di kamus.',
-      'subtitle': null,
+        'subtitle': null,
         'target': {'type': 'search_miss', 'id': '01'},
       });
       expect(item, isNotNull);
@@ -56,35 +56,38 @@ void main() {
       );
     });
 
-    test('created_at mustahil (epoch ms) dibuang, bukan dirender "baru" (#47)', () {
-      // Bentuk yang sempat ada di produksi: kolom `mode: 'timestamp'` diisi
-      // epoch milidetik lalu dibaca sebagai detik -> tahun 50.000-an.
-      final corrupt = mapFeedActivityItem({
-        'id': 'word:01',
-        'kind': 'word',
-        'created_at': '+058716-09-15T00:00:00.000Z',
-        'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
-        'body': 'pengimpor_data_csv',
-        'subtitle': 'Kata baru',
-        'target': {'type': 'word', 'id': '01'},
-      });
-      expect(corrupt, isNull);
-
-      // created_at tidak bisa diparse / kosong juga dibuang.
-      expect(
-        mapFeedActivityItem({
-          'id': 'word:02',
+    test(
+      'created_at mustahil (epoch ms) dibuang, bukan dirender "baru" (#47)',
+      () {
+        // Bentuk yang sempat ada di produksi: kolom `mode: 'timestamp'` diisi
+        // epoch milidetik lalu dibaca sebagai detik -> tahun 50.000-an.
+        final corrupt = mapFeedActivityItem({
+          'id': 'word:01',
           'kind': 'word',
-          'created_at': 'bukan-tanggal',
-          'body': 'x',
-        }),
-        isNull,
-      );
-      expect(
-        mapFeedActivityItem({'id': 'word:03', 'kind': 'word', 'body': 'x'}),
-        isNull,
-      );
-    });
+          'created_at': '+058716-09-15T00:00:00.000Z',
+          'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
+          'body': 'pengimpor_data_csv',
+          'subtitle': 'Kata baru',
+          'target': {'type': 'word', 'id': '01'},
+        });
+        expect(corrupt, isNull);
+
+        // created_at tidak bisa diparse / kosong juga dibuang.
+        expect(
+          mapFeedActivityItem({
+            'id': 'word:02',
+            'kind': 'word',
+            'created_at': 'bukan-tanggal',
+            'body': 'x',
+          }),
+          isNull,
+        );
+        expect(
+          mapFeedActivityItem({'id': 'word:03', 'kind': 'word', 'body': 'x'}),
+          isNull,
+        );
+      },
+    );
 
     test('map list membuang hanya baris korup, sisanya tetap urut', () {
       final items = mapFeedActivityList([
@@ -172,6 +175,95 @@ void main() {
         'actor': {'username': 'a', 'display_name': 'A', 'avatar_url': null},
       });
       expect(down!.kind, FeedActivityKind.voteDown);
+    });
+  });
+
+  group('mapFeedActivityItem announcement (#102)', () {
+    test('payload announcement terparse penuh', () {
+      final item = mapFeedActivityItem({
+        'id': 'announcement:01ANNC0000000000000000001',
+        'kind': 'announcement',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'actor': {
+          'username': 'admin',
+          'display_name': 'Admin SambasKu',
+          'avatar_url': null,
+        },
+        'body': 'Pengumuman',
+        'subtitle': null,
+        'target': {'type': 'announcement', 'id': '01ANNC0000000000000000001'},
+        'announcement': {
+          'id': '01ANNC0000000000000000001',
+          'title': 'Kamus baru rilis',
+          'body': 'Update v0.3 minggu ini.',
+          'action_url': 'https://sambasku.com/blog/rilis',
+          'action_label': 'Baca rilis',
+          'expired': false,
+        },
+      });
+      expect(item, isNotNull);
+      expect(item!.kind, FeedActivityKind.announcement);
+      expect(item.target?.type, 'announcement');
+      expect(item.announcement, isNotNull);
+      expect(item.announcement!.title, 'Kamus baru rilis');
+      expect(item.announcement!.actionUrl, 'https://sambasku.com/blog/rilis');
+      expect(item.announcement!.actionLabel, 'Baca rilis');
+      expect(item.announcement!.expired, isFalse);
+    });
+
+    test('expired true + action kosong', () {
+      final item = mapFeedActivityItem({
+        'id': 'announcement:01ANNC0000000000000000002',
+        'kind': 'announcement',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'actor': null,
+        'body': 'Pengumuman',
+        'target': {'type': 'announcement', 'id': '01ANNC0000000000000000002'},
+        'announcement': {
+          'id': '01ANNC0000000000000000002',
+          'title': 'Maintenance',
+          'body': 'Server maintenance besok.',
+          'action_url': null,
+          'action_label': null,
+          'expired': true,
+        },
+      });
+      expect(item, isNotNull);
+      expect(item!.announcement!.expired, isTrue);
+      expect(item.announcement!.actionUrl, isNull);
+      expect(item.announcement!.actionLabel, isNull);
+    });
+
+    test('kind lain abaikan field announcement', () {
+      final item = mapFeedActivityItem({
+        'id': 'word:01WORD00000000000000000001',
+        'kind': 'word',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'actor': null,
+        'body': '"kumis"',
+        'target': {'type': 'word', 'id': '01WORD00000000000000000001'},
+        'announcement': {
+          'id': '01ANNC0000000000000000003',
+          'title': 'Hantu',
+          'body': 'Tidak boleh nempel.',
+          'expired': false,
+        },
+      });
+      expect(item, isNotNull);
+      expect(item!.announcement, isNull);
+    });
+
+    test('announcement tanpa payload tetap tayang tanpa crash', () {
+      final item = mapFeedActivityItem({
+        'id': 'announcement:01ANNC0000000000000000004',
+        'kind': 'announcement',
+        'created_at': '2026-10-07T11:00:00.000Z',
+        'actor': null,
+        'body': 'Pengumuman',
+        'target': {'type': 'announcement', 'id': '01ANNC0000000000000000004'},
+      });
+      expect(item, isNotNull);
+      expect(item!.announcement, isNull);
     });
   });
 }

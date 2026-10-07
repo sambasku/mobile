@@ -16,6 +16,7 @@ enum FeedActivityKind {
   verification,
   voteUp,
   voteDown,
+  announcement,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -52,6 +53,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.voteUp;
     case 'vote_down':
       return FeedActivityKind.voteDown;
+    case 'announcement':
+      return FeedActivityKind.announcement;
     default:
       return null;
   }
@@ -88,6 +91,25 @@ class FeedActivityTarget {
   final String id;
 }
 
+/// Data pengumuman (#102): payload beku dari feed untuk tile + halaman detail.
+class FeedAnnouncement {
+  const FeedAnnouncement({
+    required this.id,
+    required this.title,
+    required this.body,
+    this.actionUrl,
+    this.actionLabel,
+    this.expired = false,
+  });
+
+  final String id;
+  final String title;
+  final String body;
+  final String? actionUrl;
+  final String? actionLabel;
+  final bool expired;
+}
+
 /// Satu baris Aktivitas terbaru di beranda.
 class FeedActivityItem {
   const FeedActivityItem({
@@ -98,6 +120,7 @@ class FeedActivityItem {
     this.actor,
     this.subtitle,
     this.target,
+    this.announcement,
   });
 
   final String id;
@@ -107,4 +130,5 @@ class FeedActivityItem {
   final FeedActivityActor? actor;
   final String? subtitle;
   final FeedActivityTarget? target;
+  final FeedAnnouncement? announcement;
 }
