@@ -10,6 +10,7 @@ import 'package:sambasku_mobile/features/review/presentation/pages/review_home_p
 import 'package:sambasku_mobile/features/review/presentation/providers/discussion_review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_suggestions_providers.dart';
+import 'package:sambasku_mobile/features/review/review_router.dart';
 
 void main() {
   // Gate tile mengikuti canReviewQueue, sama seperti tile antrean lain:
@@ -42,6 +43,36 @@ void main() {
     expect(find.textContaining('pelafalan'), findsOneWidget);
   });
 
+  // #88: panel pencarian kosong = kerjaan verifikator (tayangkan / usul).
+  for (final role in ['admin', 'reviewer', 'root']) {
+    testWidgets('$role melihat tile "Pencarian kosong"', (tester) async {
+      await pumpHome(tester, role);
+      expect(find.widgetWithText(FTile, 'Pencarian kosong'), findsOneWidget);
+    });
+  }
+
+  for (final role in ['contributor', 'editor']) {
+    testWidgets('$role tidak melihat tile "Pencarian kosong"', (tester) async {
+      await pumpHome(tester, role);
+      expect(find.widgetWithText(FTile, 'Pencarian kosong'), findsNothing);
+    });
+  }
+
+  testWidgets('tap tile pencarian kosong membuka panel', (tester) async {
+    final router = await pumpHome(tester, 'reviewer');
+
+    await tester.tap(find.widgetWithText(FTile, 'Pencarian kosong'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('daftar miss'), findsOneWidget);
+    expect(
+      router.routerDelegate.currentConfiguration.matches.map(
+        (m) => m.matchedLocation,
+      ),
+      contains(ReviewRouter.searchMisses.path),
+    );
+  });
+
   testWidgets('tap tile membuka pemilih kata', (tester) async {
     final router = await pumpHome(tester, 'reviewer');
 
@@ -68,6 +99,10 @@ Future<GoRouter> pumpHome(WidgetTester tester, String? role) async {
       GoRoute(
         path: DictionaryRouter.complete.path,
         builder: (_, _) => const Scaffold(body: Text('pemilih kata')),
+      ),
+      GoRoute(
+        path: ReviewRouter.searchMisses.path,
+        builder: (_, _) => const Scaffold(body: Text('daftar miss')),
       ),
     ],
   );
