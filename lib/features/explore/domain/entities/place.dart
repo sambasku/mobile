@@ -52,8 +52,8 @@ class Place {
     required this.name,
     required this.category,
     required this.type,
-    required this.lat,
-    required this.lng,
+    this.lat,
+    this.lng,
     required this.shortDescription,
     this.regionId,
     required this.images,
@@ -68,8 +68,15 @@ class Place {
   final String name;
   final PlaceCategory category;
   final PlaceType? type;
-  final double lat;
-  final double lng;
+
+  /// Null = sumber data tidak menyertakan koordinat. Item tetap tampil di
+  /// list/detail apa adanya; pin peta & tombol maps menolak null.
+  final double? lat;
+  final double? lng;
+
+  /// Ada koordinat valid (keduanya) - aman buat pin/maps.
+  bool get hasCoordinates => lat != null && lng != null;
+
   final String shortDescription;
 
   /// Id kecamatan (Region.id) tempat place ini berada; null = belum dipetakan.

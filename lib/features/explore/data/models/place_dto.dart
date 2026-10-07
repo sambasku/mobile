@@ -5,7 +5,9 @@ import '../../domain/entities/place.dart';
 ///
 /// Parse defensif per WISATA_START.md: field wajib absen → item di-skip
 /// (null), related kind tak dikenal di-skip, gambar tanpa https di-skip -
-/// satu item rusak tidak mematikan seluruh koleksi.
+/// satu item rusak tidak mematikan seluruh koleksi. Koordinat (lat/lng)
+/// TIDAK wajib: tempat tanpa koordinat tetap tampil di list/detail,
+/// hanya tidak bisa dipetakan (lihat Place.hasCoordinates).
 class PlaceDto {
   const PlaceDto({
     required this.id,
@@ -13,8 +15,8 @@ class PlaceDto {
     required this.name,
     required this.category,
     required this.type,
-    required this.lat,
-    required this.lng,
+    this.lat,
+    this.lng,
     required this.shortDescription,
     this.regionId,
     required this.images,
@@ -29,8 +31,8 @@ class PlaceDto {
   final String name;
   final PlaceCategory category;
   final PlaceType? type;
-  final double lat;
-  final double lng;
+  final double? lat;
+  final double? lng;
   final String shortDescription;
   final String? regionId;
   final List<PlaceImage> images;
@@ -59,8 +61,6 @@ class PlaceDto {
         slug == null ||
         name == null ||
         category == null ||
-        lat == null ||
-        lng == null ||
         short == null) {
       return null;
     }

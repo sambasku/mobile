@@ -39,6 +39,10 @@ class SambasMapPins extends StatefulWidget {
 
 class _SambasMapPinsState extends State<SambasMapPins>
     with SingleTickerProviderStateMixin {
+  /// Hanya tempat berkoordinat yang bisa jadi pin (Place.lat nullable).
+  List<Place> get _mappablePlaces =>
+      widget.places.where((p) => p.hasCoordinates).toList();
+
   MapLibreMapController? _controller;
   bool _symbolsAdded = false;
   Set<String> _addedSlugs = {};
@@ -137,7 +141,7 @@ class _SambasMapPinsState extends State<SambasMapPins>
     // Data ter-refresh saat peta terbuka (pull-to-refresh / tombol reload):
     // slug sama -> update pin di tempat; slug berubah -> pasang ulang semua.
     if (_symbolsAdded &&
-        !setEquals(_addedSlugs, {...widget.places.map((p) => p.slug)})) {
+        !setEquals(_addedSlugs, {..._mappablePlaces.map((p) => p.slug)})) {
       _symbolsAdded = false;
       _pulse.stop();
       _pulseRing = null;
@@ -159,17 +163,17 @@ class _SambasMapPinsState extends State<SambasMapPins>
 
   Future<void> _addPins() async {
     final controller = _controller;
-    if (controller == null || _symbolsAdded || widget.places.isEmpty) return;
+    if (controller == null || _symbolsAdded || _mappablePlaces.isEmpty) return;
     _symbolsAdded = true;
-    _addedSlugs = {...widget.places.map((p) => p.slug)};
+    _addedSlugs = {..._mappablePlaces.map((p) => p.slug)};
 
     final colors = context.theme.colors;
     String hex(Color c) =>
         '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
 
     final focusId = widget.initialPlace?.id;
-    final focus = widget.places.where((p) => p.id == focusId);
-    final others = widget.places.where((p) => p.id != focusId);
+    final focus = _mappablePlaces.where((p) => p.id == focusId);
+    final others = _mappablePlaces.where((p) => p.id != focusId);
 
     // Titik lingkaran = marker tanpa aset gambar; symbol cuma label nama.
     // Tempat yang dibuka: halo berdenyut + titik primary besar. Lainnya: titik
@@ -180,14 +184,14 @@ class _SambasMapPinsState extends State<SambasMapPins>
     final circles = await controller.addCircles([
       for (final p in focus)
         CircleOptions(
-          geometry: LatLng(p.lat, p.lng),
+          geometry: LatLng(p.lat!, p.lng!),
           circleRadius: 20,
           circleColor: hex(colors.primary),
           circleOpacity: 0.2,
         ),
       for (final p in others)
         CircleOptions(
-          geometry: LatLng(p.lat, p.lng),
+          geometry: LatLng(p.lat!, p.lng!),
           circleRadius: 6,
           circleColor: hex(colors.mutedForeground),
           circleStrokeWidth: 2,
@@ -195,7 +199,7 @@ class _SambasMapPinsState extends State<SambasMapPins>
         ),
       for (final p in focus)
         CircleOptions(
-          geometry: LatLng(p.lat, p.lng),
+          geometry: LatLng(p.lat!, p.lng!),
           circleRadius: 9,
           circleColor: hex(colors.primary),
           circleStrokeWidth: 3,
@@ -214,7 +218,7 @@ class _SambasMapPinsState extends State<SambasMapPins>
     await controller.addSymbols([
       for (final p in focus)
         SymbolOptions(
-          geometry: LatLng(p.lat, p.lng),
+          geometry: LatLng(p.lat!, p.lng!),
           textField: p.name,
           textSize: 14,
           textOffset: const Offset(0, 1.6),
@@ -226,7 +230,7 @@ class _SambasMapPinsState extends State<SambasMapPins>
         ),
       for (final p in others)
         SymbolOptions(
-          geometry: LatLng(p.lat, p.lng),
+          geometry: LatLng(p.lat!, p.lng!),
           textField: p.name,
           textSize: 11,
           textOffset: const Offset(0, 1.1),
@@ -249,9 +253,10 @@ class _SambasMapPinsState extends State<SambasMapPins>
     // Cari place terdekat dari titik tap (pin yang diketuk).
     Place? hit;
     double? best;
-    for (final p in widget.places) {
+    for (final p in _mappablePlaces) {
       final d =
-          (p.lat - latLng.latitude).abs() + (p.lng - latLng.longitude).abs();
+          (p.lat! - latLng.latitude).abs() +
+          (p.lng! - latLng.longitude).abs();
       if (best == null || d < best) {
         best = d;
         hit = p;
@@ -273,9 +278,9 @@ class _SambasMapPinsState extends State<SambasMapPins>
 
   @override
   Widget build(BuildContext context) {
-    final initialCamera = widget.initialPlace != null
+    final initialCamera = widget.initialPlace?.hasCoordinates ?? false
         ? CameraPosition(
-            target: LatLng(widget.initialPlace!.lat, widget.initialPlace!.lng),
+            target: LatLng(widget.initialPlace!.lat!, widget.initialPlace!.lng!),
             zoom: SambasMapConfig.placeZoom,
           )
         : SambasMapConfig.fullscreenCamera;
