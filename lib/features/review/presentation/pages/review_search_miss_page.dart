@@ -126,6 +126,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                       itemKey: item.id,
                       enabled: true,
                       onSwiped: (direction) => _onSwiped(item, direction),
+                      // Samakan pendahulu (verifikasi/vote): overlay ikon,
+                      // bukan teks label - ikon sudah dipass di bawah.
+                      overlayStyle: SwipeDecisionOverlayStyle.icon,
                       positiveLabel: 'Tayang',
                       negativeLabel: 'Singkirkan',
                       skipLabel: 'Lewati',
