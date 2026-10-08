@@ -7,15 +7,40 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/feed_activity_item.dart';
 
 /// Halaman detail pengumuman (#102): payload beku dari baris feed.
-/// Action (opsional) membuka link eksternal - host sudah di-whitelist API.
+/// Action (opsional): host SambasKu = deep link in-app (route dikenal),
+/// host lain = browser eksternal (#124).
 class AnnouncementDetailPage extends StatelessWidget {
   const AnnouncementDetailPage({super.key, required this.announcement});
 
   final FeedAnnouncement announcement;
 
-  Future<void> _openAction() async {
+  /// Snapshot tujuan tombol: host + label in-app/eksternal (#124).
+  /// Host saja - full URL sengaja tidak ditampilkan.
+  String get _hostSnapshot {
+    final url = Uri.tryParse(announcement.actionUrl ?? '');
+    final host = url?.host.toLowerCase() ?? '';
+    if (host.isEmpty) return '';
+    return isInAppDeepLink ? '$host · buka di aplikasi' : host;
+  }
+
+  /// Host SambasKu sendiri = kemungkinan besar ada route in-app.
+  bool get isInAppDeepLink {
+    final url = Uri.tryParse(announcement.actionUrl ?? '');
+    if (url == null || !url.isScheme('https')) return false;
+    final host = url.host.toLowerCase();
+    return host == 'sambasku.com' || host == 'www.sambasku.com';
+  }
+
+  Future<void> _openAction(BuildContext context) async {
     final url = Uri.tryParse(announcement.actionUrl ?? '');
     if (url == null || !url.isScheme('https')) return;
+    if (isInAppDeepLink) {
+      // Deep link in-app: route GoRouter (path+query), tanpa keluar app.
+      GoRouter.of(
+        context,
+      ).push(url.path + (url.hasQuery ? '?${url.query}' : ''));
+      return;
+    }
     // ponytail: cek host whitelist lokal = upgrade saat admin butuh host
     // dinamis; sekarang sinkron manual dengan announcement.validator.ts API.
     try {
@@ -44,13 +69,45 @@ class AnnouncementDetailPage extends StatelessWidget {
               top: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: FButton(
-                  onPress: _openAction,
-                  child: Text(
-                    (announcement.actionLabel ?? '').trim().isNotEmpty
-                        ? announcement.actionLabel!.trim()
-                        : 'Buka tautan',
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FButton(
+                      // #124: pembeda visual - in-app (chain) vs eksternal (globe).
+                      onPress: () => _openAction(context),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isInAppDeepLink
+                                ? FLucideIcons.link
+                                : FLucideIcons.globe,
+                            size: 16,
+                          ),
+                          const Gap(8),
+                          Flexible(
+                            child: Text(
+                              (announcement.actionLabel ?? '').trim().isNotEmpty
+                                  ? announcement.actionLabel!.trim()
+                                  : 'Buka tautan',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // #124: snapshot host (bukan full URL) - transparan ke mana
+                    // tombol menuju tanpa memenuhi layar.
+                    const Gap(6),
+                    Text(
+                      _hostSnapshot,
+                      textAlign: TextAlign.center,
+                      style: theme.typography.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             )
