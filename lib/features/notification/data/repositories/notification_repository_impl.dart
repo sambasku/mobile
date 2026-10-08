@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../domain/entities/inbox_notification.dart';
 import '../../domain/entities/inbox_notification_page.dart';
 import '../../domain/failures/notification_failure.dart';
@@ -13,6 +14,7 @@ InboxNotification parseInboxNotification(Map<String, dynamic> map) {
     type: map['type']?.toString() ?? '',
     title: map['title']?.toString() ?? '',
     body: map['body']?.toString() ?? '',
+    bodyType: parseAnnouncementBodyType(map['body_type']?.toString()),
     targetKind: map['target_kind']?.toString() ?? 'contribution',
     targetId: map['target_id']?.toString() ?? '',
     createdAt: map['created_at']?.toString() ?? '',

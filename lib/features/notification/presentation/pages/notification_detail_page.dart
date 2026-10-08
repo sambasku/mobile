@@ -9,6 +9,7 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../activity/presentation/widgets/announcement_body.dart';
 import '../../domain/entities/inbox_notification.dart';
 
 /// Detail pengumuman. Tombol Buka di footer menjalankan deeplink.
@@ -91,10 +92,8 @@ class NotificationDetailPage extends StatelessWidget {
               children: [
                 if (imageUrl != null) ...[
                   GestureDetector(
-                    onTap: () => showImagePreview(
-                      context,
-                      urls: [item.imageUrl!],
-                    ),
+                    onTap: () =>
+                        showImagePreview(context, urls: [item.imageUrl!]),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: AspectRatio(
@@ -143,7 +142,7 @@ class NotificationDetailPage extends StatelessWidget {
                 ),
                 if (item.body.isNotEmpty) ...[
                   const Gap(12),
-                  Text(item.body, style: theme.typography.md),
+                  AnnouncementBody(body: item.body, bodyType: item.bodyType),
                 ],
               ],
             ),

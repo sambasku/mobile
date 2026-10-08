@@ -7,6 +7,7 @@ import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'domain/entities/feed_activity_item.dart';
 import 'presentation/pages/announcement_detail_page.dart';
+import 'presentation/pages/pinned_announcements_page.dart';
 import 'presentation/providers/announcement_detail_provider.dart';
 
 /// Router pengumuman (#102). Detail dibuka dengan `state.extra` berisi
@@ -21,7 +22,18 @@ class ActivityRouter {
     name: 'ActivityRouter.announcementDetail',
   );
 
+  static const pinnedAnnouncements = RouteDefiner(
+    path: '/pinned',
+    name: 'ActivityRouter.pinnedAnnouncements',
+  );
+
   static final List<GoRoute> routes = [
+    GoRoute(
+      path: pinnedAnnouncements.path,
+      name: pinnedAnnouncements.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const PinnedAnnouncementsPage(),
+    ),
     GoRoute(
       path: announcementDetail.path,
       name: announcementDetail.name,

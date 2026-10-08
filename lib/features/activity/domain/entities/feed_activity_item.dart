@@ -95,6 +95,14 @@ class FeedActivityTarget {
 /// webview = isi dimuat via WebView (URL/HTML), plain = teks biasa.
 enum AnnouncementBodyType { plain, html, md, webview }
 
+/// Tak dikenal / null = plain (data lama sebelum #124).
+AnnouncementBodyType parseAnnouncementBodyType(String? raw) => switch (raw) {
+  'html' => AnnouncementBodyType.html,
+  'md' => AnnouncementBodyType.md,
+  'webview' => AnnouncementBodyType.webview,
+  _ => AnnouncementBodyType.plain,
+};
+
 /// Data pengumuman (#102): payload beku dari feed untuk tile + halaman detail.
 class FeedAnnouncement {
   const FeedAnnouncement({
@@ -105,6 +113,7 @@ class FeedAnnouncement {
     this.actionUrl,
     this.actionLabel,
     this.expired = false,
+    this.pinnedAt,
   });
 
   final String id;
@@ -114,6 +123,9 @@ class FeedAnnouncement {
   final String? actionUrl;
   final String? actionLabel;
   final bool expired;
+
+  /// Waktu dipin (UTC). Null = tidak dipin.
+  final DateTime? pinnedAt;
 }
 
 /// Satu baris Aktivitas terbaru di beranda.
