@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'domain/entities/feed_activity_item.dart';
 import 'presentation/pages/announcement_detail_page.dart';
+import 'presentation/providers/announcement_detail_provider.dart';
 
 /// Router pengumuman (#102). Detail dibuka dengan `state.extra` berisi
 /// [FeedAnnouncement] beku dari baris feed - tanpa fetch ulang (payload
-/// adalah sumber kebenaran feed, pola #94).
+/// adalah sumber kebenaran feed, pola #94). Deep link / restore state
+/// (extra hilang) → fetch publik by id.
 class ActivityRouter {
   ActivityRouter._();
 
@@ -24,17 +27,17 @@ class ActivityRouter {
       name: announcementDetail.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
       builder: (context, state) {
-        final announcement = state.extra;
-        return announcement is FeedAnnouncement
-            ? AnnouncementDetailPage(announcement: announcement)
-            : const AnnouncementMissingPage();
+        final extra = state.extra;
+        if (extra is FeedAnnouncement) {
+          return AnnouncementDetailPage(announcement: extra);
+        }
+        return AnnouncementDeepLinkPage(id: state.pathParameters['id'] ?? '');
       },
     ),
   ];
 }
 
-/// Fallback state.extra hilang (deep link / restore). Tanpa fetch ulang
-/// v1: pengumuman hanya diakses dari feed.
+/// Fallback deep link: pengumuman sudah dihapus / tidak ditemukan.
 class AnnouncementMissingPage extends StatelessWidget {
   const AnnouncementMissingPage({super.key});
 
@@ -54,6 +57,43 @@ class AnnouncementMissingPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Pembungkus deep link: `state.extra` kosong → fetch by id,
+/// gagal/404 → [AnnouncementMissingPage].
+class AnnouncementDeepLinkPage extends ConsumerWidget {
+  const AnnouncementDeepLinkPage({super.key, required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (id.isEmpty) return const AnnouncementMissingPage();
+    final detail = ref.watch(announcementDetailProvider(id));
+    return detail.when(
+      loading: () => const _AnnouncementLoader(),
+      error: (_, _) => const AnnouncementMissingPage(),
+      data: (announcement) => announcement == null
+          ? const AnnouncementMissingPage()
+          : AnnouncementDetailPage(announcement: announcement),
+    );
+  }
+}
+
+class _AnnouncementLoader extends StatelessWidget {
+  const _AnnouncementLoader();
+
+  @override
+  Widget build(BuildContext context) {
+    return FScaffold(
+      header: FHeader.nested(
+        title: const Text('Pengumuman'),
+        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+      ),
+      childPad: true,
+      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }
