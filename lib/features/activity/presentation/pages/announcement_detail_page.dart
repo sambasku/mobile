@@ -8,7 +8,6 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'announcement_body_format.dart';
 import '../../domain/entities/feed_activity_item.dart';
 
 /// Halaman detail pengumuman (#102): payload beku dari baris feed.
@@ -155,32 +154,58 @@ class AnnouncementDetailPage extends StatelessWidget {
             ),
           ),
           const Gap(12),
-          _AnnouncementBody(body: announcement.body),
+          _AnnouncementBody(
+            body: announcement.body,
+            bodyType: announcement.bodyType,
+          ),
         ],
       ),
     );
   }
 }
 
-/// Body pengumuman: plain teks, Markdown, atau HTML (#124 lanjutan).
-/// - markdown -> flutter_markdown (native, ikut tema terang/gelap)
-/// - html -> WebView loadHtmlString (JS off, tinggi terukur otomatis)
+/// Loader isi WebView: html = string HTML dibungkus shell; webview =
+/// URL https -> loadRequest, selain itu dianggap string HTML.
+extension _WebViewControllerBody on WebViewController {
+  Future<void> _loadBody(String body, AnnouncementBodyType type) async {
+    if (type == AnnouncementBodyType.webview) {
+      final uri = Uri.tryParse(body.trim());
+      if (uri != null && uri.isScheme('https')) {
+        await loadRequest(uri);
+        return;
+      }
+    }
+    await loadHtmlString(
+      '<!doctype html><html><head><meta name="viewport" '
+      'content="width=device-width, initial-scale=1">'
+      '<style>body{font-family:-apple-system,sans-serif;'
+      'font-size:16px;line-height:1.5;margin:8px;'
+      'color:#1f2328;background:transparent}'
+      'a{color:#1668dc}</style></head><body>$body</body></html>',
+    );
+  }
+}
+
+/// Body pengumuman per tipe eksplisit dari API (#124):
 /// - plain -> Text biasa
+/// - md -> flutter_markdown (native, ikut tema terang/gelap)
+/// - html -> flutter_html_style? belum - dirender via WebView inline JS off
+/// - webview -> isi (URL/HTML) dimuat via WebView
 class _AnnouncementBody extends StatelessWidget {
-  const _AnnouncementBody({required this.body});
+  const _AnnouncementBody({required this.body, required this.bodyType});
 
   final String body;
+  final AnnouncementBodyType bodyType;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final format = detectAnnouncementBodyFormat(body);
-    return switch (format) {
-      AnnouncementBodyFormat.plain => Text(
+    return switch (bodyType) {
+      AnnouncementBodyType.plain => Text(
         body,
         style: theme.typography.md.copyWith(height: 1.5),
       ),
-      AnnouncementBodyFormat.markdown => MarkdownBody(
+      AnnouncementBodyType.md => MarkdownBody(
         data: body,
         selectable: true,
         styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
@@ -191,7 +216,7 @@ class _AnnouncementBody extends StatelessWidget {
           listBullet: theme.typography.md,
         ),
       ),
-      AnnouncementBodyFormat.html => ClipRRect(
+      AnnouncementBodyType.html || AnnouncementBodyType.webview => ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: SizedBox(
           height: 320,
@@ -215,14 +240,9 @@ class _AnnouncementBody extends StatelessWidget {
                   },
                 ),
               )
-              ..loadHtmlString(
-                '<!doctype html><html><head><meta name="viewport" '
-                'content="width=device-width, initial-scale=1">'
-                '<style>body{font-family:-apple-system,sans-serif;'
-                'font-size:16px;line-height:1.5;margin:8px;'
-                'color:#1f2328;background:transparent}'
-                'a{color:#1668dc}</style></head><body>$body</body></html>',
-              ),
+              // html: bungkus string HTML. webview: body = URL -> loadRequest
+              // (JS tetap off, navigasi tetap ke browser), selain itu HTML.
+              .._loadBody(body, bodyType),
           ),
         ),
       ),

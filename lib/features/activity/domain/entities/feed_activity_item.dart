@@ -91,12 +91,17 @@ class FeedActivityTarget {
   final String id;
 }
 
+/// Format isi pengumuman (#124): html = render native, md = markdown,
+/// webview = isi dimuat via WebView (URL/HTML), plain = teks biasa.
+enum AnnouncementBodyType { plain, html, md, webview }
+
 /// Data pengumuman (#102): payload beku dari feed untuk tile + halaman detail.
 class FeedAnnouncement {
   const FeedAnnouncement({
     required this.id,
     required this.title,
     required this.body,
+    this.bodyType = AnnouncementBodyType.plain,
     this.actionUrl,
     this.actionLabel,
     this.expired = false,
@@ -105,6 +110,7 @@ class FeedAnnouncement {
   final String id;
   final String title;
   final String body;
+  final AnnouncementBodyType bodyType;
   final String? actionUrl;
   final String? actionLabel;
   final bool expired;
