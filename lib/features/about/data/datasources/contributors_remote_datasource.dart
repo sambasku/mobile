@@ -20,11 +20,16 @@ class ContributorEntry {
     required this.roles,
     required this.since,
     required this.note,
+    this.sambaskuUsername,
     this.avatarUrl,
     this.url,
   });
 
   final String id;
+
+  /// Username akun SambasKu (bukan platform lain) - tap tile membuka profil
+  /// publik in-app (#100). Opsional; tanpa ini tile tidak interaktif.
+  final String? sambaskuUsername;
   final String name;
   final List<String> roles;
   final String? avatarUrl;
@@ -49,6 +54,11 @@ class ContributorEntry {
     }
     return ContributorEntry(
       id: id,
+      sambaskuUsername:
+          json['sambaskuUsername'] is String &&
+              (json['sambaskuUsername'] as String).trim().isNotEmpty
+          ? (json['sambaskuUsername'] as String).trim()
+          : null,
       name: name,
       roles: List<String>.from(rawRoles),
       avatarUrl: json['avatarUrl'] is String
