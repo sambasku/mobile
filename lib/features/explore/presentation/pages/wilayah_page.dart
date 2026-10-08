@@ -1115,12 +1115,12 @@ class _DesaList extends StatelessWidget {
         final d = desa[i];
         final isSelected = d.id == selectedDesaId;
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: InkWell(
             onTap: () => onDesaTap(d),
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: isSelected
                   ? BoxDecoration(
                       color: theme.colors.primary.withValues(alpha: 0.15),
@@ -1148,13 +1148,15 @@ class _DesaList extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // CTA detail desa. SmallButton eksplisit: tap baris =
-                  // pilih polygon di peta, tombol = buka halaman detail.
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: SmallButton(
-                      label: 'Profil desa',
-                      onPress: () => onOpenDesaDetail(d),
+                  // Tap baris = pilih polygon di peta; chevron = buka detail
+                  // desa. Konsisten dengan item "Yang ada di sini".
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => onOpenDesaDetail(d),
+                    child: Icon(
+                      FLucideIcons.chevronRight,
+                      size: 14,
+                      color: theme.colors.mutedForeground,
                     ),
                   ),
                 ],
