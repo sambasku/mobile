@@ -1115,12 +1115,12 @@ class _DesaList extends StatelessWidget {
         final d = desa[i];
         final isSelected = d.id == selectedDesaId;
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsets.symmetric(vertical: 1),
           child: InkWell(
             onTap: () => onDesaTap(d),
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: isSelected
                   ? BoxDecoration(
                       color: theme.colors.primary.withValues(alpha: 0.15),
