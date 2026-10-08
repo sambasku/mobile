@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
 
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import 'announcement_body_format.dart';
 import '../../domain/entities/feed_activity_item.dart';
 
 /// Halaman detail pengumuman (#102): payload beku dari baris feed.
@@ -150,12 +155,77 @@ class AnnouncementDetailPage extends StatelessWidget {
             ),
           ),
           const Gap(12),
-          Text(
-            announcement.body,
-            style: theme.typography.md.copyWith(height: 1.5),
-          ),
+          _AnnouncementBody(body: announcement.body),
         ],
       ),
     );
+  }
+}
+
+/// Body pengumuman: plain teks, Markdown, atau HTML (#124 lanjutan).
+/// - markdown -> flutter_markdown (native, ikut tema terang/gelap)
+/// - html -> WebView loadHtmlString (JS off, tinggi terukur otomatis)
+/// - plain -> Text biasa
+class _AnnouncementBody extends StatelessWidget {
+  const _AnnouncementBody({required this.body});
+
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final format = detectAnnouncementBodyFormat(body);
+    return switch (format) {
+      AnnouncementBodyFormat.plain => Text(
+        body,
+        style: theme.typography.md.copyWith(height: 1.5),
+      ),
+      AnnouncementBodyFormat.markdown => MarkdownBody(
+        data: body,
+        selectable: true,
+        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+          p: theme.typography.md.copyWith(height: 1.5),
+          h1: theme.typography.xl2.copyWith(fontWeight: FontWeight.w700),
+          h2: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+          h3: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+          listBullet: theme.typography.md,
+        ),
+      ),
+      AnnouncementBodyFormat.html => ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          height: 320,
+          child: WebViewWidget(
+            controller: WebViewController()
+              ..setJavaScriptMode(JavaScriptMode.disabled)
+              ..setNavigationDelegate(
+                NavigationDelegate(
+                  // Navigasi dalam WebView diblok; link -> browser.
+                  onNavigationRequest: (req) {
+                    if (req.url.startsWith('about:')) {
+                      return NavigationDecision.navigate;
+                    }
+                    unawaited(
+                      launchUrl(
+                        Uri.parse(req.url),
+                        mode: LaunchMode.externalApplication,
+                      ).catchError((_) => false),
+                    );
+                    return NavigationDecision.prevent;
+                  },
+                ),
+              )
+              ..loadHtmlString(
+                '<!doctype html><html><head><meta name="viewport" '
+                'content="width=device-width, initial-scale=1">'
+                '<style>body{font-family:-apple-system,sans-serif;'
+                'font-size:16px;line-height:1.5;margin:8px;'
+                'color:#1f2328;background:transparent}'
+                'a{color:#1668dc}</style></head><body>$body</body></html>',
+              ),
+          ),
+        ),
+      ),
+    };
   }
 }
