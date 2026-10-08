@@ -167,11 +167,10 @@ class AppRouter {
   ) async {
     final loc = state.matchedLocation;
     final path = state.uri.path;
-    final query = state.uri.query;
-
     // HTTPS / custom scheme: /hapus-akun → rute native hapus akun.
+    // Query tak dipakai halaman delete-account - jangan diteruskan (#70).
     if (path == '/hapus-akun' || loc == '/hapus-akun') {
-      return query.isEmpty ? '/delete-account' : '/delete-account?$query';
+      return '/delete-account';
     }
 
     // Link share tempat: /wisata/<slug> → detail Place (entry analytics: link).

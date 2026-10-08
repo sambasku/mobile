@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'deep_link_params.dart';
+
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/forgot_password_page.dart';
@@ -62,7 +64,9 @@ class AuthRouter {
       path: verifyEmail.path,
       name: verifyEmail.name,
       builder: (context, state) {
-        final email = state.uri.queryParameters['email'] ?? '';
+        final email = sanitizeEmailParam(
+          state.uri.queryParameters['email'] ?? '',
+        );
         return VerifyEmailPage(
           key: ValueKey(email),
           email: email,
@@ -79,8 +83,10 @@ class AuthRouter {
       path: resetPassword.path,
       name: resetPassword.name,
       builder: (context, state) => ResetPasswordPage(
-        email: state.uri.queryParameters['email'] ?? '',
-        initialToken: state.uri.queryParameters['token'] ?? '',
+        email: sanitizeEmailParam(state.uri.queryParameters['email'] ?? ''),
+        initialToken: sanitizeResetTokenParam(
+          state.uri.queryParameters['token'] ?? '',
+        ),
         startCooldown: state.uri.queryParameters['cooldown'] == '1',
       ),
     ),
