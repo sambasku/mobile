@@ -115,7 +115,9 @@ class _MentionSuggestOverlayContentState
     final theme = widget.theme;
 
     return Focus(
-      autofocus: true,
+      // #129: autofocus=false - overlay tidak boleh mencuri fokus dari
+      // TextField composer. Navigasi arrow/enter/escape masih jalan lewat
+      // onKeyEvent tanpa autofocus.
       onKeyEvent: (node, event) {
         _handleKey(event);
         return KeyEventResult.handled;
