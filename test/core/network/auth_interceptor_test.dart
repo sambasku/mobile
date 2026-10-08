@@ -260,6 +260,71 @@ void main() {
     expect(await storage.getRefreshToken(), 'new-refresh');
     expect(await storage.getIsAuth(), isTrue);
   });
+
+  test(
+    'refresh transient gagal → backoff: 401 berikutnya tak refresh ulang',
+    () async {
+      var refreshHits = 0;
+      adapter.handler = (options) {
+        if (options.path.contains('/auth/refresh')) {
+          refreshHits++;
+          throw DioException(
+            requestOptions: options,
+            type: DioExceptionType.connectionTimeout,
+          );
+        }
+        return _json(401, {'success': false});
+      };
+
+      // Burst 3 request 401 bersamaan → 1 refresh (single-flight).
+      final results = await Future.wait(
+        [1, 2, 3]
+            .map((_) => dio.get('/api/v1/words/w1'))
+            .map((f) => f.then<Response?>((r) => r).catchError((_) => null)),
+      );
+      expect(results.every((r) => r == null), isTrue);
+      expect(refreshHits, 1);
+
+      // 401 baru segera setelah transient → backoff aktif, tak refresh ulang.
+      await expectLater(
+        () => dio.get('/api/v1/words/w1'),
+        throwsA(isA<DioException>()),
+      );
+      expect(refreshHits, 1, reason: 'backoff harus menahan refresh #74');
+    },
+  );
+
+  test(
+    'retry setelah refresh sukses masih 401 → clear session (#74)',
+    () async {
+      adapter.handler = (options) {
+        if (options.path.contains('/auth/refresh')) {
+          return _json(200, {
+            'success': true,
+            'data': {
+              'access_token': 'new-access',
+              'refresh_token': 'new-refresh',
+            },
+          });
+        }
+        // Selalu 401: token baru pun ditolak (revoked global / clock skew).
+        return _json(401, {'success': false});
+      };
+
+      await expectLater(
+        () => dio.get('/api/v1/words/w1'),
+        throwsA(isA<DioException>()),
+      );
+
+      expect(
+        await storage.getAccessToken(),
+        isNull,
+        reason: 'token baru ditolak → sesi mati (#74)',
+      );
+      expect(await storage.getRefreshToken(), isNull);
+      expect(await storage.getIsAuth(), isFalse);
+    },
+  );
 }
 
 ResponseBody _json(int status, Map<String, Object?> body) {

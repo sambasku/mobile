@@ -56,6 +56,11 @@ class AuthInterceptor extends Interceptor {
   Future<_RefreshOutcome>? _refreshFuture;
   bool _clearingSession = false;
 
+  /// Backoff refresh (#74): setelah gagal transient (timeout/5xx), tahan
+  /// refresh berikutnya sebelum jeda ini - hindari hammer endpoint refresh.
+  DateTime? _transientFailedAt;
+  static const _refreshBackoff = Duration(seconds: 5);
+
   @override
   void onRequest(
     RequestOptions options,
@@ -74,7 +79,8 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode != 401 || _shouldSkipAuthRefresh(err.requestOptions)) {
+    if (err.response?.statusCode != 401 ||
+        _shouldSkipAuthRefresh(err.requestOptions)) {
       return handler.next(err);
     }
 
@@ -97,7 +103,13 @@ class AuthInterceptor extends Interceptor {
       final response = await _refreshDio.fetch(options);
       return handler.resolve(response);
     } on DioException catch (e) {
-      // Refresh sudah sukses. Gagalnya retry bukan alasan menghapus sesi.
+      // Refresh sudah sukses. Gagalnya retry bukan alasan menghapus sesi -
+      // KECUALI token baru pun ditolak (revoked global / clock skew):
+      // sesi benar-benar mati (#74).
+      final code = e.response?.statusCode;
+      if (code == 401 || code == 403) {
+        await _clearSession();
+      }
       return handler.next(e);
     } catch (_) {
       return handler.next(err);
@@ -132,7 +144,14 @@ class AuthInterceptor extends Interceptor {
   }
 
   /// Single-flight: beberapa 401 bersamaan berbagi satu panggilan refresh.
+  /// Backoff (#74): bila refresh terakhir gagal transient <5 detik lalu,
+  /// jangan panggil ulang - langsung anggap transient.
   Future<_RefreshOutcome> _refreshToken() {
+    final failedAt = _transientFailedAt;
+    if (failedAt != null &&
+        DateTime.now().difference(failedAt) < _refreshBackoff) {
+      return Future.value(_RefreshOutcome.transient);
+    }
     return _refreshFuture ??= _doRefresh().whenComplete(() {
       _refreshFuture = null;
     });
@@ -184,8 +203,10 @@ class AuthInterceptor extends Interceptor {
     } on DioException catch (e) {
       final code = e.response?.statusCode;
       if (code == 401 || code == 403) return _RefreshOutcome.terminal;
+      _transientFailedAt = DateTime.now();
       return _RefreshOutcome.transient;
     } catch (_) {
+      _transientFailedAt = DateTime.now();
       return _RefreshOutcome.transient;
     }
   }
