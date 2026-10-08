@@ -859,53 +859,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                     ),
                   ),
                   const Gap(4),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 220),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(bottom: 4),
-                      itemCount: placesOfKec.length,
-                      itemBuilder: (context, i) {
-                        final p = placesOfKec[i];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: InkWell(
-                            onTap: () => context.push(
-                              ExploreRouter.place.path.replaceFirst(
-                                ':slug',
-                                p.slug,
-                              ),
-                              extra: 'wilayah',
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  p.category == PlaceCategory.kuliner
-                                      ? FLucideIcons.utensilsCrossed
-                                      : FLucideIcons.landmark,
-                                  size: 14,
-                                  color: theme.colors.primary,
-                                ),
-                                const Gap(8),
-                                Expanded(
-                                  child: Text(
-                                    p.name,
-                                    style: theme.typography.sm,
-                                  ),
-                                ),
-                                Icon(
-                                  FLucideIcons.chevronRight,
-                                  size: 14,
-                                  color: theme.colors.mutedForeground,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  _PlacesList(places: placesOfKec),
                 ],
                 const Gap(8),
                 Row(
@@ -1025,26 +979,20 @@ class _CompactPanel extends StatelessWidget {
   }
 }
 
-/// Daftar desa scrollable (max 220) + pill floating "Gulir ke bawah" bila
-/// masih ada item di bawah viewport. Pill hilang saat sudah sampai dasar.
-class _DesaList extends StatefulWidget {
-  const _DesaList({
-    required this.desa,
-    required this.selectedDesaId,
-    required this.onDesaTap,
-    required this.onOpenDesaDetail,
-  });
+/// Daftar scrollable dengan tinggi capped (max 220) + pill floating
+/// "Gulir ke bawah" bila masih ada item di bawah viewport.
+/// Pill hilang saat sudah sampai dasar.
+class _CappedScrollList extends StatefulWidget {
+  const _CappedScrollList({required this.itemCount, required this.itemBuilder});
 
-  final List<Region> desa;
-  final String? selectedDesaId;
-  final void Function(Region) onDesaTap;
-  final void Function(Region) onOpenDesaDetail;
+  final int itemCount;
+  final Widget Function(BuildContext, int) itemBuilder;
 
   @override
-  State<_DesaList> createState() => _DesaListState();
+  State<_CappedScrollList> createState() => _CappedScrollListState();
 }
 
-class _DesaListState extends State<_DesaList> {
+class _CappedScrollListState extends State<_CappedScrollList> {
   final _controller = ScrollController();
   bool _hasMoreBelow = false;
 
@@ -1079,63 +1027,8 @@ class _DesaListState extends State<_DesaList> {
             controller: _controller,
             shrinkWrap: true,
             padding: const EdgeInsets.only(bottom: 4),
-            itemCount: widget.desa.length,
-            itemBuilder: (context, i) {
-              final desa = widget.desa[i];
-              final isSelected = desa.id == widget.selectedDesaId;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: InkWell(
-                  onTap: () => widget.onDesaTap(desa),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                    decoration: isSelected
-                        ? BoxDecoration(
-                            color: theme.colors.primary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          )
-                        : null,
-                    child: Row(
-                      children: [
-                        Icon(
-                          FLucideIcons.mapPin,
-                          size: 14,
-                          color: isSelected
-                              ? theme.colors.primary
-                              : theme.colors.mutedForeground,
-                        ),
-                        const Gap(8),
-                        Expanded(
-                          child: Text(
-                            desa.name,
-                            style: theme.typography.sm.copyWith(
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: isSelected ? theme.colors.primary : null,
-                            ),
-                          ),
-                        ),
-                        // CTA detail desa (halaman segera hadir). SmallButton
-                        // eksplisit: tap baris = pilih polygon di peta, tombol
-                        // = buka halaman detail. Aksi terpisah jelas.
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: SmallButton(
-                            label: 'Profil desa',
-                            onPress: () => widget.onOpenDesaDetail(desa),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            itemCount: widget.itemCount,
+            itemBuilder: widget.itemBuilder,
           ),
         ),
         // Pill indikator: ada konten lagi di bawah. Tap = scroll ke dasar.
@@ -1195,6 +1088,127 @@ class _DesaListState extends State<_DesaList> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Daftar desa: item row + CTA profil desa.
+class _DesaList extends StatelessWidget {
+  const _DesaList({
+    required this.desa,
+    required this.selectedDesaId,
+    required this.onDesaTap,
+    required this.onOpenDesaDetail,
+  });
+
+  final List<Region> desa;
+  final String? selectedDesaId;
+  final void Function(Region) onDesaTap;
+  final void Function(Region) onOpenDesaDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return _CappedScrollList(
+      itemCount: desa.length,
+      itemBuilder: (context, i) {
+        final d = desa[i];
+        final isSelected = d.id == selectedDesaId;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: InkWell(
+            onTap: () => onDesaTap(d),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: isSelected
+                  ? BoxDecoration(
+                      color: theme.colors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    )
+                  : null,
+              child: Row(
+                children: [
+                  Icon(
+                    FLucideIcons.mapPin,
+                    size: 14,
+                    color: isSelected
+                        ? theme.colors.primary
+                        : theme.colors.mutedForeground,
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: Text(
+                      d.name,
+                      style: theme.typography.sm.copyWith(
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: isSelected ? theme.colors.primary : null,
+                      ),
+                    ),
+                  ),
+                  // CTA detail desa. SmallButton eksplisit: tap baris =
+                  // pilih polygon di peta, tombol = buka halaman detail.
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: SmallButton(
+                      label: 'Profil desa',
+                      onPress: () => onOpenDesaDetail(d),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Daftar tempat (wisata/kuliner) di kecamatan terpilih.
+class _PlacesList extends StatelessWidget {
+  const _PlacesList({required this.places});
+
+  final List<Place> places;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return _CappedScrollList(
+      itemCount: places.length,
+      itemBuilder: (context, i) {
+        final p = places[i];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: InkWell(
+            onTap: () => context.push(
+              ExploreRouter.place.path.replaceFirst(':slug', p.slug),
+              extra: 'wilayah',
+            ),
+            borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Icon(
+                  p.category == PlaceCategory.kuliner
+                      ? FLucideIcons.utensilsCrossed
+                      : FLucideIcons.landmark,
+                  size: 14,
+                  color: theme.colors.primary,
+                ),
+                const Gap(8),
+                Expanded(child: Text(p.name, style: theme.typography.sm)),
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 14,
+                  color: theme.colors.mutedForeground,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
