@@ -1117,7 +1117,12 @@ class _DesaList extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: InkWell(
-            onTap: () => onDesaTap(d),
+            // Tap baris = highlight polygon + buka halaman detail desa.
+            // Tanpa chevron terpisah (lebih compact).
+            onTap: () {
+              onDesaTap(d);
+              onOpenDesaDetail(d);
+            },
             borderRadius: BorderRadius.circular(8),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -1146,17 +1151,6 @@ class _DesaList extends StatelessWidget {
                             : FontWeight.w400,
                         color: isSelected ? theme.colors.primary : null,
                       ),
-                    ),
-                  ),
-                  // Tap baris = pilih polygon di peta; chevron = buka detail
-                  // desa. Konsisten dengan item "Yang ada di sini".
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => onOpenDesaDetail(d),
-                    child: Icon(
-                      FLucideIcons.chevronRight,
-                      size: 14,
-                      color: theme.colors.mutedForeground,
                     ),
                   ),
                 ],
