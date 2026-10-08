@@ -45,7 +45,7 @@ Widget _app(ProviderContainer container) => UncontrolledProviderScope(
   child: MaterialApp.router(
     routerConfig: GoRouter(
       routes: [
-        GoRoute(path: '/', builder: (_, __) => const PinnedAnnouncementsPage()),
+        GoRoute(path: '/', builder: (_, _) => const PinnedAnnouncementsPage()),
       ],
     ),
   ),
