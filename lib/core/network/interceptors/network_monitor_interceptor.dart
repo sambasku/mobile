@@ -78,6 +78,26 @@ class NetworkMonitorInterceptor extends Interceptor {
     super.onResponse(response, handler);
   }
 
+  /// Header yang tak boleh ikut terekam (#73) - case-insensitive.
+  static const _sensitiveHeaderKeys = {
+    'authorization',
+    'cookie',
+    'set-cookie',
+    'proxy-authorization',
+  };
+
+  /// Field body yang tak boleh ikut terekam (#73) - exact key, lowercase.
+  static const _sensitiveBodyKeys = {
+    'password',
+    'new_password',
+    'confirm_password',
+    'refresh_token',
+    'access_token',
+    'token',
+    'otp',
+    'code',
+  };
+
   Map<String, String> _normalizeHeaders(Map<String, dynamic>? headers) =>
       headers == null ? const <String, String>{} : _normalizeMap(headers);
 
@@ -88,7 +108,12 @@ class NetworkMonitorInterceptor extends Interceptor {
 
     return Map<String, String>.fromEntries(
       values.entries.map(
-        (entry) => MapEntry(entry.key, _stringifyValue(entry.value)),
+        (entry) => MapEntry(
+          entry.key,
+          _sensitiveHeaderKeys.contains(entry.key.toLowerCase())
+              ? '***'
+              : _stringifyValue(entry.value),
+        ),
       ),
     );
   }
@@ -113,7 +138,10 @@ class NetworkMonitorInterceptor extends Interceptor {
       if (fields.isNotEmpty) {
         result.writeln('Fields:');
         for (final e in fields.entries) {
-          result.writeln('  ${e.key}: ${e.value}');
+          final value = _sensitiveBodyKeys.contains(e.key.toLowerCase())
+              ? '***'
+              : e.value;
+          result.writeln('  ${e.key}: $value');
         }
       }
       if (files.isNotEmpty) {
@@ -130,18 +158,36 @@ class NetworkMonitorInterceptor extends Interceptor {
     }
 
     if (data is Map || data is List || data is num || data is bool) {
-      return const JsonEncoder.withIndent('  ').convert(data);
+      return const JsonEncoder.withIndent('  ').convert(_redactJson(data));
     }
 
     // Object DTO yang punya toJson() - serialize ke JSON
     try {
       final json = (data as dynamic).toJson();
-      return const JsonEncoder.withIndent('  ').convert(json);
+      return const JsonEncoder.withIndent('  ').convert(_redactJson(json));
     } catch (_) {
       // Object tidak punya toJson() - fallback ke toString()
     }
 
     return data.toString();
+  }
+
+  /// Redaksi rekursif utk Map/List dari JSON body (#73).
+  dynamic _redactJson(dynamic value) {
+    if (value is Map) {
+      return value.map(
+        (k, v) => MapEntry(
+          k,
+          k is String && _sensitiveBodyKeys.contains(k.toLowerCase())
+              ? '***'
+              : _redactJson(v),
+        ),
+      );
+    }
+    if (value is List) {
+      return value.map(_redactJson).toList();
+    }
+    return value;
   }
 
   String _stringifyValue(dynamic value) {
