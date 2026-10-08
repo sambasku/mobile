@@ -101,7 +101,9 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     );
 
     try {
-      final page = await ref.read(activityFeedRepositoryProvider).list(
+      final page = await ref
+          .read(activityFeedRepositoryProvider)
+          .list(
             limit: _pageSize,
             forceRefresh: forceRefresh,
             excludeSelf: ref.read(excludeSelfFeedProvider),
@@ -144,7 +146,9 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     state = current.copyWith(isLoadingMore: true);
 
     try {
-      final page = await ref.read(activityFeedRepositoryProvider).list(
+      final page = await ref
+          .read(activityFeedRepositoryProvider)
+          .list(
             limit: _pageSize,
             cursor: current.nextCursor,
             // Wajib ikut di loadMore: cursor halaman berikutnya tanpa flag akan
@@ -173,5 +177,5 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
 
 final activityFeedProvider =
     NotifierProvider<ActivityFeedNotifier, ActivityFeedState>(
-  ActivityFeedNotifier.new,
-);
+      ActivityFeedNotifier.new,
+    );
