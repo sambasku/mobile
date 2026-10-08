@@ -20,12 +20,17 @@ class SponsorEntry {
     required this.name,
     required this.since,
     required this.note,
+    this.sambaskuUsername,
     this.description,
     this.logoUrl,
     this.url,
   });
 
   final String id;
+
+  /// Username akun SambasKu (bukan platform lain) - tap tile membuka profil
+  /// publik in-app (#100). Opsional; tanpa ini tile tidak interaktif.
+  final String? sambaskuUsername;
   final String name;
   final String? description;
   final String? logoUrl;
@@ -44,6 +49,11 @@ class SponsorEntry {
     if (since is! String || note is! String) return null;
     return SponsorEntry(
       id: id,
+      sambaskuUsername:
+          json['sambaskuUsername'] is String &&
+              (json['sambaskuUsername'] as String).trim().isNotEmpty
+          ? (json['sambaskuUsername'] as String).trim()
+          : null,
       name: name,
       description: json['description'] is String
           ? json['description'] as String
