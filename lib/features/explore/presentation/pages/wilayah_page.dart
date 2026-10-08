@@ -76,40 +76,24 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
 
   String? _selectedKecId;
   String? _selectedDesaId;
-  bool _showDesa = false;
 
-  /// Query cari desa (lintas kecamatan). Kosong = tak sedang mencari.
-  String _desaQuery = '';
+  /// Token urutan load ADM4: hasil request yang sudah tergantikan dibuang,
+  /// sehingga polygon selalu milik kecamatan yang TERAKHIR dipilih (#106).
+  int _desaLoadToken = 0;
 
-  /// Hasil pencarian desa: (desa, kecamatan induk).
-  List<(Region, Region)> get _desaSearchResults {
-    final q = _desaQuery.trim().toLowerCase();
-    if (q.length < 2) return const [];
-    final kecamatanAsync = ref.read(regionsKecamatanProvider);
-    final desaAsync = ref.read(regionsProvider);
-    final kecById = {
-      for (final k in kecamatanAsync.value ?? const <Region>[]) k.id: k,
-    };
-    final results = <(Region, Region)>[];
-    for (final d in desaAsync.value ?? const <Region>[]) {
-      if (d.type != RegionType.desa) continue;
-      final kec = kecById[d.parentId];
-      if (kec != null && d.name.toLowerCase().contains(q)) {
-        results.add((d, kec));
-      }
-      if (results.length >= 8) break;
-    }
-    return results;
-  }
+  /// Hasil decode ADM4 (file besar): decode sekali, load & sync berbagi.
+  Map<String, dynamic>? _adm4Cache;
+
+  /// Asset ADM4 pernah gagal decode/korup: jangan retry tiap build
+  /// (decode 67K per frame = jank loop). Hardening #106.
+  bool _adm4Failed = false;
 
   /// Pilih desa dari hasil pencarian: set kecamatan induk + desa, buka
   /// panel desa, load polygon, kamera fokus ke centroid desa.
   Future<void> _pickSearchedDesa(Region desa, Region kec) async {
     setState(() {
-      _desaQuery = '';
       _selectedKecId = kec.id;
       _selectedDesaId = desa.id;
-      _showDesa = true;
     });
     unawaited(_applyKecColors());
     if (_desaShownForKec != kec.id) {
@@ -233,56 +217,52 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   /// Load (atau ganti) desa polygons untuk kecamatan yang dipilih.
   Future<void> _loadDesaGeoJson(String kecSlug) async {
     if (_desaShownForKec == kecSlug) return;
+    final token = ++_desaLoadToken;
     try {
-      final raw = await rootBundle.loadString(
-        'assets/data/regions-adm4.geojson',
-      );
-      final geojson = jsonDecode(raw) as Map<String, dynamic>;
-      final rings = <String, List<List<List<double>>>>{};
+      final geojson = await _loadAdm4();
+      if (geojson == null) return;
+      final rings = RegionGeometry.ringsFor(geojson, kecSlug);
 
-      final feats = geojson['features'];
-      if (feats is List) {
-        for (final f in feats) {
-          if (f is! Map || f['properties'] is! Map) continue;
-          final props = f['properties'] as Map;
-          final parentId = props['parentId'];
-          if (parentId != kecSlug) continue;
-
-          final id = props['id'];
-          final g = f['geometry'];
-          if (id is! String || g is! Map) continue;
-
-          if (g['type'] == 'Polygon') {
-            rings[id] = [_outerRing(g['coordinates'] as List)];
-          } else if (g['type'] == 'MultiPolygon') {
-            rings[id] = [
-              for (final poly in g['coordinates'] as List)
-                _outerRing(poly as List),
-            ];
-          }
-        }
-      }
-
-      if (!mounted) return;
+      // Request lama sudah tergantikan (tap kecamatan cepat): jangan
+      // menampilkan polygon yang sudah tak dipilih (#106).
+      if (!mounted || token != _desaLoadToken) return;
       setState(() {
         _desaRings.clear();
         _desaRings.addAll(rings);
         _desaShownForKec = kecSlug;
       });
-      await _syncDesaLayers(kecSlug);
+      await _syncDesaLayers(kecSlug, token);
     } catch (_) {
       // Asset hilang/korup: tampilkan list saja tanpa polygon desa.
     }
   }
 
-  static List<List<double>> _outerRing(List poly) => [
-    for (final p in poly.first as List)
-      [(p as List)[0] as double, p[1] as double],
-  ];
+  /// Decode ADM4 sekali - dipakai _loadDesaGeoJson & _syncDesaLayers.
+  Future<Map<String, dynamic>?> _loadAdm4() async {
+    if (_adm4Failed) return null;
+    final cached = _adm4Cache;
+    if (cached != null) return cached;
+    try {
+      final raw = await rootBundle.loadString(
+        'assets/data/regions-adm4.geojson',
+      );
+      final geojson = jsonDecode(raw);
+      if (geojson is! Map<String, dynamic>) {
+        throw const FormatException('regions-adm4.geojson bukan object');
+      }
+      _adm4Cache = geojson;
+      return geojson;
+    } catch (_) {
+      // Korup/hilang sekali = korup selamanya di sesi ini: list desa tetap
+      // jalan tanpa polygon, tanpa decode ulang per build.
+      _adm4Failed = true;
+      return null;
+    }
+  }
 
   /// Ganti isi source desa: remove layer+source lama lalu add ulang bila
   /// ada ring untuk kecamatan ini. Aman dipanggil ulang (idempotent).
-  Future<void> _syncDesaLayers(String kecSlug) async {
+  Future<void> _syncDesaLayers(String kecSlug, int token) async {
     final controller = _controller;
     if (controller == null || !_styleReady) return;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -300,64 +280,73 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         _desaLayersAdded = false;
       }
 
+      // Ganti request terjadi saat menunggu remove: berhenti - layer lama
+      // sudah bersih dan sync terbaru yang akan mengisi (#106).
+      if (token != _desaLoadToken) return;
       if (_desaRings.isEmpty) return;
+
+      final geojson = await _loadAdm4();
+      if (geojson == null || token != _desaLoadToken) return;
+      final feats = geojson['features'];
+      if (feats is! List) return;
+
+      final filteredFeats = feats.where((f) {
+        if (f is! Map || f['properties'] is! Map) return false;
+        final props = f['properties'] as Map;
+        return props['parentId'] == kecSlug;
+      }).toList();
+      if (filteredFeats.isEmpty) return;
+
+      await controller.addGeoJsonSource(_desaSourceId, {
+        'type': 'FeatureCollection',
+        'features': filteredFeats,
+      });
+      await controller.addFillLayer(
+        _desaSourceId,
+        _desaFillLayerId,
+        // Warna + opacity dari add time (default fill-color = hitam).
+        const FillLayerProperties(fillColor: _desaFillColor, fillOpacity: 0.25),
+        enableInteraction: false,
+      );
+      await controller.addLineLayer(
+        _desaSourceId,
+        _desaLineLayerId,
+        const LineLayerProperties(lineColor: '#ffffff', lineWidth: 0.8),
+        enableInteraction: false,
+      );
+      await controller.addSymbolLayer(
+        _desaSourceId,
+        _desaLabelLayerId,
+        // Label nama desa di centroid tiap polygon. Font wajib font yang
+        // di-serve OpenFreeMap (lihat komentar _addKecLabelLayer).
+        SymbolLayerProperties(
+          textField: ['get', 'name'],
+          textFont: ['Noto Sans Regular'],
+          textSize: 9,
+          textColor: isDark ? '#f9fafb' : '#1f2937',
+          textHaloColor: isDark ? '#111827' : '#ffffff',
+          textHaloWidth: 1.1,
+          textAllowOverlap: false,
+        ),
+        enableInteraction: false,
+      );
+      // Flag true hanya setelah semua layer sukses: gagal di tengah ->
+      // outer catch membuang layer setengah jadi (#106).
       _desaLayersAdded = true;
+      await _applyDesaSelection();
+    } catch (_) {
+      // Gagal di tengah: buang layer setengah jadi supaya state selalu
+      // konsisten dengan peta (#106).
       try {
-        final raw = await rootBundle.loadString(
-          'assets/data/regions-adm4.geojson',
-        );
-        final geojson = jsonDecode(raw) as Map<String, dynamic>;
-        final feats = geojson['features'];
-        if (feats is! List) return;
-
-        final filteredFeats = feats.where((f) {
-          if (f is! Map || f['properties'] is! Map) return false;
-          final props = f['properties'] as Map;
-          return props['parentId'] == kecSlug;
-        }).toList();
-        if (filteredFeats.isEmpty) return;
-
-        await controller.addGeoJsonSource(_desaSourceId, {
-          'type': 'FeatureCollection',
-          'features': filteredFeats,
-        });
-        await controller.addFillLayer(
-          _desaSourceId,
-          _desaFillLayerId,
-          // Warna + opacity dari add time (default fill-color = hitam).
-          const FillLayerProperties(
-            fillColor: _desaFillColor,
-            fillOpacity: 0.25,
-          ),
-          enableInteraction: false,
-        );
-        await controller.addLineLayer(
-          _desaSourceId,
-          _desaLineLayerId,
-          const LineLayerProperties(lineColor: '#ffffff', lineWidth: 0.8),
-          enableInteraction: false,
-        );
-        await controller.addSymbolLayer(
-          _desaSourceId,
-          _desaLabelLayerId,
-          // Label nama desa di centroid tiap polygon. Font wajib font yang
-          // di-serve OpenFreeMap (lihat komentar _addKecLabelLayer).
-          SymbolLayerProperties(
-            textField: ['get', 'name'],
-            textFont: ['Noto Sans Regular'],
-            textSize: 9,
-            textColor: isDark ? '#f9fafb' : '#1f2937',
-            textHaloColor: isDark ? '#111827' : '#ffffff',
-            textHaloWidth: 1.1,
-            textAllowOverlap: false,
-          ),
-          enableInteraction: false,
-        );
-        await _applyDesaSelection();
-      } catch (_) {
-        _desaLayersAdded = false;
-      }
-    } catch (_) {}
+        await controller.removeLayer(_desaFillLayerId);
+        await controller.removeLayer(_desaLineLayerId);
+        await controller.removeLayer(_desaLabelLayerId);
+      } catch (_) {}
+      try {
+        await controller.removeSource(_desaSourceId);
+      } catch (_) {}
+      _desaLayersAdded = false;
+    }
   }
 
   /// Warna palet per kecamatan + highlight kuning untuk yang terpilih.
@@ -452,10 +441,39 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     setState(() {
       _selectedKecId = hit;
       _selectedDesaId = null;
-      // showDesa dipertahankan: panel daftar tetap terbuka saat ganti
-      // kecamatan, tak perlu tap "Lihat desa" ulang.
     });
     unawaited(_applyKecColors());
+  }
+
+  /// Buka bottomsheet modal (search + daftar desa + places). Modal menutup
+  /// peta sementara; tinggi ikut isi (scroll), tutup via drag/barrier -
+  /// kartu di peta tetap ringkas dan tak bisa memenuhi layar (#106).
+  void _openDesaSheet() {
+    final selected =
+        (ref.read(regionsKecamatanProvider).value ?? const <Region>[])
+            .where((k) => k.id == _selectedKecId)
+            .firstOrNull;
+    unawaited(
+      showFSheet<void>(
+        context: context,
+        side: FLayout.btt,
+        // null tanpa batas ratio: child scrollable -> sheet ikut isi
+        // (pola forui untuk sheet berisi scrollable).
+        mainAxisMaxRatio: null,
+        builder: (context) => _WilayahSheet(
+          selected: selected,
+          initialDesaId: _selectedDesaId,
+          onPickSearchedDesa: _pickSearchedDesa,
+          onDesaTap: (desa) {
+            setState(() => _selectedDesaId = desa.id);
+            unawaited(_applyDesaSelection());
+            unawaited(
+              AnalyticsService.instance.logWilayahDesaSelect(desaId: desa.id),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -469,9 +487,6 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         : (desaAsync.value ?? const <Region>[])
               .where((r) => r.parentId == selected.id)
               .toList();
-    final desaSearch = _desaQuery.trim().length >= 2
-        ? _desaSearchResults
-        : const <(Region, Region)>[];
 
     // Load / ganti desa polygons saat kecamatan berubah.
     if (selected != null && _desaShownForKec != selected.id) {
@@ -509,7 +524,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                 // Desa yang tadi terbuka ikut di-add ulang di instance baru.
                 final kec = _desaShownForKec;
                 if (kec != null && _desaRings.isNotEmpty) {
-                  unawaited(_syncDesaLayers(kec));
+                  unawaited(_syncDesaLayers(kec, _desaLoadToken));
                 }
               },
               onMapClick: _onTap,
@@ -574,51 +589,23 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
               ),
             ),
           ),
-          // Panel bawah kartu mengambang, gaya sama dengan _PlaceCard di
-          // pins_page: radius 16 + border flat, margin 16, tanpa shadow.
+          // Kartu ringkas di peta: tinggi fixed, tak mungkin memenuhi
+          // layar (akar bug #106). Daftar desa/cari/places -> bottomsheet.
           Positioned(
             left: 16,
             right: 16,
             bottom: MediaQuery.paddingOf(context).bottom + 12,
-            child: _BottomPanel(
+            child: _CompactPanel(
               selected: selected,
-              showDesa: _showDesa,
-              desaOfSelected: desaOfSelected,
               loading: desaAsync.isLoading,
-              searchQuery: _desaQuery,
-              searchResults: desaSearch,
-              onSearchChanged: (v) => setState(() => _desaQuery = v),
-              onPickSearchedDesa: _pickSearchedDesa,
-              onToggleDesa: selected == null
-                  ? null
-                  : () => setState(() => _showDesa = !_showDesa),
-              onRetry: () => ref.invalidate(regionsProvider),
+              desaOfSelected: desaOfSelected,
               selectedDesaId: _selectedDesaId,
               onOpenKecDetail: (kec) => unawaited(
                 context.push(
                   ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.id),
                 ),
               ),
-              onOpenDesaDetail: (desa) => unawaited(
-                context.push(
-                  // Kode BPS sebagai slug: id desa mengandung "/" yang
-                  // memecah segmen path GoRouter (route not found).
-                  ExploreRouter.desa.path.replaceFirst(
-                    ':slug',
-                    Uri.encodeComponent(desa.code ?? desa.id),
-                  ),
-                ),
-              ),
-              onDesaTap: (desa) {
-                setState(() => _selectedDesaId = desa.id);
-                unawaited(_applyDesaSelection());
-                unawaited(
-                  AnalyticsService.instance.logWilayahDesaSelect(
-                    desaId: desa.id,
-                  ),
-                );
-              },
-              placesAsync: ref.watch(placesProvider),
+              onOpenSheet: _openDesaSheet,
             ),
           ),
         ],
@@ -627,52 +614,301 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   }
 }
 
-class _BottomPanel extends StatelessWidget {
-  const _BottomPanel({
+/// Isi bottomsheet modal Wilayah: search lintas kecamatan + daftar desa +
+/// places. Konsumsi data sendiri (watch provider) supaya selalu segar saat
+/// terbuka; daftar tak lagi tumbuh tak terbatas di panel peta (#106).
+class _WilayahSheet extends ConsumerStatefulWidget {
+  const _WilayahSheet({
     required this.selected,
-    required this.showDesa,
-    required this.desaOfSelected,
-    required this.loading,
-    required this.searchQuery,
-    required this.searchResults,
-    required this.onSearchChanged,
+    required this.initialDesaId,
     required this.onPickSearchedDesa,
-    this.onToggleDesa,
-    required this.onRetry,
-    required this.selectedDesaId,
     required this.onDesaTap,
-    required this.placesAsync,
-    required this.onOpenKecDetail,
-    required this.onOpenDesaDetail,
   });
 
+  /// Kecamatan yang dibuka saat sheet (beku: modal menutup peta).
   final Region? selected;
-  final bool showDesa;
-  final List<Region> desaOfSelected;
-  final bool loading;
-  final String searchQuery;
-  final List<(Region, Region)> searchResults;
-  final ValueChanged<String> onSearchChanged;
+
+  /// Sorot desa yang sudah terpilih saat sheet dibuka.
+  final String? initialDesaId;
   final Future<void> Function(Region desa, Region kec) onPickSearchedDesa;
-  final VoidCallback? onToggleDesa;
-  final VoidCallback onRetry;
-  final String? selectedDesaId;
   final void Function(Region) onDesaTap;
-  final AsyncValue<List<Place>?> placesAsync;
-  final void Function(Region kec) onOpenKecDetail;
-  final void Function(Region desa) onOpenDesaDetail;
+
+  @override
+  ConsumerState<_WilayahSheet> createState() => _WilayahSheetState();
+}
+
+class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
+  String _query = '';
+  String? _selectedDesaId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDesaId = widget.initialDesaId;
+  }
+
+  /// Hasil cari desa (lintas kecamatan): min 2 huruf, maks 8 hasil.
+  static List<(Region, Region)> _resultsFor(
+    String query,
+    List<Region>? kecamatan,
+    List<Region>? desa,
+  ) {
+    final q = query.trim().toLowerCase();
+    if (q.length < 2) return const [];
+    final kecById = {for (final k in kecamatan ?? const <Region>[]) k.id: k};
+    final results = <(Region, Region)>[];
+    for (final d in desa ?? const <Region>[]) {
+      if (d.type != RegionType.desa) continue;
+      final parent = kecById[d.parentId];
+      if (parent != null && d.name.toLowerCase().contains(q)) {
+        results.add((d, parent));
+      }
+      if (results.length >= 8) break;
+    }
+    return results;
+  }
+
+  void _openKecDetail(Region kec) => unawaited(
+    context.push(ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.id)),
+  );
+
+  void _openDesaDetail(Region desa) => unawaited(
+    context.push(
+      // Kode BPS sebagai slug: id desa mengandung "/" yang memecah
+      // segmen path GoRouter (route not found).
+      ExploreRouter.desa.path.replaceFirst(
+        ':slug',
+        Uri.encodeComponent(desa.code ?? desa.id),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final kec = selected;
+    final kec = widget.selected;
+    final kecamatanAsync = ref.watch(regionsKecamatanProvider);
+    final desaAsync = ref.watch(regionsProvider);
+    final placesAsync = ref.watch(placesProvider);
+    final loading = desaAsync.isLoading;
+    final desaOfSelected = kec == null
+        ? const <Region>[]
+        : (desaAsync.value ?? const <Region>[])
+              .where((r) => r.parentId == kec.id)
+              .toList();
+    final searchResults = _resultsFor(
+      _query,
+      kecamatanAsync.value,
+      desaAsync.value,
+    );
     final placesOfKec = (placesAsync.value ?? const <Place>[])
         .where((p) => kec != null && p.regionId == kec.id)
         .toList();
 
-    // FScaffold Forui bukan Material; InkWell butuh ancestor Material.
     // Gaya kartu sama dengan _PlaceCard (pins_page): radius 16 + border flat.
     final radius = BorderRadius.circular(16);
+    return SingleChildScrollView(
+      child: Material(
+        type: MaterialType.transparency,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: theme.colors.background,
+            borderRadius: radius,
+            border: Border.fromBorderSide(
+              BorderSide(color: theme.colors.border),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Cari desa lintas kecamatan. Hasil: tap -> peta fokus + sheet
+              // tertutup supaya polygon terpilih langsung terlihat.
+              FTextField(
+                control: FTextFieldControl.managed(
+                  onChange: (v) => setState(() => _query = v.text),
+                ),
+                hint: 'Cari desa...',
+                clearable: (value) => value.text.isNotEmpty,
+                prefixBuilder: (context, style, variants) =>
+                    FTextField.prefixIconBuilder(
+                      context,
+                      style,
+                      variants,
+                      const Icon(FLucideIcons.search),
+                    ),
+              ),
+              if (searchResults.isNotEmpty) ...[
+                const Gap(4),
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colors.muted.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      for (final (desa, parent) in searchResults)
+                        InkWell(
+                          onTap: () {
+                            unawaited(widget.onPickSearchedDesa(desa, parent));
+                            if (mounted) {
+                              Navigator.of(context).maybePop();
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  FLucideIcons.mapPin,
+                                  size: 13,
+                                  color: theme.colors.primary,
+                                ),
+                                const Gap(8),
+                                Expanded(
+                                  child: Text(
+                                    desa.name,
+                                    style: theme.typography.sm,
+                                  ),
+                                ),
+                                Text(
+                                  parent.name,
+                                  style: theme.typography.xs.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+              const Gap(8),
+              if (kec == null)
+                Text(
+                  'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                )
+              else ...[
+                Text(
+                  _selectedDesaId != null
+                      ? 'Desa ${desaOfSelected.where((d) => d.id == _selectedDesaId).firstOrNull?.name ?? _selectedDesaId}'
+                      : 'Kecamatan ${kec.name}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.lg.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Gap(4),
+                Text(
+                  loading
+                      ? 'Memuat daftar desa...'
+                      : '${desaOfSelected.length} desa',
+                  style: theme.typography.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                if (!loading) ...[
+                  const Gap(8),
+                  if (desaOfSelected.isEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Daftar desa belum bisa dimuat. Cek koneksi internetmu lalu coba lagi ya.',
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                        const Gap(4),
+                        FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: () => ref.invalidate(regionsProvider),
+                          child: const Text('Muat ulang'),
+                        ),
+                      ],
+                    )
+                  else
+                    _DesaList(
+                      desa: desaOfSelected,
+                      selectedDesaId: _selectedDesaId,
+                      onDesaTap: (desa) {
+                        setState(() => _selectedDesaId = desa.id);
+                        widget.onDesaTap(desa);
+                      },
+                      onOpenDesaDetail: _openDesaDetail,
+                    ),
+                ],
+                if (placesOfKec.isNotEmpty) ...[
+                  const Gap(12),
+                  Text(
+                    'Yang ada di sini',
+                    style: theme.typography.sm.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Gap(4),
+                  _PlacesList(places: placesOfKec),
+                ],
+                const Gap(8),
+                Row(
+                  children: [
+                    SmallButton(
+                      label: 'Tutup',
+                      variant: FButtonVariant.primary,
+                      onPress: () => Navigator.of(context).maybePop(),
+                    ),
+                    const Gap(8),
+                    SmallButton(
+                      label: 'Profil kecamatan',
+                      onPress: () => _openKecDetail(kec),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Kartu ringkas di peta: judul + jumlah desa + tombol. Tinggi fixed tanpa
+/// daftar - daftar/cari/places pindah ke bottomsheet (#106).
+class _CompactPanel extends StatelessWidget {
+  const _CompactPanel({
+    required this.selected,
+    required this.loading,
+    required this.desaOfSelected,
+    required this.selectedDesaId,
+    required this.onOpenKecDetail,
+    required this.onOpenSheet,
+  });
+
+  final Region? selected;
+  final bool loading;
+  final List<Region> desaOfSelected;
+  final String? selectedDesaId;
+  final void Function(Region kec) onOpenKecDetail;
+  final VoidCallback onOpenSheet;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final radius = BorderRadius.circular(16);
+    final kec = selected;
     return Material(
       type: MaterialType.transparency,
       child: Container(
@@ -682,213 +918,81 @@ class _BottomPanel extends StatelessWidget {
           borderRadius: radius,
           border: Border.fromBorderSide(BorderSide(color: theme.colors.border)),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Cari desa lintas kecamatan. Hasil: tap -> polygon desa tampil.
-            FTextField(
-              control: FTextFieldControl.managed(
-                onChange: (v) => onSearchChanged(v.text),
-              ),
-              hint: 'Cari desa...',
-              clearable: (value) => value.text.isNotEmpty,
-              prefixBuilder: (context, style, variants) =>
-                  FTextField.prefixIconBuilder(
-                    context,
-                    style,
-                    variants,
-                    const Icon(FLucideIcons.search),
-                  ),
-            ),
-            if (searchResults.isNotEmpty) ...[
-              const Gap(4),
-              Container(
-                decoration: BoxDecoration(
-                  color: theme.colors.muted.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  children: [
-                    for (final (desa, kec) in searchResults)
-                      InkWell(
-                        onTap: () => onPickSearchedDesa(desa, kec),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                FLucideIcons.mapPin,
-                                size: 13,
-                                color: theme.colors.primary,
-                              ),
-                              const Gap(8),
-                              Expanded(
-                                child: Text(
-                                  desa.name,
-                                  style: theme.typography.sm,
-                                ),
-                              ),
-                              Text(
-                                kec.name,
-                                style: theme.typography.xs.copyWith(
-                                  color: theme.colors.mutedForeground,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-            const Gap(8),
-            if (kec == null)
-              Text(
-                'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              )
-            else ...[
-              Text(
-                selectedDesaId != null
-                    ? 'Desa ${desaOfSelected.where((d) => d.id == selectedDesaId).firstOrNull?.name ?? selectedDesaId}'
-                    : 'Kecamatan ${kec.name}',
-                style: theme.typography.lg.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Gap(4),
-              Text(
-                loading
-                    ? 'Memuat daftar desa...'
-                    : '${desaOfSelected.length} desa',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              // Daftar desa DI ATAS tombol: panel anchored bottom, konten
-              // tumbuh ke atas, tombol Tutup tetap di posisi bawah yang sama.
-              if (showDesa && !loading) ...[
-                const Gap(8),
-                if (desaOfSelected.isEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Daftar desa belum bisa dimuat. Cek koneksi internetmu lalu coba lagi ya.',
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                      const Gap(4),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: onRetry,
-                        child: const Text('Muat ulang'),
-                      ),
-                    ],
-                  )
-                else
-                  _DesaList(
-                    desa: desaOfSelected,
-                    selectedDesaId: selectedDesaId,
-                    onDesaTap: onDesaTap,
-                    onOpenDesaDetail: onOpenDesaDetail,
-                  ),
-              ],
-              if (placesOfKec.isNotEmpty) ...[
-                const Gap(12),
-                Text(
-                  'Wisata dan kuliner di sini',
-                  style: theme.typography.sm.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const Gap(4),
-                ...placesOfKec.map(
-                  (p) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: InkWell(
-                      onTap: () => context.push(
-                        ExploreRouter.place.path.replaceFirst(':slug', p.slug),
-                        extra: 'wilayah',
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            p.category == PlaceCategory.kuliner
-                                ? FLucideIcons.utensilsCrossed
-                                : FLucideIcons.landmark,
-                            size: 14,
-                            color: theme.colors.primary,
-                          ),
-                          const Gap(8),
-                          Expanded(
-                            child: Text(p.name, style: theme.typography.sm),
-                          ),
-                          Icon(
-                            FLucideIcons.chevronRight,
-                            size: 14,
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ],
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: kec == null
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
+                      style: theme.typography.sm.copyWith(
+                        color: theme.colors.mutedForeground,
                       ),
                     ),
                   ),
-                ),
-              ],
-              const Gap(8),
-              Row(
+                  const Gap(8),
+                  SmallButton(label: 'Cari desa', onPress: onOpenSheet),
+                ],
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SmallButton(
-                    label: showDesa ? 'Tutup' : 'Lihat desa',
-                    variant: FButtonVariant.primary,
-                    onPress: onToggleDesa,
+                  Text(
+                    selectedDesaId != null
+                        ? 'Desa ${desaOfSelected.where((d) => d.id == selectedDesaId).firstOrNull?.name ?? selectedDesaId}'
+                        : 'Kecamatan ${kec.name}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.lg.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Gap(2),
+                  Text(
+                    loading
+                        ? 'Memuat daftar desa...'
+                        : '${desaOfSelected.length} desa',
+                    style: theme.typography.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
                   ),
                   const Gap(8),
-                  SmallButton(
-                    label: 'Profil kecamatan',
-                    onPress: () => onOpenKecDetail(kec),
+                  Row(
+                    children: [
+                      SmallButton(
+                        label: 'Lihat area',
+                        variant: FButtonVariant.primary,
+                        onPress: onOpenSheet,
+                      ),
+                      const Gap(8),
+                      SmallButton(
+                        label: 'Profil kecamatan',
+                        onPress: () => onOpenKecDetail(kec),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ],
-        ),
       ),
     );
   }
 }
 
-/// Daftar desa scrollable (max 220) + pill floating "Gulir ke bawah" bila
-/// masih ada item di bawah viewport. Pill hilang saat sudah sampai dasar.
-class _DesaList extends StatefulWidget {
-  const _DesaList({
-    required this.desa,
-    required this.selectedDesaId,
-    required this.onDesaTap,
-    required this.onOpenDesaDetail,
-  });
+/// Daftar scrollable dengan tinggi capped (max 220) + pill floating
+/// "Gulir ke bawah" bila masih ada item di bawah viewport.
+/// Pill hilang saat sudah sampai dasar.
+class _CappedScrollList extends StatefulWidget {
+  const _CappedScrollList({required this.itemCount, required this.itemBuilder});
 
-  final List<Region> desa;
-  final String? selectedDesaId;
-  final void Function(Region) onDesaTap;
-  final void Function(Region) onOpenDesaDetail;
+  final int itemCount;
+  final Widget Function(BuildContext, int) itemBuilder;
 
   @override
-  State<_DesaList> createState() => _DesaListState();
+  State<_CappedScrollList> createState() => _CappedScrollListState();
 }
 
-class _DesaListState extends State<_DesaList> {
+class _CappedScrollListState extends State<_CappedScrollList> {
   final _controller = ScrollController();
   bool _hasMoreBelow = false;
 
@@ -923,63 +1027,8 @@ class _DesaListState extends State<_DesaList> {
             controller: _controller,
             shrinkWrap: true,
             padding: const EdgeInsets.only(bottom: 4),
-            itemCount: widget.desa.length,
-            itemBuilder: (context, i) {
-              final desa = widget.desa[i];
-              final isSelected = desa.id == widget.selectedDesaId;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: InkWell(
-                  onTap: () => widget.onDesaTap(desa),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                    decoration: isSelected
-                        ? BoxDecoration(
-                            color: theme.colors.primary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          )
-                        : null,
-                    child: Row(
-                      children: [
-                        Icon(
-                          FLucideIcons.mapPin,
-                          size: 14,
-                          color: isSelected
-                              ? theme.colors.primary
-                              : theme.colors.mutedForeground,
-                        ),
-                        const Gap(8),
-                        Expanded(
-                          child: Text(
-                            desa.name,
-                            style: theme.typography.sm.copyWith(
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: isSelected ? theme.colors.primary : null,
-                            ),
-                          ),
-                        ),
-                        // CTA detail desa (halaman segera hadir). SmallButton
-                        // eksplisit: tap baris = pilih polygon di peta, tombol
-                        // = buka halaman detail. Aksi terpisah jelas.
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: SmallButton(
-                            label: 'Profil desa',
-                            onPress: () => widget.onOpenDesaDetail(desa),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            itemCount: widget.itemCount,
+            itemBuilder: widget.itemBuilder,
           ),
         ),
         // Pill indikator: ada konten lagi di bawah. Tap = scroll ke dasar.
@@ -1039,6 +1088,123 @@ class _DesaListState extends State<_DesaList> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Daftar desa: item row + CTA profil desa.
+class _DesaList extends StatelessWidget {
+  const _DesaList({
+    required this.desa,
+    required this.selectedDesaId,
+    required this.onDesaTap,
+    required this.onOpenDesaDetail,
+  });
+
+  final List<Region> desa;
+  final String? selectedDesaId;
+  final void Function(Region) onDesaTap;
+  final void Function(Region) onOpenDesaDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return _CappedScrollList(
+      itemCount: desa.length,
+      itemBuilder: (context, i) {
+        final d = desa[i];
+        final isSelected = d.id == selectedDesaId;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: InkWell(
+            // Tap baris = highlight polygon + buka halaman detail desa.
+            // Tanpa chevron terpisah (lebih compact).
+            onTap: () {
+              onDesaTap(d);
+              onOpenDesaDetail(d);
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: isSelected
+                  ? BoxDecoration(
+                      color: theme.colors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    )
+                  : null,
+              child: Row(
+                children: [
+                  Icon(
+                    FLucideIcons.mapPin,
+                    size: 14,
+                    color: isSelected
+                        ? theme.colors.primary
+                        : theme.colors.mutedForeground,
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: Text(
+                      d.name,
+                      style: theme.typography.sm.copyWith(
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: isSelected ? theme.colors.primary : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Daftar tempat (wisata/kuliner) di kecamatan terpilih.
+class _PlacesList extends StatelessWidget {
+  const _PlacesList({required this.places});
+
+  final List<Place> places;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return _CappedScrollList(
+      itemCount: places.length,
+      itemBuilder: (context, i) {
+        final p = places[i];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: InkWell(
+            onTap: () => context.push(
+              ExploreRouter.place.path.replaceFirst(':slug', p.slug),
+              extra: 'wilayah',
+            ),
+            borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Icon(
+                  p.category == PlaceCategory.kuliner
+                      ? FLucideIcons.utensilsCrossed
+                      : FLucideIcons.landmark,
+                  size: 14,
+                  color: theme.colors.primary,
+                ),
+                const Gap(8),
+                Expanded(child: Text(p.name, style: theme.typography.sm)),
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 14,
+                  color: theme.colors.mutedForeground,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

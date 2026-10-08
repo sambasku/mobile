@@ -36,6 +36,26 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     }
   }
 
+  // #102: payload pengumuman beku di feed (null = kind lain).
+  FeedAnnouncement? announcement;
+  final annRaw = map['announcement'];
+  if (annRaw is Map && kind == FeedActivityKind.announcement) {
+    final m = Map<String, dynamic>.from(annRaw);
+    final annId = m['id']?.toString() ?? '';
+    final annTitle = m['title']?.toString() ?? '';
+    final annBody = m['body']?.toString() ?? '';
+    if (annId.isNotEmpty && annTitle.isNotEmpty) {
+      announcement = FeedAnnouncement(
+        id: annId,
+        title: annTitle,
+        body: annBody,
+        actionUrl: _nonEmptyUrl(m['action_url']),
+        actionLabel: _nonEmptyUrl(m['action_label']),
+        expired: m['expired'] == true,
+      );
+    }
+  }
+
   return FeedActivityItem(
     id: id,
     kind: kind,
@@ -44,6 +64,7 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     actor: actor,
     subtitle: map['subtitle']?.toString(),
     target: target,
+    announcement: announcement,
   );
 }
 

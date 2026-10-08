@@ -12,6 +12,7 @@ import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/image_placeholder_256.dart';
 import '../../data/datasources/contributors_remote_datasource.dart';
 import '../../data/datasources/sponsors_remote_datasource.dart';
+import '../../../user_profile/user_profile_router.dart';
 import '../providers/contributors_providers.dart';
 import '../providers/sponsors_providers.dart';
 
@@ -249,7 +250,7 @@ class _ContributorTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
 
-    return Row(
+    final tile = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (contributor.avatarUrl case final avatar?)
@@ -298,6 +299,35 @@ class _ContributorTile extends StatelessWidget {
           ),
         ),
       ],
+    );
+
+    // #100: punya akun SambasKu -> tap buka profil publik in-app.
+    // Tanpa username -> tile polos (tidak interaktif).
+    final username = contributor.sambaskuUsername;
+    if (username == null) return tile;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => UserProfileRouter.open(
+          context,
+          username,
+          displayName: contributor.name,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            children: [
+              Expanded(child: tile),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -371,7 +401,7 @@ class _SponsorTile extends StatelessWidget {
     ];
     final subtitle = subtitleParts.join(' - ');
 
-    return Row(
+    final tile = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (sponsor.logoUrl case final logo?)
@@ -415,6 +445,34 @@ class _SponsorTile extends StatelessWidget {
           ),
         ),
       ],
+    );
+
+    // #100: sama dengan _ContributorTile - profil SambasKu bila ada.
+    final username = sponsor.sambaskuUsername;
+    if (username == null) return tile;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => UserProfileRouter.open(
+          context,
+          username,
+          displayName: sponsor.name,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            children: [
+              Expanded(child: tile),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

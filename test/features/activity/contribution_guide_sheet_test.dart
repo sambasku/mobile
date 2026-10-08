@@ -59,7 +59,9 @@ void main() {
     return prefs.getString(kContribGuideReadPrefsKey);
   }
 
-  testWidgets('tap Mengerti tanpa login menulis flag legacy tamu', (tester) async {
+  testWidgets('tap Mengerti tanpa login menulis flag legacy tamu', (
+    tester,
+  ) async {
     await pump(tester);
 
     await tester.tap(find.text('Mengerti'));
@@ -68,7 +70,9 @@ void main() {
     expect(await readFlag(), isNotNull);
   });
 
-  testWidgets('barrier tidak bisa di-dismiss (tap di luar / drag)', (tester) async {
+  testWidgets('barrier tidak bisa di-dismiss (tap di luar / drag)', (
+    tester,
+  ) async {
     await pump(tester);
 
     // Coba tap di luar dialog (barrier) - tidak boleh tertutup

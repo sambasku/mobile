@@ -8,4 +8,11 @@ class VoteFailure {
 
   bool get isNotFound => errorCode == 'VOTE_TARGET_NOT_FOUND';
   bool get isRateLimited => errorCode == 'RATE_LIMITED';
+
+  /// #109: tanpa override ini `error.toString()` = "Instance of 'X'" yang
+  /// jadi "Instance of 'tTb'" di release (obfuscation) - pesan backend
+  /// tak pernah sampai ke layar.
+  @override
+  String toString() =>
+      errorCode != null ? '$message ($errorCode)' : message;
 }

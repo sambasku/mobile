@@ -290,7 +290,7 @@ as bool,
 /// @nodoc
 mixin _$UpdateMyProfileRequestDto {
 
-@JsonKey(name: 'display_name') String? get displayName; String? get bio;@JsonKey(name: 'has_read_contribution_guide') bool? get hasReadContributionGuide;
+@JsonKey(name: 'display_name') String? get displayName; String? get bio;@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? get hasReadContributionGuide;
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -323,7 +323,7 @@ abstract mixin class $UpdateMyProfileRequestDtoCopyWith<$Res>  {
   factory $UpdateMyProfileRequestDtoCopyWith(UpdateMyProfileRequestDto value, $Res Function(UpdateMyProfileRequestDto) _then) = _$UpdateMyProfileRequestDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide') bool? hasReadContributionGuide
+@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
 });
 
 
@@ -430,7 +430,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide')  bool? hasReadContributionGuide)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto() when $default != null:
 return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
@@ -451,7 +451,7 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide')  bool? hasReadContributionGuide)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto():
 return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
@@ -471,7 +471,7 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide')  bool? hasReadContributionGuide)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto() when $default != null:
 return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
@@ -486,12 +486,12 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 @JsonSerializable()
 
 class _UpdateMyProfileRequestDto implements UpdateMyProfileRequestDto {
-  const _UpdateMyProfileRequestDto({@JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'has_read_contribution_guide') this.hasReadContributionGuide});
+  const _UpdateMyProfileRequestDto({@JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) this.hasReadContributionGuide});
   factory _UpdateMyProfileRequestDto.fromJson(Map<String, dynamic> json) => _$UpdateMyProfileRequestDtoFromJson(json);
 
 @override@JsonKey(name: 'display_name') final  String? displayName;
 @override final  String? bio;
-@override@JsonKey(name: 'has_read_contribution_guide') final  bool? hasReadContributionGuide;
+@override@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) final  bool? hasReadContributionGuide;
 
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -526,7 +526,7 @@ abstract mixin class _$UpdateMyProfileRequestDtoCopyWith<$Res> implements $Updat
   factory _$UpdateMyProfileRequestDtoCopyWith(_UpdateMyProfileRequestDto value, $Res Function(_UpdateMyProfileRequestDto) _then) = __$UpdateMyProfileRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide') bool? hasReadContributionGuide
+@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
 });
 
 

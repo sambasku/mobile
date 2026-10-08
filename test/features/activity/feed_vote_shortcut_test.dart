@@ -32,7 +32,9 @@ class _FakeRepo implements VoteRepository {
   Future<Either<VoteFailure, Map<String, VoteCounts>>> countMany(
     List<VoteTarget> targets,
   ) async {
-    return Either.right({testTarget.key: const VoteCounts(upvotes: 3, downvotes: 1)});
+    return Either.right({
+      testTarget.key: const VoteCounts(upvotes: 3, downvotes: 1),
+    });
   }
 
   @override
@@ -44,8 +46,8 @@ class _FakeRepo implements VoteRepository {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError(
-        '${invocation.memberName} tidak dipakai di test ini',
-      );
+    '${invocation.memberName} tidak dipakai di test ini',
+  );
 }
 
 class _FakeAuth extends AuthStatusNotifier {
@@ -92,8 +94,9 @@ Future<GoRouter> _pump(WidgetTester tester, ProviderContainer container) async {
 void main() {
   const target = VoteTarget(type: 'word', id: 'w1');
 
-  testWidgets('render count dari VoteController lalu toggle saat tap',
-      (tester) async {
+  testWidgets('render count dari VoteController lalu toggle saat tap', (
+    tester,
+  ) async {
     final repo = _FakeRepo();
     final container = ProviderContainer(
       overrides: [
@@ -115,17 +118,16 @@ void main() {
     await tester.tap(find.text('3'));
     await tester.pumpAndSettle();
 
-    expect(repo.toggles, [
-      (target: target, value: 1),
-    ]);
+    expect(repo.toggles, [(target: target, value: 1)]);
   });
 
-  testWidgets('tamu: toast login + push /login, tanpa toggle',
-      (tester) async {
+  testWidgets('tamu: toast login + push /login, tanpa toggle', (tester) async {
     final repo = _FakeRepo();
     final container = ProviderContainer(
       overrides: [
-        authStatusProvider.overrideWith(() => _FakeAuth(const AuthStatusState())),
+        authStatusProvider.overrideWith(
+          () => _FakeAuth(const AuthStatusState()),
+        ),
         voteRepositoryProvider.overrideWithValue(repo),
         toggleVoteUseCaseProvider.overrideWithValue(ToggleVoteUseCase(repo)),
       ],
@@ -141,8 +143,9 @@ void main() {
     expect(find.text('Masuk dulu untuk memberi vote'), findsOneWidget);
     expect(find.text('halaman login'), findsOneWidget);
     expect(
-      router.routerDelegate.currentConfiguration.matches
-          .map((m) => m.matchedLocation),
+      router.routerDelegate.currentConfiguration.matches.map(
+        (m) => m.matchedLocation,
+      ),
       contains('/login'),
     );
   });

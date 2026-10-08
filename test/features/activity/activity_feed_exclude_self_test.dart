@@ -10,11 +10,11 @@ import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_st
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 
 FeedActivityItem _item(String id) => FeedActivityItem(
-      id: id,
-      kind: FeedActivityKind.comment,
-      createdAt: '2026-01-01T00:00:00Z',
-      body: 'komentar',
-    );
+  id: id,
+  kind: FeedActivityKind.comment,
+  createdAt: '2026-01-01T00:00:00Z',
+  body: 'komentar',
+);
 
 /// Adapter yang mencatat query tiap request lalu mengembalikan feed kosong
 /// dengan cursor, supaya bisa diuji tanpa network.
@@ -54,7 +54,11 @@ class _FakeActivityRepository implements ActivityFeedRepository {
   }) async {
     calls.add((cursor: cursor, excludeSelf: excludeSelf));
     if (cursor == 'page-2') {
-      return ActivityFeedPage(items: [_item('b2')], nextCursor: null, hasMore: false);
+      return ActivityFeedPage(
+        items: [_item('b2')],
+        nextCursor: null,
+        hasMore: false,
+      );
     }
     return ActivityFeedPage(
       items: [_item('a1')],
@@ -102,14 +106,16 @@ void main() {
       expect(adapter.queries.single['exclude_self'], '1');
     });
 
-    test('flag ikut pada halaman berikutnya (loadMore tidak bocorkan karya)',
-        () async {
-      final repo = ActivityFeedRepository(dio);
-      await repo.list(excludeSelf: true, cursor: 'page-2');
+    test(
+      'flag ikut pada halaman berikutnya (loadMore tidak bocorkan karya)',
+      () async {
+        final repo = ActivityFeedRepository(dio);
+        await repo.list(excludeSelf: true, cursor: 'page-2');
 
-      expect(adapter.queries.single['exclude_self'], '1');
-      expect(adapter.queries.single['cursor'], 'page-2');
-    });
+        expect(adapter.queries.single['exclude_self'], '1');
+        expect(adapter.queries.single['cursor'], 'page-2');
+      },
+    );
 
     test('limit tetap terkirim dan tidak tertimpa flag', () async {
       await ActivityFeedRepository(dio).list(limit: 50, excludeSelf: true);
@@ -122,7 +128,9 @@ void main() {
   group('excludeSelfFeedProvider: keputusan filter', () {
     Future<bool> resolve(AuthStatusState auth) async {
       final container = ProviderContainer(
-        overrides: [authStatusProvider.overrideWith(() => _FakeAuthStatus(auth))],
+        overrides: [
+          authStatusProvider.overrideWith(() => _FakeAuthStatus(auth)),
+        ],
       );
       addTearDown(container.dispose);
       await container.read(authStatusProvider.future);
@@ -144,17 +152,19 @@ void main() {
       );
     });
 
-    test('login tanpa userId → false (tampilkan semua, jangan feed kosong)',
-        () async {
-      expect(
-        await resolve(const AuthStatusState(isAuth: true, username: 'saya')),
-        isFalse,
-      );
-      expect(
-        await resolve(const AuthStatusState(isAuth: true, userId: '   ')),
-        isFalse,
-      );
-    });
+    test(
+      'login tanpa userId → false (tampilkan semua, jangan feed kosong)',
+      () async {
+        expect(
+          await resolve(const AuthStatusState(isAuth: true, username: 'saya')),
+          isFalse,
+        );
+        expect(
+          await resolve(const AuthStatusState(isAuth: true, userId: '   ')),
+          isFalse,
+        );
+      },
+    );
   });
 
   group('notifier: propagate flag + reload saat identitas berubah', () {
@@ -173,8 +183,7 @@ void main() {
       return container;
     }
 
-    test('tamu: load halaman 1 tanpa flag, loadMore juga tanpa flag',
-        () async {
+    test('tamu: load halaman 1 tanpa flag, loadMore juga tanpa flag', () async {
       final container = makeContainer(const AuthStatusState());
       container.read(activityFeedProvider); // instantiate notifier dulu
       await _flush();
@@ -187,8 +196,9 @@ void main() {
     });
 
     test('login: flag ikut di load DAN loadMore', () async {
-      final container =
-          makeContainer(const AuthStatusState(isAuth: true, userId: 'u1'));
+      final container = makeContainer(
+        const AuthStatusState(isAuth: true, userId: 'u1'),
+      );
       container.read(activityFeedProvider);
       await _flush();
 

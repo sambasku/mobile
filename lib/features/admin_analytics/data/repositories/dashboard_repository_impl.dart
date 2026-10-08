@@ -19,12 +19,15 @@ Map<String, dynamic> _asMap(Object? raw) {
   return const {};
 }
 
+/// 401/403 = kegagalan otorisasi; jangan ditelan jadi [] - biar provider
+/// menampilkan error state (#69). Error lain (jaringan/server) tetap [].
+bool _isAuthzError(DioException e) =>
+    e.response?.statusCode == 401 || e.response?.statusCode == 403;
+
 List<Map<String, dynamic>> _asDataList(Map<String, dynamic>? body) {
   final raw = body?['data'];
   if (raw is! List) return const [];
-  return [
-    for (final row in raw) _asMap(row),
-  ];
+  return [for (final row in raw) _asMap(row)];
 }
 
 class DashboardRepositoryImpl implements DashboardRepository {
@@ -68,10 +71,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
     try {
       final res = await _dio.get<Map<String, dynamic>>(
         _commentsPath,
-        queryParameters: {
-          'status': 'published',
-          'limit': limit,
-        },
+        queryParameters: {'status': 'published', 'limit': limit},
       );
       final items = <AnalyticsActivityItem>[];
       for (final map in _asDataList(res.data)) {
@@ -100,7 +100,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
         );
       }
       return items;
-    } on DioException {
+    } on DioException catch (e) {
+      if (_isAuthzError(e)) rethrow;
       return const [];
     }
   }
@@ -146,7 +147,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
         );
       }
       return items;
-    } on DioException {
+    } on DioException catch (e) {
+      if (_isAuthzError(e)) rethrow;
       return const [];
     }
   }
@@ -183,7 +185,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
         );
       }
       return items;
-    } on DioException {
+    } on DioException catch (e) {
+      if (_isAuthzError(e)) rethrow;
       return const [];
     }
   }
@@ -194,11 +197,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
     try {
       final res = await _dio.get<Map<String, dynamic>>(
         _searchMissesPath,
-        queryParameters: {
-          'visible': true,
-          'fulfilled': false,
-          'limit': limit,
-        },
+        queryParameters: {'visible': true, 'fulfilled': false, 'limit': limit},
       );
       final items = <AnalyticsActivityItem>[];
       for (final map in _asDataList(res.data)) {
@@ -218,7 +217,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
           AnalyticsActivityItem(
             kind: AnalyticsActivityKind.searchMiss,
             id: id,
-            createdAt: map['created_at']?.toString() ??
+            createdAt:
+                map['created_at']?.toString() ??
                 map['last_searched_at']?.toString() ??
                 '',
             actorLabel: 'Warga',
@@ -229,7 +229,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
         );
       }
       return items;
-    } on DioException {
+    } on DioException catch (e) {
+      if (_isAuthzError(e)) rethrow;
       return const [];
     }
   }

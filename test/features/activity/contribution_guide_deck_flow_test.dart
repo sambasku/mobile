@@ -46,9 +46,8 @@ class _EmptyLatestUseCase extends ListLatestWordsUseCase {
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> call(
     ListLatestWordsParams params,
-  ) async => const Right(
-    WordSearchPage(items: [], nextCursor: null, hasMore: false),
-  );
+  ) async =>
+      const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 }
 
 class _EmptyLatestRepository implements DictionaryRepository {
@@ -59,9 +58,8 @@ class _EmptyLatestRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     bool forceRefresh = false,
-  }) async => const Right(
-    WordSearchPage(items: [], nextCursor: null, hasMore: false),
-  );
+  }) async =>
+      const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listWords({
@@ -70,9 +68,8 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
-  }) async => const Right(
-    WordSearchPage(items: [], nextCursor: null, hasMore: false),
-  );
+  }) async =>
+      const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
@@ -103,9 +100,9 @@ class _EmptyLatestRepository implements DictionaryRepository {
 }
 
 Finder tabItem(String label) => find.descendant(
-      of: find.byType(forui.FBottomNavigationBar),
-      matching: find.text(label),
-    );
+  of: find.byType(forui.FBottomNavigationBar),
+  matching: find.text(label),
+);
 
 Future<void> pumpApp(WidgetTester tester) async {
   SharedPreferences.setMockInitialValues({});
@@ -119,8 +116,9 @@ Future<void> pumpApp(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        listSearchMissesUseCaseProvider
-            .overrideWithValue(const _FakeListSearchMissesUseCase()),
+        listSearchMissesUseCaseProvider.overrideWithValue(
+          const _FakeListSearchMissesUseCase(),
+        ),
         wordOfDayProvider.overrideWith((ref) async => null),
         listLatestWordsUseCaseProvider.overrideWithValue(_EmptyLatestUseCase()),
         // Guide unread default (prefs kosong): sengaja TIDAK dioverride.
@@ -169,35 +167,36 @@ void main() {
     expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
   });
 
-  testWidgets('notifikasi router nyasar saat guide terbuka tidak membiarkan deck macet stub', (
-    tester,
-  ) async {
-    await pumpApp(tester);
+  testWidgets(
+    'notifikasi router nyasar saat guide terbuka tidak membiarkan deck macet stub',
+    (tester) async {
+      await pumpApp(tester);
 
-    await tester.tap(tabItem('Kontribusi'));
-    await settle(tester);
-    expect(find.text('Kartu bisa digeser untuk menilai'), findsOneWidget);
-    expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+      await tester.tap(tabItem('Kontribusi'));
+      await settle(tester);
+      expect(find.text('Kartu bisa digeser untuk menilai'), findsOneWidget);
+      expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
 
-    // Simulasi notifikasi routerDelegate apa pun saat dialog pageless
-    // terbuka (goBranch, deep link, dsb): canPop terbaca true.
-    AppRouter.router.routerDelegate.notifyListeners();
-    await settle(tester);
-    // Deck tergantikan stub (alert guest hilang) - kondisi menuju macet.
-    expect(
-      find.text('Masuk dulu untuk menilai kata'),
-      findsNothing,
-      reason: 'canPop=true saat dialog terbuka menampilkan stub',
-    );
+      // Simulasi notifikasi routerDelegate apa pun saat dialog pageless
+      // terbuka (goBranch, deep link, dsb): canPop terbaca true.
+      AppRouter.router.routerDelegate.notifyListeners();
+      await settle(tester);
+      // Deck tergantikan stub (alert guest hilang) - kondisi menuju macet.
+      expect(
+        find.text('Masuk dulu untuk menilai kata'),
+        findsNothing,
+        reason: 'canPop=true saat dialog terbuka menampilkan stub',
+      );
 
-    await tester.tap(find.text('Mengerti'), warnIfMissed: false);
-    await settle(tester);
-    await settle(tester);
-    await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(find.text('Mengerti'), warnIfMissed: false);
+      await settle(tester);
+      await settle(tester);
+      await tester.pump(const Duration(milliseconds: 350));
 
-    expect(find.text('Kartu bisa digeser untuk menilai'), findsNothing);
-    // Regresi inti: konten deck harus kembali, bukan stub kosong selamanya.
-    debugDumpApp();
-    expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
-  });
+      expect(find.text('Kartu bisa digeser untuk menilai'), findsNothing);
+      // Regresi inti: konten deck harus kembali, bukan stub kosong selamanya.
+      debugDumpApp();
+      expect(find.text('Masuk dulu untuk menilai kata'), findsOneWidget);
+    },
+  );
 }

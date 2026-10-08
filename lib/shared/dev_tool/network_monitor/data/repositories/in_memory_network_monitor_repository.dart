@@ -8,6 +8,9 @@ class InMemoryNetworkMonitorRepository implements NetworkMonitorRepository {
   final StreamController<List<NetworkRequestRecord>> _controller =
       StreamController<List<NetworkRequestRecord>>.broadcast();
 
+  /// Cap memori riwayat (#73) - dev tool, cukup ringkasan terkini.
+  static const _maxRecords = 200;
+
   @override
   void clear() {
     _records.clear();
@@ -23,6 +26,9 @@ class InMemoryNetworkMonitorRepository implements NetworkMonitorRepository {
 
     if (index == -1) {
       _records.insert(0, record);
+      if (_records.length > _maxRecords) {
+        _records.removeLast();
+      }
     } else {
       _records[index] = record;
     }

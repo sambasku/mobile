@@ -34,6 +34,7 @@ import '../../features/report_bug/report_bug_router.dart';
 import '../../features/review/presentation/providers/review_suggestions_providers.dart';
 import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
+import '../../features/activity/activity_router.dart';
 import '../../features/discussion/discussion_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
@@ -82,6 +83,7 @@ class AppRouter {
       ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
       ...ExploreRouter.routes,
+      ...ActivityRouter.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _HomeShell(navigationShell: navigationShell),
@@ -149,10 +151,7 @@ class AppRouter {
   /// jaringan) tidak boleh mengunci GoRouter selamanya - semua navigasi
   /// berikutnya diabaikan selama redirect pending. Fail-open (null) =
   /// navigasi tetap jalan.
-  static Future<String?> _redirect(
-    BuildContext context,
-    GoRouterState state,
-  ) {
+  static Future<String?> _redirect(BuildContext context, GoRouterState state) {
     return _redirectInner(context, state).timeout(
       const Duration(seconds: 5),
       onTimeout: () {
@@ -168,11 +167,10 @@ class AppRouter {
   ) async {
     final loc = state.matchedLocation;
     final path = state.uri.path;
-    final query = state.uri.query;
-
     // HTTPS / custom scheme: /hapus-akun → rute native hapus akun.
+    // Query tak dipakai halaman delete-account - jangan diteruskan (#70).
     if (path == '/hapus-akun' || loc == '/hapus-akun') {
-      return query.isEmpty ? '/delete-account' : '/delete-account?$query';
+      return '/delete-account';
     }
 
     // Link share tempat: /wisata/<slug> → detail Place (entry analytics: link).
@@ -195,9 +193,8 @@ class AppRouter {
     // Jangan await getIsAuth (prefs + Keychain) di setiap pop/push.
     // Hanya perlu saat gate login/profil - selain itu delay-nya terasa
     // sebagai lag back dari search-miss / ruang diskusi.
-    final needsAuthGate = loc == AuthRouter.login.path ||
-        loc == '/profile' ||
-        path == '/profile';
+    final needsAuthGate =
+        loc == AuthRouter.login.path || loc == '/profile' || path == '/profile';
     if (needsAuthGate) {
       final isAuth = await _tokenStorage.getIsAuthForGate();
       if (isAuth && loc == AuthRouter.login.path) {
@@ -271,7 +268,9 @@ class _HomeShell extends ConsumerWidget {
         child: FScaffold(
           childPad: true,
           resizeToAvoidBottomInset: false,
-          scaffoldStyle: .delta(footerDecoration: .value(const BoxDecoration())),
+          scaffoldStyle: .delta(
+            footerDecoration: .value(const BoxDecoration()),
+          ),
           footer: FBottomNavigationBar(
             index: navigationShell.currentIndex,
             onChange: (index) {
@@ -290,7 +289,8 @@ class _HomeShell extends ConsumerWidget {
                 unawaited(_openProfileBranch(context, navigationShell));
                 return;
               }
-              final openingHome = index == 0 && navigationShell.currentIndex != 0;
+              final openingHome =
+                  index == 0 && navigationShell.currentIndex != 0;
               navigationShell.goBranch(index);
               if (openingHome) {
                 // keepAlive + IndexedStack tidak membangun ulang Home, jadi
