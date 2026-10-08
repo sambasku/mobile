@@ -70,11 +70,63 @@ class AuthInterceptor extends Interceptor {
       final token = await _tokenStorage.getAccessToken();
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
+        handler.next(options);
+        return;
+      }
+      // #127 pre-flight: login-only request tanpa token jangan ditembak ke
+      // server - 401 "Token tidak disertakan" pasti. Gagal lokal supaya
+      // UI langsung tahu sesi mati, hemat round-trip.
+      if (_isAuthRequired(options)) {
+        handler.reject(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.unknown,
+            error: const _MissingTokenError(),
+            response: Response(
+              requestOptions: options,
+              statusCode: 401,
+              data: {
+                'error_code': 'UNAUTHORIZED',
+                'message': 'Token tidak disertakan',
+              },
+            ),
+          ),
+          true,
+        );
+        return;
       }
     } catch (_) {
       // lanjut tanpa header auth
     }
     handler.next(options);
+  }
+
+  /// Endpoint yang 100% butuh Bearer. Path publik (login, counts, feed,
+  /// dsb.) tidak masuk daftar - cek routes API: hanya endpoint ber-mount
+  /// `authenticate` wajib. Daftar prefiks eksplisit supaya murah + jelas.
+  static const _authRequiredPrefixes = <String>[
+    '/api/v1/votes/deck',
+    '/api/v1/votes/my',
+    '/api/v1/votes/history',
+    '/api/v1/votes',
+    '/api/v1/contributions',
+    '/api/v1/bookmarks',
+    '/api/v1/notifications',
+    '/api/v1/users/me',
+    '/api/v1/auth/logout',
+    '/api/v1/device',
+    '/api/v1/search-miss',
+  ];
+
+  /// Path publik yang berada di bawah prefiks login-only (pengecualian).
+  static const _publicPaths = <String>{'/api/v1/votes/counts'};
+
+  bool _isAuthRequired(RequestOptions options) {
+    final path = options.path.split('?').first;
+    if (_publicPaths.contains(path)) return false;
+    return _authRequiredPrefixes.any(
+      (p) => path == p || path.startsWith('$p/'),
+    );
   }
 
   @override
@@ -227,3 +279,10 @@ class AuthInterceptor extends Interceptor {
 }
 
 enum _RefreshOutcome { success, terminal, transient }
+
+/// Marker error pre-flight #127: token absen sebelum request jalan.
+class _MissingTokenError implements Exception {
+  const _MissingTokenError();
+  @override
+  String toString() => 'Token tidak disertakan (pre-flight)';
+}

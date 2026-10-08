@@ -31,6 +31,18 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
       avatarUrl: user.avatarUrl,
     );
 
+    // #127: sesi bisa mati di luar notifier ini (mis. AuthInterceptor
+    // _clearSession saat refresh terminal). Subscribe stream storage -
+    // setIsAuth(false) dari jalur manapun harus langsung tercermin di UI,
+    // bukan menunggu restart app.
+    final sub = storage.authStateChanges.listen((isAuthNow) {
+      if (isAuthNow) return; // login selalu lewat markLoggedIn (ada session).
+      final current = this.state.value;
+      if (current == null || !current.isAuth) return;
+      this.state = AsyncData(current.copyWith(isAuth: false));
+    });
+    ref.onDispose(sub.cancel);
+
     // Setelah migrate username→handle, prefs bisa masih simpan nama lama.
     // Sync dari GET /users/me supaya navigasi profil tidak 404.
     if (isAuth) {
@@ -70,19 +82,18 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     final current = state.value ?? const AuthStatusState();
     final storage = ref.read(authTokenStorageProvider);
     final user = await storage.getSessionUser();
-    final nextDisplay =
-        (displayName != null && displayName.trim().isNotEmpty)
-            ? displayName.trim()
-            : user.displayName;
-    final nextAvatar =
-        avatarUrl != null
-            ? (avatarUrl.isNotEmpty ? avatarUrl : null)
-            : user.avatarUrl;
+    final nextDisplay = (displayName != null && displayName.trim().isNotEmpty)
+        ? displayName.trim()
+        : user.displayName;
+    final nextAvatar = avatarUrl != null
+        ? (avatarUrl.isNotEmpty ? avatarUrl : null)
+        : user.avatarUrl;
 
     final sameUsername =
         (current.username?.trim() ?? user.username)?.toLowerCase() ==
         trimmed.toLowerCase();
-    final sameDisplay = (current.displayName ?? user.displayName) == nextDisplay;
+    final sameDisplay =
+        (current.displayName ?? user.displayName) == nextDisplay;
     final sameAvatar = (current.avatarUrl ?? user.avatarUrl) == nextAvatar;
     if (sameUsername && sameDisplay && sameAvatar) return;
 
@@ -111,10 +122,9 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     final current = state.value ?? const AuthStatusState();
     final storage = ref.read(authTokenStorageProvider);
     final user = await storage.getSessionUser();
-    final next =
-        (displayName != null && displayName.trim().isNotEmpty)
-            ? displayName.trim()
-            : null;
+    final next = (displayName != null && displayName.trim().isNotEmpty)
+        ? displayName.trim()
+        : null;
     final username = (user.username ?? current.username)?.trim();
     if (username != null && username.isNotEmpty) {
       await storage.saveSessionUser(
@@ -151,37 +161,36 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     );
   }
 
-  Future<AuthStatusState?> _syncIdentityFromServer(AuthStatusState current) async {
+  Future<AuthStatusState?> _syncIdentityFromServer(
+    AuthStatusState current,
+  ) async {
     try {
       final result = await ref.read(getMyProfileUseCaseProvider).call();
-      return await result.match(
-        (_) async => null,
-        (profile) async {
-          final storage = ref.read(authTokenStorageProvider);
-          final user = await storage.getSessionUser();
-          final nextAvatar = profile.avatarUrl ?? user.avatarUrl;
-          final sameUsername =
-              current.username?.toLowerCase() == profile.username.toLowerCase();
-          final sameDisplay = current.displayName == profile.displayName;
-          final sameAvatar = current.avatarUrl == nextAvatar;
-          if (sameUsername && sameDisplay && sameAvatar) {
-            // Sudah sinkron - jangan tulis prefs / emit state baru.
-            return current;
-          }
-          await storage.saveSessionUser(
-            username: profile.username,
-            displayName: profile.displayName,
-            role: user.role ?? current.role,
-            userId: user.userId ?? current.userId,
-            avatarUrl: nextAvatar,
-          );
-          return current.copyWith(
-            username: profile.username,
-            displayName: profile.displayName,
-            avatarUrl: nextAvatar,
-          );
-        },
-      );
+      return await result.match((_) async => null, (profile) async {
+        final storage = ref.read(authTokenStorageProvider);
+        final user = await storage.getSessionUser();
+        final nextAvatar = profile.avatarUrl ?? user.avatarUrl;
+        final sameUsername =
+            current.username?.toLowerCase() == profile.username.toLowerCase();
+        final sameDisplay = current.displayName == profile.displayName;
+        final sameAvatar = current.avatarUrl == nextAvatar;
+        if (sameUsername && sameDisplay && sameAvatar) {
+          // Sudah sinkron - jangan tulis prefs / emit state baru.
+          return current;
+        }
+        await storage.saveSessionUser(
+          username: profile.username,
+          displayName: profile.displayName,
+          role: user.role ?? current.role,
+          userId: user.userId ?? current.userId,
+          avatarUrl: nextAvatar,
+        );
+        return current.copyWith(
+          username: profile.username,
+          displayName: profile.displayName,
+          avatarUrl: nextAvatar,
+        );
+      });
     } catch (_) {
       return null;
     }
