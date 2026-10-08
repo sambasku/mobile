@@ -853,45 +853,57 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                 if (placesOfKec.isNotEmpty) ...[
                   const Gap(12),
                   Text(
-                    'Wisata dan kuliner di sini',
+                    'Yang ada di sini',
                     style: theme.typography.sm.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const Gap(4),
-                  ...placesOfKec.map(
-                    (p) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: InkWell(
-                        onTap: () => context.push(
-                          ExploreRouter.place.path.replaceFirst(
-                            ':slug',
-                            p.slug,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 220),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(bottom: 4),
+                      itemCount: placesOfKec.length,
+                      itemBuilder: (context, i) {
+                        final p = placesOfKec[i];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: InkWell(
+                            onTap: () => context.push(
+                              ExploreRouter.place.path.replaceFirst(
+                                ':slug',
+                                p.slug,
+                              ),
+                              extra: 'wilayah',
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  p.category == PlaceCategory.kuliner
+                                      ? FLucideIcons.utensilsCrossed
+                                      : FLucideIcons.landmark,
+                                  size: 14,
+                                  color: theme.colors.primary,
+                                ),
+                                const Gap(8),
+                                Expanded(
+                                  child: Text(
+                                    p.name,
+                                    style: theme.typography.sm,
+                                  ),
+                                ),
+                                Icon(
+                                  FLucideIcons.chevronRight,
+                                  size: 14,
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ],
+                            ),
                           ),
-                          extra: 'wilayah',
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Row(
-                          children: [
-                            Icon(
-                              p.category == PlaceCategory.kuliner
-                                  ? FLucideIcons.utensilsCrossed
-                                  : FLucideIcons.landmark,
-                              size: 14,
-                              color: theme.colors.primary,
-                            ),
-                            const Gap(8),
-                            Expanded(
-                              child: Text(p.name, style: theme.typography.sm),
-                            ),
-                            Icon(
-                              FLucideIcons.chevronRight,
-                              size: 14,
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ],
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ],
