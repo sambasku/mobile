@@ -961,7 +961,7 @@ class _CompactPanel extends StatelessWidget {
                   Row(
                     children: [
                       SmallButton(
-                        label: 'Lihat desa',
+                        label: 'Lihat area',
                         variant: FButtonVariant.primary,
                         onPress: onOpenSheet,
                       ),
