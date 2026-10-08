@@ -37,6 +37,24 @@ class AnnouncementDetailPage extends StatelessWidget {
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       childPad: true,
+      // CTA di footer: selalu terjangkau walau konten panjang (slot resmi
+      // FScaffold.footer). Tanpa action / expired → footer kosong (null).
+      footer: canOpen
+          ? SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: FButton(
+                  onPress: _openAction,
+                  child: Text(
+                    (announcement.actionLabel ?? '').trim().isNotEmpty
+                        ? announcement.actionLabel!.trim()
+                        : 'Buka tautan',
+                  ),
+                ),
+              ),
+            )
+          : null,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
@@ -79,17 +97,6 @@ class AnnouncementDetailPage extends StatelessWidget {
             announcement.body,
             style: theme.typography.md.copyWith(height: 1.5),
           ),
-          if (canOpen) ...[
-            const Gap(24),
-            FButton(
-              onPress: _openAction,
-              child: Text(
-                (announcement.actionLabel ?? '').trim().isNotEmpty
-                    ? announcement.actionLabel!.trim()
-                    : 'Buka tautan',
-              ),
-            ),
-          ],
         ],
       ),
     );
