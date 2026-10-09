@@ -105,25 +105,33 @@ void main() {
     addTearDown(container.dispose);
     await tester.pumpWidget(_app(container));
     await tester.pumpAndSettle();
-    // Bukan lagi PageView: kartu digeser bebas lewat ListView horizontal.
+    // Bukan lagi PageView: kartu digeser lewat ListView horizontal.
     expect(find.byType(PageView), findsNothing);
     expect(find.byType(ListView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
-    // Kartu selebar penuh: kartu tetangga tidak mengintip di tepi
-    // ('Dua' tak ter-build sebelum digeser).
-    expect(find.text('Dua'), findsNothing);
     // Dots/indikator halaman ikut pensiun bersama PageView.
     expect(
       find.bySemanticsLabel(RegExp('Indikator halaman carousel')),
       findsNothing,
     );
-    // Inti permintaan: jarak antar kartu = Gap murni, bukan padding.
-    await tester.drag(find.byType(ListView), const Offset(-600, 0));
-    await tester.pumpAndSettle();
+    // Inti permintaan: jarak antar kartu = Gap murni, bukan padding. Ukur
+    // saat tengah geseran (sebelum snap) supaya dua kartu sama-sama hidup.
+    await tester.drag(find.byType(ListView), const Offset(-200, 0));
+    await tester.pump();
     expect(find.byType(Gap), findsWidgets);
     final first = tester.getRect(find.text('Satu'));
     final second = tester.getRect(find.text('Dua'));
     expect(second.left - first.right, greaterThan(12));
+    // Selesaikan snap dengan fling melintasi threshold halaman berikutnya.
+    await tester.fling(find.byType(ListView), const Offset(-500, 0), 2000);
+    await tester.pumpAndSettle();
+    final scrollable = tester.state<ScrollableState>(
+      find.byType(Scrollable).first,
+    );
+    expect(
+      scrollable.position.pixels,
+      closeTo(scrollable.position.viewportDimension, 0.5),
+    );
   });
 
   testWidgets('carousel: kartu aktif render body md penuh (#134)', (

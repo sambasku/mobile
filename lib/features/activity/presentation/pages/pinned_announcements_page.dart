@@ -109,20 +109,25 @@ class _PinnedAnnouncementsPageState
   ) {
     return RefreshIndicator(
       onRefresh: () => _refresh(ref),
-      // Geser bebas (bukan PageView): jarak antar kartu = Gap() murni di
-      // antara item. Kartu selebar penuh supaya tepi kanan-kiri tertutup
-      // (tidak ada kartu tetangga yang mengintip / tepi terbuka).
+      // Carousel ideal: snap per kartu + jarak napas. Kartu = lebar - 12,
+      // dipisah Gap(12) → stride tiap item pas sama lebar viewport, jadi
+      // PageScrollPhysics mendarat presisi rata kiri. Di tepi kanan hanya
+      // terlihat jarak 12px (napas), bukan kartu tetangga yang mengintip.
       child: LayoutBuilder(
-        builder: (context, constraints) => ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          itemCount: items.length,
-          separatorBuilder: (_, _) => const Gap(12),
-          itemBuilder: (_, index) => SizedBox(
-            width: constraints.maxWidth,
-            child: _PinnedAnnouncementCard(announcement: items[index]),
-          ),
-        ),
+        builder: (context, constraints) {
+          final cardWidth = constraints.maxWidth - 12;
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const PageScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            itemCount: items.length,
+            separatorBuilder: (_, _) => const Gap(12),
+            itemBuilder: (_, index) => SizedBox(
+              width: cardWidth,
+              child: _PinnedAnnouncementCard(announcement: items[index]),
+            ),
+          );
+        },
       ),
     );
   }
@@ -146,8 +151,8 @@ class _PinnedAnnouncementsPageState
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
-          // Bentuk identik carousel asli (horizontal, kartu selebar penuh,
-          // Gap antar kartu) supaya tidak bergeser saat data datang.
+          // Bentuk identik carousel asli (horizontal, kartu lebar-12, Gap
+          // antar kartu) supaya tidak bergeser saat data datang.
           child: LayoutBuilder(
             builder: (context, constraints) => ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -155,7 +160,7 @@ class _PinnedAnnouncementsPageState
               itemCount: 3,
               separatorBuilder: (_, _) => const Gap(12),
               itemBuilder: (_, i) => SizedBox(
-                width: constraints.maxWidth,
+                width: constraints.maxWidth - 12,
                 child: _PinnedAnnouncementCard(
                   announcement: FeedAnnouncement(
                     id: 'skeleton-$i',
