@@ -59,9 +59,11 @@ class AnnouncementDetailPage extends StatelessWidget {
 
     // #134: body_type webview = konten full-bleed. Tanpa judul, padding,
     // dan CTA - konten URL itu sendiri adalah halamannya.
+    // #134: appBar pakai judul input - berlaku semua body_type.
     if (announcement.bodyType == AnnouncementBodyType.webview) {
       return FScaffold(
         header: FHeader.nested(
+          title: Text(announcement.title),
           prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         ),
         childPad: false,
@@ -75,7 +77,8 @@ class AnnouncementDetailPage extends StatelessWidget {
 
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Pengumuman'),
+        // #134: judul input, bukan statis "Pengumuman".
+        title: Text(announcement.title),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       childPad: true,
