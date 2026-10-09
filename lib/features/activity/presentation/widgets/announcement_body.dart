@@ -146,11 +146,20 @@ class _AnnouncementWebViewState extends State<_AnnouncementWebView> {
           ..setNavigationDelegate(
             NavigationDelegate(
               // Navigasi dalam WebView diblok; link -> browser. URL awal
-              // (loadRequest/loadHtmlString) diizinkan lewat.
+              // (loadRequest/loadHtmlString) diizinkan lewat, TERMASUK
+              // redirect server (301 /id dsb.) selama host masih sama -
+              // cek equality URL saja membuat webview blank + browser
+              // eksternal terbuka sendiri (sambasku.com -> /id).
               onNavigationRequest: (req) {
-                final initial = _initialUri?.toString();
-                if (req.url == 'about:blank' ||
-                    (initial != null && req.url == initial)) {
+                if (req.url == 'about:blank') {
+                  return NavigationDecision.navigate;
+                }
+                final initial = _initialUri;
+                if (initial != null &&
+                    Uri.tryParse(req.url)?.host == initial.host) {
+                  return NavigationDecision.navigate;
+                }
+                if (initial != null && req.url == initial.toString()) {
                   return NavigationDecision.navigate;
                 }
                 unawaited(

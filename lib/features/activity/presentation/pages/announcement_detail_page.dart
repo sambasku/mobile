@@ -57,6 +57,22 @@ class AnnouncementDetailPage extends StatelessWidget {
     final canOpen =
         !announcement.expired && (announcement.actionUrl ?? '').isNotEmpty;
 
+    // #134: body_type webview = konten full-bleed. Tanpa judul, padding,
+    // dan CTA - konten URL itu sendiri adalah halamannya.
+    if (announcement.bodyType == AnnouncementBodyType.webview) {
+      return FScaffold(
+        header: FHeader.nested(
+          prefixes: [FHeaderAction.back(onPress: () => context.pop())],
+        ),
+        childPad: false,
+        child: AnnouncementBody(
+          body: announcement.body,
+          bodyType: announcement.bodyType,
+          maxHeight: double.infinity,
+        ),
+      );
+    }
+
     return FScaffold(
       header: FHeader.nested(
         title: const Text('Pengumuman'),
