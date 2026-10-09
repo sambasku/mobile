@@ -3,6 +3,7 @@ import 'package:sambasku_mobile/core/models/image_attribution.dart';
 import 'package:sambasku_mobile/features/explore/data/models/place_dto.dart';
 import 'package:sambasku_mobile/features/explore/data/models/places_dto.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/place.dart';
+import 'package:sambasku_mobile/features/explore/presentation/place_ui.dart';
 
 void main() {
   group('PlaceDto', () {
@@ -210,6 +211,99 @@ void main() {
       });
 
       expect(a?.licenseUrl, 'https://creativecommons.org/licenses/by-sa/4.0/');
+    });
+  });
+
+  group('#130 mapsUrl', () {
+    Place placeOf(Map<String, dynamic> json) =>
+        PlaceDto.fromJson(json)!.toEntity();
+
+    test('mapsUrl host valid ter-parse & menang di placeGoogleMapsUri', () {
+      final place = placeOf(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'wisata',
+        'lat': 1.2,
+        'lng': 109.0,
+        'shortDescription': 'd',
+        'mapsUrl': 'https://maps.app.goo.gl/2WmeQwzcwDrWaGb56',
+      });
+      expect(place.mapsUrl, 'https://maps.app.goo.gl/2WmeQwzcwDrWaGb56');
+      expect(place.canOpenMaps, isTrue);
+      expect(
+        placeGoogleMapsUri(place).toString(),
+        'https://maps.app.goo.gl/2WmeQwzcwDrWaGb56',
+      );
+    });
+
+    test('google.com/maps & goo.gl/maps valid, dipakai sebagai mapsUrl', () {
+      for (final ok in [
+        'https://www.google.com/maps/place/Foo/@1.2,109.0,17z',
+        'https://goo.gl/maps/abc123',
+      ]) {
+        final place = placeOf({
+          'id': 'X',
+          'slug': 's',
+          'name': 'n',
+          'category': 'wisata',
+          'shortDescription': 'd',
+          'mapsUrl': ok,
+        });
+        expect(place.mapsUrl, ok, reason: ok);
+        expect(place.canOpenMaps, isTrue, reason: ok);
+      }
+    });
+
+    test('host asing & http di-skip, fallback koordinat dipakai', () {
+      for (final bad in [
+        'http://maps.app.goo.gl/x',
+        'https://evil.test/maps',
+        'https://google.com/search?q=1',
+      ]) {
+        final place = placeOf({
+          'id': 'X',
+          'slug': 's',
+          'name': 'n',
+          'category': 'wisata',
+          'lat': 1.2,
+          'lng': 109.0,
+          'shortDescription': 'd',
+          'mapsUrl': bad,
+        });
+        expect(place.mapsUrl, isNull, reason: bad);
+        expect(
+          placeGoogleMapsUri(place).toString(),
+          'https://www.google.com/maps/search/?api=1&query=1.2%2C109.0',
+          reason: bad,
+        );
+      }
+    });
+
+    test('tanpa mapsUrl & tanpa koordinat → uri null, tombol tak bisa dibuka', () {
+      final place = placeOf(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'wisata',
+        'shortDescription': 'd',
+      });
+      expect(place.mapsUrl, isNull);
+      expect(place.canOpenMaps, isFalse);
+      expect(placeGoogleMapsUri(place), isNull);
+    });
+
+    test('mapsUrl tanpa koordinat tetap bisa buka maps', () {
+      final place = placeOf(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'wisata',
+        'shortDescription': 'd',
+        'mapsUrl': 'https://maps.app.goo.gl/abc',
+      });
+      expect(place.canOpenMaps, isTrue);
+      expect(placeGoogleMapsUri(place)!.host, 'maps.app.goo.gl');
     });
   });
 }

@@ -53,17 +53,22 @@ CameraPosition? decodeMapCamera(String? raw) {
 }
 
 /// Titik tempat di Google Maps; rute dan navigasi diurus aplikasi Maps.
-/// Tanpa koordinat: cari berdasarkan nama (hasil bisa kurang presisi).
-Uri placeGoogleMapsUri(Place place) => place.hasCoordinates
-    ? Uri.https(
-        'www.google.com',
-        '/maps/search/',
-        {'api': '1', 'query': '${place.lat},${place.lng}'},
-      )
-    : Uri.https('www.google.com', '/maps/search/', {
-        'api': '1',
-        'query': place.name,
-      });
+/// #130: link presisi (mapsUrl) menang; fallback koordinat lat,lng.
+/// Tanpa keduanya: null - tombol maps disembunyikan (canOpenMaps false).
+Uri? placeGoogleMapsUri(Place place) {
+  if (place.mapsUrl != null) {
+    final uri = Uri.tryParse(place.mapsUrl!);
+    if (uri != null && uri.isScheme('https')) return uri;
+  }
+  if (place.hasCoordinates) {
+    return Uri.https(
+      'www.google.com',
+      '/maps/search/',
+      {'api': '1', 'query': '${place.lat},${place.lng}'},
+    );
+  }
+  return null;
+}
 
 /// Toast info tempat tanpa koordinat (belum bisa dipetakan).
 void showPlaceNoCoordinates(BuildContext context) => showFToast(

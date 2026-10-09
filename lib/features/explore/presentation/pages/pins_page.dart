@@ -205,10 +205,15 @@ class _PlaceCard extends StatelessWidget {
   final Place place;
 
   Future<void> _openMaps(BuildContext context) async {
+    final uri = placeGoogleMapsUri(place);
+    if (uri == null) {
+      if (context.mounted) showPlaceNoCoordinates(context);
+      return;
+    }
     // Timeout: handler external di sebagian ROM bisa menggantung; tanpa ini
     // user tidak dapat umpan balik sama sekali.
     final ok = await launchUrl(
-      placeGoogleMapsUri(place),
+      uri,
       mode: LaunchMode.externalApplication,
     ).timeout(const Duration(seconds: 8), onTimeout: () => false);
     if (!ok && context.mounted) {
@@ -303,13 +308,15 @@ class _PlaceCard extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    FButton(
-                      onPress: () => _openMaps(context),
-                      size: FButtonSizeVariant.xs,
-                      prefix: const Icon(FLucideIcons.navigation),
-                      child: const Text('Lihat di Google Maps'),
-                    ),
+                    if (place.canOpenMaps) ...[
+                      const SizedBox(height: 6),
+                      FButton(
+                        onPress: () => _openMaps(context),
+                        size: FButtonSizeVariant.xs,
+                        prefix: const Icon(FLucideIcons.navigation),
+                        child: const Text('Lihat di Google Maps'),
+                      ),
+                    ],
                   ],
                 ),
               ),

@@ -54,6 +54,7 @@ class Place {
     required this.type,
     this.lat,
     this.lng,
+    this.mapsUrl,
     required this.shortDescription,
     this.regionId,
     required this.images,
@@ -74,8 +75,16 @@ class Place {
   final double? lat;
   final double? lng;
 
+  /// Link Google Maps presisi (maps.app.goo.gl / google.com/maps) dari
+  /// places.json; null = belum ada. Menang atas lat/lng saat membuka
+  /// Google Maps (lihat placeGoogleMapsUri).
+  final String? mapsUrl;
+
   /// Ada koordinat valid (keduanya) - aman buat pin/maps.
   bool get hasCoordinates => lat != null && lng != null;
+
+  /// Bisa dibuka di Google Maps: link presisi atau koordinat (#130).
+  bool get canOpenMaps => mapsUrl != null || hasCoordinates;
 
   final String shortDescription;
 

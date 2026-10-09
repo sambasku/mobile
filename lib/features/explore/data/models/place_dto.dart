@@ -17,6 +17,7 @@ class PlaceDto {
     required this.type,
     this.lat,
     this.lng,
+    this.mapsUrl,
     required this.shortDescription,
     this.regionId,
     required this.images,
@@ -33,6 +34,7 @@ class PlaceDto {
   final PlaceType? type;
   final double? lat;
   final double? lng;
+  final String? mapsUrl;
   final String shortDescription;
   final String? regionId;
   final List<PlaceImage> images;
@@ -56,6 +58,23 @@ class PlaceDto {
         .firstOrNull;
     final lat = (json['lat'] as num?)?.toDouble();
     final lng = (json['lng'] as num?)?.toDouble();
+    // #130: link presisi Google Maps. Hanya terima host Maps yang dikenal
+    // (https + maps.app.goo.gl / goo.gl/maps / *.google.com path /maps),
+    // selain itu diabaikan supaya tak membuka URL sembarangan dari data.
+    String? mapsUrl;
+    final rawMapsUrl = str('mapsUrl');
+    if (rawMapsUrl != null) {
+      final uri = Uri.tryParse(rawMapsUrl);
+      final host = uri?.host;
+      final okHost = host == 'maps.app.goo.gl' ||
+          host == 'goo.gl' && uri!.path.startsWith('/maps') ||
+          host != null &&
+              host.endsWith('.google.com') &&
+              uri!.path.startsWith('/maps');
+      if (uri != null && uri.isScheme('https') && okHost) {
+        mapsUrl = rawMapsUrl;
+      }
+    }
     final short = str('shortDescription');
     if (id == null ||
         slug == null ||
@@ -120,6 +139,7 @@ class PlaceDto {
       type: category == PlaceCategory.wisata ? type : null,
       lat: lat,
       lng: lng,
+      mapsUrl: mapsUrl,
       shortDescription: short,
       regionId: str('regionId'),
       images: images,
@@ -169,6 +189,7 @@ class PlaceDto {
     type: type,
     lat: lat,
     lng: lng,
+    mapsUrl: mapsUrl,
     shortDescription: shortDescription,
     regionId: regionId,
     images: images,
