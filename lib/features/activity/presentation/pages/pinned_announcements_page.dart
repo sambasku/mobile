@@ -30,10 +30,11 @@ class _PinnedAnnouncementsPageState
   @override
   void initState() {
     super.initState();
-    // #134: viewportFraction di PageController (Flutter 3.44+: tak ada
-    // lagi param di PageView.builder). < 1 + padding horizontal = kartu
-    // terlihat terpisah, sebelumnya berdempet tanpa celah.
-    _pageController = PageController(viewportFraction: 0.86);
+    // #134: viewportFraction 1.0 → lebar kartu = childPad FScaffold (sama
+    // dengan item ruang diskusi). Sebelumnya 0.86 bikin Flutter center-kan
+    // tiap page → gutter ekstra kiri/kanan, kartu terlihat lebih sempit
+    // dari container feed lain.
+    _pageController = PageController();
   }
 
   @override

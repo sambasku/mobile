@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/pages/pinned_announcements_page.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/announcement_body.dart';
-import 'package:sambasku_mobile/features/activity/presentation/widgets/pinned_home_banner.dart';
 import 'package:sambasku_mobile/features/activity/presentation/providers/announcement_detail_provider.dart';
 
 /// Widget test halaman pinned: empty / single / carousel / error.
@@ -107,9 +106,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PageView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
-    // viewportFraction 0.86 (#134): neighbor ter-pre-build dan terlihat
-    // di tepi layar (memang desain - kartu terpisah, tak berdempet).
-    expect(find.text('Dua'), findsOneWidget);
+    // viewportFraction 1.0 (#134): lebar kartu = childPad FScaffold, seragam
+    // dengan item feed lain; tetangga tak ikut terlihat di tepi layar.
+    expect(find.text('Dua'), findsNothing);
     // Indikator aksesibel.
     expect(
       find.bySemanticsLabel(RegExp('Indikator halaman carousel, 1 dari 3')),
