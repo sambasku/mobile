@@ -70,7 +70,7 @@ class ReviewHomePage extends ConsumerWidget {
               if (showContribution)
                 FTile(
                   prefix: const Icon(FLucideIcons.sparkles),
-                  title: const Text('Lengkapi kata'),
+                  title: const Text('Perbaiki/lengkapi kata'),
                   subtitle: const Text(
                     'Tambah makna, relasi, variasi penulisan, contoh, '
                     'dan rekam pelafalan',

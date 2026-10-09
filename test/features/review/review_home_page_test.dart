@@ -15,24 +15,24 @@ import 'package:sambasku_mobile/features/review/review_router.dart';
 void main() {
   // Gate tile mengikuti canReviewQueue, sama seperti tile antrean lain:
   // editor punya wewenang verifikasi tapi tidak memegang antrean, jadi
-  // "Lengkapi kata" juga tidak ditunjukkan ke sana lewat hub ini.
+  // "Perbaiki/lengkapi kata" juga tidak ditunjukkan ke sana lewat hub ini.
   for (final role in ['admin', 'reviewer', 'root']) {
-    testWidgets('$role melihat tile "Lengkapi kata"', (tester) async {
+    testWidgets('$role melihat tile "Perbaiki/lengkapi kata"', (tester) async {
       await pumpHome(tester, role);
-      expect(find.widgetWithText(FTile, 'Lengkapi kata'), findsOneWidget);
+      expect(find.widgetWithText(FTile, 'Perbaiki/lengkapi kata'), findsOneWidget);
     });
   }
 
   for (final role in ['contributor', 'editor']) {
-    testWidgets('$role tidak melihat tile "Lengkapi kata"', (tester) async {
+    testWidgets('$role tidak melihat tile "Perbaiki/lengkapi kata"', (tester) async {
       await pumpHome(tester, role);
-      expect(find.widgetWithText(FTile, 'Lengkapi kata'), findsNothing);
+      expect(find.widgetWithText(FTile, 'Perbaiki/lengkapi kata'), findsNothing);
     });
   }
 
   testWidgets('tanpa role (tamu) tidak melihat tile', (tester) async {
     await pumpHome(tester, null);
-    expect(find.widgetWithText(FTile, 'Lengkapi kata'), findsNothing);
+    expect(find.widgetWithText(FTile, 'Perbaiki/lengkapi kata'), findsNothing);
   });
 
   testWidgets('tile menampilkan kapabilitas yang bisa ditambah', (
@@ -76,7 +76,7 @@ void main() {
   testWidgets('tap tile membuka pemilih kata', (tester) async {
     final router = await pumpHome(tester, 'reviewer');
 
-    await tester.tap(find.widgetWithText(FTile, 'Lengkapi kata'));
+    await tester.tap(find.widgetWithText(FTile, 'Perbaiki/lengkapi kata'));
     await tester.pumpAndSettle();
 
     // routeInformationProvider tidak mencerminkan push imperatif, jadi

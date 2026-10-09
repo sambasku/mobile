@@ -6,7 +6,7 @@ void main() {
     test('verifikator: lengkapi kata tanpa antrean', () {
       for (final role in ['admin', 'editor', 'root', 'reviewer']) {
         final copy = suggestEditEntryTileCopy(role);
-        expect(copy.title, 'Lengkapi kata');
+        expect(copy.title, 'Perbaiki/lengkapi kata');
         // Nama kapabilitas yang bisa ditambahkan, bukan sekadar "ubah".
         expect(copy.subtitle, contains('makna'));
         expect(copy.subtitle, contains('pelafalan'));

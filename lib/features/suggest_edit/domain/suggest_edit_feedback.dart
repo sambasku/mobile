@@ -9,7 +9,7 @@ import '../../review/domain/review_access.dart';
 ({String title, String subtitle}) suggestEditEntryTileCopy(String? role) {
   if (isVerifierRole(role)) {
     return (
-      title: 'Lengkapi kata',
+      title: 'Perbaiki/lengkapi kata',
       subtitle: 'Tambah makna, relasi, contoh, pelafalan - langsung terbit',
     );
   }

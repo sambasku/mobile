@@ -1111,7 +1111,13 @@ class _WordActionTileGroup extends ConsumerWidget {
               context.push('/login');
               return;
             }
-            context.push('/suggest-edit/$wordId');
+            // #83: jaring aman - invalidate setelah kembali dari form,
+            // form sudah invalidate sendiri, ini menutup jalur batal
+            // (pop tanpa submit) agar perubahan dari device lain ikut.
+            await context.push('/suggest-edit/$wordId');
+            if (context.mounted) {
+              ref.invalidate(wordDetailProvider(wordId));
+            }
           },
         ),
         FTile(
