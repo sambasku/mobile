@@ -21,7 +21,11 @@ class PinnedHomeBanner extends ConsumerStatefulWidget {
 }
 
 class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
-  final PageController _controller = PageController();
+  // viewportFraction < 1.0 = satu-satunya cara PageView memberi JARAK antar
+  // kartu (tiap halaman lebih sempit dari viewport). Sebelumnya 1.0 → dua
+  // kartu bersentuhan tanpa jeda saat swipe. Kartu jadi sedikit lebih sempit
+  // dari kartu feed lain, itu konsekuensi yang diminta.
+  final PageController _controller = PageController(viewportFraction: 0.94);
   int _page = 0;
 
   @override
@@ -186,48 +190,54 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  height: 82,
-                  decoration: BoxDecoration(
-                    color: context.theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    children: [
-                      Icon(
-                        FLucideIcons.pin,
-                        color: context.theme.colors.primary,
-                        size: 20,
-                      ),
-                      const Gap(10),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Judul pengumuman prioritas',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.theme.typography.sm.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const Gap(2),
-                            Text(
-                              'cuplikan isi pengumuman',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.theme.typography.sm.copyWith(
-                                color: context.theme.colors.mutedForeground,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                // Lebar = kartu asli (viewportFraction 0.94) supaya tidak geser
+                // horizontal saat data datang.
+                FractionallySizedBox(
+                  widthFactor: 0.94,
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 82,
+                    decoration: BoxDecoration(
+                      color: context.theme.colors.secondary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Icon(
+                          FLucideIcons.pin,
+                          color: context.theme.colors.primary,
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        const Gap(10),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Judul pengumuman prioritas',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.theme.typography.sm.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const Gap(2),
+                              Text(
+                                'cuplikan isi pengumuman',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.theme.typography.sm.copyWith(
+                                  color: context.theme.colors.mutedForeground,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const Gap(6),

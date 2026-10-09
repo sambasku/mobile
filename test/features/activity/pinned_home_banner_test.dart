@@ -174,8 +174,12 @@ void main() {
 
     await tester.fling(find.byType(PageView), const Offset(-400, 0), 1000);
     await tester.pumpAndSettle();
-    expect(find.text('Lomba Kuis'), findsOneWidget);
-    expect(find.text('Jadwal Mudik'), findsNothing);
+    // viewportFraction 0.94 membuat neighbor ikut ter-build, jadi
+    // find.text(title) tak lagi membedakan halaman utama vs preview.
+    // Cek langsung posisi controller: pindah ke halaman 1.
+    final controller = tester.widget<PageView>(find.byType(PageView)).controller;
+    expect(controller!.page, closeTo(1.0, 0.01));
+    expect(find.text('Lomba Kuis'), findsWidgets);
   });
 
   testWidgets('geometri kartu seragam dengan banner Ruang Diskusi', (
@@ -225,9 +229,10 @@ void main() {
           )
           .first,
     );
-    // Tepi kiri/kanan & tinggi wajib identik - dua kartu beranda seragam.
-    expect(pin.left, disc.left);
-    expect(pin.right, disc.right);
+    // Kartu carousel kini lebih sempit dari kartu feed (viewportFraction 0.94
+    // → jeda antar kartu), tapi tetap center & setinggi kartu Ruang Diskusi.
+    expect(pin.center.dx, closeTo(disc.center.dx, 0.5));
+    expect(pin.width, lessThan(disc.width));
     expect(pin.height, disc.height);
 
     // #134: tanpa spacing atas, dua kartu yang kini bergeometri sama tampak
