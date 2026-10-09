@@ -315,11 +315,17 @@ class _PinnedAnnouncementCard extends StatelessWidget {
       label:
           'Pengumuman: ${announcement.title}${announcement.expired ? ', sudah berakhir' : ''}',
       button: true,
-      // GestureDetector, bukan InkWell: FCard.raw tanpa ancestor Material
-      // (aturan Forui no-material-widgets).
       child: GestureDetector(
         onTap: () => _openDetail(context),
-        child: FCard.raw(
+        // #134: tanpa FCard - konten langsung (senada detail page); border
+        // halus hanya pemisah antar halaman carousel, bukan kotak penuh.
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: theme.colors.border.withValues(alpha: 0.5),
+            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
