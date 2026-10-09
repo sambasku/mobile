@@ -100,9 +100,48 @@ void main() {
     expect(resolver.activeHost, 'https://t3.test');
 
     final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getInt('devToolForcedApiTier'), 2);
+    expect(prefs.getInt('preferredApiTier'), 2);
 
     await resolver.setForcedTier(null);
-    expect(prefs.getInt('devToolForcedApiTier'), -1);
+    expect(prefs.getInt('preferredApiTier'), -1);
+  });
+
+  group('label tier untuk UI user', () {
+    test('host dikenali jadi label ramah', () {
+      expect(apiTierLabelForHost('https://api.sambasku.com'), 'Cloudflare');
+      expect(apiTierLabelForHost('https://deno.sambasku.com'), 'Deno Deploy');
+      expect(apiTierLabelForHost('https://render.sambasku.com'), 'Render');
+    });
+
+    test('host tak dikenal → hostname-nya sendiri', () {
+      expect(apiTierLabelForHost('https://kirim.test'), 'kirim.test');
+    });
+  });
+
+  group('preferensi host tersimpan', () {
+    test('pilihan bertahan di prefs key baru', () async {
+      await resolver.setForcedTier(2);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt('preferredApiTier'), 2);
+      await resolver.setForcedTier(null);
+      expect(prefs.getInt('preferredApiTier'), -1);
+    });
+
+    test('loadSavedTier memuat pilihan tanpa syarat dev tool', () async {
+      SharedPreferences.setMockInitialValues({'preferredApiTier': 1});
+      await resolver.loadSavedTier();
+      expect(resolver.forcedTierIndex, 1);
+      expect(resolver.activeHost, 'https://t2.test');
+    });
+
+    test('nilai -1 / di luar jangkauan diabaikan', () async {
+      SharedPreferences.setMockInitialValues({'preferredApiTier': -1});
+      await resolver.loadSavedTier();
+      expect(resolver.forcedTierIndex, isNull);
+
+      SharedPreferences.setMockInitialValues({'preferredApiTier': 9});
+      await resolver.loadSavedTier();
+      expect(resolver.forcedTierIndex, isNull);
+    });
   });
 }

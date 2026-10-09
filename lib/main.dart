@@ -75,9 +75,9 @@ Future<void> main() async {
   // Daftar tier API harus siap SEBELUM dioProvider dibaca di bawah - Dio
   // mengambil baseUrl awalnya dari resolver.
   ApiHostResolver.instance.configureFromEnv();
-  // Paksa-tier hanya dihormati saat perkakas dev hidup; build production milik
-  // pengguna tidak boleh terkunci di tier cadangan karena preferensi lama.
-  if (devToolsEnabled) await ApiHostResolver.instance.loadForcedTier();
+  // Pilihan host user (tile "Server" di Profil) berlaku di SEMUA build:
+  // itu preferensi produk, bukan lagi override dev tool.
+  await ApiHostResolver.instance.loadSavedTier();
 
   // Prefs sebelum runApp: frame pertama = preferensi tersimpan, bukan
   // ThemeMode.system (ikut device) yang lalu jump setelah hydrate async.

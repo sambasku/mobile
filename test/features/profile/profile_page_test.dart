@@ -10,6 +10,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:forui/forui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sambasku_mobile/core/network/auth_token_storage.dart';
+import 'package:sambasku_mobile/core/network/failover/api_host_resolver.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/core/services/analytics_service.dart';
 import 'package:sambasku_mobile/features/auth/data/providers/auth_data_providers.dart';
@@ -381,5 +382,31 @@ void main() {
 
     await tester.ensureVisible(find.text('v0.1.0(42)'));
     expect(find.text('v0.1.0(42)'), findsOneWidget);
+  });
+
+  testWidgets('tile Server tampil & membuka sheet saat ada host cadangan', (
+    tester,
+  ) async {
+    ApiHostResolver.instance.configure(
+      primaryHost: 'https://api.sambasku.com',
+      fallbackHosts: const [
+        'https://deno.sambasku.com',
+        'https://render.sambasku.com',
+      ],
+    );
+    addTearDown(
+      () => ApiHostResolver.instance.configure(
+        primaryHost: 'https://only.test',
+        fallbackHosts: const [],
+      ),
+    );
+
+    await pumpProfile(tester);
+    await tester.ensureVisible(find.text('Server'));
+
+    await tester.tap(find.text('Server'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pilih Server'), findsOneWidget);
+    expect(find.text('Uji semua'), findsOneWidget);
   });
 }

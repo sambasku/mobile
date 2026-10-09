@@ -21,7 +21,20 @@ const kHealthProbeTimeout = Duration(seconds: 8);
 /// Lama satu tier "di-pin" sebelum tier 1 dicoba lagi.
 const kTierPinDuration = Duration(minutes: 5);
 
-const _prefKeyForcedTier = 'devToolForcedApiTier';
+/// Key preferensi host pilihan USER (bukan dev tool). Dipakai tile "Server"
+/// di halaman Profil. `-1` = Otomatis.
+const _prefKeyPreferredTier = 'preferredApiTier';
+
+/// Label manusiawi tiap tier untuk UI user. Cocokkan lewat host supaya tahan
+/// kalau urutan env berubah; host tak dikenal dikembalikan apa adanya.
+String apiTierLabelForHost(String host) {
+  final h = Uri.tryParse(host)?.host ?? host;
+  if (h.contains('deno')) return 'Deno Deploy';
+  if (h.contains('render')) return 'Render';
+  if (h.contains('sambasku.com')) return 'Cloudflare';
+  if (h.contains('staging')) return 'Staging';
+  return h;
+}
 
 /// Penentu host API aktif untuk SELURUH aplikasi.
 ///
@@ -171,11 +184,13 @@ class ApiHostResolver extends ChangeNotifier {
 
   // ---- Override dev tool (hanya staging/debug, lihat DevToolOverlay) ----
 
-  Future<void> loadForcedTier() async {
+  Future<void> loadSavedTier() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final stored = prefs.getInt(_prefKeyForcedTier);
-      if (stored == null || stored < 0) return;
+      final stored = prefs.getInt(_prefKeyPreferredTier);
+      // Di luar jangkauan tier (mis. konfigurasi berubah) = abaikan, jangan
+      // digantung ke host yang tidak ada.
+      if (stored == null || stored < 0 || stored >= _tiers.length) return;
       _forcedIndex = stored;
       _emitChange();
     } catch (_) {
@@ -190,7 +205,7 @@ class ApiHostResolver extends ChangeNotifier {
     _emitChange();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_prefKeyForcedTier, index ?? -1);
+      await prefs.setInt(_prefKeyPreferredTier, index ?? -1);
     } catch (_) {
       // Gagal menyimpan tidak boleh membatalkan pilihan di sesi ini.
     }

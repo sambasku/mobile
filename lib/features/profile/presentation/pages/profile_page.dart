@@ -23,8 +23,10 @@ import '../../../user_profile/presentation/providers/user_profile_providers.dart
 import '../../../user_profile/user_profile_router.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
+import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../widgets/api_host_tile.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
@@ -226,6 +228,7 @@ class ProfilePage extends HookConsumerWidget {
                   FTileGroup(
                     label: const Text('Tampilan & bantuan'),
                     children: [
+                      apiHostTile(context, ApiHostResolver.instance),
                       themeModeTile(ref),
                       paletteTile(ref),
                       fontScaleTile(ref),
