@@ -30,7 +30,10 @@ class _PinnedAnnouncementsPageState
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    // #134: viewportFraction di PageController (Flutter 3.44+: tak ada
+    // lagi param di PageView.builder). < 1 + padding horizontal = kartu
+    // terlihat terpisah, sebelumnya berdempet tanpa celah.
+    _pageController = PageController(viewportFraction: 0.86);
   }
 
   @override
@@ -138,12 +141,17 @@ class _PinnedAnnouncementsPageState
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final announcement = items[index];
-                // #134: tanpa horizontal - childPad FScaffold sudah 12.
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 12,
+                  ),
+                  // Kartu aktif render penuh, neighbor preview ringan
+                  // (#134: WebView/platform view per halaman = jank swipe).
                   child: _PinnedAnnouncementCard(
                     announcement: announcement,
                     isCarousel: true,
+                    isPreview: index != _currentPage,
                   ),
                 );
               },
@@ -286,10 +294,15 @@ class _PinnedAnnouncementCard extends StatelessWidget {
   const _PinnedAnnouncementCard({
     required this.announcement,
     this.isCarousel = false,
+    this.isPreview = false,
   });
 
   final FeedAnnouncement announcement;
   final bool isCarousel;
+
+  /// true = kartu neighbor carousel: preview teks ringan (#134). Kartu
+  /// aktif render body penuh (md) - WebView tetap hanya di detail.
+  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -371,12 +384,27 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                 // Title
                 Text(announcement.title, style: titleStyle),
                 const Gap(8),
-                // Preview ringan (max 3 baris) - WebViewWidget/MarkdownBody
-                // penuh hanya di halaman detail (#134: jank swipe carousel).
-                AnnouncementBodyPreview(
-                  body: announcement.body,
-                  bodyType: announcement.bodyType,
-                ),
+                // Neighbor carousel: preview ringan. Kartu aktif: body penuh
+                // untuk md/plain (WebView tetap hanya di detail, #134).
+                if (isPreview)
+                  AnnouncementBodyPreview(
+                    body: announcement.body,
+                    bodyType: announcement.bodyType,
+                  )
+                else ...[
+                  if (announcement.bodyType == AnnouncementBodyType.md ||
+                      announcement.bodyType == AnnouncementBodyType.plain)
+                    AnnouncementBody(
+                      body: announcement.body,
+                      bodyType: announcement.bodyType,
+                      maxHeight: 280,
+                    )
+                  else
+                    AnnouncementBodyPreview(
+                      body: announcement.body,
+                      bodyType: announcement.bodyType,
+                    ),
+                ],
                 // Action button hint if exists
                 if (announcement.actionUrl != null &&
                     announcement.actionUrl!.isNotEmpty) ...[

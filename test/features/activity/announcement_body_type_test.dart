@@ -77,6 +77,17 @@ void main() {
     expect(stripMarkdownHtml('biasa saja'), 'biasa saja');
   });
 
+  test('#134 stripMarkdownHtml: __bold__, _it_, ~~del~~, quote, hr', () {
+    expect(stripMarkdownHtml('__tebal__'), 'tebal');
+    expect(stripMarkdownHtml('_miring_'), 'miring');
+    expect(stripMarkdownHtml('~~hapus~~'), 'hapus');
+    expect(
+      stripMarkdownHtml('> kutipan\nbiasa'),
+      'kutipan\nbiasa',
+    );
+    expect(stripMarkdownHtml('atas\n---\nbawah'), 'atas\nbawah');
+  });
+
   test('#134 preview: webview URL -> host, host tanpa skema dinormalisasi', () {
     expect(
       announcementPreviewText(

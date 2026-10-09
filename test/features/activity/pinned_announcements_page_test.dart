@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -104,13 +105,53 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PageView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
-    // Item ke-2/3 belum dibangun (lazy PageView.builder).
-    expect(find.text('Dua', skipOffstage: false), findsNothing);
+    // viewportFraction 0.86 (#134): neighbor ter-pre-build dan terlihat
+    // di tepi layar (memang desain - kartu terpisah, tak berdempet).
+    expect(find.text('Dua'), findsOneWidget);
     // Indikator aksesibel.
     expect(
       find.bySemanticsLabel(RegExp('Indikator halaman carousel, 1 dari 3')),
       findsOneWidget,
     );
+  });
+
+  testWidgets('carousel: kartu aktif render body md penuh (#134)', (
+    tester,
+  ) async {
+    final mdAnn =
+        '"id":"01M","title":"MD",'
+        '"body":"# Judul MD\\n\\nIsi **tebal** markdown",'
+        '"body_type":"md","action_url":null,"action_label":null,'
+        '"expires_at":null,"pinned_at":1799946600,"expired":false,'
+        '"created_by":"01U","created_at":1799946600,"updated_at":null';
+    final plainAnn = _ann('01N', 'Neighbor');
+    final container = ProviderContainer(
+      overrides: [
+        dioProvider.overrideWithValue(
+          _dio(
+            200,
+            '{"success":true,"data":[{$mdAnn},{$plainAnn}]}',
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(_app(container));
+    await tester.pumpAndSettle();
+    // Kartu aktif (index 0, md): MarkdownBody terpasang.
+    expect(find.byType(MarkdownBody), findsOneWidget);
+    // Kartu aktif menampilkan isi md (bukan preview strip).
+    expect(find.text('Isi tebal markdown'), findsOneWidget);
+    // Swipe ke kartu 2: kartu 1 jadi neighbor -> preview strip.
+    await tester.fling(
+      find.byType(PageView),
+      const Offset(-400, 0),
+      1000,
+    );
+    await tester.pumpAndSettle();
+    // Kartu aktif sekarang neighbor md -> preview strip, tanpa MarkdownBody.
+    expect(find.text('Isi Neighbor'), findsOneWidget);
+    expect(find.byType(MarkdownBody), findsNothing);
   });
 
   testWidgets('error: pesan gagal + tombol Coba lagi', (tester) async {

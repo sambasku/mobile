@@ -221,12 +221,17 @@ String stripMarkdownHtml(String input) => input
     )
     .replaceAll(RegExp(r'`[^`]+`'), '')
     .replaceAllMapped(RegExp(r'\*\*([^*]+)\*\*'), (m) => m[1]!)
+    .replaceAllMapped(RegExp(r'__([^_]+)__'), (m) => m[1]!)
     .replaceAllMapped(RegExp(r'\*([^*]+)\*'), (m) => m[1]!)
+    .replaceAllMapped(RegExp(r'_([^_]+)_'), (m) => m[1]!)
+    .replaceAllMapped(RegExp(r'~~([^~]+)~~'), (m) => m[1]!)
     .replaceAll(RegExp(r'#{1,6}\s'), '')
     .replaceAllMapped(
       RegExp(r'\[([^\]]+)\]\([^)]+\)'),
       (m) => m[1]!,
     )
     .replaceAll(RegExp(r'<[^>]+>'), '')
+    .replaceAll(RegExp(r'^>+\s?', multiLine: true), '')
+    .replaceAll(RegExp(r'\n\s*[-=_*]{3,}\s*\n'), '\n')
     .replaceAll(RegExp(r'\n{2,}'), '\n')
     .trim();
