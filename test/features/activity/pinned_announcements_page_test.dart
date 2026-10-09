@@ -106,9 +106,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PageView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
-    // viewportFraction 0.9: kartu lebih sempit dari viewport → tetangga ikut
-    // ter-build dan mengintip di tepi (itulah jarak antar kartu).
-    expect(find.text('Dua'), findsWidgets);
+    // viewportFraction 1.0 (#134): lebar kartu = childPad FScaffold, seragam
+    // dengan item feed lain; tetangga tak ikut terlihat di tepi layar.
+    expect(find.text('Dua'), findsNothing);
     // Indikator aksesibel.
     expect(
       find.bySemanticsLabel(RegExp('Indikator halaman carousel, 1 dari 3')),

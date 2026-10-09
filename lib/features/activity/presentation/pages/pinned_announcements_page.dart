@@ -30,10 +30,11 @@ class _PinnedAnnouncementsPageState
   @override
   void initState() {
     super.initState();
-    // viewportFraction < 1.0 = satu-satunya cara PageView memberi JARAK antar
-    // kartu (tiap halaman lebih sempit dari viewport). Sebelumnya 1.0 → kartu
-    // bersentuhan tanpa jeda saat swipe.
-    _pageController = PageController(viewportFraction: 0.9);
+    // #134: viewportFraction 1.0 → lebar kartu = childPad FScaffold (sama
+    // dengan item ruang diskusi). Sebelumnya 0.86 bikin Flutter center-kan
+    // tiap page → gutter ekstra kiri/kanan, kartu terlihat lebih sempit
+    // dari container feed lain.
+    _pageController = PageController();
   }
 
   @override
@@ -208,19 +209,13 @@ class _PinnedAnnouncementsPageState
             padding: const EdgeInsets.symmetric(vertical: 12),
             children: [
               for (var i = 0; i < 3; i++) ...[
-                // Lebar = kartu asli (viewportFraction 0.9), cegah geser
-                // horizontal saat data datang.
-                FractionallySizedBox(
-                  widthFactor: 0.9,
-                  alignment: Alignment.center,
-                  child: _PinnedAnnouncementCard(
-                    announcement: FeedAnnouncement(
-                      id: 'skeleton-$i',
-                      title: 'Judul Pengumuman',
-                      body: 'Isi pengumuman singkat untuk skeleton',
-                      bodyType: AnnouncementBodyType.plain,
-                      expired: false,
-                    ),
+                _PinnedAnnouncementCard(
+                  announcement: FeedAnnouncement(
+                    id: 'skeleton-$i',
+                    title: 'Judul Pengumuman',
+                    body: 'Isi pengumuman singkat untuk skeleton',
+                    bodyType: AnnouncementBodyType.plain,
+                    expired: false,
                   ),
                 ),
                 if (i != 2) const Gap(16),
