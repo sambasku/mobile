@@ -34,7 +34,9 @@ class _PinnedAnnouncementsPageState
         title: const Text('Pengumuman Prioritas'),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      childPad: true,
+      // childPad false: carousel butuh area selebar layar (pola
+      // word_detail_page). Gutter tiap state diatur manual.
+      childPad: false,
       child: pinnedAsync.when(
         loading: () => _buildSkeleton(context),
         error: (err, _) => _buildError(context, err, ref),
@@ -94,9 +96,8 @@ class _PinnedAnnouncementsPageState
       onRefresh: () => _refresh(ref),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        // #134: FScaffold childPad sudah kasih horizontal 12 - konten cukup
-        // vertikal, jangan tambah horizontal (gutter menumpuk).
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        // childPad dimatikan → gutter horizontal diatur di sini.
+        padding: const EdgeInsets.all(12),
         children: [_PinnedAnnouncementCard(announcement: announcement)],
       ),
     );
@@ -109,19 +110,20 @@ class _PinnedAnnouncementsPageState
   ) {
     return RefreshIndicator(
       onRefresh: () => _refresh(ref),
-      // Carousel ideal: snap per kartu + jarak napas. Kartu = lebar - 12,
-      // dipisah Gap(12) → stride tiap item pas sama lebar viewport, jadi
-      // PageScrollPhysics mendarat presisi rata kiri. Di tepi kanan hanya
-      // terlihat jarak 12px (napas), bukan kartu tetangga yang mengintip.
+      // Full-bleed + snap presisi. Matematikanya: list padding 12 kiri-kanan,
+      // kartu = lebar layar - 24 (sejajar gutter feed), Gap(24) pemisah.
+      // Stride (kartu + Gap) = lebar viewport → PageScrollPhysics mendarat
+      // presisi: tiap kartu rata kiri 12px, tepi kanan berjarak napas murni
+      // tanpa kartu tetangga yang mengintip.
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final cardWidth = constraints.maxWidth - 12;
+          final cardWidth = constraints.maxWidth - 24;
           return ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const PageScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.all(12),
             itemCount: items.length,
-            separatorBuilder: (_, _) => const Gap(12),
+            separatorBuilder: (_, _) => const Gap(24),
             itemBuilder: (_, index) => SizedBox(
               width: cardWidth,
               child: _PinnedAnnouncementCard(announcement: items[index]),
@@ -151,16 +153,16 @@ class _PinnedAnnouncementsPageState
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
-          // Bentuk identik carousel asli (horizontal, kartu lebar-12, Gap
-          // antar kartu) supaya tidak bergeser saat data datang.
+          // Bentuk identik carousel asli (horizontal, kartu lebar-24, Gap
+          // 24 antar kartu) supaya tidak bergeser saat data datang.
           child: LayoutBuilder(
             builder: (context, constraints) => ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.all(12),
               itemCount: 3,
-              separatorBuilder: (_, _) => const Gap(12),
+              separatorBuilder: (_, _) => const Gap(24),
               itemBuilder: (_, i) => SizedBox(
-                width: constraints.maxWidth - 12,
+                width: constraints.maxWidth - 24,
                 child: _PinnedAnnouncementCard(
                   announcement: FeedAnnouncement(
                     id: 'skeleton-$i',
