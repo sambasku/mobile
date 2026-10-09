@@ -13,7 +13,7 @@ import '../widgets/announcement_body.dart';
 /// Halaman pengumuman yang dipin (mobile carousel / halaman pinned).
 /// - 0 item → shrink: teks "Tidak ada pengumuman yang dipin"
 /// - 1 item → single card (mirip AnnouncementDetailPage, tanpa carousel)
-/// - >1 item → PageView carousel dengan indikator
+/// - >1 item → scroll horizontal bebas, kartu dipisah Gap() murni
 class PinnedAnnouncementsPage extends ConsumerStatefulWidget {
   const PinnedAnnouncementsPage({super.key});
 
@@ -24,30 +24,6 @@ class PinnedAnnouncementsPage extends ConsumerStatefulWidget {
 
 class _PinnedAnnouncementsPageState
     extends ConsumerState<PinnedAnnouncementsPage> {
-  late final PageController _pageController;
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    // #134: viewportFraction 1.0 → lebar kartu = childPad FScaffold (sama
-    // dengan item ruang diskusi). Sebelumnya 0.86 bikin Flutter center-kan
-    // tiap page → gutter ekstra kiri/kanan, kartu terlihat lebih sempit
-    // dari container feed lain.
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _onPageChanged(int page) {
-    if (!mounted) return;
-    setState(() => _currentPage = page);
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -133,54 +109,20 @@ class _PinnedAnnouncementsPageState
   ) {
     return RefreshIndicator(
       onRefresh: () => _refresh(ref),
-      child: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final announcement = items[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  // FScaffold(childPad) sudah kasih horizontal 12 - jangan
-                  // tambah horizontal padding lagi (biar seragam item diskusi).
-                  child: _PinnedAnnouncementCard(announcement: announcement),
-                );
-              },
-            ),
+      // Geser bebas (bukan PageView): jarak antar kartu = Gap() murni di
+      // antara item, tanpa padding di tepi luar - kartu pertama tetap
+      // sejajar kiri dengan feed.
+      child: LayoutBuilder(
+        builder: (context, constraints) => ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          itemCount: items.length,
+          separatorBuilder: (_, _) => const Gap(12),
+          itemBuilder: (_, index) => SizedBox(
+            width: constraints.maxWidth * 0.86,
+            child: _PinnedAnnouncementCard(announcement: items[index]),
           ),
-          // Page indicator
-          _buildPageIndicator(theme, items.length),
-          const Gap(16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPageIndicator(FThemeData theme, int count) {
-    return Semantics(
-      label: 'Indikator halaman carousel, ${_currentPage + 1} dari $count',
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(count, (index) {
-          final isActive = index == _currentPage;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: isActive ? 24 : 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: isActive
-                    ? theme.colors.primary
-                    : theme.colors.mutedForeground.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          );
-        }),
+        ),
       ),
     );
   }
@@ -204,12 +146,17 @@ class _PinnedAnnouncementsPageState
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
-          child: ListView(
-            // #134: tanpa horizontal - childPad FScaffold sudah 12.
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            children: [
-              for (var i = 0; i < 3; i++) ...[
-                _PinnedAnnouncementCard(
+          // Bentuk identik carousel asli (horizontal, kartu 0.86 lebar,
+          // Gap antar kartu) supaya tidak bergeser saat data datang.
+          child: LayoutBuilder(
+            builder: (context, constraints) => ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              itemCount: 3,
+              separatorBuilder: (_, _) => const Gap(12),
+              itemBuilder: (_, i) => SizedBox(
+                width: constraints.maxWidth * 0.86,
+                child: _PinnedAnnouncementCard(
                   announcement: FeedAnnouncement(
                     id: 'skeleton-$i',
                     title: 'Judul Pengumuman',
@@ -218,9 +165,8 @@ class _PinnedAnnouncementsPageState
                     expired: false,
                   ),
                 ),
-                if (i != 2) const Gap(16),
-              ],
-            ],
+              ),
+            ),
           ),
         ),
       ),

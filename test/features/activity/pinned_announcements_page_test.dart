@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -87,7 +88,7 @@ void main() {
     expect(find.byType(PageView), findsNothing);
   });
 
-  testWidgets('carousel: 3 item, PageView + indicator semantics', (
+  testWidgets('carousel: 3 item, scroll horizontal + Gap antar kartu', (
     tester,
   ) async {
     final container = ProviderContainer(
@@ -104,16 +105,21 @@ void main() {
     addTearDown(container.dispose);
     await tester.pumpWidget(_app(container));
     await tester.pumpAndSettle();
-    expect(find.byType(PageView), findsOneWidget);
+    // Bukan lagi PageView: kartu digeser bebas lewat ListView horizontal.
+    expect(find.byType(PageView), findsNothing);
+    expect(find.byType(ListView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
-    // viewportFraction 1.0 (#134): lebar kartu = childPad FScaffold, seragam
-    // dengan item feed lain; tetangga tak ikut terlihat di tepi layar.
-    expect(find.text('Dua'), findsNothing);
-    // Indikator aksesibel.
+    // Dots/indikator halaman ikut pensiun bersama PageView.
     expect(
-      find.bySemanticsLabel(RegExp('Indikator halaman carousel, 1 dari 3')),
-      findsOneWidget,
+      find.bySemanticsLabel(RegExp('Indikator halaman carousel')),
+      findsNothing,
     );
+    // Inti permintaan: jarak antar kartu = Gap murni, bukan padding.
+    final gaps = find.byType(Gap);
+    expect(gaps, findsWidgets);
+    final first = tester.getRect(find.text('Satu'));
+    final second = tester.getRect(find.text('Dua'));
+    expect(second.left - first.right, greaterThan(0));
   });
 
   testWidgets('carousel: kartu aktif render body md penuh (#134)', (
@@ -145,11 +151,11 @@ void main() {
     // Preview strip menampilkan cuplikan teks md tanpa markup; heading
     // dibuang, baris terakhir non-kosong jadi preview.
     expect(find.text('Isi tebal markdown'), findsOneWidget);
-    // PageView membangun halaman tetangga → minimal satu preview per kartu.
+    // ListView horizontal membangun kartu tetangga → minimal satu preview per kartu.
     expect(find.byType(AnnouncementBodyPreview), findsWidgets);
-    // Swipe ke kartu 2 tetap preview.
+    // Geser ke kartu 2 tetap preview.
     await tester.fling(
-      find.byType(PageView),
+      find.byType(ListView),
       const Offset(-400, 0),
       1000,
     );
