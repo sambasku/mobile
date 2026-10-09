@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -39,6 +40,20 @@ class _StubAdapter implements HttpClientAdapter {
 Dio _dio(int status, Object? body) =>
     Dio()..httpClientAdapter = _StubAdapter(status, body);
 
+/// Adapter tak pernah menjawab -> provider tetap loading.
+class _HangAdapter implements HttpClientAdapter {
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) =>
+      Completer<ResponseBody>().future;
+}
+
 Widget _app(ProviderContainer container) => UncontrolledProviderScope(
   container: container,
   child: MaterialApp.router(
@@ -73,6 +88,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(PinnedHomeBanner), findsOneWidget);
     expect(find.text('Pengumuman prioritas'), findsNothing);
+  });
+
+  testWidgets('loading: skeleton tampil (#134), bukan muncul mendadak', (
+    tester,
+  ) async {
+    // Adapter menggantung -> provider loading selamanya di frame test.
+    final dio = Dio()..httpClientAdapter = _HangAdapter();
+    final container = ProviderContainer(
+      overrides: [dioProvider.overrideWithValue(dio)],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(_app(container));
+    // pump 1 frame: provider AsyncLoading -> skeleton terpasang. Shimmer
+    // jalan terus, jadi pumpAndSettle tidak pernah settle - jangan pakai.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    // Skeleton punya text dummy "Judul pengumuman prioritas" + Container.
+    expect(find.text('Judul pengumuman prioritas'), findsOneWidget);
+    expect(find.byType(Container), findsWidgets);
   });
 
   testWidgets('error: banner shrink total', (tester) async {

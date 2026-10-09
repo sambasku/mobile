@@ -187,9 +187,12 @@ String announcementPreviewText(String body, AnnouncementBodyType bodyType) {
       ? _normalizeWebviewUrl(body)
       : null;
   if (uri != null) return uri.host;
-  return bodyType == AnnouncementBodyType.plain
+  final cleaned = bodyType == AnnouncementBodyType.plain
       ? body
       : stripMarkdownHtml(body);
+  // Return first non‑empty line (skip title/heading) for preview.
+  final lines = cleaned.split('\n').where((l) => l.trim().isNotEmpty).toList();
+  return lines.isNotEmpty ? lines.last.trim() : cleaned.trim();
 }
 
 /// Preview ringan untuk kartu carousel/list (#134): teks polos maxLines +

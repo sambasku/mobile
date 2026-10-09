@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/pages/pinned_announcements_page.dart';
+import 'package:sambasku_mobile/features/activity/presentation/widgets/announcement_body.dart';
+import 'package:sambasku_mobile/features/activity/presentation/widgets/pinned_home_banner.dart';
 import 'package:sambasku_mobile/features/activity/presentation/providers/announcement_detail_provider.dart';
 
 /// Widget test halaman pinned: empty / single / carousel / error.
@@ -138,18 +140,22 @@ void main() {
     addTearDown(container.dispose);
     await tester.pumpWidget(_app(container));
     await tester.pumpAndSettle();
-    // Kartu aktif (index 0, md): MarkdownBody terpasang.
-    expect(find.byType(MarkdownBody), findsOneWidget);
-    // Kartu aktif menampilkan isi md (bukan preview strip).
+    // #134: SEMUA kartu carousel = preview ringan (swipe mulus); body md
+    // penuh dirender di halaman detail, bukan di kartu.
+    expect(find.byType(MarkdownBody), findsNothing);
+    // Preview strip menampilkan cuplikan teks md tanpa markup; heading
+    // dibuang, baris terakhir non-kosong jadi preview.
     expect(find.text('Isi tebal markdown'), findsOneWidget);
-    // Swipe ke kartu 2: kartu 1 jadi neighbor -> preview strip.
+    // PageView membangun halaman tetangga → minimal satu preview per kartu.
+    expect(find.byType(AnnouncementBodyPreview), findsWidgets);
+    // Swipe ke kartu 2 tetap preview.
     await tester.fling(
       find.byType(PageView),
       const Offset(-400, 0),
       1000,
     );
     await tester.pumpAndSettle();
-    // Kartu aktif sekarang neighbor md -> preview strip, tanpa MarkdownBody.
+    // neighbor preview = 'Isi Neighbor'
     expect(find.text('Isi Neighbor'), findsOneWidget);
     expect(find.byType(MarkdownBody), findsNothing);
   });

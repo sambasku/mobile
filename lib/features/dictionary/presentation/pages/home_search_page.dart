@@ -14,7 +14,9 @@ import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
+import '../../../activity/presentation/providers/announcement_detail_provider.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
+import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/presentation/widgets/discussion_home_banner.dart';
 import '../../dictionary_router.dart';
@@ -216,8 +218,9 @@ class HomeSearchPage extends HookConsumerWidget {
     final hasError = state.errorMessage != null;
     final showPlaceholder =
         !feedReady || (items.isEmpty && state.errorMessage == null);
-    // 0 Kata Hari Ini, 1 spanduk, 2 judul, lalu opsional peringatan.
-    final headerCount = 3 + (hasError ? 1 : 0);
+    // 0 Kata Hari Ini, 1 spanduk diskusi, 2 banner pinned (shrink jika
+    // kosong), 3 judul, lalu opsional peringatan.
+    final headerCount = 4 + (hasError ? 1 : 0);
     final bodyCount = showPlaceholder
         ? 1
         : items.length + (state.isLoadingMore ? 1 : 0);
@@ -232,8 +235,9 @@ class HomeSearchPage extends HookConsumerWidget {
         itemBuilder: (context, index) {
           if (index == 0) return const WordOfDayCard();
           if (index == 1) return const DiscussionHomeBanner();
-          if (index == 2) return const _FeedHeading();
-          var cursor = 3;
+          if (index == 2) return const PinnedHomeBanner();
+          if (index == 3) return const _FeedHeading();
+          var cursor = 4;
           if (hasError) {
             if (index == cursor) {
               return Padding(
@@ -283,6 +287,7 @@ class HomeSearchPage extends HookConsumerWidget {
     );
     await store.deleteByPrefix('GET|/api/v1/activity');
     ref.invalidate(wordOfDayProvider);
+    ref.invalidate(pinnedAnnouncementsProvider);
     await Future.wait([
       ref.read(activityFeedProvider.notifier).load(forceRefresh: true),
       ref.read(wordOfDayProvider.future),
@@ -397,6 +402,7 @@ class _FeedSkeleton extends StatelessWidget {
       children: const [
         WordOfDayCard(),
         DiscussionHomeBanner(),
+        PinnedHomeBanner(),
         _FeedHeading(),
         _FeedListSkeleton(),
       ],

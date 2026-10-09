@@ -142,17 +142,10 @@ class _PinnedAnnouncementsPageState
               itemBuilder: (context, index) {
                 final announcement = items[index];
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 12,
-                  ),
-                  // Kartu aktif render penuh, neighbor preview ringan
-                  // (#134: WebView/platform view per halaman = jank swipe).
-                  child: _PinnedAnnouncementCard(
-                    announcement: announcement,
-                    isCarousel: true,
-                    isPreview: index != _currentPage,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  // FScaffold(childPad) sudah kasih horizontal 12 - jangan
+                  // tambah horizontal padding lagi (biar seragam item diskusi).
+                  child: _PinnedAnnouncementCard(announcement: announcement),
                 );
               },
             ),
@@ -223,7 +216,6 @@ class _PinnedAnnouncementsPageState
                     bodyType: AnnouncementBodyType.plain,
                     expired: false,
                   ),
-                  isCarousel: true,
                 ),
                 if (i != 2) const Gap(16),
               ],
@@ -291,18 +283,9 @@ class _PinnedAnnouncementsPageState
 /// Card ringkas untuk item di carousel / single view.
 /// Tap → buka AnnouncementDetailPage dengan payload beku.
 class _PinnedAnnouncementCard extends StatelessWidget {
-  const _PinnedAnnouncementCard({
-    required this.announcement,
-    this.isCarousel = false,
-    this.isPreview = false,
-  });
+  const _PinnedAnnouncementCard({required this.announcement});
 
   final FeedAnnouncement announcement;
-  final bool isCarousel;
-
-  /// true = kartu neighbor carousel: preview teks ringan (#134). Kartu
-  /// aktif render body penuh (md) - WebView tetap hanya di detail.
-  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -390,21 +373,13 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                 // Title
                 Text(announcement.title, style: titleStyle),
                 const Gap(8),
-                // Neighbor carousel: preview ringan. Kartu aktif: body
-                // penuh SEMUA tipe - webview = loadRequest URL dari body
-                // (call HTML sesuai URL), WebView cuma 1 per halaman
-                // aktif sehingga swipe tetap lancar (#134).
-                if (isPreview)
-                  AnnouncementBodyPreview(
-                    body: announcement.body,
-                    bodyType: announcement.bodyType,
-                  )
-                else
-                  AnnouncementBody(
-                    body: announcement.body,
-                    bodyType: announcement.bodyType,
-                    maxHeight: 280,
-                  ),
+                // Carousel/skeleton: preview ringan semua tipe (#134) -
+                // jaga swipe mulus. Body penuh (md, webview loadRequest)
+                // ada di halaman detail, tap kartu.
+                AnnouncementBodyPreview(
+                  body: announcement.body,
+                  bodyType: announcement.bodyType,
+                ),
                 // Action button hint if exists
                 if (announcement.actionUrl != null &&
                     announcement.actionUrl!.isNotEmpty) ...[

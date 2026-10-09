@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../activity_router.dart';
 import '../providers/announcement_detail_provider.dart';
@@ -33,7 +34,11 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
   Widget build(BuildContext context) {
     final pinned = ref.watch(pinnedAnnouncementsProvider(const {}));
     final items = pinned.asData?.value;
-    // Loading/error/kosong: hilang, bukan placeholder kosong.
+    // Error/kosong: hilang total (bukan placeholder kosong). Loading:
+    // skeleton #134 - sebelumnya shrink lalu muncul mendadak ("magic").
+    if (pinned.isLoading) {
+      return const _PinnedHomeBannerSkeleton();
+    }
     if (items == null || items.isEmpty) return const SizedBox.shrink();
 
     // Refresh bisa memendekkan list: jaga _page valid.
@@ -141,6 +146,107 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Skeleton banner home (#134): bentuk identik banner asli (tinggi 64 +
+/// dots) supaya feed tak bergeser saat data datang.
+class _PinnedHomeBannerSkeleton extends StatelessWidget {
+  const _PinnedHomeBannerSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final materialBrightness = Theme.of(context).brightness;
+    final isDark = materialBrightness == Brightness.dark;
+    final muted = context.theme.colors.muted;
+    final shimmer = ShimmerEffect(
+      baseColor: isDark
+          ? muted.withValues(alpha: 0.35)
+          : const Color(0xFFE7E7EA),
+      highlightColor: isDark
+          ? muted.withValues(alpha: 0.55)
+          : const Color(0xFFF4F4F5),
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(effect: shimmer),
+      child: IgnorePointer(
+        child: Skeletonizer(
+          enabled: true,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 64,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: context.theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FLucideIcons.pin,
+                        color: context.theme.colors.primary,
+                        size: 20,
+                      ),
+                      const Gap(10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Judul pengumuman prioritas',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.theme.typography.sm.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const Gap(2),
+                            Text(
+                              'cuplikan isi pengumuman',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.theme.typography.sm.copyWith(
+                                color: context.theme.colors.mutedForeground,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (i) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Container(
+                        width: i == 0 ? 16 : 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: context.theme.colors.mutedForeground,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
