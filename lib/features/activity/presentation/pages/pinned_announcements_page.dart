@@ -114,7 +114,9 @@ class _PinnedAnnouncementsPageState
       onRefresh: () => _refresh(ref),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        // #134: FScaffold childPad sudah kasih horizontal 12 - konten cukup
+        // vertikal, jangan tambah horizontal (gutter menumpuk).
+        padding: const EdgeInsets.symmetric(vertical: 12),
         children: [_PinnedAnnouncementCard(announcement: announcement)],
       ),
     );
@@ -136,11 +138,9 @@ class _PinnedAnnouncementsPageState
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final announcement = items[index];
+                // #134: tanpa horizontal - childPad FScaffold sudah 12.
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: _PinnedAnnouncementCard(
                     announcement: announcement,
                     isCarousel: true,
@@ -203,7 +203,8 @@ class _PinnedAnnouncementsPageState
         child: Skeletonizer(
           enabled: true,
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            // #134: tanpa horizontal - childPad FScaffold sudah 12.
+            padding: const EdgeInsets.symmetric(vertical: 12),
             children: [
               for (var i = 0; i < 3; i++) ...[
                 _PinnedAnnouncementCard(
@@ -307,7 +308,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
         onTap: () => _openDetail(context),
         child: FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -370,17 +371,12 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                 // Title
                 Text(announcement.title, style: titleStyle),
                 const Gap(8),
-                // Body preview (max 3 lines for carousel)
-                if (isCarousel)
-                  _BodyPreview(
-                    body: announcement.body,
-                    bodyType: announcement.bodyType,
-                  )
-                else
-                  AnnouncementBody(
-                    body: announcement.body,
-                    bodyType: announcement.bodyType,
-                  ),
+                // Preview ringan (max 3 baris) - WebViewWidget/MarkdownBody
+                // penuh hanya di halaman detail (#134: jank swipe carousel).
+                AnnouncementBodyPreview(
+                  body: announcement.body,
+                  bodyType: announcement.bodyType,
+                ),
                 // Action button hint if exists
                 if (announcement.actionUrl != null &&
                     announcement.actionUrl!.isNotEmpty) ...[
@@ -421,45 +417,5 @@ class _PinnedAnnouncementCard extends StatelessWidget {
       pathParameters: {'id': announcement.id},
       extra: announcement,
     );
-  }
-}
-
-/// Preview body untuk carousel (max 3 lines, plain text fallback).
-class _BodyPreview extends StatelessWidget {
-  const _BodyPreview({required this.body, required this.bodyType});
-
-  final String body;
-  final AnnouncementBodyType bodyType;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final plainText = bodyType == AnnouncementBodyType.plain
-        ? body
-        : _stripMarkdownHtml(body);
-
-    return Text(
-      plainText,
-      maxLines: 3,
-      overflow: TextOverflow.ellipsis,
-      style: theme.typography.md.copyWith(
-        height: 1.5,
-        color: theme.colors.mutedForeground,
-      ),
-    );
-  }
-
-  String _stripMarkdownHtml(String input) {
-    // Simple strip: remove markdown syntax & HTML tags
-    return input
-        .replaceAll(RegExp(r'```[\s\S]*?```'), '')
-        .replaceAll(RegExp(r'`[^`]+`'), '')
-        .replaceAll(RegExp(r'\*\*([^*]+)\*\*'), r'$1')
-        .replaceAll(RegExp(r'\*([^*]+)\*'), r'$1')
-        .replaceAll(RegExp(r'#{1,6}\s'), '')
-        .replaceAll(RegExp(r'\[([^\]]+)\]\([^)]+\)'), r'$1')
-        .replaceAll(RegExp(r'<[^>]+>'), '')
-        .replaceAll(RegExp(r'\n{2,}'), '\n')
-        .trim();
   }
 }

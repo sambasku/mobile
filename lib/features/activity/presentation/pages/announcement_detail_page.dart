@@ -114,7 +114,8 @@ class AnnouncementDetailPage extends StatelessWidget {
             )
           : null,
       child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        // #134: tanpa horizontal - childPad FScaffold sudah 12.
+        padding: const EdgeInsets.symmetric(vertical: 12),
         children: [
           if (announcement.expired)
             Padding(
