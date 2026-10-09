@@ -48,7 +48,9 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
     final accent = theme.colors.primary;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      // #134: banner Diskusi di atas cuma menyumbang bottom 10 - mepet.
+      // Carousel pengumuman tambah 8 di atasnya supaya antar kartu bernapas.
+      padding: const EdgeInsets.only(top: 8, bottom: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -178,7 +180,9 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
+            // Harus sama dengan banner asli (top 8 + bottom 10) supaya
+            // feed tidak bergeser saat data datang.
+            padding: const EdgeInsets.only(top: 8, bottom: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

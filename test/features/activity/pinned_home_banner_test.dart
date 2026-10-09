@@ -229,5 +229,9 @@ void main() {
     expect(pin.left, disc.left);
     expect(pin.right, disc.right);
     expect(pin.height, disc.height);
+
+    // #134: tanpa spacing atas, dua kartu yang kini bergeometri sama tampak
+    // menyatu. Wajib ada jeda vertikal yang jelas antar kartu.
+    expect(pin.top - disc.bottom, greaterThanOrEqualTo(16));
   });
 }
