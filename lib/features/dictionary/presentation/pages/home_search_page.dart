@@ -33,6 +33,10 @@ const _headerCollapseDistance = 90.0;
 /// Key blok header collaps (dipakai test untuk menemukan blok ini).
 const _headerCollapseKey = ValueKey('header_collapse');
 
+/// Gutter manual horizontal beranda: shell childPad dimatikan demi carousel
+/// pengumuman yang full-bleed, jadi tiap seksi non-carousel memasang sendiri.
+const _hPad = EdgeInsets.symmetric(horizontal: 12);
+
 /// Tab HOME: feed lintas aktivitas publik + Kata Hari Ini.
 class HomeSearchPage extends HookConsumerWidget {
   const HomeSearchPage({super.key});
@@ -67,6 +71,9 @@ class HomeSearchPage extends HookConsumerWidget {
       if (current != AppLifecycleState.resumed) return;
       if (previous == null || previous == AppLifecycleState.resumed) return;
       ref.invalidate(wordOfDayProvider);
+      // Pengumuman pinned bisa expired saat app di background; invalidate
+      // (data lama tetap tampil selagi reload, tanpa skeleton berkedip).
+      ref.invalidate(pinnedAnnouncementsProvider);
       ref.read(activityFeedProvider.notifier).load();
     });
 
@@ -84,9 +91,12 @@ class HomeSearchPage extends HookConsumerWidget {
 
     return Column(
       children: [
-        const FHeader(
-          title: BrandWordmark(),
-          suffixes: [ThemeToggleHeaderAction()],
+        Padding(
+          padding: _hPad,
+          child: const FHeader(
+            title: BrandWordmark(),
+            suffixes: [ThemeToggleHeaderAction()],
+          ),
         ),
         // Search + tombol usul: satu blok collaps scroll-proportional.
         // Transform dihitung dari collapse.value (0 terbuka, 1 tertutup):
@@ -116,7 +126,7 @@ class HomeSearchPage extends HookConsumerWidget {
           },
           // child di-cache: tidak rebuild saat animasi jalan.
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
             child: Column(
               children: [
                 Row(
@@ -233,15 +243,26 @@ class HomeSearchPage extends HookConsumerWidget {
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
         itemCount: headerCount + bodyCount,
         itemBuilder: (context, index) {
-          if (index == 0) return const WordOfDayCard();
-          if (index == 1) return const DiscussionHomeBanner();
+          // Index 2 (carousel pengumuman) dibiarkan full-bleed; sisanya
+          // memasang gutter manual.
+          if (index == 0) {
+            return const Padding(padding: _hPad, child: WordOfDayCard());
+          }
+          if (index == 1) {
+            return const Padding(
+              padding: _hPad,
+              child: DiscussionHomeBanner(),
+            );
+          }
           if (index == 2) return const PinnedHomeBanner();
-          if (index == 3) return const _FeedHeading();
+          if (index == 3) {
+            return const Padding(padding: _hPad, child: _FeedHeading());
+          }
           var cursor = 4;
           if (hasError) {
             if (index == cursor) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: FAlert(
                   variant: FAlertVariant.destructive,
                   title: Text(state.errorMessage!),
@@ -261,13 +282,16 @@ class HomeSearchPage extends HookConsumerWidget {
               child: Center(child: FCircularProgress()),
             );
           }
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ActivityFeedTile(item: items[bodyIndex]),
-              if (bodyIndex != items.length - 1)
-                Divider(height: 1, color: context.theme.colors.border),
-            ],
+          return Padding(
+            padding: _hPad,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ActivityFeedTile(item: items[bodyIndex]),
+                if (bodyIndex != items.length - 1)
+                  Divider(height: 1, color: context.theme.colors.border),
+              ],
+            ),
           );
         },
       ),
@@ -377,14 +401,17 @@ class _FeedListSkeleton extends StatelessWidget {
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
-          child: Column(
-            children: [
-              for (var i = 0; i < 4; i++) ...[
-                ActivityFeedTile(item: placeholder),
-                if (i != 3)
-                  Divider(height: 1, color: context.theme.colors.border),
+          child: Padding(
+            padding: _hPad,
+            child: Column(
+              children: [
+                for (var i = 0; i < 4; i++) ...[
+                  ActivityFeedTile(item: placeholder),
+                  if (i != 3)
+                    Divider(height: 1, color: context.theme.colors.border),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -400,10 +427,10 @@ class _FeedSkeleton extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
       children: const [
-        WordOfDayCard(),
-        DiscussionHomeBanner(),
+        Padding(padding: _hPad, child: WordOfDayCard()),
+        Padding(padding: _hPad, child: DiscussionHomeBanner()),
         PinnedHomeBanner(),
-        _FeedHeading(),
+        Padding(padding: _hPad, child: _FeedHeading()),
         _FeedListSkeleton(),
       ],
     );

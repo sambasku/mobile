@@ -48,7 +48,9 @@ final announcementDetailProvider = FutureProvider.autoDispose
 
 /// Pinned announcements list (mobile carousel / halaman pinned).
 /// GET /api/v1/announcements/pinned - publik, tidak butuh auth.
-final pinnedAnnouncementsProvider = FutureProvider.autoDispose
+/// Tanpa autoDispose: banner di beranda bisa off-screen saat scroll;
+/// autoDispose membuang datanya lalu skeleton muncul saat scroll balik.
+final pinnedAnnouncementsProvider = FutureProvider
     .family<List<FeedAnnouncement>, void>((ref, _) async {
       final dio = ref.watch(dioProvider);
       try {
