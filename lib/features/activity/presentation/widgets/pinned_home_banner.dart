@@ -53,7 +53,9 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 64,
+            // Tinggi disamakan dengan banner Ruang Diskusi (82) supaya kedua
+            // kartu di beranda seragam - sebelumnya 64 (18px lebih pendek).
+            height: 82,
             child: PageView.builder(
               controller: _controller,
               itemCount: items.length,
@@ -69,7 +71,6 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                     extra: a,
                   ),
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       color: theme.colors.secondary,
                       borderRadius: BorderRadius.circular(12),
@@ -182,8 +183,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  height: 64,
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  height: 82,
                   decoration: BoxDecoration(
                     color: context.theme.colors.secondary,
                     borderRadius: BorderRadius.circular(12),

@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/pinned_home_banner.dart';
+import 'package:sambasku_mobile/features/discussion/presentation/widgets/discussion_home_banner.dart';
 
 /// Widget test banner pinned beranda: shrink saat kosong/error, tampil saat
 /// ada pinned, tap navigasi ke /pinned, suffix multi-pinned.
@@ -174,5 +176,58 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Lomba Kuis'), findsOneWidget);
     expect(find.text('Jadwal Mudik'), findsNothing);
+  });
+
+  testWidgets('geometri kartu seragam dengan banner Ruang Diskusi', (
+    tester,
+  ) async {
+    final container = ProviderContainer(
+      overrides: [
+        dioProvider.overrideWithValue(
+          _dio(200, '{"success":true,"data":[{${_ann('01A', 'Jadwal Mudik')}}]}'),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.dark.touch,
+            child: FScaffold(
+              childPad: true,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
+                children: const [DiscussionHomeBanner(), PinnedHomeBanner()],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Kartu = Material Diskusi vs Container dalam PinnedHomeBanner.
+    final disc = tester.getRect(
+      find
+          .descendant(
+            of: find.byType(DiscussionHomeBanner),
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+    final pin = tester.getRect(
+      find
+          .descendant(
+            of: find.byType(PinnedHomeBanner),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    // Tepi kiri/kanan & tinggi wajib identik - dua kartu beranda seragam.
+    expect(pin.left, disc.left);
+    expect(pin.right, disc.right);
+    expect(pin.height, disc.height);
   });
 }
