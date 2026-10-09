@@ -384,27 +384,21 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                 // Title
                 Text(announcement.title, style: titleStyle),
                 const Gap(8),
-                // Neighbor carousel: preview ringan. Kartu aktif: body penuh
-                // untuk md/plain (WebView tetap hanya di detail, #134).
+                // Neighbor carousel: preview ringan. Kartu aktif: body
+                // penuh SEMUA tipe - webview = loadRequest URL dari body
+                // (call HTML sesuai URL), WebView cuma 1 per halaman
+                // aktif sehingga swipe tetap lancar (#134).
                 if (isPreview)
                   AnnouncementBodyPreview(
                     body: announcement.body,
                     bodyType: announcement.bodyType,
                   )
-                else ...[
-                  if (announcement.bodyType == AnnouncementBodyType.md ||
-                      announcement.bodyType == AnnouncementBodyType.plain)
-                    AnnouncementBody(
-                      body: announcement.body,
-                      bodyType: announcement.bodyType,
-                      maxHeight: 280,
-                    )
-                  else
-                    AnnouncementBodyPreview(
-                      body: announcement.body,
-                      bodyType: announcement.bodyType,
-                    ),
-                ],
+                else
+                  AnnouncementBody(
+                    body: announcement.body,
+                    bodyType: announcement.bodyType,
+                    maxHeight: 280,
+                  ),
                 // Action button hint if exists
                 if (announcement.actionUrl != null &&
                     announcement.actionUrl!.isNotEmpty) ...[
