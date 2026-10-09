@@ -109,17 +109,21 @@ void main() {
     expect(find.byType(PageView), findsNothing);
     expect(find.byType(ListView), findsOneWidget);
     expect(find.text('Satu'), findsOneWidget);
+    // Kartu selebar penuh: kartu tetangga tidak mengintip di tepi
+    // ('Dua' tak ter-build sebelum digeser).
+    expect(find.text('Dua'), findsNothing);
     // Dots/indikator halaman ikut pensiun bersama PageView.
     expect(
       find.bySemanticsLabel(RegExp('Indikator halaman carousel')),
       findsNothing,
     );
     // Inti permintaan: jarak antar kartu = Gap murni, bukan padding.
-    final gaps = find.byType(Gap);
-    expect(gaps, findsWidgets);
+    await tester.drag(find.byType(ListView), const Offset(-600, 0));
+    await tester.pumpAndSettle();
+    expect(find.byType(Gap), findsWidgets);
     final first = tester.getRect(find.text('Satu'));
     final second = tester.getRect(find.text('Dua'));
-    expect(second.left - first.right, greaterThan(0));
+    expect(second.left - first.right, greaterThan(12));
   });
 
   testWidgets('carousel: kartu aktif render body md penuh (#134)', (

@@ -110,8 +110,8 @@ class _PinnedAnnouncementsPageState
     return RefreshIndicator(
       onRefresh: () => _refresh(ref),
       // Geser bebas (bukan PageView): jarak antar kartu = Gap() murni di
-      // antara item, tanpa padding di tepi luar - kartu pertama tetap
-      // sejajar kiri dengan feed.
+      // antara item. Kartu selebar penuh supaya tepi kanan-kiri tertutup
+      // (tidak ada kartu tetangga yang mengintip / tepi terbuka).
       child: LayoutBuilder(
         builder: (context, constraints) => ListView.separated(
           scrollDirection: Axis.horizontal,
@@ -119,7 +119,7 @@ class _PinnedAnnouncementsPageState
           itemCount: items.length,
           separatorBuilder: (_, _) => const Gap(12),
           itemBuilder: (_, index) => SizedBox(
-            width: constraints.maxWidth * 0.86,
+            width: constraints.maxWidth,
             child: _PinnedAnnouncementCard(announcement: items[index]),
           ),
         ),
@@ -146,7 +146,7 @@ class _PinnedAnnouncementsPageState
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
-          // Bentuk identik carousel asli (horizontal, kartu 0.86 lebar,
+          // Bentuk identik carousel asli (horizontal, kartu selebar penuh,
           // Gap antar kartu) supaya tidak bergeser saat data datang.
           child: LayoutBuilder(
             builder: (context, constraints) => ListView.separated(
@@ -155,7 +155,7 @@ class _PinnedAnnouncementsPageState
               itemCount: 3,
               separatorBuilder: (_, _) => const Gap(12),
               itemBuilder: (_, i) => SizedBox(
-                width: constraints.maxWidth * 0.86,
+                width: constraints.maxWidth,
                 child: _PinnedAnnouncementCard(
                   announcement: FeedAnnouncement(
                     id: 'skeleton-$i',
