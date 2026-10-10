@@ -50,4 +50,9 @@ abstract interface class DictionaryRemoteDatasource {
   /// Kata hari ini (28-api-word-of-the-day.md). Publik. data null = korpus kosong.
   @GET('/api/v1/words/today')
   Future<ApiResponse<WordDetailDto>> getWordOfDay();
+
+  /// Daftar kategori/glosarium (GET /api/v1/categories) untuk filter
+  /// browse A-Z (#50). Publik tanpa auth.
+  @GET('/api/v1/categories')
+  Future<ApiResponse<List<CategoryDto>>> listCategories();
 }

@@ -91,23 +91,41 @@ class FeedActivityTarget {
   final String id;
 }
 
+/// Format isi pengumuman (#124): html = render native, md = markdown,
+/// webview = isi dimuat via WebView (URL/HTML), plain = teks biasa.
+enum AnnouncementBodyType { plain, html, md, webview }
+
+/// Tak dikenal / null = plain (data lama sebelum #124).
+AnnouncementBodyType parseAnnouncementBodyType(String? raw) => switch (raw) {
+  'html' => AnnouncementBodyType.html,
+  'md' => AnnouncementBodyType.md,
+  'webview' => AnnouncementBodyType.webview,
+  _ => AnnouncementBodyType.plain,
+};
+
 /// Data pengumuman (#102): payload beku dari feed untuk tile + halaman detail.
 class FeedAnnouncement {
   const FeedAnnouncement({
     required this.id,
     required this.title,
     required this.body,
+    this.bodyType = AnnouncementBodyType.plain,
     this.actionUrl,
     this.actionLabel,
     this.expired = false,
+    this.pinnedAt,
   });
 
   final String id;
   final String title;
   final String body;
+  final AnnouncementBodyType bodyType;
   final String? actionUrl;
   final String? actionLabel;
   final bool expired;
+
+  /// Waktu dipin (UTC). Null = tidak dipin.
+  final DateTime? pinnedAt;
 }
 
 /// Satu baris Aktivitas terbaru di beranda.

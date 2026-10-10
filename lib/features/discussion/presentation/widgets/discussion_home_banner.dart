@@ -15,7 +15,7 @@ class DiscussionHomeBanner extends StatelessWidget {
     final accent = theme.colors.primary;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Material(
         color: theme.colors.secondary,
         clipBehavior: Clip.antiAlias,

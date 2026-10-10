@@ -6,6 +6,7 @@ import '../../domain/entities/word_summary.dart';
 class WordListState {
   const WordListState({
     this.q = '',
+    this.category,
     this.searchIn = 'lemma',
     this.viaSearch = false,
     this.items = const [],
@@ -17,6 +18,9 @@ class WordListState {
   });
 
   final String q;
+
+  /// Filter kategori/glosarium (#50). Null = semua.
+  final String? category;
 
   /// `lemma` = Sambas, `translation` = Indonesia.
   final String searchIn;
@@ -33,6 +37,7 @@ class WordListState {
 
   WordListState copyWith({
     String? q,
+    String? category,
     String? searchIn,
     bool? viaSearch,
     List<WordSummary>? items,
@@ -46,6 +51,7 @@ class WordListState {
   }) {
     return WordListState(
       q: q ?? this.q,
+      category: category ?? this.category,
       searchIn: searchIn ?? this.searchIn,
       viaSearch: viaSearch ?? this.viaSearch,
       items: items ?? this.items,

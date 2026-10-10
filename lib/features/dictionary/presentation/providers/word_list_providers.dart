@@ -115,6 +115,23 @@ class WordListNotifier extends _$WordListNotifier {
     _debounce = Timer(const Duration(milliseconds: _kDebounceMs), load);
   }
 
+  /// Filter kategori berubah (#50). Reset + fetch halaman pertama.
+  void onCategoryChanged(String? category) {
+    if (category == state.category) return;
+    _debounce?.cancel();
+    _dropInFlight();
+    state = state.copyWith(
+      category: category,
+      items: const [],
+      clearNextCursor: true,
+      hasMore: false,
+      isLoading: true,
+      viaSearch: false,
+      clearErrorMessage: true,
+    );
+    scheduleMicrotask(load);
+  }
+
   /// Sambas (`lemma`) atau Indonesia (`translation`).
   void onSearchInChanged(String searchIn) {
     if (searchIn == state.searchIn) return;
@@ -162,7 +179,7 @@ class WordListNotifier extends _$WordListNotifier {
               ),
             )
           : await ref.read(listWordsUseCaseProvider)(
-              ListWordsParams(q: state.q, cursor: state.nextCursor),
+              ListWordsParams(q: state.q, cursor: state.nextCursor, category: state.category),
             );
 
       if (!ref.mounted || reqId != _loadMoreReqId) return;
@@ -270,7 +287,7 @@ class WordListNotifier extends _$WordListNotifier {
       }
 
       final listed = await ref.read(listWordsUseCaseProvider)(
-        ListWordsParams(q: q),
+        ListWordsParams(q: q, category: state.category),
       );
       if (!ref.mounted || reqId != _loadReqId) return;
 

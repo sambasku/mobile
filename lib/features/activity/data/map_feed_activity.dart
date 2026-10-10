@@ -44,14 +44,22 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     final annId = m['id']?.toString() ?? '';
     final annTitle = m['title']?.toString() ?? '';
     final annBody = m['body']?.toString() ?? '';
+    // #124: bodyType eksplisit dari API; tak dikenal = plain (data lama).
+    final bodyType = parseAnnouncementBodyType(
+      m['bodyType']?.toString() ?? m['body_type']?.toString(),
+    );
     if (annId.isNotEmpty && annTitle.isNotEmpty) {
       announcement = FeedAnnouncement(
         id: annId,
         title: annTitle,
         body: annBody,
+        bodyType: bodyType,
         actionUrl: _nonEmptyUrl(m['action_url']),
         actionLabel: _nonEmptyUrl(m['action_label']),
         expired: m['expired'] == true,
+        pinnedAt: m['pinned_at'] != null
+            ? DateTime.tryParse(m['pinned_at'].toString())
+            : null,
       );
     }
   }

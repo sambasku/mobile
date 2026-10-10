@@ -30,10 +30,10 @@ enum VotePendingAction { rewind }
 /// (errorCode menyusul), exception lain teks generik (bukan toString()
 /// yang bocor nama class ter-obfuscate).
 String _deckErrorDetail(Object error) => switch (error) {
-      VoteFailure(:final message, :final errorCode) =>
-        errorCode != null ? '$message ($errorCode)' : message,
-      _ => '',
-    };
+  VoteFailure(:final message, :final errorCode) =>
+    errorCode != null ? '$message ($errorCode)' : message,
+  _ => '',
+};
 
 /// Section deck nilai kata di tab Kontribusi.
 ///
@@ -101,7 +101,9 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
                     onDeckVisible: () {
                       if (_loggedView) return;
                       _loggedView = true;
-                      AnalyticsService.instance.log(AnalyticsEvents.voteDeckView);
+                      AnalyticsService.instance.log(
+                        AnalyticsEvents.voteDeckView,
+                      );
                     },
                   )
                 : const _GuestDeck(),
@@ -203,30 +205,44 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     return async.when(
       // Kerangka kartu (bukan spinner) - sama pola sesi tinjau.
       loading: () => const _VoteDeckCardPlaceholder(),
-      error: (error, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const FAlert(
-            variant: FAlertVariant.destructive,
-            title: Text(
-              'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.',
-            ),
-            icon: Icon(FLucideIcons.circleAlert),
-          ),
-          // #109: pesan failure backend, atau teks generik utk exception
-          // tak dikenal - jangan toString() mentah (bocor nama class
-          // ter-obfuscate seperti "Instance of 'tTb'").
-          if (_deckErrorDetail(error).isNotEmpty) ...[
-            const Gap(6),
-            Text(
-              _deckErrorDetail(error),
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.mutedForeground,
+      error: (error, _) {
+        // #127 self-healing: 401/UNAUTHORIZED = sesi berakhir, bukan error
+        // jaringan. Jangan tawarkan refresh (dead-end) - arahkan login ulang.
+        final detail = _deckErrorDetail(error);
+        final sessionEnded =
+            detail.contains('UNAUTHORIZED') ||
+            detail.contains('Token tidak disertakan');
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FAlert(
+              variant: sessionEnded
+                  ? FAlertVariant.primary
+                  : FAlertVariant.destructive,
+              title: Text(
+                sessionEnded
+                    ? 'Sesi berakhir. Silakan masuk kembali.'
+                    : 'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.',
+              ),
+              icon: Icon(
+                sessionEnded ? FLucideIcons.logIn : FLucideIcons.circleAlert,
               ),
             ),
+            // #109: pesan failure backend, atau teks generik utk exception
+            // tak dikenal - jangan toString() mentah (bocor nama class
+            // ter-obfuscate seperti "Instance of 'tTb'").
+            if (detail.isNotEmpty && !sessionEnded) ...[
+              const Gap(6),
+              Text(
+                detail,
+                style: theme.typography.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ],
           ],
-        ],
-      ),
+        );
+      },
       data: (state) {
         if (state.items.isEmpty) {
           return Padding(
@@ -298,27 +314,27 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
               onDisagree: _rewinding
                   ? null
                   : () => _castBar(
-                        context,
-                        ref,
-                        item: item,
-                        direction: VoteDeckSwipeDirection.disagree,
-                      ),
+                      context,
+                      ref,
+                      item: item,
+                      direction: VoteDeckSwipeDirection.disagree,
+                    ),
               onSkip: _rewinding
                   ? null
                   : () => _castBar(
-                        context,
-                        ref,
-                        item: item,
-                        direction: VoteDeckSwipeDirection.skip,
-                      ),
+                      context,
+                      ref,
+                      item: item,
+                      direction: VoteDeckSwipeDirection.skip,
+                    ),
               onAgree: _rewinding
                   ? null
                   : () => _castBar(
-                        context,
-                        ref,
-                        item: item,
-                        direction: VoteDeckSwipeDirection.agree,
-                      ),
+                      context,
+                      ref,
+                      item: item,
+                      direction: VoteDeckSwipeDirection.agree,
+                    ),
               onRewind: () => _rewind(context, ref),
               // Kartu tidak digeser: deck keepAlive, kembali ke kata yang sama.
               onFix: () => context.push('/suggest-edit/${item.id}'),
@@ -389,10 +405,9 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     }
 
     final value = direction == VoteDeckSwipeDirection.agree ? 1 : -1;
-    ref.read(voteDeckControllerProvider.notifier).castOptimistic(
-          item: item,
-          value: value,
-        );
+    ref
+        .read(voteDeckControllerProvider.notifier)
+        .castOptimistic(item: item, value: value);
 
     AnalyticsService.instance.log(
       AnalyticsEvents.voteDeckSwipe,
@@ -409,8 +424,9 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   Future<void> _rewind(BuildContext context, WidgetRef ref) async {
     if (_rewinding) return;
     widget.onPendingAction(VotePendingAction.rewind);
-    final failure =
-        await ref.read(voteDeckControllerProvider.notifier).rewind();
+    final failure = await ref
+        .read(voteDeckControllerProvider.notifier)
+        .rewind();
     if (!context.mounted) {
       widget.onPendingAction(null);
       return;
@@ -470,7 +486,8 @@ class _VoteDeckActionBar extends StatelessWidget {
                   ? const SizedBox.shrink()
                   // Layar sempit (sekitar 320dp): ikon saja, bukan "P...".
                   : LayoutBuilder(
-                      builder: (context, constraints) => constraints.maxWidth < 100
+                      builder: (context, constraints) =>
+                          constraints.maxWidth < 100
                           ? Align(
                               alignment: Alignment.centerLeft,
                               child: FButton.icon(
@@ -530,10 +547,7 @@ class _VoteDeckActionBar extends StatelessWidget {
               size: FButtonSizeVariant.sm,
               semanticsLabel: 'Sudah pas',
               onPress: _rewinding || onAgree == null ? null : onAgree,
-              child: Icon(
-                FLucideIcons.arrowBigUp,
-                color: theme.colors.success,
-              ),
+              child: Icon(FLucideIcons.arrowBigUp, color: theme.colors.success),
             ),
           ],
         ),

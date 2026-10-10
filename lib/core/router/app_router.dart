@@ -102,7 +102,11 @@ class AppRouter {
               GoRoute(
                 path: ExploreRouter.hub.path,
                 name: ExploreRouter.hub.name,
-                builder: (context, state) => const ExplorePage(),
+                // Padding manual: shell childPad sudah dimatikan demi Home.
+                builder: (context, state) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: ExplorePage(),
+                ),
               ),
             ],
           ),
@@ -111,7 +115,10 @@ class AppRouter {
               GoRoute(
                 path: '/action',
                 name: 'ActionRouter.activity',
-                builder: (context, state) => const ActivityPage(),
+                builder: (context, state) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: ActivityPage(),
+                ),
               ),
             ],
           ),
@@ -120,7 +127,10 @@ class AppRouter {
               GoRoute(
                 path: '/profile',
                 name: 'ProfileRouter.profile',
-                builder: (context, state) => const ProfilePage(),
+                builder: (context, state) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: ProfilePage(),
+                ),
               ),
             ],
           ),
@@ -266,7 +276,10 @@ class _HomeShell extends ConsumerWidget {
     return _DeferredShellTicker(
       child: RepaintBoundary(
         child: FScaffold(
-          childPad: true,
+          // childPad false: tab Home butuh area full-bleed untuk carousel
+          // pengumuman (pola word_detail_page). Tab lain dibungkus padding
+          // manual di builder-nya masing-masing.
+          childPad: false,
           resizeToAvoidBottomInset: false,
           scaffoldStyle: .delta(
             footerDecoration: .value(const BoxDecoration()),

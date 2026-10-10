@@ -12,6 +12,7 @@ import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/word_list_state.dart';
 import '../providers/search_history_provider.dart';
+import '../providers/categories_provider.dart';
 import '../providers/word_list_providers.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 
@@ -32,6 +33,7 @@ class WordListPage extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final scroll = useScrollController();
     final history = ref.watch(searchHistoryControllerProvider);
+    final categories = ref.watch(categoriesProvider);
     final showHistory =
         state.q.trim().isEmpty &&
         !state.isLoading &&
@@ -141,6 +143,26 @@ class WordListPage extends HookConsumerWidget {
                     variants,
                     const Icon(FLucideIcons.search),
                   ),
+            ),
+            const Gap(10),
+            categories.maybeWhen(
+              data: (items) {
+                if (items.isEmpty) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 6),
+                  child: FSelect<String>(
+                    items: {for (final c in items) c.name: c.id},
+                    control: FSelectControl.managed(
+                      initial: state.category,
+                      onChange: (value) => notifier.onCategoryChanged(value),
+                    ),
+                    label: const Text('Kategori'),
+                    clearable: true,
+                    size: .sm,
+                  ),
+                );
+              },
+              orElse: () => const SizedBox.shrink(),
             ),
             const Gap(10),
             if (state.errorMessage != null)

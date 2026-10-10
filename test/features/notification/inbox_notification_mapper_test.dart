@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sambasku_mobile/features/activity/domain/entities/feed_activity_item.dart';
 import 'package:sambasku_mobile/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:sambasku_mobile/features/notification/domain/entities/inbox_notification.dart';
 import 'package:sambasku_mobile/features/notification/domain/failures/notification_failure.dart';
@@ -76,7 +77,8 @@ void main() {
       'type': 'campaign',
       'title': 'Pengumuman',
       'body': 'Ada kabar baru',
-      'image_url': 'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/campaigns/x.webp',
+      'image_url':
+          'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/campaigns/x.webp',
       'target_kind': 'campaign',
       'target_id': '01HCAMP',
       'read_at': null,
@@ -102,6 +104,34 @@ void main() {
     });
     expect(item.imageUrl, isNull);
   });
+
+  test(
+    'parseInboxNotification body_type: md dikenali, kosong/asing → plain',
+    () {
+      Map<String, dynamic> raw(Object? bodyType) => {
+        'id': '01HNOTIF000000000000000006',
+        'type': 'campaign',
+        'title': 'Pengumuman',
+        'body': '**Halo**',
+        'body_type': bodyType,
+        'target_kind': 'campaign',
+        'target_id': '01HCAMP',
+        'created_at': '2026-09-21T00:00:00.000Z',
+      };
+      expect(
+        parseInboxNotification(raw('md')).bodyType,
+        AnnouncementBodyType.md,
+      );
+      expect(
+        parseInboxNotification(raw(null)).bodyType,
+        AnnouncementBodyType.plain,
+      );
+      expect(
+        parseInboxNotification(raw('rtf')).bodyType,
+        AnnouncementBodyType.plain,
+      );
+    },
+  );
 
   test('typeLabel fallback', () {
     const item = InboxNotification(

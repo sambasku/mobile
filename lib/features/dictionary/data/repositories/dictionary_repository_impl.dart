@@ -100,6 +100,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    String? category,
   }) async {
     try {
       final response = await _remoteDatasource.listWords({
@@ -108,6 +109,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         'cursor': ?cursor,
         'letter': ?letter,
         'is_verified': ?isVerified,
+        'category': ?category,
       });
 
       if (response.success == false) {
@@ -421,6 +423,50 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       );
     } catch (error) {
       return Either.left(DictionaryFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async {
+    try {
+      final response = await _remoteDatasource.listCategories();
+
+      if (response.success == false) {
+        return Either.left(
+          DictionaryFailure(
+            response.message ?? 'Gagal memuat kategori',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+
+      final items = response.data;
+      if (items == null) {
+        return Either.left(
+          DictionaryFailure(
+            response.message ?? 'Gagal memuat kategori',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+
+      return Either.right(
+        items
+            .map(
+              (c) => WordCategory(
+                id: c.id,
+                name: c.name,
+              ),
+            )
+            .toList(),
+      );
+    } on DioException catch (e) {
+      return Either.left(
+        DictionaryFailure(
+          e.message ?? 'Gagal memuat kategori',
+          errorCode: e.response?.data?['error_code'] as String?,
+        ),
+      );
     }
   }
 

@@ -141,7 +141,7 @@ class _BodyState extends State<_Body> {
   Future<void> _share(BuildContext buttonContext) async {
     final place = widget.place;
     final link =
-        placePublicUrl(place.slug) ?? placeGoogleMapsUri(place).toString();
+        placePublicUrl(place.slug) ?? placeGoogleMapsUri(place)?.toString();
     final box = buttonContext.findRenderObject() as RenderBox?;
     await SharePlus.instance.share(
       ShareParams(

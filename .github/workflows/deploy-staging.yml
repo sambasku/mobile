@@ -48,6 +48,9 @@ jobs:
       - name: Test
         run: flutter test
 
+  # APK staging untuk tes device: pakai `flutter run --flavor staging`
+  # lokal, atau build manual. CI staging hanya test.
+
   notify:
     needs: [test]
     if: always()
