@@ -19,6 +19,7 @@ class CachedNetworkImageWithFallback extends StatefulWidget {
     this.fallback = const ImagePlaceholder256(),
     this.fit = BoxFit.cover,
     this.alignment = Alignment.center,
+    this.expand = true,
   });
 
   final String imageUrl;
@@ -27,6 +28,11 @@ class CachedNetworkImageWithFallback extends StatefulWidget {
   final Widget fallback;
   final BoxFit fit;
   final Alignment alignment;
+
+  /// True (default): lebar & tinggi penuh parent - konteks beruas tetap
+  /// (SizedBox.expand, carousel). False: ukuran natural, dibatasi parent -
+  /// konten flow (mis. gambar di body markdown).
+  final bool expand;
 
   @override
   State<CachedNetworkImageWithFallback> createState() =>
@@ -89,8 +95,8 @@ class _CachedNetworkImageWithFallbackState
       return SvgPicture.network(
         _activeUrl,
         fit: BoxFit.contain,
-        width: double.infinity,
-        height: double.infinity,
+        width: widget.expand ? double.infinity : null,
+        height: widget.expand ? double.infinity : null,
         placeholderBuilder: (_) => const Skeletonizer(child: Bone()),
         errorBuilder: (_, _, _) => _errorChild(),
       );
@@ -100,8 +106,8 @@ class _CachedNetworkImageWithFallbackState
       imageUrl: _activeUrl,
       fit: widget.fit,
       alignment: widget.alignment,
-      width: double.infinity,
-      height: double.infinity,
+      width: widget.expand ? double.infinity : null,
+      height: widget.expand ? double.infinity : null,
       placeholder: (_, _) => const Skeletonizer(child: Bone()),
       errorBuilder: (_, _, _) => _errorChild(),
     );

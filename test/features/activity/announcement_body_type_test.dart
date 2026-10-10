@@ -114,4 +114,23 @@ void main() {
       'teks biasa',
     );
   });
+
+  test('wrapImagesInHtml bungkus <img> jadi tautan internal agar tap dicegat', () {
+    // Tap gambar -> skema internal, dicegat navigation delegate tanpa JS.
+    expect(
+      wrapImagesInHtml('<p><img src="https://x.com/a.png"></p>'),
+      '<p><a href="sambasku-image:https%3A%2F%2Fx.com%2Fa.png">'
+      '<img src="https://x.com/a.png"></a></p>',
+    );
+    // Atribut lain (width/alt) dipertahankan; src kutip tunggal juga.
+    expect(
+      wrapImagesInHtml("<img alt='foto' src='https://x.com/b.jpg' width='10'>"),
+      "<a href=\"sambasku-image:https%3A%2F%2Fx.com%2Fb.jpg\">"
+      "<img alt='foto' src='https://x.com/b.jpg' width='10'></a>",
+    );
+    // Tanpa <img> -> tak berubah.
+    expect(wrapImagesInHtml('<p>halo</p>'), '<p>halo</p>');
+    // <img> tanpa src -> dibiarkan (tak bisa di-preview).
+    expect(wrapImagesInHtml('<img alt="x">'), '<img alt="x">');
+  });
 }

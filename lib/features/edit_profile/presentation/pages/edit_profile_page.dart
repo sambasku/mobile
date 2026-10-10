@@ -30,11 +30,15 @@ class EditProfilePage extends HookConsumerWidget {
     }, const []);
 
     ref.listen(editProfileProvider.select((s) => s.successMessage), (_, next) {
-      if (next == null) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(next)));
-      if (context.canPop()) {
+      if (next == null || !context.mounted) return;
+      showFToast(
+        context: context,
+        title: Text(next),
+        variant: .primary,
+      );
+      if (context.mounted && context.canPop()) {
         context.pop();
-      } else {
+      } else if (context.mounted) {
         context.go('/profile');
       }
     });
