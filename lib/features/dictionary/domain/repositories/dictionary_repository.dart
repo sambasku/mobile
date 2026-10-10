@@ -44,6 +44,7 @@ abstract interface class DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
+    String? category,
   });
 
   /// Feed beranda: kata published urut waktu persetujuan.
@@ -53,4 +54,8 @@ abstract interface class DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   });
+
+  /// Daftar kategori/glosarium (GET /api/v1/categories) untuk filter
+  /// browse A-Z (#50).
+  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories();
 }

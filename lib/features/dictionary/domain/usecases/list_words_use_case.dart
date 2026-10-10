@@ -20,6 +20,7 @@ class ListWordsUseCase {
       cursor: params.cursor,
       letter: params.letter,
       isVerified: params.isVerified,
+      category: params.category,
     );
   }
 }
@@ -31,6 +32,7 @@ class ListWordsParams {
     this.cursor,
     this.letter,
     this.isVerified,
+    this.category,
   });
 
   final String q;
@@ -42,4 +44,7 @@ class ListWordsParams {
 
   /// Bila true, hanya kata terverifikasi (selaras web browse huruf).
   final bool? isVerified;
+
+  /// Filter kategori (fitur #50): id ULID atau nama case-insensitive.
+  final String? category;
 }

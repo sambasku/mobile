@@ -65,7 +65,7 @@ final class LetterWordsNotifierProvider
 }
 
 String _$letterWordsNotifierHash() =>
-    r'716b2e0b380249fa44b8a10643ef8cd7f3ecbaed';
+    r'7d9ef7950e41ae58bc55232c7a060f70e945d32a';
 
 /// Browse kata per huruf (setara web `/huruf/:letter`).
 /// Family per huruf supaya state A tidak bentrok dengan B.

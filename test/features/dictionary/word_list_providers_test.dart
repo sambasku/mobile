@@ -31,6 +31,7 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordSearchPage>> listWords({
     required String q,
     required int limit,
+    String? category,
     String? cursor,
     String? letter,
     bool? isVerified,
@@ -62,6 +63,10 @@ class _FakeDictionaryRepository implements DictionaryRepository {
       ),
     );
   }
+
+  @override
+  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
+      const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
