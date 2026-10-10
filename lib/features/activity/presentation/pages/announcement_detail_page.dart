@@ -163,14 +163,19 @@ class AnnouncementDetailPage extends StatelessWidget {
                 ),
               ),
             ),
-          Text(
-            announcement.title,
-            style: theme.typography.xl2.copyWith(
-              fontWeight: FontWeight.w700,
-              height: 1.25,
+          // html: judul cukup di app bar - WebView menampilkan isi murni
+          // apa adanya (konsol menyusun kontennya sendiri). plain/md tetap
+          // gaya artikel dengan judul di atas body.
+          if (announcement.bodyType != AnnouncementBodyType.html) ...[
+            Text(
+              announcement.title,
+              style: theme.typography.xl2.copyWith(
+                fontWeight: FontWeight.w700,
+                height: 1.25,
+              ),
             ),
-          ),
-          const Gap(12),
+            const Gap(12),
+          ],
           AnnouncementBody(
             body: announcement.body,
             bodyType: announcement.bodyType,
