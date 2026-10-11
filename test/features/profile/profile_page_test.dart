@@ -407,6 +407,6 @@ void main() {
     await tester.tap(find.text('Server'));
     await tester.pumpAndSettle();
     expect(find.text('Pilih Server'), findsOneWidget);
-    expect(find.text('Uji semua'), findsOneWidget);
+    expect(find.text('Ping'), findsOneWidget);
   });
 }

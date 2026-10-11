@@ -35,9 +35,8 @@ void main() {
             data: FThemes.zinc.light.touch,
             child: FScaffold(
               child: Builder(
-                builder: (context) => FTileGroup(
-                  children: [apiHostTile(context, resolver)],
-                ),
+                builder: (context) =>
+                    FTileGroup(children: [apiHostTile(context, resolver)]),
               ),
             ),
           ),
@@ -53,13 +52,17 @@ void main() {
     expect(find.text('Otomatis'), findsOneWidget);
   });
 
-  testWidgets('mode terkunci - label menunjukkan host terpilih', (tester) async {
+  testWidgets('mode terkunci - label menunjukkan host terpilih', (
+    tester,
+  ) async {
     await resolver.setForcedTier(2);
     await pumpTile(tester);
     expect(find.text('Render'), findsOneWidget);
   });
 
-  testWidgets('tap tile membuka sheet berisi 3 host + Otomatis', (tester) async {
+  testWidgets('tap tile membuka sheet berisi 3 host + Otomatis', (
+    tester,
+  ) async {
     await pumpTile(tester);
     await tester.tap(find.text('Server'));
     await tester.pumpAndSettle();
@@ -68,10 +71,17 @@ void main() {
     expect(find.text('Cloudflare'), findsOneWidget);
     expect(find.text('Deno Deploy'), findsOneWidget);
     expect(find.text('Render'), findsOneWidget);
-    expect(find.text('Uji semua'), findsOneWidget);
+    expect(find.text('Uji semua'), findsNothing);
+    expect(find.text('Ping'), findsOneWidget);
+    // Sebelum ping: subtitle tiap tier menampilkan host.
+    expect(find.text('https://api.sambasku.com'), findsOneWidget);
+    expect(find.text('https://deno.sambasku.com'), findsOneWidget);
+    expect(find.text('https://render.sambasku.com'), findsOneWidget);
   });
 
-  testWidgets('pilih Render di sheet → resolver terkunci ke tier 3', (tester) async {
+  testWidgets('pilih Render di sheet → resolver terkunci ke tier 3', (
+    tester,
+  ) async {
     await pumpTile(tester);
     await tester.tap(find.text('Server'));
     await tester.pumpAndSettle();
