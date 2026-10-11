@@ -1,9 +1,9 @@
 name: Deploy (Production)
 
 # Build flavor `production`. Play Console menerima AAB sebagai draft di
-# track closed testing (nama API: alpha).
+# track production (rollout tetap manual di Console).
 # Build APK dan GitHub Release ditunda (langkahnya dikomentari).
-# Rollout Play tetap manual. Track production belum dipakai.
+# Rollout Play tetap manual.
 # Trigger: push tag `vMAJOR.MINOR.PATCH` (contoh `v1.1.1`).
 #
 # versionName = tag tanpa awalan `v`.
@@ -162,7 +162,7 @@ jobs:
       #     path: build/app/outputs/flutter-apk/app-production-release.apk
       #     if-no-files-found: error
 
-      # Draft di track closed testing (API: alpha) - tidak auto-publish.
+      # Draft di track production - tidak auto-publish.
       # Rollout tetap manual di Play Console.
       - name: Assert AAB has no advertising ID permission
         run: node scripts/assert-no-ad-id.mjs
@@ -173,7 +173,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.PLAY_PACKAGE_NAME }}
           releaseFiles: build/app/outputs/bundle/productionRelease/app-production-release.aab
-          tracks: alpha
+          tracks: production
           status: draft
           releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
 
