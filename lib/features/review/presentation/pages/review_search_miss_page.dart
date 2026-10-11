@@ -20,7 +20,9 @@ import '../providers/review_search_miss_providers.dart';
 /// Mekanisme sama seperti area verifikator: satu kartu, swipe +
 /// tombol aksi, pindah kartu optimis TANPA menunggu request selesai.
 /// Kalau request gagal, kartu kembali ke depan + toast destructive.
-/// - kanan / [Tayang] → tayangkan ke beranda publik (miss belum tayang)
+/// - kanan / [Tayang] → tayangkan ke beranda publik (miss belum tayang);
+///   miss yang SUDAH tayang → kartu tetap maju + toast info (#137,
+///   dulu spring back diam-diam sehingga swipe terasa "mati")
 /// - kiri / [Singkirkan] → soft delete (spam / tidak layak)
 /// - atas / [Lewati] → skip PER USER (`POST /:id/skip`): miss hilang
 ///   dari panel user ini saja, verifikator lain tetap melihatnya
@@ -293,7 +295,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
                 semanticsLabel: 'Tayang',
-                // Sudah tayang → tanpa aksi (kartu spring back saat swipe).
+                // Sudah tayang → tombol nonaktif (swipe kanan = lewati, #137).
                 onPress: item.isVisible
                     ? null
                     : () => _decide(item, SwipeDecisionDirection.positive),
@@ -311,9 +313,12 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
     ReviewSearchMiss item,
     SwipeDecisionDirection direction,
   ) async {
-    // Sudah tayang → swipe kanan tidak menimbulkan aksi (spring back).
+    // Sudah tayang → tidak ada aksi server, tapi kartu TETAP maju + info
+    // (#137: dulu spring back diam-diam → swipe terasa gagal).
     if (direction == SwipeDecisionDirection.positive && item.isVisible) {
-      return false;
+      setState(() => _pos++);
+      _toast('"${item.term}" sudah tayang — dilewati');
+      return true;
     }
     _decide(item, direction);
     return true;
