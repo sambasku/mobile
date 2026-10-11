@@ -187,7 +187,7 @@ class LoginPage extends HookConsumerWidget {
                   variant: .ghost,
                   onPress: busy
                       ? null
-                      : () => context.go(AuthRouter.forgotPassword.path),
+                      : () => context.push(AuthRouter.forgotPassword.path),
                   child: const Text('Lupa password?'),
                 ),
               ),
@@ -259,7 +259,7 @@ class LoginPage extends HookConsumerWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: busy
                           ? null
-                          : () => context.go('/register'),
+                          : () => context.push('/register'),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text.rich(
@@ -348,7 +348,7 @@ void _showEmailNotVerifiedSheet(BuildContext context, String email) {
                 FButton(
                   onPress: () {
                     Navigator.of(sheetContext).pop();
-                    context.go(
+                    context.push(
                       '${AuthRouter.verifyEmail.path}?email=${Uri.encodeComponent(email)}',
                     );
                   },

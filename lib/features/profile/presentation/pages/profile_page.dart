@@ -219,7 +219,7 @@ class ProfilePage extends HookConsumerWidget {
                             FLucideIcons.chevronRight,
                             size: 16,
                           ),
-                          onPress: () => context.go('/register'),
+                          onPress: () => context.push('/register'),
                         ),
                       ],
                     ),
