@@ -262,8 +262,9 @@ class _ProbeStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (probing) {
-      // Saat ping berjalan, tampilkan spinner di sebelah host.
+    if (probing && outcome == null) {
+      // Ping berjalan dan tier ini belum ada hasil: spinner di sebelah host.
+      // Tier yang sudah punya hasil langsung menampilkan hasilnya.
       return Row(
         children: [
           Text(
