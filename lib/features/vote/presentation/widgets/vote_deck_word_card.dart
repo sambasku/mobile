@@ -31,7 +31,7 @@ class VoteDeckWordCard extends ConsumerWidget {
         ? VoteDeckWordFace(
             lemma: item.lemma,
             sense: item.sense,
-            wordType: item.wordType,
+            wordType: item.wordTypeLabel,
           )
         : LayoutBuilder(
             builder: (context, constraints) => SingleChildScrollView(

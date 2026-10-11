@@ -137,7 +137,7 @@ class _GuestDeck extends ConsumerWidget {
                 child: VoteDeckWordFace(
                   lemma: w.lemma,
                   sense: w.sense,
-                  wordType: w.wordType,
+                  wordType: w.wordTypeLabel,
                 ),
               );
             },
