@@ -6,6 +6,7 @@ import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_detail_page.dart';
+import 'presentation/pages/place_article_page.dart';
 import 'presentation/pages/region_detail_page.dart';
 
 class ExploreRouter {
@@ -23,6 +24,12 @@ class ExploreRouter {
   static const place = RouteDefiner(
     path: '/explore/place/:slug',
     name: 'ExploreRouter.place',
+  );
+
+  /// Route artikel markdown Place (push penuh, root navigator).
+  static const placeArticle = RouteDefiner(
+    path: '/explore/place/:slug/artikel',
+    name: 'ExploreRouter.placeArticle',
   );
 
   /// Daftar + detail Cuisine (cuisines.json, bukan places.json).
@@ -95,6 +102,14 @@ class ExploreRouter {
       builder: (context, state) {
         final slug = state.pathParameters['slug'] ?? '';
         return CuisineDetailPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: placeArticle.path,
+      name: placeArticle.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return PlaceArticlePage(slug: slug);
       },
     ),
     GoRoute(
