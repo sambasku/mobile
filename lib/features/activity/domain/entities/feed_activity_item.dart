@@ -84,11 +84,14 @@ class FeedActivityActor {
   final String? avatarUrl;
 }
 
+/// #144: arah pencarian search-miss (lemma = kata Sambas, translation = kata
+/// Indonesia). Diperlukan oleh form usul kata agar field prefill tepat.
 class FeedActivityTarget {
-  const FeedActivityTarget({required this.type, required this.id});
+  const FeedActivityTarget({required this.type, required this.id, this.direction});
 
   final String type;
   final String id;
+  final String? direction; // 'lemma' | 'translation' | null
 }
 
 /// Format isi pengumuman (#124): html = render native, md = markdown,

@@ -32,7 +32,15 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     final type = m['type']?.toString() ?? '';
     final tid = m['id']?.toString() ?? '';
     if (type.isNotEmpty && tid.isNotEmpty) {
-      target = FeedActivityTarget(type: type, id: tid);
+      // #144: arah search-miss ('lemma'/'translation') untuk prefill form usul.
+      final direction = m['direction']?.toString();
+      target = FeedActivityTarget(
+        type: type,
+        id: tid,
+        direction: (direction == 'lemma' || direction == 'translation')
+            ? direction
+            : null,
+      );
     }
   }
 
