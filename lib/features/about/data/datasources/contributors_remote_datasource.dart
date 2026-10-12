@@ -64,7 +64,7 @@ class ContributorEntry {
       avatarUrl: json['avatarUrl'] is String
           ? json['avatarUrl'] as String
           : null,
-      url: json['url'] is String ? json['url'] as String : null,
+      url: _cleanUrl(json['url']),
       since: since,
       note: note,
     );
@@ -108,4 +108,12 @@ class ContributorsRemoteDatasource {
     parsed.sort((a, b) => a.since.compareTo(b.since));
     return parsed;
   }
+}
+
+/// Null-safe URL: placeholder '-'/'—' atau kosong dianggap tidak ada.
+String? _cleanUrl(Object? raw) {
+  if (raw is! String) return null;
+  final t = raw.trim();
+  if (t.isEmpty || t == '-' || t == '—') return null;
+  return t;
 }

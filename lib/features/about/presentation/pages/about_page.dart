@@ -303,27 +303,32 @@ class _ContributorTile extends StatelessWidget {
 
     // #100: punya akun SambasKu -> tap buka profil publik in-app.
     // Tanpa username -> tile polos (tidak interaktif).
+    // #147: url website -> ikon globe buka browser eksternal.
     final username = contributor.sambaskuUsername;
-    if (username == null) return tile;
+    if (username == null && contributor.url == null) return tile;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: () => UserProfileRouter.open(
-          context,
-          username,
-          displayName: contributor.name,
-        ),
+        onTap: username == null
+            ? null
+            : () => UserProfileRouter.open(
+                context,
+                username,
+                displayName: contributor.name,
+              ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
             children: [
               Expanded(child: tile),
-              Icon(
-                FLucideIcons.chevronRight,
-                size: 16,
-                color: theme.colors.mutedForeground,
-              ),
+              if (contributor.url case final url?) _WebsiteAction(url: url),
+              if (username != null)
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
             ],
           ),
         ),
@@ -448,31 +453,76 @@ class _SponsorTile extends StatelessWidget {
     );
 
     // #100: sama dengan _ContributorTile - profil SambasKu bila ada.
+    // #147: url website -> ikon globe buka browser eksternal.
     final username = sponsor.sambaskuUsername;
-    if (username == null) return tile;
+    if (username == null && sponsor.url == null) return tile;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: () => UserProfileRouter.open(
-          context,
-          username,
-          displayName: sponsor.name,
-        ),
+        onTap: username == null
+            ? null
+            : () => UserProfileRouter.open(
+                context,
+                username,
+                displayName: sponsor.name,
+              ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
             children: [
               Expanded(child: tile),
-              Icon(
-                FLucideIcons.chevronRight,
-                size: 16,
-                color: theme.colors.mutedForeground,
-              ),
+              if (sponsor.url case final url?) _WebsiteAction(url: url),
+              if (username != null)
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// #147: aksi kecil buka website (url_launcher, browser eksternal).
+/// Gagal launch -> toast; tap tidak menjalar ke tap tile (profil).
+class _WebsiteAction extends StatelessWidget {
+  const _WebsiteAction({required this.url});
+
+  final String url;
+
+  Future<void> _open(BuildContext context) async {
+    var ok = false;
+    try {
+      final uri = Uri.tryParse(url);
+      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+        ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {
+      ok = false;
+    }
+    if (!ok && context.mounted) {
+      showFToast(
+        context: context,
+        title: const Text('Tidak bisa membuka website'),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: 'Buka website',
+      visualDensity: VisualDensity.compact,
+      icon: Icon(
+        FLucideIcons.globe,
+        size: 16,
+        color: context.theme.colors.mutedForeground,
+      ),
+      onPressed: () => _open(context),
     );
   }
 }

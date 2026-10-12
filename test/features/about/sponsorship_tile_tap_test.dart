@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,27 @@ const _linked = ContributorEntry(
   note: 'Penggagas dan pengelola repositori',
   avatarUrl: null,
   since: '2019-03-01',
+);
+
+const _withUrl = ContributorEntry(
+  id: 'iamutaki',
+  sambaskuUsername: 'ibnulmutaki',
+  name: 'Ibnul Mutaki',
+  roles: ['developer'],
+  note: 'Penggagas',
+  avatarUrl: null,
+  url: 'https://iamutaki.com',
+  since: '2019-03-01',
+);
+
+const _urlOnly = ContributorEntry(
+  id: 'hanapi',
+  name: 'Hana Pertiwi',
+  roles: ['peneliti'],
+  note: 'Riset kosakata',
+  avatarUrl: null,
+  url: 'https://example.org',
+  since: '2020-01-01',
 );
 
 const _plain = ContributorEntry(
@@ -109,5 +131,81 @@ void main() {
     // InkWell internal halaman (tab dsb.) boleh ada; tile polos berarti
     // TIDAK ada chevron affordance profil.
     expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
+  });
+
+  // #147: ikon globe buka website via url_launcher (channel dimock).
+  group('#147 action website', () {
+    final launched = <String>[];
+
+    setUp(() {
+      launched.clear();
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('plugins.flutter.io/url_launcher'),
+            (call) async {
+              if (call.method == 'launch') {
+                launched.add((call.arguments as Map)['url'] as String);
+                return true;
+              }
+              return true;
+            },
+          );
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('plugins.flutter.io/url_launcher'),
+            null,
+          );
+    });
+
+    testWidgets('url terisi -> globe; tap buka browser, bukan profil', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(800, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await pumpPage(
+        tester,
+        contributors: const [_withUrl, _plain],
+        router: router(),
+      );
+
+      // Hanya tile ber-url yang punya globe.
+      expect(find.byIcon(FLucideIcons.globe), findsOneWidget);
+      await tester.tap(find.byIcon(FLucideIcons.globe));
+      await tester.pumpAndSettle();
+
+      expect(launched, ['https://iamutaki.com']);
+      expect(find.text('PROFILE:ibnulmutaki'), findsNothing);
+    });
+
+    testWidgets('url tanpa username -> globe ada, chevron tidak', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(800, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await pumpPage(tester, contributors: const [_urlOnly], router: router());
+
+      expect(find.byIcon(FLucideIcons.globe), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
+    });
+
+    testWidgets('tanpa url -> tidak ada globe', (tester) async {
+      tester.view.physicalSize = const Size(800, 2000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await pumpPage(tester, contributors: const [_plain], router: router());
+
+      expect(find.byIcon(FLucideIcons.globe), findsNothing);
+    });
   });
 }
