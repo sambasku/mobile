@@ -42,7 +42,7 @@ final class EditProfileNotifierProvider
 }
 
 String _$editProfileNotifierHash() =>
-    r'efd1187b938d1b9f22126d0a91b28239573e6dac';
+    r'96831241e16db8fd52431124f9959c80e6cd1e30';
 
 abstract class _$EditProfileNotifier extends $Notifier<EditProfileState> {
   EditProfileState build();

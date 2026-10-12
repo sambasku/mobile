@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginRequestDto {
 
- String get email; String get password;@JsonKey(name: 'client_type') String get clientType;
+ String get identifier; String get password;@JsonKey(name: 'client_type') String get clientType;
 /// Create a copy of LoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $LoginRequestDtoCopyWith<LoginRequestDto> get copyWith => _$LoginRequestDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginRequestDto&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginRequestDto&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.password, password) || other.password == password)&&(identical(other.clientType, clientType) || other.clientType == clientType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,clientType);
+int get hashCode => Object.hash(runtimeType,identifier,password,clientType);
 
 @override
 String toString() {
-  return 'LoginRequestDto(email: $email, password: $password, clientType: $clientType)';
+  return 'LoginRequestDto(identifier: $identifier, password: $password, clientType: $clientType)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $LoginRequestDtoCopyWith<$Res>  {
   factory $LoginRequestDtoCopyWith(LoginRequestDto value, $Res Function(LoginRequestDto) _then) = _$LoginRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String email, String password,@JsonKey(name: 'client_type') String clientType
+ String identifier, String password,@JsonKey(name: 'client_type') String clientType
 });
 
 
@@ -65,9 +65,9 @@ class _$LoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of LoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? clientType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? identifier = null,Object? password = null,Object? clientType = null,}) {
   return _then(_self.copyWith(
-email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
 as String,
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String password, @JsonKey(name: 'client_type')  String clientType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String identifier,  String password, @JsonKey(name: 'client_type')  String clientType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginRequestDto() when $default != null:
-return $default(_that.email,_that.password,_that.clientType);case _:
+return $default(_that.identifier,_that.password,_that.clientType);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.email,_that.password,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String password, @JsonKey(name: 'client_type')  String clientType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String identifier,  String password, @JsonKey(name: 'client_type')  String clientType)  $default,) {final _that = this;
 switch (_that) {
 case _LoginRequestDto():
-return $default(_that.email,_that.password,_that.clientType);case _:
+return $default(_that.identifier,_that.password,_that.clientType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.email,_that.password,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String password, @JsonKey(name: 'client_type')  String clientType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String identifier,  String password, @JsonKey(name: 'client_type')  String clientType)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginRequestDto() when $default != null:
-return $default(_that.email,_that.password,_that.clientType);case _:
+return $default(_that.identifier,_that.password,_that.clientType);case _:
   return null;
 
 }
@@ -211,10 +211,10 @@ return $default(_that.email,_that.password,_that.clientType);case _:
 @JsonSerializable()
 
 class _LoginRequestDto implements LoginRequestDto {
-  const _LoginRequestDto({required this.email, required this.password, @JsonKey(name: 'client_type') this.clientType = 'mobile'});
+  const _LoginRequestDto({required this.identifier, required this.password, @JsonKey(name: 'client_type') this.clientType = 'mobile'});
   factory _LoginRequestDto.fromJson(Map<String, dynamic> json) => _$LoginRequestDtoFromJson(json);
 
-@override final  String email;
+@override final  String identifier;
 @override final  String password;
 @override@JsonKey(name: 'client_type') final  String clientType;
 
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginRequestDto&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginRequestDto&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.password, password) || other.password == password)&&(identical(other.clientType, clientType) || other.clientType == clientType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,clientType);
+int get hashCode => Object.hash(runtimeType,identifier,password,clientType);
 
 @override
 String toString() {
-  return 'LoginRequestDto(email: $email, password: $password, clientType: $clientType)';
+  return 'LoginRequestDto(identifier: $identifier, password: $password, clientType: $clientType)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$LoginRequestDtoCopyWith<$Res> implements $LoginRequestDto
   factory _$LoginRequestDtoCopyWith(_LoginRequestDto value, $Res Function(_LoginRequestDto) _then) = __$LoginRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password,@JsonKey(name: 'client_type') String clientType
+ String identifier, String password,@JsonKey(name: 'client_type') String clientType
 });
 
 
@@ -268,9 +268,9 @@ class __$LoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of LoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? clientType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? identifier = null,Object? password = null,Object? clientType = null,}) {
   return _then(_LoginRequestDto(
-email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
 as String,

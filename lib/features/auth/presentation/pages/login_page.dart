@@ -34,10 +34,10 @@ class LoginPage extends HookConsumerWidget {
         (status?.isAuth ?? false) && !(status?.isLoggingOut ?? false);
     final fromVerifierRelogin =
         GoRouterState.of(context).uri.queryParameters['relogin'] == '1';
-    final email = useTextEditingController();
+    final identifier = useTextEditingController();
     final password = useTextEditingController();
     final logoLoaded = useState(false);
-    useListenable(email);
+    useListenable(identifier);
     useListenable(password);
 
     final busy = state.isSubmitting;
@@ -101,7 +101,7 @@ class LoginPage extends HookConsumerWidget {
     ) {
       if (showSheet != true || !context.mounted) return;
       ref.read(authLoginProvider.notifier).acknowledgeUnverifiedSheet();
-      _showEmailNotVerifiedSheet(context, email.text.trim());
+      _showEmailNotVerifiedSheet(context, identifier.text.trim());
     });
 
     if (alreadyAuth) {
@@ -112,13 +112,14 @@ class LoginPage extends HookConsumerWidget {
     }
 
     final canSubmit =
-        email.text.contains('@') &&
+        identifier.text.trim().isNotEmpty &&
         password.text.length >= 8 &&
         !busy;
 
-    void submit() => ref
-        .read(authLoginProvider.notifier)
-        .submit(email: email.text, password: password.text);
+    void submit() => ref.read(authLoginProvider.notifier).submit(
+          email: identifier.text.trim(),
+          password: password.text,
+        );
 
     return FScaffold(
       childPad: true,
@@ -167,10 +168,12 @@ class LoginPage extends HookConsumerWidget {
                 ),
                 const Gap(16),
               ],
-              FTextField.email(
-                control: .managed(controller: email),
+              FTextField(
+                control: .managed(controller: identifier),
                 enabled: !busy,
-                label: const Text('Email'),
+                label: const Text('Email atau Username'),
+                hint: 'email@contoh.com / username',
+                autofillHints: const [AutofillHints.email, AutofillHints.username],
               ),
               const Gap(12),
               FTextField.password(

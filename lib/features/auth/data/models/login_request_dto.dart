@@ -9,7 +9,7 @@ part 'login_request_dto.g.dart';
 @freezed
 abstract class LoginRequestDto with _$LoginRequestDto {
   const factory LoginRequestDto({
-    required String email,
+    required String identifier,
     required String password,
     @JsonKey(name: 'client_type') @Default('mobile') String clientType,
   }) = _LoginRequestDto;

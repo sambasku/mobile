@@ -34,6 +34,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
 
   @override
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
+    String? username,
     String? displayName,
     String? bio,
     bool? hasReadContributionGuide,
@@ -41,6 +42,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     try {
       final response = await _remote.updateMyProfile(
         UpdateMyProfileRequestDto(
+          username: username,
           displayName: displayName,
           bio: bio,
           hasReadContributionGuide: hasReadContributionGuide,

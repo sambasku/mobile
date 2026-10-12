@@ -14,8 +14,10 @@ class EditProfilePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(editProfileProvider);
+    final username = useTextEditingController();
     final displayName = useTextEditingController();
     final bio = useTextEditingController();
+    useListenable(username);
     useListenable(displayName);
     useListenable(bio);
 
@@ -23,6 +25,7 @@ class EditProfilePage extends HookConsumerWidget {
       Future.microtask(() async {
         final loaded = await ref.read(editProfileProvider.notifier).load();
         if (loaded == null || !context.mounted) return;
+        username.text = loaded.username;
         displayName.text = loaded.displayName;
         bio.text = loaded.bio;
       });
@@ -52,13 +55,15 @@ class EditProfilePage extends HookConsumerWidget {
       });
     });
 
-    final canSubmit = displayName.text.trim().isNotEmpty &&
+    final canSubmit = _isValidUsername(username.text) &&
+        displayName.text.trim().isNotEmpty &&
         displayName.text.trim().length <= 100 &&
         bio.text.trim().length <= 500 &&
         !state.isSubmitting &&
         !state.isLoading;
 
     void submit() => ref.read(editProfileProvider.notifier).submit(
+          username: username.text.trim(),
           displayName: displayName.text,
           bio: bio.text,
         );
@@ -80,6 +85,15 @@ class EditProfilePage extends HookConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: 8),
               children: [
+                FTextField(
+                  control: .managed(controller: username),
+                  enabled: !state.isSubmitting,
+                  label: const Text('Username'),
+                  hint: 'a-z, 0-9, titik, underscore (3-30 karakter)',
+                  maxLength: 30,
+                  textInputAction: .next,
+                ),
+                const Gap(12),
                 FTextField(
                   control: .managed(controller: displayName),
                   enabled: !state.isSubmitting,
@@ -110,4 +124,9 @@ class EditProfilePage extends HookConsumerWidget {
             ),
     );
   }
+}
+
+
+bool _isValidUsername(String value) {
+  return RegExp(r'^[a-z0-9._]{3,30}$').hasMatch(value);
 }

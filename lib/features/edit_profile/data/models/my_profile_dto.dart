@@ -20,6 +20,8 @@ abstract class MyProfileDto with _$MyProfileDto {
 @freezed
 abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
   const factory UpdateMyProfileRequestDto({
+    // includeIfNull: false — hanya kirim kalau diisi
+    @JsonKey(includeIfNull: false) String? username,
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
     // #98: kirim key ini hanya saat true - null ikut ter-serialize

@@ -28,6 +28,7 @@ Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
 _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
   Map<String, dynamic> json,
 ) => _UpdateMyProfileRequestDto(
+  username: json['username'] as String?,
   displayName: json['display_name'] as String?,
   bio: json['bio'] as String?,
   hasReadContributionGuide: json['has_read_contribution_guide'] as bool?,
@@ -36,6 +37,7 @@ _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
 Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
   _UpdateMyProfileRequestDto instance,
 ) => <String, dynamic>{
+  'username': ?instance.username,
   'display_name': instance.displayName,
   'bio': instance.bio,
   'has_read_contribution_guide': ?instance.hasReadContributionGuide,

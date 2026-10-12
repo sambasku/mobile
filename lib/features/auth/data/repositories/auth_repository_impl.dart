@@ -84,7 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final response = await _remoteDatasource.login(
-        LoginRequestDto(email: email, password: password),
+        LoginRequestDto(identifier: email, password: password),
       );
 
       final payload = response.data;
