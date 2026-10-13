@@ -326,7 +326,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               'provider_file_id': slot.uploaded!.providerFileId,
               'provider': ?slot.uploaded!.provider,
               'sha': ?slot.uploaded!.sha,
-              'alt_text': slot.uploaded!.altText,
+              'alt_text': ?slot.uploaded!.altText,
               'is_primary': slot.uploaded!.isPrimary,
             },
       ];
