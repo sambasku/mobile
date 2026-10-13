@@ -273,7 +273,7 @@ jobs:
           MSG="$STATUS CI $REPO — $WORKFLOW
           Branch: $BRANCH · Commit: $SHA
           $RUN_URL"
-          jq -n --arg content "$MSG" '{{content: $content}}' \
+          jq -n --arg content "$MSG" '{content: $content}' \
             | curl -sf -X POST -H 'Content-Type: application/json' \
                 -d @- "$DISCORD_WEBHOOK_URL" \
             || echo "Discord webhook gagal (best-effort, job tidak gagal)"
