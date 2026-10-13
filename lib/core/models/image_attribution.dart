@@ -6,6 +6,7 @@ String shareProviderLabel(String id) => switch (id) {
       // Legacy atribusi gambar kata / share lama
       'pexels' => 'Pexels',
       'wikimedia' => 'Wikimedia',
+      'sambasku' => 'Sambasku',
       _ => id,
     };
 
