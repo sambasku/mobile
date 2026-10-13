@@ -19,6 +19,8 @@ void main() {
     expect(dto.isVerifier, isTrue);
     expect(dto.joinedAt, '2026-08-01T00:00:00.000Z');
     expect(dto.stats.contributionsApproved, 12);
+    expect(dto.stats.wordsApproved, 4);
+    expect(dto.stats.correctionsApproved, 8);
     expect(dto.stats.verificationsDone, 34);
   });
 

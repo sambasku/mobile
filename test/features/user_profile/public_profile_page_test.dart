@@ -27,6 +27,8 @@ const _profile = PublicProfile(
   isVerifier: false,
   joinedAt: '2026-08-01T00:00:00.000Z',
   contributionsApproved: 2,
+  wordsApproved: 1,
+  correctionsApproved: 1,
   verificationsDone: 0,
   commentsPublished: 0,
 );
@@ -88,9 +90,8 @@ void main() {
   testWidgets('stat profil dirender inline, bukan kartu', (tester) async {
     await _pump(tester);
 
-    expect(find.textContaining('kontribusi'), findsOneWidget);
-    expect(find.textContaining('verifikasi'), findsOneWidget);
-    expect(find.textContaining('komentar'), findsOneWidget);
+    expect(find.textContaining('usul kata'), findsOneWidget);
+    expect(find.textContaining('perbaikan'), findsOneWidget);
   });
 
   testWidgets('profil orang lain: tanpa tombol Edit, CTA tile tampil',

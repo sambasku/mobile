@@ -521,10 +521,8 @@ class _ProfileHeaderTitle extends ConsumerWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             ProfileStatRow(
-                              contributions:
-                                  profile?.contributionsApproved ?? 0,
-                              verifications: profile?.verificationsDone ?? 0,
-                              comments: profile?.commentsPublished ?? 0,
+                              words: profile?.wordsApproved ?? 0,
+                              corrections: profile?.correctionsApproved ?? 0,
                             ),
                             const Gap(4),
                             ProfileMetaRow(

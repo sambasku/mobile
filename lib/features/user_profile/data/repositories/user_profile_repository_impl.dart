@@ -77,6 +77,8 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
         isVerifier: dto.isVerifier,
         joinedAt: dto.joinedAt,
         contributionsApproved: dto.stats.contributionsApproved,
+        wordsApproved: dto.stats.wordsApproved,
+        correctionsApproved: dto.stats.correctionsApproved,
         verificationsDone: dto.stats.verificationsDone,
         commentsPublished: dto.stats.commentsPublished,
         avatarUrl: dto.avatarUrl,

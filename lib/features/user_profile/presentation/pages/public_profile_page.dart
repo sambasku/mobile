@@ -285,9 +285,8 @@ class _ProfileBody extends HookConsumerWidget {
           ),
           const Gap(10),
           ProfileStatRow(
-            contributions: profile.contributionsApproved,
-            verifications: profile.verificationsDone,
-            comments: profile.commentsPublished,
+            words: profile.wordsApproved,
+            corrections: profile.correctionsApproved,
           ),
           const Gap(6),
           ProfileMetaRow(joinedLabel: joined, isVerifier: profile.isVerifier),

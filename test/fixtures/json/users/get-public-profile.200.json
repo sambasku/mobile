@@ -7,6 +7,8 @@
     "joined_at": "2026-08-01T00:00:00.000Z",
     "stats": {
       "contributions_approved": 12,
+      "words_approved": 4,
+      "corrections_approved": 8,
       "verifications_done": 34
     }
   }

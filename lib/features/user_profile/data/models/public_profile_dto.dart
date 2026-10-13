@@ -23,6 +23,8 @@ abstract class PublicProfileDto with _$PublicProfileDto {
 abstract class PublicProfileStatsDto with _$PublicProfileStatsDto {
   const factory PublicProfileStatsDto({
     @JsonKey(name: 'contributions_approved') @Default(0) int contributionsApproved,
+    @JsonKey(name: 'words_approved') @Default(0) int wordsApproved,
+    @JsonKey(name: 'corrections_approved') @Default(0) int correctionsApproved,
     @JsonKey(name: 'verifications_done') @Default(0) int verificationsDone,
     @JsonKey(name: 'comments_published') @Default(0) int commentsPublished,
   }) = _PublicProfileStatsDto;
