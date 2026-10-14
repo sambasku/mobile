@@ -99,113 +99,131 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
         .where((w) => w.id != widget.excludeWordId)
         .toList();
     final media = MediaQuery.of(context);
+    // Tinggi: 85% layar, tapi tidak melebihi ruang di atas keyboard.
+    final full = media.size.height * 0.85;
+    final available = media.size.height - media.viewInsets.bottom;
+    final height = full > available ? available : full;
 
-    return SizedBox(
-      height: (media.size.height - media.viewInsets.bottom) * 0.85,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + media.viewInsets.bottom),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Sinonim & antonim',
-                    style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                FButton(
-                  size: FButtonSizeVariant.sm,
-                  onPress: () => Navigator.pop(context),
-                  child: const Text('Selesai'),
-                ),
-              ],
-            ),
-            const Gap(12),
-            Row(
-              children: [
-                for (final (type, label) in const [
-                  ('synonym', 'Sinonim'),
-                  ('antonym', 'Antonim'),
-                ]) ...[
+    // Keyboard dihitung SEKALI (padding bawah mengangkat sheet). Dulu dihitung
+    // dua kali (tinggi + padding) → kolom cari tertutup (#156). Header tetap,
+    // sisanya scrollable agar aman di layar pendek/landscape.
+    return Padding(
+      padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+      child: SizedBox(
+        height: height,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
                   Expanded(
-                    child: FButton(
-                      size: FButtonSizeVariant.sm,
-                      variant: _type == type
-                          ? FButtonVariant.primary
-                          : FButtonVariant.outline,
-                      onPress: () => setState(() => _type = type),
-                      child: Text('$label (${_ofType(type).length})'),
+                    child: Text(
+                      'Sinonim & antonim',
+                      style: theme.typography.lg
+                          .copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
-                  if (type == 'synonym') const Gap(8),
+                  FButton(
+                    size: FButtonSizeVariant.sm,
+                    onPress: () => Navigator.pop(context),
+                    child: const Text('Selesai'),
+                  ),
                 ],
-              ],
-            ),
-            const Gap(12),
-            if (selected.isEmpty)
-              Text(
-                _type == 'synonym'
-                    ? 'Belum ada sinonim. Cari kata di bawah untuk menambah.'
-                    : 'Belum ada antonim. Cari kata di bawah untuk menambah.',
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              )
-            else
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  for (final r in selected)
-                    GestureDetector(
-                      onTap: () => _toggle(r.wordId, r.lemma),
-                      child: FBadge(
-                        variant: FBadgeVariant.secondary,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(r.lemma),
-                            const Gap(4),
-                            Icon(
-                              FLucideIcons.x,
-                              size: 12,
-                              semanticLabel: 'Hapus ${r.lemma}',
+              ),
+              const Gap(12),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          for (final (type, label) in const [
+                            ('synonym', 'Sinonim'),
+                            ('antonym', 'Antonim'),
+                          ]) ...[
+                            Expanded(
+                              child: FButton(
+                                size: FButtonSizeVariant.sm,
+                                variant: _type == type
+                                    ? FButtonVariant.primary
+                                    : FButtonVariant.outline,
+                                onPress: () => setState(() => _type = type),
+                                child: Text('$label (${_ofType(type).length})'),
+                              ),
                             ),
+                            if (type == 'synonym') const Gap(8),
+                          ],
+                        ],
+                      ),
+                      const Gap(12),
+                      if (selected.isEmpty)
+                        Text(
+                          _type == 'synonym'
+                              ? 'Belum ada sinonim. Cari kata di bawah untuk menambah.'
+                              : 'Belum ada antonim. Cari kata di bawah untuk menambah.',
+                          style: theme.typography.sm.copyWith(
+                            color: theme.colors.mutedForeground,
+                          ),
+                        )
+                      else
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            for (final r in selected)
+                              GestureDetector(
+                                onTap: () => _toggle(r.wordId, r.lemma),
+                                child: FBadge(
+                                  variant: FBadgeVariant.secondary,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(r.lemma),
+                                      const Gap(4),
+                                      Icon(
+                                        FLucideIcons.x,
+                                        size: 12,
+                                        semanticLabel: 'Hapus ${r.lemma}',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
+                      const Gap(12),
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: _query,
+                          onChange: (value) => ref
+                              .read(wordCompleteProvider.notifier)
+                              .onQueryChanged(value.text),
+                        ),
+                        hint: 'Cari kata yang sudah ada...',
+                        prefixBuilder: (context, style, variants) =>
+                            FTextField.prefixIconBuilder(
+                              context,
+                              style,
+                              variants,
+                              const Icon(FLucideIcons.search),
+                            ),
                       ),
-                    ),
-                ],
-              ),
-            const Gap(12),
-            FTextField(
-              control: FTextFieldControl.managed(
-                controller: _query,
-                onChange: (value) => ref
-                    .read(wordCompleteProvider.notifier)
-                    .onQueryChanged(value.text),
-              ),
-              hint: 'Cari kata yang sudah ada...',
-              prefixBuilder: (context, style, variants) =>
-                  FTextField.prefixIconBuilder(
-                    context,
-                    style,
-                    variants,
-                    const Icon(FLucideIcons.search),
+                      const Gap(8),
+                      _RelationResults(
+                        state: search,
+                        results: results,
+                        selectedIds: {for (final r in selected) r.wordId},
+                        onTap: _toggle,
+                      ),
+                    ],
                   ),
-            ),
-            const Gap(8),
-            Expanded(
-              child: _RelationResults(
-                state: search,
-                results: results,
-                selectedIds: {for (final r in selected) r.wordId},
-                onTap: _toggle,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -245,6 +263,8 @@ class _RelationResults extends StatelessWidget {
       );
     }
     return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: results.length,
       separatorBuilder: (_, _) => const Gap(4),
       itemBuilder: (context, i) {
