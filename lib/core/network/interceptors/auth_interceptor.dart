@@ -109,7 +109,10 @@ class AuthInterceptor extends Interceptor {
     '/api/v1/votes/my',
     '/api/v1/votes/history',
     '/api/v1/votes',
-    '/api/v1/contributions',
+    // JANGAN blanket '/api/v1/contributions': POST /contributions/words
+    // (+ /words/batch) publik (optionalAuthenticate) - tamu boleh submit.
+    '/api/v1/contributions/my',
+    '/api/v1/contributions/duplicate-confirm',
     '/api/v1/bookmarks',
     '/api/v1/notifications',
     '/api/v1/users/me',
