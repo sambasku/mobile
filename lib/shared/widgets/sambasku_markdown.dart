@@ -31,11 +31,11 @@ class SambaskuMarkdown extends StatelessWidget {
       sizedImageBuilder: buildSambaskuMarkdownImage,
       onTapLink: (text, href, title) => openSambaskuMarkdownHref(href),
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-        p: theme.typography.md.copyWith(height: 1.5),
-        h1: theme.typography.xl2.copyWith(fontWeight: FontWeight.w700),
-        h2: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
-        h3: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
-        listBullet: theme.typography.md,
+        p: theme.typography.sm.copyWith(height: 1.5),
+        h1: theme.typography.xl2.copyWith(fontWeight: FontWeight.w700, height: 1.3),
+        h2: theme.typography.xl.copyWith(fontWeight: FontWeight.w700, height: 1.3),
+        h3: theme.typography.lg.copyWith(fontWeight: FontWeight.w700, height: 1.3),
+        listBullet: theme.typography.sm,
       ),
     );
   }
