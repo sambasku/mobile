@@ -14,10 +14,10 @@ Future<void> invalidateWordDetailCaches(
   String wordId,
   String lemma,
 ) async {
-  if (wordId.isNotEmpty) ref.invalidate(wordDetailProvider(wordId));
   final cleanLemma = lemma.trim();
-  if (cleanLemma.isNotEmpty) ref.invalidate(wordDetailProvider(cleanLemma));
 
+  // L1 dihapus DULU: provider yang di-invalidate refetch segera kalau masih
+  // di-watch halaman, dan tidak boleh kena entri L1 basi (issue #159).
   final store = ref.read(responseCacheStoreProvider);
   await Future.wait([
     if (wordId.isNotEmpty)
@@ -30,4 +30,7 @@ Future<void> invalidateWordDetailCaches(
         ),
       ),
   ]);
+
+  if (wordId.isNotEmpty) ref.invalidate(wordDetailProvider(wordId));
+  if (cleanLemma.isNotEmpty) ref.invalidate(wordDetailProvider(cleanLemma));
 }
