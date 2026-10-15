@@ -132,7 +132,7 @@ class RegisterPage extends HookConsumerWidget {
         }
         if (!context.mounted) return;
         ref.read(authRegisterProvider.notifier).acknowledgeSuccess();
-        context.go(
+        context.push(
           '${AuthRouter.verifyEmail.path}?email=${Uri.encodeComponent(pending)}&cooldown=1',
         );
       }());

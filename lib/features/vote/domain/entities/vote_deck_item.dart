@@ -25,6 +25,14 @@ class VoteDeckItem {
   final String? sense;
   final int upvotes;
   final int downvotes;
+
+  /// Label jenis entri untuk UI (seragam dengan wordSummary/wordDetail).
+  String get wordTypeLabel => switch (wordType) {
+        'idiom' => 'Idiom',
+        'peribahasa' => 'Peribahasa',
+        'ungkapan' => 'Ungkapan',
+        _ => 'Kata',
+      };
 }
 
 class VoteDeckPage {

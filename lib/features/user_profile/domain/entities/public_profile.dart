@@ -7,6 +7,8 @@ class PublicProfile {
     required this.isVerifier,
     required this.joinedAt,
     required this.contributionsApproved,
+    required this.wordsApproved,
+    required this.correctionsApproved,
     required this.verificationsDone,
     required this.commentsPublished,
     this.bio,
@@ -19,6 +21,8 @@ class PublicProfile {
   final bool isVerifier;
   final String joinedAt;
   final int contributionsApproved;
+  final int wordsApproved;
+  final int correctionsApproved;
   final int verificationsDone;
   final int commentsPublished;
   final String? avatarUrl;

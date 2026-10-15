@@ -7,6 +7,7 @@ abstract interface class EditProfileRepository {
   Future<Either<EditProfileFailure, MyProfile>> getMyProfile();
 
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
+    String? username,
     String? displayName,
     String? bio,
     bool? hasReadContributionGuide,

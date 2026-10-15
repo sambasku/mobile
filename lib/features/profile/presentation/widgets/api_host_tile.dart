@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/network/failover/api_host_resolver.dart';
+import '../../../../core/theme/f_colors_x.dart';
 
 /// Tile "Server" di halaman Profil: user memilih host API (Cloudflare /
 /// Deno Deploy / Render) + uji ping sebelum pindah, lalu menguncinya.
@@ -20,9 +21,7 @@ FTileMixin apiHostTile(BuildContext context, ApiHostResolver resolver) {
       listenable: resolver,
       builder: (_, _) => _ActiveHostLabel(resolver: resolver),
     ),
-    onPress: resolver.hasFallbacks
-        ? () => _openSheet(context, resolver)
-        : null,
+    onPress: resolver.hasFallbacks ? () => _openSheet(context, resolver) : null,
   );
 }
 
@@ -79,8 +78,17 @@ class _ApiHostSheet extends StatefulWidget {
   State<_ApiHostSheet> createState() => _ApiHostSheetState();
 }
 
+/// Hasil ping satu tier, siap ditampilkan dengan ikon + warna status.
+class _ProbeOutcome {
+  const _ProbeOutcome({required this.ok, required this.label});
+
+  /// true = server balas 200. false = timeout / non-200 / error jaringan.
+  final bool ok;
+  final String label;
+}
+
 class _ApiHostSheetState extends State<_ApiHostSheet> {
-  final Map<String, String> _probeResults = {};
+  final Map<String, _ProbeOutcome> _probeResults = {};
   bool _probing = false;
   CancelToken? _probeToken;
 
@@ -112,7 +120,7 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
       for (final tier in widget.resolver.tiers) {
         if (!mounted || token.isCancelled) return;
         final started = DateTime.now();
-        String result;
+        _ProbeOutcome outcome;
         try {
           final res = await dio.get<void>(
             '${tier.host}/api/v1/ping',
@@ -120,17 +128,26 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
             options: Options(validateStatus: (_) => true),
           );
           final ms = DateTime.now().difference(started).inMilliseconds;
-          result = res.statusCode == 200 ? 'OK ${ms}ms' : 'HTTP ${res.statusCode}';
+          outcome = res.statusCode == 200
+              ? _ProbeOutcome(ok: true, label: '${ms}ms')
+              : _ProbeOutcome(ok: false, label: 'HTTP ${res.statusCode}');
         } on DioException catch (e) {
           if (e.type == DioExceptionType.cancel) return;
           final ms = DateTime.now().difference(started).inMilliseconds;
-          result = 'Gagal ${ms}ms';
+          final timedOut =
+              e.type == DioExceptionType.connectionTimeout ||
+              e.type == DioExceptionType.receiveTimeout ||
+              e.type == DioExceptionType.sendTimeout;
+          outcome = _ProbeOutcome(
+            ok: false,
+            label: timedOut ? 'timeout ${ms}ms' : 'gagal ${ms}ms',
+          );
         } catch (_) {
           final ms = DateTime.now().difference(started).inMilliseconds;
-          result = 'Gagal ${ms}ms';
+          outcome = _ProbeOutcome(ok: false, label: 'gagal ${ms}ms');
         }
         if (!mounted || token.isCancelled) return;
-        setState(() => _probeResults[tier.host] = result);
+        setState(() => _probeResults[tier.host] = outcome);
       }
     } finally {
       dio.close(force: true);
@@ -169,7 +186,7 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
                 FButton(
                   size: FButtonSizeVariant.sm,
                   onPress: _probing ? null : _probeAll,
-                  child: Text(_probing ? 'Menguji...' : 'Uji semua'),
+                  child: Text(_probing ? 'Ping...' : 'Ping'),
                 ),
               ],
             ),
@@ -191,20 +208,22 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
                   title: const Text('Otomatis'),
                   subtitle: const Text(
                     'Pakai Cloudflare, pindah sendiri kalau gagal (disarankan)',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   selected: forced == null,
-                  suffix: forced == null ? const Icon(FLucideIcons.check) : null,
+                  suffix: forced == null
+                      ? const Icon(FLucideIcons.check)
+                      : null,
                   onPress: () => _select(null),
                 ),
                 for (var i = 0; i < tiers.length; i++)
                   FTile(
                     title: Text(apiTierLabelForHost(tiers[i].host)),
-                    subtitle: Text(
-                      _probeResults[tiers[i].host] == null
-                          ? tiers[i].host
-                          : '${tiers[i].host}\n${_probeResults[tiers[i].host]}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    subtitle: _ProbeStatus(
+                      host: tiers[i].host,
+                      outcome: _probeResults[tiers[i].host],
+                      probing: _probing,
                     ),
                     selected: forced == i,
                     suffix: forced == i ? const Icon(FLucideIcons.check) : null,
@@ -225,6 +244,91 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Widget subtitle yang menampilkan status ping dengan ikon + warna.
+class _ProbeStatus extends StatelessWidget {
+  const _ProbeStatus({
+    required this.host,
+    required this.outcome,
+    required this.probing,
+  });
+
+  final String host;
+  final _ProbeOutcome? outcome;
+  final bool probing;
+
+  @override
+  Widget build(BuildContext context) {
+    if (probing && outcome == null) {
+      // Ping berjalan dan tier ini belum ada hasil: spinner di sebelah host.
+      // Tier yang sudah punya hasil langsung menampilkan hasilnya.
+      return Row(
+        children: [
+          Text(
+            host,
+            style: TextStyle(
+              fontSize: 13,
+              color: context.theme.colors.mutedForeground,
+            ),
+          ),
+          const Gap(4),
+          const SizedBox(
+            width: 12,
+            height: 12,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ],
+      );
+    }
+
+    if (outcome == null) {
+      // Belum diuji — tampilkan host saja.
+      return Text(
+        host,
+        style: TextStyle(
+          fontSize: 13,
+          color: context.theme.colors.mutedForeground,
+        ),
+      );
+    }
+
+    // Sudah ada hasil — pisahkan host (teks biasa) dari hasil ping (ikon+warna).
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          host,
+          style: TextStyle(
+            fontSize: 13,
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+        const Gap(2),
+        Row(
+          children: [
+            Icon(
+              outcome!.ok ? FLucideIcons.checkCircle : FLucideIcons.alertCircle,
+              size: 12,
+              color: outcome!.ok
+                  ? context.theme.colors.success
+                  : context.theme.colors.destructive,
+            ),
+            const Gap(4),
+            Text(
+              outcome!.label,
+              style: TextStyle(
+                fontSize: 11,
+                color: outcome!.ok
+                    ? context.theme.colors.success
+                    : context.theme.colors.destructive,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

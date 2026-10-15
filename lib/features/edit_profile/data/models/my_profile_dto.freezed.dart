@@ -290,7 +290,7 @@ as bool,
 /// @nodoc
 mixin _$UpdateMyProfileRequestDto {
 
-@JsonKey(name: 'display_name') String? get displayName; String? get bio;@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? get hasReadContributionGuide;
+@JsonKey(includeIfNull: false) String? get username;@JsonKey(name: 'display_name') String? get displayName; String? get bio;@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? get hasReadContributionGuide;
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -303,16 +303,16 @@ $UpdateMyProfileRequestDtoCopyWith<UpdateMyProfileRequestDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateMyProfileRequestDto&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateMyProfileRequestDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,displayName,bio,hasReadContributionGuide);
+int get hashCode => Object.hash(runtimeType,username,displayName,bio,hasReadContributionGuide);
 
 @override
 String toString() {
-  return 'UpdateMyProfileRequestDto(displayName: $displayName, bio: $bio, hasReadContributionGuide: $hasReadContributionGuide)';
+  return 'UpdateMyProfileRequestDto(username: $username, displayName: $displayName, bio: $bio, hasReadContributionGuide: $hasReadContributionGuide)';
 }
 
 
@@ -323,7 +323,7 @@ abstract mixin class $UpdateMyProfileRequestDtoCopyWith<$Res>  {
   factory $UpdateMyProfileRequestDtoCopyWith(UpdateMyProfileRequestDto value, $Res Function(UpdateMyProfileRequestDto) _then) = _$UpdateMyProfileRequestDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
+@JsonKey(includeIfNull: false) String? username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
 });
 
 
@@ -340,9 +340,10 @@ class _$UpdateMyProfileRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? displayName = freezed,Object? bio = freezed,Object? hasReadContributionGuide = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = freezed,Object? displayName = freezed,Object? bio = freezed,Object? hasReadContributionGuide = freezed,}) {
   return _then(_self.copyWith(
-displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,hasReadContributionGuide: freezed == hasReadContributionGuide ? _self.hasReadContributionGuide : hasReadContributionGuide // ignore: cast_nullable_to_non_nullable
 as bool?,
@@ -430,10 +431,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto() when $default != null:
-return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
   return orElse();
 
 }
@@ -451,10 +452,10 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto():
-return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -471,10 +472,10 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeIfNull: false)  String? username, @JsonKey(name: 'display_name')  String? displayName,  String? bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)  bool? hasReadContributionGuide)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateMyProfileRequestDto() when $default != null:
-return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.hasReadContributionGuide);case _:
   return null;
 
 }
@@ -486,9 +487,10 @@ return $default(_that.displayName,_that.bio,_that.hasReadContributionGuide);case
 @JsonSerializable()
 
 class _UpdateMyProfileRequestDto implements UpdateMyProfileRequestDto {
-  const _UpdateMyProfileRequestDto({@JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) this.hasReadContributionGuide});
+  const _UpdateMyProfileRequestDto({@JsonKey(includeIfNull: false) this.username, @JsonKey(name: 'display_name') this.displayName, this.bio, @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) this.hasReadContributionGuide});
   factory _UpdateMyProfileRequestDto.fromJson(Map<String, dynamic> json) => _$UpdateMyProfileRequestDtoFromJson(json);
 
+@override@JsonKey(includeIfNull: false) final  String? username;
 @override@JsonKey(name: 'display_name') final  String? displayName;
 @override final  String? bio;
 @override@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) final  bool? hasReadContributionGuide;
@@ -506,16 +508,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateMyProfileRequestDto&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateMyProfileRequestDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,displayName,bio,hasReadContributionGuide);
+int get hashCode => Object.hash(runtimeType,username,displayName,bio,hasReadContributionGuide);
 
 @override
 String toString() {
-  return 'UpdateMyProfileRequestDto(displayName: $displayName, bio: $bio, hasReadContributionGuide: $hasReadContributionGuide)';
+  return 'UpdateMyProfileRequestDto(username: $username, displayName: $displayName, bio: $bio, hasReadContributionGuide: $hasReadContributionGuide)';
 }
 
 
@@ -526,7 +528,7 @@ abstract mixin class _$UpdateMyProfileRequestDtoCopyWith<$Res> implements $Updat
   factory _$UpdateMyProfileRequestDtoCopyWith(_UpdateMyProfileRequestDto value, $Res Function(_UpdateMyProfileRequestDto) _then) = __$UpdateMyProfileRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
+@JsonKey(includeIfNull: false) String? username,@JsonKey(name: 'display_name') String? displayName, String? bio,@JsonKey(name: 'has_read_contribution_guide', includeIfNull: false) bool? hasReadContributionGuide
 });
 
 
@@ -543,9 +545,10 @@ class __$UpdateMyProfileRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? displayName = freezed,Object? bio = freezed,Object? hasReadContributionGuide = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = freezed,Object? displayName = freezed,Object? bio = freezed,Object? hasReadContributionGuide = freezed,}) {
   return _then(_UpdateMyProfileRequestDto(
-displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,hasReadContributionGuide: freezed == hasReadContributionGuide ? _self.hasReadContributionGuide : hasReadContributionGuide // ignore: cast_nullable_to_non_nullable
 as bool?,

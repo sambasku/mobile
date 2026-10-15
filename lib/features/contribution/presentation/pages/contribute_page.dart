@@ -569,6 +569,20 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             ],
             const Gap(16),
             const _FieldCaption(
+              'Jenis',
+              info:
+                  'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan '
+                  'berupa frasa; kata tunggal tidak perlu dipilih.',
+            ),
+            _WordTypeChips(
+              value: _wordType,
+              onChanged: (v) {
+                _onFieldEdited();
+                setState(() => _wordType = v);
+              },
+            ),
+            const Gap(16),
+            const _FieldCaption(
               'Register',
               info:
                   'Opsional. Gaya atau pantangan berbahasa. '

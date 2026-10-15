@@ -11,6 +11,8 @@ void main() {
     isVerifier: false,
     joinedAt: '2026-08-01T00:00:00.000Z',
     contributionsApproved: 1,
+    wordsApproved: 1,
+    correctionsApproved: 0,
     verificationsDone: 2,
     commentsPublished: 3,
     bio: null,

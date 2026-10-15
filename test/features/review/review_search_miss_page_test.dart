@@ -127,29 +127,30 @@ void main() {
     expect(find.text('nandor'), findsOneWidget);
   });
 
-  testWidgets('tombol pensil → dialog koreksi term → PATCH + kartu ter-update', (
-    tester,
-  ) async {
-    final repo = _FakeRepo();
-    await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
+  testWidgets(
+    'tombol pensil → dialog koreksi term → PATCH + kartu ter-update',
+    (tester) async {
+      final repo = _FakeRepo();
+      await _pumpPanel(tester, items: [missBaru, missKedua], repo: repo);
 
-    await tester.tap(_fbtnByIcon(FLucideIcons.pencil));
-    await tester.pumpAndSettle();
+      await tester.tap(_fbtnByIcon(FLucideIcons.pencil));
+      await tester.pumpAndSettle();
 
-    // Dialog terbuka, prefilled term lama.
-    expect(find.text('Koreksi term'), findsOneWidget);
-    expect(find.widgetWithText(FTextField, 'Term'), findsOneWidget);
+      // Dialog terbuka, prefilled term lama.
+      expect(find.text('Koreksi term'), findsOneWidget);
+      expect(find.widgetWithText(FTextField, 'Term'), findsOneWidget);
 
-    await tester.enterText(find.byType(TextField), 'kepayah');
-    await tester.tap(find.text('Simpan'));
-    await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'kepayah');
+      await tester.tap(find.text('Simpan'));
+      await tester.pumpAndSettle();
 
-    expect(repo.updateTermCalls, [(missBaru.id, 'kepayah')]);
-    // Kartu tetap (tidak advance) — term baru tampil.
-    expect(find.text('kepayah'), findsOneWidget);
-    expect(find.text('kepayang'), findsNothing);
-    expect(find.text('nandor'), findsNothing);
-  });
+      expect(repo.updateTermCalls, [(missBaru.id, 'kepayah')]);
+      // Kartu tetap (tidak advance) — term baru tampil.
+      expect(find.text('kepayah'), findsOneWidget);
+      expect(find.text('kepayang'), findsNothing);
+      expect(find.text('nandor'), findsNothing);
+    },
+  );
 
   testWidgets('koreksi term batal → tanpa PATCH, kartu tetap', (tester) async {
     final repo = _FakeRepo();
@@ -207,24 +208,27 @@ void main() {
     expect(find.text('kepayang'), findsOneWidget);
   });
 
-  testWidgets('kartu sudah tayang → swipe kanan tanpa aksi (spring back)', (
-    tester,
-  ) async {
-    final repo = _FakeRepo();
-    await _pumpPanel(tester, items: [missTayang], repo: repo);
+  testWidgets(
+    'kartu sudah tayang → swipe kanan auto-skip + toast info (#137)',
+    (tester) async {
+      final repo = _FakeRepo();
+      await _pumpPanel(tester, items: [missTayang, missKedua], repo: repo);
 
-    expect(find.text('kalumpe'), findsOneWidget);
-    expect(find.text('tayang'), findsOneWidget);
-    // Tombol Tayang dinonaktifkan untuk kartu sudah tayang.
-    final tayangBtn = tester.widget<FButton>(_tayangBtn);
-    expect(tayangBtn.onPress, isNull);
+      expect(find.text('kalumpe'), findsOneWidget);
+      expect(find.text('tayang'), findsOneWidget);
+      // Tombol Tayang dinonaktifkan untuk kartu sudah tayang.
+      final tayangBtn = tester.widget<FButton>(_tayangBtn);
+      expect(tayangBtn.onPress, isNull);
 
-    await tester.fling(find.text('kalumpe'), const Offset(400, 0), 800);
-    await tester.pumpAndSettle();
+      await tester.fling(find.text('kalumpe'), const Offset(400, 0), 800);
+      await tester.pumpAndSettle();
 
-    expect(repo.setVisibleCalls, isEmpty);
-    expect(find.text('kalumpe'), findsOneWidget);
-  });
+      // Tidak ada request server; kartu maju ke berikutnya + toast info.
+      expect(repo.setVisibleCalls, isEmpty);
+      expect(find.textContaining('sudah tayang — dilewati'), findsOneWidget);
+      expect(find.text('nandor'), findsOneWidget);
+    },
+  );
 
   testWidgets('viewport sempit (320px) tanpa RenderFlex overflow', (
     tester,

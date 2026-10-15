@@ -4,12 +4,12 @@ import 'package:sambasku_mobile/features/auth/data/models/login_request_dto.dart
 void main() {
   test('LoginRequestDto.toJson memakai client_type (snake_case API)', () {
     const dto = LoginRequestDto(
-      email: 'budi@test.com',
+      identifier: 'budi@test.com',
       password: 'Password123',
     );
 
     expect(dto.toJson(), {
-      'email': 'budi@test.com',
+      'identifier': 'budi@test.com',
       'password': 'Password123',
       'client_type': 'mobile',
     });

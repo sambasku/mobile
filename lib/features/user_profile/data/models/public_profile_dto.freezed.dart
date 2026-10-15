@@ -317,7 +317,7 @@ $PublicProfileStatsDtoCopyWith<$Res> get stats {
 /// @nodoc
 mixin _$PublicProfileStatsDto {
 
-@JsonKey(name: 'contributions_approved') int get contributionsApproved;@JsonKey(name: 'verifications_done') int get verificationsDone;@JsonKey(name: 'comments_published') int get commentsPublished;
+@JsonKey(name: 'contributions_approved') int get contributionsApproved;@JsonKey(name: 'words_approved') int get wordsApproved;@JsonKey(name: 'corrections_approved') int get correctionsApproved;@JsonKey(name: 'verifications_done') int get verificationsDone;@JsonKey(name: 'comments_published') int get commentsPublished;
 /// Create a copy of PublicProfileStatsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -330,16 +330,16 @@ $PublicProfileStatsDtoCopyWith<PublicProfileStatsDto> get copyWith => _$PublicPr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.wordsApproved, wordsApproved) || other.wordsApproved == wordsApproved)&&(identical(other.correctionsApproved, correctionsApproved) || other.correctionsApproved == correctionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,contributionsApproved,verificationsDone,commentsPublished);
+int get hashCode => Object.hash(runtimeType,contributionsApproved,wordsApproved,correctionsApproved,verificationsDone,commentsPublished);
 
 @override
 String toString() {
-  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
+  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, wordsApproved: $wordsApproved, correctionsApproved: $correctionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
 }
 
 
@@ -350,7 +350,7 @@ abstract mixin class $PublicProfileStatsDtoCopyWith<$Res>  {
   factory $PublicProfileStatsDtoCopyWith(PublicProfileStatsDto value, $Res Function(PublicProfileStatsDto) _then) = _$PublicProfileStatsDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'contributions_approved') int contributionsApproved,@JsonKey(name: 'verifications_done') int verificationsDone,@JsonKey(name: 'comments_published') int commentsPublished
+@JsonKey(name: 'contributions_approved') int contributionsApproved,@JsonKey(name: 'words_approved') int wordsApproved,@JsonKey(name: 'corrections_approved') int correctionsApproved,@JsonKey(name: 'verifications_done') int verificationsDone,@JsonKey(name: 'comments_published') int commentsPublished
 });
 
 
@@ -367,9 +367,11 @@ class _$PublicProfileStatsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicProfileStatsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? contributionsApproved = null,Object? verificationsDone = null,Object? commentsPublished = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? contributionsApproved = null,Object? wordsApproved = null,Object? correctionsApproved = null,Object? verificationsDone = null,Object? commentsPublished = null,}) {
   return _then(_self.copyWith(
 contributionsApproved: null == contributionsApproved ? _self.contributionsApproved : contributionsApproved // ignore: cast_nullable_to_non_nullable
+as int,wordsApproved: null == wordsApproved ? _self.wordsApproved : wordsApproved // ignore: cast_nullable_to_non_nullable
+as int,correctionsApproved: null == correctionsApproved ? _self.correctionsApproved : correctionsApproved // ignore: cast_nullable_to_non_nullable
 as int,verificationsDone: null == verificationsDone ? _self.verificationsDone : verificationsDone // ignore: cast_nullable_to_non_nullable
 as int,commentsPublished: null == commentsPublished ? _self.commentsPublished : commentsPublished // ignore: cast_nullable_to_non_nullable
 as int,
@@ -457,10 +459,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'words_approved')  int wordsApproved, @JsonKey(name: 'corrections_approved')  int correctionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublicProfileStatsDto() when $default != null:
-return $default(_that.contributionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
+return $default(_that.contributionsApproved,_that.wordsApproved,_that.correctionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
   return orElse();
 
 }
@@ -478,10 +480,10 @@ return $default(_that.contributionsApproved,_that.verificationsDone,_that.commen
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'words_approved')  int wordsApproved, @JsonKey(name: 'corrections_approved')  int correctionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)  $default,) {final _that = this;
 switch (_that) {
 case _PublicProfileStatsDto():
-return $default(_that.contributionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
+return $default(_that.contributionsApproved,_that.wordsApproved,_that.correctionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -498,10 +500,10 @@ return $default(_that.contributionsApproved,_that.verificationsDone,_that.commen
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'contributions_approved')  int contributionsApproved, @JsonKey(name: 'words_approved')  int wordsApproved, @JsonKey(name: 'corrections_approved')  int correctionsApproved, @JsonKey(name: 'verifications_done')  int verificationsDone, @JsonKey(name: 'comments_published')  int commentsPublished)?  $default,) {final _that = this;
 switch (_that) {
 case _PublicProfileStatsDto() when $default != null:
-return $default(_that.contributionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
+return $default(_that.contributionsApproved,_that.wordsApproved,_that.correctionsApproved,_that.verificationsDone,_that.commentsPublished);case _:
   return null;
 
 }
@@ -513,10 +515,12 @@ return $default(_that.contributionsApproved,_that.verificationsDone,_that.commen
 @JsonSerializable()
 
 class _PublicProfileStatsDto implements PublicProfileStatsDto {
-  const _PublicProfileStatsDto({@JsonKey(name: 'contributions_approved') this.contributionsApproved = 0, @JsonKey(name: 'verifications_done') this.verificationsDone = 0, @JsonKey(name: 'comments_published') this.commentsPublished = 0});
+  const _PublicProfileStatsDto({@JsonKey(name: 'contributions_approved') this.contributionsApproved = 0, @JsonKey(name: 'words_approved') this.wordsApproved = 0, @JsonKey(name: 'corrections_approved') this.correctionsApproved = 0, @JsonKey(name: 'verifications_done') this.verificationsDone = 0, @JsonKey(name: 'comments_published') this.commentsPublished = 0});
   factory _PublicProfileStatsDto.fromJson(Map<String, dynamic> json) => _$PublicProfileStatsDtoFromJson(json);
 
 @override@JsonKey(name: 'contributions_approved') final  int contributionsApproved;
+@override@JsonKey(name: 'words_approved') final  int wordsApproved;
+@override@JsonKey(name: 'corrections_approved') final  int correctionsApproved;
 @override@JsonKey(name: 'verifications_done') final  int verificationsDone;
 @override@JsonKey(name: 'comments_published') final  int commentsPublished;
 
@@ -533,16 +537,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.wordsApproved, wordsApproved) || other.wordsApproved == wordsApproved)&&(identical(other.correctionsApproved, correctionsApproved) || other.correctionsApproved == correctionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,contributionsApproved,verificationsDone,commentsPublished);
+int get hashCode => Object.hash(runtimeType,contributionsApproved,wordsApproved,correctionsApproved,verificationsDone,commentsPublished);
 
 @override
 String toString() {
-  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
+  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, wordsApproved: $wordsApproved, correctionsApproved: $correctionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
 }
 
 
@@ -553,7 +557,7 @@ abstract mixin class _$PublicProfileStatsDtoCopyWith<$Res> implements $PublicPro
   factory _$PublicProfileStatsDtoCopyWith(_PublicProfileStatsDto value, $Res Function(_PublicProfileStatsDto) _then) = __$PublicProfileStatsDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'contributions_approved') int contributionsApproved,@JsonKey(name: 'verifications_done') int verificationsDone,@JsonKey(name: 'comments_published') int commentsPublished
+@JsonKey(name: 'contributions_approved') int contributionsApproved,@JsonKey(name: 'words_approved') int wordsApproved,@JsonKey(name: 'corrections_approved') int correctionsApproved,@JsonKey(name: 'verifications_done') int verificationsDone,@JsonKey(name: 'comments_published') int commentsPublished
 });
 
 
@@ -570,9 +574,11 @@ class __$PublicProfileStatsDtoCopyWithImpl<$Res>
 
 /// Create a copy of PublicProfileStatsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? contributionsApproved = null,Object? verificationsDone = null,Object? commentsPublished = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? contributionsApproved = null,Object? wordsApproved = null,Object? correctionsApproved = null,Object? verificationsDone = null,Object? commentsPublished = null,}) {
   return _then(_PublicProfileStatsDto(
 contributionsApproved: null == contributionsApproved ? _self.contributionsApproved : contributionsApproved // ignore: cast_nullable_to_non_nullable
+as int,wordsApproved: null == wordsApproved ? _self.wordsApproved : wordsApproved // ignore: cast_nullable_to_non_nullable
+as int,correctionsApproved: null == correctionsApproved ? _self.correctionsApproved : correctionsApproved // ignore: cast_nullable_to_non_nullable
 as int,verificationsDone: null == verificationsDone ? _self.verificationsDone : verificationsDone // ignore: cast_nullable_to_non_nullable
 as int,commentsPublished: null == commentsPublished ? _self.commentsPublished : commentsPublished // ignore: cast_nullable_to_non_nullable
 as int,

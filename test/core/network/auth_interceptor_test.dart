@@ -325,6 +325,54 @@ void main() {
       expect(await storage.getIsAuth(), isFalse);
     },
   );
+
+  group('tamu tanpa token', () {
+    setUp(() async {
+      await storage.clearTokens();
+    });
+
+    for (final path in const [
+      '/api/v1/contributions/words',
+      '/api/v1/contributions/words/batch',
+    ]) {
+      test('POST $path tetap ditembak ke server (submit anonim)', () async {
+        var hits = 0;
+        adapter.handler = (options) {
+          hits++;
+          expect(options.headers.containsKey('Authorization'), isFalse);
+          return _json(201, {
+            'success': true,
+            'data': {'word_id': 'w1', 'status': 'pending_review'},
+          });
+        };
+
+        final res = await dio.post<Object?>(path, data: <String, Object?>{});
+
+        expect(res.statusCode, 201);
+        expect(hits, 1);
+      });
+    }
+
+    for (final path in const [
+      '/api/v1/contributions/my',
+      '/api/v1/contributions/duplicate-confirm',
+    ]) {
+      test('$path tetap ditolak lokal (login-only, #127)', () async {
+        adapter.handler = (_) => fail('tidak boleh sampai server');
+
+        await expectLater(
+          () => dio.post<Object?>(path),
+          throwsA(
+            isA<DioException>().having(
+              (e) => e.response?.statusCode,
+              'status',
+              401,
+            ),
+          ),
+        );
+      });
+    }
+  });
 }
 
 ResponseBody _json(int status, Map<String, Object?> body) {

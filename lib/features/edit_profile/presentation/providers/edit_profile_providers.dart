@@ -14,7 +14,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
   @override
   EditProfileState build() => const EditProfileState(isLoading: true);
 
-  Future<({String displayName, String bio})?> load() async {
+  Future<({String username, String displayName, String bio})?> load() async {
     state = state.copyWith(
       isLoading: true,
       clearErrorMessage: true,
@@ -43,12 +43,13 @@ class EditProfileNotifier extends _$EditProfileNotifier {
                 avatarUrl: profile.avatarUrl,
               ),
         );
-        return (displayName: profile.displayName, bio: profile.bio ?? '');
+        return (username: profile.username, displayName: profile.displayName, bio: profile.bio ?? '');
       },
     );
   }
 
   Future<void> submit({
+    required String username,
     required String displayName,
     required String bio,
   }) async {
@@ -59,6 +60,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     );
 
     final result = await ref.read(updateMyProfileUseCaseProvider).call(
+          username: username.trim(),
           displayName: displayName.trim(),
           bio: bio.trim().isEmpty ? null : bio.trim(),
         );
@@ -79,10 +81,10 @@ class EditProfileNotifier extends _$EditProfileNotifier {
         .read(authStatusProvider.notifier)
         .setDisplayName(displayName.trim());
 
-    final username = state.username;
-    if (username != null && username.isNotEmpty) {
-      ref.invalidate(publicProfileProvider(username));
-      ref.invalidate(publicActivityProvider(username));
+    final storedUsername = state.username;
+    if (storedUsername != null && storedUsername.isNotEmpty) {
+      ref.invalidate(publicProfileProvider(storedUsername));
+      ref.invalidate(publicActivityProvider(storedUsername));
     }
 
     state = state.copyWith(

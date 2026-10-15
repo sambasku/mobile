@@ -255,7 +255,7 @@ void main() {
 
     expect(find.text('Kata / ungkapan Sambas *'), findsOneWidget);
     expect(find.text('Terjemahan Indonesia *'), findsOneWidget);
-    expect(find.text('Jenis'), findsNothing);
+    expect(find.text('Jenis'), findsOneWidget);
     expect(find.text('Dialek'), findsNothing);
     expect(find.text('Contoh'), findsNothing);
 

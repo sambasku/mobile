@@ -12,6 +12,7 @@ const _reasons = <(String, String)>[
   ('inaccurate', 'Arti atau ejaan salah'),
   ('duplicate', 'Duplikat entri lain'),
   ('inappropriate', 'Tidak pantas'),
+  ('vulgar', 'Kata kasar/vulgar'),
   ('spam', 'Spam'),
   ('other', 'Lainnya'),
 ];

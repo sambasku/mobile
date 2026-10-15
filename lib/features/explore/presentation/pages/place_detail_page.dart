@@ -19,6 +19,7 @@ import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
+import '../../data/place_markdown/place_markdown_repository.dart';
 
 const _heroAspect = 16 / 10;
 
@@ -222,6 +223,26 @@ class _BodyState extends State<_Body> {
                       Text(
                         place.shortDescription,
                         style: theme.typography.sm.copyWith(height: 1.5),
+                      ),
+                      const Gap(16),
+                      Consumer(
+                        builder: (context, ref, _) {
+                          final hasArticle = ref.watch(
+                            placeMarkdownProvider(place.slug),
+                          ).value != null;
+                          return hasArticle
+                              ? FButton(
+                                  variant: FButtonVariant.outline,
+                                  prefix: const Icon(FLucideIcons.book),
+                                  onPress: () {
+                                    context.push(
+                                      '${ExploreRouter.placeArticle.path}?slug=${place.slug}',
+                                    );
+                                  },
+                                  child: const Text('Baca Selengkapnya'),
+                                )
+                              : const SizedBox.shrink();
+                        },
                       ),
                       const Gap(16),
                       FButton(

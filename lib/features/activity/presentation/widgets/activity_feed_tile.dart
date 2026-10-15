@@ -279,9 +279,13 @@ class ActivityFeedTile extends StatelessWidget {
         );
       case 'search_miss':
         final term = _searchMissTerm(item);
+        // #144: arah search-miss untuk memilih field prefill yang tepat di
+        // form usul (direction 'translation' → kata Indonesia ke padanan).
+        final searchIn = target.direction;
         final q = Uri(
           queryParameters: <String, String>{
             if (term != null && term.isNotEmpty) 'lemma': term,
+            'search_in': ?searchIn,
             'miss_id': target.id,
           },
         ).query;

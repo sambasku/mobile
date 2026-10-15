@@ -7,9 +7,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../providers/regions_providers.dart';
+import '../widgets/district_markdown_view.dart';
 
-/// Detail kecamatan/desa: kontennya belum ada, ditampilkan sebagai halaman
-/// "Segera hadir" agar user sudah mengenal fungsi CTA-nya sejak sekarang.
+/// Detail kecamatan/desa. Kecamatan: artikel markdown dari CDN (#123)
+/// dirender di atas info wilayah. Desa: masih "Segera hadir".
 class RegionDetailPage extends ConsumerStatefulWidget {
   const RegionDetailPage.kecamatan({super.key, required this.slug})
     : isKecamatan = true;
@@ -58,52 +59,49 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
     return FScaffold(
       header: FHeader.nested(title: Text(name)),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                isKec ? FLucideIcons.signpost : FLucideIcons.mapPin,
-                size: 48,
-                color: theme.colors.primary,
-              ),
-              const Gap(16),
-              FBadge(
-                variant: FBadgeVariant.outline,
-                child: const Text('Segera hadir'),
-              ),
-              const Gap(12),
-              Text(
-                isKec ? 'Kecamatan $name' : 'Desa $name',
-                style: theme.typography.lg.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              if (isKec && desaCount > 0) ...[
-                const Gap(4),
-                Text(
-                  '$desaCount desa',
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
-              const Gap(12),
-              Text(
-                isKec
-                    ? 'Profil kecamatan ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.'
-                    : 'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.',
-                textAlign: TextAlign.center,
-                style: theme.typography.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ],
+      // ListView agar artikel panjang bisa di-scroll.
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          if (isKec) ...[
+            // Artikel markdown kecamatan: skeleton saat loading, kosong
+            // bila tidak tersedia (soft-fail, halaman tetap normal).
+            DistrictMarkdownView(slug: widget.slug),
+            const Gap(24),
+          ],
+          if (!isKec) ...[
+            Icon(FLucideIcons.mapPin, size: 48, color: theme.colors.primary),
+            const Gap(16),
+            FBadge(
+              variant: FBadgeVariant.outline,
+              child: const Text('Segera hadir'),
+            ),
+            const Gap(12),
+          ],
+          Text(
+            isKec ? 'Kecamatan $name' : 'Desa $name',
+            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
           ),
-        ),
+          if (isKec && desaCount > 0) ...[
+            const Gap(4),
+            Text(
+              '$desaCount desa',
+              style: theme.typography.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ],
+          if (!isKec) ...[
+            const Gap(12),
+            Text(
+              'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat '
+              'info lengkapnya di sini ya.',
+              style: theme.typography.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

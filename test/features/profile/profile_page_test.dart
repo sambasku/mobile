@@ -34,6 +34,8 @@ const _profile = PublicProfile(
   bio: 'Bio percobaan',
   joinedAt: '2026-08-01T00:00:00.000Z',
   contributionsApproved: 2,
+  wordsApproved: 1,
+  correctionsApproved: 1,
   verificationsDone: 5,
   commentsPublished: 1,
 );
@@ -240,7 +242,8 @@ void main() {
 
       expect(find.text('@budi'), findsOneWidget);
       expect(find.text('Bio percobaan'), findsOneWidget);
-      expect(find.textContaining('kontribusi'), findsWidgets);
+      expect(find.textContaining('usul kata'), findsOneWidget);
+    expect(find.textContaining('perbaikan'), findsOneWidget);
       expect(find.text('Verifikator'), findsOneWidget);
       // Label role lama tidak boleh tampil lagi.
       expect(find.text('Reviewer'), findsNothing);
@@ -407,6 +410,6 @@ void main() {
     await tester.tap(find.text('Server'));
     await tester.pumpAndSettle();
     expect(find.text('Pilih Server'), findsOneWidget);
-    expect(find.text('Uji semua'), findsOneWidget);
+    expect(find.text('Ping'), findsOneWidget);
   });
 }

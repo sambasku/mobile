@@ -54,18 +54,16 @@ class ProfileStatDot extends StatelessWidget {
   );
 }
 
-/// Baris lengkap 3 stat profil: kontribusi · verifikasi · komentar.
+/// Baris lengkap 2 stat profil: usul kata · perbaikan.
 class ProfileStatRow extends StatelessWidget {
   const ProfileStatRow({
     super.key,
-    required this.contributions,
-    required this.verifications,
-    required this.comments,
+    required this.words,
+    required this.corrections,
   });
 
-  final int contributions;
-  final int verifications;
-  final int comments;
+  final int words;
+  final int corrections;
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +72,9 @@ class ProfileStatRow extends StatelessWidget {
       runSpacing: 2,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        ProfileStatInline(count: contributions, label: 'kontribusi'),
+        ProfileStatInline(count: words, label: 'usul kata'),
         const ProfileStatDot(),
-        ProfileStatInline(count: verifications, label: 'verifikasi'),
-        const ProfileStatDot(),
-        ProfileStatInline(count: comments, label: 'komentar'),
+        ProfileStatInline(count: corrections, label: 'perbaikan'),
       ],
     );
   }

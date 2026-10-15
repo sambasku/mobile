@@ -14,6 +14,7 @@ import 'package:record/record.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/permission_helper.dart';
+import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
 import '../../application/wav_trim.dart';
 import '../providers/audio_player_controller.dart';
 import '../providers/pronunciation_providers.dart';
@@ -768,7 +769,12 @@ class _RecordPronunciationSheetState
         });
       },
       (_) async {
-        ref.invalidate(wordDetailProvider(widget.wordId));
+        // Issue #159: flush L1 + Riverpod, bukan invalidate polos.
+        await invalidateWordDetailCaches(
+          ref,
+          widget.wordId,
+          ref.read(wordDetailProvider(widget.wordId)).value?.lemma ?? '',
+        );
         if (!mounted) return;
         AnalyticsService.instance.log(
           AnalyticsEvents.audioRecordSubmit,

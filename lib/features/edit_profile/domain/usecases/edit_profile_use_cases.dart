@@ -19,11 +19,13 @@ class UpdateMyProfileUseCase {
   final EditProfileRepository _repository;
 
   Future<Either<EditProfileFailure, MyProfile>> call({
+    String? username,
     String? displayName,
     String? bio,
     bool? hasReadContributionGuide,
   }) =>
       _repository.updateMyProfile(
+        username: username,
         displayName: displayName,
         bio: bio,
         hasReadContributionGuide: hasReadContributionGuide,

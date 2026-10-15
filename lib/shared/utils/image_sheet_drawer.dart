@@ -9,6 +9,7 @@ import 'file_persist_helper.dart';
 import 'compress_image_for_upload.dart';
 import 'permission_helper.dart';
 import 'photo_pick_constants.dart';
+import '../widgets/image_crop_page.dart';
 
 enum PhotoPickSource { camera, gallery, file, mediaExplorer }
 
@@ -33,8 +34,23 @@ void showImageSheetDrawer(
   double maxWidth = kPhotoPickMaxWidth,
   double maxHeight = kPhotoPickMaxHeight,
   int imageQuality = kPhotoPickQuality,
+  /// Tampilkan ImageCropPage setelah pick (default true).
+  /// Setel false untuk share_sheet atau konteks tanpa crop.
+  bool cropEnabled = true,
 }) {
   final imagePicker = picker ?? ImagePicker();
+
+  // Picker memanggil onSuccess lalu pop(sheetContext) secara sinkron; crop
+  // dijadwalkan sesudahnya supaya pop itu tidak menutup halaman crop.
+  // Batal crop → pick dibuang; Lewati → foto asli.
+  void deliver(File file, void Function(File file) emit) {
+    if (!cropEnabled) return emit(file);
+    Future<void>.delayed(Duration.zero, () async {
+      if (!context.mounted) return;
+      final cropped = await cropImage(context, file.path);
+      if (cropped != null) emit(cropped);
+    });
+  }
 
   showModalBottomSheet<void>(
     context: context,
@@ -86,15 +102,14 @@ void showImageSheetDrawer(
                           onTap: () => openCamera(
                             sheetContext,
                             imagePicker,
-                            (xfile) {
-                              final file = File(xfile.path);
-                              onCameraCaptured?.call(xfile);
+                            (xfile) => deliver(File(xfile.path), (file) {
+                              onCameraCaptured?.call(XFile(file.path));
                               onPickedWithSource?.call(
                                 file,
                                 PhotoPickSource.camera,
                               );
                               onPicked?.call(file);
-                            },
+                            }),
                             maxWidth: maxWidth,
                             maxHeight: maxHeight,
                             imageQuality: imageQuality,
@@ -107,15 +122,14 @@ void showImageSheetDrawer(
                           onTap: () => pickImageFromGallery(
                             sheetContext,
                             imagePicker,
-                            (xfile) {
-                              final file = File(xfile.path);
-                              onImagePicked?.call(xfile);
+                            (xfile) => deliver(File(xfile.path), (file) {
+                              onImagePicked?.call(XFile(file.path));
                               onPickedWithSource?.call(
                                 file,
                                 PhotoPickSource.gallery,
                               );
                               onPicked?.call(file);
-                            },
+                            }),
                             maxWidth: maxWidth,
                             maxHeight: maxHeight,
                             imageQuality: imageQuality,
@@ -127,14 +141,14 @@ void showImageSheetDrawer(
                           label: 'File',
                           onTap: () => pickImageFromFile(
                             sheetContext,
-                            (file) {
+                            (picked) => deliver(picked, (file) {
                               onFilePicked?.call(file);
                               onPickedWithSource?.call(
                                 file,
                                 PhotoPickSource.file,
                               );
                               onPicked?.call(file);
-                            },
+                            }),
                           ),
                         ),
                       if (mediaExplorerPicker && onMediaExplorer != null)

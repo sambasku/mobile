@@ -11,6 +11,7 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
+import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
 import '../../../contribution/presentation/widgets/contribute_images_field.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
@@ -326,7 +327,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               'provider_file_id': slot.uploaded!.providerFileId,
               'provider': ?slot.uploaded!.provider,
               'sha': ?slot.uploaded!.sha,
-              'alt_text': slot.uploaded!.altText,
+              'alt_text': ?slot.uploaded!.altText,
               'is_primary': slot.uploaded!.isPrimary,
             },
       ];
@@ -380,7 +381,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           ),
         ),
       );
-      ref.invalidate(wordDetailProvider(widget.wordId));
+      // Issue #159: flush L1 + Riverpod, kalau tidak detail refetch data basi.
+      await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
+      if (!mounted) return;
       ref.invalidate(changeHistoryProvider(widget.wordId));
       final router = GoRouter.of(context);
       router.pop();
@@ -429,7 +432,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             : 'Contoh kalimat masuk antrean pengecekan.',
       ),
     );
-    ref.invalidate(wordDetailProvider(widget.wordId));
+    await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
+    if (!mounted) return;
     GoRouter.of(context).pop();
   }
 
@@ -469,7 +473,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         _removeRelationIds.clear();
         _removeVariants.clear();
       });
-      ref.invalidate(wordDetailProvider(widget.wordId));
+      await invalidateWordDetailCaches(
+        ref,
+        widget.wordId,
+        ref.read(wordDetailProvider(widget.wordId)).value?.lemma ?? '',
+      );
+      if (!mounted) return;
     }
     await _showError(
       message,

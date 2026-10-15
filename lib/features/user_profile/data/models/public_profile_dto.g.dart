@@ -36,6 +36,8 @@ _PublicProfileStatsDto _$PublicProfileStatsDtoFromJson(
   Map<String, dynamic> json,
 ) => _PublicProfileStatsDto(
   contributionsApproved: (json['contributions_approved'] as num?)?.toInt() ?? 0,
+  wordsApproved: (json['words_approved'] as num?)?.toInt() ?? 0,
+  correctionsApproved: (json['corrections_approved'] as num?)?.toInt() ?? 0,
   verificationsDone: (json['verifications_done'] as num?)?.toInt() ?? 0,
   commentsPublished: (json['comments_published'] as num?)?.toInt() ?? 0,
 );
@@ -44,6 +46,8 @@ Map<String, dynamic> _$PublicProfileStatsDtoToJson(
   _PublicProfileStatsDto instance,
 ) => <String, dynamic>{
   'contributions_approved': instance.contributionsApproved,
+  'words_approved': instance.wordsApproved,
+  'corrections_approved': instance.correctionsApproved,
   'verifications_done': instance.verificationsDone,
   'comments_published': instance.commentsPublished,
 };
