@@ -14,6 +14,7 @@ import 'cached_network_image_with_fallback.dart';
 ///
 /// - gambar: lebar penuh, rasio asli, tap -> preview fullscreen pinch-zoom
 /// - link: hanya https -> browser eksternal (skema lain diabaikan)
+/// - tabel: lebar kolom mengikuti isi, scroll horizontal bila melebihi layar
 class SambaskuMarkdown extends StatelessWidget {
   const SambaskuMarkdown({super.key, required this.data, this.selectable = true});
 
@@ -24,21 +25,76 @@ class SambaskuMarkdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
+    // Jaring pengaman: caller sudah menyaring kosong, tapi renderer tidak
+    // boleh menggambar apa pun untuk input kosong.
+    if (data.trim().isEmpty) return const SizedBox.shrink();
     return MarkdownBody(
       data: data,
       selectable: selectable,
       sizedImageBuilder: buildSambaskuMarkdownImage,
       onTapLink: (text, href, title) => openSambaskuMarkdownHref(href),
-      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-        p: theme.typography.sm.copyWith(height: 1.5),
-        h1: theme.typography.xl2.copyWith(fontWeight: FontWeight.w700, height: 1.3),
-        h2: theme.typography.xl.copyWith(fontWeight: FontWeight.w700, height: 1.3),
-        h3: theme.typography.lg.copyWith(fontWeight: FontWeight.w700, height: 1.3),
-        listBullet: theme.typography.sm,
-      ),
+      styleSheet: sambaskuMarkdownStyleSheet(context),
     );
   }
+}
+
+/// Style sheet artikel (issue #160). Dipisah supaya ukuran bisa diuji.
+///
+/// Skala Forui `touch`: xs 14, sm 16, md 18, lg 20, xl 22, xl2 30. Body
+/// `sm` (16) sama dengan layar lain; heading turun dari xl2/xl/lg
+/// (30/22/20) ke xl/md/sm (22/18/16) supaya tidak mendominasi layar kecil.
+/// Korpus artikel memakai h1-h5, tabel, daftar, gambar, link, dan hr.
+@visibleForTesting
+MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
+  final theme = context.theme;
+  final typo = theme.typography;
+  final colors = theme.colors;
+  const bold = FontWeight.w700;
+
+  return MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+    p: typo.sm.copyWith(height: 1.5),
+    h1: typo.xl.copyWith(fontWeight: bold, height: 1.3),
+    h2: typo.md.copyWith(fontWeight: bold, height: 1.3),
+    h3: typo.sm.copyWith(fontWeight: bold, height: 1.3),
+    // fromTheme memberi h4-h6 style yang sama (bodyLarge); bedakan eksplisit.
+    h4: typo.sm.copyWith(fontWeight: bold, height: 1.3),
+    h5: typo.xs.copyWith(fontWeight: bold, height: 1.3),
+    h6: typo.xs.copyWith(
+      fontWeight: bold,
+      height: 1.3,
+      color: colors.mutedForeground,
+    ),
+    // Jarak di atas heading memisahkan bagian; padding bawah dijaga kecil.
+    h1Padding: const EdgeInsets.only(top: 8, bottom: 2),
+    h2Padding: const EdgeInsets.only(top: 8, bottom: 2),
+    h3Padding: const EdgeInsets.only(top: 4),
+    h4Padding: const EdgeInsets.only(top: 4),
+    em: typo.sm.copyWith(fontStyle: FontStyle.italic),
+    strong: typo.sm.copyWith(fontWeight: bold),
+    listBullet: typo.sm,
+    // ponytail: default flutter_markdown 8px; 4px lebih rapat, belum diuji
+    // visual di device. Naikkan kalau terasa terlalu padat.
+    blockSpacing: 4,
+    // Tabel: IntrinsicColumnWidth -> lebar kolom ikut isi dan flutter_markdown
+    // membungkusnya dengan scroll horizontal. Default FlexColumnWidth memecah
+    // tabel 6-7 kolom jadi kolom sempit dengan teks terpotong per huruf.
+    tableColumnWidth: const IntrinsicColumnWidth(),
+    tableHead: typo.sm.copyWith(fontWeight: bold),
+    tableBody: typo.sm,
+    tableHeadAlign: TextAlign.left,
+    tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    tableBorder: TableBorder.all(color: colors.border),
+    // Default blockquote/hr memakai Colors.blue dan garis 5px yang tidak
+    // adaptif dark mode; pakai warna tema.
+    blockquote: typo.sm.copyWith(color: colors.mutedForeground),
+    blockquotePadding: const EdgeInsets.only(left: 12),
+    blockquoteDecoration: BoxDecoration(
+      border: Border(left: BorderSide(color: colors.border, width: 3)),
+    ),
+    horizontalRuleDecoration: BoxDecoration(
+      border: Border(top: BorderSide(color: colors.border)),
+    ),
+  );
 }
 
 /// Gambar di body markdown: lebar penuh, tinggi ikut rasio asli (expand:
