@@ -5,6 +5,7 @@ import 'deep_link_params.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
+import 'data/github_oauth_callback_bus.dart';
 import 'presentation/pages/forgot_password_page.dart';
 import 'presentation/pages/legal_webview_page.dart';
 import 'presentation/pages/login_page.dart';
@@ -31,6 +32,12 @@ class AuthRouter {
   static const resetPassword = RouteDefiner(
     path: '/reset-password',
     name: 'AuthRouter.resetPassword',
+  );
+  /// Deep link OAuth GitHub (`sambasku-staging://app/oauth/github`).
+  /// Code ditangani [GithubSignInAdapter]; rute ini hanya mencegah 404.
+  static const githubOauthCallback = RouteDefiner(
+    path: '/oauth/github',
+    name: 'AuthRouter.githubOauthCallback',
   );
   static const termsWebView = RouteDefiner(
     path: '/syarat-ketentuan',
@@ -89,6 +96,25 @@ class AuthRouter {
         ),
         startCooldown: state.uri.queryParameters['cooldown'] == '1',
       ),
+    ),
+    GoRoute(
+      path: githubOauthCallback.path,
+      name: githubOauthCallback.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        // Serahkan URI ke adapter (GoRouter sering dapat link lebih dulu
+        // daripada app_links), lalu kembali ke login/daftar.
+        GithubOauthCallbackBus.emit(state.uri);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(login.path);
+          }
+        });
+        return const SizedBox.shrink();
+      },
     ),
   ];
 }

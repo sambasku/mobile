@@ -175,8 +175,9 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Tanpa horizontal - childPad FScaffold DevTool sudah pad.
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          padding: const EdgeInsets.only(bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -286,19 +287,16 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
                     ),
                   ),
                 )
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: FTileGroup.builder(
-                    count: filtered.length,
-                    tileBuilder: (context, index) {
-                      final meta = filtered[index];
-                      return _CacheTile(
-                        meta: meta,
-                        onPress: () => _openDetail(meta),
-                        onDelete: () => _deleteKey(meta.key),
-                      );
-                    },
-                  ),
+              : FTileGroup.builder(
+                  count: filtered.length,
+                  tileBuilder: (context, index) {
+                    final meta = filtered[index];
+                    return _CacheTile(
+                      meta: meta,
+                      onPress: () => _openDetail(meta),
+                      onDelete: () => _deleteKey(meta.key),
+                    );
+                  },
                 ),
         ),
       ],

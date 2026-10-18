@@ -12,6 +12,12 @@ void main() {
   test('host whitelist staging lolos', () {
     expect(
       isAllowedNotificationHost(
+        Uri.parse('https://sambasku-web-staging.ibnuul.workers.dev/x'),
+      ),
+      isTrue,
+    );
+    expect(
+      isAllowedNotificationHost(
         Uri.parse('https://sambasku-web-staging.iamutaki.com/x'),
       ),
       isTrue,

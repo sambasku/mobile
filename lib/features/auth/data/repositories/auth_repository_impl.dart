@@ -126,6 +126,12 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return _persistSession(payload);
     } on DioException catch (error) {
+      // ponytail: 1x retry untuk response hilang setelah picker menaruh
+      // app ke background; backend idempotent (identity lookup dulu),
+      // user tidak dobel. Kalau race makin sering: queue + resume.
+      if (_isTransientNetworkError(error)) {
+        return _loginWithGoogleOnce(idToken);
+      }
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
       );
@@ -133,6 +139,37 @@ class AuthRepositoryImpl implements AuthRepository {
       return Either.left(AuthFailure(error.toString()));
     }
   }
+
+  Future<Either<AuthFailure, AuthSession>> _loginWithGoogleOnce(
+    String idToken,
+  ) async {
+    try {
+      final response = await _remoteDatasource.loginWithGoogle(
+        GoogleLoginRequestDto(idToken: idToken),
+      );
+      final payload = response.data;
+      if (payload == null) {
+        return Either.left(
+          AuthFailure(
+            response.message ?? 'Tidak bisa masuk dengan Google.',
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return _persistSession(payload);
+    } on DioException catch (error) {
+      return Either.left(
+        AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
+      );
+    } catch (error) {
+      return Either.left(AuthFailure(error.toString()));
+    }
+  }
+
+  bool _isTransientNetworkError(DioException error) =>
+      error.type == DioExceptionType.connectionError ||
+      error.type == DioExceptionType.receiveTimeout ||
+      error.type == DioExceptionType.connectionTimeout;
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({

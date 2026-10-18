@@ -87,11 +87,21 @@ class FeedActivityActor {
 /// #144: arah pencarian search-miss (lemma = kata Sambas, translation = kata
 /// Indonesia). Diperlukan oleh form usul kata agar field prefill tepat.
 class FeedActivityTarget {
-  const FeedActivityTarget({required this.type, required this.id, this.direction});
+  const FeedActivityTarget({
+    required this.type,
+    required this.id,
+    this.direction,
+    this.status,
+  });
 
   final String type;
   final String id;
   final String? direction; // 'lemma' | 'translation' | null
+
+  /// #166: status kata target ('pending_review' = usulan belum tayang;
+  /// null = published / kind tanpa status). Verifikator diarahkan ke antrean
+  /// review, bukan detail publik (404).
+  final String? status;
 }
 
 /// Format isi pengumuman (#124): html = render native, md = markdown,

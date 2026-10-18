@@ -10,8 +10,9 @@ android.apply {
             dimension = "flavor-type"
             applicationId = "com.iamutaki.sambasku.staging"
             resValue(type = "string", name = "app_name", value = "SambasKu Staging")
-            manifestPlaceholders["deepLinkHost"] = "sambasku-web-staging.iamutaki.com"
-            // AppAuth redirect: {scheme}:/oauthredirect
+            manifestPlaceholders["deepLinkHost"] = "sambasku-web-staging.ibnuul.workers.dev"
+            // GitHub OAuth custom scheme (terpisah dari prod supaya tidak bentrok).
+            manifestPlaceholders["oauthDeepLinkScheme"] = "sambasku-staging"
             manifestPlaceholders["appAuthRedirectScheme"] = "com.iamutaki.sambasku.staging"
         }
         create("production") {
@@ -19,6 +20,7 @@ android.apply {
             applicationId = "com.iamutaki.sambasku"
             resValue(type = "string", name = "app_name", value = "SambasKu")
             manifestPlaceholders["deepLinkHost"] = "sambasku.com"
+            manifestPlaceholders["oauthDeepLinkScheme"] = "sambasku"
             manifestPlaceholders["appAuthRedirectScheme"] = "com.iamutaki.sambasku"
         }
     }

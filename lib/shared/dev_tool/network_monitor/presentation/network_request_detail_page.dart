@@ -13,17 +13,22 @@ class NetworkRequestDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    // childPad: gutter horizontal dari FScaffold; jangan tambah Padding lagi.
+    return FScaffold(
+      childPad: true,
+      header: FHeader.nested(
         title: Text(
           '${record.method} ${record.path}',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Copy cURL',
-            icon: Icon(FLucideIcons.terminal),
-            onPressed: () {
+        prefixes: [
+          FHeaderAction.back(onPress: () => Navigator.of(context).pop()),
+        ],
+        suffixes: [
+          FHeaderAction(
+            icon: const Icon(FLucideIcons.terminal),
+            semanticsLabel: 'Copy cURL',
+            onPress: () {
               Clipboard.setData(ClipboardData(text: _buildCurl()));
               showFToast(
                 context: context,
@@ -35,25 +40,22 @@ class NetworkRequestDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: FTabs(
-          expands: true,
-          children: [
-            FTabEntry.entry(
-              label: const Text('Summary'),
-              child: _buildSummary(context),
-            ),
-            FTabEntry.entry(
-              label: const Text('Request'),
-              child: _buildRequest(context),
-            ),
-            FTabEntry.entry(
-              label: const Text('Response'),
-              child: _buildResponse(context),
-            ),
-          ],
-        ),
+      child: FTabs(
+        expands: true,
+        children: [
+          FTabEntry.entry(
+            label: const Text('Summary'),
+            child: _buildSummary(context),
+          ),
+          FTabEntry.entry(
+            label: const Text('Request'),
+            child: _buildRequest(context),
+          ),
+          FTabEntry.entry(
+            label: const Text('Response'),
+            child: _buildResponse(context),
+          ),
+        ],
       ),
     );
   }

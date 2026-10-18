@@ -66,7 +66,7 @@ abstract final class Env {
   /// Origin situs publik sesuai flavor (untuk caption share / deep link).
   static String? get webAppUrl {
     if (F.isStaging || webAppUrlProduction == null) {
-      return _nonEmpty(webAppUrlStaging) ?? 'https://sambasku-web-staging.iamutaki.com';
+      return _nonEmpty(webAppUrlStaging) ?? 'https://sambasku-web-staging.ibnuul.workers.dev';
     }
     return _nonEmpty(webAppUrlProduction) ?? 'https://sambasku.com';
   }

@@ -32,11 +32,20 @@
 				<string>sambasku</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.iamutaki.sambasku.staging.oauth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sambasku-staging</string>
+			</array>
+		</dict>
 	</array>
 	<!-- Google Sign-In: tambah GIDClientID + URL scheme reversed iOS client ID.
 	     Jangan timpa scheme sambasku di atas (reset password). -->
-	<!-- GitHub OAuth: callback HTTPS Universal Link /oauth/github
-	     (apple-app-site-association). Bukan custom scheme - GitHub menolak. -->
+	<!-- GitHub OAuth: HTTPS di web → custom scheme sambasku / sambasku-staging. -->
 	<!-- Facebook Login: isi FacebookAppID + FacebookClientToken + URL scheme
 	     fb{APP_ID} (array terpisah, jangan timpa sambasku).
 	     LSApplicationQueriesSchemes: fbapi, fb-messenger-share-api.

@@ -33,7 +33,7 @@ final class _Env {
   static const String? githubClientIdProduction = 'Ov23liuhFjUQj3bh5uWE';
 
   static const String? webAppUrlStaging =
-      'https://sambasku-web-staging.iamutaki.com';
+      'https://sambasku-web-staging.ibnuul.workers.dev';
 
   static const String? webAppUrlProduction = 'https://sambasku.com';
 }

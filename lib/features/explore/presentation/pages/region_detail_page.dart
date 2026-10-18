@@ -59,9 +59,12 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
     return FScaffold(
       header: FHeader.nested(title: Text(name)),
+      // childPad false: sama pola artikel wisata (#168) - padding hanya di
+      // ListView supaya markdown/tabel tidak kena gutter dobel (12+16).
+      childPad: false,
       // ListView agar artikel panjang bisa di-scroll.
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
           if (isKec) ...[
             // Artikel markdown kecamatan: skeleton saat loading, kosong

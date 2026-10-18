@@ -18,10 +18,8 @@ bool googleAuthEnabled(Ref ref) => isGoogleAuthConfigured();
 @riverpod
 bool facebookAuthEnabled(Ref ref) => false;
 
-/// Sementara dimatikan di semua flavor (staging + production).
-/// Nyalakan lagi: `=> isGithubAuthConfigured();`
 @riverpod
-bool githubAuthEnabled(Ref ref) => false;
+bool githubAuthEnabled(Ref ref) => isGithubAuthConfigured();
 
 @riverpod
 class AuthLoginNotifier extends _$AuthLoginNotifier {
@@ -40,53 +38,53 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       clearSession: true,
       showUnverifiedSheet: false,
     );
-
-    final result = await ref
-        .read(authLoginUseCaseProvider)
-        .call(LoginParams(email: email, password: password));
-
-    result.match(
-      (failure) {
-        if (failure.isEmailNotVerified) {
+    try {
+      final result = await ref
+          .read(authLoginUseCaseProvider)
+          .call(LoginParams(email: email, password: password));
+      result.match(
+        (failure) {
+          if (failure.isEmailNotVerified) {
+            state = state.copyWith(
+              clearPendingAction: true,
+              clearErrorMessage: true,
+              clearErrorCode: true,
+              clearSession: true,
+              showUnverifiedSheet: true,
+            );
+            return;
+          }
           state = state.copyWith(
             clearPendingAction: true,
-            clearErrorMessage: true,
-            clearErrorCode: true,
+            errorMessage: failure.message,
+            errorCode: failure.errorCode,
             clearSession: true,
-            showUnverifiedSheet: true,
+            showUnverifiedSheet: false,
           );
-          _inFlight = false;
-          return;
-        }
-        state = state.copyWith(
-          clearPendingAction: true,
-          errorMessage: failure.message,
-          errorCode: failure.errorCode,
-          clearSession: true,
-          showUnverifiedSheet: false,
-        );
-        AnalyticsService.instance.log(
-          AnalyticsEvents.authLoginFail,
-          params: {
-            'method': 'email',
-            if (failure.errorCode != null) 'error_code': failure.errorCode!,
-          },
-        );
-      },
-      (session) {
-        ref.read(authStatusProvider.notifier).markLoggedIn(session);
-        state = state.copyWith(
-          clearPendingAction: true,
-          session: session,
-          showUnverifiedSheet: false,
-        );
-        AnalyticsService.instance.logAuthSuccess(
-          event: AnalyticsEvents.authLoginSuccess,
-          method: 'email',
-        );
-      },
-    );
-    _inFlight = false;
+          AnalyticsService.instance.log(
+            AnalyticsEvents.authLoginFail,
+            params: {
+              'method': 'email',
+              if (failure.errorCode != null) 'error_code': failure.errorCode!,
+            },
+          );
+        },
+        (session) {
+          ref.read(authStatusProvider.notifier).markLoggedIn(session);
+          state = state.copyWith(
+            clearPendingAction: true,
+            session: session,
+            showUnverifiedSheet: false,
+          );
+          AnalyticsService.instance.logAuthSuccess(
+            event: AnalyticsEvents.authLoginSuccess,
+            method: 'email',
+          );
+        },
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitGoogle() async {
@@ -99,13 +97,15 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       clearSession: true,
       showUnverifiedSheet: false,
     );
-
-    final result = await ref.read(authLoginWithGoogleUseCaseProvider).call();
-    result.match(
-      (failure) => _applyGoogleFailure(failure),
-      (session) => _applyGoogleSession(session),
-    );
-    _inFlight = false;
+    try {
+      final result = await ref.read(authLoginWithGoogleUseCaseProvider).call();
+      result.match(
+        (failure) => _applyGoogleFailure(failure),
+        (session) => _applyGoogleSession(session),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitFacebook() async {
@@ -118,13 +118,15 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       clearSession: true,
       showUnverifiedSheet: false,
     );
-
-    final result = await ref.read(authLoginWithFacebookUseCaseProvider).call();
-    result.match(
-      (failure) => _applyFacebookFailure(failure),
-      (session) => _applySocialSession(session, method: 'facebook'),
-    );
-    _inFlight = false;
+    try {
+      final result = await ref.read(authLoginWithFacebookUseCaseProvider).call();
+      result.match(
+        (failure) => _applyFacebookFailure(failure),
+        (session) => _applySocialSession(session, method: 'facebook'),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitGithub() async {
@@ -137,13 +139,15 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       clearSession: true,
       showUnverifiedSheet: false,
     );
-
-    final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
-    result.match(
-      (failure) => _applyGithubFailure(failure),
-      (session) => _applySocialSession(session, method: 'github'),
-    );
-    _inFlight = false;
+    try {
+      final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
+      result.match(
+        (failure) => _applyGithubFailure(failure),
+        (session) => _applySocialSession(session, method: 'github'),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   void _applyGoogleFailure(AuthFailure failure) {

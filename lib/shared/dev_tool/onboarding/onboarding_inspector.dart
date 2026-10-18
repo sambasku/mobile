@@ -37,27 +37,25 @@ class _OnboardingDevPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final done = OnboardingPrefs.done;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            done ? 'Status: selesai' : 'Status: belum selesai',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-          ),
-          const Gap(8),
-          Text(
-            'Mengulang menulis flag onboarding menjadi belum selesai, lalu membuka halaman onboarding.',
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
-          ),
-          const Gap(20),
-          FButton(
-            onPress: _replay,
-            child: const Text('Ulangi onboarding'),
-          ),
-        ],
-      ),
+    // Tanpa horizontal - childPad FScaffold DevTool sudah pad.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          done ? 'Status: selesai' : 'Status: belum selesai',
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+        ),
+        const Gap(8),
+        Text(
+          'Mengulang menulis flag onboarding menjadi belum selesai, lalu membuka halaman onboarding.',
+          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+        ),
+        const Gap(20),
+        FButton(
+          onPress: _replay,
+          child: const Text('Ulangi onboarding'),
+        ),
+      ],
     );
   }
 }

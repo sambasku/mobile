@@ -227,6 +227,7 @@ class AppRouter {
         path == AuthRouter.verifyEmail.path ||
         path == AuthRouter.register.path ||
         path == AuthRouter.termsWebView.path ||
+        path == AuthRouter.githubOauthCallback.path ||
         path == DeleteAccountRouter.deleteAccount.path ||
         path == '/hapus-akun') {
       return true;

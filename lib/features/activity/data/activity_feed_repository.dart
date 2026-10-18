@@ -35,12 +35,9 @@ class ActivityFeedRepository {
     final query = <String, dynamic>{
       'limit': limit,
       if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
-      // Penyaringan terjadi di API (SQL, sebelum cap per jenis). Tanpa token
-      // sah server mengabaikannya dan tetap mengembalikan feed publik penuh.
-      //
-      // `buildCacheKey` sengaja tidak memuat Authorization, tapi memuat query -
-      // jadi feed login dan feed tamu punya entri cache terpisah dan tidak
-      // saling menimpa.
+      // #167: server exclude otomatis saat Bearer sah. Flag ini tetap dikirim
+      // saat login sebagai pembeda cache key L1 (buildCacheKey memuat query,
+      // bukan Authorization) - feed login vs tamu tidak saling menimpa.
       if (excludeSelf) 'exclude_self': '1',
     };
     final cache = _cache;

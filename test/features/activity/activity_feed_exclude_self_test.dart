@@ -73,6 +73,22 @@ class _FakeAuthStatus extends AuthStatusNotifier {
   Future<AuthStatusState> build() async => authState;
 }
 
+/// #167: identitas resolve setelah jeda async (simulasi cold-start: prefs +
+/// storage belum terbaca saat notifier feed build).
+class _DelayedAuthStatus extends AuthStatusNotifier {
+  _DelayedAuthStatus(this.authState);
+
+  final AuthStatusState authState;
+
+  @override
+  Future<AuthStatusState> build() async {
+    for (var i = 0; i < 4; i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+    return authState;
+  }
+}
+
 Future<void> _flush() async {
   for (var i = 0; i < 8; i++) {
     await Future<void>.delayed(Duration.zero);
@@ -196,6 +212,31 @@ void main() {
 
       expect(repo.calls.map((c) => c.excludeSelf), [true, true]);
       expect(repo.calls.last.cursor, 'page-2');
+    });
+
+    test('#167: fetch pertama menunggu authStatus resolve (tidak ada panggilan prematur)',
+        () async {
+      // Identitas baru resolve setelah jeda - sebelum fix, load() langsung
+      // menembak repo dengan excludeSelf:false (data sendiri flash).
+      final container = ProviderContainer(
+        overrides: [
+          activityFeedRepositoryProvider.overrideWithValue(repo),
+          authStatusProvider.overrideWith(
+            () => _DelayedAuthStatus(
+              const AuthStatusState(isAuth: true, userId: 'u1'),
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      container.read(activityFeedProvider);
+      // Double flush: jeda authStatus (4 tick) + chain await di load().
+      await _flush();
+      await _flush();
+
+      // Semua panggilan ke repo terjadi SETELAH identitas diketahui.
+      expect(repo.calls, isNotEmpty);
+      expect(repo.calls.first.excludeSelf, isTrue);
     });
   });
 }

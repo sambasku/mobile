@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../data/place_markdown/place_markdown_repository.dart';
 import '../providers/places_providers.dart';
 import '../../../../shared/widgets/sambasku_markdown.dart';
@@ -20,22 +19,26 @@ class PlaceArticlePage extends ConsumerWidget {
     final async = ref.watch(placeMarkdownProvider(slug));
     final theme = context.theme;
     final placesAsync = ref.watch(placesProvider);
-    final place = placesAsync.value?.where((p) => p.slug == slug).firstOrNull;
+    final place =
+        placesAsync.value?.where((p) => p.slug == slug).firstOrNull;
 
     return FScaffold(
       header: FHeader.nested(
         title: Text(place?.name ?? slug),
         prefixes: [FHeaderAction.back(onPress: () => _back(context))],
       ),
+      childPad: false,
       child: async.when(
         loading: () => _buildSkeleton(theme),
-        data: (markdown) {
-          if (markdown == null || markdown.trim().isEmpty) {
-            return const SizedBox.shrink();
-          }
-          return SambaskuMarkdown(data: markdown);
-        },
-        error: (_, _) => const SizedBox.shrink(),
+        data: (markdown) => (markdown == null || markdown.trim().isEmpty)
+            ? _EmptyArticle(slug: slug)
+            // MarkdownBody tidak scrollable - tanpa ini artikel panjang
+            // overflow RenderFlex (region page pakai pola sama via ListView).
+            : SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: SambaskuMarkdown(data: markdown),
+              ),
+        error: (_, _) => _EmptyArticle(slug: slug),
       ),
     );
   }
@@ -56,26 +59,59 @@ class PlaceArticlePage extends ConsumerWidget {
         const Gap(12),
         ...List.generate(3, (i) {
           final width = i == 2 ? 0.7 : 1.0;
-          return Column(
-            children: [
-              FractionallySizedBox(
-                widthFactor: width,
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: theme.colors.border,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: width,
+              child: Container(
+                height: 12,
+                decoration: BoxDecoration(
+                  color: theme.colors.border,
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              if (i < 2) const Gap(8),
-            ],
+            ),
           );
         }),
       ],
     );
   }
 
-  void _back(BuildContext context) => context.canPop() ? context.pop() : context.go('/explore');
+  void _back(BuildContext context) =>
+      context.canPop() ? context.pop() : context.go('/explore');
+}
+
+/// Artikel tidak tersedia / gagal dimuat. Jangan blank page (#168) -
+/// kasih konteks + jalan keluar (kembali ke detail, coba lagi).
+class _EmptyArticle extends ConsumerWidget {
+  const _EmptyArticle({required this.slug});
+
+  final String slug;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(FLucideIcons.fileQuestionMark, size: 40),
+            const Gap(12),
+            Text(
+              'Artikel belum tersedia atau gagal dimuat.',
+              textAlign: TextAlign.center,
+              style: context.theme.typography.sm,
+            ),
+            const Gap(16),
+            FButton(
+              onPress: () => ref.invalidate(placeMarkdownProvider(slug)),
+              child: const Text('Coba lagi'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -31,16 +31,20 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
     final m = Map<String, dynamic>.from(targetRaw);
     final type = m['type']?.toString() ?? '';
     final tid = m['id']?.toString() ?? '';
-    if (type.isNotEmpty && tid.isNotEmpty) {
-      // #144: arah search-miss ('lemma'/'translation') untuk prefill form usul.
-      final direction = m['direction']?.toString();
-      target = FeedActivityTarget(
-        type: type,
-        id: tid,
-        direction: (direction == 'lemma' || direction == 'translation')
-            ? direction
-            : null,
-      );
+      if (type.isNotEmpty && tid.isNotEmpty) {
+        // #144: arah search-miss ('lemma'/'translation') untuk prefill form usul.
+        final direction = m['direction']?.toString();
+        // #166: status kata target - whitelist 'pending_review' saja (nilai
+        // lain diperlakukan null = published).
+        final status = m['status']?.toString();
+        target = FeedActivityTarget(
+          type: type,
+          id: tid,
+          direction: (direction == 'lemma' || direction == 'translation')
+              ? direction
+              : null,
+          status: status == 'pending_review' ? status : null,
+        );
     }
   }
 

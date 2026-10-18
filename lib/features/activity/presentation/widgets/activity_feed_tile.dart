@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../../review/domain/review_access.dart';
+import '../../../review/review_router.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../activity_router.dart';
 import '../../domain/entities/feed_activity_item.dart';
 import 'activity_kind_avatar.dart';
 
 /// Satu baris feed "Aktivitas terbaru" (home + profil publik).
-class ActivityFeedTile extends StatelessWidget {
+class ActivityFeedTile extends ConsumerWidget {
   const ActivityFeedTile({super.key, required this.item, this.showCta = true});
 
   final FeedActivityItem item;
@@ -24,8 +28,9 @@ class ActivityFeedTile extends StatelessWidget {
   final bool showCta;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
+    final auth = ref.watch(authStatusProvider).value;
     final actorLabel = item.actor == null
         ? 'Warga'
         : displayPublicAccountLabel(
@@ -40,9 +45,24 @@ class ActivityFeedTile extends StatelessWidget {
       ?kindLabel,
       if (subtitle != null && subtitle.isNotEmpty) subtitle,
     ].join(' · ');
-    final path = _navigatePath(item);
+  /// #166: usulan kata baru pending → verifikator shortcut ke antrean review,
+  /// non-verifikator buka detail publik (pending = 404). Untuk tamu/kontributor
+  /// tujuannya hanya info karena kata belum tayang di mana pun (bukan dead row).
+  final isPendingSubmission =
+      item.kind == FeedActivityKind.contribution &&
+      item.target?.status == 'pending_review';
+  final canReview = canReviewQueue(auth?.role);
+  final path = _navigatePath(item, canReview: canReview);
+  // CTA "Lihat kata" untuk kata published; "Tinjau usulan" hanya verifikator
+  // pada usulan pending. Non-pending+null dan pending+tamu: toast, tidak ada
+  // CTA label (baris tetap bisa ditap).
+  final showCtaLabel = switch (item.kind) {
+        FeedActivityKind.contribution => !(isPendingSubmission && !canReview),
+        _ => true,
+      } &&
+      showCta && path != null;
 
-    final content = Row(
+  final content = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
@@ -164,10 +184,13 @@ class ActivityFeedTile extends StatelessWidget {
                     ),
                     // CTA hanya label; tap ditangani InkWell baris (tujuan sama).
                     // Sengaja muted: fokus visual tetap di lemma, bukan CTA.
-                    if (showCta && path != null) ...[
+                    if (showCtaLabel) ...[
                       const Gap(8),
                       Text(
-                        _ctaLabel(item.kind),
+                        _ctaLabel(
+                          item.kind,
+                          pendingReview: isPendingSubmission && canReview,
+                        ),
                         style: theme.typography.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           fontWeight: FontWeight.w500,
@@ -191,14 +214,26 @@ class ActivityFeedTile extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: path == null
-            ? null
-            : () {
-                FocusManager.instance.primaryFocus?.unfocus();
-                // #102: pengumuman bawa payload beku (detail tanpa fetch ulang).
-                context.push(path, extra: item.announcement);
-              },
+    child: InkWell(
+      // #166: usulan pending tanpa akses review = tap toast (bukan dead row);
+      // verifikator + kind lain tetap push path. Baris tanpa tujuan = onTap
+      // null (tidak ada ripple menyesatkan).
+      onTap: (path == null && !(isPendingSubmission && !canReview))
+          ? null
+          : () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              if (isPendingSubmission && !canReview) {
+                showFToast(
+                  context: context,
+                  title: const Text(
+                    'Kata ini masih menunggu tinjauan verifikator',
+                  ),
+                );
+                return;
+              }
+              // #102: pengumuman bawa payload beku (detail tanpa fetch ulang).
+              context.push(path!, extra: item.announcement);
+            },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: content,
@@ -230,7 +265,11 @@ class ActivityFeedTile extends StatelessWidget {
     };
   }
 
-  static String _ctaLabel(FeedActivityKind kind) {
+  static String _ctaLabel(FeedActivityKind kind, {bool pendingReview = false}) {
+    // #166: usulan pending → CTA tinjau, bukan buka detail.
+    if (pendingReview && kind == FeedActivityKind.contribution) {
+      return 'Tinjau usulan';
+    }
     return switch (kind) {
       FeedActivityKind.vote => 'Ikut menilai',
       FeedActivityKind.voteUp => 'Ikut menilai',
@@ -252,11 +291,19 @@ class ActivityFeedTile extends StatelessWidget {
     };
   }
 
-  String? _navigatePath(FeedActivityItem item) {
+  String? _navigatePath(FeedActivityItem item, {required bool canReview}) {
     final target = item.target;
     if (target == null) return null;
     switch (target.type) {
       case 'word':
+        // #166: usulan kata baru pending → verifikator shortcut ke antrean
+        // review terfilter kata itu; non-verifikator / published tetap buka
+        // detail kata publik (pending = 404 graceful di WordDetailPage).
+        if (item.kind == FeedActivityKind.contribution &&
+            target.status == 'pending_review' &&
+            canReview) {
+          return ReviewRouter.queuePath(wordId: target.id);
+        }
         return DictionaryRouter.detail.path.replaceFirst(':id', target.id);
       case 'announcement':
         // #102: payload beku diteruskan via extra - detail tanpa fetch ulang.

@@ -101,6 +101,15 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     );
 
     try {
+      // #167: pastikan authStatus resolve (atau timeout 2s) sebelum fetch
+      // pertama. Tanpa ini flag `excludeSelf` dibaca saat future masih
+      // loading → false → data sendiri flash → reload. Timeout/storage
+      // error: lanjut saja - backend kini selalu exclude saat Bearer sah.
+      try {
+        await ref
+            .read(authStatusProvider.future)
+            .timeout(const Duration(seconds: 2));
+      } catch (_) {}
       final page = await ref
           .read(activityFeedRepositoryProvider)
           .list(

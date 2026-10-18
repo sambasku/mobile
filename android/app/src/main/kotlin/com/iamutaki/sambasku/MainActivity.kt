@@ -2,6 +2,7 @@
 
 package com.iamutaki.sambasku
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Handler
@@ -56,7 +57,10 @@ class MainActivity : FlutterActivity() {
         maxSeconds: Int,
         result: MethodChannel.Result,
     ) {
-        val bitmap = BitmapFactory.decodeFile(overlayPath)
+        // Issue #165: decode bounds dulu, turunkan inSampleSize supaya
+        // sisi panjang <= 1920 px (overlay dirender pixelRatio 2x di Dart,
+        // full-res bisa 2160x2880 = ~25 MB bitmap).
+        val bitmap = decodeOverlayScaled(overlayPath)
         if (bitmap == null) {
             result.error("no_overlay", "overlay PNG gagal dibaca", null)
             return
@@ -118,4 +122,22 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun evenDimension(value: Int): Int = maxOf(2, value - (value % 2))
+
+    private companion object {
+        const val MAX_OVERLAY_DIM = 1920
+    }
+
+    // ponytail: granularity power-of-2 (2880 px turun ke 1440, bukan tepat
+    // 1920) - cukup untuk overlay share; kalau butuh presisi, tambah
+    // Bitmap.createScaledBitmap setelah decode.
+    private fun decodeOverlayScaled(path: String): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(path, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        val longSide = maxOf(bounds.outWidth, bounds.outHeight)
+        var sample = 1
+        while (longSide / sample > MAX_OVERLAY_DIM) sample *= 2
+        val options = BitmapFactory.Options().apply { inSampleSize = sample }
+        return BitmapFactory.decodeFile(path, options)
+    }
 }
