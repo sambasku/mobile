@@ -126,15 +126,12 @@ class _ApiHostPageState extends State<_ApiHostPage> {
   Widget build(BuildContext context) {
     final tiers = _resolver.tiers;
     if (!_resolver.hasFallbacks) {
-      return const Padding(
-        padding: EdgeInsets.all(24),
-        child: Center(
-          child: Text(
-            'Flavor ini hanya punya satu host, jadi tidak ada tier cadangan '
-            'dan circuit breaker diam.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey),
-          ),
+      return const Center(
+        child: Text(
+          'Flavor ini hanya punya satu host, jadi tidak ada tier cadangan '
+          'dan circuit breaker diam.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
         ),
       );
     }
@@ -142,8 +139,9 @@ class _ApiHostPageState extends State<_ApiHostPage> {
     final active = _resolver.activeTier;
     final remaining = _resolver.pinRemaining;
 
+    // Tanpa horizontal - childPad FScaffold DevTool sudah pad.
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.zero,
       children: [
         _StatusCard(
           active: active,

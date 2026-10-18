@@ -236,7 +236,9 @@ class _BodyState extends State<_Body> {
                                   prefix: const Icon(FLucideIcons.book),
                                   onPress: () {
                                     context.push(
-                                      '${ExploreRouter.placeArticle.path}?slug=${place.slug}',
+                                      ExploreRouter.placeArticlePath(
+                                        place.slug,
+                                      ),
                                     );
                                   },
                                   child: const Text('Baca Selengkapnya'),

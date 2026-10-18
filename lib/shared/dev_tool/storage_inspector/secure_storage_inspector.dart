@@ -60,8 +60,9 @@ class _SecureStoragePageState extends State<_SecureStoragePage> {
 
     return Column(
       children: [
+        // Tanpa horizontal - childPad FScaffold DevTool sudah pad.
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
               FButton(
@@ -88,7 +89,7 @@ class _SecureStoragePageState extends State<_SecureStoragePage> {
           child: _data.isEmpty
               ? const Center(child: Text('Kosong'))
               : ListView.separated(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: _data.length,
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {

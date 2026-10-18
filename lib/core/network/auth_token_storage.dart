@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +36,14 @@ class AuthTokenStorage {
   static const _userIdKey = 'sessionUserId';
   static const _avatarUrlKey = 'sessionAvatarUrl';
 
+  /// Epoch in-memory: naik tiap [saveTokens]/[clearTokens].
+  /// AuthInterceptor memakainya supaya refresh yang dimulai sebelum login
+  /// baru tidak menimpa / menghapus sesi yang baru ditulis.
+  int _sessionGeneration = 0;
+
+  /// Snapshot generasi sesi saat ini (bukan persist - restart app = 0).
+  int get sessionGeneration => _sessionGeneration;
+
   final _authStateController = StreamController<bool>.broadcast();
 
   /// Emit saat [setIsAuth] berubah - dipakai DeviceRegistrationService.
@@ -56,13 +65,18 @@ class AuthTokenStorage {
       _storage.write(key: _accessTokenKey, value: accessToken),
       _storage.write(key: _refreshTokenKey, value: refreshToken),
     ]);
+    _sessionGeneration++;
   }
 
   Future<String?> getAccessToken() async {
     final value = await _storage.read(key: _accessTokenKey);
-    if (value == null || value.isEmpty) return null;
+    if (value == null || value.trim().isEmpty) return null;
     return value;
   }
+
+  @visibleForTesting
+  Future<void> rawWriteAccessTokenForTest(String value) =>
+      _storage.write(key: _accessTokenKey, value: value);
 
   Future<String?> getRefreshToken() async {
     final value = await _storage.read(key: _refreshTokenKey);
@@ -83,6 +97,7 @@ class AuthTokenStorage {
       prefs.remove(_userIdKey),
       prefs.remove(_avatarUrlKey),
     ]);
+    _sessionGeneration++;
     await setIsAuth(false);
   }
 

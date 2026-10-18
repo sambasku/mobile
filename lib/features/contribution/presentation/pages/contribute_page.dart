@@ -14,6 +14,7 @@ import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
@@ -22,6 +23,7 @@ import '../../domain/repositories/contribution_repository.dart';
 import '../../domain/usecases/submit_anon_word_use_case.dart';
 import '../../domain/meaning_source.dart';
 import '../models/submit_word_state.dart';
+import '../providers/lemma_check_providers.dart';
 import '../providers/submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
 import '../widgets/contribute_images_field.dart';
@@ -64,6 +66,7 @@ class _MeaningDraft {
   String savedDefinition = '';
   String savedTranslation = '';
   KbbiMeaningSnapshot? kbbiSnapshot;
+
   /// Guard saat apply pick supaya listener tidak clear snapshot.
   bool applyingKbbiPick = false;
 
@@ -138,6 +141,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             searchMissId: widget.initialSearchMissId,
           );
       _lemmaCtrl.addListener(_onFieldEdited);
+      // Issue #170: cek ketersediaan lemma (indikator, non-blocking).
+      _lemmaCtrl.addListener(() => _onLemmaChanged(_lemmaCtrl.text));
+      _onLemmaChanged(_lemmaCtrl.text);
       _standardTranslationCtrl.addListener(_onStandardTranslationEdited);
       for (final m in _meanings) {
         m.defCtrl.addListener(_onFieldEdited);
@@ -148,6 +154,10 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
   void _onFieldEdited() {
     ref.read(submitWordProvider.notifier).clearFieldErrors();
+  }
+
+  void _onLemmaChanged(String text) {
+    ref.read(lemmaCheckProvider.notifier).onLemmaChanged(text);
   }
 
   void _onStandardTranslationEdited() {
@@ -523,6 +533,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             textInputAction: TextInputAction.next,
           ),
           _inlineError(notifier.errorFor('lemma')),
+          // Issue #170: indikator ketersediaan lemma - non-blocking.
+          const _LemmaCheckIndicator(),
 
           if (!_advanced) ...[
             const Gap(16),
@@ -1188,6 +1200,120 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           context.go('/');
         }
     }
+  }
+}
+
+/// Indikator ketersediaan lemma (issue #170). Labeling saja - tidak
+/// memblokir submit. Idle / error jaringan = hilang total.
+class _LemmaCheckIndicator extends ConsumerWidget {
+  const _LemmaCheckIndicator();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final check = ref.watch(lemmaCheckProvider);
+    final theme = context.theme;
+
+    if (check.checking) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            // Bar tipis + gerak lebih lambat dari default Forui (1s/500ms)
+            // supaya tidak terburu-buru di hint kecil ini.
+            child: const FProgress(
+              style: FProgressStyleDelta.delta(
+                constraints: BoxConstraints.tightFor(height: 3),
+                motion: FProgressMotionDelta.delta(
+                  period: Duration(milliseconds: 1600),
+                  interval: Duration(milliseconds: 900),
+                  curve: Curves.easeInOut,
+                ),
+              ),
+            ),
+          ),
+          const Gap(6),
+          Text(
+            'Memeriksa ketersediaan kata...',
+            style: theme.typography.xs.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (check.exists == true) {
+      final wordId = check.wordId;
+      return GestureDetector(
+        onTap: () => context.push('/words/$wordId'),
+        behavior: HitTestBehavior.opaque,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(
+                  FLucideIcons.circleAlert,
+                  size: 14,
+                  color: theme.colors.warning,
+                ),
+              ),
+              const Gap(6),
+              Expanded(
+                child: Text(
+                  'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.',
+                  style: theme.typography.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ),
+            const Gap(6),
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (check.exists == false) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(
+                FLucideIcons.circleCheck,
+                size: 14,
+                color: theme.colors.primary,
+              ),
+            ),
+            const Gap(6),
+            Expanded(
+              child: Text(
+                'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.',
+                style: theme.typography.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 

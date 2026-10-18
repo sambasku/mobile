@@ -35,42 +35,43 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       clearPendingEmail: true,
       clearSession: true,
     );
-
-    final registerResult = await ref
-        .read(authRegisterUseCaseProvider)
-        .call(
-          RegisterParams(
-            name: name,
-            email: email,
-            phoneNationalDigits: phoneNationalDigits,
-            password: password,
-            confirmPassword: confirmPassword,
-            consents: consents,
-          ),
-        );
-
-    registerResult.match(
-      (failure) {
-        state = state.copyWith(
-          clearPendingAction: true,
-          errorMessage: failure.message,
-          errorCode: failure.errorCode,
-          success: false,
-        );
-      },
-      (_) {
-        state = state.copyWith(
-          clearPendingAction: true,
-          success: true,
-          pendingEmail: email.trim(),
-        );
-        AnalyticsService.instance.logAuthSuccess(
-          event: AnalyticsEvents.authRegisterSuccess,
-          method: 'email',
-        );
-      },
-    );
-    _inFlight = false;
+    try {
+      final registerResult = await ref
+          .read(authRegisterUseCaseProvider)
+          .call(
+            RegisterParams(
+              name: name,
+              email: email,
+              phoneNationalDigits: phoneNationalDigits,
+              password: password,
+              confirmPassword: confirmPassword,
+              consents: consents,
+            ),
+          );
+      registerResult.match(
+        (failure) {
+          state = state.copyWith(
+            clearPendingAction: true,
+            errorMessage: failure.message,
+            errorCode: failure.errorCode,
+            success: false,
+          );
+        },
+        (_) {
+          state = state.copyWith(
+            clearPendingAction: true,
+            success: true,
+            pendingEmail: email.trim(),
+          );
+          AnalyticsService.instance.logAuthSuccess(
+            event: AnalyticsEvents.authRegisterSuccess,
+            method: 'email',
+          );
+        },
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitGoogle() async {
@@ -83,13 +84,15 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       success: false,
       clearSession: true,
     );
-
-    final result = await ref.read(authLoginWithGoogleUseCaseProvider).call();
-    result.match(
-      (failure) => _applyGoogleFailure(failure),
-      (session) => _applySocialSession(session, method: 'google'),
-    );
-    _inFlight = false;
+    try {
+      final result = await ref.read(authLoginWithGoogleUseCaseProvider).call();
+      result.match(
+        (failure) => _applyGoogleFailure(failure),
+        (session) => _applySocialSession(session, method: 'google'),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitFacebook() async {
@@ -102,13 +105,16 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       success: false,
       clearSession: true,
     );
-
-    final result = await ref.read(authLoginWithFacebookUseCaseProvider).call();
-    result.match(
-      (failure) => _applyFacebookFailure(failure),
-      (session) => _applySocialSession(session, method: 'facebook'),
-    );
-    _inFlight = false;
+    try {
+      final result =
+          await ref.read(authLoginWithFacebookUseCaseProvider).call();
+      result.match(
+        (failure) => _applyFacebookFailure(failure),
+        (session) => _applySocialSession(session, method: 'facebook'),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   Future<void> submitGithub() async {
@@ -121,13 +127,15 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       success: false,
       clearSession: true,
     );
-
-    final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
-    result.match(
-      (failure) => _applyGithubFailure(failure),
-      (session) => _applySocialSession(session, method: 'github'),
-    );
-    _inFlight = false;
+    try {
+      final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
+      result.match(
+        (failure) => _applyGithubFailure(failure),
+        (session) => _applySocialSession(session, method: 'github'),
+      );
+    } finally {
+      _inFlight = false;
+    }
   }
 
   void _applyGoogleFailure(AuthFailure failure) {
@@ -143,7 +151,7 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     final hide = failure.errorCode == 'GOOGLE_AUTH_UNAVAILABLE';
     state = state.copyWith(
       clearPendingAction: true,
-      errorMessage: failure.message,
+      errorMessage: hide ? null : failure.message,
       errorCode: failure.errorCode,
       googleUnavailable: hide || state.googleUnavailable,
       success: false,

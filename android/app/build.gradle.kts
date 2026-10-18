@@ -35,7 +35,8 @@ android {
         versionName = flutter.versionName
         // Default supaya IDE resolve ${deepLinkHost}; di-override per flavor
         // di flavorizr.gradle.kts.
-        manifestPlaceholders["deepLinkHost"] = "sambasku-web-staging.iamutaki.com"
+        manifestPlaceholders["deepLinkHost"] = "sambasku-web-staging.ibnuul.workers.dev"
+        manifestPlaceholders["oauthDeepLinkScheme"] = "sambasku-staging"
         manifestPlaceholders["appAuthRedirectScheme"] = "com.iamutaki.sambasku.staging"
     }
 

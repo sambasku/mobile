@@ -26,11 +26,16 @@ class ExploreRouter {
     name: 'ExploreRouter.place',
   );
 
-  /// Route artikel markdown Place (push penuh, root navigator).
-  static const placeArticle = RouteDefiner(
-    path: '/explore/place/:slug/artikel',
-    name: 'ExploreRouter.placeArticle',
-  );
+/// Route artikel markdown Place (push penuh, root navigator).
+static const placeArticle = RouteDefiner(
+path: '/explore/place/:slug/artikel',
+name: 'ExploreRouter.placeArticle',
+);
+
+/// Path artikel untuk satu slug (#168): wajib replace segment `:slug`,
+/// bukan query param - literal ':slug' di path bikin halaman kosong.
+static String placeArticlePath(String slug) =>
+placeArticle.path.replaceFirst(':slug', slug);
 
   /// Daftar + detail Cuisine (cuisines.json, bukan places.json).
   static const cuisineList = RouteDefiner(

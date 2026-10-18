@@ -165,7 +165,7 @@ jobs:
       - name: Assert AAB has no advertising ID permission
         run: node scripts/assert-no-ad-id.mjs
 
-      - name: Upload draft ke Google Play closed testing
+      - name: Upload draft ke Google Play production
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}

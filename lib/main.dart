@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'core/cache/cache_providers.dart';
+import 'core/cache/evict_stale_image_assets.dart';
 import 'core/network/auth_token_storage.dart';
 import 'core/network/failover/api_host_resolver.dart';
 import 'core/network/network_providers.dart';
@@ -47,6 +49,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   debugPrint('MILESTONE main-start'); // ignore: avoid_print
+
+  // Issue mobile#164: targetSdk 36 -> Android 15+ memaksa edge-to-edge.
+  // Aktifkan eksplisit supaya perilaku seragam di semua versi Android;
+  // inset ditangani SafeArea internal FHeader/FBottomNavigationBar (Forui).
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Photo Picker di semua API (default hanya API 33+). Tanpa READ_MEDIA_*.
   final imagePickerImplementation = ImagePickerPlatform.instance;
@@ -186,5 +193,6 @@ Future<void> main() async {
     if (kIsWeb) return; // preview web: tanpa Firebase, jangan sentuh FCM
     unawaited(registrationService.start());
     unawaited(NotificationService.handleInitialMessage());
+    unawaited(evictStaleImageAssets(prefs));
   });
 }

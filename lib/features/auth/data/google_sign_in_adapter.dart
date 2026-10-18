@@ -10,6 +10,11 @@ import '../domain/ports/google_sign_in_port.dart';
 class GoogleSignInAdapter implements GoogleSignInPort {
   bool _initialized = false;
 
+  /// Cancel < 800ms biasanya bukan user batal, tapi token issuance ditolak
+  /// (mis. package/SHA-1 tidak cocok dengan OAuth client). Log membedakan
+  /// kasus lapangan tanpa menebak.
+  static const _instantCancelMs = 800;
+
   @override
   Future<String?> authenticate() async {
     final serverClientId = Env.googleWebClientId?.trim();
@@ -19,18 +24,35 @@ class GoogleSignInAdapter implements GoogleSignInPort {
       );
     }
 
+    final sw = Stopwatch()..start();
     try {
       if (!_initialized) {
         await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
         _initialized = true;
       }
 
-      final account = await GoogleSignIn.instance.authenticate(
+      var account = await GoogleSignIn.instance.authenticate(
         scopeHint: const ['email', 'openid', 'profile'],
       );
-      final idToken = account.authentication.idToken;
+      var idToken = account.authentication.idToken;
+
+      // ponytail: credential cache bisa kasih idToken null (dikenal di
+      // google_sign_in 7.x); 1x authenticate() ulang cukup menutup itu.
+      // Kalau masih sering, upgrade ke authorizationClient().
       if (idToken == null || idToken.trim().isEmpty) {
-        throw StateError('ID token Google kosong setelah akun dipilih.');
+        developer.log(
+          'idToken null setelah authenticate - retry sekali',
+          name: 'auth.google',
+        );
+        account = await GoogleSignIn.instance.authenticate(
+          scopeHint: const ['email', 'openid', 'profile'],
+        );
+        idToken = account.authentication.idToken;
+      }
+
+      if (idToken == null || idToken.trim().isEmpty) {
+        sw.stop();
+        throw StateError('Tidak bisa masuk dengan Google. Coba lagi.');
       }
       return idToken;
     } on GoogleSignInException catch (error, stack) {
@@ -39,6 +61,14 @@ class GoogleSignInAdapter implements GoogleSignInPort {
       // User dismiss / batal / interrupt → null (toast "dibatalkan" di UI).
       if (error.code == GoogleSignInExceptionCode.canceled ||
           error.code == GoogleSignInExceptionCode.interrupted) {
+        final elapsed = sw.elapsedMilliseconds;
+        developer.log(
+          elapsed < _instantCancelMs
+              ? 'cancel instan ${elapsed}ms - indikasi config (package/SHA), '
+                  'bukan user batal'
+              : 'cancel oleh user setelah ${elapsed}ms',
+          name: 'auth.google',
+        );
         return null;
       }
 
@@ -66,7 +96,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
   }
 
   void _log(String message, Object error, StackTrace stack) {
-    debugPrint('[auth.google] $message: $error');
+    debugPrint('[auth.google] $message');
     developer.log(
       message,
       name: 'auth.google',

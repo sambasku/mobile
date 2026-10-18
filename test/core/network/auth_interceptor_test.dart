@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -149,6 +150,133 @@ void main() {
     expect(refreshHits, 0);
     expect(await storage.getAccessToken(), 'stale-access');
   });
+
+  test(
+    '401 pada /device/register tidak memicu refresh / clear session (#171)',
+    () async {
+      var refreshHits = 0;
+      var registerHits = 0;
+      adapter.handler = (options) {
+        if (options.path.contains('/auth/refresh')) {
+          refreshHits++;
+          return _json(401, {'success': false});
+        }
+        if (options.path.contains('/device/register')) {
+          registerHits++;
+          return _json(401, {
+            'success': false,
+            'error_code': 'UNAUTHORIZED',
+            'message': 'Token tidak valid atau kadaluarsa',
+          });
+        }
+        return _json(500, {'success': false});
+      };
+
+      await expectLater(
+        () => dio.post(
+          '/api/v1/device/register',
+          data: {'udid': 'dev-1', 'fcm_token': 'fcm-1'},
+        ),
+        throwsA(isA<DioException>()),
+      );
+
+      expect(registerHits, 1);
+      expect(refreshHits, 0);
+      // Sesi TIDAK boleh ikut terhapus - register FCM best-effort.
+      expect(await storage.getAccessToken(), 'stale-access');
+      expect(await storage.getRefreshToken(), 'stale-refresh');
+      expect(await storage.getIsAuth(), isTrue);
+    },
+  );
+
+  test(
+    'refresh terminal tidak clear sesi yang diganti login di tengah jalan',
+    () async {
+      // Simulasi: 401 → refresh mulai → login Google menimpa token →
+      // refresh gagal 401. Clear harus skip supaya profil tidak 401.
+      final refreshStarted = Completer<void>();
+      final loginDone = Completer<void>();
+      var refreshHits = 0;
+
+      adapter.handler = (options) async {
+        if (options.path.contains('/auth/refresh')) {
+          refreshHits++;
+          if (!refreshStarted.isCompleted) refreshStarted.complete();
+          await loginDone.future;
+          return _json(401, {
+            'success': false,
+            'error_code': 'UNAUTHORIZED',
+          });
+        }
+        return _json(401, {'success': false});
+      };
+
+      final pending = dio.get('/api/v1/words/w1');
+      await refreshStarted.future;
+      await storage.saveTokens(
+        accessToken: 'fresh-access',
+        refreshToken: 'fresh-refresh',
+      );
+      await storage.setIsAuth(true);
+      loginDone.complete();
+
+      await expectLater(pending, throwsA(isA<DioException>()));
+      expect(refreshHits, 1);
+      expect(await storage.getAccessToken(), 'fresh-access');
+      expect(await storage.getRefreshToken(), 'fresh-refresh');
+      expect(await storage.getIsAuth(), isTrue);
+    },
+  );
+
+  test(
+    'refresh 200 tidak menimpa token yang ditulis login di tengah jalan',
+    () async {
+      // Race B: refresh usang SUKSES setelah login Google. Jangan
+      // saveTokens hasil refresh di atas sesi baru (generation bump).
+      final refreshStarted = Completer<void>();
+      final loginDone = Completer<void>();
+      var refreshHits = 0;
+      var wordHits = 0;
+
+      adapter.handler = (options) async {
+        if (options.path.contains('/auth/refresh')) {
+          refreshHits++;
+          if (!refreshStarted.isCompleted) refreshStarted.complete();
+          await loginDone.future;
+          return _json(200, {
+            'success': true,
+            'data': {
+              'access_token': 'from-stale-refresh',
+              'refresh_token': 'from-stale-refresh-rt',
+            },
+          });
+        }
+        if (options.path.contains('/words/w1')) {
+          wordHits++;
+          return _json(401, {'success': false});
+        }
+        return _json(500, {'success': false});
+      };
+
+      final pending = dio.get('/api/v1/words/w1');
+      await refreshStarted.future;
+      await storage.saveTokens(
+        accessToken: 'google-access',
+        refreshToken: 'google-refresh',
+      );
+      await storage.setIsAuth(true);
+      loginDone.complete();
+
+      // Refresh transient → request asli tetap gagal 401, tapi sesi Google
+      // tidak boleh tertimpa token dari refresh usang.
+      await expectLater(pending, throwsA(isA<DioException>()));
+      expect(refreshHits, 1);
+      expect(wordHits, 1);
+      expect(await storage.getAccessToken(), 'google-access');
+      expect(await storage.getRefreshToken(), 'google-refresh');
+      expect(await storage.getIsAuth(), isTrue);
+    },
+  );
 
   test('401 + extra skipAuthRefresh tidak memicu refresh', () async {
     var refreshHits = 0;
@@ -326,8 +454,7 @@ void main() {
     },
   );
 
-  group('tamu tanpa token', () {
-    setUp(() async {
+  group('tamu tanpa token', () {    setUp(() async {
       await storage.clearTokens();
     });
 
@@ -373,6 +500,32 @@ void main() {
       });
     }
   });
+
+  test('token kosong/whitespace tidak mengirim header Bearer kosong', () async {
+    // `bearer` tulis '' atau '   ' ke secure storage (bukan null). Tanpa
+    // guard, interceptor mengirim `Bearer ` dan server menjawab
+    // "Token tidak valid atau kadaluarsa" - menyesatkan.
+    for (final raw in const ['', '   ']) {
+      await storage.clearTokens();
+      await storage.rawWriteAccessTokenForTest(raw);
+      var hits = 0;
+      adapter.handler = (options) {
+        hits++;
+        expect(options.headers.containsKey('Authorization'), isFalse);
+        return _json(401, <String, Object?>{
+          'success': false,
+          'error_code': 'UNAUTHORIZED',
+          'message': 'Token tidak disertakan',
+        });
+      };
+      final res = await dio.get<Object?>(
+        '/api/v1/words',
+        options: Options(validateStatus: (_) => true),
+      );
+      expect(res.statusCode, 401);
+      expect(hits, 1);
+    }
+  });
 }
 
 ResponseBody _json(int status, Map<String, Object?> body) {
@@ -385,7 +538,8 @@ ResponseBody _json(int status, Map<String, Object?> body) {
   );
 }
 
-typedef _AdapterHandler = ResponseBody Function(RequestOptions options);
+typedef _AdapterHandler =
+    FutureOr<ResponseBody> Function(RequestOptions options);
 
 class _RecordingAdapter implements HttpClientAdapter {
   _AdapterHandler? handler;
@@ -403,6 +557,6 @@ class _RecordingAdapter implements HttpClientAdapter {
     if (h == null) {
       return _json(500, {'success': false});
     }
-    return h(options);
+    return await h(options);
   }
 }

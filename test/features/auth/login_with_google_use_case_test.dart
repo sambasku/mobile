@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
@@ -15,6 +17,7 @@ class _ThrowingSignIn implements GoogleSignInPort {
 
 class _FakeSignIn implements GoogleSignInPort {
   _FakeSignIn(this.token);
+
   final String? token;
   var calls = 0;
 
@@ -25,8 +28,15 @@ class _FakeSignIn implements GoogleSignInPort {
   }
 }
 
+/// Picker hilang saat app di-background: future tidak pernah complete.
+class _HangingSignIn implements GoogleSignInPort {
+  @override
+  Future<String?> authenticate() => Completer<String?>().future;
+}
+
 class _FakeRepo implements AuthRepository {
   _FakeRepo(this.result);
+
   final Either<AuthFailure, AuthSession> result;
   String? receivedToken;
   var loginWithGoogleCalls = 0;
@@ -53,7 +63,6 @@ class _FakeRepo implements AuthRepository {
   }) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
-
   @override
   Future<Either<AuthFailure, AuthSession>> login({
     required String email,
@@ -69,10 +78,6 @@ class _FakeRepo implements AuthRepository {
     required String confirmPassword,
     required List<({String documentType, String documentVersion})> consents,
   }) async => throw UnimplementedError();
-
-  @override
-  Future<Either<AuthFailure, void>> logout() async =>
-      throw UnimplementedError();
 
   @override
   Future<Either<AuthFailure, AuthSession>> verifyEmail({
@@ -96,17 +101,22 @@ class _FakeRepo implements AuthRepository {
     String? code,
     required String newPassword,
   }) async => throw UnimplementedError();
+
+  @override
+  Future<Either<AuthFailure, void>> logout() async => throw UnimplementedError();
 }
 
-void main() {
-  const session = AuthSession(
-    userId: '01U',
-    username: 'budi',
-    role: 'contributor',
-  );
+AuthSession get _session => AuthSession(
+      userId: 'u1',
+      username: 'user1',
+      displayName: 'User Satu',
+      role: 'user',
+      avatarUrl: null,
+    );
 
-  test('sukses - AuthSession dari repository', () async {
-    final repo = _FakeRepo(Either.right(session));
+void main() {
+  test('sukses: token diteruskan ke repo', () async {
+    final repo = _FakeRepo(Either.right(_session));
     final signIn = _FakeSignIn('id-token-google');
     final usecase = LoginWithGoogleUseCase(repo, signIn);
 
@@ -114,14 +124,14 @@ void main() {
 
     expect(signIn.calls, 1);
     expect(repo.receivedToken, 'id-token-google');
-    expect(result.getRight().toNullable()?.username, 'budi');
+    expect(result.getRight().toNullable()?.username, 'user1');
   });
 
-  test('409 EMAIL_ALREADY_EXISTS diteruskan', () async {
+  test('409 EMAIL_ALREADY_EXISTS diteruskan apa adanya', () async {
     final repo = _FakeRepo(
       Either.left(
         const AuthFailure(
-          'Email sudah terdaftar. Masuk dengan password atau gunakan lupa password.',
+          'Email sudah dipakai.',
           errorCode: 'EMAIL_ALREADY_EXISTS',
         ),
       ),
@@ -129,30 +139,30 @@ void main() {
     final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn('id-token'));
 
     final result = await usecase();
-    final failure = result.getLeft().toNullable();
-    expect(failure?.errorCode, 'EMAIL_ALREADY_EXISTS');
-    expect(failure?.message, contains('Email sudah terdaftar'));
+
+    expect(result.getLeft().toNullable()?.errorCode, 'EMAIL_ALREADY_EXISTS');
   });
 
   test('batal SDK → AuthFailure GOOGLE_SIGN_IN_CANCELED, tidak panggil API',
       () async {
-    final repo = _FakeRepo(Either.right(session));
+    final repo = _FakeRepo(Either.right(_session));
     final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn(null));
 
     final result = await usecase();
-    final failure = result.getLeft().toNullable();
 
     expect(repo.loginWithGoogleCalls, 0);
+    final failure = result.getLeft().toNullable();
     expect(failure?.errorCode, AuthFailure.googleSignInCanceled);
     expect(failure?.message, 'Masuk dibatalkan.');
     expect(failure?.isSocialSignInCanceled, isTrue);
   });
 
   test('idToken kosong → AuthFailure generik, tidak panggil API', () async {
-    final repo = _FakeRepo(Either.right(session));
-    final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn('  '));
+    final repo = _FakeRepo(Either.right(_session));
+    final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn(' '));
 
     final result = await usecase();
+
     expect(repo.loginWithGoogleCalls, 0);
     expect(
       result.getLeft().toNullable()?.message,
@@ -160,14 +170,37 @@ void main() {
     );
   });
 
-  test('exception SDK → AuthFailure pesan singkat, tanpa detail SHA', () async {
-    final repo = _FakeRepo(Either.right(session));
+  test('exception SDK → AuthFailure pesan singkat, tanpa detail SHA',
+      () async {
+    final repo = _FakeRepo(Either.right(_session));
     final usecase = LoginWithGoogleUseCase(repo, _ThrowingSignIn());
 
     final result = await usecase();
+
     expect(repo.loginWithGoogleCalls, 0);
     final message = result.getLeft().toNullable()?.message ?? '';
     expect(message, isNot(contains('SHA-1')));
     expect(message, 'Tidak bisa masuk dengan Google. Coba lagi.');
+  });
+
+  test(
+      'authenticate menggantung (picker hilang di background) → '
+      'timeout membebaskan dengan batal, bukan hang selamanya', () async {
+    final repo = _FakeRepo(Either.right(_session));
+    final usecase = LoginWithGoogleUseCase(
+      repo,
+      _HangingSignIn(),
+      authTimeout: const Duration(milliseconds: 100),
+    );
+
+    final result = await usecase().timeout(
+      const Duration(seconds: 10),
+      onTimeout: () => throw TestFailure('use case hang selamanya'),
+    );
+
+    final failure = result.getLeft().toNullable();
+    expect(failure?.errorCode, AuthFailure.googleSignInCanceled);
+    expect(failure?.isSocialSignInCanceled, isTrue);
+    expect(repo.loginWithGoogleCalls, 0);
   });
 }

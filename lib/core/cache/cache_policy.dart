@@ -2,7 +2,10 @@ import 'cache_entry.dart';
 
 /// Matriks TTL L1 kanonik (§5.5 MOBILE_LOCAL_STRATEGI).
 abstract final class CachePolicy {
-  static const int schemaVersion = 1;
+  /// Bump = wipe total L1 (response cache) saat open berikutnya. Naikkan tiap
+  /// data CDN mengubah URL/konten yang di-cache 24 jam (referenceStatic) -
+  /// tanpa bump, `places.json` lama dengan URL gambar usang tetap dipakai.
+  static const int schemaVersion = 2;
   static const int maxBudgetBytes = 40 * 1024 * 1024; // ~40 MB (dalam rentang 32-50)
 
   static Duration freshFor(CacheClass cacheClass, {DateTime? now}) {

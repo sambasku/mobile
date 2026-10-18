@@ -166,6 +166,8 @@ Future<void> _openNotificationUrl(BuildContext? context, String raw) async {
 /// Sinkron dengan api: campaign.validator.ts - ALLOWED_DEEP_LINK_HOSTS.
 const Set<String> kAllowedNotificationHosts = {
   'sambasku.com',
+  'sambasku-web-staging.ibnuul.workers.dev',
+  // Host lama (DNS sudah hilang); tetap diizinkan untuk deep link tersimpan.
   'sambasku-web-staging.iamutaki.com',
   'play.google.com',
 };

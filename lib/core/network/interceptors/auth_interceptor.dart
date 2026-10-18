@@ -18,9 +18,10 @@ const kSkipAuthRefreshExtra = 'skipAuthRefresh';
 /// - `/auth/login|google|facebook|refresh|register|verify-email|resend-otp`
 ///   401 di login sosial adalah token penyedia ditolak, bukan sesi kedaluwarsa.
 /// - `/device/revoke` (detach FCM; 401 di sini tidak boleh memicu refresh)
+/// - `/device/register` (FCM best-effort #171; 401 jangan clear sesi login baru)
 /// - request dengan `extra[kSkipAuthRefreshExtra] == true`
 ///
-/// Refresh memakai varian mobile varian mobile:
+/// Refresh memakai body mobile:
 /// `POST /api/v1/auth/refresh` body `{ refresh_token }`
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({
@@ -53,7 +54,7 @@ class AuthInterceptor extends Interceptor {
   /// tetap menembak tier 1 yang sedang mati.
   final ApiHostResolver _hostResolver;
   final Dio _refreshDio;
-  Future<_RefreshOutcome>? _refreshFuture;
+  Future<_RefreshResult>? _refreshFuture;
   bool _clearingSession = false;
 
   /// Backoff refresh (#74): setelah gagal transient (timeout/5xx), tahan
@@ -68,7 +69,11 @@ class AuthInterceptor extends Interceptor {
   ) async {
     try {
       final token = await _tokenStorage.getAccessToken();
-      if (token != null) {
+      // Token kosong/whitespace = tidak ada token. Tanpa cek ini header
+      // `Bearer ` (spasi ekor) terkirim dan server membalas "Token tidak
+      // valid atau kadaluarsa" alih-alih "Token tidak disertakan" -
+      // menyamarkan sesi mati sebagai token rusak.
+      if (token != null && token.trim().isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
         handler.next(options);
         return;
@@ -139,18 +144,25 @@ class AuthInterceptor extends Interceptor {
       return handler.next(err);
     }
 
+    // Fingerprint token yang dipakai retry (setelah refresh sukses). Dipakai
+    // agar clear setelah retry 401 tidak menghapus sesi login yang baru
+    // menimpa storage di tengah jalan.
+    String? retryFingerprint;
+
     try {
-      final outcome = await _refreshToken();
-      if (outcome == _RefreshOutcome.terminal) {
-        await _clearSession();
+      final result = await _refreshToken();
+      if (result.outcome == _RefreshOutcome.terminal) {
+        await _clearSession(expectedFingerprint: result.fingerprint);
         return handler.next(err);
       }
-      if (outcome != _RefreshOutcome.success) {
+      if (result.outcome != _RefreshOutcome.success) {
         return handler.next(err);
       }
 
       final options = err.requestOptions;
       final newToken = await _tokenStorage.getAccessToken();
+      final refreshSnap = await _tokenStorage.getRefreshToken();
+      retryFingerprint = _sessionFingerprint(newToken, refreshSnap);
       if (newToken != null) {
         options.headers['Authorization'] = 'Bearer $newToken';
       }
@@ -163,7 +175,7 @@ class AuthInterceptor extends Interceptor {
       // sesi benar-benar mati (#74).
       final code = e.response?.statusCode;
       if (code == 401 || code == 403) {
-        await _clearSession();
+        await _clearSession(expectedFingerprint: retryFingerprint);
       }
       return handler.next(e);
     } catch (_) {
@@ -181,17 +193,33 @@ class AuthInterceptor extends Interceptor {
         path.contains('/auth/register') ||
         path.contains('/auth/verify-email') ||
         path.contains('/auth/resend-otp') ||
-        path.contains('/device/revoke');
+        path.contains('/device/revoke') ||
+        // Register FCM best-effort (#171): 401 di sini (race token belum
+        // tersimpan / azp gate) tidak boleh memicu refresh apalagi clear
+        // session - device service sudah catch dan coba lagi nanti.
+        path.contains('/device/register');
   }
 
   /// Hapus sesi lokal. Tidak memanggil revoke FCM: endpoint revoke wajib
   /// Bearer valid, jadi memanggilnya di sini (access/refresh sudah mati)
   /// memicu 401 → refresh → revoke → infinite loop.
   /// Detach FCM tetap di logout eksplisit ([AuthStatusNotifier.logout]).
-  Future<void> _clearSession() async {
+  ///
+  /// [expectedFingerprint]: snapshot access+refresh saat refresh/retry
+  /// dimulai. Bila storage sudah berbeda (login baru menang), jangan wipe.
+  Future<void> _clearSession({String? expectedFingerprint}) async {
     if (_clearingSession) return;
     _clearingSession = true;
     try {
+      if (expectedFingerprint != null) {
+        final access = await _tokenStorage.getAccessToken();
+        final refresh = await _tokenStorage.getRefreshToken();
+        final current = _sessionFingerprint(access, refresh);
+        if (current != expectedFingerprint) {
+          // Sesi sudah diganti (login Google/dll.) - biarkan.
+          return;
+        }
+      }
       await _tokenStorage.clearTokens();
     } finally {
       _clearingSession = false;
@@ -201,20 +229,30 @@ class AuthInterceptor extends Interceptor {
   /// Single-flight: beberapa 401 bersamaan berbagi satu panggilan refresh.
   /// Backoff (#74): bila refresh terakhir gagal transient <5 detik lalu,
   /// jangan panggil ulang - langsung anggap transient.
-  Future<_RefreshOutcome> _refreshToken() {
+  Future<_RefreshResult> _refreshToken() {
     final failedAt = _transientFailedAt;
     if (failedAt != null &&
         DateTime.now().difference(failedAt) < _refreshBackoff) {
-      return Future.value(_RefreshOutcome.transient);
+      return Future.value(const _RefreshResult(_RefreshOutcome.transient));
     }
     return _refreshFuture ??= _doRefresh().whenComplete(() {
       _refreshFuture = null;
     });
   }
 
-  Future<_RefreshOutcome> _doRefresh() async {
+  Future<_RefreshResult> _doRefresh() async {
     final refreshToken = await _tokenStorage.getRefreshToken();
-    if (refreshToken == null) return _RefreshOutcome.terminal;
+    final accessToken = await _tokenStorage.getAccessToken();
+    final fingerprint = _sessionFingerprint(accessToken, refreshToken);
+    // Epoch saat refresh dimulai: login baru (saveTokens) menaikkan angka
+    // ini - jangan timpa / anggap sukses jika sesi sudah diganti.
+    final epochAtStart = _tokenStorage.sessionGeneration;
+    if (refreshToken == null) {
+      return _RefreshResult(
+        _RefreshOutcome.terminal,
+        fingerprint: fingerprint,
+      );
+    }
 
     try {
       final tier = _hostResolver.activeTier;
@@ -231,40 +269,70 @@ class AuthInterceptor extends Interceptor {
 
       final raw = response.data;
       if (raw == null || raw['success'] != true) {
-        return _RefreshOutcome.transient;
+        return const _RefreshResult(_RefreshOutcome.transient);
       }
 
       final data = raw['data'];
-      if (data is! Map) return _RefreshOutcome.transient;
+      if (data is! Map) {
+        return const _RefreshResult(_RefreshOutcome.transient);
+      }
 
-      final accessToken = data['access_token'] as String?;
+      final newAccess = data['access_token'] as String?;
       final rotatedRefresh = data['refresh_token'] as String?;
-      if (accessToken == null || accessToken.isEmpty) {
-        return _RefreshOutcome.transient;
+      if (newAccess == null || newAccess.isEmpty) {
+        return const _RefreshResult(_RefreshOutcome.transient);
+      }
+
+      // Race B: login Google menimpa token saat refresh masih in-flight.
+      // Jangan write hasil refresh usang ke atas sesi baru.
+      if (await _isRefreshStale(
+        epochAtStart: epochAtStart,
+        refreshTokenUsed: refreshToken,
+      )) {
+        return const _RefreshResult(_RefreshOutcome.transient);
       }
 
       // Rotasi wajib di backend mobile; fallback ke token lama hanya
       // jika body tidak mengirimkan (mis. bug server).
       await _tokenStorage.saveTokens(
-        accessToken: accessToken,
+        accessToken: newAccess,
         refreshToken: (rotatedRefresh != null && rotatedRefresh.isNotEmpty)
             ? rotatedRefresh
             : refreshToken,
       );
       // JWT refresh memuat username terkini dari DB - sync prefs agar
       // navigasi profil tidak memakai handle lama pra-migrate.
-      await _syncUsernameFromAccessToken(accessToken);
-      return _RefreshOutcome.success;
+      await _syncUsernameFromAccessToken(newAccess);
+      return const _RefreshResult(_RefreshOutcome.success);
     } on DioException catch (e) {
       final code = e.response?.statusCode;
-      if (code == 401 || code == 403) return _RefreshOutcome.terminal;
+      if (code == 401 || code == 403) {
+        return _RefreshResult(
+          _RefreshOutcome.terminal,
+          fingerprint: fingerprint,
+        );
+      }
       _transientFailedAt = DateTime.now();
-      return _RefreshOutcome.transient;
+      return const _RefreshResult(_RefreshOutcome.transient);
     } catch (_) {
       _transientFailedAt = DateTime.now();
-      return _RefreshOutcome.transient;
+      return const _RefreshResult(_RefreshOutcome.transient);
     }
   }
+
+  /// true bila sesi diganti sejak refresh dimulai (login baru / clear).
+  Future<bool> _isRefreshStale({
+    required int epochAtStart,
+    required String refreshTokenUsed,
+  }) async {
+    if (_tokenStorage.sessionGeneration != epochAtStart) return true;
+    final currentRefresh = await _tokenStorage.getRefreshToken();
+    return currentRefresh != refreshTokenUsed;
+  }
+
+  /// Snapshot access+refresh untuk bandingkan sebelum clear session.
+  static String _sessionFingerprint(String? access, String? refresh) =>
+      '${access ?? ''}\u0000${refresh ?? ''}';
 
   Future<void> _syncUsernameFromAccessToken(String accessToken) async {
     final username = usernameFromAccessToken(accessToken);
@@ -282,6 +350,17 @@ class AuthInterceptor extends Interceptor {
 }
 
 enum _RefreshOutcome { success, terminal, transient }
+
+/// Hasil refresh + fingerprint token saat refresh dimulai (untuk clear aman).
+class _RefreshResult {
+  const _RefreshResult(this.outcome, {this.fingerprint});
+
+  final _RefreshOutcome outcome;
+
+  /// Diisi saat outcome terminal: akses+refresh sebelum panggilan refresh.
+  /// `_clearSession` menolak wipe jika storage sudah beda.
+  final String? fingerprint;
+}
 
 /// Marker error pre-flight #127: token absen sebelum request jalan.
 class _MissingTokenError implements Exception {

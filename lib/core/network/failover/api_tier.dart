@@ -22,7 +22,7 @@ class ApiTier {
   /// Nomor tier yang dibaca manusia.
   int get number => index + 1;
 
-  /// Label ringkas untuk dev tool dan log: "Tier 2 - deno.sambasku.com".
+  /// Label ringkas untuk dev tool dan log: "Tier 2 - render.sambasku.com".
   String get label => 'Tier $number - ${Uri.parse(host).host}';
 
   @override

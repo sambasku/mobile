@@ -242,16 +242,14 @@ class _EmptyNetworkMonitorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    // Tanpa horizontal - childPad FScaffold DevTool sudah pad.
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          'Belum ada request yang direkam.',
-          textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
-            color: theme.colors.mutedForeground,
-            height: 1.5,
-          ),
+      child: Text(
+        'Belum ada request yang direkam.',
+        textAlign: TextAlign.center,
+        style: theme.typography.sm.copyWith(
+          color: theme.colors.mutedForeground,
+          height: 1.5,
         ),
       ),
     );
