@@ -172,7 +172,7 @@ void main() {
       await tester.tap(find.text('Lihat kata'));
       await tester.pumpAndSettle();
 
-      expect(_currentLocation(router!), '/words/01USULWORD000000000000');
+      expect(_currentLocation(router), '/words/01USULWORD000000000000');
     },
   );
 }
