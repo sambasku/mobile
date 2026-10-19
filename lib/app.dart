@@ -48,7 +48,11 @@ class App extends ConsumerWidget {
       theme: _materialTheme(palette.light.touch),
       darkTheme: _materialTheme(palette.dark.touch),
       localizationsDelegates: FLocalizations.localizationsDelegates,
-      supportedLocales: FLocalizations.supportedLocales,
+      // UI hanya bahasa Indonesia. Sebelumnya dipakai seluruh daftar locale
+      // Forui, termasuk locale RTL (ar/fa/he/ur/ps) - di perangkat ber-locale
+      // RTL, Directionality dari Localizations membalik semua Row sehingga
+      // tombol Setujui/Tolak di Area Verifikator jadi terbalik (#189).
+      supportedLocales: const [Locale('id')],
       builder: (context, child) {
         // Forui tidak auto-switch brightness - pilih variant dari Theme Material
         final fTheme =
