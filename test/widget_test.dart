@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,8 +31,7 @@ class _FakeListSearchMissesUseCase implements ListSearchMissesUseCase {
   @override
   Future<Either<SearchMissFailure, List<SearchMiss>>> call(
     ListSearchMissesParams params,
-  ) async =>
-      Either.right(<SearchMiss>[]);
+  ) async => Either.right(<SearchMiss>[]);
 }
 
 class _EmptyLatestUseCase extends ListLatestWordsUseCase {
@@ -41,9 +41,7 @@ class _EmptyLatestUseCase extends ListLatestWordsUseCase {
   Future<Either<DictionaryFailure, WordSearchPage>> call(
     ListLatestWordsParams params,
   ) async =>
-      const Right(
-        WordSearchPage(items: [], nextCursor: null, hasMore: false),
-      );
+      const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 }
 
 class _EmptyLatestRepository implements DictionaryRepository {
@@ -55,9 +53,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     bool forceRefresh = false,
   }) async =>
-      const Right(
-        WordSearchPage(items: [], nextCursor: null, hasMore: false),
-      );
+      const Right(WordSearchPage(items: [], nextCursor: null, hasMore: false));
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listWords({
@@ -67,32 +63,28 @@ class _EmptyLatestRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({
@@ -100,8 +92,7 @@ class _EmptyLatestRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 }
 
 void main() {
@@ -130,8 +121,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          listSearchMissesUseCaseProvider
-              .overrideWithValue(const _FakeListSearchMissesUseCase()),
+          listSearchMissesUseCaseProvider.overrideWithValue(
+            const _FakeListSearchMissesUseCase(),
+          ),
           // Kata hari ini juga hit Dio; tanpa stub, connectTimeout
           // menyisakan pending Timer di fake-async.
           wordOfDayProvider.overrideWith((ref) async => null),
@@ -149,5 +141,38 @@ void main() {
     // cold start langsung HOME (FScaffold shell + header wordmark SVG)
     expect(find.byType(FScaffold), findsWidgets);
     expect(find.byType(BrandWordmark), findsOneWidget);
+  });
+
+  // #189: app mewarisi locale perangkat. Kalau lokale RTL (mis. Arab) diterima,
+  // Directionality membalik seluruh Row - tombol Setujui/Tolak di Area
+  // Verifikator tampak terbalik. App harus tetap dirender LTR.
+  testWidgets('locale perangkat RTL tetap dirender LTR', (
+    WidgetTester tester,
+  ) async {
+    tester.platformDispatcher.localesTestValue = const [Locale('ar')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+    SharedPreferences.setMockInitialValues({});
+    await ThemeModeController.preload();
+    await ForuiPaletteController.preload();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          listSearchMissesUseCaseProvider.overrideWithValue(
+            const _FakeListSearchMissesUseCase(),
+          ),
+          wordOfDayProvider.overrideWith((ref) async => null),
+          listLatestWordsUseCaseProvider.overrideWithValue(
+            _EmptyLatestUseCase(),
+          ),
+        ],
+        child: const App(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    final context = tester.element(find.byType(FScaffold).first);
+    expect(Directionality.of(context), TextDirection.ltr);
   });
 }

@@ -582,4 +582,77 @@ void main() {
     expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     expect(find.byIcon(FLucideIcons.x), findsOneWidget);
   });
+
+  // #189: MaterialApp produksi hanya mendukung Locale('id'). Row action bar
+  // (Tolak lalu Setujui) harus tetap LTR walau bahasa perangkat Arab.
+  for (final locale in const [Locale('ar'), Locale('id')]) {
+    testWidgets(
+      'action bar Setujui di kanan Tolak (perangkat ${locale.languageCode})',
+      (tester) async {
+        tester.platformDispatcher.localesTestValue = [locale];
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+        SharedPreferences.setMockInitialValues({
+          'isAuth': true,
+          'sessionUsername': 'rina',
+          'sessionRole': 'reviewer',
+        });
+        FlutterSecureStorage.setMockInitialValues({
+          'accessToken': 'test-access',
+          'refreshToken': 'test-refresh',
+        });
+
+        const idA = '01REVIEWITEM0000000000000A';
+        final detailA = _wordDetail(id: idA, lemma: 'kalintiak');
+        final repo = _FakeReviewRepository(
+          items: [detailA.contribution],
+          details: {idA: detailA},
+        );
+        final container = ProviderContainer(
+          overrides: [
+            authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
+            reviewRepositoryProvider.overrideWithValue(repo),
+          ],
+        );
+        addTearDown(container.dispose);
+        container.read(reviewSessionProvider.notifier).start(
+          ids: const [idA],
+          index: 0,
+        );
+
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp(
+              theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+              localizationsDelegates: FLocalizations.localizationsDelegates,
+              supportedLocales: const [Locale('id')],
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(disableAnimations: true),
+                child: child ?? const SizedBox.shrink(),
+              ),
+              home: FTheme(
+                data: FThemes.zinc.light.touch,
+                child: const ReviewSessionPage(startId: idA),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        await tester.pump();
+
+        expect(
+          Directionality.of(tester.element(find.byType(ReviewSessionPage))),
+          TextDirection.ltr,
+        );
+        final approve = tester.getCenter(find.byIcon(FLucideIcons.check));
+        final reject = tester.getCenter(find.byIcon(FLucideIcons.x));
+        expect(approve.dx, greaterThan(reject.dx));
+
+        // Hint swipe menjadwalkan timer 700ms. Pompa sampai lewat supaya
+        // fake-async tidak menyisakan timer.
+        await tester.pump(const Duration(milliseconds: 800));
+      },
+    );
+  }
 }
