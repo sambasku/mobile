@@ -16,6 +16,8 @@ _WordSummaryDto _$WordSummaryDtoFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       isVerified: json['is_verified'] as bool,
       matchedTranslation: json['matched_translation'] as String?,
+      matchedVariant: json['matched_variant'] as String?,
+      matchType: json['match_type'] as String?,
       sense: json['sense'] as String?,
       approvedAt: json['approved_at'] as String?,
       usageLabels:
@@ -35,6 +37,8 @@ Map<String, dynamic> _$WordSummaryDtoToJson(_WordSummaryDto instance) =>
       'status': instance.status,
       'is_verified': instance.isVerified,
       'matched_translation': instance.matchedTranslation,
+      'matched_variant': instance.matchedVariant,
+      'match_type': instance.matchType,
       'sense': instance.sense,
       'approved_at': instance.approvedAt,
       'usage_labels': instance.usageLabels,

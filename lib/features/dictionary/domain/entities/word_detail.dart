@@ -83,6 +83,7 @@ class WordDetail {
     this.images = const [],
     this.relatedWords = const [],
     this.appearsIn = const [],
+    this.meaningGroups = const [],
     this.variants = const [],
   });
 
@@ -108,6 +109,10 @@ class WordDetail {
   final List<WordImage> images;
   final List<RelatedWord> relatedWords;
   final List<RelatedWord> appearsIn;
+
+  /// PRD relasi-lemma: kelompok makna published yang memuat kata ini.
+  /// Kosong = kata tidak punya kelompok (bagian UI tidak dirender).
+  final List<MeaningGroup> meaningGroups;
   final List<WordVariant> variants;
 
   String get wordTypeLabel => switch (wordType) {
@@ -185,6 +190,7 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
+    this.createdBy,
     this.translations = const [],
     this.examples = const [],
   });
@@ -197,6 +203,9 @@ class WordMeaning {
   final String? wordClassName;
   final String? definition;
   final int orderIndex;
+
+  /// Kontributor makna (`meanings.created_by`). Null pada data lama.
+  final WordVerifier? createdBy;
   final List<WordTranslation> translations;
   final List<WordExample> examples;
 
@@ -353,13 +362,48 @@ class RelatedWord {
   final String relationType;
 
   String get relationLabel => switch (relationType) {
-    'synonym' => 'Sinonim',
-    'antonym' => 'Antonim',
-    'has_component' => 'Komponen',
-    'see_also' => 'Lihat juga',
-    'derived_from' => 'Diturunkan dari',
-    _ => relationType,
-  };
+        'synonym' => 'Sinonim',
+        'antonym' => 'Antonim',
+        'has_component' => 'Komponen',
+        'see_also' => 'Lihat juga',
+        'derived_from' => 'Diturunkan dari',
+        // PRD relasi-lemma Section 8.1: variasi & bentuk tidak baku.
+        'variant_of' => 'Variasi dari',
+        'nonstandard_of' => 'Bentuk tidak baku dari',
+        _ => relationType,
+      };
+}
+
+/// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.
+class MeaningGroup {
+  const MeaningGroup({
+    required this.groupId,
+    required this.name,
+    this.description,
+    this.members = const [],
+  });
+
+  final String groupId;
+  final String name;
+  final String? description;
+
+  /// Anggota lain dalam kelompok ini (kata ini sendiri tidak diulang).
+  final List<MeaningGroupMember> members;
+}
+
+/// PRD relasi-lemma: satu lema anggota kelompok makna.
+class MeaningGroupMember {
+  const MeaningGroupMember({
+    required this.wordId,
+    required this.lemma,
+    this.notes,
+  });
+
+  final String wordId;
+  final String lemma;
+
+  /// Catatan nuansa/konteks dari pengelola (opsional).
+  final String? notes;
 }
 
 class WordVariant {

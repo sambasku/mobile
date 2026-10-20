@@ -70,6 +70,11 @@ _WordDetailDto _$WordDetailDtoFromJson(
           ?.map((e) => WordVariantDto.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  meaningGroups:
+      (json['meaning_groups'] as List<dynamic>?)
+          ?.map((e) => MeaningGroupDto.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   date: json['date'] as String?,
   isNewThisWeek: json['is_new_this_week'] as bool? ?? false,
 );
@@ -97,6 +102,7 @@ Map<String, dynamic> _$WordDetailDtoToJson(_WordDetailDto instance) =>
       'related_words': instance.relatedWords,
       'appears_in': instance.appearsIn,
       'variants': instance.variants,
+      'meaning_groups': instance.meaningGroups,
       'date': instance.date,
       'is_new_this_week': instance.isNewThisWeek,
     };
@@ -123,6 +129,9 @@ _MeaningDto _$MeaningDtoFromJson(Map<String, dynamic> json) => _MeaningDto(
   inheritedFromMeaningId: json['inherited_from_meaning_id'] as String?,
   definition: json['definition'] as String?,
   orderIndex: (json['order_index'] as num?)?.toInt() ?? 0,
+  createdBy: json['created_by'] == null
+      ? null
+      : WordVerifierDto.fromJson(json['created_by'] as Map<String, dynamic>),
   translations:
       (json['translations'] as List<dynamic>?)
           ?.map((e) => TranslationDto.fromJson(e as Map<String, dynamic>))
@@ -142,6 +151,7 @@ Map<String, dynamic> _$MeaningDtoToJson(_MeaningDto instance) =>
       'inherited_from_meaning_id': instance.inheritedFromMeaningId,
       'definition': instance.definition,
       'order_index': instance.orderIndex,
+      'created_by': instance.createdBy,
       'translations': instance.translations,
       'examples': instance.examples,
     };
@@ -263,6 +273,45 @@ Map<String, dynamic> _$RelatedWordDtoToJson(_RelatedWordDto instance) =>
       'word_id': instance.wordId,
       'lemma': instance.lemma,
       'relation_type': instance.relationType,
+    };
+
+_MeaningGroupMemberDto _$MeaningGroupMemberDtoFromJson(
+  Map<String, dynamic> json,
+) => _MeaningGroupMemberDto(
+  wordId: json['word_id'] as String,
+  lemma: json['lemma'] as String,
+  notes: json['notes'] as String?,
+);
+
+Map<String, dynamic> _$MeaningGroupMemberDtoToJson(
+  _MeaningGroupMemberDto instance,
+) => <String, dynamic>{
+  'word_id': instance.wordId,
+  'lemma': instance.lemma,
+  'notes': instance.notes,
+};
+
+_MeaningGroupDto _$MeaningGroupDtoFromJson(Map<String, dynamic> json) =>
+    _MeaningGroupDto(
+      groupId: json['group_id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      members:
+          (json['members'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    MeaningGroupMemberDto.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$MeaningGroupDtoToJson(_MeaningGroupDto instance) =>
+    <String, dynamic>{
+      'group_id': instance.groupId,
+      'name': instance.name,
+      'description': instance.description,
+      'members': instance.members,
     };
 
 _WordVariantDto _$WordVariantDtoFromJson(Map<String, dynamic> json) =>

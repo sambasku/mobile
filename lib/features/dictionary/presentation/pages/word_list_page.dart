@@ -328,6 +328,14 @@ class _WordTile extends StatelessWidget with FTileMixin {
       subtitle = item.wordTypeLabel;
     }
 
+    // PRD relasi-lemma: tandai hasil yang datang dari perluasan kelompok
+    // makna, supaya user tahu ini bukan cocok langsung.
+    if (item.isRelatedGroupMatch) {
+      subtitle = subtitle == null
+          ? 'Makna terkait'
+          : 'Makna terkait · $subtitle';
+    }
+
     return FTile(
       title: Text(item.lemma),
       subtitle: subtitle != null ? Text(subtitle) : null,
