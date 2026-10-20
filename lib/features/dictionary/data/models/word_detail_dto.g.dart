@@ -65,14 +65,14 @@ _WordDetailDto _$WordDetailDtoFromJson(
           ?.map((e) => RelatedWordDto.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
-  variants:
-      (json['variants'] as List<dynamic>?)
-          ?.map((e) => WordVariantDto.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const [],
   meaningGroups:
       (json['meaning_groups'] as List<dynamic>?)
           ?.map((e) => MeaningGroupDto.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  variants:
+      (json['variants'] as List<dynamic>?)
+          ?.map((e) => WordVariantDto.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
   date: json['date'] as String?,
@@ -101,8 +101,8 @@ Map<String, dynamic> _$WordDetailDtoToJson(_WordDetailDto instance) =>
       'images': instance.images,
       'related_words': instance.relatedWords,
       'appears_in': instance.appearsIn,
-      'variants': instance.variants,
       'meaning_groups': instance.meaningGroups,
+      'variants': instance.variants,
       'date': instance.date,
       'is_new_this_week': instance.isNewThisWeek,
     };
@@ -129,9 +129,6 @@ _MeaningDto _$MeaningDtoFromJson(Map<String, dynamic> json) => _MeaningDto(
   inheritedFromMeaningId: json['inherited_from_meaning_id'] as String?,
   definition: json['definition'] as String?,
   orderIndex: (json['order_index'] as num?)?.toInt() ?? 0,
-  createdBy: json['created_by'] == null
-      ? null
-      : WordVerifierDto.fromJson(json['created_by'] as Map<String, dynamic>),
   translations:
       (json['translations'] as List<dynamic>?)
           ?.map((e) => TranslationDto.fromJson(e as Map<String, dynamic>))
@@ -151,7 +148,6 @@ Map<String, dynamic> _$MeaningDtoToJson(_MeaningDto instance) =>
       'inherited_from_meaning_id': instance.inheritedFromMeaningId,
       'definition': instance.definition,
       'order_index': instance.orderIndex,
-      'created_by': instance.createdBy,
       'translations': instance.translations,
       'examples': instance.examples,
     };

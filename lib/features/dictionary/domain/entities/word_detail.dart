@@ -190,7 +190,6 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
-    this.createdBy,
     this.translations = const [],
     this.examples = const [],
   });
@@ -203,9 +202,6 @@ class WordMeaning {
   final String? wordClassName;
   final String? definition;
   final int orderIndex;
-
-  /// Kontributor makna (`meanings.created_by`). Null pada data lama.
-  final WordVerifier? createdBy;
   final List<WordTranslation> translations;
   final List<WordExample> examples;
 

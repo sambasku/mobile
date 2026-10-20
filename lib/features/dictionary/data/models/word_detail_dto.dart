@@ -31,10 +31,11 @@ abstract class WordDetailDto with _$WordDetailDto {
     @Default([])
     List<RelatedWordDto> relatedWords,
     @JsonKey(name: 'appears_in') @Default([]) List<RelatedWordDto> appearsIn,
-    @Default([]) List<WordVariantDto> variants,
 
     /// PRD relasi-lemma: kelompok makna (published saja).
     @JsonKey(name: 'meaning_groups') @Default([]) List<MeaningGroupDto> meaningGroups,
+
+    @Default([]) List<WordVariantDto> variants,
 
     /// Hanya diisi GET /words/today; detail biasa mengabaikan (null/false).
     String? date,
@@ -65,7 +66,6 @@ abstract class MeaningDto with _$MeaningDto {
     @JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId,
     String? definition,
     @JsonKey(name: 'order_index') @Default(0) int orderIndex,
-    @JsonKey(name: 'created_by') WordVerifierDto? createdBy,
     @Default([]) List<TranslationDto> translations,
     @Default([]) List<ExampleDto> examples,
   }) = _MeaningDto;

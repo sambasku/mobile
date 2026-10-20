@@ -75,8 +75,6 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                   status: dto.status,
                   isVerified: dto.isVerified,
                   matchedTranslation: dto.matchedTranslation,
-                  matchedVariant: dto.matchedVariant,
-                  matchType: dto.matchType,
                   sense: dto.sense,
                   usageLabels: List<String>.from(dto.usageLabels),
                 ),
@@ -552,8 +550,26 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     isCorrected: dto.isCorrected,
     selfVerified: dto.selfVerified,
     verifiedAt: dto.verifiedAt,
-    verifiedBy: _mapVerifier(dto.verifiedBy),
-    createdBy: _mapVerifier(dto.createdBy),
+    verifiedBy: dto.verifiedBy == null
+        ? null
+        : WordVerifier(
+            username: dto.verifiedBy!.username,
+            displayName:
+                (dto.verifiedBy!.displayName?.trim().isNotEmpty == true)
+                    ? dto.verifiedBy!.displayName!.trim()
+                    : dto.verifiedBy!.username,
+            role: dto.verifiedBy!.role,
+          ),
+    createdBy: dto.createdBy == null
+        ? null
+        : WordVerifier(
+            username: dto.createdBy!.username,
+            displayName:
+                (dto.createdBy!.displayName?.trim().isNotEmpty == true)
+                    ? dto.createdBy!.displayName!.trim()
+                    : dto.createdBy!.username,
+            role: dto.createdBy!.role,
+          ),
     meanings: dto.meanings
         .map(
           (m) => WordMeaning(
@@ -568,7 +584,6 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                 : '${m.wordClass!.name} (${m.wordClass!.alias})',
             definition: m.definition,
             orderIndex: m.orderIndex,
-            createdBy: _mapVerifier(m.createdBy),
             translations: m.translations
                 .map(
                   (t) => WordTranslation(
@@ -698,16 +713,4 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     }
     return DictionaryFailure(fallback);
   }
-}
-
-WordVerifier? _mapVerifier(WordVerifierDto? dto) {
-  if (dto == null) return null;
-  final displayName = dto.displayName?.trim();
-  return WordVerifier(
-    username: dto.username,
-    displayName: (displayName != null && displayName.isNotEmpty)
-        ? displayName
-        : dto.username,
-    role: dto.role,
-  );
 }
