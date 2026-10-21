@@ -9,6 +9,11 @@ enum SuggestCategory {
   changePhoto('change_photo', 'Ubah foto', 'Hapus, ganti, atau pilih foto utama'),
   synonym('synonym', 'Sinonim', 'Kata lain yang artinya sama'),
   antonym('antonym', 'Antonim', 'Kata yang artinya berlawanan'),
+  // PRD relasi-lemma: relasi bentuk + akar/turunan + kelompok makna.
+  variantOf('variant_of', 'Variasi bentuk', 'Kata ini variasi dari kata lain'),
+  nonstandardOf('nonstandard_of', 'Bentuk tidak baku', 'Kata ini bentuk tidak baku dari kata baku'),
+  derivedFrom('derived_from', 'Kata turunan', 'Kata ini diturunkan dari akar kata'),
+  meaningGroup('meaning_group', 'Kelompok makna', 'Gabungkan kata bermakna sama dalam satu kelompok'),
   spellingVariant('spelling_variant', 'Variasi penulisan', 'Ejaan lain untuk kata yang sama'),
   lemmaNotes('lemma_notes', 'Lainnya', 'Ejaan lemma atau catatan');
 
@@ -109,19 +114,47 @@ Map<String, dynamic>? buildAddMeaning({
   };
 }
 
-/// Sinonim/antonim: tambah (id hasil cari lemma) + hapus yang sudah ada.
+/// Sinonim/antonim: tambah + hapus yang sudah ada. `addLemmas` = lemma bebas;
+/// API resolve sendiri (lemma yang belum ada dibuat sebagai kata baru saat
+/// usulan disetujui verifikator).
 Map<String, dynamic>? buildRelations({
   required String relationType,
-  required List<String> addWordIds,
+  required List<String> addLemmas,
   required Iterable<String> removeWordIds,
 }) {
   final rows = [
-    for (final id in addWordIds.toSet())
-      {'action': 'add', 'relation_type': relationType, 'word_id': id},
+    for (final lemma in addLemmas.map((e) => e.trim()).toSet())
+      if (lemma.isNotEmpty) {'action': 'add', 'relation_type': relationType, 'lemma': lemma},
     for (final id in removeWordIds)
       {'action': 'remove', 'relation_type': relationType, 'word_id': id},
   ];
   return rows.isEmpty ? null : {'relations': rows};
+}
+
+// PRD relasi-lemma: kelompok makna - gabung grup yang ada / usul grup baru
+// / keluar dari grup. `null` = tidak ada perubahan.
+Map<String, dynamic>? buildGroups({
+  String? joinGroupId,
+  String? newGroupName,
+  String? newGroupDescription,
+  List<String> newGroupLemmas = const [],
+  Iterable<String> leaveGroupIds = const [],
+}) {
+  final rows = <Map<String, dynamic>>[
+    if (joinGroupId != null && joinGroupId.isNotEmpty)
+      {'action': 'add', 'group_id': joinGroupId},
+    if (newGroupName != null && newGroupName.trim().isNotEmpty)
+      {
+        'action': 'add',
+        'name': newGroupName.trim(),
+        if (newGroupDescription != null && newGroupDescription.trim().isNotEmpty)
+          'description': newGroupDescription.trim(),
+        if (newGroupLemmas.isNotEmpty) 'lemmas': newGroupLemmas,
+      },
+    for (final id in leaveGroupIds)
+      {'action': 'remove', 'group_id': id},
+  ];
+  return rows.isEmpty ? null : {'groups': rows};
 }
 
 /// Variasi penulisan: bentuk baru (tanpa lemma/duplikat) + hapus yang ada.
@@ -170,12 +203,18 @@ String? suggestFieldKey(String apiField) {
     return 'padanan';
   }
   if (apiField.contains('word_class')) return 'word_class';
-  return switch (apiField) {
-    'lemma' => 'lemma',
-    'notes' => 'notes',
-    'reason_text' => 'reason',
-    'source_sentence' => 'sentence',
-    'target_sentence' => 'sentence_translation',
-    _ => null,
-  };
+    if (apiField.startsWith('relations.')) return 'relation_lemma';
+    if (apiField.startsWith('groups.')) {
+      if (apiField.endsWith('.name')) return 'name';
+      if (apiField.endsWith('.lemmas')) return 'group_lemma';
+      return null;
+    }
+    return switch (apiField) {
+      'lemma' => 'lemma',
+      'notes' => 'notes',
+      'reason_text' => 'reason',
+      'source_sentence' => 'sentence',
+      'target_sentence' => 'sentence_translation',
+      _ => null,
+    };
 }

@@ -54,4 +54,46 @@ void main() {
     expect(suggestFieldKey('meanings.0.translations.0.translation_text'), 'padanan');
     expect(suggestFieldKey('proposed_changes'), isNull);
   });
+
+  test('relasi baru: tipe ikut kategori, tanpa perubahan = null', () {
+    expect(
+      buildRelations(relationType: 'variant_of', addLemmas: [], removeWordIds: []),
+      isNull,
+    );
+    final out = buildRelations(
+      relationType: 'derived_from',
+      addLemmas: ['akar'],
+      removeWordIds: ['w3'],
+    )!['relations'] as List;
+    expect(out, [
+      {'action': 'add', 'relation_type': 'derived_from', 'lemma': 'akar'},
+      {'action': 'remove', 'relation_type': 'derived_from', 'word_id': 'w3'},
+    ]);
+  });
+
+  test('kelompok: usul grup baru dan keluar dari grup', () {
+    expect(buildGroups(), isNull);
+    final out = buildGroups(
+      newGroupName: 'kenapa',
+      newGroupDescription: '  alasan  ',
+      newGroupLemmas: ['ngape'],
+      leaveGroupIds: ['g1'],
+    )!['groups'] as List;
+    expect(out, [
+      {
+        'action': 'add',
+        'name': 'kenapa',
+        'description': 'alasan',
+        'lemmas': ['ngape'],
+      },
+      {'action': 'remove', 'group_id': 'g1'},
+    ]);
+  });
+
+  test('kelompok: gabung grup yang sudah ada tanpa nama baru', () {
+    final out = buildGroups(joinGroupId: 'g1')!['groups'] as List;
+    expect(out, [
+      {'action': 'add', 'group_id': 'g1'},
+    ]);
+  });
 }

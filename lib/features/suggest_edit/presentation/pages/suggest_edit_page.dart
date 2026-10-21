@@ -19,6 +19,7 @@ import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/suggest_category.dart';
 import '../../domain/suggest_edit_feedback.dart';
+import '../widgets/lemma_picker_field.dart';
 import '../widgets/word_change_history_section.dart';
 
 /// Form usul perubahan: pilih kategori dulu, lalu isi field kategori itu saja.
@@ -71,9 +72,17 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   // Relasi + variasi.
   final _synonymCtrl = TextEditingController();
   final _antonymCtrl = TextEditingController();
+  // PRD relasi-lemma: relasi bentuk/akar memakai satu controller (satu
+  // kategori = satu tipe, cermin _synonymCtrl/_antonymCtrl).
+  final _relationCtrl = TextEditingController();
   final Set<String> _removeRelationIds = {};
   final _variantCtrl = TextEditingController();
   final Map<String, String> _removeVariants = {};
+
+  // Kelompok makna: usul grup baru atau gabung grup yang sudah ada.
+  final _groupNameCtrl = TextEditingController();
+  final _groupMembersCtrl = TextEditingController();
+  final Set<String> _leaveGroupIds = {};
 
   // Lainnya.
   final _lemmaCtrl = TextEditingController();
@@ -92,7 +101,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       _sentenceTranslationCtrl,
       _synonymCtrl,
       _antonymCtrl,
+      _relationCtrl,
       _variantCtrl,
+      _groupNameCtrl,
+      _groupMembersCtrl,
       _lemmaCtrl,
       _notesCtrl,
       _reasonTextCtrl,
@@ -137,24 +149,6 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
     if (!available.contains(requested)) return;
     _category = requested;
-  }
-
-  Future<String?> _resolveLemmaId(Dio dio, String lemma, String excludeId) async {
-    final res = await dio.get<Map<String, dynamic>>(
-      '/api/v1/words/search',
-      queryParameters: {'q': lemma, 'limit': 10},
-    );
-    final data = res.data?['data'];
-    if (data is! List) return null;
-    for (final item in data) {
-      if (item is! Map) continue;
-      final id = item['id'] as String?;
-      final l = (item['lemma'] as String?)?.trim().toLowerCase();
-      if (id != null && id != excludeId && l == lemma.trim().toLowerCase()) {
-        return id;
-      }
-    }
-    return null;
   }
 
   Future<String?> _resolveIdnLanguageId(Dio dio, WordMeaning? meaning) async {
@@ -282,22 +276,30 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return touchesExisting ? {'images': images} : null;
       case SuggestCategory.synonym:
       case SuggestCategory.antonym:
+      // PRD relasi-lemma: kategori relasi baru - satu kategori satu tipe.
+      case SuggestCategory.variantOf:
+      case SuggestCategory.nonstandardOf:
+      case SuggestCategory.derivedFrom:
         final type = _category!.code;
-        final ctrl = type == 'synonym' ? _synonymCtrl : _antonymCtrl;
-        final ids = <String>[];
-        for (final lemma in splitCsv(ctrl.text)) {
-          final id = await _resolveLemmaId(dio, lemma, detail.id);
-          if (id == null) {
-            throw StateError('"$lemma" belum ada di kamus. Tulis lemma kata yang sudah ada.');
-          }
-          ids.add(id);
-        }
+        final ctrl = switch (_category!) {
+          SuggestCategory.synonym => _synonymCtrl,
+          SuggestCategory.antonym => _antonymCtrl,
+          _ => _relationCtrl,
+        };
+        // Lemma dikirim apa adanya; API resolve (kata yang belum ada
+        // dibuat sebagai kata baru saat usulan disetujui verifikator).
         return buildRelations(
           relationType: type,
-          addWordIds: ids,
+          addLemmas: splitCsv(ctrl.text),
           removeWordIds: _removeRelationIds
               .where((k) => k.startsWith('$type|'))
               .map((k) => k.substring(type.length + 1)),
+        );
+      case SuggestCategory.meaningGroup:
+        return buildGroups(
+          newGroupName: _groupNameCtrl.text,
+          newGroupLemmas: splitCsv(_groupMembersCtrl.text),
+          leaveGroupIds: _leaveGroupIds,
         );
       case SuggestCategory.spellingVariant:
         return buildVariants(
@@ -688,15 +690,37 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         ];
       case SuggestCategory.synonym:
       case SuggestCategory.antonym:
+      // PRD relasi-lemma: pola form sama dengan sinonim/antonim - teks
+      // CSV lemma + hapus relasi yang ada; beda hanya tipe relasinya.
+      case SuggestCategory.variantOf:
+      case SuggestCategory.nonstandardOf:
+      case SuggestCategory.derivedFrom:
         final type = category.code;
         final existing = detail.relatedWords.where((r) => r.relationType == type).toList();
+        final ctrl = switch (category) {
+          SuggestCategory.synonym => _synonymCtrl,
+          SuggestCategory.antonym => _antonymCtrl,
+          _ => _relationCtrl,
+        };
+        final targetLabel = switch (category) {
+          SuggestCategory.derivedFrom => 'akar kata',
+          _ => 'kata rujukan',
+        };
         return [
-          FTextField(
-            control: FTextFieldControl.managed(
-              controller: type == 'synonym' ? _synonymCtrl : _antonymCtrl,
-            ),
-            label: Text('Tambah ${category.label.toLowerCase()}'),
-            hint: 'Lemma yang sudah ada, pisahkan dengan koma',
+          LemmaPickerField(
+            controller: ctrl,
+            label: 'Tambah ${category.label.toLowerCase()}',
+            hint: 'Pilih saran ketik, atau tulis lemma baru sendiri',
+            error: _errorText('relation_lemma'),
+          ),
+          const Gap(12),
+          _FieldCaption(
+            category == SuggestCategory.derivedFrom
+                ? 'Kata ini diturunkan dari $targetLabel di atas'
+                : 'Kata ini variasi/bentuk lain dari kata di atas',
+            info: category == SuggestCategory.derivedFrom
+                ? 'Contoh: "ngansoh" diturunkan dari "ansoh".'
+                : 'Contoh: "tekpalat" variasi dari "taek palat".',
           ),
           if (existing.isNotEmpty) ...[
             const Gap(12),
@@ -708,6 +732,41 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                 onChange: (v) => setState(() => v
                     ? _removeRelationIds.add('$type|${r.wordId}')
                     : _removeRelationIds.remove('$type|${r.wordId}')),
+              ),
+          ],
+        ];
+      case SuggestCategory.meaningGroup:
+        final leaveTargets = detail.meaningGroups;
+        return [
+          FTextField(
+            control: FTextFieldControl.managed(controller: _groupNameCtrl),
+            label: const Text('Nama kelompok baru'),
+            hint: 'Contoh: kenapa',
+            error: _errorText('name'),
+          ),
+        const Gap(8),
+        LemmaPickerField(
+          controller: _groupMembersCtrl,
+          label: 'Anggota lain',
+          hint: 'Pilih saran ketik, atau tulis lemma baru sendiri',
+          error: _errorText('group_lemma'),
+        ),
+          const Gap(12),
+          const _FieldCaption(
+            'Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.',
+            info: 'Contoh: "ngape", "jape", "jope" = kelompok "kenapa".\n\n'
+                'Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.',
+          ),
+          if (leaveTargets.isNotEmpty) ...[
+            const Gap(12),
+            const _FieldCaption('Keluar dari kelompok'),
+            for (final g in leaveTargets)
+              _removeCheckbox(
+                label: g.name,
+                value: _leaveGroupIds.contains(g.groupId),
+                onChange: (v) => setState(() => v
+                    ? _leaveGroupIds.add(g.groupId)
+                    : _leaveGroupIds.remove(g.groupId)),
               ),
           ],
         ];
