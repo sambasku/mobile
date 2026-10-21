@@ -87,10 +87,12 @@ const placeTypeLabels = {
   PlaceType.belanja: 'Belanja',
 };
 
-/// Label singkat untuk list/kartu: type wisata, atau "Kuliner"/"Wisata".
-String placeLabel(Place place) => place.category == PlaceCategory.kuliner
-    ? 'Kuliner'
-    : placeTypeLabels[place.type] ?? 'Wisata';
+/// Label singkat untuk list/kartu: type wisata, atau kategori.
+String placeLabel(Place place) => switch (place.category) {
+      PlaceCategory.kuliner => 'Kuliner',
+      PlaceCategory.budaya => 'Budaya',
+      PlaceCategory.wisata => placeTypeLabels[place.type] ?? 'Wisata',
+    };
 
 void showPlaceBookmarkSoon(BuildContext context) => showFToast(
   context: context,

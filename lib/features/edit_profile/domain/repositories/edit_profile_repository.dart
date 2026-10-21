@@ -10,6 +10,8 @@ abstract interface class EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? regionId,
+    String? villageId,
     bool? hasReadContributionGuide,
   });
 }

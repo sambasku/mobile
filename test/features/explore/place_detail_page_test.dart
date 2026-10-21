@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/place.dart';
+import 'package:sambasku_mobile/features/explore/explore_router.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/place_detail_page.dart';
+import 'package:sambasku_mobile/features/explore/presentation/pages/place_photos_page.dart';
 import 'package:sambasku_mobile/features/explore/presentation/providers/places_providers.dart';
 
-Place _place(String id, String name, List<PlaceRelated> related) => Place(
+Place _place(
+  String id,
+  String name,
+  List<PlaceRelated> related, {
+  String? regionId,
+  PlaceCategory category = PlaceCategory.wisata,
+}) => Place(
   id: id,
   slug: id,
   name: name,
-  category: PlaceCategory.wisata,
+  category: category,
   type: PlaceType.sejarah,
+  regionId: regionId,
   lat: 1.36,
   lng: 109.31,
   shortDescription: 'Deskripsi $name',
@@ -38,10 +48,16 @@ void main() {
       ..devicePixelRatio = 3;
     addTearDown(tester.view.reset);
     final places = [
-      _place('istana', 'Istana Alwatzikoebillah', const [
-        PlaceRelated(kind: PlaceRelatedKind.place, id: 'masjid'),
-      ]),
-      _place('masjid', 'Masjid Jami', const []),
+      _place('istana', 'Istana Alwatzikoebillah', const [], regionId: 'sambas'),
+      _place('masjid', 'Masjid Jami', const [], regionId: 'sambas'),
+      _place('pantai-jauh', 'Pantai Jauh', const [], regionId: 'paloh'),
+      _place(
+        'bubur',
+        'Bubur Pedas',
+        const [],
+        regionId: 'sambas',
+        category: PlaceCategory.kuliner,
+      ),
     ];
     await tester.pumpWidget(
       ProviderScope(
@@ -58,10 +74,16 @@ void main() {
 
     expect(find.text('Istana Alwatzikoebillah'), findsOneWidget);
     expect(find.text('Wisata'), findsOneWidget);
-    expect(find.text('Sejarah'), findsNWidgets(2)); // badge + kartu terkait
+    expect(find.text('Sejarah'), findsOneWidget);
     expect(find.text('08.00 - 17.00'), findsOneWidget);
+    expect(find.text('Baca Selengkapnya'), findsNothing);
+    expect(find.text('[object Object]'), findsNothing);
+    expect(find.text('Sumber'), findsWidgets);
     expect(find.byTooltip('Bagikan'), findsOneWidget);
+    expect(find.text('Wisata lain di kecamatan ini'), findsOneWidget);
     expect(find.text('Masjid Jami'), findsOneWidget);
+    expect(find.text('Pantai Jauh'), findsNothing);
+    expect(find.text('Bubur Pedas'), findsNothing);
 
     final source = find.textContaining('sengaja panjang').first;
     await tester.ensureVisible(source);
@@ -118,4 +140,79 @@ void main() {
     expect(find.text('1 / 2'), findsOneWidget);
   });
 
+  testWidgets('kontak nomor dan email tampil, teks rusak disembunyikan', (
+    tester,
+  ) async {
+    tester.view
+      ..physicalSize = const Size(1170, 2532)
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final places = [
+      Place(
+        id: 'pantai',
+        slug: 'pantai',
+        name: 'Pantai Camar Bulan',
+        category: PlaceCategory.wisata,
+        type: PlaceType.pantai,
+        shortDescription: 'Pantai',
+        images: const [
+          PlaceImage(url: 'https://img.example/a.jpg', isMain: true),
+          PlaceImage(url: 'https://img.example/b.jpg', isMain: false),
+          PlaceImage(url: 'https://img.example/c.jpg', isMain: false),
+          PlaceImage(url: 'https://img.example/d.jpg', isMain: false),
+        ],
+        hours: null,
+        contact: const PlaceContact(
+          phone: '085229186159',
+          email: 'budiprasetiya@rocketmail.com',
+        ),
+        related: const [],
+        sources: const [],
+      ),
+    ];
+    final router = GoRouter(
+      initialLocation: '/pantai',
+      routes: [
+        GoRoute(
+          path: '/pantai',
+          builder: (_, _) => const PlaceDetailPage(slug: 'pantai'),
+        ),
+        GoRoute(
+          path: ExploreRouter.placePhotos.path,
+          builder: (_, state) =>
+              PlacePhotosPage(slug: state.pathParameters['slug'] ?? ''),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [placesProvider.overrideWith((ref) async => places)],
+        child: MaterialApp.router(
+          routerConfig: router,
+          builder: (context, child) => FTheme(
+            data: FThemes.zinc.light.touch,
+            child: FToaster(child: child ?? const SizedBox()),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('085229186159'), findsOneWidget);
+    expect(find.text('Telepon'), findsOneWidget);
+    expect(find.text('budiprasetiya@rocketmail.com'), findsOneWidget);
+    expect(find.text('Email'), findsOneWidget);
+    expect(find.text('[object Object]'), findsNothing);
+    expect(find.text('Foto'), findsOneWidget);
+    expect(find.text('Lihat 1 foto lainnya'), findsOneWidget);
+    await tester.tap(find.text('Lihat 1 foto lainnya'));
+    await tester.pumpAndSettle();
+    expect(find.text('Unggah foto'), findsOneWidget);
+    expect(find.text('Lihat 1 foto lainnya'), findsNothing);
+    final grid = tester.widget<GridView>(find.byType(GridView));
+    final delegate =
+        grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
+    expect(delegate.crossAxisCount, 3);
+  });
 }

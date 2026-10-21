@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../discussion/domain/discussion_models.dart';
@@ -134,6 +135,14 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
         ? item.images.first.displaySource
         : null;
     final thumbUrl = thumb == null ? null : (displayImageUrl(thumb) ?? thumb);
+    final theme = context.theme;
+    final when = item.createdAt.isNotEmpty
+        ? formatRelativeCompact(DateTime.tryParse(item.createdAt))
+        : '';
+    final extra = [
+      if (when.isNotEmpty) when,
+      if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
+    ].join(' · ');
     return FTile(
       prefix: const Icon(FLucideIcons.messageSquare),
       title: Text(
@@ -141,13 +150,27 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(
-        [
-          name,
-          if (item.createdAt.isNotEmpty)
-            formatRelativeCompact(DateTime.tryParse(item.createdAt)),
-          if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
-        ].where((e) => e.isNotEmpty).join(' · '),
+      subtitle: Row(
+        children: [
+          Flexible(
+            child: PublicAccountName(
+              label: name,
+              isVerifier: item.isVerifier,
+              style: theme.typography.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+          if (extra.isNotEmpty)
+            Text(
+              ' · $extra',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+        ],
       ),
       suffix: thumbUrl != null
           ? Row(

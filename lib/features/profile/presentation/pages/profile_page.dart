@@ -13,6 +13,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../auth/presentation/models/auth_status_state.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../linked_accounts/presentation/providers/linked_accounts_providers.dart';
 import '../../../notification/notification_router.dart';
 import '../../../admin_analytics/admin_analytics_router.dart';
 import '../../../admin_analytics/domain/admin_access.dart';
@@ -21,11 +22,15 @@ import '../../../review/presentation/providers/review_suggestions_providers.dart
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../../achievement/presentation/providers/achievement_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
+import '../../../../shared/widgets/public_account_name.dart';
+import '../../../../shared/widgets/avatar_border_overlay.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
@@ -39,10 +44,12 @@ class ProfilePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authStatus = ref.watch(authStatusProvider);
+    final links = ref.watch(linkedAccountsProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
     final scroll = useScrollController();
     // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
     final versionFuture = useMemoized(PackageInfo.fromPlatform);
+    final allowNotif = useAllowNotificationShortcut();
     // Animation, bukan double: ListView menu tidak rebuild tiap frame scroll.
     // Yang rebuild hanya title header + blok stat (AnimatedBuilder).
     final collapse = useScrollCollapse(scroll);
@@ -187,12 +194,24 @@ class ProfilePage extends HookConsumerWidget {
                         ),
                         FTile(
                           prefix: const Icon(FLucideIcons.keyRound, size: 18),
-                          title: const Text('Ubah Password'),
+                          title: Text(
+                            links.isLoading ||
+                                    links.hasPassword ||
+                                    links.errorMessage != null
+                                ? 'Ubah Password'
+                                : 'Buat Password',
+                          ),
                           suffix: const Icon(
                             FLucideIcons.chevronRight,
                             size: 16,
                           ),
-                          onPress: () => context.push('/change-password'),
+                          onPress: () => context.push(
+                            links.isLoading ||
+                                    links.hasPassword ||
+                                    links.errorMessage != null
+                                ? '/change-password'
+                                : '/set-password',
+                          ),
                         ),
                       ],
                     ),
@@ -228,6 +247,23 @@ class ProfilePage extends HookConsumerWidget {
                   FTileGroup(
                     label: const Text('Tampilan & bantuan'),
                     children: [
+                      if (allowNotif.visible)
+                        FTile(
+                          prefix: const Icon(FLucideIcons.bell, size: 18),
+                          title: const Text('Izinkan notifikasi'),
+                          subtitle: const Text('Kabar saat usulanmu disetujui'),
+                          enabled: !allowNotif.busy,
+                          suffix: allowNotif.busy
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: FCircularProgress(),
+                                )
+                              : const Icon(FLucideIcons.chevronRight, size: 16),
+                          onPress: allowNotif.busy
+                              ? null
+                              : () => allowNotif.onPress(context),
+                        ),
                       apiHostTile(context, ApiHostResolver.instance),
                       themeModeTile(ref),
                       paletteTile(ref),
@@ -282,8 +318,8 @@ class ProfilePage extends HookConsumerWidget {
                       ],
                     ),
                   ],
-                  const Gap(16),
-                  // Label versi paling bawah. Gagal load = label hilang.
+                const Gap(16),
+                // Label versi paling bawah. Gagal load = label hilang.
                   FutureBuilder<PackageInfo>(
                     future: versionFuture,
                     builder: (context, snapshot) {
@@ -389,6 +425,8 @@ class _ProfileHeaderTitle extends ConsumerWidget {
     final profile = profileAsync?.asData?.value;
     final loadingProfile =
         profile == null && (profileAsync?.isLoading ?? false);
+    final showVerifier =
+        profile?.isVerifier ?? (isAuth && isVerifierRole(status?.role));
 
     Future<void> openPublicProfile() async {
       // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
@@ -435,10 +473,18 @@ class _ProfileHeaderTitle extends ConsumerWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    UserAvatar(
-                      name: isAuth ? displayName : null,
-                      imageUrl: status?.avatarUrl,
+                    AvatarBorderOverlay(
                       size: 56,
+                      borderUrl: ref
+                          .watch(myActiveBorderProvider)
+                          .asData
+                          ?.value
+                          ?.imageUrl,
+                      child: UserAvatar(
+                        name: isAuth ? displayName : null,
+                        imageUrl: status?.avatarUrl,
+                        size: 56,
+                      ),
                     ),
                     const Gap(12),
                     Expanded(
@@ -446,10 +492,10 @@ class _ProfileHeaderTitle extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            displayName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          PublicAccountName(
+                            label: displayName,
+                            isVerifier: showVerifier,
+                            badgeSize: 16,
                             style: theme.typography.lg.copyWith(
                               fontWeight: FontWeight.w700,
                               height: 1.2,

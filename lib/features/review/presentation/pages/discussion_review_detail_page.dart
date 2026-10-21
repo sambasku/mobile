@@ -11,6 +11,7 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../discussion/data/discussion_providers.dart';
 import '../../../discussion/domain/discussion_models.dart';
@@ -308,8 +309,9 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
         Expanded(
           child: ListView(
             children: [
-              Text(
-                name,
+              PublicAccountName(
+                label: name,
+                isVerifier: item.isVerifier,
                 style: theme.typography.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -529,16 +531,16 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
         ),
         if (_isPending) ...[
           FButton(
+            variant: FButtonVariant.outline,
+            onPress: _busy ? null : _reject,
+            child: const Text('Tolak'),
+          ),
+          const Gap(8),
+          FButton(
             onPress: _busy ? null : _approve,
             child: _busy
                 ? const FCircularProgress()
                 : const Text('Setujui & tayangkan'),
-          ),
-          const Gap(8),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: _busy ? null : _reject,
-            child: const Text('Tolak'),
           ),
           const Gap(12),
         ] else

@@ -77,11 +77,17 @@ List<(String, bool)> splitQuotedLemma(String body) {
 }
 
 class FeedActivityActor {
-  const FeedActivityActor({this.username, this.displayName, this.avatarUrl});
+  const FeedActivityActor({
+    this.username,
+    this.displayName,
+    this.avatarUrl,
+    this.isVerifier = false,
+  });
 
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
 }
 
 /// #144: arah pencarian search-miss (lemma = kata Sambas, translation = kata

@@ -15,11 +15,13 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../core/models/image_attribution.dart';
+import '../../../user_profile/user_profile_router.dart';
+import '../../../about/presentation/providers/contributors_providers.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
-import '../../data/place_markdown/place_markdown_repository.dart';
+import '../providers/regions_providers.dart';
 
 const _heroAspect = 16 / 10;
 
@@ -158,7 +160,6 @@ class _BodyState extends State<_Body> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final place = widget.place;
-    final relatedPlaces = place.relatedOf(PlaceRelatedKind.place);
     final topInset = MediaQuery.paddingOf(context).top;
 
     Widget heroButton(IconData icon, String tooltip, VoidCallback onTap) =>
@@ -202,11 +203,11 @@ class _BodyState extends State<_Body> {
                         children: [
                           FBadge(
                             variant: FBadgeVariant.secondary,
-                            child: Text(
-                              place.category == PlaceCategory.kuliner
-                                  ? 'Kuliner'
-                                  : 'Wisata',
-                            ),
+                            child: Text(switch (place.category) {
+                              PlaceCategory.kuliner => 'Kuliner',
+                              PlaceCategory.budaya => 'Budaya',
+                              PlaceCategory.wisata => 'Wisata',
+                            }),
                           ),
                           if (placeTypeLabels[place.type] case final type?)
                             FBadge(
@@ -215,7 +216,8 @@ class _BodyState extends State<_Body> {
                             ),
                         ],
                       ),
-                      if (place.hours != null || place.contact != null) ...[
+                      if (place.hours != null ||
+                          place.contact?.isEmpty == false) ...[
                         const Gap(12),
                         _InfoStrip(hours: place.hours, contact: place.contact),
                       ],
@@ -224,61 +226,92 @@ class _BodyState extends State<_Body> {
                         place.shortDescription,
                         style: theme.typography.sm.copyWith(height: 1.5),
                       ),
-                      const Gap(16),
+                      if (place.images.length > 1)
+                        _PhotoGrid(slug: place.slug, images: place.images),
+                      // Kredit penulis artikel (v2): authorId -> kontributor SambasKu;
+                      // tap buka profil in-app. Absen/offline = tanpa baris.
                       Consumer(
                         builder: (context, ref, _) {
-                          final hasArticle = ref.watch(
-                            placeMarkdownProvider(place.slug),
-                          ).value != null;
-                          return hasArticle
-                              ? FButton(
-                                  variant: FButtonVariant.outline,
-                                  prefix: const Icon(FLucideIcons.book),
-                                  onPress: () {
-                                    context.push(
-                                      ExploreRouter.placeArticlePath(
-                                        place.slug,
-                                      ),
-                                    );
-                                  },
-                                  child: const Text('Baca Selengkapnya'),
-                                )
-                              : const SizedBox.shrink();
+                          final authorId = place.authorId;
+                          if (authorId == null) {
+                            return const SizedBox.shrink();
+                          }
+                          final username = ref
+                              .watch(contributorsIdToUsernameProvider)
+                              .value?[authorId];
+                          if (username == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: _CreditLine(
+                              label: 'Penulis',
+                              name: username,
+                              authorId: authorId,
+                            ),
+                          );
                         },
                       ),
                       const Gap(16),
-                      FButton(
-                        prefix: const Icon(FLucideIcons.map),
-                        onPress: () {
-                          if (!place.hasCoordinates) {
-                            showPlaceNoCoordinates(context);
-                            return;
-                          }
-                          context.push(
-                            '${ExploreRouter.pins.path}?slug=${place.slug}',
-                          );
-                        },
-                        child: const Text('Lihat di peta'),
-                      ),
-                      if (relatedPlaces.isNotEmpty)
-                        _RelatedPlaces(related: relatedPlaces, self: place),
-                      if (place.sources.isNotEmpty) ...[
-                        const Gap(20),
-                        for (final s in place.sources)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: _CreditLine(
-                              label: 'Sumber',
-                              name: s.name,
-                              nameUrl: s.address,
-                              license: s.license,
-                              licenseUrl: s.licenseUrl,
+                      FTileGroup(
+                        label: const Text('Aksi'),
+                        children: [
+                          FTile(
+                            prefix: const Icon(FLucideIcons.map, size: 18),
+                            title: const Text('Lihat di peta'),
+                            suffix: const Icon(
+                              FLucideIcons.chevronRight,
+                              size: 16,
+                            ),
+                            onPress: () {
+                              if (!place.hasCoordinates) {
+                                showPlaceNoCoordinates(context);
+                                return;
+                              }
+                              context.push(
+                                '${ExploreRouter.pins.path}?slug=${place.slug}',
+                              );
+                            },
+                          ),
+                          FTile(
+                            prefix: const Icon(FLucideIcons.pencil, size: 18),
+                            title: const Text('Usulkan perubahan'),
+                            suffix: const Icon(
+                              FLucideIcons.chevronRight,
+                              size: 16,
+                            ),
+                            onPress: () => context.push(
+                              ExploreRouter.placeEdit.path.replaceFirst(
+                                ':slug',
+                                place.slug,
+                              ),
                             ),
                           ),
-                      ],
+                          FTile(
+                            prefix: const Icon(FLucideIcons.image, size: 18),
+                            title: const Text('Tambah foto'),
+                            suffix: const Icon(
+                              FLucideIcons.chevronRight,
+                              size: 16,
+                            ),
+                            onPress: () => context.push(
+                              ExploreRouter.placeAddPhoto.path.replaceFirst(
+                                ':slug',
+                                place.slug,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
+                _NearbyWisata(place: place),
+                if (place.sources.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _SourcesCard(sources: place.sources),
+                  ),
               ],
             ),
             // ponytail: tombol overlay tetap di atas saat scroll; status bar
@@ -437,6 +470,7 @@ class _CarouselState extends State<_Carousel> {
             suffix: where.isEmpty ? null : ' / $where',
             license: attribution.license,
             licenseUrl: attribution.licenseUrl,
+            authorId: attribution.authorId,
           ),
         ),
       ],
@@ -456,7 +490,7 @@ void _open(String? url) {
 
 /// Kredit satu baris: "Label: nama[suffix] · lisensi". Nama boleh terpotong,
 /// lisensi tetap utuh (kredit CC wajib terbaca). Nama & lisensi bisa di-tap.
-class _CreditLine extends StatelessWidget {
+class _CreditLine extends ConsumerWidget {
   const _CreditLine({
     required this.label,
     required this.name,
@@ -464,6 +498,7 @@ class _CreditLine extends StatelessWidget {
     this.suffix,
     this.license,
     this.licenseUrl,
+    this.authorId,
   });
 
   final String label;
@@ -472,9 +507,10 @@ class _CreditLine extends StatelessWidget {
   final String? suffix;
   final String? license;
   final String? licenseUrl;
+  final String? authorId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final muted = theme.typography.xs.copyWith(
       color: theme.colors.mutedForeground,
@@ -486,7 +522,19 @@ class _CreditLine extends StatelessWidget {
         Text('$label: ', style: muted),
         Flexible(
           child: GestureDetector(
-            onTap: () => _open(nameUrl),
+            onTap: () {
+              if (authorId != null) {
+                // Profil SambasKu in-app: resolve authorId → username
+                final username = ref
+                    .watch(contributorsIdToUsernameProvider)
+                    .value?[authorId];
+                if (username != null) {
+                  UserProfileRouter.open(context, username, displayName: name);
+                  return;
+                }
+              }
+              _open(nameUrl);
+            },
             child: Text(
               '$name${suffix ?? ''}',
               maxLines: 1,
@@ -513,53 +561,89 @@ class _CreditLine extends StatelessWidget {
   }
 }
 
-/// Kolom info ringkas (jam, kontak). Hanya field yang terisi yang tampil.
+/// Jam buka, telepon, dan email. Baris kosong tidak dirender.
 class _InfoStrip extends StatelessWidget {
   const _InfoStrip({this.hours, this.contact});
 
   final String? hours;
-  final String? contact;
+  final PlaceContact? contact;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final items = [
-      if (hours != null) (FLucideIcons.clock, hours!, 'Jam buka'),
-      if (contact != null) (FLucideIcons.phone, contact!, 'Kontak'),
+    final rows = <({IconData icon, String value, String caption, Uri? uri})>[
+      if (hours != null && hours!.trim().isNotEmpty)
+        (
+          icon: FLucideIcons.clock,
+          value: hours!.trim(),
+          caption: 'Jam buka',
+          uri: null,
+        ),
+      if (contact?.phone case final phone?)
+        (
+          icon: FLucideIcons.phone,
+          value: phone,
+          caption: 'Telepon',
+          uri: Uri.parse('tel:${phone.replaceAll(' ', '')}'),
+        ),
+      if (contact?.email case final email?)
+        (
+          icon: FLucideIcons.mail,
+          value: email,
+          caption: 'Email',
+          uri: Uri(scheme: 'mailto', path: email),
+        ),
+      if (contact?.note case final note?)
+        (icon: FLucideIcons.phone, value: note, caption: 'Kontak', uri: null),
     ];
+    if (rows.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         border: Border.all(color: theme.colors.border),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: IntrinsicHeight(
-        child: Row(
+      // InkWell butuh ancestor Material. Forui tidak menyediakannya.
+      child: Material(
+        type: MaterialType.transparency,
+        child: Column(
           children: [
-            for (final (i, (icon, value, caption)) in items.indexed) ...[
-              if (i > 0) const VerticalDivider(width: 1),
-              Expanded(
+            for (final (i, row) in rows.indexed) ...[
+              if (i > 0) Divider(height: 1, color: theme.colors.border),
+              InkWell(
+                onTap: row.uri == null
+                    ? null
+                    : () {
+                        launchUrl(
+                          row.uri!,
+                          mode: LaunchMode.externalApplication,
+                        ).timeout(
+                          const Duration(seconds: 8),
+                          onTimeout: () => false,
+                        );
+                      },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(icon, size: 16, color: theme.colors.primary),
+                      Icon(row.icon, size: 16, color: theme.colors.primary),
                       const Gap(8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              value,
+                              row.value,
                               style: theme.typography.sm.copyWith(
                                 fontWeight: FontWeight.w600,
                                 height: 1.3,
                               ),
                             ),
                             Text(
-                              caption,
+                              row.caption,
                               style: theme.typography.xs.copyWith(
                                 color: theme.colors.mutedForeground,
                               ),
@@ -579,41 +663,225 @@ class _InfoStrip extends StatelessWidget {
   }
 }
 
-class _RelatedPlaces extends ConsumerWidget {
-  const _RelatedPlaces({required this.related, required this.self});
+/// Pratinjau 3 foto. Sisanya dibuka di halaman linimasa.
+class _PhotoGrid extends StatelessWidget {
+  const _PhotoGrid({required this.slug, required this.images});
 
-  static const _cardWidth = 136.0;
+  static const _previewCount = 3;
 
-  final List<PlaceRelated> related;
-  final Place self;
+  final String slug;
+  final List<PlaceImage> images;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = context.theme;
-    final places = ref.watch(placesProvider).value ?? const <Place>[];
-    final byId = {for (final p in places) p.id: p};
-    final targets = related
-        .map((r) => byId[r.id])
-        .whereType<Place>()
-        .where((p) => p.slug != self.slug)
-        .toList();
-    if (targets.isEmpty) return const SizedBox.shrink();
+    final shown = images.length <= _previewCount
+        ? images
+        : images.sublist(0, _previewCount);
+    final hidden = images.length - shown.length;
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Gap(12),
+        Text(
+          'Foto',
+          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const Gap(4),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          // Tanpa ini GridView memakai padding status bar, jadi judul
+          // "Foto" terlihat jauh dari gambar.
+          padding: EdgeInsets.zero,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
+          itemCount: shown.length,
+          itemBuilder: (context, i) {
+            final img = shown[i];
+            return GestureDetector(
+              onTap: () => showImagePreview(
+                context,
+                urls: [for (final im in images) im.url],
+                credits: [for (final im in images) im.attribution],
+                initialIndex: i,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(img.url, width: 360) ?? img.url,
+                  fallbackUrl: img.url,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+        ),
+        if (hidden > 0) ...[
+          const Gap(8),
+          GestureDetector(
+            onTap: () => context.push(ExploreRouter.placePhotosPath(slug)),
+            child: Text(
+              'Lihat $hidden foto lainnya',
+              style: theme.typography.sm.copyWith(
+                color: theme.colors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _SourcesCard extends StatelessWidget {
+  const _SourcesCard({required this.sources});
+
+  final List<PlaceSource> sources;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Gap(20),
         Text(
-          'Dekat sini',
+          'Sumber',
           style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const Gap(8),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colors.border),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final (i, source) in sources.indexed) ...[
+                if (i > 0) Divider(height: 1, color: theme.colors.border),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: _SourceRow(source: source),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Satu sumber di dalam kartu. Judul "Sumber" sudah di parent,
+/// jadi baris ini hanya nama dan lisensi, masing-masing satu baris.
+class _SourceRow extends StatelessWidget {
+  const _SourceRow({required this.source});
+
+  final PlaceSource source;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final muted = theme.typography.xs.copyWith(
+      color: theme.colors.mutedForeground,
+    );
+    final license = source.license;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => _open(source.address),
+          child: Text(
+            source.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: muted.copyWith(
+              color: theme.colors.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        if (license != null) ...[
+          const Gap(2),
+          GestureDetector(
+            onTap: () => _open(source.licenseUrl),
+            child: Text(
+              license,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: muted.copyWith(decoration: TextDecoration.underline),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Wisata lain di kecamatan yang sama. Kosong kalau region belum ada
+/// atau tidak ada tempat wisata lain di sana.
+class _NearbyWisata extends ConsumerWidget {
+  const _NearbyWisata({required this.place});
+
+  static const _cardWidth = 136.0;
+
+  final Place place;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final regionId = place.regionId;
+    if (regionId == null) return const SizedBox.shrink();
+
+    final theme = context.theme;
+    final places = ref.watch(placesProvider).value ?? const <Place>[];
+    final nearby = [
+      for (final other in places)
+        if (other.regionId == regionId &&
+            other.category == PlaceCategory.wisata &&
+            other.slug != place.slug)
+          other,
+    ]..sort((a, b) => a.name.compareTo(b.name));
+    if (nearby.isEmpty) return const SizedBox.shrink();
+
+    final regionName = ref
+        .watch(regionsProvider)
+        .value
+        ?.where((r) => r.id == regionId)
+        .firstOrNull
+        ?.name;
+    final title = regionName == null
+        ? 'Wisata lain di kecamatan ini'
+        : 'Wisata lain di $regionName';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Gap(20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            title,
+            style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+          ),
         ),
         const Gap(8),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          // Inset ikut konten, bukan gutter tetap. Kartu pertama sejajar
+          // judul; saat digeser, kartu boleh sampai ke tepi layar.
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final (i, t) in targets.indexed) ...[
+              for (final (i, t) in nearby.indexed) ...[
                 if (i > 0) const Gap(12),
                 _relatedCard(context, t),
               ],
@@ -656,12 +924,6 @@ class _RelatedPlaces extends ConsumerWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
-            ),
-            Text(
-              placeLabel(t),
-              style: theme.typography.xs.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
             ),
           ],
         ),

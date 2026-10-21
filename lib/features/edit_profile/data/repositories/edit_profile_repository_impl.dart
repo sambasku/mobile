@@ -37,6 +37,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? regionId,
+    String? villageId,
     bool? hasReadContributionGuide,
   }) async {
     try {
@@ -45,6 +47,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
           username: username,
           displayName: displayName,
           bio: bio,
+          regionId: regionId,
+          villageId: villageId,
           hasReadContributionGuide: hasReadContributionGuide,
         ),
       );
@@ -68,6 +72,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
         username: dto.username,
         displayName: dto.displayName,
         bio: dto.bio,
+        regionId: dto.regionId,
+        villageId: dto.villageId,
         avatarUrl: dto.avatarUrl,
         hasReadContributionGuide: dto.hasReadContributionGuide,
       );

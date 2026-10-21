@@ -187,6 +187,18 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
             current: detail.notesDiff.current,
             proposed: detail.notesDiff.proposed,
           ),
+        if (detail.wordTypeDiff.changed)
+          _DiffRow(
+            label: 'Jenis entri',
+            current: detail.wordTypeDiff.current,
+            proposed: detail.wordTypeDiff.proposed,
+          ),
+        for (final klass in detail.classDiffs)
+          _DiffRow(
+            label: 'Kelas kata',
+            current: klass.current,
+            proposed: klass.proposed,
+          ),
         if (detail.meaningsChanged > 0)
           _CountRow(label: 'Makna', count: detail.meaningsChanged),
         if (detail.categoriesAdded > 0 || detail.categoriesRemoved > 0)
@@ -216,6 +228,8 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
           ),
         if (!detail.lemmaDiff.changed &&
             !detail.notesDiff.changed &&
+            !detail.wordTypeDiff.changed &&
+            detail.classDiffs.isEmpty &&
             detail.meaningsChanged == 0 &&
             detail.categoriesAdded == 0 &&
             detail.categoriesRemoved == 0 &&
@@ -244,14 +258,14 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
               ),
             ),
           FButton(
-            onPress: _busy ? null : _approve,
-            child: Text(_busy ? 'Memproses...' : 'Setujui'),
-          ),
-          const Gap(8),
-          FButton(
             variant: FButtonVariant.outline,
             onPress: _busy ? null : _reject,
             child: const Text('Tolak'),
+          ),
+          const Gap(8),
+          FButton(
+            onPress: _busy ? null : _approve,
+            child: Text(_busy ? 'Memproses...' : 'Setujui'),
           ),
         ] else
           Text(

@@ -45,11 +45,15 @@ class _FakeDatasource implements RegionsRemoteDatasource {
   @override
   Future<dio.Response<dynamic>> fetchRaw() async => _FakeResponse(body);
   @override
+  Future<Map<String, dynamic>> fetchCatalogEnvelope() async =>
+      regionsApiBodyToEnvelope(body);
+  @override
   Future<RegionsDto> fetchRegions() async {
     throw UnimplementedError();
   }
+
   @override
-  String get configUrl => 'fake';
+  String get catalogPath => 'fake';
 }
 
 class _FakeResponse implements dio.Response<dynamic> {
@@ -64,18 +68,28 @@ void main() {
   test('JSON valid -> daftar region (desa + kecamatan)', () async {
     final repo = RegionsRepositoryImpl(
       _FakeDatasource({
-        'version': 1,
-        'regions': [
-          {
-            'id': 'sambas',
-            'name': 'Sambas',
-            'type': 'kecamatan',
-            'lat': 1.34,
-            'lng': 109.31,
-          },
-          {'id': 'sambas/semeto', 'name': 'Semeto', 'type': 'desa', 'parentId': 'sambas'},
-          {'name': 'rusak - di-skip'},
-        ],
+        'success': true,
+        'data': {
+          'regions': [
+            {
+              'id': 'sambas',
+              'name': 'Sambas',
+              'type': 'kecamatan',
+              'lat': 1.34,
+              'lng': 109.31,
+              'parent_id': null,
+              'code': null,
+            },
+            {
+              'id': 'sambas/semeto',
+              'name': 'Semeto',
+              'type': 'desa',
+              'parent_id': 'sambas',
+              'code': '6101040029',
+            },
+            {'name': 'rusak - di-skip'},
+          ],
+        },
       }),
       CachedJsonClient(_MemStore()),
     );
@@ -97,7 +111,10 @@ void main() {
 
   test('body rusak (regions bukan list) -> null', () async {
     final repo = RegionsRepositoryImpl(
-      _FakeDatasource({'regions': 'bukan-list'}),
+      _FakeDatasource({
+        'success': true,
+        'data': {'regions': 'bukan-list'},
+      }),
       CachedJsonClient(_MemStore()),
     );
     expect(await repo.getRegions(), isNull);

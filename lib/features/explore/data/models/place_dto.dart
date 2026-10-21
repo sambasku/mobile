@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../core/models/image_attribution.dart';
 import '../../domain/entities/place.dart';
 
@@ -20,6 +22,7 @@ class PlaceDto {
     this.mapsUrl,
     required this.shortDescription,
     this.regionId,
+    this.authorId,
     required this.images,
     required this.hours,
     required this.contact,
@@ -37,9 +40,10 @@ class PlaceDto {
   final String? mapsUrl;
   final String shortDescription;
   final String? regionId;
+  final String? authorId;
   final List<PlaceImage> images;
   final String? hours;
-  final String? contact;
+  final PlaceContact? contact;
   final List<PlaceRelated> related;
   final List<PlaceSource> sources;
 
@@ -66,7 +70,8 @@ class PlaceDto {
     if (rawMapsUrl != null) {
       final uri = Uri.tryParse(rawMapsUrl);
       final host = uri?.host;
-      final okHost = host == 'maps.app.goo.gl' ||
+      final okHost =
+          host == 'maps.app.goo.gl' ||
           host == 'goo.gl' && uri!.path.startsWith('/maps') ||
           host != null &&
               host.endsWith('.google.com') &&
@@ -142,9 +147,10 @@ class PlaceDto {
       mapsUrl: mapsUrl,
       shortDescription: short,
       regionId: str('regionId'),
+      authorId: str('authorId'),
       images: images,
       hours: str('hours'),
-      contact: str('contact'),
+      contact: parsePlaceContact(json['contact']),
       related: related,
       sources: sources,
     );
@@ -192,10 +198,69 @@ class PlaceDto {
     mapsUrl: mapsUrl,
     shortDescription: shortDescription,
     regionId: regionId,
+    authorId: authorId,
     images: images,
     hours: hours,
     contact: contact,
     related: related,
     sources: sources,
   );
+}
+
+/// String, JSON `{phone, email}`, atau map. Teks rusak `[object Object]`
+/// dan objek kosong jadi null.
+PlaceContact? parsePlaceContact(Object? raw) {
+  if (raw == null) return null;
+  if (raw is Map) return _contactFromMap(raw);
+  if (raw is! String) return null;
+  final text = raw.trim();
+  if (text.isEmpty || text.toLowerCase() == '[object object]') return null;
+  if (text.startsWith('{')) {
+    try {
+      final decoded = jsonDecode(text);
+      if (decoded is Map) return _contactFromMap(decoded);
+    } catch (_) {
+      // Bukan JSON. Lanjut sebagai teks biasa.
+    }
+  }
+
+  String? phone;
+  String? email;
+  final notes = <String>[];
+  for (final part in text.split(RegExp(r'\n| · '))) {
+    final bit = part.trim();
+    if (bit.isEmpty || bit.toLowerCase() == '[object object]') continue;
+    if (bit.contains('@')) {
+      email ??= bit;
+    } else if (phone == null) {
+      phone = bit;
+    } else {
+      notes.add(bit);
+    }
+  }
+  return _contactOrNull(
+    phone: phone,
+    email: email,
+    note: notes.isEmpty ? null : notes.join(' · '),
+  );
+}
+
+PlaceContact? _contactFromMap(Map raw) {
+  String? pick(String key) {
+    final value = raw[key];
+    if (value is! String) return null;
+    final text = value.trim();
+    if (text.isEmpty || text.toLowerCase() == '[object object]') return null;
+    return text;
+  }
+
+  return _contactOrNull(
+    phone: pick('phone') ?? pick('tel'),
+    email: pick('email'),
+  );
+}
+
+PlaceContact? _contactOrNull({String? phone, String? email, String? note}) {
+  if (phone == null && email == null && note == null) return null;
+  return PlaceContact(phone: phone, email: email, note: note);
 }

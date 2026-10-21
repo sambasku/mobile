@@ -66,6 +66,8 @@ abstract class MeaningDto with _$MeaningDto {
     @JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId,
     String? definition,
     @JsonKey(name: 'order_index') @Default(0) int orderIndex,
+    // WIP review-flow: kontributor per makna (belum di-commit).
+    @JsonKey(name: 'created_by') WordVerifierDto? createdBy,
     @Default([]) List<TranslationDto> translations,
     @Default([]) List<ExampleDto> examples,
   }) = _MeaningDto;

@@ -19,6 +19,7 @@ import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/presentation/widgets/discussion_home_banner.dart';
+import '../../../search_miss/search_miss_router.dart';
 import '../../dictionary_router.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
@@ -26,8 +27,9 @@ import '../widgets/word_of_day_card.dart';
 /// Durasi semua layer animasi header (tinggi, slide, fade, gap).
 const _headerAnimDuration = Duration(milliseconds: 280);
 
-/// Jarak scroll untuk membuka/menutup penuh blok header. Makin kecil =
-/// makin responsif.
+/// Jarak jari untuk menutup penuh blok header. Tetap 90, sama seperti saat
+/// bloknya cuma kolom cari + satu tombol. Menyamakan jarak dengan tinggi
+/// blok baru (~160) membuat feed terlihat diam lebih lama.
 const _headerCollapseDistance = 90.0;
 
 /// Key blok header collaps (dipakai test untuk menemukan blok ini).
@@ -47,7 +49,8 @@ class HomeSearchPage extends HookConsumerWidget {
     final scroll = useScrollController();
 
     // Animation, bukan double: halaman tidak rebuild tiap frame scroll.
-    // Yang rebuild hanya blok collaps di bawah (AnimatedBuilder).
+    // Align.heightFactor hanya mengubah ukuran slot; constraint anak tetap
+    // longgar, jadi FTileGroup tidak di-layout ulang tiap frame.
     final collapse = useScrollCollapse(
       scroll,
       distance: _headerCollapseDistance,
@@ -98,13 +101,6 @@ class HomeSearchPage extends HookConsumerWidget {
             suffixes: [ThemeToggleHeaderAction()],
           ),
         ),
-        // Search + tombol usul: satu blok collaps scroll-proportional.
-        // Transform dihitung dari collapse.value (0 terbuka, 1 tertutup):
-        // tinggi menyusut, fade. ClipRect menjaga isi tidak bocor saat
-        // tinggi < tinggi konten. IgnorePointer menutup tap saat blok
-        // hampir tertutup supaya tidak menangkap gesture feed.
-        // Rebuild dibatasi ke blok ini saja (AnimatedBuilder) agar scroll
-        // feed tidak rebuild row per frame.
         AnimatedBuilder(
           animation: collapse,
           builder: (context, child) {
@@ -124,70 +120,13 @@ class HomeSearchPage extends HookConsumerWidget {
               ),
             );
           },
-          // child di-cache: tidak rebuild saat animasi jalan.
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+          child: const Padding(
+            padding: EdgeInsets.fromLTRB(12, 0, 12, 4),
             child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => context.push(
-                          '${DictionaryRouter.list.path}?focus=1',
-                        ),
-                        child: AbsorbPointer(
-                          child: FTextField(
-                            size: .sm,
-                            readOnly: true,
-                            hint: 'Cari kata Sambas...',
-                            prefixBuilder: (context, style, variants) =>
-                                FTextField.prefixIconBuilder(
-                                  context,
-                                  style,
-                                  variants,
-                                  const Icon(FLucideIcons.search),
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Gap(8),
-                    FButton(
-                      size: .sm,
-                      variant: FButtonVariant.outline,
-                      onPress: () => context.push(
-                        DictionaryRouter.letter.path.replaceFirst(
-                          ':letter',
-                          'a',
-                        ),
-                      ),
-                      child: const Text('A-Z'),
-                    ),
-                  ],
-                ),
-                const Gap(8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FButton(
-                    size: .sm,
-                    variant: FButtonVariant.outline,
-                    prefix: const Icon(FLucideIcons.plus),
-                    onPress: () {
-                      AnalyticsService.instance.log(
-                        AnalyticsEvents.contributeStart,
-                        params: {'from': 'home'},
-                      );
-                      context.push(ContributionRouter.contribute.path);
-                    },
-                    child: const Text('Usul kata baru'),
-                  ),
-                ),
-              ],
+              children: [_HomeSearchRow(), Gap(8), _HomeMenuTiles()],
             ),
           ),
         ),
-        // Jarak blok collaps ke feed; ikut menyusut saat blok hilang.
         AnimatedBuilder(
           animation: collapse,
           builder: (context, _) => SizedBox(height: 4 * (1 - collapse.value)),
@@ -249,10 +188,7 @@ class HomeSearchPage extends HookConsumerWidget {
             return const Padding(padding: _hPad, child: WordOfDayCard());
           }
           if (index == 1) {
-            return const Padding(
-              padding: _hPad,
-              child: DiscussionHomeBanner(),
-            );
+            return const Padding(padding: _hPad, child: DiscussionHomeBanner());
           }
           if (index == 2) return const PinnedHomeBanner();
           if (index == 3) {
@@ -319,6 +255,83 @@ class HomeSearchPage extends HookConsumerWidget {
   }
 }
 
+class _HomeSearchRow extends StatelessWidget {
+  const _HomeSearchRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => context.push('${DictionaryRouter.list.path}?focus=1'),
+            child: AbsorbPointer(
+              child: FTextField(
+                size: .sm,
+                readOnly: true,
+                hint: 'Cari kata Sambas...',
+                prefixBuilder: (context, style, variants) =>
+                    FTextField.prefixIconBuilder(
+                      context,
+                      style,
+                      variants,
+                      const Icon(FLucideIcons.search),
+                    ),
+              ),
+            ),
+          ),
+        ),
+        const Gap(8),
+        FButton(
+          size: .sm,
+          variant: FButtonVariant.outline,
+          onPress: () => context.push(
+            DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
+          ),
+          child: const Text('A-Z'),
+        ),
+      ],
+    );
+  }
+}
+
+class _HomeMenuTiles extends StatelessWidget {
+  const _HomeMenuTiles();
+
+  @override
+  Widget build(BuildContext context) {
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        FTile(
+          prefix: const Icon(FLucideIcons.plus, size: 18),
+          title: const Text('Usul kata baru'),
+          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+          onPress: () {
+            AnalyticsService.instance.log(
+              AnalyticsEvents.contributeStart,
+              params: {'from': 'home'},
+            );
+            context.push(ContributionRouter.contribute.path);
+          },
+        ),
+        FTile(
+          prefix: const Icon(FLucideIcons.userSearch, size: 18),
+          title: const Text('Dicari warga'),
+          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+          onPress: () {
+            AnalyticsService.instance.log(
+              AnalyticsEvents.searchMissListOpen,
+              params: {'from': 'home'},
+            );
+            context.push(SearchMissRouter.list.path);
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class _FeedHeading extends StatelessWidget {
   const _FeedHeading();
 
@@ -337,7 +350,6 @@ class _FeedHeading extends StatelessWidget {
     );
   }
 }
-
 
 class _EmptyFeed extends StatelessWidget {
   const _EmptyFeed();

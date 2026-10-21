@@ -129,6 +129,9 @@ _MeaningDto _$MeaningDtoFromJson(Map<String, dynamic> json) => _MeaningDto(
   inheritedFromMeaningId: json['inherited_from_meaning_id'] as String?,
   definition: json['definition'] as String?,
   orderIndex: (json['order_index'] as num?)?.toInt() ?? 0,
+  createdBy: json['created_by'] == null
+      ? null
+      : WordVerifierDto.fromJson(json['created_by'] as Map<String, dynamic>),
   translations:
       (json['translations'] as List<dynamic>?)
           ?.map((e) => TranslationDto.fromJson(e as Map<String, dynamic>))
@@ -148,6 +151,7 @@ Map<String, dynamic> _$MeaningDtoToJson(_MeaningDto instance) =>
       'inherited_from_meaning_id': instance.inheritedFromMeaningId,
       'definition': instance.definition,
       'order_index': instance.orderIndex,
+      'created_by': instance.createdBy,
       'translations': instance.translations,
       'examples': instance.examples,
     };

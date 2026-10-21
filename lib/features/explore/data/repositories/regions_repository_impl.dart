@@ -8,16 +8,16 @@ import '../models/regions_dto.dart';
 /// Impl repository regions (pola places_repository_impl).
 ///
 /// Cache L1 (referenceStatic, fresh 24 jam + SWR) -> miss/stale -> fetch
-/// jsDelivr via datasource -> DTO -> entity. Error apa pun (network, parse)
-/// -> null (soft-fail), jangan pernah crash UI. Kosong juga null supaya
-/// UI tahu bedanya "belum ke-load" vs "memang kosong".
+/// `GET /api/v1/regions/catalog` -> DTO -> entity. Error apa pun (network,
+/// parse) -> null (soft-fail). Kosong juga null supaya UI tahu bedanya
+/// "belum ke-load" vs "memang kosong".
 class RegionsRepositoryImpl {
   RegionsRepositoryImpl(this._datasource, this._cache);
 
   final RegionsRemoteDatasource _datasource;
   final CachedJsonClient _cache;
 
-  static const _cacheKey = '/cdn/regions.json';
+  static const _cacheKey = '/api/v1/regions/catalog';
 
   Future<List<Region>?> getRegions({bool forceRefresh = false}) async {
     try {
@@ -25,21 +25,12 @@ class RegionsRepositoryImpl {
         key: buildCacheKey(method: 'GET', path: _cacheKey),
         cacheClass: CacheClass.referenceStatic,
         forceRefresh: forceRefresh,
-        fetch: _fetchEnvelope,
+        fetch: _datasource.fetchCatalogEnvelope,
       );
       final regions = RegionsDto.fromJson(envelope)?.toEntity();
       return (regions == null || regions.isEmpty) ? null : regions;
     } catch (_) {
       return null;
     }
-  }
-
-  Future<Map<String, dynamic>> _fetchEnvelope() async {
-    final resp = await _datasource.fetchRaw();
-    final body = resp.data;
-    if (body is! Map) {
-      throw StateError('Body regions.json bukan object');
-    }
-    return Map<String, dynamic>.from(body);
   }
 }

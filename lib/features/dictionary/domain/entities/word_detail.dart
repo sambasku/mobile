@@ -190,6 +190,8 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
+    // WIP review-flow: kontributor per makna (belum di-commit).
+    this.createdBy,
     this.translations = const [],
     this.examples = const [],
   });
@@ -202,6 +204,9 @@ class WordMeaning {
   final String? wordClassName;
   final String? definition;
   final int orderIndex;
+
+  /// Kontributor makna ini (WIP review-flow, belum di-commit).
+  final WordVerifier? createdBy;
   final List<WordTranslation> translations;
   final List<WordExample> examples;
 

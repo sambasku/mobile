@@ -14,7 +14,14 @@ class EditProfileNotifier extends _$EditProfileNotifier {
   @override
   EditProfileState build() => const EditProfileState(isLoading: true);
 
-  Future<({String username, String displayName, String bio})?> load() async {
+  Future<
+      ({
+        String username,
+        String displayName,
+        String bio,
+        String? regionId,
+        String? villageId,
+      })?> load() async {
     state = state.copyWith(
       isLoading: true,
       clearErrorMessage: true,
@@ -43,7 +50,13 @@ class EditProfileNotifier extends _$EditProfileNotifier {
                 avatarUrl: profile.avatarUrl,
               ),
         );
-        return (username: profile.username, displayName: profile.displayName, bio: profile.bio ?? '');
+        return (
+          username: profile.username,
+          displayName: profile.displayName,
+          bio: profile.bio ?? '',
+          regionId: profile.regionId,
+          villageId: profile.villageId,
+        );
       },
     );
   }
@@ -52,6 +65,8 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     required String username,
     required String displayName,
     required String bio,
+    String? regionId,
+    String? villageId,
   }) async {
     state = state.copyWith(
       isSubmitting: true,
@@ -63,6 +78,8 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           username: username.trim(),
           displayName: displayName.trim(),
           bio: bio.trim().isEmpty ? null : bio.trim(),
+          regionId: regionId,
+          villageId: villageId,
         );
 
     final outcome = result.match(

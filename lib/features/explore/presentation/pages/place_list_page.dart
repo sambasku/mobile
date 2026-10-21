@@ -13,7 +13,7 @@ import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
-import '../providers/places_providers.dart';
+import '../providers/places_browse_providers.dart';
 
 /// Filter list satu baris. Publik karena dipakai juga dari
 /// ExploreCategoryPage (kartu Wisata / Kuliner di tab Eksplorasi).
@@ -38,7 +38,16 @@ const _pageTitle = {
   PlacePageMode.kuliner: 'Kuliner',
 };
 
-/// Daftar Place. Data CDN soft-fail: gagal = tombol coba lagi.
+/// 3 kolom: foto kotak 1:1, nama selalu 2 baris. Tipe tidak ditampilkan.
+const _placeGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+  crossAxisCount: 3,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 8,
+  childAspectRatio: 0.7,
+);
+
+/// Daftar Place berhalaman (`before` / `next_cursor`).
+/// Mode wisata = grid 3 kolom. Mode kuliner tetap list satu kolom.
 class PlaceListPage extends ConsumerStatefulWidget {
   const PlaceListPage({super.key, required this.mode});
 
@@ -51,6 +60,9 @@ class PlaceListPage extends ConsumerStatefulWidget {
 class _PlaceListPageState extends ConsumerState<PlaceListPage> {
   late PlaceListFilter _filter;
   late PlacePageMode _mode;
+  final _scroll = ScrollController();
+  bool _autoloadBusy = false;
+  int? _fillToken;
 
   @override
   void initState() {
@@ -59,15 +71,59 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     _filter = _mode == PlacePageMode.kuliner
         ? PlaceListFilter.kuliner
         : PlaceListFilter.semua;
+    _scroll.addListener(_maybeLoadMore);
   }
 
   String _query = '';
   Timer? _debounce;
 
+  PlacesBrowseQuery get _browseQuery {
+    final q = _query.trim();
+    if (_mode == PlacePageMode.kuliner || _filter == PlaceListFilter.kuliner) {
+      return PlacesBrowseQuery(category: PlaceCategory.kuliner, q: q);
+    }
+    final type = _filter == PlaceListFilter.semua
+        ? null
+        : PlaceType.values.byName(_filter.name);
+    return PlacesBrowseQuery(category: PlaceCategory.wisata, type: type, q: q);
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
+    _scroll.dispose();
     super.dispose();
+  }
+
+  void _scheduleFillCheck() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _maybeLoadMore();
+    });
+  }
+
+  Future<void> _maybeLoadMore() async {
+    if (_autoloadBusy || !_scroll.hasClients) return;
+    final data = ref.read(placesBrowseProvider(_browseQuery)).value;
+    if (data == null ||
+        !data.hasMore ||
+        data.isLoadingMore ||
+        data.loadMoreFailed) {
+      return;
+    }
+    if (_scroll.position.maxScrollExtent - _scroll.position.pixels >= 200) {
+      return;
+    }
+    final before = data.items.length;
+    _autoloadBusy = true;
+    try {
+      await ref.read(placesBrowseProvider(_browseQuery).notifier).loadMore();
+    } finally {
+      _autoloadBusy = false;
+      final after = ref.read(placesBrowseProvider(_browseQuery)).value;
+      if (mounted && after != null && after.items.length != before) {
+        _scheduleFillCheck();
+      }
+    }
   }
 
   void _onSearchChanged(TextEditingValue value) {
@@ -78,13 +134,12 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     });
   }
 
-  // #104: hard miss L1 (forceRefresh → fetch CDN) + skeleton selama fetch,
-  // bukan invalidate saja yang cuma baca cache fresh lagi.
-  Future<void> _reload() async {
+  Future<void> _reload({bool keepItems = false}) async {
     setState(() => _refreshing = true);
     try {
-      await ref.read(placesRefreshProvider.future);
-      ref.invalidate(placesProvider);
+      await ref
+          .read(placesBrowseProvider(_browseQuery).notifier)
+          .reload(keepItems: keepItems);
     } finally {
       if (mounted) setState(() => _refreshing = false);
     }
@@ -95,7 +150,8 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final placesAsync = ref.watch(placesProvider);
+    final browseQuery = _browseQuery;
+    final placesAsync = ref.watch(placesBrowseProvider(browseQuery));
 
     return ExcludeSemanticsOnExit(
       child: FScaffold(
@@ -108,14 +164,43 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                   context.canPop() ? context.pop() : context.go('/explore'),
             ),
           ],
+          suffixes: _mode == PlacePageMode.wisata
+              ? [
+                  FHeaderAction(
+                    icon: const Icon(FLucideIcons.history),
+                    onPress: () =>
+                        context.push(ExploreRouter.placeProposals.path),
+                  ),
+                  FHeaderAction(
+                    icon: const Icon(FLucideIcons.plus),
+                    onPress: () =>
+                        context.push(ExploreRouter.placeContribute.path),
+                  ),
+                ]
+              : const [],
         ),
         child: placesAsync.when(
-          loading: () => _SkeletonList(refreshing: _refreshing),
-          error: (_, _) => _ErrorBody(onRetry: _reload),
-          data: (places) {
-            if (places == null) return _ErrorBody(onRetry: _reload);
-            if (places.isEmpty) return const _EmptyBody();
-            final filtered = _applyFilter(places);
+          loading: () => _SkeletonList(
+            refreshing: _refreshing,
+            grid: _mode == PlacePageMode.wisata,
+          ),
+          error: (_, _) => _ErrorBody(onRetry: () => _reload()),
+          data: (page) {
+            if (page.items.isEmpty &&
+                _query.trim().isEmpty &&
+                (_mode == PlacePageMode.kuliner ||
+                    _filter == PlaceListFilter.semua)) {
+              return const _EmptyBody();
+            }
+            final fillToken = Object.hash(
+              browseQuery,
+              page.items.length,
+              page.hasMore,
+            );
+            if (page.hasMore && fillToken != _fillToken) {
+              _fillToken = fillToken;
+              _scheduleFillCheck();
+            }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -138,11 +223,14 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                 if (_mode == PlacePageMode.wisata) ...[
                   _PlaceFilterBar(
                     selected: _filter,
-                    onSelect: (f) => setState(() => _filter = f),
+                    onSelect: (f) {
+                      setState(() => _filter = f);
+                      if (_scroll.hasClients) _scroll.jumpTo(0);
+                    },
                   ),
                   const Gap(4),
                 ],
-                if (filtered.isEmpty)
+                if (page.items.isEmpty)
                   Expanded(
                     child: Center(
                       child: Text(
@@ -157,16 +245,56 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                 else
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: _reload,
-                      child: ListView.separated(
+                      onRefresh: () => _reload(keepItems: true),
+                      child: CustomScrollView(
+                        controller: _scroll,
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
                         keyboardDismissBehavior:
                             ScrollViewKeyboardDismissBehavior.onDrag,
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) => const Divider(height: 1),
-                        itemBuilder: (context, i) =>
-                            _PlaceCard(place: filtered[i]),
+                        slivers: [
+                          if (_mode == PlacePageMode.wisata)
+                            SliverGrid(
+                              gridDelegate: _placeGridDelegate,
+                              delegate: SliverChildBuilderDelegate(
+                                (context, i) =>
+                                    _PlaceGridTile(place: page.items[i]),
+                                childCount: page.items.length,
+                              ),
+                            )
+                          else
+                            SliverList.separated(
+                              itemCount: page.items.length,
+                              separatorBuilder: (_, _) =>
+                                  const Divider(height: 1),
+                              itemBuilder: (context, i) =>
+                                  _PlaceCard(place: page.items[i]),
+                            ),
+                          if (page.isLoadingMore)
+                            const SliverToBoxAdapter(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: FCircularProgress()),
+                              ),
+                            ),
+                          if (page.loadMoreFailed)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                child: FButton(
+                                  onPress: () => ref
+                                      .read(
+                                        placesBrowseProvider(
+                                          browseQuery,
+                                        ).notifier,
+                                      )
+                                      .loadMore(),
+                                  child: const Text('Coba lagi'),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
@@ -176,32 +304,6 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
         ),
       ),
     );
-  }
-
-  // Debounce 300ms: tahan setState per ketikan. Filter tetap lokal; kalau
-  // search pindah ke API, debounce ini sudah jadi.
-  // Mode kuliner: hanya kategori kuliner, tanpa filter type.
-  // Mode wisata: kategori wisata, difilter per type kalau chip dipilih.
-  List<Place> _applyFilter(List<Place> places) {
-    final q = _query.trim().toLowerCase();
-    if (_mode == PlacePageMode.kuliner) {
-      return places
-          .where(
-            (p) =>
-                p.category == PlaceCategory.kuliner &&
-                p.name.toLowerCase().contains(q),
-          )
-          .toList();
-    }
-    return places.where((p) {
-      if (q.isNotEmpty && !p.name.toLowerCase().contains(q)) return false;
-      // Chip "Kuliner" di mode wisata tetap menyaring entri kuliner.
-      if (_filter == PlaceListFilter.kuliner) {
-        return p.category == PlaceCategory.kuliner;
-      }
-      if (p.category != PlaceCategory.wisata) return false;
-      return _filter == PlaceListFilter.semua || p.type?.name == _filter.name;
-    }).toList();
   }
 }
 
@@ -230,6 +332,101 @@ class _PlaceFilterBar extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _PlaceGridTile extends StatelessWidget {
+  const _PlaceGridTile({required this.place});
+
+  final Place place;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final cover = place.cover;
+    final titleStyle = theme.typography.xs.copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.25,
+    );
+    final titleHeight = (titleStyle.fontSize ?? 12) * 1.25 * 2;
+
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: () => context.push(
+          ExploreRouter.place.path.replaceFirst(':slug', place.slug),
+        ),
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: cover == null
+                        ? ColoredBox(
+                            color: theme.colors.muted,
+                            child: Icon(
+                              FLucideIcons.landmark,
+                              size: 28,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          )
+                        : CachedNetworkImageWithFallback(
+                            imageUrl:
+                                displayImageUrl(cover.url, width: 360) ??
+                                cover.url,
+                            fallbackUrl: cover.url,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: IconButton(
+                      tooltip: 'Bookmark',
+                      onPressed: () => showPlaceBookmarkSoon(context),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 28,
+                        height: 28,
+                      ),
+                      style: IconButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundColor: theme.colors.background.withValues(
+                          alpha: 0.88,
+                        ),
+                        minimumSize: const Size(28, 28),
+                        fixedSize: const Size(28, 28),
+                      ),
+                      icon: Icon(
+                        FLucideIcons.bookmark,
+                        size: 14,
+                        color: theme.colors.foreground,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Gap(6),
+            SizedBox(
+              height: titleHeight,
+              child: Text(
+                place.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: titleStyle,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -373,9 +570,10 @@ class _ErrorBody extends StatelessWidget {
 class _SkeletonList extends StatelessWidget {
   /// #104: true saat pull-to-refresh (muat ulang dari CDN) - label
   /// semantics membedakan "menyegarkan" dari loading awal.
-  const _SkeletonList({this.refreshing = false});
+  const _SkeletonList({this.refreshing = false, this.grid = false});
 
   final bool refreshing;
+  final bool grid;
 
   @override
   Widget build(BuildContext context) {
@@ -392,38 +590,62 @@ class _SkeletonList extends StatelessWidget {
             : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 5,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (_, _) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Bone(
-                width: _PlaceCard._thumbSize,
-                height: _PlaceCard._thumbSize,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
+      child: grid
+          ? GridView.builder(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: _placeGridDelegate,
+              itemCount: 9,
+              itemBuilder: (_, _) => const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: Bone(
+                      width: double.infinity,
+                      height: double.infinity,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                  Gap(6),
+                  Bone(width: double.infinity, height: 12),
+                  Gap(4),
+                  Bone(width: 72, height: 12),
+                ],
               ),
-              Gap(12),
-              Expanded(
-                child: Column(
+            )
+          : ListView.separated(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 5,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (_, _) => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Bone(width: 160, height: 16),
-                    Gap(6),
-                    Bone(width: 64, height: 14),
-                    Gap(6),
-                    Bone(width: 200, height: 12),
+                    Bone(
+                      width: _PlaceCard._thumbSize,
+                      height: _PlaceCard._thumbSize,
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    Gap(12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Bone(width: 160, height: 16),
+                          Gap(6),
+                          Bone(width: 64, height: 14),
+                          Gap(6),
+                          Bone(width: 200, height: 12),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -9,6 +9,8 @@ abstract class MyProfileDto with _$MyProfileDto {
     required String username,
     @JsonKey(name: 'display_name') required String displayName,
     String? bio,
+    @JsonKey(name: 'region_id') String? regionId,
+    @JsonKey(name: 'village_id') String? villageId,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
     @JsonKey(name: 'has_read_contribution_guide') @Default(false) bool hasReadContributionGuide,
   }) = _MyProfileDto;
@@ -24,6 +26,9 @@ abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
     @JsonKey(includeIfNull: false) String? username,
     @JsonKey(name: 'display_name') String? displayName,
     String? bio,
+    // null ikut terkirim supaya user bisa mengosongkan kecamatan/desa.
+    @JsonKey(name: 'region_id') String? regionId,
+    @JsonKey(name: 'village_id') String? villageId,
     // #98: kirim key ini hanya saat true - null ikut ter-serialize
     // (includeIfNull default) dan ditolak validasi backend.
     @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)

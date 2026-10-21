@@ -6,12 +6,14 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/ulid.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_providers.dart';
+import '../../../review/presentation/utils/open_pending_word_review.dart';
 import '../../../review/presentation/providers/review_submit_queue.dart';
 import '../../../review/presentation/widgets/reject_reason_sheet.dart';
 import '../../../bookmark/presentation/providers/bookmark_providers.dart';
@@ -37,6 +39,7 @@ import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../share/data/share_background_repository.dart';
+import '../../../share/domain/word_public_url.dart';
 import '../../../share/presentation/share_sheet.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../application/word_clipboard.dart';
@@ -170,6 +173,32 @@ void openWordShareSheet(
   );
 }
 
+/// Share teks + URL kanonik `/id/words/<lemma>` ke sheet sistem.
+Future<void> shareWordPublicLink(
+  BuildContext context,
+  WordDetail detail,
+) async {
+  final text = wordShareLinkMessage(detail.lemma);
+  if (text.trim().isEmpty) return;
+  AnalyticsService.instance.log(
+    AnalyticsEvents.shareStart,
+    params: {'word_id': detail.id, 'surface': 'link'},
+  );
+  final box = context.findRenderObject() as RenderBox?;
+  await SharePlus.instance.share(
+    ShareParams(
+      text: text,
+      sharePositionOrigin: box == null
+          ? null
+          : box.localToGlobal(Offset.zero) & box.size,
+    ),
+  );
+  AnalyticsService.instance.log(
+    AnalyticsEvents.shareComplete,
+    params: {'word_id': detail.id, 'surface': 'link'},
+  );
+}
+
 /// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
 /// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
 Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
@@ -194,60 +223,25 @@ Future<void> _openWordReview(
   BuildContext context,
   WidgetRef ref,
   String wordId,
-) async {
-  final result = await ref
-      .read(reviewRepositoryProvider)
-      .list(status: 'pending', wordId: wordId, limit: 20);
-  if (!context.mounted) return;
-  result.match(
-    (failure) {
-      final message = failure.isForbidden
-          ? 'Kamu tidak berwenang meninjau usulan.'
-          : failure.message;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    },
-    (page) {
-      if (page.items.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tidak ada usulan yang menunggu untuk kata ini.'),
-          ),
-        );
-        return;
-      }
-      if (page.items.length == 1) {
-        context.push('/review/${page.items.first.id}');
-        return;
-      }
-      context.push('/review/queue?wordId=$wordId');
-    },
-  );
-}
+) => openPendingWordReview(context, ref, wordId);
 
 Future<void> _approveInPlace(
   BuildContext context,
   WidgetRef ref,
   String wordId,
 ) async {
-  final connection = await ref.read(reviewRepositoryProvider).list(
-        status: 'pending',
-        wordId: wordId,
-        limit: 20,
-      );
+  final connection = await ref
+      .read(reviewRepositoryProvider)
+      .list(status: 'pending', wordId: wordId, limit: 20);
   if (!context.mounted) return;
-  final pendingId = connection.match(
-    (failure) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-      return null;
-    },
-    (page) => page.items.firstOrNull?.id,
-  );
+  final pendingId = connection.match((failure) {
+    showFToast(
+      context: context,
+      title: Text(failure.message),
+      variant: FToastVariant.destructive,
+    );
+    return null;
+  }, (page) => page.items.firstOrNull?.id);
   if (pendingId == null) return;
   final queue = ref.read(reviewSubmitQueueProvider.notifier);
   queue.enqueueApprove(pendingId);
@@ -268,23 +262,18 @@ Future<void> _rejectInPlace(
 ) async {
   final comment = await showRejectReasonSheet(context);
   if (comment == null || !context.mounted) return;
-  final connection = await ref.read(reviewRepositoryProvider).list(
-        status: 'pending',
-        wordId: wordId,
-        limit: 20,
-      );
+  final connection = await ref
+      .read(reviewRepositoryProvider)
+      .list(status: 'pending', wordId: wordId, limit: 20);
   if (!context.mounted) return;
-  final pendingId = connection.match(
-    (failure) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-      return null;
-    },
-    (page) => page.items.firstOrNull?.id,
-  );
+  final pendingId = connection.match((failure) {
+    showFToast(
+      context: context,
+      title: Text(failure.message),
+      variant: FToastVariant.destructive,
+    );
+    return null;
+  }, (page) => page.items.firstOrNull?.id);
   if (pendingId == null) return;
   final queue = ref.read(reviewSubmitQueueProvider.notifier);
   queue.enqueueReject(pendingId, comment: comment);
@@ -301,10 +290,7 @@ Future<void> _rejectInPlace(
 /// Bypass L1 cache (forceRefresh) lalu invalidate family + await — persis
 /// pola `_refreshWordDetail` tapi tanpa invalidasi provider lain (vote/
 /// bookmark/komentar) yang bukan bagian dari keputusan review.
-Future<void> _refreshDetailAfterDecision(
-  WidgetRef ref,
-  String wordId,
-) async {
+Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
   final key = wordId.trim();
   if (looksLikeUlid(key)) {
     await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
@@ -593,16 +579,10 @@ class _DetailBody extends HookConsumerWidget {
                                   ),
                               onReview: () =>
                                   _openWordReview(context, ref, wordId),
-                              onApprove: () => _approveInPlace(
-                                context,
-                                ref,
-                                wordId,
-                              ),
-                              onReject: () => _rejectInPlace(
-                                context,
-                                ref,
-                                wordId,
-                              ),
+                              onApprove: () =>
+                                  _approveInPlace(context, ref, wordId),
+                              onReject: () =>
+                                  _rejectInPlace(context, ref, wordId),
                             ),
                         ],
                       ),
@@ -681,6 +661,9 @@ class _DetailBody extends HookConsumerWidget {
                             meaning: e.value,
                             wordId: wordId,
                             languageId: detail.languageId,
+                            contributor: detail.meanings.length > 1
+                                ? (e.value.createdBy ?? detail.createdBy)
+                                : null,
                           ),
                         ),
                       ],
@@ -734,21 +717,23 @@ class _DetailBody extends HookConsumerWidget {
                             username:
                                 detail.verifiedBy?.username ??
                                 detail.createdBy!.username,
-                            badge: detail.combinedByVerifier
-                                ? 'Verifikator'
-                                : null,
+                            showCheck: detail.combinedByVerifier,
                           )
                         else ...[
                           if (detail.creatorAttributionLabel != null)
                             _AttributionLine(
                               label: detail.creatorAttributionLabel!,
                               username: detail.createdBy!.username,
+                              showCheck: isVerifierRole(detail.createdBy!.role),
                             ),
                           if (detail.verifierAttributionLabel != null) ...[
                             const Gap(2),
                             _AttributionLine(
                               label: detail.verifierAttributionLabel!,
                               username: detail.verifiedBy!.username,
+                              showCheck: isVerifierRole(
+                                detail.verifiedBy!.role,
+                              ),
                             ),
                           ],
                         ],
@@ -1096,7 +1081,7 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
   }
 }
 
-/// Aksi di atas komentar: bagikan kartu + usul perubahan.
+/// Aksi di atas komentar: bagikan tautan, bagikan kartu, usul perubahan.
 class _WordActionTileGroup extends ConsumerWidget {
   const _WordActionTileGroup({required this.detail, required this.wordId});
 
@@ -1110,6 +1095,15 @@ class _WordActionTileGroup extends ConsumerWidget {
     final entryCopy = suggestEditEntryTileCopy(role);
     return FTileGroup(
       children: [
+        FTile(
+          prefix: const Icon(FLucideIcons.link),
+          title: const Text('Bagikan tautan'),
+          subtitle: const Text(
+            'Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain',
+          ),
+          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+          onPress: () => shareWordPublicLink(context, detail),
+        ),
         FTile(
           prefix: const Icon(FLucideIcons.image),
           title: const Text('Bagikan kartu'),
@@ -1239,6 +1233,7 @@ class _MeaningBlock extends StatelessWidget {
     required this.meaning,
     required this.wordId,
     required this.languageId,
+    this.contributor,
   });
 
   final int index;
@@ -1246,6 +1241,9 @@ class _MeaningBlock extends StatelessWidget {
   final WordMeaning meaning;
   final String wordId;
   final String languageId;
+
+  /// Terisi hanya kalau kata punya lebih dari satu makna.
+  final WordVerifier? contributor;
 
   @override
   Widget build(BuildContext context) {
@@ -1280,6 +1278,13 @@ class _MeaningBlock extends StatelessWidget {
                       color: theme.colors.primary,
                       fontSize: 12,
                     ),
+                  ),
+                if (contributor != null)
+                  _AttributionLine(
+                    label:
+                        'oleh ${displayPublicUsername(contributor!.displayName)}',
+                    username: contributor!.username,
+                    showCheck: isVerifierRole(contributor!.role),
                   ),
                 if (definition != null && definition.isNotEmpty)
                   Text(
@@ -1726,12 +1731,12 @@ class _AttributionLine extends StatelessWidget {
   const _AttributionLine({
     required this.label,
     required this.username,
-    this.badge,
+    this.showCheck = false,
   });
 
   final String label;
   final String username;
-  final String? badge;
+  final bool showCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -1743,7 +1748,7 @@ class _AttributionLine extends StatelessWidget {
     );
     return Semantics(
       button: tappable,
-      label: badge == null ? label : '$label, $badge',
+      label: showCheck ? '$label, Verifikator' : label,
       child: GestureDetector(
         onTap: tappable
             ? () => UserProfileRouter.open(context, username)
@@ -1751,38 +1756,27 @@ class _AttributionLine extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             style: textStyle,
-            children: [
-              TextSpan(text: label),
-              if (badge != null)
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 1,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colors.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        badge!,
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+            children: _attributionSpans(label, showCheck: showCheck),
           ),
         ),
       ),
     );
   }
+}
+
+/// Kalimat atribusi + centang. Menggantikan chip teks "Verifikator".
+List<InlineSpan> _attributionSpans(String label, {required bool showCheck}) {
+  return [
+    TextSpan(text: label),
+    if (showCheck)
+      const WidgetSpan(
+        alignment: PlaceholderAlignment.middle,
+        child: Padding(
+          padding: EdgeInsets.only(left: 4),
+          child: VerifiedBadgeIcon(size: 14),
+        ),
+      ),
+  ];
 }
 
 void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
@@ -1824,32 +1818,37 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     ),
                   ],
                 ),
-                if (detail.combinedAttributionLabel != null) ...[
-                  Text(
-                    detail.combinedAttributionLabel!,
-                    style: theme.typography.sm,
-                  ),
-                  if (detail.combinedByVerifier) ...[
-                    const Gap(6),
-                    Text(
-                      'Verifikator',
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.primary,
-                        fontWeight: FontWeight.w600,
+                if (detail.combinedAttributionLabel != null)
+                  Text.rich(
+                    TextSpan(
+                      style: theme.typography.sm,
+                      children: _attributionSpans(
+                        detail.combinedAttributionLabel!,
+                        showCheck: detail.combinedByVerifier,
                       ),
                     ),
-                  ],
-                ] else ...[
+                  )
+                else ...[
                   if (detail.creatorAttributionLabel != null)
-                    Text(
-                      detail.creatorAttributionLabel!,
-                      style: theme.typography.sm,
+                    Text.rich(
+                      TextSpan(
+                        style: theme.typography.sm,
+                        children: _attributionSpans(
+                          detail.creatorAttributionLabel!,
+                          showCheck: isVerifierRole(detail.createdBy!.role),
+                        ),
+                      ),
                     ),
                   if (detail.verifierAttributionLabel != null) ...[
                     const Gap(4),
-                    Text(
-                      detail.verifierAttributionLabel!,
-                      style: theme.typography.sm,
+                    Text.rich(
+                      TextSpan(
+                        style: theme.typography.sm,
+                        children: _attributionSpans(
+                          detail.verifierAttributionLabel!,
+                          showCheck: isVerifierRole(detail.verifiedBy!.role),
+                        ),
+                      ),
                     ),
                   ],
                 ],

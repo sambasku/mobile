@@ -104,13 +104,13 @@ final class RegionsRepositoryProvider
 
 String _$regionsRepositoryHash() => r'22522c43011b403cfe975760204dd2a7b8d5dd1b';
 
-/// Katalog wilayah (19 kecamatan + desa) dari CDN.
+/// Katalog wilayah (19 kecamatan + desa) dari `GET /api/v1/regions/catalog`.
 /// Null = offline/JSON rusak (soft-fail). referenceStatic: fresh 24 jam + SWR.
 
 @ProviderFor(regions)
 final regionsProvider = RegionsProvider._();
 
-/// Katalog wilayah (19 kecamatan + desa) dari CDN.
+/// Katalog wilayah (19 kecamatan + desa) dari `GET /api/v1/regions/catalog`.
 /// Null = offline/JSON rusak (soft-fail). referenceStatic: fresh 24 jam + SWR.
 
 final class RegionsProvider
@@ -121,7 +121,7 @@ final class RegionsProvider
           FutureOr<List<Region>?>
         >
     with $FutureModifier<List<Region>?>, $FutureProvider<List<Region>?> {
-  /// Katalog wilayah (19 kecamatan + desa) dari CDN.
+  /// Katalog wilayah (19 kecamatan + desa) dari `GET /api/v1/regions/catalog`.
   /// Null = offline/JSON rusak (soft-fail). referenceStatic: fresh 24 jam + SWR.
   RegionsProvider._()
     : super(

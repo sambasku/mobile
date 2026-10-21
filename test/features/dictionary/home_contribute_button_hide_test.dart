@@ -10,75 +10,72 @@ import 'package:sambasku_mobile/features/dictionary/presentation/pages/home_sear
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
 
 void main() {
-  testWidgets('header collaps ngikutin jari, snap saat lepas, balik saat naik', (
-    tester,
-  ) async {
-    await pumpHome(tester);
+  testWidgets(
+    'header collaps ngikutin jari, kolom cari dan menu ikut bersama',
+    (tester) async {
+      await pumpHome(tester);
 
-    // Awal: search + tombol usul terlihat penuh.
-    final collapsible = find.byKey(const ValueKey('header_collapse'));
-    expect(collapsible, findsOneWidget);
-    expect(tester.getSize(collapsible).height, greaterThan(80));
+      final collapsible = find.byKey(const ValueKey('header_collapse'));
+      expect(collapsible, findsOneWidget);
+      final fullHeight = tester.getSize(collapsible).height;
+      expect(fullHeight, greaterThan(80));
+      final searchBefore = tester.getTopLeft(find.text('A-Z')).dy;
+      final tileBefore = tester.getTopLeft(find.text('Dicari warga')).dy;
+      expect(tileBefore, greaterThan(searchBefore));
 
-    // Drag turun sedikit (jari masih menempel): blok menyusut parsial,
-    // proporsional dengan jarak drag - bukan biner show/hide.
-    final gesture = await tester.startGesture(
-      tester.getCenter(find.byType(ListView)),
-    );
-    await gesture.moveBy(const Offset(0, -50));
-    await tester.pump();
-    final partialHeight = tester.getSize(collapsible).height;
-    expect(
-      partialHeight,
-      inExclusiveRange(20, 90),
-      reason: 'blok harus menyusut parsial mengikuti jari',
-    );
+      // 50px / jarak collaps 90 = progress ~0.55, cukup untuk snap tutup.
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(ListView)),
+      );
+      await gesture.moveBy(const Offset(0, -50));
+      await tester.pump();
+      final partialHeight = tester.getSize(collapsible).height;
+      expect(
+        partialHeight,
+        inExclusiveRange(20, fullHeight - 8),
+        reason: 'blok harus menyusut parsial mengikuti jari',
+      );
+      expect(
+        tester.getTopLeft(collapsible).dy,
+        lessThan(tileBefore),
+        reason: 'menu ada di dalam blok yang menyusut',
+      );
+      expect(
+        tester.getTopLeft(collapsible).dy + partialHeight,
+        lessThan(tileBefore + 8),
+        reason: 'menu ikut terpotong saat blok menyusut',
+      );
 
-    // Jari lepas: snap mulus ke ujung terdekat (progress 0.55 -> tertutup).
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(
-      tester.getSize(collapsible).height,
-      lessThan(8),
-      reason: 'lepas jari di progress 0.5 harus snap ke tertutup',
-    );
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(collapsible).height,
+        lessThan(8),
+        reason: 'lepas jari di progress 0.5 harus snap ke tertutup',
+      );
 
-    // Blok tertutup: feed naik mengisi ruang.
-    final feedTop = tester.getTopLeft(find.byType(ListView)).dy;
-    expect(
-      feedTop,
-      lessThan(120),
-      reason: 'feed harus naik mengisi ruang yang ditinggalkan header',
-    );
+      final feedTop = tester.getTopLeft(find.byType(ListView)).dy;
+      expect(
+        feedTop,
+        lessThan(120),
+        reason: 'feed harus naik mengisi ruang yang ditinggalkan header',
+      );
 
-    // Drag naik: blok balik penuh.
-    final gestureUp = await tester.startGesture(
-      tester.getCenter(find.byType(ListView)),
-    );
-    await gestureUp.moveBy(const Offset(0, 200));
-    await gestureUp.up();
-    await tester.pumpAndSettle();
-    expect(tester.getSize(collapsible).height, greaterThan(80));
+      final gestureUp = await tester.startGesture(
+        tester.getCenter(find.byType(ListView)),
+      );
+      await gestureUp.moveBy(const Offset(0, 200));
+      await gestureUp.up();
+      await tester.pumpAndSettle();
+      expect(tester.getSize(collapsible).height, greaterThan(80));
 
-    // Tombol hidup lagi: onPress terpanggil (tap melempar FlutterError
-    // "No GoRouter found" karena test tanpa GoRouter - yang dibuktikan
-    // adalah gesture sampai ke onPress).
-    await tester.tap(find.text('Usul kata baru'), warnIfMissed: false);
-    await tester.pump();
-    expect(
-      tester.takeException()?.toString(),
-      contains('No GoRouter found'),
-    );
-    // Frame animasi FButton bisa tinggalkan timer; drain sebelum dispose.
-    await tester.pumpAndSettle();
-    final buttonRectBack = tester.getRect(find.text('Usul kata baru'));
-    expect(buttonRectBack.top, greaterThan(0));
-    expect(
-      buttonRectBack.bottom,
-      lessThan(200),
-      reason: 'tombol balik ke posisi header atas',
-    );
-  });
+      expect(find.text('Dicari warga'), findsOneWidget);
+      await tester.tap(find.text('Usul kata baru'), warnIfMissed: false);
+      await tester.pump();
+      expect(tester.takeException()?.toString(), contains('No GoRouter found'));
+      await tester.pumpAndSettle();
+    },
+  );
 }
 
 Future<void> pumpHome(WidgetTester tester) async {
@@ -114,9 +111,7 @@ Future<void> pumpHome(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        activityFeedProvider.overrideWith(
-          () => _FakeFeedNotifier(feedItems),
-        ),
+        activityFeedProvider.overrideWith(() => _FakeFeedNotifier(feedItems)),
         wordOfDayProvider.overrideWith((ref) async => wotd),
       ],
       child: FTheme(

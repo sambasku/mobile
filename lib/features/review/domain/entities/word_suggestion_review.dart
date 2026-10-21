@@ -92,7 +92,9 @@ class WordSuggestionDetail {
     required this.createdAt,
     required this.lemmaDiff,
     required this.notesDiff,
+    required this.wordTypeDiff,
     this.meaningsChanged = 0,
+    this.classDiffs = const [],
     this.categoriesAdded = 0,
     this.categoriesRemoved = 0,
     this.relationsAdded = 0,
@@ -115,7 +117,9 @@ class WordSuggestionDetail {
   final String createdAt;
   final WordSuggestionFieldDiff lemmaDiff;
   final WordSuggestionFieldDiff notesDiff;
+  final WordSuggestionFieldDiff wordTypeDiff;
   final int meaningsChanged;
+  final List<WordSuggestionFieldDiff> classDiffs;
   final int categoriesAdded;
   final int categoriesRemoved;
   final int relationsAdded;

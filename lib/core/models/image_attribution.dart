@@ -41,12 +41,17 @@ class ImageAttribution {
     this.license,
     this.licenseUrl,
     this.source,
+    this.authorId,
   });
 
   final String name;
 
-  /// `unsplash` | `pixabay` | `openverse` | …
+  /// `unsplash` | `pixabay` | `openverse` | `wikimedia` | `sambasku` | …
   final String provider;
+
+  /// Id kontributor SambasKu (contributors.json) - kredit internal; tap
+  /// kredit membuka profil publik in-app. Hanya relevan provider `sambasku`.
+  final String? authorId;
 
   /// Halaman pembuat / foto asli (https).
   final String? url;
@@ -74,8 +79,9 @@ class ImageAttribution {
       url: str('url'),
       license: str('license'),
       licenseUrl: str('license_url'),
-      source: str('source'),
-    );
+        source: str('source'),
+        authorId: str('authorId'),
+      );
   }
 
   /// Body `images[].attribution`. API menolak URL non-https, jadi yang bukan

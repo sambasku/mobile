@@ -80,9 +80,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
         wordsApproved: dto.stats.wordsApproved,
         correctionsApproved: dto.stats.correctionsApproved,
         verificationsDone: dto.stats.verificationsDone,
-        commentsPublished: dto.stats.commentsPublished,
-        avatarUrl: dto.avatarUrl,
-      );
+      commentsPublished: dto.stats.commentsPublished,
+      avatarUrl: dto.avatarUrl,
+      activeBorderUrl: dto.activeBorderUrl,
+    );
 
   PublicActivityItem _mapActivity(PublicActivityItemDto dto) => PublicActivityItem(
         id: dto.id,

@@ -6,7 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/place.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/place_list_page.dart';
-import 'package:sambasku_mobile/features/explore/presentation/providers/places_providers.dart';
+import 'package:sambasku_mobile/features/explore/presentation/providers/places_browse_providers.dart';
 
 Place _place(String name, PlaceCategory category, PlaceType? type) => Place(
   id: name,
@@ -30,10 +30,85 @@ final _places = [
   _place('Bubur Pedas', PlaceCategory.kuliner, null),
 ];
 
+List<Place> _visible(PlacesBrowseQuery query) {
+  final q = query.q.toLowerCase();
+  return [
+    for (final place in _places)
+      if (place.category == query.category &&
+          (query.type == null || place.type == query.type) &&
+          (q.isEmpty || place.name.toLowerCase().contains(q)))
+        place,
+  ];
+}
+
+class _StaticBrowse extends PlacesBrowse {
+  _StaticBrowse(super.query);
+
+  @override
+  Future<PlacesBrowseState> build() async =>
+      PlacesBrowseState(items: _visible(query));
+}
+
+class _HangBrowse extends PlacesBrowse {
+  _HangBrowse(super.query);
+
+  @override
+  Future<PlacesBrowseState> build() async {
+    await Completer<void>().future;
+    return const PlacesBrowseState();
+  }
+}
+
+class _RefreshBrowse extends PlacesBrowse {
+  _RefreshBrowse(super.query, this.onReload, this.gate);
+
+  final void Function() onReload;
+  final Future<void> gate;
+
+  @override
+  Future<PlacesBrowseState> build() async =>
+      PlacesBrowseState(items: _visible(query));
+
+  @override
+  Future<void> reload({bool keepItems = false}) async {
+    onReload();
+    await gate;
+  }
+}
+
+class _PageBrowse extends PlacesBrowse {
+  _PageBrowse(super.query, this.onLoad);
+
+  final void Function() onLoad;
+
+  @override
+  Future<PlacesBrowseState> build() async => PlacesBrowseState(
+    items: [_places.first],
+    nextCursor: 'cursor-1',
+    hasMore: true,
+  );
+
+  @override
+  Future<void> loadMore() async {
+    onLoad();
+    final current = state.value!;
+    state = AsyncData(
+      current.copyWith(
+        items: [...current.items, _places[1]],
+        hasMore: false,
+        clearCursor: true,
+        isLoadingMore: false,
+      ),
+    );
+  }
+}
+
 Future<void> _pump(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [placesProvider.overrideWith((ref) async => _places)],
+      overrides: [
+        placesBrowseProvider.overrideWith2((query) => _StaticBrowse(query)),
+      ],
       child: MaterialApp(
         home: FTheme(
           data: FThemes.zinc.light.touch,
@@ -48,13 +123,39 @@ Future<void> _pump(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('mode wisata loading memakai grid 3 kolom', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          placesBrowseProvider.overrideWith2((query) => _HangBrowse(query)),
+        ],
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.light.touch,
+            child: const FToaster(
+              child: PlaceListPage(mode: PlacePageMode.wisata),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final grid = tester.widget<GridView>(find.byType(GridView));
+    final delegate =
+        grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
+    expect(delegate.crossAxisCount, 3);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('tap bookmark shows coming-soon toast', (tester) async {
     await _pump(tester);
 
+    expect(find.byType(CustomScrollView), findsOneWidget);
     expect(
       tester.getTopLeft(find.byIcon(FLucideIcons.bookmark).first).dy,
-      tester.getTopLeft(find.text('Pantai Temajuk')).dy,
-      reason: 'ikon bookmark sejajar baris atas nama',
+      lessThan(tester.getTopLeft(find.text('Pantai Temajuk')).dy),
+      reason: 'ikon bookmark menempel di foto, di atas nama',
     );
 
     await tester.tap(find.byTooltip('Bookmark').first);
@@ -73,10 +174,9 @@ void main() {
 
     await tester.enterText(find.byType(EditableText), '');
     await tester.pumpAndSettle();
-    final kulinerChip = find.descendant(
-      of: find.byType(FBadge),
-      matching: find.text('Kuliner'),
-    ).first;
+    final kulinerChip = find
+        .descendant(of: find.byType(FBadge), matching: find.text('Kuliner'))
+        .first;
     await tester.ensureVisible(kulinerChip);
     await tester.pumpAndSettle();
     await tester.tap(kulinerChip);
@@ -88,7 +188,9 @@ void main() {
   testWidgets('mode kuliner: tanpa chip, hanya entri kuliner', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [placesProvider.overrideWith((ref) async => _places)],
+        overrides: [
+          placesBrowseProvider.overrideWith2((query) => _StaticBrowse(query)),
+        ],
         child: MaterialApp(
           home: FTheme(
             data: FThemes.zinc.light.touch,
@@ -101,28 +203,51 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Kuliner'), findsWidgets); // judul header + label kartu
+    expect(find.text('Kuliner'), findsWidgets);
     expect(find.text('Bubur Pedas'), findsOneWidget);
     expect(find.text('Pantai Temajuk'), findsNothing);
     expect(find.text('Istana Alwatzikoebillah'), findsNothing);
-    // Baris chip filter tidak dirender di mode kuliner.
     expect(find.text('Semua'), findsNothing);
   });
 
-  // #104: pull-to-refresh harus hard-miss L1 (forceRefresh fetch CDN),
-  // bukan invalidate yang cuma baca cache fresh lagi + skeleton tampil.
-  testWidgets('pull-to-refresh memanggil placesRefreshProvider (forceRefresh) + skeleton', (tester) async {
+  testWidgets('scroll pendek memuat halaman cursor berikutnya', (tester) async {
+    var loads = 0;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          placesBrowseProvider.overrideWith2(
+            (query) => _PageBrowse(query, () => loads++),
+          ),
+        ],
+        child: MaterialApp(
+          home: FTheme(
+            data: FThemes.zinc.light.touch,
+            child: const FToaster(
+              child: PlaceListPage(mode: PlacePageMode.wisata),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(loads, 1);
+    expect(find.text('Istana Alwatzikoebillah'), findsOneWidget);
+  });
+
+  testWidgets('pull-to-refresh memuat ulang halaman pertama', (tester) async {
     var refreshCalls = 0;
     final refreshCompleter = Completer<void>();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          placesProvider.overrideWith((ref) async => _places),
-          placesRefreshProvider.overrideWith((ref) async {
-            refreshCalls++;
-            await refreshCompleter.future;
-            return _places;
-          }),
+          placesBrowseProvider.overrideWith2(
+            (query) => _RefreshBrowse(
+              query,
+              () => refreshCalls++,
+              refreshCompleter.future,
+            ),
+          ),
         ],
         child: MaterialApp(
           home: FTheme(
@@ -141,7 +266,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(refreshCalls, 1, reason: 'pull-to-refresh memicu fetch forceRefresh');
+    expect(refreshCalls, 1, reason: 'pull-to-refresh memuat ulang halaman');
     expect(find.byType(RefreshIndicator), findsOneWidget);
     refreshCompleter.complete();
     await tester.pumpAndSettle();

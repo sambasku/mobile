@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart' show RefreshIndicator;
+import 'package:flutter/material.dart' show RefreshIndicator, showModalBottomSheet;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -17,8 +17,14 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../../shared/widgets/avatar_border_overlay.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/small_button.dart';
+import '../../../achievement/presentation/providers/achievement_providers.dart';
+import '../../../achievement/presentation/widgets/achievement_badge_grid.dart';
+import '../../../achievement/presentation/widgets/border_picker_sheet.dart';
+import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -195,6 +201,15 @@ class _ProfileBody extends HookConsumerWidget {
         ? ref.watch(authStatusProvider).value?.avatarUrl
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
+    // Bingkai profil: profil sendiri baca live dari /me/achievements supaya
+    // langsung berubah setelah pilih bingkai; profil orang lain pakai wire
+    // active_border_url dari profil publik.
+    final myBorder = isOwnProfile
+        ? ref.watch(myActiveBorderProvider).asData?.value
+        : null;
+    final borderUrl = isOwnProfile
+        ? myBorder?.imageUrl
+        : profile.activeBorderUrl;
     final canPreviewAvatar =
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
@@ -213,23 +228,26 @@ class _ProfileBody extends HookConsumerWidget {
                     (isOwnProfile && !uploadingAvatar.value) ||
                     canPreviewAvatar,
                 label: isOwnProfile
-                    ? 'Ganti foto profil'
+                    ? 'Foto profil, ketuk untuk ubah'
                     : canPreviewAvatar
-                    ? 'Lihat foto profil'
-                    : 'Foto profil',
+                        ? 'Lihat foto profil'
+                        : 'Foto profil',
                 child: GestureDetector(
                   onTap: isOwnProfile && !uploadingAvatar.value
-                      ? () =>
-                            _pickAndUploadAvatar(context, ref, uploadingAvatar)
+                      ? () => _showAvatarActions(context, ref, uploadingAvatar)
                       : canPreviewAvatar
-                      ? () => showImagePreview(context, urls: [avatarSrc])
-                      : null,
-                  child: _Avatar(
-                    name: profile.displayName,
-                    imageUrl: avatarSrc,
+                          ? () => showImagePreview(context, urls: [avatarSrc])
+                          : null,
+                  child: AvatarBorderOverlay(
                     size: 56,
-                    showEditBadge: isOwnProfile,
-                    uploading: uploadingAvatar.value,
+                    borderUrl: borderUrl,
+                    child: _Avatar(
+                      name: profile.displayName,
+                      imageUrl: avatarSrc,
+                      size: 56,
+                      showEditBadge: isOwnProfile,
+                      uploading: uploadingAvatar.value,
+                    ),
                   ),
                 ),
               ),
@@ -238,10 +256,10 @@ class _ProfileBody extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      profile.displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    PublicAccountName(
+                      label: profile.displayName,
+                      isVerifier: profile.isVerifier,
+                      badgeSize: 16,
                       style: theme.typography.lg.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1.2,
@@ -291,6 +309,15 @@ class _ProfileBody extends HookConsumerWidget {
           const Gap(6),
           ProfileMetaRow(joinedLabel: joined, isVerifier: profile.isVerifier),
           const Gap(16),
+          // Profil sendiri: sub-tab Badge | Border | Pencapaian; profil orang
+          // lain: deretan lencana publik (badge milik user).
+          if (isOwnProfile) ...[
+            ProfileAchievementTabs(),
+            const Gap(16),
+          ] else ...[
+            _PublicBadges(username: profile.username),
+            const Gap(16),
+          ],
           Text(
             'Aktivitas terbaru',
             style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
@@ -346,6 +373,46 @@ class _ProfileBody extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Bottom sheet tap avatar sendiri: ganti foto atau ubah bingkai.
+  Future<void> _showAvatarActions(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> uploadingAvatar,
+  ) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: const Icon(FLucideIcons.camera),
+                  title: const Text('Ganti foto profil'),
+                  onPress: () => Navigator.of(sheetContext).pop('photo'),
+                ),
+                FTile(
+                  prefix: const Icon(FLucideIcons.frame),
+                  title: const Text('Ubah bingkai profil'),
+                  onPress: () => Navigator.of(sheetContext).pop('border'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!context.mounted) return;
+    if (action == 'photo') {
+      await _pickAndUploadAvatar(context, ref, uploadingAvatar);
+    } else if (action == 'border') {
+      await showBorderPickerSheet(context);
+    }
   }
 
   Future<void> _pickAndUploadAvatar(
@@ -521,6 +588,49 @@ class _InitialsAvatar extends StatelessWidget {
     final word = parts.first;
     if (word.length >= 2) return word.substring(0, 2).toUpperCase();
     return word.toUpperCase();
+  }
+}
+
+/// Deretan lencana publik di profil orang lain: badge milik user (level
+/// tertinggi per family). Border hanya tampil sebagai bingkai di avatar.
+class _PublicBadges extends ConsumerWidget {
+  const _PublicBadges({required this.username});
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.theme;
+    final async = ref.watch(userAchievementsProvider(username));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Lencana',
+          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const Gap(8),
+        async.when(
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: FCircularProgress()),
+          ),
+          error: (err, _) => Text(
+            'Lencana tidak bisa dimuat.',
+            style: theme.typography.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          data: (items) {
+            final badges = items.where((e) => e.isBadge).toList(growable: false);
+            return AchievementBadgeGrid(
+              items: AchievementBadgeGrid.topTierPerFamily(badges),
+              emptyLabel: 'Belum ada lencana.',
+            );
+          },
+        ),
+      ],
+    );
   }
 }
 

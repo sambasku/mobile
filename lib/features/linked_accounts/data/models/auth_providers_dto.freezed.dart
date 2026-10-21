@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthProvidersDto {
 
- List<AuthProviderItemDto> get providers;
+ List<AuthProviderItemDto> get providers;@JsonKey(name: 'has_password') bool get hasPassword;
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AuthProvidersDtoCopyWith<AuthProvidersDto> get copyWith => _$AuthProvidersDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProvidersDto&&const DeepCollectionEquality().equals(other.providers, providers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProvidersDto&&const DeepCollectionEquality().equals(other.providers, providers)&&(identical(other.hasPassword, hasPassword) || other.hasPassword == hasPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(providers));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(providers),hasPassword);
 
 @override
 String toString() {
-  return 'AuthProvidersDto(providers: $providers)';
+  return 'AuthProvidersDto(providers: $providers, hasPassword: $hasPassword)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AuthProvidersDtoCopyWith<$Res>  {
   factory $AuthProvidersDtoCopyWith(AuthProvidersDto value, $Res Function(AuthProvidersDto) _then) = _$AuthProvidersDtoCopyWithImpl;
 @useResult
 $Res call({
- List<AuthProviderItemDto> providers
+ List<AuthProviderItemDto> providers,@JsonKey(name: 'has_password') bool hasPassword
 });
 
 
@@ -65,10 +65,11 @@ class _$AuthProvidersDtoCopyWithImpl<$Res>
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? providers = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? providers = null,Object? hasPassword = null,}) {
   return _then(_self.copyWith(
 providers: null == providers ? _self.providers : providers // ignore: cast_nullable_to_non_nullable
-as List<AuthProviderItemDto>,
+as List<AuthProviderItemDto>,hasPassword: null == hasPassword ? _self.hasPassword : hasPassword // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto() when $default != null:
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.providers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)  $default,) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto():
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.providers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<AuthProviderItemDto> providers)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto() when $default != null:
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   return null;
 
 }
@@ -209,7 +210,7 @@ return $default(_that.providers);case _:
 @JsonSerializable()
 
 class _AuthProvidersDto implements AuthProvidersDto {
-  const _AuthProvidersDto({final  List<AuthProviderItemDto> providers = const []}): _providers = providers;
+  const _AuthProvidersDto({final  List<AuthProviderItemDto> providers = const [], @JsonKey(name: 'has_password') this.hasPassword = false}): _providers = providers;
   factory _AuthProvidersDto.fromJson(Map<String, dynamic> json) => _$AuthProvidersDtoFromJson(json);
 
  final  List<AuthProviderItemDto> _providers;
@@ -219,6 +220,7 @@ class _AuthProvidersDto implements AuthProvidersDto {
   return EqualUnmodifiableListView(_providers);
 }
 
+@override@JsonKey(name: 'has_password') final  bool hasPassword;
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProvidersDto&&const DeepCollectionEquality().equals(other._providers, _providers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProvidersDto&&const DeepCollectionEquality().equals(other._providers, _providers)&&(identical(other.hasPassword, hasPassword) || other.hasPassword == hasPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_providers));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_providers),hasPassword);
 
 @override
 String toString() {
-  return 'AuthProvidersDto(providers: $providers)';
+  return 'AuthProvidersDto(providers: $providers, hasPassword: $hasPassword)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$AuthProvidersDtoCopyWith<$Res> implements $AuthProvidersD
   factory _$AuthProvidersDtoCopyWith(_AuthProvidersDto value, $Res Function(_AuthProvidersDto) _then) = __$AuthProvidersDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<AuthProviderItemDto> providers
+ List<AuthProviderItemDto> providers,@JsonKey(name: 'has_password') bool hasPassword
 });
 
 
@@ -270,10 +272,11 @@ class __$AuthProvidersDtoCopyWithImpl<$Res>
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? providers = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? providers = null,Object? hasPassword = null,}) {
   return _then(_AuthProvidersDto(
 providers: null == providers ? _self._providers : providers // ignore: cast_nullable_to_non_nullable
-as List<AuthProviderItemDto>,
+as List<AuthProviderItemDto>,hasPassword: null == hasPassword ? _self.hasPassword : hasPassword // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

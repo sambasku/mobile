@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/gestures/swipe_exempt.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -10,6 +11,7 @@ import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../../dictionary/presentation/widgets/audio_player_tile.dart';
 import '../../domain/entities/vote_deck_item.dart';
+import 'deck_entry_type_editor.dart';
 
 /// Isi kartu deck: detail lengkap kata (gambar, audio, semua makna + contoh).
 ///
@@ -150,12 +152,8 @@ class _WordDetailBody extends StatelessWidget {
           style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
-        const Gap(2),
-        Text(
-          detail.wordTypeLabel,
-          style: theme.typography.xs.copyWith(color: theme.colors.mutedForeground),
-          textAlign: TextAlign.center,
-        ),
+        const Gap(8),
+        DeckEntryTypeEditor(detail: detail),
         if (detail.audios.isNotEmpty) ...[
           const Gap(8),
           AudioPlayerTile(wordId: detail.id, audio: detail.audios.first),
@@ -261,11 +259,15 @@ class VoteDeckWordFace extends StatelessWidget {
     required this.lemma,
     required this.sense,
     required this.wordType,
+    this.onLockedTap,
   });
 
   final String lemma;
   final String? sense;
   final String wordType;
+
+  /// Tamu: tap jenis membuka login. Null = label diam.
+  final VoidCallback? onLockedTap;
 
   @override
   Widget build(BuildContext context) {
@@ -295,13 +297,30 @@ class VoteDeckWordFace extends StatelessWidget {
           ],
           if (wordType.isNotEmpty) ...[
             const Gap(12),
-            Text(
-              wordType,
-              style: theme.typography.xs.copyWith(
-                color: theme.colors.mutedForeground,
+            if (onLockedTap == null)
+              Text(
+                wordType,
+                style: theme.typography.xs.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+                textAlign: TextAlign.center,
+              )
+            else
+              SwipeExemptRegion(
+                child: FTileGroup(
+                  children: [
+                    FTile(
+                      title: const Text('Jenis entri'),
+                      details: Text(wordType),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        color: theme.colors.mutedForeground,
+                      ),
+                      onPress: onLockedTap,
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
           ],
         ],
       ),

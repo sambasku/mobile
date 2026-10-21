@@ -3,11 +3,17 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 class WordClassPickItem {
-  const WordClassPickItem({required this.id, required this.name, this.alias});
+  const WordClassPickItem({
+    required this.id,
+    required this.name,
+    this.alias,
+    this.code,
+  });
 
   final String id;
   final String name;
   final String? alias;
+  final String? code;
 
   String get displayLabel =>
       (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
@@ -90,6 +96,26 @@ class _WordClassPickerSheetBody extends StatelessWidget {
               ),
             ),
           ),
+          if (_shortcuts(items) case final shortcuts when shortcuts.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final item in shortcuts)
+                    FButton(
+                      variant: item.id == selectedId
+                          ? FButtonVariant.primary
+                          : FButtonVariant.outline,
+                      size: FButtonSizeVariant.xs,
+                      mainAxisSize: MainAxisSize.min,
+                      onPress: () => Navigator.of(context).pop(item),
+                      child: Text(_shortcutLabel(item)),
+                    ),
+                ],
+              ),
+            ),
           const Divider(height: 1),
           Expanded(
             child: items.isEmpty
@@ -126,8 +152,6 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                     children: [
                                       Text(
                                         item.name,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
                                         style: theme.typography.sm.copyWith(
                                           fontWeight: selected
                                               ? FontWeight.w700
@@ -142,8 +166,6 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                         const Gap(2),
                                         Text(
                                           item.alias!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
                                           style: theme.typography.sm.copyWith(
                                             color: theme.colors.mutedForeground,
                                             fontSize: 12,
@@ -171,4 +193,36 @@ class _WordClassPickerSheetBody extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Urutan yang diminta di sheet: Kata Kerja, Kata Sifat, Kata Benda.
+const _shortcutCodes = ['v', 'adj', 'n'];
+
+const _shortcutAliases = {
+  'v': 'kata kerja',
+  'adj': 'kata sifat',
+  'n': 'kata benda',
+};
+
+List<WordClassPickItem> _shortcuts(List<WordClassPickItem> items) {
+  final picked = <WordClassPickItem>[];
+  for (final code in _shortcutCodes) {
+    for (final item in items) {
+      final itemCode = item.code?.trim().toLowerCase() ?? '';
+      final alias = item.alias?.trim().toLowerCase() ?? '';
+      final name = item.name.trim().toLowerCase();
+      final label = _shortcutAliases[code];
+      if (itemCode == code || alias == label || name == label) {
+        picked.add(item);
+        break;
+      }
+    }
+  }
+  return picked;
+}
+
+String _shortcutLabel(WordClassPickItem item) {
+  final alias = item.alias?.trim() ?? '';
+  if (alias.isNotEmpty) return alias;
+  return item.name;
 }

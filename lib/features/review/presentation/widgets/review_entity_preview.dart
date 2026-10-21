@@ -13,7 +13,9 @@ import '../../../../shared/reference/reference_data.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
+import '../../../../shared/domain/word_type_options.dart';
 import '../../domain/entities/review_contribution.dart';
+import 'review_inline_type_editor.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
 class ReviewEntityPreview extends ConsumerWidget {
@@ -31,7 +33,7 @@ class ReviewEntityPreview extends ConsumerWidget {
     // terpotong.
     return SingleChildScrollView(
       child: switch (type) {
-        'word' => _WordPreview(entity: detail.entity),
+        'word' => _WordPreview(detail: detail),
         'word_image' => _ImagePreview(entity: detail.entity),
         'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
         'pronunciation' => _PronunciationPreview(entity: detail.entity),
@@ -237,15 +239,17 @@ class _MetaRow extends StatelessWidget {
 }
 
 class _WordPreview extends StatelessWidget {
-  const _WordPreview({required this.entity});
+  const _WordPreview({required this.detail});
 
-  final Map<String, dynamic> entity;
+  final ReviewDetail detail;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final entity = detail.entity;
     final lemma = entity['lemma']?.toString() ?? '-';
     final wordType = entity['wordType']?.toString();
+    final canEditType = detail.contribution.isPending;
     final notes = entity['notes']?.toString().trim();
     final usageLabels = knownUsageLabels(entity['usageLabels']);
     final meanings = entity['meanings'];
@@ -263,10 +267,13 @@ class _WordPreview extends StatelessWidget {
                 lemma,
                 style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
               ),
-              if (wordType != null && wordType.isNotEmpty) ...[
+              if (canEditType) ...[
+                const Gap(8),
+                ReviewInlineTypeEditor(detail: detail),
+              ] else if (wordType != null && wordType.isNotEmpty) ...[
                 const Gap(4),
                 Text(
-                  wordType,
+                  wordTypeOptionLabel(wordType),
                   style: theme.typography.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -348,6 +355,7 @@ class _WordPreview extends StatelessWidget {
 
   /// Baris sinonim/antonim/variasi yang punya isi saja.
   List<(String, List<String>)> _extras() {
+    final entity = detail.entity;
     List<String> lemmas(String type) => [
       for (final r in _mapsOf(entity['relatedWords']))
         if (r['relationType'] == type && '${r['lemma'] ?? ''}'.isNotEmpty)

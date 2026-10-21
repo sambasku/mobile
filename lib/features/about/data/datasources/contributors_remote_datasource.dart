@@ -20,7 +20,7 @@ class ContributorEntry {
     required this.roles,
     required this.since,
     required this.note,
-    this.sambaskuUsername,
+    this.username,
     this.avatarUrl,
     this.url,
   });
@@ -29,7 +29,9 @@ class ContributorEntry {
 
   /// Username akun SambasKu (bukan platform lain) - tap tile membuka profil
   /// publik in-app (#100). Opsional; tanpa ini tile tidak interaktif.
-  final String? sambaskuUsername;
+  /// Data baru pakai `username`; parser masih fallback `sambaskuUsername`
+  /// selama cache CDN lama hidup (transisi).
+  final String? username;
   final String name;
   final List<String> roles;
   final String? avatarUrl;
@@ -54,11 +56,7 @@ class ContributorEntry {
     }
     return ContributorEntry(
       id: id,
-      sambaskuUsername:
-          json['sambaskuUsername'] is String &&
-              (json['sambaskuUsername'] as String).trim().isNotEmpty
-          ? (json['sambaskuUsername'] as String).trim()
-          : null,
+      username: _cleanUsername(json['username'] ?? json['sambaskuUsername']),
       name: name,
       roles: List<String>.from(rawRoles),
       avatarUrl: json['avatarUrl'] is String
@@ -108,6 +106,13 @@ class ContributorsRemoteDatasource {
     parsed.sort((a, b) => a.since.compareTo(b.since));
     return parsed;
   }
+}
+
+/// Null-safe username: bukan string / kosong / whitespace -> null.
+String? _cleanUsername(Object? raw) {
+  if (raw is! String) return null;
+  final t = raw.trim();
+  return t.isEmpty ? null : t;
 }
 
 /// Null-safe URL: placeholder '-'/'—' atau kosong dianggap tidak ada.

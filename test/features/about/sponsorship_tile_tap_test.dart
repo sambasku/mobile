@@ -12,7 +12,7 @@ import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_p
 
 const _linked = ContributorEntry(
   id: 'iamutaki',
-  sambaskuUsername: 'ibnulmutaki',
+  username: 'ibnulmutaki',
   name: 'Ibnul Mutaki',
   roles: ['developer', 'maintainer'],
   note: 'Penggagas dan pengelola repositori',
@@ -22,7 +22,7 @@ const _linked = ContributorEntry(
 
 const _withUrl = ContributorEntry(
   id: 'iamutaki',
-  sambaskuUsername: 'ibnulmutaki',
+  username: 'ibnulmutaki',
   name: 'Ibnul Mutaki',
   roles: ['developer'],
   note: 'Penggagas',
@@ -50,7 +50,7 @@ const _plain = ContributorEntry(
   since: '2020-01-01',
 );
 
-/// #100: tile dengan sambaskuUsername tap -> profil publik SambasKu;
+/// #100: tile dengan username tap -> profil publik SambasKu;
 /// tanpa username -> tile polos (tidak interaktif).
 void main() {
   Future<void> pumpPage(
@@ -99,7 +99,7 @@ void main() {
     ],
   );
 
-  testWidgets('tap contributor dengan sambaskuUsername -> /users/ibnulmutaki', (
+  testWidgets('tap contributor dengan username -> /users/ibnulmutaki', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(800, 2000);
@@ -119,7 +119,7 @@ void main() {
     expect(find.text('PROFILE:ibnulmutaki'), findsOneWidget);
   });
 
-  testWidgets('tanpa sambaskuUsername -> tidak ada InkWell', (tester) async {
+  testWidgets('tanpa username -> tidak ada InkWell', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);

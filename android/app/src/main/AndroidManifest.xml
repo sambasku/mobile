@@ -82,6 +82,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/words" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPattern="/id/words/.*" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/reset-password" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/hapus-akun" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/users" />

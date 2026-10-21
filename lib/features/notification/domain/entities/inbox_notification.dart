@@ -70,6 +70,10 @@ class InboxNotification {
         return 'Disetujui';
       case 'verifier_application_rejected':
         return 'Ditolak';
+      case 'place_contribution_approved':
+        return 'Wisata disetujui';
+      case 'place_contribution_rejected':
+        return 'Wisata ditolak';
       default:
         return 'Pembaruan';
     }

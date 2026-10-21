@@ -18,7 +18,7 @@ class RegionDetailPage extends ConsumerStatefulWidget {
   const RegionDetailPage.desa({super.key, required this.slug})
     : isKecamatan = false;
 
-  /// Kecamatan: slug id `regions.json`. Desa: kode BPS (id).
+  /// Kecamatan: slug id katalog wilayah. Desa: kode BPS (id).
   final String slug;
 
   final bool isKecamatan;

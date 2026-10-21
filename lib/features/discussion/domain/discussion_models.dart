@@ -210,6 +210,7 @@ class DiscussionItem {
     required this.username,
     this.displayName,
     this.avatarUrl,
+    this.isVerifier = false,
     required this.body,
     this.linkUrl,
     required this.images,
@@ -232,6 +233,7 @@ class DiscussionItem {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
   final String? body;
   final String? linkUrl;
   final List<DiscussionImage> images;
@@ -289,6 +291,7 @@ class DiscussionItem {
       username: json['username']?.toString(),
       displayName: json['display_name']?.toString(),
       avatarUrl: json['avatar_url']?.toString(),
+      isVerifier: json['is_verifier'] == true,
       body: json['body']?.toString(),
       linkUrl: json['link_url']?.toString(),
       images: imagesRaw is List
@@ -327,6 +330,8 @@ class DiscussionItem {
       userId: userId,
       username: username,
       displayName: displayName,
+      avatarUrl: avatarUrl,
+      isVerifier: isVerifier,
       body: body,
       linkUrl: linkUrl,
       images: images,

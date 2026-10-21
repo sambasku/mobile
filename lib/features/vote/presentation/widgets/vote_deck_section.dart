@@ -138,6 +138,7 @@ class _GuestDeck extends ConsumerWidget {
                   lemma: w.lemma,
                   sense: w.sense,
                   wordType: w.wordTypeLabel,
+                  onLockedTap: () => context.push('/login'),
                 ),
               );
             },

@@ -13,6 +13,7 @@ class PublicProfile {
     required this.commentsPublished,
     this.bio,
     this.avatarUrl,
+    this.activeBorderUrl,
   });
   final String username;
   final String displayName;
@@ -26,6 +27,8 @@ class PublicProfile {
   final int verificationsDone;
   final int commentsPublished;
   final String? avatarUrl;
+  /// Bingkai profil aktif (asset achievement) - null = tanpa bingkai.
+  final String? activeBorderUrl;
 }
 
 class PublicActivityItem {

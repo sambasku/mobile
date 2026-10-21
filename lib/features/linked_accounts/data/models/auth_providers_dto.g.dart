@@ -15,10 +15,14 @@ _AuthProvidersDto _$AuthProvidersDtoFromJson(Map<String, dynamic> json) =>
               )
               .toList() ??
           const [],
+      hasPassword: json['has_password'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$AuthProvidersDtoToJson(_AuthProvidersDto instance) =>
-    <String, dynamic>{'providers': instance.providers};
+    <String, dynamic>{
+      'providers': instance.providers,
+      'has_password': instance.hasPassword,
+    };
 
 _AuthProviderItemDto _$AuthProviderItemDtoFromJson(Map<String, dynamic> json) =>
     _AuthProviderItemDto(

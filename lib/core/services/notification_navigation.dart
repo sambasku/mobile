@@ -8,6 +8,7 @@ import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/domain/entities/inbox_notification.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/discussion/discussion_router.dart';
+import '../../features/explore/explore_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/utils/error_bottom_sheet.dart';
@@ -37,15 +38,19 @@ Future<void> navigateFromNotificationPayload(
     return;
   }
 
-  if ((actionKind == 'contribution' || actionKind == 'suggestion') &&
-      actionValue != null &&
-      actionValue.isNotEmpty) {
-    _go(
-      router,
-      MyContributionsRouter.detailPath(kind: actionKind!, id: actionValue),
-    );
-    return;
-  }
+if ((actionKind == 'contribution' || actionKind == 'suggestion') &&
+    actionValue != null &&
+    actionValue.isNotEmpty) {
+_go(
+router,
+MyContributionsRouter.detailPath(kind: actionKind!, id: actionValue),
+);
+return;
+}
+if (actionKind == 'place_contribution' || type.startsWith('place_contribution')) {
+_go(router, ExploreRouter.placeProposals.path);
+return;
+}
 
   if (actionKind == 'discussion' &&
       actionValue != null &&

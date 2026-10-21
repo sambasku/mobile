@@ -48,7 +48,7 @@ final class LemmaCheckNotifierProvider
 }
 
 String _$lemmaCheckNotifierHash() =>
-    r'bf290038ac7792473187d7d0e4ef67d68c71c6b1';
+    r'72a370dcb8ce7ae2055327f3a21218d5661e48d3';
 
 /// Cek ketersediaan lemma lewat GET /words/lemma/{lemma} (issue #170).
 /// Non-blocking: hasil hanya untuk label, tidak memblokir submit.

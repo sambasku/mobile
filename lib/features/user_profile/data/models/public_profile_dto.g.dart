@@ -15,6 +15,7 @@ _PublicProfileDto _$PublicProfileDtoFromJson(Map<String, dynamic> json) =>
       isVerifier: json['is_verifier'] as bool? ?? false,
       joinedAt: json['joined_at'] as String,
       avatarUrl: json['avatar_url'] as String?,
+      activeBorderUrl: json['active_border_url'] as String?,
       stats: PublicProfileStatsDto.fromJson(
         json['stats'] as Map<String, dynamic>,
       ),
@@ -29,6 +30,7 @@ Map<String, dynamic> _$PublicProfileDtoToJson(_PublicProfileDto instance) =>
       'is_verifier': instance.isVerifier,
       'joined_at': instance.joinedAt,
       'avatar_url': instance.avatarUrl,
+      'active_border_url': instance.activeBorderUrl,
       'stats': instance.stats,
     };
 

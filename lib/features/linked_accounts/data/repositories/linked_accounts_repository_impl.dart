@@ -30,6 +30,8 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
         LinkedAccountsStatus(
           googleLinked: providers.any((p) => p.provider == 'google'),
           githubLinked: providers.any((p) => p.provider == 'github'),
+          facebookLinked: providers.any((p) => p.provider == 'facebook'),
+          hasPassword: response.data!.hasPassword,
         ),
       );
     } on DioException catch (error) {

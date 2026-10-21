@@ -11,6 +11,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -498,10 +499,17 @@ class _HelpHeader extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
-                username,
+              child: PublicAccountName(
+                label: username,
+                isVerifier: item.isVerifier,
+                onTap: isLinkablePublicUsername(item.username)
+                    ? () => UserProfileRouter.open(context, item.username!)
+                    : null,
                 style: theme.typography.sm.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: isLinkablePublicUsername(item.username)
+                      ? theme.colors.primary
+                      : theme.colors.foreground,
                 ),
               ),
             ),

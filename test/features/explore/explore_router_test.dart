@@ -31,13 +31,34 @@ void main() {
 
     // Bug lama: path literal ':slug' + query (?slug=...) tidak match route
     // artikel -> halaman artikel kosong (issue #168).
-    expect(ExploreRouter.placeArticlePath('istana'),
-        '/explore/place/istana/artikel');
+    expect(
+      ExploreRouter.placeArticlePath('istana'),
+      '/explore/place/istana/artikel',
+    );
     expect(ExploreRouter.placeArticlePath('istana').contains(':slug'), false);
 
     final match = router.configuration
         .findMatch(Uri.parse(ExploreRouter.placeArticlePath('istana')))
         .last;
     expect(match.route.name, ExploreRouter.placeArticle.name);
+  });
+
+  test('placePhotosPath membuka linimasa foto, bukan detail slug foto', () {
+    final router = GoRouter(
+      routes: [
+        GoRoute(path: '/', builder: (_, _) => const SizedBox()),
+        ...ExploreRouter.routes,
+      ],
+    );
+    addTearDown(router.dispose);
+
+    expect(
+      ExploreRouter.placePhotosPath('istana'),
+      '/explore/place/istana/foto',
+    );
+    final match = router.configuration
+        .findMatch(Uri.parse(ExploreRouter.placePhotosPath('istana')))
+        .last;
+    expect(match.route.name, ExploreRouter.placePhotos.name);
   });
 }

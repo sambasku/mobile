@@ -25,6 +25,7 @@ FeedActivityItem mapPublicActivityToFeed(
       username: profile.username,
       displayName: profile.displayName,
       avatarUrl: profile.avatarUrl,
+      isVerifier: profile.isVerifier,
     ),
     target: item.wordId == null
         ? null

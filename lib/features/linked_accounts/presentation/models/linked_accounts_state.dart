@@ -4,6 +4,8 @@ class LinkedAccountsState {
     this.isBusy = false,
     this.googleLinked = false,
     this.githubLinked = false,
+    this.facebookLinked = false,
+    this.hasPassword = true,
     this.errorMessage,
     this.infoMessage,
   });
@@ -12,6 +14,11 @@ class LinkedAccountsState {
   final bool isBusy;
   final bool googleLinked;
   final bool githubLinked;
+  final bool facebookLinked;
+
+  /// Default true supaya tile profil tidak melompat ke "Buat Password"
+  /// sebelum GET /auth/providers selesai.
+  final bool hasPassword;
   final String? errorMessage;
   final String? infoMessage;
 
@@ -20,6 +27,8 @@ class LinkedAccountsState {
     bool? isBusy,
     bool? googleLinked,
     bool? githubLinked,
+    bool? facebookLinked,
+    bool? hasPassword,
     String? errorMessage,
     String? infoMessage,
     bool clearError = false,
@@ -30,6 +39,8 @@ class LinkedAccountsState {
       isBusy: isBusy ?? this.isBusy,
       googleLinked: googleLinked ?? this.googleLinked,
       githubLinked: githubLinked ?? this.githubLinked,
+      facebookLinked: facebookLinked ?? this.facebookLinked,
+      hasPassword: hasPassword ?? this.hasPassword,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       infoMessage: clearInfo ? null : (infoMessage ?? this.infoMessage),
     );

@@ -168,9 +168,14 @@ void main() {
       final sub = container.listen(lemmaCheckProvider, (_, _) {});
 
       container.read(lemmaCheckProvider.notifier).onLemmaChanged('makan');
-      expect(container.read(lemmaCheckProvider).checking, isTrue);
+      expect(
+        container.read(lemmaCheckProvider).checking,
+        isFalse,
+        reason: 'indikator belum nyala selama debounce',
+      );
       async.elapse(const Duration(milliseconds: 300));
       expect(adapter.requestCount, 0, reason: 'masih dalam debounce');
+      expect(container.read(lemmaCheckProvider).checking, isFalse);
 
       async.elapse(const Duration(milliseconds: 400));
       async.flushTimers();
@@ -180,6 +185,58 @@ void main() {
       expect(state.checking, isFalse);
       expect(state.exists, isTrue);
       expect(state.wordId, '01JWORDMAKAN0000000000000A');
+      sub.close();
+    });
+  });
+
+  test('ketukan beruntun hanya menembak lemma terakhir', () {
+    fakeAsync((async) {
+      final adapter = _LemmaAdapter();
+      final container = _container(adapter);
+      addTearDown(container.dispose);
+
+      final sub = container.listen(lemmaCheckProvider, (_, _) {});
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('ma');
+      async.elapse(const Duration(milliseconds: 200));
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('mak');
+      async.elapse(const Duration(milliseconds: 200));
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('makan');
+      expect(container.read(lemmaCheckProvider).checking, isFalse);
+
+      async.elapse(const Duration(milliseconds: 500));
+      expect(adapter.requestCount, 0, reason: 'debounce dihitung ulang');
+
+      async.elapse(const Duration(milliseconds: 200));
+      async.flushTimers();
+
+      expect(adapter.requestCount, 1);
+      expect(container.read(lemmaCheckProvider).exists, isTrue);
+      expect(container.read(lemmaCheckProvider).checkedLemma, 'makan');
+      sub.close();
+    });
+  });
+
+  test('teks sama (kursor pindah) tidak mengulang cek', () {
+    fakeAsync((async) {
+      final adapter = _LemmaAdapter();
+      final container = _container(adapter);
+      addTearDown(container.dispose);
+
+      final sub = container.listen(lemmaCheckProvider, (_, _) {});
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('makan');
+      async.elapse(const Duration(seconds: 1));
+      async.flushTimers();
+      expect(adapter.requestCount, 1);
+      expect(container.read(lemmaCheckProvider).exists, isTrue);
+
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('makan');
+      container.read(lemmaCheckProvider.notifier).onLemmaChanged('  makan  ');
+      async.elapse(const Duration(seconds: 1));
+      async.flushTimers();
+
+      expect(adapter.requestCount, 1);
+      expect(container.read(lemmaCheckProvider).exists, isTrue);
+      expect(container.read(lemmaCheckProvider).checking, isFalse);
       sub.close();
     });
   });

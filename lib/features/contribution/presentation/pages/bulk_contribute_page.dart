@@ -12,10 +12,12 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../models/bulk_submit_word_state.dart';
+import '../providers/bulk_lemma_check_provider.dart';
 import '../providers/bulk_submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
 
@@ -259,11 +261,10 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
       if (!context.mounted) return;
       final latest = ref.read(bulkSubmitWordProvider);
       // Issue #28: buang cache detail untuk tiap kata yang baru terkirim.
-      for (final row
-          in latest.rows.where((r) => r.wordId?.isNotEmpty == true)) {
-        unawaited(
-          invalidateWordDetailCaches(ref, row.wordId!, row.lemma),
-        );
+      for (final row in latest.rows.where(
+        (r) => r.wordId?.isNotEmpty == true,
+      )) {
+        unawaited(invalidateWordDetailCaches(ref, row.wordId!, row.lemma));
       }
       _showBatchResultDialog(latest);
     });
@@ -455,7 +456,7 @@ class _BulkTableHeader extends StatelessWidget {
   }
 }
 
-class _BulkTableRow extends StatelessWidget {
+class _BulkTableRow extends ConsumerWidget {
   const _BulkTableRow({
     required this.index,
     required this.row,
@@ -475,13 +476,22 @@ class _BulkTableRow extends StatelessWidget {
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final locked = !row.isEditable || row.status == BulkRowSubmitStatus.sending;
     final n = index + 1;
     final error = row.errorMessage?.trim();
     final failed = row.status == BulkRowSubmitStatus.failed;
     final divider = Border(left: BorderSide(color: borderColor));
+    final lemma = ctrls?.lemmaCtrl.text ?? row.lemma;
+    final existingWordId = ref.watch(
+      bulkLemmaCheckProvider.select((marks) {
+        final key = lemma.trim().toLowerCase();
+        final mark = marks[key];
+        if (mark == null || !mark.exists) return null;
+        return mark.wordId;
+      }),
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -498,9 +508,35 @@ class _BulkTableRow extends StatelessWidget {
                 child: _cell(
                   controller: ctrls?.lemmaCtrl,
                   hint: index == 0 ? 'ngupi' : null,
-                  semanticsLabel: 'Kata Sambas baris $n',
+                  semanticsLabel: existingWordId == null
+                      ? 'Kata Sambas baris $n'
+                      : 'Kata Sambas baris $n, sudah ada di kamus',
                   locked: locked,
                   textInputAction: TextInputAction.next,
+                  // Issue #181: icon di ujung lemma, bukan kolom baru.
+                  // ExcludeSemantics: FButton/ikon di suffix Forui 0.22
+                  // bentrok dengan MergeSemantics field.
+                  suffixBuilder: existingWordId == null
+                      ? null
+                      : (context, style, _) => Padding(
+                          padding: style.clearButtonPadding,
+                          child: ExcludeSemantics(
+                            child: GestureDetector(
+                              onTap: () {
+                                AnalyticsService.instance.logWordOpen(
+                                  wordId: existingWordId,
+                                  source: 'bulk_lemma',
+                                );
+                                context.push('/words/$existingWordId');
+                              },
+                              child: Icon(
+                                FLucideIcons.circleAlert,
+                                size: 16,
+                                color: theme.colors.warning,
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
               ),
               Expanded(
@@ -544,6 +580,7 @@ class _BulkTableRow extends StatelessWidget {
     required String semanticsLabel,
     required bool locked,
     required TextInputAction textInputAction,
+    FFieldIconBuilder<FTextFieldStyle>? suffixBuilder,
   }) {
     if (controller == null) return const SizedBox(height: 40);
     return Semantics(
@@ -556,6 +593,7 @@ class _BulkTableRow extends StatelessWidget {
         enabled: !locked,
         readOnly: locked,
         textInputAction: textInputAction,
+        suffixBuilder: suffixBuilder,
       ),
     );
   }

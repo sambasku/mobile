@@ -5,8 +5,11 @@ import 'presentation/pages/explore_category_page.dart';
 import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/pins_page.dart';
+import 'presentation/pages/place_contribute_page.dart';
 import 'presentation/pages/place_detail_page.dart';
 import 'presentation/pages/place_article_page.dart';
+import 'presentation/pages/place_photos_page.dart';
+import 'presentation/pages/place_proposals_page.dart';
 import 'presentation/pages/region_detail_page.dart';
 
 class ExploreRouter {
@@ -26,16 +29,25 @@ class ExploreRouter {
     name: 'ExploreRouter.place',
   );
 
-/// Route artikel markdown Place (push penuh, root navigator).
-static const placeArticle = RouteDefiner(
-path: '/explore/place/:slug/artikel',
-name: 'ExploreRouter.placeArticle',
-);
+  /// Route artikel markdown Place (push penuh, root navigator).
+  static const placeArticle = RouteDefiner(
+    path: '/explore/place/:slug/artikel',
+    name: 'ExploreRouter.placeArticle',
+  );
 
-/// Path artikel untuk satu slug (#168): wajib replace segment `:slug`,
-/// bukan query param - literal ':slug' di path bikin halaman kosong.
-static String placeArticlePath(String slug) =>
-placeArticle.path.replaceFirst(':slug', slug);
+  /// Path artikel untuk satu slug (#168): wajib replace segment `:slug`,
+  /// bukan query param - literal ':slug' di path bikin halaman kosong.
+  static String placeArticlePath(String slug) =>
+      placeArticle.path.replaceFirst(':slug', slug);
+
+  /// Linimasa foto satu tempat.
+  static const placePhotos = RouteDefiner(
+    path: '/explore/place/:slug/foto',
+    name: 'ExploreRouter.placePhotos',
+  );
+
+  static String placePhotosPath(String slug) =>
+      placePhotos.path.replaceFirst(':slug', slug);
 
   /// Daftar + detail Cuisine (cuisines.json, bukan places.json).
   static const cuisineList = RouteDefiner(
@@ -48,10 +60,32 @@ placeArticle.path.replaceFirst(':slug', slug);
     name: 'ExploreRouter.cuisineDetail',
   );
 
-  /// Peta semua Place (pin, tap → detail).
+  /// Peta semua Place (pin, tap ke detail).
   static const pins = RouteDefiner(
     path: '/explore/place/pins',
     name: 'ExploreRouter.pins',
+  );
+
+  /// Usulan wisata milik user. Wajib sebelum `place` supaya "usulan"
+  /// tidak tertelan sebagai slug.
+  static const placeProposals = RouteDefiner(
+    path: '/explore/place/usulan',
+    name: 'ExploreRouter.placeProposals',
+  );
+
+  static const placeContribute = RouteDefiner(
+    path: '/explore/place/kontribusi',
+    name: 'ExploreRouter.placeContribute',
+  );
+
+  static const placeEdit = RouteDefiner(
+    path: '/explore/place/:slug/sunting',
+    name: 'ExploreRouter.placeEdit',
+  );
+
+  static const placeAddPhoto = RouteDefiner(
+    path: '/explore/place/:slug/tambah-foto',
+    name: 'ExploreRouter.placeAddPhoto',
   );
 
   /// Detail kecamatan (slug = id) dan desa (slug = kode BPS).
@@ -84,6 +118,33 @@ placeArticle.path.replaceFirst(':slug', slug);
       },
     ),
     GoRoute(
+      path: placeProposals.path,
+      name: placeProposals.name,
+      builder: (context, state) => const PlaceProposalsPage(),
+    ),
+    GoRoute(
+      path: placeContribute.path,
+      name: placeContribute.name,
+      builder: (context, state) =>
+          const PlaceContributePage(mode: PlaceContributeMode.create),
+    ),
+    GoRoute(
+      path: placeEdit.path,
+      name: placeEdit.name,
+      builder: (context, state) => PlaceContributePage(
+        mode: PlaceContributeMode.edit,
+        slug: state.pathParameters['slug'],
+      ),
+    ),
+    GoRoute(
+      path: placeAddPhoto.path,
+      name: placeAddPhoto.name,
+      builder: (context, state) => PlaceContributePage(
+        mode: PlaceContributeMode.photo,
+        slug: state.pathParameters['slug'],
+      ),
+    ),
+    GoRoute(
       path: kecamatan.path,
       name: kecamatan.name,
       builder: (context, state) =>
@@ -107,6 +168,14 @@ placeArticle.path.replaceFirst(':slug', slug);
       builder: (context, state) {
         final slug = state.pathParameters['slug'] ?? '';
         return CuisineDetailPage(slug: slug);
+      },
+    ),
+    GoRoute(
+      path: placePhotos.path,
+      name: placePhotos.name,
+      builder: (context, state) {
+        final slug = state.pathParameters['slug'] ?? '';
+        return PlacePhotosPage(slug: slug);
       },
     ),
     GoRoute(

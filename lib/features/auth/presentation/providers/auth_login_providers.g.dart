@@ -100,20 +100,12 @@ final class FacebookAuthEnabledProvider
 String _$facebookAuthEnabledHash() =>
     r'424948d76984687d69736c98a75d6c8af3fad0bb';
 
-/// Sementara dimatikan di semua flavor (staging + production).
-/// Nyalakan lagi: `=> isGithubAuthConfigured();`
-
 @ProviderFor(githubAuthEnabled)
 final githubAuthEnabledProvider = GithubAuthEnabledProvider._();
-
-/// Sementara dimatikan di semua flavor (staging + production).
-/// Nyalakan lagi: `=> isGithubAuthConfigured();`
 
 final class GithubAuthEnabledProvider
     extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  /// Sementara dimatikan di semua flavor (staging + production).
-  /// Nyalakan lagi: `=> isGithubAuthConfigured();`
   GithubAuthEnabledProvider._()
     : super(
         from: null,
@@ -147,7 +139,7 @@ final class GithubAuthEnabledProvider
   }
 }
 
-String _$githubAuthEnabledHash() => r'3da003f7c8332fcb55c79120ca0d9da8bbe3466b';
+String _$githubAuthEnabledHash() => r'0ace23c3a745a5d672815455d1a69efc0f51c34b';
 
 @ProviderFor(AuthLoginNotifier)
 final authLoginProvider = AuthLoginNotifierProvider._();

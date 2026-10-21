@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
-import '../../core/widgets/verified_badge_icon.dart';
 import '../utils/public_account_name.dart';
+import 'public_account_name.dart';
 import 'user_avatar.dart';
 
 /// Label peran di header thread (hanya Verifikator yang ditampilkan).
@@ -16,7 +16,7 @@ String threadAuthorRoleLabel({required bool isVerifier}) =>
 /// ```
 /// [Avatar] Nama ✓  2h
 ///          isi komentar…
-///          [footer]
+///          [footer]                    [hapus]
 /// ```
 class ThreadMessageRow extends StatelessWidget {
   const ThreadMessageRow({
@@ -109,36 +109,13 @@ class ThreadMessageRow extends StatelessWidget {
               Row(
                 children: [
                   Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: onUsernameTap == null || isRedacted
-                              ? Text(
-                                  label,
-                                  style: nameStyle,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              : Semantics(
-                                  button: true,
-                                  label: 'Lihat profil $label',
-                                  child: GestureDetector(
-                                    onTap: onUsernameTap,
-                                    child: Text(
-                                      label,
-                                      style: nameStyle,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                        ),
-                        if (isVerifier) ...[
-                          const Gap(3),
-                          const VerifiedBadgeIcon(size: 13),
-                        ],
-                      ],
+                    child: PublicAccountName(
+                      label: label,
+                      isVerifier: isVerifier,
+                      onTap: onUsernameTap == null || isRedacted
+                          ? null
+                          : onUsernameTap,
+                      style: nameStyle,
                     ),
                   ),
                   if (trailingMeta.isNotEmpty) ...[
@@ -150,23 +127,10 @@ class ThreadMessageRow extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  if (onDelete != null) ...[
+                  // Tanpa footer, hapus tetap di header supaya aksi tidak hilang.
+                  if (onDelete != null && footer == null) ...[
                     const Spacer(),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(6),
-                        onTap: onDelete,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Icon(
-                            FLucideIcons.trash,
-                            size: 14,
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                    ),
+                    _ThreadDeleteButton(onPressed: onDelete!),
                   ],
                 ],
               ),
@@ -188,7 +152,22 @@ class ThreadMessageRow extends StatelessWidget {
                 if (body.trim().isNotEmpty) const Gap(6),
                 media!,
               ],
-              if (footer != null) ...[const Gap(4), footer!],
+              if (footer != null) ...[
+                const Gap(4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: footer!,
+                      ),
+                    ),
+                    if (onDelete != null)
+                      _ThreadDeleteButton(onPressed: onDelete!),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
@@ -212,6 +191,33 @@ class ThreadMessageRow extends StatelessWidget {
               ),
             )
           : content,
+    );
+  }
+}
+
+/// Ikon hapus di baris thread. Material transparan supaya ripple InkWell
+/// jalan di pohon Forui yang tidak punya ancestor Material.
+class _ThreadDeleteButton extends StatelessWidget {
+  const _ThreadDeleteButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Icon(
+            FLucideIcons.trash,
+            size: 14,
+            color: context.theme.colors.mutedForeground,
+          ),
+        ),
+      ),
     );
   }
 }

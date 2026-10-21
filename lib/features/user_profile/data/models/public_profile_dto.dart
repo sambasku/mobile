@@ -12,6 +12,8 @@ abstract class PublicProfileDto with _$PublicProfileDto {
     @JsonKey(name: 'is_verifier') @Default(false) bool isVerifier,
     @JsonKey(name: 'joined_at') required String joinedAt,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
+    /// URL aset bingkai profil aktif (achievement reward_type profile_border).
+    @JsonKey(name: 'active_border_url') String? activeBorderUrl,
     required PublicProfileStatsDto stats,
   }) = _PublicProfileDto;
 

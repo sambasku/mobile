@@ -11,6 +11,7 @@ class AnalyticsActivityItem {
     required this.body,
     this.actorUsername,
     this.avatarUrl,
+    this.isVerifier = false,
     this.subtitle,
     this.navigatePath,
   });
@@ -29,6 +30,9 @@ class AnalyticsActivityItem {
 
   /// URL avatar; null → placeholder inisial di [UserAvatar].
   final String? avatarUrl;
+
+  /// Centang verifikator di samping nama.
+  final bool isVerifier;
 
   /// Teks utama (body komentar, ringkasan vote, dsb.).
   final String body;

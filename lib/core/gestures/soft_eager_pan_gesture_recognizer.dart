@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 
+import 'swipe_exempt.dart';
+
 /// Pan that competes with scrollables, but only steals the arena once the
 /// gesture looks intentional (past [claimSlop] on a claimable axis).
 ///
@@ -28,6 +30,9 @@ class SoftEagerPanGestureRecognizer extends PanGestureRecognizer {
 
   @override
   void addAllowedPointer(PointerDownEvent event) {
+    // Kontrol di dalam kartu (radio jenis kata) menandai pointer ini
+    // sebelum recognizer induk ikut arena, supaya geser tidak mencuri tap.
+    if (SwipeExemptHub.contains(event.pointer)) return;
     _accumDx = 0;
     _accumDy = 0;
     _claimed = false;

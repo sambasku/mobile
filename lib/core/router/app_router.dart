@@ -15,18 +15,19 @@ import '../../features/bookmark/bookmark_router.dart';
 import '../../features/my_comments/my_comments_router.dart';
 import '../../features/my_votes/my_votes_router.dart';
 import '../../features/change_password/change_password_router.dart';
+import '../../features/set_password/set_password_router.dart';
 import '../../features/delete_account/delete_account_router.dart';
 import '../../features/edit_profile/edit_profile_router.dart';
 import '../../features/linked_accounts/linked_accounts_router.dart';
 import '../../features/contribution/contribution_router.dart';
 import '../../features/dictionary/dictionary_router.dart';
+import '../../features/share/domain/word_public_url.dart';
 import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
-import '../../features/dictionary/presentation/providers/word_of_day_providers.dart';
 import '../../features/onboarding/data/onboarding_prefs.dart';
 import '../../features/onboarding/onboarding_router.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
@@ -64,6 +65,7 @@ class AppRouter {
       ...OnboardingRouter.routes,
       ...AuthRouter.routes,
       ...ChangePasswordRouter.routes,
+      ...SetPasswordRouter.routes,
       ...DeleteAccountRouter.routes,
       ...EditProfileRouter.routes,
       ...LinkedAccountsRouter.routes,
@@ -189,6 +191,10 @@ class AppRouter {
       if (slug.isNotEmpty) return '/explore/place/$slug?entry=link';
     }
 
+    // Link share kata: /id/words/<lemma> → detail native (route /words/:id).
+    final wordLink = nativeWordPathFromPublicLink(state.uri);
+    if (wordLink != null) return wordLink;
+
     final onboardingDone = OnboardingPrefs.done;
     final isOnboarding = loc == OnboardingRouter.onboarding.path;
     final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
@@ -233,6 +239,7 @@ class AppRouter {
       return true;
     }
     if (path.startsWith('/words/')) return true;
+    if (path.startsWith('/id/words/')) return true;
     if (path.startsWith('/huruf/')) return true;
     if (path.startsWith('/users/')) return true;
     if (path.startsWith('/wisata/')) return true;
@@ -309,7 +316,9 @@ class _HomeShell extends ConsumerWidget {
               if (openingHome) {
                 // keepAlive + IndexedStack tidak membangun ulang Home, jadi
                 // kata yang baru disetujui tetap tersembunyi sampai di-refresh.
-                ref.invalidate(wordOfDayProvider);
+                // WOTD TIDAK di-invalidate: pilihan harian deterministik per
+                // tanggal WIB + server kirim Cache-Control, invalidate cuma
+                // membuang keepAlive tanpa hasil berbeda.
                 ref.read(latestWordsProvider.notifier).load();
               }
             },

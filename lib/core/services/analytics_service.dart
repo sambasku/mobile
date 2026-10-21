@@ -32,11 +32,18 @@ abstract final class AnalyticsEvents {
   static const authRegisterSuccess = 'auth_register_success';
   static const authLogout = 'auth_logout';
   static const searchMissTap = 'search_miss_tap';
+  static const searchMissListOpen = 'search_miss_list_open';
   static const commentSubmit = 'comment_submit';
 
   /// Bukan `notification_open`: nama itu reserved Firebase (otomatis dari FCM).
   static const inboxOpen = 'inbox_open';
+  static const achievementsView = 'achievements_view';
+  static const achievementBadgeView = 'achievement_badge_view';
   static const notificationItemTap = 'notification_item_tap';
+
+  /// Shortcut profil "Izinkan notifikasi".
+  /// `result`: granted | denied | settings | dismissed. `source`: profile.
+  static const notificationAllow = 'notification_allow';
   static const suggestEditSubmit = 'suggest_edit_submit';
   static const audioRecordStart = 'audio_record_start';
   static const audioRecordSubmit = 'audio_record_submit';
@@ -210,7 +217,15 @@ class AnalyticsService {
     params: {'slug': slug, 'category': category, 'entry': entry},
   );
 
-  /// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
-  Future<void> logCuisineOpen({required String slug}) =>
-      log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
+/// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
+Future<void> logCuisineOpen({required String slug}) =>
+log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
+
+/// Sub-tab pencapaian dibuka. `tab`: badge | border | pencapaian.
+Future<void> logAchievementsView({required String tab}) =>
+log(AnalyticsEvents.achievementsView, params: {'tab': tab});
+
+/// Satu lencana dilihat/diketuk. Param identitas: code.
+Future<void> logAchievementBadgeView({required String code}) =>
+log(AnalyticsEvents.achievementBadgeView, params: {'code': code});
 }

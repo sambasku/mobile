@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../auth/data/providers/auth_data_providers.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../auth/domain/ports/github_sign_in_port.dart';
 import '../../../auth/domain/ports/google_sign_in_port.dart';
 import '../../../auth/presentation/models/auth_login_state.dart';
@@ -13,13 +14,16 @@ part 'linked_accounts_providers.g.dart';
 class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
   @override
   LinkedAccountsState build() {
-    Future.microtask(refresh);
-    return const LinkedAccountsState();
+    final isAuth = ref.watch(authStatusProvider).value?.isAuth ?? false;
+    if (isAuth) Future.microtask(refresh);
+    return LinkedAccountsState(isLoading: isAuth);
   }
 
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true, clearError: true, clearInfo: true);
-    final result = await ref.read(getLinkedAccountsStatusUseCaseProvider).call();
+    final result = await ref
+        .read(getLinkedAccountsStatusUseCaseProvider)
+        .call();
     result.match(
       (failure) => state = state.copyWith(
         isLoading: false,
@@ -29,6 +33,8 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
         isLoading: false,
         googleLinked: status.googleLinked,
         githubLinked: status.githubLinked,
+        facebookLinked: status.facebookLinked,
+        hasPassword: status.hasPassword,
         clearError: true,
       ),
     );
@@ -43,8 +49,9 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
         state = state.copyWith(isBusy: false);
         return;
       }
-      final result =
-          await ref.read(linkGoogleAccountUseCaseProvider).call(idToken);
+      final result = await ref
+          .read(linkGoogleAccountUseCaseProvider)
+          .call(idToken);
       result.match(
         (failure) => state = state.copyWith(
           isBusy: false,
@@ -69,10 +76,8 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
     state = state.copyWith(isBusy: true, clearError: true, clearInfo: true);
     final result = await ref.read(unlinkGoogleAccountUseCaseProvider).call();
     result.match(
-      (failure) => state = state.copyWith(
-        isBusy: false,
-        errorMessage: failure.message,
-      ),
+      (failure) =>
+          state = state.copyWith(isBusy: false, errorMessage: failure.message),
       (message) => state = state.copyWith(
         isBusy: false,
         googleLinked: false,
@@ -97,7 +102,9 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
         state = state.copyWith(isBusy: false);
         return;
       }
-      final result = await ref.read(linkGithubAccountUseCaseProvider).call(
+      final result = await ref
+          .read(linkGithubAccountUseCaseProvider)
+          .call(
             code: auth.code,
             redirectUri: auth.redirectUri,
             codeVerifier: auth.codeVerifier,
@@ -126,10 +133,8 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
     state = state.copyWith(isBusy: true, clearError: true, clearInfo: true);
     final result = await ref.read(unlinkGithubAccountUseCaseProvider).call();
     result.match(
-      (failure) => state = state.copyWith(
-        isBusy: false,
-        errorMessage: failure.message,
-      ),
+      (failure) =>
+          state = state.copyWith(isBusy: false, errorMessage: failure.message),
       (message) => state = state.copyWith(
         isBusy: false,
         githubLinked: false,

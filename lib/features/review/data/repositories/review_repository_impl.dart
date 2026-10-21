@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/network/api_error_text.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/repositories/review_repository.dart';
@@ -227,7 +228,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     final data = error.response?.data;
     if (data is Map) {
       return ReviewFailure(
-        data['message']?.toString() ?? fallback,
+        apiErrorText(data, fallback),
         errorCode: data['error_code']?.toString(),
       );
     }

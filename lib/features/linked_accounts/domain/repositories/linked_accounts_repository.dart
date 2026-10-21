@@ -6,10 +6,14 @@ class LinkedAccountsStatus {
   const LinkedAccountsStatus({
     required this.googleLinked,
     required this.githubLinked,
+    required this.facebookLinked,
+    required this.hasPassword,
   });
 
   final bool googleLinked;
   final bool githubLinked;
+  final bool facebookLinked;
+  final bool hasPassword;
 }
 
 abstract interface class LinkedAccountsRepository {

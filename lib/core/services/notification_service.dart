@@ -2,12 +2,37 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'device_registration_holder.dart';
 import 'notification_navigation.dart';
 
+/// Apa yang harus dilakukan shortcut "Izinkan notifikasi" di profil.
+enum NotificationAllowAction {
+  /// OS sudah mengizinkan. Shortcut disembunyikan.
+  alreadyAllowed,
+
+  /// Belum pernah ditolak permanen. Tampilkan dialog sistem.
+  request,
+
+  /// Ditolak permanen atau dibatasi. Dialog sistem tidak muncul lagi.
+  openSettings,
+}
+
+/// [osAllowed] dari channel Awesome Notifications.
+/// [permanentlyDenied] dari status OS (ditolak permanen atau restricted).
+NotificationAllowAction notificationAllowAction({
+  required bool osAllowed,
+  required bool permanentlyDenied,
+}) {
+  if (osAllowed) return NotificationAllowAction.alreadyAllowed;
+  if (permanentlyDenied) return NotificationAllowAction.openSettings;
+  return NotificationAllowAction.request;
+}
+
 /// Foreground FCM → Awesome Notifications (in-app saat app dibuka).
-/// Permission diminta dari onboarding slide 3, bukan di cold start.
+/// Permission diminta dari onboarding slide 3 atau shortcut profil,
+/// bukan di cold start.
 ///
 /// [onNotificationsMayHaveChanged] di-set dari bootstrap (`main`) agar
 /// cache Riverpod (inbox + unread) di-invalidate tanpa `core` mengimpor
@@ -29,22 +54,18 @@ class NotificationService {
 
   /// Init channel + listener tanpa meminta izin OS.
   static Future<void> init() async {
-    await AwesomeNotifications().initialize(
-      null,
-      [
-        NotificationChannel(
-          channelKey: _channelKey,
-          channelName: 'SambasKu',
-          channelDescription: 'Notifikasi dari SambasKu',
-          defaultColor: const Color(0xFF0F766E),
-          ledColor: Colors.white,
-          importance: NotificationImportance.High,
-          channelShowBadge: true,
-          playSound: true,
-        ),
-      ],
-      debug: kDebugMode,
-    );
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+        channelKey: _channelKey,
+        channelName: 'SambasKu',
+        channelDescription: 'Notifikasi dari SambasKu',
+        defaultColor: const Color(0xFF0F766E),
+        ledColor: Colors.white,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        playSound: true,
+      ),
+    ], debug: kDebugMode);
 
     FirebaseMessaging.onMessage.listen(_showForegroundNotification);
     FirebaseMessaging.onMessageOpenedApp.listen(_onRemoteMessageOpened);
@@ -74,7 +95,20 @@ class NotificationService {
     WidgetsBinding.instance.addObserver(_lifecycleObserver);
   }
 
-  /// Dipanggil dari onboarding slide 3 saat user tap Izinkan.
+  /// Status shortcut profil. Web selalu [NotificationAllowAction.alreadyAllowed]
+  /// supaya tile tidak muncul (FCM tidak dipakai di preview web).
+  static Future<NotificationAllowAction> currentAllowAction() async {
+    if (kIsWeb) return NotificationAllowAction.alreadyAllowed;
+    final osAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (osAllowed) return NotificationAllowAction.alreadyAllowed;
+    final status = await Permission.notification.status;
+    return notificationAllowAction(
+      osAllowed: false,
+      permanentlyDenied: status.isPermanentlyDenied || status.isRestricted,
+    );
+  }
+
+  /// Dipanggil dari onboarding slide 3 dan shortcut profil.
   static Future<void> requestPermissions() async {
     await FirebaseMessaging.instance.requestPermission();
     final allowed = await AwesomeNotifications().isNotificationAllowed();
@@ -104,8 +138,9 @@ class NotificationService {
         title: title ?? 'SambasKu',
         body: body ?? '',
         payload: message.data.map((k, v) => MapEntry(k, v.toString())),
-        notificationLayout:
-            hasImage ? NotificationLayout.BigPicture : NotificationLayout.Default,
+        notificationLayout: hasImage
+            ? NotificationLayout.BigPicture
+            : NotificationLayout.Default,
         bigPicture: hasImage ? imageUrl : null,
       ),
     );

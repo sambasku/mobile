@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../domain/entities/analytics_activity_item.dart';
@@ -122,25 +123,21 @@ class _ActivityRow extends StatelessWidget {
               Row(
                 children: [
                   Flexible(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: PublicAccountName(
+                      label: item.actorLabel,
+                      isVerifier: item.isVerifier,
                       onTap: canOpenProfile
                           ? () => UserProfileRouter.open(
                                 context,
                                 item.actorUsername!,
                               )
                           : null,
-                      child: Text(
-                        item.actorLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          color: canOpenProfile
-                              ? theme.colors.primary
-                              : theme.colors.foreground,
-                        ),
+                      style: theme.typography.sm.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                        color: canOpenProfile
+                            ? theme.colors.primary
+                            : theme.colors.foreground,
                       ),
                     ),
                   ),

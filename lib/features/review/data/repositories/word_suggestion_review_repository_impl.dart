@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../shared/domain/word_type_options.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/repositories/word_suggestion_review_repository.dart';
@@ -48,6 +49,19 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
   final meaningsChanged = meanings is List
       ? meanings.whereType<Map>().length
       : 0;
+  final classDiffs = <WordSuggestionFieldDiff>[];
+  if (meanings is List) {
+    for (final raw in meanings.whereType<Map>()) {
+      final changes = raw['changes'];
+      if (changes is! List) continue;
+      for (final change in changes.whereType<Map>()) {
+        if (change['label']?.toString() != 'Kelas kata') continue;
+        if (change['changed'] != true) continue;
+        classDiffs.add(_parseFieldDiff(change));
+      }
+    }
+  }
+  final wordType = _parseFieldDiff(diff['word_type']);
 
   List countList(Object? raw, String key) {
     final map = asStringKeyMap(raw);
@@ -68,7 +82,15 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
     createdAt: suggestion['created_at']?.toString() ?? '',
     lemmaDiff: _parseFieldDiff(diff['lemma']),
     notesDiff: _parseFieldDiff(diff['notes']),
+    wordTypeDiff: WordSuggestionFieldDiff(
+      current: wordTypeOptionLabel(wordType.current),
+      proposed: wordType.proposed == null
+          ? null
+          : wordTypeOptionLabel(wordType.proposed),
+      changed: wordType.changed,
+    ),
     meaningsChanged: meaningsChanged,
+    classDiffs: classDiffs,
     categoriesAdded: countList(categories, 'added').length,
     categoriesRemoved: countList(categories, 'removed').length,
     relationsAdded: countList(relations, 'added').length,

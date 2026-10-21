@@ -18,7 +18,7 @@ PlacesRepositoryImpl placesRepository(Ref ref) => PlacesRepositoryImpl(
   ref.watch(cachedJsonClientProvider),
 );
 
-/// Katalog Place dari CDN. Null = offline/JSON rusak (soft-fail).
+/// Katalog Place dari API publik. Null = offline/JSON rusak (soft-fail).
 /// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.
 @riverpod
 Future<List<Place>?> places(Ref ref) =>

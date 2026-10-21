@@ -22,12 +22,16 @@ class UpdateMyProfileUseCase {
     String? username,
     String? displayName,
     String? bio,
+    String? regionId,
+    String? villageId,
     bool? hasReadContributionGuide,
   }) =>
       _repository.updateMyProfile(
         username: username,
         displayName: displayName,
         bio: bio,
+        regionId: regionId,
+        villageId: villageId,
         hasReadContributionGuide: hasReadContributionGuide,
       );
 }

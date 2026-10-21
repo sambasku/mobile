@@ -304,7 +304,7 @@ class _ContributorTile extends StatelessWidget {
     // #100: punya akun SambasKu -> tap buka profil publik in-app.
     // Tanpa username -> tile polos (tidak interaktif).
     // #147: url website -> ikon globe buka browser eksternal.
-    final username = contributor.sambaskuUsername;
+    final username = contributor.username;
     if (username == null && contributor.url == null) return tile;
     return Material(
       color: Colors.transparent,
@@ -454,7 +454,7 @@ class _SponsorTile extends StatelessWidget {
 
     // #100: sama dengan _ContributorTile - profil SambasKu bila ada.
     // #147: url website -> ikon globe buka browser eksternal.
-    final username = sponsor.sambaskuUsername;
+    final username = sponsor.username;
     if (username == null && sponsor.url == null) return tile;
     return Material(
       color: Colors.transparent,

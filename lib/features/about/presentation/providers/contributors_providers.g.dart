@@ -108,4 +108,54 @@ final class ContributorsProvider
   }
 }
 
-String _$contributorsHash() => r'4e00f3bf11d371a89ff60ce2bd6e6939a796116d';
+String _$contributorsHash() => r'6c64a87c6ac3ada5e6c1764cf0c3ee93f86f2b29';
+
+/// Map id → username untuk lookup kredit internal (penulis artikel/foto).
+/// Null = offline/JSON rusak. Lookup lokal, tanpa fetch tambahan.
+
+@ProviderFor(contributorsIdToUsername)
+final contributorsIdToUsernameProvider = ContributorsIdToUsernameProvider._();
+
+/// Map id → username untuk lookup kredit internal (penulis artikel/foto).
+/// Null = offline/JSON rusak. Lookup lokal, tanpa fetch tambahan.
+
+final class ContributorsIdToUsernameProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, String>?>,
+          Map<String, String>?,
+          FutureOr<Map<String, String>?>
+        >
+    with
+        $FutureModifier<Map<String, String>?>,
+        $FutureProvider<Map<String, String>?> {
+  /// Map id → username untuk lookup kredit internal (penulis artikel/foto).
+  /// Null = offline/JSON rusak. Lookup lokal, tanpa fetch tambahan.
+  ContributorsIdToUsernameProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contributorsIdToUsernameProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$contributorsIdToUsernameHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Map<String, String>?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Map<String, String>?> create(Ref ref) {
+    return contributorsIdToUsername(ref);
+  }
+}
+
+String _$contributorsIdToUsernameHash() =>
+    r'9004f427d1ec53df6be47c2cd34073b7e05fcda7';

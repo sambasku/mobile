@@ -104,13 +104,13 @@ final class PlacesRepositoryProvider
 
 String _$placesRepositoryHash() => r'468b5b979d330e87c5691e457fa08d22197d0909';
 
-/// Katalog Place dari CDN. Null = offline/JSON rusak (soft-fail).
+/// Katalog Place dari API publik. Null = offline/JSON rusak (soft-fail).
 /// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.
 
 @ProviderFor(places)
 final placesProvider = PlacesProvider._();
 
-/// Katalog Place dari CDN. Null = offline/JSON rusak (soft-fail).
+/// Katalog Place dari API publik. Null = offline/JSON rusak (soft-fail).
 /// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.
 
 final class PlacesProvider
@@ -121,7 +121,7 @@ final class PlacesProvider
           FutureOr<List<Place>?>
         >
     with $FutureModifier<List<Place>?>, $FutureProvider<List<Place>?> {
-  /// Katalog Place dari CDN. Null = offline/JSON rusak (soft-fail).
+  /// Katalog Place dari API publik. Null = offline/JSON rusak (soft-fail).
   /// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.
   PlacesProvider._()
     : super(
