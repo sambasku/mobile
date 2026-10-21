@@ -78,7 +78,9 @@ void main() {
   testWidgets('kartu menampilkan semua makna, contoh, audio, dan gambar', (tester) async {
     await _pump(tester, () async => _detail);
 
-    expect(find.text('ikan kecil di sungai'), findsOneWidget);
+    // Definition tampil 2x: di subtitle tile "Kelas kata" (editor) + di
+    // konten makna _MeaningView. FindsWidgets, bukan OneWidget.
+    expect(find.text('ikan kecil di sungai'), findsWidgets);
     expect(find.text('→ melompat'), findsOneWidget);
     expect(find.text('1.'), findsOneWidget);
     expect(find.text('2.'), findsOneWidget);

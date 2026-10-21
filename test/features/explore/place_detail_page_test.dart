@@ -78,8 +78,19 @@ void main() {
     expect(find.text('08.00 - 17.00'), findsOneWidget);
     expect(find.text('Baca Selengkapnya'), findsNothing);
     expect(find.text('[object Object]'), findsNothing);
-    expect(find.text('Sumber'), findsWidgets);
     expect(find.byTooltip('Bagikan'), findsOneWidget);
+    // Section "Sumber" dan "Wisata lain" ada di bawah fold ListView lazy -
+    // wajib scroll dulu. Ada 2 scrollable (carousel + list), pilih vertikal.
+    await tester.scrollUntilVisible(
+      find.text('Sumber'),
+      400,
+      scrollable: find
+          .byWidgetPredicate(
+            (w) => w is Scrollable && w.axis == Axis.vertical,
+          )
+          .first,
+    );
+    expect(find.text('Sumber'), findsWidgets);
     expect(find.text('Wisata lain di kecamatan ini'), findsOneWidget);
     expect(find.text('Masjid Jami'), findsOneWidget);
     expect(find.text('Pantai Jauh'), findsNothing);
