@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -144,6 +144,18 @@ class RegisterPage extends HookConsumerWidget {
         password.text.contains(RegExp(r'[0-9]'));
     final legalReady =
         termsVersion.value != null && privacyVersion.value != null;
+    /// Tombol sosial di halaman Daftar WAJIB lewat checkbox legal dulu -
+    /// server (mode enforce) menolak akun baru tanpa consents.
+    final socialReady = acceptedLegal.value && legalReady && !busy;
+    List<({String documentType, String documentVersion})>? socialConsents() {
+      final terms = termsVersion.value;
+      final privacy = privacyVersion.value;
+      if (terms == null || privacy == null) return null;
+      return [
+        (documentType: 'terms', documentVersion: terms),
+        (documentType: 'privacy', documentVersion: privacy),
+      ];
+    }
     final canSubmit =
         name.text.trim().isNotEmpty &&
         email.text.contains('@') &&
@@ -199,7 +211,7 @@ class RegisterPage extends HookConsumerWidget {
               Text(
                 'Buat akun Kontributor',
                 textAlign: .center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
                   color: theme.colors.foreground,
                 ),
@@ -208,7 +220,7 @@ class RegisterPage extends HookConsumerWidget {
               Text(
                 'Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.',
                 textAlign: .center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -259,7 +271,7 @@ class RegisterPage extends HookConsumerWidget {
                         const Gap(6),
                         Text(
                           phoneCountry.value.prefixLabel,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                             fontWeight: FontWeight.w600,
                           ),
@@ -317,7 +329,7 @@ class RegisterPage extends HookConsumerWidget {
                                       !acceptedLegal.value,
                             child: Text(
                               'Saya setuju Syarat dan Ketentuan',
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -328,7 +340,7 @@ class RegisterPage extends HookConsumerWidget {
                                 context.push(AuthRouter.termsWebView.path),
                             child: Text(
                               'Baca dokumen lengkap di SambasKu',
-                              style: theme.typography.xs.copyWith(
+                              style: theme.typography.body.xs.copyWith(
                                 color: theme.colors.primary,
                                 decoration: TextDecoration.underline,
                                 decorationColor: theme.colors.primary,
@@ -363,11 +375,11 @@ class RegisterPage extends HookConsumerWidget {
                       GoogleAuthButton(
                         label: 'Daftar dengan Google',
                         isLoading: googleLoading,
-                        onPress: busy
-                            ? null
-                            : () => ref
+                        onPress: socialReady
+                            ? () => ref
                                   .read(authRegisterProvider.notifier)
-                                  .submitGoogle(),
+                                  .submitGoogle(consents: socialConsents())
+                            : null,
                       ),
                     if (ref.watch(googleAuthEnabledProvider) &&
                         !state.googleUnavailable &&
@@ -378,11 +390,11 @@ class RegisterPage extends HookConsumerWidget {
                         !state.githubUnavailable)
                       GithubAuthButton(
                         isLoading: githubLoading,
-                        onPress: busy
-                            ? null
-                            : () => ref
+                        onPress: socialReady
+                            ? () => ref
                                   .read(authRegisterProvider.notifier)
-                                  .submitGithub(),
+                                  .submitGithub(consents: socialConsents())
+                            : null,
                       ),
                   ],
                 ),
@@ -392,11 +404,11 @@ class RegisterPage extends HookConsumerWidget {
                   FacebookAuthButton(
                     label: 'Daftar dengan Facebook',
                     isLoading: facebookLoading,
-                    onPress: busy
-                        ? null
-                        : () => ref
+                    onPress: socialReady
+                        ? () => ref
                               .read(authRegisterProvider.notifier)
-                              .submitFacebook(),
+                              .submitFacebook(consents: socialConsents())
+                        : null,
                   ),
                 ],
               ],

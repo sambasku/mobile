@@ -11,6 +11,9 @@ _GoogleLoginRequestDto _$GoogleLoginRequestDtoFromJson(
 ) => _GoogleLoginRequestDto(
   idToken: json['id_token'] as String,
   clientType: json['client_type'] as String? ?? 'mobile',
+  consents: (json['consents'] as List<dynamic>?)
+      ?.map((e) => LegalConsentDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$GoogleLoginRequestDtoToJson(
@@ -18,4 +21,5 @@ Map<String, dynamic> _$GoogleLoginRequestDtoToJson(
 ) => <String, dynamic>{
   'id_token': instance.idToken,
   'client_type': instance.clientType,
+  'consents': ?instance.consents,
 };

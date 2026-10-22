@@ -18,18 +18,24 @@ abstract interface class AuthRepository {
     required String password,
   });
 
+  /// [consents] opsional: hanya dikirim dari halaman Daftar (checkbox
+  /// wajib). Login page tidak mengirim - akun baru dari sana ditangani
+  /// server (mode lenient) + sheet persetujuan.
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   });
 
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   });
 
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
+    List<({String documentType, String documentVersion})>? consents,
   });
 
   Future<Either<AuthFailure, AuthSession>> verifyEmail({

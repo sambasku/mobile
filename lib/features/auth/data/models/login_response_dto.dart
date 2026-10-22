@@ -23,6 +23,8 @@ abstract class LoginResponseDto with _$LoginResponseDto {
     @JsonKey(name: 'access_token') required String accessToken,
     @JsonKey(name: 'expires_in') required int expiresIn,
     @JsonKey(name: 'refresh_token') String? refreshToken,
+    /// True bila server baru menulis consent - tampilkan sheet persetujuan.
+    @JsonKey(name: 'requires_consent') @Default(false) bool requiresConsent,
     required LoginUserDto user,
   }) = _LoginResponseDto;
 

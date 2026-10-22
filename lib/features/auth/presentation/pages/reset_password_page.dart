@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -169,7 +169,7 @@ class ResetPasswordPage extends HookConsumerWidget {
                 : email.contains('@')
                 ? 'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
                 : 'Minta kodenya dulu di halaman lupa password ya.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),

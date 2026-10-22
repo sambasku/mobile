@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -76,14 +76,26 @@ class LoginPage extends HookConsumerWidget {
           code == AuthFailure.githubSignInCanceled) {
         showFToast(context: context, title: const Text('Masuk dibatalkan'));
         ref.read(authLoginProvider.notifier).acknowledgeSocialCancel();
+        return;
+      }
+      // Mode enforce: akun baru dari halaman login tidak boleh lahir tanpa
+      // consent. Arahkan ke halaman Daftar yang punya checkbox legal.
+      if (code == 'CONSENT_REQUIRED') {
+        showFToast(
+          context: context,
+          title: const Text('Daftar dulu ya supaya bisa setujui ketentuan'),
+        );
+        ref.read(authLoginProvider.notifier).clearError();
+        context.push(AuthRouter.register.path);
       }
     });
 
     ref.listen(authLoginProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
       final code = ref.read(authLoginProvider).errorCode;
-      if (code == 'RATE_LIMITED' ||
-          code == AuthFailure.googleSignInCanceled ||
+    if (code == 'RATE_LIMITED' ||
+        code == 'CONSENT_REQUIRED' ||
+        code == AuthFailure.googleSignInCanceled ||
           code == AuthFailure.facebookSignInCanceled ||
           code == AuthFailure.githubSignInCanceled) {
         return;
@@ -267,7 +279,7 @@ class LoginPage extends HookConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text.rich(
                           TextSpan(
-                            style: context.theme.typography.sm.copyWith(
+                            style: context.theme.typography.body.sm.copyWith(
                               color: context.theme.colors.foreground,
                             ),
                             children: const [
@@ -288,7 +300,7 @@ class LoginPage extends HookConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
                           'Lanjut tanpa akun (Anonim)',
-                          style: context.theme.typography.xs.copyWith(
+                          style: context.theme.typography.body.xs.copyWith(
                             color: context.theme.colors.mutedForeground,
                           ),
                         ),
@@ -303,7 +315,7 @@ class LoginPage extends HookConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
                           'Laporkan masalah',
-                          style: context.theme.typography.xs.copyWith(
+                          style: context.theme.typography.body.xs.copyWith(
                             color: context.theme.colors.destructive,
                             fontWeight: FontWeight.w600,
                           ),
@@ -338,12 +350,12 @@ void _showEmailNotVerifiedSheet(BuildContext context, String email) {
               children: [
                 Text(
                   'Email belum diverifikasi',
-                  style: theme.typography.lg.copyWith(fontWeight: .w600),
+                  style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                 ),
                 const Gap(8),
                 Text(
                   'Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),

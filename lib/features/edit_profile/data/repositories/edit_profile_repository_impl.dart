@@ -76,6 +76,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
         villageId: dto.villageId,
         avatarUrl: dto.avatarUrl,
         hasReadContributionGuide: dto.hasReadContributionGuide,
+        requiresConsent: dto.requiresConsent,
       );
 
   EditProfileFailure _mapDio(DioException error) {

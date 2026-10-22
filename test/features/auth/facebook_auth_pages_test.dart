@@ -1,10 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart';
 import 'package:sambasku_mobile/features/auth/domain/ports/facebook_sign_in_port.dart';
@@ -16,6 +20,34 @@ import 'package:sambasku_mobile/features/auth/presentation/pages/register_page.d
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_login_providers.dart';
 import 'package:sambasku_mobile/flavors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+
+/// Dio stub: register page mem-fetch /legal/current untuk gembok checkbox.
+Dio _stubDio() => Dio(BaseOptions())
+  ..httpClientAdapter = _LegalCurrentAdapter();
+
+/// Adapter minimal: GET /legal/current -> versi aktif; endpoint lain 404.
+class _LegalCurrentAdapter implements HttpClientAdapter {
+  static const _body =
+      '{"data":{"terms":{"version":"2026-01-01"},"privacy":{"version":"2026-01-01"}}}';
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    if (options.uri.path.endsWith('/legal/current')) {
+      return ResponseBody.fromString(_body, 200, headers: {
+        Headers.contentTypeHeader: [Headers.jsonContentType],
+      });
+    }
+    return ResponseBody.fromString('{"message":"stub"}', 404);
+  }
+}
 
 class _StubSignIn implements FacebookSignInPort {
   @override
@@ -29,21 +61,24 @@ class _StubRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-  }) async => facebookResult;
+      List<({String documentType, String documentVersion})>? consents,
+}) async => facebookResult;
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
+      List<({String documentType, String documentVersion})>? consents,
+}) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-  }) async => Either.left(const AuthFailure('tidak dipakai'));
+      List<({String documentType, String documentVersion})>? consents,
+}) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> login({
@@ -100,14 +135,17 @@ Widget _harness({
     ],
   );
   return ProviderScope(
-    overrides: overrides.cast(),
+    overrides: [
+      dioProvider.overrideWithValue(_stubDio()),
+      ...overrides.cast(),
+    ],
     child: MaterialApp.router(
-      theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+      theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
       routerConfig: router,
       builder: (context, routed) => FTheme(
-        data: FThemes.zinc.light.touch,
+        data: foruiPalettes['zinc']!.light.touch,
         child: FToaster(child: routed ?? const SizedBox.shrink()),
       ),
     ),
@@ -218,6 +256,15 @@ void main() {
         ],
       ),
     );
+    await _pumpUi(tester);
+    // Register mengunci tombol sosial sampai checkbox legal dicentang.
+    await tester.tap(find.byType(FCheckbox));
+    await _pumpUi(tester);
+    // Register mengunci tombol sosial sampai checkbox legal dicentang.
+    // Checkbox di bawah viewport - scroll dulu.
+    await tester.ensureVisible(find.byType(FCheckbox));
+    await _pumpUi(tester);
+    await tester.tap(find.byType(FCheckbox));
     await _pumpUi(tester);
     await tester.ensureVisible(find.text('Daftar dengan Facebook'));
     await tester.tap(find.text('Daftar dengan Facebook'));

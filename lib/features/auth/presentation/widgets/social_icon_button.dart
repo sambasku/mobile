@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
 
@@ -54,11 +54,7 @@ class SocialIconButton extends StatelessWidget {
               height: 52,
               child: Center(
                 child: isLoading
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: FCircularProgress(),
-                      )
+                    ? const FCircularProgress(size: .xl)
                     : SvgPicture.asset(
                         assetPath,
                         width: 24,
@@ -93,7 +89,7 @@ class GoogleAuthDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             'atau',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),

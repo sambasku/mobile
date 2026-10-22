@@ -13,6 +13,8 @@ abstract class MyProfileDto with _$MyProfileDto {
     @JsonKey(name: 'village_id') String? villageId,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
     @JsonKey(name: 'has_read_contribution_guide') @Default(false) bool hasReadContributionGuide,
+    /// True bila user belum menyetujui terms/privacy versi aktif.
+    @JsonKey(name: 'requires_consent') @Default(false) bool requiresConsent,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>

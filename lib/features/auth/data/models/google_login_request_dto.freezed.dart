@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'google_login_request_dto.dart';
@@ -9,13 +9,15 @@ part of 'google_login_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$GoogleLoginRequestDto {
 
-@JsonKey(name: 'id_token') String get idToken;@JsonKey(name: 'client_type') String get clientType;
+@JsonKey(name: 'id_token') String get idToken;@JsonKey(name: 'client_type') String get clientType;/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+@JsonKey(includeIfNull: false) List<LegalConsentDto>? get consents;
 /// Create a copy of GoogleLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,21 @@ $GoogleLoginRequestDtoCopyWith<GoogleLoginRequestDto> get copyWith => _$GoogleLo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLoginRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+  final _this = this as GoogleLoginRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLoginRequestDto&&(identical(other.idToken, _this.idToken) || other.idToken == _this.idToken)&&(identical(other.clientType, _this.clientType) || other.clientType == _this.clientType)&&const DeepCollectionEquality().equals(other.consents, _this.consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idToken,clientType);
+int get hashCode {
+  final _this = this as GoogleLoginRequestDto;
+  return Object.hash(runtimeType,_this.idToken,_this.clientType,const DeepCollectionEquality().hash(_this.consents));
+}
 
 @override
 String toString() {
-  return 'GoogleLoginRequestDto(idToken: $idToken, clientType: $clientType)';
+  final _this = this as GoogleLoginRequestDto;
+  return 'GoogleLoginRequestDto(idToken: ${_this.idToken}, clientType: ${_this.clientType}, consents: ${_this.consents})';
 }
 
 
@@ -48,7 +55,7 @@ abstract mixin class $GoogleLoginRequestDtoCopyWith<$Res>  {
   factory $GoogleLoginRequestDtoCopyWith(GoogleLoginRequestDto value, $Res Function(GoogleLoginRequestDto) _then) = _$GoogleLoginRequestDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id_token') String idToken,@JsonKey(name: 'client_type') String clientType
+@JsonKey(name: 'id_token') String idToken,@JsonKey(name: 'client_type') String clientType,@JsonKey(includeIfNull: false) List<LegalConsentDto>? consents
 });
 
 
@@ -65,11 +72,12 @@ class _$GoogleLoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of GoogleLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? idToken = null,Object? clientType = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? idToken = null,Object? clientType = null,Object? consents = freezed,}) {
+  return _then(GoogleLoginRequestDto(
 idToken: null == idToken ? _self.idToken : idToken // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
-as String,
+as String,consents: freezed == consents ? _self.consents : consents // ignore: cast_nullable_to_non_nullable
+as List<LegalConsentDto>?,
   ));
 }
 
@@ -154,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GoogleLoginRequestDto() when $default != null:
-return $default(_that.idToken,_that.clientType);case _:
+return $default(_that.idToken,_that.clientType,_that.consents);case _:
   return orElse();
 
 }
@@ -175,10 +183,10 @@ return $default(_that.idToken,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)  $default,) {final _that = this;
 switch (_that) {
 case _GoogleLoginRequestDto():
-return $default(_that.idToken,_that.clientType);case _:
+return $default(_that.idToken,_that.clientType,_that.consents);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +203,10 @@ return $default(_that.idToken,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id_token')  String idToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)?  $default,) {final _that = this;
 switch (_that) {
 case _GoogleLoginRequestDto() when $default != null:
-return $default(_that.idToken,_that.clientType);case _:
+return $default(_that.idToken,_that.clientType,_that.consents);case _:
   return null;
 
 }
@@ -210,11 +218,22 @@ return $default(_that.idToken,_that.clientType);case _:
 @JsonSerializable()
 
 class _GoogleLoginRequestDto implements GoogleLoginRequestDto {
-  const _GoogleLoginRequestDto({@JsonKey(name: 'id_token') required this.idToken, @JsonKey(name: 'client_type') this.clientType = 'mobile'});
+  const _GoogleLoginRequestDto({@JsonKey(name: 'id_token') required this.idToken, @JsonKey(name: 'client_type') this.clientType = 'mobile', @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents}): _consents = consents;
   factory _GoogleLoginRequestDto.fromJson(Map<String, dynamic> json) => _$GoogleLoginRequestDtoFromJson(json);
 
 @override@JsonKey(name: 'id_token') final  String idToken;
 @override@JsonKey(name: 'client_type') final  String clientType;
+/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+ final  List<LegalConsentDto>? _consents;
+/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+@override@JsonKey(includeIfNull: false) List<LegalConsentDto>? get consents {
+  final value = _consents;
+  if (value == null) return null;
+  if (_consents is EqualUnmodifiableListView) return _consents;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of GoogleLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +248,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLoginRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLoginRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.clientType, clientType) || other.clientType == clientType)&&const DeepCollectionEquality().equals(other.consents, _consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idToken,clientType);
+int get hashCode {
+    return Object.hash(runtimeType,idToken,clientType,const DeepCollectionEquality().hash(_consents));
+}
 
 @override
 String toString() {
-  return 'GoogleLoginRequestDto(idToken: $idToken, clientType: $clientType)';
+    return 'GoogleLoginRequestDto(idToken: $idToken, clientType: $clientType, consents: $consents)';
 }
 
 
@@ -249,7 +270,7 @@ abstract mixin class _$GoogleLoginRequestDtoCopyWith<$Res> implements $GoogleLog
   factory _$GoogleLoginRequestDtoCopyWith(_GoogleLoginRequestDto value, $Res Function(_GoogleLoginRequestDto) _then) = __$GoogleLoginRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id_token') String idToken,@JsonKey(name: 'client_type') String clientType
+@JsonKey(name: 'id_token') String idToken,@JsonKey(name: 'client_type') String clientType,@JsonKey(includeIfNull: false) List<LegalConsentDto>? consents
 });
 
 
@@ -266,11 +287,12 @@ class __$GoogleLoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of GoogleLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? idToken = null,Object? clientType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? idToken = null,Object? clientType = null,Object? consents = freezed,}) {
   return _then(_GoogleLoginRequestDto(
 idToken: null == idToken ? _self.idToken : idToken // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
-as String,
+as String,consents: freezed == consents ? _self._consents : consents // ignore: cast_nullable_to_non_nullable
+as List<LegalConsentDto>?,
   ));
 }
 

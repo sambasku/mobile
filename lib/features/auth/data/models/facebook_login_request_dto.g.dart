@@ -11,6 +11,9 @@ _FacebookLoginRequestDto _$FacebookLoginRequestDtoFromJson(
 ) => _FacebookLoginRequestDto(
   accessToken: json['access_token'] as String,
   clientType: json['client_type'] as String? ?? 'mobile',
+  consents: (json['consents'] as List<dynamic>?)
+      ?.map((e) => LegalConsentDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$FacebookLoginRequestDtoToJson(
@@ -18,4 +21,5 @@ Map<String, dynamic> _$FacebookLoginRequestDtoToJson(
 ) => <String, dynamic>{
   'access_token': instance.accessToken,
   'client_type': instance.clientType,
+  'consents': ?instance.consents,
 };

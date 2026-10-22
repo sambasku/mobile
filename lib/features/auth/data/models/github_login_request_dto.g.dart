@@ -13,6 +13,9 @@ _GithubLoginRequestDto _$GithubLoginRequestDtoFromJson(
   redirectUri: json['redirect_uri'] as String,
   codeVerifier: json['code_verifier'] as String?,
   clientType: json['client_type'] as String? ?? 'mobile',
+  consents: (json['consents'] as List<dynamic>?)
+      ?.map((e) => LegalConsentDto.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$GithubLoginRequestDtoToJson(
@@ -22,4 +25,5 @@ Map<String, dynamic> _$GithubLoginRequestDtoToJson(
   'redirect_uri': instance.redirectUri,
   'code_verifier': instance.codeVerifier,
   'client_type': instance.clientType,
+  'consents': ?instance.consents,
 };

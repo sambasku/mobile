@@ -97,7 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
 
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -110,10 +110,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken),
+        GoogleLoginRequestDto(idToken: idToken, consents: _toConsentDtos(consents)),
       );
       final payload = response.data;
       if (payload == null) {
@@ -124,13 +125,13 @@ class AuthRepositoryImpl implements AuthRepository {
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       // ponytail: 1x retry untuk response hilang setelah picker menaruh
       // app ke background; backend idempotent (identity lookup dulu),
       // user tidak dobel. Kalau race makin sering: queue + resume.
       if (_isTransientNetworkError(error)) {
-        return _loginWithGoogleOnce(idToken);
+        return await _loginWithGoogleOnce(idToken, consents);
       }
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -142,10 +143,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   Future<Either<AuthFailure, AuthSession>> _loginWithGoogleOnce(
     String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   ) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken),
+        GoogleLoginRequestDto(idToken: idToken, consents: _toConsentDtos(consents)),
       );
       final payload = response.data;
       if (payload == null) {
@@ -156,7 +158,7 @@ class AuthRepositoryImpl implements AuthRepository {
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -174,10 +176,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithFacebook(
-        FacebookLoginRequestDto(accessToken: accessToken),
+        FacebookLoginRequestDto(accessToken: accessToken, consents: _toConsentDtos(consents)),
       );
       final payload = response.data;
       if (payload == null) {
@@ -188,7 +191,7 @@ class AuthRepositoryImpl implements AuthRepository {
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -203,6 +206,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithGithub(
@@ -210,6 +214,7 @@ class AuthRepositoryImpl implements AuthRepository {
           code: code,
           redirectUri: redirectUri,
           codeVerifier: codeVerifier,
+          consents: _toConsentDtos(consents),
         ),
       );
       final payload = response.data;
@@ -221,7 +226,7 @@ class AuthRepositoryImpl implements AuthRepository {
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -249,7 +254,7 @@ class AuthRepositoryImpl implements AuthRepository {
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -322,6 +327,16 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  /// Record domain -> DTO wire. Null saat tidak ada consent (login page).
+  List<LegalConsentDto>? _toConsentDtos(
+    List<({String documentType, String documentVersion})>? consents,
+  ) {
+    if (consents == null) return null;
+    return consents
+        .map((c) => LegalConsentDto(documentType: c.documentType, documentVersion: c.documentVersion))
+        .toList();
+  }
+
   Future<Either<AuthFailure, AuthSession>> _persistSession(
     LoginResponseDto payload,
   ) async {
@@ -355,6 +370,7 @@ class AuthRepositoryImpl implements AuthRepository {
         displayName: payload.user.displayName,
         role: payload.user.role,
         avatarUrl: payload.user.avatarUrl,
+        requiresConsent: payload.requiresConsent,
       ),
     );
   }

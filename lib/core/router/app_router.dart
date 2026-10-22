@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -11,6 +11,7 @@ import '../../features/activity/presentation/pages/activity_page.dart';
 import '../../features/admin_analytics/admin_analytics_router.dart';
 import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
+import '../../features/auth/presentation/widgets/legal_consent_sheet.dart';
 import '../../features/bookmark/bookmark_router.dart';
 import '../../features/my_comments/my_comments_router.dart';
 import '../../features/my_votes/my_votes_router.dart';
@@ -272,6 +273,23 @@ class _HomeShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
+
+    // Consent legal: server (GET /users/me) yang jadi sumber kebenaran.
+    // Sheet non-dismissible - user agree dulu atau keluar.
+    //
+    // Pakai post-frame di setiap build, BUKAN ref.listen: setelah login
+    // sosial `markLoggedIn` menyetel requiresLegalConsent=true SEBELUM
+    // shell ini mount, jadi listener tidak pernah melihat transisi
+    // false->true dan user lolos tanpa sheet sampai restart. Guard
+    // idempoten di showLegalConsentSheet mencegah sheet ganda.
+    final needsConsent =
+        ref.watch(authStatusProvider.select((s) => s.value?.requiresLegalConsent ?? false));
+    if (needsConsent) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        unawaited(showLegalConsentSheet(context, ref));
+      });
+    }
     // resizeToAvoidBottomInset false: keyboard tidak dorong bottom nav
     // (nested scaffold + inset = overflow / "geser drawer")
     // footerDecoration dikosongkan - FBottomNavigationBar sudah punya top border

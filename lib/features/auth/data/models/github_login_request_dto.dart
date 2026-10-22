@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'register_request_dto.dart' show LegalConsentDto;
+
 part 'github_login_request_dto.freezed.dart';
 part 'github_login_request_dto.g.dart';
 
@@ -10,6 +12,8 @@ abstract class GithubLoginRequestDto with _$GithubLoginRequestDto {
     @JsonKey(name: 'redirect_uri') required String redirectUri,
     @JsonKey(name: 'code_verifier') String? codeVerifier,
     @JsonKey(name: 'client_type') @Default('mobile') String clientType,
+    /// Persetujuan legal - wajib untuk akun baru (mode enforce).
+    @JsonKey(includeIfNull: false) List<LegalConsentDto>? consents,
   }) = _GithubLoginRequestDto;
 
   factory GithubLoginRequestDto.fromJson(Map<String, dynamic> json) =>

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'login_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'login_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $LoginUserDtoCopyWith<LoginUserDto> get copyWith => _$LoginUserDtoCopyWithImpl<L
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginUserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  final _this = this as LoginUserDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginUserDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,role,avatarUrl);
+int get hashCode {
+  final _this = this as LoginUserDto;
+  return Object.hash(runtimeType,_this.id,_this.username,_this.displayName,_this.role,_this.avatarUrl);
+}
 
 @override
 String toString() {
-  return 'LoginUserDto(id: $id, username: $username, displayName: $displayName, role: $role, avatarUrl: $avatarUrl)';
+  final _this = this as LoginUserDto;
+  return 'LoginUserDto(id: ${_this.id}, username: ${_this.username}, displayName: ${_this.displayName}, role: ${_this.role}, avatarUrl: ${_this.avatarUrl})';
 }
 
 
@@ -66,7 +72,7 @@ class _$LoginUserDtoCopyWithImpl<$Res>
 /// Create a copy of LoginUserDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? displayName = freezed,Object? role = null,Object? avatarUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(LoginUserDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginUserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginUserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,role,avatarUrl);
+int get hashCode {
+    return Object.hash(runtimeType,id,username,displayName,role,avatarUrl);
+}
 
 @override
 String toString() {
-  return 'LoginUserDto(id: $id, username: $username, displayName: $displayName, role: $role, avatarUrl: $avatarUrl)';
+    return 'LoginUserDto(id: $id, username: $username, displayName: $displayName, role: $role, avatarUrl: $avatarUrl)';
 }
 
 
@@ -290,7 +298,8 @@ as String?,
 /// @nodoc
 mixin _$LoginResponseDto {
 
-@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'expires_in') int get expiresIn;@JsonKey(name: 'refresh_token') String? get refreshToken; LoginUserDto get user;
+@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'expires_in') int get expiresIn;@JsonKey(name: 'refresh_token') String? get refreshToken;/// True bila server baru menulis consent - tampilkan sheet persetujuan.
+@JsonKey(name: 'requires_consent') bool get requiresConsent; LoginUserDto get user;
 /// Create a copy of LoginResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -303,16 +312,21 @@ $LoginResponseDtoCopyWith<LoginResponseDto> get copyWith => _$LoginResponseDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponseDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.user, user) || other.user == user));
+  final _this = this as LoginResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponseDto&&(identical(other.accessToken, _this.accessToken) || other.accessToken == _this.accessToken)&&(identical(other.expiresIn, _this.expiresIn) || other.expiresIn == _this.expiresIn)&&(identical(other.refreshToken, _this.refreshToken) || other.refreshToken == _this.refreshToken)&&(identical(other.requiresConsent, _this.requiresConsent) || other.requiresConsent == _this.requiresConsent)&&(identical(other.user, _this.user) || other.user == _this.user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,expiresIn,refreshToken,user);
+int get hashCode {
+  final _this = this as LoginResponseDto;
+  return Object.hash(runtimeType,_this.accessToken,_this.expiresIn,_this.refreshToken,_this.requiresConsent,_this.user);
+}
 
 @override
 String toString() {
-  return 'LoginResponseDto(accessToken: $accessToken, expiresIn: $expiresIn, refreshToken: $refreshToken, user: $user)';
+  final _this = this as LoginResponseDto;
+  return 'LoginResponseDto(accessToken: ${_this.accessToken}, expiresIn: ${_this.expiresIn}, refreshToken: ${_this.refreshToken}, requiresConsent: ${_this.requiresConsent}, user: ${_this.user})';
 }
 
 
@@ -323,7 +337,7 @@ abstract mixin class $LoginResponseDtoCopyWith<$Res>  {
   factory $LoginResponseDtoCopyWith(LoginResponseDto value, $Res Function(LoginResponseDto) _then) = _$LoginResponseDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String? refreshToken, LoginUserDto user
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(name: 'requires_consent') bool requiresConsent, LoginUserDto user
 });
 
 
@@ -340,12 +354,13 @@ class _$LoginResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? expiresIn = null,Object? refreshToken = freezed,Object? user = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? expiresIn = null,Object? refreshToken = freezed,Object? requiresConsent = null,Object? user = null,}) {
+  return _then(LoginResponseDto(
 accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,expiresIn: null == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
 as int,refreshToken: freezed == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
-as String?,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as String?,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
+as bool,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as LoginUserDto,
   ));
 }
@@ -440,10 +455,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken,  LoginUserDto user)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(name: 'requires_consent')  bool requiresConsent,  LoginUserDto user)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginResponseDto() when $default != null:
-return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user);case _:
+return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.requiresConsent,_that.user);case _:
   return orElse();
 
 }
@@ -461,10 +476,10 @@ return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken,  LoginUserDto user)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(name: 'requires_consent')  bool requiresConsent,  LoginUserDto user)  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponseDto():
-return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user);case _:
+return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.requiresConsent,_that.user);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -481,10 +496,10 @@ return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken,  LoginUserDto user)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'expires_in')  int expiresIn, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(name: 'requires_consent')  bool requiresConsent,  LoginUserDto user)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponseDto() when $default != null:
-return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user);case _:
+return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.requiresConsent,_that.user);case _:
   return null;
 
 }
@@ -496,12 +511,14 @@ return $default(_that.accessToken,_that.expiresIn,_that.refreshToken,_that.user)
 @JsonSerializable()
 
 class _LoginResponseDto implements LoginResponseDto {
-  const _LoginResponseDto({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'expires_in') required this.expiresIn, @JsonKey(name: 'refresh_token') this.refreshToken, required this.user});
+  const _LoginResponseDto({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'expires_in') required this.expiresIn, @JsonKey(name: 'refresh_token') this.refreshToken, @JsonKey(name: 'requires_consent') this.requiresConsent = false, required this.user});
   factory _LoginResponseDto.fromJson(Map<String, dynamic> json) => _$LoginResponseDtoFromJson(json);
 
 @override@JsonKey(name: 'access_token') final  String accessToken;
 @override@JsonKey(name: 'expires_in') final  int expiresIn;
 @override@JsonKey(name: 'refresh_token') final  String? refreshToken;
+/// True bila server baru menulis consent - tampilkan sheet persetujuan.
+@override@JsonKey(name: 'requires_consent') final  bool requiresConsent;
 @override final  LoginUserDto user;
 
 /// Create a copy of LoginResponseDto
@@ -517,16 +534,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponseDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.user, user) || other.user == user));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponseDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken)&&(identical(other.requiresConsent, requiresConsent) || other.requiresConsent == requiresConsent)&&(identical(other.user, user) || other.user == user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,expiresIn,refreshToken,user);
+int get hashCode {
+    return Object.hash(runtimeType,accessToken,expiresIn,refreshToken,requiresConsent,user);
+}
 
 @override
 String toString() {
-  return 'LoginResponseDto(accessToken: $accessToken, expiresIn: $expiresIn, refreshToken: $refreshToken, user: $user)';
+    return 'LoginResponseDto(accessToken: $accessToken, expiresIn: $expiresIn, refreshToken: $refreshToken, requiresConsent: $requiresConsent, user: $user)';
 }
 
 
@@ -537,7 +556,7 @@ abstract mixin class _$LoginResponseDtoCopyWith<$Res> implements $LoginResponseD
   factory _$LoginResponseDtoCopyWith(_LoginResponseDto value, $Res Function(_LoginResponseDto) _then) = __$LoginResponseDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String? refreshToken, LoginUserDto user
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(name: 'requires_consent') bool requiresConsent, LoginUserDto user
 });
 
 
@@ -554,12 +573,13 @@ class __$LoginResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? expiresIn = null,Object? refreshToken = freezed,Object? user = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? expiresIn = null,Object? refreshToken = freezed,Object? requiresConsent = null,Object? user = null,}) {
   return _then(_LoginResponseDto(
 accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,expiresIn: null == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
 as int,refreshToken: freezed == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
-as String?,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as String?,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
+as bool,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as LoginUserDto,
   ));
 }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -62,7 +62,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               Text(
                 'Atur ulang password',
                 textAlign: .center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
                   color: theme.colors.foreground,
                 ),
@@ -71,7 +71,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               Text(
                 'Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.',
                 textAlign: .center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),

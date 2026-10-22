@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'my_profile_dto.dart';
@@ -9,13 +9,15 @@ part of 'my_profile_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$MyProfileDto {
 
- String get username;@JsonKey(name: 'display_name') String get displayName; String? get bio;@JsonKey(name: 'region_id') String? get regionId;@JsonKey(name: 'village_id') String? get villageId;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'has_read_contribution_guide') bool get hasReadContributionGuide;
+ String get username;@JsonKey(name: 'display_name') String get displayName; String? get bio;@JsonKey(name: 'region_id') String? get regionId;@JsonKey(name: 'village_id') String? get villageId;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'has_read_contribution_guide') bool get hasReadContributionGuide;/// True bila user belum menyetujui terms/privacy versi aktif.
+@JsonKey(name: 'requires_consent') bool get requiresConsent;
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,21 @@ $MyProfileDtoCopyWith<MyProfileDto> get copyWith => _$MyProfileDtoCopyWithImpl<M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+  final _this = this as MyProfileDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.regionId, _this.regionId) || other.regionId == _this.regionId)&&(identical(other.villageId, _this.villageId) || other.villageId == _this.villageId)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.hasReadContributionGuide, _this.hasReadContributionGuide) || other.hasReadContributionGuide == _this.hasReadContributionGuide)&&(identical(other.requiresConsent, _this.requiresConsent) || other.requiresConsent == _this.requiresConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,regionId,villageId,avatarUrl,hasReadContributionGuide);
+int get hashCode {
+  final _this = this as MyProfileDto;
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.regionId,_this.villageId,_this.avatarUrl,_this.hasReadContributionGuide,_this.requiresConsent);
+}
 
 @override
 String toString() {
-  return 'MyProfileDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, avatarUrl: $avatarUrl, hasReadContributionGuide: $hasReadContributionGuide)';
+  final _this = this as MyProfileDto;
+  return 'MyProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, regionId: ${_this.regionId}, villageId: ${_this.villageId}, avatarUrl: ${_this.avatarUrl}, hasReadContributionGuide: ${_this.hasReadContributionGuide}, requiresConsent: ${_this.requiresConsent})';
 }
 
 
@@ -48,7 +55,7 @@ abstract mixin class $MyProfileDtoCopyWith<$Res>  {
   factory $MyProfileDtoCopyWith(MyProfileDto value, $Res Function(MyProfileDto) _then) = _$MyProfileDtoCopyWithImpl;
 @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide
+ String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent
 });
 
 
@@ -65,8 +72,8 @@ class _$MyProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,}) {
+  return _then(MyProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
@@ -74,6 +81,7 @@ as String?,regionId: freezed == regionId ? _self.regionId : regionId // ignore: 
 as String?,villageId: freezed == villageId ? _self.villageId : villageId // ignore: cast_nullable_to_non_nullable
 as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,hasReadContributionGuide: null == hasReadContributionGuide ? _self.hasReadContributionGuide : hasReadContributionGuide // ignore: cast_nullable_to_non_nullable
+as bool,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -159,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent);case _:
   return orElse();
 
 }
@@ -180,10 +188,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent)  $default,) {final _that = this;
 switch (_that) {
 case _MyProfileDto():
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +208,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent)?  $default,) {final _that = this;
 switch (_that) {
 case _MyProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent);case _:
   return null;
 
 }
@@ -215,7 +223,7 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 @JsonSerializable()
 
 class _MyProfileDto implements MyProfileDto {
-  const _MyProfileDto({required this.username, @JsonKey(name: 'display_name') required this.displayName, this.bio, @JsonKey(name: 'region_id') this.regionId, @JsonKey(name: 'village_id') this.villageId, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'has_read_contribution_guide') this.hasReadContributionGuide = false});
+  const _MyProfileDto({required this.username, @JsonKey(name: 'display_name') required this.displayName, this.bio, @JsonKey(name: 'region_id') this.regionId, @JsonKey(name: 'village_id') this.villageId, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'has_read_contribution_guide') this.hasReadContributionGuide = false, @JsonKey(name: 'requires_consent') this.requiresConsent = false});
   factory _MyProfileDto.fromJson(Map<String, dynamic> json) => _$MyProfileDtoFromJson(json);
 
 @override final  String username;
@@ -225,6 +233,8 @@ class _MyProfileDto implements MyProfileDto {
 @override@JsonKey(name: 'village_id') final  String? villageId;
 @override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
 @override@JsonKey(name: 'has_read_contribution_guide') final  bool hasReadContributionGuide;
+/// True bila user belum menyetujui terms/privacy versi aktif.
+@override@JsonKey(name: 'requires_consent') final  bool requiresConsent;
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +249,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide)&&(identical(other.requiresConsent, requiresConsent) || other.requiresConsent == requiresConsent));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,regionId,villageId,avatarUrl,hasReadContributionGuide);
+int get hashCode {
+    return Object.hash(runtimeType,username,displayName,bio,regionId,villageId,avatarUrl,hasReadContributionGuide,requiresConsent);
+}
 
 @override
 String toString() {
-  return 'MyProfileDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, avatarUrl: $avatarUrl, hasReadContributionGuide: $hasReadContributionGuide)';
+    return 'MyProfileDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, avatarUrl: $avatarUrl, hasReadContributionGuide: $hasReadContributionGuide, requiresConsent: $requiresConsent)';
 }
 
 
@@ -259,7 +271,7 @@ abstract mixin class _$MyProfileDtoCopyWith<$Res> implements $MyProfileDtoCopyWi
   factory _$MyProfileDtoCopyWith(_MyProfileDto value, $Res Function(_MyProfileDto) _then) = __$MyProfileDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide
+ String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent
 });
 
 
@@ -276,7 +288,7 @@ class __$MyProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,}) {
   return _then(_MyProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -285,6 +297,7 @@ as String?,regionId: freezed == regionId ? _self.regionId : regionId // ignore: 
 as String?,villageId: freezed == villageId ? _self.villageId : villageId // ignore: cast_nullable_to_non_nullable
 as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,hasReadContributionGuide: null == hasReadContributionGuide ? _self.hasReadContributionGuide : hasReadContributionGuide // ignore: cast_nullable_to_non_nullable
+as bool,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -309,16 +322,21 @@ $UpdateMyProfileRequestDtoCopyWith<UpdateMyProfileRequestDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateMyProfileRequestDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+  final _this = this as UpdateMyProfileRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateMyProfileRequestDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.regionId, _this.regionId) || other.regionId == _this.regionId)&&(identical(other.villageId, _this.villageId) || other.villageId == _this.villageId)&&(identical(other.hasReadContributionGuide, _this.hasReadContributionGuide) || other.hasReadContributionGuide == _this.hasReadContributionGuide));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,regionId,villageId,hasReadContributionGuide);
+int get hashCode {
+  final _this = this as UpdateMyProfileRequestDto;
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.regionId,_this.villageId,_this.hasReadContributionGuide);
+}
 
 @override
 String toString() {
-  return 'UpdateMyProfileRequestDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, hasReadContributionGuide: $hasReadContributionGuide)';
+  final _this = this as UpdateMyProfileRequestDto;
+  return 'UpdateMyProfileRequestDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, regionId: ${_this.regionId}, villageId: ${_this.villageId}, hasReadContributionGuide: ${_this.hasReadContributionGuide})';
 }
 
 
@@ -347,7 +365,7 @@ class _$UpdateMyProfileRequestDtoCopyWithImpl<$Res>
 /// Create a copy of UpdateMyProfileRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? username = freezed,Object? displayName = freezed,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? hasReadContributionGuide = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(UpdateMyProfileRequestDto(
 username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
@@ -518,16 +536,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateMyProfileRequestDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateMyProfileRequestDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,regionId,villageId,hasReadContributionGuide);
+int get hashCode {
+    return Object.hash(runtimeType,username,displayName,bio,regionId,villageId,hasReadContributionGuide);
+}
 
 @override
 String toString() {
-  return 'UpdateMyProfileRequestDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, hasReadContributionGuide: $hasReadContributionGuide)';
+    return 'UpdateMyProfileRequestDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, hasReadContributionGuide: $hasReadContributionGuide)';
 }
 
 

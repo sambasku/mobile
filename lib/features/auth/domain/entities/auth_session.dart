@@ -6,6 +6,7 @@ class AuthSession {
     required this.role,
     this.displayName,
     this.avatarUrl,
+    this.requiresConsent = false,
   });
 
   final String userId;
@@ -15,6 +16,9 @@ class AuthSession {
   /// Nama tampilan profil (boleh spasi/kapital). Fallback UI → [username].
   final String? displayName;
   final String? avatarUrl;
+  /// True bila server baru menulis consent di jalur login ini - app wajib
+  /// menampilkan sheet persetujuan setelah sesi tersimpan.
+  final bool requiresConsent;
 
   /// Role verifikator (base-stack Section 22) - dipakai UI menyembunyikan
   /// aksi khusus (antrean review, dsb)

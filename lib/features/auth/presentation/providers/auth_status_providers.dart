@@ -63,6 +63,7 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
         role: session.role,
         userId: session.userId,
         avatarUrl: session.avatarUrl,
+        requiresLegalConsent: session.requiresConsent,
       ),
     );
     // Sama seperti logout: list keepAlive watch authStatus, cukup rebuild.
@@ -174,7 +175,12 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
             current.username?.toLowerCase() == profile.username.toLowerCase();
         final sameDisplay = current.displayName == profile.displayName;
         final sameAvatar = current.avatarUrl == nextAvatar;
-        if (sameUsername && sameDisplay && sameAvatar) {
+        // requires_consent harus ikut dievaluasi walau identitas sama -
+        // naiknya versi legal tidak mengubah identitas tapi harus tetap
+        // memunculkan sheet (sumber kebenaran /users/me, bukan flag login).
+        final sameConsent =
+            current.requiresLegalConsent == profile.requiresConsent;
+        if (sameUsername && sameDisplay && sameAvatar && sameConsent) {
           // Sudah sinkron - jangan tulis prefs / emit state baru.
           return current;
         }
@@ -189,6 +195,7 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
           username: profile.username,
           displayName: profile.displayName,
           avatarUrl: nextAvatar,
+          requiresLegalConsent: profile.requiresConsent,
         );
       });
     } catch (_) {
@@ -208,7 +215,8 @@ class AuthStatusNotifier extends _$AuthStatusNotifier {
     final changed =
         synced.username != current.username ||
         synced.displayName != current.displayName ||
-        synced.avatarUrl != current.avatarUrl;
+        synced.avatarUrl != current.avatarUrl ||
+        synced.requiresLegalConsent != current.requiresLegalConsent;
     if (changed) {
       state = AsyncData(synced);
     }

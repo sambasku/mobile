@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -112,7 +112,7 @@ class VerifyEmailPage extends HookConsumerWidget {
               Text(
                 'Masukkan kode 6 karakter',
                 textAlign: .center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
                   color: theme.colors.foreground,
                 ),
@@ -123,7 +123,7 @@ class VerifyEmailPage extends HookConsumerWidget {
                     ? 'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.'
                     : 'Kode dikirim ke $email (berlaku 10 menit).',
                 textAlign: .center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
