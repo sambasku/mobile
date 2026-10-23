@@ -55,13 +55,13 @@ class AnalyticsOverviewStrip extends StatelessWidget {
           children: [
             Text(
               'Perlu tindakan',
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(6),
             if (attention.isEmpty)
               Text(
                 'Tidak ada antrean.',
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               )
@@ -81,7 +81,7 @@ class AnalyticsOverviewStrip extends StatelessWidget {
             const Gap(8),
             Text(
               'Hari ini',
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(4),
             Wrap(
@@ -94,20 +94,20 @@ class AnalyticsOverviewStrip extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: '${m.label} ',
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
                         TextSpan(
                           text: formatAnalyticsCount(m.today),
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         if (m.delta != null)
                           TextSpan(
                             text: ' ${formatDelta(m.delta!)}',
-                            style: theme.typography.xs.copyWith(
+                            style: theme.typography.body.xs.copyWith(
                               fontWeight: FontWeight.w600,
                               color: m.delta! > 0
                                   ? const Color(0xFF16A34A)
@@ -144,7 +144,7 @@ class _Chip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(label, style: theme.typography.xs),
+        child: Text(label, style: theme.typography.body.xs),
       ),
     );
     if (onTap == null) return child;

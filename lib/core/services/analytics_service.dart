@@ -33,6 +33,8 @@ abstract final class AnalyticsEvents {
   static const authLogout = 'auth_logout';
   static const searchMissTap = 'search_miss_tap';
   static const searchMissListOpen = 'search_miss_list_open';
+  /// #193: pengguna ganti chip kategori feed beranda.
+  static const feedFilter = 'feed_filter';
   static const commentSubmit = 'comment_submit';
 
   /// Bukan `notification_open`: nama itu reserved Firebase (otomatis dari FCM).

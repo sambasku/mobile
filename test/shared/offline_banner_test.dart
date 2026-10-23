@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/network/connectivity_provider.dart';
 import 'package:sambasku_mobile/shared/widgets/offline_banner.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   test('connectivity: semua none = offline, ada wifi = online', () {
@@ -28,7 +29,7 @@ void main() {
           connectivityProvider.overrideWith((ref) => controller.stream),
         ],
         child: FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: const MaterialApp(home: Scaffold(body: OfflineBanner())),
         ),
       ),

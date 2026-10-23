@@ -3,19 +3,20 @@
 /// (mis. RATE_LIMITED -> toast hitung mundur).
 class AuthFailure {
   const AuthFailure(this.message, {this.errorCode});
-
   static const googleSignInCanceled = 'GOOGLE_SIGN_IN_CANCELED';
   static const facebookSignInCanceled = 'FACEBOOK_SIGN_IN_CANCELED';
   static const githubSignInCanceled = 'GITHUB_SIGN_IN_CANCELED';
+  static const oauthAccount = 'OAUTH_ACCOUNT';
 
   final String message;
   final String? errorCode;
-
   bool get isEmailNotVerified => errorCode == 'EMAIL_NOT_VERIFIED';
-
   /// User dismiss sheet Google/Facebook/GitHub → toast singkat, bukan alert form.
   bool get isSocialSignInCanceled =>
       errorCode == googleSignInCanceled ||
       errorCode == facebookSignInCanceled ||
       errorCode == githubSignInCanceled;
+  /// Akun login via OAuth: reset password tidak bisa diproses.
+  /// Info (bottom sheet biru), bukan error merah.
+  bool get isOAuthAccount => errorCode == oauthAccount;
 }

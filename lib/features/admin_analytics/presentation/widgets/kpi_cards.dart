@@ -122,7 +122,7 @@ class _KpiRow extends StatelessWidget {
                   data.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -130,7 +130,7 @@ class _KpiRow extends StatelessWidget {
                   data.subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: data.attention
                         ? const Color(0xFFD97706)
                         : theme.colors.mutedForeground,
@@ -142,7 +142,7 @@ class _KpiRow extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             formatAnalyticsCount(data.value),
-            style: theme.typography.lg.copyWith(
+            style: theme.typography.body.lg.copyWith(
               fontWeight: FontWeight.w700,
               color: data.attention
                   ? const Color(0xFFD97706)

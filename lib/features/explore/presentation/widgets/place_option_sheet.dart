@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -94,7 +94,7 @@ class _PlaceOptionSheetBodyState extends State<_PlaceOptionSheetBody> {
                     widget.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -114,7 +114,7 @@ class _PlaceOptionSheetBodyState extends State<_PlaceOptionSheetBody> {
                   : '${widget.items.length} pilihan - ketuk untuk memilih',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
@@ -146,7 +146,7 @@ class _PlaceOptionSheetBodyState extends State<_PlaceOptionSheetBody> {
                       widget.items.isEmpty
                           ? 'Tidak ada data'
                           : 'Tidak ada yang cocok',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -173,7 +173,7 @@ class _PlaceOptionSheetBodyState extends State<_PlaceOptionSheetBody> {
                                     item.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: theme.typography.sm.copyWith(
+                                    style: theme.typography.body.sm.copyWith(
                                       fontWeight: selected
                                           ? FontWeight.w700
                                           : FontWeight.w500,

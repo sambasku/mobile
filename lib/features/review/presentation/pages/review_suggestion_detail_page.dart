@@ -8,6 +8,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../providers/review_suggestions_providers.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 /// Detail usulan edit + Setujui / Tolak.
 class ReviewSuggestionDetailPage extends ConsumerWidget {
@@ -83,43 +84,37 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
   Future<void> _reject() async {
     if (_busy || !detail.isPending) return;
     final controller = TextEditingController();
-    final comment = await showFDialog<String>(
+    final comment = await showFMessageDialog<String>(
       context: context,
-      builder: (dialogContext, style, animation) {
-        return FDialog(
-          style: style,
-          animation: animation,
-          title: const Text('Tolak usulan'),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Berikan alasan penolakan untuk kontributor.'),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: controller),
-                label: const Text('Alasan'),
-                maxLines: 3,
-              ),
-            ],
+      title: const Text('Tolak usulan'),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Berikan alasan penolakan untuk kontributor.'),
+          const Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            label: const Text('Alasan'),
+            maxLines: 3,
           ),
-          actions: [
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            FButton(
-              onPress: () {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                Navigator.of(dialogContext).pop(text);
-              },
-              child: const Text('Tolak'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: const Text('Batal'),
+        ),
+        FButton(
+          onPress: () {
+            final text = controller.text.trim();
+            if (text.isEmpty) return;
+            Navigator.of(dialogContext).pop(text);
+          },
+          child: const Text('Tolak'),
+        ),
+      ],
     );
     controller.dispose();
     if (!mounted || comment == null || comment.trim().isEmpty) return;
@@ -155,24 +150,24 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
       children: [
         Text(
           detail.wordLemma,
-          style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
         Text(
           'Dari ${detail.contributorLabel} · ${formatDateTimeIso(detail.createdAt)}',
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
           ),
         ),
         const Gap(12),
         Text(
           'Alasan: ${detail.reason}',
-          style: theme.typography.sm,
+          style: theme.typography.body.sm,
         ),
         const Gap(20),
         Text(
           'Perbandingan',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(8),
         if (detail.lemmaDiff.changed)
@@ -241,7 +236,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
             detail.imagesRemoved == 0)
           Text(
             'Tidak ada diff ringkas',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -252,7 +247,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
                 'Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar hanya di console.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -270,7 +265,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
         ] else
           Text(
             'Status: ${detail.status}',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -300,18 +295,18 @@ class _DiffRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
           Text(
             'Sekarang: ${current?.trim().isNotEmpty == true ? current : '-'}',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
           Text(
             'Usulan: ${proposed?.trim().isNotEmpty == true ? proposed : '-'}',
-            style: theme.typography.sm,
+            style: theme.typography.body.sm,
           ),
         ],
       ),
@@ -337,7 +332,7 @@ class _CountRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         detail != null ? '$label: $detail' : '$label: $count perubahan',
-        style: theme.typography.sm,
+        style: theme.typography.body.sm,
       ),
     );
   }

@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dart';
 import 'package:sambasku_mobile/flavors.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
-    theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+    theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
     localizationsDelegates: FLocalizations.localizationsDelegates,
     supportedLocales: FLocalizations.supportedLocales,
-    home: FTheme(data: FThemes.zinc.light.touch, child: child),
+    home: FTheme(data: foruiPalettes['zinc']!.light.touch, child: child),
   ),
 );
 

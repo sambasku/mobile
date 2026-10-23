@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
@@ -170,7 +170,7 @@ class ReportBugPage extends HookConsumerWidget {
             const Gap(4),
             Text(
               'Login untuk bisa melampirkan screenshot',
-              style: context.theme.typography.sm.copyWith(
+              style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
             ),
@@ -191,7 +191,7 @@ class ReportBugPage extends HookConsumerWidget {
             alignment: Alignment.centerRight,
             child: Text(
               '${trimmed.length}/2000',
-              style: context.theme.typography.sm.copyWith(
+              style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
             ),
@@ -200,7 +200,7 @@ class ReportBugPage extends HookConsumerWidget {
             const Gap(8),
             Text(
               'Lampiran (opsional, maks 4)',
-              style: context.theme.typography.sm.copyWith(
+              style: context.theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),

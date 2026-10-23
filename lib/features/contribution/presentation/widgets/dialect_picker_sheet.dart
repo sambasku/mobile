@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -72,7 +72,7 @@ class _DialectPickerSheetBody extends StatelessWidget {
                     'Pilih dialek',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -90,7 +90,7 @@ class _DialectPickerSheetBody extends StatelessWidget {
               'Default otomatis · bisa diganti',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
@@ -102,7 +102,7 @@ class _DialectPickerSheetBody extends StatelessWidget {
                 ? Center(
                     child: Text(
                       'Tidak ada dialek',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -132,7 +132,7 @@ class _DialectPickerSheetBody extends StatelessWidget {
                                           item.name,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: theme.typography.sm.copyWith(
+                                          style: theme.typography.body.sm.copyWith(
                                             fontWeight: selected
                                                 ? FontWeight.w700
                                                 : FontWeight.w500,
@@ -146,7 +146,7 @@ class _DialectPickerSheetBody extends StatelessWidget {
                                         const Gap(8),
                                         Text(
                                           'default',
-                                          style: theme.typography.sm.copyWith(
+                                          style: theme.typography.body.sm.copyWith(
                                             color: theme.colors.mutedForeground,
                                             fontSize: 11,
                                           ),

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' show lerpDouble;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 
@@ -526,7 +526,7 @@ class _SwipeLabelOverlay extends StatelessWidget {
                 ),
                 child: Text(
                   label,
-                  style: context.theme.typography.sm.copyWith(
+                  style: context.theme.typography.body.sm.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                   ),
@@ -577,7 +577,7 @@ class _SwipeIconOverlay extends StatelessWidget {
                   Icon(icon, size: 96, color: color),
                   Text(
                     label,
-                    style: context.theme.typography.lg.copyWith(
+                    style: context.theme.typography.body.lg.copyWith(
                       color: color,
                       fontWeight: FontWeight.w800,
                     ),

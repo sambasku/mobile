@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -97,10 +97,7 @@ FTileMixin fontScaleTile(WidgetRef ref) {
       for (final entry in _scaleLabels.entries)
         FSelectTile(
           value: entry.key,
-          title: Text(
-            entry.value,
-            style: TextStyle(fontSize: 14 * entry.key),
-          ),
+          title: Text(entry.value, style: TextStyle(fontSize: 14 * entry.key)),
         ),
     ],
   );
@@ -120,12 +117,12 @@ class _PaletteDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: 16,
-        height: 16,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(color: context.theme.colors.border),
-        ),
-      );
+    width: 16,
+    height: 16,
+    decoration: BoxDecoration(
+      color: color,
+      shape: BoxShape.circle,
+      border: Border.all(color: context.theme.colors.border),
+    ),
+  );
 }

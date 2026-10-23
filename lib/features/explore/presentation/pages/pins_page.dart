@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/theme/forui_palette_controller.dart';
 import '../../../../core/theme/forui_palettes.dart';
@@ -212,10 +212,8 @@ class _PlaceCard extends StatelessWidget {
     }
     // Timeout: handler external di sebagian ROM bisa menggantung; tanpa ini
     // user tidak dapat umpan balik sama sekali.
-    final ok = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    ).timeout(const Duration(seconds: 8), onTimeout: () => false);
+    final ok = await launchExternalUrl(uri)
+        .timeout(const Duration(seconds: 8), onTimeout: () => false);
     if (!ok && context.mounted) {
       showFToast(
         context: context,
@@ -283,7 +281,7 @@ class _PlaceCard extends StatelessWidget {
                       place.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                         height: 1.3,
                       ),
@@ -345,7 +343,7 @@ class _PinsEmpty extends StatelessWidget {
               title: const Text('Belum ada tempat di peta'),
               subtitle: Text(
                 'Daftar tempat masih kosong, atau datanya gagal dimuat.',
-                style: context.theme.typography.sm,
+                style: context.theme.typography.body.sm,
               ),
             ),
             const SizedBox(height: 12),
@@ -369,7 +367,7 @@ class _PinsError extends StatelessWidget {
           title: const Text('Peta tidak bisa dimuat'),
           subtitle: Text(
             'Periksa koneksi internetmu lalu coba lagi ya.',
-            style: context.theme.typography.sm,
+            style: context.theme.typography.body.sm,
           ),
         ),
       ),

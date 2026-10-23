@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vote_toggle_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'vote_toggle_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VoteToggleRequestDtoCopyWith<VoteToggleRequestDto> get copyWith => _$VoteToggle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteToggleRequestDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.value, value) || other.value == value));
+  final _this = this as VoteToggleRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteToggleRequestDto&&(identical(other.targetType, _this.targetType) || other.targetType == _this.targetType)&&(identical(other.targetId, _this.targetId) || other.targetId == _this.targetId)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,value);
+int get hashCode {
+  final _this = this as VoteToggleRequestDto;
+  return Object.hash(runtimeType,_this.targetType,_this.targetId,_this.value);
+}
 
 @override
 String toString() {
-  return 'VoteToggleRequestDto(targetType: $targetType, targetId: $targetId, value: $value)';
+  final _this = this as VoteToggleRequestDto;
+  return 'VoteToggleRequestDto(targetType: ${_this.targetType}, targetId: ${_this.targetId}, value: ${_this.value})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VoteToggleRequestDtoCopyWithImpl<$Res>
 /// Create a copy of VoteToggleRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? targetType = null,Object? targetId = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(VoteToggleRequestDto(
 targetType: null == targetType ? _self.targetType : targetType // ignore: cast_nullable_to_non_nullable
 as String,targetId: null == targetId ? _self.targetId : targetId // ignore: cast_nullable_to_non_nullable
 as String,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -231,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteToggleRequestDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteToggleRequestDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,value);
+int get hashCode {
+    return Object.hash(runtimeType,targetType,targetId,value);
+}
 
 @override
 String toString() {
-  return 'VoteToggleRequestDto(targetType: $targetType, targetId: $targetId, value: $value)';
+    return 'VoteToggleRequestDto(targetType: $targetType, targetId: $targetId, value: $value)';
 }
 
 

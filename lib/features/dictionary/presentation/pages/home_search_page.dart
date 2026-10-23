@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -13,13 +14,13 @@ import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
+import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../activity/presentation/providers/announcement_detail_provider.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../contribution/contribution_router.dart';
-import '../../../discussion/presentation/widgets/discussion_home_banner.dart';
-import '../../../search_miss/search_miss_router.dart';
+import '../../../discussion/discussion_router.dart';
 import '../../dictionary_router.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
@@ -27,9 +28,8 @@ import '../widgets/word_of_day_card.dart';
 /// Durasi semua layer animasi header (tinggi, slide, fade, gap).
 const _headerAnimDuration = Duration(milliseconds: 280);
 
-/// Jarak jari untuk menutup penuh blok header. Tetap 90, sama seperti saat
-/// bloknya cuma kolom cari + satu tombol. Menyamakan jarak dengan tinggi
-/// blok baru (~160) membuat feed terlihat diam lebih lama.
+/// Jarak jari untuk menutup penuh blok header (kolom cari + 2 tile: Usul
+/// kata baru, Ruang Diskusi).
 const _headerCollapseDistance = 90.0;
 
 /// Key blok header collaps (dipakai test untuk menemukan blok ini).
@@ -45,7 +45,10 @@ class HomeSearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(activityFeedProvider);
+    // #193: kategori chips dipisah dari state feed. `useState` milik halaman
+    // (bukan provider) - pindah tab tidak butuh hidup lintas halaman.
+    final selectedCategory = useState(FeedCategory.all);
+    final state = ref.watch(activityFeedProvider(selectedCategory.value));
     final scroll = useScrollController();
 
     // Animation, bukan double: halaman tidak rebuild tiap frame scroll.
@@ -77,20 +80,22 @@ class HomeSearchPage extends HookConsumerWidget {
       // Pengumuman pinned bisa expired saat app di background; invalidate
       // (data lama tetap tampil selagi reload, tanpa skeleton berkedip).
       ref.invalidate(pinnedAnnouncementsProvider);
-      ref.read(activityFeedProvider.notifier).load();
+      ref.read(activityFeedProvider(selectedCategory.value).notifier).load();
     });
 
     useEffect(() {
       void listener() {
         if (!scroll.hasClients) return;
         if (scroll.position.maxScrollExtent - scroll.position.pixels < 200) {
-          ref.read(activityFeedProvider.notifier).loadMore();
+          ref
+              .read(activityFeedProvider(selectedCategory.value).notifier)
+              .loadMore();
         }
       }
 
       scroll.addListener(listener);
       return () => scroll.removeListener(listener);
-    }, [scroll]);
+    }, [scroll, selectedCategory.value]);
 
     return Column(
       children: [
@@ -120,10 +125,12 @@ class HomeSearchPage extends HookConsumerWidget {
               ),
             );
           },
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(12, 0, 12, 4),
-            child: Column(
-              children: [_HomeSearchRow(), Gap(8), _HomeMenuTiles()],
+          child: RepaintBoundary(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+              child: Column(
+                children: [_HomeSearchRow(), Gap(8), _HomeMenuTiles()],
+              ),
             ),
           ),
         ),
@@ -139,6 +146,20 @@ class HomeSearchPage extends HookConsumerWidget {
             scroll,
             dayId: dayId,
             feedReady: feedReady,
+            category: selectedCategory.value,
+            onCategoryChanged: (next) {
+              if (next == selectedCategory.value) return;
+              // Feedback taktil: ganti filter terasa instan di jari.
+              HapticFeedback.selectionClick();
+              // Lazy: chip kategori hanya fetch saat PERTAMA di-tap.
+              // Kategori yang sudah pernah dimuat = nol request.
+              ref.read(activityFeedProvider(next).notifier).ensureLoaded();
+              AnalyticsService.instance.log(
+                AnalyticsEvents.feedFilter,
+                params: {'category': next.wire},
+              );
+              selectedCategory.value = next;
+            },
           ),
         ),
       ],
@@ -152,8 +173,13 @@ class HomeSearchPage extends HookConsumerWidget {
     ScrollController scroll, {
     required String? dayId,
     required bool feedReady,
+    required FeedCategory category,
+    required ValueChanged<FeedCategory> onCategoryChanged,
   }) {
-    if (state.isLoading && state.items.isEmpty) {
+    // #193: skeleton penuh hanya saat kategori ini BELUM PERNAH dimuat.
+    // Pindah chip ke kategori yang sudah ter-cache = render langsung (nol
+    // skeleton berkedip); kategori baru menampilkan skeleton sekali.
+    if (!state.hasLoaded) {
       return const _FeedSkeleton();
     }
 
@@ -167,69 +193,75 @@ class HomeSearchPage extends HookConsumerWidget {
     final hasError = state.errorMessage != null;
     final showPlaceholder =
         !feedReady || (items.isEmpty && state.errorMessage == null);
-    // 0 Kata Hari Ini, 1 spanduk diskusi, 2 banner pinned (shrink jika
-    // kosong), 3 judul, lalu opsional peringatan.
-    final headerCount = 4 + (hasError ? 1 : 0);
+    // Feed = CustomScrollView (bukan ListView) supaya baris chip kategori
+    // bisa PIN di bawah app bar saat scroll (lihat PinnedHeaderSliver).
     final bodyCount = showPlaceholder
         ? 1
         : items.length + (state.isLoadingMore ? 1 : 0);
 
     return RefreshIndicator(
-      onRefresh: () => _refresh(ref),
-      child: ListView.builder(
+      onRefresh: () => _refresh(ref, category),
+      child: CustomScrollView(
         controller: scroll,
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-        itemCount: headerCount + bodyCount,
-        itemBuilder: (context, index) {
-          // Index 2 (carousel pengumuman) dibiarkan full-bleed; sisanya
-          // memasang gutter manual.
-          if (index == 0) {
-            return const Padding(padding: _hPad, child: WordOfDayCard());
-          }
-          if (index == 1) {
-            return const Padding(padding: _hPad, child: DiscussionHomeBanner());
-          }
-          if (index == 2) return const PinnedHomeBanner();
-          if (index == 3) {
-            return const Padding(padding: _hPad, child: _FeedHeading());
-          }
-          var cursor = 4;
-          if (hasError) {
-            if (index == cursor) {
-              return Padding(
+        slivers: [
+          const SliverToBoxAdapter(
+            child: Padding(padding: _hPad, child: WordOfDayCard()),
+          ),
+          const SliverToBoxAdapter(child: PinnedHomeBanner()),
+          const SliverToBoxAdapter(
+            child: Padding(padding: _hPad, child: _FeedHeading()),
+          ),
+          // Chip kategori menempel di bawah app bar saat feed di-scroll
+          // (pinned) - filter tetap terjangkau tanpa scroll balik ke atas.
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _FeedCategoryChipsHeader(
+              child: _FeedCategoryChips(
+                selected: category,
+                onChanged: onCategoryChanged,
+              ),
+            ),
+          ),
+          if (hasError)
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: FAlert(
                   variant: FAlertVariant.destructive,
                   title: Text(state.errorMessage!),
                 ),
-              );
-            }
-            cursor++;
-          }
-          final bodyIndex = index - cursor;
-          if (!feedReady) return const _FeedListSkeleton();
-          if (items.isEmpty && state.errorMessage == null) {
-            return const _EmptyFeed();
-          }
-          if (bodyIndex >= items.length) {
-            return const Padding(
-              padding: EdgeInsets.only(top: 12, bottom: 8),
-              child: Center(child: FCircularProgress()),
-            );
-          }
-          return Padding(
-            padding: _hPad,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ActivityFeedTile(item: items[bodyIndex]),
-                if (bodyIndex != items.length - 1)
-                  Divider(height: 1, color: context.theme.colors.border),
-              ],
+              ),
             ),
-          );
-        },
+          if (!feedReady)
+            const SliverToBoxAdapter(child: _FeedListSkeleton())
+          else if (items.isEmpty && state.errorMessage == null)
+            const SliverToBoxAdapter(child: _EmptyFeed())
+          else
+            SliverList.builder(
+              itemCount: bodyCount,
+              itemBuilder: (context, bodyIndex) {
+                if (bodyIndex >= items.length) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 12, bottom: 8),
+                    child: Center(child: FCircularProgress()),
+                  );
+                }
+                return Padding(
+                  padding: _hPad,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ActivityFeedTile(item: items[bodyIndex]),
+                      if (bodyIndex != items.length - 1)
+                        Divider(height: 1, color: context.theme.colors.border),
+                    ],
+                  ),
+                );
+              },
+            ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        ],
       ),
     );
   }
@@ -240,7 +272,7 @@ class HomeSearchPage extends HookConsumerWidget {
     return item.target?.type == 'word' && item.target?.id == dayId;
   }
 
-  Future<void> _refresh(WidgetRef ref) async {
+  Future<void> _refresh(WidgetRef ref, FeedCategory category) async {
     final store = ref.read(responseCacheStoreProvider);
     await store.delete(
       buildCacheKey(method: 'GET', path: '/api/v1/words/today'),
@@ -249,7 +281,9 @@ class HomeSearchPage extends HookConsumerWidget {
     ref.invalidate(wordOfDayProvider);
     ref.invalidate(pinnedAnnouncementsProvider);
     await Future.wait([
-      ref.read(activityFeedProvider.notifier).load(forceRefresh: true),
+      ref
+          .read(activityFeedProvider(category).notifier)
+          .load(forceRefresh: true),
       ref.read(wordOfDayProvider.future),
     ]);
   }
@@ -300,6 +334,9 @@ class _HomeMenuTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // #193: tile "Dicari warga" dipindah ke chips kategori feed (kini bisa
+    // diakses langsung dari beranda); area CTA hanya menyisakan "Usul kata
+    // baru" - blok lebih pendek, jarak collapse disesuaikan.
     return FTileGroup(
       physics: const NeverScrollableScrollPhysics(),
       children: [
@@ -316,20 +353,112 @@ class _HomeMenuTiles extends StatelessWidget {
           },
         ),
         FTile(
-          prefix: const Icon(FLucideIcons.userSearch, size: 18),
-          title: const Text('Dicari warga'),
+          prefix: const Icon(FLucideIcons.languages, size: 18),
+          title: const Text('Ruang Diskusi'),
+          subtitle: const Text(
+            'Tanya arti atau bahas kata Sambas bareng warga',
+          ),
           suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-          onPress: () {
-            AnalyticsService.instance.log(
-              AnalyticsEvents.searchMissListOpen,
-              params: {'from': 'home'},
-            );
-            context.push(SearchMissRouter.list.path);
-          },
+          onPress: () => context.push(DiscussionRouter.feed.path),
         ),
       ],
     );
   }
+}
+
+/// #193: chips kategori feed beranda. Full-bleed (tanpa _hPad) + scroll
+/// horizontal: chip terakhir tidak terpotong gutter, tepi kiri rata layar.
+class _FeedCategoryChips extends StatelessWidget {
+  const _FeedCategoryChips({required this.selected, this.onChanged});
+
+  final FeedCategory selected;
+
+  /// Null = mode statis (dipakai skeleton: render tanpa aksi).
+  final ValueChanged<FeedCategory>? onChanged;
+
+  /// Tinggi baris chip (dipakai delegate pinned).
+  static const double height = 36;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        // Key khusus test: ada ListView lain di halaman (feed vertical).
+        key: const ValueKey('feed_category_chips'),
+        scrollDirection: Axis.horizontal,
+        // padding asimetris: kiri/kanan 12 sejajar gutter konten, tapi chip
+        // bisa scroll melewati gutter (clamping ScrollView, bukan viewport
+        // terpotong).
+        padding: const EdgeInsets.fromLTRB(12, 2, 12, 2),
+        itemCount: FeedCategory.values.length,
+        separatorBuilder: (_, _) => const Gap(6),
+        itemBuilder: (context, i) {
+          final category = FeedCategory.values[i];
+          final isSelected = category == selected;
+          return FButton(
+            size: .xs,
+            variant: isSelected
+                ? FButtonVariant.primary
+                : FButtonVariant.outline,
+            onPress: onChanged == null ? null : () => onChanged!(category),
+            child: Text(category.label),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Delegate pinned untuk baris chip kategori: baris ini menempel di bawah
+/// app bar saat feed di-scroll, jadi filter selalu terjangkau.
+///
+/// Latar opaque (warna tema) wajib: tanpa itu, item feed yang lewat di
+/// belakang baris chip akan tembus terlihat dan chip jadi susah dibaca.
+class _FeedCategoryChipsHeader extends SliverPersistentHeaderDelegate {
+  _FeedCategoryChipsHeader({required this.child});
+
+  final Widget child;
+
+  @override
+  double get minExtent => _FeedCategoryChips.height;
+
+  @override
+  double get maxExtent => _FeedCategoryChips.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final theme = context.theme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.background,
+        // Garis bawah tipis sebagai pemisah dari feed yang lewat di bawah.
+        border: Border(
+          bottom: BorderSide(color: theme.colors.border, width: 0.5),
+        ),
+        // Saat menempel dengan konten lewat di belakang (pinned aktif),
+        // bayangan halus menegaskan bar terpisah dari feed (pola app bar).
+        boxShadow: overlapsContent
+            ? [
+                BoxShadow(
+                  color: theme.colors.foreground.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: child,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_FeedCategoryChipsHeader oldDelegate) =>
+      oldDelegate.child != child;
 }
 
 class _FeedHeading extends StatelessWidget {
@@ -342,7 +471,7 @@ class _FeedHeading extends StatelessWidget {
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: Text(
         'Aktivitas terbaru',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           fontWeight: FontWeight.w700,
           color: theme.colors.foreground,
         ),
@@ -370,7 +499,9 @@ class _EmptyFeed extends StatelessWidget {
           Text(
             'Belum ada aktivitas.',
             textAlign: TextAlign.center,
-            style: theme.typography.md.copyWith(color: theme.colors.foreground),
+            style: theme.typography.body.md.copyWith(
+              color: theme.colors.foreground,
+            ),
           ),
         ],
       ),
@@ -386,7 +517,7 @@ class _FeedListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -409,7 +540,7 @@ class _FeedListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -440,9 +571,9 @@ class _FeedSkeleton extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
       children: const [
         Padding(padding: _hPad, child: WordOfDayCard()),
-        Padding(padding: _hPad, child: DiscussionHomeBanner()),
         PinnedHomeBanner(),
         Padding(padding: _hPad, child: _FeedHeading()),
+        _FeedCategoryChips(selected: FeedCategory.all, onChanged: null),
         _FeedListSkeleton(),
       ],
     );

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +28,7 @@ class VerifierRolePage extends StatelessWidget {
           Text(
             'Baca ringkas apa itu verifikator dan apa saja yang dilakukan '
             'sebelum mengajukan diri.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               height: 1.4,
             ),
@@ -94,7 +94,7 @@ class _RoleBlock extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -102,7 +102,7 @@ class _RoleBlock extends StatelessWidget {
         const Gap(4),
         Text(
           body,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.4,
           ),

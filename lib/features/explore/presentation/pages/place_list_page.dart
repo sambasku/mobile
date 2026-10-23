@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -236,7 +236,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                       child: Text(
                         'Belum ada destinasi yang cocok.',
                         textAlign: TextAlign.center,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -346,7 +346,7 @@ class _PlaceGridTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final cover = place.cover;
-    final titleStyle = theme.typography.xs.copyWith(
+    final titleStyle = theme.typography.body.xs.copyWith(
       fontWeight: FontWeight.w600,
       height: 1.25,
     );
@@ -489,7 +489,7 @@ class _PlaceCard extends StatelessWidget {
                       place.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                         height: 1.3,
                       ),
@@ -497,19 +497,20 @@ class _PlaceCard extends StatelessWidget {
                     const Gap(4),
                     Text(
                       placeLabel(place),
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         fontWeight: FontWeight.w500,
                         color: theme.colors.primary,
                       ),
                     ),
-                    Text(
-                      place.shortDescription,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.mutedForeground,
+                    if (place.shortDescription.isNotEmpty)
+                      Text(
+                        place.shortDescription,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -666,13 +667,13 @@ class _EmptyBody extends StatelessWidget {
             const Gap(16),
             Text(
               'Belum ada destinasi',
-              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(8),
             Text(
               'Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.',
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

@@ -74,6 +74,12 @@ class InboxNotification {
         return 'Wisata disetujui';
       case 'place_contribution_rejected':
         return 'Wisata ditolak';
+      case 'event_contribution_approved':
+        return 'Acara disetujui';
+      case 'event_contribution_rejected':
+        return 'Acara ditolak';
+      case 'event_contribution_needs_revision':
+        return 'Acara perlu revisi';
       default:
         return 'Pembaruan';
     }

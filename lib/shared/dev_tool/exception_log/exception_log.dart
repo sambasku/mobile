@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:share_plus/share_plus.dart';
@@ -220,14 +220,14 @@ class _ExceptionSheetState extends State<_ExceptionSheet> {
             children: [
               Text(
                 'Terjadi kesalahan',
-                style: theme.typography.lg.copyWith(
+                style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const Gap(8),
               Text(
                 _genericMessage,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -240,7 +240,7 @@ class _ExceptionSheetState extends State<_ExceptionSheet> {
                   child: SingleChildScrollView(
                     child: SelectableText(
                       _report,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),

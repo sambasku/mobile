@@ -52,11 +52,11 @@ class PublicAccountName extends StatelessWidget {
         Flexible(child: name),
         if (isVerifier) ...[
           const Gap(3),
-          Semantics(
-            label: 'Verifikator',
-            child: ExcludeSemantics(
-              child: VerifiedBadgeIcon(size: badgeSize),
-            ),
+          // Centang hijau = penanda verifikator, bukan tombol profil: tap
+          // membuka penjelasan peran (label teks "Verifikator" dihapus).
+          VerifiedBadgeIcon(
+            size: badgeSize,
+            onTap: () => showVerifierBadgeInfo(context),
           ),
         ],
       ],

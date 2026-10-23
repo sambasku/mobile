@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gal/gal.dart';
 import 'package:gap/gap.dart';
@@ -683,7 +683,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
             width: 44,
             child: Text(
               title,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
               ),
@@ -717,7 +717,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
     }) {
       return Row(
         children: [
-          Expanded(child: Text(label, style: theme.typography.sm)),
+          Expanded(child: Text(label, style: theme.typography.body.sm)),
           FSwitch(
             semanticsLabel: label,
             value: value,
@@ -747,7 +747,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     Expanded(
                       child: Text(
                         'Bagikan kartu',
-                        style: theme.typography.lg.copyWith(
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -833,7 +833,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         ),
                         title: Text(
                           'Atur posisi',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -841,7 +841,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           _template.allowsMediaPan
                               ? 'Geser teks atau crop gambar / video'
                               : 'Buka fullscreen untuk geser / putar teks',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: chipMuted,
                             fontSize: 11,
                           ),
@@ -861,7 +861,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                   children: [
                     Text(
                       'Latar',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1015,14 +1015,14 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
                           'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.',
-                          style: theme.typography.sm.copyWith(color: chipMuted),
+                          style: theme.typography.body.sm.copyWith(color: chipMuted),
                         ),
                       ),
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: chipMuted,
                           fontSize: 11,
                         ),
@@ -1105,7 +1105,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     const Gap(16),
                     Text(
                       'Editor',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1129,7 +1129,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           width: 44,
                           child: Text(
                             'Warna',
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
                             ),
@@ -1179,7 +1179,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           width: 44,
                           child: Text(
                             'Gradasi',
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 11,
                             ),
@@ -1259,7 +1259,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       ],
                     ),
                     const Gap(8),
-                    Text('Ukuran lemma', style: theme.typography.sm),
+                    Text('Ukuran lemma', style: theme.typography.body.sm),
                     Slider(
                       value: _settings.lemmaFontScale.clamp(0.7, 1.8),
                       min: 0.7,
@@ -1271,7 +1271,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         _settings = _settings.copyWith(lemmaFontScale: v);
                       }),
                     ),
-                    Text('Ukuran teks deskripsi', style: theme.typography.sm),
+                    Text('Ukuran teks deskripsi', style: theme.typography.body.sm),
                     Slider(
                       value: _settings.bodyFontScale.clamp(0.7, 1.6),
                       min: 0.7,
@@ -1284,7 +1284,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       }),
                     ),
                     if (_template.usesOverlay) ...[
-                      Text('Ketebalan overlay', style: theme.typography.sm),
+                      Text('Ketebalan overlay', style: theme.typography.body.sm),
                       Slider(
                         value: _settings.overlayStrength,
                         min: 0,

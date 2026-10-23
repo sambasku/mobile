@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/shared/widgets/word_image_view.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 WordImage _pending() => const WordImage(
   id: 'img-1',
@@ -18,8 +19,8 @@ Future<void> _pump(WidgetTester tester, Brightness brightness) async {
         data: ThemeData(brightness: brightness),
         child: FTheme(
           data: brightness == Brightness.dark
-              ? FThemes.zinc.dark.touch
-              : FThemes.zinc.light.touch,
+              ? foruiPalettes['zinc']!.dark.touch
+              : foruiPalettes['zinc']!.light.touch,
           child: SizedBox(
             width: 320,
             height: 200,

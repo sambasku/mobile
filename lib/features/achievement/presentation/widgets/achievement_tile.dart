@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 import '../../../../core/utils/display_image_url.dart';
@@ -70,7 +70,7 @@ class AchievementTile extends StatelessWidget with FTileMixin {
       prefix: thumb,
       title: Text(
         item.title,
-        style: owned ? null : theme.typography.sm,
+        style: owned ? null : theme.typography.body.sm,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -80,7 +80,7 @@ class AchievementTile extends StatelessWidget with FTileMixin {
         overflow: TextOverflow.ellipsis,
         style: owned
             ? null
-            : theme.typography.sm.copyWith(
+            : theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontStyle: FontStyle.italic,
               ),

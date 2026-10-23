@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -207,7 +207,7 @@ class _Block extends StatelessWidget {
                   ),
                   child: Text(
                     labelBadge!,
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       fontSize: 9,
                       fontWeight: FontWeight.w600,
                       color: theme.colors.primary,
@@ -218,7 +218,7 @@ class _Block extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     fontWeight: FontWeight.w700,
                     color: isError ? theme.colors.destructive : theme.colors.mutedForeground,
                   ),
@@ -241,7 +241,7 @@ class _Block extends StatelessWidget {
           const Gap(4),
           SelectableText(
             content,
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               height: 1.4,
               color: isError ? theme.colors.destructive : null,
             ),
@@ -270,7 +270,7 @@ class _Row extends StatelessWidget {
             width: 64,
             child: Text(
               label,
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
@@ -278,7 +278,7 @@ class _Row extends StatelessWidget {
           ),
           const Gap(6),
           Expanded(
-            child: SelectableText(value, style: theme.typography.xs),
+            child: SelectableText(value, style: theme.typography.body.xs),
           ),
         ],
       ),

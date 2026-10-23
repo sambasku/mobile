@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +13,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../../explore/explore_router.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/utils/open_pending_word_review.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -101,7 +102,7 @@ class ActivityFeedTile extends ConsumerWidget {
                               item.actor!.username!,
                             )
                           : null,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1.25,
                         color: canOpenProfile
@@ -114,7 +115,7 @@ class ActivityFeedTile extends ConsumerWidget {
                     const Gap(8),
                     Text(
                       dateLabel,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                         height: 1.25,
                       ),
@@ -131,7 +132,7 @@ class ActivityFeedTile extends ConsumerWidget {
                     '@${item.actor!.username}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                       fontWeight: FontWeight.w500,
                       height: 1.25,
@@ -158,7 +159,7 @@ class ActivityFeedTile extends ConsumerWidget {
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   height: 1.35,
                   color: theme.colors.foreground,
                 ),
@@ -172,7 +173,7 @@ class ActivityFeedTile extends ConsumerWidget {
                         contextMeta,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.25,
                         ),
@@ -187,7 +188,7 @@ class ActivityFeedTile extends ConsumerWidget {
                           item.kind,
                           pendingReview: isPendingSubmission && canReview,
                         ),
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           fontWeight: FontWeight.w500,
                           height: 1.25,
@@ -265,6 +266,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.contribution => 'Usulan kata baru',
       FeedActivityKind.verification => 'Verifikasi',
       FeedActivityKind.announcement => 'Pengumuman',
+      FeedActivityKind.placePhoto => 'Foto wisata',
     };
   }
 
@@ -291,6 +293,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.contribution => 'Lihat kata',
       FeedActivityKind.verification => 'Lihat kata',
       FeedActivityKind.announcement => 'Baca pengumuman',
+      FeedActivityKind.placePhoto => 'Lihat tempat',
     };
   }
 
@@ -314,6 +317,9 @@ class ActivityFeedTile extends ConsumerWidget {
         );
       case 'discussion':
         return DiscussionRouter.detailPath(target.id);
+      case 'place':
+        // #187: target = slug tempat (bukan ULID) - detail publik mobile.
+        return ExploreRouter.place.path.replaceFirst(':slug', target.id);
       case 'user':
         final username = item.actor?.username?.trim();
         if (username == null ||

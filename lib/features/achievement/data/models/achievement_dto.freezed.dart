@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'achievement_dto.dart';
@@ -9,6 +9,7 @@ part of 'achievement_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -29,16 +30,21 @@ $AchievementDtoCopyWith<AchievementDto> get copyWith => _$AchievementDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementDto&&(identical(other.id, id) || other.id == id)&&(identical(other.code, code) || other.code == code)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.rewardType, rewardType) || other.rewardType == rewardType)&&(identical(other.badgeUrl, badgeUrl) || other.badgeUrl == badgeUrl)&&(identical(other.family, family) || other.family == family)&&(identical(other.level, level) || other.level == level)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userAchievementId, userAchievementId) || other.userAchievementId == userAchievementId)&&(identical(other.awardedAt, awardedAt) || other.awardedAt == awardedAt)&&(identical(other.isActiveBorder, isActiveBorder) || other.isActiveBorder == isActiveBorder));
+  final _this = this as AchievementDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.rewardType, _this.rewardType) || other.rewardType == _this.rewardType)&&(identical(other.badgeUrl, _this.badgeUrl) || other.badgeUrl == _this.badgeUrl)&&(identical(other.family, _this.family) || other.family == _this.family)&&(identical(other.level, _this.level) || other.level == _this.level)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.userAchievementId, _this.userAchievementId) || other.userAchievementId == _this.userAchievementId)&&(identical(other.awardedAt, _this.awardedAt) || other.awardedAt == _this.awardedAt)&&(identical(other.isActiveBorder, _this.isActiveBorder) || other.isActiveBorder == _this.isActiveBorder));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,code,title,description,category,rewardType,badgeUrl,family,level,isActive,userAchievementId,awardedAt,isActiveBorder);
+int get hashCode {
+  final _this = this as AchievementDto;
+  return Object.hash(runtimeType,_this.id,_this.code,_this.title,_this.description,_this.category,_this.rewardType,_this.badgeUrl,_this.family,_this.level,_this.isActive,_this.userAchievementId,_this.awardedAt,_this.isActiveBorder);
+}
 
 @override
 String toString() {
-  return 'AchievementDto(id: $id, code: $code, title: $title, description: $description, category: $category, rewardType: $rewardType, badgeUrl: $badgeUrl, family: $family, level: $level, isActive: $isActive, userAchievementId: $userAchievementId, awardedAt: $awardedAt, isActiveBorder: $isActiveBorder)';
+  final _this = this as AchievementDto;
+  return 'AchievementDto(id: ${_this.id}, code: ${_this.code}, title: ${_this.title}, description: ${_this.description}, category: ${_this.category}, rewardType: ${_this.rewardType}, badgeUrl: ${_this.badgeUrl}, family: ${_this.family}, level: ${_this.level}, isActive: ${_this.isActive}, userAchievementId: ${_this.userAchievementId}, awardedAt: ${_this.awardedAt}, isActiveBorder: ${_this.isActiveBorder})';
 }
 
 
@@ -67,7 +73,7 @@ class _$AchievementDtoCopyWithImpl<$Res>
 /// Create a copy of AchievementDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? code = null,Object? title = null,Object? description = null,Object? category = null,Object? rewardType = null,Object? badgeUrl = freezed,Object? family = freezed,Object? level = freezed,Object? isActive = null,Object? userAchievementId = freezed,Object? awardedAt = freezed,Object? isActiveBorder = null,}) {
-  return _then(_self.copyWith(
+  return _then(AchievementDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -253,16 +259,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementDto&&(identical(other.id, id) || other.id == id)&&(identical(other.code, code) || other.code == code)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.rewardType, rewardType) || other.rewardType == rewardType)&&(identical(other.badgeUrl, badgeUrl) || other.badgeUrl == badgeUrl)&&(identical(other.family, family) || other.family == family)&&(identical(other.level, level) || other.level == level)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userAchievementId, userAchievementId) || other.userAchievementId == userAchievementId)&&(identical(other.awardedAt, awardedAt) || other.awardedAt == awardedAt)&&(identical(other.isActiveBorder, isActiveBorder) || other.isActiveBorder == isActiveBorder));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementDto&&(identical(other.id, id) || other.id == id)&&(identical(other.code, code) || other.code == code)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.rewardType, rewardType) || other.rewardType == rewardType)&&(identical(other.badgeUrl, badgeUrl) || other.badgeUrl == badgeUrl)&&(identical(other.family, family) || other.family == family)&&(identical(other.level, level) || other.level == level)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userAchievementId, userAchievementId) || other.userAchievementId == userAchievementId)&&(identical(other.awardedAt, awardedAt) || other.awardedAt == awardedAt)&&(identical(other.isActiveBorder, isActiveBorder) || other.isActiveBorder == isActiveBorder));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,code,title,description,category,rewardType,badgeUrl,family,level,isActive,userAchievementId,awardedAt,isActiveBorder);
+int get hashCode {
+    return Object.hash(runtimeType,id,code,title,description,category,rewardType,badgeUrl,family,level,isActive,userAchievementId,awardedAt,isActiveBorder);
+}
 
 @override
 String toString() {
-  return 'AchievementDto(id: $id, code: $code, title: $title, description: $description, category: $category, rewardType: $rewardType, badgeUrl: $badgeUrl, family: $family, level: $level, isActive: $isActive, userAchievementId: $userAchievementId, awardedAt: $awardedAt, isActiveBorder: $isActiveBorder)';
+    return 'AchievementDto(id: $id, code: $code, title: $title, description: $description, category: $category, rewardType: $rewardType, badgeUrl: $badgeUrl, family: $family, level: $level, isActive: $isActive, userAchievementId: $userAchievementId, awardedAt: $awardedAt, isActiveBorder: $isActiveBorder)';
 }
 
 
@@ -329,16 +337,21 @@ $AchievementListDtoCopyWith<AchievementListDto> get copyWith => _$AchievementLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementListDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor));
+  final _this = this as AchievementListDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementListDto&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.nextCursor, _this.nextCursor) || other.nextCursor == _this.nextCursor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),nextCursor);
+int get hashCode {
+  final _this = this as AchievementListDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items),_this.nextCursor);
+}
 
 @override
 String toString() {
-  return 'AchievementListDto(items: $items, nextCursor: $nextCursor)';
+  final _this = this as AchievementListDto;
+  return 'AchievementListDto(items: ${_this.items}, nextCursor: ${_this.nextCursor})';
 }
 
 
@@ -367,7 +380,7 @@ class _$AchievementListDtoCopyWithImpl<$Res>
 /// Create a copy of AchievementListDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? nextCursor = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AchievementListDto(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<AchievementDto>,nextCursor: freezed == nextCursor ? _self.nextCursor : nextCursor // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -511,7 +524,7 @@ return $default(_that.items,_that.nextCursor);case _:
 @JsonSerializable()
 
 class _AchievementListDto implements AchievementListDto {
-  const _AchievementListDto({final  List<AchievementDto> items = const <AchievementDto>[], @JsonKey(name: 'next_cursor') this.nextCursor}): _items = items;
+  const _AchievementListDto({ List<AchievementDto> items = const <AchievementDto>[], @JsonKey(name: 'next_cursor') this.nextCursor}): _items = items;
   factory _AchievementListDto.fromJson(Map<String, dynamic> json) => _$AchievementListDtoFromJson(json);
 
  final  List<AchievementDto> _items;
@@ -536,16 +549,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementListDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementListDto&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),nextCursor);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),nextCursor);
+}
 
 @override
 String toString() {
-  return 'AchievementListDto(items: $items, nextCursor: $nextCursor)';
+    return 'AchievementListDto(items: $items, nextCursor: $nextCursor)';
 }
 
 
@@ -601,16 +616,21 @@ $SetBorderRequestDtoCopyWith<SetBorderRequestDto> get copyWith => _$SetBorderReq
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetBorderRequestDto&&(identical(other.borderId, borderId) || other.borderId == borderId));
+  final _this = this as SetBorderRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetBorderRequestDto&&(identical(other.borderId, _this.borderId) || other.borderId == _this.borderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,borderId);
+int get hashCode {
+  final _this = this as SetBorderRequestDto;
+  return Object.hash(runtimeType,_this.borderId);
+}
 
 @override
 String toString() {
-  return 'SetBorderRequestDto(borderId: $borderId)';
+  final _this = this as SetBorderRequestDto;
+  return 'SetBorderRequestDto(borderId: ${_this.borderId})';
 }
 
 
@@ -639,7 +659,7 @@ class _$SetBorderRequestDtoCopyWithImpl<$Res>
 /// Create a copy of SetBorderRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? borderId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SetBorderRequestDto(
 borderId: freezed == borderId ? _self.borderId : borderId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -800,16 +820,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetBorderRequestDto&&(identical(other.borderId, borderId) || other.borderId == borderId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetBorderRequestDto&&(identical(other.borderId, borderId) || other.borderId == borderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,borderId);
+int get hashCode {
+    return Object.hash(runtimeType,borderId);
+}
 
 @override
 String toString() {
-  return 'SetBorderRequestDto(borderId: $borderId)';
+    return 'SetBorderRequestDto(borderId: $borderId)';
 }
 
 
@@ -864,16 +886,21 @@ $SetBorderResponseDtoCopyWith<SetBorderResponseDto> get copyWith => _$SetBorderR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetBorderResponseDto&&(identical(other.activeBorderId, activeBorderId) || other.activeBorderId == activeBorderId));
+  final _this = this as SetBorderResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetBorderResponseDto&&(identical(other.activeBorderId, _this.activeBorderId) || other.activeBorderId == _this.activeBorderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,activeBorderId);
+int get hashCode {
+  final _this = this as SetBorderResponseDto;
+  return Object.hash(runtimeType,_this.activeBorderId);
+}
 
 @override
 String toString() {
-  return 'SetBorderResponseDto(activeBorderId: $activeBorderId)';
+  final _this = this as SetBorderResponseDto;
+  return 'SetBorderResponseDto(activeBorderId: ${_this.activeBorderId})';
 }
 
 
@@ -902,7 +929,7 @@ class _$SetBorderResponseDtoCopyWithImpl<$Res>
 /// Create a copy of SetBorderResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? activeBorderId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SetBorderResponseDto(
 activeBorderId: freezed == activeBorderId ? _self.activeBorderId : activeBorderId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -1063,16 +1090,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetBorderResponseDto&&(identical(other.activeBorderId, activeBorderId) || other.activeBorderId == activeBorderId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetBorderResponseDto&&(identical(other.activeBorderId, activeBorderId) || other.activeBorderId == activeBorderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,activeBorderId);
+int get hashCode {
+    return Object.hash(runtimeType,activeBorderId);
+}
 
 @override
 String toString() {
-  return 'SetBorderResponseDto(activeBorderId: $activeBorderId)';
+    return 'SetBorderResponseDto(activeBorderId: $activeBorderId)';
 }
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,6 +13,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/providers/dictionary_
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/usecases/search_words_use_case.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_complete_page.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   testWidgets('awalnya meminta minimal 2 huruf, bukan layar kosong', (
@@ -105,12 +106,12 @@ Future<GoRouter> _pumpPage(
         searchWordsUseCaseProvider.overrideWithValue(SearchWordsUseCase(repo)),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: FLocalizations.localizationsDelegates,
         supportedLocales: FLocalizations.supportedLocales,
         routerConfig: router,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: child!,
         ),
       ),

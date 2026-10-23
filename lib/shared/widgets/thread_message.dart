@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -7,7 +7,9 @@ import '../utils/public_account_name.dart';
 import 'public_account_name.dart';
 import 'user_avatar.dart';
 
-/// Label peran di header thread (hanya Verifikator yang ditampilkan).
+/// Label peran di header thread. Centang hijau sudah mewakili verifikator,
+/// jadi label teks tidak lagi ditampilkan (dibiarkan untuk kompatibilitas
+/// caller lama).
 String threadAuthorRoleLabel({required bool isVerifier}) =>
     isVerifier ? 'Verifikator' : 'Kontributor';
 
@@ -84,14 +86,14 @@ class ThreadMessageRow extends StatelessWidget {
       ...metaParts.where((p) => p.trim().isNotEmpty),
     ].join(' · ');
 
-    final nameStyle = theme.typography.sm.copyWith(
+    final nameStyle = theme.typography.body.sm.copyWith(
       fontWeight: FontWeight.w700,
       height: 1.2,
       color: onUsernameTap == null || isRedacted
           ? theme.colors.foreground
           : theme.colors.primary,
     );
-    final metaStyle = theme.typography.sm.copyWith(
+    final metaStyle = theme.typography.body.sm.copyWith(
       color: theme.colors.mutedForeground,
       fontSize: 11,
       height: 1.2,
@@ -140,7 +142,7 @@ class ThreadMessageRow extends StatelessWidget {
                   body: body,
                   isRedacted: isRedacted,
                   onMentionTap: onMentionTap,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     height: 1.35,
                     fontStyle: isRedacted ? FontStyle.italic : FontStyle.normal,
                     color: isRedacted
@@ -185,10 +187,7 @@ class ThreadMessageRow extends StatelessWidget {
                   color: theme.colors.primary.withValues(alpha: 0.35),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: content,
-              ),
+              child: Padding(padding: const EdgeInsets.all(8), child: content),
             )
           : content,
     );
@@ -239,8 +238,10 @@ class ThreadComposer extends StatelessWidget {
   final TextEditingController controller;
   final bool isSubmitting;
   final VoidCallback onSubmit;
+
   /// Jika diisi, tampilkan chip "Rekam suara" di bawah field.
   final VoidCallback? onRecordAudio;
+
   /// Builder opsional untuk overlay suggestion (mis. mention autocomplete).
   final Widget Function(BuildContext)? suggestBuilder;
   final String hint;
@@ -252,10 +253,7 @@ class ThreadComposer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (suggestBuilder != null) ...[
-          suggestBuilder!(context),
-          const Gap(4),
-        ],
+        if (suggestBuilder != null) ...[suggestBuilder!(context), const Gap(4)],
         if (onRecordAudio != null) ...[
           Align(
             alignment: Alignment.centerLeft,
@@ -270,9 +268,7 @@ class ThreadComposer extends StatelessWidget {
                   child: Ink(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: theme.colors.border,
-                      ),
+                      border: Border.all(color: theme.colors.border),
                       color: isSubmitting
                           ? theme.colors.secondary.withValues(alpha: 0.5)
                           : theme.colors.secondary.withValues(alpha: 0.35),
@@ -293,7 +289,7 @@ class ThreadComposer extends StatelessWidget {
                           const Gap(6),
                           Text(
                             'Rekam suara',
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -382,7 +378,7 @@ class ThreadLoginPrompt extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -415,8 +411,9 @@ class MentionBodyText extends StatelessWidget {
   /// Callback dengan username yang di-tap (tanpa `@`).
   final ValueChanged<String>? onMentionTap;
 
-  static final RegExp _mentionRe =
-      RegExp(r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])');
+  static final RegExp _mentionRe = RegExp(
+    r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -426,9 +423,7 @@ class MentionBodyText extends StatelessWidget {
       fontWeight: isRedacted ? null : FontWeight.w600,
     );
 
-    return RichText(
-      text: _buildTextSpan(body, mentionStyle),
-    );
+    return RichText(text: _buildTextSpan(body, mentionStyle));
   }
 
   TextSpan _buildTextSpan(String text, TextStyle mentionStyle) {
@@ -442,23 +437,21 @@ class MentionBodyText extends StatelessWidget {
       final username = match.group(1)!;
       // `anonim` = akun sistem, dirender sebagai teks biasa.
       final isRealMention = username.toLowerCase() != 'anonim';
-      spans.add(TextSpan(
-        text: match.group(0),
-        style: isRealMention ? mentionStyle : null,
-        recognizer: isRealMention && onMentionTap != null
-            ? (TapGestureRecognizer()
-              ..onTap = () => onMentionTap!(username))
-            : null,
-      ));
+      spans.add(
+        TextSpan(
+          text: match.group(0),
+          style: isRealMention ? mentionStyle : null,
+          recognizer: isRealMention && onMentionTap != null
+              ? (TapGestureRecognizer()..onTap = () => onMentionTap!(username))
+              : null,
+        ),
+      );
       lastEnd = match.end;
     }
     if (lastEnd < text.length) {
       spans.add(TextSpan(text: text.substring(lastEnd)));
     }
 
-    return TextSpan(
-      children: spans,
-      style: style,
-    );
+    return TextSpan(children: spans, style: style);
   }
 }

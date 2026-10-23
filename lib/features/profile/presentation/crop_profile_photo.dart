@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 import '../../../shared/utils/compress_image_for_upload.dart';
@@ -119,7 +119,10 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
         Rect.fromLTWH(0, 0, out, out),
         Paint()..filterQuality = FilterQuality.high,
       );
-      final cropped = await recorder.endRecording().toImage(out.toInt(), out.toInt());
+      final cropped = await recorder.endRecording().toImage(
+        out.toInt(),
+        out.toInt(),
+      );
       final data = await cropped.toByteData(format: ui.ImageByteFormat.png);
       cropped.dispose();
       if (data == null || !mounted) return;
@@ -159,10 +162,12 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
                 ? const Center(child: FCircularProgress())
                 : LayoutBuilder(
                     builder: (context, constraints) {
-                      final side = math.min(
-                        constraints.maxWidth,
-                        constraints.maxHeight,
-                      ) - 48;
+                      final side =
+                          math.min(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ) -
+                          48;
                       _side = side;
                       return Center(
                         child: SizedBox(
@@ -238,7 +243,10 @@ class _CoverPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final cover = math.max(size.width / image.width, size.height / image.height);
+    final cover = math.max(
+      size.width / image.width,
+      size.height / image.height,
+    );
     final w = image.width * cover;
     final h = image.height * cover;
     canvas.drawImageRect(

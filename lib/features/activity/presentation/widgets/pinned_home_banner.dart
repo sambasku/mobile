@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -66,14 +66,13 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
 
     return Padding(
       // Napas vertikal minimal antar kartu beranda (permintaan review):
-      // Ruang Diskusi di atas + heading teks di bawah.
+      // Kata Hari Ini di atas + heading teks di bawah.
       padding: const EdgeInsets.only(top: 4, bottom: 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            // Tinggi disamakan dengan banner Ruang Diskusi (82) supaya kedua
-            // kartu di beranda seragam.
+            // Tinggi tetap 82 (test geometri menjaga angka ini).
             height: 82,
             // Full-bleed + snap presisi (pola halaman /pinned): list padding 12,
             // kartu = layar - 24 (lebar sama seperti sebelum childPad shell
@@ -128,7 +127,7 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                                       a.title,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.typography.sm.copyWith(
+                                      style: theme.typography.body.sm.copyWith(
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -137,7 +136,7 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                                       announcementPreviewText(a.body, a.bodyType),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: theme.typography.sm.copyWith(
+                                      style: theme.typography.body.sm.copyWith(
                                         color: theme.colors.mutedForeground,
                                         fontSize: 12,
                                       ),
@@ -201,7 +200,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -212,7 +211,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -249,7 +248,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                                 'Judul pengumuman prioritas',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: context.theme.typography.sm.copyWith(
+                                style: context.theme.typography.body.sm.copyWith(
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -258,7 +257,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                                 'cuplikan isi pengumuman',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: context.theme.typography.sm.copyWith(
+                                style: context.theme.typography.body.sm.copyWith(
                                   color: context.theme.colors.mutedForeground,
                                   fontSize: 12,
                                 ),

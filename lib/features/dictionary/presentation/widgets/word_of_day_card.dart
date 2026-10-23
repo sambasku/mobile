@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -141,7 +141,7 @@ class _WordOfDayBody extends ConsumerWidget {
                                 Expanded(
                                   child: Text(
                                     'Kata hari ini',
-                                    style: theme.typography.xs.copyWith(
+                                    style: theme.typography.body.xs.copyWith(
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white,
                                       shadows: [
@@ -167,7 +167,7 @@ class _WordOfDayBody extends ConsumerWidget {
                                       ),
                                       child: Text(
                                         dateLabel,
-                                        style: theme.typography.xs.copyWith(
+                                        style: theme.typography.body.xs.copyWith(
                                           color: Colors.white.withValues(
                                             alpha: 0.9,
                                           ),
@@ -182,7 +182,7 @@ class _WordOfDayBody extends ConsumerWidget {
                               item.word.lemma,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: theme.typography.lg.copyWith(
+                              style: theme.typography.body.lg.copyWith(
                                 fontWeight: FontWeight.w700,
                                 height: 1.15,
                                 color: Colors.white,
@@ -201,7 +201,7 @@ class _WordOfDayBody extends ConsumerWidget {
                                 sense,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: Colors.white.withValues(alpha: 0.9),
                                   shadows: [
                                     Shadow(
@@ -230,7 +230,7 @@ class _WordOfDayBody extends ConsumerWidget {
                                       : 'Ditampilkan hari ini, berganti setiap hari',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: theme.typography.xs.copyWith(
+                                  style: theme.typography.body.xs.copyWith(
                                     color: Colors.white.withValues(alpha: 0.85),
                                     shadows: [
                                       Shadow(
@@ -266,7 +266,7 @@ class _WordOfDaySkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -279,7 +279,7 @@ class _WordOfDaySkeleton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: SkeletonizerConfig(
-        data: SkeletonizerConfigData(effect: shimmer),
+        data: SkeletonizerConfigData(effectResolver: shimmerResolver),
         child: IgnorePointer(
           child: Material(
             color: Colors.transparent,

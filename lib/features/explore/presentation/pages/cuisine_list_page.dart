@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -105,7 +105,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                       child: Text(
                         'Belum ada cuisine yang cocok.',
                         textAlign: TextAlign.center,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -189,7 +189,7 @@ class _CuisineCard extends StatelessWidget {
                       cuisine.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                         height: 1.3,
                       ),
@@ -197,7 +197,7 @@ class _CuisineCard extends StatelessWidget {
                     const Gap(4),
                     Text(
                       cuisine.region,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         fontWeight: FontWeight.w500,
                         color: theme.colors.primary,
                       ),
@@ -206,7 +206,7 @@ class _CuisineCard extends StatelessWidget {
                       cuisine.description,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -351,13 +351,13 @@ class _EmptyBody extends StatelessWidget {
             const Gap(16),
             Text(
               'Belum ada cuisine',
-              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(8),
             Text(
               'Konten cuisine khas Sambas sedang disiapkan. Balik lagi nanti ya.',
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

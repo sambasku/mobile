@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -134,14 +134,14 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
         children: [
           Text(
             widget.imageId != null ? 'Laporkan foto' : 'Laporkan entri',
-            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
           Text(
             widget.imageId != null
                 ? 'Laporkan foto ini ke tim Sambasku untuk ditinjau.'
                 : 'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),

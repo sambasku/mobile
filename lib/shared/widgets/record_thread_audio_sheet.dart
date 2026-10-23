@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -356,7 +356,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
                 Expanded(
                   child: Text(
                     widget.title,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -371,7 +371,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
             ),
             Text(
               widget.subtitle,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -387,7 +387,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
               Text(
                 'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
                 textAlign: TextAlign.center,
-                style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+                style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
               ),
               const Gap(12),
               FButton(
@@ -399,7 +399,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
               Text(
                 'Durasi ${_elapsedSec}s',
                 textAlign: TextAlign.center,
-                style: theme.typography.sm,
+                style: theme.typography.body.sm,
               ),
               const Gap(12),
               Row(

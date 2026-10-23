@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -563,7 +563,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
       children: [
-        Text(banner, style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground)),
+        Text(banner, style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground)),
         const Gap(12),
         FTileGroup(
           label: const Text('Apa yang ingin diubah?'),
@@ -891,7 +891,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       _fieldErrors['word_class']!,
-                      style: context.theme.typography.sm.copyWith(color: context.theme.colors.error),
+                      style: context.theme.typography.body.sm.copyWith(color: context.theme.colors.error),
                     ),
                   ),
               ],
@@ -985,7 +985,7 @@ class _SelectField extends StatelessWidget {
                   hasValue ? selectedLabel! : hint,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: hasValue ? theme.colors.foreground : theme.colors.mutedForeground,
                   ),
                 ),
@@ -1015,7 +1015,7 @@ class _FieldCaption extends StatelessWidget {
           Flexible(
             child: Text(
               text,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
                 color: theme.colors.foreground,
               ),
@@ -1040,7 +1040,7 @@ class _InfoTip extends StatelessWidget {
       constraints: const FPortalConstraints(maxWidth: 280),
       popoverBuilder: (context, _) => Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(message, style: theme.typography.sm.copyWith(height: 1.35)),
+        child: Text(message, style: theme.typography.body.sm.copyWith(height: 1.35)),
       ),
       builder: (context, controller, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,

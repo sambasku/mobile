@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +9,7 @@ import 'package:sambasku_mobile/features/user_profile/domain/entities/public_pro
 import 'package:sambasku_mobile/features/user_profile/presentation/pages/public_profile_page.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
 import 'package:sambasku_mobile/shared/widgets/small_button.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeAuthStatus extends AuthStatusNotifier {
   _FakeAuthStatus(this.username);
@@ -50,16 +51,11 @@ final _activity = [
   ),
 ];
 
-Future<void> _pump(
-  WidgetTester tester, {
-  String? sessionUsername,
-}) async {
+Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        authStatusProvider.overrideWith(
-          () => _FakeAuthStatus(sessionUsername),
-        ),
+        authStatusProvider.overrideWith(() => _FakeAuthStatus(sessionUsername)),
         publicProfileProvider('budi').overrideWith((ref) async => _profile),
         publicActivityProvider('budi').overrideWith((ref) async => _activity),
       ],
@@ -67,7 +63,7 @@ Future<void> _pump(
         localizationsDelegates: FLocalizations.localizationsDelegates,
         supportedLocales: FLocalizations.supportedLocales,
         builder: (context, child) =>
-            FTheme(data: FThemes.zinc.light.touch, child: child!),
+            FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         home: const PublicProfilePage(username: 'budi'),
       ),
     ),
@@ -77,8 +73,9 @@ Future<void> _pump(
 }
 
 void main() {
-  testWidgets('aktivitas terbaru dirender sebagai ActivityFeedTile',
-      (tester) async {
+  testWidgets('aktivitas terbaru dirender sebagai ActivityFeedTile', (
+    tester,
+  ) async {
     await _pump(tester);
 
     expect(find.byType(ActivityFeedTile), findsNWidgets(2));
@@ -94,26 +91,29 @@ void main() {
     expect(find.textContaining('perbaikan'), findsOneWidget);
   });
 
-  testWidgets('profil orang lain: tanpa tombol Edit, CTA tile tampil',
-      (tester) async {
+  testWidgets('profil orang lain: tanpa tombol Edit, CTA tile tampil', (
+    tester,
+  ) async {
     await _pump(tester);
 
-    expect(find.byType(SmallButton), findsNothing);
+    expect(find.bySemanticsLabel('Edit profil'), findsNothing);
     expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     expect(find.text('Lihat arti'), findsOneWidget);
   });
 
-  testWidgets('profil sendiri: tombol Edit kecil tampil, CTA tile disembunyikan',
-      (tester) async {
-    await _pump(tester, sessionUsername: 'budi');
+  testWidgets(
+    'profil sendiri: tombol Edit kecil di body, CTA tile disembunyikan',
+    (tester) async {
+      await _pump(tester, sessionUsername: 'budi');
 
-    final edit = find.byType(SmallButton);
-    expect(edit, findsOneWidget);
-    expect(find.descendant(of: edit, matching: find.text('Edit')),
-        findsOneWidget);
-    expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
-    expect(find.text('Lihat arti'), findsNothing);
-    // Body tetap dirender.
-    expect(find.textContaining('bagus nih'), findsOneWidget);
-  });
+      // Layout publik tetap lama: tombol Edit kecil di sisi kanan identitas.
+      // Ikon edit di app bar hanya milik tab Profil.
+      expect(find.byType(SmallButton), findsOneWidget);
+      expect(find.bySemanticsLabel('Edit profil'), findsNothing);
+      expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
+      expect(find.text('Lihat arti'), findsNothing);
+      // Body tetap dirender.
+      expect(find.textContaining('bagus nih'), findsOneWidget);
+    },
+  );
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'create_word_example_dto.dart';
@@ -9,6 +9,7 @@ part of 'create_word_example_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $CreateWordExampleDtoCopyWith<CreateWordExampleDto> get copyWith => _$CreateWord
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordExampleDto&&(identical(other.sourceLanguageId, sourceLanguageId) || other.sourceLanguageId == sourceLanguageId)&&(identical(other.sourceSentence, sourceSentence) || other.sourceSentence == sourceSentence));
+  final _this = this as CreateWordExampleDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordExampleDto&&(identical(other.sourceLanguageId, _this.sourceLanguageId) || other.sourceLanguageId == _this.sourceLanguageId)&&(identical(other.sourceSentence, _this.sourceSentence) || other.sourceSentence == _this.sourceSentence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceLanguageId,sourceSentence);
+int get hashCode {
+  final _this = this as CreateWordExampleDto;
+  return Object.hash(runtimeType,_this.sourceLanguageId,_this.sourceSentence);
+}
 
 @override
 String toString() {
-  return 'CreateWordExampleDto(sourceLanguageId: $sourceLanguageId, sourceSentence: $sourceSentence)';
+  final _this = this as CreateWordExampleDto;
+  return 'CreateWordExampleDto(sourceLanguageId: ${_this.sourceLanguageId}, sourceSentence: ${_this.sourceSentence})';
 }
 
 
@@ -66,7 +72,7 @@ class _$CreateWordExampleDtoCopyWithImpl<$Res>
 /// Create a copy of CreateWordExampleDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sourceLanguageId = null,Object? sourceSentence = null,}) {
-  return _then(_self.copyWith(
+  return _then(CreateWordExampleDto(
 sourceLanguageId: null == sourceLanguageId ? _self.sourceLanguageId : sourceLanguageId // ignore: cast_nullable_to_non_nullable
 as String,sourceSentence: null == sourceSentence ? _self.sourceSentence : sourceSentence // ignore: cast_nullable_to_non_nullable
 as String,
@@ -229,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordExampleDto&&(identical(other.sourceLanguageId, sourceLanguageId) || other.sourceLanguageId == sourceLanguageId)&&(identical(other.sourceSentence, sourceSentence) || other.sourceSentence == sourceSentence));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordExampleDto&&(identical(other.sourceLanguageId, sourceLanguageId) || other.sourceLanguageId == sourceLanguageId)&&(identical(other.sourceSentence, sourceSentence) || other.sourceSentence == sourceSentence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceLanguageId,sourceSentence);
+int get hashCode {
+    return Object.hash(runtimeType,sourceLanguageId,sourceSentence);
+}
 
 @override
 String toString() {
-  return 'CreateWordExampleDto(sourceLanguageId: $sourceLanguageId, sourceSentence: $sourceSentence)';
+    return 'CreateWordExampleDto(sourceLanguageId: $sourceLanguageId, sourceSentence: $sourceSentence)';
 }
 
 

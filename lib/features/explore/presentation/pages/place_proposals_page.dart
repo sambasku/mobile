@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -134,7 +134,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                     const Gap(10),
                     Text(
                       'Masuk dulu untuk melihat usulan kamu',
-                      style: context.theme.typography.md.copyWith(
+                      style: context.theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
@@ -166,7 +166,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                     const Gap(10),
                     Text(
                       'Gagal memuat usulan',
-                      style: context.theme.typography.sm.copyWith(
+                      style: context.theme.typography.body.sm.copyWith(
                         color: context.theme.colors.mutedForeground,
                       ),
                       textAlign: TextAlign.center,
@@ -199,7 +199,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                         Text(
                           'Belum ada usulan',
                           textAlign: TextAlign.center,
-                          style: context.theme.typography.md.copyWith(
+                          style: context.theme.typography.body.md.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -207,7 +207,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                         Text(
                           'Status usulan yang sudah direview akan muncul di sini.',
                           textAlign: TextAlign.center,
-                          style: context.theme.typography.sm.copyWith(
+                          style: context.theme.typography.body.sm.copyWith(
                             color: context.theme.colors.mutedForeground,
                           ),
                         ),

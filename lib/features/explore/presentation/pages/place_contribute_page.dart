@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -349,7 +349,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
       children: [
         Text(
           'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.',
-          style: context.theme.typography.sm.copyWith(
+          style: context.theme.typography.body.sm.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
         ),
@@ -379,14 +379,14 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
       children: [
         Text(
           'Langkah ${_step + 1} dari 4: ${labels[_step]}',
-          style: context.theme.typography.sm.copyWith(
+          style: context.theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
         const Gap(4),
         Text(
           'Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.',
-          style: context.theme.typography.xs.copyWith(
+          style: context.theme.typography.body.xs.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
         ),
@@ -402,7 +402,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
                 const Gap(12),
                 Text(
                   _hint!,
-                  style: context.theme.typography.sm.copyWith(
+                  style: context.theme.typography.body.sm.copyWith(
                     color: context.theme.colors.destructive,
                   ),
                 ),
@@ -488,7 +488,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     const Gap(12),
     Text(
       'Ketuk peta untuk memilih koordinat. Opsional.',
-      style: context.theme.typography.xs.copyWith(
+      style: context.theme.typography.body.xs.copyWith(
         color: context.theme.colors.mutedForeground,
       ),
     ),
@@ -506,7 +506,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
       const Gap(6),
       Text(
         '${_point!.latitude.toStringAsFixed(6)}, ${_point!.longitude.toStringAsFixed(6)}',
-        style: context.theme.typography.xs.copyWith(
+        style: context.theme.typography.body.xs.copyWith(
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -542,7 +542,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
         _files.isEmpty
             ? 'Foto opsional, maksimal $max.'
             : '${_files.length} dari $max foto dipilih.',
-        style: context.theme.typography.sm,
+        style: context.theme.typography.body.sm,
       ),
       const Gap(12),
       Wrap(
@@ -640,7 +640,7 @@ class _LoginGate extends StatelessWidget {
       children: [
         Text(
           'Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.',
-          style: context.theme.typography.sm,
+          style: context.theme.typography.body.sm,
         ),
         const Gap(16),
         FButton(onPress: onLogin, child: const Text('Masuk')),

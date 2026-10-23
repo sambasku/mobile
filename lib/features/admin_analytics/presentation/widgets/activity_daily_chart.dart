@@ -136,7 +136,7 @@ class _AnalyticsActivityDailyChartState
               children: [
                 Text(
                   'Aktivitas ${widget.windowDays} hari',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -146,7 +146,7 @@ class _AnalyticsActivityDailyChartState
                   child: Text(
                     selected == null ? '' : _shortDay(selected.date),
                     textAlign: TextAlign.end,
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                       fontWeight: FontWeight.w600,
                     ),
@@ -186,7 +186,7 @@ class _AnalyticsActivityDailyChartState
                                         s.short,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: theme.typography.xs.copyWith(
+                                        style: theme.typography.body.xs.copyWith(
                                           color: theme.colors.mutedForeground,
                                           fontSize: 10,
                                         ),
@@ -200,7 +200,7 @@ class _AnalyticsActivityDailyChartState
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: theme.typography.sm.copyWith(
+                                  style: theme.typography.body.sm.copyWith(
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -217,7 +217,7 @@ class _AnalyticsActivityDailyChartState
                   ? Center(
                       child: Text(
                         'Belum ada data.',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -277,7 +277,7 @@ class _AnalyticsActivityDailyChartState
                                   child: Center(
                                     child: Text(
                                       _shortDay(data[i].date),
-                                      style: theme.typography.xs.copyWith(
+                                      style: theme.typography.body.xs.copyWith(
                                         fontSize: 10,
                                         height: 1,
                                         color: isSelected

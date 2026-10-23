@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../domain/explore_category.dart';
+import '../../../event/presentation/pages/event_list_page.dart';
 import '../pages/cuisine_list_page.dart';
 import '../pages/place_list_page.dart';
 import '../pages/wilayah_page.dart';
@@ -25,6 +26,8 @@ class ExploreCategoryPage extends StatelessWidget {
         ? const CuisineListPage()
         : categoryId == 'wilayah'
         ? const WilayahPage()
+        : categoryId == 'acara'
+        ? const EventListPage()
         : FScaffold(
             childPad: false,
             header: FHeader.nested(
@@ -69,14 +72,14 @@ class _ComingSoonBody extends StatelessWidget {
             const Gap(12),
             Text(
               category?.title ?? 'Kategori',
-              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             const Gap(8),
             Text(
               category?.subtitle ?? 'Kategori ini belum tersedia.',
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -84,7 +87,7 @@ class _ComingSoonBody extends StatelessWidget {
             Text(
               'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.',
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

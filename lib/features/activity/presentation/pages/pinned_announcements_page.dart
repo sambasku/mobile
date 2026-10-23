@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -77,7 +77,7 @@ class _PinnedAnnouncementsPageState
             Text(
               'Tidak ada pengumuman yang dipin',
               textAlign: TextAlign.center,
-              style: theme.typography.md.copyWith(
+              style: theme.typography.body.md.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -138,7 +138,7 @@ class _PinnedAnnouncementsPageState
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -149,7 +149,7 @@ class _PinnedAnnouncementsPageState
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -197,7 +197,7 @@ class _PinnedAnnouncementsPageState
             Text(
               'Gagal memuat pengumuman',
               textAlign: TextAlign.center,
-              style: theme.typography.md.copyWith(
+              style: theme.typography.body.md.copyWith(
                 color: theme.colors.foreground,
               ),
             ),
@@ -207,7 +207,7 @@ class _PinnedAnnouncementsPageState
             Text(
               _errorBrief(error),
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -244,7 +244,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final titleStyle = theme.typography.lg.copyWith(
+    final titleStyle = theme.typography.body.lg.copyWith(
       fontWeight: FontWeight.w700,
       height: 1.3,
     );
@@ -292,7 +292,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                           const Gap(4),
                           Text(
                             'Dipin',
-                            style: theme.typography.xs.copyWith(
+                            style: theme.typography.body.xs.copyWith(
                               fontWeight: FontWeight.w600,
                               color: theme.colors.primary,
                             ),
@@ -315,7 +315,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                         ),
                         child: Text(
                           'Berakhir',
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             fontWeight: FontWeight.w600,
                             color: theme.colors.mutedForeground,
                           ),
@@ -351,7 +351,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                           announcement.actionLabel?.isNotEmpty == true
                               ? announcement.actionLabel!
                               : 'Buka tautan',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.primary,
                             decoration: TextDecoration.underline,
                           ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -50,7 +50,7 @@ class _WordTypePickerSheetBody extends StatelessWidget {
                     'Pilih jenis entri',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -66,7 +66,7 @@ class _WordTypePickerSheetBody extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: Text(
               'Ketuk untuk memilih',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
@@ -98,7 +98,7 @@ class _WordTypePickerSheetBody extends StatelessWidget {
                                 children: [
                                   Text(
                                     option.label,
-                                    style: theme.typography.sm.copyWith(
+                                    style: theme.typography.body.sm.copyWith(
                                       fontWeight: option.value == selected
                                           ? FontWeight.w700
                                           : FontWeight.w500,
@@ -110,7 +110,7 @@ class _WordTypePickerSheetBody extends StatelessWidget {
                                   const Gap(2),
                                   Text(
                                     option.detail,
-                                    style: theme.typography.sm.copyWith(
+                                    style: theme.typography.body.sm.copyWith(
                                       color: theme.colors.mutedForeground,
                                       fontSize: 12,
                                       height: 1.35,

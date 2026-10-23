@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -99,7 +99,7 @@ class _MicPermissionOnboardingPageState
                   const Gap(24),
                   Text(
                     'Rekam pelafalan butuh akses mikrofon',
-                    style: theme.typography.xl.copyWith(
+                    style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -108,7 +108,7 @@ class _MicPermissionOnboardingPageState
                     'Sebelum merekam, SambasKu meminta izin mikrofon. '
                     'Ini hanya dipakai untuk fitur pelafalan - bukan untuk '
                     'menyadap atau merekam di latar belakang.',
-                    style: theme.typography.md.copyWith(
+                    style: theme.typography.body.md.copyWith(
                       color: theme.colors.mutedForeground,
                       height: 1.45,
                     ),
@@ -116,7 +116,7 @@ class _MicPermissionOnboardingPageState
                   const Gap(24),
                   Text(
                     'Yang perlu kamu tahu',
-                    style: theme.typography.md.copyWith(
+                    style: theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -209,14 +209,14 @@ class _RequirementRow extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const Gap(2),
               Text(
                 body,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   height: 1.4,
                 ),

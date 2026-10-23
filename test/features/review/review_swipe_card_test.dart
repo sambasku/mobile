@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_swipe_card.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
-      theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+      theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: FLocalizations.localizationsDelegates,
       supportedLocales: FLocalizations.supportedLocales,
       home: FTheme(
-        data: FThemes.zinc.light.touch,
+        data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(
           body: Center(
             child: SizedBox(

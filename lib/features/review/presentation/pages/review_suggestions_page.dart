@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -56,7 +56,7 @@ class _ReviewSuggestionsPageState
                 error is ReviewFailure
                     ? error.message
                     : 'Gagal memuat usulan edit',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -83,7 +83,7 @@ class _ReviewSuggestionsPageState
                       child: Center(
                         child: Text(
                           'Tidak ada usulan edit menunggu',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                           textAlign: TextAlign.center,
@@ -143,7 +143,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -154,7 +154,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,

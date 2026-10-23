@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -230,7 +230,7 @@ class WordListPage extends HookConsumerWidget {
                     ? 'Belum ada kata terbit.'
                     : 'Tidak ada kata untuk "$query"',
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
@@ -239,7 +239,7 @@ class WordListPage extends HookConsumerWidget {
                 Text(
                   'Belum ada di kamus. Usulkan supaya bisa dicari orang lain.',
                   textAlign: TextAlign.center,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -360,7 +360,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -371,7 +371,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -424,7 +424,7 @@ class _LoadingMoreFooter extends StatelessWidget {
             const Gap(8),
             Text(
               'Memuat...',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -464,7 +464,7 @@ class _SearchHistorySection extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Riwayat pencarian',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                     fontWeight: FontWeight.w600,
                   ),
@@ -479,7 +479,7 @@ class _SearchHistorySection extends StatelessWidget {
                   ),
                   child: Text(
                     'Hapus',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.primary,
                     ),
                   ),

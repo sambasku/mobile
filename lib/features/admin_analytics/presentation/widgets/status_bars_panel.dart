@@ -101,7 +101,7 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
               children: [
                 Text(
                   'Status',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -163,7 +163,7 @@ class _StatusRow extends StatelessWidget {
               item.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w500,
                 color: item.attention
                     ? accent
@@ -173,7 +173,7 @@ class _StatusRow extends StatelessWidget {
           ),
           Text(
             formatAnalyticsCount(item.value),
-            style: theme.typography.md.copyWith(
+            style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
               color: accent,
             ),

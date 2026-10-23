@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -35,6 +35,7 @@ import '../widgets/knowledge_toggles.dart';
 import '../widgets/word_class_picker_sheet.dart';
 import '../../data/providers/contribution_data_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 class ContributePage extends ConsumerStatefulWidget {
   const ContributePage({
@@ -462,7 +463,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             isAuth
                 ? 'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'
                 : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -576,7 +577,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               ),
               Text(
                 _standardDefinition.trim(),
-                style: theme.typography.sm.copyWith(height: 1.4),
+                style: theme.typography.body.sm.copyWith(height: 1.4),
               ),
             ],
             const Gap(16),
@@ -716,7 +717,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             else
               Text(
                 'Maksimal ${SubmitAnonWordUseCase.maxMeanings} makna per usulan.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -1062,7 +1063,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       padding: const EdgeInsets.only(top: 4),
       child: Text(
         message,
-        style: theme.typography.sm.copyWith(color: theme.colors.error),
+        style: theme.typography.body.sm.copyWith(color: theme.colors.error),
       ),
     );
   }
@@ -1117,26 +1118,21 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         );
       },
       (message) async {
-        final goHistory = await showFDialog<bool>(
+        final goHistory = await showFMessageDialog<bool>(
           context: context,
-          builder: (dialogContext, style, animation) => FDialog(
-            style: style,
-            animation: animation,
-            direction: Axis.vertical,
-            title: const Text('Tercatat di riwayat'),
-            body: Text(message),
-            actions: [
-              FButton(
-                onPress: () => Navigator.of(dialogContext).pop(true),
-                child: const Text('Lihat riwayat'),
-              ),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: () => Navigator.of(dialogContext).pop(false),
-                child: const Text('Tutup'),
-              ),
-            ],
-          ),
+          title: const Text('Tercatat di riwayat'),
+          body: Text(message),
+          actions: (dialogContext) => [
+            FButton(
+              onPress: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Lihat riwayat'),
+            ),
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Tutup'),
+            ),
+          ],
         );
         if (!context.mounted) return;
         if (goHistory == true) {
@@ -1154,32 +1150,27 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               : 'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.')
         : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
 
-    final choice = await showFDialog<String>(
+    final choice = await showFMessageDialog<String>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext, style, animation) => FDialog(
-        style: style,
-        animation: animation,
-        direction: Axis.vertical,
-        title: const Text('Usulan terkirim'),
-        body: Text(successText),
-        actions: [
-          FButton(
-            onPress: () => Navigator.of(dialogContext).pop('again'),
-            child: const Text('Tambah lagi'),
-          ),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: () => Navigator.of(dialogContext).pop('list'),
-            child: const Text('Lihat usulan'),
-          ),
-          FButton(
-            variant: FButtonVariant.ghost,
-            onPress: () => Navigator.of(dialogContext).pop('home'),
-            child: const Text('Ke beranda'),
-          ),
-        ],
-      ),
+      title: const Text('Usulan terkirim'),
+      body: Text(successText),
+      actions: (dialogContext) => [
+        FButton(
+          onPress: () => Navigator.of(dialogContext).pop('again'),
+          child: const Text('Tambah lagi'),
+        ),
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop('list'),
+          child: const Text('Lihat usulan'),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: () => Navigator.of(dialogContext).pop('home'),
+          child: const Text('Ke beranda'),
+        ),
+      ],
     );
     if (!context.mounted) return;
     // Form sudah terkirim. Jangan biarkan /contribute tetap di bawah
@@ -1235,7 +1226,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
           const Gap(6),
           Text(
             'Memeriksa ketersediaan kata...',
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -1265,7 +1256,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
               Expanded(
                 child: Text(
                   'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.',
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -1303,7 +1294,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
             Expanded(
               child: Text(
                 'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.',
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -1368,7 +1359,7 @@ class _MeaningBlock extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Makna ${index + 1}',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -1379,7 +1370,7 @@ class _MeaningBlock extends StatelessWidget {
                     onPress: onRemove,
                     child: Text(
                       'Hapus',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.error,
                       ),
                     ),
@@ -1408,7 +1399,7 @@ class _MeaningBlock extends StatelessWidget {
                   wantDefinition: draft.wantDefinition,
                   wantPadanan: draft.wantPadanan,
                 ),
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   height: 1.35,
                 ),
@@ -1523,7 +1514,7 @@ class _MeaningInlineError extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4),
       child: Text(
         message!,
-        style: theme.typography.sm.copyWith(color: theme.colors.error),
+        style: theme.typography.body.sm.copyWith(color: theme.colors.error),
       ),
     );
   }
@@ -1562,7 +1553,7 @@ class _SelectField extends StatelessWidget {
                   hasValue ? selectedLabel! : hint,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: hasValue
                         ? theme.colors.foreground
                         : theme.colors.mutedForeground,
@@ -1598,7 +1589,7 @@ class _FieldCaption extends StatelessWidget {
           Flexible(
             child: Text(
               text,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
                 color: theme.colors.foreground,
               ),
@@ -1625,7 +1616,7 @@ class _InfoTip extends StatelessWidget {
       constraints: const FPortalConstraints(maxWidth: 280),
       popoverBuilder: (context, _) => Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(message, style: theme.typography.sm.copyWith(height: 1.35)),
+        child: Text(message, style: theme.typography.body.sm.copyWith(height: 1.35)),
       ),
       builder: (context, controller, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -1652,7 +1643,7 @@ class _SelectFieldSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -1663,7 +1654,7 @@ class _SelectFieldSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: Skeletonizer(
         enabled: true,
         child: IgnorePointer(
@@ -1848,7 +1839,7 @@ class _BuildReferenceError extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: context.theme.typography.sm.copyWith(
+            style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.error,
             ),
             maxLines: 1,
@@ -1934,7 +1925,7 @@ class _ModeChip extends StatelessWidget {
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               color: selected ? theme.colors.primary : theme.colors.foreground,
             ),

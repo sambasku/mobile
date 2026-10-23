@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vote_toggle_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'vote_toggle_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VoteToggleResponseDtoCopyWith<VoteToggleResponseDto> get copyWith => _$VoteTogg
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteToggleResponseDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
+  final _this = this as VoteToggleResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteToggleResponseDto&&(identical(other.targetType, _this.targetType) || other.targetType == _this.targetType)&&(identical(other.targetId, _this.targetId) || other.targetId == _this.targetId)&&(identical(other.myVote, _this.myVote) || other.myVote == _this.myVote)&&(identical(other.upvotes, _this.upvotes) || other.upvotes == _this.upvotes)&&(identical(other.downvotes, _this.downvotes) || other.downvotes == _this.downvotes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,myVote,upvotes,downvotes);
+int get hashCode {
+  final _this = this as VoteToggleResponseDto;
+  return Object.hash(runtimeType,_this.targetType,_this.targetId,_this.myVote,_this.upvotes,_this.downvotes);
+}
 
 @override
 String toString() {
-  return 'VoteToggleResponseDto(targetType: $targetType, targetId: $targetId, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes)';
+  final _this = this as VoteToggleResponseDto;
+  return 'VoteToggleResponseDto(targetType: ${_this.targetType}, targetId: ${_this.targetId}, myVote: ${_this.myVote}, upvotes: ${_this.upvotes}, downvotes: ${_this.downvotes})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VoteToggleResponseDtoCopyWithImpl<$Res>
 /// Create a copy of VoteToggleResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? targetType = null,Object? targetId = null,Object? myVote = freezed,Object? upvotes = null,Object? downvotes = null,}) {
-  return _then(_self.copyWith(
+  return _then(VoteToggleResponseDto(
 targetType: null == targetType ? _self.targetType : targetType // ignore: cast_nullable_to_non_nullable
 as String,targetId: null == targetId ? _self.targetId : targetId // ignore: cast_nullable_to_non_nullable
 as String,myVote: freezed == myVote ? _self.myVote : myVote // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteToggleResponseDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteToggleResponseDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,myVote,upvotes,downvotes);
+int get hashCode {
+    return Object.hash(runtimeType,targetType,targetId,myVote,upvotes,downvotes);
+}
 
 @override
 String toString() {
-  return 'VoteToggleResponseDto(targetType: $targetType, targetId: $targetId, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes)';
+    return 'VoteToggleResponseDto(targetType: $targetType, targetId: $targetId, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes)';
 }
 
 

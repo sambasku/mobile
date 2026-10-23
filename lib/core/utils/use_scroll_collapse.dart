@@ -27,11 +27,19 @@ Animation<double> useScrollCollapse(
       final delta = pixels - lastPixels.value;
       lastPixels.value = pixels;
       if (pixels <= 0) {
-        collapse.animateBack(0, curve: Curves.easeOutCubic);
+        // Hanya mulai animasi bila belum di 0. Tanpa guard ini, tiap frame
+        // overscroll memanggil animateBack → notifikasi listener → repaint
+        // ulang blok header walau nilainya tak berubah (scroll terasa berat).
+        if (collapse.value > 0 && !collapse.isAnimating) {
+          collapse.animateBack(0, curve: Curves.easeOutCubic);
+        }
         return;
       }
       collapse.stop();
-      collapse.value = (collapse.value + delta / distance).clamp(0.0, 1.0);
+      // Setter .value selalu notify; lewati bila progress tak berubah
+      // (umum saat scroll balik pelan / di ujung list).
+      final next = (collapse.value + delta / distance).clamp(0.0, 1.0);
+      if (next != collapse.value) collapse.value = next;
     }
 
     void idleListener() {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -152,7 +152,7 @@ class _VoteDeckStub extends StatelessWidget {
       children: [
         Text(
           'Bantu nilai agar arti kata lebih akurat',
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.mutedForeground,
           ),
@@ -227,7 +227,7 @@ class _ContributeMenu extends StatelessWidget {
                 tile(
                   FLucideIcons.plusCircle,
                   'Usul kata baru',
-                  'Tambah kata yang belum ada',
+                  'Kata Sambas belum ada di kamus? Tambahkan sendiri',
                   () {
                     AnalyticsService.instance.log(
                       AnalyticsEvents.contributeStart,
@@ -239,13 +239,13 @@ class _ContributeMenu extends StatelessWidget {
                 tile(
                   FLucideIcons.search,
                   'Dicari warga',
-                  'Dicari, tapi belum ada di kamus',
+                  'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya',
                   () => go(SearchMissRouter.list.path),
                 ),
                 tile(
                   FLucideIcons.languages,
                   'Ruang diskusi',
-                  'Ngobrol bareng warga di Ruang Diskusi',
+                  'Tanya arti atau bahas kata Sambas bareng warga',
                   () => go(DiscussionRouter.feed.path),
                 ),
               ],

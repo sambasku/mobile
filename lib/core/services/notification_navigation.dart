@@ -4,11 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/models/external_link.dart';
 import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/domain/entities/inbox_notification.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/discussion/discussion_router.dart';
 import '../../features/explore/explore_router.dart';
+import '../../features/event/event_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/utils/error_bottom_sheet.dart';
@@ -49,6 +51,12 @@ return;
 }
 if (actionKind == 'place_contribution' || type.startsWith('place_contribution')) {
 _go(router, ExploreRouter.placeProposals.path);
+return;
+}
+
+if (actionKind == 'event_contribution' ||
+    type.startsWith('event_contribution')) {
+_go(router, EventRouter.proposals.path);
 return;
 }
 
@@ -254,11 +262,11 @@ Future<String?> openHttpsUrl(String raw) async {
       debugPrint('openHttpsUrl market failed: $e\n$st');
     }
   }
-  try {
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened) return 'Tidak ada aplikasi yang bisa membuka tautan ini.';
-    return null;
-  } catch (e, st) {
+try {
+final opened = await launchExternalUrl(uri);
+if (!opened) return 'Tidak ada aplikasi yang bisa membuka tautan ini.';
+return null;
+} catch (e, st) {
     debugPrint('openHttpsUrl failed: $e\n$st');
     return e.toString();
   }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +12,7 @@ import '../../../search_miss/presentation/widgets/search_miss_skeleton_list.dart
 import '../../domain/entities/review_search_miss.dart';
 import '../../domain/failures/review_failure.dart';
 import '../providers/review_search_miss_providers.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 /// Panel pencarian kosong verifikator (#88): semua miss yang belum
 /// terjawab, termasuk yang belum ditayangkan — panel ini gerbang
@@ -113,7 +114,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
             children: [
               Text(
                 'Kanan tayang · kiri singkirkan · atas lewati — atau ketuk kartu untuk mengusulkan.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -232,7 +233,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
     children: [
       Text(
         message,
-        style: context.theme.typography.sm.copyWith(
+        style: context.theme.typography.body.sm.copyWith(
           color: context.theme.colors.mutedForeground,
         ),
       ),
@@ -358,40 +359,33 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
   /// PATCH /:id {term} — kartu tetap (bukan aksi deck), deck di-update lokal.
   Future<void> _openEditTerm(ReviewSearchMiss item) async {
     final controller = TextEditingController(text: item.term);
-    final result = await showFDialog<String>(
+    final result = await showFMessageDialog<String>(
       context: context,
-      builder: (dialogContext, style, animation) {
-        return FDialog(
-          style: style,
-          animation: animation,
-          title: const Text('Koreksi term'),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Perbaiki salah ketik warga sebelum ditayangkan.'),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: controller),
-                label: const Text('Term'),
-                autofocus: true,
-              ),
-            ],
+      title: const Text('Koreksi term'),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Perbaiki salah ketik warga sebelum ditayangkan.'),
+          const Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            label: const Text('Term'),
+            autofocus: true,
           ),
-          actions: [
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            FButton(
-              onPress: () =>
-                  Navigator.of(dialogContext).pop(controller.text.trim()),
-              child: const Text('Simpan'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: const Text('Batal'),
+        ),
+        FButton(
+          onPress: () => Navigator.of(dialogContext).pop(controller.text.trim()),
+          child: const Text('Simpan'),
+        ),
+      ],
     );
     final term = result;
     if (term == null || term.isEmpty || term == item.term) return;
@@ -504,7 +498,7 @@ class _MissCardBody extends StatelessWidget {
               item.term,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(10),
             Wrap(
@@ -522,7 +516,7 @@ class _MissCardBody extends StatelessWidget {
             const Gap(18),
             Text(
               'Ketuk untuk mengusulkan kata ini.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -559,7 +553,7 @@ class _MetaChip extends StatelessWidget {
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

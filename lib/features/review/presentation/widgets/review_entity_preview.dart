@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -85,7 +85,7 @@ class _Skeletonized extends StatelessWidget {
     final theme = context.theme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -95,7 +95,7 @@ class _Skeletonized extends StatelessWidget {
       duration: const Duration(milliseconds: 1500),
     );
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(child: Skeletonizer(enabled: true, child: child)),
     );
   }
@@ -167,7 +167,7 @@ class _SectionCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
@@ -214,7 +214,7 @@ class _MetaRow extends StatelessWidget {
             width: 108,
             child: Text(
               label,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -224,7 +224,7 @@ class _MetaRow extends StatelessWidget {
               loading: loading,
               child: Text(
                 value,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: emphasize ? FontWeight.w700 : FontWeight.w500,
                   color: muted ? theme.colors.mutedForeground : null,
                   fontStyle: muted ? FontStyle.italic : null,
@@ -265,7 +265,7 @@ class _WordPreview extends StatelessWidget {
             children: [
               Text(
                 lemma,
-                style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               ),
               if (canEditType) ...[
                 const Gap(8),
@@ -274,7 +274,7 @@ class _WordPreview extends StatelessWidget {
                 const Gap(4),
                 Text(
                   wordTypeOptionLabel(wordType),
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -297,7 +297,7 @@ class _WordPreview extends StatelessWidget {
               ],
               if (notes != null && notes.isNotEmpty) ...[
                 const Gap(8),
-                Text(notes, style: theme.typography.sm),
+                Text(notes, style: theme.typography.body.sm),
               ],
             ],
           ),
@@ -308,7 +308,7 @@ class _WordPreview extends StatelessWidget {
           child: meanings is! List || meanings.isEmpty
               ? Text(
                   'Tidak ada makna.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 )
@@ -342,7 +342,7 @@ class _WordPreview extends StatelessWidget {
                           TextSpan(text: values.join(', ')),
                         ],
                       ),
-                      style: theme.typography.sm,
+                      style: theme.typography.body.sm,
                     ),
                   ),
               ],
@@ -395,12 +395,12 @@ class _MeaningBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(definition, style: theme.typography.sm),
+        Text(definition, style: theme.typography.body.sm),
         if (terjemahan != null && terjemahan.trim().isNotEmpty) ...[
           const Gap(4),
           Text(
             'Terjemahan: $terjemahan',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -411,7 +411,7 @@ class _MeaningBlock extends StatelessWidget {
             raw['meaningSource']?.toString() ??
                 raw['meaning_source']?.toString(),
           ),
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             fontWeight: FontWeight.w600,
           ),
@@ -434,7 +434,7 @@ class _MeaningBlock extends StatelessWidget {
                       ),
                   ],
                 ),
-                style: theme.typography.sm,
+                style: theme.typography.body.sm,
               ),
             ),
       ],
@@ -466,7 +466,7 @@ class _ImagePreview extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 'Untuk kata “$lemma”',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -474,7 +474,7 @@ class _ImagePreview extends StatelessWidget {
           if (url == null)
             Text(
               'URL gambar tidak tersedia.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -497,7 +497,7 @@ class _ImagePreview extends StatelessWidget {
             const Gap(8),
             Text(
               'Ketuk untuk perbesar',
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
@@ -541,7 +541,7 @@ class _AudioPreview extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 'Untuk kata “$lemma”',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -549,7 +549,7 @@ class _AudioPreview extends StatelessWidget {
           if (url == null)
             Text(
               'File audio tidak tersedia.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -594,7 +594,7 @@ class _PronunciationPreview extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 'Untuk kata “$lemma”',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -602,7 +602,7 @@ class _PronunciationPreview extends StatelessWidget {
           if (value != null)
             Text(
               value,
-              style: theme.typography.xl.copyWith(
+              style: theme.typography.body.xl.copyWith(
                 fontWeight: FontWeight.w700,
                 fontFamily: 'monospace',
               ),
@@ -611,7 +611,7 @@ class _PronunciationPreview extends StatelessWidget {
             const Gap(4),
             Text(
               'Notasi: $notation',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -645,7 +645,7 @@ class _LemmaHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         'Untuk kata “$text”',
-        style: context.theme.typography.sm.copyWith(
+        style: context.theme.typography.body.sm.copyWith(
           color: context.theme.colors.mutedForeground,
         ),
       ),
@@ -726,7 +726,7 @@ class _MeaningPreview extends ConsumerWidget {
           const Gap(4),
           Text(
             'Terjemahan',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
               color: theme.colors.mutedForeground,
             ),
@@ -780,13 +780,13 @@ class _TranslationRowView extends StatelessWidget {
               loading: row.languageLoading,
               child: Text(
                 row.language ?? '',
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-          Text(row.text, style: theme.typography.sm),
+          Text(row.text, style: theme.typography.body.sm),
         ],
       ),
     );
@@ -810,7 +810,7 @@ class _MeaningTranslationsEmpty extends StatelessWidget {
     };
     return Text(
       text,
-      style: theme.typography.sm.copyWith(
+      style: theme.typography.body.sm.copyWith(
         color: isWarning ? theme.colors.error : theme.colors.mutedForeground,
         fontWeight: isWarning ? FontWeight.w600 : null,
       ),
@@ -911,7 +911,7 @@ class _SentenceBlock extends StatelessWidget {
       children: [
         Text(
           label,
-          style: theme.typography.xs.copyWith(
+          style: theme.typography.body.xs.copyWith(
             color: theme.colors.mutedForeground,
             fontWeight: FontWeight.w700,
           ),
@@ -921,13 +921,13 @@ class _SentenceBlock extends StatelessWidget {
             loading: languageLoading,
             child: Text(
               language ?? '',
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
           ),
         const Gap(2),
-        Text(text, style: theme.typography.sm),
+        Text(text, style: theme.typography.body.sm),
       ],
     );
   }
@@ -1004,7 +1004,7 @@ class _FieldPreview extends StatelessWidget {
           if (rows.isEmpty)
             Text(
               'Tidak ada detail.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             )
@@ -1173,13 +1173,13 @@ class _InlineAudioPlayerState extends State<_InlineAudioPlayer> {
                   children: [
                     Text(
                       _error ? 'Gagal memutar - ketuk lagi' : label,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       _playing ? 'Sedang diputar' : 'Ketuk untuk mendengar',
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),

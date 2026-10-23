@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +10,7 @@ import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/providers/contribution_guide_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/contribution_guide_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 /// Guide swipe tab Kontribusi: hanya tap "Mengerti" yang menulis flag
 /// lokal. Full-screen overlay dengan barrierDismissible=false.
@@ -35,11 +36,11 @@ void main() {
           builder: (context, ref, _) {
             container = ProviderScope.containerOf(context);
             return MaterialApp(
-              theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+              theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
               localizationsDelegates: FLocalizations.localizationsDelegates,
               supportedLocales: FLocalizations.supportedLocales,
               builder: (context, child) =>
-                  FTheme(data: FThemes.zinc.light.touch, child: child!),
+                  FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
               home: const Scaffold(body: SizedBox.expand()),
             );
           },

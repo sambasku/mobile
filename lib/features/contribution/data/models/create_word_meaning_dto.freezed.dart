@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'create_word_meaning_dto.dart';
@@ -9,6 +9,7 @@ part of 'create_word_meaning_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $CreateWordMeaningDtoCopyWith<CreateWordMeaningDto> get copyWith => _$CreateWord
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordMeaningDto&&(identical(other.wordClassId, wordClassId) || other.wordClassId == wordClassId)&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.isHaveDefinition, isHaveDefinition) || other.isHaveDefinition == isHaveDefinition)&&(identical(other.isHaveTranslation, isHaveTranslation) || other.isHaveTranslation == isHaveTranslation)&&(identical(other.meaningSource, meaningSource) || other.meaningSource == meaningSource)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex)&&const DeepCollectionEquality().equals(other.translations, translations)&&const DeepCollectionEquality().equals(other.examples, examples));
+  final _this = this as CreateWordMeaningDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordMeaningDto&&(identical(other.wordClassId, _this.wordClassId) || other.wordClassId == _this.wordClassId)&&(identical(other.definition, _this.definition) || other.definition == _this.definition)&&(identical(other.isHaveDefinition, _this.isHaveDefinition) || other.isHaveDefinition == _this.isHaveDefinition)&&(identical(other.isHaveTranslation, _this.isHaveTranslation) || other.isHaveTranslation == _this.isHaveTranslation)&&(identical(other.meaningSource, _this.meaningSource) || other.meaningSource == _this.meaningSource)&&(identical(other.orderIndex, _this.orderIndex) || other.orderIndex == _this.orderIndex)&&const DeepCollectionEquality().equals(other.translations, _this.translations)&&const DeepCollectionEquality().equals(other.examples, _this.examples));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordClassId,definition,isHaveDefinition,isHaveTranslation,meaningSource,orderIndex,const DeepCollectionEquality().hash(translations),const DeepCollectionEquality().hash(examples));
+int get hashCode {
+  final _this = this as CreateWordMeaningDto;
+  return Object.hash(runtimeType,_this.wordClassId,_this.definition,_this.isHaveDefinition,_this.isHaveTranslation,_this.meaningSource,_this.orderIndex,const DeepCollectionEquality().hash(_this.translations),const DeepCollectionEquality().hash(_this.examples));
+}
 
 @override
 String toString() {
-  return 'CreateWordMeaningDto(wordClassId: $wordClassId, definition: $definition, isHaveDefinition: $isHaveDefinition, isHaveTranslation: $isHaveTranslation, meaningSource: $meaningSource, orderIndex: $orderIndex, translations: $translations, examples: $examples)';
+  final _this = this as CreateWordMeaningDto;
+  return 'CreateWordMeaningDto(wordClassId: ${_this.wordClassId}, definition: ${_this.definition}, isHaveDefinition: ${_this.isHaveDefinition}, isHaveTranslation: ${_this.isHaveTranslation}, meaningSource: ${_this.meaningSource}, orderIndex: ${_this.orderIndex}, translations: ${_this.translations}, examples: ${_this.examples})';
 }
 
 
@@ -66,7 +72,7 @@ class _$CreateWordMeaningDtoCopyWithImpl<$Res>
 /// Create a copy of CreateWordMeaningDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? wordClassId = null,Object? definition = null,Object? isHaveDefinition = null,Object? isHaveTranslation = null,Object? meaningSource = null,Object? orderIndex = null,Object? translations = null,Object? examples = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CreateWordMeaningDto(
 wordClassId: null == wordClassId ? _self.wordClassId : wordClassId // ignore: cast_nullable_to_non_nullable
 as String,definition: null == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as String,isHaveDefinition: null == isHaveDefinition ? _self.isHaveDefinition : isHaveDefinition // ignore: cast_nullable_to_non_nullable
@@ -216,7 +222,7 @@ return $default(_that.wordClassId,_that.definition,_that.isHaveDefinition,_that.
 @JsonSerializable()
 
 class _CreateWordMeaningDto implements CreateWordMeaningDto {
-  const _CreateWordMeaningDto({@JsonKey(name: 'word_class_id') required this.wordClassId, required this.definition, @JsonKey(name: 'is_have_definition') this.isHaveDefinition = true, @JsonKey(name: 'is_have_translation') this.isHaveTranslation = true, @JsonKey(name: 'meaning_source') this.meaningSource = 'manual', @JsonKey(name: 'order_index') this.orderIndex = 1, required final  List<CreateWordTranslationDto> translations, @JsonKey(includeIfNull: false) final  List<CreateWordExampleDto>? examples}): _translations = translations,_examples = examples;
+  const _CreateWordMeaningDto({@JsonKey(name: 'word_class_id') required this.wordClassId, required this.definition, @JsonKey(name: 'is_have_definition') this.isHaveDefinition = true, @JsonKey(name: 'is_have_translation') this.isHaveTranslation = true, @JsonKey(name: 'meaning_source') this.meaningSource = 'manual', @JsonKey(name: 'order_index') this.orderIndex = 1, required  List<CreateWordTranslationDto> translations, @JsonKey(includeIfNull: false)  List<CreateWordExampleDto>? examples}): _translations = translations,_examples = examples;
   factory _CreateWordMeaningDto.fromJson(Map<String, dynamic> json) => _$CreateWordMeaningDtoFromJson(json);
 
 @override@JsonKey(name: 'word_class_id') final  String wordClassId;
@@ -255,16 +261,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordMeaningDto&&(identical(other.wordClassId, wordClassId) || other.wordClassId == wordClassId)&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.isHaveDefinition, isHaveDefinition) || other.isHaveDefinition == isHaveDefinition)&&(identical(other.isHaveTranslation, isHaveTranslation) || other.isHaveTranslation == isHaveTranslation)&&(identical(other.meaningSource, meaningSource) || other.meaningSource == meaningSource)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex)&&const DeepCollectionEquality().equals(other._translations, _translations)&&const DeepCollectionEquality().equals(other._examples, _examples));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordMeaningDto&&(identical(other.wordClassId, wordClassId) || other.wordClassId == wordClassId)&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.isHaveDefinition, isHaveDefinition) || other.isHaveDefinition == isHaveDefinition)&&(identical(other.isHaveTranslation, isHaveTranslation) || other.isHaveTranslation == isHaveTranslation)&&(identical(other.meaningSource, meaningSource) || other.meaningSource == meaningSource)&&(identical(other.orderIndex, orderIndex) || other.orderIndex == orderIndex)&&const DeepCollectionEquality().equals(other.translations, _translations)&&const DeepCollectionEquality().equals(other.examples, _examples));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordClassId,definition,isHaveDefinition,isHaveTranslation,meaningSource,orderIndex,const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_examples));
+int get hashCode {
+    return Object.hash(runtimeType,wordClassId,definition,isHaveDefinition,isHaveTranslation,meaningSource,orderIndex,const DeepCollectionEquality().hash(_translations),const DeepCollectionEquality().hash(_examples));
+}
 
 @override
 String toString() {
-  return 'CreateWordMeaningDto(wordClassId: $wordClassId, definition: $definition, isHaveDefinition: $isHaveDefinition, isHaveTranslation: $isHaveTranslation, meaningSource: $meaningSource, orderIndex: $orderIndex, translations: $translations, examples: $examples)';
+    return 'CreateWordMeaningDto(wordClassId: $wordClassId, definition: $definition, isHaveDefinition: $isHaveDefinition, isHaveTranslation: $isHaveTranslation, meaningSource: $meaningSource, orderIndex: $orderIndex, translations: $translations, examples: $examples)';
 }
 
 

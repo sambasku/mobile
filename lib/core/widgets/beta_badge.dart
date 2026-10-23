@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 /// Label kecil "BETA" warna destructive. Toggle lewat `F.isBeta`.
@@ -17,7 +17,7 @@ class BetaBadge extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text(
           'BETA',
-          style: context.theme.typography.xs.copyWith(
+          style: context.theme.typography.body.xs.copyWith(
             fontSize: 9,
             height: 1,
             fontWeight: FontWeight.w700,

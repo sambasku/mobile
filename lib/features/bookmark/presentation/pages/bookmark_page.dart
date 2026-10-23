@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +61,7 @@ class _GuestState extends StatelessWidget {
             const Gap(10),
             Text(
               'Masuk dulu untuk melihat kata tersimpan',
-              style: theme.typography.md.copyWith(
+              style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
@@ -113,7 +113,7 @@ class _BookmarkList extends ConsumerWidget {
                 error is BookmarkFailure
                     ? error.message
                     : 'Gagal memuat bookmark',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -158,7 +158,7 @@ class _BookmarkList extends ConsumerWidget {
                       const Gap(10),
                       Text(
                         'Belum ada kata tersimpan.',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -166,7 +166,7 @@ class _BookmarkList extends ConsumerWidget {
                       const Gap(4),
                       Text(
                         'Tekan ikon bookmark di halaman detail kata.',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,

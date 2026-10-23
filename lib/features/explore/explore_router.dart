@@ -7,7 +7,6 @@ import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_contribute_page.dart';
 import 'presentation/pages/place_detail_page.dart';
-import 'presentation/pages/place_article_page.dart';
 import 'presentation/pages/place_photos_page.dart';
 import 'presentation/pages/place_proposals_page.dart';
 import 'presentation/pages/region_detail_page.dart';
@@ -28,17 +27,6 @@ class ExploreRouter {
     path: '/explore/place/:slug',
     name: 'ExploreRouter.place',
   );
-
-  /// Route artikel markdown Place (push penuh, root navigator).
-  static const placeArticle = RouteDefiner(
-    path: '/explore/place/:slug/artikel',
-    name: 'ExploreRouter.placeArticle',
-  );
-
-  /// Path artikel untuk satu slug (#168): wajib replace segment `:slug`,
-  /// bukan query param - literal ':slug' di path bikin halaman kosong.
-  static String placeArticlePath(String slug) =>
-      placeArticle.path.replaceFirst(':slug', slug);
 
   /// Linimasa foto satu tempat.
   static const placePhotos = RouteDefiner(
@@ -176,14 +164,6 @@ class ExploreRouter {
       builder: (context, state) {
         final slug = state.pathParameters['slug'] ?? '';
         return PlacePhotosPage(slug: slug);
-      },
-    ),
-    GoRoute(
-      path: placeArticle.path,
-      name: placeArticle.name,
-      builder: (context, state) {
-        final slug = state.pathParameters['slug'] ?? '';
-        return PlaceArticlePage(slug: slug);
       },
     ),
     GoRoute(

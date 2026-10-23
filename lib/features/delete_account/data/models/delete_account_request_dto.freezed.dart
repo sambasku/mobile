@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'delete_account_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'delete_account_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $DeleteAccountRequestDtoCopyWith<DeleteAccountRequestDto> get copyWith => _$Dele
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountRequestDto&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
+  final _this = this as DeleteAccountRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountRequestDto&&(identical(other.password, _this.password) || other.password == _this.password)&&(identical(other.confirmation, _this.confirmation) || other.confirmation == _this.confirmation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,password,confirmation);
+int get hashCode {
+  final _this = this as DeleteAccountRequestDto;
+  return Object.hash(runtimeType,_this.password,_this.confirmation);
+}
 
 @override
 String toString() {
-  return 'DeleteAccountRequestDto(password: $password, confirmation: $confirmation)';
+  final _this = this as DeleteAccountRequestDto;
+  return 'DeleteAccountRequestDto(password: ${_this.password}, confirmation: ${_this.confirmation})';
 }
 
 
@@ -66,7 +72,7 @@ class _$DeleteAccountRequestDtoCopyWithImpl<$Res>
 /// Create a copy of DeleteAccountRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? password = freezed,Object? confirmation = null,}) {
-  return _then(_self.copyWith(
+  return _then(DeleteAccountRequestDto(
 password: freezed == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String?,confirmation: null == confirmation ? _self.confirmation : confirmation // ignore: cast_nullable_to_non_nullable
 as String,
@@ -229,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteAccountRequestDto&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteAccountRequestDto&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,password,confirmation);
+int get hashCode {
+    return Object.hash(runtimeType,password,confirmation);
+}
 
 @override
 String toString() {
-  return 'DeleteAccountRequestDto(password: $password, confirmation: $confirmation)';
+    return 'DeleteAccountRequestDto(password: $password, confirmation: $confirmation)';
 }
 
 

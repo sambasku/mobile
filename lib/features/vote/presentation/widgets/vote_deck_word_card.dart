@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -92,7 +92,7 @@ class _OpenDetailFooter extends StatelessWidget {
                 const Gap(6),
                 Text(
                   'Lihat detail dan komentar',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: color,
                     fontWeight: FontWeight.w600,
                   ),
@@ -149,7 +149,7 @@ class _WordDetailBody extends StatelessWidget {
         ],
         Text(
           detail.lemma,
-          style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
         const Gap(8),
@@ -195,28 +195,28 @@ class _MeaningView extends StatelessWidget {
         if (className != null && className.isNotEmpty)
           Text(
             className,
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               fontWeight: FontWeight.w600,
               color: theme.colors.primary,
             ),
           ),
         if (definition != null && definition.isNotEmpty && definition != '-')
-          Text(definition, style: theme.typography.sm.copyWith(height: 1.35)),
+          Text(definition, style: theme.typography.body.sm.copyWith(height: 1.35)),
         for (final t in meaning.translations)
           Text(
             '→ ${t.text}',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
           ),
         for (final e in meaning.examples) ...[
           const Gap(6),
           Text(
             e.sourceSentence,
-            style: theme.typography.sm.copyWith(fontStyle: FontStyle.italic),
+            style: theme.typography.body.sm.copyWith(fontStyle: FontStyle.italic),
           ),
           if (e.targetSentence?.trim().isNotEmpty ?? false)
             Text(
               e.targetSentence!.trim(),
-              style: theme.typography.sm.copyWith(color: muted),
+              style: theme.typography.body.sm.copyWith(color: muted),
             ),
           for (final audio in e.audios)
             Padding(
@@ -238,7 +238,7 @@ class _MeaningView extends StatelessWidget {
                   width: 22,
                   child: Text(
                     '$index.',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w700,
                       color: muted,
                     ),
@@ -280,14 +280,14 @@ class VoteDeckWordFace extends StatelessWidget {
         children: [
           Text(
             lemma,
-            style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           if (sense != null && sense!.trim().isNotEmpty) ...[
             const Gap(10),
             Text(
               sense!,
-              style: theme.typography.md.copyWith(
+              style: theme.typography.body.md.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
@@ -300,7 +300,7 @@ class VoteDeckWordFace extends StatelessWidget {
             if (onLockedTap == null)
               Text(
                 wordType,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,

@@ -12,7 +12,9 @@ import '../../otp_code.dart';
 import '../otp_code_formatter.dart';
 import '../providers/auth_forgot_providers.dart';
 import '../providers/auth_reset_providers.dart';
+import '../../domain/failures/auth_failure.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 
 const _resendCooldown = Duration(minutes: 2);
 
@@ -112,6 +114,20 @@ class ResetPasswordPage extends HookConsumerWidget {
 
     ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
+      // Akun OAuth: info, bukan error (lihat forgot_password_page).
+      final code = ref.read(authForgotProvider).errorCode;
+      if (code == AuthFailure.oauthAccount) {
+        showAppInfoSheet(
+          context,
+          message: next,
+          title: 'Akun OAuth',
+        ).whenComplete(() {
+          if (context.mounted) {
+            ref.read(authForgotProvider.notifier).clearError();
+          }
+        });
+        return;
+      }
       showAppErrorSheet(context, message: next).whenComplete(() {
         if (context.mounted) {
           ref.read(authForgotProvider.notifier).clearError();

@@ -38,13 +38,13 @@ class AdminAnalyticsForbiddenPage extends StatelessWidget {
               Text(
                 'Akses terbatas',
                 textAlign: TextAlign.center,
-                style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               ),
               const Gap(8),
               Text(
                 'Hanya admin dan root yang boleh membuka Analitik.',
                 textAlign: TextAlign.center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),

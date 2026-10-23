@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -110,7 +110,7 @@ class AudioPlayerTile extends ConsumerWidget {
                         meta,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -132,7 +132,7 @@ class AudioPlayerTile extends ConsumerWidget {
                         timeLabel,
                         maxLines: 1,
                         softWrap: false,
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),

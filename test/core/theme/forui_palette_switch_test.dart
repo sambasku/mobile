@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,19 +25,22 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-  }) async => Either.left(const AuthFailure('tidak dipakai'));
+      List<({String documentType, String documentVersion})>? consents,
+}) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-  }) async => Either.left(const AuthFailure('tidak dipakai'));
+      List<({String documentType, String documentVersion})>? consents,
+}) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
+      List<({String documentType, String documentVersion})>? consents,
+}) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
 
@@ -125,7 +128,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    final zincPrimary = FThemes.zinc.light.touch
+    final zincPrimary = foruiPalettes['zinc']!.light.touch
         .toApproximateMaterialTheme()
         .colorScheme
         .primary;
@@ -154,7 +157,7 @@ void main() {
 
     // 2) MaterialApp dibangun ulang dengan tema merah
     final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
-    final redPrimary = FThemes.red.light.touch
+    final redPrimary = foruiPalettes['red']!.light.touch
         .toApproximateMaterialTheme()
         .colorScheme
         .primary;

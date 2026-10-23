@@ -77,6 +77,38 @@ class PlacesRemoteDatasource {
   Future<Map<String, dynamic>> fetchCatalogEnvelope() => walkPlaceCursors(
     fetchPage: (before) async => (await fetchRaw(before: before)).data,
   );
+
+  /// Catat view detail place (metrik popularitas). Server dedupe per
+  /// pembaca per hari (user login > X-Device-Id), jadi panggil ulang aman.
+  /// Fire-and-forget: error jaringan dilempar ke caller yang ignore.
+  /// #187: satu halaman galeri foto tempat (`next_offset` null = habis).
+  /// Galeri bisa >12 foto, sedangkan detail hanya membawa halaman pertama.
+  Future<({List<Map<String, dynamic>> items, int total, int? nextOffset})>
+  fetchImagePage(String slug, {int offset = 0}) async {
+    final res = await _dio.get<dynamic>(
+      '/api/v1/places/${Uri.encodeComponent(slug)}/images',
+      queryParameters: {'offset': offset},
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final body = res.data;
+    final data = body is Map ? body['data'] : null;
+    final items = data is Map ? data['items'] : null;
+    return (
+      items: [
+        for (final raw in (items is List ? items : const []).whereType<Map>())
+          _wirePlaceImageToCamel(Map<String, dynamic>.from(raw)),
+      ],
+      total: data is Map ? (data['total'] as num?)?.toInt() ?? 0 : 0,
+      nextOffset: data is Map ? (data['next_offset'] as num?)?.toInt() : null,
+    );
+  }
+
+  Future<void> recordView(String slug) async {
+    await _dio.post<dynamic>(
+      '/api/v1/places/${Uri.encodeComponent(slug)}/view',
+      options: Options(sendTimeout: const Duration(seconds: 5)),
+    );
+  }
 }
 
 /// `next_cursor` halaman ini. Null = halaman terakhir.
@@ -139,29 +171,33 @@ Map<String, dynamic> placesApiBodyToEnvelope(Object? body) {
   };
 }
 
+Map<String, dynamic> _wirePlaceImageToCamel(Map<String, dynamic> img) {
+  final attr = img['attribution'];
+  Map<String, dynamic>? attribution;
+  if (attr is Map) {
+    attribution = {
+      'name': attr['name'],
+      'provider': attr['provider'],
+      'url': attr['url'],
+      'license': attr['license'],
+      'license_url': attr['license_url'],
+      'source': attr['source'],
+      if (attr['authorId'] != null) 'authorId': attr['authorId'],
+    };
+  }
+  return {
+    'url': img['url'],
+    'isMain': img['is_main'] == true,
+    'attribution': ?attribution,
+  };
+}
+
 Map<String, dynamic> _wirePlaceToCamel(Map<String, dynamic> w) {
   final images = <Map<String, dynamic>>[];
   final rawImages = w['images'];
   if (rawImages is List) {
     for (final img in rawImages.whereType<Map>()) {
-      final attr = img['attribution'];
-      Map<String, dynamic>? attribution;
-      if (attr is Map) {
-        attribution = {
-          'name': attr['name'],
-          'provider': attr['provider'],
-          'url': attr['url'],
-          'license': attr['license'],
-          'license_url': attr['license_url'],
-          'source': attr['source'],
-          if (attr['authorId'] != null) 'authorId': attr['authorId'],
-        };
-      }
-      images.add({
-        'url': img['url'],
-        'isMain': img['is_main'] == true,
-        'attribution': ?attribution,
-      });
+      images.add(_wirePlaceImageToCamel(Map<String, dynamic>.from(img)));
     }
   }
 

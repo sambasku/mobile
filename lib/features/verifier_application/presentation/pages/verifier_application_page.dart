@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -250,7 +250,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     Text(
                       'Membuka halaman masuk...',
                       textAlign: .center,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -276,7 +276,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     Text(
                       'Pengajuan disetujui',
                       textAlign: .center,
-                      style: theme.typography.xl.copyWith(
+                      style: theme.typography.body.xl.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colors.success,
                       ),
@@ -285,7 +285,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     Text(
                       'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.',
                       textAlign: .center,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -371,7 +371,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                                 const Gap(6),
                                 Text(
                                   phoneCountry.value.prefixLabel,
-                                  style: context.theme.typography.sm.copyWith(
+                                  style: context.theme.typography.body.sm.copyWith(
                                     color: context.theme.colors.mutedForeground,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -400,7 +400,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   const Gap(16),
                   Text(
                     'Media sosial (minimal 1)',
-                    style: context.theme.typography.sm.copyWith(
+                    style: context.theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -452,7 +452,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   Text(
                     'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.',
                     textAlign: .center,
-                    style: context.theme.typography.sm.copyWith(
+                    style: context.theme.typography.body.sm.copyWith(
                       color: context.theme.colors.mutedForeground,
                     ),
                   ),
@@ -527,7 +527,7 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
                 children: [
                   Text(
                     'Pilih platform',
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -683,7 +683,7 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
         const Gap(8),
         Text(
           'Screenshot profil',
-          style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(6),
         _ScreenshotSlot(
@@ -750,7 +750,7 @@ class _ScreenshotSlot extends StatelessWidget {
             const Gap(4),
             Text(
               'Kamera / galeri',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 11,
               ),

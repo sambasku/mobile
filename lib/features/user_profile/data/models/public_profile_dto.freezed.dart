@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'public_profile_dto.dart';
@@ -9,6 +9,7 @@ part of 'public_profile_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -29,16 +30,21 @@ $PublicProfileDtoCopyWith<PublicProfileDto> get copyWith => _$PublicProfileDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.role, role) || other.role == role)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.activeBorderUrl, activeBorderUrl) || other.activeBorderUrl == activeBorderUrl)&&(identical(other.stats, stats) || other.stats == stats));
+  final _this = this as PublicProfileDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.isVerifier, _this.isVerifier) || other.isVerifier == _this.isVerifier)&&(identical(other.joinedAt, _this.joinedAt) || other.joinedAt == _this.joinedAt)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.activeBorderUrl, _this.activeBorderUrl) || other.activeBorderUrl == _this.activeBorderUrl)&&(identical(other.stats, _this.stats) || other.stats == _this.stats));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,role,isVerifier,joinedAt,avatarUrl,activeBorderUrl,stats);
+int get hashCode {
+  final _this = this as PublicProfileDto;
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.role,_this.isVerifier,_this.joinedAt,_this.avatarUrl,_this.activeBorderUrl,_this.stats);
+}
 
 @override
 String toString() {
-  return 'PublicProfileDto(username: $username, displayName: $displayName, bio: $bio, role: $role, isVerifier: $isVerifier, joinedAt: $joinedAt, avatarUrl: $avatarUrl, activeBorderUrl: $activeBorderUrl, stats: $stats)';
+  final _this = this as PublicProfileDto;
+  return 'PublicProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, role: ${_this.role}, isVerifier: ${_this.isVerifier}, joinedAt: ${_this.joinedAt}, avatarUrl: ${_this.avatarUrl}, activeBorderUrl: ${_this.activeBorderUrl}, stats: ${_this.stats})';
 }
 
 
@@ -67,7 +73,7 @@ class _$PublicProfileDtoCopyWithImpl<$Res>
 /// Create a copy of PublicProfileDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = freezed,Object? bio = freezed,Object? role = null,Object? isVerifier = null,Object? joinedAt = null,Object? avatarUrl = freezed,Object? activeBorderUrl = freezed,Object? stats = null,}) {
-  return _then(_self.copyWith(
+  return _then(PublicProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
@@ -254,16 +260,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.role, role) || other.role == role)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.activeBorderUrl, activeBorderUrl) || other.activeBorderUrl == activeBorderUrl)&&(identical(other.stats, stats) || other.stats == stats));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.role, role) || other.role == role)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.activeBorderUrl, activeBorderUrl) || other.activeBorderUrl == activeBorderUrl)&&(identical(other.stats, stats) || other.stats == stats));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,username,displayName,bio,role,isVerifier,joinedAt,avatarUrl,activeBorderUrl,stats);
+int get hashCode {
+    return Object.hash(runtimeType,username,displayName,bio,role,isVerifier,joinedAt,avatarUrl,activeBorderUrl,stats);
+}
 
 @override
 String toString() {
-  return 'PublicProfileDto(username: $username, displayName: $displayName, bio: $bio, role: $role, isVerifier: $isVerifier, joinedAt: $joinedAt, avatarUrl: $avatarUrl, activeBorderUrl: $activeBorderUrl, stats: $stats)';
+    return 'PublicProfileDto(username: $username, displayName: $displayName, bio: $bio, role: $role, isVerifier: $isVerifier, joinedAt: $joinedAt, avatarUrl: $avatarUrl, activeBorderUrl: $activeBorderUrl, stats: $stats)';
 }
 
 
@@ -335,16 +343,21 @@ $PublicProfileStatsDtoCopyWith<PublicProfileStatsDto> get copyWith => _$PublicPr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.wordsApproved, wordsApproved) || other.wordsApproved == wordsApproved)&&(identical(other.correctionsApproved, correctionsApproved) || other.correctionsApproved == correctionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
+  final _this = this as PublicProfileStatsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicProfileStatsDto&&(identical(other.contributionsApproved, _this.contributionsApproved) || other.contributionsApproved == _this.contributionsApproved)&&(identical(other.wordsApproved, _this.wordsApproved) || other.wordsApproved == _this.wordsApproved)&&(identical(other.correctionsApproved, _this.correctionsApproved) || other.correctionsApproved == _this.correctionsApproved)&&(identical(other.verificationsDone, _this.verificationsDone) || other.verificationsDone == _this.verificationsDone)&&(identical(other.commentsPublished, _this.commentsPublished) || other.commentsPublished == _this.commentsPublished));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,contributionsApproved,wordsApproved,correctionsApproved,verificationsDone,commentsPublished);
+int get hashCode {
+  final _this = this as PublicProfileStatsDto;
+  return Object.hash(runtimeType,_this.contributionsApproved,_this.wordsApproved,_this.correctionsApproved,_this.verificationsDone,_this.commentsPublished);
+}
 
 @override
 String toString() {
-  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, wordsApproved: $wordsApproved, correctionsApproved: $correctionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
+  final _this = this as PublicProfileStatsDto;
+  return 'PublicProfileStatsDto(contributionsApproved: ${_this.contributionsApproved}, wordsApproved: ${_this.wordsApproved}, correctionsApproved: ${_this.correctionsApproved}, verificationsDone: ${_this.verificationsDone}, commentsPublished: ${_this.commentsPublished})';
 }
 
 
@@ -373,7 +386,7 @@ class _$PublicProfileStatsDtoCopyWithImpl<$Res>
 /// Create a copy of PublicProfileStatsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? contributionsApproved = null,Object? wordsApproved = null,Object? correctionsApproved = null,Object? verificationsDone = null,Object? commentsPublished = null,}) {
-  return _then(_self.copyWith(
+  return _then(PublicProfileStatsDto(
 contributionsApproved: null == contributionsApproved ? _self.contributionsApproved : contributionsApproved // ignore: cast_nullable_to_non_nullable
 as int,wordsApproved: null == wordsApproved ? _self.wordsApproved : wordsApproved // ignore: cast_nullable_to_non_nullable
 as int,correctionsApproved: null == correctionsApproved ? _self.correctionsApproved : correctionsApproved // ignore: cast_nullable_to_non_nullable
@@ -542,16 +555,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.wordsApproved, wordsApproved) || other.wordsApproved == wordsApproved)&&(identical(other.correctionsApproved, correctionsApproved) || other.correctionsApproved == correctionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicProfileStatsDto&&(identical(other.contributionsApproved, contributionsApproved) || other.contributionsApproved == contributionsApproved)&&(identical(other.wordsApproved, wordsApproved) || other.wordsApproved == wordsApproved)&&(identical(other.correctionsApproved, correctionsApproved) || other.correctionsApproved == correctionsApproved)&&(identical(other.verificationsDone, verificationsDone) || other.verificationsDone == verificationsDone)&&(identical(other.commentsPublished, commentsPublished) || other.commentsPublished == commentsPublished));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,contributionsApproved,wordsApproved,correctionsApproved,verificationsDone,commentsPublished);
+int get hashCode {
+    return Object.hash(runtimeType,contributionsApproved,wordsApproved,correctionsApproved,verificationsDone,commentsPublished);
+}
 
 @override
 String toString() {
-  return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, wordsApproved: $wordsApproved, correctionsApproved: $correctionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
+    return 'PublicProfileStatsDto(contributionsApproved: $contributionsApproved, wordsApproved: $wordsApproved, correctionsApproved: $correctionsApproved, verificationsDone: $verificationsDone, commentsPublished: $commentsPublished)';
 }
 
 
@@ -610,16 +625,21 @@ $PublicActivityItemDtoCopyWith<PublicActivityItemDto> get copyWith => _$PublicAc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
+  final _this = this as PublicActivityItemDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityItemDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.occurredAt, _this.occurredAt) || other.occurredAt == _this.occurredAt)&&(identical(other.wordId, _this.wordId) || other.wordId == _this.wordId)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.summary, _this.summary) || other.summary == _this.summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,wordId,lemma,summary);
+int get hashCode {
+  final _this = this as PublicActivityItemDto;
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.occurredAt,_this.wordId,_this.lemma,_this.summary);
+}
 
 @override
 String toString() {
-  return 'PublicActivityItemDto(id: $id, kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
+  final _this = this as PublicActivityItemDto;
+  return 'PublicActivityItemDto(id: ${_this.id}, kind: ${_this.kind}, occurredAt: ${_this.occurredAt}, wordId: ${_this.wordId}, lemma: ${_this.lemma}, summary: ${_this.summary})';
 }
 
 
@@ -648,7 +668,7 @@ class _$PublicActivityItemDtoCopyWithImpl<$Res>
 /// Create a copy of PublicActivityItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? occurredAt = null,Object? wordId = freezed,Object? lemma = freezed,Object? summary = null,}) {
-  return _then(_self.copyWith(
+  return _then(PublicActivityItemDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
@@ -819,16 +839,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,occurredAt,wordId,lemma,summary);
+int get hashCode {
+    return Object.hash(runtimeType,id,kind,occurredAt,wordId,lemma,summary);
+}
 
 @override
 String toString() {
-  return 'PublicActivityItemDto(id: $id, kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
+    return 'PublicActivityItemDto(id: $id, kind: $kind, occurredAt: $occurredAt, wordId: $wordId, lemma: $lemma, summary: $summary)';
 }
 
 
@@ -888,16 +910,21 @@ $PublicActivityMetaDtoCopyWith<PublicActivityMetaDto> get copyWith => _$PublicAc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityMetaDto&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+  final _this = this as PublicActivityMetaDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityMetaDto&&(identical(other.limit, _this.limit) || other.limit == _this.limit)&&(identical(other.nextCursor, _this.nextCursor) || other.nextCursor == _this.nextCursor)&&(identical(other.hasMore, _this.hasMore) || other.hasMore == _this.hasMore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,limit,nextCursor,hasMore);
+int get hashCode {
+  final _this = this as PublicActivityMetaDto;
+  return Object.hash(runtimeType,_this.limit,_this.nextCursor,_this.hasMore);
+}
 
 @override
 String toString() {
-  return 'PublicActivityMetaDto(limit: $limit, nextCursor: $nextCursor, hasMore: $hasMore)';
+  final _this = this as PublicActivityMetaDto;
+  return 'PublicActivityMetaDto(limit: ${_this.limit}, nextCursor: ${_this.nextCursor}, hasMore: ${_this.hasMore})';
 }
 
 
@@ -926,7 +953,7 @@ class _$PublicActivityMetaDtoCopyWithImpl<$Res>
 /// Create a copy of PublicActivityMetaDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? limit = null,Object? nextCursor = freezed,Object? hasMore = null,}) {
-  return _then(_self.copyWith(
+  return _then(PublicActivityMetaDto(
 limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int,nextCursor: freezed == nextCursor ? _self.nextCursor : nextCursor // ignore: cast_nullable_to_non_nullable
 as String?,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
@@ -1091,16 +1118,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityMetaDto&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityMetaDto&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.nextCursor, nextCursor) || other.nextCursor == nextCursor)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,limit,nextCursor,hasMore);
+int get hashCode {
+    return Object.hash(runtimeType,limit,nextCursor,hasMore);
+}
 
 @override
 String toString() {
-  return 'PublicActivityMetaDto(limit: $limit, nextCursor: $nextCursor, hasMore: $hasMore)';
+    return 'PublicActivityMetaDto(limit: $limit, nextCursor: $nextCursor, hasMore: $hasMore)';
 }
 
 
@@ -1157,16 +1186,21 @@ $PublicActivityDtoCopyWith<PublicActivityDto> get copyWith => _$PublicActivityDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.meta, meta) || other.meta == meta));
+  final _this = this as PublicActivityDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicActivityDto&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.meta, _this.meta) || other.meta == _this.meta));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),meta);
+int get hashCode {
+  final _this = this as PublicActivityDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items),_this.meta);
+}
 
 @override
 String toString() {
-  return 'PublicActivityDto(items: $items, meta: $meta)';
+  final _this = this as PublicActivityDto;
+  return 'PublicActivityDto(items: ${_this.items}, meta: ${_this.meta})';
 }
 
 
@@ -1195,7 +1229,7 @@ class _$PublicActivityDtoCopyWithImpl<$Res>
 /// Create a copy of PublicActivityDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? meta = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PublicActivityDto(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<PublicActivityItemDto>,meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
 as PublicActivityMetaDto?,
@@ -1351,7 +1385,7 @@ return $default(_that.items,_that.meta);case _:
 @JsonSerializable()
 
 class _PublicActivityDto implements PublicActivityDto {
-  const _PublicActivityDto({final  List<PublicActivityItemDto> items = const <PublicActivityItemDto>[], this.meta}): _items = items;
+  const _PublicActivityDto({ List<PublicActivityItemDto> items = const <PublicActivityItemDto>[], this.meta}): _items = items;
   factory _PublicActivityDto.fromJson(Map<String, dynamic> json) => _$PublicActivityDtoFromJson(json);
 
  final  List<PublicActivityItemDto> _items;
@@ -1376,16 +1410,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.meta, meta) || other.meta == meta));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicActivityDto&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.meta, meta) || other.meta == meta));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),meta);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),meta);
+}
 
 @override
 String toString() {
-  return 'PublicActivityDto(items: $items, meta: $meta)';
+    return 'PublicActivityDto(items: $items, meta: $meta)';
 }
 
 
@@ -1453,16 +1489,21 @@ $MentionSuggestItemDtoCopyWith<MentionSuggestItemDto> get copyWith => _$MentionS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  final _this = this as MentionSuggestItemDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestItemDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl);
+int get hashCode {
+  final _this = this as MentionSuggestItemDto;
+  return Object.hash(runtimeType,_this.id,_this.username,_this.displayName,_this.avatarUrl);
+}
 
 @override
 String toString() {
-  return 'MentionSuggestItemDto(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl)';
+  final _this = this as MentionSuggestItemDto;
+  return 'MentionSuggestItemDto(id: ${_this.id}, username: ${_this.username}, displayName: ${_this.displayName}, avatarUrl: ${_this.avatarUrl})';
 }
 
 
@@ -1491,7 +1532,7 @@ class _$MentionSuggestItemDtoCopyWithImpl<$Res>
 /// Create a copy of MentionSuggestItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? displayName = freezed,Object? avatarUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(MentionSuggestItemDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -1658,16 +1699,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestItemDto&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl);
+int get hashCode {
+    return Object.hash(runtimeType,id,username,displayName,avatarUrl);
+}
 
 @override
 String toString() {
-  return 'MentionSuggestItemDto(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl)';
+    return 'MentionSuggestItemDto(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl)';
 }
 
 
@@ -1725,16 +1768,21 @@ $MentionSuggestDtoCopyWith<MentionSuggestDto> get copyWith => _$MentionSuggestDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestDto&&const DeepCollectionEquality().equals(other.items, items));
+  final _this = this as MentionSuggestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MentionSuggestDto&&const DeepCollectionEquality().equals(other.items, _this.items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items));
+int get hashCode {
+  final _this = this as MentionSuggestDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items));
+}
 
 @override
 String toString() {
-  return 'MentionSuggestDto(items: $items)';
+  final _this = this as MentionSuggestDto;
+  return 'MentionSuggestDto(items: ${_this.items})';
 }
 
 
@@ -1763,7 +1811,7 @@ class _$MentionSuggestDtoCopyWithImpl<$Res>
 /// Create a copy of MentionSuggestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? items = null,}) {
-  return _then(_self.copyWith(
+  return _then(MentionSuggestDto(
 items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<MentionSuggestItemDto>,
   ));
@@ -1906,7 +1954,7 @@ return $default(_that.items);case _:
 @JsonSerializable()
 
 class _MentionSuggestDto implements MentionSuggestDto {
-  const _MentionSuggestDto({final  List<MentionSuggestItemDto> items = const <MentionSuggestItemDto>[]}): _items = items;
+  const _MentionSuggestDto({ List<MentionSuggestItemDto> items = const <MentionSuggestItemDto>[]}): _items = items;
   factory _MentionSuggestDto.fromJson(Map<String, dynamic> json) => _$MentionSuggestDtoFromJson(json);
 
  final  List<MentionSuggestItemDto> _items;
@@ -1930,16 +1978,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestDto&&const DeepCollectionEquality().equals(other._items, _items));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MentionSuggestDto&&const DeepCollectionEquality().equals(other.items, _items));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
+}
 
 @override
 String toString() {
-  return 'MentionSuggestDto(items: $items)';
+    return 'MentionSuggestDto(items: $items)';
 }
 
 

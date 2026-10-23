@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/failover/api_host_resolver.dart';
 import 'package:sambasku_mobile/features/profile/presentation/widgets/api_host_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,13 +32,14 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
-          home: FTheme(
-            data: FThemes.zinc.light.touch,
-            child: FScaffold(
-              child: Builder(
-                builder: (context) =>
-                    FTileGroup(children: [apiHostTile(context, resolver)]),
-              ),
+          // Forui 0.27 wajib FTheme ancestor. Sheet pakai root navigator,
+          // jadi FTheme harus di atas Navigator (builder), bukan di home.
+          builder: (context, child) =>
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+          home: FScaffold(
+            child: Builder(
+              builder: (context) =>
+                  FTileGroup(children: [apiHostTile(context, resolver)]),
             ),
           ),
         ),

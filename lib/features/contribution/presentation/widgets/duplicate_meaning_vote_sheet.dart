@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -29,7 +29,7 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
             children: [
               Text(
                 'Kata ini sudah ditemukan',
-                style: theme.typography.lg.copyWith(
+                style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -38,7 +38,7 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
                 isAuthenticated
                     ? 'Pilih dukunganmu agar tercatat di riwayat perubahan $lemma.'
                     : 'Masuk dulu untuk mendukung atau menolak makna yang sudah ada.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -90,12 +90,12 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
               const Gap(16),
               Text(
                 'Tolak usulan',
-                style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               ),
               const Gap(4),
               Text(
                 'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),

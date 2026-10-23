@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart' show RefreshIndicator, showModalBottomSheet;
+import 'package:material_ui/material_ui.dart'
+    show RefreshIndicator, showModalBottomSheet;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -220,6 +221,9 @@ class _ProfileBody extends HookConsumerWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
         children: [
+          // Layout publik: avatar kecil di kiri + identitas di kanan. Bingkai
+          // achievement tetap tampil lewat AvatarBorderOverlay. Layout center
+          // besar hanya untuk tab Profil (profile_page.dart).
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -230,14 +234,14 @@ class _ProfileBody extends HookConsumerWidget {
                 label: isOwnProfile
                     ? 'Foto profil, ketuk untuk ubah'
                     : canPreviewAvatar
-                        ? 'Lihat foto profil'
-                        : 'Foto profil',
+                    ? 'Lihat foto profil'
+                    : 'Foto profil',
                 child: GestureDetector(
                   onTap: isOwnProfile && !uploadingAvatar.value
                       ? () => _showAvatarActions(context, ref, uploadingAvatar)
                       : canPreviewAvatar
-                          ? () => showImagePreview(context, urls: [avatarSrc])
-                          : null,
+                      ? () => showImagePreview(context, urls: [avatarSrc])
+                      : null,
                   child: AvatarBorderOverlay(
                     size: 56,
                     borderUrl: borderUrl,
@@ -245,7 +249,6 @@ class _ProfileBody extends HookConsumerWidget {
                       name: profile.displayName,
                       imageUrl: avatarSrc,
                       size: 56,
-                      showEditBadge: isOwnProfile,
                       uploading: uploadingAvatar.value,
                     ),
                   ),
@@ -260,7 +263,7 @@ class _ProfileBody extends HookConsumerWidget {
                       label: profile.displayName,
                       isVerifier: profile.isVerifier,
                       badgeSize: 16,
-                      style: theme.typography.lg.copyWith(
+                      style: theme.typography.body.lg.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1.2,
                       ),
@@ -271,7 +274,7 @@ class _ProfileBody extends HookConsumerWidget {
                         '@${profile.username}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -281,7 +284,7 @@ class _ProfileBody extends HookConsumerWidget {
                       const Gap(6),
                       Text(
                         profile.bio!,
-                        style: theme.typography.sm,
+                        style: theme.typography.body.sm,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -320,7 +323,9 @@ class _ProfileBody extends HookConsumerWidget {
           ],
           Text(
             'Aktivitas terbaru',
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.md.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const Gap(8),
           activityAsync.when(
@@ -352,7 +357,7 @@ class _ProfileBody extends HookConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
                     'Belum ada aktivitas publik.',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -479,14 +484,12 @@ class _Avatar extends StatelessWidget {
     required this.name,
     this.imageUrl,
     this.size = 40,
-    this.showEditBadge = false,
     this.uploading = false,
   });
 
   final String name;
   final String? imageUrl;
   final double size;
-  final bool showEditBadge;
   final bool uploading;
 
   @override
@@ -526,32 +529,7 @@ class _Avatar extends StatelessWidget {
       face = _InitialsAvatar(name: name, size: size, theme: theme);
     }
 
-    if (!showEditBadge) return face;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        face,
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              color: theme.colors.primary,
-              shape: BoxShape.circle,
-              border: Border.all(color: theme.colors.background, width: 2),
-            ),
-            child: Icon(
-              FLucideIcons.camera,
-              size: 13,
-              color: theme.colors.primaryForeground,
-            ),
-          ),
-        ),
-      ],
-    );
+    return face;
   }
 }
 
@@ -571,7 +549,7 @@ class _InitialsAvatar extends StatelessWidget {
       style: .delta(backgroundColor: t.colors.primary.withValues(alpha: 0.12)),
       child: Text(
         initials,
-        style: t.typography.md.copyWith(
+        style: t.typography.body.md.copyWith(
           fontWeight: FontWeight.w700,
           color: t.colors.primary,
           height: 1,
@@ -607,7 +585,7 @@ class _PublicBadges extends ConsumerWidget {
       children: [
         Text(
           'Lencana',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
         async.when(
@@ -617,12 +595,14 @@ class _PublicBadges extends ConsumerWidget {
           ),
           error: (err, _) => Text(
             'Lencana tidak bisa dimuat.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
           data: (items) {
-            final badges = items.where((e) => e.isBadge).toList(growable: false);
+            final badges = items
+                .where((e) => e.isBadge)
+                .toList(growable: false);
             return AchievementBadgeGrid(
               items: AchievementBadgeGrid.topTierPerFamily(badges),
               emptyLabel: 'Belum ada lencana.',
@@ -661,13 +641,15 @@ class _ErrorState extends StatelessWidget {
               failure.isNotFound
                   ? 'Pengguna tidak ditemukan'
                   : 'Gagal memuat profil',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(6),
             Text(
               failure.message,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -121,7 +121,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                   Expanded(
                     child: Text(
                       'Sinonim & antonim',
-                      style: theme.typography.lg
+                      style: theme.typography.body.lg
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -164,7 +164,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                           _type == 'synonym'
                               ? 'Belum ada sinonim. Cari kata di bawah untuk menambah.'
                               : 'Belum ada antonim. Cari kata di bawah untuk menambah.',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         )
@@ -246,7 +246,7 @@ class _RelationResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final muted = theme.typography.sm.copyWith(color: theme.colors.mutedForeground);
+    final muted = theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground);
     if (!state.isSearching) {
       return Text('Ketik minimal 2 huruf.', style: muted);
     }
@@ -370,7 +370,7 @@ class _VariantsSheetState extends State<_VariantsSheet> {
               Expanded(
                 child: Text(
                   'Variasi penulisan',
-                  style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               FButton(
@@ -383,7 +383,7 @@ class _VariantsSheetState extends State<_VariantsSheet> {
           const Gap(4),
           Text(
             'Ejaan lain untuk "${widget.lemma}".',
-            style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+            style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
           ),
           const Gap(12),
           if (_items.isNotEmpty) ...[

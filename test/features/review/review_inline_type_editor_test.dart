@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -9,6 +9,7 @@ import 'package:sambasku_mobile/features/review/domain/repositories/review_repos
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_inline_type_editor.dart';
 import 'package:sambasku_mobile/shared/reference/reference_data.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _umum = '01CLASSUMUM00000000000000';
 const _nomina = '01CLASSNOMINA000000000000';
@@ -116,14 +117,13 @@ void main() {
           referenceWordClassesProvider.overrideWith((ref) async => classes),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
-          builder: (context, child) => FToaster(
-            child: FTheme(
-              data: FThemes.zinc.light.touch,
-              child: child ?? const SizedBox.shrink(),
-            ),
+          builder: (context, child) => FTheme(
+            data: foruiPalettes['zinc']!.light.touch,
+            // FToaster 0.27 butuh FTheme ancestor (akses accessibility scope).
+            child: FToaster(child: child ?? const SizedBox.shrink()),
           ),
           home: Scaffold(
             body: ReviewInlineTypeEditor(detail: _detail(entity)),

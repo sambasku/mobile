@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-import '../../core/theme/f_colors_x.dart';
 import '../../core/widgets/verified_badge_icon.dart';
 
 /// Baris "angka label" stat profil ala feed: count bold + label muted,
@@ -24,11 +23,13 @@ class ProfileStatInline extends StatelessWidget {
         children: [
           TextSpan(
             text: '$count',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           TextSpan(
             text: ' $label',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -47,7 +48,7 @@ class ProfileStatDot extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 3),
     child: Text(
       '·',
-      style: context.theme.typography.sm.copyWith(
+      style: context.theme.typography.body.sm.copyWith(
         color: context.theme.colors.mutedForeground,
       ),
     ),
@@ -80,7 +81,8 @@ class ProfileStatRow extends StatelessWidget {
   }
 }
 
-/// Meta profil: Bergabung, lalu badge Verifikator di baris sendiri.
+/// Meta profil: Bergabung + centang hijau verifikator. Label teks
+/// "Verifikator" dihapus - ikon mewakilinya, tap ikon membuka penjelasan.
 class ProfileMetaRow extends StatelessWidget {
   const ProfileMetaRow({
     super.key,
@@ -96,32 +98,21 @@ class ProfileMetaRow extends StatelessWidget {
     final theme = context.theme;
     final hasJoined = joinedLabel.trim().isNotEmpty;
     if (!hasJoined && !isVerifier) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       mainAxisSize: MainAxisSize.min,
-      spacing: 2,
+      spacing: 3,
       children: [
         if (hasJoined)
           Text(
             'Bergabung $joinedLabel',
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
         if (isVerifier)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4,
-            children: [
-              const VerifiedBadgeIcon(size: 12),
-              Text(
-                'Verifikator',
-                style: theme.typography.xs.copyWith(
-                  color: theme.colors.success,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          VerifiedBadgeIcon(
+            size: 12,
+            onTap: () => showVerifierBadgeInfo(context),
           ),
       ],
     );

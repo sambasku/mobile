@@ -100,7 +100,7 @@ class _ErrorState extends StatelessWidget {
             const Gap(10),
             Text(
               failure.isNotFound ? 'Usulan tidak ditemukan' : failure.message,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,

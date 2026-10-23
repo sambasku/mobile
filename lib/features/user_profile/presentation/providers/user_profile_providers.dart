@@ -15,7 +15,10 @@ Future<PublicProfile> publicProfile(Ref ref, String username) async {
 
 /// Load aktivitas publik (mode merge - tanpa filter kind, max 20, tanpa cursor).
 @riverpod
-Future<List<PublicActivityItem>> publicActivity(Ref ref, String username) async {
+Future<List<PublicActivityItem>> publicActivity(
+  Ref ref,
+  String username,
+) async {
   final result = await ref.watch(getPublicActivityUseCaseProvider)(username);
   return result.match((failure) => throw failure, (items) => items.items);
 }

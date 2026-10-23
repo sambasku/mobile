@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/admin_analytics/domain/entities/dashboard_stats.dart';
 import 'package:sambasku_mobile/features/admin_analytics/presentation/pages/admin_analytics_page.dart';
 import 'package:sambasku_mobile/features/admin_analytics/presentation/providers/admin_analytics_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   testWidgets('halaman analitik render tanpa RenderFlex overflow', (tester) async {
@@ -16,7 +17,7 @@ void main() {
           analyticsActivityFeedProvider.overrideWith((ref) async => const []),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: GoRouter(
@@ -29,7 +30,7 @@ void main() {
             ],
           ),
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: child!,
           ),
         ),

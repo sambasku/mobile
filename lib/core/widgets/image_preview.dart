@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../shared/widgets/image_credit.dart';

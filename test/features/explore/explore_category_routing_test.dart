@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/cuisine.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/explore_category_page.dart';
 import 'package:sambasku_mobile/features/explore/presentation/providers/cuisine_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _dummy = Cuisine(
   id: 'x',
@@ -30,7 +31,7 @@ void main() {
         ],
         child: MaterialApp(
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: ExploreCategoryPage(categoryId: categoryId)),
           ),
         ),

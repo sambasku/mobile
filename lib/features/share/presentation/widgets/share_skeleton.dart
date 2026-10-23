@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -24,7 +24,7 @@ class ShareSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shareShimmerEffect(context)),
+      data: SkeletonizerConfigData(effectResolver: (_) => shareShimmerEffect(context)),
       child: IgnorePointer(child: Skeletonizer(enabled: true, child: child)),
     );
   }

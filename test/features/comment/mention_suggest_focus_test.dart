@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:forui/forui.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/features/comment/presentation/widgets/mention_suggest_overlay.dart';
 import 'package:sambasku_mobile/features/comment/presentation/providers/mention_suggest_providers.dart';
 import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
@@ -36,6 +38,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          builder: (context, child) =>
+              FTheme(data: foruiPalettes[defaultPalette]!.light.touch, child: child!),
           home: Scaffold(
             body: Column(
               children: [

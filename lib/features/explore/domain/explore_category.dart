@@ -54,6 +54,7 @@ class ExploreCategory {
       title: 'Acara',
       subtitle: 'Festival, pameran, dan kegiatan',
       icon: FLucideIcons.calendarDays,
+      comingSoon: false,
     ),
     ExploreCategory(
       id: 'sejarah',

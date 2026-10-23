@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -68,7 +68,7 @@ class WordCommentEntryBar extends ConsumerWidget {
                 const Gap(8),
                 Text(
                   '$count Komentar',
-                  style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
                 Icon(FLucideIcons.chevronUp, size: 16, color: theme.colors.mutedForeground),
@@ -284,7 +284,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
               Expanded(
                 child: Text(
                   'Komentar ($count)',
-                  style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               IconButton(
@@ -309,7 +309,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                   if (state.items.isEmpty)
                     Text(
                       'Belum ada komentar.',
-                      style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+                      style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
                     )
                   else
                     ...state.items.map((c) {

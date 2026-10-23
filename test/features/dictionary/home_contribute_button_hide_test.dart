@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -8,6 +8,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_of_day.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/home_search_page.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   testWidgets(
@@ -20,12 +21,21 @@ void main() {
       final fullHeight = tester.getSize(collapsible).height;
       expect(fullHeight, greaterThan(80));
       final searchBefore = tester.getTopLeft(find.text('A-Z')).dy;
-      final tileBefore = tester.getTopLeft(find.text('Dicari warga')).dy;
+      // Penanda menu yang ikut menyusut = tile terakhir blok header
+      // (Ruang Diskusi, di bawah "Usul kata baru").
+      final tileBefore = tester.getTopLeft(find.text('Ruang Diskusi')).dy;
       expect(tileBefore, greaterThan(searchBefore));
 
-      // 50px / jarak collaps 90 = progress ~0.55, cukup untuk snap tutup.
+      // 50px / jarak collaps 90 = progress 0.56 (> 0.5) → snap ke tertutup
+      // saat jari lepas. Tepat 0.5 akan snap ke TERBUKA (batas tengah).
+      // Feed = CustomScrollView dengan controller (yang lain shrink-wrap).
+      final feedList = find
+          .byWidgetPredicate(
+            (w) => w is CustomScrollView && w.controller != null,
+          )
+          .first;
       final gesture = await tester.startGesture(
-        tester.getCenter(find.byType(ListView)),
+        tester.getCenter(feedList),
       );
       await gesture.moveBy(const Offset(0, -50));
       await tester.pump();
@@ -51,10 +61,10 @@ void main() {
       expect(
         tester.getSize(collapsible).height,
         lessThan(8),
-        reason: 'lepas jari di progress 0.5 harus snap ke tertutup',
+        reason: 'lepas jari di progress 0.67 harus snap ke tertutup',
       );
 
-      final feedTop = tester.getTopLeft(find.byType(ListView)).dy;
+      final feedTop = tester.getTopLeft(feedList).dy;
       expect(
         feedTop,
         lessThan(120),
@@ -62,14 +72,18 @@ void main() {
       );
 
       final gestureUp = await tester.startGesture(
-        tester.getCenter(find.byType(ListView)),
+        tester.getCenter(feedList),
       );
       await gestureUp.moveBy(const Offset(0, 200));
       await gestureUp.up();
       await tester.pumpAndSettle();
       expect(tester.getSize(collapsible).height, greaterThan(80));
 
-      expect(find.text('Dicari warga'), findsOneWidget);
+      expect(find.text('Usul kata baru'), findsOneWidget);
+      // #193: tile "Dicari warga" pindah ke chips kategori feed; Ruang
+      // Diskusi jadi tile kedua di blok menu header.
+      expect(find.text('Dicari warga'), findsNothing);
+      expect(find.text('Ruang Diskusi'), findsOneWidget);
       await tester.tap(find.text('Usul kata baru'), warnIfMissed: false);
       await tester.pump();
       expect(tester.takeException()?.toString(), contains('No GoRouter found'));
@@ -111,11 +125,13 @@ Future<void> pumpHome(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        activityFeedProvider.overrideWith(() => _FakeFeedNotifier(feedItems)),
+        activityFeedProvider.overrideWith2(
+          (category) => _FakeFeedNotifier(category, feedItems),
+        ),
         wordOfDayProvider.overrideWith((ref) async => wotd),
       ],
       child: FTheme(
-        data: FThemes.zinc.light.touch,
+        data: foruiPalettes['zinc']!.light.touch,
         child: const MaterialApp(home: HomeSearchPage()),
       ),
     ),
@@ -125,13 +141,10 @@ Future<void> pumpHome(WidgetTester tester) async {
 }
 
 class _FakeFeedNotifier extends ActivityFeedNotifier {
-  _FakeFeedNotifier(this.items);
+  _FakeFeedNotifier(super.category, this.items);
 
   final List<FeedActivityItem> items;
 
   @override
-  ActivityFeedState build() {
-    state = ActivityFeedState(items: items);
-    return state;
-  }
+  ActivityFeedState build() => ActivityFeedState(items: items, hasLoaded: true);
 }

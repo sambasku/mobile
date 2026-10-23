@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -226,7 +226,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                       'Ambil definisi dari KBBI',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.lg.copyWith(
+                      style: theme.typography.body.lg.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -244,7 +244,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                 'Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -263,11 +263,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                 suffixBuilder: _loading
                     ? (context, style, _) => Padding(
                         padding: style.clearButtonPadding,
-                        child: const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: FCircularProgress(),
-                        ),
+                        child: const FCircularProgress(size: .sm),
                       )
                     : null,
               ),
@@ -293,7 +289,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                   '${_items.length} definisi - gulir untuk melihat semua',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                     fontSize: 12,
                   ),
@@ -310,7 +306,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                         child: Text(
                           'Ketik kata untuk mencari di KBBI',
                           textAlign: TextAlign.center,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -323,7 +319,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                         child: Text(
                           'Tidak ditemukan di KBBI',
                           textAlign: TextAlign.center,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -381,7 +377,7 @@ class _KbbiSuggestionTile extends StatelessWidget {
                   children: [
                     Text(
                       item.definition,
-                      style: theme.typography.sm,
+                      style: theme.typography.body.sm,
                       maxLines: 4,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -390,7 +386,7 @@ class _KbbiSuggestionTile extends StatelessWidget {
                       meta,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                         fontSize: 12,
                       ),

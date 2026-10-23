@@ -7,7 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../auth_router.dart';
 import '../providers/auth_forgot_providers.dart';
+import '../../domain/failures/auth_failure.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 
 /// Minta kode reset 6 karakter 0-9A-Z. Response API selalu sama (anti-enumeration).
 class ForgotPasswordPage extends HookConsumerWidget {
@@ -28,6 +30,21 @@ class ForgotPasswordPage extends HookConsumerWidget {
 
     ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
+      // Akun OAuth: info, bukan error - reset password memang tidak
+      // bisa diproses, user perlu tahu harus lewat provider.
+      final code = ref.read(authForgotProvider).errorCode;
+      if (code == AuthFailure.oauthAccount) {
+        showAppInfoSheet(
+          context,
+          message: next,
+          title: 'Akun OAuth',
+        ).whenComplete(() {
+          if (context.mounted) {
+            ref.read(authForgotProvider.notifier).clearError();
+          }
+        });
+        return;
+      }
       showAppErrorSheet(context, message: next).whenComplete(() {
         if (context.mounted) {
           ref.read(authForgotProvider.notifier).clearError();

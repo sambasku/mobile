@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -203,7 +203,7 @@ class _ContributeRelationsSheetBodyState
                       'Kelengkapan opsional',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.lg.copyWith(
+                      style: theme.typography.body.lg.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -219,7 +219,7 @@ class _ContributeRelationsSheetBodyState
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Text(
                 'Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete\'',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -270,7 +270,7 @@ class _ContributeRelationsSheetBodyState
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Text(
                           e,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.error,
                           ),
                         ),

@@ -12,6 +12,5 @@ class SuggestMentionsUseCase {
 
   Future<Either<UserProfileFailure, List<MentionSuggestion>>> call(
     String query,
-  ) =>
-      _repository.suggestMentions(query);
+  ) => _repository.suggestMentions(query);
 }

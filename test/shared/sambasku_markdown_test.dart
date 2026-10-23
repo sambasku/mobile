@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/shared/widgets/sambasku_markdown.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 /// Issue #160: ukuran heading/spasi artikel + edge case input.
 Widget _host(Widget child) => MaterialApp(
-  theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+  theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
   localizationsDelegates: FLocalizations.localizationsDelegates,
   supportedLocales: FLocalizations.supportedLocales,
   home: FTheme(
-    data: FThemes.zinc.light.touch,
+    data: foruiPalettes['zinc']!.light.touch,
     child: Scaffold(body: SingleChildScrollView(child: child)),
   ),
 );

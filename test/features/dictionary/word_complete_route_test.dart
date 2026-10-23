@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/core/router/app_router.dart';
 import 'package:sambasku_mobile/features/dictionary/dictionary_router.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_detail_page.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 /// "/words/complete" dan "/words/:id" bisa sama-sama match. Kalau urutannya
 /// terbalik, go_router memperlakukan "complete" sebagai wordId dan pemilih
@@ -39,7 +40,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: GoRouter(
@@ -48,7 +49,7 @@ void main() {
             initialLocation: DictionaryRouter.complete.path,
           ),
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: child!,
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -11,6 +11,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/entities/word_summary
 import 'package:sambasku_mobile/features/dictionary/domain/failures/dictionary_failure.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_list_page.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 WordSummary _word(String lemma, {String? sense, String? matchType}) =>
     WordSummary(
@@ -132,12 +133,12 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) =>
-              FTheme(data: FThemes.zinc.light.touch, child: child!),
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );
@@ -188,12 +189,12 @@ void main() {
           dictionaryRepositoryProvider.overrideWithValue(_RelatedGroupStub()),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) =>
-              FTheme(data: FThemes.zinc.light.touch, child: child!),
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );

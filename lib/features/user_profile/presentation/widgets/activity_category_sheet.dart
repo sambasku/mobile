@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -42,14 +42,15 @@ class ActivityCategorySheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final scrollController = useScrollController();
-    final state = useState<(
-      List<PublicActivityItem>,
-      String?,
-      bool,
-      bool // isLoadingMore
-    )>(
-      ([], null, false, false),
-    );
+    final state =
+        useState<
+          (
+            List<PublicActivityItem>,
+            String?,
+            bool,
+            bool, // isLoadingMore
+          )
+        >(([], null, false, false));
 
     Future<void> loadInitial() async {
       final page = await ref.read(
@@ -118,14 +119,14 @@ class ActivityCategorySheet extends HookConsumerWidget {
                   children: [
                     Text(
                       _kindLabel(kind),
-                      style: theme.typography.lg.copyWith(
+                      style: theme.typography.body.lg.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const Spacer(),
                     Text(
                       '${items.length} item',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -153,7 +154,7 @@ class ActivityCategorySheet extends HookConsumerWidget {
                           const Gap(12),
                           Text(
                             'Belum ada $_kindLabel${kind.toLowerCase()}',
-                            style: theme.typography.md.copyWith(
+                            style: theme.typography.body.md.copyWith(
                               color: theme.colors.mutedForeground,
                             ),
                           ),
@@ -164,7 +165,8 @@ class ActivityCategorySheet extends HookConsumerWidget {
                 : ListView.separated(
                     controller: scrollController,
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                    itemCount: items.length + (hasMore || isLoadingMore ? 1 : 0),
+                    itemCount:
+                        items.length + (hasMore || isLoadingMore ? 1 : 0),
                     separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (_, index) {
                       if (index >= items.length) {

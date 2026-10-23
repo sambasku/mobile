@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bookmark_item_dto.dart';
@@ -9,6 +9,7 @@ part of 'bookmark_item_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $BookmarkItemDtoCopyWith<BookmarkItemDto> get copyWith => _$BookmarkItemDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkItemDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.bookmarkedAt, bookmarkedAt) || other.bookmarkedAt == bookmarkedAt)&&(identical(other.word, word) || other.word == word));
+  final _this = this as BookmarkItemDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkItemDto&&(identical(other.wordId, _this.wordId) || other.wordId == _this.wordId)&&(identical(other.bookmarkedAt, _this.bookmarkedAt) || other.bookmarkedAt == _this.bookmarkedAt)&&(identical(other.word, _this.word) || other.word == _this.word));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordId,bookmarkedAt,word);
+int get hashCode {
+  final _this = this as BookmarkItemDto;
+  return Object.hash(runtimeType,_this.wordId,_this.bookmarkedAt,_this.word);
+}
 
 @override
 String toString() {
-  return 'BookmarkItemDto(wordId: $wordId, bookmarkedAt: $bookmarkedAt, word: $word)';
+  final _this = this as BookmarkItemDto;
+  return 'BookmarkItemDto(wordId: ${_this.wordId}, bookmarkedAt: ${_this.bookmarkedAt}, word: ${_this.word})';
 }
 
 
@@ -66,7 +72,7 @@ class _$BookmarkItemDtoCopyWithImpl<$Res>
 /// Create a copy of BookmarkItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? wordId = null,Object? bookmarkedAt = freezed,Object? word = null,}) {
-  return _then(_self.copyWith(
+  return _then(BookmarkItemDto(
 wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,bookmarkedAt: freezed == bookmarkedAt ? _self.bookmarkedAt : bookmarkedAt // ignore: cast_nullable_to_non_nullable
 as String?,word: null == word ? _self.word : word // ignore: cast_nullable_to_non_nullable
@@ -240,16 +246,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkItemDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.bookmarkedAt, bookmarkedAt) || other.bookmarkedAt == bookmarkedAt)&&(identical(other.word, word) || other.word == word));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkItemDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.bookmarkedAt, bookmarkedAt) || other.bookmarkedAt == bookmarkedAt)&&(identical(other.word, word) || other.word == word));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordId,bookmarkedAt,word);
+int get hashCode {
+    return Object.hash(runtimeType,wordId,bookmarkedAt,word);
+}
 
 @override
 String toString() {
-  return 'BookmarkItemDto(wordId: $wordId, bookmarkedAt: $bookmarkedAt, word: $word)';
+    return 'BookmarkItemDto(wordId: $wordId, bookmarkedAt: $bookmarkedAt, word: $word)';
 }
 
 
@@ -315,16 +323,21 @@ $BookmarkWordDtoCopyWith<BookmarkWordDto> get copyWith => _$BookmarkWordDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkWordDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.available, available) || other.available == available));
+  final _this = this as BookmarkWordDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkWordDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&(identical(other.available, _this.available) || other.available == _this.available));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,lemma,wordType,isVerified,available);
+int get hashCode {
+  final _this = this as BookmarkWordDto;
+  return Object.hash(runtimeType,_this.id,_this.lemma,_this.wordType,_this.isVerified,_this.available);
+}
 
 @override
 String toString() {
-  return 'BookmarkWordDto(id: $id, lemma: $lemma, wordType: $wordType, isVerified: $isVerified, available: $available)';
+  final _this = this as BookmarkWordDto;
+  return 'BookmarkWordDto(id: ${_this.id}, lemma: ${_this.lemma}, wordType: ${_this.wordType}, isVerified: ${_this.isVerified}, available: ${_this.available})';
 }
 
 
@@ -353,7 +366,7 @@ class _$BookmarkWordDtoCopyWithImpl<$Res>
 /// Create a copy of BookmarkWordDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? lemma = null,Object? wordType = null,Object? isVerified = null,Object? available = null,}) {
-  return _then(_self.copyWith(
+  return _then(BookmarkWordDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
 as String,wordType: null == wordType ? _self.wordType : wordType // ignore: cast_nullable_to_non_nullable
@@ -522,16 +535,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkWordDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.available, available) || other.available == available));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkWordDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.available, available) || other.available == available));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,lemma,wordType,isVerified,available);
+int get hashCode {
+    return Object.hash(runtimeType,id,lemma,wordType,isVerified,available);
+}
 
 @override
 String toString() {
-  return 'BookmarkWordDto(id: $id, lemma: $lemma, wordType: $wordType, isVerified: $isVerified, available: $available)';
+    return 'BookmarkWordDto(id: $id, lemma: $lemma, wordType: $wordType, isVerified: $isVerified, available: $available)';
 }
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -83,7 +83,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
                     'Ubah bingkai profil',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -99,7 +99,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: Text(
               'Pilih bingkai yang sudah kamu miliki',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
@@ -158,7 +158,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
                         'Kamu belum punya bingkai. Ikuti program berikutnya '
                         'untuk mendapatkannya.',
                         textAlign: TextAlign.center,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -258,7 +258,7 @@ class _BorderCell extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   fontWeight: border.isActiveBorder ? FontWeight.w700 : null,
                   color: border.isActiveBorder
                       ? theme.colors.primary

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'register_device_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'register_device_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $RegisterDeviceResponseDtoCopyWith<RegisterDeviceResponseDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterDeviceResponseDto&&(identical(other.udid, udid) || other.udid == udid)&&(identical(other.fcmTokenRegistered, fcmTokenRegistered) || other.fcmTokenRegistered == fcmTokenRegistered));
+  final _this = this as RegisterDeviceResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterDeviceResponseDto&&(identical(other.udid, _this.udid) || other.udid == _this.udid)&&(identical(other.fcmTokenRegistered, _this.fcmTokenRegistered) || other.fcmTokenRegistered == _this.fcmTokenRegistered));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,udid,fcmTokenRegistered);
+int get hashCode {
+  final _this = this as RegisterDeviceResponseDto;
+  return Object.hash(runtimeType,_this.udid,_this.fcmTokenRegistered);
+}
 
 @override
 String toString() {
-  return 'RegisterDeviceResponseDto(udid: $udid, fcmTokenRegistered: $fcmTokenRegistered)';
+  final _this = this as RegisterDeviceResponseDto;
+  return 'RegisterDeviceResponseDto(udid: ${_this.udid}, fcmTokenRegistered: ${_this.fcmTokenRegistered})';
 }
 
 
@@ -66,7 +72,7 @@ class _$RegisterDeviceResponseDtoCopyWithImpl<$Res>
 /// Create a copy of RegisterDeviceResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? udid = null,Object? fcmTokenRegistered = null,}) {
-  return _then(_self.copyWith(
+  return _then(RegisterDeviceResponseDto(
 udid: null == udid ? _self.udid : udid // ignore: cast_nullable_to_non_nullable
 as String,fcmTokenRegistered: null == fcmTokenRegistered ? _self.fcmTokenRegistered : fcmTokenRegistered // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -229,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterDeviceResponseDto&&(identical(other.udid, udid) || other.udid == udid)&&(identical(other.fcmTokenRegistered, fcmTokenRegistered) || other.fcmTokenRegistered == fcmTokenRegistered));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterDeviceResponseDto&&(identical(other.udid, udid) || other.udid == udid)&&(identical(other.fcmTokenRegistered, fcmTokenRegistered) || other.fcmTokenRegistered == fcmTokenRegistered));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,udid,fcmTokenRegistered);
+int get hashCode {
+    return Object.hash(runtimeType,udid,fcmTokenRegistered);
+}
 
 @override
 String toString() {
-  return 'RegisterDeviceResponseDto(udid: $udid, fcmTokenRegistered: $fcmTokenRegistered)';
+    return 'RegisterDeviceResponseDto(udid: $udid, fcmTokenRegistered: $fcmTokenRegistered)';
 }
 
 

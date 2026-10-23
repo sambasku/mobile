@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../domain/entities/feed_activity_item.dart';
 import '../widgets/announcement_body.dart';
@@ -44,11 +44,7 @@ class AnnouncementDetailPage extends StatelessWidget {
     }
     // ponytail: cek host whitelist lokal = upgrade saat admin butuh host
     // dinamis; sekarang sinkron manual dengan announcement.validator.ts API.
-    try {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } catch (_) {
-      // Browser tak tersedia: diam saja, tombol bisa dicoba lagi.
-    }
+    await launchExternalUrl(url);
   }
 
   @override
@@ -123,7 +119,7 @@ class AnnouncementDetailPage extends StatelessWidget {
                     Text(
                       _hostSnapshot,
                       textAlign: TextAlign.center,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -139,7 +135,7 @@ class AnnouncementDetailPage extends StatelessWidget {
           if (announcement.expired)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: FCard.raw(
+              child: FCard(
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Row(
@@ -153,7 +149,7 @@ class AnnouncementDetailPage extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.',
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -169,7 +165,7 @@ class AnnouncementDetailPage extends StatelessWidget {
           if (announcement.bodyType != AnnouncementBodyType.html) ...[
             Text(
               announcement.title,
-              style: theme.typography.xl2.copyWith(
+              style: theme.typography.body.xl2.copyWith(
                 fontWeight: FontWeight.w700,
                 height: 1.25,
               ),

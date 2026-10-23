@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +62,7 @@ class _GuestState extends StatelessWidget {
             const Gap(10),
             Text(
               'Masuk dulu untuk melihat usulanmu',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
@@ -109,7 +109,7 @@ class _ContributionsList extends ConsumerWidget {
                 error is MyContributionFailure
                     ? error.message
                     : 'Gagal memuat kontribusi',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -156,7 +156,7 @@ class _ContributionsList extends ConsumerWidget {
                       const Gap(10),
                       Text(
                         'Belum ada usulan',
-                        style: theme.typography.md.copyWith(
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.center,
@@ -164,7 +164,7 @@ class _ContributionsList extends ConsumerWidget {
                       const Gap(4),
                       Text(
                         'Usul kata baru atau perubahan akan muncul di sini.',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -248,7 +248,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -259,7 +259,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,

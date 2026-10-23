@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -95,7 +95,7 @@ class _ShareSolidColorSheetState extends State<_ShareSolidColorSheet> {
             ),
           ),
           const Gap(16),
-          Text('Warna polos', style: theme.typography.lg),
+          Text('Warna polos', style: theme.typography.body.lg),
           const Gap(12),
           SizedBox(
             height: 160,

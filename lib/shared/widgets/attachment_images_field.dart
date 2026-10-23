@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
@@ -343,7 +343,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         children: [
           Text(
             widget.disabledHint,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -363,7 +363,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     if (_unavailable) {
       return Text(
         'Upload gambar sementara tidak tersedia. Formulir tetap bisa dikirim tanpa gambar.',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
       );
@@ -403,7 +403,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         const Gap(4),
         Text(
           hintParts.join(' · '),
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             fontSize: 11,
           ),
@@ -519,7 +519,7 @@ class _Thumb extends StatelessWidget {
                   value: slot.hasViolenceWarning,
                   label: Text(
                     'Foto berisi kekerasan',
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -528,7 +528,7 @@ class _Thumb extends StatelessWidget {
                 const Gap(2),
                 Text(
                   'Centang kalau fotonya menunjukkan kekerasan (misalnya luka, darah, atau senjata yang dipakai menyerang). Tim kami juga bisa menandai ini nanti.',
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     fontSize: 10,
                   ),

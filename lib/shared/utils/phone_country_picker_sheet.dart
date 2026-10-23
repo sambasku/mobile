@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -111,7 +111,7 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
             children: [
               Text(
                 'Pilih negara',
-                style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
               ),
               const Gap(12),
               FTextField(
@@ -137,7 +137,7 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
                         ),
                         child: Text(
                           label,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                             fontWeight: FontWeight.w600,
                           ),
@@ -153,7 +153,7 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
                         child: Text(
                           'Tidak ada negara yang cocok',
                           textAlign: TextAlign.center,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -199,13 +199,13 @@ class _CountryListTile extends StatelessWidget {
                 children: [
                   Text(
                     country.nameId,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     '+${country.dialCode}',
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),

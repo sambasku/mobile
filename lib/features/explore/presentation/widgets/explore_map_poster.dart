@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -71,7 +71,7 @@ class ExploreMapPoster extends StatelessWidget {
                         const Gap(10),
                         Text(
                           'Peta Sambas',
-                          style: theme.typography.md.copyWith(
+                          style: theme.typography.body.md.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                           textAlign: TextAlign.center,
@@ -81,7 +81,7 @@ class ExploreMapPoster extends StatelessWidget {
                           compact
                               ? 'Ketuk untuk membuka peta interaktif.'
                               : 'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                           textAlign: TextAlign.center,
@@ -133,7 +133,7 @@ class _LoadingContent extends StatelessWidget {
                 const Gap(10),
                 Text(
                   'Memuat peta...',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                   textAlign: TextAlign.center,
@@ -157,13 +157,13 @@ class _ShimmerSweep extends StatelessWidget {
 
     return ExcludeSemantics(
       child: SkeletonizerConfig(
-        data: SkeletonizerConfigData(
-          effect: ShimmerEffect(
-            baseColor: highlight.withValues(alpha: 0),
-            highlightColor: highlight,
-            duration: const Duration(milliseconds: 1500),
-          ),
+      data: SkeletonizerConfigData(
+        effectResolver: (_) => ShimmerEffect(
+          baseColor: highlight.withValues(alpha: 0),
+          highlightColor: highlight,
+          duration: const Duration(milliseconds: 1500),
         ),
+      ),
         child: const Skeletonizer.zone(enabled: true, child: Bone()),
       ),
     );

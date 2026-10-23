@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -10,6 +10,7 @@ import 'package:sambasku_mobile/features/dictionary/presentation/widgets/audio_p
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_deck_item.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_word_card.dart';
 import 'package:sambasku_mobile/shared/widgets/cached_network_image_with_fallback.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _item = VoteDeckItem(
   id: '01WORD0000000000000000000A',
@@ -63,7 +64,7 @@ Future<void> _pump(WidgetTester tester, Future<WordDetail> Function() load) asyn
       overrides: [wordDetailProvider(_item.id).overrideWith((ref) => load())],
       child: MaterialApp(
         home: FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: const Scaffold(
             body: SizedBox(width: 800, height: 900, child: VoteDeckWordCard(item: _item)),
           ),

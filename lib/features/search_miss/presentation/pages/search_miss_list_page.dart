@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +41,7 @@ class SearchMissListPage extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -66,7 +66,7 @@ class SearchMissListPage extends ConsumerWidget {
                 children: [
                   Text(
                     'Belum ada kata yang dicari warga. Coba lagi nanti, atau usulkan kata baru dari menu di atas.',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -80,7 +80,7 @@ class SearchMissListPage extends ConsumerWidget {
               children: [
                 Text(
                   'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),

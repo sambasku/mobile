@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -64,7 +64,7 @@ class AnnouncementMissingPage extends StatelessWidget {
       child: Center(
         child: Text(
           'Pengumuman tidak lagi tersedia.',
-          style: context.theme.typography.sm.copyWith(
+          style: context.theme.typography.body.sm.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
         ),

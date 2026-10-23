@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -30,7 +30,9 @@ import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/domain/entities/vote_target.dart';
 import '../../../vote/domain/failures/vote_failure.dart';
+import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/providers/vote_providers.dart';
+import '../../../vote/presentation/widgets/meaning_vote_row.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/failures/dictionary_failure.dart';
@@ -127,7 +129,7 @@ class WordDetailPage extends HookConsumerWidget {
                       isNotFound
                           ? 'Kata tidak ditemukan'
                           : 'Gagal memuat detail',
-                      style: theme.typography.md.copyWith(
+                      style: theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
@@ -135,7 +137,7 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(6),
                     Text(
                       failure.message,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                       textAlign: TextAlign.center,
@@ -365,7 +367,7 @@ void showPendingReviewSheet(
                     Expanded(
                       child: Text(
                         'Menunggu pengecekan',
-                        style: theme.typography.lg.copyWith(
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -378,7 +380,7 @@ void showPendingReviewSheet(
                 ),
                 Text(
                   'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas.',
-                  style: theme.typography.sm,
+                  style: theme.typography.body.sm,
                 ),
                 const Gap(12),
                 if (onApprove != null && onReject != null) ...[
@@ -435,10 +437,25 @@ class _DetailBody extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final violenceRevealed = useState(false);
+    // Vote makna: state batch (counts + my-votes) untuk semua makna kata ini.
+    final meaningVotes = ref.watch(meaningVotesControllerProvider);
     useEffect(() {
       violenceRevealed.value = false;
       return null;
     }, [wordId]);
+
+    // Vote per makna: 1 batch (counts + my-votes) untuk semua makna kata
+    // ini. Gagal load tidak boleh blok halaman - tombol vote tetap tampil
+    // dengan angka 0 dan toggle tetap jalan (server yang-source state).
+    useEffect(() {
+      final ids = detail.meanings.map((m) => m.id).toList(growable: false);
+      if (ids.isEmpty) return null;
+      ref
+          .read(meaningVotesControllerProvider.notifier)
+          .load(ids)
+          .catchError((_) {});
+      return null;
+    }, [detail.id]);
 
     // Foto utama dulu, sisanya urutan API.
     final orderedImages = [
@@ -552,7 +569,7 @@ class _DetailBody extends HookConsumerWidget {
                           Expanded(
                             child: Text(
                               detail.lemma,
-                              style: theme.typography.xl.copyWith(
+                              style: theme.typography.body.xl.copyWith(
                                 fontWeight: FontWeight.w700,
                                 height: 1.15,
                               ),
@@ -589,7 +606,7 @@ class _DetailBody extends HookConsumerWidget {
                       const Gap(2),
                       Text(
                         detail.wordTypeLabel,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -599,7 +616,7 @@ class _DetailBody extends HookConsumerWidget {
                           detail.pronunciations
                               .map((p) => '${p.notation} ${p.value}')
                               .join(' · '),
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                             fontStyle: FontStyle.italic,
                           ),
@@ -618,7 +635,7 @@ class _DetailBody extends HookConsumerWidget {
                         const Gap(8),
                         Text(
                           detail.notes!,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -661,6 +678,11 @@ class _DetailBody extends HookConsumerWidget {
                             meaning: e.value,
                             wordId: wordId,
                             languageId: detail.languageId,
+                            isTopSupported:
+                                meaningVotes.topMeaningId(
+                                  detail.meanings.map((m) => m.id),
+                                ) ==
+                                e.value.id,
                             contributor: detail.meanings.length > 1
                                 ? (e.value.createdBy ?? detail.createdBy)
                                 : null,
@@ -899,7 +921,7 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
                       ),
                       child: Text(
                         '${_index + 1}/${images.length}',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -959,7 +981,7 @@ class _WordVoteBar extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     _votePrompt,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -975,7 +997,7 @@ class _WordVoteBar extends ConsumerWidget {
               Expanded(
                 child: Text(
                   _votePrompt,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -1216,7 +1238,7 @@ class _SectionLabel extends StatelessWidget {
     final theme = context.theme;
     return Text(
       text.toUpperCase(),
-      style: theme.typography.sm.copyWith(
+      style: theme.typography.body.sm.copyWith(
         fontWeight: FontWeight.w700,
         letterSpacing: 0.06,
         color: theme.colors.mutedForeground,
@@ -1226,13 +1248,14 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _MeaningBlock extends StatelessWidget {
+class _MeaningBlock extends ConsumerWidget {
   const _MeaningBlock({
     required this.index,
     required this.lemma,
     required this.meaning,
     required this.wordId,
     required this.languageId,
+    required this.isTopSupported,
     this.contributor,
   });
 
@@ -1242,11 +1265,14 @@ class _MeaningBlock extends StatelessWidget {
   final String wordId;
   final String languageId;
 
+  /// Makna dengan skor vote tertinggi di kata ini (komunitas paling mendukung).
+  final bool isTopSupported;
+
   /// Terisi hanya kalau kata punya lebih dari satu makna.
   final WordVerifier? contributor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final className = meaning.wordClassName;
     final definition = meaning.definition?.trim();
@@ -1260,7 +1286,7 @@ class _MeaningBlock extends StatelessWidget {
             width: 22,
             child: Text(
               '$index.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
@@ -1273,12 +1299,19 @@ class _MeaningBlock extends StatelessWidget {
                 if (className != null && className.isNotEmpty)
                   Text(
                     className,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                       color: theme.colors.primary,
                       fontSize: 12,
                     ),
                   ),
+                if (isTopSupported) ...[
+                  const Gap(2),
+                  FBadge(
+                    variant: FBadgeVariant.secondary,
+                    child: const Text('Paling didukung'),
+                  ),
+                ],
                 if (contributor != null)
                   _AttributionLine(
                     label:
@@ -1289,7 +1322,7 @@ class _MeaningBlock extends StatelessWidget {
                 if (definition != null && definition.isNotEmpty)
                   Text(
                     definition,
-                    style: theme.typography.sm.copyWith(height: 1.35),
+                    style: theme.typography.body.sm.copyWith(height: 1.35),
                   ),
                 if (meaning.translations.isNotEmpty) ...[
                   const Gap(4),
@@ -1298,7 +1331,7 @@ class _MeaningBlock extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
                         '→ ${t.text}',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1308,12 +1341,16 @@ class _MeaningBlock extends StatelessWidget {
                   const Gap(4),
                   Text(
                     'Belum ada terjemahan',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
                 ],
+                // Vote per makna: mana makna yang paling valid di mata
+                // komunitas (upvote = makna ini tepat).
+                const Gap(6),
+                MeaningVoteRow(meaningId: meaning.id),
                 if (meaning.examples.isNotEmpty) ...[
                   const Gap(4),
                   ...meaning.examples.map((e) {
@@ -1325,7 +1362,7 @@ class _MeaningBlock extends StatelessWidget {
                         children: [
                           Text(
                             e.sourceSentence,
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               fontStyle: FontStyle.italic,
                               height: 1.3,
                             ),
@@ -1333,7 +1370,7 @@ class _MeaningBlock extends StatelessWidget {
                           if (translation != null && translation.isNotEmpty)
                             Text(
                               translation,
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 color: theme.colors.mutedForeground,
                                 height: 1.3,
                               ),
@@ -1396,7 +1433,7 @@ class _RelatedRow extends StatelessWidget {
             Expanded(
               child: Text(
                 related.lemma,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1435,14 +1472,14 @@ class _MeaningGroupRow extends StatelessWidget {
                 children: [
                   Text(
                     member.lemma,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   if (notes != null && notes.isNotEmpty)
                     Text(
                       notes,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -1488,7 +1525,7 @@ class _VariantRow extends StatelessWidget {
             Expanded(
               child: Text(
                 meta,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   fontSize: 11,
                 ),
@@ -1510,7 +1547,7 @@ class _DetailSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -1523,7 +1560,7 @@ class _DetailSkeleton extends StatelessWidget {
     // Mirror struktur [_DetailBody]: carousel full-bleed → meta → vote → makna.
     // Komentar ada di bar bawah.
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -1557,7 +1594,7 @@ class _DetailSkeleton extends StatelessWidget {
                             children: [
                               Text(
                                 'lemma contoh kata',
-                                style: theme.typography.xl.copyWith(
+                                style: theme.typography.body.xl.copyWith(
                                   fontWeight: FontWeight.w700,
                                   height: 1.15,
                                 ),
@@ -1565,14 +1602,14 @@ class _DetailSkeleton extends StatelessWidget {
                               const Gap(2),
                               Text(
                                 'Nomina',
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                               ),
                               const Gap(4),
                               Text(
                                 '/ma.kan/',
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -1606,7 +1643,7 @@ class _DetailSkeleton extends StatelessWidget {
                         Expanded(
                           child: Text(
                             _votePrompt,
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               color: theme.colors.mutedForeground,
                             ),
                           ),
@@ -1623,7 +1660,7 @@ class _DetailSkeleton extends StatelessWidget {
                     const Gap(16),
                     Text(
                       'Komentar',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colors.mutedForeground,
                         fontSize: 11,
@@ -1662,7 +1699,7 @@ class _MeaningSkeletonBlock extends StatelessWidget {
             width: 22,
             child: Text(
               '$index.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
@@ -1674,7 +1711,7 @@ class _MeaningSkeletonBlock extends StatelessWidget {
               children: [
                 Text(
                   'Verba',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                     color: theme.colors.primary,
                     fontSize: 12,
@@ -1682,12 +1719,12 @@ class _MeaningSkeletonBlock extends StatelessWidget {
                 ),
                 Text(
                   'Definisi makna singkat untuk skeleton layout',
-                  style: theme.typography.sm.copyWith(height: 1.35),
+                  style: theme.typography.body.sm.copyWith(height: 1.35),
                 ),
                 const Gap(4),
                 Text(
                   '→ terjemahan contoh',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1707,21 +1744,29 @@ class _CommentSkeletonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     return FCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'nama pengguna',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const Gap(6),
-          Text(
-            'isi komentar skeleton beberapa kata di sini',
-            style: theme.typography.sm,
-          ),
-          const Gap(10),
-          const VoteButtonsSkeleton(compact: true),
-        ],
+      // forui 0.27: FCard tidak lagi membungkus child dengan padding
+      // default (0.22 wrap Content padding 16). Padding dipakai supaya isi
+      // tidak menempel border kartu.
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'nama pengguna',
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(6),
+            Text(
+              'isi komentar skeleton beberapa kata di sini',
+              style: theme.typography.body.sm,
+            ),
+            const Gap(10),
+            const VoteButtonsSkeleton(compact: true),
+          ],
+        ),
       ),
     );
   }
@@ -1742,7 +1787,7 @@ class _AttributionLine extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final tappable = isLinkablePublicUsername(username);
-    final textStyle = theme.typography.sm.copyWith(
+    final textStyle = theme.typography.body.sm.copyWith(
       color: theme.colors.mutedForeground,
       fontWeight: FontWeight.w500,
     );
@@ -1807,7 +1852,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     Expanded(
                       child: Text(
                         'Atribusi',
-                        style: theme.typography.lg.copyWith(
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1821,7 +1866,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                 if (detail.combinedAttributionLabel != null)
                   Text.rich(
                     TextSpan(
-                      style: theme.typography.sm,
+                      style: theme.typography.body.sm,
                       children: _attributionSpans(
                         detail.combinedAttributionLabel!,
                         showCheck: detail.combinedByVerifier,
@@ -1832,7 +1877,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                   if (detail.creatorAttributionLabel != null)
                     Text.rich(
                       TextSpan(
-                        style: theme.typography.sm,
+                        style: theme.typography.body.sm,
                         children: _attributionSpans(
                           detail.creatorAttributionLabel!,
                           showCheck: isVerifierRole(detail.createdBy!.role),
@@ -1843,7 +1888,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     const Gap(4),
                     Text.rich(
                       TextSpan(
-                        style: theme.typography.sm,
+                        style: theme.typography.body.sm,
                         children: _attributionSpans(
                           detail.verifierAttributionLabel!,
                           showCheck: isVerifierRole(detail.verifiedBy!.role),
@@ -1856,7 +1901,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                   const Gap(4),
                   Text(
                     verifiedAt,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),

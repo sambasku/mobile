@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -64,7 +64,7 @@ class _WordCompletePageState extends ConsumerState<WordCompletePage> {
           Text(
             'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, '
             'variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -106,7 +106,7 @@ class _Results extends ConsumerWidget {
           children: [
             Text(
               state.errorMessage!,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
@@ -166,7 +166,7 @@ class _Hint extends StatelessWidget {
           const Gap(8),
           Text(
             message,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
             textAlign: TextAlign.center,
@@ -195,7 +195,7 @@ class _WordTile extends StatelessWidget with FTileMixin {
             : '$gloss - ${item.wordTypeLabel}',
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+        style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
       ),
       suffix: Icon(
         FLucideIcons.chevronRight,

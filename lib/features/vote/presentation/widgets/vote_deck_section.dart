@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -70,7 +70,7 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
                 'Bantu nilai agar arti kata lebih akurat',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w700,
                   color: theme.colors.mutedForeground,
                 ),
@@ -80,7 +80,7 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
               const Gap(8),
               Text(
                 remaining,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                   fontWeight: FontWeight.w600,
                 ),
@@ -236,7 +236,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
               const Gap(6),
               Text(
                 detail,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -258,7 +258,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 const Gap(10),
                 Text(
                   'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                   textAlign: TextAlign.center,
@@ -590,7 +590,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
     final theme = context.theme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -608,7 +608,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
       ),
       child: SizedBox.expand(
         child: SkeletonizerConfig(
-          data: SkeletonizerConfigData(effect: shimmer),
+          data: SkeletonizerConfigData(effectResolver: shimmerResolver),
           child: IgnorePointer(
             child: Skeletonizer(
               enabled: enabled,

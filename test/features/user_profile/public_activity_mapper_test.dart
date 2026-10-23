@@ -21,13 +21,13 @@ void main() {
 
   var seq = 0;
   PublicActivityItem item(String kind, {String? wordId}) => PublicActivityItem(
-        id: '01ACT${(seq++).toString().padLeft(20, '0')}',
-        kind: kind,
-        occurredAt: '2026-09-30T10:00:00.000Z',
-        summary: 'ringkasan',
-        wordId: wordId,
-        lemma: 'kumis',
-      );
+    id: '01ACT${(seq++).toString().padLeft(20, '0')}',
+    kind: kind,
+    occurredAt: '2026-09-30T10:00:00.000Z',
+    summary: 'ringkasan',
+    wordId: wordId,
+    lemma: 'kumis',
+  );
 
   test('kind dipetakan ke enum feed terdekat', () {
     expect(
@@ -79,7 +79,10 @@ void main() {
   });
 
   test('target word terisi dari wordId, aktor dari profil', () {
-    final mapped = mapPublicActivityToFeed(item('contribution', wordId: 'w1'), profile);
+    final mapped = mapPublicActivityToFeed(
+      item('contribution', wordId: 'w1'),
+      profile,
+    );
     expect(mapped.target?.type, 'word');
     expect(mapped.target?.id, 'w1');
     expect(mapped.actor?.username, 'budi');

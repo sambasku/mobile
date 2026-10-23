@@ -111,4 +111,21 @@ void main() {
     final failure = result.getLeft().toNullable();
     expect(failure?.errorCode, 'RATE_LIMITED');
   });
+
+  test('akun OAuth - error_code OAUTH_ACCOUNT terdeteksi', () async {
+    final repo = _FakeRepo(
+      Either.left(
+        const AuthFailure(
+          'Akun kamu login dengan layanan OAuth Google, reset password tidak bisa diproses di sini. Atur password lewat Google.',
+          errorCode: 'OAUTH_ACCOUNT',
+        ),
+      ),
+    );
+    final usecase = ForgotPasswordUseCase(repo);
+
+    final result = await usecase('budi@test.com');
+    final failure = result.getLeft().toNullable();
+    expect(failure?.errorCode, AuthFailure.oauthAccount);
+    expect(failure?.isOAuthAccount, isTrue);
+  });
 }

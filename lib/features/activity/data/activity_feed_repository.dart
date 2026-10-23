@@ -6,6 +6,23 @@ import '../../../core/cache/cached_json_client.dart';
 import '../domain/entities/feed_activity_item.dart';
 import 'map_feed_activity.dart';
 
+/// Kategori chips feed beranda (#193). Nilai = query `category` di API.
+enum FeedCategory {
+  all('all', 'Semua'),
+  searchMiss('search_miss', 'Pencarian warga'),
+  correction('correction', 'Perbaikan'),
+  announcement('announcement', 'Pengumuman'),
+  joined('joined', 'Warga');
+
+  const FeedCategory(this.wire, this.label);
+
+  /// Nilai `category` yang dikirim ke API.
+  final String wire;
+
+  /// Label chip di UI.
+  final String label;
+}
+
 class ActivityFeedPage {
   const ActivityFeedPage({
     required this.items,
@@ -31,6 +48,9 @@ class ActivityFeedRepository {
     String? cursor,
     bool forceRefresh = false,
     bool excludeSelf = false,
+    // #193: filter kategori chips. `all` = tanpa filter (identik dengan
+    // request tanpa param - perilaku lama tidak berubah).
+    FeedCategory category = FeedCategory.all,
   }) async {
     final query = <String, dynamic>{
       'limit': limit,
@@ -39,6 +59,9 @@ class ActivityFeedRepository {
       // saat login sebagai pembeda cache key L1 (buildCacheKey memuat query,
       // bukan Authorization) - feed login vs tamu tidak saling menimpa.
       if (excludeSelf) 'exclude_self': '1',
+      // #193: kategori ikut masuk cache key L1 -> tiap kategori punya cache
+      // terpisah, tidak saling menimpa.
+      if (category != FeedCategory.all) 'category': category.wire,
     };
     final cache = _cache;
     final isFirstPage = cursor == null || cursor.isEmpty;

@@ -8,12 +8,7 @@ import '../../core/utils/display_image_url.dart';
 /// Diameter diseragamkan lewat [SizedBox] + [ClipOval].
 /// Foto: URL asli dulu, lalu URL display (wsrv) sebagai fallback.
 class UserAvatar extends StatelessWidget {
-  const UserAvatar({
-    super.key,
-    this.name,
-    this.imageUrl,
-    this.size = 36,
-  });
+  const UserAvatar({super.key, this.name, this.imageUrl, this.size = 36});
 
   /// Dipakai untuk semantics / aksesibilitas; tidak ditampilkan sebagai inisial.
   final String? name;
@@ -36,9 +31,11 @@ class UserAvatar extends StatelessWidget {
 
     final raw = imageUrl?.trim();
     final hasPhoto = raw != null && raw.isNotEmpty;
-    final display = hasPhoto
-        ? (displayImageUrl(raw, width: 256) ?? raw)
-        : null;
+    final display = hasPhoto ? (displayImageUrl(raw, width: 256) ?? raw) : null;
+
+    // Decode di ukuran layar, bukan resolusi asli: feed berisi banyak avatar
+    // 40px, decode gambar 512px+ per baris = jank saat scroll.
+    final cacheWidth = (size * MediaQuery.devicePixelRatioOf(context)).round();
 
     final Widget child;
     if (hasPhoto) {
@@ -46,6 +43,7 @@ class UserAvatar extends StatelessWidget {
         raw,
         width: size,
         height: size,
+        cacheWidth: cacheWidth,
         fit: BoxFit.cover,
         gaplessPlayback: true,
         errorBuilder: (_, _, _) {
@@ -54,6 +52,7 @@ class UserAvatar extends StatelessWidget {
               display,
               width: size,
               height: size,
+              cacheWidth: cacheWidth,
               fit: BoxFit.cover,
               gaplessPlayback: true,
               errorBuilder: (_, _, _) => placeholder,

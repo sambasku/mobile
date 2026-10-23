@@ -97,7 +97,7 @@ class _BlurredThumb extends StatelessWidget {
                     ? 'Kekerasan · ketuk untuk lihat'
                     : 'Konten kekerasan',
                 textAlign: TextAlign.center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: const Color(0xFFFFFFFF),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,

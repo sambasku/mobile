@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -207,7 +207,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                           _hint!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -249,12 +249,12 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                                             hit.label,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
-                                            style: theme.typography.sm,
+                                            style: theme.typography.body.sm,
                                           ),
                                         ),
                                         Text(
                                           '${i + 1}',
-                                          style: theme.typography.xs.copyWith(
+                                          style: theme.typography.body.xs.copyWith(
                                             color: theme.colors.mutedForeground,
                                           ),
                                         ),

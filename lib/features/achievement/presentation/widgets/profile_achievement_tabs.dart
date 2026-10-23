@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -111,7 +111,7 @@ class _BorderTab extends StatelessWidget {
         child: Text(
           'Belum punya bingkai profil.',
           textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
           ),
         ),
@@ -212,7 +212,7 @@ class _BorderRowState extends ConsumerState<_BorderRow> {
                   border.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -220,7 +220,7 @@ class _BorderRowState extends ConsumerState<_BorderRow> {
                   border.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -229,11 +229,7 @@ class _BorderRowState extends ConsumerState<_BorderRow> {
           ),
           const Gap(8),
           if (_busy)
-            const SizedBox(
-              width: 18,
-              height: 18,
-              child: FCircularProgress(),
-            )
+            const FCircularProgress(size: .md)
           else
             border.isActiveBorder
                 ? FButton(
@@ -281,16 +277,16 @@ class _AllTab extends StatelessWidget {
                 children: [
                   Text(
                     item.title,
-                    style: sheetTheme.typography.lg.copyWith(
+                    style: sheetTheme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const Gap(6),
-                  Text(item.description, style: sheetTheme.typography.sm),
+                  Text(item.description, style: sheetTheme.typography.body.sm),
                   const Gap(10),
                   Text(
                     item.isOwned ? 'Sudah kamu miliki' : 'Belum dibuka',
-                    style: sheetTheme.typography.sm.copyWith(
+                    style: sheetTheme.typography.body.sm.copyWith(
                       color: item.isOwned
                           ? sheetTheme.colors.primary
                           : sheetTheme.colors.mutedForeground,
@@ -321,7 +317,7 @@ class _AllTab extends StatelessWidget {
         child: Text(
           'Belum ada pencapaian tersedia.',
           textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
           ),
         ),
@@ -335,7 +331,7 @@ class _AllTab extends StatelessWidget {
         if (owned.isNotEmpty) ...[
           Text(
             'Dimiliki',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(4),
           FTileGroup(
@@ -349,7 +345,7 @@ class _AllTab extends StatelessWidget {
           const Gap(12),
           Text(
             'Belum dibuka',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
           ),
           const Gap(4),
           FTileGroup(

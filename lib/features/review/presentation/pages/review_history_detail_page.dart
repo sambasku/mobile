@@ -117,12 +117,12 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
       children: [
         Text(
           detail.contribution.title,
-          style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
         Text(
           '${reviewStatusLabel(detail.contribution.status)} · ${detail.contribution.contributorLabel}',
-          style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+          style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
         ),
         const Gap(16),
         ReviewEntityPreview(detail: detail),
@@ -130,18 +130,18 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
           const Gap(16),
           Text(
             'Riwayat keputusan',
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(8),
           for (final row in prior) ...[
             Text(
               '${reviewStatusLabel(row.status)} · ${formatDateTimeIso(row.createdAt)}',
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
             ),
             if (row.comment != null && row.comment!.trim().isNotEmpty)
               Text(
                 row.comment!,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -153,7 +153,7 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
           pending
               ? 'Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.'
               : 'Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi hanya menghapus stempel kata.',
-          style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+          style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
         ),
         const Gap(16),
         if (pending)

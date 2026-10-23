@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
@@ -17,6 +17,7 @@ import '../../../discussion/data/discussion_providers.dart';
 import '../../../discussion/domain/discussion_models.dart';
 import '../providers/discussion_review_providers.dart';
 import '../widgets/discussion_image_censor_editor.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 /// Detail diskusi pending + Setujui / Tolak (+ sensor multi-foto).
 class DiscussionReviewDetailPage extends ConsumerWidget {
@@ -170,7 +171,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
               children: [
                 Text(
                   'Pastikan semua foto aman',
-                  style: context.theme.typography.lg.copyWith(
+                  style: context.theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -183,7 +184,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                   'Pastikan foto bukan NSFW, aman ditayangkan publik, '
                   'data sensitif sudah disensor bila perlu, dan flag kekerasan '
                   'sudah ditempel bila perlu.',
-                  style: context.theme.typography.sm.copyWith(
+                  style: context.theme.typography.body.sm.copyWith(
                     color: context.theme.colors.mutedForeground,
                   ),
                 ),
@@ -210,43 +211,37 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
   Future<void> _reject() async {
     if (_busy || !_isPending) return;
     final controller = TextEditingController();
-    final note = await showFDialog<String>(
+    final note = await showFMessageDialog<String>(
       context: context,
-      builder: (dialogContext, style, animation) {
-        return FDialog(
-          style: style,
-          animation: animation,
-          title: const Text('Tolak diskusi'),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Berikan alasan penolakan (wajib).'),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: controller),
-                label: const Text('Alasan'),
-                maxLines: 3,
-              ),
-            ],
+      title: const Text('Tolak diskusi'),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Berikan alasan penolakan (wajib).'),
+          const Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            label: const Text('Alasan'),
+            maxLines: 3,
           ),
-          actions: [
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            FButton(
-              onPress: () {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                Navigator.of(dialogContext).pop(text);
-              },
-              child: const Text('Tolak'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: const Text('Batal'),
+        ),
+        FButton(
+          onPress: () {
+            final text = controller.text.trim();
+            if (text.isEmpty) return;
+            Navigator.of(dialogContext).pop(text);
+          },
+          child: const Text('Tolak'),
+        ),
+      ],
     );
     controller.dispose();
     if (note == null || note.isEmpty || !mounted) return;
@@ -283,7 +278,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
       );
       return;
     }
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final ok = await launchExternalUrl(uri);
     if (!ok && mounted) {
       showFToast(
         context: context,
@@ -312,7 +307,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
               PublicAccountName(
                 label: name,
                 isVerifier: item.isVerifier,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -320,7 +315,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                 const Gap(4),
                 Text(
                   formatRelativeCompact(DateTime.tryParse(item.createdAt)),
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -328,7 +323,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
               const Gap(16),
               Text(
                 body.isEmpty ? '(tanpa teks)' : body,
-                style: theme.typography.sm,
+                style: theme.typography.body.sm,
               ),
               if (link != null && link.isNotEmpty) ...[
                 const Gap(12),
@@ -347,7 +342,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                 const Gap(16),
                 Text(
                   'Lampiran gambar ($_n)',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -471,7 +466,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                           child: Text(
                             'Ketuk foto untuk melihat ukuran penuh',
                             textAlign: TextAlign.center,
-                            style: theme.typography.xs.copyWith(
+                            style: theme.typography.body.xs.copyWith(
                               color: theme.colors.mutedForeground,
                               height: 1.3,
                             ),
@@ -549,7 +544,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
             child: Text(
               'Status: ${item.statusLabel}',
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

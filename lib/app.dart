@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -24,12 +24,14 @@ class App extends ConsumerWidget {
   // ponytail: Forui kasih shape rounded ke bottom sheet tapi clipBehavior null
   // (= Clip.none), jadi Material anak full-bleed nutup sudut -> keliatan kotak.
   // Set antiAlias sekali di sini biar semua showModalBottomSheet seragam.
-  static ThemeData _materialTheme(FThemeData f) {
+  static ThemeData materialTheme(FThemeData f) {
     final theme = f.toApproximateMaterialTheme();
     return theme.copyWith(
       bottomSheetTheme: theme.bottomSheetTheme.copyWith(clipBehavior: Clip.antiAlias),
     );
   }
+
+  static ThemeData _materialTheme(FThemeData f) => materialTheme(f);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

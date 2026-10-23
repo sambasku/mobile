@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -29,7 +29,7 @@ Future<void> showAppErrorSheet(
               children: [
                 Text(
                   title,
-                  style: theme.typography.lg.copyWith(fontWeight: .w600),
+                  style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                 ),
                 const Gap(8),
                 ConstrainedBox(
@@ -39,7 +39,7 @@ Future<void> showAppErrorSheet(
                   child: SingleChildScrollView(
                     child: Text(
                       message,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),

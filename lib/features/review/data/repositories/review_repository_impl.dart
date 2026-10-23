@@ -73,6 +73,9 @@ class ReviewRepositoryImpl implements ReviewRepository {
           'entity_type': ?entityType,
           if (mine) 'mine': true,
           if (hideSkipped) 'hide_skipped': true,
+          // Antrean global diacak server per user supaya lemma tidak seragam.
+          // Riwayat (mine) tetap kronologis.
+          if (!mine) 'randomize': true,
           if (wordId != null && wordId.isNotEmpty) 'word_id': wordId,
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         },

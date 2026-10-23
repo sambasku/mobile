@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'github_link_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'github_link_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $GithubLinkRequestDtoCopyWith<GithubLinkRequestDto> get copyWith => _$GithubLink
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GithubLinkRequestDto&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier));
+  final _this = this as GithubLinkRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GithubLinkRequestDto&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.redirectUri, _this.redirectUri) || other.redirectUri == _this.redirectUri)&&(identical(other.codeVerifier, _this.codeVerifier) || other.codeVerifier == _this.codeVerifier));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,redirectUri,codeVerifier);
+int get hashCode {
+  final _this = this as GithubLinkRequestDto;
+  return Object.hash(runtimeType,_this.code,_this.redirectUri,_this.codeVerifier);
+}
 
 @override
 String toString() {
-  return 'GithubLinkRequestDto(code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier)';
+  final _this = this as GithubLinkRequestDto;
+  return 'GithubLinkRequestDto(code: ${_this.code}, redirectUri: ${_this.redirectUri}, codeVerifier: ${_this.codeVerifier})';
 }
 
 
@@ -66,7 +72,7 @@ class _$GithubLinkRequestDtoCopyWithImpl<$Res>
 /// Create a copy of GithubLinkRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? redirectUri = null,Object? codeVerifier = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(GithubLinkRequestDto(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,redirectUri: null == redirectUri ? _self.redirectUri : redirectUri // ignore: cast_nullable_to_non_nullable
 as String,codeVerifier: freezed == codeVerifier ? _self.codeVerifier : codeVerifier // ignore: cast_nullable_to_non_nullable
@@ -231,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GithubLinkRequestDto&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GithubLinkRequestDto&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,code,redirectUri,codeVerifier);
+int get hashCode {
+    return Object.hash(runtimeType,code,redirectUri,codeVerifier);
+}
 
 @override
 String toString() {
-  return 'GithubLinkRequestDto(code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier)';
+    return 'GithubLinkRequestDto(code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier)';
 }
 
 
@@ -297,16 +305,21 @@ $GithubLinkResponseDtoCopyWith<GithubLinkResponseDto> get copyWith => _$GithubLi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GithubLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+  final _this = this as GithubLinkResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GithubLinkResponseDto&&(identical(other.provider, _this.provider) || other.provider == _this.provider)&&(identical(other.linkedAt, _this.linkedAt) || other.linkedAt == _this.linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+  final _this = this as GithubLinkResponseDto;
+  return Object.hash(runtimeType,_this.provider,_this.linkedAt);
+}
 
 @override
 String toString() {
-  return 'GithubLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
+  final _this = this as GithubLinkResponseDto;
+  return 'GithubLinkResponseDto(provider: ${_this.provider}, linkedAt: ${_this.linkedAt})';
 }
 
 
@@ -335,7 +348,7 @@ class _$GithubLinkResponseDtoCopyWithImpl<$Res>
 /// Create a copy of GithubLinkResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? linkedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(GithubLinkResponseDto(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,linkedAt: null == linkedAt ? _self.linkedAt : linkedAt // ignore: cast_nullable_to_non_nullable
 as String,
@@ -498,16 +511,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GithubLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GithubLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+    return Object.hash(runtimeType,provider,linkedAt);
+}
 
 @override
 String toString() {
-  return 'GithubLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
+    return 'GithubLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
 }
 
 

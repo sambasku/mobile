@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'comment_dto.dart';
@@ -9,6 +9,7 @@ part of 'comment_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $CommentDtoCopyWith<CommentDto> get copyWith => _$CommentDtoCopyWithImpl<Comment
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.body, body) || other.body == body)&&(identical(other.audioUrl, audioUrl) || other.audioUrl == audioUrl)&&(identical(other.audioMimeType, audioMimeType) || other.audioMimeType == audioMimeType)&&(identical(other.audioDurationMs, audioDurationMs) || other.audioDurationMs == audioDurationMs)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
+  final _this = this as CommentDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.wordId, _this.wordId) || other.wordId == _this.wordId)&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.isVerifier, _this.isVerifier) || other.isVerifier == _this.isVerifier)&&(identical(other.body, _this.body) || other.body == _this.body)&&(identical(other.audioUrl, _this.audioUrl) || other.audioUrl == _this.audioUrl)&&(identical(other.audioMimeType, _this.audioMimeType) || other.audioMimeType == _this.audioMimeType)&&(identical(other.audioDurationMs, _this.audioDurationMs) || other.audioDurationMs == _this.audioDurationMs)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.upvotes, _this.upvotes) || other.upvotes == _this.upvotes)&&(identical(other.downvotes, _this.downvotes) || other.downvotes == _this.downvotes)&&(identical(other.status, _this.status) || other.status == _this.status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,displayName,avatarUrl,isVerifier,body,audioUrl,audioMimeType,audioDurationMs,createdAt,upvotes,downvotes,status);
+int get hashCode {
+  final _this = this as CommentDto;
+  return Object.hash(runtimeType,_this.id,_this.wordId,_this.userId,_this.username,_this.displayName,_this.avatarUrl,_this.isVerifier,_this.body,_this.audioUrl,_this.audioMimeType,_this.audioDurationMs,_this.createdAt,_this.upvotes,_this.downvotes,_this.status);
+}
 
 @override
 String toString() {
-  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, isVerifier: $isVerifier, body: $body, audioUrl: $audioUrl, audioMimeType: $audioMimeType, audioDurationMs: $audioDurationMs, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
+  final _this = this as CommentDto;
+  return 'CommentDto(id: ${_this.id}, wordId: ${_this.wordId}, userId: ${_this.userId}, username: ${_this.username}, displayName: ${_this.displayName}, avatarUrl: ${_this.avatarUrl}, isVerifier: ${_this.isVerifier}, body: ${_this.body}, audioUrl: ${_this.audioUrl}, audioMimeType: ${_this.audioMimeType}, audioDurationMs: ${_this.audioDurationMs}, createdAt: ${_this.createdAt}, upvotes: ${_this.upvotes}, downvotes: ${_this.downvotes}, status: ${_this.status})';
 }
 
 
@@ -66,7 +72,7 @@ class _$CommentDtoCopyWithImpl<$Res>
 /// Create a copy of CommentDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? wordId = null,Object? userId = null,Object? username = freezed,Object? displayName = freezed,Object? avatarUrl = freezed,Object? isVerifier = null,Object? body = freezed,Object? audioUrl = freezed,Object? audioMimeType = freezed,Object? audioDurationMs = freezed,Object? createdAt = freezed,Object? upvotes = null,Object? downvotes = null,Object? status = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CommentDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -255,16 +261,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.body, body) || other.body == body)&&(identical(other.audioUrl, audioUrl) || other.audioUrl == audioUrl)&&(identical(other.audioMimeType, audioMimeType) || other.audioMimeType == audioMimeType)&&(identical(other.audioDurationMs, audioDurationMs) || other.audioDurationMs == audioDurationMs)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommentDto&&(identical(other.id, id) || other.id == id)&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.isVerifier, isVerifier) || other.isVerifier == isVerifier)&&(identical(other.body, body) || other.body == body)&&(identical(other.audioUrl, audioUrl) || other.audioUrl == audioUrl)&&(identical(other.audioMimeType, audioMimeType) || other.audioMimeType == audioMimeType)&&(identical(other.audioDurationMs, audioDurationMs) || other.audioDurationMs == audioDurationMs)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.status, status) || other.status == status));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,wordId,userId,username,displayName,avatarUrl,isVerifier,body,audioUrl,audioMimeType,audioDurationMs,createdAt,upvotes,downvotes,status);
+int get hashCode {
+    return Object.hash(runtimeType,id,wordId,userId,username,displayName,avatarUrl,isVerifier,body,audioUrl,audioMimeType,audioDurationMs,createdAt,upvotes,downvotes,status);
+}
 
 @override
 String toString() {
-  return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, isVerifier: $isVerifier, body: $body, audioUrl: $audioUrl, audioMimeType: $audioMimeType, audioDurationMs: $audioDurationMs, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
+    return 'CommentDto(id: $id, wordId: $wordId, userId: $userId, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, isVerifier: $isVerifier, body: $body, audioUrl: $audioUrl, audioMimeType: $audioMimeType, audioDurationMs: $audioDurationMs, createdAt: $createdAt, upvotes: $upvotes, downvotes: $downvotes, status: $status)';
 }
 
 

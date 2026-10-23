@@ -1,5 +1,4 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -18,7 +17,7 @@ final excludeSelfFeedProvider = Provider<bool>((ref) {
   final auth = ref.watch(authStatusProvider).value;
   if (!(auth?.isAuth ?? false)) return false;
   // `isAuth` true tapi `userId` masih null (prefs belum terisi, sync
-  // `GET /users/me` gagal) → jangan sembunyikan apa pun. Saat tidak yakin siapa
+  // `GET /users/me` gagal) → jangan sembunyikan apa pun. Saat tidak yaku siapa
   // dirinya, menampilkan semua lebih aman daripada feed kosong tanpa penjelasan.
   //
   // Ini juga mencegah flag terkirim tanpa viewer: server mengabaikan
@@ -34,6 +33,7 @@ class ActivityFeedState {
     this.nextCursor,
     this.hasMore = false,
     this.errorMessage,
+    this.hasLoaded = false,
   });
 
   final List<FeedActivityItem> items;
@@ -43,6 +43,11 @@ class ActivityFeedState {
   final bool hasMore;
   final String? errorMessage;
 
+  /// #193: pernah selesai satu kali load (sukses ATAU gagal) - penanda
+  /// "sudah pernah fetch" yang jujur, bukan hack `isLoading && items.isEmpty`
+  /// (yang menyamakan "belum pernah" dengan "sedang dimuat").
+  final bool hasLoaded;
+
   ActivityFeedState copyWith({
     List<FeedActivityItem>? items,
     bool? isLoading,
@@ -50,6 +55,7 @@ class ActivityFeedState {
     String? nextCursor,
     bool? hasMore,
     String? errorMessage,
+    bool? hasLoaded,
     bool clearErrorMessage = false,
     bool clearCursor = false,
   }) {
@@ -62,13 +68,24 @@ class ActivityFeedState {
       errorMessage: clearErrorMessage
           ? null
           : (errorMessage ?? this.errorMessage),
+      hasLoaded: hasLoaded ?? this.hasLoaded,
     );
   }
 }
 
+/// #193: feed per kategori chips. LAZY by design - hemat request + query
+/// Turso: hanya `all` yang auto-load di frame pertama. Kategori lain mulai
+/// kosong (`hasLoaded: false`) dan baru fetch saat chip PERTAMA kali di-tap
+/// (`ensureLoaded`). Tanpa autoDispose: state per kategori bertahan selama
+/// sesi, pindah-pindah chip = nol request.
 class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
-  static const _pageSize = 20;
+  ActivityFeedNotifier(this.category);
 
+  /// Kategori argumen family. Disimpan di field (bukan dibaca dari `ref`):
+  /// Riverpod 3 tidak mengekspos argumen family ke `Notifier` manual.
+  final FeedCategory category;
+
+  static const _pageSize = 20;
   int _loadReqId = 0;
   int _loadMoreReqId = 0;
   bool _isLoadingSync = false;
@@ -82,8 +99,21 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     ref.listen(excludeSelfFeedProvider, (prev, next) {
       if (prev != null && prev != next) Future.microtask(load);
     });
-    Future.microtask(load);
-    return const ActivityFeedState(isLoading: true);
+
+    // #193: hanya kategori `all` yang auto-load (beranda harus terisi di frame
+    // pertama). Kategori lain menunggu `ensureLoaded` dari tap chip.
+    if (category == FeedCategory.all) {
+      Future.microtask(load);
+      return const ActivityFeedState(isLoading: true);
+    }
+    return const ActivityFeedState();
+  }
+
+  /// #193: fetch hanya bila belum pernah. Chip yang sudah dimuat = nol
+  /// request (state di memori), dipanggil dari tap chip.
+  void ensureLoaded() {
+    if (state.hasLoaded || _isLoadingSync) return;
+    load();
   }
 
   Future<void> load({bool forceRefresh = false}) async {
@@ -91,7 +121,6 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     _isLoadingSync = true;
     final reqId = ++_loadReqId;
     _loadMoreReqId++;
-
     state = state.copyWith(
       isLoading: true,
       isLoadingMore: false,
@@ -99,7 +128,6 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
       clearCursor: true,
       hasMore: false,
     );
-
     try {
       // #167: pastikan authStatus resolve (atau timeout 2s) sebelum fetch
       // pertama. Tanpa ini flag `excludeSelf` dibaca saat future masih
@@ -116,6 +144,7 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
             limit: _pageSize,
             forceRefresh: forceRefresh,
             excludeSelf: ref.read(excludeSelfFeedProvider),
+            category: category,
           );
       if (!ref.mounted || reqId != _loadReqId) return;
       state = state.copyWith(
@@ -124,12 +153,16 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
         nextCursor: page.nextCursor,
         clearCursor: page.nextCursor == null,
         hasMore: page.hasMore,
+        // Gagal/sukses tetap "pernah load": error tampil, retry manual via
+        // pull-to-refresh. Tidak ada loop retry per tap.
+        hasLoaded: true,
       );
     } catch (e) {
       if (ref.mounted && reqId == _loadReqId) {
         state = state.copyWith(
           isLoading: false,
           errorMessage: 'Gagal memuat aktivitas.',
+          hasLoaded: true,
         );
       }
     } finally {
@@ -151,9 +184,7 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
     }
     _isLoadingMoreSync = true;
     final reqId = ++_loadMoreReqId;
-
     state = current.copyWith(isLoadingMore: true);
-
     try {
       final page = await ref
           .read(activityFeedRepositoryProvider)
@@ -163,6 +194,7 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
             // Wajib ikut di loadMore: cursor halaman berikutnya tanpa flag akan
             // mengembalikan karya sendiri dan bocor ke ekor feed.
             excludeSelf: ref.read(excludeSelfFeedProvider),
+            category: category,
           );
       if (!ref.mounted || reqId != _loadMoreReqId) return;
       state = state.copyWith(
@@ -185,6 +217,6 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
 }
 
 final activityFeedProvider =
-    NotifierProvider<ActivityFeedNotifier, ActivityFeedState>(
-      ActivityFeedNotifier.new,
-    );
+    NotifierProvider.family<ActivityFeedNotifier, ActivityFeedState, FeedCategory>(
+  ActivityFeedNotifier.new,
+);

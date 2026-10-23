@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +14,7 @@ import 'package:sambasku_mobile/features/my_comments/domain/entities/my_comment_
 import 'package:sambasku_mobile/features/my_comments/domain/repositories/my_comment_repository.dart';
 import 'package:sambasku_mobile/features/my_comments/presentation/pages/my_comments_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeComments implements MyCommentRepository {
   final statuses = <String?>[];
@@ -80,12 +81,12 @@ void main() {
           myCommentRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: child!,
           ),
         ),

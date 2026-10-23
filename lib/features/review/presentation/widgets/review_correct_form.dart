@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -630,7 +630,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       const Gap(4),
       Text(
         'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
       ),
@@ -646,7 +646,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       const Gap(4),
       Text(
         'Sensitivitas isi makna.',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
       ),
@@ -954,7 +954,7 @@ class _SectionLabel extends StatelessWidget {
     final theme = context.theme;
     return Text(
       text,
-      style: theme.typography.sm.copyWith(
+      style: theme.typography.body.sm.copyWith(
         fontWeight: FontWeight.w600,
         color: theme.colors.foreground,
       ),

@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -269,7 +269,7 @@ class _DiscussionImageCensorEditorPageState
                   children: [
                     Text(
                       'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -294,7 +294,7 @@ class _DiscussionImageCensorEditorPageState
                     const Gap(8),
                     Text(
                       'Ukuran kuas',
-                      style: theme.typography.sm,
+                      style: theme.typography.body.sm,
                     ),
                     Slider(
                       value: _brushRadius,

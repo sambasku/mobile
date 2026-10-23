@@ -81,7 +81,7 @@ class NotificationDetailPage extends StatelessWidget {
           ? Center(
               child: Text(
                 'Pengumuman tidak ditemukan',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -116,7 +116,7 @@ class NotificationDetailPage extends StatelessWidget {
                       const Gap(4),
                       Text(
                         'Ketuk untuk melihat gambar',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -126,7 +126,7 @@ class NotificationDetailPage extends StatelessWidget {
                 ],
                 Text(
                   item.title,
-                  style: theme.typography.lg.copyWith(
+                  style: theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -136,7 +136,7 @@ class NotificationDetailPage extends StatelessWidget {
                     item.typeLabel,
                     formatDateTimeIso(item.createdAt),
                   ].where((part) => part.isNotEmpty).join(' · '),
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),

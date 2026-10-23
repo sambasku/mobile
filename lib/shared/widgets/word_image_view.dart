@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -160,7 +160,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       'Foto berisi kekerasan',
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w600,
                       ),
@@ -169,7 +169,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Lihat foto',
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: Colors.white,
                         decoration: TextDecoration.underline,
                         decorationColor: Colors.white,
@@ -205,12 +205,12 @@ Future<bool> confirmRevealViolenceImage(BuildContext context) async {
               children: [
                 Text(
                   'Lihat foto ini?',
-                  style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
                 Text(
                   'Foto ini memperlihatkan kekerasan. Kalau ada orang di dekatmu, mereka juga bisa melihat.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),

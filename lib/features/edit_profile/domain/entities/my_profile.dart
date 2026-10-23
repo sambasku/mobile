@@ -7,6 +7,7 @@ class MyProfile {
     this.villageId,
     this.avatarUrl,
     this.hasReadContributionGuide = false,
+    this.requiresConsent = false,
   });
 
   final String username;
@@ -18,4 +19,8 @@ class MyProfile {
 
   /// Guide swipe di tab Kontribusi sudah ditandai baca di server.
   final bool hasReadContributionGuide;
+
+  /// Server hitung dari user_consents vs versi aktif - dipakai app untuk
+  /// memunculkan sheet persetujuan setiap launch sampai user setuju.
+  final bool requiresConsent;
 }

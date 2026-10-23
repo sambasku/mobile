@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -231,7 +231,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
                     children: [
                       Text(
                         'Media Explorer',
-                        style: theme.typography.lg.copyWith(
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -248,7 +248,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
                         ),
                         child: Text(
                           badge,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: theme.colors.mutedForeground,
@@ -336,7 +336,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               _mode == 'popular' ? 'Populer' : 'Hasil: $_activeQuery',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -374,7 +374,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
                 ? 'Latar tidak tersedia. Coba lagi nanti.'
                 : 'Tidak ada hasil.',
             textAlign: TextAlign.center,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),

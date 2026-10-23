@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../event/presentation/providers/event_providers.dart';
+import '../../../event/presentation/widgets/event_ui.dart';
 import '../providers/regions_providers.dart';
 import '../widgets/district_markdown_view.dart';
 
@@ -83,28 +85,37 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
           ],
           Text(
             isKec ? 'Kecamatan $name' : 'Desa $name',
-            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
           ),
           if (isKec && desaCount > 0) ...[
             const Gap(4),
             Text(
               '$desaCount desa',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
           ],
-          if (!isKec) ...[
-            const Gap(12),
-            Text(
-              'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat '
-              'info lengkapnya di sini ya.',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
+if (!isKec) ...[
+          const Gap(12),
+          Text(
+            'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat '
+            'info lengkapnya di sini ya.',
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
             ),
-          ],
+          ),
         ],
+        // Agenda desa (hanya desa): acara dengan village_id = desa ini.
+        // Slug wilayah (id katalog publik) diterima API sebagai village_id.
+        if (!isKec && region != null)
+          buildEventMiniList(
+            context,
+            ref.watch(eventsForVillageProvider(region.id)).value ?? const [],
+            title: 'Agenda di Desa $name',
+          ) ??
+          const SizedBox.shrink(),
+      ],
       ),
     );
   }

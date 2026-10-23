@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +47,7 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
                 error is DiscussionFailure
                     ? error.message
                     : 'Gagal memuat antrean diskusi',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -93,7 +93,7 @@ class _QueueList extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     'Tidak ada diskusi menunggu tinjauan',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                     textAlign: TextAlign.center,
@@ -156,7 +156,7 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
             child: PublicAccountName(
               label: name,
               isVerifier: item.isVerifier,
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -166,7 +166,7 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
               ' · $extra',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -207,7 +207,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -218,7 +218,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,

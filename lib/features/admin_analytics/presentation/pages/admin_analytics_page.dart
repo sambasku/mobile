@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show RefreshIndicator, Theme;
+import 'package:material_ui/material_ui.dart' show RefreshIndicator, Theme;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -99,7 +99,7 @@ class _AnalyticsStatsSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -110,7 +110,7 @@ class _AnalyticsStatsSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: const IgnorePointer(
         child: Skeletonizer(
           enabled: true,

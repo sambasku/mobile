@@ -3,6 +3,7 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cached_json_client.dart';
 import '../../domain/entities/place.dart';
 import '../datasources/places_remote_datasource.dart';
+import '../models/place_dto.dart';
 import '../models/places_dto.dart';
 
 /// Impl repository places (API publik).
@@ -30,6 +31,25 @@ class PlacesRepositoryImpl {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<void> recordView(String slug) => _datasource.recordView(slug);
+
+  /// #187: halaman galeri foto (offset server-side). Error dilempar supaya
+  /// grid bisa menampilkan tombol coba lagi, bukan senyap kosong.
+  Future<({List<PlaceImage> items, int total, int? nextOffset})> imagePage(
+    String slug, {
+    int offset = 0,
+  }) async {
+    final page = await _datasource.fetchImagePage(slug, offset: offset);
+    return (
+      items: [
+        for (final raw in page.items)
+          ?PlaceDto.imageFromJson(raw),
+      ],
+      total: page.total,
+      nextOffset: page.nextOffset,
+    );
   }
 
   /// Satu halaman daftar. Error dilempar supaya halaman bisa tampil gagal/retry.

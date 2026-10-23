@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -72,7 +72,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                     'Pilih kelas kata',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -90,7 +90,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
               '${items.length} pilihan - ketuk untuk memilih',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
@@ -122,7 +122,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                 ? Center(
                     child: Text(
                       'Tidak ada kelas kata',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -152,7 +152,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                     children: [
                                       Text(
                                         item.name,
-                                        style: theme.typography.sm.copyWith(
+                                        style: theme.typography.body.sm.copyWith(
                                           fontWeight: selected
                                               ? FontWeight.w700
                                               : FontWeight.w500,
@@ -166,7 +166,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                         const Gap(2),
                                         Text(
                                           item.alias!,
-                                          style: theme.typography.sm.copyWith(
+                                          style: theme.typography.body.sm.copyWith(
                                             color: theme.colors.mutedForeground,
                                             fontSize: 12,
                                           ),

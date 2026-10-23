@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'network_request_record.dart';
@@ -9,6 +9,7 @@ part of 'network_request_record.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -29,16 +30,21 @@ $NetworkRequestRecordCopyWith<NetworkRequestRecord> get copyWith => _$NetworkReq
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRequestRecord&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.method, method) || other.method == method)&&(identical(other.url, url) || other.url == url)&&(identical(other.path, path) || other.path == path)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&const DeepCollectionEquality().equals(other.queryParameters, queryParameters)&&const DeepCollectionEquality().equals(other.requestHeaders, requestHeaders)&&(identical(other.requestBody, requestBody) || other.requestBody == requestBody)&&const DeepCollectionEquality().equals(other.responseHeaders, responseHeaders)&&(identical(other.responseBody, responseBody) || other.responseBody == responseBody)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isError, isError) || other.isError == isError)&&(identical(other.cacheSource, cacheSource) || other.cacheSource == cacheSource));
+  final _this = this as NetworkRequestRecord;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRequestRecord&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.startedAt, _this.startedAt) || other.startedAt == _this.startedAt)&&(identical(other.method, _this.method) || other.method == _this.method)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.path, _this.path) || other.path == _this.path)&&(identical(other.finishedAt, _this.finishedAt) || other.finishedAt == _this.finishedAt)&&(identical(other.statusCode, _this.statusCode) || other.statusCode == _this.statusCode)&&(identical(other.durationMs, _this.durationMs) || other.durationMs == _this.durationMs)&&const DeepCollectionEquality().equals(other.queryParameters, _this.queryParameters)&&const DeepCollectionEquality().equals(other.requestHeaders, _this.requestHeaders)&&(identical(other.requestBody, _this.requestBody) || other.requestBody == _this.requestBody)&&const DeepCollectionEquality().equals(other.responseHeaders, _this.responseHeaders)&&(identical(other.responseBody, _this.responseBody) || other.responseBody == _this.responseBody)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.isError, _this.isError) || other.isError == _this.isError)&&(identical(other.cacheSource, _this.cacheSource) || other.cacheSource == _this.cacheSource));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,startedAt,method,url,path,finishedAt,statusCode,durationMs,const DeepCollectionEquality().hash(queryParameters),const DeepCollectionEquality().hash(requestHeaders),requestBody,const DeepCollectionEquality().hash(responseHeaders),responseBody,errorMessage,isError,cacheSource);
+int get hashCode {
+  final _this = this as NetworkRequestRecord;
+  return Object.hash(runtimeType,_this.id,_this.startedAt,_this.method,_this.url,_this.path,_this.finishedAt,_this.statusCode,_this.durationMs,const DeepCollectionEquality().hash(_this.queryParameters),const DeepCollectionEquality().hash(_this.requestHeaders),_this.requestBody,const DeepCollectionEquality().hash(_this.responseHeaders),_this.responseBody,_this.errorMessage,_this.isError,_this.cacheSource);
+}
 
 @override
 String toString() {
-  return 'NetworkRequestRecord(id: $id, startedAt: $startedAt, method: $method, url: $url, path: $path, finishedAt: $finishedAt, statusCode: $statusCode, durationMs: $durationMs, queryParameters: $queryParameters, requestHeaders: $requestHeaders, requestBody: $requestBody, responseHeaders: $responseHeaders, responseBody: $responseBody, errorMessage: $errorMessage, isError: $isError, cacheSource: $cacheSource)';
+  final _this = this as NetworkRequestRecord;
+  return 'NetworkRequestRecord(id: ${_this.id}, startedAt: ${_this.startedAt}, method: ${_this.method}, url: ${_this.url}, path: ${_this.path}, finishedAt: ${_this.finishedAt}, statusCode: ${_this.statusCode}, durationMs: ${_this.durationMs}, queryParameters: ${_this.queryParameters}, requestHeaders: ${_this.requestHeaders}, requestBody: ${_this.requestBody}, responseHeaders: ${_this.responseHeaders}, responseBody: ${_this.responseBody}, errorMessage: ${_this.errorMessage}, isError: ${_this.isError}, cacheSource: ${_this.cacheSource})';
 }
 
 
@@ -67,7 +73,7 @@ class _$NetworkRequestRecordCopyWithImpl<$Res>
 /// Create a copy of NetworkRequestRecord
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? startedAt = null,Object? method = null,Object? url = null,Object? path = null,Object? finishedAt = freezed,Object? statusCode = freezed,Object? durationMs = freezed,Object? queryParameters = null,Object? requestHeaders = null,Object? requestBody = freezed,Object? responseHeaders = null,Object? responseBody = freezed,Object? errorMessage = freezed,Object? isError = null,Object? cacheSource = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NetworkRequestRecord(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
@@ -225,7 +231,7 @@ return $default(_that.id,_that.startedAt,_that.method,_that.url,_that.path,_that
 @JsonSerializable()
 
 class _NetworkRequestRecord implements NetworkRequestRecord {
-  const _NetworkRequestRecord({required this.id, required this.startedAt, required this.method, required this.url, required this.path, this.finishedAt, this.statusCode, this.durationMs, final  Map<String, String> queryParameters = const <String, String>{}, final  Map<String, String> requestHeaders = const <String, String>{}, this.requestBody, final  Map<String, String> responseHeaders = const <String, String>{}, this.responseBody, this.errorMessage, this.isError = false, this.cacheSource}): _queryParameters = queryParameters,_requestHeaders = requestHeaders,_responseHeaders = responseHeaders;
+  const _NetworkRequestRecord({required this.id, required this.startedAt, required this.method, required this.url, required this.path, this.finishedAt, this.statusCode, this.durationMs,  Map<String, String> queryParameters = const <String, String>{},  Map<String, String> requestHeaders = const <String, String>{}, this.requestBody,  Map<String, String> responseHeaders = const <String, String>{}, this.responseBody, this.errorMessage, this.isError = false, this.cacheSource}): _queryParameters = queryParameters,_requestHeaders = requestHeaders,_responseHeaders = responseHeaders;
   factory _NetworkRequestRecord.fromJson(Map<String, dynamic> json) => _$NetworkRequestRecordFromJson(json);
 
 @override final  String id;
@@ -277,16 +283,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRequestRecord&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.method, method) || other.method == method)&&(identical(other.url, url) || other.url == url)&&(identical(other.path, path) || other.path == path)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&const DeepCollectionEquality().equals(other._queryParameters, _queryParameters)&&const DeepCollectionEquality().equals(other._requestHeaders, _requestHeaders)&&(identical(other.requestBody, requestBody) || other.requestBody == requestBody)&&const DeepCollectionEquality().equals(other._responseHeaders, _responseHeaders)&&(identical(other.responseBody, responseBody) || other.responseBody == responseBody)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isError, isError) || other.isError == isError)&&(identical(other.cacheSource, cacheSource) || other.cacheSource == cacheSource));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRequestRecord&&(identical(other.id, id) || other.id == id)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.method, method) || other.method == method)&&(identical(other.url, url) || other.url == url)&&(identical(other.path, path) || other.path == path)&&(identical(other.finishedAt, finishedAt) || other.finishedAt == finishedAt)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.durationMs, durationMs) || other.durationMs == durationMs)&&const DeepCollectionEquality().equals(other.queryParameters, _queryParameters)&&const DeepCollectionEquality().equals(other.requestHeaders, _requestHeaders)&&(identical(other.requestBody, requestBody) || other.requestBody == requestBody)&&const DeepCollectionEquality().equals(other.responseHeaders, _responseHeaders)&&(identical(other.responseBody, responseBody) || other.responseBody == responseBody)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isError, isError) || other.isError == isError)&&(identical(other.cacheSource, cacheSource) || other.cacheSource == cacheSource));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,startedAt,method,url,path,finishedAt,statusCode,durationMs,const DeepCollectionEquality().hash(_queryParameters),const DeepCollectionEquality().hash(_requestHeaders),requestBody,const DeepCollectionEquality().hash(_responseHeaders),responseBody,errorMessage,isError,cacheSource);
+int get hashCode {
+    return Object.hash(runtimeType,id,startedAt,method,url,path,finishedAt,statusCode,durationMs,const DeepCollectionEquality().hash(_queryParameters),const DeepCollectionEquality().hash(_requestHeaders),requestBody,const DeepCollectionEquality().hash(_responseHeaders),responseBody,errorMessage,isError,cacheSource);
+}
 
 @override
 String toString() {
-  return 'NetworkRequestRecord(id: $id, startedAt: $startedAt, method: $method, url: $url, path: $path, finishedAt: $finishedAt, statusCode: $statusCode, durationMs: $durationMs, queryParameters: $queryParameters, requestHeaders: $requestHeaders, requestBody: $requestBody, responseHeaders: $responseHeaders, responseBody: $responseBody, errorMessage: $errorMessage, isError: $isError, cacheSource: $cacheSource)';
+    return 'NetworkRequestRecord(id: $id, startedAt: $startedAt, method: $method, url: $url, path: $path, finishedAt: $finishedAt, statusCode: $statusCode, durationMs: $durationMs, queryParameters: $queryParameters, requestHeaders: $requestHeaders, requestBody: $requestBody, responseHeaders: $responseHeaders, responseBody: $responseBody, errorMessage: $errorMessage, isError: $isError, cacheSource: $cacheSource)';
 }
 
 

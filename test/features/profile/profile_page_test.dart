@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -24,7 +24,9 @@ import 'package:sambasku_mobile/features/notification/domain/repositories/notifi
 import 'package:sambasku_mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
+import 'package:sambasku_mobile/shared/widgets/user_avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _profile = PublicProfile(
   username: 'budi',
@@ -50,11 +52,13 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
@@ -62,6 +66,7 @@ class _FakeAuthRepository implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
@@ -193,12 +198,13 @@ void main() {
           ...extraOverrides.cast<dynamic>(),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: child ?? const SizedBox.shrink()),
           ),
         ),
@@ -243,13 +249,49 @@ void main() {
       expect(find.text('@budi'), findsOneWidget);
       expect(find.text('Bio percobaan'), findsOneWidget);
       expect(find.textContaining('usul kata'), findsOneWidget);
-    expect(find.textContaining('perbaikan'), findsOneWidget);
-      expect(find.text('Verifikator'), findsOneWidget);
+      expect(find.textContaining('perbaikan'), findsOneWidget);
+      // Label teks "Verifikator" dihapus: centang hijau yang mewakili,
+      // tap ikon membuka penjelasan.
+      expect(find.text('Verifikator'), findsNothing);
+      // Dua centang di profil sendiri: samping nama + baris meta.
+      expect(
+        find.bySemanticsLabel('Verifikator, ketuk untuk info'),
+        findsWidgets,
+      );
       // Label role lama tidak boleh tampil lagi.
       expect(find.text('Reviewer'), findsNothing);
       expect(find.text('Kontributor'), findsNothing);
-      // Desain baru: edit profil dari profil publik (tap header), bukan tile.
+
+      // CTA eksplisit ke profil publik (header juga bisa di-tap).
+      expect(find.text('Lihat profil publik'), findsOneWidget);
+      // Edit profil = ikon di pojok header (semantik), bukan tile teks.
       expect(find.text('Edit profil'), findsNothing);
+      expect(find.bySemanticsLabel('Edit profil'), findsOneWidget);
+
+      // Layout center: avatar besar (104) tepat di tengah lebar layar,
+      // identitas rata tengah di bawahnya.
+      final avatar = find.byType(UserAvatar);
+      expect(tester.getSize(avatar).width, 104);
+      final screenCenter = tester.view.physicalSize.width / 2;
+      expect(tester.getCenter(avatar).dx, closeTo(screenCenter, 1));
+      expect(tester.getCenter(find.text('@budi')).dx, closeTo(screenCenter, 1));
+      expect(
+        tester.getTopLeft(find.text('@budi')).dy,
+        greaterThan(tester.getBottomLeft(avatar).dy),
+        reason: 'handle ada di bawah avatar, bukan di sampingnya',
+      );
+
+      // Tap centang hijau → sheet penjelasan peran verifikator.
+      await tester.tap(
+        find.bySemanticsLabel('Verifikator, ketuk untuk info').first,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Verifikator'), findsOneWidget);
+      expect(find.textContaining('memeriksa usulan'), findsOneWidget);
+      await tester.tap(find.text('Mengerti'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
     },
   );
 
@@ -347,12 +389,13 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           routerConfig: router,
           builder: (context, child) =>
-              FTheme(data: FThemes.zinc.light.touch, child: child!),
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );

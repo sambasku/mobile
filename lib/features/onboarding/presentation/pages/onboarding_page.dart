@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -139,11 +139,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ? null
                       : () => _finish(requestPermission: true),
                   child: _busy
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: FCircularProgress(),
-                        )
+                      ? const FCircularProgress()
                       : const Text('Izinkan notifikasi'),
                 ),
                 const Gap(10),
@@ -186,7 +182,7 @@ class _SlideContent extends StatelessWidget {
         const Gap(28),
         Text(
           title,
-          style: theme.typography.xl.copyWith(
+          style: theme.typography.body.xl.copyWith(
             fontWeight: FontWeight.w700,
             height: 1.2,
           ),
@@ -194,7 +190,7 @@ class _SlideContent extends StatelessWidget {
         const Gap(14),
         Text(
           body,
-          style: theme.typography.md.copyWith(
+          style: theme.typography.body.md.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.45,
           ),

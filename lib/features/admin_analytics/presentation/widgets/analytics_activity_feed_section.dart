@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Theme;
+import 'package:material_ui/material_ui.dart' show Theme;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -32,7 +32,7 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
       children: [
         Text(
           'Aktivitas terbaru',
-          style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
         DecoratedBox(
@@ -59,7 +59,7 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
                       alignment: Alignment.topLeft,
                       child: Text(
                         'Belum ada aktivitas.',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -132,7 +132,7 @@ class _ActivityRow extends StatelessWidget {
                                 item.actorUsername!,
                               )
                           : null,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1.2,
                         color: canOpenProfile
@@ -145,7 +145,7 @@ class _ActivityRow extends StatelessWidget {
                     const Gap(6),
                     Text(
                       trailingMeta,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                         height: 1.2,
                       ),
@@ -157,7 +157,7 @@ class _ActivityRow extends StatelessWidget {
                 item.body,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(height: 1.2),
+                style: theme.typography.body.sm.copyWith(height: 1.2),
               ),
             ],
           ),
@@ -191,7 +191,7 @@ class _ActivityFeedSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -202,7 +202,7 @@ class _ActivityFeedSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -241,7 +241,7 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -250,7 +250,7 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
           onTap: onRetry,
           child: Text(
             'Coba lagi',
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.primary,
               fontWeight: FontWeight.w600,
             ),

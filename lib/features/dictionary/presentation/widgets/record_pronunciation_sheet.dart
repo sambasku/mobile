@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -37,7 +37,10 @@ const _minComfortSec = 0.45;
 /// Peak meter normalisasi di bawah ini: soft warning "terlalu pelan".
 const _quietPeakThreshold = 0.15;
 
-/// Sheet rekam: izin → rekam → potong manual (opsional) → pratinjau → kirim.
+/// Sheet rekam: izin → rekam → potong manual (opsional) → pratinjau (opsional)
+/// → kirim → consent publikasi → upload.
+/// Consent tidak lagi langkah terpisah: muncul saat menekan "Kirim".
+/// Pratinjau yang sudah pernah diputar tidak wajib diulang.
 /// Nama penutur: default mencantumkan nama saat login, bisa dimatikan (anonim).
 /// Selesai dengan `true` bila rekaman terkirim.
 Future<bool?> showRecordPronunciationSheet(
@@ -129,7 +132,8 @@ class _RecordPronunciationSheetState
   bool _stoppingForLifecycle = false;
   /// Default ON saat login (nama tampilan tersedia); user bisa matikan untuk anonim.
   bool _creditSpeakerName = false;
-  /// PDP Pasal 8: wajib setuju sebelum kirim (chip hijau).
+  /// PDP Pasal 8: setuju publikasi; diminta lewat sheet saat menekan "Kirim"
+  /// (sekali per sesi sheet).
   bool _speakerConsent = false;
 
   String get _accountSpeakerName => widget.defaultSpeakerName.trim();
@@ -602,7 +606,7 @@ class _RecordPronunciationSheetState
   }
 
   /// Sheet persetujuan publikasi + lisensi (PDP Pasal 8). Hasil true = setuju.
-  Future<void> _showConsentSheet() async {
+  Future<bool> _showConsentSheet() async {
     final theme = FTheme.of(context);
     final agreed = await showModalBottomSheet<bool>(
       context: context,
@@ -616,7 +620,7 @@ class _RecordPronunciationSheetState
           children: [
             Text(
               'Publikasi & Lisensi Rekaman',
-              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(12),
             Text(
@@ -625,7 +629,7 @@ class _RecordPronunciationSheetState
               'Pastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. '
               'Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. '
               'Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 height: 1.5,
               ),
@@ -651,6 +655,7 @@ class _RecordPronunciationSheetState
         _error = null;
       });
     }
+    return agreed == true;
   }
 
   Future<void> _submit() async {
@@ -673,31 +678,28 @@ class _RecordPronunciationSheetState
       );
       return;
     }
-    if (!_hasPreviewed) {
-      setState(
-        () => _error = 'Dengarkan pratinjau dulu sebelum mengirim',
-      );
-      return;
-    }
+    // Consent = bagian dari aksi kirim (sekali per sesi sheet), bukan chip
+    // terpisah. Hentikan preview dulu supaya suara tidak menumpuk saat sheet
+    // consent terbuka.
+    await _stopPreviewPlayer();
     if (!_speakerConsent) {
-      setState(
-        () => _error = 'Setujui publikasi & lisensi dulu, ya',
-      );
-      return;
+      final agreed = await _showConsentSheet();
+      if (!mounted) return;
+      if (agreed != true) {
+        // Batal: kembali ke editor apa adanya. Lanjutkan pratinjau yang tadi
+        // berhenti - user tidak perlu menekan putar ulang.
+        if (_hasPreviewed) unawaited(_togglePreview());
+        return;
+      }
     }
-
     setState(() {
       _phase = _RecordPhase.submitting;
       _error = null;
       _trimBusy = true;
     });
-
-    // Hentikan preview + hapus cache trim; jangan reset _hasPreviewed.
+    // Hentikan preview; cache trim dipertahankan supaya kalau upload gagal,
+    // pratinjau tinggal lanjut tanpa memotong ulang.
     await _stopPreviewPlayer();
-    final oldPreview = _previewTrimPath;
-    _previewTrimPath = null;
-    await _deleteQuietly(oldPreview);
-
     late final File uploadFile;
     late final int durationMs;
     try {
@@ -803,7 +805,7 @@ class _RecordPronunciationSheetState
           children: [
             Text(
               'Dialek (opsional)',
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
             ),
             const Gap(6),
             Wrap(
@@ -875,12 +877,12 @@ class _RecordPronunciationSheetState
           children: [
             Text(
               isExample ? 'Rekam audio contoh' : 'Rekam pelafalan',
-              style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
             const Gap(4),
             Text(
               hintMax,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -888,7 +890,7 @@ class _RecordPronunciationSheetState
               const Gap(14),
               Text(
                 'Ucapkan',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.mutedForeground,
                 ),
@@ -897,7 +899,7 @@ class _RecordPronunciationSheetState
               Text(
                 _spoken,
                 textAlign: TextAlign.center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.italic,
                   height: 1.25,
@@ -927,7 +929,7 @@ class _RecordPronunciationSheetState
                         ? 'Nama tampilan belum ada di profil'
                         : _accountSpeakerName)
                     : 'Tanpa nama (Anonim)',
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: _creditSpeakerName && _accountSpeakerName.isNotEmpty
                       ? null
                       : theme.colors.mutedForeground,
@@ -937,7 +939,7 @@ class _RecordPronunciationSheetState
                 const Gap(2),
                 Text(
                   'Mengikuti nama tampilan di profilmu',
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -950,7 +952,7 @@ class _RecordPronunciationSheetState
               Text(
                 'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci',
                 textAlign: TextAlign.center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -959,7 +961,7 @@ class _RecordPronunciationSheetState
             if (_error != null) ...[
               Text(
                 _error!,
-                style: theme.typography.sm.copyWith(color: theme.colors.error),
+                style: theme.typography.body.sm.copyWith(color: theme.colors.error),
               ),
               const Gap(8),
             ],
@@ -968,7 +970,7 @@ class _RecordPronunciationSheetState
                     _phase == _RecordPhase.submitting)) ...[
               Text(
                 _qualityHint!,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.primary,
                 ),
               ),
@@ -981,7 +983,7 @@ class _RecordPronunciationSheetState
                 Text(
                   'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
                   textAlign: TextAlign.center,
-                  style: theme.typography.md.copyWith(
+                  style: theme.typography.body.md.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1001,7 +1003,7 @@ class _RecordPronunciationSheetState
                       ? 'Lepas untuk stop'
                       : 'Level mikrofon · ketuk tombol untuk stop',
                   textAlign: TextAlign.center,
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -1026,7 +1028,7 @@ class _RecordPronunciationSheetState
                 _phase == _RecordPhase.submitting) ...[
               Text(
                 'Potong rekaman',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -1036,7 +1038,7 @@ class _RecordPronunciationSheetState
                     ? 'Menyiapkan editor…'
                     : 'Geser rentang (${_fmt(selectionSec)} dari ${_fmt(_totalSec)}). '
                           'Bagian terpilih yang akan dikirim.',
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -1065,7 +1067,7 @@ class _RecordPronunciationSheetState
                   const Gap(4),
                   Text(
                     'Waveform tidak tersedia - geser slider untuk memotong',
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -1092,70 +1094,11 @@ class _RecordPronunciationSheetState
                 ),
                 child: Text(_previewPlaying ? 'Jeda' : 'Pratinjau'),
               ),
-              if (!_hasPreviewed) ...[
-                const Gap(6),
-                Text(
-                  'Dengarkan dulu sebelum mengirim',
-                  style: theme.typography.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
-              const Gap(12),
-              FTappable(
-                onPress: _phase == _RecordPhase.submitting
-                    ? null
-                    : _showConsentSheet,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _speakerConsent
-                        ? theme.colors.primaryForeground.withValues(alpha: 0.1)
-                        : theme.colors.secondary,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: _speakerConsent
-                          ? theme.colors.primary
-                          : theme.colors.border,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        _speakerConsent
-                            ? FLucideIcons.badgeCheck
-                            : FLucideIcons.shieldAlert,
-                        size: 16,
-                        color: _speakerConsent
-                            ? theme.colors.primary
-                            : theme.colors.mutedForeground,
-                      ),
-                      const Gap(8),
-                      Expanded(
-                        child: Text(
-                          _speakerConsent
-                              ? 'Publik, CC BY-SA - penutur setuju'
-                              : 'Publikasi & Lisensi: perlu setuju',
-                          style: theme.typography.xs.copyWith(
-                            color: _speakerConsent
-                                ? theme.colors.primary
-                                : theme.colors.mutedForeground,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      if (!_speakerConsent)
-                        Icon(
-                          FLucideIcons.chevronRight,
-                          size: 14,
-                          color: theme.colors.mutedForeground,
-                        ),
-                    ],
-                  ),
+              const Gap(6),
+              Text(
+                'Tekan Kirim untuk setuju soal publikasi & lisensi rekaman',
+                style: theme.typography.body.xs.copyWith(
+                  color: theme.colors.mutedForeground,
                 ),
               ),
               const Gap(12),
@@ -1273,7 +1216,7 @@ class _RecordRoundButton extends StatelessWidget {
         Text(
           label,
           textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w600,
             color: enabled
                 ? theme.colors.foreground

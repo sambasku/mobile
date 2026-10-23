@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -320,26 +320,26 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                 children: [
                   Text(
                     item.typeLabel,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Gap(8),
                   Text(
                     'Oleh ${item.actorLabel}',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
                   Text(
                     when,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
                   if (item.reason != null && item.reason!.trim().isNotEmpty) ...[
                     const Gap(12),
-                    Text('Alasan', style: theme.typography.sm.copyWith(
+                    Text('Alasan', style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     )),
                     Text(item.reason!),
@@ -347,7 +347,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                   if (item.reviewComment != null &&
                       item.reviewComment!.trim().isNotEmpty) ...[
                     const Gap(12),
-                    Text('Catatan reviewer', style: theme.typography.sm.copyWith(
+                    Text('Catatan reviewer', style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     )),
                     Text(item.reviewComment!),
@@ -355,7 +355,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                   const Gap(16),
                   Text(
                     'Perubahan',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -363,7 +363,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                   if (item.changes.isEmpty)
                     Text(
                       'Tidak ada detail perubahan.',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     )
@@ -388,21 +388,21 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
                           children: [
                             Text(
                               label.isNotEmpty ? label : diff.field,
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             if (oldVal != null)
                               Text(
                                 'Sebelum: $oldVal',
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                               ),
                             if (newVal != null)
                               Text(
                                 item.isDuplicateVote ? newVal : 'Sesudah: $newVal',
-                                style: theme.typography.sm,
+                                style: theme.typography.body.sm,
                               ),
                           ],
                         ),
@@ -487,13 +487,13 @@ class _EmptyState extends StatelessWidget {
           const Gap(12),
           Text(
             title,
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
           ),
           const Gap(6),
           Text(
             subtitle,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               height: 1.35,
             ),

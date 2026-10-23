@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -29,7 +29,7 @@ Future<MapBasemap?> showBasemapPickerSheet(
               children: [
                 Text(
                   'Gaya peta',
-                  style: theme.typography.lg.copyWith(
+                  style: theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),

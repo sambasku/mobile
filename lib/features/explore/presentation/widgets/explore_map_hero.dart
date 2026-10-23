@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -74,7 +74,7 @@ class ExploreMapHero extends StatelessWidget {
                     'Jelajahi Sambas',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                       fontSize: height < 160 ? 16 : null,
                     ),
@@ -85,7 +85,7 @@ class ExploreMapHero extends StatelessWidget {
                       'Peta hidup Kabupaten Sambas - ketuk untuk membuka.',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -12,6 +12,7 @@ import 'package:sambasku_mobile/features/review/domain/entities/review_search_mi
 import 'package:sambasku_mobile/features/review/domain/failures/review_failure.dart';
 import 'package:sambasku_mobile/features/review/presentation/pages/review_search_miss_page.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_search_miss_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 Finder _fbtnByIcon(IconData icon) =>
     find.ancestor(of: find.byIcon(icon), matching: find.byType(FButton));
@@ -321,7 +322,7 @@ Future<void> _pumpPanel(
         reviewSearchMissProvider.overrideWith((ref) async => items),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: FLocalizations.localizationsDelegates,
         supportedLocales: FLocalizations.supportedLocales,
         routerConfig: GoRouter(
@@ -337,8 +338,10 @@ Future<void> _pumpPanel(
             ),
           ],
         ),
-        builder: (context, child) => FToaster(
-          child: FTheme(data: FThemes.zinc.light.touch, child: child!),
+        builder: (context, child) => FTheme(
+          data: foruiPalettes['zinc']!.light.touch,
+          // FToaster 0.27 butuh FTheme ancestor (akses accessibility scope).
+          child: FToaster(child: child!),
         ),
       ),
     ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -38,7 +38,7 @@ class _SplashPageState extends State<SplashPage> {
             const Gap(16),
             Text(
               F.title,
-              style: context.theme.typography.lg.copyWith(
+              style: context.theme.typography.body.lg.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),

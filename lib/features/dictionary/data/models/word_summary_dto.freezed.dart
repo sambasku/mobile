@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'word_summary_dto.dart';
@@ -9,6 +9,7 @@ part of 'word_summary_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -36,16 +37,21 @@ $WordSummaryDtoCopyWith<WordSummaryDto> get copyWith => _$WordSummaryDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordSummaryDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.status, status) || other.status == status)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.matchedTranslation, matchedTranslation) || other.matchedTranslation == matchedTranslation)&&(identical(other.matchedVariant, matchedVariant) || other.matchedVariant == matchedVariant)&&(identical(other.matchType, matchType) || other.matchType == matchType)&&(identical(other.sense, sense) || other.sense == sense)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&const DeepCollectionEquality().equals(other.usageLabels, usageLabels));
+  final _this = this as WordSummaryDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordSummaryDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.languageId, _this.languageId) || other.languageId == _this.languageId)&&(identical(other.languageCode, _this.languageCode) || other.languageCode == _this.languageCode)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.isVerified, _this.isVerified) || other.isVerified == _this.isVerified)&&(identical(other.matchedTranslation, _this.matchedTranslation) || other.matchedTranslation == _this.matchedTranslation)&&(identical(other.matchedVariant, _this.matchedVariant) || other.matchedVariant == _this.matchedVariant)&&(identical(other.matchType, _this.matchType) || other.matchType == _this.matchType)&&(identical(other.sense, _this.sense) || other.sense == _this.sense)&&(identical(other.approvedAt, _this.approvedAt) || other.approvedAt == _this.approvedAt)&&const DeepCollectionEquality().equals(other.usageLabels, _this.usageLabels));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,lemma,languageId,languageCode,wordType,status,isVerified,matchedTranslation,matchedVariant,matchType,sense,approvedAt,const DeepCollectionEquality().hash(usageLabels));
+int get hashCode {
+  final _this = this as WordSummaryDto;
+  return Object.hash(runtimeType,_this.id,_this.lemma,_this.languageId,_this.languageCode,_this.wordType,_this.status,_this.isVerified,_this.matchedTranslation,_this.matchedVariant,_this.matchType,_this.sense,_this.approvedAt,const DeepCollectionEquality().hash(_this.usageLabels));
+}
 
 @override
 String toString() {
-  return 'WordSummaryDto(id: $id, lemma: $lemma, languageId: $languageId, languageCode: $languageCode, wordType: $wordType, status: $status, isVerified: $isVerified, matchedTranslation: $matchedTranslation, matchedVariant: $matchedVariant, matchType: $matchType, sense: $sense, approvedAt: $approvedAt, usageLabels: $usageLabels)';
+  final _this = this as WordSummaryDto;
+  return 'WordSummaryDto(id: ${_this.id}, lemma: ${_this.lemma}, languageId: ${_this.languageId}, languageCode: ${_this.languageCode}, wordType: ${_this.wordType}, status: ${_this.status}, isVerified: ${_this.isVerified}, matchedTranslation: ${_this.matchedTranslation}, matchedVariant: ${_this.matchedVariant}, matchType: ${_this.matchType}, sense: ${_this.sense}, approvedAt: ${_this.approvedAt}, usageLabels: ${_this.usageLabels})';
 }
 
 
@@ -74,7 +80,7 @@ class _$WordSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of WordSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? lemma = null,Object? languageId = null,Object? languageCode = null,Object? wordType = null,Object? status = null,Object? isVerified = null,Object? matchedTranslation = freezed,Object? matchedVariant = freezed,Object? matchType = freezed,Object? sense = freezed,Object? approvedAt = freezed,Object? usageLabels = null,}) {
-  return _then(_self.copyWith(
+  return _then(WordSummaryDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
 as String,languageId: null == languageId ? _self.languageId : languageId // ignore: cast_nullable_to_non_nullable
@@ -229,7 +235,7 @@ return $default(_that.id,_that.lemma,_that.languageId,_that.languageCode,_that.w
 @JsonSerializable()
 
 class _WordSummaryDto implements WordSummaryDto {
-  const _WordSummaryDto({required this.id, required this.lemma, @JsonKey(name: 'language_id') required this.languageId, @JsonKey(name: 'language_code') required this.languageCode, @JsonKey(name: 'word_type') required this.wordType, required this.status, @JsonKey(name: 'is_verified') required this.isVerified, @JsonKey(name: 'matched_translation') this.matchedTranslation, @JsonKey(name: 'matched_variant') this.matchedVariant, @JsonKey(name: 'match_type') this.matchType, this.sense, @JsonKey(name: 'approved_at') this.approvedAt, @JsonKey(name: 'usage_labels') final  List<String> usageLabels = const []}): _usageLabels = usageLabels;
+  const _WordSummaryDto({required this.id, required this.lemma, @JsonKey(name: 'language_id') required this.languageId, @JsonKey(name: 'language_code') required this.languageCode, @JsonKey(name: 'word_type') required this.wordType, required this.status, @JsonKey(name: 'is_verified') required this.isVerified, @JsonKey(name: 'matched_translation') this.matchedTranslation, @JsonKey(name: 'matched_variant') this.matchedVariant, @JsonKey(name: 'match_type') this.matchType, this.sense, @JsonKey(name: 'approved_at') this.approvedAt, @JsonKey(name: 'usage_labels')  List<String> usageLabels = const []}): _usageLabels = usageLabels;
   factory _WordSummaryDto.fromJson(Map<String, dynamic> json) => _$WordSummaryDtoFromJson(json);
 
 @override final  String id;
@@ -273,16 +279,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordSummaryDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.status, status) || other.status == status)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.matchedTranslation, matchedTranslation) || other.matchedTranslation == matchedTranslation)&&(identical(other.matchedVariant, matchedVariant) || other.matchedVariant == matchedVariant)&&(identical(other.matchType, matchType) || other.matchType == matchType)&&(identical(other.sense, sense) || other.sense == sense)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&const DeepCollectionEquality().equals(other._usageLabels, _usageLabels));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordSummaryDto&&(identical(other.id, id) || other.id == id)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&(identical(other.status, status) || other.status == status)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified)&&(identical(other.matchedTranslation, matchedTranslation) || other.matchedTranslation == matchedTranslation)&&(identical(other.matchedVariant, matchedVariant) || other.matchedVariant == matchedVariant)&&(identical(other.matchType, matchType) || other.matchType == matchType)&&(identical(other.sense, sense) || other.sense == sense)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&const DeepCollectionEquality().equals(other.usageLabels, _usageLabels));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,lemma,languageId,languageCode,wordType,status,isVerified,matchedTranslation,matchedVariant,matchType,sense,approvedAt,const DeepCollectionEquality().hash(_usageLabels));
+int get hashCode {
+    return Object.hash(runtimeType,id,lemma,languageId,languageCode,wordType,status,isVerified,matchedTranslation,matchedVariant,matchType,sense,approvedAt,const DeepCollectionEquality().hash(_usageLabels));
+}
 
 @override
 String toString() {
-  return 'WordSummaryDto(id: $id, lemma: $lemma, languageId: $languageId, languageCode: $languageCode, wordType: $wordType, status: $status, isVerified: $isVerified, matchedTranslation: $matchedTranslation, matchedVariant: $matchedVariant, matchType: $matchType, sense: $sense, approvedAt: $approvedAt, usageLabels: $usageLabels)';
+    return 'WordSummaryDto(id: $id, lemma: $lemma, languageId: $languageId, languageCode: $languageCode, wordType: $wordType, status: $status, isVerified: $isVerified, matchedTranslation: $matchedTranslation, matchedVariant: $matchedVariant, matchType: $matchType, sense: $sense, approvedAt: $approvedAt, usageLabels: $usageLabels)';
 }
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -83,7 +83,7 @@ class LetterWordsPage extends HookConsumerWidget {
           Text(
             'Kata yang dimulai dengan huruf $display.',
             textAlign: TextAlign.center,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               height: 1.4,
             ),
@@ -127,7 +127,7 @@ class LetterWordsPage extends HookConsumerWidget {
               Text(
                 state.errorMessage!,
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
@@ -161,7 +161,7 @@ class LetterWordsPage extends HookConsumerWidget {
               Text(
                 'Belum ada kata untuk huruf ${letter.toUpperCase()}.',
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
@@ -236,7 +236,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -247,7 +247,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -300,7 +300,7 @@ class _LoadingMoreFooter extends StatelessWidget {
             const Gap(8),
             Text(
               'Memuat...',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -8,17 +8,21 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../core/models/image_attribution.dart';
+import '../../../auth/auth_router.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../about/presentation/providers/contributors_providers.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
+import '../../../event/presentation/providers/event_providers.dart';
+import '../../../event/presentation/widgets/event_ui.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
 import '../providers/regions_providers.dart';
@@ -106,7 +110,7 @@ class _ErrorBody extends StatelessWidget {
           title: const Text('Konten tidak ditemukan'),
           subtitle: Text(
             'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.',
-            style: context.theme.typography.sm,
+            style: context.theme.typography.body.sm,
           ),
         ),
       ),
@@ -114,17 +118,17 @@ class _ErrorBody extends StatelessWidget {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends ConsumerStatefulWidget {
   const _Body({required this.place, required this.entry});
 
   final Place place;
   final String entry;
 
   @override
-  State<_Body> createState() => _BodyState();
+  ConsumerState<_Body> createState() => _BodyState();
 }
 
-class _BodyState extends State<_Body> {
+class _BodyState extends ConsumerState<_Body> {
   @override
   void initState() {
     super.initState();
@@ -138,7 +142,20 @@ class _BodyState extends State<_Body> {
           entry: widget.entry,
         ),
       );
+      // Metrik popularitas wisata (docs/api/45-api-place-views.md) -
+      // best-effort, gagal jaringan tidak boleh ganggu tampilan detail.
+      unawaited(_recordView());
     });
+  }
+
+  /// Catat 1 view detail. Semua error di-swallow (termasuk provider error)
+  /// supaya metrik tidak pernah menggagalkan pembukaan halaman.
+  Future<void> _recordView() async {
+    try {
+      await ref.read(placesRepositoryProvider).recordView(widget.place.slug);
+    } catch (_) {
+      // best-effort
+    }
   }
 
   Future<void> _share(BuildContext buttonContext) async {
@@ -146,9 +163,11 @@ class _BodyState extends State<_Body> {
     final link =
         placePublicUrl(place.slug) ?? placeGoogleMapsUri(place)?.toString();
     final box = buttonContext.findRenderObject() as RenderBox?;
+    final desc = place.shortDescription.trim();
+    final text = desc.isEmpty ? '${place.name}\n\n$link' : '${place.name}\n$desc\n\n$link';
     await SharePlus.instance.share(
       ShareParams(
-        text: '${place.name}\n${place.shortDescription}\n\n$link',
+        text: text,
         sharePositionOrigin: box == null
             ? null
             : box.localToGlobal(Offset.zero) & box.size,
@@ -161,6 +180,8 @@ class _BodyState extends State<_Body> {
     final theme = context.theme;
     final place = widget.place;
     final topInset = MediaQuery.paddingOf(context).top;
+    // #187: tamu tetap boleh lihat galeri, tapi tak bisa mengunggah.
+    final auth = ref.watch(authStatusProvider).value;
 
     Widget heroButton(IconData icon, String tooltip, VoidCallback onTap) =>
         IconButton(
@@ -191,7 +212,7 @@ class _BodyState extends State<_Body> {
                     children: [
                       Text(
                         place.name,
-                        style: theme.typography.xl.copyWith(
+                        style: theme.typography.body.xl.copyWith(
                           fontWeight: FontWeight.w800,
                           height: 1.25,
                         ),
@@ -221,11 +242,13 @@ class _BodyState extends State<_Body> {
                         const Gap(12),
                         _InfoStrip(hours: place.hours, contact: place.contact),
                       ],
-                      const Gap(12),
-                      Text(
-                        place.shortDescription,
-                        style: theme.typography.sm.copyWith(height: 1.5),
-                      ),
+                      if (place.shortDescription.isNotEmpty) ...[
+                        const Gap(12),
+                        Text(
+                          place.shortDescription,
+                          style: theme.typography.body.sm.copyWith(height: 1.5),
+                        ),
+                      ],
                       if (place.images.length > 1)
                         _PhotoGrid(slug: place.slug, images: place.images),
                       // Kredit penulis artikel (v2): authorId -> kontributor SambasKu;
@@ -290,15 +313,19 @@ class _BodyState extends State<_Body> {
                           FTile(
                             prefix: const Icon(FLucideIcons.image, size: 18),
                             title: const Text('Tambah foto'),
+                            subtitle: auth?.isAuth == true
+                                ? null
+                                : const Text('Masuk dulu untuk ikut mengisi'),
                             suffix: const Icon(
                               FLucideIcons.chevronRight,
                               size: 16,
                             ),
+                            // #187: foto wisata masuk feed publik -> wajib akun.
                             onPress: () => context.push(
-                              ExploreRouter.placeAddPhoto.path.replaceFirst(
-                                ':slug',
-                                place.slug,
-                              ),
+                              auth?.isAuth == true
+                                  ? ExploreRouter.placeAddPhoto.path
+                                        .replaceFirst(':slug', place.slug)
+                                  : AuthRouter.login.path,
                             ),
                           ),
                         ],
@@ -307,6 +334,7 @@ class _BodyState extends State<_Body> {
                   ),
                 ),
                 _NearbyWisata(place: place),
+                _PlaceAgenda(place: place),
                 if (place.sources.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -443,7 +471,7 @@ class _CarouselState extends State<_Carousel> {
                 ),
                 child: Text(
                   '${_index + 1}/${widget.images.length}',
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
@@ -481,11 +509,9 @@ class _CarouselState extends State<_Carousel> {
 void _open(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   if (uri == null || !uri.isScheme('https')) return;
-  // Timeout: handler external di sebagian ROM bisa menggantung.
-  launchUrl(
-    withUnsplashUtm(uri),
-    mode: LaunchMode.externalApplication,
-  ).timeout(const Duration(seconds: 8), onTimeout: () => false);
+    // Timeout: handler external di sebagian ROM bisa menggantung.
+    launchExternalUrl(withUnsplashUtm(uri))
+        .timeout(const Duration(seconds: 8), onTimeout: () => false);
 }
 
 /// Kredit satu baris: "Label: nama[suffix] · lisensi". Nama boleh terpotong,
@@ -512,7 +538,7 @@ class _CreditLine extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final muted = theme.typography.xs.copyWith(
+    final muted = theme.typography.body.xs.copyWith(
       color: theme.colors.mutedForeground,
     );
     final license = this.license;
@@ -614,10 +640,7 @@ class _InfoStrip extends StatelessWidget {
                 onTap: row.uri == null
                     ? null
                     : () {
-                        launchUrl(
-                          row.uri!,
-                          mode: LaunchMode.externalApplication,
-                        ).timeout(
+                        launchExternalUrl(row.uri!).timeout(
                           const Duration(seconds: 8),
                           onTimeout: () => false,
                         );
@@ -637,14 +660,14 @@ class _InfoStrip extends StatelessWidget {
                           children: [
                             Text(
                               row.value,
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 fontWeight: FontWeight.w600,
                                 height: 1.3,
                               ),
                             ),
                             Text(
                               row.caption,
-                              style: theme.typography.xs.copyWith(
+                              style: theme.typography.body.xs.copyWith(
                                 color: theme.colors.mutedForeground,
                               ),
                             ),
@@ -686,7 +709,7 @@ class _PhotoGrid extends StatelessWidget {
         const Gap(12),
         Text(
           'Foto',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
         GridView.builder(
@@ -727,7 +750,7 @@ class _PhotoGrid extends StatelessWidget {
             onTap: () => context.push(ExploreRouter.placePhotosPath(slug)),
             child: Text(
               'Lihat $hidden foto lainnya',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.primary,
                 fontWeight: FontWeight.w600,
               ),
@@ -753,7 +776,7 @@ class _SourcesCard extends StatelessWidget {
         const Gap(20),
         Text(
           'Sumber',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
         Container(
@@ -789,7 +812,7 @@ class _SourceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final muted = theme.typography.xs.copyWith(
+    final muted = theme.typography.body.xs.copyWith(
       color: theme.colors.mutedForeground,
     );
     final license = source.license;
@@ -869,7 +892,9 @@ class _NearbyWisata extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             title,
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.md.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         const Gap(8),
@@ -923,11 +948,36 @@ class _NearbyWisata extends ConsumerWidget {
               t.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Agenda acara yang menunjuk tempat ini (`?place_id=`). Kosong/error =
+/// section disembunyikan (soft-fail, halaman wisata utama tetap normal).
+class _PlaceAgenda extends ConsumerWidget {
+  const _PlaceAgenda({required this.place});
+
+  final Place place;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final events = ref.watch(eventsForPlaceProvider(place.id)).value ?? const [];
+    final section = buildEventMiniList(
+      context,
+      events,
+      title: 'Agenda di ${place.name}',
+    );
+    if (section == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: section,
     );
   }
 }

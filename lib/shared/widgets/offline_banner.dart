@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -43,7 +43,7 @@ class OfflineBanner extends ConsumerWidget {
                           'Kamu lagi offline. Nampilin data tersimpan.',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: Colors.white,
                           ),
                         ),

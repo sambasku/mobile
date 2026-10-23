@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'set_password_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'set_password_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $SetPasswordRequestDtoCopyWith<SetPasswordRequestDto> get copyWith => _$SetPassw
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetPasswordRequestDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword));
+  final _this = this as SetPasswordRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetPasswordRequestDto&&(identical(other.provider, _this.provider) || other.provider == _this.provider)&&(identical(other.idToken, _this.idToken) || other.idToken == _this.idToken)&&(identical(other.accessToken, _this.accessToken) || other.accessToken == _this.accessToken)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.redirectUri, _this.redirectUri) || other.redirectUri == _this.redirectUri)&&(identical(other.codeVerifier, _this.codeVerifier) || other.codeVerifier == _this.codeVerifier)&&(identical(other.newPassword, _this.newPassword) || other.newPassword == _this.newPassword)&&(identical(other.confirmPassword, _this.confirmPassword) || other.confirmPassword == _this.confirmPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,idToken,accessToken,code,redirectUri,codeVerifier,newPassword,confirmPassword);
+int get hashCode {
+  final _this = this as SetPasswordRequestDto;
+  return Object.hash(runtimeType,_this.provider,_this.idToken,_this.accessToken,_this.code,_this.redirectUri,_this.codeVerifier,_this.newPassword,_this.confirmPassword);
+}
 
 @override
 String toString() {
-  return 'SetPasswordRequestDto(provider: $provider, idToken: $idToken, accessToken: $accessToken, code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier, newPassword: $newPassword, confirmPassword: $confirmPassword)';
+  final _this = this as SetPasswordRequestDto;
+  return 'SetPasswordRequestDto(provider: ${_this.provider}, idToken: ${_this.idToken}, accessToken: ${_this.accessToken}, code: ${_this.code}, redirectUri: ${_this.redirectUri}, codeVerifier: ${_this.codeVerifier}, newPassword: ${_this.newPassword}, confirmPassword: ${_this.confirmPassword})';
 }
 
 
@@ -66,7 +72,7 @@ class _$SetPasswordRequestDtoCopyWithImpl<$Res>
 /// Create a copy of SetPasswordRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? idToken = freezed,Object? accessToken = freezed,Object? code = freezed,Object? redirectUri = freezed,Object? codeVerifier = freezed,Object? newPassword = null,Object? confirmPassword = null,}) {
-  return _then(_self.copyWith(
+  return _then(SetPasswordRequestDto(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,idToken: freezed == idToken ? _self.idToken : idToken // ignore: cast_nullable_to_non_nullable
 as String?,accessToken: freezed == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetPasswordRequestDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetPasswordRequestDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.idToken, idToken) || other.idToken == idToken)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.code, code) || other.code == code)&&(identical(other.redirectUri, redirectUri) || other.redirectUri == redirectUri)&&(identical(other.codeVerifier, codeVerifier) || other.codeVerifier == codeVerifier)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,idToken,accessToken,code,redirectUri,codeVerifier,newPassword,confirmPassword);
+int get hashCode {
+    return Object.hash(runtimeType,provider,idToken,accessToken,code,redirectUri,codeVerifier,newPassword,confirmPassword);
+}
 
 @override
 String toString() {
-  return 'SetPasswordRequestDto(provider: $provider, idToken: $idToken, accessToken: $accessToken, code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier, newPassword: $newPassword, confirmPassword: $confirmPassword)';
+    return 'SetPasswordRequestDto(provider: $provider, idToken: $idToken, accessToken: $accessToken, code: $code, redirectUri: $redirectUri, codeVerifier: $codeVerifier, newPassword: $newPassword, confirmPassword: $confirmPassword)';
 }
 
 
@@ -312,16 +320,21 @@ $SetPasswordResponseDtoCopyWith<SetPasswordResponseDto> get copyWith => _$SetPas
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetPasswordResponseDto&&(identical(other.message, message) || other.message == message)&&(identical(other.loginWith, loginWith) || other.loginWith == loginWith));
+  final _this = this as SetPasswordResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetPasswordResponseDto&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.loginWith, _this.loginWith) || other.loginWith == _this.loginWith));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message,loginWith);
+int get hashCode {
+  final _this = this as SetPasswordResponseDto;
+  return Object.hash(runtimeType,_this.message,_this.loginWith);
+}
 
 @override
 String toString() {
-  return 'SetPasswordResponseDto(message: $message, loginWith: $loginWith)';
+  final _this = this as SetPasswordResponseDto;
+  return 'SetPasswordResponseDto(message: ${_this.message}, loginWith: ${_this.loginWith})';
 }
 
 
@@ -350,7 +363,7 @@ class _$SetPasswordResponseDtoCopyWithImpl<$Res>
 /// Create a copy of SetPasswordResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? loginWith = null,}) {
-  return _then(_self.copyWith(
+  return _then(SetPasswordResponseDto(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,loginWith: null == loginWith ? _self.loginWith : loginWith // ignore: cast_nullable_to_non_nullable
 as String,
@@ -513,16 +526,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetPasswordResponseDto&&(identical(other.message, message) || other.message == message)&&(identical(other.loginWith, loginWith) || other.loginWith == loginWith));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetPasswordResponseDto&&(identical(other.message, message) || other.message == message)&&(identical(other.loginWith, loginWith) || other.loginWith == loginWith));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message,loginWith);
+int get hashCode {
+    return Object.hash(runtimeType,message,loginWith);
+}
 
 @override
 String toString() {
-  return 'SetPasswordResponseDto(message: $message, loginWith: $loginWith)';
+    return 'SetPasswordResponseDto(message: $message, loginWith: $loginWith)';
 }
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
@@ -13,6 +13,7 @@ import 'package:sambasku_mobile/features/review/domain/entities/review_contribut
 import 'package:sambasku_mobile/features/review/domain/failures/review_failure.dart';
 import 'package:sambasku_mobile/features/review/domain/repositories/review_repository.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeAuth extends AuthStatusNotifier {
   _FakeAuth(this.authState);
@@ -114,7 +115,7 @@ Future<GoRouter> _pump(
         supportedLocales: FLocalizations.supportedLocales,
         routerConfig: router,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: FToaster(child: child!),
         ),
       ),

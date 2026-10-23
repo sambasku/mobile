@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:forui/forui.dart';
@@ -14,6 +14,7 @@ import 'package:sambasku_mobile/features/vote/domain/providers/vote_domain_provi
 import 'package:sambasku_mobile/features/vote/domain/repositories/vote_repository.dart';
 import 'package:sambasku_mobile/features/vote/domain/usecases/toggle_vote_use_case.dart';
 import 'package:sambasku_mobile/features/vote/data/providers/vote_data_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeRepo implements VoteRepository {
   final List<({VoteTarget target, int value})> toggles = [];
@@ -79,7 +80,7 @@ Future<GoRouter> _pump(WidgetTester tester, ProviderContainer container) async {
         supportedLocales: FLocalizations.supportedLocales,
         routerConfig: router,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: FToaster(child: child!),
         ),
       ),

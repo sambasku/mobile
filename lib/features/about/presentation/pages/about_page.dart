@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -55,7 +55,7 @@ class AboutPage extends StatelessWidget {
               Text(
                 'Kamus Digital Sambas-Indonesia',
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   height: 1.2,
                   color: theme.colors.mutedForeground,
                 ),
@@ -64,7 +64,7 @@ class AboutPage extends StatelessWidget {
               Text(
                 'Versi $versionLabel',
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   height: 1.2,
                   color: theme.colors.mutedForeground,
                 ),
@@ -101,11 +101,8 @@ class AboutPage extends StatelessWidget {
                     'sumber dan membagikan hasilnya dengan lisensi yang '
                     'sama. Di GitHub juga ada profil organisasi, cara '
                     'ikut serta, info sponsor, dan saluran komunitas.',
-                actionLabel: 'Buka di GitHub',
-                onPress: () => launchUrl(
-                  AboutPage.githubUri,
-                  mode: LaunchMode.externalApplication,
-                ),
+      actionLabel: 'Buka di GitHub',
+      onPress: () => launchExternalUrl(AboutPage.githubUri),
               ),
             ],
           );
@@ -226,7 +223,7 @@ class _ContributorsSection extends ConsumerWidget {
       children: [
         Text(
           'Tim Kami',
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -274,7 +271,7 @@ class _ContributorTile extends StatelessWidget {
             children: [
               Text(
                 contributor.name,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.foreground,
                 ),
@@ -282,7 +279,7 @@ class _ContributorTile extends StatelessWidget {
               if (contributor.roles.isNotEmpty)
                 Text(
                   contributor.roles.join(', '),
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     height: 1.4,
                   ),
@@ -290,7 +287,7 @@ class _ContributorTile extends StatelessWidget {
               const Gap(2),
               Text(
                 contributor.note,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   height: 1.4,
                 ),
@@ -359,7 +356,7 @@ class _SponsorsSection extends ConsumerWidget {
           children: [
             Text(
               'Sponsor & Mitra',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.foreground,
               ),
@@ -400,11 +397,7 @@ class _SponsorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final subtitleParts = [
-      ?sponsor.description,
-      if (sponsor.note.trim().isNotEmpty) sponsor.note,
-    ];
-    final subtitle = subtitleParts.join(' - ');
+    final note = sponsor.note.trim();
 
     final tile = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -431,16 +424,26 @@ class _SponsorTile extends StatelessWidget {
             children: [
               Text(
                 sponsor.name,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.foreground,
                 ),
               ),
-              if (subtitleParts.isNotEmpty) ...[
+              if (sponsor.description case final desc?) ...[
                 const Gap(2),
                 Text(
-                  subtitle,
-                  style: theme.typography.sm.copyWith(
+                  desc,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (note.isNotEmpty) ...[
+                const Gap(4),
+                Text(
+                  note,
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     height: 1.4,
                   ),
@@ -499,7 +502,7 @@ class _WebsiteAction extends StatelessWidget {
     try {
       final uri = Uri.tryParse(url);
       if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
-        ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        ok = await launchExternalUrl(uri);
       }
     } catch (_) {
       ok = false;
@@ -596,7 +599,7 @@ class _AboutBlock extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -604,7 +607,7 @@ class _AboutBlock extends StatelessWidget {
         const Gap(4),
         Text(
           body,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.4,
           ),
@@ -635,7 +638,7 @@ class _AboutLinkBlock extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -643,7 +646,7 @@ class _AboutLinkBlock extends StatelessWidget {
         const Gap(4),
         Text(
           body,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.4,
           ),

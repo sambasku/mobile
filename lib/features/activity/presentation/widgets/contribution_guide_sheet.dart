@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -51,7 +51,7 @@ class _GuideContent extends ConsumerWidget {
                       Text(
                         'Kartu bisa digeser untuk menilai',
                         textAlign: TextAlign.center,
-                        style: theme.typography.xl.copyWith(
+                        style: theme.typography.body.xl.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -62,7 +62,7 @@ class _GuideContent extends ConsumerWidget {
                         '• Geser kiri → "Perlu dicek ulang" (arti kurang tepat)\n'
                         '• Geser ke atas → "Lewati" (ragu / belum yakin)',
                         textAlign: TextAlign.center,
-                        style: theme.typography.md.copyWith(
+                        style: theme.typography.body.md.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.5,
                         ),

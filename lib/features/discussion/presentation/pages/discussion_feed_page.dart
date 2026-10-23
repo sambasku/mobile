@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -80,7 +80,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                     ? error.message
                     : 'Gagal memuat diskusi',
                 textAlign: TextAlign.center,
-                style: context.theme.typography.sm.copyWith(
+                style: context.theme.typography.body.sm.copyWith(
                   color: context.theme.colors.mutedForeground,
                 ),
               ),
@@ -115,7 +115,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   Text(
                     'Belum ada diskusi yang tayang',
                     textAlign: TextAlign.center,
-                    style: context.theme.typography.md.copyWith(
+                    style: context.theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -123,7 +123,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   Text(
                     'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.',
                     textAlign: TextAlign.center,
-                    style: context.theme.typography.sm.copyWith(
+                    style: context.theme.typography.body.sm.copyWith(
                       color: context.theme.colors.mutedForeground,
                     ),
                   ),
@@ -210,7 +210,7 @@ class _NewThreadComposer extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Mulai thread baru…',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                       height: 1.25,
                     ),
@@ -306,7 +306,7 @@ class _FeedTile extends ConsumerWidget {
                                           item.username!,
                                         )
                                     : null,
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   fontWeight: FontWeight.w700,
                                   height: 1.25,
                                   color: canOpenProfile
@@ -319,7 +319,7 @@ class _FeedTile extends ConsumerWidget {
                               const Gap(8),
                               Text(
                                 dateLabel,
-                                style: theme.typography.xs.copyWith(
+                                style: theme.typography.body.xs.copyWith(
                                   color: theme.colors.mutedForeground,
                                   height: 1.25,
                                 ),
@@ -333,7 +333,7 @@ class _FeedTile extends ConsumerWidget {
                             body,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               height: 1.35,
                               color: theme.colors.foreground,
                             ),
@@ -344,7 +344,7 @@ class _FeedTile extends ConsumerWidget {
                           contextMeta,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                             height: 1.25,
                           ),
@@ -386,7 +386,7 @@ class _FeedTile extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         'Saya juga ingin tahu',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.25,
                         ),
@@ -439,7 +439,7 @@ class _SortChips extends StatelessWidget {
         ),
         Text(
           sort == 'popular' ? 'Menurut upvote' : 'Menurut waktu',
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             fontSize: 11,
           ),

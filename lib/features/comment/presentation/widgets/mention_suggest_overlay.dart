@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -138,16 +138,12 @@ class _MentionSuggestOverlayContentState
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 child: Row(
                   children: [
-                    SizedBox(
-                      width: 14,
-                      height: 14,
-                      // Warna spinner default tema sudah selaras; ukuran kecil.
-                      child: const FCircularProgress(),
-                    ),
+                  // Warna spinner default tema sudah selaras; ukuran kecil.
+                  const FCircularProgress(size: .xs),
                     const Gap(8),
                     Text(
                       'Mencari pengguna...',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -187,7 +183,7 @@ class _MentionSuggestOverlayContentState
                                 item.username.isNotEmpty
                                     ? item.username[0].toUpperCase()
                                     : '?',
-                                style: theme.typography.xs,
+                                style: theme.typography.body.xs,
                               )
                             : null,
                       ),
@@ -195,7 +191,7 @@ class _MentionSuggestOverlayContentState
                       Expanded(
                         child: Text(
                           '@${item.username}',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -207,7 +203,7 @@ class _MentionSuggestOverlayContentState
                         Flexible(
                           child: Text(
                             item.displayName!,
-                            style: theme.typography.xs.copyWith(
+                            style: theme.typography.body.xs.copyWith(
                               color: theme.colors.mutedForeground,
                             ),
                             maxLines: 1,

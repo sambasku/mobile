@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/services/analytics_service.dart';
@@ -94,7 +94,7 @@ class _ErrorBody extends StatelessWidget {
           title: const Text('Konten tidak ditemukan'),
           subtitle: Text(
             'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.',
-            style: context.theme.typography.sm,
+            style: context.theme.typography.body.sm,
           ),
         ),
       ),
@@ -127,7 +127,7 @@ class _Body extends StatelessWidget {
                   children: [
                     Text(
                       item.name,
-                      style: theme.typography.xl.copyWith(
+                      style: theme.typography.body.xl.copyWith(
                         fontWeight: FontWeight.w800,
                         height: 1.25,
                       ),
@@ -140,13 +140,13 @@ class _Body extends StatelessWidget {
                     const Gap(12),
                     Text(
                       item.description,
-                      style: theme.typography.sm.copyWith(height: 1.5),
+                      style: theme.typography.body.sm.copyWith(height: 1.5),
                     ),
                     if (item.ingredients.isNotEmpty) ...[
                       const Gap(20),
                       Text(
                         'Bahan',
-                        style: theme.typography.md.copyWith(
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -167,14 +167,14 @@ class _Body extends StatelessWidget {
                       const Gap(20),
                       Text(
                         'Cara menyajikan',
-                        style: theme.typography.md.copyWith(
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const Gap(8),
                       Text(
                         item.servingSuggestion!,
-                        style: theme.typography.sm.copyWith(height: 1.5),
+                        style: theme.typography.body.sm.copyWith(height: 1.5),
                       ),
                     ],
                     if (item.sources.isNotEmpty) ...[
@@ -294,10 +294,10 @@ void _open(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   if (uri == null || !uri.isScheme('https')) return;
   // Timeout: handler external di sebagian ROM bisa menggantung.
-  launchUrl(
-    uri,
-    mode: LaunchMode.externalApplication,
-  ).timeout(const Duration(seconds: 8), onTimeout: () => false);
+  launchExternalUrl(uri).timeout(
+    const Duration(seconds: 8),
+    onTimeout: () => false,
+  );
 }
 
 /// Kredit satu baris: "Label: nama · lisensi". Nama & lisensi bisa di-tap.
@@ -319,7 +319,7 @@ class _CreditLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final muted = theme.typography.xs.copyWith(
+    final muted = theme.typography.body.xs.copyWith(
       color: theme.colors.mutedForeground,
     );
     final license = this.license;

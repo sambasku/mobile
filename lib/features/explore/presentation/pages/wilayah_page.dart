@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -774,12 +774,12 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                                 Expanded(
                                   child: Text(
                                     desa.name,
-                                    style: theme.typography.sm,
+                                    style: theme.typography.body.sm,
                                   ),
                                 ),
                                 Text(
                                   parent.name,
-                                  style: theme.typography.xs.copyWith(
+                                  style: theme.typography.body.xs.copyWith(
                                     color: theme.colors.mutedForeground,
                                   ),
                                 ),
@@ -795,7 +795,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
               if (kec == null)
                 Text(
                   'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 )
@@ -806,7 +806,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                       : 'Kecamatan ${kec.name}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.lg.copyWith(
+                  style: theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -815,7 +815,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                   loading
                       ? 'Memuat daftar desa...'
                       : '${desaOfSelected.length} desa',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -827,7 +827,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                       children: [
                         Text(
                           'Daftar desa belum bisa dimuat. Cek koneksi internetmu lalu coba lagi ya.',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -854,7 +854,7 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                   const Gap(12),
                   Text(
                     'Yang ada di sini',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -925,7 +925,7 @@ class _CompactPanel extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -944,7 +944,7 @@ class _CompactPanel extends StatelessWidget {
                         : 'Kecamatan ${kec.name}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -953,7 +953,7 @@ class _CompactPanel extends StatelessWidget {
                     loading
                         ? 'Memuat daftar desa...'
                         : '${desaOfSelected.length} desa',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -1070,7 +1070,7 @@ class _CappedScrollListState extends State<_CappedScrollList> {
                       children: [
                         Text(
                           'Gulir ke bawah',
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -1145,7 +1145,7 @@ class _DesaList extends StatelessWidget {
                   Expanded(
                     child: Text(
                       d.name,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w400,
@@ -1194,7 +1194,7 @@ class _PlacesList extends StatelessWidget {
                   color: theme.colors.primary,
                 ),
                 const Gap(8),
-                Expanded(child: Text(p.name, style: theme.typography.sm)),
+                Expanded(child: Text(p.name, style: theme.typography.body.sm)),
                 Icon(
                   FLucideIcons.chevronRight,
                   size: 14,

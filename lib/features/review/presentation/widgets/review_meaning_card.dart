@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -142,7 +142,7 @@ class ReviewMeaningCard extends ConsumerWidget {
               children: [
                 Text(
                   'Makna ${index + 1}',
-                  style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
                 Flexible(
@@ -186,7 +186,7 @@ class ReviewMeaningCard extends ConsumerWidget {
               const Gap(4),
               Text(
                 'Kelas kata wajib dipilih',
-                style: theme.typography.xs.copyWith(color: theme.colors.destructive),
+                style: theme.typography.body.xs.copyWith(color: theme.colors.destructive),
               ),
             ],
             Padding(
@@ -229,7 +229,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                   const Gap(12),
                   Text(
                     'Contoh kalimat',
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                       fontWeight: FontWeight.w600,
                     ),

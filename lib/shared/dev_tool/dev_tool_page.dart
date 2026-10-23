@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -85,7 +85,7 @@ class _DevToolPageState extends State<DevToolPage> {
                     Expanded(
                       child: Text(
                         _title,
-                        style: theme.typography.xl.copyWith(
+                        style: theme.typography.body.xl.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -167,12 +167,12 @@ class _EmptyState extends StatelessWidget {
           const Gap(10),
           Text(
             'Belum ada inspector',
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
           Text(
             'Tambahkan DevToolInspector ke daftar inspectors',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
             textAlign: TextAlign.center,

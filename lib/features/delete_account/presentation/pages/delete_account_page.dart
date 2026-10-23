@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -92,7 +92,7 @@ class DeleteAccountPage extends HookConsumerWidget {
             'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token '
             'notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, '
             'tapi tanpa namamu.',
-            style: context.theme.typography.sm.copyWith(
+            style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
           ),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -9,6 +9,7 @@ import 'package:sambasku_mobile/features/about/data/datasources/sponsors_remote_
 import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dart';
 import 'package:sambasku_mobile/features/about/presentation/providers/contributors_providers.dart';
 import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _linked = ContributorEntry(
   id: 'iamutaki',
@@ -69,7 +70,7 @@ void main() {
           ),
         ],
         child: FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: MaterialApp.router(routerConfig: router),
         ),
       ),
@@ -179,7 +180,10 @@ void main() {
       await tester.tap(find.byIcon(FLucideIcons.globe));
       await tester.pumpAndSettle();
 
-      expect(launched, ['https://iamutaki.com']);
+      // Link eksternal otomatis ber-UTM (rule external-link-utm).
+      expect(launched, [
+        'https://iamutaki.com?utm_source=sambasku.com&utm_medium=referral',
+      ]);
       expect(find.text('PROFILE:ibnulmutaki'), findsNothing);
     });
 

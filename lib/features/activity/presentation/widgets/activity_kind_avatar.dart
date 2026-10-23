@@ -154,6 +154,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.check,
           foreground: theme.colors.success,
         );
+      case FeedActivityKind.placePhoto:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.mapPin,
+          foreground: secondary,
+        );
       case FeedActivityKind.announcement:
         // #102: pengumuman resmi dari admin - megaphone warna primary.
         return _KindAvatarStyle(

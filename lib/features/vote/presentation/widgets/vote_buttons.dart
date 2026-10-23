@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -214,7 +214,7 @@ class _SideButtonState extends State<_SideButton>
                     const Gap(6),
                     Text(
                       '${w.count}',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: color,
                         fontWeight:
                             w.active ? FontWeight.w700 : FontWeight.w500,

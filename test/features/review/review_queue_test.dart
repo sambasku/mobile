@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,6 +15,7 @@ import 'package:sambasku_mobile/features/review/presentation/pages/review_sessio
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_gate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeReviewRepository implements ReviewRepository {
   _FakeReviewRepository({
@@ -437,11 +438,11 @@ void main() {
           authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: ReviewGate(child: Text('antrean')),
           ),
         ),
@@ -477,11 +478,11 @@ void main() {
           ),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: ReviewQueuePage(),
           ),
         ),
@@ -538,11 +539,11 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
           localizationsDelegates: FLocalizations.localizationsDelegates,
           supportedLocales: FLocalizations.supportedLocales,
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const ReviewSessionPage(startId: idA),
           ),
         ),
@@ -624,7 +625,7 @@ void main() {
           UncontrolledProviderScope(
             container: container,
             child: MaterialApp(
-              theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+              theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
               localizationsDelegates: FLocalizations.localizationsDelegates,
               supportedLocales: const [Locale('id')],
               builder: (context, child) => MediaQuery(
@@ -632,7 +633,7 @@ void main() {
                 child: child ?? const SizedBox.shrink(),
               ),
               home: FTheme(
-                data: FThemes.zinc.light.touch,
+                data: foruiPalettes['zinc']!.light.touch,
                 child: const ReviewSessionPage(startId: idA),
               ),
             ),

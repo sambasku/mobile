@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
@@ -248,7 +248,7 @@ class _DiscussionDetailPageState
                       ? error.message
                       : 'Gagal memuat detail',
                   textAlign: TextAlign.center,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -284,7 +284,7 @@ class _DiscussionDetailPageState
                       _HelpHeader(item: item),
                       if (item.body?.trim().isNotEmpty == true) ...[
                         const Gap(10),
-                        Text(item.body!.trim(), style: theme.typography.sm),
+                        Text(item.body!.trim(), style: theme.typography.body.sm),
                       ],
                       if (item.linkUrl?.trim().isNotEmpty == true) ...[
                         const Gap(10),
@@ -292,14 +292,11 @@ class _DiscussionDetailPageState
                           alignment: Alignment.centerLeft,
                           child: FButton(
                             variant: FButtonVariant.outline,
-                            onPress: () async {
-                              final uri = Uri.tryParse(item.linkUrl!.trim());
-                              if (uri == null) return;
-                              await launchUrl(
-                                uri,
-                                mode: LaunchMode.externalApplication,
-                              );
-                            },
+              onPress: () async {
+                final uri = Uri.tryParse(item.linkUrl!.trim());
+                if (uri == null) return;
+                await launchExternalUrl(uri);
+              },
                             prefix: const Icon(FLucideIcons.externalLink, size: 14),
                             child: Text(
                               item.linkUrl!.trim(),
@@ -336,7 +333,7 @@ class _DiscussionDetailPageState
                             Expanded(
                               child: Text(
                                 'Saya juga ingin tahu',
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                               ),
@@ -357,7 +354,7 @@ class _DiscussionDetailPageState
                         replies.isEmpty
                             ? 'Balasan'
                             : 'Balasan · ${replies.length}',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -367,14 +364,14 @@ class _DiscussionDetailPageState
                           item.status == 'pending_review'
                               ? 'Balasan dibuka setelah permintaan ditayangkan.'
                               : 'Thread balasan tidak tersedia untuk status ini.',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         )
                       else if (replies.isEmpty)
                         Text(
                           'Belum ada balasan. Jadilah yang pertama membantu.',
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         )
@@ -437,7 +434,7 @@ class _DiscussionDetailPageState
                                       Expanded(
                                         child: Text(
                                           'Jawaban membantu?',
-                                          style: theme.typography.sm.copyWith(
+                                          style: theme.typography.body.sm.copyWith(
                                             color: theme.colors.mutedForeground,
                                             fontSize: 11,
                                           ),
@@ -505,7 +502,7 @@ class _HelpHeader extends StatelessWidget {
                 onTap: isLinkablePublicUsername(item.username)
                     ? () => UserProfileRouter.open(context, item.username!)
                     : null,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: isLinkablePublicUsername(item.username)
                       ? theme.colors.primary
@@ -525,7 +522,7 @@ class _HelpHeader extends StatelessWidget {
           const Gap(4),
           Text(
             when,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               fontSize: 11,
             ),
@@ -634,7 +631,7 @@ class _ImageRowState extends State<_ImageRow> {
                   ? 'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain'
                   : 'Ketuk foto untuk melihat ukuran penuh',
               textAlign: TextAlign.center,
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
                 height: 1.3,
               ),

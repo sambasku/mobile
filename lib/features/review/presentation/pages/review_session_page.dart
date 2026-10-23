@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -480,7 +480,7 @@ class _ReviewViewBody extends StatelessWidget {
             item.title,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: context.theme.typography.xl.copyWith(
+            style: context.theme.typography.body.xl.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -532,7 +532,7 @@ class _ReviewViewBody extends StatelessWidget {
             const Gap(16),
             Text(
               'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.',
-              style: context.theme.typography.sm.copyWith(
+              style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
             ),
@@ -553,7 +553,7 @@ class _ReviewCardPlaceholder extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -572,7 +572,7 @@ class _ReviewCardPlaceholder extends StatelessWidget {
           border: Border.all(color: theme.colors.border),
         ),
         child: SkeletonizerConfig(
-          data: SkeletonizerConfigData(effect: shimmer),
+          data: SkeletonizerConfigData(effectResolver: shimmerResolver),
           child: IgnorePointer(
             child: Skeletonizer(
               enabled: true,
@@ -582,7 +582,7 @@ class _ReviewCardPlaceholder extends StatelessWidget {
                 children: [
                   Text(
                     'Judul usulan contoh skeleton',
-                    style: theme.typography.xl.copyWith(
+                    style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -658,7 +658,7 @@ class _MetaChip extends StatelessWidget {
             const Gap(6),
             Text(
               label,
-              style: theme.typography.xs.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.xs.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -689,13 +689,13 @@ class _SectionNote extends StatelessWidget {
           children: [
             Text(
               title,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
             ),
             const Gap(6),
-            Text(body, style: theme.typography.sm),
+            Text(body, style: theme.typography.body.sm),
           ],
         ),
       ),

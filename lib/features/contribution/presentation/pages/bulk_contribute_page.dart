@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -20,6 +20,7 @@ import '../models/bulk_submit_word_state.dart';
 import '../providers/bulk_lemma_check_provider.dart';
 import '../providers/bulk_submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 class BulkContributePage extends ConsumerStatefulWidget {
   const BulkContributePage({super.key});
@@ -176,39 +177,34 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
               : '$sent kata berhasil dikirim.')
         : '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
 
-    final choice = await showFDialog<String>(
+    final choice = await showFMessageDialog<String>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext, style, animation) => FDialog(
-        style: style,
-        animation: animation,
-        direction: Axis.vertical,
-        title: Text(title),
-        body: Text(body),
-        actions: [
-          if (allOk) ...[
-            FButton(
-              onPress: () => Navigator.of(dialogContext).pop('list'),
-              child: const Text('Lihat usulan'),
-            ),
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop('back'),
-              child: const Text('Kembali'),
-            ),
-          ] else ...[
-            FButton(
-              onPress: () => Navigator.of(dialogContext).pop('stay'),
-              child: const Text('Perbaiki'),
-            ),
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop('list'),
-              child: const Text('Lihat usulan'),
-            ),
-          ],
+      title: Text(title),
+      body: Text(body),
+      actions: (dialogContext) => [
+        if (allOk) ...[
+          FButton(
+            onPress: () => Navigator.of(dialogContext).pop('list'),
+            child: const Text('Lihat usulan'),
+          ),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => Navigator.of(dialogContext).pop('back'),
+            child: const Text('Kembali'),
+          ),
+        ] else ...[
+          FButton(
+            onPress: () => Navigator.of(dialogContext).pop('stay'),
+            child: const Text('Perbaiki'),
+          ),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => Navigator.of(dialogContext).pop('list'),
+            child: const Text('Lihat usulan'),
+          ),
         ],
-      ),
+      ],
     );
 
     if (!mounted) return;
@@ -325,14 +321,14 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
             isAuth
                 ? 'Tiap kata langsung tayang dengan label Menunggu pengecekan.'
                 : 'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
           const Gap(4),
           Text(
             'Maksimal ${BulkSubmitWordState.maxRows} kata. Isi kata Sambas dan terjemahan Indonesia.',
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -354,7 +350,7 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
           else
             Text(
               'Maksimal ${BulkSubmitWordState.maxRows} baris per sesi.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -421,7 +417,7 @@ class _BulkTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final style = theme.typography.xs.copyWith(
+    final style = theme.typography.body.xs.copyWith(
       fontWeight: FontWeight.w600,
       color: theme.colors.mutedForeground,
     );
@@ -566,7 +562,7 @@ class _BulkTableRow extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Text(
                 error,
-                style: theme.typography.xs.copyWith(color: theme.colors.error),
+                style: theme.typography.body.xs.copyWith(color: theme.colors.error),
               ),
             ),
         ],

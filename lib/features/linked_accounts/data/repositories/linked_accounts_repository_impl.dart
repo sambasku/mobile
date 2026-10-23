@@ -25,15 +25,18 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
           ),
         );
       }
-      final providers = response.data!.providers;
-      return Either.right(
-        LinkedAccountsStatus(
-          googleLinked: providers.any((p) => p.provider == 'google'),
-          githubLinked: providers.any((p) => p.provider == 'github'),
-          facebookLinked: providers.any((p) => p.provider == 'facebook'),
-          hasPassword: response.data!.hasPassword,
-        ),
-      );
+        final providers = response.data!.providers;
+        String? linkedAtFor(String name) =>
+            providers.where((p) => p.provider == name).firstOrNull?.linkedAt;
+        return Either.right(
+          LinkedAccountsStatus(
+            googleLinked: providers.any((p) => p.provider == 'google'),
+            githubLinked: providers.any((p) => p.provider == 'github'),
+            googleLinkedAt: linkedAtFor('google'),
+            githubLinkedAt: linkedAtFor('github'),
+            hasPassword: response.data!.hasPassword,
+          ),
+        );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {

@@ -27,6 +27,7 @@ import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
+import '../../features/event/event_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
 import '../../features/onboarding/data/onboarding_prefs.dart';
@@ -86,6 +87,7 @@ class AppRouter {
       ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
       ...ExploreRouter.routes,
+      ...EventRouter.routes,
       ...ActivityRouter.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
@@ -245,6 +247,7 @@ class AppRouter {
     if (path.startsWith('/users/')) return true;
     if (path.startsWith('/wisata/')) return true;
     if (path.startsWith('/explore/place/')) return true;
+    if (path.startsWith('/acara')) return true;
     if (path.startsWith('/discussions')) return true;
     return false;
   }

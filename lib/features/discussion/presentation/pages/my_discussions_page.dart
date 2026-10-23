@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -70,7 +70,7 @@ class _GuestState extends StatelessWidget {
             const Gap(10),
             Text(
               'Masuk dulu untuk melihat riwayat diskusi kamu',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
@@ -143,7 +143,7 @@ class _MineList extends ConsumerWidget {
                         ? error.message
                         : 'Gagal memuat riwayat',
                     textAlign: TextAlign.center,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -170,7 +170,7 @@ class _MineList extends ConsumerWidget {
                                 Text(
                                   'Belum ada diskusi',
                                   textAlign: TextAlign.center,
-                                  style: theme.typography.md.copyWith(
+                                  style: theme.typography.body.md.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -178,7 +178,7 @@ class _MineList extends ConsumerWidget {
                                 Text(
                                   'Kirim teks atau foto yang sulit diterjemahkan.',
                                   textAlign: TextAlign.center,
-                                  style: theme.typography.sm.copyWith(
+                                  style: theme.typography.body.sm.copyWith(
                                     color: theme.colors.mutedForeground,
                                   ),
                                 ),

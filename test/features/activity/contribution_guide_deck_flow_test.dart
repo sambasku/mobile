@@ -1,6 +1,6 @@
 import 'dart:ui' show Size;
 
-import 'package:flutter/material.dart' show debugDumpApp;
+import 'package:material_ui/material_ui.dart' show debugDumpApp;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

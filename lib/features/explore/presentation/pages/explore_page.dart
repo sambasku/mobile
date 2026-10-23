@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:forui/forui.dart'
@@ -193,7 +193,7 @@ class _CategoryCard extends StatelessWidget {
                             child: Text(
                               'Segera hadir',
                               maxLines: 1,
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w600,
                                 color: theme.colors.primaryForeground,
@@ -217,7 +217,7 @@ class _CategoryCard extends StatelessWidget {
                         category.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                         ),
@@ -227,7 +227,7 @@ class _CategoryCard extends StatelessWidget {
                         category.subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           fontSize: 9,
                           color: theme.colors.mutedForeground,
                         ),

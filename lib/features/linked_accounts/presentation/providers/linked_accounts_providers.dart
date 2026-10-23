@@ -27,13 +27,15 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
     result.match(
       (failure) => state = state.copyWith(
         isLoading: false,
+        errorCode: failure.errorCode,
         errorMessage: failure.message,
       ),
       (status) => state = state.copyWith(
         isLoading: false,
         googleLinked: status.googleLinked,
         githubLinked: status.githubLinked,
-        facebookLinked: status.facebookLinked,
+        googleLinkedAt: status.googleLinkedAt,
+        githubLinkedAt: status.githubLinkedAt,
         hasPassword: status.hasPassword,
         clearError: true,
       ),
@@ -55,6 +57,7 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
       result.match(
         (failure) => state = state.copyWith(
           isBusy: false,
+          errorCode: failure.errorCode,
           errorMessage: failure.message,
         ),
         (_) => state = state.copyWith(
@@ -76,11 +79,15 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
     state = state.copyWith(isBusy: true, clearError: true, clearInfo: true);
     final result = await ref.read(unlinkGoogleAccountUseCaseProvider).call();
     result.match(
-      (failure) =>
-          state = state.copyWith(isBusy: false, errorMessage: failure.message),
+      (failure) => state = state.copyWith(
+        isBusy: false,
+        errorCode: failure.errorCode,
+        errorMessage: failure.message,
+      ),
       (message) => state = state.copyWith(
         isBusy: false,
         googleLinked: false,
+        clearGoogleLinkedAt: true,
         infoMessage: message,
         clearError: true,
       ),
@@ -112,6 +119,7 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
       result.match(
         (failure) => state = state.copyWith(
           isBusy: false,
+          errorCode: failure.errorCode,
           errorMessage: failure.message,
         ),
         (_) => state = state.copyWith(
@@ -129,15 +137,24 @@ class LinkedAccountsNotifier extends _$LinkedAccountsNotifier {
     }
   }
 
+  /// Dipanggil page setelah error sheet ditutup, supaya pesan sama bisa muncul lagi.
+  void clearError() {
+    state = state.copyWith(clearError: true);
+  }
+
   Future<void> unlinkGithub() async {
     state = state.copyWith(isBusy: true, clearError: true, clearInfo: true);
     final result = await ref.read(unlinkGithubAccountUseCaseProvider).call();
     result.match(
-      (failure) =>
-          state = state.copyWith(isBusy: false, errorMessage: failure.message),
+      (failure) => state = state.copyWith(
+        isBusy: false,
+        errorCode: failure.errorCode,
+        errorMessage: failure.message,
+      ),
       (message) => state = state.copyWith(
         isBusy: false,
         githubLinked: false,
+        clearGithubLinkedAt: true,
         infoMessage: message,
         clearError: true,
       ),

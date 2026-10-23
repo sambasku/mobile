@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     show InkWell, Material, MaterialType, RefreshIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -254,11 +254,7 @@ class ProfilePage extends HookConsumerWidget {
                           subtitle: const Text('Kabar saat usulanmu disetujui'),
                           enabled: !allowNotif.busy,
                           suffix: allowNotif.busy
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: FCircularProgress(),
-                                )
+                              ? const FCircularProgress(size: .sm)
                               : const Icon(FLucideIcons.chevronRight, size: 16),
                           onPress: allowNotif.busy
                               ? null
@@ -318,8 +314,8 @@ class ProfilePage extends HookConsumerWidget {
                       ],
                     ),
                   ],
-                const Gap(16),
-                // Label versi paling bawah. Gagal load = label hilang.
+                  const Gap(16),
+                  // Label versi paling bawah. Gagal load = label hilang.
                   FutureBuilder<PackageInfo>(
                     future: versionFuture,
                     builder: (context, snapshot) {
@@ -328,7 +324,7 @@ class ProfilePage extends HookConsumerWidget {
                       return Center(
                         child: Text(
                           'v${info.version}(${info.buildNumber})',
-                          style: context.theme.typography.xs.copyWith(
+                          style: context.theme.typography.body.xs.copyWith(
                             color: context.theme.colors.mutedForeground,
                           ),
                         ),
@@ -466,15 +462,47 @@ class _ProfileHeaderTitle extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            child: Stack(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                // Aksi kanan atas (notifikasi + edit) mengambang, tidak ikut
+                // menentukan lebar konten - konten tetap center penuh.
+                if (isAuth)
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FHeaderData(
+                          actionStyle: theme.headerStyles.resolve({
+                            FHeaderVariant.root,
+                            context.platformVariant,
+                          }).actionStyle,
+                          child: const NotificationHeaderAction(),
+                        ),
+                        FHeaderData(
+                          actionStyle: theme.headerStyles.resolve({
+                            FHeaderVariant.root,
+                            context.platformVariant,
+                          }).actionStyle,
+                          child: FHeaderAction(
+                            icon: const Icon(FLucideIcons.pencil, size: 18),
+                            onPress: () => context.push('/edit-profile'),
+                            semanticsLabel: 'Edit profil',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    const Gap(4),
+                    // Foto besar + center supaya bingkai achievement jelas
+                    // terlihat.
                     AvatarBorderOverlay(
-                      size: 56,
+                      size: 104,
                       borderUrl: ref
                           .watch(myActiveBorderProvider)
                           .asData
@@ -483,105 +511,105 @@ class _ProfileHeaderTitle extends ConsumerWidget {
                       child: UserAvatar(
                         name: isAuth ? displayName : null,
                         imageUrl: status?.avatarUrl,
-                        size: 56,
+                        size: 104,
                       ),
                     ),
-                    const Gap(12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          PublicAccountName(
-                            label: displayName,
-                            isVerifier: showVerifier,
-                            badgeSize: 16,
-                            style: theme.typography.lg.copyWith(
-                              fontWeight: FontWeight.w700,
-                              height: 1.2,
-                            ),
-                          ),
-                          if (isAuth &&
-                              username != null &&
-                              username.isNotEmpty) ...[
-                            const Gap(1),
-                            Text(
-                              '@$username',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.sm.copyWith(
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ),
-                          ],
-                          if (profile?.bio?.trim().isNotEmpty == true) ...[
-                            const Gap(4),
-                            Text(
-                              profile!.bio!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.typography.sm,
-                            ),
-                          ],
-                        ],
+                    const Gap(10),
+                    // Tamu juga tetap lihat label ajakan masuk di bawah avatar.
+                    PublicAccountName(
+                      label: displayName,
+                      isVerifier: showVerifier,
+                      badgeSize: 16,
+                      style: theme.typography.body.lg.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
                       ),
                     ),
-                    if (isAuth) ...[
-                      const Gap(8),
-                      // FHeader memusatkan suffix secara vertikal terhadap
-                      // title yang tinggi; taruh di sini agar tetap di atas.
-                      FHeaderData(
-                        actionStyle: theme.headerStyles.resolve({
-                          FHeaderVariant.root,
-                          context.platformVariant,
-                        }).actionStyle,
-                        child: const NotificationHeaderAction(),
+                    if (isAuth && username != null && username.isNotEmpty) ...[
+                      const Gap(1),
+                      Text(
+                        '@$username',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
                       ),
                     ],
-                  ],
-                ),
-                if (profile != null || loadingProfile)
-                  // Collaps ikut scroll, sama seperti blok search di Home.
-                  // Rebuild dibatasi ke blok stat saja (AnimatedBuilder).
-                  AnimatedBuilder(
-                    animation: collapse,
-                    builder: (context, child) {
-                      final t = collapse.value;
-                      return Align(
-                        alignment: Alignment.topLeft,
-                        heightFactor: 1 - t,
-                        child: ClipRect(
-                          child: Opacity(
-                            opacity: (1 - t * 1.4).clamp(0.0, 1.0),
-                            child: child,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Skeletonizer(
-                        enabled: loadingProfile,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ProfileStatRow(
-                              words: profile?.wordsApproved ?? 0,
-                              corrections: profile?.correctionsApproved ?? 0,
-                            ),
-                            const Gap(4),
-                            ProfileMetaRow(
-                              joinedLabel: profile == null
-                                  ? '1 Januari 2026'
-                                  : formatDateTimeIso(profile.joinedAt),
-                              isVerifier: profile?.isVerifier ?? false,
-                            ),
-                          ],
+                    if (isAuth && profile?.bio?.trim().isNotEmpty == true) ...[
+                      const Gap(4),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 420),
+                        child: Text(
+                          profile!.bio!,
+                          textAlign: TextAlign.center,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.typography.body.sm,
                         ),
                       ),
-                    ),
-                  ),
+                    ],
+                    if (profile != null || loadingProfile)
+                      // Collaps ikut scroll, sama seperti blok search di Home.
+                      // Rebuild dibatasi ke blok stat saja (AnimatedBuilder).
+                      AnimatedBuilder(
+                        animation: collapse,
+                        builder: (context, child) {
+                          final t = collapse.value;
+                          return Align(
+                            alignment: Alignment.topCenter,
+                            heightFactor: 1 - t,
+                            child: ClipRect(
+                              child: Opacity(
+                                opacity: (1 - t * 1.4).clamp(0.0, 1.0),
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Skeletonizer(
+                            enabled: loadingProfile,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ProfileStatRow(
+                                  words: profile?.wordsApproved ?? 0,
+                                  corrections:
+                                      profile?.correctionsApproved ?? 0,
+                                ),
+                                const Gap(4),
+                                ProfileMetaRow(
+                                  joinedLabel: profile == null
+                                      ? '1 Januari 2026'
+                                      : formatDateTimeIso(profile.joinedAt),
+                                  isVerifier: profile?.isVerifier ?? false,
+                                ),
+                                if (isAuth && profile != null) ...[
+                                  const Gap(8),
+                                  // CTA eksplisit: header bisa di-tap, tapi
+                                  // tidak semua tahu. Tombol ini yang membuat
+                                  // "lihat profil saya" jelas.
+                                  FButton(
+                                    size: .xs,
+                                    variant: FButtonVariant.outline,
+                                    prefix: const Icon(
+                                      FLucideIcons.externalLink,
+                                      size: 14,
+                                    ),
+                                    onPress: openPublicProfile,
+                                    child: const Text('Lihat profil publik'),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),

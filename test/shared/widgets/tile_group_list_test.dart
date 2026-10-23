@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 
 import 'package:sambasku_mobile/shared/widgets/tile_group_list.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _Item {
   const _Item(this.id);
@@ -15,7 +16,7 @@ Widget _host({
   required Future<void> Function() onLoadMore,
 }) {
   return FTheme(
-    data: FThemes.zinc.light.touch,
+    data: foruiPalettes['zinc']!.light.touch,
     child: MaterialApp(
       home: Scaffold(
         body: SizedBox(

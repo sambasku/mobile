@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -49,7 +49,7 @@ class AchievementBadgeGrid extends StatelessWidget {
         child: Text(
           emptyLabel,
           textAlign: TextAlign.center,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
           ),
         ),
@@ -102,7 +102,7 @@ class AchievementBadgeGrid extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   fontWeight: FontWeight.w600,
                   height: 1.2,
                 ),

@@ -14,7 +14,8 @@ final class _Env {
 
   static const String? apiHostProduction = 'https://api.sambasku.com';
 
-  static const String? apiHostFallbackProduction = 'https://render.sambasku.com';
+  static const String? apiHostFallbackProduction =
+      'https://render.sambasku.com';
 
   static const String? apiHostFallback2Production = null;
 

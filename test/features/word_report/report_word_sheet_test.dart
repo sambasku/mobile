@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/word_report/data/word_report_providers.dart';
 import 'package:sambasku_mobile/features/word_report/data/word_report_repository.dart';
 import 'package:sambasku_mobile/features/word_report/presentation/report_word_sheet.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _CapturingRepo extends WordReportRepository {
   _CapturingRepo() : super(Dio());
@@ -32,11 +33,11 @@ Future<void> _pump(WidgetTester tester, _CapturingRepo repo, String? imageId) as
     ProviderScope(
       overrides: [wordReportRepositoryProvider.overrideWithValue(repo)],
       child: MaterialApp(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: FLocalizations.localizationsDelegates,
         supportedLocales: FLocalizations.supportedLocales,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: FToaster(child: child!),
         ),
         home: Scaffold(

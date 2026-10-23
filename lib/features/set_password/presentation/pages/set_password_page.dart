@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -28,7 +28,6 @@ class SetPasswordPage extends HookConsumerWidget {
 
     final providers = <String>[
       if (links.googleLinked) 'google',
-      if (links.facebookLinked) 'facebook',
       if (links.githubLinked) 'github',
     ];
 

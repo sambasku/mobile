@@ -106,7 +106,7 @@ class KnowledgeToggleChip extends StatelessWidget {
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                   color: labelColor,
                   height: 1.2,

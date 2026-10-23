@@ -80,12 +80,12 @@ class PlaceDto {
         mapsUrl = rawMapsUrl;
       }
     }
-    final short = str('shortDescription');
+    // Deskripsi opsional: place tanpa deskripsi tetap tampil (data dibersihkan).
+    final short = str('shortDescription') ?? '';
     if (id == null ||
         slug == null ||
         name == null ||
-        category == null ||
-        short == null) {
+        category == null) {
       return null;
     }
 

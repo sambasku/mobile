@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 
 import 'package:sambasku_mobile/shared/widgets/compact_list.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 void main() {
   Widget harness(Widget child) {
     return MaterialApp(
       home: FTheme(
-        data: FThemes.zinc.light.touch,
+        data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(body: child),
       ),
     );

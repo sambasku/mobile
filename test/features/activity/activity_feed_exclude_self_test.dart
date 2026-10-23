@@ -41,9 +41,9 @@ class _RecordingAdapter implements HttpClientAdapter {
   }
 }
 
-/// Repo palsu: mencatat flag excludeSelf per halaman.
+/// Repo palsu: mencatat flag excludeSelf + kategori per halaman.
 class _FakeActivityRepository implements ActivityFeedRepository {
-  final calls = <({String? cursor, bool excludeSelf})>[];
+  final calls = <({String? cursor, bool excludeSelf, FeedCategory category})>[];
 
   @override
   Future<ActivityFeedPage> list({
@@ -51,8 +51,9 @@ class _FakeActivityRepository implements ActivityFeedRepository {
     String? cursor,
     bool forceRefresh = false,
     bool excludeSelf = false,
+    FeedCategory category = FeedCategory.all,
   }) async {
-    calls.add((cursor: cursor, excludeSelf: excludeSelf));
+    calls.add((cursor: cursor, excludeSelf: excludeSelf, category: category));
     if (cursor == 'page-2') {
       return ActivityFeedPage(items: [_item('b2')], nextCursor: null, hasMore: false);
     }
@@ -192,11 +193,11 @@ void main() {
     test('tamu: load halaman 1 tanpa flag, loadMore juga tanpa flag',
         () async {
       final container = makeContainer(const AuthStatusState());
-      container.read(activityFeedProvider); // instantiate notifier dulu
+      container.read(activityFeedProvider(FeedCategory.all)); // instantiate notifier dulu
       await _flush();
 
-      expect(container.read(activityFeedProvider).items.length, 1);
-      await container.read(activityFeedProvider.notifier).loadMore();
+      expect(container.read(activityFeedProvider(FeedCategory.all)).items.length, 1);
+      await container.read(activityFeedProvider(FeedCategory.all).notifier).loadMore();
 
       expect(repo.calls.map((c) => c.excludeSelf), [false, false]);
       expect(repo.calls.last.cursor, 'page-2');
@@ -205,10 +206,10 @@ void main() {
     test('login: flag ikut di load DAN loadMore', () async {
       final container =
           makeContainer(const AuthStatusState(isAuth: true, userId: 'u1'));
-      container.read(activityFeedProvider);
+      container.read(activityFeedProvider(FeedCategory.all));
       await _flush();
 
-      await container.read(activityFeedProvider.notifier).loadMore();
+      await container.read(activityFeedProvider(FeedCategory.all).notifier).loadMore();
 
       expect(repo.calls.map((c) => c.excludeSelf), [true, true]);
       expect(repo.calls.last.cursor, 'page-2');
@@ -229,7 +230,7 @@ void main() {
         ],
       );
       addTearDown(container.dispose);
-      container.read(activityFeedProvider);
+      container.read(activityFeedProvider(FeedCategory.all));
       // Double flush: jeda authStatus (4 tick) + chain await di load().
       await _flush();
       await _flush();
@@ -237,6 +238,101 @@ void main() {
       // Semua panggilan ke repo terjadi SETELAH identitas diketahui.
       expect(repo.calls, isNotEmpty);
       expect(repo.calls.first.excludeSelf, isTrue);
+    });
+  });
+
+  // #193: chips kategori feed beranda. Inti yang dijaga: kategori yang belum
+  // di-tap TIDAK memanggil repo (hemat query Turso), dan tiap kategori punya
+  // query sendiri yang independen.
+  group('kategori chips (#193)', () {
+    late _FakeActivityRepository repo;
+
+    setUp(() => repo = _FakeActivityRepository());
+
+    ProviderContainer makeContainer() {
+      final container = ProviderContainer(
+        overrides: [
+          activityFeedRepositoryProvider.overrideWithValue(repo),
+          authStatusProvider.overrideWith(
+            () => _FakeAuthStatus(const AuthStatusState()),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('hanya kategori all yang auto-load; kategori lain nol request',
+        () async {
+      final container = makeContainer();
+      container.read(activityFeedProvider(FeedCategory.all));
+      await _flush();
+
+      // Belum pernah menyentuh chip lain: hanya 1 panggilan (kategori all).
+      expect(repo.calls, hasLength(1));
+      expect(repo.calls.single.category, FeedCategory.all);
+
+      // Instansiasi kategori lain TIDAK auto-load (state masih kosong).
+      final joined = container.read(activityFeedProvider(FeedCategory.joined));
+      await _flush();
+      expect(joined.hasLoaded, isFalse);
+      expect(repo.calls, hasLength(1));
+    });
+
+    test('ensureLoaded: fetch sekali, tap kedua nol request', () async {
+      final container = makeContainer();
+      final notifier =
+          container.read(activityFeedProvider(FeedCategory.joined).notifier);
+
+      notifier.ensureLoaded();
+      await _flush();
+      expect(repo.calls, hasLength(1));
+      expect(repo.calls.single.category, FeedCategory.joined);
+
+      // Tap ulang chip yang sama: hasLoaded true -> tidak fetch lagi.
+      notifier.ensureLoaded();
+      await _flush();
+      expect(repo.calls, hasLength(1));
+    });
+
+    test('tiap kategori mengirim wire value sendiri', () async {
+      final container = makeContainer();
+      for (final category in FeedCategory.values) {
+        container.read(activityFeedProvider(category).notifier).ensureLoaded();
+        await _flush();
+      }
+
+      expect(
+        repo.calls.map((c) => c.category).toSet(),
+        FeedCategory.values.toSet(),
+      );
+    });
+
+    test('loadMore ikut membawa kategori yang sama', () async {
+      final container = makeContainer();
+      // Kategori non-all LAZY: harus ensureLoaded dulu (bukan auto-load).
+      container
+          .read(activityFeedProvider(FeedCategory.correction).notifier)
+          .ensureLoaded();
+      await _flush();
+      await container
+          .read(activityFeedProvider(FeedCategory.correction).notifier)
+          .loadMore();
+
+      expect(repo.calls.map((c) => c.category), everyElement(FeedCategory.correction));
+      expect(repo.calls.last.cursor, 'page-2');
+    });
+  });
+
+  // Wire value enum = kontrak dengan API (#193). Salah ketik di sini membuat
+  // server membalas 400 karena zod enum menolak nilai asing.
+  group('FeedCategory wire values', () {
+    test('sesuai kontrak API', () {
+      expect(FeedCategory.all.wire, 'all');
+      expect(FeedCategory.searchMiss.wire, 'search_miss');
+      expect(FeedCategory.correction.wire, 'correction');
+      expect(FeedCategory.announcement.wire, 'announcement');
+      expect(FeedCategory.joined.wire, 'joined');
     });
   });
 }

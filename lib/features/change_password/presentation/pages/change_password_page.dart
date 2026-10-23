@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -133,7 +133,7 @@ class ChangePasswordPage extends HookConsumerWidget {
             'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
             'dan kamu diminta login ulang dengan password baru.',
             textAlign: .center,
-            style: context.theme.typography.sm.copyWith(
+            style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
           ),

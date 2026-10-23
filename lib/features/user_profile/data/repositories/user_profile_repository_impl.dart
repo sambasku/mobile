@@ -34,7 +34,13 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   @override
-  Future<Either<UserProfileFailure, ({List<PublicActivityItem> items, String? nextCursor})>> getActivity(
+  Future<
+    Either<
+      UserProfileFailure,
+      ({List<PublicActivityItem> items, String? nextCursor})
+    >
+  >
+  getActivity(
     String username, {
     String? kind,
     int? limit,
@@ -68,24 +74,25 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   PublicProfile _mapProfile(PublicProfileDto dto) => PublicProfile(
-        username: dto.username,
-        displayName: (dto.displayName == null || dto.displayName!.trim().isEmpty)
-            ? dto.username
-            : dto.displayName!,
-        bio: dto.bio,
-        role: dto.role,
-        isVerifier: dto.isVerifier,
-        joinedAt: dto.joinedAt,
-        contributionsApproved: dto.stats.contributionsApproved,
-        wordsApproved: dto.stats.wordsApproved,
-        correctionsApproved: dto.stats.correctionsApproved,
-        verificationsDone: dto.stats.verificationsDone,
-      commentsPublished: dto.stats.commentsPublished,
-      avatarUrl: dto.avatarUrl,
-      activeBorderUrl: dto.activeBorderUrl,
-    );
+    username: dto.username,
+    displayName: (dto.displayName == null || dto.displayName!.trim().isEmpty)
+        ? dto.username
+        : dto.displayName!,
+    bio: dto.bio,
+    role: dto.role,
+    isVerifier: dto.isVerifier,
+    joinedAt: dto.joinedAt,
+    contributionsApproved: dto.stats.contributionsApproved,
+    wordsApproved: dto.stats.wordsApproved,
+    correctionsApproved: dto.stats.correctionsApproved,
+    verificationsDone: dto.stats.verificationsDone,
+    commentsPublished: dto.stats.commentsPublished,
+    avatarUrl: dto.avatarUrl,
+    activeBorderUrl: dto.activeBorderUrl,
+  );
 
-  PublicActivityItem _mapActivity(PublicActivityItemDto dto) => PublicActivityItem(
+  PublicActivityItem _mapActivity(PublicActivityItemDto dto) =>
+      PublicActivityItem(
         id: dto.id,
         kind: dto.kind,
         occurredAt: dto.occurredAt,
@@ -130,7 +137,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   UserProfileFailure _mapDio(DioException error) {
     final response = error.response?.data;
     if (response != null && response['error_code'] == 'USER_NOT_FOUND') {
-      return UserProfileFailure('Pengguna tidak ditemukan', errorCode: 'USER_NOT_FOUND');
+      return UserProfileFailure(
+        'Pengguna tidak ditemukan',
+        errorCode: 'USER_NOT_FOUND',
+      );
     }
     final message = response?['message'];
     if (message != null && message.isNotEmpty) {
@@ -143,7 +153,8 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   String _fallbackForStatus(int? statusCode, DioException error) {
-    if (statusCode == 429 || error.response?.data?['error_code'] == 'RATE_LIMITED') {
+    if (statusCode == 429 ||
+        error.response?.data?['error_code'] == 'RATE_LIMITED') {
       return 'Terlalu banyak permintaan. Coba lagi nanti.';
     }
     if (statusCode != null && statusCode >= 500) {
