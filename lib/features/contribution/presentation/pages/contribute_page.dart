@@ -524,6 +524,15 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               });
             },
           ),
+          if (!_advanced)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? '
+                'Aktifkan mode Lengkap, lalu Tambah makna.',
+                style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
+              ),
+            ),
           const Gap(16),
 
           FTextField(
@@ -680,12 +689,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             _inlineError(notifier.errorFor('dialect_id')),
             _inlineError(notifier.errorFor('language_id')),
             const Gap(16),
-            const _FieldCaption(
-              'Makna *',
-              info:
-                  'Satu kata bisa punya beberapa arti.\n\n'
-                  'Tiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.',
-            ),
+                    const _FieldCaption(
+                      'Makna *',
+                      info:
+                          'Satu kata bisa punya beberapa arti.\n\n'
+                          'Tiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.\n\n'
+                          'Kelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.',
+                    ),
             for (var i = 0; i < _meanings.length; i++) ...[
               _MeaningBlock(
                 index: i,
