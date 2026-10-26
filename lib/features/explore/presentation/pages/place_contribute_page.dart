@@ -1,22 +1,23 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/widgets/attachment_images_field.dart';
+import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/place_contribution_api.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
 import '../providers/places_providers.dart';
-import '../widgets/place_option_sheet.dart';
 import '../widgets/sambas_map_view.dart';
 import 'place_pin_picker_page.dart';
 
@@ -42,13 +43,12 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   final _desc = TextEditingController();
   final _hours = TextEditingController();
   final _contact = TextEditingController();
-  final _slugFocus = FocusNode();
 
   var _step = 0;
   var _busy = false;
   var _filled = false;
+  /// Slug sudah terisi dari data lama (mode edit) - jangan ikut nama lagi.
   var _slugTouched = false;
-  var _writingSlug = false;
   String _category = 'wisata';
   String? _type;
   String? _regionId;
@@ -58,17 +58,15 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   LatLng? _point;
   List<PlaceOption> _regions = const [];
   List<PlaceOption> _villages = const [];
-  List<XFile> _files = const [];
-  String? _hint;
+  List<AttachmentImageSlot> _images = const [];
+
+  /// Batas foto: mode tambah-foto 5, usulan tempat 20.
+  int get _maxImages => widget.mode == PlaceContributeMode.photo ? 5 : 20;
 
   @override
   void initState() {
     super.initState();
     _name.addListener(_syncSlug);
-    _slugCtrl.addListener(() {
-      if (_writingSlug) return;
-      if (_slugCtrl.text != slugifyPlace(_name.text)) _slugTouched = true;
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadLookups());
   }
 
@@ -79,19 +77,18 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     _desc.dispose();
     _hours.dispose();
     _contact.dispose();
-    _slugFocus.dispose();
     super.dispose();
   }
 
   PlaceContributionApi get _api => PlaceContributionApi(ref.read(dioProvider));
 
+  /// Slug diturunkan dari nama (tidak ditampilkan ke user). Saat menyunting,
+  /// `_slugTouched` = true supaya slug lama (URL stabil) tidak ikut berubah.
   void _syncSlug() {
-    if (_slugTouched || _slugFocus.hasFocus) return;
+    if (_slugTouched) return;
     final next = slugifyPlace(_name.text);
     if (_slugCtrl.text == next) return;
-    _writingSlug = true;
     _slugCtrl.text = next;
-    _writingSlug = false;
   }
 
   void _apply(Place place) {
@@ -132,27 +129,38 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   }
 
   Future<void> _pickCategory() async {
-    final picked = await showPlaceOptionSheet(
+    final picked = await showOptionPickerSheet<String>(
       context,
-      title: 'Pilih kategori',
-      selectedId: _type,
+      title: 'Pilih kategori wisata',
+      icon: FLucideIcons.listFilter,
       items: [
         for (final type in _types)
-          PlaceOption(id: type, name: _typeLabel(type)),
+          OptionPickerItem(
+            value: type,
+            label: _typeLabel(type),
+            selected: type == _type,
+          ),
       ],
     );
     if (picked == null || !mounted) return;
-    setState(() => _type = picked.id);
+    setState(() => _type = picked);
   }
 
   Future<void> _pickRegion() async {
-    final picked = await showPlaceOptionSheet(
+    final picked = await showOptionPickerSheet<PlaceOption>(
       context,
       title: 'Pilih kecamatan',
       icon: FLucideIcons.mapPin,
       searchable: true,
-      selectedId: _regionId,
-      items: _regions,
+      searchHint: 'Cari kecamatan',
+      items: [
+        for (final r in _regions)
+          OptionPickerItem(
+            value: r,
+            label: r.name,
+            selected: r.id == _regionId,
+          ),
+      ],
     );
     if (picked == null || !mounted) return;
     setState(() {
@@ -167,23 +175,34 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
 
   Future<void> _pickVillage() async {
     if (_regionId == null) {
-      setState(() => _hint = 'Pilih kecamatan dulu.');
+      _validationError('Pilih kecamatan dulu.');
       return;
     }
-    final picked = await showPlaceOptionSheet(
+    final picked = await showOptionPickerSheet<PlaceOption>(
       context,
       title: 'Pilih desa',
       icon: FLucideIcons.mapPin,
       searchable: true,
-      selectedId: _villageId,
-      items: _villages,
+      searchHint: 'Cari desa',
+      items: [
+        for (final v in _villages)
+          OptionPickerItem(
+            value: v,
+            label: v.name,
+            selected: v.id == _villageId,
+          ),
+      ],
     );
     if (picked == null || !mounted) return;
     setState(() {
       _villageId = picked.id;
       _villageName = picked.name;
-      _hint = null;
     });
+  }
+
+  /// Validasi gagal -> bottom sheet (pola sama dengan form acara).
+  void _validationError(String message) {
+    showAppErrorSheet(context, message: message, title: 'Lengkapi dulu ya');
   }
 
   Future<void> _openMap() async {
@@ -198,30 +217,14 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     setState(() => _point = result.point);
   }
 
-  Future<void> _pickFiles() async {
-    final max = widget.mode == PlaceContributeMode.photo ? 5 : 20;
-    final picked = await ImagePicker().pickMultiImage(limit: max);
-    if (!mounted || picked.isEmpty) return;
-    setState(() {
-      final paths = _files.map((f) => f.path).toSet();
-      _files = [
-        ..._files,
-        ...picked.where((f) => !paths.contains(f.path)),
-      ].take(max).toList();
-    });
-  }
-
-  bool _stepOk() {
+bool _stepOk() {
     if (_step == 0) {
       if (_name.text.trim().isEmpty || _desc.text.trim().isEmpty) {
-        setState(() => _hint = 'Nama dan deskripsi wajib diisi.');
+        _validationError('Nama dan deskripsi wajib diisi.');
         return false;
       }
-      final slug = _slugCtrl.text.trim().isEmpty
-          ? slugifyPlace(_name.text)
-          : _slugCtrl.text.trim();
-      if (!RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(slug)) {
-        setState(() => _hint = 'Slug hanya huruf kecil, angka, dan hyphen.');
+      if (slugifyPlace(_name.text).isEmpty) {
+        _validationError('Nama perlu mengandung huruf atau angka.');
         return false;
       }
     }
@@ -229,68 +232,83 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
       final lat = _point!.latitude;
       final lng = _point!.longitude;
       if (lat < 1.0 || lat > 1.8 || lng < 108.5 || lng > 110.0) {
-        setState(() => _hint = 'Titik harus di dalam Kabupaten Sambas.');
+        _validationError('Titik harus di dalam Kabupaten Sambas.');
         return false;
       }
     }
-    setState(() => _hint = null);
     return true;
   }
 
-  Future<void> _submit() async {
-    if (_busy) return;
-    if (widget.mode != PlaceContributeMode.photo && !_stepOk()) return;
-    setState(() => _busy = true);
-    try {
-      final urls = <String>[];
-      for (final file in _files) {
-        urls.add(await _api.uploadImage(File(file.path)));
-      }
-      if (widget.mode == PlaceContributeMode.photo) {
-        final slug = widget.slug;
-        if (slug == null || urls.isEmpty) {
-          throw const PlaceContributionException('Pilih minimal satu foto.');
-        }
-        await _api.appendImages(slug, urls);
-        if (!mounted) return;
-        showFToast(context: context, title: const Text('Foto langsung tampil'));
-        context.pop();
-        return;
-      }
-      final place = _currentPlace();
-      await _api.submit({
-        if (widget.mode == PlaceContributeMode.edit) 'place_id': place?.id,
-        'slug': _slugCtrl.text.trim().isEmpty
-            ? slugifyPlace(_name.text)
-            : _slugCtrl.text.trim(),
-        'name': _name.text.trim(),
-        'category': _category,
-        if (_type != null) 'type': _type,
-        if (_point != null) 'lat': _point!.latitude,
-        if (_point != null) 'lng': _point!.longitude,
-        'short_description': _desc.text.trim(),
-        if (_regionId != null) 'region_id': _regionId,
-        if (_villageId != null) 'village_id': _villageId,
-        if (_hours.text.trim().isNotEmpty) 'hours': _hours.text.trim(),
-        if (_contact.text.trim().isNotEmpty) 'contact': _contact.text.trim(),
-        if (urls.isNotEmpty)
-          'images': [
-            for (final url in urls) {'url': url},
-          ],
-      });
-      if (!mounted) return;
-      context.pushReplacement(ExploreRouter.placeProposals.path);
-    } on PlaceContributionException catch (e) {
-      if (!mounted) return;
-      if (e.code == 'RATE_LIMITED') {
-        showFToast(context: context, title: Text(e.message));
-      } else {
-        await showAppErrorSheet(context, message: e.message);
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+Future<void> _submit() async {
+  if (_busy) return;
+  // Upload sudah berjalan di AttachmentImagesField; submit hanya memakai
+  // slot siap (pola form usul kata - upload-then-submit).
+  if (_images.any((s) => s.uploading)) {
+    showFToast(context: context, title: const Text('Tunggu upload foto selesai'));
+    return;
   }
+  if (_images.any((s) => s.error)) {
+    showFToast(
+      context: context,
+      title: const Text('Hapus foto yang gagal diunggah dulu'),
+      variant: FToastVariant.destructive,
+    );
+    return;
+  }
+  final urls = [
+    for (final s in _images)
+      if (s.isReady && s.uploaded != null) s.uploaded!.url,
+  ];
+  if (widget.mode != PlaceContributeMode.photo && !_stepOk()) return;
+  setState(() => _busy = true);
+  try {
+    if (widget.mode == PlaceContributeMode.photo) {
+      final slug = widget.slug;
+      if (slug == null || urls.isEmpty) {
+        throw const PlaceContributionException('Pilih minimal satu foto.');
+      }
+      await _api.appendImages(slug, urls);
+      if (!mounted) return;
+      showFToast(context: context, title: const Text('Foto langsung tampil'));
+      context.pop();
+      return;
+    }
+    final place = _currentPlace();
+    await _api.submit({
+      if (widget.mode == PlaceContributeMode.edit) 'place_id': place?.id,
+      // Slug tidak lagi diisi user: mode edit mempertahankan slug lama
+      // (URL tetap stabil), mode create diturunkan dari nama.
+      'slug': _slugCtrl.text.trim().isEmpty
+          ? slugifyPlace(_name.text)
+          : _slugCtrl.text.trim(),
+      'name': _name.text.trim(),
+      'category': _category,
+      if (_type != null) 'type': _type,
+      if (_point != null) 'lat': _point!.latitude,
+      if (_point != null) 'lng': _point!.longitude,
+      'short_description': _desc.text.trim(),
+      if (_regionId != null) 'region_id': _regionId,
+      if (_villageId != null) 'village_id': _villageId,
+      if (_hours.text.trim().isNotEmpty) 'hours': _hours.text.trim(),
+      if (_contact.text.trim().isNotEmpty) 'contact': _contact.text.trim(),
+      if (urls.isNotEmpty)
+        'images': [
+          for (final url in urls) {'url': url},
+        ],
+    });
+    if (!mounted) return;
+    context.pushReplacement(ExploreRouter.placeProposals.path);
+  } on PlaceContributionException catch (e) {
+    if (!mounted) return;
+    if (e.code == 'RATE_LIMITED') {
+      showFToast(context: context, title: Text(e.message));
+    } else {
+      await showAppErrorSheet(context, message: e.message);
+    }
+  } finally {
+    if (mounted) setState(() => _busy = false);
+  }
+}
 
   Place? _currentPlace() {
     final slug = widget.slug;
@@ -344,8 +362,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   }
 
   Widget _photoBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
       children: [
         Text(
           'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.',
@@ -354,17 +371,12 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
           ),
         ),
         const Gap(16),
-        FButton(
-          onPress: _busy ? null : _pickFiles,
-          child: Text(
-            _files.isEmpty ? 'Pilih foto' : '${_files.length} foto dipilih',
-          ),
-        ),
-        const Spacer(),
+        _imagesField(),
+        const Gap(24),
         SafeArea(
           top: false,
           child: FButton(
-            onPress: _busy || _files.isEmpty ? null : _submit,
+            onPress: _busy || _images.isEmpty ? null : _submit,
             child: Text(_busy ? 'Mengirim...' : 'Kirim foto'),
           ),
         ),
@@ -397,16 +409,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
               if (_step == 0) ..._identity(),
               if (_step == 1) ..._location(),
               if (_step == 2) ..._contactFields(),
-              if (_step == 3) ..._photos(),
-              if (_hint != null) ...[
-                const Gap(12),
-                Text(
-                  _hint!,
-                  style: context.theme.typography.body.sm.copyWith(
-                    color: context.theme.colors.destructive,
-                  ),
-                ),
-              ],
+              if (_step == 3) _imagesField(),
             ],
           ),
         ),
@@ -422,7 +425,6 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
                         ? null
                         : () => setState(() {
                             _step -= 1;
-                            _hint = null;
                           }),
                     child: const Text('Kembali'),
                   ),
@@ -458,13 +460,6 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
       control: FTextFieldControl.managed(controller: _name),
       label: const Text('Nama'),
       hint: 'Nama tempat',
-    ),
-    const Gap(12),
-    FTextField(
-      control: FTextFieldControl.managed(controller: _slugCtrl),
-      focusNode: _slugFocus,
-      label: const Text('Slug'),
-      hint: 'otomatis dari nama',
     ),
     const Gap(12),
     _choice(
@@ -534,93 +529,32 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     ),
   ];
 
-  List<Widget> _photos() {
-    final theme = context.theme;
-    final max = widget.mode == PlaceContributeMode.photo ? 5 : 20;
-    return [
-      Text(
-        _files.isEmpty
-            ? 'Foto opsional, maksimal $max.'
-            : '${_files.length} dari $max foto dipilih.',
-        style: context.theme.typography.body.sm,
-      ),
-      const Gap(12),
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (var i = 0; i < _files.length; i++)
-            SizedBox(
-              width: 88,
-              height: 88,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        File(_files[i].path),
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => ColoredBox(
-                          color: theme.colors.muted,
-                          child: Icon(
-                            FLucideIcons.image,
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: -6,
-                    right: -6,
-                    child: GestureDetector(
-                      onTap: () =>
-                          setState(() => _files = [..._files]..removeAt(i)),
-                      child: Container(
-                        width: 22,
-                        height: 22,
-                        decoration: BoxDecoration(
-                          color: theme.colors.destructive,
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          FLucideIcons.x,
-                          size: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+  /// Field foto kanonik (sama dengan form usul kata): sheet kamera/galeri,
+  /// upload segera, thumbnail + status + hapus, preview fullscreen.
+  Widget _imagesField() {
+    return AttachmentImagesField(
+      enabled: !_busy,
+      maxImages: _maxImages,
+      maxSizeMb: 5,
+      images: _images,
+      onChanged: (next) => setState(() => _images = next),
+      upload: (file, {required bool isPrimary}) async {
+        try {
+          final url = await _api.uploadImage(file);
+          return Either.right(
+            AttachmentUploadedImage(
+              url: url,
+              providerFileId: url,
+              isPrimary: isPrimary,
             ),
-          if (_files.length < max)
-            InkWell(
-              onTap: _pickFiles,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: theme.colors.border),
-                ),
-                child: Icon(
-                  FLucideIcons.plus,
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ),
-        ],
-      ),
-      if (_files.isEmpty) ...[
-        const Gap(12),
-        FButton(onPress: _pickFiles, child: const Text('Pilih foto')),
-      ],
-    ];
+          );
+        } on PlaceContributionException catch (e) {
+          return Either.left(
+            AttachmentUploadFailure(e.message, errorCode: e.code),
+          );
+        }
+      },
+    );
   }
 
   Widget _choice(String label, String value, VoidCallback onPress) {

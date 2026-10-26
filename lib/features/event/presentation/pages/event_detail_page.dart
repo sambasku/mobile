@@ -5,10 +5,16 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/models/external_link.dart';
+import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/widgets/image_preview.dart';
+import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_providers.dart';
 import '../widgets/event_ui.dart';
+
+/// Rasio poster hero detail acara (sama dengan hero wisata).
+const _heroAspect = 16 / 10;
 
 /// Detail acara by slug.
 class EventDetailPage extends ConsumerWidget {
@@ -58,6 +64,10 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),
       children: [
+        if (event.posterUrls.isNotEmpty) ...[
+          _PosterCarousel(event: event),
+          const Gap(16),
+        ],
         Text(
           event.name,
           style: theme.typography.body.xl.copyWith(
@@ -77,39 +87,11 @@ class _Body extends StatelessWidget {
                 child: Text(event.category!.name),
               ),
             if (sourceLabel != null)
-              FBadge(
-                variant: FBadgeVariant.outline,
-                child: Text(sourceLabel),
-              ),
+              FBadge(variant: FBadgeVariant.outline, child: Text(sourceLabel)),
           ],
         ),
         const Gap(16),
-        _InfoRow(
-          icon: FLucideIcons.clock,
-          text: formatEventSchedule(event),
-        ),
-        if (event.locationText.isNotEmpty) ...[
-          const Gap(8),
-          _InfoRow(
-            icon: FLucideIcons.mapPin,
-            text: event.locationText,
-          ),
-        ],
-        if (event.village != null) ...[
-          const Gap(8),
-          _InfoRow(
-            icon: FLucideIcons.building2,
-            text: 'Desa ${event.village!.name}',
-          ),
-        ],
-        // Penyelenggara opsional - label kosong di-skip (PRD 6.2).
-        if (event.organizer != null && event.organizer!.isNotEmpty) ...[
-          const Gap(8),
-          _InfoRow(
-            icon: FLucideIcons.users,
-            text: 'Diselenggarakan oleh ${event.organizer}',
-          ),
-        ],
+        _InfoGroup(event: event),
         if (event.description.isNotEmpty) ...[
           const Gap(16),
           Text(
@@ -132,9 +114,7 @@ class _Body extends StatelessWidget {
                 FTile(
                   title: Text(place.name),
                   prefix: const Icon(FLucideIcons.mapPinned, size: 18),
-                  onPress: () => context.push(
-                    '/explore/place/${place.slug}',
-                  ),
+                  onPress: () => context.push('/explore/place/${place.slug}'),
                 ),
             ],
           ),
@@ -184,28 +164,120 @@ class _Body extends StatelessWidget {
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.text});
+class _PosterCarousel extends StatefulWidget {
+  const _PosterCarousel({required this.event});
 
-  final IconData icon;
-  final String text;
+  final Event event;
+
+  @override
+  State<_PosterCarousel> createState() => _PosterCarouselState();
+}
+
+class _PosterCarouselState extends State<_PosterCarousel> {
+  final _controller = PageController();
+  int _index = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 16, color: theme.colors.mutedForeground),
-        const Gap(8),
-        Expanded(
-          child: Text(
-            text,
-            style: theme.typography.body.sm.copyWith(
-              color: theme.colors.mutedForeground,
-            ),
+    final posters = widget.event.posterUrls;
+    return AspectRatio(
+      aspectRatio: _heroAspect,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          PageView.builder(
+            controller: _controller,
+            itemCount: posters.length,
+            onPageChanged: (i) => setState(() => _index = i),
+            itemBuilder: (context, i) {
+              final poster = posters[i];
+              return GestureDetector(
+                onTap: () =>
+                    showImagePreview(context, urls: posters, initialIndex: i),
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(poster, width: 1200) ?? poster,
+                  fallbackUrl: poster,
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
           ),
+          if (posters.length > 1)
+            Positioned(
+              right: 12,
+              bottom: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  '${_index + 1}/${posters.length}',
+                  style: theme.typography.body.xs.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Info utama acara (jadwal, lokasi, desa, penyelenggara) dalam satu
+/// FTileGroup - selaras pola detail wisata.
+class _InfoGroup extends StatelessWidget {
+  const _InfoGroup({required this.event});
+
+  final Event event;
+
+  @override
+  Widget build(BuildContext context) {
+    final villageSlug = event.village?.slug;
+    return FTileGroup(
+      children: [
+        FTile(
+          prefix: const Icon(FLucideIcons.clock, size: 18),
+          title: Text(formatEventSchedule(event)),
         ),
+        if (event.locationText.isNotEmpty)
+          FTile(
+            prefix: const Icon(FLucideIcons.mapPin, size: 18),
+            title: Text(event.locationText),
+          ),
+        // Desa opsional; tap = detail desa (slug = kode BPS).
+        if (event.village != null)
+          FTile(
+            prefix: const Icon(FLucideIcons.building2, size: 18),
+            title: Text('Desa ${event.village!.name}'),
+            suffix: villageSlug == null
+                ? null
+                : const Icon(FLucideIcons.chevronRight, size: 16),
+            onPress: villageSlug == null
+                ? null
+                : () => context.push(
+                    '/explore/desa/${Uri.encodeComponent(villageSlug)}',
+                  ),
+          ),
+        // Penyelenggara opsional - label kosong di-skip (PRD 6.2).
+        if (event.organizer != null && event.organizer!.isNotEmpty)
+          FTile(
+            prefix: const Icon(FLucideIcons.users, size: 18),
+            title: Text('Diselenggarakan oleh ${event.organizer}'),
+          ),
       ],
     );
   }

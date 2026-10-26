@@ -55,11 +55,11 @@ class _FailDeckRepo implements VoteRepository {
       Either.right(VoteView(target: target, upvotes: 0, downvotes: 0));
 
   @override
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async =>
       Either.right(unit);
 
   @override
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId) async =>
       Either.right(unit);
 }
 

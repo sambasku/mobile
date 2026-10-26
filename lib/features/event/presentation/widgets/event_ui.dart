@@ -13,7 +13,10 @@ FBadge eventOccurrenceBadge(EventOccurrenceStatus status) {
     EventOccurrenceStatus.upcoming => (FBadgeVariant.primary, 'Akan datang'),
     EventOccurrenceStatus.ongoing => (FBadgeVariant.secondary, 'Berlangsung'),
     EventOccurrenceStatus.completed => (FBadgeVariant.outline, 'Selesai'),
-    EventOccurrenceStatus.cancelled => (FBadgeVariant.destructive, 'Dibatalkan'),
+    EventOccurrenceStatus.cancelled => (
+      FBadgeVariant.destructive,
+      'Dibatalkan',
+    ),
   };
   return FBadge(variant: variant, child: Text(label));
 }
@@ -26,7 +29,8 @@ String formatEventSchedule(Event event) {
   final end = formatDateTime(event.endsAt);
   if (start.isEmpty) return '';
   if (end.isEmpty || end == start) return start;
-  final sameDay = event.startsAt.toLocal().day == event.endsAt.toLocal().day &&
+  final sameDay =
+      event.startsAt.toLocal().day == event.endsAt.toLocal().day &&
       event.startsAt.toLocal().month == event.endsAt.toLocal().month &&
       event.startsAt.toLocal().year == event.endsAt.toLocal().year;
   if (sameDay) {

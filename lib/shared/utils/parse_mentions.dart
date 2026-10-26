@@ -23,10 +23,14 @@ List<String> parseMentionCandidates(String text, {int? cursor}) {
     // Cegah email/quoted-handle: char sebelum '@' harus bukan bagian kata.
     if (start > 0) {
       final prev = text.codeUnitAt(start - 1);
-      final isWordChar = (prev >= 0x30 && prev <= 0x39) || // 0-9
+      final isWordChar =
+          (prev >= 0x30 && prev <= 0x39) || // 0-9
           (prev >= 0x41 && prev <= 0x5A) || // A-Z
           (prev >= 0x61 && prev <= 0x7A) || // a-z
-          prev == 0x5F || prev == 0x2E || prev == 0x2D || prev == 0x40; // _ . - @
+          prev == 0x5F ||
+          prev == 0x2E ||
+          prev == 0x2D ||
+          prev == 0x40; // _ . - @
       if (isWordChar) continue;
     }
     if (name.length < 2 || name.length > 30) continue;

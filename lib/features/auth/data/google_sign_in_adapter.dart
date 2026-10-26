@@ -20,7 +20,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
     final serverClientId = Env.googleWebClientId?.trim();
     if (serverClientId == null || serverClientId.isEmpty) {
       throw StateError(
-        'Masuk dengan Google belum siap di perangkat ini. Coba lagi nanti.',
+        'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
       );
     }
 
@@ -84,7 +84,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
           stack,
         );
         throw StateError(
-          'Masuk dengan Google belum siap di perangkat ini. Coba lagi nanti.',
+          'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
         );
       }
 

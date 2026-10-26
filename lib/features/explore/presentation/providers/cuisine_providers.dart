@@ -1,11 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
+import '../../data/culinary_contribution_api.dart';
 import '../../data/datasources/cuisine_remote_datasource.dart';
+import '../../data/models/cuisine_dto.dart';
 import '../../data/repositories/cuisine_repository_impl.dart';
 import '../../domain/entities/cuisine.dart';
-
 part 'cuisine_providers.g.dart';
 
 @riverpod
@@ -13,18 +12,45 @@ CuisineRemoteDatasource cuisineRemoteDatasource(Ref ref) =>
     CuisineRemoteDatasource(ref.watch(dioProvider));
 
 @riverpod
-CuisineRepositoryImpl cuisineRepository(Ref ref) => CuisineRepositoryImpl(
-  ref.watch(cuisineRemoteDatasourceProvider),
-  ref.watch(cachedJsonClientProvider),
-);
+CuisineRepositoryImpl cuisineRepository(Ref ref) =>
+    CuisineRepositoryImpl(ref.watch(cuisineRemoteDatasourceProvider));
 
-/// Katalog cuisine dari CDN. Null = offline/JSON rusak (soft-fail).
-/// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.
+/// Katalog kuliner dari API. Null = offline/error (soft-fail) supaya UI
+/// menampilkan tombol coba lagi, bukan crash.
 @riverpod
-Future<List<Cuisine>?> cuisine(Ref ref) =>
-    ref.watch(cuisineRepositoryProvider).getCuisines();
+Future<List<Cuisine>?> cuisine(Ref ref) async {
+  try {
+    return await ref.watch(cuisineRepositoryProvider).getAll();
+  } catch (_) {
+    return null;
+  }
+}
 
-/// Pull-to-refresh / tombol muat ulang: hard miss L1 lalu tunggu fetch.
+/// Pull-to-refresh / tombol muat ulang: fetch ulang penuh dari API.
 @riverpod
-Future<List<Cuisine>?> cuisineRefresh(Ref ref) =>
-    ref.watch(cuisineRepositoryProvider).getCuisines(forceRefresh: true);
+Future<List<Cuisine>?> cuisineRefresh(Ref ref) async {
+  try {
+    return await ref.watch(cuisineRepositoryProvider).getAll();
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Detail satu kuliner by slug + daftar tempat penyedia.
+@riverpod
+Future<CuisineDtoItem?> cuisineBySlug(Ref ref, String slug) =>
+    ref.watch(cuisineRepositoryProvider).getBySlug(slug);
+
+@riverpod
+CulinaryContributionApi culinaryContributionApi(Ref ref) =>
+    CulinaryContributionApi(ref.watch(dioProvider));
+
+/// Daftar tempat/penjual kuliner (halaman pertama). Null = gagal (soft-fail).
+@riverpod
+Future<CulinaryPlacePage?> culinaryPlaces(Ref ref, {String? q, String? type}) async {
+  try {
+    return await ref.watch(cuisineRepositoryProvider).places(q: q, type: type);
+  } catch (_) {
+    return null;
+  }
+}

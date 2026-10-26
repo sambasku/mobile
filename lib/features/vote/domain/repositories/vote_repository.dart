@@ -26,15 +26,16 @@ abstract interface class VoteRepository {
     List<VoteTarget> targets,
   );
 
-  /// Antrean kata published yang user belum vote (34-api-vote-deck.md).
+  /// Antrean makna published yang user belum vote (34-api-vote-deck.md,
+  /// 0101: deck per makna).
   Future<Either<VoteFailure, VoteDeckPage>> getDeck({
     int limit = 10,
     String? cursor,
   });
 
-  /// Lewati kartu deck tanpa menulis vote. Idempoten.
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId);
+  /// Lewati kartu deck (makna) tanpa menulis vote. Idempoten.
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId);
 
   /// Batalkan skip. Idempoten.
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId);
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId);
 }

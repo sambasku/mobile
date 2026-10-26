@@ -107,7 +107,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   ),
                   const Gap(24),
                   Icon(
-                    FLucideIcons.languages,
+                    FLucideIcons.messagesSquare,
                     size: 40,
                     color: context.theme.colors.mutedForeground,
                   ),
@@ -315,6 +315,21 @@ class _FeedTile extends ConsumerWidget {
                                 ),
                               ),
                             ),
+                            // Handle @username agar mudah di-mention.
+                            if (canOpenProfile && item.username != actorLabel) ...[
+                              const Gap(4),
+                              Flexible(
+                                child: Text(
+                                  '@${item.username}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.typography.body.xs.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ),
+                            ],
                             if (dateLabel.isNotEmpty) ...[
                               const Gap(8),
                               Text(

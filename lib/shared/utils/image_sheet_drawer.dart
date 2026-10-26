@@ -23,6 +23,7 @@ void showImageSheetDrawer(
   Function(File image)? onPicked,
   Function(File image, PhotoPickSource source)? onPickedWithSource,
   Function()? onRemoved,
+
   /// Dipanggil setelah sheet ditutup - buka Media Explorer (stock).
   VoidCallback? onMediaExplorer,
   bool cameraPicker = true,
@@ -34,6 +35,7 @@ void showImageSheetDrawer(
   double maxWidth = kPhotoPickMaxWidth,
   double maxHeight = kPhotoPickMaxHeight,
   int imageQuality = kPhotoPickQuality,
+
   /// Tampilkan ImageCropPage setelah pick (default true).
   /// Setel false untuk share_sheet atau konteks tanpa crop.
   bool cropEnabled = true,
@@ -71,7 +73,10 @@ void showImageSheetDrawer(
                   children: [
                     const Text(
                       'Pilih Sumber',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.of(sheetContext).pop(),
@@ -234,9 +239,9 @@ Future<void> openCamera(
   } catch (e, st) {
     debugPrint('[Camera] $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka kamera')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal membuka kamera')));
     }
   }
 }
@@ -312,9 +317,9 @@ Future<void> pickImageFromFile(
   } catch (e, st) {
     debugPrint('[ImageSheet] file pick $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memilih file')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal memilih file')));
     }
   }
 }

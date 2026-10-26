@@ -212,7 +212,7 @@ class CommentRepositoryImpl implements CommentRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak komentar. Coba lagi nanti.';
+      return 'Terlalu banyak komentar. Coba lagi dalam beberapa saat.';
     }
     if (statusCode == 401) {
       return 'Sesi berakhir, silakan masuk kembali';
@@ -221,7 +221,7 @@ class CommentRepositoryImpl implements CommentRepository {
       return 'Kamu tidak bisa menghapus komentar ini';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
     }
     return 'Terjadi kesalahan, coba lagi';
   }

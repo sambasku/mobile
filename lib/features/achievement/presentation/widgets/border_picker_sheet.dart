@@ -46,18 +46,15 @@ class _BorderPickerSheet extends HookConsumerWidget {
             .read(setActiveBorderUseCaseProvider)
             .call(border?.userAchievementId);
         if (!context.mounted) return;
-        result.match(
-          (failure) => Navigator.of(context).pop(),
-          (_) {
-            ref.invalidate(myAchievementsProvider);
-            ref.invalidate(myActiveBorderProvider);
-            Navigator.of(context).pop();
-            showFToast(
-              context: context,
-              title: const Text('Bingkai profil diperbarui'),
-            );
-          },
-        );
+        result.match((failure) => Navigator.of(context).pop(), (_) {
+          ref.invalidate(myAchievementsProvider);
+          ref.invalidate(myActiveBorderProvider);
+          Navigator.of(context).pop();
+          showFToast(
+            context: context,
+            title: const Text('Bingkai profil diperbarui'),
+          );
+        });
       } finally {
         if (context.mounted) applying.value = null;
       }
@@ -72,11 +69,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
             child: Row(
               children: [
-                Icon(
-                  FLucideIcons.frame,
-                  size: 18,
-                  color: theme.colors.primary,
-                ),
+                Icon(FLucideIcons.frame, size: 18, color: theme.colors.primary),
                 const Gap(8),
                 Expanded(
                   child: Text(
@@ -170,10 +163,10 @@ class _BorderPickerSheet extends HookConsumerWidget {
                       itemCount: borders.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                      ),
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                          ),
                       itemBuilder: (context, index) {
                         final border = borders[index];
                         final busy = applying.value == border.userAchievementId;
@@ -236,21 +229,21 @@ class _BorderCell extends StatelessWidget {
                 child: busy
                     ? const Center(child: FCircularProgress())
                     : url == null
-                        ? Icon(
-                            FLucideIcons.frame,
-                            size: 32,
-                            color: theme.colors.mutedForeground,
-                          )
-                        : Image.network(
-                            url,
-                            fit: BoxFit.contain,
-                            gaplessPlayback: true,
-                            errorBuilder: (_, _, _) => Icon(
-                              FLucideIcons.frame,
-                              size: 32,
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
+                    ? Icon(
+                        FLucideIcons.frame,
+                        size: 32,
+                        color: theme.colors.mutedForeground,
+                      )
+                    : Image.network(
+                        url,
+                        fit: BoxFit.contain,
+                        gaplessPlayback: true,
+                        errorBuilder: (_, _, _) => Icon(
+                          FLucideIcons.frame,
+                          size: 32,
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
               ),
               const Gap(4),
               Text(

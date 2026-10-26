@@ -74,10 +74,12 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
 
   List<_Row> _buildRows(String rawQuery) {
     final needle = rawQuery.trim().toLowerCase();
-    final primary =
-        kPrimaryPhoneCountries.where((c) => _matches(c, needle)).toList();
-    final others =
-        kOtherPhoneCountries.where((c) => _matches(c, needle)).toList();
+    final primary = kPrimaryPhoneCountries
+        .where((c) => _matches(c, needle))
+        .toList();
+    final others = kOtherPhoneCountries
+        .where((c) => _matches(c, needle))
+        .toList();
 
     if (primary.isEmpty && others.isEmpty) {
       return const [_EmptyRow()];
@@ -111,7 +113,9 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
             children: [
               Text(
                 'Pilih negara',
-                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
+                style: theme.typography.body.lg.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Gap(12),
               FTextField(
@@ -213,11 +217,7 @@ class _CountryListTile extends StatelessWidget {
               ),
             ),
             if (selected)
-              Icon(
-                FLucideIcons.check,
-                size: 16,
-                color: theme.colors.primary,
-              ),
+              Icon(FLucideIcons.check, size: 16, color: theme.colors.primary),
           ],
         ),
       ),

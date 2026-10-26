@@ -21,10 +21,10 @@ void main() {
     tester,
   ) async {
     final cases = <(String, IconData)>[
-      ('approved', FLucideIcons.badgeCheck),
+      ('approved', FLucideIcons.circleDashedCheck),
       ('rejected', FLucideIcons.circleX),
       ('corrected', FLucideIcons.penLine),
-      ('pending', FLucideIcons.badgeAlert),
+      ('pending', FLucideIcons.clock),
     ];
     for (final (status, icon) in cases) {
       await tester.pumpWidget(wrap(SubmissionStatusIcon(status: status)));

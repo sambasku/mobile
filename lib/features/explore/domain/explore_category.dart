@@ -42,12 +42,12 @@ class ExploreCategory {
       icon: FLucideIcons.utensilsCrossed,
       comingSoon: false,
     ),
-    // Segera
     ExploreCategory(
       id: 'usaha',
       title: 'Usaha',
       subtitle: 'UMKM dan jasa lokal',
       icon: FLucideIcons.store,
+      comingSoon: false,
     ),
     ExploreCategory(
       id: 'acara',
@@ -57,40 +57,19 @@ class ExploreCategory {
       comingSoon: false,
     ),
     ExploreCategory(
-      id: 'sejarah',
-      title: 'Sejarah',
-      subtitle: 'Narasi identitas dan tokoh Sambas',
-      icon: FLucideIcons.landmark,
-    ),
-    ExploreCategory(
-      id: 'kisah',
-      title: 'Kisah',
-      subtitle: 'Folklor dan kisah rakyat',
-      icon: FLucideIcons.bookOpen,
-    ),
-    ExploreCategory(
-      id: 'karya',
-      title: 'Karya',
-      subtitle: 'Anyaman, songket, dan kesenian',
-      icon: FLucideIcons.palette,
-    ),
-    ExploreCategory(
-      id: 'tradisi',
-      title: 'Tradisi',
-      subtitle: 'Upacara dan kalender budaya',
-      icon: FLucideIcons.sparkles,
-    ),
-    ExploreCategory(
-      id: 'permainan',
+      id: 'hiburan',
       title: 'Permainan',
-      subtitle: 'Mainan tradisional anak',
-      icon: FLucideIcons.puzzle,
+      subtitle: 'Pantun dan permainan Sambas',
+      icon: FLucideIcons.tv,
+      comingSoon: false,
     ),
+    // Segera
+    // Gabungan Sejarah + Kisah + Karya + Tradisi + Permainan.
     ExploreCategory(
-      id: 'pendidikan',
-      title: 'Pendidikan',
-      subtitle: 'Bahan ajar untuk murid',
-      icon: FLucideIcons.graduationCap,
+      id: 'ensiklopedia',
+      title: 'Ensiklopedia',
+      subtitle: 'Sejarah, kisah, karya, dan tradisi',
+      icon: FLucideIcons.bookOpen,
     ),
     ExploreCategory(
       id: 'komunitas',

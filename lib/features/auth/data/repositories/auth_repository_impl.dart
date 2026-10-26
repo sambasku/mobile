@@ -114,7 +114,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken, consents: _toConsentDtos(consents)),
+        GoogleLoginRequestDto(
+          idToken: idToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
@@ -147,7 +150,10 @@ class AuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken, consents: _toConsentDtos(consents)),
+        GoogleLoginRequestDto(
+          idToken: idToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
@@ -180,7 +186,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final response = await _remoteDatasource.loginWithFacebook(
-        FacebookLoginRequestDto(accessToken: accessToken, consents: _toConsentDtos(consents)),
+        FacebookLoginRequestDto(
+          accessToken: accessToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
@@ -333,7 +342,12 @@ class AuthRepositoryImpl implements AuthRepository {
   ) {
     if (consents == null) return null;
     return consents
-        .map((c) => LegalConsentDto(documentType: c.documentType, documentVersion: c.documentVersion))
+        .map(
+          (c) => LegalConsentDto(
+            documentType: c.documentType,
+            documentVersion: c.documentVersion,
+          ),
+        )
         .toList();
   }
 
@@ -414,8 +428,10 @@ class AuthRepositoryImpl implements AuthRepository {
     return switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
-      DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+      DioExceptionType.receiveTimeout =>
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     };
   }

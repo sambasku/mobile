@@ -13,6 +13,7 @@ import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
+import '../utils/explore_back.dart';
 import '../providers/places_browse_providers.dart';
 
 /// Filter list satu baris. Publik karena dipakai juga dari
@@ -154,15 +155,19 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
     final placesAsync = ref.watch(placesBrowseProvider(browseQuery));
 
     return ExcludeSemanticsOnExit(
-      child: FScaffold(
+      // Back sistem: jangan tutup app saat halaman dibuka dari deep link
+      // (tanpa stack) - kembali ke tab Eksplorasi.
+      child: PopScope(
+        canPop: exploreCanPop(context),
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) popOrGoExplore(context);
+        },
+        child: FScaffold(
         childPad: true,
         header: FHeader.nested(
           title: Text(_pageTitle[_mode] ?? 'Eksplorasi'),
           prefixes: [
-            FHeaderAction.back(
-              onPress: () =>
-                  context.canPop() ? context.pop() : context.go('/explore'),
-            ),
+            FHeaderAction.back(onPress: () => popOrGoExplore(context)),
           ],
           suffixes: _mode == PlacePageMode.wisata
               ? [
@@ -180,9 +185,30 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
               : const [],
         ),
         child: placesAsync.when(
-          loading: () => _SkeletonList(
-            refreshing: _refreshing,
-            grid: _mode == PlacePageMode.wisata,
+          // Skeleton tetap DI BAWAH search + filter: query berubah = state
+          // loading baru, kalau seluruh body diganti skeleton, search bar
+          // ikut hilang/timpa - UX buruk saat ngetik.
+          loading: () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SearchField(onChanged: _onSearchChanged),
+              const Gap(12),
+              if (_mode == PlacePageMode.wisata) ...[
+                _PlaceFilterBar(
+                  selected: _filter,
+                  onSelect: (f) => setState(() => _filter = f),
+                ),
+                // Jarak chips -> grid: 4 terlalu mepet (chip punya tinggi
+                // sendiri, grid langsung menempel di bawahnya).
+                const Gap(12),
+              ],
+              Expanded(
+                child: _SkeletonList(
+                  refreshing: _refreshing,
+                  grid: _mode == PlacePageMode.wisata,
+                ),
+              ),
+            ],
           ),
           error: (_, _) => _ErrorBody(onRetry: () => _reload()),
           data: (page) {
@@ -190,7 +216,15 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                 _query.trim().isEmpty &&
                 (_mode == PlacePageMode.kuliner ||
                     _filter == PlaceListFilter.semua)) {
-              return const _EmptyBody();
+              return _EmptyWithSearch(
+                search: _SearchField(onChanged: _onSearchChanged),
+                filterBar: _mode == PlacePageMode.wisata
+                    ? _PlaceFilterBar(
+                        selected: _filter,
+                        onSelect: (f) => setState(() => _filter = f),
+                      )
+                    : null,
+              );
             }
             final fillToken = Object.hash(
               browseQuery,
@@ -204,21 +238,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FTextField(
-                  control: FTextFieldControl.managed(
-                    onChange: _onSearchChanged,
-                  ),
-                  hint: 'Cari destinasi...',
-                  textInputAction: TextInputAction.search,
-                  clearable: (value) => value.text.isNotEmpty,
-                  prefixBuilder: (context, style, variants) =>
-                      FTextField.prefixIconBuilder(
-                        context,
-                        style,
-                        variants,
-                        const Icon(FLucideIcons.search),
-                      ),
-                ),
+                _SearchField(onChanged: _onSearchChanged),
                 const Gap(12),
                 if (_mode == PlacePageMode.wisata) ...[
                   _PlaceFilterBar(
@@ -228,7 +248,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                       if (_scroll.hasClients) _scroll.jumpTo(0);
                     },
                   ),
-                  const Gap(4),
+                  const Gap(12),
                 ],
                 if (page.items.isEmpty)
                   Expanded(
@@ -302,6 +322,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
             );
           },
         ),
+        ),
       ),
     );
   }
@@ -333,6 +354,50 @@ class _PlaceFilterBar extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  const _SearchField({required this.onChanged});
+
+  final ValueChanged<TextEditingValue> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return FTextField(
+      control: FTextFieldControl.managed(onChange: onChanged),
+      hint: 'Cari destinasi...',
+      textInputAction: TextInputAction.search,
+      clearable: (value) => value.text.isNotEmpty,
+      prefixBuilder: (context, style, variants) => FTextField.prefixIconBuilder(
+        context,
+        style,
+        variants,
+        const Icon(FLucideIcons.search),
+      ),
+    );
+  }
+}
+
+/// Body kosong (belum ada konten sama sekali) TAPI search + filter tetap
+/// tampil supaya user bisa mencoba kata lain tanpa kehilangan field.
+class _EmptyWithSearch extends StatelessWidget {
+  const _EmptyWithSearch({required this.search, this.filterBar});
+
+  final Widget search;
+  final Widget? filterBar;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        search,
+        const Gap(12),
+        if (filterBar != null) ...[filterBar!, const Gap(12)],
+        const Expanded(child: _EmptyBody()),
+      ],
     );
   }
 }
@@ -555,7 +620,9 @@ class _ErrorBody extends StatelessWidget {
           children: [
             const FAlert(
               title: Text('Gagal memuat'),
-              subtitle: Text('Periksa koneksi internetmu lalu coba lagi ya.'),
+              subtitle: Text(
+                'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+              ),
             ),
             const Gap(16),
             FButton(onPress: onRetry, child: const Text('Coba lagi')),
@@ -667,7 +734,9 @@ class _EmptyBody extends StatelessWidget {
             const Gap(16),
             Text(
               'Belum ada destinasi',
-              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const Gap(8),
             Text(

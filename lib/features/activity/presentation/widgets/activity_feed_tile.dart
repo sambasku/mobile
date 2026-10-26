@@ -14,9 +14,11 @@ import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../explore/explore_router.dart';
+import '../../../event/event_router.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/utils/open_pending_word_review.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../../usaha/usaha_router.dart';
 import '../../activity_router.dart';
 import '../../domain/entities/feed_activity_item.dart';
 import 'activity_kind_avatar.dart';
@@ -267,6 +269,10 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.verification => 'Verifikasi',
       FeedActivityKind.announcement => 'Pengumuman',
       FeedActivityKind.placePhoto => 'Foto wisata',
+      FeedActivityKind.placeListing => 'Wisata',
+      FeedActivityKind.event => 'Acara',
+      FeedActivityKind.usaha => 'Usaha',
+      FeedActivityKind.culinary => 'Kuliner',
     };
   }
 
@@ -294,6 +300,10 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.verification => 'Lihat kata',
       FeedActivityKind.announcement => 'Baca pengumuman',
       FeedActivityKind.placePhoto => 'Lihat tempat',
+      FeedActivityKind.placeListing => 'Lihat tempat',
+      FeedActivityKind.event => 'Lihat acara',
+      FeedActivityKind.usaha => 'Lihat usaha',
+      FeedActivityKind.culinary => 'Lihat kuliner',
     };
   }
 
@@ -320,6 +330,21 @@ class ActivityFeedTile extends ConsumerWidget {
       case 'place':
         // #187: target = slug tempat (bukan ULID) - detail publik mobile.
         return ExploreRouter.place.path.replaceFirst(':slug', target.id);
+      case 'event':
+        // target = slug acara (bukan ULID) - detail publik mobile.
+        return EventRouter.detail.path.replaceFirst(':slug', target.id);
+      case 'usaha':
+        // target = slug usaha (bukan ULID) - detail publik mobile.
+        return UsahaRouter.detailPath(target.id);
+      case 'culinary':
+        // target = slug kuliner (bukan ULID) - detail publik mobile.
+        return ExploreRouter.cuisineDetail.path.replaceFirst(
+          ':slug',
+          target.id,
+        );
+      case 'culinary_place':
+        // Belum ada halaman detail tempat kuliner - arahkan ke daftar.
+        return ExploreRouter.cuisinePlaces.path;
       case 'user':
         final username = item.actor?.username?.trim();
         if (username == null ||

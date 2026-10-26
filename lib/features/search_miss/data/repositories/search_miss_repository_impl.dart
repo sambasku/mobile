@@ -44,7 +44,10 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       return Either.right(data.map(_toEntity).toList());
     } on DioException catch (error) {
       return Either.left(
-        _mapDio(error, fallback: 'Gagal memuat, coba cek koneksi internet'),
+        _mapDio(
+          error,
+          fallback: 'Gagal memuat. Coba lagi dalam beberapa saat.',
+        ),
       );
     } catch (error) {
       return Either.left(SearchMissFailure(error.toString()));
@@ -72,9 +75,13 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return const SearchMissFailure('Koneksi lambat, coba lagi');
+        return const SearchMissFailure(
+          'Server lama merespons. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.connectionError:
-        return const SearchMissFailure('Tidak ada koneksi internet');
+        return const SearchMissFailure(
+          'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.badCertificate:
       case DioExceptionType.badResponse:
       case DioExceptionType.cancel:

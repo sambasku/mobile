@@ -4,20 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/gestures/swipe_exempt.dart';
-import '../../../../core/utils/display_image_url.dart';
-import '../../../../core/widgets/image_preview.dart';
-import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
-import '../../../dictionary/domain/entities/word_detail.dart';
-import '../../../dictionary/presentation/providers/word_detail_providers.dart';
-import '../../../dictionary/presentation/widgets/audio_player_tile.dart';
 import '../../domain/entities/vote_deck_item.dart';
-import 'deck_entry_type_editor.dart';
 
-/// Isi kartu deck: detail lengkap kata (gambar, audio, semua makna + contoh).
-///
-/// Deck API hanya membawa satu `sense`; detail diambil dari
-/// [wordDetailProvider]. Selama loading/gagal, kartu tetap tampil dengan
-/// data deck supaya tidak pernah kosong.
+/// Isi kartu deck (0101: per makna): lemma + definisi makna yang dinilai +
+/// konteks "makna ke-N". Tap kartu / footer membuka detail kata induk
+/// (semua makna, komentar) - pemilik navigasi ada di section, bukan sini.
 class VoteDeckWordCard extends ConsumerWidget {
   const VoteDeckWordCard({super.key, required this.item, this.onOpenDetail});
 
@@ -28,243 +19,47 @@ class VoteDeckWordCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detail = ref.watch(wordDetailProvider(item.id)).value;
-    final content = detail == null
-        ? VoteDeckWordFace(
-            lemma: item.lemma,
-            sense: item.sense,
-            wordType: item.wordTypeLabel,
-          )
-        : LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: ConstrainedBox(
-                // Isi pendek tetap di tengah kartu; isi panjang bisa di-scroll.
-                constraints: BoxConstraints(
-                  minHeight:
-                      (constraints.maxHeight - 32).clamp(0, double.infinity),
-                ),
-                child: _WordDetailBody(detail: detail),
-              ),
-            ),
-          );
-    final open = onOpenDetail;
-    if (open == null) return content;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(child: content),
-        _OpenDetailFooter(lemma: item.lemma, onTap: open),
-      ],
+    return VoteDeckMeaningFace(
+      lemma: item.lemma,
+      sense: item.sense,
+      wordTypeLabel: item.wordTypeLabel,
+      wordClassLabel: item.wordClassLabel,
+      orderIndex: item.orderIndex,
+      meaningCount: item.meaningCount,
     );
   }
 }
 
-/// Link ke halaman detail di bawah kartu (di luar area scroll): selalu
-/// terlihat dan dekat jempol, sedekat action bar.
-class _OpenDetailFooter extends StatelessWidget {
-  const _OpenDetailFooter({required this.lemma, required this.onTap});
-
-  final String lemma;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final color = theme.colors.primary;
-    return Semantics(
-      button: true,
-      label: 'Lihat detail dan komentar $lemma',
-      excludeSemantics: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: theme.colors.border)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(FLucideIcons.messageCircle, size: 14, color: color),
-                const Gap(6),
-                Text(
-                  'Lihat detail dan komentar',
-                  style: theme.typography.body.sm.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Gap(2),
-                Icon(FLucideIcons.chevronRight, size: 14, color: color),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _WordDetailBody extends StatelessWidget {
-  const _WordDetailBody({required this.detail});
-
-  final WordDetail detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final images = detail.images;
-    final image = images.isEmpty
-        ? null
-        : images.firstWhere((i) => i.isPrimary, orElse: () => images.first);
-    final meanings = detail.meanings;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (image != null) ...[
-          GestureDetector(
-            onTap: () => showImagePreview(
-              context,
-              urls: [image.url],
-              credits: [image.attribution],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: CachedNetworkImageWithFallback(
-                  imageUrl: displayImageUrl(image.url, width: 900) ?? image.url,
-                  fallbackUrl: image.url,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          const Gap(12),
-        ],
-        Text(
-          detail.lemma,
-          style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
-          textAlign: TextAlign.center,
-        ),
-        const Gap(8),
-        DeckEntryTypeEditor(detail: detail),
-        if (detail.audios.isNotEmpty) ...[
-          const Gap(8),
-          AudioPlayerTile(wordId: detail.id, audio: detail.audios.first),
-        ],
-        const Gap(12),
-        for (var i = 0; i < meanings.length; i++)
-          _MeaningView(
-            index: meanings.length > 1 ? i + 1 : null,
-            meaning: meanings[i],
-            wordId: detail.id,
-          ),
-      ],
-    );
-  }
-}
-
-class _MeaningView extends StatelessWidget {
-  const _MeaningView({
-    required this.index,
-    required this.meaning,
-    required this.wordId,
-  });
-
-  /// Null saat kata hanya punya satu makna (nomor tidak perlu).
-  final int? index;
-  final WordMeaning meaning;
-  final String wordId;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final className = meaning.wordClassName?.trim();
-    final definition = meaning.definition?.trim();
-    final muted = theme.colors.mutedForeground;
-
-    final body = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (className != null && className.isNotEmpty)
-          Text(
-            className,
-            style: theme.typography.body.xs.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colors.primary,
-            ),
-          ),
-        if (definition != null && definition.isNotEmpty && definition != '-')
-          Text(definition, style: theme.typography.body.sm.copyWith(height: 1.35)),
-        for (final t in meaning.translations)
-          Text(
-            '→ ${t.text}',
-            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
-          ),
-        for (final e in meaning.examples) ...[
-          const Gap(6),
-          Text(
-            e.sourceSentence,
-            style: theme.typography.body.sm.copyWith(fontStyle: FontStyle.italic),
-          ),
-          if (e.targetSentence?.trim().isNotEmpty ?? false)
-            Text(
-              e.targetSentence!.trim(),
-              style: theme.typography.body.sm.copyWith(color: muted),
-            ),
-          for (final audio in e.audios)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: AudioPlayerTile(wordId: wordId, audio: audio),
-            ),
-        ],
-      ],
-    );
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: index == null
-          ? body
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 22,
-                  child: Text(
-                    '$index.',
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: muted,
-                    ),
-                  ),
-                ),
-                Expanded(child: body),
-              ],
-            ),
-    );
-  }
-}
-
-/// Tampilan ringkas kartu (lemma, satu arti, jenis kata): guest deck dan
-/// kartu yang detailnya belum/gagal dimuat.
-class VoteDeckWordFace extends StatelessWidget {
-  const VoteDeckWordFace({
+/// Tampilan ringkas kartu (lemma, definisi makna ini, jenis kata):
+/// deck login, guest deck, dan fallback.
+class VoteDeckMeaningFace extends StatelessWidget {
+  const VoteDeckMeaningFace({
     super.key,
     required this.lemma,
     required this.sense,
-    required this.wordType,
+    required this.wordTypeLabel,
+    this.wordClassLabel = '',
+    this.orderIndex = 1,
+    this.meaningCount = 1,
     this.onLockedTap,
   });
 
   final String lemma;
+
+  /// Definisi makna yang dinilai (bukan makna pertama kata).
   final String? sense;
-  final String wordType;
+
+  /// Label jenis entri ("Kata", "Idiom", ...).
+  final String wordTypeLabel;
+
+  /// Label kelas kata makna ini ("Kata Benda", "Umum"). Kosong = belum ada.
+  final String wordClassLabel;
+
+  /// 1-based; label "Makna ke-N" hanya muncul bila kata punya >1 makna.
+  final int orderIndex;
+
+  /// Jumlah makna published kata ini.
+  final int meaningCount;
 
   /// Tamu: tap jenis membuka login. Null = label diam.
   final VoidCallback? onLockedTap;
@@ -278,6 +73,17 @@ class VoteDeckWordFace extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          if (meaningCount > 1) ...[
+            Text(
+              'Makna ke-$orderIndex dari $meaningCount',
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const Gap(6),
+          ],
           Text(
             lemma,
             style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
@@ -291,36 +97,45 @@ class VoteDeckWordFace extends StatelessWidget {
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
-          if (wordType.isNotEmpty) ...[
+          // Tamu: tile terkunci (tap = login). User login: chip read-only.
+          if (onLockedTap != null) ...[
             const Gap(12),
-            if (onLockedTap == null)
-              Text(
-                wordType,
-                style: theme.typography.body.xs.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-                textAlign: TextAlign.center,
-              )
-            else
-              SwipeExemptRegion(
-                child: FTileGroup(
-                  children: [
-                    FTile(
-                      title: const Text('Jenis entri'),
-                      details: Text(wordType),
-                      suffix: Icon(
-                        FLucideIcons.chevronRight,
-                        color: theme.colors.mutedForeground,
-                      ),
-                      onPress: onLockedTap,
+            SwipeExemptRegion(
+              child: FTileGroup(
+                children: [
+                  FTile(
+                    title: const Text('Jenis entri'),
+                    details: Text(wordTypeLabel),
+                    suffix: Icon(
+                      FLucideIcons.chevronRight,
+                      color: theme.colors.mutedForeground,
                     ),
-                  ],
-                ),
+                    onPress: onLockedTap,
+                  ),
+                ],
               ),
+            ),
+          ] else if (wordClassLabel.isNotEmpty || wordTypeLabel != 'Kata') ...[
+            const Gap(12),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                if (wordClassLabel.isNotEmpty)
+                  FBadge(
+                    variant: FBadgeVariant.secondary,
+                    child: Text(wordClassLabel),
+                  ),
+                if (wordTypeLabel != 'Kata')
+                  FBadge(
+                    variant: FBadgeVariant.outline,
+                    child: Text(wordTypeLabel),
+                  ),
+              ],
+            ),
           ],
         ],
       ),

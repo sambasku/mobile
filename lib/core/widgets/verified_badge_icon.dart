@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
-
 import '../../shared/utils/info_bottom_sheet.dart';
 import '../theme/f_colors_x.dart';
 
-/// Ikon `badgeCheck` untuk kata/akun terverifikasi.
-/// Warna [FColorsX.success] menyesuaikan light/dark.
+/// Lencana `badgeCheck` biru untuk PERAN verifikator (di samping nama akun).
+///
+/// Biru [FColorsX.verifierBlue] supaya tidak tertukar dengan hijau status
+/// kata terverifikasi (`WordApprovedBadgeIcon`).
 class VerifiedBadgeIcon extends StatelessWidget {
   const VerifiedBadgeIcon({super.key, this.size = 18, this.onTap});
 
@@ -20,7 +21,7 @@ class VerifiedBadgeIcon extends StatelessWidget {
     final icon = Icon(
       FLucideIcons.badgeCheck,
       size: size,
-      color: context.theme.colors.success,
+      color: context.theme.colors.verifierBlue,
     );
     if (onTap == null) return icon;
     return Semantics(
@@ -35,12 +36,12 @@ class VerifiedBadgeIcon extends StatelessWidget {
   }
 }
 
-/// Penjelasan centang hijau di samping akun. Label teks "Verifikator" tidak
+/// Penjelasan lencana biru di samping akun. Label teks "Verifikator" tidak
 /// dipakai lagi di UI - ikon sudah mewakilinya.
 Future<void> showVerifierBadgeInfo(BuildContext context) => showAppInfoSheet(
-  context,
-  title: 'Verifikator',
-  message:
-      'Centang hijau menandai akun verifikator: warga yang memeriksa usulan '
-      'kata dan kontribusi sebelum tayang.',
-);
+      context,
+      title: 'Verifikator',
+      message:
+          'Lencana biru menandai akun verifikator: warga yang memeriksa usulan '
+          'kata dan kontribusi sebelum tayang.',
+    );

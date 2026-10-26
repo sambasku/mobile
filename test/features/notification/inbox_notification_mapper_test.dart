@@ -71,6 +71,38 @@ void main() {
     expect(item.actionValue, '01W');
   });
 
+  test('typeLabel word_example', () {
+    final item = parseInboxNotification({
+      'id': '01HNOTIF000000000000000013',
+      'type': 'word_example',
+      'title': 'Contoh baru',
+      'body': 'Bujang menambahkan contoh kalimat di "kete".',
+      'target_kind': 'word',
+      'target_id': '01W',
+      'action_kind': 'word',
+      'action_value': '01W',
+      'read_at': null,
+      'created_at': '2026-09-21T00:00:00.000Z',
+    });
+    expect(item.typeLabel, 'Contoh');
+  });
+
+  test('typeLabel word_audio', () {
+    final item = parseInboxNotification({
+      'id': '01HNOTIF000000000000000014',
+      'type': 'word_audio',
+      'title': 'Pelafalan baru',
+      'body': 'Bujang merekam pelafalan "kete".',
+      'target_kind': 'word',
+      'target_id': '01W',
+      'action_kind': 'word',
+      'action_value': '01W',
+      'read_at': null,
+      'created_at': '2026-09-21T00:00:00.000Z',
+    });
+    expect(item.typeLabel, 'Pelafalan');
+  });
+
   test('parseInboxNotification campaign image_url', () {
     final item = parseInboxNotification({
       'id': '01HNOTIF000000000000000004',

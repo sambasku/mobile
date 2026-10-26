@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import '../../domain/entities/event.dart';
@@ -32,6 +34,7 @@ class EventRemoteDatasource {
     String? before,
     String? categoryId,
     String? villageId,
+    String? regionId,
     String? placeId,
     String? q,
     bool notEnded = false,
@@ -44,8 +47,8 @@ class EventRemoteDatasource {
         if (before != null && before.isNotEmpty) 'before': before,
         if (categoryId != null && categoryId.isNotEmpty)
           'category_id': categoryId,
-        if (villageId != null && villageId.isNotEmpty)
-          'village_id': villageId,
+        if (villageId != null && villageId.isNotEmpty) 'village_id': villageId,
+        if (regionId != null && regionId.isNotEmpty) 'region_id': regionId,
         if (placeId != null && placeId.isNotEmpty) 'place_id': placeId,
         if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
         if (notEnded) 'not_ended': '1',
@@ -136,6 +139,32 @@ class EventContributionApi {
         '/api/v1/event-contributions/${Uri.encodeComponent(id)}',
       ),
     );
+  }
+
+  /// Unggah poster acara (wajib file, bukan URL) - multipart ke
+  /// `POST /api/v1/event-contributions/images`, hasilnya URL publik.
+  Future<String> uploadPoster(File file) async {
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.uri.pathSegments.last,
+      ),
+    });
+    final res = await _send(
+      () => _dio.post<dynamic>(
+        '/api/v1/event-contributions/images',
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
+      ),
+    );
+    final url = _dataMap(res.data)['url'];
+    if (url is! String || url.isEmpty) {
+      throw const EventContributionException('Unggah poster gagal');
+    }
+    return url;
   }
 
   Future<Response<dynamic>> _send(

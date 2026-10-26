@@ -134,10 +134,10 @@ class _GuestDeck extends ConsumerWidget {
               }
               final w = items.first;
               return _CardShell(
-                child: VoteDeckWordFace(
+                child: VoteDeckMeaningFace(
                   lemma: w.lemma,
                   sense: w.sense,
-                  wordType: w.wordTypeLabel,
+                  wordTypeLabel: w.wordTypeLabel,
                   onLockedTap: () => context.push('/login'),
                 ),
               );
@@ -280,7 +280,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         }
 
         final item = state.items.first;
-        if (state.items.length > 1) _prefetchDetail(state.items[1].id);
+        if (state.items.length > 1) _prefetchDetail(state.items[1].wordId);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -338,7 +338,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                     ),
               onRewind: () => _rewind(context, ref),
               // Kartu tidak digeser: deck keepAlive, kembali ke kata yang sama.
-              onFix: () => context.push('/suggest-edit/${item.id}'),
+              onFix: () => context.push('/suggest-edit/${item.wordId}'),
             ),
           ],
         );
@@ -359,12 +359,12 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   /// sudah dinilai; logikanya di controller karena widget ini dispose
   /// selama route root terbuka.
   Future<void> _openDetail(BuildContext context, VoteDeckItem item) async {
-    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
+    ref.read(wordDetailAudioPlayerProvider(item.wordId).notifier).stop();
     final deck = ref.read(voteDeckControllerProvider.notifier);
     final dropped = await deck.openDetail(
       item,
       () => context.push(
-        DictionaryRouter.detail.path.replaceFirst(':id', item.id),
+        DictionaryRouter.detail.path.replaceFirst(':id', item.wordId),
       ),
     );
     // Context widget ini mungkin sudah dispose: toast lewat navigator root
@@ -398,7 +398,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   }) async {
     if (_rewinding) return false;
     // AnimatedSwitcher menahan kartu lama ~220ms; audio berhenti saat swipe.
-    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
+    ref.read(wordDetailAudioPlayerProvider(item.wordId).notifier).stop();
 
     if (direction == VoteDeckSwipeDirection.skip) {
       ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item);
@@ -416,7 +416,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         'direction': direction == VoteDeckSwipeDirection.agree
             ? 'right'
             : 'left',
-        'word_id': item.id,
+        'meaning_id': item.id,
       },
     );
     return true;

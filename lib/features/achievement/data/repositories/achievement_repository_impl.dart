@@ -17,14 +17,13 @@ class AchievementRepositoryImpl implements AchievementRepository {
   Future<Either<AchievementFailure, List<Achievement>>> listCatalog({
     String? rewardType,
     String? category,
-  }) =>
-      _guard(
-        () => _remote.listCatalog(
-          rewardType: rewardType,
-          category: category,
-          limit: 50,
-        ),
-      );
+  }) => _guard(
+    () => _remote.listCatalog(
+      rewardType: rewardType,
+      category: category,
+      limit: 50,
+    ),
+  );
 
   @override
   Future<Either<AchievementFailure, List<Achievement>>> listByUsername(
@@ -35,14 +34,10 @@ class AchievementRepositoryImpl implements AchievementRepository {
   Future<Either<AchievementFailure, List<Achievement>>> listMine({
     String? rewardType,
     String? category,
-  }) =>
-      _guard(
-        () => _remote.listMine(
-          rewardType: rewardType,
-          category: category,
-          limit: 50,
-        ),
-      );
+  }) => _guard(
+    () =>
+        _remote.listMine(rewardType: rewardType, category: category, limit: 50),
+  );
 
   @override
   Future<Either<AchievementFailure, String?>> setBorder(String? awardId) async {
@@ -90,22 +85,22 @@ class AchievementRepositoryImpl implements AchievementRepository {
   }
 
   Achievement _mapAchievement(AchievementDto dto) => Achievement(
-        id: dto.id,
-        code: dto.code,
-        title: dto.title,
-        description: dto.description,
-        category: dto.category,
-        rewardType: dto.rewardType,
-        badgeUrl: dto.badgeUrl,
-        family: dto.family,
-        level: dto.level,
-        isActive: dto.isActive,
-        userAchievementId: dto.userAchievementId,
-        awardedAt: dto.awardedAt == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(dto.awardedAt! * 1000),
-        isActiveBorder: dto.isActiveBorder,
-      );
+    id: dto.id,
+    code: dto.code,
+    title: dto.title,
+    description: dto.description,
+    category: dto.category,
+    rewardType: dto.rewardType,
+    badgeUrl: dto.badgeUrl,
+    family: dto.family,
+    level: dto.level,
+    isActive: dto.isActive,
+    userAchievementId: dto.userAchievementId,
+    awardedAt: dto.awardedAt == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(dto.awardedAt! * 1000),
+    isActiveBorder: dto.isActiveBorder,
+  );
 
   AchievementFailure _mapDio(DioException error) {
     final data = error.response?.data;
@@ -113,15 +108,19 @@ class AchievementRepositoryImpl implements AchievementRepository {
       final message = data['message'];
       final code = data['error_code'];
       if (message is String && message.isNotEmpty) {
-        return AchievementFailure(message, errorCode: code is String ? code : null);
+        return AchievementFailure(
+          message,
+          errorCode: code is String ? code : null,
+        );
       }
     }
     return AchievementFailure(switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     });
   }

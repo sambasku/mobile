@@ -153,10 +153,10 @@ class VerifierApplicationRepositoryImpl
 
   String _fallback(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi nanti.';
+      return 'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
     }
     return 'Terjadi kesalahan, coba lagi';
   }

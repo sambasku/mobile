@@ -10,9 +10,12 @@ import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../data/culinary_contribution_api.dart';
 import '../../domain/entities/cuisine.dart';
 import '../providers/cuisine_providers.dart';
+import '../widgets/culinary_action_sheets.dart';
 
 void _back(BuildContext context) =>
     context.canPop() ? context.pop() : context.go('/explore');
@@ -26,14 +29,12 @@ class CuisineDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cuisineAsync = ref.watch(cuisineProvider);
-    final item = cuisineAsync.value?.where((k) => k.slug == slug).firstOrNull;
+    final cuisineAsync = ref.watch(cuisineBySlugProvider(slug));
+    final item = cuisineAsync.value?.toEntity();
     if (item != null) {
       // Log cuisine_open sekali saat detail tampil (bukan di build stateless
       // kartu list - bisa multi-fire).
-      unawaited(
-        AnalyticsService.instance.logCuisineOpen(slug: item.slug),
-      );
+      unawaited(AnalyticsService.instance.logCuisineOpen(slug: item.slug));
       return _Body(item: item);
     }
 
@@ -102,15 +103,46 @@ class _ErrorBody extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends ConsumerStatefulWidget {
   const _Body({required this.item});
 
   final Cuisine item;
 
   @override
+  ConsumerState<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends ConsumerState<_Body> {
+  Future<void> _report() async {
+    if (await culinaryNeedsAuth(context, ref)) return;
+    if (!mounted) return;
+    final reason = await showCulinaryReasonSheet(context, isPlace: false);
+    if (reason == null || !mounted) return;
+    try {
+      await ref
+          .read(culinaryContributionApiProvider)
+          .reportCuisine(widget.item.slug, reasonCode: reason);
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        title: 'Laporan terkirim',
+        message: 'Terima kasih. Admin akan memeriksa kuliner ini.',
+      );
+    } on CulinaryException catch (e) {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        title: 'Gagal melapor',
+        message: e.message,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final topInset = MediaQuery.paddingOf(context).top;
+    final item = widget.item;
 
     return FScaffold(
       childPad: false,
@@ -133,11 +165,8 @@ class _Body extends StatelessWidget {
                       ),
                     ),
                     const Gap(8),
-                    FBadge(
-                      variant: FBadgeVariant.secondary,
-                      child: Text(item.region),
-                    ),
-                    const Gap(12),
+                    // Region disembunyikan: promosi kuliner di level
+                    // kabupaten, tidak perlu badge "Sambas" per item.
                     Text(
                       item.description,
                       style: theme.typography.body.sm.copyWith(height: 1.5),
@@ -191,6 +220,49 @@ class _Body extends StatelessWidget {
                           ),
                         ),
                     ],
+                    const Gap(20),
+                    FTileGroup(
+                      label: const Text('Bantu lengkapi'),
+                      children: [
+                        FTile(
+                          prefix: const Icon(FLucideIcons.pencil, size: 18),
+                          title: const Text('Usul perbaikan data'),
+                          subtitle: const Text(
+                            'Salah nama, deskripsi, atau bahan?',
+                          ),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: () async {
+                            if (await culinaryNeedsAuth(context, ref)) return;
+                            if (!context.mounted) return;
+                            await showCulinaryEditSheet(
+                              context,
+                              ref,
+                              target: CulinaryEditTarget.cuisine(
+                                id: item.id,
+                                name: item.name,
+                                description: item.description,
+                                ingredients: item.ingredients,
+                              ),
+                            );
+                          },
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.flag, size: 18),
+                          title: const Text('Laporkan masalah'),
+                          subtitle: const Text(
+                            'Data menyesatkan atau duplikat',
+                          ),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: _report,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -294,10 +366,9 @@ void _open(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   if (uri == null || !uri.isScheme('https')) return;
   // Timeout: handler external di sebagian ROM bisa menggantung.
-  launchExternalUrl(uri).timeout(
-    const Duration(seconds: 8),
-    onTimeout: () => false,
-  );
+  launchExternalUrl(
+    uri,
+  ).timeout(const Duration(seconds: 8), onTimeout: () => false);
 }
 
 /// Kredit satu baris: "Label: nama · lisensi". Nama & lisensi bisa di-tap.

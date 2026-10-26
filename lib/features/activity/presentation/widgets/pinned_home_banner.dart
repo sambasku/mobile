@@ -100,63 +100,66 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                         label:
                             'Pengumuman: ${a.title}${a.expired ? ', sudah berakhir' : ''}',
                         child: GestureDetector(
-                        onTap: () => context.pushNamed(
-                          ActivityRouter.announcementDetail.name,
-                          pathParameters: {'id': a.id},
-                          extra: a,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: theme.colors.secondary,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: accent.withValues(alpha: 0.35),
-                            ),
+                          onTap: () => context.pushNamed(
+                            ActivityRouter.announcementDetail.name,
+                            pathParameters: {'id': a.id},
+                            extra: a,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Row(
-                            children: [
-                              Icon(FLucideIcons.pin, color: accent, size: 20),
-                              const Gap(10),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      a.title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.typography.body.sm.copyWith(
-                                        fontWeight: FontWeight.w700,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: theme.colors.secondary,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: accent.withValues(alpha: 0.35),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        a.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme.typography.body.sm
+                                            .copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
-                                    ),
-                                    const Gap(2),
-                                    Text(
-                                      announcementPreviewText(a.body, a.bodyType),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.typography.body.sm.copyWith(
-                                        color: theme.colors.mutedForeground,
-                                        fontSize: 12,
+                                      const Gap(2),
+                                      Text(
+                                        announcementPreviewText(
+                                          a.body,
+                                          a.bodyType,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: theme.typography.body.sm
+                                            .copyWith(
+                                              color:
+                                                  theme.colors.mutedForeground,
+                                              fontSize: 12,
+                                            ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Icon(
-                                FLucideIcons.chevronRight,
-                                size: 18,
-                                color: theme.colors.mutedForeground,
-                              ),
-                            ],
+                                // Penanda dipin (pengganti chevron): kartu
+                                // bukan navigasi bertingkat, cukup badge.
+                                Icon(FLucideIcons.pin, size: 18, color: accent),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -176,9 +179,7 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                       shape: BoxShape.circle,
                       color: i == page
                           ? accent
-                          : theme.colors.mutedForeground.withValues(
-                              alpha: 0.4,
-                            ),
+                          : theme.colors.mutedForeground.withValues(alpha: 0.4),
                     ),
                   ),
               ],
@@ -233,12 +234,6 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       children: [
-                        Icon(
-                          FLucideIcons.pin,
-                          color: context.theme.colors.primary,
-                          size: 20,
-                        ),
-                        const Gap(10),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -248,22 +243,28 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                                 'Judul pengumuman prioritas',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: context.theme.typography.body.sm.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: context.theme.typography.body.sm
+                                    .copyWith(fontWeight: FontWeight.w700),
                               ),
                               const Gap(2),
                               Text(
                                 'cuplikan isi pengumuman',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: context.theme.typography.body.sm.copyWith(
-                                  color: context.theme.colors.mutedForeground,
-                                  fontSize: 12,
-                                ),
+                                style: context.theme.typography.body.sm
+                                    .copyWith(
+                                      color:
+                                          context.theme.colors.mutedForeground,
+                                      fontSize: 12,
+                                    ),
                               ),
                             ],
                           ),
+                        ),
+                        Icon(
+                          FLucideIcons.pin,
+                          color: context.theme.colors.primary,
+                          size: 18,
                         ),
                       ],
                     ),

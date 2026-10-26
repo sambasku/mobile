@@ -174,7 +174,7 @@ void main() {
     await pumpContribute(
       tester,
       failure: const ContributionFailure(
-        'Terlalu banyak usulan dikirim. Coba lagi nanti.',
+        'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.',
         errorCode: 'RATE_LIMITED',
       ),
     );
@@ -184,7 +184,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(FToast),
-        matching: find.text('Terlalu banyak usulan dikirim. Coba lagi nanti.'),
+        matching: find.text('Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.'),
       ),
       findsOneWidget,
     );
@@ -256,6 +256,9 @@ void main() {
 
     expect(find.text('Kata / ungkapan Sambas *'), findsOneWidget);
     expect(find.text('Terjemahan Indonesia *'), findsOneWidget);
+    // "Jenis" ada di bawah fold (ListView lazy) - scroll dulu sebelum cek.
+    await tester.drag(find.byType(ListView), const Offset(0, -400));
+    await tester.pump();
     expect(find.text('Jenis'), findsOneWidget);
     expect(find.text('Dialek'), findsNothing);
     expect(find.text('Contoh'), findsNothing);

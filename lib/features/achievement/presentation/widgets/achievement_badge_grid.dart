@@ -32,8 +32,7 @@ class AchievementBadgeGrid extends StatelessWidget {
         continue;
       }
       final current = best[family];
-      if (current == null ||
-          (item.level ?? 0) > (current.level ?? 0)) {
+      if (current == null || (item.level ?? 0) > (current.level ?? 0)) {
         best[family] = item;
       }
     }
@@ -45,7 +44,7 @@ class AchievementBadgeGrid extends StatelessWidget {
     final theme = context.theme;
     if (items.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(
           emptyLabel,
           textAlign: TextAlign.center,

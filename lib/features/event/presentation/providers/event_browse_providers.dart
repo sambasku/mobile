@@ -8,12 +8,16 @@ import 'event_providers.dart';
 class EventBrowseQuery {
   const EventBrowseQuery({
     this.categoryId,
+    this.regionId,
     this.q = '',
-    this.notEnded = true,
+    this.notEnded = false,
     this.order = 'asc',
   });
 
   final String? categoryId;
+
+  /// Filter kecamatan (ULID atau slug katalog publik).
+  final String? regionId;
   final String q;
 
   /// Hanya acara yang belum selesai.
@@ -26,12 +30,13 @@ class EventBrowseQuery {
   bool operator ==(Object other) =>
       other is EventBrowseQuery &&
       other.categoryId == categoryId &&
+      other.regionId == regionId &&
       other.q == q &&
       other.notEnded == notEnded &&
       other.order == order;
 
   @override
-  int get hashCode => Object.hash(categoryId, q, notEnded, order);
+  int get hashCode => Object.hash(categoryId, regionId, q, notEnded, order);
 }
 
 class EventBrowseState {
@@ -68,9 +73,7 @@ class EventBrowseState {
 }
 
 final eventBrowseProvider = AsyncNotifierProvider.autoDispose
-    .family<EventBrowse, EventBrowseState, EventBrowseQuery>(
-      EventBrowse.new,
-    );
+    .family<EventBrowse, EventBrowseState, EventBrowseQuery>(EventBrowse.new);
 
 class EventBrowse extends AsyncNotifier<EventBrowseState> {
   EventBrowse(this.query);
@@ -85,6 +88,7 @@ class EventBrowse extends AsyncNotifier<EventBrowseState> {
         .read(eventRepositoryProvider)
         .listPage(
           categoryId: query.categoryId,
+          regionId: query.regionId,
           q: query.q,
           notEnded: query.notEnded,
           order: query.order,
@@ -98,6 +102,7 @@ class EventBrowse extends AsyncNotifier<EventBrowseState> {
   }
 
   Future<void> loadMore() async {
+    if (!ref.mounted) return;
     final current = state.value;
     if (current == null ||
         !current.hasMore ||
@@ -112,11 +117,13 @@ class EventBrowse extends AsyncNotifier<EventBrowseState> {
           .listPage(
             before: current.nextCursor,
             categoryId: query.categoryId,
+            regionId: query.regionId,
             q: query.q,
             notEnded: query.notEnded,
             order: query.order,
             limit: eventsPageSize,
           );
+      if (!ref.mounted) return;
       final s = state.value ?? current;
       state = AsyncData(
         s.copyWith(
@@ -128,24 +135,26 @@ class EventBrowse extends AsyncNotifier<EventBrowseState> {
         ),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       final s = state.value ?? current;
       state = AsyncData(s.copyWith(isLoadingMore: false, loadMoreFailed: true));
     }
   }
 
   /// Muat ulang. `keepItems` = jangan kosongkan list lama saat refresh.
+  ///
+  /// Tanpa `keepItems` layar pindah ke skeleton; dengan `keepItems` grid tetap
+  /// terpasang sehingga `ScrollController` tidak lepas dan posisi scroll tidak
+  /// balik ke atas saat pull-to-refresh.
   Future<void> reload({bool keepItems = false}) async {
-    final previous = state.value?.items;
-    state = const AsyncLoading();
-    try {
-      final next = await _fetchState();
-      if (keepItems && previous != null && previous.isNotEmpty) {
-        state = AsyncData(next.copyWith(items: previous));
-      } else {
-        state = AsyncData(next);
-      }
-    } catch (e, st) {
-      state = AsyncError(e, st);
-    }
+    if (!ref.mounted) return;
+    final previous = state.value;
+    if (!keepItems) state = const AsyncLoading();
+    final next = await AsyncValue.guard(_fetchState);
+    if (!ref.mounted) return;
+    // Refresh gagal: pertahankan data lama (jangan ganti layar jadi error).
+    state = keepItems && next.hasError && previous != null
+        ? AsyncData(previous)
+        : next;
   }
 }

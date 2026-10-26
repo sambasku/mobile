@@ -8,8 +8,9 @@ part 'achievement_providers.g.dart';
 /// Milik user login: owned + locked (GET /me/achievements).
 @riverpod
 Future<List<Achievement>> myAchievements(Ref ref, {String? rewardType}) async {
-  final result =
-      await ref.watch(getMyAchievementsUseCaseProvider)(rewardType: rewardType);
+  final result = await ref.watch(getMyAchievementsUseCaseProvider)(
+    rewardType: rewardType,
+  );
   return result.match((failure) => throw failure, (items) => items);
 }
 
@@ -23,8 +24,9 @@ Future<List<Achievement>> userAchievements(Ref ref, String username) async {
 /// Border aktif milik user login (overlay avatar profil sendiri). null = tanpa bingkai.
 @riverpod
 Future<ActiveBorder?> myActiveBorder(Ref ref) async {
-  final items =
-      await ref.watch(myAchievementsProvider(rewardType: 'profile_border').future);
+  final items = await ref.watch(
+    myAchievementsProvider(rewardType: 'profile_border').future,
+  );
   for (final item in items) {
     if (item.isActiveBorder && item.badgeUrl != null) {
       return ActiveBorder(

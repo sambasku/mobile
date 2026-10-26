@@ -18,6 +18,10 @@ enum FeedActivityKind {
   voteDown,
   announcement,
   placePhoto,
+  placeListing,
+  event,
+  usaha,
+  culinary,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -58,6 +62,14 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.announcement;
     case 'place_photo':
       return FeedActivityKind.placePhoto;
+    case 'place_listing':
+      return FeedActivityKind.placeListing;
+    case 'event':
+      return FeedActivityKind.event;
+    case 'usaha':
+      return FeedActivityKind.usaha;
+    case 'culinary':
+      return FeedActivityKind.culinary;
     default:
       return null;
   }

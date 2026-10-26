@@ -225,9 +225,13 @@ class ContributionRepositoryImpl implements ContributionRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return const ContributionFailure('Koneksi lambat, coba lagi nanti');
+        return const ContributionFailure(
+          'Server lama merespons. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.connectionError:
-        return const ContributionFailure('Tidak ada koneksi internet');
+        return const ContributionFailure(
+          'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.badCertificate:
       case DioExceptionType.cancel:
       case DioExceptionType.badResponse:
@@ -241,13 +245,13 @@ class ContributionRepositoryImpl implements ContributionRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak usulan dikirim. Coba lagi nanti.';
+      return 'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.';
     }
     if (statusCode == 400) {
-        return 'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
+      return 'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
     }
     return 'Terjadi kesalahan saat mengirim usulan, coba lagi';
   }

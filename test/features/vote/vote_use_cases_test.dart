@@ -65,11 +65,11 @@ class _FakeVoteRepository implements VoteRepository {
   }
 
   @override
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async =>
       Either.right(unit);
 
   @override
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId) async =>
       Either.right(unit);
 }
 

@@ -51,8 +51,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     }, [autofocus, isAuth]);
 
     final trimmed = body.text.trim();
-    final linkTrimmed =
-        shareSocialLink.value ? link.text.trim() : '';
+    final linkTrimmed = shareSocialLink.value ? link.text.trim() : '';
     final canSubmit = isAuth && trimmed.isNotEmpty && !submitting.value;
 
     void promptLogin() {
@@ -178,7 +177,9 @@ class CreateDiscussionPage extends HookConsumerWidget {
                     children: [
                       FTile(
                         title: const Text('Semua gambar gagal'),
-                        subtitle: const Text('Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?'),
+                        subtitle: const Text(
+                          'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?',
+                        ),
                       ),
                       FTile(
                         title: const Text(''),
@@ -212,10 +213,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           linkUrl: linkTrimmed.isEmpty ? null : linkTrimmed,
           images: [
             for (final u in ready)
-              DiscussionImageRef(
-                url: u.url,
-                providerFileId: u.providerFileId,
-              ),
+              DiscussionImageRef(url: u.url, providerFileId: u.providerFileId),
           ],
         );
 
@@ -276,7 +274,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-              title: const Text('Mulai diskusi'),
+        title: const Text('Mulai diskusi'),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -290,10 +288,10 @@ class CreateDiscussionPage extends HookConsumerWidget {
         children: [
           const FAlert(
             icon: Icon(FLucideIcons.info),
-              title: Text('Thread kamu dicek dulu sebelum tayang'),
-              subtitle: Text(
-                'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.',
-              ),
+            title: Text('Thread kamu dicek dulu sebelum tayang'),
+            subtitle: Text(
+              'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.',
+            ),
           ),
           const Gap(16),
           if (!isAuth) ...[
@@ -311,7 +309,8 @@ class CreateDiscussionPage extends HookConsumerWidget {
             focusNode: bodyFocus,
             enabled: !submitting.value && isAuth,
             label: const Text('Deskripsi'),
-            hint: 'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.',
+            hint:
+                'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.',
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             minLines: 4,
@@ -324,9 +323,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
               children: [
                 FButton(
                   variant: FButtonVariant.ghost,
-                  onPress: submitting.value || !isAuth
-                      ? null
-                      : pasteClipboard,
+                  onPress: submitting.value || !isAuth ? null : pasteClipboard,
                   prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
                   child: const Text('Tempel'),
                 ),
@@ -378,7 +375,8 @@ class CreateDiscussionPage extends HookConsumerWidget {
               control: FTextFieldControl.managed(controller: link),
               enabled: !submitting.value && isAuth,
               label: const Text('Tautan'),
-              hint: 'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://',
+              hint:
+                  'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://',
               keyboardType: TextInputType.url,
               textInputAction: TextInputAction.done,
             ),
@@ -444,9 +442,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
                 images.value = const [];
               },
               upload: (File file, {required bool isPrimary}) async {
-                final uploader = ref.read(
-                  discussionImageUploadServiceProvider,
-                );
+                final uploader = ref.read(discussionImageUploadServiceProvider);
                 try {
                   final refImg = await uploader.upload(file);
                   return Either.right(
@@ -473,15 +469,11 @@ class CreateDiscussionPage extends HookConsumerWidget {
                     );
                   }
                   return Either.left(
-                    const AttachmentUploadFailure(
-                      'Satu gambar gagal diunggah',
-                    ),
+                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
                   );
                 } catch (_) {
                   return Either.left(
-                    const AttachmentUploadFailure(
-                      'Satu gambar gagal diunggah',
-                    ),
+                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
                   );
                 }
               },
@@ -518,8 +510,10 @@ String _mapDio(DioException error) {
   return switch (error.type) {
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
-    DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-    DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+    DioExceptionType.receiveTimeout =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.',
+    DioExceptionType.connectionError =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
     _ => 'Terjadi kesalahan, coba lagi',
   };
 }

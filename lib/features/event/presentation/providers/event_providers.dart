@@ -30,12 +30,9 @@ Future<List<EventCategoryRef>> eventCategories(Ref ref) =>
 /// Dipakai di detail wisata. Null = offline/error - section disembunyikan.
 @riverpod
 Future<List<Event>> eventsForPlace(Ref ref, String placeId) async {
-  final page = await ref.watch(eventRepositoryProvider).listPage(
-    placeId: placeId,
-    notEnded: true,
-    order: 'asc',
-    limit: 10,
-  );
+  final page = await ref
+      .watch(eventRepositoryProvider)
+      .listPage(placeId: placeId, notEnded: true, order: 'asc', limit: 10);
   return page.events;
 }
 
@@ -44,11 +41,8 @@ Future<List<Event>> eventsForPlace(Ref ref, String placeId) async {
 /// Dipakai di detail desa. Null = offline/error - section disembunyikan.
 @riverpod
 Future<List<Event>> eventsForVillage(Ref ref, String villageId) async {
-  final page = await ref.watch(eventRepositoryProvider).listPage(
-    villageId: villageId,
-    notEnded: true,
-    order: 'asc',
-    limit: 10,
-  );
+  final page = await ref
+      .watch(eventRepositoryProvider)
+      .listPage(villageId: villageId, notEnded: true, order: 'asc', limit: 10);
   return page.events;
 }

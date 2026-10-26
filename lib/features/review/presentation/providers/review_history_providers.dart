@@ -56,9 +56,12 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
   String? get statusFilter => _statusFilter;
 
   Future<void> setStatusFilter(String? status) async {
+    if (!ref.mounted) return;
     _statusFilter = status;
     state = const AsyncLoading();
-    state = await AsyncValue.guard(_fetch);
+    final next = await AsyncValue.guard(_fetch);
+    if (!ref.mounted) return;
+    state = next;
   }
 
   Future<ReviewHistoryState> _fetch({String? cursor}) async {
@@ -81,6 +84,7 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
   }
 
   Future<void> loadMore() async {
+    if (!ref.mounted) return;
     final current = state.value;
     if (current == null || !current.hasMore || current.nextCursor == null) {
       return;
@@ -92,6 +96,7 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
       limit: _limit,
       cursor: current.nextCursor,
     );
+    if (!ref.mounted) return;
     result.fold(
       (failure) => state = AsyncError(failure, StackTrace.current),
       (page) {

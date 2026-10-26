@@ -29,6 +29,38 @@ void main() {
     expect(out.single.isPrimary, isTrue);
   });
 
+  test('guard submit: slot uploading/error memblokir, urls hanya slot siap', () {
+    const ready = AttachmentImageSlot(
+      id: '1',
+      localPath: '/a.jpg',
+      uploaded: AttachmentUploadedImage(
+        url: 'https://cdn/a.jpg',
+        providerFileId: 'file_a',
+      ),
+    );
+    const uploading = AttachmentImageSlot(
+      id: '2',
+      localPath: '/b.jpg',
+      uploading: true,
+    );
+    const errored = AttachmentImageSlot(
+      id: '3',
+      localPath: '/c.jpg',
+      error: true,
+    );
+
+    // Kontrak yang dipakai form wisata/kuliner/acara/usaha sebelum submit.
+    final busy = [ready, uploading].any((s) => s.uploading);
+    final failed = [ready, errored].any((s) => s.error);
+    expect(busy, isTrue);
+    expect(failed, isTrue);
+
+    final urls = [for (final s in [ready, uploading, errored]) s.uploaded?.url]
+        .whereType<String>()
+        .toList();
+    expect(urls, ['https://cdn/a.jpg']);
+  });
+
   test('copyWith clearUploaded menghapus hasil upload', () {
     const slot = AttachmentImageSlot(
       id: '1',

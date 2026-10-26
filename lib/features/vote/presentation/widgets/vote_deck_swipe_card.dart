@@ -49,7 +49,7 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
       enabled: widget.enabled,
       // Isi kartu (detail kata) bisa panjang: swipe-atas lewati hanya saat
       // isi muat, selain itu lewati lewat tombol.
-      allowNestedVerticalScroll: true,
+      allowNestedVerticalScroll: false,
       fallbackHeight: 240,
       hintId: 'vote-deck',
       positiveLabel: 'Sudah pas',

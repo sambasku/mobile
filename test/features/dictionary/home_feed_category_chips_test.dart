@@ -142,6 +142,33 @@ void main() {
     expect(find.textContaining('aktivitas kategori all'), findsNothing);
   });
 
+  testWidgets('chip terpilih tetap benar & bisa di-tap saat kategori memuat', (
+    tester,
+  ) async {
+    final repo = RecordingRepository();
+    // get() ditahan supaya state loading (isLoading, belum hasLoaded) terlihat.
+    await pumpHome(tester, repo);
+    await tester.pumpAndSettle();
+
+    // Tap lalu jangan settle: masih dalam frame loading kategori baru.
+    await tester.tap(find.text('Warga'));
+    await tester.pump();
+
+    // Dulu: seluruh scroll view diganti skeleton yang chip-nya hard-code
+    // "Semua" + disabled -> pilihan terlihat balik ke Semua + tak bisa tap.
+    expect(find.byKey(const ValueKey('feed_category_chips')), findsOneWidget);
+    final wargaChip = find.ancestor(
+      of: find.text('Warga'),
+      matching: find.byType(FButton),
+    );
+    expect(
+      tester.widget<FButton>(wargaChip).variant,
+      FButtonVariant.primary,
+      reason: 'chip yang di-tap harus tampil terpilih selama loading',
+    );
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('baris chip menempel di bawah app bar saat feed di-scroll', (
     tester,
   ) async {

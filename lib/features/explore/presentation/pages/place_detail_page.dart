@@ -26,11 +26,11 @@ import '../../../event/presentation/widgets/event_ui.dart';
 import '../place_ui.dart';
 import '../providers/places_providers.dart';
 import '../providers/regions_providers.dart';
+import '../utils/explore_back.dart';
 
 const _heroAspect = 16 / 10;
 
-void _back(BuildContext context) =>
-    context.canPop() ? context.pop() : context.go('/explore');
+void _back(BuildContext context) => popOrGoExplore(context);
 
 /// Detail satu Place: hero carousel full-bleed + atribusi, badge kategori/type,
 /// info jam/kontak, deskripsi, "Lihat di peta", "Dekat sini" (related place),
@@ -45,6 +45,18 @@ class PlaceDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Back sistem saat halaman dibuka dari share/deep link (tanpa stack)
+    // tidak boleh menutup app - kembali ke tab Eksplorasi.
+    return PopScope(
+      canPop: exploreCanPop(context),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) popOrGoExplore(context);
+      },
+      child: _build(context, ref),
+    );
+  }
+
+  Widget _build(BuildContext context, WidgetRef ref) {
     final placesAsync = ref.watch(placesProvider);
     final place = placesAsync.value?.where((p) => p.slug == slug).firstOrNull;
     if (place != null) return _Body(place: place, entry: entry);

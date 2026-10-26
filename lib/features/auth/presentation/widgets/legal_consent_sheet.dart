@@ -87,7 +87,7 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
       }
     } catch (_) {
       consents = null;
-      loadError = 'Gagal memuat dokumen legal. Cek koneksi kamu ya.';
+      loadError = 'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
     }
   }
 
@@ -175,7 +175,7 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                         FTile(
                           title: const Text('Coba muat ulang'),
                           subtitle: const Text(
-                            'Butuh koneksi untuk mengambil versi dokumen terbaru.',
+                            'Versi dokumen terbaru belum bisa diambil. Coba lagi dalam beberapa saat.',
                           ),
                           suffix: FButton(
                             variant: FButtonVariant.outline,

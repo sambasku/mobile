@@ -445,7 +445,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final code = data is Map ? data['error_code'] as String? : null;
     final message = data is Map && data['message'] is String
         ? data['message'] as String
-        : 'Gagal mengirim usulan. Periksa koneksi lalu coba lagi.';
+        : 'Gagal mengirim usulan. Coba lagi dalam beberapa saat.';
 
     if (code == 'RATE_LIMITED') {
       showFToast(context: context, title: Text(message));

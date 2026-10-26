@@ -371,7 +371,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
           padding: const EdgeInsets.all(24),
           child: Text(
             _degraded
-                ? 'Latar tidak tersedia. Coba lagi nanti.'
+                ? 'Latar tidak tersedia. Coba lagi dalam beberapa saat.'
                 : 'Tidak ada hasil.',
             textAlign: TextAlign.center,
             style: theme.typography.body.sm.copyWith(

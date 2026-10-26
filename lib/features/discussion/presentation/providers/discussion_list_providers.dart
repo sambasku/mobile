@@ -117,6 +117,7 @@ class DiscussionFeedController
       target: item.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -154,6 +155,7 @@ class DiscussionFeedController
           cursor: current.nextCursor,
           sort: current.sort,
         );
+    if (!ref.mounted) return null;
     final failureOrNull = page.match(
       (failure) => failure,
       (_) => null,
@@ -164,6 +166,7 @@ class DiscussionFeedController
     }
     final value = page.match((_) => throw StateError('unreachable'), (v) => v);
     final more = await _attachMyVotes(value.items);
+    if (!ref.mounted) return null;
     state = AsyncData(
       current.copyWith(
         items: [...current.items, ...more],
@@ -235,6 +238,7 @@ class MyDiscussionsController
           cursor: current.nextCursor,
           status: current.status,
         );
+    if (!ref.mounted) return null;
     return page.match(
       (failure) {
         state = AsyncData(current.copyWith(isLoadingMore: false));
@@ -355,6 +359,7 @@ class DiscussionDetailController
       target: item.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -387,6 +392,7 @@ class DiscussionDetailController
       target: reply.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -426,6 +432,7 @@ class DiscussionDetailController
     final result = await ref
         .read(discussionRepositoryProvider)
         .createReply(discussionId: discussionId, body: trimmed);
+    if (!ref.mounted) return null;
     return result.match(
       (failure) {
         state = AsyncData(current.copyWith(isSubmittingReply: false));
@@ -462,6 +469,7 @@ class DiscussionDetailController
           durationMs: durationMs,
           body: body,
         );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) {
         state = AsyncData(current.copyWith(isSubmittingReply: false));
@@ -488,6 +496,7 @@ class DiscussionDetailController
     final result = await ref
         .read(discussionRepositoryProvider)
         .deleteReply(reply.id);
+    if (!ref.mounted) return null;
     return result.match((failure) => failure, (_) {
       state = AsyncData(
         DiscussionDetailState(

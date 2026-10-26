@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/models/image_attribution.dart';
+import '../../core/widgets/image_preview.dart';
 import '../utils/image_sheet_drawer.dart';
 import 'cached_network_image_with_fallback.dart';
 import 'image_credit.dart';
@@ -424,6 +425,50 @@ class _Thumb extends StatelessWidget {
   final VoidCallback onRemove;
   final VoidCallback onViolenceToggle;
 
+  /// Preview fullscreen: lokal (baru pilih) atau URL (sudah terunggah).
+  void _preview(BuildContext context, AttachmentImageSlot s) {
+    if (s.localPath.isEmpty) {
+      final url = s.uploaded?.url;
+      if (url == null || url.isEmpty) return;
+      showImagePreview(context, urls: [url]);
+      return;
+    }
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder<void>(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: Colors.black.withValues(alpha: 0.92),
+        transitionDuration: const Duration(milliseconds: 180),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
+        pageBuilder: (context, _, _) => Material(
+          type: MaterialType.transparency,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: InteractiveViewer(
+                    minScale: 1,
+                    maxScale: 5,
+                    child: Image.file(File(s.localPath), fit: BoxFit.contain),
+                  ),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: IconButton(
+                    tooltip: 'Tutup',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -438,7 +483,11 @@ class _Thumb extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Positioned.fill(
-                child: ClipRRect(
+                child: GestureDetector(
+                  // Tap thumbnail = preview fullscreen (pinch-zoom). Tanpa ini
+                  // user cuma lihat potongan 88px dan tak bisa memeriksa foto.
+                  onTap: () => _preview(context, slot),
+                  child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: slot.localPath.isNotEmpty
                       ? Image.file(
@@ -464,6 +513,7 @@ class _Thumb extends StatelessWidget {
                             color: theme.colors.mutedForeground,
                           ),
                         ),
+                  ),
                 ),
               ),
               if (slot.uploading)

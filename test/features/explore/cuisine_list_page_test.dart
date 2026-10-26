@@ -38,14 +38,22 @@ Future<void> _pump(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('list menampilkan semua cuisine lalu filter via search', (
+  testWidgets('grid kuliner tampil 3 kolom lalu filter via search', (
     tester,
   ) async {
     await _pump(tester);
 
+    expect(find.byType(GridView), findsOneWidget);
+    final grid = tester.widget<GridView>(find.byType(GridView));
+    expect(
+      (grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount)
+          .crossAxisCount,
+      3,
+    );
     expect(find.text('Bubur Pedas'), findsOneWidget);
     expect(find.text('Terubuk Asap'), findsOneWidget);
-    expect(find.text('Kota Sambas'), findsNWidgets(2));
+    // Daerah asal tidak ditampilkan: promosi kuliner di level kabupaten.
+    expect(find.text('Kota Sambas'), findsNothing);
 
     await tester.enterText(find.byType(EditableText), 'terubuk');
     await tester.pumpAndSettle();

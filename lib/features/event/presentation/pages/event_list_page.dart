@@ -15,18 +15,16 @@ import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_browse_providers.dart';
 import '../providers/event_providers.dart';
-import '../widgets/event_ui.dart';
 
-/// Grid 2 kolom: poster + nama 2 baris + tanggal.
-///
-/// Dua kolom (bukan tiga seperti wisata) karena judul acara lebih panjang
-/// daripada nama tempat dan tanggal perlu baris sendiri. Poster pakai
-/// `Expanded` supaya tinggi sel tetap pas di layar sempit (tidak overflow).
+/// Grid 3 kolom, selaras grid wisata/kuliner (`place_list_page.dart`,
+/// `cuisine_list_page.dart`): poster kotak 1:1 + nama maks 2 baris. Tanggal
+/// tampil sebagai badge pill overlay di atas poster; badge status & jam
+/// lengkap ada di halaman detail.
 const _eventGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-  crossAxisCount: 2,
+  crossAxisCount: 3,
   mainAxisSpacing: 12,
-  crossAxisSpacing: 12,
-  childAspectRatio: 1,
+  crossAxisSpacing: 8,
+  childAspectRatio: 0.7,
 );
 
 /// Daftar acara (festival, pameran, kegiatan) di Sambas.
@@ -54,6 +52,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
   @override
   void dispose() {
     _debounce?.cancel();
+    _scroll.removeListener(_maybeLoadMore);
     _scroll.dispose();
     super.dispose();
   }
@@ -61,15 +60,25 @@ class _EventListPageState extends ConsumerState<EventListPage> {
   EventBrowseQuery get _browseQuery => EventBrowseQuery(
     categoryId: _categoryId,
     q: _query.trim(),
+    notEnded: false,
   );
 
   void _onSearchChanged(String text) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      if (mounted) {
-        setState(() => _query = text);
-        if (_scroll.hasClients) _scroll.jumpTo(0);
-      }
+      if (!mounted || text == _query) return;
+      setState(() => _query = text);
+      _resetScroll();
+    });
+  }
+
+  /// Kembalikan daftar ke atas setelah filter/cari berubah. Dijadwalkan
+  /// post-frame karena provider baru masih `AsyncLoading`: `CustomScrollView`
+  /// belum terpasang, jadi `jumpTo(0)` di frame ini dilewati dan daftar
+  /// tetap di posisi lama (terasa "nyangkut" di tengah).
+  void _resetScroll() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _scroll.hasClients) _scroll.jumpTo(0);
     });
   }
 
@@ -163,11 +172,15 @@ class _EventListPageState extends ConsumerState<EventListPage> {
                 categories: categories,
                 selectedId: _categoryId,
                 onSelect: (id) {
+                  if (id == _categoryId) return;
                   setState(() => _categoryId = id);
-                  if (_scroll.hasClients) _scroll.jumpTo(0);
+                  // Ganti chip = provider baru (AsyncLoading) -> scroll view
+                  // sementara dilepas. Reset posisi SETELAH frame berikut,
+                  // kalau dipanggil langsung controller bisa tanpa position.
+                  _resetScroll();
                 },
               ),
-              const Gap(4),
+              const Gap(12),
             ],
             Expanded(
               child: browseAsync.when(
@@ -289,16 +302,16 @@ class _CategoryBar extends StatelessWidget {
   }
 }
 
-/// Subtitle kartu grid: tanggal singkat + jam mulai, mis. `17 Nov · 21:00`.
-/// Satu baris saja - jadwal lengkap ada di halaman detail.
+/// Subtitle kartu grid: tanggal mulai singkat, mis. `17 Nov`. Jam dan status
+/// lengkap ada di halaman detail.
 String _gridSchedule(Event event) {
-  final date = formatDateShort(event.startsAt);
-  final time = formatDateTime(event.startsAt).split(' ').last;
-  if (date.isEmpty) return '';
-  return time.isEmpty ? date : '$date · $time';
+  return formatDateShort(event.startsAt);
 }
 
-/// Kartu acara di grid: poster (tinggi sisa) + nama 2 baris + tanggal.
+/// Kartu acara di grid 3 kolom, bentuk sama dengan kartu wisata/kuliner:
+/// poster kotak 1:1 + nama maks 2 baris. Tanggal mulai jadi badge pill
+/// overlay di pojok poster - badge status & jam sengaja tidak ditampilkan
+/// (sel kecil); info lengkap ada di halaman detail.
 class _EventGridTile extends StatelessWidget {
   const _EventGridTile({required this.event});
 
@@ -307,11 +320,13 @@ class _EventGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final poster = event.posterUrl;
-    final titleStyle = theme.typography.body.sm.copyWith(
+    final poster = event.posterUrls.isEmpty ? null : event.posterUrls.first;
+    final titleStyle = theme.typography.body.xs.copyWith(
       fontWeight: FontWeight.w600,
       height: 1.25,
     );
+    // fontSize fallback 14 = nilai xs Forui touch mode (lihat typography.dart);
+    // fallback 12 lama bikin SizedBox lebih pendek dari teks aslinya.
     final titleHeight = (titleStyle.fontSize ?? 14) * 1.25 * 2;
 
     return Material(
@@ -322,7 +337,8 @@ class _EventGridTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            AspectRatio(
+              aspectRatio: 1,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -345,10 +361,26 @@ class _EventGridTile extends StatelessWidget {
                           ),
                   ),
                   Positioned(
-                    top: 6,
-                    left: 6,
-                    child: eventOccurrenceBadge(
-                      event.effectiveOccurrenceStatus,
+                    left: 4,
+                    bottom: 4,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: theme.colors.background.withValues(alpha: 0.88),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          _gridSchedule(event),
+                          maxLines: 1,
+                          style: theme.typography.body.xs.copyWith(
+                            color: theme.colors.foreground,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -362,15 +394,6 @@ class _EventGridTile extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: titleStyle,
-              ),
-            ),
-            const Gap(2),
-            Text(
-              _gridSchedule(event),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.typography.body.xs.copyWith(
-                color: theme.colors.mutedForeground,
               ),
             ),
           ],
@@ -392,7 +415,9 @@ class _SkeletonGrid extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       effect: ShimmerEffect(
-        baseColor: isDark ? muted.withValues(alpha: 0.35) : const Color(0xFFE7E7EA),
+        baseColor: isDark
+            ? muted.withValues(alpha: 0.35)
+            : const Color(0xFFE7E7EA),
         highlightColor: isDark
             ? muted.withValues(alpha: 0.55)
             : const Color(0xFFF4F4F5),
@@ -402,11 +427,12 @@ class _SkeletonGrid extends StatelessWidget {
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: _eventGridDelegate,
-        itemCount: 6,
+        itemCount: 9,
         itemBuilder: (_, _) => const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            AspectRatio(
+              aspectRatio: 1,
               child: Bone(
                 width: double.infinity,
                 height: double.infinity,
@@ -414,9 +440,9 @@ class _SkeletonGrid extends StatelessWidget {
               ),
             ),
             Gap(6),
-            Bone(width: double.infinity, height: 14),
+            Bone(width: double.infinity, height: 12),
             Gap(4),
-            Bone(width: 80, height: 12),
+            Bone(width: 72, height: 12),
           ],
         ),
       ),

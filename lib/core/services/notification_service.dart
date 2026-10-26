@@ -124,6 +124,14 @@ class NotificationService {
     final body = notification?.body ?? message.data['body'] as String?;
     if (title == null && body == null) return;
 
+    // Cek izin - bila tidak ada, skip buat hindari INSUFFICIENT_PERMISSIONS
+    final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      debugPrint('Foreground notification skipped (notifications not allowed)');
+      _notifyCachesStale(); // Invalidasi inbox walau tidak tampil notifikasi
+      return;
+    }
+
     final imageUrl =
         message.data['image_url']?.toString() ??
         notification?.android?.imageUrl ??

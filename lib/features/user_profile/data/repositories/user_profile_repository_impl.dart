@@ -155,10 +155,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   String _fallbackForStatus(int? statusCode, DioException error) {
     if (statusCode == 429 ||
         error.response?.data?['error_code'] == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi nanti.';
+      return 'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
     }
     return 'Terjadi kesalahan saat memuat profil, coba lagi';
   }

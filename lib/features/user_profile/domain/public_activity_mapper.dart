@@ -3,7 +3,7 @@ import 'entities/public_profile.dart';
 
 /// Memetakan aktivitas publik ke item feed untuk ditampilkan di tile.
 ///
-/// Dipakai oleh ActivityCategorySheet dan dites di
+/// Dipakai [ProfileActivityList] dan dites di
 /// test/features/user_profile/public_activity_mapper_test.dart.
 FeedActivityItem mapPublicActivityToFeed(
   PublicActivityItem item,
@@ -14,6 +14,8 @@ FeedActivityItem mapPublicActivityToFeed(
     'vote' => FeedActivityKind.vote,
     // #99: kategori verification profil = event word_verified - check, bukan panah vote
     'verification' => FeedActivityKind.verification,
+    // 'correction' (filter Perbaikan profil, #193) & 'contribution':
+    // tile feed menilai kind granular dari summary - cukup fallback word.
     _ => FeedActivityKind.word,
   };
   return FeedActivityItem(

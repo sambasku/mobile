@@ -181,9 +181,7 @@ class DiscussionRepository {
       );
       final data = res.data?['data'];
       if (data is! Map) {
-        return Either.left(
-          const DiscussionFailure('Balasan tidak lengkap'),
-        );
+        return Either.left(const DiscussionFailure('Balasan tidak lengkap'));
       }
       return Either.right(
         DiscussionReply.fromJson(Map<String, dynamic>.from(data)),
@@ -315,8 +313,7 @@ class DiscussionRepository {
     try {
       final hasCensored =
           censoredFiles?.any((f) => f != null && f.isNotEmpty) ?? false;
-      final hasWarnings =
-          contentWarnings?.any((w) => w.isNotEmpty) ?? false;
+      final hasWarnings = contentWarnings?.any((w) => w.isNotEmpty) ?? false;
 
       final Response<Map<String, dynamic>> res;
       if (!hasCensored && !hasWarnings) {
@@ -416,9 +413,7 @@ class DiscussionRepository {
     final items = <DiscussionItem>[];
     if (data is List) {
       for (final raw in data.whereType<Map>()) {
-        items.add(
-          DiscussionItem.fromJson(Map<String, dynamic>.from(raw)),
-        );
+        items.add(DiscussionItem.fromJson(Map<String, dynamic>.from(raw)));
       }
     }
     return DiscussionPage(
@@ -447,8 +442,9 @@ class DiscussionRepository {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => fallback,
     });
   }

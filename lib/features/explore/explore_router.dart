@@ -4,6 +4,8 @@ import '../../core/router/route_definer.dart';
 import 'presentation/pages/explore_category_page.dart';
 import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
+import 'presentation/pages/culinary_contribute_page.dart';
+import 'presentation/pages/culinary_places_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_contribute_page.dart';
 import 'presentation/pages/place_detail_page.dart';
@@ -41,6 +43,29 @@ class ExploreRouter {
   static const cuisineList = RouteDefiner(
     path: '/explore/cuisine',
     name: 'ExploreRouter.cuisineList',
+  );
+
+  /// Daftar tempat/penjual kuliner (butuh segmen statis SEBELUM detail).
+  static const cuisinePlaces = RouteDefiner(
+    path: '/explore/cuisine/places',
+    name: 'ExploreRouter.cuisinePlaces',
+  );
+
+  /// Form usulan kuliner/tempat/relasi. WAJIB sebelum `cuisineDetail` -
+  /// `/explore/cuisine/:slug` akan menelan segmen statis ini.
+  static const cuisineContribute = RouteDefiner(
+    path: '/explore/cuisine/usul',
+    name: 'ExploreRouter.cuisineContribute',
+  );
+
+  static const cuisinePlaceContribute = RouteDefiner(
+    path: '/explore/cuisine/usul-tempat',
+    name: 'ExploreRouter.cuisinePlaceContribute',
+  );
+
+  static const cuisineLink = RouteDefiner(
+    path: '/explore/cuisine/usul-penjual',
+    name: 'ExploreRouter.cuisineLink',
   );
 
   static const cuisineDetail = RouteDefiner(
@@ -149,6 +174,29 @@ class ExploreRouter {
       path: cuisineList.path,
       name: cuisineList.name,
       builder: (context, state) => const CuisineListPage(),
+    ),
+    GoRoute(
+      path: cuisinePlaces.path,
+      name: cuisinePlaces.name,
+      builder: (context, state) => const CulinaryPlacesPage(),
+    ),
+    GoRoute(
+      path: cuisineContribute.path,
+      name: cuisineContribute.name,
+      builder: (context, state) =>
+          const CulinaryContributePage(mode: CulinaryContributeMode.cuisine),
+    ),
+    GoRoute(
+      path: cuisinePlaceContribute.path,
+      name: cuisinePlaceContribute.name,
+      builder: (context, state) =>
+          const CulinaryContributePage(mode: CulinaryContributeMode.place),
+    ),
+    GoRoute(
+      path: cuisineLink.path,
+      name: cuisineLink.name,
+      builder: (context, state) =>
+          const CulinaryContributePage(mode: CulinaryContributeMode.link),
     ),
     GoRoute(
       path: cuisineDetail.path,

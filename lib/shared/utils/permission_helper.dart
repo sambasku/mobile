@@ -30,7 +30,9 @@ void showPermissionDeniedDialog(BuildContext context) {
             children: [
               FTile(
                 title: const Text('Izin Ditolak'),
-                subtitle: const Text('Biar fitur ini jalan, izinkan akses ke galeri atau kamera dari pengaturan aplikasi.'),
+                subtitle: const Text(
+                  'Biar fitur ini jalan, izinkan akses ke galeri atau kamera dari pengaturan aplikasi.',
+                ),
               ),
               FTile(
                 title: const Text(''),
@@ -73,7 +75,9 @@ void showMicrophonePermissionDeniedDialog(BuildContext context) {
             children: [
               FTile(
                 title: const Text('Izin mikrofon diperlukan'),
-                subtitle: const Text('Akses mikrofon dimatikan untuk SambasKu. Aktifkan di Pengaturan perangkat agar bisa merekam pelafalan kata.'),
+                subtitle: const Text(
+                  'Akses mikrofon dimatikan untuk SambasKu. Aktifkan di Pengaturan perangkat agar bisa merekam pelafalan kata.',
+                ),
               ),
               FTile(
                 title: const Text(''),

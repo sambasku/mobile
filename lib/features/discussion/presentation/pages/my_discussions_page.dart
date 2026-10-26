@@ -63,7 +63,7 @@ class _GuestState extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              FLucideIcons.languages,
+              FLucideIcons.messagesSquare,
               size: 40,
               color: theme.colors.mutedForeground,
             ),

@@ -516,7 +516,10 @@ class _ReviewViewBody extends StatelessWidget {
             child: ClipRect(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: ReviewEntityPreview(detail: detail),
+                child: ReviewEntityPreview(
+                  detail: detail,
+                  scrollable: false,
+                ),
               ),
             ),
           ),

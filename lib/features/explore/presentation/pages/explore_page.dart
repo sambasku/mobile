@@ -30,7 +30,7 @@ class ExplorePage extends HookConsumerWidget {
     );
 
     // Jembatan ke kamus: kosakata di tab kamus (bukan coming-soon).
-    if (cat.id == 'tradisi') {
+    if (cat.id == 'ensiklopedia') {
       context.push(DictionaryRouter.list.path);
       return;
     }
@@ -76,9 +76,14 @@ class ExplorePage extends HookConsumerWidget {
       },
     );
 
+    // Available dulu (urutan tetap), coming-soon di-append setelahnya -
+    // toggle tidak pernah menggeser posisi kartu yang sudah aktif
+    // (Acara dulunya loncat karena ada di list statis setelah Usaha).
+    final available = ExploreCategory.all.where((c) => !c.comingSoon).toList();
+    final soon = ExploreCategory.all.where((c) => c.comingSoon).toList();
     final categories = showComingSoon.value
-        ? ExploreCategory.all
-        : ExploreCategory.all.where((c) => !c.comingSoon).toList();
+        ? [...available, ...soon]
+        : available;
 
     return Column(
       children: [

@@ -1,31 +1,51 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
-import '../../../../core/utils/display_image_url.dart';
-import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
-import '../../domain/providers/achievement_domain_providers.dart';
 import '../providers/achievement_providers.dart';
+import '../../../achievement/achievement_router.dart';
 import 'achievement_badge_grid.dart';
-import 'achievement_tile.dart';
-import 'border_picker_sheet.dart';
 
-/// Sub-tab Pencapaian di profil sendiri: Badge | Border | Pencapaian.
+/// Ringkasan lencana profil: grid 3 kolom + tombol ke halaman Pencapaian.
 ///
-/// Non-expanding [FTabs] supaya aman di dalam ListView profil.
+/// Dipakai tab Profil (profil sendiri, data `/me/achievements`) dan profil
+/// publik (lencana milik user lain). Pengganti sub-tab FTabs
+/// "Badge | Border | Pencapaian" yang pecah (label multiline merusak area).
+/// Border tetap diatur via `showBorderPickerSheet`.
 class ProfileAchievementTabs extends ConsumerWidget {
-  const ProfileAchievementTabs({super.key});
+  const ProfileAchievementTabs({
+    super.key,
+    this.username,
+    this.title = 'Lencana',
+    this.showAllButton = true,
+    this.showTitle = true,
+  });
+
+  /// Null = lencana milik user yang sedang login.
+  final String? username;
+  final String title;
+  final bool showAllButton;
+  final bool showTitle;
+
+  void _openAll(BuildContext context) {
+    AnalyticsService.instance.logAchievementsView(tab: 'all');
+    context.push(AchievementRouter.list.path);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(myAchievementsProvider());
+    final async = username == null
+        ? ref.watch(myAchievementsProvider())
+        : ref.watch(userAchievementsProvider(username!));
+
     return async.when(
       loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(child: FCircularProgress()),
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Center(child: FCircularProgress(size: .sm)),
       ),
       error: (err, _) => Padding(
         padding: const EdgeInsets.only(top: 8),
@@ -42,321 +62,52 @@ class ProfileAchievementTabs extends ConsumerWidget {
             const Gap(8),
             FButton(
               variant: FButtonVariant.outline,
-              onPress: () => ref.invalidate(myAchievementsProvider),
+              size: .xs,
+              onPress: () => ref.invalidate(
+                username == null
+                    ? myAchievementsProvider()
+                    : userAchievementsProvider(username!),
+              ),
               child: const Text('Coba lagi'),
             ),
           ],
         ),
       ),
       data: (items) {
-        final owned = items.where((e) => e.isOwned).toList(growable: false);
-        return FTabs(
-          onPress: (index) => AnalyticsService.instance.logAchievementsView(
-            tab: const ['badge', 'border', 'pencapaian'][index],
-          ),
+        final badges = AchievementBadgeGrid.topTierPerFamily(
+          items.where((e) => e.isOwned && e.isBadge).toList(growable: false),
+        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FTabEntry.entry(
-              label: const Text('Badge'),
-              child: _BadgeTab(
-                badges: AchievementBadgeGrid.topTierPerFamily(
-                  owned.where((e) => e.isBadge).toList(growable: false),
+            if (showTitle) ...[
+              Text(
+                title,
+                style: context.theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            ),
-            FTabEntry.entry(
-              label: const Text('Border'),
-              child: _BorderTab(
-                borders: owned.where((e) => e.isBorder).toList(growable: false),
+              const Gap(8),
+            ],
+            AchievementBadgeGrid(items: badges),
+            if (showAllButton && badges.isNotEmpty) ...[
+              const Gap(8),
+              // Shrink-wrap supaya sejajar tombol kecil lain (pola FButton
+              // default .max = full width).
+              Align(
+                alignment: Alignment.center,
+                child: FButton(
+                  size: FButtonSizeVariant.xs,
+                  variant: FButtonVariant.outline,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () => _openAll(context),
+                  child: const Text('Lihat semua pencapaian'),
+                ),
               ),
-            ),
-            FTabEntry.entry(
-              label: const Text('Pencapaian'),
-              child: _AllTab(items: items),
-            ),
+            ],
           ],
         );
       },
-    );
-  }
-}
-
-class _BadgeTab extends StatelessWidget {
-  const _BadgeTab({required this.badges});
-
-  final List<Achievement> badges;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 16),
-      child: AchievementBadgeGrid(
-        items: badges,
-        emptyLabel: 'Belum ada lencana. Terus berkontribusi untuk membukanya.',
-      ),
-    );
-  }
-}
-
-class _BorderTab extends StatelessWidget {
-  const _BorderTab({required this.borders});
-
-  final List<Achievement> borders;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    if (borders.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Text(
-          'Belum punya bingkai profil.',
-          textAlign: TextAlign.center,
-          style: theme.typography.body.sm.copyWith(
-            color: theme.colors.mutedForeground,
-          ),
-        ),
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Gap(8),
-        for (final border in borders)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: _BorderRow(border: border),
-          ),
-      ],
-    );
-  }
-}
-
-class _BorderRow extends ConsumerStatefulWidget {
-  const _BorderRow({required this.border});
-
-  final Achievement border;
-
-  @override
-  ConsumerState<_BorderRow> createState() => _BorderRowState();
-}
-
-class _BorderRowState extends ConsumerState<_BorderRow> {
-  bool _busy = false;
-
-  Future<void> _toggle() async {
-    if (_busy) return;
-    setState(() => _busy = true);
-    final next = widget.border.isActiveBorder
-        ? null
-        : widget.border.userAchievementId;
-    final result = await ref.read(setActiveBorderUseCaseProvider).call(next);
-    if (!mounted) return;
-    setState(() => _busy = false);
-    result.match(
-      (failure) => showFToast(context: context, title: Text(failure.message)),
-      (_) {
-        ref.invalidate(myAchievementsProvider);
-        ref.invalidate(myActiveBorderProvider);
-        showFToast(
-          context: context,
-          title: Text(
-            next == null ? 'Bingkai dilepas' : 'Bingkai profil diperbarui',
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final border = widget.border;
-    final url = displayImageUrl(border.badgeUrl, width: 128) ?? border.badgeUrl;
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: border.isActiveBorder
-              ? theme.colors.primary
-              : theme.colors.border,
-          width: border.isActiveBorder ? 2 : 1,
-        ),
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 44,
-            height: 44,
-            child: url == null
-                ? Icon(
-                    FLucideIcons.frame,
-                    color: theme.colors.mutedForeground,
-                  )
-                : Image.network(
-                    url,
-                    fit: BoxFit.contain,
-                    gaplessPlayback: true,
-                    errorBuilder: (_, _, _) => Icon(
-                      FLucideIcons.frame,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-          ),
-          const Gap(10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  border.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  border.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Gap(8),
-          if (_busy)
-            const FCircularProgress(size: .md)
-          else
-            border.isActiveBorder
-                ? FButton(
-                    variant: FButtonVariant.outline,
-                    size: FButtonSizeVariant.sm,
-                    onPress: _toggle,
-                    child: const Text('Lepas'),
-                  )
-                : FButton(
-                    size: FButtonSizeVariant.sm,
-                    onPress: _toggle,
-                    child: const Text('Pakai'),
-                  ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AllTab extends StatelessWidget {
-  const _AllTab({required this.items});
-
-  final List<Achievement> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final owned = items.where((e) => e.isOwned).toList(growable: false);
-    final locked = items.where((e) => !e.isOwned).toList(growable: false);
-
-    void open(Achievement item) {
-      AnalyticsService.instance.logAchievementBadgeView(code: item.code);
-      showModalBottomSheet<void>(
-        context: context,
-        useRootNavigator: true,
-        isScrollControlled: true,
-        builder: (sheetContext) {
-          final sheetTheme = sheetContext.theme;
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.title,
-                    style: sheetTheme.typography.body.lg.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const Gap(6),
-                  Text(item.description, style: sheetTheme.typography.body.sm),
-                  const Gap(10),
-                  Text(
-                    item.isOwned ? 'Sudah kamu miliki' : 'Belum dibuka',
-                    style: sheetTheme.typography.body.sm.copyWith(
-                      color: item.isOwned
-                          ? sheetTheme.colors.primary
-                          : sheetTheme.colors.mutedForeground,
-                    ),
-                  ),
-                  if (item.isBorder && item.isOwned) ...[
-                    const Gap(12),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: () {
-                        Navigator.of(sheetContext).pop();
-                        showBorderPickerSheet(context);
-                      },
-                      child: const Text('Ubah bingkai profil'),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
-
-    if (items.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Text(
-          'Belum ada pencapaian tersedia.',
-          textAlign: TextAlign.center,
-          style: theme.typography.body.sm.copyWith(
-            color: theme.colors.mutedForeground,
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Gap(8),
-        if (owned.isNotEmpty) ...[
-          Text(
-            'Dimiliki',
-            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const Gap(4),
-          FTileGroup(
-            children: [
-              for (final item in owned)
-                AchievementTile(item: item, onTap: () => open(item)),
-            ],
-          ),
-        ],
-        if (locked.isNotEmpty) ...[
-          const Gap(12),
-          Text(
-            'Belum dibuka',
-            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const Gap(4),
-          FTileGroup(
-            children: [
-              for (final item in locked)
-                AchievementTile(item: item, onTap: () => open(item)),
-            ],
-          ),
-        ],
-        const Gap(16),
-      ],
     );
   }
 }

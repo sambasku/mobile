@@ -71,7 +71,8 @@ class VoteDeckState {
   }
 }
 
-/// Antrean deck nilai kata (login). keepAlive + watch auth.
+/// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
+/// keepAlive + watch auth.
 @Riverpod(keepAlive: true)
 class VoteDeckController extends _$VoteDeckController {
   static const _pageSize = 10;
@@ -167,7 +168,7 @@ class VoteDeckController extends _$VoteDeckController {
   void skipAndAdvance(VoteDeckItem item) {
     AnalyticsService.instance.log(
       AnalyticsEvents.voteDeckSwipe,
-      params: {'direction': 'skip', 'word_id': item.id},
+      params: {'direction': 'skip', 'meaning_id': item.id},
     );
     _locallySkipped.add(item.id);
     _dropLocal(
@@ -189,7 +190,9 @@ class VoteDeckController extends _$VoteDeckController {
     VoteDeckItem item,
     Future<Object?> Function() push,
   ) async {
-    final target = VoteTarget(type: 'word', id: item.id);
+    // 0101: vote di detail kata = per makna; kartu dianggap dinilai bila
+    // user vote makna ini dari halaman detail.
+    final target = VoteTarget(type: 'meaning', id: item.id);
     // VoteController autoDispose: tahan hidup supaya myVote terbaca setelah pop.
     final sub = ref.listen(voteControllerProvider(target), (_, _) {});
     try {
@@ -249,7 +252,7 @@ class VoteDeckController extends _$VoteDeckController {
       if (!cancelled) {
         // Sudah in-flight atau selesai → tunggu settle lalu undo di server.
         await queue.waitUntilNotInFlight(entry.item.id);
-        final target = VoteTarget(type: 'word', id: entry.item.id);
+        final target = VoteTarget(type: 'meaning', id: entry.item.id);
         final result = await ref.watch(toggleVoteUseCaseProvider)(
           target: target,
           value: value,
@@ -272,10 +275,10 @@ class VoteDeckController extends _$VoteDeckController {
     return null;
   }
 
-  void _dropLocal(String wordId, {VoteDeckRewindEntry? rewind}) {
+  void _dropLocal(String meaningId, {VoteDeckRewindEntry? rewind}) {
     final current = state.value;
     if (current == null) return;
-    final remaining = current.items.where((i) => i.id != wordId).toList();
+    final remaining = current.items.where((i) => i.id != meaningId).toList();
     state = AsyncData(
       current.copyWith(items: remaining, rewindEntry: rewind),
     );

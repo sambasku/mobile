@@ -212,8 +212,9 @@ class _PlaceCard extends StatelessWidget {
     }
     // Timeout: handler external di sebagian ROM bisa menggantung; tanpa ini
     // user tidak dapat umpan balik sama sekali.
-    final ok = await launchExternalUrl(uri)
-        .timeout(const Duration(seconds: 8), onTimeout: () => false);
+    final ok = await launchExternalUrl(
+      uri,
+    ).timeout(const Duration(seconds: 8), onTimeout: () => false);
     if (!ok && context.mounted) {
       showFToast(
         context: context,
@@ -366,7 +367,7 @@ class _PinsError extends StatelessWidget {
         child: FAlert(
           title: const Text('Peta tidak bisa dimuat'),
           subtitle: Text(
-            'Periksa koneksi internetmu lalu coba lagi ya.',
+            'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
             style: context.theme.typography.body.sm,
           ),
         ),

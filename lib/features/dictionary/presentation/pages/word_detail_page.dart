@@ -26,10 +26,10 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/domain/entities/vote_target.dart';
-import '../../../vote/domain/failures/vote_failure.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
@@ -210,7 +210,7 @@ Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
   } else {
     await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
   }
-  final voteTarget = VoteTarget(type: 'word', id: wordId);
+  final voteTarget = VoteTarget(type: 'meaning', id: wordId);
   ref.invalidate(wordDetailProvider(wordId));
   ref.invalidate(voteControllerProvider(voteTarget));
   ref.invalidate(bookmarkToggleControllerProvider(wordId));
@@ -584,7 +584,7 @@ class _DetailBody extends HookConsumerWidget {
                                   context,
                                   detail,
                                 ),
-                                child: const VerifiedBadgeIcon(),
+                                child: const WordApprovedBadgeIcon(),
                               ),
                             )
                           else
@@ -663,9 +663,6 @@ class _DetailBody extends HookConsumerWidget {
                           ],
                         ),
                       ],
-
-                      const Gap(10),
-                      _WordVoteBar(wordId: wordId),
 
                       if (detail.meanings.isNotEmpty) ...[
                         const Gap(16),
@@ -945,110 +942,9 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
   }
 }
 
-const _votePrompt = 'Vote';
-
-class _WordVoteBar extends ConsumerWidget {
-  const _WordVoteBar({required this.wordId});
-
-  final String wordId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-    final target = VoteTarget(type: 'word', id: wordId);
-    final async = ref.watch(voteControllerProvider(target));
-
-    ref.listen(voteControllerProvider(target), (prev, next) {
-      if (next.hasError && !(prev?.hasError ?? false)) {
-        final err = next.error;
-        showFToast(
-          context: context,
-          title: Text(err is VoteFailure ? err.message : 'Gagal memuat vote'),
-          variant: FToastVariant.destructive,
-        );
-      }
-    });
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 50) return const SizedBox.shrink();
-
-        return async.when(
-          loading: () => Skeletonizer(
-            enabled: true,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _votePrompt,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ),
-                const Gap(8),
-                const VoteButtonsSkeleton(compact: true),
-              ],
-            ),
-          ),
-          error: (_, _) => const SizedBox.shrink(),
-          data: (view) => Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _votePrompt,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ),
-              const Gap(8),
-              VoteButtons(
-                upvotes: view.upvotes,
-                downvotes: view.downvotes,
-                myVote: view.myVote,
-                compact: true,
-                onVote: (value) => _vote(context, ref, target, value),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _vote(
-    BuildContext context,
-    WidgetRef ref,
-    VoteTarget target,
-    int value,
-  ) async {
-    final auth = ref.read(authStatusProvider).value;
-    if (!(auth?.isAuth ?? false)) {
-      showFToast(
-        context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
-        variant: FToastVariant.primary,
-      );
-      context.push('/login');
-      return;
-    }
-    final failure = await ref
-        .read(voteControllerProvider(target).notifier)
-        .toggle(value);
-    if (failure != null && context.mounted) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-    }
-  }
-}
-
 /// Tombol bookmark di header detail kata (16-api-bookmark.md). Widget
 /// tombolnya murni tampilan - guard login + toast failure ada di sini
-/// (pola _vote pada _WordVoteBar).
+/// (pola _vote pada vote per makna).
 class _WordBookmarkHeaderAction extends ConsumerWidget {
   const _WordBookmarkHeaderAction({required this.wordId});
 
@@ -1635,21 +1531,6 @@ class _DetailSkeleton extends StatelessWidget {
                           height: 22,
                           borderRadius: BorderRadius.circular(6),
                         ),
-                      ],
-                    ),
-                    const Gap(10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _votePrompt,
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        ),
-                        const Gap(8),
-                        const VoteButtonsSkeleton(compact: true),
                       ],
                     ),
                     const Gap(16),

@@ -34,14 +34,17 @@ class PronunciationAudioUploadService {
       final name = audioFile.path.split(Platform.pathSeparator).last;
       final lower = name.toLowerCase();
       final (mimeType, filename) = lower.endsWith('.wav')
-          ? (DioMediaType('audio', 'wav'), name.endsWith('.wav') ? name : 'recording.wav')
+          ? (
+              DioMediaType('audio', 'wav'),
+              name.endsWith('.wav') ? name : 'recording.wav',
+            )
           : lower.endsWith('.webm')
-              ? (DioMediaType('audio', 'webm'), 'recording.webm')
-              : lower.endsWith('.ogg')
-                  ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
-                  : lower.endsWith('.mp3')
-                      ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
-                      : (DioMediaType('audio', 'mp4'), 'recording.m4a');
+          ? (DioMediaType('audio', 'webm'), 'recording.webm')
+          : lower.endsWith('.ogg')
+          ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
+          : lower.endsWith('.mp3')
+          ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
+          : (DioMediaType('audio', 'mp4'), 'recording.m4a');
 
       final trimmedSpeaker = speakerName?.trim();
       final formData = FormData.fromMap({
@@ -97,7 +100,7 @@ class PronunciationAudioUploadService {
       }
       return Either.left(
         PronunciationUploadFailure(
-          e.message ?? 'Gagal mengunggah audio, periksa koneksi',
+          e.message ?? 'Gagal mengunggah audio. Coba lagi dalam beberapa saat.',
         ),
       );
     } catch (e) {

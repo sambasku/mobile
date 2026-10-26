@@ -35,8 +35,7 @@ class DiscussionDetailPage extends ConsumerStatefulWidget {
       _DiscussionDetailPageState();
 }
 
-class _DiscussionDetailPageState
-    extends ConsumerState<DiscussionDetailPage> {
+class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   late final TextEditingController _replyCtrl;
 
   @override
@@ -129,10 +128,7 @@ class _DiscussionDetailPageState
       return;
     }
     if (failure.errorCode == 'RATE_LIMITED') {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-      );
+      showFToast(context: context, title: Text(failure.message));
       return;
     }
     await showAppErrorSheet(context, message: failure.message);
@@ -226,7 +222,14 @@ class _DiscussionDetailPageState
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Detail Bantuan'),
+        title: async.maybeWhen(
+          data: (state) => Text(
+            state.item.body?.trim() ?? 'Detail Bantuan',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          orElse: () => const Text('Detail Bantuan'),
+        ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -274,9 +277,7 @@ class _DiscussionDetailPageState
                 child: RefreshIndicator(
                   onRefresh: () async {
                     ref.invalidate(discussionDetailProvider(widget.id));
-                    await ref.read(
-                      discussionDetailProvider(widget.id).future,
-                    );
+                    await ref.read(discussionDetailProvider(widget.id).future);
                   },
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
@@ -284,7 +285,10 @@ class _DiscussionDetailPageState
                       _HelpHeader(item: item),
                       if (item.body?.trim().isNotEmpty == true) ...[
                         const Gap(10),
-                        Text(item.body!.trim(), style: theme.typography.body.sm),
+                        Text(
+                          item.body!.trim(),
+                          style: theme.typography.body.sm,
+                        ),
                       ],
                       if (item.linkUrl?.trim().isNotEmpty == true) ...[
                         const Gap(10),
@@ -292,12 +296,15 @@ class _DiscussionDetailPageState
                           alignment: Alignment.centerLeft,
                           child: FButton(
                             variant: FButtonVariant.outline,
-              onPress: () async {
-                final uri = Uri.tryParse(item.linkUrl!.trim());
-                if (uri == null) return;
-                await launchExternalUrl(uri);
-              },
-                            prefix: const Icon(FLucideIcons.externalLink, size: 14),
+                            onPress: () async {
+                              final uri = Uri.tryParse(item.linkUrl!.trim());
+                              if (uri == null) return;
+                              await launchExternalUrl(uri);
+                            },
+                            prefix: const Icon(
+                              FLucideIcons.externalLink,
+                              size: 14,
+                            ),
                             child: Text(
                               item.linkUrl!.trim(),
                               maxLines: 1,
@@ -390,9 +397,7 @@ class _DiscussionDetailPageState
                             dateLabel: formatRelativeAgo(
                               DateTime.tryParse(reply.createdAt),
                             ),
-                            metaParts: [
-                              if (reply.isPinned) 'Disematkan',
-                            ],
+                            metaParts: [if (reply.isPinned) 'Disematkan'],
                             isRedacted: !reply.isPublished,
                             highlighted: reply.isPinned && reply.isPublished,
                             media: reply.isPublished && reply.hasAudio
@@ -402,13 +407,11 @@ class _DiscussionDetailPageState
                                   )
                                 : null,
                             onDelete:
-                                reply.isPublished &&
-                                    reply.isOwner(auth?.userId)
+                                reply.isPublished && reply.isOwner(auth?.userId)
                                 ? () => _deleteReply(reply)
                                 : null,
-                            onUsernameTap: isLinkablePublicUsername(
-                              reply.username,
-                            )
+                            onUsernameTap:
+                                isLinkablePublicUsername(reply.username)
                                 ? () => UserProfileRouter.open(
                                     context,
                                     reply.username!,
@@ -434,10 +437,13 @@ class _DiscussionDetailPageState
                                       Expanded(
                                         child: Text(
                                           'Jawaban membantu?',
-                                          style: theme.typography.body.sm.copyWith(
-                                            color: theme.colors.mutedForeground,
-                                            fontSize: 11,
-                                          ),
+                                          style: theme.typography.body.sm
+                                              .copyWith(
+                                                color: theme
+                                                    .colors
+                                                    .mutedForeground,
+                                                fontSize: 11,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -495,7 +501,7 @@ class _HelpHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(
+            Flexible(
               child: PublicAccountName(
                 label: username,
                 isVerifier: item.isVerifier,
@@ -510,6 +516,7 @@ class _HelpHeader extends StatelessWidget {
                 ),
               ),
             ),
+            const Gap(8),
             FBadge(
               variant: item.isPublished
                   ? FBadgeVariant.primary
@@ -518,6 +525,20 @@ class _HelpHeader extends StatelessWidget {
             ),
           ],
         ),
+        // Handle @username di baris sendiri agar mudah di-mention.
+        if (isLinkablePublicUsername(item.username) &&
+            item.username != username) ...[
+          const Gap(2),
+          Text(
+            '@${item.username}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+              fontSize: 11,
+            ),
+          ),
+        ],
         if (when.isNotEmpty) ...[
           const Gap(4),
           Text(
@@ -552,10 +573,10 @@ class _ImageRowState extends State<_ImageRow> {
       widget.images.take(_maxPages).toList(growable: false);
 
   List<String> get _previewUrls => [
-        for (final u in _pages)
-          if (u.displaySource != null)
-            displayImageUrl(u.displaySource!, width: 1200) ?? u.displaySource!,
-      ];
+    for (final u in _pages)
+      if (u.displaySource != null)
+        displayImageUrl(u.displaySource!, width: 1200) ?? u.displaySource!,
+  ];
 
   void _openPreview(int index) {
     final pages = _pages;
@@ -601,8 +622,7 @@ class _ImageRowState extends State<_ImageRow> {
     // Bleed ke lebar layar (keluar dari padding FScaffold childPad).
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bleed =
-            ((screenW - constraints.maxWidth) / 2).clamp(0.0, 48.0);
+        final bleed = ((screenW - constraints.maxWidth) / 2).clamp(0.0, 48.0);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -650,8 +670,9 @@ class _ImageRowState extends State<_ImageRow> {
                         shape: BoxShape.circle,
                         color: i == _page
                             ? theme.colors.primary
-                            : theme.colors.mutedForeground
-                                .withValues(alpha: 0.35),
+                            : theme.colors.mutedForeground.withValues(
+                                alpha: 0.35,
+                              ),
                       ),
                     ),
                 ],

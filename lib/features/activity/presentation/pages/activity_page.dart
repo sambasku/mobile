@@ -243,7 +243,7 @@ class _ContributeMenu extends StatelessWidget {
                   () => go(SearchMissRouter.list.path),
                 ),
                 tile(
-                  FLucideIcons.languages,
+                  FLucideIcons.messagesSquare,
                   'Ruang diskusi',
                   'Tanya arti atau bahas kata Sambas bareng warga',
                   () => go(DiscussionRouter.feed.path),

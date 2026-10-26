@@ -19,9 +19,14 @@ import 'review_inline_type_editor.dart';
 
 /// Preview baca-saja isi usulan - per jenis entity, bukan dump key:value.
 class ReviewEntityPreview extends ConsumerWidget {
-  const ReviewEntityPreview({super.key, required this.detail});
+  const ReviewEntityPreview({
+    super.key,
+    required this.detail,
+    this.scrollable = true,
+  });
 
   final ReviewDetail detail;
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,15 +36,119 @@ class ReviewEntityPreview extends ConsumerWidget {
     // dengan banyak makna atau definisi panjang akan lebih tinggi dari
     // kartu. Column telanjang meluap jadi error di dalam stack, bukan sekadar
     // terpotong.
-    return SingleChildScrollView(
-      child: switch (type) {
-        'word' => _WordPreview(detail: detail),
-        'word_image' => _ImagePreview(entity: detail.entity),
-        'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
-        'pronunciation' => _PronunciationPreview(entity: detail.entity),
-        'example' => _ExamplePreview(entity: detail.entity),
-        'meaning' => _MeaningPreview(entity: detail.entity),
-        _ => _FieldPreview(entity: detail.entity),
+    final content = switch (type) {
+      'word' => _WordPreview(detail: detail),
+      'word_image' => _ImagePreview(entity: detail.entity),
+      'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
+      'pronunciation' => _PronunciationPreview(entity: detail.entity),
+      'example' => _ExamplePreview(entity: detail.entity),
+      'meaning' => _MeaningPreview(entity: detail.entity),
+      _ => _FieldPreview(entity: detail.entity),
+    };
+
+    if (scrollable) {
+      return SingleChildScrollView(child: content);
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final theme = context.theme;
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => _showPreviewSheet(context, content),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: constraints.maxHeight - 32,
+                  ),
+                  // Konten bisa lebih tinggi dari kartu (DB: banyak makna /
+                  // definisi panjang). SingleChildScrollView tanpa gesture
+                  // memotong kelebihan itu tanpa memicu assert RenderFlex
+                  // overflow - ClipRect saja tidak menahan assert di Column.
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: content,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        theme.colors.background.withValues(alpha: 0),
+                        theme.colors.background.withValues(alpha: 0.8),
+                      ],
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        'Ketuk untuk baca selengkapnya',
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showPreviewSheet(BuildContext context, Widget content) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        final theme = sheetContext.theme;
+        return Material(
+          color: theme.colors.background,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: theme.colors.border,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const Gap(16),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: content,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }

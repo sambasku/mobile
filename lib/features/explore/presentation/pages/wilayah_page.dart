@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show rootBundle, HapticFeedback;
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +13,11 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/theme_mode_controller.dart';
 import '../../../../shared/widgets/small_button.dart';
+import '../../../event/presentation/providers/event_browse_providers.dart';
+import '../../../event/presentation/widgets/event_ui.dart';
+import '../../../usaha/domain/entities/usaha.dart';
+import '../../../usaha/presentation/providers/usaha_browse_providers.dart';
+import '../../../usaha/usaha_router.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/entities/region.dart';
 import '../../domain/region_geometry.dart';
@@ -460,7 +465,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         // null tanpa batas ratio: child scrollable -> sheet ikut isi
         // (pola forui untuk sheet berisi scrollable).
         mainAxisMaxRatio: null,
-        builder: (context) => _WilayahSheet(
+        builder: (context) => WilayahSheet(
           selected: selected,
           initialDesaId: _selectedDesaId,
           onPickSearchedDesa: _pickSearchedDesa,
@@ -617,8 +622,9 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
 /// Isi bottomsheet modal Wilayah: search lintas kecamatan + daftar desa +
 /// places. Konsumsi data sendiri (watch provider) supaya selalu segar saat
 /// terbuka; daftar tak lagi tumbuh tak terbatas di panel peta (#106).
-class _WilayahSheet extends ConsumerStatefulWidget {
-  const _WilayahSheet({
+class WilayahSheet extends ConsumerStatefulWidget {
+  const WilayahSheet({
+    super.key,
     required this.selected,
     required this.initialDesaId,
     required this.onPickSearchedDesa,
@@ -634,12 +640,13 @@ class _WilayahSheet extends ConsumerStatefulWidget {
   final void Function(Region) onDesaTap;
 
   @override
-  ConsumerState<_WilayahSheet> createState() => _WilayahSheetState();
+  ConsumerState<WilayahSheet> createState() => _WilayahSheetState();
 }
 
-class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
+class _WilayahSheetState extends ConsumerState<WilayahSheet> {
   String _query = '';
   String? _selectedDesaId;
+  _SheetTab _tab = _SheetTab.desa;
 
   @override
   void initState() {
@@ -703,6 +710,10 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
     );
     final placesOfKec = (placesAsync.value ?? const <Place>[])
         .where((p) => kec != null && p.regionId == kec.id)
+        .toList();
+    // Wisata saja (kuliner punya halaman sendiri).
+    final wisataOfKec = placesOfKec
+        .where((p) => p.category == PlaceCategory.wisata)
         .toList();
 
     // Gaya kartu sama dengan _PlaceCard (pins_page): radius 16 + border flat.
@@ -812,55 +823,22 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
                 ),
                 const Gap(4),
                 Text(
-                  loading
-                      ? 'Memuat daftar desa...'
-                      : '${desaOfSelected.length} desa',
+                  switch (_tab) {
+                    _SheetTab.desa => loading
+                        ? 'Memuat desa...'
+                        : '${desaOfSelected.length} desa',
+                    _SheetTab.wisata => '${wisataOfKec.length} wisata',
+                    _SheetTab.usaha => 'Usaha di kecamatan ini',
+                    _SheetTab.acara => 'Acara di kecamatan ini',
+                  },
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
-                if (!loading) ...[
-                  const Gap(8),
-                  if (desaOfSelected.isEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Daftar desa belum bisa dimuat. Cek koneksi internetmu lalu coba lagi ya.',
-                          style: theme.typography.body.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                        const Gap(4),
-                        FButton(
-                          variant: FButtonVariant.outline,
-                          onPress: () => ref.invalidate(regionsProvider),
-                          child: const Text('Muat ulang'),
-                        ),
-                      ],
-                    )
-                  else
-                    _DesaList(
-                      desa: desaOfSelected,
-                      selectedDesaId: _selectedDesaId,
-                      onDesaTap: (desa) {
-                        setState(() => _selectedDesaId = desa.id);
-                        widget.onDesaTap(desa);
-                      },
-                      onOpenDesaDetail: _openDesaDetail,
-                    ),
-                ],
-                if (placesOfKec.isNotEmpty) ...[
-                  const Gap(12),
-                  Text(
-                    'Yang ada di sini',
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const Gap(4),
-                  _PlacesList(places: placesOfKec),
-                ],
+                const Gap(8),
+                _SheetChips(selected: _tab, onChanged: _onTabChanged),
+                const Gap(8),
+                _tabBody(kec, desaOfSelected, wisataOfKec, loading),
                 const Gap(8),
                 Row(
                   children: [
@@ -881,6 +859,176 @@ class _WilayahSheetState extends ConsumerState<_WilayahSheet> {
           ),
         ),
       ),
+    );
+  }
+
+  void _onTabChanged(_SheetTab next) {
+    if (next == _tab) return;
+    // Ganti filter terasa instan di jari (konsisten chips feed home).
+    HapticFeedback.selectionClick();
+    unawaited(AnalyticsService.instance.logWilayahSheetTab(tab: next.name));
+    setState(() => _tab = next);
+  }
+
+  /// Body per chip. Provider usaha/acara hanya di-watch di cabang aktif -
+  /// fetch terjadi saat chip pertama dibuka (autoDispose family, lazy).
+  Widget _tabBody(
+    Region kec,
+    List<Region> desaOfSelected,
+    List<Place> wisataOfKec,
+    bool loading,
+  ) {
+    final theme = context.theme;
+    final muted = theme.typography.body.sm.copyWith(
+      color: theme.colors.mutedForeground,
+    );
+    switch (_tab) {
+      case _SheetTab.desa:
+        if (loading) return Text('Memuat daftar desa...', style: muted);
+        if (desaOfSelected.isEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.',
+                style: muted,
+              ),
+              const Gap(4),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => ref.invalidate(regionsProvider),
+                child: const Text('Muat ulang'),
+              ),
+            ],
+          );
+        }
+        return _DesaList(
+          desa: desaOfSelected,
+          selectedDesaId: _selectedDesaId,
+          onDesaTap: (desa) {
+            setState(() => _selectedDesaId = desa.id);
+            widget.onDesaTap(desa);
+          },
+          onOpenDesaDetail: _openDesaDetail,
+        );
+      case _SheetTab.wisata:
+        if (wisataOfKec.isEmpty) {
+          return Text('Belum ada wisata di kecamatan ini.', style: muted);
+        }
+        return _PlacesList(places: wisataOfKec);
+      case _SheetTab.usaha:
+        final async = ref.watch(
+          usahaBrowseProvider(UsahaBrowseQuery(regionId: kec.id)),
+        );
+        if (async.isLoading) {
+          return Text('Memuat daftar usaha...', style: muted);
+        }
+        final items = async.value?.items ?? const [];
+        if (items.isEmpty) {
+          return Text('Belum ada usaha di kecamatan ini.', style: muted);
+        }
+        return _UsahaList(items: items);
+      case _SheetTab.acara:
+        final async = ref.watch(
+          eventBrowseProvider(EventBrowseQuery(regionId: kec.id)),
+        );
+        if (async.isLoading) return Text('Memuat acara...', style: muted);
+        final items = async.value?.items ?? const [];
+        if (items.isEmpty) {
+          return Text('Belum ada acara di kecamatan ini.', style: muted);
+        }
+        return _CappedScrollList(
+          itemCount: items.length,
+          itemBuilder: (context, i) => EventMiniTile(event: items[i]),
+        );
+    }
+  }
+}
+
+/// Chip tab isi sheet: gaya sama dengan chips kategori feed home
+/// (_FeedCategoryChips) - FButton xs, primary saat aktif, outline saat tidak.
+enum _SheetTab { desa, wisata, usaha, acara }
+
+class _SheetChips extends StatelessWidget {
+  const _SheetChips({required this.selected, required this.onChanged});
+
+  final _SheetTab selected;
+  final ValueChanged<_SheetTab> onChanged;
+
+  static const _labels = {
+    _SheetTab.desa: 'Desa',
+    _SheetTab.wisata: 'Wisata',
+    _SheetTab.usaha: 'Usaha',
+    _SheetTab.acara: 'Acara',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 32,
+      child: ListView.separated(
+        // Key khusus test: sheet punya ListView lain (daftar desa/places).
+        key: const ValueKey('wilayah_sheet_chips'),
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.zero,
+        itemCount: _SheetTab.values.length,
+        separatorBuilder: (_, _) => const Gap(6),
+        itemBuilder: (context, i) {
+          final tab = _SheetTab.values[i];
+          final isSelected = tab == selected;
+          return FButton(
+            size: .xs,
+            variant: isSelected
+                ? FButtonVariant.primary
+                : FButtonVariant.outline,
+            onPress: () => onChanged(tab),
+            child: Text(_labels[tab]!),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Daftar usaha ringkas di sheet: row gaya _PlacesList (icon + nama +
+/// chevron), tap = halaman detail usaha.
+class _UsahaList extends StatelessWidget {
+  const _UsahaList({required this.items});
+
+  final List<Usaha> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return _CappedScrollList(
+      itemCount: items.length,
+      itemBuilder: (context, i) {
+        final u = items[i];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: InkWell(
+            onTap: () =>
+                unawaited(context.push(UsahaRouter.detailPath(u.slug))),
+            borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Icon(
+                  FLucideIcons.store,
+                  size: 14,
+                  color: theme.colors.primary,
+                ),
+                const Gap(8),
+                Expanded(child: Text(u.name, style: theme.typography.body.sm)),
+                Icon(
+                  FLucideIcons.chevronRight,
+                  size: 14,
+                  color: theme.colors.mutedForeground,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

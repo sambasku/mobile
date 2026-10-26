@@ -167,6 +167,15 @@ class AuthInterceptor extends Interceptor {
         options.headers['Authorization'] = 'Bearer $newToken';
       }
 
+      // Multipart: FormData sudah `finalize()` di attempt pertama. Retry
+      // dengan objek yang sama melempar StateError / body kosong (UI lihat
+      // TOKEN_EXPIRED padahal refresh sukses). Clone supaya bisa dikirim
+      // ulang; MultipartFile.clone() membuka stream file baru.
+      final body = options.data;
+      if (body is FormData && body.isFinalized) {
+        options.data = body.clone();
+      }
+
       final response = await _refreshDio.fetch(options);
       return handler.resolve(response);
     } on DioException catch (e) {

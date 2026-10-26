@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart'
-    show InkWell, Material, MaterialType, RefreshIndicator;
+import 'package:material_ui/material_ui.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -9,7 +8,6 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../auth/presentation/models/auth_status_state.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -23,19 +21,19 @@ import '../../../notification/presentation/providers/notification_providers.dart
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
-import '../../../../core/utils/format_datetime.dart';
-import '../../../../core/utils/use_scroll_collapse.dart';
+import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../../core/network/failover/api_host_resolver.dart';
+import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
-import '../../../../shared/widgets/public_account_name.dart';
-import '../../../../shared/widgets/avatar_border_overlay.dart';
-import '../../../../shared/widgets/user_avatar.dart';
 import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
 import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
-/// Tab PROFILE - identitas di app bar + menu sectioned (FTileGroup).
+/// Tab PROFILE - header identitas (avatar besar + cover) di atas menu
+/// sectioned (FTileGroup). Header identitas dipakai bersama dengan
+/// halaman profil publik ([ProfileIdentityHeader]).
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
@@ -50,9 +48,6 @@ class ProfilePage extends HookConsumerWidget {
     // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
     final versionFuture = useMemoized(PackageInfo.fromPlatform);
     final allowNotif = useAllowNotificationShortcut();
-    // Animation, bukan double: ListView menu tidak rebuild tiap frame scroll.
-    // Yang rebuild hanya title header + blok stat (AnimatedBuilder).
-    final collapse = useScrollCollapse(scroll);
 
     // Sync handle sekali saat tab Profil aktif - jangan tiap rebuild auth.
     useEffect(() {
@@ -63,273 +58,248 @@ class ProfilePage extends HookConsumerWidget {
       return null;
     }, [isAuth]);
 
-    Future<void> refreshIdentity() async {
+    Future<void> refreshAll() async {
       if (!isAuth) return;
+      final username = ref.read(authStatusProvider).value?.username?.trim();
+      await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
+      ref.invalidate(linkedAccountsProvider);
+      ref.invalidate(myAchievementsProvider());
+      ref.invalidate(myActiveBorderProvider);
+      if (username != null && username.isNotEmpty) {
+        ref.invalidate(publicProfileProvider(username.toLowerCase()));
+      }
       await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
     }
 
     return Column(
       children: [
-        AnimatedBuilder(
-          animation: collapse,
-          builder: (context, _) => FHeader(
-            title: _ProfileHeaderTitle(
-              status: authStatus.value,
-              collapse: collapse,
-            ),
-          ),
+        // Judul dikosongkan: nama sudah tampil besar di header identitas tepat
+        // di bawahnya, jadi mengulangnya di app bar terasa dobel.
+        FHeader(
+          title: const SizedBox.shrink(),
+          suffixes: [
+            if (isAuth) ...[
+              FHeaderData(
+                actionStyle: context.theme.headerStyles
+                    .resolve({
+                      FHeaderVariant.root,
+                      context.platformVariant,
+                    })
+                    .actionStyle,
+                child: const NotificationHeaderAction(),
+              ),
+              FHeaderAction(
+                icon: const Icon(FLucideIcons.pencil, size: 18),
+                onPress: () => context.push('/edit-profile'),
+                semanticsLabel: 'Edit profil',
+              ),
+            ],
+          ],
         ),
         Expanded(
           child: authStatus.when(
-            loading: () => const Center(child: FCircularProgress()),
-            error: (_, _) => const Center(child: FCircularProgress()),
-            data: (status) => RefreshIndicator(
-              onRefresh: refreshIdentity,
+            loading: () => const ProfileIdentityHeaderSkeleton(
+              variant: ProfileHeaderVariant.hero,
+            ),
+            error: (_, _) => const ProfileIdentityHeaderSkeleton(
+              variant: ProfileHeaderVariant.hero,
+            ),
+            data: (state) => RefreshIndicator(
+              onRefresh: refreshAll,
               child: ListView(
                 controller: scroll,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 4, 0, 16),
+                padding: EdgeInsets.zero,
                 children: [
-                  if (status.isAuth) ...[
-                    FTileGroup(
-                      label: const Text('Aktivitas saya'),
+                  _IdentitySection(status: state),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+                    child: Column(
                       children: [
-                        const _NotificationTile(),
-                        FTile(
-                          prefix: const Icon(
-                            FLucideIcons.filePenLine,
-                            size: 18,
-                          ),
-                          title: const Text('Kontribusi Saya'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/contributions'),
-                        ),
-                        FTile(
-                          prefix: const Icon(FLucideIcons.bookmark, size: 18),
-                          title: const Text('Bookmark'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/bookmarks'),
-                        ),
-                        FTile(
-                          prefix: const Icon(FLucideIcons.arrowBigUp, size: 18),
-                          title: const Text('Vote'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/votes'),
-                        ),
-                        FTile(
-                          prefix: const Icon(
-                            FLucideIcons.messageSquare,
-                            size: 18,
-                          ),
-                          title: const Text('Komentar'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/comments'),
-                        ),
-                      ],
-                    ),
-                    _sectionGap,
-                    if (status.role == 'contributor' ||
-                        canAccessReviewHome(status.role) ||
-                        canAccessAdminAnalytics(status.role)) ...[
-                      FTileGroup(
-                        label: const Text('Peran'),
-                        children: [
-                          if (status.role == 'contributor')
-                            FTile(
-                              prefix: const Icon(
-                                FLucideIcons.badgeCheck,
-                                size: 18,
+                        if (state.isAuth) ...[
+                          FTileGroup(
+                            label: const Text('Aktivitas saya'),
+                            children: [
+                              const _NotificationTile(),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.filePenLine,
+                                title: 'Kontribusi Saya',
+                                path: '/contributions',
                               ),
-                              title: const Text('Jadi verifikator'),
-                              suffix: const Icon(
-                                FLucideIcons.chevronRight,
-                                size: 16,
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.bookmark,
+                                title: 'Bookmark',
+                                path: '/bookmarks',
                               ),
-                              onPress: () =>
-                                  context.push('/verifier-application'),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.arrowBigUp,
+                                title: 'Vote',
+                                path: '/votes',
+                              ),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.messageSquare,
+                                title: 'Komentar',
+                                path: '/comments',
+                              ),
+                            ],
+                          ),
+                          _sectionGap,
+                          if (state.role == 'contributor' ||
+                              canAccessReviewHome(state.role) ||
+                              canAccessAdminAnalytics(state.role)) ...[
+                            FTileGroup(
+                              label: const Text('Peran'),
+                              children: [
+                                if (state.role == 'contributor')
+                                  _navTile(
+                                    context,
+                                    icon: FLucideIcons.badgeCheck,
+                                    title: 'Jadi verifikator',
+                                    path: '/verifier-application',
+                                  ),
+                                if (canAccessReviewHome(state.role))
+                                  const _ReviewQueueTile(),
+                                if (canAccessAdminAnalytics(state.role))
+                                  _navTile(
+                                    context,
+                                    icon: FLucideIcons.chartColumn,
+                                    title: 'Analitik',
+                                    path: AdminAnalyticsRouter.home.path,
+                                  ),
+                              ],
                             ),
-                          if (canAccessReviewHome(status.role))
-                            const _ReviewQueueTile(),
-                          if (canAccessAdminAnalytics(status.role))
-                            FTile(
-                              prefix: const Icon(
-                                FLucideIcons.chartColumn,
-                                size: 18,
+                            _sectionGap,
+                          ],
+                          FTileGroup(
+                            label: const Text('Akun'),
+                            children: [
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.link,
+                                title: 'Akun Terhubung',
+                                path: '/linked-accounts',
                               ),
-                              title: const Text('Analitik'),
-                              suffix: const Icon(
-                                FLucideIcons.chevronRight,
-                                size: 16,
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.keyRound,
+                                title: links.isLoading ||
+                                        links.hasPassword ||
+                                        links.errorMessage != null
+                                    ? 'Ubah Password'
+                                    : 'Buat Password',
+                                path: links.isLoading ||
+                                        links.hasPassword ||
+                                        links.errorMessage != null
+                                    ? '/change-password'
+                                    : '/set-password',
                               ),
-                              onPress: () =>
-                                  context.push(AdminAnalyticsRouter.home.path),
-                            ),
+                            ],
+                          ),
+                          _sectionGap,
+                        ] else ...[
+                          FTileGroup(
+                            children: [
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.logIn,
+                                title: 'Masuk / Login',
+                                path: '/login',
+                                go: true,
+                              ),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.userRoundPlus,
+                                title: 'Daftar',
+                                path: '/register',
+                              ),
+                            ],
+                          ),
+                          _sectionGap,
                         ],
-                      ),
-                      _sectionGap,
-                    ],
-                    FTileGroup(
-                      label: const Text('Akun'),
-                      children: [
-                        FTile(
-                          prefix: const Icon(FLucideIcons.link, size: 18),
-                          title: const Text('Akun Terhubung'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/linked-accounts'),
+                        FTileGroup(
+                          label: const Text('Tampilan'),
+                          children: [
+                            themeModeTile(ref),
+                            paletteTile(ref),
+                            fontScaleTile(ref),
+                            apiHostTile(context, ApiHostResolver.instance),
+                          ],
                         ),
-                        FTile(
-                          prefix: const Icon(FLucideIcons.keyRound, size: 18),
-                          title: Text(
-                            links.isLoading ||
-                                    links.hasPassword ||
-                                    links.errorMessage != null
-                                ? 'Ubah Password'
-                                : 'Buat Password',
-                          ),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push(
-                            links.isLoading ||
-                                    links.hasPassword ||
-                                    links.errorMessage != null
-                                ? '/change-password'
-                                : '/set-password',
-                          ),
+                        _sectionGap,
+                        FTileGroup(
+                          label: const Text('Bantuan'),
+                          children: [
+                            if (allowNotif.visible)
+                              FTile(
+                                prefix: const Icon(FLucideIcons.bell, size: 18),
+                                title: const Text('Izinkan notifikasi'),
+                                subtitle: const Text(
+                                  'Kabar saat usulanmu disetujui',
+                                ),
+                                enabled: !allowNotif.busy,
+                                suffix: allowNotif.busy
+                                    ? const FCircularProgress(size: .sm)
+                                    : _chevron,
+                                onPress: allowNotif.busy
+                                    ? null
+                                    : () => allowNotif.onPress(context),
+                              ),
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.info,
+                              title: 'Tentang SambasKu',
+                              path: '/about',
+                            ),
+                            _navTile(
+                              context,
+                              icon: FLucideIcons.flag,
+                              title: 'Laporkan Masalah',
+                              path: '/report-bug',
+                            ),
+                          ],
                         ),
+                        if (state.isAuth) ...[
+                          _sectionGap,
+                          FTileGroup(
+                            label: const Text('Keluar & hapus akun'),
+                            children: [
+                              FTile(
+                                variant: .destructive,
+                                prefix: const Icon(FLucideIcons.userRoundX),
+                                title: const Text('Hapus akun'),
+                                suffix: _chevron,
+                                onPress: () => context.push('/delete-account'),
+                              ),
+                              FTile(
+                                variant: .destructive,
+                                prefix: state.isLoggingOut
+                                    ? const FCircularProgress(size: .sm)
+                                    : const Icon(FLucideIcons.logOut),
+                                title: Text(
+                                  state.isLoggingOut ? 'Keluar...' : 'Keluar',
+                                ),
+                                enabled: !state.isLoggingOut,
+                                onPress: state.isLoggingOut
+                                    ? null
+                                    : () async {
+                                        await ref
+                                            .read(authStatusProvider.notifier)
+                                            .logout();
+                                        if (!context.mounted) return;
+                                        context.go('/login');
+                                      },
+                              ),
+                            ],
+                          ),
+                        ],
+                        const Gap(16),
+                        _VersionLabel(future: versionFuture),
                       ],
                     ),
-                    _sectionGap,
-                  ] else ...[
-                    FTileGroup(
-                      children: [
-                        FTile(
-                          prefix: const Icon(FLucideIcons.logIn, size: 18),
-                          title: const Text('Masuk / Login'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.go('/login'),
-                        ),
-                        FTile(
-                          prefix: const Icon(
-                            FLucideIcons.userRoundPlus,
-                            size: 18,
-                          ),
-                          title: const Text('Daftar'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/register'),
-                        ),
-                      ],
-                    ),
-                    _sectionGap,
-                  ],
-                  FTileGroup(
-                    label: const Text('Tampilan & bantuan'),
-                    children: [
-                      if (allowNotif.visible)
-                        FTile(
-                          prefix: const Icon(FLucideIcons.bell, size: 18),
-                          title: const Text('Izinkan notifikasi'),
-                          subtitle: const Text('Kabar saat usulanmu disetujui'),
-                          enabled: !allowNotif.busy,
-                          suffix: allowNotif.busy
-                              ? const FCircularProgress(size: .sm)
-                              : const Icon(FLucideIcons.chevronRight, size: 16),
-                          onPress: allowNotif.busy
-                              ? null
-                              : () => allowNotif.onPress(context),
-                        ),
-                      apiHostTile(context, ApiHostResolver.instance),
-                      themeModeTile(ref),
-                      paletteTile(ref),
-                      fontScaleTile(ref),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.info, size: 18),
-                        title: const Text('Tentang SambasKu'),
-                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-                        onPress: () => context.push('/about'),
-                      ),
-                      FTile(
-                        prefix: const Icon(FLucideIcons.flag, size: 18),
-                        title: const Text('Laporkan Masalah'),
-                        suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-                        onPress: () => context.push('/report-bug'),
-                      ),
-                    ],
-                  ),
-                  if (status.isAuth) ...[
-                    _sectionGap,
-                    FTileGroup(
-                      children: [
-                        FTile(
-                          variant: .destructive,
-                          prefix: const Icon(FLucideIcons.userRoundX),
-                          title: const Text('Hapus akun'),
-                          suffix: const Icon(
-                            FLucideIcons.chevronRight,
-                            size: 16,
-                          ),
-                          onPress: () => context.push('/delete-account'),
-                        ),
-                        FTile(
-                          variant: .destructive,
-                          prefix: status.isLoggingOut
-                              ? const FCircularProgress()
-                              : const Icon(FLucideIcons.logOut),
-                          title: Text(
-                            status.isLoggingOut ? 'Keluar...' : 'Keluar',
-                          ),
-                          enabled: !status.isLoggingOut,
-                          onPress: status.isLoggingOut
-                              ? null
-                              : () async {
-                                  await ref
-                                      .read(authStatusProvider.notifier)
-                                      .logout();
-                                  if (!context.mounted) return;
-                                  context.go('/login');
-                                },
-                        ),
-                      ],
-                    ),
-                  ],
-                  const Gap(16),
-                  // Label versi paling bawah. Gagal load = label hilang.
-                  FutureBuilder<PackageInfo>(
-                    future: versionFuture,
-                    builder: (context, snapshot) {
-                      final info = snapshot.data;
-                      if (info == null) return const SizedBox.shrink();
-                      return Center(
-                        child: Text(
-                          'v${info.version}(${info.buildNumber})',
-                          style: context.theme.typography.body.xs.copyWith(
-                            color: context.theme.colors.mutedForeground,
-                          ),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),
@@ -337,6 +307,148 @@ class ProfilePage extends HookConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  static String _displayNameOf(AuthStatusState? status) {
+    final display = status?.displayName?.trim();
+    if (display != null && display.isNotEmpty) return display;
+    final handle = status?.username?.trim();
+    if (handle != null && handle.isNotEmpty) return handle;
+    return 'Pengguna';
+  }
+}
+
+/// Satu baris menu ber-chevron. Menggantikan 12 salinan FTile + ikon yang
+/// sebelumnya ditulis manual di halaman ini.
+FTile _navTile(
+  BuildContext context, {
+  required IconData icon,
+  required String title,
+  required String path,
+  bool go = false,
+}) {
+  return FTile(
+    prefix: Icon(icon, size: 18),
+    title: Text(title),
+    suffix: _chevron,
+    onPress: () => go ? context.go(path) : context.push(path),
+  );
+}
+
+const Widget _chevron = Icon(FLucideIcons.chevronRight, size: 16);
+
+/// Header identitas tab Profil: avatar besar + cover + stat 5 angka.
+class _IdentitySection extends ConsumerWidget {
+  const _IdentitySection({required this.status});
+
+  final AuthStatusState status;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAuth = status.isAuth;
+    final username = status.username?.trim();
+    // Detail profil publik (bio, stat, bergabung). Tamu tidak watch.
+    final usernameLower = username?.toLowerCase();
+    final profileAsync = isAuth && usernameLower != null && usernameLower.isNotEmpty
+        ? ref.watch(publicProfileProvider(usernameLower))
+        : null;
+    final profile = profileAsync?.asData?.value;
+
+    final border = ref.watch(myActiveBorderProvider).asData?.value?.imageUrl;
+    // Tamu: label ajakan masuk tampil di header, bukan username kosong.
+    final displayName = isAuth ? ProfilePage._displayNameOf(status) : 'Belum masuk';
+
+    Future<void> openPublicProfile() async {
+      // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
+      final latest = ref.read(authStatusProvider).value;
+      final titleHint = latest?.displayName?.trim();
+      var handle = latest?.username?.trim();
+      if (handle == null || handle.isEmpty) {
+        handle = await ref
+            .read(authStatusProvider.notifier)
+            .ensureUsernameForProfile();
+      }
+      if (!context.mounted) return;
+      if (handle == null || handle.isEmpty) {
+        showFToast(
+          context: context,
+          title: const Text('Profil belum siap, coba lagi'),
+        );
+        return;
+      }
+      UserProfileRouter.open(
+        context,
+        handle,
+        displayName: (titleHint != null && titleHint.isNotEmpty)
+            ? titleHint
+            : null,
+      );
+    }
+
+    return Column(
+      children: [
+        ProfileIdentityHeader(
+          variant: ProfileHeaderVariant.hero,
+          displayName: displayName,
+          username: isAuth ? username : null,
+          avatarUrl: status.avatarUrl,
+          borderUrl: isAuth ? border : null,
+          bio: profile?.bio,
+          isVerifier: profile?.isVerifier ??
+              (isAuth && isVerifierRole(status.role)),
+          stats: profile == null
+              ? null
+              : ProfileStatGrid(
+                  words: profile.wordsApproved,
+                  corrections: profile.correctionsApproved,
+                  verifications: profile.verificationsDone,
+                  comments: profile.commentsPublished,
+                  contributions: profile.contributionsApproved,
+                ),
+          joinedLabel: profile == null
+              ? null
+              : formatDateTimeIso(profile.joinedAt),
+          onAvatarTap: isAuth ? openPublicProfile : null,
+          actions: [
+            if (isAuth)
+              FButton(
+                size: .xs,
+                variant: FButtonVariant.outline,
+                mainAxisSize: MainAxisSize.min,
+                prefix: const Icon(FLucideIcons.externalLink, size: 14),
+                onPress: openPublicProfile,
+                child: const Text('Lihat profil publik'),
+              ),
+          ],
+          footer: isAuth ? const ProfileAchievementTabs() : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _VersionLabel extends StatelessWidget {
+  const _VersionLabel({required this.future});
+
+  final Future<PackageInfo> future;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PackageInfo>(
+      future: future,
+      builder: (context, snapshot) {
+        final info = snapshot.data;
+        if (info == null) return const SizedBox.shrink();
+        return Center(
+          child: Text(
+            'v${info.version}(${info.buildNumber})',
+            style: context.theme.typography.body.xs.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -352,7 +464,7 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
       prefix: const Icon(FLucideIcons.bell, size: 18),
       title: const Text('Notifikasi'),
       subtitle: unread > 0 ? Text('$unread belum dibaca') : null,
-      suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+      suffix: _chevron,
       onPress: () => context.push(NotificationRouter.list.path),
     );
   }
@@ -382,239 +494,10 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
                 child: SizedBox(width: 8, height: 8),
               ),
             ),
-          const Icon(FLucideIcons.chevronRight, size: 16),
+          _chevron,
         ],
       ),
       onPress: () => context.push('/review'),
-    );
-  }
-}
-
-/// Header kaya ala Threads: avatar + nama + handle + bio + stat + meta.
-/// Tap seluruh blok membuka profil publik. Slot FHeader.title.
-class _ProfileHeaderTitle extends ConsumerWidget {
-  const _ProfileHeaderTitle({required this.status, required this.collapse});
-
-  final AuthStatusState? status;
-
-  /// 0 = blok stat terbuka, 1 = tertutup (dari [useScrollCollapse]).
-  final Animation<double> collapse;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-    final isAuth = status?.isAuth ?? false;
-    final username = status?.username?.trim();
-    final rawDisplay = status?.displayName?.trim();
-    final displayName = isAuth
-        ? (rawDisplay?.isNotEmpty == true
-              ? rawDisplay!
-              : (username?.isNotEmpty == true ? username! : 'Pengguna'))
-        : 'Belum masuk';
-
-    // Detail profil publik (bio, stat, bergabung). Tamu tidak watch.
-    final usernameLower = username?.toLowerCase();
-    final profileAsync =
-        isAuth && usernameLower != null && usernameLower.isNotEmpty
-        ? ref.watch(publicProfileProvider(usernameLower))
-        : null;
-    final profile = profileAsync?.asData?.value;
-    final loadingProfile =
-        profile == null && (profileAsync?.isLoading ?? false);
-    final showVerifier =
-        profile?.isVerifier ?? (isAuth && isVerifierRole(status?.role));
-
-    Future<void> openPublicProfile() async {
-      // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
-      final latest = ref.read(authStatusProvider).value;
-      final titleHint = latest?.displayName?.trim();
-      var handle = latest?.username?.trim();
-      if (handle == null || handle.isEmpty) {
-        handle = await ref
-            .read(authStatusProvider.notifier)
-            .ensureUsernameForProfile();
-      }
-      if (!context.mounted) return;
-      if (handle == null || handle.isEmpty) {
-        showFToast(
-          context: context,
-          title: const Text('Profil belum siap, coba lagi'),
-        );
-        return;
-      }
-      UserProfileRouter.open(
-        context,
-        handle,
-        displayName: (titleHint != null && titleHint.isNotEmpty)
-            ? titleHint
-            : null,
-      );
-    }
-
-    // Label semantik + hint agar tap-header diketahui pengguna screen reader.
-    return Semantics(
-      button: true,
-      enabled: isAuth,
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: isAuth ? openPublicProfile : null,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Stack(
-              children: [
-                // Aksi kanan atas (notifikasi + edit) mengambang, tidak ikut
-                // menentukan lebar konten - konten tetap center penuh.
-                if (isAuth)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FHeaderData(
-                          actionStyle: theme.headerStyles.resolve({
-                            FHeaderVariant.root,
-                            context.platformVariant,
-                          }).actionStyle,
-                          child: const NotificationHeaderAction(),
-                        ),
-                        FHeaderData(
-                          actionStyle: theme.headerStyles.resolve({
-                            FHeaderVariant.root,
-                            context.platformVariant,
-                          }).actionStyle,
-                          child: FHeaderAction(
-                            icon: const Icon(FLucideIcons.pencil, size: 18),
-                            onPress: () => context.push('/edit-profile'),
-                            semanticsLabel: 'Edit profil',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Gap(4),
-                    // Foto besar + center supaya bingkai achievement jelas
-                    // terlihat.
-                    AvatarBorderOverlay(
-                      size: 104,
-                      borderUrl: ref
-                          .watch(myActiveBorderProvider)
-                          .asData
-                          ?.value
-                          ?.imageUrl,
-                      child: UserAvatar(
-                        name: isAuth ? displayName : null,
-                        imageUrl: status?.avatarUrl,
-                        size: 104,
-                      ),
-                    ),
-                    const Gap(10),
-                    // Tamu juga tetap lihat label ajakan masuk di bawah avatar.
-                    PublicAccountName(
-                      label: displayName,
-                      isVerifier: showVerifier,
-                      badgeSize: 16,
-                      style: theme.typography.body.lg.copyWith(
-                        fontWeight: FontWeight.w700,
-                        height: 1.2,
-                      ),
-                    ),
-                    if (isAuth && username != null && username.isNotEmpty) ...[
-                      const Gap(1),
-                      Text(
-                        '@$username',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ],
-                    if (isAuth && profile?.bio?.trim().isNotEmpty == true) ...[
-                      const Gap(4),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 420),
-                        child: Text(
-                          profile!.bio!,
-                          textAlign: TextAlign.center,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.typography.body.sm,
-                        ),
-                      ),
-                    ],
-                    if (profile != null || loadingProfile)
-                      // Collaps ikut scroll, sama seperti blok search di Home.
-                      // Rebuild dibatasi ke blok stat saja (AnimatedBuilder).
-                      AnimatedBuilder(
-                        animation: collapse,
-                        builder: (context, child) {
-                          final t = collapse.value;
-                          return Align(
-                            alignment: Alignment.topCenter,
-                            heightFactor: 1 - t,
-                            child: ClipRect(
-                              child: Opacity(
-                                opacity: (1 - t * 1.4).clamp(0.0, 1.0),
-                                child: child,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Skeletonizer(
-                            enabled: loadingProfile,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ProfileStatRow(
-                                  words: profile?.wordsApproved ?? 0,
-                                  corrections:
-                                      profile?.correctionsApproved ?? 0,
-                                ),
-                                const Gap(4),
-                                ProfileMetaRow(
-                                  joinedLabel: profile == null
-                                      ? '1 Januari 2026'
-                                      : formatDateTimeIso(profile.joinedAt),
-                                  isVerifier: profile?.isVerifier ?? false,
-                                ),
-                                if (isAuth && profile != null) ...[
-                                  const Gap(8),
-                                  // CTA eksplisit: header bisa di-tap, tapi
-                                  // tidak semua tahu. Tombol ini yang membuat
-                                  // "lihat profil saya" jelas.
-                                  FButton(
-                                    size: .xs,
-                                    variant: FButtonVariant.outline,
-                                    prefix: const Icon(
-                                      FLucideIcons.externalLink,
-                                      size: 14,
-                                    ),
-                                    onPress: openPublicProfile,
-                                    child: const Text('Lihat profil publik'),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

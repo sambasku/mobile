@@ -88,6 +88,7 @@ class PlacesBrowse extends AsyncNotifier<PlacesBrowseState> {
   /// Muat ulang halaman pertama. [keepItems] menahan daftar yang sudah ada
   /// saat pull-to-refresh gagal.
   Future<void> reload({bool keepItems = false}) async {
+    if (!ref.mounted) return;
     if (!keepItems) state = const AsyncLoading();
     final next = await AsyncValue.guard(_fetchState);
     if (!ref.mounted) return;
@@ -96,6 +97,7 @@ class PlacesBrowse extends AsyncNotifier<PlacesBrowseState> {
   }
 
   Future<void> loadMore() async {
+    if (!ref.mounted) return;
     final current = state.value;
     if (current == null ||
         !current.hasMore ||

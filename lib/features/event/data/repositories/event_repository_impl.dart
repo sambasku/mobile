@@ -16,6 +16,7 @@ class EventRepositoryImpl {
     String? before,
     String? categoryId,
     String? villageId,
+    String? regionId,
     String? placeId,
     String? q,
     bool notEnded = false,
@@ -26,6 +27,7 @@ class EventRepositoryImpl {
       before: before,
       categoryId: categoryId,
       villageId: villageId,
+      regionId: regionId,
       placeId: placeId,
       q: q,
       notEnded: notEnded,
@@ -35,6 +37,5 @@ class EventRepositoryImpl {
 
   Future<Event?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
 
-  Future<List<EventCategoryRef>> categories() =>
-      _datasource.fetchCategories();
+  Future<List<EventCategoryRef>> categories() => _datasource.fetchCategories();
 }

@@ -59,6 +59,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Bubur Pedas Sambas'), findsNothing);
-    expect(find.text('Belum ada cuisine yang cocok.'), findsOneWidget);
+    expect(find.text('Belum ada kuliner yang cocok.'), findsOneWidget);
   });
 }

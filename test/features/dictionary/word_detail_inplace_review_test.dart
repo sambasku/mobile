@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/core/widgets/pending_review_badge_icon.dart';
-import 'package:sambasku_mobile/core/widgets/verified_badge_icon.dart';
+import 'package:sambasku_mobile/core/widgets/word_approved_badge_icon.dart';
 import 'package:sambasku_mobile/features/dictionary/data/providers/dictionary_data_providers.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_of_day.dart';
@@ -216,7 +216,7 @@ void main() {
     await tester.tap(find.text('Setujui'));
     await tester.pumpAndSettle();
     expect(reviewRepo.approved, 1);
-    expect(find.byType(VerifiedBadgeIcon), findsOneWidget);
+    expect(find.byType(WordApprovedBadgeIcon), findsOneWidget);
     expect(find.byType(PendingReviewBadgeIcon), findsNothing);
   });
 }

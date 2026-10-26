@@ -69,15 +69,15 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   }
 
   MyProfile _map(MyProfileDto dto) => MyProfile(
-        username: dto.username,
-        displayName: dto.displayName,
-        bio: dto.bio,
-        regionId: dto.regionId,
-        villageId: dto.villageId,
-        avatarUrl: dto.avatarUrl,
-        hasReadContributionGuide: dto.hasReadContributionGuide,
-        requiresConsent: dto.requiresConsent,
-      );
+    username: dto.username,
+    displayName: dto.displayName,
+    bio: dto.bio,
+    regionId: dto.regionId,
+    villageId: dto.villageId,
+    avatarUrl: dto.avatarUrl,
+    hasReadContributionGuide: dto.hasReadContributionGuide,
+    requiresConsent: dto.requiresConsent,
+  );
 
   EditProfileFailure _mapDio(DioException error) {
     final data = error.response?.data;
@@ -95,8 +95,9 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     });
   }

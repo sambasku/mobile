@@ -174,16 +174,11 @@ class _DeckEntryTypeEditorState extends ConsumerState<DeckEntryTypeEditor> {
       );
       showFToast(
         context: context,
-        title: Text(
-          selfApplied ? 'Tersimpan' : 'Usulan terkirim',
-        ),
+        title: Text(selfApplied ? 'Tersimpan' : 'Usulan terkirim'),
       );
       AnalyticsService.instance.log(
         AnalyticsEvents.suggestEditSubmit,
-        params: {
-          'word_id': widget.detail.id,
-          'category': 'other',
-        },
+        params: {'word_id': widget.detail.id, 'category': 'other'},
       );
       _savedWordType = _wordType;
       _savedClass
@@ -201,7 +196,7 @@ class _DeckEntryTypeEditorState extends ConsumerState<DeckEntryTypeEditor> {
       final code = data is Map ? data['error_code']?.toString() : null;
       final message = apiErrorText(
         data,
-        'Gagal mengirim usulan. Periksa koneksi lalu coba lagi.',
+        'Gagal mengirim usulan. Coba lagi dalam beberapa saat.',
       );
       if (code == 'RATE_LIMITED') {
         showFToast(context: context, title: Text(message));

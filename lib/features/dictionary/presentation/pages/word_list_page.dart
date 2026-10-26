@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/word_list_state.dart';
@@ -339,9 +339,9 @@ class _WordTile extends StatelessWidget with FTileMixin {
     return FTile(
       title: Text(item.lemma),
       subtitle: subtitle != null ? Text(subtitle) : null,
-      suffix: item.isVerified
-          ? const VerifiedBadgeIcon()
-          : const PendingReviewBadgeIcon(),
+        suffix: item.isVerified
+            ? const WordApprovedBadgeIcon()
+            : const PendingReviewBadgeIcon(),
       onPress: () {
         FocusManager.instance.primaryFocus?.unfocus();
         context.push(DictionaryRouter.detail.path.replaceFirst(':id', item.id));
@@ -400,7 +400,7 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
     return FTile(
       title: const Text('kata Sambas contoh'),
       suffix: Icon(
-        FLucideIcons.badgeCheck,
+        FLucideIcons.circleDashedCheck,
         size: 18,
         color: context.theme.colors.mutedForeground,
       ),

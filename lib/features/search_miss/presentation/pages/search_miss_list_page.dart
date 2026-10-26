@@ -65,7 +65,7 @@ class SearchMissListPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(0, 16, 0, 32),
                 children: [
                   Text(
-                    'Belum ada kata yang dicari warga. Coba lagi nanti, atau usulkan kata baru dari menu di atas.',
+                    'Belum ada kata yang dicari warga. Coba lagi dalam beberapa saat, atau usulkan kata baru dari menu di atas.',
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),

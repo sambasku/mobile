@@ -86,7 +86,7 @@ class _DiscussionImageCensorEditorPageState
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Gagal memuat gambar. Periksa koneksi / URL staging.';
+        _error = 'Gagal memuat gambar. Coba lagi dalam beberapa saat.';
       });
     }
   }
@@ -167,8 +167,8 @@ class _DiscussionImageCensorEditorPageState
     final block = mode == DiscussionCensorBrushMode.pixelate
         ? (radius ~/ 3).clamp(4, 24)
         : mode == DiscussionCensorBrushMode.blur
-            ? (radius ~/ 4).clamp(3, 16)
-            : 1;
+        ? (radius ~/ 4).clamp(3, 16)
+        : 1;
 
     for (var y = cy - radius; y <= cy + radius; y++) {
       if (y < 0 || y >= height) continue;
@@ -250,112 +250,105 @@ class _DiscussionImageCensorEditorPageState
       child: _loading
           ? const Center(child: FCircularProgress())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(_error!, textAlign: TextAlign.center),
-                      const Gap(12),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: _load,
-                        child: const Text('Coba lagi'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_error!, textAlign: TextAlign.center),
+                  const Gap(12),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: _load,
+                    child: const Text('Coba lagi'),
                   ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                ],
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.',
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(8),
+                Wrap(
+                  spacing: 8,
                   children: [
-                    Text(
-                      'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.',
-                      style: theme.typography.body.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                    for (final mode in DiscussionCensorBrushMode.values)
+                      FButton(
+                        variant: _mode == mode
+                            ? FButtonVariant.primary
+                            : FButtonVariant.outline,
+                        onPress: () => setState(() => _mode = mode),
+                        child: Text(switch (mode) {
+                          DiscussionCensorBrushMode.pixelate => 'Pixelate',
+                          DiscussionCensorBrushMode.blur => 'Blur',
+                          DiscussionCensorBrushMode.block => 'Blok',
+                        }),
                       ),
-                    ),
-                    const Gap(8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        for (final mode in DiscussionCensorBrushMode.values)
-                          FButton(
-                            variant: _mode == mode
-                                ? FButtonVariant.primary
-                                : FButtonVariant.outline,
-                            onPress: () => setState(() => _mode = mode),
-                            child: Text(switch (mode) {
-                              DiscussionCensorBrushMode.pixelate => 'Pixelate',
-                              DiscussionCensorBrushMode.blur => 'Blur',
-                              DiscussionCensorBrushMode.block => 'Blok',
-                            }),
-                          ),
-                      ],
-                    ),
-                    const Gap(8),
-                    Text(
-                      'Ukuran kuas',
-                      style: theme.typography.body.sm,
-                    ),
-                    Slider(
-                      value: _brushRadius,
-                      min: 12,
-                      max: 64,
-                      onChanged: (v) => setState(() => _brushRadius = v),
-                    ),
-                    const Gap(8),
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final img = _image!;
-                          final maxW = constraints.maxWidth;
-                          final maxH = constraints.maxHeight;
-                          final scale = (maxW / img.width < maxH / img.height)
-                              ? maxW / img.width
-                              : maxH / img.height;
-                          final w = img.width * scale;
-                          final h = img.height * scale;
-                          return Center(
-                            child: SizedBox(
-                              width: w,
-                              height: h,
-                              child: GestureDetector(
-                                onPanStart: (d) => _applyBrush(
-                                  d.localPosition,
-                                  Size(w, h),
-                                ),
-                                onPanUpdate: (d) => _applyBrush(
-                                  d.localPosition,
-                                  Size(w, h),
-                                ),
-                                child: RawImage(
-                                  image: img,
-                                  fit: BoxFit.fill,
-                                  width: w,
-                                  height: h,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const Gap(12),
-                    FButton(
-                      onPress: _busy ? null : _export,
-                      child: _busy
-                          ? const FCircularProgress()
-                          : const Text('Terapkan sensor'),
-                    ),
-                    const Gap(8),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: _busy
-                          ? null
-                          : () => Navigator.of(context).pop(false),
-                      child: const Text('Batal'),
-                    ),
                   ],
                 ),
+                const Gap(8),
+                Text('Ukuran kuas', style: theme.typography.body.sm),
+                Slider(
+                  value: _brushRadius,
+                  min: 12,
+                  max: 64,
+                  onChanged: (v) => setState(() => _brushRadius = v),
+                ),
+                const Gap(8),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final img = _image!;
+                      final maxW = constraints.maxWidth;
+                      final maxH = constraints.maxHeight;
+                      final scale = (maxW / img.width < maxH / img.height)
+                          ? maxW / img.width
+                          : maxH / img.height;
+                      final w = img.width * scale;
+                      final h = img.height * scale;
+                      return Center(
+                        child: SizedBox(
+                          width: w,
+                          height: h,
+                          child: GestureDetector(
+                            onPanStart: (d) =>
+                                _applyBrush(d.localPosition, Size(w, h)),
+                            onPanUpdate: (d) =>
+                                _applyBrush(d.localPosition, Size(w, h)),
+                            child: RawImage(
+                              image: img,
+                              fit: BoxFit.fill,
+                              width: w,
+                              height: h,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const Gap(12),
+                FButton(
+                  onPress: _busy ? null : _export,
+                  child: _busy
+                      ? const FCircularProgress()
+                      : const Text('Terapkan sensor'),
+                ),
+                const Gap(8),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: _busy
+                      ? null
+                      : () => Navigator.of(context).pop(false),
+                  child: const Text('Batal'),
+                ),
+              ],
+            ),
     );
   }
 }

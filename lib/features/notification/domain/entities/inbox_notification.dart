@@ -60,12 +60,22 @@ class InboxNotification {
         return 'Diskusi diturunkan';
       case 'discussion_reply':
         return 'Balasan diskusi';
+      case 'discussion_mention':
+        return 'Sebutan diskusi';
+      case 'pantun_reply':
+        return 'Balasan pantun';
+      case 'pantun_mention':
+        return 'Sebutan pantun';
       case 'campaign':
         return 'Pengumuman';
       case 'word_comment':
         return 'Komentar';
       case 'word_vote':
         return 'Vote';
+      case 'word_example':
+        return 'Contoh';
+      case 'word_audio':
+        return 'Pelafalan';
       case 'verifier_application_approved':
         return 'Disetujui';
       case 'verifier_application_rejected':

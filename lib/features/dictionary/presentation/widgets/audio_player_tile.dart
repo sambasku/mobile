@@ -23,8 +23,9 @@ class AudioPlayerTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final WordDetailAudioView view =
-        ref.watch(wordDetailAudioPlayerProvider(wordId));
+    final WordDetailAudioView view = ref.watch(
+      wordDetailAudioPlayerProvider(wordId),
+    );
     final AudioTilePlaybackState playback = view.stateFor(audio.id);
     final isActive = view.activeAudioId == audio.id;
     final showBar = isActive && view.showProgress;
@@ -56,8 +57,8 @@ class AudioPlayerTile extends ConsumerWidget {
     final effectiveDuration = isActive && view.duration > Duration.zero
         ? view.duration
         : (audio.durationMs != null && audio.durationMs! > 0
-            ? Duration(milliseconds: audio.durationMs!)
-            : Duration.zero);
+              ? Duration(milliseconds: audio.durationMs!)
+              : Duration.zero);
 
     final timeLabel = isActive && effectiveDuration > Duration.zero
         ? '${_fmt(view.position)} / ${_fmt(effectiveDuration)}'
@@ -67,7 +68,8 @@ class AudioPlayerTile extends ConsumerWidget {
       AudioTilePlaybackState.playing => 'Jeda audio $meta',
       AudioTilePlaybackState.paused => 'Lanjutkan audio $meta',
       AudioTilePlaybackState.loading => 'Memuat audio $meta',
-      AudioTilePlaybackState.error => 'Gagal memutar $meta, ketuk untuk coba lagi',
+      AudioTilePlaybackState.error =>
+        'Gagal memutar $meta, ketuk untuk coba lagi',
       AudioTilePlaybackState.idle => 'Putar audio $meta',
     };
 
@@ -151,7 +153,9 @@ class AudioPlayerTile extends ConsumerWidget {
                         ? (ratio) {
                             ref
                                 .read(
-                                  wordDetailAudioPlayerProvider(wordId).notifier,
+                                  wordDetailAudioPlayerProvider(
+                                    wordId,
+                                  ).notifier,
                                 )
                                 .seekRatio(ratio);
                           }
@@ -185,7 +189,7 @@ class AudioPlayerTile extends ConsumerWidget {
       showFToast(
         context: context,
         title: const Text(
-          'Gagal memutar audio. Periksa koneksi lalu coba lagi.',
+          'Gagal memutar audio. Coba lagi dalam beberapa saat.',
         ),
         variant: FToastVariant.destructive,
       );

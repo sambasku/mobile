@@ -7,7 +7,7 @@ import '../../../../core/models/api_response.dart';
 ///   → di UI tampilkan di bawah FTextField yang sesuai (mobile-base-stack
 ///   Section 11 mapping VALIDATION_ERROR).
 /// - 429 RATE_LIMITED: usulan dikirim terlalu sering → toast
-///   "Terlalu banyak usulan dikirim. Coba lagi nanti".
+///   "Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat".
 class ContributionFailure {
   const ContributionFailure(
     this.message, {

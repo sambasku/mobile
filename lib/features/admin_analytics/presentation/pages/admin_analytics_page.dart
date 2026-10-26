@@ -56,7 +56,9 @@ class AdminAnalyticsPage extends ConsumerWidget {
               error: (_, _) => FAlert(
                 variant: .destructive,
                 title: const Text('Statistik gagal dimuat'),
-                subtitle: const Text('Periksa koneksi lalu coba lagi.'),
+                subtitle: const Text(
+                  'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+                ),
                 icon: const Icon(FLucideIcons.circleAlert),
               ),
               data: (stats) => _AnalyticsStatsBody(stats: stats),
@@ -133,15 +135,8 @@ const _placeholderStats = DashboardStats(
       'rejected': 3,
     },
   ),
-  contributions: ContributionsStats(
-    total: 240,
-    byStatus: {'pending': 6},
-  ),
-  users: UsersStats(
-    active: 80,
-    onlineRecently: 5,
-    byRole: {},
-  ),
+  contributions: ContributionsStats(total: 240, byStatus: {'pending': 6}),
+  users: UsersStats(active: 80, onlineRecently: 5, byRole: {}),
   activity: ActivityStats(
     auditLogsLast7Days: 42,
     dailyLast30Days: [

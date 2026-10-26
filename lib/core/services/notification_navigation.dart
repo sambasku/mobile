@@ -9,8 +9,10 @@ import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/domain/entities/inbox_notification.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/discussion/discussion_router.dart';
+import '../../features/entertainment/entertainment_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/event/event_router.dart';
+import '../../features/usaha/usaha_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/utils/error_bottom_sheet.dart';
@@ -59,6 +61,27 @@ if (actionKind == 'event_contribution' ||
 _go(router, EventRouter.proposals.path);
 return;
 }
+
+if (actionKind == 'usaha_contribution' ||
+    type.startsWith('usaha_contribution')) {
+_go(router, UsahaRouter.proposals.path);
+return;
+}
+
+if (actionKind == 'usaha_claim' || type.startsWith('usaha_claim')) {
+_go(router, UsahaRouter.saya.path);
+return;
+}
+
+if (actionKind == 'usaha' && actionValue != null && actionValue.isNotEmpty) {
+_go(router, UsahaRouter.detailPath(actionValue));
+return;
+}
+
+  if (actionKind == 'pantun' && actionValue != null && actionValue.isNotEmpty) {
+    _go(router, EntertainmentRouter.pantunDetailPath(actionValue));
+    return;
+  }
 
   if (actionKind == 'discussion' &&
       actionValue != null &&
@@ -112,6 +135,13 @@ return;
   if (targetKind == 'word' && targetId != null && targetId.isNotEmpty) {
     _go(router, '/words/$targetId?focus=activity');
     return;
+  }
+
+  if (targetKind == 'pantun' || type.startsWith('pantun')) {
+    if (targetId != null && targetId.isNotEmpty) {
+      _go(router, EntertainmentRouter.pantunDetailPath(targetId));
+      return;
+    }
   }
 
   if (targetKind == 'discussion' ||

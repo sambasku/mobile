@@ -20,7 +20,7 @@ void main() {
         'lat': 1.35,
         'lng': 109.2,
         'maps_url': null,
-        'poster_url': null,
+        'poster_urls': <String>[],
         'organizer': 'Panitia Pawai',
         'source_url': 'https://facebook.com/pawai.blocks',
         'source_type': 'facebook',

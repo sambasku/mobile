@@ -176,13 +176,11 @@ class HomeSearchPage extends HookConsumerWidget {
     required FeedCategory category,
     required ValueChanged<FeedCategory> onCategoryChanged,
   }) {
-    // #193: skeleton penuh hanya saat kategori ini BELUM PERNAH dimuat.
-    // Pindah chip ke kategori yang sudah ter-cache = render langsung (nol
-    // skeleton berkedip); kategori baru menampilkan skeleton sekali.
-    if (!state.hasLoaded) {
-      return const _FeedSkeleton();
-    }
-
+    // #193: chip kategori SELALU dirender (bukan diganti skeleton). Dulu
+    // kategori yang belum pernah dimuat mengganti seluruh scroll view dengan
+    // skeleton yang chipnya hard-code "Semua" + disabled -> saat user pilih
+    // chip lain, pilihan terlihat "balik ke Semua" dan chips tak bisa
+    // di-tap (persis seperti error). Kini hanya BODY yang skeleton.
     final items = feedReady
         ? [
             for (final item in state.items)
@@ -233,7 +231,7 @@ class HomeSearchPage extends HookConsumerWidget {
                 ),
               ),
             ),
-          if (!feedReady)
+          if (!feedReady || !state.hasLoaded)
             const SliverToBoxAdapter(child: _FeedListSkeleton())
           else if (items.isEmpty && state.errorMessage == null)
             const SliverToBoxAdapter(child: _EmptyFeed())
@@ -353,7 +351,7 @@ class _HomeMenuTiles extends StatelessWidget {
           },
         ),
         FTile(
-          prefix: const Icon(FLucideIcons.languages, size: 18),
+          prefix: const Icon(FLucideIcons.messagesSquare, size: 18),
           title: const Text('Ruang Diskusi'),
           subtitle: const Text(
             'Tanya arti atau bahas kata Sambas bareng warga',
@@ -420,11 +418,15 @@ class _FeedCategoryChipsHeader extends SliverPersistentHeaderDelegate {
 
   final Widget child;
 
-  @override
-  double get minExtent => _FeedCategoryChips.height;
+  /// Jarak napas antara baris chip dan konten feed di bawahnya; ikut tinggi
+  /// delegate supaya saat pinned konten tidak menempel ke chip.
+  static const double _bottomGap = 8;
 
   @override
-  double get maxExtent => _FeedCategoryChips.height;
+  double get minExtent => _FeedCategoryChips.height + _bottomGap;
+
+  @override
+  double get maxExtent => _FeedCategoryChips.height + _bottomGap;
 
   @override
   Widget build(
@@ -433,26 +435,37 @@ class _FeedCategoryChipsHeader extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final theme = context.theme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colors.background,
-        // Garis bawah tipis sebagai pemisah dari feed yang lewat di bawah.
-        border: Border(
-          bottom: BorderSide(color: theme.colors.border, width: 0.5),
+    // Latar menutup chip + gap (opaque) supaya item feed tidak tembus saat
+    // lewat di belakang; garis pemisah tepat di bawah chip.
+    return ColoredBox(
+      color: theme.colors.background,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: overlapsContent
+              ? [
+                  BoxShadow(
+                    color: theme.colors.foreground.withValues(alpha: 0.06),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
-        // Saat menempel dengan konten lewat di belakang (pinned aktif),
-        // bayangan halus menegaskan bar terpisah dari feed (pola app bar).
-        boxShadow: overlapsContent
-            ? [
-                BoxShadow(
-                  color: theme.colors.foreground.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: theme.colors.border, width: 0.5),
                 ),
-              ]
-            : null,
+              ),
+              child: child,
+            ),
+            const SizedBox(height: _bottomGap),
+          ],
+        ),
       ),
-      child: child,
     );
   }
 
@@ -558,24 +571,6 @@ class _FeedListSkeleton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _FeedSkeleton extends StatelessWidget {
-  const _FeedSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-      children: const [
-        Padding(padding: _hPad, child: WordOfDayCard()),
-        PinnedHomeBanner(),
-        Padding(padding: _hPad, child: _FeedHeading()),
-        _FeedCategoryChips(selected: FeedCategory.all, onChanged: null),
-        _FeedListSkeleton(),
-      ],
     );
   }
 }

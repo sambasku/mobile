@@ -92,7 +92,7 @@ class RegisterPage extends HookConsumerWidget {
         showFToast(
           context: context,
           title: Text(
-            ref.read(authRegisterProvider).errorMessage ?? 'Coba lagi nanti',
+            ref.read(authRegisterProvider).errorMessage ?? 'Coba lagi dalam beberapa saat',
           ),
         );
         ref.read(authRegisterProvider.notifier).clearError();

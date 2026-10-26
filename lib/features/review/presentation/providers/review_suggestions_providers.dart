@@ -97,6 +97,7 @@ class ReviewSuggestionsListController
       limit: _pageSize,
       cursor: current.nextCursor,
     );
+    if (!ref.mounted) return;
     page.match(
       (_) {
         state = AsyncData(current.copyWith(isLoadingMore: false));

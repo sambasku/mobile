@@ -2,15 +2,18 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
-/// Bottom sheet error form-level (submit gagal).
+/// Bottom sheet error form-level (submit gagal) atau error muat data.
 ///
-/// Jangan pakai untuk `RATE_LIMITED` (toast), validasi per-field (inline),
-/// atau empty/load list (FAlert di body). Lihat
-/// Pola baku error sheet.
+/// Jangan pakai untuk `RATE_LIMITED` (toast) atau validasi per-field (inline).
+/// Lihat Pola baku error sheet.
+///
+/// `onRetry` opsional: kalau diisi, sheet menampilkan "Coba lagi" di samping
+/// "Mengerti" supaya user tidak perlu menutup sheet lalu menekan tombol lain.
 Future<void> showAppErrorSheet(
   BuildContext context, {
   required String message,
   String title = 'Terjadi kesalahan',
+  VoidCallback? onRetry,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -46,10 +49,33 @@ Future<void> showAppErrorSheet(
                   ),
                 ),
                 const Gap(16),
-                FButton(
-                  onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('Mengerti'),
-                ),
+                if (onRetry == null)
+                  FButton(
+                    onPress: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Mengerti'),
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: () => Navigator.of(sheetContext).pop(),
+                          child: const Text('Tutup'),
+                        ),
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: FButton(
+                          onPress: () {
+                            Navigator.of(sheetContext).pop();
+                            onRetry();
+                          },
+                          child: const Text('Coba lagi'),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

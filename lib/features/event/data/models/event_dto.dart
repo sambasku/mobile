@@ -37,7 +37,9 @@ class EventDto {
       lat: _double(json['lat']),
       lng: _double(json['lng']),
       mapsUrl: _str(json['maps_url']),
-      posterUrl: _str(json['poster_url']),
+      posterUrls: (json['poster_urls'] as List<dynamic>? ?? const [])
+          .map((e) => e as String)
+          .toList(growable: false),
       organizer: _str(json['organizer']),
       sourceUrl: _str(json['source_url']),
       sourceType: _sourceType(json['source_type']),

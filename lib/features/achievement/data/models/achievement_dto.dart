@@ -21,6 +21,7 @@ abstract class AchievementDto with _$AchievementDto {
     int? level,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'user_achievement_id') String? userAchievementId,
+
     /// Unix epoch detik (format waktu wire backend).
     @JsonKey(name: 'awarded_at') int? awardedAt,
     @JsonKey(name: 'is_active_border') @Default(false) bool isActiveBorder,

@@ -17,6 +17,7 @@ String threadAuthorRoleLabel({required bool isVerifier}) =>
 ///
 /// ```
 /// [Avatar] Nama ✓  2h
+///          @username
 ///          isi komentar…
 ///          [footer]                    [hapus]
 /// ```
@@ -81,6 +82,10 @@ class ThreadMessageRow extends StatelessWidget {
       displayName: displayName,
       username: username,
     );
+    // Tampilkan @username bila label memakai display name - user perlu tahu
+    // handle untuk mention (issue: susah mention karena username tak terlihat).
+    final showHandle =
+        !isRedacted && isLinkablePublicUsername(username) && username != label;
     final trailingMeta = [
       if (dateLabel != null && dateLabel!.isNotEmpty) dateLabel!,
       ...metaParts.where((p) => p.trim().isNotEmpty),
@@ -136,6 +141,17 @@ class ThreadMessageRow extends StatelessWidget {
                   ],
                 ],
               ),
+              // Handle @username di baris sendiri di bawah nama - user perlu
+              // tahu handle untuk mention (issue: username tak terlihat).
+              if (showHandle) ...[
+                const Gap(2),
+                Text(
+                  '@$username',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: metaStyle,
+                ),
+              ],
               const Gap(3),
               if (body.trim().isNotEmpty)
                 MentionBodyText(

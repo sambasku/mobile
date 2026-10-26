@@ -35,6 +35,8 @@ abstract final class AnalyticsEvents {
   static const searchMissListOpen = 'search_miss_list_open';
   /// #193: pengguna ganti chip kategori feed beranda.
   static const feedFilter = 'feed_filter';
+  /// Pengguna ganti chip Desa/Wisata/Usaha/Acara di sheet Wilayah.
+  static const wilayahSheetTab = 'wilayah_sheet_tab';
   static const commentSubmit = 'comment_submit';
 
   /// Bukan `notification_open`: nama itu reserved Firebase (otomatis dari FCM).
@@ -181,6 +183,9 @@ class AnalyticsService {
 
   Future<void> logWilayahKecSelect({required String kecId}) =>
       log(AnalyticsEvents.wilayahKecSelect, params: {'kec_id': kecId});
+
+  Future<void> logWilayahSheetTab({required String tab}) =>
+      log(AnalyticsEvents.wilayahSheetTab, params: {'tab': tab});
 
   Future<void> logMapOpen({required String entry, required String mode}) =>
       log(AnalyticsEvents.mapOpen, params: {'entry': entry, 'mode': mode});

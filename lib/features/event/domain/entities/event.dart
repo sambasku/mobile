@@ -28,11 +28,7 @@ class EventCategoryRef {
 
 /// Desa terkait (single FK ke `regions`).
 class EventVillageRef {
-  const EventVillageRef({
-    required this.id,
-    required this.name,
-    this.slug,
-  });
+  const EventVillageRef({required this.id, required this.name, this.slug});
 
   final String id;
   final String name;
@@ -72,7 +68,7 @@ class Event {
     this.lat,
     this.lng,
     this.mapsUrl,
-    this.posterUrl,
+    this.posterUrls = const [],
     this.organizer,
     this.sourceUrl,
     this.sourceType,
@@ -104,7 +100,9 @@ class Event {
   final double? lat;
   final double? lng;
   final String? mapsUrl;
-  final String? posterUrl;
+
+  /// Poster acara (bisa banyak). [0] = sampul.
+  final List<String> posterUrls;
 
   /// Penyelenggara opsional - kalau null, UI skip labelnya (PRD 6.2).
   final String? organizer;

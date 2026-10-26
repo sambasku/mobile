@@ -11,6 +11,7 @@ enum FeedCategory {
   all('all', 'Semua'),
   searchMiss('search_miss', 'Pencarian warga'),
   correction('correction', 'Perbaikan'),
+  explore('explore', 'Eksplorasi'),
   announcement('announcement', 'Pengumuman'),
   joined('joined', 'Warga');
 

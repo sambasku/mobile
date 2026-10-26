@@ -9,11 +9,7 @@ import '../../domain/entities/achievement.dart';
 /// Locked = siluet abu + label "Belum dibuka"; owned = thumbnail aset +
 /// deskripsi. FTileMixin supaya bisa jadi anak FTileGroup.
 class AchievementTile extends StatelessWidget with FTileMixin {
-  const AchievementTile({
-    super.key,
-    required this.item,
-    required this.onTap,
-  });
+  const AchievementTile({super.key, required this.item, required this.onTap});
 
   final Achievement item;
   final VoidCallback onTap;

@@ -65,7 +65,7 @@ class LoginPage extends HookConsumerWidget {
         showFToast(
           context: context,
           title: Text(
-            ref.read(authLoginProvider).errorMessage ?? 'Coba lagi nanti',
+            ref.read(authLoginProvider).errorMessage ?? 'Coba lagi dalam beberapa saat',
           ),
         );
         ref.read(authLoginProvider.notifier).clearError();

@@ -31,7 +31,7 @@ class GithubSignInAdapter implements GithubSignInPort {
     final clientId = Env.githubClientId?.trim();
     if (clientId == null || clientId.isEmpty) {
       throw StateError(
-        'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi nanti.',
+        'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
       );
     }
 

@@ -74,7 +74,9 @@ class ReportBugPage extends HookConsumerWidget {
                     children: [
                       FTile(
                         title: const Text('Semua gambar gagal'),
-                        subtitle: const Text('Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?'),
+                        subtitle: const Text(
+                          'Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?',
+                        ),
                       ),
                       FTile(
                         title: const Text(''),
@@ -231,21 +233,27 @@ class ReportBugPage extends HookConsumerWidget {
                             FTileGroup(
                               children: [
                                 FTile(
-                                  title: const Text('Gambar tidak bisa diunggah'),
-                                  subtitle: const Text('Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?'),
+                                  title: const Text(
+                                    'Gambar tidak bisa diunggah',
+                                  ),
+                                  subtitle: const Text(
+                                    'Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?',
+                                  ),
                                 ),
                                 FTile(
                                   title: const Text(''),
                                   suffix: FButton(
                                     variant: FButtonVariant.destructive,
-                                    onPress: () => Navigator.of(sheetContext).pop(true),
+                                    onPress: () =>
+                                        Navigator.of(sheetContext).pop(true),
                                     child: const Text('Kirim tanpa gambar'),
                                   ),
                                 ),
                                 FTile(
                                   title: const Text(''),
                                   suffix: FButton(
-                                    onPress: () => Navigator.of(sheetContext).pop(false),
+                                    onPress: () =>
+                                        Navigator.of(sheetContext).pop(false),
                                     child: const Text('Batal'),
                                   ),
                                 ),
@@ -289,15 +297,11 @@ class ReportBugPage extends HookConsumerWidget {
                     );
                   }
                   return Either.left(
-                    const AttachmentUploadFailure(
-                      'Satu gambar gagal diunggah',
-                    ),
+                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
                   );
                 } catch (_) {
                   return Either.left(
-                    const AttachmentUploadFailure(
-                      'Satu gambar gagal diunggah',
-                    ),
+                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
                   );
                 }
               },
@@ -332,8 +336,10 @@ String _mapDio(DioException error) {
   return switch (error.type) {
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
-    DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-    DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+    DioExceptionType.receiveTimeout =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.',
+    DioExceptionType.connectionError =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
     _ => 'Terjadi kesalahan, coba lagi',
   };
 }

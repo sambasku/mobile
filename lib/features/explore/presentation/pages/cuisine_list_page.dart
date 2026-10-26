@@ -11,9 +11,19 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/cuisine.dart';
+import '../../explore_router.dart';
 import '../providers/cuisine_providers.dart';
 
-/// Daftar cuisine dari `cuisines.json` (CDN). Data soft-fail:
+/// Grid 3 kolom: foto kotak 1:1, nama selalu 2 baris - seragam dengan
+/// halaman wisata (`place_list_page.dart`).
+const _cuisineGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+  crossAxisCount: 3,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 8,
+  childAspectRatio: 0.7,
+);
+
+/// Daftar kuliner dari API `/api/v1/culinary/cuisines`. Data soft-fail:
 /// gagal = tombol coba lagi.
 class CuisineListPage extends ConsumerStatefulWidget {
   const CuisineListPage({super.key});
@@ -41,17 +51,9 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
   }
 
   Future<void> _reload() async {
-    // #104: hard miss L1 (forceRefresh → fetch CDN) + skeleton selama fetch.
-    setState(() => _refreshing = true);
-    try {
-      await ref.read(cuisineRefreshProvider.future);
-      ref.invalidate(cuisineProvider);
-    } finally {
-      if (mounted) setState(() => _refreshing = false);
-    }
+    await ref.read(cuisineRefreshProvider.future);
+    ref.invalidate(cuisineProvider);
   }
-
-  bool _refreshing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +64,29 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Cuisine'),
+          title: const Text('Kuliner'),
           prefixes: [
             FHeaderAction.back(
               onPress: () =>
                   context.canPop() ? context.pop() : context.go('/explore'),
             ),
           ],
+          suffixes: [
+            FHeaderAction(
+              icon: const Icon(FLucideIcons.store),
+              onPress: () => context.push(ExploreRouter.cuisinePlaces.path),
+              semanticsLabel: 'Tempat kuliner',
+            ),
+            FHeaderAction(
+              icon: const Icon(FLucideIcons.plus),
+              onPress: () =>
+                  context.push(ExploreRouter.cuisineContribute.path),
+              semanticsLabel: 'Usulkan kuliner',
+            ),
+          ],
         ),
         child: cuisineAsync.when(
-          loading: () => _SkeletonList(refreshing: _refreshing),
+          loading: () => const _SkeletonGrid(),
           error: (_, _) => _ErrorBody(onRetry: _reload),
           data: (items) {
             if (items == null) return _ErrorBody(onRetry: _reload);
@@ -87,7 +102,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   control: FTextFieldControl.managed(
                     onChange: _onSearchChanged,
                   ),
-                  hint: 'Cari cuisine...',
+                  hint: 'Cari kuliner...',
                   textInputAction: TextInputAction.search,
                   clearable: (value) => value.text.isNotEmpty,
                   prefixBuilder: (context, style, variants) =>
@@ -103,7 +118,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Belum ada cuisine yang cocok.',
+                        'Belum ada kuliner yang cocok.',
                         textAlign: TextAlign.center,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
@@ -115,15 +130,15 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: _reload,
-                      child: ListView.separated(
+                      child: GridView.builder(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         keyboardDismissBehavior:
                             ScrollViewKeyboardDismissBehavior.onDrag,
+                        gridDelegate: _cuisineGridDelegate,
                         itemCount: filtered.length,
-                        separatorBuilder: (_, _) => const Divider(height: 1),
                         itemBuilder: (context, i) =>
-                            _CuisineCard(cuisine: filtered[i]),
+                            _CuisineGridTile(cuisine: filtered[i]),
                       ),
                     ),
                   ),
@@ -136,10 +151,9 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
   }
 }
 
-class _CuisineCard extends StatelessWidget {
-  const _CuisineCard({required this.cuisine});
-
-  static const _thumbSize = 88.0;
+/// Tile grid kuliner - bentuk sama dengan `_PlaceGridTile` di wisata.
+class _CuisineGridTile extends StatelessWidget {
+  const _CuisineGridTile({required this.cuisine});
 
   final Cuisine cuisine;
 
@@ -147,98 +161,53 @@ class _CuisineCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final cover = cuisine.cover;
+    final titleStyle = theme.typography.body.xs.copyWith(
+      fontWeight: FontWeight.w600,
+      height: 1.25,
+    );
+    final titleHeight = (titleStyle.fontSize ?? 12) * 1.25 * 2;
 
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
         onTap: () => context.push('/explore/cuisine/${cuisine.slug}'),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: SizedBox.square(
-                  dimension: _thumbSize,
-                  child: cover == null
-                      ? ColoredBox(
-                          color: theme.colors.muted,
-                          child: Icon(
-                            FLucideIcons.utensilsCrossed,
-                            size: 32,
-                            color: theme.colors.mutedForeground,
-                          ),
-                        )
-                      : CachedNetworkImageWithFallback(
-                          imageUrl:
-                              displayImageUrl(cover.url, width: 240) ??
-                              cover.url,
-                          fallbackUrl: cover.url,
-                          fit: BoxFit.cover,
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: cover == null
+                    ? ColoredBox(
+                        color: theme.colors.muted,
+                        child: Icon(
+                          FLucideIcons.utensilsCrossed,
+                          size: 28,
+                          color: theme.colors.mutedForeground,
                         ),
-                ),
-              ),
-              const Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      cuisine.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.sm.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.3,
+                      )
+                    : CachedNetworkImageWithFallback(
+                        imageUrl:
+                            displayImageUrl(cover.url, width: 360) ??
+                            cover.url,
+                        fallbackUrl: cover.url,
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                    const Gap(4),
-                    Text(
-                      cuisine.region,
-                      style: theme.typography.body.xs.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: theme.colors.primary,
-                      ),
-                    ),
-                    Text(
-                      cuisine.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.body.xs.copyWith(
-                        color: theme.colors.mutedForeground,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-              IconButton(
-                tooltip: 'Bookmark',
-                onPressed: () => showFToast(
-                  context: context,
-                  title: const Text('Bookmark cuisine belum bisa dipakai'),
-                  description: const Text(
-                    'Kami sedang berusaha membuatnya jadi lebih baik.',
-                  ),
-                ),
-                padding: EdgeInsets.zero,
-                alignment: Alignment.topRight,
-                constraints: const BoxConstraints.tightFor(
-                  width: 40,
-                  height: 40,
-                ),
-                style: const ButtonStyle(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                icon: Icon(
-                  FLucideIcons.bookmark,
-                  size: 20,
-                  color: theme.colors.mutedForeground,
-                ),
+            ),
+            const Gap(6),
+            SizedBox(
+              height: titleHeight,
+              child: Text(
+                cuisine.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: titleStyle,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -260,7 +229,9 @@ class _ErrorBody extends StatelessWidget {
           children: [
             const FAlert(
               title: Text('Gagal memuat'),
-              subtitle: Text('Periksa koneksi internetmu lalu coba lagi ya.'),
+              subtitle: Text(
+                'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+              ),
             ),
             const Gap(16),
             FButton(onPress: onRetry, child: const Text('Coba lagi')),
@@ -271,14 +242,10 @@ class _ErrorBody extends StatelessWidget {
   }
 }
 
-/// Skeleton kartu cuisine - bentuk mirip konten asli supaya transisi
+/// Skeleton grid kuliner - bentuk mirip konten asli supaya transisi
 /// loading → konten/gagal tidak "loncat".
-class _SkeletonList extends StatelessWidget {
-  /// #104: true saat pull-to-refresh (muat ulang dari CDN) - label
-  /// semantics membedakan "menyegarkan" dari loading awal.
-  const _SkeletonList({this.refreshing = false});
-
-  final bool refreshing;
+class _SkeletonGrid extends StatelessWidget {
+  const _SkeletonGrid();
 
   @override
   Widget build(BuildContext context) {
@@ -295,36 +262,27 @@ class _SkeletonList extends StatelessWidget {
             : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
-      child: ListView.separated(
+      child: GridView.builder(
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: 5,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (_, _) => const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Bone(
-                width: _CuisineCard._thumbSize,
-                height: _CuisineCard._thumbSize,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
+        gridDelegate: _cuisineGridDelegate,
+        itemCount: 9,
+        itemBuilder: (_, _) => const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 1,
+              child: Bone(
+                width: double.infinity,
+                height: double.infinity,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Bone(width: 160, height: 16),
-                    Gap(6),
-                    Bone(width: 64, height: 14),
-                    Gap(6),
-                    Bone(width: 200, height: 12),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            Gap(6),
+            Bone(width: double.infinity, height: 12),
+            Gap(4),
+            Bone(width: 72, height: 12),
+          ],
         ),
       ),
     );
@@ -350,12 +308,14 @@ class _EmptyBody extends StatelessWidget {
             ),
             const Gap(16),
             Text(
-              'Belum ada cuisine',
-              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+              'Belum ada kuliner',
+              style: theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const Gap(8),
             Text(
-              'Konten cuisine khas Sambas sedang disiapkan. Balik lagi nanti ya.',
+              'Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.',
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,

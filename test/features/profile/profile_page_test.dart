@@ -264,6 +264,12 @@ void main() {
 
       // CTA eksplisit ke profil publik (header juga bisa di-tap).
       expect(find.text('Lihat profil publik'), findsOneWidget);
+      // Tombol shrink-wrap (bukan full width) - sejajar tombol kecil lain.
+      final btn = tester.getRect(
+        find.widgetWithText(FButton, 'Lihat profil publik'),
+      );
+      final label = tester.getRect(find.text('Lihat profil publik'));
+      expect(btn.width, lessThan(label.width + 80));
       // Edit profil = ikon di pojok header (semantik), bukan tile teks.
       expect(find.text('Edit profil'), findsNothing);
       expect(find.bySemanticsLabel('Edit profil'), findsOneWidget);
@@ -324,6 +330,27 @@ void main() {
 
     expect(find.text('halaman login'), findsOneWidget);
     expect(find.text('Keluar'), findsNothing);
+  });
+
+  testWidgets('sudah login - verifikator hanya punya satu centang (di nama)', (
+    tester,
+  ) async {
+    await pumpProfile(
+      tester,
+      prefs: {
+        'isAuth': true,
+        'sessionUsername': 'budi',
+        'sessionRole': 'reviewer',
+      },
+      secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
+      extraOverrides: [
+        publicProfileProvider('budi').overrideWith((ref) async => _profile),
+      ],
+    );
+
+    // Nama dapat centang via PublicAccountName; baris "Bergabung" tidak.
+    expect(find.byIcon(FLucideIcons.badgeCheck), findsOneWidget);
+    expect(find.textContaining('Bergabung'), findsOneWidget);
   });
 
   testWidgets('sudah login - tile Vote dan Komentar membuka route', (

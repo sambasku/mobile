@@ -43,8 +43,8 @@ String _normalizeUsername(String raw) {
   return value;
 }
 
-class _SocialDraft {
-  const _SocialDraft({
+class SocialDraft {
+  const SocialDraft({
     this.platform,
     this.username = '',
     this.screenshotUrl,
@@ -72,7 +72,7 @@ class _SocialDraft {
       !uploading &&
       !error;
 
-  _SocialDraft copyWith({
+  SocialDraft copyWith({
     String? platform,
     String? username,
     String? screenshotUrl,
@@ -82,7 +82,7 @@ class _SocialDraft {
     bool? error,
     bool clearRemoteScreenshot = false,
   }) {
-    return _SocialDraft(
+    return SocialDraft(
       platform: platform ?? this.platform,
       username: username ?? this.username,
       screenshotUrl: clearRemoteScreenshot
@@ -98,6 +98,46 @@ class _SocialDraft {
   }
 }
 
+/// Validasi form sebelum kirim. Kosong = siap kirim.
+///
+/// Diambil keluar dari `build` supaya bisa diuji tanpa widget test.
+List<String> verifierFormErrors({
+  required String phoneDigits,
+  required String address,
+  required List<SocialDraft> social,
+}) {
+  final errors = <String>[];
+  if (phoneDigits.isEmpty) {
+    errors.add('Nomor HP wajib diisi.');
+  } else if (!RegExp(r'^\d{8,15}$').hasMatch(phoneDigits)) {
+    errors.add('Nomor HP tidak valid. Contoh: 81234567890.');
+  }
+  if (address.trim().length < 10) {
+    errors.add('Alamat minimal 10 karakter.');
+  }
+  if (social.isEmpty) {
+    errors.add('Tambahkan minimal satu akun media sosial.');
+  }
+  for (var i = 0; i < social.length; i++) {
+    final row = social[i];
+    final label = i == 0 ? 'akun pertama' : 'akun ke-${i + 1}';
+    if (!row.platformReady) {
+      errors.add('Pilih platform untuk $label.');
+    }
+    if (_normalizeUsername(row.username).length < 2) {
+      errors.add('Nama atau username $label minimal 2 karakter.');
+    }
+    if (row.uploading) {
+      errors.add('Tunggu screenshot $label selesai diunggah.');
+    } else if (row.error) {
+      errors.add('Screenshot $label gagal diunggah. Coba lagi.');
+    } else if (!row.screenshotReady) {
+      errors.add('Unggah screenshot profil $label.');
+    }
+  }
+  return errors;
+}
+
 class VerifierApplicationPage extends HookConsumerWidget {
   const VerifierApplicationPage({super.key});
 
@@ -107,7 +147,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final phone = useTextEditingController();
     final address = useTextEditingController();
     final phoneCountry = useState(kPhoneCountryId);
-    final social = useState<List<_SocialDraft>>([const _SocialDraft()]);
+    final social = useState<List<SocialDraft>>([const SocialDraft()]);
     final isReLogging = useState(false);
     useListenable(phone);
     useListenable(address);
@@ -122,10 +162,10 @@ class VerifierApplicationPage extends HookConsumerWidget {
       phone.text = parsed.national;
       address.text = next.address;
       social.value = next.socialLinks.isEmpty
-          ? [const _SocialDraft()]
+          ? [const SocialDraft()]
           : next.socialLinks
                 .map(
-                  (l) => _SocialDraft(
+                  (l) => SocialDraft(
                     platform: l.platform,
                     username: l.username,
                     screenshotUrl: l.screenshot.url,
@@ -162,8 +202,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final needsRevision = application?.needsRevision == true;
     final readOnly = state.isSubmitting;
 
+    // Baris tidak lengkap dilewati di sini; validasi di `submit()` yang
+    // menjelaskan ke user kenapa belum bisa dikirim.
     final links = <SocialLink>[];
-    var allReady = social.value.isNotEmpty;
     for (final row in social.value) {
       final username = _normalizeUsername(row.username);
       final platform = row.platform;
@@ -171,7 +212,6 @@ class VerifierApplicationPage extends HookConsumerWidget {
           platform == null ||
           username.length < 2 ||
           !row.screenshotReady) {
-        allReady = false;
         continue;
       }
       links.add(
@@ -185,24 +225,30 @@ class VerifierApplicationPage extends HookConsumerWidget {
         ),
       );
     }
-    final canSubmit =
-        !readOnly &&
-        !state.isLoading &&
-        !pending &&
-        !approved &&
-        phone.text.trim().isNotEmpty &&
-        address.text.trim().length >= 10 &&
-        allReady &&
-        links.length == social.value.length;
+    final blocked = readOnly || state.isLoading || pending || approved;
 
     void submit() {
+      final phoneDigits = toInternationalPhoneDigits(
+        phoneCountry.value,
+        phone.text.trim(),
+      );
+      final errors = verifierFormErrors(
+        phoneDigits: phoneDigits,
+        address: address.text.trim(),
+        social: social.value,
+      );
+      if (errors.isNotEmpty) {
+        showAppErrorSheet(
+          context,
+          title: 'Pengajuan belum bisa dikirim',
+          message: errors.map((e) => '- $e').join('\n'),
+        );
+        return;
+      }
       ref
           .read(verifierApplicationProvider.notifier)
           .submit(
-            phone: toInternationalPhoneDigits(
-              phoneCountry.value,
-              phone.text.trim(),
-            ),
+            phone: phoneDigits,
             address: address.text.trim(),
             socialLinks: links,
           );
@@ -371,10 +417,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
                                 const Gap(6),
                                 Text(
                                   phoneCountry.value.prefixLabel,
-                                  style: context.theme.typography.body.sm.copyWith(
-                                    color: context.theme.colors.mutedForeground,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: context.theme.typography.body.sm
+                                      .copyWith(
+                                        color: context
+                                            .theme
+                                            .colors
+                                            .mutedForeground,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
                                 Icon(
                                   FLucideIcons.chevronDown,
@@ -429,14 +479,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     FButton(
                       variant: .outline,
                       onPress: () {
-                        social.value = [...social.value, const _SocialDraft()];
+                        social.value = [...social.value, const SocialDraft()];
                       },
                       child: const Text('Tambah lainnya'),
                     ),
                   ],
                   const Gap(16),
                   FButton(
-                    onPress: canSubmit ? submit : null,
+                    onPress: blocked ? null : submit,
                     prefix: state.isSubmitting
                         ? const FCircularProgress()
                         : null,
@@ -475,10 +525,10 @@ class _SocialRow extends ConsumerStatefulWidget {
   });
 
   final int index;
-  final _SocialDraft draft;
+  final SocialDraft draft;
   final bool enabled;
   final bool canRemove;
-  final ValueChanged<_SocialDraft> onChanged;
+  final ValueChanged<SocialDraft> onChanged;
   final VoidCallback onRemove;
 
   @override
@@ -715,7 +765,7 @@ class _ScreenshotSlot extends StatelessWidget {
     required this.onTap,
   });
 
-  final _SocialDraft draft;
+  final SocialDraft draft;
   final bool enabled;
   final VoidCallback onTap;
 

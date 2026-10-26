@@ -151,37 +151,14 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
             )
           : _loading
           ? const Center(child: FCircularProgress())
-          : _error != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FLucideIcons.circleAlert,
-                      size: 40,
-                      color: context.theme.colors.mutedForeground,
-                    ),
-                    const Gap(10),
-                    Text(
-                      'Gagal memuat usulan',
-                      style: context.theme.typography.body.sm.copyWith(
-                        color: context.theme.colors.mutedForeground,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const Gap(16),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: _load,
-                      child: const Text('Coba lagi'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : RefreshIndicator(
+        : _error != null
+            ? _ErrorSheetOnce(
+                message: _error is PlaceContributionException
+                    ? (_error! as PlaceContributionException).message
+                    : 'Gagal memuat usulan. Periksa koneksi lalu coba lagi.',
+                onRetry: _load,
+              )
+            : RefreshIndicator(
               onRefresh: _load,
               child: _items == null || _items!.isEmpty
                   ? ListView(
@@ -326,6 +303,45 @@ class _ProposalRow extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Error muat data: bottom sheet (sekali per error) + pull-to-refresh di
+/// belakangnya supaya tetap bisa mencoba lagi setelah sheet ditutup.
+class _ErrorSheetOnce extends StatefulWidget {
+  const _ErrorSheetOnce({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  State<_ErrorSheetOnce> createState() => _ErrorSheetOnceState();
+}
+
+class _ErrorSheetOnceState extends State<_ErrorSheetOnce> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        message: widget.message,
+        title: 'Gagal memuat usulan',
+        onRetry: widget.onRetry,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async => widget.onRetry(),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: const [SizedBox(height: 240)],
       ),
     );
   }

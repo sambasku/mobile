@@ -86,7 +86,10 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       );
     } on DioException catch (error) {
       return Either.left(
-        _mapDio(error, fallback: 'Pencarian gagal, periksa koneksi'),
+        _mapDio(
+          error,
+          fallback: 'Pencarian gagal. Coba lagi dalam beberapa saat.',
+        ),
       );
     } catch (error) {
       return Either.left(DictionaryFailure(error.toString()));
@@ -154,7 +157,10 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       );
     } on DioException catch (error) {
       return Either.left(
-        _mapDio(error, fallback: 'Daftar kata gagal dimuat, periksa koneksi'),
+        _mapDio(
+          error,
+          fallback: 'Daftar kata gagal dimuat. Coba lagi dalam beberapa saat.',
+        ),
       );
     } catch (error) {
       return Either.left(DictionaryFailure(error.toString()));
@@ -199,18 +205,15 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
             return Map<String, dynamic>.from(body);
           },
         );
-        response = ApiResponse<List<WordSummaryDto>>.fromJson(
-          envelope,
-          (Object? j) {
-            if (j is! List) return <WordSummaryDto>[];
-            return j
-                .whereType<Map>()
-                .map(
-                  (e) => WordSummaryDto.fromJson(Map<String, dynamic>.from(e)),
-                )
-                .toList();
-          },
-        );
+        response = ApiResponse<List<WordSummaryDto>>.fromJson(envelope, (
+          Object? j,
+        ) {
+          if (j is! List) return <WordSummaryDto>[];
+          return j
+              .whereType<Map>()
+              .map((e) => WordSummaryDto.fromJson(Map<String, dynamic>.from(e)))
+              .toList();
+        });
       } else {
         response = await _remoteDatasource.listLatestWords(query);
       }
@@ -260,7 +263,10 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       );
     } on DioException catch (error) {
       return Either.left(
-        _mapDio(error, fallback: 'Feed gagal dimuat, periksa koneksi'),
+        _mapDio(
+          error,
+          fallback: 'Feed gagal dimuat. Coba lagi dalam beberapa saat.',
+        ),
       );
     } catch (error) {
       return Either.left(DictionaryFailure(error.toString()));
@@ -281,10 +287,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       var success = true;
 
       if (cache != null && dio != null) {
-        final key = buildCacheKey(
-          method: 'GET',
-          path: '/api/v1/words/$id',
-        );
+        final key = buildCacheKey(method: 'GET', path: '/api/v1/words/$id');
         final envelope = await cache.getOrFetch(
           key: key,
           cacheClass: CacheClass.dictionaryDetail,
@@ -369,9 +372,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
           cacheClass: CacheClass.dictionaryDetail,
           forceRefresh: forceRefresh,
           fetch: () async {
-            final resp = await dio.get<dynamic>(
-              '/api/v1/words/lemma/$encoded',
-            );
+            final resp = await dio.get<dynamic>('/api/v1/words/lemma/$encoded');
             final body = resp.data;
             if (body is! Map) {
               throw StateError('Envelope detail lemma tidak valid');
@@ -451,14 +452,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       }
 
       return Either.right(
-        items
-            .map(
-              (c) => WordCategory(
-                id: c.id,
-                name: c.name,
-              ),
-            )
-            .toList(),
+        items.map((c) => WordCategory(id: c.id, name: c.name)).toList(),
       );
     } on DioException catch (e) {
       return Either.left(
@@ -556,18 +550,17 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
             username: dto.verifiedBy!.username,
             displayName:
                 (dto.verifiedBy!.displayName?.trim().isNotEmpty == true)
-                    ? dto.verifiedBy!.displayName!.trim()
-                    : dto.verifiedBy!.username,
+                ? dto.verifiedBy!.displayName!.trim()
+                : dto.verifiedBy!.username,
             role: dto.verifiedBy!.role,
           ),
     createdBy: dto.createdBy == null
         ? null
         : WordVerifier(
             username: dto.createdBy!.username,
-            displayName:
-                (dto.createdBy!.displayName?.trim().isNotEmpty == true)
-                    ? dto.createdBy!.displayName!.trim()
-                    : dto.createdBy!.username,
+            displayName: (dto.createdBy!.displayName?.trim().isNotEmpty == true)
+                ? dto.createdBy!.displayName!.trim()
+                : dto.createdBy!.username,
             role: dto.createdBy!.role,
           ),
     meanings: dto.meanings
@@ -591,8 +584,8 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                     username: m.createdBy!.username,
                     displayName:
                         (m.createdBy!.displayName?.trim().isNotEmpty == true)
-                            ? m.createdBy!.displayName!.trim()
-                            : m.createdBy!.username,
+                        ? m.createdBy!.displayName!.trim()
+                        : m.createdBy!.username,
                     role: m.createdBy!.role,
                   ),
             translations: m.translations

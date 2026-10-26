@@ -11,12 +11,7 @@ class EventContributionException implements Exception {
 }
 
 /// Status usulan acara.
-enum EventContributionStatus {
-  pending,
-  needsRevision,
-  approved,
-  rejected,
-}
+enum EventContributionStatus { pending, needsRevision, approved, rejected }
 
 /// Parse status dari wire API (snake_case).
 EventContributionStatus? eventContributionStatusFromWire(String? raw) =>
@@ -83,6 +78,8 @@ class EventContributionDraft {
     required this.startsAt,
     required this.endsAt,
     required this.locationText,
+    this.lat,
+    this.lng,
     this.organizer,
     this.sourceUrl,
     this.sourceType,
@@ -90,6 +87,7 @@ class EventContributionDraft {
     this.regionId,
     this.villageId,
     this.placeIds = const [],
+    this.posterUrls = const [],
   });
 
   final String name;
@@ -98,6 +96,8 @@ class EventContributionDraft {
   final DateTime startsAt;
   final DateTime endsAt;
   final String locationText;
+  final double? lat;
+  final double? lng;
   final String? organizer;
 
   /// Link original konten. Disimpan BERSIH tanpa UTM.
@@ -109,6 +109,10 @@ class EventContributionDraft {
   final String? villageId;
   final List<String> placeIds;
 
+  /// URL poster hasil unggah (mobile wajib upload file, tidak input URL).
+  /// Urutan = urutan unggah; [0] dipakai sebagai sampul.
+  final List<String> posterUrls;
+
   /// Body wire untuk `POST /api/v1/event-contributions`.
   Map<String, dynamic> toBody() => {
     'name': name,
@@ -117,6 +121,8 @@ class EventContributionDraft {
     'starts_at': startsAt.toUtc().toIso8601String(),
     'ends_at': endsAt.toUtc().toIso8601String(),
     'location_text': locationText,
+    if (lat != null && lng != null) 'lat': lat,
+    if (lat != null && lng != null) 'lng': lng,
     if (organizer != null && organizer!.isNotEmpty) 'organizer': organizer,
     if (sourceUrl != null && sourceUrl!.isNotEmpty) 'source_url': sourceUrl,
     if (sourceType != null) 'source_type': sourceType!.name,
@@ -125,5 +131,6 @@ class EventContributionDraft {
     if (regionId != null) 'region_id': regionId,
     if (villageId != null) 'village_id': villageId,
     if (placeIds.isNotEmpty) 'place_ids': placeIds,
+    if (posterUrls.isNotEmpty) 'poster_urls': posterUrls,
   };
 }
