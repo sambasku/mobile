@@ -450,6 +450,57 @@ void main() {
     expect(find.text('halaman komentar'), findsOneWidget);
   });
 
+  testWidgets('scroll tidak memicu fetch ulang header profil', (tester) async {
+    // Regresi: header dulu anak ListView lazy. Begitu tergulir keluar
+    // cacheExtent, widget di-dispose, provider autoDispose mati, dan API
+    // dipanggil lagi tiap balik scroll. Sekarang header harus tetap
+    // mounted - jumlah fetch tidak bertambah setelah scroll.
+    //
+    // Viewport sengaja pendek: dengan layar tinggi semua konten muat dan
+    // ListView lama pun tidak pernah men-dispose header, jadi bug tidak
+    // terdeteksi.
+    var fetches = 0;
+    await pumpProfile(
+      tester,
+      prefs: {
+        'isAuth': true,
+        'sessionUsername': 'budi',
+        'sessionRole': 'contributor',
+      },
+      secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
+      extraOverrides: [
+        publicProfileProvider('budi').overrideWith((ref) async {
+          fetches++;
+          return _profile;
+        }),
+      ],
+    );
+    final afterFirstLoad = fetches;
+
+    // Pendekkan viewport SETELAH pump: `pumpProfile` menyetel 800x2400, dan
+    // dengan layar tinggi semua konten muat sehingga sliver tidak pernah
+    // men-dispose header - bug tidak terdeteksi.
+    tester.view.physicalSize = const Size(800, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // jumpTo, bukan drag: drag ke atas lalu balik melewati tepi atas
+    // memicu RefreshIndicator sungguhan, jadi yang terukur bukan bug ini.
+    final position = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position;
+    position.jumpTo(position.maxScrollExtent);
+    await tester.pump(const Duration(milliseconds: 300));
+    position.jumpTo(0);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(fetches, afterFirstLoad, reason: 'header tetap mounted saat scroll');
+  });
+
   testWidgets('label versi tampil paling bawah profil', (tester) async {
     await pumpProfile(tester);
 

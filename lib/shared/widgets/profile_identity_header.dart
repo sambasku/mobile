@@ -19,8 +19,8 @@ enum ProfileHeaderVariant { hero, compact }
 /// Header identitas bersama untuk tab Profil dan Profil Publik.
 ///
 /// Satu sumber kebenaran untuk cover, avatar + bingkai, nama, handle, bio,
-/// stat 5 angka, dan meta "Bergabung". Dipakai dua halaman supaya perbaikan
-/// visual tidak perlu dikerjakan dua kali.
+/// stat ringkas (2 angka), dan meta "Bergabung". Dipakai dua halaman supaya
+/// perbaikan visual tidak perlu dikerjakan dua kali.
 ///
 /// Param sengaja primitif (tanpa entitas domain) agar halaman tamu, profil
 /// sendiri, dan profil orang lain bisa memakai widget yang sama.
@@ -55,7 +55,7 @@ class ProfileIdentityHeader extends StatelessWidget {
   final bool isVerifier;
 
   /// Null = blok stat disembunyikan (tamu / profil belum termuat).
-  final ProfileStatGrid? stats;
+  final Widget? stats;
   final String? joinedLabel;
 
   /// Tombol di bawah identitas (mis. `Edit` di profil sendiri).
@@ -177,10 +177,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                   ),
                 ),
               ],
-              if (stats != null) ...[
-                const Gap(10),
-                stats!,
-              ],
+              if (stats != null) ...[const Gap(10), stats!],
               if (joinedLabel != null && joinedLabel!.trim().isNotEmpty) ...[
                 const Gap(6),
                 ProfileMetaRow(joinedLabel: joinedLabel!),
@@ -190,14 +187,13 @@ class ProfileIdentityHeader extends StatelessWidget {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  alignment: _isHero ? WrapAlignment.center : WrapAlignment.start,
+                  alignment: _isHero
+                      ? WrapAlignment.center
+                      : WrapAlignment.start,
                   children: actions,
                 ),
               ],
-              if (footer != null) ...[
-                const Gap(12),
-                footer!,
-              ],
+              if (footer != null) ...[const Gap(12), footer!],
             ],
           ),
         ),
@@ -278,13 +274,7 @@ class ProfileIdentityHeaderSkeleton extends StatelessWidget {
         variant: variant,
         displayName: 'Nama pengguna',
         username: 'username',
-        stats: const ProfileStatGrid(
-          words: 0,
-          corrections: 0,
-          verifications: 0,
-          comments: 0,
-          contributions: 0,
-        ),
+        stats: const ProfileStatRow(words: 0, corrections: 0),
       ),
     );
   }

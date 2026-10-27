@@ -64,11 +64,17 @@ class MeaningVotesState {
 class MeaningVotesController extends _$MeaningVotesController {
   static const _maxTargets = 50;
 
+  /// Penanda load terakhir. Controller ini satu slot untuk SEMUA kata, jadi
+  /// buka kata A -> cepat pindah ke kata B bisa membuat hasil A mendarat
+  /// belakangan dan menimpa angka B. Hasil yang bukan request terakhir dibuang.
+  int _loadToken = 0;
+
   @override
   MeaningVotesState build() => const MeaningVotesState();
 
   /// Muat counts + vote milik user untuk daftar id makna (idempoten).
   Future<void> load(List<String> meaningIds) async {
+    final token = ++_loadToken;
     final ids = meaningIds.take(_maxTargets).toList(growable: false);
     if (ids.isEmpty) {
       state = const MeaningVotesState();
@@ -102,6 +108,7 @@ class MeaningVotesController extends _$MeaningVotesController {
       );
     }
 
+    if (token != _loadToken) return; // sudah ada kata lain yang dimuat
     state = MeaningVotesState(counts: countMap, myVotes: myVotes);
   }
 

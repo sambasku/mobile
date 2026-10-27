@@ -26,8 +26,13 @@ class ReferenceItem {
   final String? nativeName;
 
   /// `Nama (alias)` bila alias ada - mengikuti gaya picker yang sudah dipakai.
-  String get displayLabel =>
-      (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
+  /// Kelas `umum` cukup `Nama`: alias seed-nya ("Belum Diketahui") berbunyi
+  /// status, bukan nama kelas.
+  String get displayLabel => (alias == null ||
+          alias!.isEmpty ||
+          code.toLowerCase() == 'umum')
+      ? name
+      : '$name ($alias)';
 
   /// Nama saja; untuk bahasa lebih enak pakai nama lokal bila tersedia.
   String get readableName => nativeName?.trim().isNotEmpty == true

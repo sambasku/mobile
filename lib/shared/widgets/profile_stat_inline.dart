@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
-
 /// Baris "angka label" stat profil ala feed: count bold + label muted,
 /// dipisah titik tengah. Dipakai tab Profil + profil publik.
 class ProfileStatInline extends StatelessWidget {
@@ -54,89 +53,11 @@ class ProfileStatDot extends StatelessWidget {
   );
 }
 
-/// Grid stat profil 5 angka (3 kolom): usul kata, perbaikan, verifikasi,
-/// komentar, kontribusi. Dipakai header identitas dua halaman profil.
+/// Baris ringkas stat profil: `3 usul kata · 2 perbaikan`.
 ///
-/// Angka 0 tetap ditampilkan (muted) supaya profil baru tidak terlihat
-/// kosong - bukan sinyal "belum ada kontribusi".
-class ProfileStatGrid extends StatelessWidget {
-  const ProfileStatGrid({
-    super.key,
-    required this.words,
-    required this.corrections,
-    required this.verifications,
-    required this.comments,
-    required this.contributions,
-    this.compact = false,
-  });
-
-  final int words;
-  final int corrections;
-  final int verifications;
-  final int comments;
-  final int contributions;
-
-  /// true = tipografi satu tingkat lebih kecil (header compact).
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final numberStyle = (compact
-            ? theme.typography.body.md
-            : theme.typography.body.lg)
-        .copyWith(fontWeight: FontWeight.w700, height: 1.15);
-    final labelStyle = theme.typography.body.xs.copyWith(
-      color: theme.colors.mutedForeground,
-      height: 1.2,
-    );
-
-    final entries = <({int count, String label})>[
-      (count: words, label: 'usul kata'),
-      (count: corrections, label: 'perbaikan'),
-      (count: verifications, label: 'verifikasi'),
-      (count: comments, label: 'komentar'),
-      (count: contributions, label: 'kontribusi'),
-    ];
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // 3 kolom saat ruang cukup, 2 kolom saat sempit (layar kecil + font
-        // besar). Tidak pakai GridView: 5 item butuh baris terakhir rata kiri
-        // tanpa sisa sel kosong yang ikut memakan tinggi.
-        const gap = 8.0;
-        final columns = constraints.maxWidth < 240 ? 2 : 3;
-        final cellWidth =
-            (constraints.maxWidth - gap * (columns - 1)) / columns;
-
-        return Wrap(
-          spacing: gap,
-          runSpacing: 10,
-          children: [
-            for (final entry in entries)
-              SizedBox(
-                width: cellWidth,
-                child: Semantics(
-                  label: '${entry.count} ${entry.label}',
-                  excludeSemantics: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('${entry.count}', style: numberStyle),
-                      Text(entry.label, style: labelStyle),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-/// Baris lengkap 2 stat profil: usul kata · perbaikan.
+/// Satu baris, dua angka yang benar-benar dicari orang. Hitungan lain
+/// (verifikasi, komentar, kontribusi) sengaja tidak ditampilkan - "kontribusi"
+/// = turunan dari dua angka ini, sisanya noise di header profil.
 class ProfileStatRow extends StatelessWidget {
   const ProfileStatRow({
     super.key,
@@ -152,6 +73,7 @@ class ProfileStatRow extends StatelessWidget {
     return Wrap(
       spacing: 0,
       runSpacing: 2,
+      alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         ProfileStatInline(count: words, label: 'usul kata'),

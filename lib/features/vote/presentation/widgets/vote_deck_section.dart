@@ -336,9 +336,18 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       item: item,
                       direction: VoteDeckSwipeDirection.agree,
                     ),
-              onRewind: () => _rewind(context, ref),
-              // Kartu tidak digeser: deck keepAlive, kembali ke kata yang sama.
-              onFix: () => context.push('/suggest-edit/${item.wordId}'),
+                  onRewind: () => _rewind(context, ref),
+                  // Kartu tidak digeser: deck keepAlive, kembali ke kata yang
+                  // sama. Invalidate setelah form tertutup supaya chip kelas
+                  // kata tidak basi bila usulan di-self-apply (issue #159).
+                  onFix: () async {
+                    await context.push('/suggest-edit/${item.wordId}');
+                    if (context.mounted) {
+                      await ref
+                          .read(voteDeckControllerProvider.notifier)
+                          .refresh();
+                    }
+                  },
             ),
           ],
         );

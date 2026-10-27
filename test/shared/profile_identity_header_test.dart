@@ -6,29 +6,23 @@ import 'package:sambasku_mobile/shared/widgets/profile_identity_header.dart';
 import 'package:sambasku_mobile/shared/widgets/profile_stat_inline.dart';
 import 'package:sambasku_mobile/shared/widgets/user_avatar.dart';
 
-/// Stat lengkap 5 angka - bentuk data yang dikirim API profil publik.
-const _stats = ProfileStatGrid(
-  words: 3,
-  corrections: 2,
-  verifications: 1,
-  comments: 4,
-  contributions: 5,
-);
+/// Stat ringkas 2 angka - bentuk data yang dikirim API profil publik.
+const _stats = ProfileStatRow(words: 3, corrections: 2);
 
 Future<void> _pump(WidgetTester tester, Widget child) async {
   await tester.pumpWidget(
     FTheme(
       data: foruiPalettes['zinc']!.light.touch,
-      child: FScaffold(
-        child: SingleChildScrollView(child: child),
-      ),
+      child: FScaffold(child: SingleChildScrollView(child: child)),
     ),
   );
   await tester.pump();
 }
 
 void main() {
-  testWidgets('hero: avatar 104, 5 stat, cover placeholder', (tester) async {
+  testWidgets('hero: avatar 104, stat ringkas, cover placeholder', (
+    tester,
+  ) async {
     await _pump(
       tester,
       const ProfileIdentityHeader(
@@ -45,18 +39,22 @@ void main() {
     expect(avatar, findsOneWidget);
     expect(tester.getSize(avatar).width, 104);
 
-    // 5 angka + 5 label.
-    for (final label in [
-      'usul kata',
-      'perbaikan',
-      'verifikasi',
-      'komentar',
-      'kontribusi',
-    ]) {
-      expect(find.text(label), findsOneWidget, reason: 'label $label');
+    // Dua angka yang dicari orang; sisanya sengaja tidak ditampilkan.
+    for (final label in ['usul kata', 'perbaikan']) {
+      expect(
+        find.textContaining(label),
+        findsOneWidget,
+        reason: 'label $label',
+      );
     }
-    expect(find.text('3'), findsOneWidget);
-    expect(find.text('5'), findsOneWidget);
+    expect(
+      find.text('usul kata'),
+      findsNothing,
+      reason: 'satu baris, bukan grid',
+    );
+    for (final label in ['verifikasi', 'komentar', 'kontribusi']) {
+      expect(find.text(label), findsNothing, reason: 'noise: $label');
+    }
 
     expect(find.text('Budi Santoso'), findsOneWidget);
     expect(find.text('@budi'), findsOneWidget);
@@ -76,7 +74,7 @@ void main() {
     );
 
     expect(tester.getSize(find.byType(UserAvatar)).width, 72);
-    expect(find.byType(ProfileStatGrid), findsNothing);
+    expect(find.byType(ProfileStatRow), findsNothing);
     expect(find.text('usul kata'), findsNothing);
     // Tanpa username -> baris handle tidak dirender.
     expect(find.textContaining('@'), findsNothing);

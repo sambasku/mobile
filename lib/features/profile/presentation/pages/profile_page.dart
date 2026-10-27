@@ -80,12 +80,10 @@ class ProfilePage extends HookConsumerWidget {
           suffixes: [
             if (isAuth) ...[
               FHeaderData(
-                actionStyle: context.theme.headerStyles
-                    .resolve({
-                      FHeaderVariant.root,
-                      context.platformVariant,
-                    })
-                    .actionStyle,
+                actionStyle: context.theme.headerStyles.resolve({
+                  FHeaderVariant.root,
+                  context.platformVariant,
+                }).actionStyle,
                 child: const NotificationHeaderAction(),
               ),
               FHeaderAction(
@@ -106,202 +104,215 @@ class ProfilePage extends HookConsumerWidget {
             ),
             data: (state) => RefreshIndicator(
               onRefresh: refreshAll,
-              child: ListView(
+              // SingleChildScrollView, bukan ListView: halaman ini isinya
+              // pendek dan statis. Di ListView lazy, header identitas
+              // di-dispose saat keluar cacheExtent - provider autoDispose
+              // (profil, lencana, bingkai) ikut mati dan fetch API terulang
+              // tiap balik scroll. Kolom + scroll view = semua anak tetap
+              // mounted, nol refetch.
+              child: SingleChildScrollView(
                 controller: scroll,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                children: [
-                  _IdentitySection(status: state),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
-                    child: Column(
-                      children: [
-                        if (state.isAuth) ...[
-                          FTileGroup(
-                            label: const Text('Aktivitas saya'),
-                            children: [
-                              const _NotificationTile(),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.filePenLine,
-                                title: 'Kontribusi Saya',
-                                path: '/contributions',
-                              ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.bookmark,
-                                title: 'Bookmark',
-                                path: '/bookmarks',
-                              ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.arrowBigUp,
-                                title: 'Vote',
-                                path: '/votes',
-                              ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.messageSquare,
-                                title: 'Komentar',
-                                path: '/comments',
-                              ),
-                            ],
-                          ),
-                          _sectionGap,
-                          if (state.role == 'contributor' ||
-                              canAccessReviewHome(state.role) ||
-                              canAccessAdminAnalytics(state.role)) ...[
+                child: Column(
+                  children: [
+                    _IdentitySection(status: state),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+                      child: Column(
+                        children: [
+                          if (state.isAuth) ...[
                             FTileGroup(
-                              label: const Text('Peran'),
+                              label: const Text('Aktivitas saya'),
                               children: [
-                                if (state.role == 'contributor')
-                                  _navTile(
-                                    context,
-                                    icon: FLucideIcons.badgeCheck,
-                                    title: 'Jadi verifikator',
-                                    path: '/verifier-application',
-                                  ),
-                                if (canAccessReviewHome(state.role))
-                                  const _ReviewQueueTile(),
-                                if (canAccessAdminAnalytics(state.role))
-                                  _navTile(
-                                    context,
-                                    icon: FLucideIcons.chartColumn,
-                                    title: 'Analitik',
-                                    path: AdminAnalyticsRouter.home.path,
-                                  ),
+                                const _NotificationTile(),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.filePenLine,
+                                  title: 'Kontribusi Saya',
+                                  path: '/contributions',
+                                ),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.bookmark,
+                                  title: 'Bookmark',
+                                  path: '/bookmarks',
+                                ),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.arrowBigUp,
+                                  title: 'Vote',
+                                  path: '/votes',
+                                ),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.messageSquare,
+                                  title: 'Komentar',
+                                  path: '/comments',
+                                ),
+                              ],
+                            ),
+                            _sectionGap,
+                            if (state.role == 'contributor' ||
+                                canAccessReviewHome(state.role) ||
+                                canAccessAdminAnalytics(state.role)) ...[
+                              FTileGroup(
+                                label: const Text('Peran'),
+                                children: [
+                                  if (state.role == 'contributor')
+                                    _navTile(
+                                      context,
+                                      icon: FLucideIcons.badgeCheck,
+                                      title: 'Jadi verifikator',
+                                      path: '/verifier-application',
+                                    ),
+                                  if (canAccessReviewHome(state.role))
+                                    const _ReviewQueueTile(),
+                                  if (canAccessAdminAnalytics(state.role))
+                                    _navTile(
+                                      context,
+                                      icon: FLucideIcons.chartColumn,
+                                      title: 'Analitik',
+                                      path: AdminAnalyticsRouter.home.path,
+                                    ),
+                                ],
+                              ),
+                              _sectionGap,
+                            ],
+                            FTileGroup(
+                              label: const Text('Akun'),
+                              children: [
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.link,
+                                  title: 'Akun Terhubung',
+                                  path: '/linked-accounts',
+                                ),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.keyRound,
+                                  title:
+                                      links.isLoading ||
+                                          links.hasPassword ||
+                                          links.errorMessage != null
+                                      ? 'Ubah Password'
+                                      : 'Buat Password',
+                                  path:
+                                      links.isLoading ||
+                                          links.hasPassword ||
+                                          links.errorMessage != null
+                                      ? '/change-password'
+                                      : '/set-password',
+                                ),
+                              ],
+                            ),
+                            _sectionGap,
+                          ] else ...[
+                            FTileGroup(
+                              children: [
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.logIn,
+                                  title: 'Masuk / Login',
+                                  path: '/login',
+                                  go: true,
+                                ),
+                                _navTile(
+                                  context,
+                                  icon: FLucideIcons.userRoundPlus,
+                                  title: 'Daftar',
+                                  path: '/register',
+                                ),
                               ],
                             ),
                             _sectionGap,
                           ],
                           FTileGroup(
-                            label: const Text('Akun'),
+                            label: const Text('Tampilan'),
                             children: [
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.link,
-                                title: 'Akun Terhubung',
-                                path: '/linked-accounts',
-                              ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.keyRound,
-                                title: links.isLoading ||
-                                        links.hasPassword ||
-                                        links.errorMessage != null
-                                    ? 'Ubah Password'
-                                    : 'Buat Password',
-                                path: links.isLoading ||
-                                        links.hasPassword ||
-                                        links.errorMessage != null
-                                    ? '/change-password'
-                                    : '/set-password',
-                              ),
+                              themeModeTile(ref),
+                              paletteTile(ref),
+                              fontScaleTile(ref),
+                              apiHostTile(context, ApiHostResolver.instance),
                             ],
                           ),
-                          _sectionGap,
-                        ] else ...[
-                          FTileGroup(
-                            children: [
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.logIn,
-                                title: 'Masuk / Login',
-                                path: '/login',
-                                go: true,
-                              ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.userRoundPlus,
-                                title: 'Daftar',
-                                path: '/register',
-                              ),
-                            ],
-                          ),
-                          _sectionGap,
-                        ],
-                        FTileGroup(
-                          label: const Text('Tampilan'),
-                          children: [
-                            themeModeTile(ref),
-                            paletteTile(ref),
-                            fontScaleTile(ref),
-                            apiHostTile(context, ApiHostResolver.instance),
-                          ],
-                        ),
-                        _sectionGap,
-                        FTileGroup(
-                          label: const Text('Bantuan'),
-                          children: [
-                            if (allowNotif.visible)
-                              FTile(
-                                prefix: const Icon(FLucideIcons.bell, size: 18),
-                                title: const Text('Izinkan notifikasi'),
-                                subtitle: const Text(
-                                  'Kabar saat usulanmu disetujui',
-                                ),
-                                enabled: !allowNotif.busy,
-                                suffix: allowNotif.busy
-                                    ? const FCircularProgress(size: .sm)
-                                    : _chevron,
-                                onPress: allowNotif.busy
-                                    ? null
-                                    : () => allowNotif.onPress(context),
-                              ),
-                            _navTile(
-                              context,
-                              icon: FLucideIcons.info,
-                              title: 'Tentang SambasKu',
-                              path: '/about',
-                            ),
-                            _navTile(
-                              context,
-                              icon: FLucideIcons.flag,
-                              title: 'Laporkan Masalah',
-                              path: '/report-bug',
-                            ),
-                          ],
-                        ),
-                        if (state.isAuth) ...[
                           _sectionGap,
                           FTileGroup(
-                            label: const Text('Keluar & hapus akun'),
+                            label: const Text('Bantuan'),
                             children: [
-                              FTile(
-                                variant: .destructive,
-                                prefix: const Icon(FLucideIcons.userRoundX),
-                                title: const Text('Hapus akun'),
-                                suffix: _chevron,
-                                onPress: () => context.push('/delete-account'),
-                              ),
-                              FTile(
-                                variant: .destructive,
-                                prefix: state.isLoggingOut
-                                    ? const FCircularProgress(size: .sm)
-                                    : const Icon(FLucideIcons.logOut),
-                                title: Text(
-                                  state.isLoggingOut ? 'Keluar...' : 'Keluar',
+                              if (allowNotif.visible)
+                                FTile(
+                                  prefix: const Icon(
+                                    FLucideIcons.bell,
+                                    size: 18,
+                                  ),
+                                  title: const Text('Izinkan notifikasi'),
+                                  subtitle: const Text(
+                                    'Kabar saat usulanmu disetujui',
+                                  ),
+                                  enabled: !allowNotif.busy,
+                                  suffix: allowNotif.busy
+                                      ? const FCircularProgress(size: .sm)
+                                      : _chevron,
+                                  onPress: allowNotif.busy
+                                      ? null
+                                      : () => allowNotif.onPress(context),
                                 ),
-                                enabled: !state.isLoggingOut,
-                                onPress: state.isLoggingOut
-                                    ? null
-                                    : () async {
-                                        await ref
-                                            .read(authStatusProvider.notifier)
-                                            .logout();
-                                        if (!context.mounted) return;
-                                        context.go('/login');
-                                      },
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.info,
+                                title: 'Tentang SambasKu',
+                                path: '/about',
+                              ),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.flag,
+                                title: 'Laporkan Masalah',
+                                path: '/report-bug',
                               ),
                             ],
                           ),
+                          if (state.isAuth) ...[
+                            _sectionGap,
+                            FTileGroup(
+                              label: const Text('Keluar & hapus akun'),
+                              children: [
+                                FTile(
+                                  variant: .destructive,
+                                  prefix: const Icon(FLucideIcons.userRoundX),
+                                  title: const Text('Hapus akun'),
+                                  suffix: _chevron,
+                                  onPress: () =>
+                                      context.push('/delete-account'),
+                                ),
+                                FTile(
+                                  variant: .destructive,
+                                  prefix: state.isLoggingOut
+                                      ? const FCircularProgress(size: .sm)
+                                      : const Icon(FLucideIcons.logOut),
+                                  title: Text(
+                                    state.isLoggingOut ? 'Keluar...' : 'Keluar',
+                                  ),
+                                  enabled: !state.isLoggingOut,
+                                  onPress: state.isLoggingOut
+                                      ? null
+                                      : () async {
+                                          await ref
+                                              .read(authStatusProvider.notifier)
+                                              .logout();
+                                          if (!context.mounted) return;
+                                          context.go('/login');
+                                        },
+                                ),
+                              ],
+                            ),
+                          ],
+                          const Gap(16),
+                          _VersionLabel(future: versionFuture),
                         ],
-                        const Gap(16),
-                        _VersionLabel(future: versionFuture),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -338,7 +349,7 @@ FTile _navTile(
 
 const Widget _chevron = Icon(FLucideIcons.chevronRight, size: 16);
 
-/// Header identitas tab Profil: avatar besar + cover + stat 5 angka.
+/// Header identitas tab Profil: avatar besar + cover + stat ringkas.
 class _IdentitySection extends ConsumerWidget {
   const _IdentitySection({required this.status});
 
@@ -350,14 +361,17 @@ class _IdentitySection extends ConsumerWidget {
     final username = status.username?.trim();
     // Detail profil publik (bio, stat, bergabung). Tamu tidak watch.
     final usernameLower = username?.toLowerCase();
-    final profileAsync = isAuth && usernameLower != null && usernameLower.isNotEmpty
+    final profileAsync =
+        isAuth && usernameLower != null && usernameLower.isNotEmpty
         ? ref.watch(publicProfileProvider(usernameLower))
         : null;
     final profile = profileAsync?.asData?.value;
 
     final border = ref.watch(myActiveBorderProvider).asData?.value?.imageUrl;
     // Tamu: label ajakan masuk tampil di header, bukan username kosong.
-    final displayName = isAuth ? ProfilePage._displayNameOf(status) : 'Belum masuk';
+    final displayName = isAuth
+        ? ProfilePage._displayNameOf(status)
+        : 'Belum masuk';
 
     Future<void> openPublicProfile() async {
       // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
@@ -395,16 +409,13 @@ class _IdentitySection extends ConsumerWidget {
           avatarUrl: status.avatarUrl,
           borderUrl: isAuth ? border : null,
           bio: profile?.bio,
-          isVerifier: profile?.isVerifier ??
-              (isAuth && isVerifierRole(status.role)),
+          isVerifier:
+              profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
           stats: profile == null
               ? null
-              : ProfileStatGrid(
+              : ProfileStatRow(
                   words: profile.wordsApproved,
                   corrections: profile.correctionsApproved,
-                  verifications: profile.verificationsDone,
-                  comments: profile.commentsPublished,
-                  contributions: profile.contributionsApproved,
                 ),
           joinedLabel: profile == null
               ? null

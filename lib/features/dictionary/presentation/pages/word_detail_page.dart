@@ -29,9 +29,7 @@ import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
-import '../../../vote/domain/entities/vote_target.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
-import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_detail.dart';
@@ -210,15 +208,21 @@ Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
   } else {
     await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
   }
-  final voteTarget = VoteTarget(type: 'meaning', id: wordId);
   ref.invalidate(wordDetailProvider(wordId));
-  ref.invalidate(voteControllerProvider(voteTarget));
   ref.invalidate(bookmarkToggleControllerProvider(wordId));
   ref.invalidate(commentListControllerProvider(wordId));
-  await Future.wait([
-    ref.read(wordDetailProvider(wordId).future),
-    ref.read(commentListControllerProvider(wordId).future),
-  ]);
+  final detailFuture = ref.read(wordDetailProvider(wordId).future);
+  final commentsFuture = ref.read(commentListControllerProvider(wordId).future);
+  final detail = await detailFuture;
+  await commentsFuture;
+  // Vote menempel di MAKNA (0101), bukan kata: muat ulang counts makna
+  // setelah detail segar diketahui. Tanpa ini tarik-refresh tidak
+  // memperbarui angka vote yang tampil.
+  final meaningIds =
+      detail.meanings.map((m) => m.id).toList(growable: false);
+  if (meaningIds.isNotEmpty) {
+    await ref.read(meaningVotesControllerProvider.notifier).load(meaningIds);
+  }
 }
 
 Future<void> _openWordReview(

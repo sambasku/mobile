@@ -79,7 +79,7 @@ class VoteDeckItem {
     final wc = wordClass;
     if (wc == null) return '';
     final alias = wc.alias?.trim();
-    if (wc.code == 'umum') return wc.name;
+    if (wc.code.toLowerCase() == 'umum') return wc.name;
     return (alias == null || alias.isEmpty) ? wc.name : alias;
   }
 }

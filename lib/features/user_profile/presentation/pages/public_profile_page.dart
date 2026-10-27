@@ -241,16 +241,14 @@ class _ProfileBody extends HookConsumerWidget {
                     borderUrl: borderUrl,
                     bio: profile.bio,
                     isVerifier: profile.isVerifier,
-                    stats: ProfileStatGrid(
+                    stats: ProfileStatRow(
                       words: profile.wordsApproved,
                       corrections: profile.correctionsApproved,
-                      verifications: profile.verificationsDone,
-                      comments: profile.commentsPublished,
-                      contributions: profile.contributionsApproved,
                     ),
                     joinedLabel: joined,
                     onAvatarTap: isOwnProfile && !uploadingAvatar.value
-                        ? () => _showAvatarActions(context, ref, uploadingAvatar)
+                        ? () =>
+                              _showAvatarActions(context, ref, uploadingAvatar)
                         : canPreviewAvatar
                         ? () => showImagePreview(context, urls: [avatarSrc])
                         : null,

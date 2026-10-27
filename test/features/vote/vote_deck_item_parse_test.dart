@@ -50,6 +50,20 @@ void main() {
     expect(item.wordClass, isNull);
   });
 
+  test('code umum kapital tetap dianggap Umum (bukan alias)', () {
+    final item = parseVoteDeckItem(
+      card(
+        wordClass: {
+          'id': '01WCUMUM0000000000000000',
+          'code': 'Umum',
+          'name': 'Umum',
+          'alias': 'Belum Diketahui',
+        },
+      ),
+    );
+    expect(item.wordClassLabel, 'Umum');
+  });
+
   test('alias kosong → fallback nama kelas; code umum → nama kelas', () {
     final noAlias = parseVoteDeckItem(
       card(

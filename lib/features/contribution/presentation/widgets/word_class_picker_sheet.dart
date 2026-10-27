@@ -16,7 +16,7 @@ class WordClassPickItem {
   final String? code;
 
   String get displayLabel =>
-      (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
+      (alias == null || alias!.isEmpty || code == 'umum') ? name : '$name ($alias)';
 }
 
 /// Bottom sheet pilih kelas kata - list scrollable, aman untuk banyak opsi.
@@ -162,7 +162,9 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                         ),
                                       ),
                                       if (item.alias != null &&
-                                          item.alias!.isNotEmpty) ...[
+                                          item.alias!.isNotEmpty &&
+                                          item.code?.toLowerCase() !=
+                                              'umum') ...[
                                         const Gap(2),
                                         Text(
                                           item.alias!,

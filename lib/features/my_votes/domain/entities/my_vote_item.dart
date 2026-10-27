@@ -31,7 +31,10 @@ class MyVoteItem {
 
   bool get canOpen => word != null;
 
-  String get title => word?.lemma ?? 'Kata sudah dihapus';
+  // Target tanpa kata induk (pantun, diskusi) tidak pernah punya `word`,
+  // jadi jangan klaim "dihapus" - sebut jenis targetnya saja.
+  String get title => word?.lemma ??
+      (targetType == 'word' ? 'Kata sudah dihapus' : voteTargetLabel(targetType));
 
   String subtitle(String date) {
     final direction = value == 1 ? 'Upvote' : 'Downvote';
@@ -49,6 +52,8 @@ String voteTargetLabel(String targetType) {
     'comment' => 'Komentar',
     'discussion_reply' => 'Balasan diskusi',
     'discussion' => 'Pertanyaan diskusi',
+    'pantun' => 'Pantun',
+    'pantun_reply' => 'Balasan pantun',
     _ => targetType,
   };
 }
