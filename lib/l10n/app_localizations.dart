@@ -12364,6 +12364,618 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Balasan minimal 1 karakter'**
   String get discussionReplyMinLength;
+
+  /// No description provided for @eventPickDate.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tanggal'**
+  String get eventPickDate;
+
+  /// No description provided for @eventPickTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jam'**
+  String get eventPickTime;
+
+  /// No description provided for @eventFormIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi dulu ya'**
+  String get eventFormIncomplete;
+
+  /// No description provided for @eventFormNameRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama acara wajib diisi.'**
+  String get eventFormNameRequired;
+
+  /// No description provided for @eventFormDescRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan singkat acaranya.'**
+  String get eventFormDescRequired;
+
+  /// No description provided for @eventFormCategoryRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori acara dulu.'**
+  String get eventFormCategoryRequired;
+
+  /// No description provided for @eventFormStartRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentukan waktu mulai.'**
+  String get eventFormStartRequired;
+
+  /// No description provided for @eventFormEndRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentukan waktu selesai.'**
+  String get eventFormEndRequired;
+
+  /// No description provided for @eventFormEndBeforeStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu selesai tidak boleh sebelum waktu mulai.'**
+  String get eventFormEndBeforeStart;
+
+  /// No description provided for @eventFormLocationRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tuliskan lokasi acaranya.'**
+  String get eventFormLocationRequired;
+
+  /// No description provided for @eventFormLinkHttpsRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Link sumber harus diawali https://'**
+  String get eventFormLinkHttpsRequired;
+
+  /// No description provided for @eventFormWaitUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload poster selesai.'**
+  String get eventFormWaitUpload;
+
+  /// No description provided for @eventFormRemoveFailedPoster.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus poster yang gagal diunggah dulu.'**
+  String get eventFormRemoveFailedPoster;
+
+  /// No description provided for @eventContributeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan acara'**
+  String get eventContributeTitle;
+
+  /// No description provided for @eventSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get eventSubmitting;
+
+  /// No description provided for @eventSubmitCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get eventSubmitCta;
+
+  /// No description provided for @eventFormIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.'**
+  String get eventFormIntro;
+
+  /// No description provided for @eventFormNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama acara'**
+  String get eventFormNameLabel;
+
+  /// No description provided for @eventFormDescLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get eventFormDescLabel;
+
+  /// No description provided for @eventFormDescHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan singkat acaranya'**
+  String get eventFormDescHint;
+
+  /// No description provided for @eventFormScheduleLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal'**
+  String get eventFormScheduleLabel;
+
+  /// No description provided for @eventFormStartDateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal mulai'**
+  String get eventFormStartDateLabel;
+
+  /// No description provided for @eventFormStartTimeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam mulai'**
+  String get eventFormStartTimeLabel;
+
+  /// No description provided for @eventFormEndDateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal selesai'**
+  String get eventFormEndDateLabel;
+
+  /// No description provided for @eventFormEndTimeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam selesai'**
+  String get eventFormEndTimeLabel;
+
+  /// No description provided for @eventFormLocationLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi'**
+  String get eventFormLocationLabel;
+
+  /// No description provided for @eventFormLocationHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tempat atau alamat acara'**
+  String get eventFormLocationHint;
+
+  /// No description provided for @eventFormMapHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk peta untuk memilih koordinat. Opsional.'**
+  String get eventFormMapHint;
+
+  /// No description provided for @eventFormCoords.
+  ///
+  /// In id, this message translates to:
+  /// **'{lat}, {lng}'**
+  String eventFormCoords(String lat, String lng);
+
+  /// No description provided for @eventFormClearCoords.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus koordinat'**
+  String get eventFormClearCoords;
+
+  /// No description provided for @eventFormPosterLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Poster acara'**
+  String get eventFormPosterLabel;
+
+  /// No description provided for @eventFormPosterHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa lebih dari satu foto. Gambar pertama jadi sampul.'**
+  String get eventFormPosterHint;
+
+  /// No description provided for @eventFormOrganizerLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyelenggara'**
+  String get eventFormOrganizerLabel;
+
+  /// No description provided for @eventFormSourceLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sumber resmi'**
+  String get eventFormSourceLabel;
+
+  /// No description provided for @eventFormSourceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau acaranya ada di Facebook, Instagram, atau website, tempel link-nya di sini.'**
+  String get eventFormSourceHint;
+
+  /// No description provided for @eventFormSourceLinkLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Link sumber'**
+  String get eventFormSourceLinkLabel;
+
+  /// No description provided for @eventFormSourceLinkHint.
+  ///
+  /// In id, this message translates to:
+  /// **'https:// (opsional)'**
+  String get eventFormSourceLinkHint;
+
+  /// No description provided for @eventFormCreditLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kredit penerbit'**
+  String get eventFormCreditLabel;
+
+  /// No description provided for @eventFormCreditHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional, mis. nama panitia'**
+  String get eventFormCreditHint;
+
+  /// No description provided for @eventProposalTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara'**
+  String get eventProposalTitle;
+
+  /// No description provided for @eventProposalSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kamu sudah terkirim'**
+  String get eventProposalSent;
+
+  /// No description provided for @eventProposalSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tim kami akan meninjaunya dulu. Kalau lolos, acaranya tayang di daftar acara.'**
+  String get eventProposalSentBody;
+
+  /// No description provided for @eventProposalBack.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get eventProposalBack;
+
+  /// No description provided for @eventCategoryLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get eventCategoryLabel;
+
+  /// No description provided for @eventCategoryPickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori acara'**
+  String get eventCategoryPickerTitle;
+
+  /// No description provided for @eventCategoryPickerHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get eventCategoryPickerHint;
+
+  /// No description provided for @eventSourcePlatformLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Platform sumber'**
+  String get eventSourcePlatformLabel;
+
+  /// No description provided for @eventSourcePlatformPicker.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih platform (opsional)'**
+  String get eventSourcePlatformPicker;
+
+  /// No description provided for @eventSourcePlatformNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada'**
+  String get eventSourcePlatformNone;
+
+  /// No description provided for @eventSourcePlatformNoneDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara tanpa tautan asal'**
+  String get eventSourcePlatformNoneDesc;
+
+  /// No description provided for @eventProposalsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara'**
+  String get eventProposalsTitle;
+
+  /// No description provided for @eventProposalsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan. Periksa koneksi lalu coba lagi.'**
+  String get eventProposalsLoadFailed;
+
+  /// No description provided for @eventProposalCancelTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan?'**
+  String get eventProposalCancelTitle;
+
+  /// No description provided for @eventProposalCancelBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak dikirim ke peninjau.'**
+  String get eventProposalCancelBody;
+
+  /// No description provided for @eventProposalCancelCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get eventProposalCancelCta;
+
+  /// No description provided for @eventProposalStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get eventProposalStatusApproved;
+
+  /// No description provided for @eventProposalStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get eventProposalStatusRejected;
+
+  /// No description provided for @eventProposalStatusRevision.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu revisi'**
+  String get eventProposalStatusRevision;
+
+  /// No description provided for @eventProposalStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get eventProposalStatusPending;
+
+  /// No description provided for @eventProposalsLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulan kamu'**
+  String get eventProposalsLoginGate;
+
+  /// No description provided for @eventProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get eventProposalsEmpty;
+
+  /// No description provided for @eventProposalsEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah direview akan muncul di sini.'**
+  String get eventProposalsEmptyHint;
+
+  /// No description provided for @eventProposalsLoadFailedShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan'**
+  String get eventProposalsLoadFailedShort;
+
+  /// No description provided for @eventListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get eventListTitle;
+
+  /// No description provided for @eventListSearch.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari acara'**
+  String get eventListSearch;
+
+  /// No description provided for @eventListRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get eventListRetry;
+
+  /// No description provided for @eventListFilterAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get eventListFilterAll;
+
+  /// No description provided for @eventListEmptyFiltered.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara yang cocok'**
+  String get eventListEmptyFiltered;
+
+  /// No description provided for @eventListEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara'**
+  String get eventListEmpty;
+
+  /// No description provided for @eventListEmptySearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain ya.'**
+  String get eventListEmptySearchHint;
+
+  /// No description provided for @eventListEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.'**
+  String get eventListEmptyHint;
+
+  /// No description provided for @eventListProposeCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan acara'**
+  String get eventListProposeCta;
+
+  /// No description provided for @eventListLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat acara'**
+  String get eventListLoadFailed;
+
+  /// No description provided for @eventListLoadFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi internetmu lalu coba lagi ya.'**
+  String get eventListLoadFailedBody;
+
+  /// No description provided for @eventStatusUpcoming.
+  ///
+  /// In id, this message translates to:
+  /// **'Akan datang'**
+  String get eventStatusUpcoming;
+
+  /// No description provided for @eventStatusOngoing.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang berlangsung'**
+  String get eventStatusOngoing;
+
+  /// No description provided for @eventStatusEnded.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah selesai'**
+  String get eventStatusEnded;
+
+  /// No description provided for @eventStatusCancelled.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get eventStatusCancelled;
+
+  /// No description provided for @eventPlatformFacebook.
+  ///
+  /// In id, this message translates to:
+  /// **'Facebook'**
+  String get eventPlatformFacebook;
+
+  /// No description provided for @eventPlatformInstagram.
+  ///
+  /// In id, this message translates to:
+  /// **'Instagram'**
+  String get eventPlatformInstagram;
+
+  /// No description provided for @eventPlatformWebsite.
+  ///
+  /// In id, this message translates to:
+  /// **'Website'**
+  String get eventPlatformWebsite;
+
+  /// No description provided for @eventPlatformTiktok.
+  ///
+  /// In id, this message translates to:
+  /// **'TikTok'**
+  String get eventPlatformTiktok;
+
+  /// No description provided for @eventPlatformYoutube.
+  ///
+  /// In id, this message translates to:
+  /// **'YouTube'**
+  String get eventPlatformYoutube;
+
+  /// No description provided for @eventPlatformWhatsapp.
+  ///
+  /// In id, this message translates to:
+  /// **'WhatsApp'**
+  String get eventPlatformWhatsapp;
+
+  /// No description provided for @eventPlatformOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get eventPlatformOther;
+
+  /// No description provided for @eventDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get eventDetailTitle;
+
+  /// No description provided for @eventDetailRelatedPlaces.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata terkait'**
+  String get eventDetailRelatedPlaces;
+
+  /// No description provided for @eventDetailOfficialSource.
+  ///
+  /// In id, this message translates to:
+  /// **'Sumber resmi'**
+  String get eventDetailOfficialSource;
+
+  /// No description provided for @eventDetailPosterCounter.
+  ///
+  /// In id, this message translates to:
+  /// **'{current}/{total}'**
+  String eventDetailPosterCounter(int current, int total);
+
+  /// No description provided for @eventDetailVillage.
+  ///
+  /// In id, this message translates to:
+  /// **'Desa {name}'**
+  String eventDetailVillage(String name);
+
+  /// No description provided for @eventDetailOrganizer.
+  ///
+  /// In id, this message translates to:
+  /// **'Diselenggarakan oleh {name}'**
+  String eventDetailOrganizer(String name);
+
+  /// No description provided for @eventDetailNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara ini tidak ditemukan'**
+  String get eventDetailNotFound;
+
+  /// No description provided for @eventDetailSeeList.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat daftar acara'**
+  String get eventDetailSeeList;
+
+  /// No description provided for @eventDetailLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat acara'**
+  String get eventDetailLoadFailed;
+
+  /// No description provided for @eventChipUpcoming.
+  ///
+  /// In id, this message translates to:
+  /// **'Akan datang'**
+  String get eventChipUpcoming;
+
+  /// No description provided for @eventChipOngoing.
+  ///
+  /// In id, this message translates to:
+  /// **'Berlangsung'**
+  String get eventChipOngoing;
+
+  /// No description provided for @eventChipEnded.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get eventChipEnded;
+
+  /// No description provided for @eventChipCancelled.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get eventChipCancelled;
+
+  /// No description provided for @eventDateRange.
+  ///
+  /// In id, this message translates to:
+  /// **'{start} - {end}'**
+  String eventDateRange(String start, String end);
+
+  /// No description provided for @eventPosterUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah poster gagal'**
+  String get eventPosterUploadFailed;
+
+  /// No description provided for @eventSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan. Coba lagi.'**
+  String get eventSaveFailed;
+
+  /// No description provided for @eventFormOrganizerHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional'**
+  String get eventFormOrganizerHint;
 }
 
 class _AppLocalizationsDelegate

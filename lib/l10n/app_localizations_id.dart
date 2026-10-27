@@ -6799,6 +6799,334 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get discussionReplyMinLength => 'Balasan minimal 1 karakter';
+
+  @override
+  String get eventPickDate => 'Pilih tanggal';
+
+  @override
+  String get eventPickTime => 'Pilih jam';
+
+  @override
+  String get eventFormIncomplete => 'Lengkapi dulu ya';
+
+  @override
+  String get eventFormNameRequired => 'Nama acara wajib diisi.';
+
+  @override
+  String get eventFormDescRequired => 'Ceritakan singkat acaranya.';
+
+  @override
+  String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
+
+  @override
+  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+
+  @override
+  String get eventFormEndRequired => 'Tentukan waktu selesai.';
+
+  @override
+  String get eventFormEndBeforeStart =>
+      'Waktu selesai tidak boleh sebelum waktu mulai.';
+
+  @override
+  String get eventFormLocationRequired => 'Tuliskan lokasi acaranya.';
+
+  @override
+  String get eventFormLinkHttpsRequired => 'Link sumber harus diawali https://';
+
+  @override
+  String get eventFormWaitUpload => 'Tunggu upload poster selesai.';
+
+  @override
+  String get eventFormRemoveFailedPoster =>
+      'Hapus poster yang gagal diunggah dulu.';
+
+  @override
+  String get eventContributeTitle => 'Usulkan acara';
+
+  @override
+  String get eventSubmitting => 'Mengirim...';
+
+  @override
+  String get eventSubmitCta => 'Kirim usulan';
+
+  @override
+  String get eventFormIntro =>
+      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+
+  @override
+  String get eventFormNameLabel => 'Nama acara';
+
+  @override
+  String get eventFormDescLabel => 'Deskripsi';
+
+  @override
+  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+
+  @override
+  String get eventFormScheduleLabel => 'Jadwal';
+
+  @override
+  String get eventFormStartDateLabel => 'Tanggal mulai';
+
+  @override
+  String get eventFormStartTimeLabel => 'Jam mulai';
+
+  @override
+  String get eventFormEndDateLabel => 'Tanggal selesai';
+
+  @override
+  String get eventFormEndTimeLabel => 'Jam selesai';
+
+  @override
+  String get eventFormLocationLabel => 'Lokasi';
+
+  @override
+  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+
+  @override
+  String get eventFormMapHint =>
+      'Ketuk peta untuk memilih koordinat. Opsional.';
+
+  @override
+  String eventFormCoords(String lat, String lng) {
+    return '$lat, $lng';
+  }
+
+  @override
+  String get eventFormClearCoords => 'Hapus koordinat';
+
+  @override
+  String get eventFormPosterLabel => 'Poster acara';
+
+  @override
+  String get eventFormPosterHint =>
+      'Bisa lebih dari satu foto. Gambar pertama jadi sampul.';
+
+  @override
+  String get eventFormOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventFormSourceLabel => 'Sumber resmi';
+
+  @override
+  String get eventFormSourceHint =>
+      'Kalau acaranya ada di Facebook, Instagram, atau website, tempel link-nya di sini.';
+
+  @override
+  String get eventFormSourceLinkLabel => 'Link sumber';
+
+  @override
+  String get eventFormSourceLinkHint => 'https:// (opsional)';
+
+  @override
+  String get eventFormCreditLabel => 'Kredit penerbit';
+
+  @override
+  String get eventFormCreditHint => 'Opsional, mis. nama panitia';
+
+  @override
+  String get eventProposalTitle => 'Usulan acara';
+
+  @override
+  String get eventProposalSent => 'Usulan kamu sudah terkirim';
+
+  @override
+  String get eventProposalSentBody =>
+      'Tim kami akan meninjaunya dulu. Kalau lolos, acaranya tayang di daftar acara.';
+
+  @override
+  String get eventProposalBack => 'Kembali';
+
+  @override
+  String get eventCategoryLabel => 'Kategori';
+
+  @override
+  String get eventCategoryPickerTitle => 'Pilih kategori acara';
+
+  @override
+  String get eventCategoryPickerHint => 'Pilih kategori';
+
+  @override
+  String get eventSourcePlatformLabel => 'Platform sumber';
+
+  @override
+  String get eventSourcePlatformPicker => 'Pilih platform (opsional)';
+
+  @override
+  String get eventSourcePlatformNone => 'Tidak ada';
+
+  @override
+  String get eventSourcePlatformNoneDesc => 'Acara tanpa tautan asal';
+
+  @override
+  String get eventProposalsTitle => 'Usulan acara';
+
+  @override
+  String get eventProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get eventProposalCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get eventProposalCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get eventProposalCancelCta => 'Batalkan';
+
+  @override
+  String get eventProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get eventProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get eventProposalStatusRevision => 'Perlu revisi';
+
+  @override
+  String get eventProposalStatusPending => 'Menunggu';
+
+  @override
+  String get eventProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get eventProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get eventProposalsEmptyHint =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get eventProposalsLoadFailedShort => 'Gagal memuat usulan';
+
+  @override
+  String get eventListTitle => 'Acara';
+
+  @override
+  String get eventListSearch => 'Cari acara';
+
+  @override
+  String get eventListRetry => 'Coba lagi';
+
+  @override
+  String get eventListFilterAll => 'Semua';
+
+  @override
+  String get eventListEmptyFiltered => 'Belum ada acara yang cocok';
+
+  @override
+  String get eventListEmpty => 'Belum ada acara';
+
+  @override
+  String get eventListEmptySearchHint => 'Coba kata lain ya.';
+
+  @override
+  String get eventListEmptyHint =>
+      'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.';
+
+  @override
+  String get eventListProposeCta => 'Usulkan acara';
+
+  @override
+  String get eventListLoadFailed => 'Gagal memuat acara';
+
+  @override
+  String get eventListLoadFailedBody =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventStatusUpcoming => 'Akan datang';
+
+  @override
+  String get eventStatusOngoing => 'Sedang berlangsung';
+
+  @override
+  String get eventStatusEnded => 'Sudah selesai';
+
+  @override
+  String get eventStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get eventPlatformFacebook => 'Facebook';
+
+  @override
+  String get eventPlatformInstagram => 'Instagram';
+
+  @override
+  String get eventPlatformWebsite => 'Website';
+
+  @override
+  String get eventPlatformTiktok => 'TikTok';
+
+  @override
+  String get eventPlatformYoutube => 'YouTube';
+
+  @override
+  String get eventPlatformWhatsapp => 'WhatsApp';
+
+  @override
+  String get eventPlatformOther => 'Lainnya';
+
+  @override
+  String get eventDetailTitle => 'Acara';
+
+  @override
+  String get eventDetailRelatedPlaces => 'Wisata terkait';
+
+  @override
+  String get eventDetailOfficialSource => 'Sumber resmi';
+
+  @override
+  String eventDetailPosterCounter(int current, int total) {
+    return '$current/$total';
+  }
+
+  @override
+  String eventDetailVillage(String name) {
+    return 'Desa $name';
+  }
+
+  @override
+  String eventDetailOrganizer(String name) {
+    return 'Diselenggarakan oleh $name';
+  }
+
+  @override
+  String get eventDetailNotFound => 'Acara ini tidak ditemukan';
+
+  @override
+  String get eventDetailSeeList => 'Lihat daftar acara';
+
+  @override
+  String get eventDetailLoadFailed => 'Gagal memuat acara';
+
+  @override
+  String get eventChipUpcoming => 'Akan datang';
+
+  @override
+  String get eventChipOngoing => 'Berlangsung';
+
+  @override
+  String get eventChipEnded => 'Selesai';
+
+  @override
+  String get eventChipCancelled => 'Dibatalkan';
+
+  @override
+  String eventDateRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get eventPosterUploadFailed => 'Unggah poster gagal';
+
+  @override
+  String get eventSaveFailed => 'Gagal menyimpan. Coba lagi.';
+
+  @override
+  String get eventFormOrganizerHint => 'Opsional';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -13596,4 +13924,332 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get discussionReplyMinLength => 'Balasan minimal 1 karakter';
+
+  @override
+  String get eventPickDate => 'Pilih tanggal';
+
+  @override
+  String get eventPickTime => 'Pilih jam';
+
+  @override
+  String get eventFormIncomplete => 'Lengkapi dulu ya';
+
+  @override
+  String get eventFormNameRequired => 'Nama acara wajib diisi.';
+
+  @override
+  String get eventFormDescRequired => 'Ceritakan singkat acaranya.';
+
+  @override
+  String get eventFormCategoryRequired => 'Pilih kategori acara dulu.';
+
+  @override
+  String get eventFormStartRequired => 'Tentukan waktu mulai.';
+
+  @override
+  String get eventFormEndRequired => 'Tentukan waktu selesai.';
+
+  @override
+  String get eventFormEndBeforeStart =>
+      'Waktu selesai tidak boleh sebelum waktu mulai.';
+
+  @override
+  String get eventFormLocationRequired => 'Tuliskan lokasi acaranya.';
+
+  @override
+  String get eventFormLinkHttpsRequired => 'Link sumber harus diawali https://';
+
+  @override
+  String get eventFormWaitUpload => 'Tunggu upload poster selesai.';
+
+  @override
+  String get eventFormRemoveFailedPoster =>
+      'Hapus poster yang gagal diunggah dulu.';
+
+  @override
+  String get eventContributeTitle => 'Usulkan acara';
+
+  @override
+  String get eventSubmitting => 'Mengirim...';
+
+  @override
+  String get eventSubmitCta => 'Kirim usulan';
+
+  @override
+  String get eventFormIntro =>
+      'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.';
+
+  @override
+  String get eventFormNameLabel => 'Nama acara';
+
+  @override
+  String get eventFormDescLabel => 'Deskripsi';
+
+  @override
+  String get eventFormDescHint => 'Ceritakan singkat acaranya';
+
+  @override
+  String get eventFormScheduleLabel => 'Jadwal';
+
+  @override
+  String get eventFormStartDateLabel => 'Tanggal mulai';
+
+  @override
+  String get eventFormStartTimeLabel => 'Jam mulai';
+
+  @override
+  String get eventFormEndDateLabel => 'Tanggal selesai';
+
+  @override
+  String get eventFormEndTimeLabel => 'Jam selesai';
+
+  @override
+  String get eventFormLocationLabel => 'Lokasi';
+
+  @override
+  String get eventFormLocationHint => 'Nama tempat atau alamat acara';
+
+  @override
+  String get eventFormMapHint =>
+      'Ketuk peta untuk memilih koordinat. Opsional.';
+
+  @override
+  String eventFormCoords(String lat, String lng) {
+    return '$lat, $lng';
+  }
+
+  @override
+  String get eventFormClearCoords => 'Hapus koordinat';
+
+  @override
+  String get eventFormPosterLabel => 'Poster acara';
+
+  @override
+  String get eventFormPosterHint =>
+      'Bisa lebih dari satu foto. Gambar pertama jadi sampul.';
+
+  @override
+  String get eventFormOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventFormSourceLabel => 'Sumber resmi';
+
+  @override
+  String get eventFormSourceHint =>
+      'Kalau acaranya ada di Facebook, Instagram, atau website, tempel link-nya di sini.';
+
+  @override
+  String get eventFormSourceLinkLabel => 'Link sumber';
+
+  @override
+  String get eventFormSourceLinkHint => 'https:// (opsional)';
+
+  @override
+  String get eventFormCreditLabel => 'Kredit penerbit';
+
+  @override
+  String get eventFormCreditHint => 'Opsional, mis. nama panitia';
+
+  @override
+  String get eventProposalTitle => 'Usulan acara';
+
+  @override
+  String get eventProposalSent => 'Usulan kamu sudah terkirim';
+
+  @override
+  String get eventProposalSentBody =>
+      'Tim kami akan meninjaunya dulu. Kalau lolos, acaranya tayang di daftar acara.';
+
+  @override
+  String get eventProposalBack => 'Kembali';
+
+  @override
+  String get eventCategoryLabel => 'Kategori';
+
+  @override
+  String get eventCategoryPickerTitle => 'Pilih kategori acara';
+
+  @override
+  String get eventCategoryPickerHint => 'Pilih kategori';
+
+  @override
+  String get eventSourcePlatformLabel => 'Platform sumber';
+
+  @override
+  String get eventSourcePlatformPicker => 'Pilih platform (opsional)';
+
+  @override
+  String get eventSourcePlatformNone => 'Tidak ada';
+
+  @override
+  String get eventSourcePlatformNoneDesc => 'Acara tanpa tautan asal';
+
+  @override
+  String get eventProposalsTitle => 'Usulan acara';
+
+  @override
+  String get eventProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get eventProposalCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get eventProposalCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get eventProposalCancelCta => 'Batalkan';
+
+  @override
+  String get eventProposalStatusApproved => 'Disetujui';
+
+  @override
+  String get eventProposalStatusRejected => 'Ditolak';
+
+  @override
+  String get eventProposalStatusRevision => 'Perlu revisi';
+
+  @override
+  String get eventProposalStatusPending => 'Menunggu';
+
+  @override
+  String get eventProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get eventProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get eventProposalsEmptyHint =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get eventProposalsLoadFailedShort => 'Gagal memuat usulan';
+
+  @override
+  String get eventListTitle => 'Acara';
+
+  @override
+  String get eventListSearch => 'Cari acara';
+
+  @override
+  String get eventListRetry => 'Coba lagi';
+
+  @override
+  String get eventListFilterAll => 'Semua';
+
+  @override
+  String get eventListEmptyFiltered => 'Belum ada acara yang cocok';
+
+  @override
+  String get eventListEmpty => 'Belum ada acara';
+
+  @override
+  String get eventListEmptySearchHint => 'Coba kata lain ya.';
+
+  @override
+  String get eventListEmptyHint =>
+      'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.';
+
+  @override
+  String get eventListProposeCta => 'Usulkan acara';
+
+  @override
+  String get eventListLoadFailed => 'Gagal memuat acara';
+
+  @override
+  String get eventListLoadFailedBody =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventStatusUpcoming => 'Akan datang';
+
+  @override
+  String get eventStatusOngoing => 'Sedang berlangsung';
+
+  @override
+  String get eventStatusEnded => 'Sudah selesai';
+
+  @override
+  String get eventStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get eventPlatformFacebook => 'Facebook';
+
+  @override
+  String get eventPlatformInstagram => 'Instagram';
+
+  @override
+  String get eventPlatformWebsite => 'Website';
+
+  @override
+  String get eventPlatformTiktok => 'TikTok';
+
+  @override
+  String get eventPlatformYoutube => 'YouTube';
+
+  @override
+  String get eventPlatformWhatsapp => 'WhatsApp';
+
+  @override
+  String get eventPlatformOther => 'Lainnya';
+
+  @override
+  String get eventDetailTitle => 'Acara';
+
+  @override
+  String get eventDetailRelatedPlaces => 'Wisata terkait';
+
+  @override
+  String get eventDetailOfficialSource => 'Sumber resmi';
+
+  @override
+  String eventDetailPosterCounter(int current, int total) {
+    return '$current/$total';
+  }
+
+  @override
+  String eventDetailVillage(String name) {
+    return 'Desa $name';
+  }
+
+  @override
+  String eventDetailOrganizer(String name) {
+    return 'Diselenggarakan oleh $name';
+  }
+
+  @override
+  String get eventDetailNotFound => 'Acara ini tidak ditemukan';
+
+  @override
+  String get eventDetailSeeList => 'Lihat daftar acara';
+
+  @override
+  String get eventDetailLoadFailed => 'Gagal memuat acara';
+
+  @override
+  String get eventChipUpcoming => 'Akan datang';
+
+  @override
+  String get eventChipOngoing => 'Berlangsung';
+
+  @override
+  String get eventChipEnded => 'Selesai';
+
+  @override
+  String get eventChipCancelled => 'Dibatalkan';
+
+  @override
+  String eventDateRange(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get eventPosterUploadFailed => 'Unggah poster gagal';
+
+  @override
+  String get eventSaveFailed => 'Gagal menyimpan. Coba lagi.';
+
+  @override
+  String get eventFormOrganizerHint => 'Opsional';
 }
