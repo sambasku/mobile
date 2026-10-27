@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -15,6 +16,7 @@ import '../../../explore/presentation/providers/regions_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
+import '../usaha_labels.dart';
 
 /// Form usulan usaha baru. Boleh anonim - minimum nama + kecamatan.
 class UsahaContributePage extends ConsumerStatefulWidget {
@@ -55,20 +57,25 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   }
 
   void _warn(String message) {
-    showAppErrorSheet(context, title: 'Lengkapi dulu ya', message: message);
+    showAppErrorSheet(
+      context,
+      title: AppLocalizations.of(context).usahaFormIncompleteTitle,
+      message: message,
+    );
   }
 
   Future<void> _pickCategory() async {
     // Tunggu kategori selesai load (ref.read(.value) bisa null kalau
     // provider belum resolve - list jadi kosong padahal data ada).
+    final l10n = AppLocalizations.of(context);
     final categories = await ref.read(usahaCategoriesProvider.future);
     if (!mounted) return;
     final picked = await showOptionPickerSheet<UsahaCategoryRef>(
       context,
-      title: 'Pilih kategori usaha',
+      title: l10n.usahaFormPickCategory,
       icon: FLucideIcons.tags,
       searchable: true,
-      searchHint: 'Cari kategori',
+      searchHint: l10n.usahaFormSearchCategory,
       items: [
         for (final c in categories)
           OptionPickerItem(
@@ -86,15 +93,16 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   }
 
   Future<void> _pickKind() async {
+    final l10n = AppLocalizations.of(context);
     final picked = await showOptionPickerSheet<UsahaKind>(
       context,
-      title: 'Jenis usaha',
+      title: l10n.usahaFormKind,
       icon: FLucideIcons.store,
       items: [
         for (final kind in UsahaKind.values)
           OptionPickerItem(
             value: kind,
-            label: usahaKindLabel(kind),
+            label: usahaKindLabel(l10n, kind),
             selected: kind == _kind,
           ),
       ],
@@ -106,15 +114,16 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   Future<void> _pickKecamatan() async {
     // Tunggu regions selesai load (ref.read(.value) bisa null kalau belum
     // pernah buka explore - list jadi kosong padahal data ada).
+    final l10n = AppLocalizations.of(context);
     final regionsAsync = await ref.read(regionsProvider.future);
     final regions = regionsAsync ?? const <Region>[];
     if (!mounted) return;
     final picked = await showOptionPickerSheet<Region>(
       context,
-      title: 'Pilih kecamatan',
+      title: l10n.usahaFormPickDistrict,
       icon: FLucideIcons.mapPin,
       searchable: true,
-      searchHint: 'Cari kecamatan',
+      searchHint: l10n.usahaFormSearchDistrict,
       items: [
         for (final r in regions.where((r) => r.type == RegionType.kecamatan))
           OptionPickerItem(
@@ -132,9 +141,10 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   }
 
   Future<void> _pickDesa() async {
+    final l10n = AppLocalizations.of(context);
     final kecamatan = _kecamatan;
     if (kecamatan == null) {
-      _warn('Pilih kecamatan dulu ya.');
+      _warn(l10n.usahaFormDistrictRequired);
       return;
     }
     // Tunggu regions selesai load (ref.read(.value) bisa null kalau belum
@@ -144,10 +154,10 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
     if (!mounted) return;
     final picked = await showOptionPickerSheet<Region>(
       context,
-      title: 'Pilih desa',
+      title: l10n.usahaFormPickVillage,
       icon: FLucideIcons.mapPin,
       searchable: true,
-      searchHint: 'Cari desa',
+      searchHint: l10n.usahaFormSearchVillage,
       items: [
         for (final r in regions.where(
           (r) => r.type == RegionType.desa && r.parentId == kecamatan.id,
@@ -176,29 +186,27 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   }
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context);
     final name = _name.text.trim();
     if (name.length < 3) {
-      _warn('Nama usaha minimal 3 huruf ya.');
+      _warn(l10n.usahaFormNameTooShort);
       return;
     }
     final kecamatan = _kecamatan;
     if (kecamatan == null) {
-      _warn('Pilih kecamatan lokasi usaha dulu.');
+      _warn(l10n.usahaFormDistrictMissing);
       return;
     }
     // Foto utama diunggah segera oleh AttachmentImagesField; guard supaya
     // cover yang masih upload/gagal tidak didrop diam-diam saat submit.
     if (_cover.any((s) => s.uploading)) {
-      showFToast(
-        context: context,
-        title: const Text('Tunggu upload foto selesai'),
-      );
+      showFToast(context: context, title: Text(l10n.usahaFormWaitUpload));
       return;
     }
     if (_cover.any((s) => s.error)) {
       showFToast(
         context: context,
-        title: const Text('Hapus foto yang gagal diunggah dulu'),
+        title: Text(l10n.usahaFormRemoveFailedPhoto),
         variant: FToastVariant.destructive,
       );
       return;
@@ -238,17 +246,15 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           child: FTileGroup(
             children: [
               FTile(
-                title: const Text('Usulan terkirim'),
-                subtitle: const Text(
-                  'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.',
-                ),
+                title: Text(l10n.usahaProposalSent),
+                subtitle: Text(l10n.usahaProposalSentBody),
               ),
               FTile(
-                title: const Text('Lihat usulan saya'),
+                title: Text(l10n.usahaSeeProposals),
                 onPress: () => Navigator.pop(ctx, true),
               ),
               FTile(
-                title: const Text('Kembali ke daftar usaha'),
+                title: Text(l10n.usahaBackToList),
                 onPress: () => Navigator.pop(ctx, false),
               ),
             ],
@@ -266,7 +272,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
       await showAppErrorSheet(
         context,
         message: e.message,
-        title: 'Usulan gagal',
+        title: l10n.usahaProposalFailed,
       );
     } finally {
       if (mounted) setState(() => _submitting = false);
@@ -275,11 +281,12 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulkan usaha'),
+        title: Text(l10n.usahaContributeAction),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -297,7 +304,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
             onPress: _submitting ? null : _submit,
             child: _submitting
                 ? const FCircularProgress(size: .sm)
-                : const Text('Kirim usulan'),
+                : Text(l10n.usahaSubmitProposal),
           ),
         ),
       ),
@@ -305,7 +312,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
         padding: const EdgeInsets.only(bottom: 40),
         children: [
           Text(
-            'Isi yang kamu tahu saja. Nama dan kecamatan wajib, sisanya boleh menyusul - admin bisa melengkapi.',
+            l10n.usahaFormIntro,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -313,15 +320,15 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           const Gap(16),
           FTextField(
             control: FTextFieldControl.managed(controller: _name),
-            label: const Text('Nama usaha'),
-            hint: 'Nama usaha atau jasa',
+            label: Text(l10n.usahaFormName),
+            hint: l10n.usahaFormNameHint,
             textCapitalization: TextCapitalization.words,
           ),
           const Gap(10),
           FTextField(
             control: FTextFieldControl.managed(controller: _description),
-            label: const Text('Deskripsi (opsional)'),
-            hint: 'Apa yang dijual atau jasa yang ditawarkan',
+            label: Text(l10n.usahaFormDescription),
+            hint: l10n.usahaFormDescriptionHint,
             maxLines: 4,
           ),
           const Gap(16),
@@ -329,26 +336,26 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
             children: [
               FTile(
                 prefix: const Icon(FLucideIcons.tags, size: 18),
-                title: const Text('Kategori'),
-                subtitle: Text(_categoryName ?? 'Belum dipilih'),
+                title: Text(l10n.usahaFormCategory),
+                subtitle: Text(_categoryName ?? l10n.usahaFormNotSelected),
                 onPress: _pickCategory,
               ),
               FTile(
                 prefix: const Icon(FLucideIcons.store, size: 18),
-                title: const Text('Jenis'),
-                subtitle: Text(usahaKindLabel(_kind)),
+                title: Text(l10n.usahaFormKindLabel),
+                subtitle: Text(usahaKindLabel(l10n, _kind)),
                 onPress: _pickKind,
               ),
               FTile(
                 prefix: const Icon(FLucideIcons.mapPin, size: 18),
-                title: const Text('Kecamatan'),
-                subtitle: Text(_kecamatan?.name ?? 'Wajib dipilih'),
+                title: Text(l10n.usahaFormDistrict),
+                subtitle: Text(_kecamatan?.name ?? l10n.usahaFormRequired),
                 onPress: _pickKecamatan,
               ),
               FTile(
                 prefix: const Icon(FLucideIcons.signpost, size: 18),
-                title: const Text('Desa (opsional)'),
-                subtitle: Text(_desa?.name ?? 'Belum dipilih'),
+                title: Text(l10n.usahaFormVillage),
+                subtitle: Text(_desa?.name ?? l10n.usahaFormNotSelected),
                 onPress: _pickDesa,
               ),
             ],
@@ -356,8 +363,8 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           const Gap(10),
           FTextField(
             control: FTextFieldControl.managed(controller: _address),
-            label: const Text('Alamat atau petunjuk lokasi (opsional)'),
-            hint: 'Jalan, nomor, atau patokan',
+            label: Text(l10n.usahaFormAddress),
+            hint: l10n.usahaFormAddressHint,
             maxLines: 2,
           ),
           const Gap(10),
@@ -365,10 +372,10 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
             children: [
               FTile(
                 prefix: const Icon(FLucideIcons.mapPinned, size: 18),
-                title: const Text('Tandai di peta (opsional)'),
+                title: Text(l10n.usahaFormMapPin),
                 subtitle: Text(
                   _point == null
-                      ? 'Bantu pengunjung menemukan lokasi'
+                      ? l10n.usahaFormMapPinHint
                       : '${_point!.latitude.toStringAsFixed(5)}, ${_point!.longitude.toStringAsFixed(5)}',
                 ),
                 onPress: _openMap,
@@ -377,7 +384,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           ),
           const Gap(16),
           Text(
-            'Kontak (opsional)',
+            l10n.usahaFormContactSection,
             style: theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -387,35 +394,33 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           // dari phone (lihat toNewPayload di usaha-contribution.controller).
           FTextField(
             control: FTextFieldControl.managed(controller: _phone),
-            label: const Text('No. HP'),
+            label: Text(l10n.usahaFormPhone),
             hint: '0812xxxxxxx',
             keyboardType: TextInputType.phone,
           ),
           const Gap(10),
           FTextField(
             control: FTextFieldControl.managed(controller: _website),
-            label: const Text('Website (https)'),
+            label: Text(l10n.usahaFormWebsite),
             hint: 'https://...',
             keyboardType: TextInputType.url,
           ),
           const Gap(10),
           FTextField(
             control: FTextFieldControl.managed(controller: _social),
-            label: const Text('Media sosial (https)'),
+            label: Text(l10n.usahaFormSocial),
             hint: 'https://instagram.com/...',
             keyboardType: TextInputType.url,
           ),
-        const Gap(16),
-        FTileGroup(
-          children: [
-            FTile(
-              prefix: const Icon(FLucideIcons.keyRound, size: 18),
-              title: const Text('Ini usaha saya'),
-                subtitle: const Text(
-                  'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.',
-                ),
+          const Gap(16),
+          FTileGroup(
+            children: [
+              FTile(
+                prefix: const Icon(FLucideIcons.keyRound, size: 18),
+                title: Text(l10n.usahaFormClaim),
+                subtitle: Text(l10n.usahaFormClaimBody),
                 suffix: FSwitch(
-                  semanticsLabel: 'Ini usaha saya',
+                  semanticsLabel: l10n.usahaFormClaim,
                   value: _wantsClaim,
                   onChange: (value) => setState(() => _wantsClaim = value),
                 ),
@@ -454,4 +459,3 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
     );
   }
 }
-

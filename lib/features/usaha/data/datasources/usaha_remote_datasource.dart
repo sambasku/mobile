@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+import '../../../../core/i18n/l10n.dart';
 import '../../domain/entities/usaha.dart';
 import '../models/usaha_dto.dart';
 
@@ -238,7 +239,7 @@ class UsahaContributionApi {
     );
     final url = _dataMap(res.data)['url'];
     if (url is! String || url.isEmpty) {
-      throw const UsahaException('Unggah foto gagal');
+      throw UsahaException(l10n.usahaUploadImageFailed);
     }
     return url;
   }
@@ -255,11 +256,11 @@ class UsahaContributionApi {
         throw UsahaException(
           message is String && message.isNotEmpty
               ? message
-              : 'Gagal menyimpan. Coba lagi ya.',
+              : l10n.usahaSaveFailed,
           code: data['error_code'] as String?,
         );
       }
-      throw const UsahaException('Gagal menyimpan. Coba lagi ya.');
+      throw UsahaException(l10n.usahaSaveFailed);
     }
   }
 }

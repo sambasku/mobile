@@ -124,7 +124,10 @@ class Usaha {
   bool get hasCoordinates => lat != null && lng != null;
 
   bool get hasContact =>
-      _filled(phone) || _filled(whatsapp) || _filled(website) || _filled(socialUrl);
+      _filled(phone) ||
+      _filled(whatsapp) ||
+      _filled(website) ||
+      _filled(socialUrl);
 
   bool get isManaged => managerId != null && managerId!.isNotEmpty;
 }
@@ -173,7 +176,8 @@ class UsahaContribution {
     this.usahaName,
     this.name,
     this.revisionNote,
-    this.rejectReason,
+    this.rejectReasonCode,
+    this.rejectReasonText,
     this.wantsClaim = false,
   });
 
@@ -187,14 +191,16 @@ class UsahaContribution {
   final String? usahaSlug;
   final String? usahaName;
   final String? revisionNote;
-  final String? rejectReason;
+
+  /// Alasan penolakan dari server: kode (`reject_reason_code`) + teks bebas.
+  final String? rejectReasonCode;
+  final String? rejectReasonText;
   final bool wantsClaim;
   final DateTime createdAt;
 
   bool get isPending => status == UsahaContributionStatus.pending;
 
-  bool get needsRevision =>
-      status == UsahaContributionStatus.needsRevision;
+  bool get needsRevision => status == UsahaContributionStatus.needsRevision;
 
   bool get canCancel => isPending || needsRevision;
 }
@@ -211,7 +217,8 @@ class UsahaClaim {
     required this.createdAt,
     this.usahaSlug,
     this.usahaName,
-    this.rejectReason,
+    this.rejectReasonCode,
+    this.rejectReasonText,
   });
 
   final String id;
@@ -219,7 +226,10 @@ class UsahaClaim {
   final String? usahaSlug;
   final String? usahaName;
   final UsahaClaimStatus status;
-  final String? rejectReason;
+
+  /// Alasan penolakan dari server: kode (`reject_reason_code`) + teks bebas.
+  final String? rejectReasonCode;
+  final String? rejectReasonText;
   final DateTime createdAt;
 }
 
@@ -276,58 +286,3 @@ class UsahaContributionDraft {
     'wants_claim': wantsClaim,
   };
 }
-
-/// Label status publikasi.
-String usahaPublishLabel(UsahaPublishStatus status) => switch (status) {
-  UsahaPublishStatus.draft => 'Draft',
-  UsahaPublishStatus.published => 'Tayang',
-  UsahaPublishStatus.archived => 'Diarsipkan',
-  UsahaPublishStatus.restricted => 'Dibatasi',
-};
-
-/// Label status operasional.
-String usahaOperationalLabel(UsahaOperationalStatus status) =>
-    switch (status) {
-      UsahaOperationalStatus.unknown => 'Belum ada info buka',
-      UsahaOperationalStatus.open => 'Buka',
-      UsahaOperationalStatus.temporarilyClosed => 'Tutup sementara',
-      UsahaOperationalStatus.permanentlyClosed => 'Tutup permanen',
-    };
-
-/// Label jenis usaha.
-String usahaKindLabel(UsahaKind kind) => switch (kind) {
-  UsahaKind.product => 'Produk',
-  UsahaKind.service => 'Jasa',
-  UsahaKind.both => 'Produk dan jasa',
-};
-
-/// Label status pengajuan usaha.
-String usahaContributionStatusLabel(UsahaContributionStatus status) =>
-    switch (status) {
-      UsahaContributionStatus.approved => 'Disetujui',
-      UsahaContributionStatus.rejected => 'Ditolak',
-      UsahaContributionStatus.needsRevision => 'Perlu revisi',
-      UsahaContributionStatus.pending => 'Menunggu',
-    };
-
-/// Label jenis pengajuan usaha.
-String usahaContributionKindLabel(UsahaContributionKind kind) => switch (kind) {
-  UsahaContributionKind.baru => 'Usulan baru',
-  UsahaContributionKind.profile => 'Perubahan profil',
-  UsahaContributionKind.itemAdd => 'Tambah item',
-  UsahaContributionKind.itemEdit => 'Ubah item',
-  UsahaContributionKind.itemDelete => 'Hapus item',
-  UsahaContributionKind.operational => 'Status buka',
-  UsahaContributionKind.archive => 'Minta arsip',
-  UsahaContributionKind.restore => 'Minta tayang',
-};
-
-/// Alasan laporan masyarakat (kode wire + label tampil).
-const Map<String, String> usahaReportReasonLabel = {
-  'closed': 'Usaha sudah tutup',
-  'wrong_location': 'Lokasi salah',
-  'invalid_contact': 'Kontak tidak valid',
-  'misleading': 'Info menyesatkan',
-  'duplicate': 'Duplikat',
-  'abuse': 'Penyalahgunaan',
-};

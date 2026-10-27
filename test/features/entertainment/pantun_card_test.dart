@@ -137,13 +137,16 @@ void main() {
     final without = await voteWidth(withFooter: false);
     final withFooter = await voteWidth(withFooter: true);
 
-    // Dulu vote bar berbagi baris dengan footer (Flexible + Spacer) lalu
-    // disusutkan FittedBox; sekarang lebarnya harus identik.
+        // Vote dan footer berbagi satu baris (gaya ThreadMessageRow), tapi
+        // Align memberi constraint longgar - lebar vote tetap natural,
+        // tidak disusutkan Spacer/Flexible seperti versi lama.
     expect(withFooter, without);
     expect(tester.widget<Icon>(find.byIcon(FLucideIcons.arrowBigUp)).size, 14);
   });
 
-  testWidgets('footer hapus memakai ikon trash + label Hapus', (tester) async {
+  testWidgets('footer hapus: ikon trash saja, label lewat Semantics', (
+    tester,
+  ) async {
     await pump(
       tester,
       PantunCard(
@@ -151,13 +154,16 @@ void main() {
         footer: PantunActionRow.delete(onDelete: () {}),
       ),
     );
-
-    expect(find.text('Hapus'), findsOneWidget);
+    expect(find.text('Hapus'), findsNothing);
     expect(find.byIcon(FLucideIcons.trash), findsOneWidget);
     expect(find.byIcon(FLucideIcons.flag), findsNothing);
+    expect(
+      tester.getSemantics(find.byIcon(FLucideIcons.trash)),
+      matchesSemantics(label: 'Hapus', isButton: true, hasTapAction: true),
+    );
   });
 
-  testWidgets('footer lapor memakai ikon flag + label Laporkan', (
+  testWidgets('footer lapor: ikon flag saja, label lewat Semantics', (
     tester,
   ) async {
     await pump(
@@ -167,9 +173,12 @@ void main() {
         footer: PantunActionRow.report(onReport: () {}),
       ),
     );
-
-    expect(find.text('Laporkan'), findsOneWidget);
+    expect(find.text('Laporkan'), findsNothing);
     expect(find.byIcon(FLucideIcons.flag), findsOneWidget);
     expect(find.byIcon(FLucideIcons.trash), findsNothing);
+    expect(
+      tester.getSemantics(find.byIcon(FLucideIcons.flag)),
+      matchesSemantics(label: 'Laporkan', isButton: true, hasTapAction: true),
+    );
   });
 }

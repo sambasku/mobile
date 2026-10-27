@@ -5,41 +5,45 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/usaha.dart';
+import '../usaha_labels.dart';
 import '../../usaha_router.dart';
 
 /// Badge status operasional. `unknown` tidak ditampilkan (tidak ada info).
-FBadge? usahaOperationalBadge(UsahaOperationalStatus status) {
-  final (variant, label) = switch (status) {
-    UsahaOperationalStatus.open => (FBadgeVariant.primary, 'Buka'),
-    UsahaOperationalStatus.temporarilyClosed => (
-      FBadgeVariant.secondary,
-      'Tutup sementara',
-    ),
-    UsahaOperationalStatus.permanentlyClosed => (
-      FBadgeVariant.destructive,
-      'Tutup permanen',
-    ),
-    UsahaOperationalStatus.unknown => (FBadgeVariant.outline, ''),
+FBadge? usahaOperationalBadge(
+  AppLocalizations l10n,
+  UsahaOperationalStatus status,
+) {
+  if (status == UsahaOperationalStatus.unknown) return null;
+  final variant = switch (status) {
+    UsahaOperationalStatus.open => FBadgeVariant.primary,
+    UsahaOperationalStatus.temporarilyClosed => FBadgeVariant.secondary,
+    UsahaOperationalStatus.permanentlyClosed => FBadgeVariant.destructive,
+    UsahaOperationalStatus.unknown => FBadgeVariant.outline,
   };
-  if (label.isEmpty) return null;
-  return FBadge(variant: variant, child: Text(label));
+  return FBadge(
+    variant: variant,
+    child: Text(usahaOperationalLabel(l10n, status)),
+  );
 }
 
 /// Baris meta tile: kategori · desa · jenis.
 String usahaMetaLine(Usaha usaha) {
   final parts = <String>[
     if (usaha.category != null) usaha.category!.name,
-    if (usaha.village != null) usaha.village!.name else if (usaha.addressText != null)
+    if (usaha.village != null)
+      usaha.village!.name
+    else if (usaha.addressText != null)
       usaha.addressText!,
   ];
   return parts.join(' · ');
 }
 
 /// Format harga katalog. Teks bebas apa adanya - kosong = belum dicantumkan.
-String usahaPriceLabel(UsahaItem item) {
+String usahaPriceLabel(AppLocalizations l10n, UsahaItem item) {
   final price = item.priceText?.trim();
-  return price == null || price.isEmpty ? 'Harga belum dicantumkan' : price;
+  return price == null || price.isEmpty ? l10n.usahaPriceUnlisted : price;
 }
 
 /// Kartu usaha di grid 3 kolom: foto 1:1 + nama - seragam dengan kartu
@@ -113,6 +117,7 @@ class UsahaMiniTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return FTile(
       prefix: Icon(FLucideIcons.store, color: theme.colors.primary),
@@ -127,7 +132,7 @@ class UsahaMiniTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      suffix: usahaOperationalBadge(usaha.operationalStatus),
+      suffix: usahaOperationalBadge(l10n, usaha.operationalStatus),
       onPress: onTap ?? () => context.push(UsahaRouter.detailPath(usaha.slug)),
     );
   }

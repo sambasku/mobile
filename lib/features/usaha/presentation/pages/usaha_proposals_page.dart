@@ -5,12 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
+import '../usaha_labels.dart';
 
 /// Status usulan usaha milik akun yang sedang masuk.
 class UsahaProposalsPage extends ConsumerWidget {
@@ -18,15 +20,17 @@ class UsahaProposalsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulan usaha'),
+        title: Text(l10n.usahaProposalsTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go(UsahaRouter.list.path),
+            onPress: () => context.canPop()
+                ? context.pop()
+                : context.go(UsahaRouter.list.path),
           ),
         ],
       ),
@@ -35,12 +39,14 @@ class UsahaProposalsPage extends ConsumerWidget {
           : ref
                 .watch(usahaProposalsControllerProvider)
                 .when(
-                  loading: () => const Center(child: FCircularProgress(size: .sm)),
+                  loading: () =>
+                      const Center(child: FCircularProgress(size: .sm)),
                   error: (err, _) => _ErrorBody(
-                    onRetry: () => ref.invalidate(usahaProposalsControllerProvider),
+                    onRetry: () =>
+                        ref.invalidate(usahaProposalsControllerProvider),
                     message: err is UsahaException
                         ? err.message
-                        : 'Gagal memuat usulan. Periksa koneksi lalu coba lagi.',
+                        : l10n.usahaProposalsLoadFailed,
                   ),
                   data: (items) {
                     if (items.isEmpty) return const _EmptyBody();
@@ -68,6 +74,7 @@ class UsahaProposalsPage extends ConsumerWidget {
     UsahaContribution item,
   ) async {
     // Path = hasil pop: hindari race pop lalu aksi di navigator yang sama.
+    final l10n = AppLocalizations.of(context);
     final ok = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -77,20 +84,20 @@ class UsahaProposalsPage extends ConsumerWidget {
         child: FTileGroup(
           children: [
             FTile(
-              title: const Text('Batalkan usulan?'),
-              subtitle: const Text('Usulan yang dibatalkan tidak bisa dikembalikan.'),
+              title: Text(l10n.usahaProposalCancelTitle),
+              subtitle: Text(l10n.usahaProposalCancelBody),
               suffix: FButton(
                 variant: FButtonVariant.destructive,
                 onPress: () => Navigator.pop(ctx, true),
-                child: const Text('Batalkan'),
+                child: Text(l10n.usahaCancelAction),
               ),
             ),
             FTile(
-              title: const Text('Biarkan dulu'),
+              title: Text(l10n.usahaLeaveForNow),
               suffix: FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => Navigator.pop(ctx, false),
-                child: const Text('Tidak jadi'),
+                child: Text(l10n.usahaNevermind),
               ),
             ),
           ],
@@ -102,7 +109,11 @@ class UsahaProposalsPage extends ConsumerWidget {
       await ref.read(usahaProposalsControllerProvider.notifier).cancel(item.id);
     } on UsahaException catch (e) {
       if (!context.mounted) return;
-      await showAppErrorSheet(context, message: e.message, title: 'Gagal membatalkan');
+      await showAppErrorSheet(
+        context,
+        message: e.message,
+        title: l10n.usahaClaimCancelFailed,
+      );
     }
   }
 }
@@ -115,14 +126,19 @@ class _ProposalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final pending = item.isPending;
     final meta = [
-      usahaContributionKindLabel(item.kind),
+      usahaContributionKindLabel(l10n, item.kind),
       formatDateShort(item.createdAt),
     ].join(' · ');
     final note = switch (item.status) {
-      UsahaContributionStatus.rejected => item.rejectReason,
+      UsahaContributionStatus.rejected => usahaRejectDisplay(
+        l10n,
+        code: item.rejectReasonCode,
+        text: item.rejectReasonText,
+      ),
       UsahaContributionStatus.needsRevision => item.revisionNote,
       _ => null,
     };
@@ -133,11 +149,13 @@ class _ProposalRow extends StatelessWidget {
         color: pending ? theme.colors.foreground : theme.colors.mutedForeground,
       ),
       title: Text(
-        item.name ?? item.usahaName ?? 'Usulan usaha',
+        item.name ?? item.usahaName ?? l10n.usahaProposalsTitle,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: pending ? theme.colors.foreground : theme.colors.mutedForeground,
+          color: pending
+              ? theme.colors.foreground
+              : theme.colors.mutedForeground,
           fontWeight: pending ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
@@ -151,7 +169,7 @@ class _ProposalRow extends StatelessWidget {
         children: [
           FBadge(
             variant: _statusVariant(item.status),
-            child: Text(usahaContributionStatusLabel(item.status)),
+            child: Text(usahaContributionStatusLabel(l10n, item.status)),
           ),
           if (item.canCancel) ...[
             const Gap(8),
@@ -159,7 +177,7 @@ class _ProposalRow extends StatelessWidget {
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               onPress: onCancel,
-              child: const Text('Batalkan'),
+              child: Text(l10n.usahaCancelAction),
             ),
           ],
         ],
@@ -168,18 +186,20 @@ class _ProposalRow extends StatelessWidget {
   }
 }
 
-FBadgeVariant _statusVariant(UsahaContributionStatus status) => switch (status) {
-  UsahaContributionStatus.approved => FBadgeVariant.primary,
-  UsahaContributionStatus.rejected => FBadgeVariant.destructive,
-  UsahaContributionStatus.needsRevision => FBadgeVariant.secondary,
-  UsahaContributionStatus.pending => FBadgeVariant.outline,
-};
+FBadgeVariant _statusVariant(UsahaContributionStatus status) =>
+    switch (status) {
+      UsahaContributionStatus.approved => FBadgeVariant.primary,
+      UsahaContributionStatus.rejected => FBadgeVariant.destructive,
+      UsahaContributionStatus.needsRevision => FBadgeVariant.secondary,
+      UsahaContributionStatus.pending => FBadgeVariant.outline,
+    };
 
 class _LoginGate extends StatelessWidget {
   const _LoginGate();
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -187,18 +207,24 @@ class _LoginGate extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(FLucideIcons.store, size: 40, color: theme.colors.mutedForeground),
+            Icon(
+              FLucideIcons.store,
+              size: 40,
+              color: theme.colors.mutedForeground,
+            ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat usulan kamu',
-              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
+              l10n.usahaProposalsLoginGate,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(l10n.authLoginAction),
             ),
           ],
         ),
@@ -212,23 +238,28 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
         const Gap(48),
         Center(
-          child: Icon(FLucideIcons.store, size: 40, color: theme.colors.mutedForeground),
+          child: Icon(
+            FLucideIcons.store,
+            size: 40,
+            color: theme.colors.mutedForeground,
+          ),
         ),
         const Gap(10),
         Text(
-          'Belum ada usulan',
+          l10n.usahaProposalsEmpty,
           textAlign: TextAlign.center,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(4),
         Text(
-          'Status usulan yang sudah ditinjau akan muncul di sini.',
+          l10n.usahaProposalsEmptyHint,
           textAlign: TextAlign.center,
           style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
@@ -239,7 +270,7 @@ class _EmptyBody extends StatelessWidget {
           child: FButton(
             variant: FButtonVariant.outline,
             onPress: () => context.push(UsahaRouter.contribute.path),
-            child: const Text('Usulkan usaha'),
+            child: Text(l10n.usahaContributeAction),
           ),
         ),
       ],
@@ -266,7 +297,7 @@ class _ErrorBodyState extends State<_ErrorBody> {
       await showAppErrorSheet(
         context,
         message: widget.message,
-        title: 'Gagal memuat usulan',
+        title: AppLocalizations.of(context).usahaProposalsLoadFailedTitle,
         onRetry: widget.onRetry,
       );
     });

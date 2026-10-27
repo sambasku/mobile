@@ -127,11 +127,10 @@ class UsahaContributionDto {
       usahaId: _str(json['usaha_id']),
       usahaSlug: _str(json['usaha_slug']),
       usahaName: _str(json['usaha_name']),
-      name: payloadName ?? _str(json['usaha_name']) ?? 'Pengajuan usaha',
+      name: payloadName ?? _str(json['usaha_name']),
       revisionNote: _str(json['revision_note']),
-      rejectReason: status == UsahaContributionStatus.rejected
-          ? _rejectDisplay(rejectCode, rejectText)
-          : null,
+      rejectReasonCode: rejectCode,
+      rejectReasonText: rejectText,
       wantsClaim: json['wants_claim'] == true,
     );
   }
@@ -172,12 +171,8 @@ class UsahaClaimDto {
       usahaSlug: _str(json['usaha_slug']),
       usahaName: _str(json['usaha_name']),
       status: status,
-      rejectReason: status == UsahaClaimStatus.rejected
-          ? _rejectDisplay(
-              _str(json['reject_reason_code']),
-              _str(json['reject_reason_text']),
-            )
-          : null,
+      rejectReasonCode: _str(json['reject_reason_code']),
+      rejectReasonText: _str(json['reject_reason_text']),
       createdAt: createdAt,
     );
   }
@@ -188,26 +183,6 @@ class UsahaClaimDto {
     'cancelled' => UsahaClaimStatus.cancelled,
     _ => UsahaClaimStatus.pending,
   };
-}
-
-const Map<String, String> _rejectCodeLabel = {
-  'duplicate': 'Usaha serupa sudah terdaftar',
-  'incomplete': 'Informasi belum lengkap',
-  'invalid': 'Data tidak valid',
-  'not_owner': 'Bukan pengelola sah',
-  'stale': 'Data sudah berubah',
-  'violation': 'Melanggar ketentuan',
-  'other': 'Alasan lain',
-  'evidence_insufficient': 'Bukti belum cukup',
-  'claim_conflict': 'Usaha sudah diklaim orang lain',
-};
-
-String _rejectDisplay(String? code, String? text) {
-  final label = code == null ? null : _rejectCodeLabel[code];
-  if (label != null && text != null && text.trim().isNotEmpty) {
-    return '$label: ${text.trim()}';
-  }
-  return text?.trim().isNotEmpty == true ? text!.trim() : (label ?? 'Ditolak');
 }
 
 String? _str(Object? value) {

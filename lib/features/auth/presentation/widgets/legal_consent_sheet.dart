@@ -305,9 +305,9 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
   );
 }
 
-/// Hyperlink dokumen legal di dalam tile: teks bergaris bawah + area tap
-/// selebar baris (bukan tombol outline yang abstrak). Forui tidak punya
-/// widget link, jadi GestureDetector - InkWell butuh ancestor Material.
+/// Hyperlink dokumen legal di dalam tile: teks bergaris bawah, ukuran sama
+/// dengan isi tile lain (bukan tombol outline yang abstrak). Forui tidak
+/// punya widget link, jadi GestureDetector - InkWell butuh ancestor Material.
 class _DocLink extends StatelessWidget {
   const _DocLink({required this.label, required this.onTap});
 
@@ -329,9 +329,8 @@ class _DocLink extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
             label,
-            style: theme.typography.body.md.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.primary,
-              fontWeight: .w600,
               decoration: TextDecoration.underline,
               decorationColor: theme.colors.primary,
             ),

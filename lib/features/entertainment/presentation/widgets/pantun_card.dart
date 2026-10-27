@@ -29,7 +29,8 @@ class PantunCard extends StatelessWidget {
   final Pantun pantun;
   final VoidCallback? onTap;
 
-  /// Konten tambahan di bawah baris vote (mis. aksi hapus).
+  /// Aksi di kanan baris vote (mis. hapus/lapor), gaya [ThreadMessageRow].
+  /// Tanpa bar vote, aksi dirender rata kiri.
   final Widget? footer;
   final VoidCallback? onUsernameTap;
 
@@ -135,15 +136,29 @@ class PantunCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Vote/Tindakan di baris sendiri: tanpa kompetisi lebar,
-              // jadi panah balasan tidak menyusut (FittedBox di VoteButtons).
-              if (onVoteToggle != null || footer != null) const Gap(6),
-              if (onVoteToggle != null)
-                PantunVoteBar(pantun: pantun, onToggle: onVoteToggle!),
-              if (footer != null) ...[
-                if (onVoteToggle != null) const Gap(2),
-                Align(alignment: Alignment.centerRight, child: footer!),
-              ],
+                    // Vote/Tindakan satu baris, gaya ThreadMessageRow:
+                    // vote rata kiri, aksi (hapus/lapor) rata kanan.
+                    if (onVoteToggle != null || footer != null) const Gap(6),
+                    if (onVoteToggle != null && footer != null)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: PantunVoteBar(
+                                pantun: pantun,
+                                onToggle: onVoteToggle!,
+                              ),
+                            ),
+                          ),
+                          footer!,
+                        ],
+                      )
+                    else if (onVoteToggle != null)
+                      PantunVoteBar(pantun: pantun, onToggle: onVoteToggle!)
+                    else
+                      ?footer,
             ],
           ),
         ),
@@ -215,29 +230,29 @@ class PantunActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    // Ikon saja (gaya _ThreadDeleteButton di ThreadMessageRow). Label tetap
+    // dipakai untuk Semantics: screen reader butuh nama aksi, mata tidak.
     return Semantics(
       button: true,
       label: label,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(6),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 14, color: theme.colors.mutedForeground),
-                const Gap(4),
-                Text(
-                  label,
-                  style: theme.typography.body.sm.copyWith(
-                    fontSize: 11,
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
+      child: Tooltip(
+        message: label,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(6),
+            onTap: onTap,
+            // Target sentuh 44px walau ikonnya kecil (a11y).
+            child: ConstrainedBox(
+              constraints: const BoxConstraints.tightFor(
+                width: 44,
+                height: 44,
+              ),
+              child: Icon(
+                icon,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
             ),
           ),
         ),

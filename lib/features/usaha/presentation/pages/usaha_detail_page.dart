@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/models/external_link.dart';
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -13,6 +14,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
+import '../usaha_labels.dart';
 import '../widgets/usaha_ui.dart';
 
 /// Detail usaha by slug (katalog + kontak + klaim/lapor).
@@ -23,12 +25,13 @@ class UsahaDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final usahaAsync = ref.watch(usahaBySlugProvider(slug));
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usaha'),
+        title: Text(l10n.usahaTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -59,6 +62,7 @@ class UsahaDetailPage extends ConsumerWidget {
 
   /// Klaim pengelolaan - wajib login.
   Future<void> _openClaimSheet(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.read(authStatusProvider).value?.isAuth == true;
     if (!authed) {
       final goLogin = await showModalBottomSheet<bool>(
@@ -70,17 +74,15 @@ class UsahaDetailPage extends ConsumerWidget {
           child: FTileGroup(
             children: [
               FTile(
-                title: const Text('Masuk dulu ya'),
-                subtitle: const Text(
-                  'Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.',
-                ),
+                title: Text(l10n.usahaLoginFirstTitle),
+                subtitle: Text(l10n.usahaClaimLoginBody),
               ),
               FTile(
-                title: const Text('Masuk'),
+                title: Text(l10n.authLoginAction),
                 onPress: () => Navigator.pop(ctx, true),
               ),
               FTile(
-                title: const Text('Nanti saja'),
+                title: Text(l10n.authLater),
                 onPress: () => Navigator.pop(ctx, false),
               ),
             ],
@@ -112,13 +114,11 @@ class UsahaDetailPage extends ConsumerWidget {
           child: FTileGroup(
             children: [
               FTile(
-                title: const Text('Klaim terkirim'),
-                subtitle: const Text(
-                  'Admin akan memeriksa buktimu. Hasilnya muncul di halaman klaim.',
-                ),
+                title: Text(l10n.usahaClaimSent),
+                subtitle: Text(l10n.usahaClaimSentBody),
               ),
               FTile(
-                title: const Text('Lihat klaim saya'),
+                title: Text(l10n.usahaSeeClaims),
                 onPress: () {
                   Navigator.pop(ctx);
                   context.push(UsahaRouter.claims.path);
@@ -133,31 +133,34 @@ class UsahaDetailPage extends ConsumerWidget {
       await showAppErrorSheet(
         context,
         message: e.message,
-        title: 'Klaim gagal',
+        title: l10n.usahaClaimFailed,
       );
     }
   }
 
   /// Laporkan info usaha yang salah/usang.
   Future<void> _openReportSheet(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.read(authStatusProvider).value?.isAuth == true;
     if (!authed) {
       await showAppErrorSheet(
         context,
-        title: 'Masuk dulu ya',
-        message: 'Laporan butuh akun supaya kami bisa tindak lanjuti.',
+        title: l10n.usahaLoginFirstTitle,
+        message: l10n.usahaReportLoginBody,
       );
       return;
     }
-    final reasons = usahaReportReasonLabel.entries.toList();
     final picked = await showOptionPickerSheet<String>(
       context,
-      title: 'Laporkan masalah',
+      title: l10n.usahaReportTitle,
       icon: FLucideIcons.flag,
-      subtitle: 'Apa yang salah dengan info usaha ini?',
+      subtitle: l10n.usahaReportSubtitle,
       items: [
-        for (final entry in reasons)
-          OptionPickerItem(value: entry.key, label: entry.value),
+        for (final code in usahaReportReasonCodes)
+          OptionPickerItem(
+            value: code,
+            label: usahaReportReasonLabel(l10n, code),
+          ),
       ],
     );
     if (picked == null || !context.mounted) return;
@@ -168,15 +171,15 @@ class UsahaDetailPage extends ConsumerWidget {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Laporan terkirim',
-        message: 'Terima kasih. Admin akan memeriksa info usaha ini.',
+        title: l10n.usahaReportSent,
+        message: l10n.usahaReportSentBody,
       );
     } on UsahaException catch (e) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
         message: e.message,
-        title: 'Gagal melapor',
+        title: l10n.usahaReportFailed,
       );
     }
   }
@@ -190,9 +193,10 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = usaha.coverUrl;
-    final badge = usahaOperationalBadge(usaha.operationalStatus);
+    final badge = usahaOperationalBadge(l10n, usaha.operationalStatus);
 
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),
@@ -231,12 +235,12 @@ class _Body extends StatelessWidget {
               ),
             FBadge(
               variant: FBadgeVariant.outline,
-              child: Text(usahaKindLabel(usaha.kind)),
+              child: Text(usahaKindLabel(l10n, usaha.kind)),
             ),
             if (usaha.isManaged)
               FBadge(
                 variant: FBadgeVariant.secondary,
-                child: const Text('Dikelola pemilik'),
+                child: Text(l10n.usahaManagedByOwner),
               ),
           ],
         ),
@@ -250,9 +254,9 @@ class _Body extends StatelessWidget {
         if (usaha.operationalStatus ==
             UsahaOperationalStatus.permanentlyClosed) ...[
           const Gap(14),
-          const FAlert(
-            title: Text('Usaha ini sudah tutup permanen'),
-            subtitle: Text('Info tetap kami simpan sebagai catatan sejarah.'),
+          FAlert(
+            title: Text(l10n.usahaClosedPermanentlyTitle),
+            subtitle: Text(l10n.usahaClosedPermanentlyBody),
           ),
         ],
         const Gap(18),
@@ -260,7 +264,7 @@ class _Body extends StatelessWidget {
         if (usaha.items.isNotEmpty) ...[
           const Gap(20),
           Text(
-            'Katalog',
+            l10n.usahaCatalog,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -276,8 +280,8 @@ class _Body extends StatelessWidget {
           children: [
             FTile(
               prefix: const Icon(FLucideIcons.keyRound, size: 18),
-              title: const Text('Ini usaha saya'),
-              subtitle: const Text('Ajukan klaim pengelolaan ke admin'),
+              title: Text(l10n.usahaFormClaim),
+              subtitle: Text(l10n.usahaManageClaimBody),
               onPress: onClaim,
             ),
           ],
@@ -294,6 +298,7 @@ class _ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final rows = <FTile>[];
 
@@ -314,7 +319,7 @@ class _ContactSection extends StatelessWidget {
 
     add(
       FLucideIcons.phone,
-      'Telepon',
+      l10n.usahaContactPhone,
       usaha.phone,
       usaha.phone == null
           ? null
@@ -322,29 +327,34 @@ class _ContactSection extends StatelessWidget {
     );
     add(
       FLucideIcons.messageCircle,
-      'WhatsApp',
+      l10n.usahaContactWhatsapp,
       usaha.whatsapp,
       usaha.whatsapp == null
           ? null
           : Uri.parse('https://wa.me/${_waNumber(usaha.whatsapp!)}'),
     );
-    add(FLucideIcons.globe, 'Website', usaha.website, _https(usaha.website));
+    add(
+      FLucideIcons.globe,
+      l10n.usahaContactWebsite,
+      usaha.website,
+      _https(usaha.website),
+    );
     add(
       FLucideIcons.link,
-      'Media sosial',
+      l10n.usahaContactSocial,
       usaha.socialUrl,
       _https(usaha.socialUrl),
     );
     add(
       FLucideIcons.mapPin,
-      'Peta',
+      l10n.usahaContactMap,
       usaha.mapsUrl ?? usaha.addressText,
       _https(usaha.mapsUrl),
     );
 
     if (rows.isEmpty) {
       return Text(
-        'Kontak belum dicantumkan.',
+        l10n.usahaContactEmpty,
         style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
@@ -379,6 +389,7 @@ class _ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final image = item.imageUrl;
     return FTileGroup(
@@ -407,7 +418,7 @@ class _ItemTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
           suffix: Text(
-            usahaPriceLabel(item),
+            usahaPriceLabel(l10n, item),
             style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -437,6 +448,7 @@ class _ClaimSheetState extends State<_ClaimSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -449,15 +461,14 @@ class _ClaimSheetState extends State<_ClaimSheet> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Klaim usaha ini',
+                l10n.usahaClaimSheetTitle,
                 style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const Gap(6),
               Text(
-                'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang '
-                'tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.',
+                l10n.usahaClaimSheetBody,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -465,8 +476,8 @@ class _ClaimSheetState extends State<_ClaimSheet> {
               const Gap(12),
               FTextField.multiline(
                 control: FTextFieldControl.managed(controller: _evidence),
-                label: const Text('Bukti kontak'),
-                hint: 'Nomor WhatsApp atau akun media sosial pengelola',
+                label: Text(l10n.usahaClaimEvidence),
+                hint: l10n.usahaClaimEvidenceHint,
                 maxLines: 4,
               ),
               const Gap(16),
@@ -476,20 +487,20 @@ class _ClaimSheetState extends State<_ClaimSheet> {
                   if (text.length < 5) {
                     showAppErrorSheet(
                       context,
-                      title: 'Bukti kurang',
-                      message: 'Tulis bukti minimal 5 karakter ya.',
+                      title: l10n.usahaClaimEvidenceShortTitle,
+                      message: l10n.usahaClaimEvidenceShort,
                     );
                     return;
                   }
                   Navigator.pop(context, text);
                 },
-                child: const Text('Kirim klaim'),
+                child: Text(l10n.usahaClaimSubmit),
               ),
               const Gap(8),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => Navigator.pop(context),
-                child: const Text('Batal'),
+                child: Text(l10n.commonCancel),
               ),
             ],
           ),
@@ -504,6 +515,7 @@ class _NotFoundBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -518,7 +530,7 @@ class _NotFoundBody extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Usaha ini tidak ditemukan',
+              l10n.usahaNotFound,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -528,7 +540,7 @@ class _NotFoundBody extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.go(UsahaRouter.list.path),
-              child: const Text('Lihat daftar usaha'),
+              child: Text(l10n.usahaSeeList),
             ),
           ],
         ),
@@ -542,6 +554,7 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -556,7 +569,7 @@ class _ErrorBody extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Gagal memuat usaha',
+              l10n.usahaLoadFailed,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -565,7 +578,7 @@ class _ErrorBody extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.go(UsahaRouter.list.path),
-              child: const Text('Lihat daftar usaha'),
+              child: Text(l10n.usahaSeeList),
             ),
           ],
         ),

@@ -3495,15 +3495,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
 
   @override
-  String get authLegalSheetTitle => 'Sebelum lanjut, ada dua dokumen';
+  String get authLegalSheetTitle => 'Syarat dan Kebijakan Privasi';
 
   @override
   String get authLegalSheetBody =>
-      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.';
+      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Silakan baca dulu dokumen di bawah ini, ya.';
 
   @override
   String authTermsTileSubtitle(String version) {
-    return 'Aturan main pakai SambasKu. Versi $version.';
+    return 'Ketentuan pemakaian layanan. Versi $version.';
   }
 
   @override
@@ -4409,6 +4409,543 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get commonServerError =>
       'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get usahaOperationalUnknown => 'Belum ada info buka';
+
+  @override
+  String get usahaOperationalOpen => 'Buka';
+
+  @override
+  String get usahaOperationalTemporarilyClosed => 'Tutup sementara';
+
+  @override
+  String get usahaOperationalPermanentlyClosed => 'Tutup permanen';
+
+  @override
+  String get usahaKindProduct => 'Produk';
+
+  @override
+  String get usahaKindService => 'Jasa';
+
+  @override
+  String get usahaKindBoth => 'Produk dan jasa';
+
+  @override
+  String get usahaStatusApproved => 'Disetujui';
+
+  @override
+  String get usahaStatusRejected => 'Ditolak';
+
+  @override
+  String get usahaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get usahaStatusPending => 'Menunggu';
+
+  @override
+  String get usahaClaimStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get usahaKindNew => 'Usulan baru';
+
+  @override
+  String get usahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get usahaKindItemAdd => 'Tambah item';
+
+  @override
+  String get usahaKindItemEdit => 'Ubah item';
+
+  @override
+  String get usahaKindItemDelete => 'Hapus item';
+
+  @override
+  String get usahaKindOperational => 'Status buka';
+
+  @override
+  String get usahaKindArchive => 'Minta arsip';
+
+  @override
+  String get usahaKindRestore => 'Minta tayang';
+
+  @override
+  String get usahaReportClosed => 'Usaha sudah tutup';
+
+  @override
+  String get usahaReportWrongLocation => 'Lokasi salah';
+
+  @override
+  String get usahaReportInvalidContact => 'Kontak tidak valid';
+
+  @override
+  String get usahaReportMisleading => 'Info menyesatkan';
+
+  @override
+  String get usahaReportDuplicate => 'Duplikat';
+
+  @override
+  String get usahaReportAbuse => 'Penyalahgunaan';
+
+  @override
+  String get usahaRejectDuplicate => 'Usaha serupa sudah terdaftar';
+
+  @override
+  String get usahaRejectIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get usahaRejectInvalid => 'Data tidak valid';
+
+  @override
+  String get usahaRejectNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get usahaRejectStale => 'Data sudah berubah';
+
+  @override
+  String get usahaRejectViolation => 'Melanggar ketentuan';
+
+  @override
+  String get usahaRejectOther => 'Alasan lain';
+
+  @override
+  String get usahaRejectEvidenceInsufficient => 'Bukti belum cukup';
+
+  @override
+  String get usahaRejectClaimConflict => 'Usaha sudah diklaim orang lain';
+
+  @override
+  String get usahaRejectDefault => 'Ditolak';
+
+  @override
+  String get usahaUploadImageFailed => 'Unggah foto gagal';
+
+  @override
+  String get usahaSaveFailed => 'Gagal menyimpan. Coba lagi ya.';
+
+  @override
+  String get usahaTitle => 'Usaha';
+
+  @override
+  String get usahaSearchHint => 'Cari usaha atau jasa';
+
+  @override
+  String get usahaFilterAll => 'Semua';
+
+  @override
+  String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';
+
+  @override
+  String get usahaListEmptyRegistered => 'Belum ada usaha terdaftar';
+
+  @override
+  String get usahaListEmptyQueryHint => 'Coba kata lain ya.';
+
+  @override
+  String get usahaListEmptyHint =>
+      'Punya usaha atau tahu usaha di sekitarmu? Boleh kamu usulkan.';
+
+  @override
+  String get usahaContributeAction => 'Usulkan usaha';
+
+  @override
+  String get usahaLoadFailed => 'Gagal memuat usaha';
+
+  @override
+  String get usahaLoadFailedBody =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get usahaClaimsTitle => 'Klaim saya';
+
+  @override
+  String get usahaClaimsLoadFailed =>
+      'Gagal memuat klaim. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get usahaClaimsLoadFailedTitle => 'Gagal memuat klaim';
+
+  @override
+  String get usahaClaimCancelTitle => 'Batalkan klaim?';
+
+  @override
+  String get usahaClaimCancelBody => 'Kamu bisa ajukan klaim baru kapan saja.';
+
+  @override
+  String get usahaCancelAction => 'Batalkan';
+
+  @override
+  String get usahaLeaveForNow => 'Biarkan dulu';
+
+  @override
+  String get usahaNevermind => 'Tidak jadi';
+
+  @override
+  String get usahaClaimCancelFailed => 'Gagal membatalkan';
+
+  @override
+  String get usahaClaimsLoginGate => 'Masuk dulu untuk melihat klaim kamu';
+
+  @override
+  String get usahaClaimsEmpty => 'Belum ada klaim';
+
+  @override
+  String get usahaClaimsEmptyHint =>
+      'Buka detail usaha lalu pilih \"Ini usaha saya\" untuk mengajukan klaim.';
+
+  @override
+  String usahaSubmittedAt(String date) {
+    return 'Diajukan $date';
+  }
+
+  @override
+  String get usahaFormIncompleteTitle => 'Lengkapi dulu ya';
+
+  @override
+  String get usahaFormPickCategory => 'Pilih kategori usaha';
+
+  @override
+  String get usahaFormSearchCategory => 'Cari kategori';
+
+  @override
+  String get usahaFormKind => 'Jenis usaha';
+
+  @override
+  String get usahaFormPickDistrict => 'Pilih kecamatan';
+
+  @override
+  String get usahaFormSearchDistrict => 'Cari kecamatan';
+
+  @override
+  String get usahaFormPickVillage => 'Pilih desa';
+
+  @override
+  String get usahaFormSearchVillage => 'Cari desa';
+
+  @override
+  String get usahaFormDistrictRequired => 'Pilih kecamatan dulu ya.';
+
+  @override
+  String get usahaFormNameTooShort => 'Nama usaha minimal 3 huruf ya.';
+
+  @override
+  String get usahaFormDistrictMissing => 'Pilih kecamatan lokasi usaha dulu.';
+
+  @override
+  String get usahaFormWaitUpload => 'Tunggu upload foto selesai';
+
+  @override
+  String get usahaFormRemoveFailedPhoto =>
+      'Hapus foto yang gagal diunggah dulu';
+
+  @override
+  String get usahaProposalSent => 'Usulan terkirim';
+
+  @override
+  String get usahaProposalSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSeeProposals => 'Lihat usulan saya';
+
+  @override
+  String get usahaBackToList => 'Kembali ke daftar usaha';
+
+  @override
+  String get usahaProposalFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSubmitProposal => 'Kirim usulan';
+
+  @override
+  String get usahaFormIntro =>
+      'Isi yang kamu tahu saja. Nama dan kecamatan wajib, sisanya boleh menyusul - admin bisa melengkapi.';
+
+  @override
+  String get usahaFormName => 'Nama usaha';
+
+  @override
+  String get usahaFormNameHint => 'Nama usaha atau jasa';
+
+  @override
+  String get usahaFormDescription => 'Deskripsi (opsional)';
+
+  @override
+  String get usahaFormDescriptionHint =>
+      'Apa yang dijual atau jasa yang ditawarkan';
+
+  @override
+  String get usahaFormCategory => 'Kategori';
+
+  @override
+  String get usahaFormNotSelected => 'Belum dipilih';
+
+  @override
+  String get usahaFormKindLabel => 'Jenis';
+
+  @override
+  String get usahaFormDistrict => 'Kecamatan';
+
+  @override
+  String get usahaFormRequired => 'Wajib dipilih';
+
+  @override
+  String get usahaFormVillage => 'Desa (opsional)';
+
+  @override
+  String get usahaFormAddress => 'Alamat atau petunjuk lokasi (opsional)';
+
+  @override
+  String get usahaFormAddressHint => 'Jalan, nomor, atau patokan';
+
+  @override
+  String get usahaFormMapPin => 'Tandai di peta (opsional)';
+
+  @override
+  String get usahaFormMapPinHint => 'Bantu pengunjung menemukan lokasi';
+
+  @override
+  String get usahaFormContactSection => 'Kontak (opsional)';
+
+  @override
+  String get usahaFormPhone => 'No. HP';
+
+  @override
+  String get usahaFormWebsite => 'Website (https)';
+
+  @override
+  String get usahaFormSocial => 'Media sosial (https)';
+
+  @override
+  String get usahaFormClaim => 'Ini usaha saya';
+
+  @override
+  String get usahaFormClaimBody =>
+      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+
+  @override
+  String get usahaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get usahaClaimLoginBody =>
+      'Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.';
+
+  @override
+  String get usahaClaimSent => 'Klaim terkirim';
+
+  @override
+  String get usahaClaimSentBody =>
+      'Admin akan memeriksa buktimu. Hasilnya muncul di halaman klaim.';
+
+  @override
+  String get usahaSeeClaims => 'Lihat klaim saya';
+
+  @override
+  String get usahaClaimFailed => 'Klaim gagal';
+
+  @override
+  String get usahaReportLoginBody =>
+      'Laporan butuh akun supaya kami bisa tindak lanjuti.';
+
+  @override
+  String get usahaReportTitle => 'Laporkan masalah';
+
+  @override
+  String get usahaReportSubtitle => 'Apa yang salah dengan info usaha ini?';
+
+  @override
+  String get usahaReportSent => 'Laporan terkirim';
+
+  @override
+  String get usahaReportSentBody =>
+      'Terima kasih. Admin akan memeriksa info usaha ini.';
+
+  @override
+  String get usahaReportFailed => 'Gagal melapor';
+
+  @override
+  String get usahaManagedByOwner => 'Dikelola pemilik';
+
+  @override
+  String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
+
+  @override
+  String get usahaClosedPermanentlyBody =>
+      'Info tetap kami simpan sebagai catatan sejarah.';
+
+  @override
+  String get usahaCatalog => 'Katalog';
+
+  @override
+  String get usahaManageClaimBody => 'Ajukan klaim pengelolaan ke admin';
+
+  @override
+  String get usahaContactPhone => 'Telepon';
+
+  @override
+  String get usahaContactWhatsapp => 'WhatsApp';
+
+  @override
+  String get usahaContactWebsite => 'Website';
+
+  @override
+  String get usahaContactSocial => 'Media sosial';
+
+  @override
+  String get usahaContactMap => 'Peta';
+
+  @override
+  String get usahaContactEmpty => 'Kontak belum dicantumkan.';
+
+  @override
+  String get usahaClaimSheetTitle => 'Klaim usaha ini';
+
+  @override
+  String get usahaClaimSheetBody =>
+      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+
+  @override
+  String get usahaClaimEvidence => 'Bukti kontak';
+
+  @override
+  String get usahaClaimEvidenceHint =>
+      'Nomor WhatsApp atau akun media sosial pengelola';
+
+  @override
+  String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
+
+  @override
+  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+
+  @override
+  String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaNotFound => 'Usaha ini tidak ditemukan';
+
+  @override
+  String get usahaSeeList => 'Lihat daftar usaha';
+
+  @override
+  String get usahaProposalsTitle => 'Usulan usaha';
+
+  @override
+  String get usahaProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get usahaProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get usahaProposalCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get usahaProposalCancelBody =>
+      'Usulan yang dibatalkan tidak bisa dikembalikan.';
+
+  @override
+  String get usahaProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get usahaProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get usahaProposalsEmptyHint =>
+      'Status usulan yang sudah ditinjau akan muncul di sini.';
+
+  @override
+  String get usahaSayaTitle => 'Usaha saya';
+
+  @override
+  String get usahaSayaLoadFailed =>
+      'Gagal memuat usaha kamu. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String usahaPendingChanges(String count) {
+    return '$count perubahan menunggu';
+  }
+
+  @override
+  String get usahaManage => 'Kelola';
+
+  @override
+  String get usahaManagePickChange =>
+      'Pilih perubahan yang mau diajukan ke admin';
+
+  @override
+  String get usahaManageOperational => 'Ubah status buka';
+
+  @override
+  String get usahaManageItemAdd => 'Tambah item katalog';
+
+  @override
+  String get usahaManageCatalog => 'Kelola katalog';
+
+  @override
+  String get usahaManageCatalogBody => 'Ubah atau hapus item yang sudah ada';
+
+  @override
+  String get usahaManageRestore => 'Minta tayang lagi';
+
+  @override
+  String get usahaManageArchive => 'Minta arsipkan';
+
+  @override
+  String get usahaManageArchiveBody => 'Usaha disembunyikan dari daftar publik';
+
+  @override
+  String get usahaCatalogPick => 'Pilih item untuk diubah atau dihapus';
+
+  @override
+  String get usahaCatalogEmpty => 'Katalog masih kosong';
+
+  @override
+  String get usahaChangeSent => 'Pengajuan terkirim';
+
+  @override
+  String get usahaChangeSentBody =>
+      'Admin akan meninjau dulu. Statusnya muncul di Usulan saya.';
+
+  @override
+  String get usahaChangeFailed => 'Gagal mengajukan';
+
+  @override
+  String get usahaItemName => 'Nama item';
+
+  @override
+  String get usahaItemNameHint => 'Nama item atau layanan';
+
+  @override
+  String get usahaItemDescription => 'Keterangan (opsional)';
+
+  @override
+  String get usahaItemPrice => 'Harga (opsional)';
+
+  @override
+  String get usahaItemPriceHint => 'Mis. Rp 15.000 / mulai Rp 50.000';
+
+  @override
+  String get usahaItemNameShortTitle => 'Nama kurang';
+
+  @override
+  String get usahaItemNameShort => 'Nama item minimal 2 huruf ya.';
+
+  @override
+  String get usahaItemSubmit => 'Kirim ke admin';
+
+  @override
+  String get usahaSayaLoginGate => 'Masuk dulu untuk mengelola usaha kamu';
+
+  @override
+  String get usahaSayaEmpty => 'Belum ada usaha yang kamu kelola';
+
+  @override
+  String get usahaSayaEmptyHint =>
+      'Ajukan klaim di halaman detail usaha. Setelah disetujui admin, usahamu muncul di sini.';
+
+  @override
+  String get usahaPriceUnlisted => 'Harga belum dicantumkan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -7902,15 +8439,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
 
   @override
-  String get authLegalSheetTitle => 'Sebelum lanjut, ada dua dokumen';
+  String get authLegalSheetTitle => 'Syarat dan Kebijakan Privasi';
 
   @override
   String get authLegalSheetBody =>
-      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.';
+      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Silakan baca dulu dokumen di bawah ini, ya.';
 
   @override
   String authTermsTileSubtitle(String version) {
-    return 'Aturan main pakai SambasKu. Versi $version.';
+    return 'Ketentuan pemakaian layanan. Versi $version.';
   }
 
   @override
@@ -8816,4 +9353,541 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get commonServerError =>
       'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get usahaOperationalUnknown => 'Belum ada info buka';
+
+  @override
+  String get usahaOperationalOpen => 'Buka';
+
+  @override
+  String get usahaOperationalTemporarilyClosed => 'Tutup sementara';
+
+  @override
+  String get usahaOperationalPermanentlyClosed => 'Tutup permanen';
+
+  @override
+  String get usahaKindProduct => 'Produk';
+
+  @override
+  String get usahaKindService => 'Jasa';
+
+  @override
+  String get usahaKindBoth => 'Produk dan jasa';
+
+  @override
+  String get usahaStatusApproved => 'Disetujui';
+
+  @override
+  String get usahaStatusRejected => 'Ditolak';
+
+  @override
+  String get usahaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get usahaStatusPending => 'Menunggu';
+
+  @override
+  String get usahaClaimStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get usahaKindNew => 'Usulan baru';
+
+  @override
+  String get usahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get usahaKindItemAdd => 'Tambah item';
+
+  @override
+  String get usahaKindItemEdit => 'Ubah item';
+
+  @override
+  String get usahaKindItemDelete => 'Hapus item';
+
+  @override
+  String get usahaKindOperational => 'Status buka';
+
+  @override
+  String get usahaKindArchive => 'Minta arsip';
+
+  @override
+  String get usahaKindRestore => 'Minta tayang';
+
+  @override
+  String get usahaReportClosed => 'Usaha sudah tutup';
+
+  @override
+  String get usahaReportWrongLocation => 'Lokasi salah';
+
+  @override
+  String get usahaReportInvalidContact => 'Kontak tidak valid';
+
+  @override
+  String get usahaReportMisleading => 'Info menyesatkan';
+
+  @override
+  String get usahaReportDuplicate => 'Duplikat';
+
+  @override
+  String get usahaReportAbuse => 'Penyalahgunaan';
+
+  @override
+  String get usahaRejectDuplicate => 'Usaha serupa sudah terdaftar';
+
+  @override
+  String get usahaRejectIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get usahaRejectInvalid => 'Data tidak valid';
+
+  @override
+  String get usahaRejectNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get usahaRejectStale => 'Data sudah berubah';
+
+  @override
+  String get usahaRejectViolation => 'Melanggar ketentuan';
+
+  @override
+  String get usahaRejectOther => 'Alasan lain';
+
+  @override
+  String get usahaRejectEvidenceInsufficient => 'Bukti belum cukup';
+
+  @override
+  String get usahaRejectClaimConflict => 'Usaha sudah diklaim orang lain';
+
+  @override
+  String get usahaRejectDefault => 'Ditolak';
+
+  @override
+  String get usahaUploadImageFailed => 'Unggah foto gagal';
+
+  @override
+  String get usahaSaveFailed => 'Gagal menyimpan. Coba lagi ya.';
+
+  @override
+  String get usahaTitle => 'Usaha';
+
+  @override
+  String get usahaSearchHint => 'Cari usaha atau jasa';
+
+  @override
+  String get usahaFilterAll => 'Semua';
+
+  @override
+  String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';
+
+  @override
+  String get usahaListEmptyRegistered => 'Belum ada usaha terdaftar';
+
+  @override
+  String get usahaListEmptyQueryHint => 'Coba kata lain ya.';
+
+  @override
+  String get usahaListEmptyHint =>
+      'Punya usaha atau tahu usaha di sekitarmu? Boleh kamu usulkan.';
+
+  @override
+  String get usahaContributeAction => 'Usulkan usaha';
+
+  @override
+  String get usahaLoadFailed => 'Gagal memuat usaha';
+
+  @override
+  String get usahaLoadFailedBody =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get usahaClaimsTitle => 'Klaim saya';
+
+  @override
+  String get usahaClaimsLoadFailed =>
+      'Gagal memuat klaim. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get usahaClaimsLoadFailedTitle => 'Gagal memuat klaim';
+
+  @override
+  String get usahaClaimCancelTitle => 'Batalkan klaim?';
+
+  @override
+  String get usahaClaimCancelBody => 'Kamu bisa ajukan klaim baru kapan saja.';
+
+  @override
+  String get usahaCancelAction => 'Batalkan';
+
+  @override
+  String get usahaLeaveForNow => 'Biarkan dulu';
+
+  @override
+  String get usahaNevermind => 'Tidak jadi';
+
+  @override
+  String get usahaClaimCancelFailed => 'Gagal membatalkan';
+
+  @override
+  String get usahaClaimsLoginGate => 'Masuk dulu untuk melihat klaim kamu';
+
+  @override
+  String get usahaClaimsEmpty => 'Belum ada klaim';
+
+  @override
+  String get usahaClaimsEmptyHint =>
+      'Buka detail usaha lalu pilih \"Ini usaha saya\" untuk mengajukan klaim.';
+
+  @override
+  String usahaSubmittedAt(String date) {
+    return 'Diajukan $date';
+  }
+
+  @override
+  String get usahaFormIncompleteTitle => 'Lengkapi dulu ya';
+
+  @override
+  String get usahaFormPickCategory => 'Pilih kategori usaha';
+
+  @override
+  String get usahaFormSearchCategory => 'Cari kategori';
+
+  @override
+  String get usahaFormKind => 'Jenis usaha';
+
+  @override
+  String get usahaFormPickDistrict => 'Pilih kecamatan';
+
+  @override
+  String get usahaFormSearchDistrict => 'Cari kecamatan';
+
+  @override
+  String get usahaFormPickVillage => 'Pilih desa';
+
+  @override
+  String get usahaFormSearchVillage => 'Cari desa';
+
+  @override
+  String get usahaFormDistrictRequired => 'Pilih kecamatan dulu ya.';
+
+  @override
+  String get usahaFormNameTooShort => 'Nama usaha minimal 3 huruf ya.';
+
+  @override
+  String get usahaFormDistrictMissing => 'Pilih kecamatan lokasi usaha dulu.';
+
+  @override
+  String get usahaFormWaitUpload => 'Tunggu upload foto selesai';
+
+  @override
+  String get usahaFormRemoveFailedPhoto =>
+      'Hapus foto yang gagal diunggah dulu';
+
+  @override
+  String get usahaProposalSent => 'Usulan terkirim';
+
+  @override
+  String get usahaProposalSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSeeProposals => 'Lihat usulan saya';
+
+  @override
+  String get usahaBackToList => 'Kembali ke daftar usaha';
+
+  @override
+  String get usahaProposalFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSubmitProposal => 'Kirim usulan';
+
+  @override
+  String get usahaFormIntro =>
+      'Isi yang kamu tahu saja. Nama dan kecamatan wajib, sisanya boleh menyusul - admin bisa melengkapi.';
+
+  @override
+  String get usahaFormName => 'Nama usaha';
+
+  @override
+  String get usahaFormNameHint => 'Nama usaha atau jasa';
+
+  @override
+  String get usahaFormDescription => 'Deskripsi (opsional)';
+
+  @override
+  String get usahaFormDescriptionHint =>
+      'Apa yang dijual atau jasa yang ditawarkan';
+
+  @override
+  String get usahaFormCategory => 'Kategori';
+
+  @override
+  String get usahaFormNotSelected => 'Belum dipilih';
+
+  @override
+  String get usahaFormKindLabel => 'Jenis';
+
+  @override
+  String get usahaFormDistrict => 'Kecamatan';
+
+  @override
+  String get usahaFormRequired => 'Wajib dipilih';
+
+  @override
+  String get usahaFormVillage => 'Desa (opsional)';
+
+  @override
+  String get usahaFormAddress => 'Alamat atau petunjuk lokasi (opsional)';
+
+  @override
+  String get usahaFormAddressHint => 'Jalan, nomor, atau patokan';
+
+  @override
+  String get usahaFormMapPin => 'Tandai di peta (opsional)';
+
+  @override
+  String get usahaFormMapPinHint => 'Bantu pengunjung menemukan lokasi';
+
+  @override
+  String get usahaFormContactSection => 'Kontak (opsional)';
+
+  @override
+  String get usahaFormPhone => 'No. HP';
+
+  @override
+  String get usahaFormWebsite => 'Website (https)';
+
+  @override
+  String get usahaFormSocial => 'Media sosial (https)';
+
+  @override
+  String get usahaFormClaim => 'Ini usaha saya';
+
+  @override
+  String get usahaFormClaimBody =>
+      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+
+  @override
+  String get usahaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get usahaClaimLoginBody =>
+      'Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.';
+
+  @override
+  String get usahaClaimSent => 'Klaim terkirim';
+
+  @override
+  String get usahaClaimSentBody =>
+      'Admin akan memeriksa buktimu. Hasilnya muncul di halaman klaim.';
+
+  @override
+  String get usahaSeeClaims => 'Lihat klaim saya';
+
+  @override
+  String get usahaClaimFailed => 'Klaim gagal';
+
+  @override
+  String get usahaReportLoginBody =>
+      'Laporan butuh akun supaya kami bisa tindak lanjuti.';
+
+  @override
+  String get usahaReportTitle => 'Laporkan masalah';
+
+  @override
+  String get usahaReportSubtitle => 'Apa yang salah dengan info usaha ini?';
+
+  @override
+  String get usahaReportSent => 'Laporan terkirim';
+
+  @override
+  String get usahaReportSentBody =>
+      'Terima kasih. Admin akan memeriksa info usaha ini.';
+
+  @override
+  String get usahaReportFailed => 'Gagal melapor';
+
+  @override
+  String get usahaManagedByOwner => 'Dikelola pemilik';
+
+  @override
+  String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
+
+  @override
+  String get usahaClosedPermanentlyBody =>
+      'Info tetap kami simpan sebagai catatan sejarah.';
+
+  @override
+  String get usahaCatalog => 'Katalog';
+
+  @override
+  String get usahaManageClaimBody => 'Ajukan klaim pengelolaan ke admin';
+
+  @override
+  String get usahaContactPhone => 'Telepon';
+
+  @override
+  String get usahaContactWhatsapp => 'WhatsApp';
+
+  @override
+  String get usahaContactWebsite => 'Website';
+
+  @override
+  String get usahaContactSocial => 'Media sosial';
+
+  @override
+  String get usahaContactMap => 'Peta';
+
+  @override
+  String get usahaContactEmpty => 'Kontak belum dicantumkan.';
+
+  @override
+  String get usahaClaimSheetTitle => 'Klaim usaha ini';
+
+  @override
+  String get usahaClaimSheetBody =>
+      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+
+  @override
+  String get usahaClaimEvidence => 'Bukti kontak';
+
+  @override
+  String get usahaClaimEvidenceHint =>
+      'Nomor WhatsApp atau akun media sosial pengelola';
+
+  @override
+  String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
+
+  @override
+  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+
+  @override
+  String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaNotFound => 'Usaha ini tidak ditemukan';
+
+  @override
+  String get usahaSeeList => 'Lihat daftar usaha';
+
+  @override
+  String get usahaProposalsTitle => 'Usulan usaha';
+
+  @override
+  String get usahaProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get usahaProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get usahaProposalCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get usahaProposalCancelBody =>
+      'Usulan yang dibatalkan tidak bisa dikembalikan.';
+
+  @override
+  String get usahaProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get usahaProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get usahaProposalsEmptyHint =>
+      'Status usulan yang sudah ditinjau akan muncul di sini.';
+
+  @override
+  String get usahaSayaTitle => 'Usaha saya';
+
+  @override
+  String get usahaSayaLoadFailed =>
+      'Gagal memuat usaha kamu. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String usahaPendingChanges(String count) {
+    return '$count perubahan menunggu';
+  }
+
+  @override
+  String get usahaManage => 'Kelola';
+
+  @override
+  String get usahaManagePickChange =>
+      'Pilih perubahan yang mau diajukan ke admin';
+
+  @override
+  String get usahaManageOperational => 'Ubah status buka';
+
+  @override
+  String get usahaManageItemAdd => 'Tambah item katalog';
+
+  @override
+  String get usahaManageCatalog => 'Kelola katalog';
+
+  @override
+  String get usahaManageCatalogBody => 'Ubah atau hapus item yang sudah ada';
+
+  @override
+  String get usahaManageRestore => 'Minta tayang lagi';
+
+  @override
+  String get usahaManageArchive => 'Minta arsipkan';
+
+  @override
+  String get usahaManageArchiveBody => 'Usaha disembunyikan dari daftar publik';
+
+  @override
+  String get usahaCatalogPick => 'Pilih item untuk diubah atau dihapus';
+
+  @override
+  String get usahaCatalogEmpty => 'Katalog masih kosong';
+
+  @override
+  String get usahaChangeSent => 'Pengajuan terkirim';
+
+  @override
+  String get usahaChangeSentBody =>
+      'Admin akan meninjau dulu. Statusnya muncul di Usulan saya.';
+
+  @override
+  String get usahaChangeFailed => 'Gagal mengajukan';
+
+  @override
+  String get usahaItemName => 'Nama item';
+
+  @override
+  String get usahaItemNameHint => 'Nama item atau layanan';
+
+  @override
+  String get usahaItemDescription => 'Keterangan (opsional)';
+
+  @override
+  String get usahaItemPrice => 'Harga (opsional)';
+
+  @override
+  String get usahaItemPriceHint => 'Mis. Rp 15.000 / mulai Rp 50.000';
+
+  @override
+  String get usahaItemNameShortTitle => 'Nama kurang';
+
+  @override
+  String get usahaItemNameShort => 'Nama item minimal 2 huruf ya.';
+
+  @override
+  String get usahaItemSubmit => 'Kirim ke admin';
+
+  @override
+  String get usahaSayaLoginGate => 'Masuk dulu untuk mengelola usaha kamu';
+
+  @override
+  String get usahaSayaEmpty => 'Belum ada usaha yang kamu kelola';
+
+  @override
+  String get usahaSayaEmptyHint =>
+      'Ajukan klaim di halaman detail usaha. Setelah disetujui admin, usahamu muncul di sini.';
+
+  @override
+  String get usahaPriceUnlisted => 'Harga belum dicantumkan';
 }

@@ -6326,19 +6326,19 @@ abstract class AppLocalizations {
   /// Judul sheet persetujuan dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Sebelum lanjut, ada dua dokumen'**
+  /// **'Syarat dan Kebijakan Privasi'**
   String get authLegalSheetTitle;
 
   /// Penjelasan sheet persetujuan dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.'**
+  /// **'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Silakan baca dulu dokumen di bawah ini, ya.'**
   String get authLegalSheetBody;
 
   /// Keterangan dokumen syarat dan ketentuan
   ///
   /// In id, this message translates to:
-  /// **'Aturan main pakai SambasKu. Versi {version}.'**
+  /// **'Ketentuan pemakaian layanan. Versi {version}.'**
   String authTermsTileSubtitle(String version);
 
   /// Keterangan dokumen kebijakan privasi
@@ -8050,6 +8050,1026 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Server sedang gangguan. Coba lagi dalam beberapa saat.'**
   String get commonServerError;
+
+  /// Label status buka usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada info buka'**
+  String get usahaOperationalUnknown;
+
+  /// No description provided for @usahaOperationalOpen.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get usahaOperationalOpen;
+
+  /// No description provided for @usahaOperationalTemporarilyClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup sementara'**
+  String get usahaOperationalTemporarilyClosed;
+
+  /// No description provided for @usahaOperationalPermanentlyClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup permanen'**
+  String get usahaOperationalPermanentlyClosed;
+
+  /// Jenis usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Produk'**
+  String get usahaKindProduct;
+
+  /// No description provided for @usahaKindService.
+  ///
+  /// In id, this message translates to:
+  /// **'Jasa'**
+  String get usahaKindService;
+
+  /// No description provided for @usahaKindBoth.
+  ///
+  /// In id, this message translates to:
+  /// **'Produk dan jasa'**
+  String get usahaKindBoth;
+
+  /// Status usulan/klaim usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get usahaStatusApproved;
+
+  /// No description provided for @usahaStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get usahaStatusRejected;
+
+  /// No description provided for @usahaStatusNeedsRevision.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu revisi'**
+  String get usahaStatusNeedsRevision;
+
+  /// No description provided for @usahaStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get usahaStatusPending;
+
+  /// Status klaim usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get usahaClaimStatusCancelled;
+
+  /// Jenis pengajuan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan baru'**
+  String get usahaKindNew;
+
+  /// No description provided for @usahaKindProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan profil'**
+  String get usahaKindProfile;
+
+  /// No description provided for @usahaKindItemAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah item'**
+  String get usahaKindItemAdd;
+
+  /// No description provided for @usahaKindItemEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah item'**
+  String get usahaKindItemEdit;
+
+  /// No description provided for @usahaKindItemDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus item'**
+  String get usahaKindItemDelete;
+
+  /// No description provided for @usahaKindOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Status buka'**
+  String get usahaKindOperational;
+
+  /// No description provided for @usahaKindArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta arsip'**
+  String get usahaKindArchive;
+
+  /// No description provided for @usahaKindRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta tayang'**
+  String get usahaKindRestore;
+
+  /// Alasan laporan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha sudah tutup'**
+  String get usahaReportClosed;
+
+  /// No description provided for @usahaReportWrongLocation.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi salah'**
+  String get usahaReportWrongLocation;
+
+  /// No description provided for @usahaReportInvalidContact.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak tidak valid'**
+  String get usahaReportInvalidContact;
+
+  /// No description provided for @usahaReportMisleading.
+  ///
+  /// In id, this message translates to:
+  /// **'Info menyesatkan'**
+  String get usahaReportMisleading;
+
+  /// No description provided for @usahaReportDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Duplikat'**
+  String get usahaReportDuplicate;
+
+  /// No description provided for @usahaReportAbuse.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyalahgunaan'**
+  String get usahaReportAbuse;
+
+  /// Label kode alasan penolakan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha serupa sudah terdaftar'**
+  String get usahaRejectDuplicate;
+
+  /// No description provided for @usahaRejectIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi belum lengkap'**
+  String get usahaRejectIncomplete;
+
+  /// No description provided for @usahaRejectInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak valid'**
+  String get usahaRejectInvalid;
+
+  /// No description provided for @usahaRejectNotOwner.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukan pengelola sah'**
+  String get usahaRejectNotOwner;
+
+  /// No description provided for @usahaRejectStale.
+  ///
+  /// In id, this message translates to:
+  /// **'Data sudah berubah'**
+  String get usahaRejectStale;
+
+  /// No description provided for @usahaRejectViolation.
+  ///
+  /// In id, this message translates to:
+  /// **'Melanggar ketentuan'**
+  String get usahaRejectViolation;
+
+  /// No description provided for @usahaRejectOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan lain'**
+  String get usahaRejectOther;
+
+  /// No description provided for @usahaRejectEvidenceInsufficient.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukti belum cukup'**
+  String get usahaRejectEvidenceInsufficient;
+
+  /// No description provided for @usahaRejectClaimConflict.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha sudah diklaim orang lain'**
+  String get usahaRejectClaimConflict;
+
+  /// Fallback saat alasan penolakan kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get usahaRejectDefault;
+
+  /// Pesan error upload foto usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah foto gagal'**
+  String get usahaUploadImageFailed;
+
+  /// Pesan error generik simpan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan. Coba lagi ya.'**
+  String get usahaSaveFailed;
+
+  /// Judul halaman katalog usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha'**
+  String get usahaTitle;
+
+  /// No description provided for @usahaSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari usaha atau jasa'**
+  String get usahaSearchHint;
+
+  /// Chip filter kategori usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get usahaFilterAll;
+
+  /// No description provided for @usahaListEmptyQuery.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usaha yang cocok'**
+  String get usahaListEmptyQuery;
+
+  /// No description provided for @usahaListEmptyRegistered.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usaha terdaftar'**
+  String get usahaListEmptyRegistered;
+
+  /// No description provided for @usahaListEmptyQueryHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain ya.'**
+  String get usahaListEmptyQueryHint;
+
+  /// No description provided for @usahaListEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Punya usaha atau tahu usaha di sekitarmu? Boleh kamu usulkan.'**
+  String get usahaListEmptyHint;
+
+  /// No description provided for @usahaContributeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan usaha'**
+  String get usahaContributeAction;
+
+  /// No description provided for @usahaLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usaha'**
+  String get usahaLoadFailed;
+
+  /// No description provided for @usahaLoadFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi internetmu lalu coba lagi ya.'**
+  String get usahaLoadFailedBody;
+
+  /// No description provided for @usahaClaimsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim saya'**
+  String get usahaClaimsTitle;
+
+  /// No description provided for @usahaClaimsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat klaim. Periksa koneksi lalu coba lagi.'**
+  String get usahaClaimsLoadFailed;
+
+  /// No description provided for @usahaClaimsLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat klaim'**
+  String get usahaClaimsLoadFailedTitle;
+
+  /// No description provided for @usahaClaimCancelTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan klaim?'**
+  String get usahaClaimCancelTitle;
+
+  /// No description provided for @usahaClaimCancelBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu bisa ajukan klaim baru kapan saja.'**
+  String get usahaClaimCancelBody;
+
+  /// No description provided for @usahaCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get usahaCancelAction;
+
+  /// No description provided for @usahaLeaveForNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan dulu'**
+  String get usahaLeaveForNow;
+
+  /// No description provided for @usahaNevermind.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak jadi'**
+  String get usahaNevermind;
+
+  /// No description provided for @usahaClaimCancelFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membatalkan'**
+  String get usahaClaimCancelFailed;
+
+  /// No description provided for @usahaClaimsLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat klaim kamu'**
+  String get usahaClaimsLoginGate;
+
+  /// No description provided for @usahaClaimsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada klaim'**
+  String get usahaClaimsEmpty;
+
+  /// No description provided for @usahaClaimsEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka detail usaha lalu pilih \"Ini usaha saya\" untuk mengajukan klaim.'**
+  String get usahaClaimsEmptyHint;
+
+  /// Baris waktu pengajuan klaim/usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Diajukan {date}'**
+  String usahaSubmittedAt(String date);
+
+  /// No description provided for @usahaFormIncompleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi dulu ya'**
+  String get usahaFormIncompleteTitle;
+
+  /// No description provided for @usahaFormPickCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori usaha'**
+  String get usahaFormPickCategory;
+
+  /// No description provided for @usahaFormSearchCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kategori'**
+  String get usahaFormSearchCategory;
+
+  /// No description provided for @usahaFormKind.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis usaha'**
+  String get usahaFormKind;
+
+  /// No description provided for @usahaFormPickDistrict.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kecamatan'**
+  String get usahaFormPickDistrict;
+
+  /// No description provided for @usahaFormSearchDistrict.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kecamatan'**
+  String get usahaFormSearchDistrict;
+
+  /// No description provided for @usahaFormPickVillage.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih desa'**
+  String get usahaFormPickVillage;
+
+  /// No description provided for @usahaFormSearchVillage.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari desa'**
+  String get usahaFormSearchVillage;
+
+  /// No description provided for @usahaFormDistrictRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kecamatan dulu ya.'**
+  String get usahaFormDistrictRequired;
+
+  /// No description provided for @usahaFormNameTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama usaha minimal 3 huruf ya.'**
+  String get usahaFormNameTooShort;
+
+  /// No description provided for @usahaFormDistrictMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kecamatan lokasi usaha dulu.'**
+  String get usahaFormDistrictMissing;
+
+  /// No description provided for @usahaFormWaitUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload foto selesai'**
+  String get usahaFormWaitUpload;
+
+  /// No description provided for @usahaFormRemoveFailedPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus foto yang gagal diunggah dulu'**
+  String get usahaFormRemoveFailedPhoto;
+
+  /// No description provided for @usahaProposalSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim'**
+  String get usahaProposalSent;
+
+  /// No description provided for @usahaProposalSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.'**
+  String get usahaProposalSentBody;
+
+  /// No description provided for @usahaSeeProposals.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat usulan saya'**
+  String get usahaSeeProposals;
+
+  /// No description provided for @usahaBackToList.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali ke daftar usaha'**
+  String get usahaBackToList;
+
+  /// No description provided for @usahaProposalFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan gagal'**
+  String get usahaProposalFailed;
+
+  /// No description provided for @usahaSubmitProposal.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get usahaSubmitProposal;
+
+  /// No description provided for @usahaFormIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi yang kamu tahu saja. Nama dan kecamatan wajib, sisanya boleh menyusul - admin bisa melengkapi.'**
+  String get usahaFormIntro;
+
+  /// No description provided for @usahaFormName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama usaha'**
+  String get usahaFormName;
+
+  /// No description provided for @usahaFormNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama usaha atau jasa'**
+  String get usahaFormNameHint;
+
+  /// No description provided for @usahaFormDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi (opsional)'**
+  String get usahaFormDescription;
+
+  /// No description provided for @usahaFormDescriptionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang dijual atau jasa yang ditawarkan'**
+  String get usahaFormDescriptionHint;
+
+  /// No description provided for @usahaFormCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get usahaFormCategory;
+
+  /// No description provided for @usahaFormNotSelected.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dipilih'**
+  String get usahaFormNotSelected;
+
+  /// No description provided for @usahaFormKindLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get usahaFormKindLabel;
+
+  /// No description provided for @usahaFormDistrict.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get usahaFormDistrict;
+
+  /// No description provided for @usahaFormRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Wajib dipilih'**
+  String get usahaFormRequired;
+
+  /// No description provided for @usahaFormVillage.
+  ///
+  /// In id, this message translates to:
+  /// **'Desa (opsional)'**
+  String get usahaFormVillage;
+
+  /// No description provided for @usahaFormAddress.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat atau petunjuk lokasi (opsional)'**
+  String get usahaFormAddress;
+
+  /// No description provided for @usahaFormAddressHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jalan, nomor, atau patokan'**
+  String get usahaFormAddressHint;
+
+  /// No description provided for @usahaFormMapPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Tandai di peta (opsional)'**
+  String get usahaFormMapPin;
+
+  /// No description provided for @usahaFormMapPinHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu pengunjung menemukan lokasi'**
+  String get usahaFormMapPinHint;
+
+  /// No description provided for @usahaFormContactSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak (opsional)'**
+  String get usahaFormContactSection;
+
+  /// No description provided for @usahaFormPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'No. HP'**
+  String get usahaFormPhone;
+
+  /// No description provided for @usahaFormWebsite.
+  ///
+  /// In id, this message translates to:
+  /// **'Website (https)'**
+  String get usahaFormWebsite;
+
+  /// No description provided for @usahaFormSocial.
+  ///
+  /// In id, this message translates to:
+  /// **'Media sosial (https)'**
+  String get usahaFormSocial;
+
+  /// No description provided for @usahaFormClaim.
+  ///
+  /// In id, this message translates to:
+  /// **'Ini usaha saya'**
+  String get usahaFormClaim;
+
+  /// No description provided for @usahaFormClaimBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.'**
+  String get usahaFormClaimBody;
+
+  /// No description provided for @usahaLoginFirstTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya'**
+  String get usahaLoginFirstTitle;
+
+  /// No description provided for @usahaClaimLoginBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.'**
+  String get usahaClaimLoginBody;
+
+  /// No description provided for @usahaClaimSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim terkirim'**
+  String get usahaClaimSent;
+
+  /// No description provided for @usahaClaimSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan memeriksa buktimu. Hasilnya muncul di halaman klaim.'**
+  String get usahaClaimSentBody;
+
+  /// No description provided for @usahaSeeClaims.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat klaim saya'**
+  String get usahaSeeClaims;
+
+  /// No description provided for @usahaClaimFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim gagal'**
+  String get usahaClaimFailed;
+
+  /// No description provided for @usahaReportLoginBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan butuh akun supaya kami bisa tindak lanjuti.'**
+  String get usahaReportLoginBody;
+
+  /// No description provided for @usahaReportTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan masalah'**
+  String get usahaReportTitle;
+
+  /// No description provided for @usahaReportSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang salah dengan info usaha ini?'**
+  String get usahaReportSubtitle;
+
+  /// No description provided for @usahaReportSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan terkirim'**
+  String get usahaReportSent;
+
+  /// No description provided for @usahaReportSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih. Admin akan memeriksa info usaha ini.'**
+  String get usahaReportSentBody;
+
+  /// No description provided for @usahaReportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal melapor'**
+  String get usahaReportFailed;
+
+  /// No description provided for @usahaManagedByOwner.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikelola pemilik'**
+  String get usahaManagedByOwner;
+
+  /// No description provided for @usahaClosedPermanentlyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha ini sudah tutup permanen'**
+  String get usahaClosedPermanentlyTitle;
+
+  /// No description provided for @usahaClosedPermanentlyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Info tetap kami simpan sebagai catatan sejarah.'**
+  String get usahaClosedPermanentlyBody;
+
+  /// No description provided for @usahaCatalog.
+  ///
+  /// In id, this message translates to:
+  /// **'Katalog'**
+  String get usahaCatalog;
+
+  /// No description provided for @usahaManageClaimBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ajukan klaim pengelolaan ke admin'**
+  String get usahaManageClaimBody;
+
+  /// No description provided for @usahaContactPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Telepon'**
+  String get usahaContactPhone;
+
+  /// No description provided for @usahaContactWhatsapp.
+  ///
+  /// In id, this message translates to:
+  /// **'WhatsApp'**
+  String get usahaContactWhatsapp;
+
+  /// No description provided for @usahaContactWebsite.
+  ///
+  /// In id, this message translates to:
+  /// **'Website'**
+  String get usahaContactWebsite;
+
+  /// No description provided for @usahaContactSocial.
+  ///
+  /// In id, this message translates to:
+  /// **'Media sosial'**
+  String get usahaContactSocial;
+
+  /// No description provided for @usahaContactMap.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta'**
+  String get usahaContactMap;
+
+  /// No description provided for @usahaContactEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak belum dicantumkan.'**
+  String get usahaContactEmpty;
+
+  /// No description provided for @usahaClaimSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim usaha ini'**
+  String get usahaClaimSheetTitle;
+
+  /// No description provided for @usahaClaimSheetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.'**
+  String get usahaClaimSheetBody;
+
+  /// No description provided for @usahaClaimEvidence.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukti kontak'**
+  String get usahaClaimEvidence;
+
+  /// No description provided for @usahaClaimEvidenceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor WhatsApp atau akun media sosial pengelola'**
+  String get usahaClaimEvidenceHint;
+
+  /// No description provided for @usahaClaimEvidenceShortTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukti kurang'**
+  String get usahaClaimEvidenceShortTitle;
+
+  /// No description provided for @usahaClaimEvidenceShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis bukti minimal 5 karakter ya.'**
+  String get usahaClaimEvidenceShort;
+
+  /// No description provided for @usahaClaimSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim klaim'**
+  String get usahaClaimSubmit;
+
+  /// No description provided for @usahaNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha ini tidak ditemukan'**
+  String get usahaNotFound;
+
+  /// No description provided for @usahaSeeList.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat daftar usaha'**
+  String get usahaSeeList;
+
+  /// No description provided for @usahaProposalsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan usaha'**
+  String get usahaProposalsTitle;
+
+  /// No description provided for @usahaProposalsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan. Periksa koneksi lalu coba lagi.'**
+  String get usahaProposalsLoadFailed;
+
+  /// No description provided for @usahaProposalsLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan'**
+  String get usahaProposalsLoadFailedTitle;
+
+  /// No description provided for @usahaProposalCancelTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan?'**
+  String get usahaProposalCancelTitle;
+
+  /// No description provided for @usahaProposalCancelBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak bisa dikembalikan.'**
+  String get usahaProposalCancelBody;
+
+  /// No description provided for @usahaProposalsLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulan kamu'**
+  String get usahaProposalsLoginGate;
+
+  /// No description provided for @usahaProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get usahaProposalsEmpty;
+
+  /// No description provided for @usahaProposalsEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah ditinjau akan muncul di sini.'**
+  String get usahaProposalsEmptyHint;
+
+  /// No description provided for @usahaSayaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha saya'**
+  String get usahaSayaTitle;
+
+  /// No description provided for @usahaSayaLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usaha kamu. Periksa koneksi lalu coba lagi.'**
+  String get usahaSayaLoadFailed;
+
+  /// Baris ringkas jumlah perubahan pending di usaha saya
+  ///
+  /// In id, this message translates to:
+  /// **'{count} perubahan menunggu'**
+  String usahaPendingChanges(String count);
+
+  /// No description provided for @usahaManage.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola'**
+  String get usahaManage;
+
+  /// No description provided for @usahaManagePickChange.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih perubahan yang mau diajukan ke admin'**
+  String get usahaManagePickChange;
+
+  /// No description provided for @usahaManageOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah status buka'**
+  String get usahaManageOperational;
+
+  /// No description provided for @usahaManageItemAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah item katalog'**
+  String get usahaManageItemAdd;
+
+  /// No description provided for @usahaManageCatalog.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola katalog'**
+  String get usahaManageCatalog;
+
+  /// No description provided for @usahaManageCatalogBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah atau hapus item yang sudah ada'**
+  String get usahaManageCatalogBody;
+
+  /// No description provided for @usahaManageRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta tayang lagi'**
+  String get usahaManageRestore;
+
+  /// No description provided for @usahaManageArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta arsipkan'**
+  String get usahaManageArchive;
+
+  /// No description provided for @usahaManageArchiveBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha disembunyikan dari daftar publik'**
+  String get usahaManageArchiveBody;
+
+  /// No description provided for @usahaCatalogPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih item untuk diubah atau dihapus'**
+  String get usahaCatalogPick;
+
+  /// No description provided for @usahaCatalogEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Katalog masih kosong'**
+  String get usahaCatalogEmpty;
+
+  /// No description provided for @usahaChangeSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan terkirim'**
+  String get usahaChangeSent;
+
+  /// No description provided for @usahaChangeSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan meninjau dulu. Statusnya muncul di Usulan saya.'**
+  String get usahaChangeSentBody;
+
+  /// No description provided for @usahaChangeFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengajukan'**
+  String get usahaChangeFailed;
+
+  /// No description provided for @usahaItemName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama item'**
+  String get usahaItemName;
+
+  /// No description provided for @usahaItemNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama item atau layanan'**
+  String get usahaItemNameHint;
+
+  /// No description provided for @usahaItemDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Keterangan (opsional)'**
+  String get usahaItemDescription;
+
+  /// No description provided for @usahaItemPrice.
+  ///
+  /// In id, this message translates to:
+  /// **'Harga (opsional)'**
+  String get usahaItemPrice;
+
+  /// No description provided for @usahaItemPriceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mis. Rp 15.000 / mulai Rp 50.000'**
+  String get usahaItemPriceHint;
+
+  /// No description provided for @usahaItemNameShortTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kurang'**
+  String get usahaItemNameShortTitle;
+
+  /// No description provided for @usahaItemNameShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama item minimal 2 huruf ya.'**
+  String get usahaItemNameShort;
+
+  /// No description provided for @usahaItemSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ke admin'**
+  String get usahaItemSubmit;
+
+  /// No description provided for @usahaSayaLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengelola usaha kamu'**
+  String get usahaSayaLoginGate;
+
+  /// No description provided for @usahaSayaEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usaha yang kamu kelola'**
+  String get usahaSayaEmpty;
+
+  /// No description provided for @usahaSayaEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ajukan klaim di halaman detail usaha. Setelah disetujui admin, usahamu muncul di sini.'**
+  String get usahaSayaEmptyHint;
+
+  /// No description provided for @usahaPriceUnlisted.
+  ///
+  /// In id, this message translates to:
+  /// **'Harga belum dicantumkan'**
+  String get usahaPriceUnlisted;
 }
 
 class _AppLocalizationsDelegate

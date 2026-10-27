@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
@@ -97,6 +98,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final browseQuery = _browseQuery;
     final browseAsync = ref.watch(usahaBrowseProvider(browseQuery));
     final categories = ref.watch(usahaCategoriesProvider).value ?? const [];
@@ -105,7 +107,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Usaha'),
+          title: Text(l10n.usahaTitle),
           prefixes: [
             FHeaderAction.back(
               onPress: () =>
@@ -130,7 +132,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
               control: FTextFieldControl.managed(
                 onChange: (value) => _onSearchChanged(value.text),
               ),
-              hint: 'Cari usaha atau jasa',
+              hint: l10n.usahaSearchHint,
               textInputAction: TextInputAction.search,
               clearable: (value) => value.text.isNotEmpty,
               prefixBuilder: (context, style, variants) =>
@@ -192,7 +194,9 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                           const SliverToBoxAdapter(
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(child: FCircularProgress(size: .sm)),
+                              child: Center(
+                                child: FCircularProgress(size: .sm),
+                              ),
                             ),
                           ),
                         if (page.loadMoreFailed)
@@ -204,10 +208,12 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                                   variant: FButtonVariant.outline,
                                   onPress: () => ref
                                       .read(
-                                        usahaBrowseProvider(browseQuery).notifier,
+                                        usahaBrowseProvider(
+                                          browseQuery,
+                                        ).notifier,
                                       )
                                       .loadMore(),
-                                  child: const Text('Coba lagi'),
+                                  child: Text(l10n.commonRetry),
                                 ),
                               ),
                             ),
@@ -239,6 +245,7 @@ class _CategoryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -249,7 +256,7 @@ class _CategoryBar extends StatelessWidget {
               variant: selectedId == null
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: const Text('Semua'),
+              child: Text(l10n.usahaFilterAll),
             ),
           ),
           for (final category in categories) ...[
@@ -280,9 +287,12 @@ class _SkeletonGrid extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       effect: ShimmerEffect(
-        baseColor: isDark ? muted.withValues(alpha: 0.35) : const Color(0xFFE7E7EA),
-        highlightColor:
-            isDark ? muted.withValues(alpha: 0.55) : const Color(0xFFF4F4F5),
+        baseColor: isDark
+            ? muted.withValues(alpha: 0.35)
+            : const Color(0xFFE7E7EA),
+        highlightColor: isDark
+            ? muted.withValues(alpha: 0.55)
+            : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
       child: GridView.builder(
@@ -320,6 +330,7 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -336,15 +347,15 @@ class _EmptyBody extends StatelessWidget {
           ),
           const Gap(10),
           Text(
-            hasQuery ? 'Belum ada usaha yang cocok' : 'Belum ada usaha terdaftar',
+            hasQuery ? l10n.usahaListEmptyQuery : l10n.usahaListEmptyRegistered,
             textAlign: TextAlign.center,
-            style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.md.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const Gap(4),
           Text(
-            hasQuery
-                ? 'Coba kata lain ya.'
-                : 'Punya usaha atau tahu usaha di sekitarmu? Boleh kamu usulkan.',
+            hasQuery ? l10n.usahaListEmptyQueryHint : l10n.usahaListEmptyHint,
             textAlign: TextAlign.center,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
@@ -355,7 +366,7 @@ class _EmptyBody extends StatelessWidget {
             child: FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push(UsahaRouter.contribute.path),
-              child: const Text('Usulkan usaha'),
+              child: Text(l10n.usahaContributeAction),
             ),
           ),
         ],
@@ -371,16 +382,17 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const FAlert(
-            title: Text('Gagal memuat usaha'),
-            subtitle: Text('Periksa koneksi internetmu lalu coba lagi ya.'),
+          FAlert(
+            title: Text(l10n.usahaLoadFailed),
+            subtitle: Text(l10n.usahaLoadFailedBody),
           ),
           const Gap(16),
-          FButton(onPress: () => onRetry(), child: const Text('Coba lagi')),
+          FButton(onPress: () => onRetry(), child: Text(l10n.commonRetry)),
         ],
       ),
     );

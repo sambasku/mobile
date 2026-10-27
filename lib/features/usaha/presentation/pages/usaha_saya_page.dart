@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
@@ -11,6 +12,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
+import '../usaha_labels.dart';
 import '../widgets/usaha_ui.dart';
 
 /// Usaha yang dikelola user + pengajuan perubahan (field-lock admin).
@@ -19,11 +21,12 @@ class UsahaSayaPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usaha saya'),
+        title: Text(l10n.usahaSayaTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -43,7 +46,7 @@ class UsahaSayaPage extends ConsumerWidget {
                     onRetry: () => ref.invalidate(usahaMineControllerProvider),
                     message: err is UsahaException
                         ? err.message
-                        : 'Gagal memuat usaha kamu. Periksa koneksi lalu coba lagi.',
+                        : l10n.usahaSayaLoadFailed,
                   ),
                   data: (mine) {
                     if (mine.items.isEmpty) return const _EmptyBody();
@@ -67,7 +70,9 @@ class UsahaSayaPage extends ConsumerWidget {
                             [
                               usahaMetaLine(usaha),
                               if (usaha.pendingChanges > 0)
-                                '${usaha.pendingChanges} perubahan menunggu',
+                                l10n.usahaPendingChanges(
+                                  '${usaha.pendingChanges}',
+                                ),
                             ].join('\n'),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -75,13 +80,16 @@ class UsahaSayaPage extends ConsumerWidget {
                           suffix: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              usahaOperationalBadge(usaha.operationalStatus) ??
+                              usahaOperationalBadge(
+                                    l10n,
+                                    usaha.operationalStatus,
+                                  ) ??
                                   const SizedBox.shrink(),
                               FButton(
                                 variant: FButtonVariant.outline,
                                 size: FButtonSizeVariant.sm,
                                 onPress: () => _openActions(ctx, ref, usaha),
-                                child: const Text('Kelola'),
+                                child: Text(l10n.usahaManage),
                               ),
                             ],
                           ),
@@ -100,6 +108,7 @@ class UsahaSayaPage extends ConsumerWidget {
     WidgetRef ref,
     Usaha usaha,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final action = await showModalBottomSheet<_ManageAction>(
       context: context,
       useRootNavigator: true,
@@ -110,37 +119,35 @@ class UsahaSayaPage extends ConsumerWidget {
           children: [
             FTile(
               title: Text(usaha.name),
-              subtitle: const Text(
-                'Pilih perubahan yang mau diajukan ke admin',
-              ),
+              subtitle: Text(l10n.usahaManagePickChange),
             ),
             FTile(
               prefix: const Icon(FLucideIcons.circleCheck, size: 18),
-              title: const Text('Ubah status buka'),
+              title: Text(l10n.usahaManageOperational),
               onPress: () => Navigator.pop(ctx, _ManageAction.operational),
             ),
             FTile(
               prefix: const Icon(FLucideIcons.listPlus, size: 18),
-              title: const Text('Tambah item katalog'),
+              title: Text(l10n.usahaManageItemAdd),
               onPress: () => Navigator.pop(ctx, _ManageAction.itemAdd),
             ),
             FTile(
               prefix: const Icon(FLucideIcons.bookOpen, size: 18),
-              title: const Text('Kelola katalog'),
-              subtitle: const Text('Ubah atau hapus item yang sudah ada'),
+              title: Text(l10n.usahaManageCatalog),
+              subtitle: Text(l10n.usahaManageCatalogBody),
               onPress: () => Navigator.pop(ctx, _ManageAction.catalog),
             ),
             if (usaha.publishStatus == UsahaPublishStatus.archived)
               FTile(
                 prefix: const Icon(FLucideIcons.arrowUpFromLine, size: 18),
-                title: const Text('Minta tayang lagi'),
+                title: Text(l10n.usahaManageRestore),
                 onPress: () => Navigator.pop(ctx, _ManageAction.restore),
               )
             else
               FTile(
                 prefix: const Icon(FLucideIcons.archive, size: 18),
-                title: const Text('Minta arsipkan'),
-                subtitle: const Text('Usaha disembunyikan dari daftar publik'),
+                title: Text(l10n.usahaManageArchive),
+                subtitle: Text(l10n.usahaManageArchiveBody),
                 onPress: () => Navigator.pop(ctx, _ManageAction.archive),
               ),
           ],
@@ -157,7 +164,7 @@ class UsahaSayaPage extends ConsumerWidget {
           context: context,
           useRootNavigator: true,
           isScrollControlled: true,
-          builder: (_) => const _ItemSheet(title: 'Tambah item'),
+          builder: (_) => _ItemSheet(title: l10n.usahaManageItemAdd),
         );
         if (item == null || !context.mounted) return;
         await _submit(context, ref, usaha, 'item_add', payload: item.toBody());
@@ -175,15 +182,16 @@ class UsahaSayaPage extends ConsumerWidget {
     WidgetRef ref,
     Usaha usaha,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final picked = await showOptionPickerSheet<UsahaOperationalStatus>(
       context,
-      title: 'Status buka',
+      title: l10n.usahaKindOperational,
       icon: FLucideIcons.circleCheck,
       items: [
         for (final status in UsahaOperationalStatus.values)
           OptionPickerItem(
             value: status,
-            label: usahaOperationalLabel(status),
+            label: usahaOperationalLabel(l10n, status),
             selected: status == usaha.operationalStatus,
           ),
       ],
@@ -203,6 +211,7 @@ class UsahaSayaPage extends ConsumerWidget {
     WidgetRef ref,
     Usaha usaha,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final detail = await ref.read(usahaBySlugProvider(usaha.slug).future);
     if (!context.mounted) return;
     final items = detail?.items ?? const <UsahaItem>[];
@@ -215,16 +224,16 @@ class UsahaSayaPage extends ConsumerWidget {
         child: FTileGroup(
           children: [
             FTile(
-              title: const Text('Katalog'),
-              subtitle: const Text('Pilih item untuk diubah atau dihapus'),
+              title: Text(l10n.usahaCatalog),
+              subtitle: Text(l10n.usahaCatalogPick),
             ),
             if (items.isEmpty)
-              FTile(title: const Text('Katalog masih kosong'))
+              FTile(title: Text(l10n.usahaCatalogEmpty))
             else
               for (final it in items)
                 FTile(
                   title: Text(it.name),
-                  subtitle: Text(usahaPriceLabel(it)),
+                  subtitle: Text(usahaPriceLabel(l10n, it)),
                   suffix: const Icon(FLucideIcons.chevronRight, size: 16),
                   onPress: () => Navigator.pop(ctx, it),
                 ),
@@ -243,11 +252,11 @@ class UsahaSayaPage extends ConsumerWidget {
           children: [
             FTile(title: Text(item.name)),
             FTile(
-              title: const Text('Ubah item'),
+              title: Text(l10n.usahaKindItemEdit),
               onPress: () => Navigator.pop(ctx, 'edit'),
             ),
             FTile(
-              title: const Text('Hapus item'),
+              title: Text(l10n.usahaKindItemDelete),
               onPress: () => Navigator.pop(ctx, 'delete'),
             ),
           ],
@@ -264,7 +273,7 @@ class UsahaSayaPage extends ConsumerWidget {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      builder: (_) => _ItemSheet(title: 'Ubah item', initial: item),
+      builder: (_) => _ItemSheet(title: l10n.usahaKindItemEdit, initial: item),
     );
     if (draft == null || !context.mounted) return;
     await _submit(
@@ -285,6 +294,7 @@ class UsahaSayaPage extends ConsumerWidget {
     String? itemId,
     Map<String, dynamic> payload = const {},
   }) async {
+    final l10n = AppLocalizations.of(context);
     try {
       await ref
           .read(usahaContributionApiProvider)
@@ -298,15 +308,15 @@ class UsahaSayaPage extends ConsumerWidget {
       ref.invalidate(usahaMineControllerProvider);
       await showAppErrorSheet(
         context,
-        title: 'Pengajuan terkirim',
-        message: 'Admin akan meninjau dulu. Statusnya muncul di Usulan saya.',
+        title: l10n.usahaChangeSent,
+        message: l10n.usahaChangeSentBody,
       );
     } on UsahaException catch (e) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
         message: e.message,
-        title: 'Gagal mengajukan',
+        title: l10n.usahaChangeFailed,
       );
     }
   }
@@ -366,6 +376,7 @@ class _ItemSheetState extends State<_ItemSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -386,21 +397,21 @@ class _ItemSheetState extends State<_ItemSheet> {
               const Gap(12),
               FTextField(
                 control: FTextFieldControl.managed(controller: _name),
-                label: const Text('Nama item'),
-                hint: 'Nama item atau layanan',
+                label: Text(l10n.usahaItemName),
+                hint: l10n.usahaItemNameHint,
                 textCapitalization: TextCapitalization.words,
               ),
               const Gap(10),
               FTextField(
                 control: FTextFieldControl.managed(controller: _description),
-                label: const Text('Keterangan (opsional)'),
+                label: Text(l10n.usahaItemDescription),
                 maxLines: 3,
               ),
               const Gap(10),
               FTextField(
                 control: FTextFieldControl.managed(controller: _price),
-                label: const Text('Harga (opsional)'),
-                hint: 'Mis. Rp 15.000 / mulai Rp 50.000',
+                label: Text(l10n.usahaItemPrice),
+                hint: l10n.usahaItemPriceHint,
               ),
               const Gap(16),
               FButton(
@@ -409,8 +420,8 @@ class _ItemSheetState extends State<_ItemSheet> {
                   if (name.length < 2) {
                     showAppErrorSheet(
                       context,
-                      title: 'Nama kurang',
-                      message: 'Nama item minimal 2 huruf ya.',
+                      title: l10n.usahaItemNameShortTitle,
+                      message: l10n.usahaItemNameShort,
                     );
                     return;
                   }
@@ -423,7 +434,7 @@ class _ItemSheetState extends State<_ItemSheet> {
                     ),
                   );
                 },
-                child: const Text('Kirim ke admin'),
+                child: Text(l10n.usahaItemSubmit),
               ),
             ],
           ),
@@ -438,6 +449,7 @@ class _LoginGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -452,7 +464,7 @@ class _LoginGate extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk mengelola usaha kamu',
+              l10n.usahaSayaLoginGate,
               style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -462,7 +474,7 @@ class _LoginGate extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(l10n.authLoginAction),
             ),
           ],
         ),
@@ -476,6 +488,7 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -490,13 +503,13 @@ class _EmptyBody extends StatelessWidget {
         ),
         const Gap(10),
         Text(
-          'Belum ada usaha yang kamu kelola',
+          l10n.usahaSayaEmpty,
           textAlign: TextAlign.center,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(4),
         Text(
-          'Ajukan klaim di halaman detail usaha. Setelah disetujui admin, usahamu muncul di sini.',
+          l10n.usahaSayaEmptyHint,
           textAlign: TextAlign.center,
           style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
@@ -507,7 +520,7 @@ class _EmptyBody extends StatelessWidget {
           child: FButton(
             variant: FButtonVariant.outline,
             onPress: () => context.push(UsahaRouter.claims.path),
-            child: const Text('Lihat klaim saya'),
+            child: Text(l10n.usahaSeeClaims),
           ),
         ),
       ],
@@ -534,7 +547,7 @@ class _ErrorBodyState extends State<_ErrorBody> {
       await showAppErrorSheet(
         context,
         message: widget.message,
-        title: 'Gagal memuat usaha',
+        title: AppLocalizations.of(context).usahaLoadFailed,
         onRetry: widget.onRetry,
       );
     });

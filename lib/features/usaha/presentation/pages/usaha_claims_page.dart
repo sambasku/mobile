@@ -5,12 +5,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
+import '../usaha_labels.dart';
 
 /// Klaim pengelolaan milik user + statusnya.
 class UsahaClaimsPage extends ConsumerWidget {
@@ -18,15 +20,17 @@ class UsahaClaimsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Klaim saya'),
+        title: Text(l10n.usahaClaimsTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () =>
-                context.canPop() ? context.pop() : context.go(UsahaRouter.list.path),
+            onPress: () => context.canPop()
+                ? context.pop()
+                : context.go(UsahaRouter.list.path),
           ),
         ],
       ),
@@ -35,12 +39,14 @@ class UsahaClaimsPage extends ConsumerWidget {
           : ref
                 .watch(usahaClaimsControllerProvider)
                 .when(
-                  loading: () => const Center(child: FCircularProgress(size: .sm)),
+                  loading: () =>
+                      const Center(child: FCircularProgress(size: .sm)),
                   error: (err, _) => _ErrorBody(
-                    onRetry: () => ref.invalidate(usahaClaimsControllerProvider),
+                    onRetry: () =>
+                        ref.invalidate(usahaClaimsControllerProvider),
                     message: err is UsahaException
                         ? err.message
-                        : 'Gagal memuat klaim. Periksa koneksi lalu coba lagi.',
+                        : l10n.usahaClaimsLoadFailed,
                   ),
                   data: (items) {
                     if (items.isEmpty) return const _EmptyBody();
@@ -67,6 +73,7 @@ class UsahaClaimsPage extends ConsumerWidget {
     WidgetRef ref,
     UsahaClaim item,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -76,20 +83,20 @@ class UsahaClaimsPage extends ConsumerWidget {
         child: FTileGroup(
           children: [
             FTile(
-              title: const Text('Batalkan klaim?'),
-              subtitle: const Text('Kamu bisa ajukan klaim baru kapan saja.'),
+              title: Text(l10n.usahaClaimCancelTitle),
+              subtitle: Text(l10n.usahaClaimCancelBody),
               suffix: FButton(
                 variant: FButtonVariant.destructive,
                 onPress: () => Navigator.pop(ctx, true),
-                child: const Text('Batalkan'),
+                child: Text(l10n.usahaCancelAction),
               ),
             ),
             FTile(
-              title: const Text('Biarkan dulu'),
+              title: Text(l10n.usahaLeaveForNow),
               suffix: FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => Navigator.pop(ctx, false),
-                child: const Text('Tidak jadi'),
+                child: Text(l10n.usahaNevermind),
               ),
             ),
           ],
@@ -101,7 +108,11 @@ class UsahaClaimsPage extends ConsumerWidget {
       await ref.read(usahaClaimsControllerProvider.notifier).cancel(item.id);
     } on UsahaException catch (e) {
       if (!context.mounted) return;
-      await showAppErrorSheet(context, message: e.message, title: 'Gagal membatalkan');
+      await showAppErrorSheet(
+        context,
+        message: e.message,
+        title: l10n.usahaClaimCancelFailed,
+      );
     }
   }
 }
@@ -114,10 +125,18 @@ class _ClaimRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final pending = item.status == UsahaClaimStatus.pending;
-    final name = item.usahaName ?? 'Usaha';
-    final note = item.status == UsahaClaimStatus.rejected ? item.rejectReason : null;
+    final name = item.usahaName ?? l10n.usahaTitle;
+    final note = item.status == UsahaClaimStatus.rejected
+        ? usahaRejectDisplay(
+            l10n,
+            code: item.rejectReasonCode,
+            text: item.rejectReasonText,
+          )
+        : null;
+    final submittedAt = l10n.usahaSubmittedAt(formatDateShort(item.createdAt));
 
     return FTile(
       prefix: Icon(
@@ -129,14 +148,14 @@ class _ClaimRow extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: pending ? theme.colors.foreground : theme.colors.mutedForeground,
+          color: pending
+              ? theme.colors.foreground
+              : theme.colors.mutedForeground,
           fontWeight: pending ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
       subtitle: Text(
-        note == null
-            ? 'Diajukan ${formatDateShort(item.createdAt)}'
-            : 'Diajukan ${formatDateShort(item.createdAt)}\n$note',
+        note == null ? submittedAt : '$submittedAt\n$note',
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
       ),
@@ -145,7 +164,7 @@ class _ClaimRow extends StatelessWidget {
         children: [
           FBadge(
             variant: _variant(item.status),
-            child: Text(_label(item.status)),
+            child: Text(usahaClaimStatusLabel(l10n, item.status)),
           ),
           if (pending) ...[
             const Gap(8),
@@ -153,7 +172,7 @@ class _ClaimRow extends StatelessWidget {
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               onPress: onCancel,
-              child: const Text('Batalkan'),
+              child: Text(l10n.usahaCancelAction),
             ),
           ],
         ],
@@ -167,13 +186,6 @@ class _ClaimRow extends StatelessWidget {
     UsahaClaimStatus.cancelled => FBadgeVariant.outline,
     UsahaClaimStatus.pending => FBadgeVariant.secondary,
   };
-
-  static String _label(UsahaClaimStatus status) => switch (status) {
-    UsahaClaimStatus.approved => 'Disetujui',
-    UsahaClaimStatus.rejected => 'Ditolak',
-    UsahaClaimStatus.cancelled => 'Dibatalkan',
-    UsahaClaimStatus.pending => 'Menunggu',
-  };
 }
 
 class _LoginGate extends StatelessWidget {
@@ -181,6 +193,7 @@ class _LoginGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -188,18 +201,24 @@ class _LoginGate extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(FLucideIcons.keyRound, size: 40, color: theme.colors.mutedForeground),
+            Icon(
+              FLucideIcons.keyRound,
+              size: 40,
+              color: theme.colors.mutedForeground,
+            ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat klaim kamu',
-              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
+              l10n.usahaClaimsLoginGate,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(l10n.authLoginAction),
             ),
           ],
         ),
@@ -213,6 +232,7 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -227,13 +247,13 @@ class _EmptyBody extends StatelessWidget {
         ),
         const Gap(10),
         Text(
-          'Belum ada klaim',
+          l10n.usahaClaimsEmpty,
           textAlign: TextAlign.center,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(4),
         Text(
-          'Buka detail usaha lalu pilih "Ini usaha saya" untuk mengajukan klaim.',
+          l10n.usahaClaimsEmptyHint,
           textAlign: TextAlign.center,
           style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
@@ -263,7 +283,7 @@ class _ErrorBodyState extends State<_ErrorBody> {
       await showAppErrorSheet(
         context,
         message: widget.message,
-        title: 'Gagal memuat klaim',
+        title: AppLocalizations.of(context).usahaClaimsLoadFailedTitle,
         onRetry: widget.onRetry,
       );
     });

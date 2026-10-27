@@ -57,7 +57,10 @@ void main() {
     await tester.tap(find.byKey(const Key('trigger')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Sebelum lanjut, ada dua dokumen'), findsOneWidget);
+    expect(
+      find.text('Syarat dan Kebijakan Privasi'),
+      findsOneWidget,
+    );
 
     // Kedua dokumen wajib bisa dibaca - accept-legal menuntut dua-duanya.
     // Label dokumen itu sendiri sudah hyperlink, tanpa tombol "Baca" abstrak.
