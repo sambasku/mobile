@@ -7,6 +7,7 @@ import '../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../shared/widgets/image_credit.dart';
 import '../data/share_background_repository.dart';
 import '../domain/share_models.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/share_skeleton.dart';
 const _photoProviders = ['pixabay', 'openverse', 'unsplash'];
 const _videoProviders = ['pixabay'];
@@ -211,9 +212,10 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final media = MediaQuery.of(context);
     final badge = _media == 'video'
-        ? '${shareProviderLabel(_provider)} video'
+        ? l10n.shareVideoBadge(shareProviderLabel(_provider))
         : shareProviderLabel(_provider);
 
     return SizedBox(
@@ -230,7 +232,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Media Explorer',
+                        l10n.shareExplorerTitle,
                         style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -327,7 +329,7 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
                 FButton(
                   mainAxisSize: MainAxisSize.min,
                   onPress: _onSearch,
-                  child: const Text('Cari'),
+                  child: Text(l10n.shareSearchCta),
                 ),
               ],
             ),
@@ -335,7 +337,9 @@ class _MediaExplorerBodyState extends State<_MediaExplorerBody>
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              _mode == 'popular' ? 'Populer' : 'Hasil: $_activeQuery',
+              _mode == 'popular'
+                  ? l10n.sharePopular
+                  : l10n.shareSearchResult(_activeQuery),
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),

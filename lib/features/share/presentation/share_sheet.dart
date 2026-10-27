@@ -10,6 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
+import 'share_labels.dart';
 import '../../../../shared/utils/file_persist_helper.dart';
 import '../../../../shared/utils/permission_helper.dart';
 import '../../../shared/widgets/image_credit.dart';
@@ -349,8 +351,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
     if (degraded && mounted) {
       showFToast(
         context: context,
-        title: const Text(
-          'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.',
+        title: Text(
+          AppLocalizations.of(context).shareStockUnavailable,
         ),
       );
     }
@@ -425,12 +427,12 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.photo_outlined),
-                  title: const Text('Foto'),
+                  title: Text(AppLocalizations.of(context).sharePhoto),
                   onTap: () => Navigator.pop(ctx, 'photo'),
                 ),
                 ListTile(
                   leading: const Icon(Icons.videocam_outlined),
-                  title: const Text('Video'),
+                  title: Text(AppLocalizations.of(context).shareVideo),
                   onTap: () => Navigator.pop(ctx, 'video'),
                 ),
               ],
@@ -469,8 +471,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         context: context,
         title: Text(
           source == ImageSource.camera
-              ? 'Gagal membuka kamera'
-              : 'Gagal memilih dari galeri',
+              ? AppLocalizations.of(context).shareCameraFailed
+              : AppLocalizations.of(context).shareGalleryPickFailed,
         ),
         variant: FToastVariant.destructive,
       );
@@ -507,8 +509,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
           if (mounted) {
             showFToast(
               context: context,
-              title: const Text(
-                'Video tidak bisa diekspor. Dibagikan sebagai foto.',
+              title: Text(
+                AppLocalizations.of(context).shareVideoFallbackShared,
               ),
             );
           }
@@ -535,7 +537,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
       if (!mounted) return;
       showFToast(
         context: context,
-        title: Text('Gagal membagikan: $e'),
+        title: Text(AppLocalizations.of(context).shareFailed('$e')),
         variant: FToastVariant.destructive,
       );
     } finally {
@@ -567,8 +569,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
           if (mounted) {
             showFToast(
               context: context,
-              title: const Text(
-                'Video tidak bisa diekspor. Disimpan sebagai foto.',
+              title: Text(
+                AppLocalizations.of(context).shareVideoFallbackSaved,
               ),
             );
           }
@@ -582,7 +584,10 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
         showPermissionDeniedDialog(context);
         return;
       }
-      showFToast(context: context, title: const Text('Tersimpan di galeri'));
+      showFToast(
+          context: context,
+          title: Text(AppLocalizations.of(context).shareSavedToGallery),
+        );
     } on GalException catch (e) {
       if (!mounted) return;
       if (e.type == GalExceptionType.accessDenied) {
@@ -591,14 +596,14 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
       }
       showFToast(
         context: context,
-        title: Text('Gagal menyimpan: ${e.type.message}'),
+        title: Text(AppLocalizations.of(context).shareSaveFailed(e.type.message)),
         variant: FToastVariant.destructive,
       );
     } catch (e) {
       if (!mounted) return;
       showFToast(
         context: context,
-        title: Text('Gagal menyimpan: $e'),
+        title: Text(AppLocalizations.of(context).shareSaveFailed('$e')),
         variant: FToastVariant.destructive,
       );
     } finally {
@@ -654,6 +659,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final media = MediaQuery.of(context);
     final chipSelected = theme.colors.primary;
     final chipMuted = theme.colors.mutedForeground;
@@ -746,7 +752,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Bagikan kartu',
+                        l10n.shareSheetTitle,
                         style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -832,15 +838,15 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           color: theme.colors.foreground,
                         ),
                         title: Text(
-                          'Atur posisi',
+                          l10n.shareAdjustPosition,
                           style: theme.typography.body.sm.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         subtitle: Text(
                           _template.allowsMediaPan
-                              ? 'Geser teks atau crop gambar / video'
-                              : 'Buka fullscreen untuk geser / putar teks',
+                              ? l10n.shareAdjustHintPannable
+                              : l10n.shareAdjustHintFixed,
                           style: theme.typography.body.sm.copyWith(
                             color: chipMuted,
                             fontSize: 11,
@@ -860,7 +866,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   children: [
                     Text(
-                      'Latar',
+                      l10n.shareSectionBackdrop,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -892,7 +898,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                           scrollDirection: Axis.horizontal,
                           children: [
                             _SourceChip(
-                              label: 'Tanpa\nlatar',
+                              label: l10n.shareChipNoBackdrop,
                               selected:
                                   _bgSource == ShareBgSource.none ||
                                   _template.forcesNoPhoto,
@@ -904,7 +910,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             ),
                             const Gap(8),
                             _SourceChip(
-                              label: 'Explorer',
+                              label: l10n.shareChipExplorer,
                               selected: false,
                               selectedBorder: chipSelected,
                               icon: Icons.travel_explore,
@@ -912,7 +918,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             ),
                             const Gap(8),
                             _SourceChip(
-                              label: 'Galeri',
+                              label: l10n.shareChipGallery,
                               selected:
                                   _bgSource == ShareBgSource.device &&
                                   (_localImageFile != null ||
@@ -935,7 +941,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             ),
                             const Gap(8),
                             _SourceChip(
-                              label: 'Kamera',
+                              label: l10n.shareChipCamera,
                               selected: false,
                               selectedBorder: chipSelected,
                               icon: Icons.camera_alt_outlined,
@@ -946,7 +952,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             const Gap(8),
                             for (final img in _wordImages) ...[
                               _SourceChip(
-                                label: 'Kata',
+                                label: l10n.shareChipWord,
                                 selected:
                                     _bgSource == ShareBgSource.wordImage &&
                                     _wordImageUrl == img.url,
@@ -969,7 +975,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                             for (var i = 0; i < _bgItems.length; i++) ...[
                               _SourceChip(
                                 label: _bgItems[i].isVideo
-                                    ? 'Video'
+                                    ? l10n.shareVideo
                                     : shareProviderLabel(_bgItems[i].provider),
                                 selected:
                                     _bgSource == ShareBgSource.stock &&
@@ -1014,14 +1020,14 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
-                          'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.',
+                          l10n.shareStockUnavailable,
                           style: theme.typography.body.sm.copyWith(color: chipMuted),
                         ),
                       ),
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video',
+                        l10n.shareThumbHint,
                         style: theme.typography.body.sm.copyWith(
                           color: chipMuted,
                           fontSize: 11,
@@ -1030,10 +1036,10 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ),
                     const Gap(12),
                     labeledChipRow(
-                      title: 'Gaya',
+                      title: l10n.shareSectionStyle,
                       chips: ShareTemplateId.values.map((t) {
                         return styleChip(
-                          label: t.label,
+                          label: shareTemplateLabel(t, l10n),
                           selected: _template == t,
                           onSelected: (_) {
                             setState(() {
@@ -1051,7 +1057,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ),
                     const Gap(8),
                     labeledChipRow(
-                      title: 'Rasio',
+                      title: l10n.shareSectionRatio,
                       chips: ShareRatioId.values.map((r) {
                         return styleChip(
                           label: r.label,
@@ -1063,10 +1069,10 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     if (widget.detail.meanings.length > 1) ...[
                       const Gap(8),
                       labeledChipRow(
-                        title: 'Makna',
+                        title: l10n.shareSectionMeaning,
                         chips: [
                           styleChip(
-                            label: 'Semua',
+                            label: l10n.shareMeaningAll,
                             selected: _settings.showAllMeanings,
                             onSelected: (_) {
                               setState(() {
@@ -1085,7 +1091,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                               label:
                                   widget.detail.meanings[i].wordClassBracket ??
                                   widget.detail.meanings[i].wordClassName ??
-                                  'Makna ${i + 1}',
+                                  l10n.shareMeaningNth(i + 1),
                               selected:
                                   !_settings.showAllMeanings &&
                                   _meaningIndex == i,
@@ -1104,17 +1110,17 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ],
                     const Gap(16),
                     Text(
-                      'Editor',
+                      l10n.shareSectionEditor,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const Gap(8),
                     labeledChipRow(
-                      title: 'Font',
+                      title: l10n.shareSectionFont,
                       chips: ShareFontPair.values.map((f) {
                         return styleChip(
-                          label: f.label,
+                          label: shareFontLabel(f, l10n),
                           selected: _settings.fontPair == f,
                           onSelected: (_) => setState(() {
                             _settings = _settings.copyWith(fontPair: f);
@@ -1128,7 +1134,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         SizedBox(
                           width: 44,
                           child: Text(
-                            'Warna',
+                            l10n.shareLabelColor,
                             style: theme.typography.body.sm.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -1178,7 +1184,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         SizedBox(
                           width: 44,
                           child: Text(
-                            'Gradasi',
+                            l10n.shareLabelGradient,
                             style: theme.typography.body.sm.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 11,
@@ -1259,7 +1265,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       ],
                     ),
                     const Gap(8),
-                    Text('Ukuran lemma', style: theme.typography.body.sm),
+                    Text(l10n.shareLemmaSize, style: theme.typography.body.sm),
                     Slider(
                       value: _settings.lemmaFontScale.clamp(0.7, 1.8),
                       min: 0.7,
@@ -1271,7 +1277,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                         _settings = _settings.copyWith(lemmaFontScale: v);
                       }),
                     ),
-                    Text('Ukuran teks deskripsi', style: theme.typography.body.sm),
+                    Text(l10n.shareBodySize, style: theme.typography.body.sm),
                     Slider(
                       value: _settings.bodyFontScale.clamp(0.7, 1.6),
                       min: 0.7,
@@ -1284,7 +1290,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       }),
                     ),
                     if (_template.usesOverlay) ...[
-                      Text('Ketebalan overlay', style: theme.typography.body.sm),
+                      Text(l10n.shareOverlayThickness, style: theme.typography.body.sm),
                       Slider(
                         value: _settings.overlayStrength,
                         min: 0,
@@ -1298,7 +1304,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                       ),
                     ],
                     settingsSwitchRow(
-                      label: 'Tampilkan kelas kata',
+                      label: l10n.shareShowWordClass,
                       value: _settings.showWordClass,
                       onChange: (v) => setState(() {
                         _settings = _settings.copyWith(showWordClass: v);
@@ -1306,7 +1312,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ),
                     const Gap(8),
                     settingsSwitchRow(
-                      label: 'Tampilkan terjemahan',
+                      label: l10n.shareShowTranslation,
                       value: _settings.showPadanan,
                       onChange: (v) => setState(() {
                         _settings = _settings.copyWith(showPadanan: v);
@@ -1314,7 +1320,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ),
                     const Gap(8),
                     settingsSwitchRow(
-                      label: 'Tampilkan definisi',
+                      label: l10n.shareShowDefinition,
                       value: _settings.showDefinition,
                       onChange: (v) => setState(() {
                         _settings = _settings.copyWith(showDefinition: v);
@@ -1322,7 +1328,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     ),
                     const Gap(8),
                     settingsSwitchRow(
-                      label: 'Tampilkan contoh kalimat',
+                      label: l10n.shareShowExample,
                       value:
                           _settings.showExample && _meaning.examples.isNotEmpty,
                       enabled: _meaning.examples.isNotEmpty,
@@ -1333,8 +1339,8 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                     const Gap(8),
                     settingsSwitchRow(
                       label: _mustCredit
-                          ? 'Watermark SambasKu (wajib untuk foto Creative Commons)'
-                          : 'Tampilkan watermark SambasKu',
+                          ? l10n.shareWatermarkRequired
+                          : l10n.shareWatermarkToggle,
                       value: _effectiveSettings.showWatermark,
                       enabled: !_mustCredit,
                       onChange: (v) => setState(() {
@@ -1363,7 +1369,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                               prefix: _saving
                                   ? const FCircularProgress()
                                   : null,
-                              child: const Text('Simpan'),
+                              child: Text(l10n.shareSave),
                             ),
                           ),
                           const Gap(12),
@@ -1375,7 +1381,7 @@ class _WordShareSheetBodyState extends State<_WordShareSheetBody> {
                               prefix: _sharing
                                   ? const FCircularProgress()
                                   : null,
-                              child: const Text('Bagikan'),
+                              child: Text(l10n.shareShare),
                             ),
                           ),
                         ],

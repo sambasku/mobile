@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 import '../domain/share_models.dart';
+import '../../../l10n/app_localizations.dart';
+import 'share_labels.dart';
 import 'widgets/share_card_canvas.dart';
 
 Future<void> showShareImageFullscreen(
@@ -121,7 +123,7 @@ class _FullscreenCardPage extends StatelessWidget {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Preview kartu'),
+        title: Text(AppLocalizations.of(context).sharePreviewCardTitle),
       ),
       body: Center(
         child: InteractiveViewer(
@@ -214,6 +216,7 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
   @override
   Widget build(BuildContext context) {
     final data = widget.buildData(_settings);
+    final l10n = AppLocalizations.of(context);
     final bottom = MediaQuery.paddingOf(context).bottom;
     final canPanMedia = widget.template.allowsMediaPan;
 
@@ -223,17 +226,17 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Atur posisi'),
+        title: Text(AppLocalizations.of(context).shareLayoutEditorTitle),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Batal',
+          tooltip: AppLocalizations.of(context).shareCancel,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(_settings),
-            child: const Text(
-              'Selesai',
+            child: Text(
+              AppLocalizations.of(context).shareDone,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -248,8 +251,8 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Text(
               canPanMedia
-                  ? 'Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.'
-                  : 'Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.',
+                  ? l10n.shareLayoutHintPannable
+                  : l10n.shareLayoutHintFixed,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.65),
                 fontSize: 13,
@@ -314,7 +317,7 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
                         variant: _mediaSelected
                             ? FBadgeVariant.primary
                             : FBadgeVariant.secondary,
-                        child: const Text('Latar'),
+                        child: Text(AppLocalizations.of(context).shareSectionBackdrop),
                       ),
                     ),
                   ),
@@ -322,7 +325,9 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
                 ],
                 if (_selected != null) ...[
                   Text(
-                    'Rotasi ${_selected!.label}',
+                    l10n.shareRotateLabel(
+                      shareTextElementLabel(_selected!, l10n),
+                    ),
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -350,16 +355,16 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
                       });
                     },
                   ),
-                ] else if (_mediaSelected)
-                  const Text(
-                    'Geser di kartu untuk mengatur crop gambar atau video',
-                    style: TextStyle(color: Color(0x8AFFFFFF), fontSize: 13),
-                  )
-                else
-                  Text(
-                    canPanMedia
-                        ? 'Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi'
-                        : 'Pilih elemen teks di kartu untuk mengatur rotasi',
+                ]               else if (_mediaSelected)
+                Text(
+                  l10n.shareDragToCrop,
+                  style: const TextStyle(color: Color(0x8AFFFFFF), fontSize: 13),
+                )
+              else
+                Text(
+                  canPanMedia
+                      ? l10n.sharePickBackdropOrText
+                      : l10n.sharePickTextElement,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.55),
                       fontSize: 13,
@@ -373,7 +378,7 @@ class _LayoutEditorPageState extends State<_LayoutEditorPage> {
                       _selected = null;
                       _mediaSelected = false;
                     }),
-                    child: const Text('Reset posisi'),
+                    child: Text(AppLocalizations.of(context).shareResetPosition),
                   ),
                 ),
               ],

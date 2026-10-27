@@ -1326,6 +1326,498 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'baru saja'**
   String get commentSkeletonDate;
+
+  /// No description provided for @shareStockUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.'**
+  String get shareStockUnavailable;
+
+  /// No description provided for @sharePhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get sharePhoto;
+
+  /// No description provided for @shareVideo.
+  ///
+  /// In id, this message translates to:
+  /// **'Video'**
+  String get shareVideo;
+
+  /// No description provided for @shareCameraFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuka kamera'**
+  String get shareCameraFailed;
+
+  /// No description provided for @shareGalleryPickFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memilih dari galeri'**
+  String get shareGalleryPickFailed;
+
+  /// No description provided for @shareVideoFallbackShared.
+  ///
+  /// In id, this message translates to:
+  /// **'Video tidak bisa diekspor. Dibagikan sebagai foto.'**
+  String get shareVideoFallbackShared;
+
+  /// No description provided for @shareVideoFallbackSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Video tidak bisa diekspor. Disimpan sebagai foto.'**
+  String get shareVideoFallbackSaved;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membagikan: {error}'**
+  String shareFailed(String error);
+
+  /// No description provided for @shareSavedToGallery.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersimpan di galeri'**
+  String get shareSavedToGallery;
+
+  /// No description provided for @shareSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan: {error}'**
+  String shareSaveFailed(String error);
+
+  /// No description provided for @shareSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan kartu'**
+  String get shareSheetTitle;
+
+  /// No description provided for @shareAdjustPosition.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur posisi'**
+  String get shareAdjustPosition;
+
+  /// No description provided for @shareAdjustHintPannable.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser teks atau crop gambar / video'**
+  String get shareAdjustHintPannable;
+
+  /// No description provided for @shareAdjustHintFixed.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka fullscreen untuk geser / putar teks'**
+  String get shareAdjustHintFixed;
+
+  /// No description provided for @shareSectionBackdrop.
+  ///
+  /// In id, this message translates to:
+  /// **'Latar'**
+  String get shareSectionBackdrop;
+
+  /// No description provided for @shareChipNoBackdrop.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa\nlatar'**
+  String get shareChipNoBackdrop;
+
+  /// No description provided for @shareChipExplorer.
+  ///
+  /// In id, this message translates to:
+  /// **'Explorer'**
+  String get shareChipExplorer;
+
+  /// No description provided for @shareChipGallery.
+  ///
+  /// In id, this message translates to:
+  /// **'Galeri'**
+  String get shareChipGallery;
+
+  /// No description provided for @shareChipCamera.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera'**
+  String get shareChipCamera;
+
+  /// No description provided for @shareChipWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get shareChipWord;
+
+  /// No description provided for @shareThumbHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video'**
+  String get shareThumbHint;
+
+  /// No description provided for @shareSectionStyle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gaya'**
+  String get shareSectionStyle;
+
+  /// No description provided for @shareSectionRatio.
+  ///
+  /// In id, this message translates to:
+  /// **'Rasio'**
+  String get shareSectionRatio;
+
+  /// No description provided for @shareSectionMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get shareSectionMeaning;
+
+  /// No description provided for @shareMeaningAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get shareMeaningAll;
+
+  /// No description provided for @shareMeaningNth.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna {n}'**
+  String shareMeaningNth(int n);
+
+  /// No description provided for @shareSectionEditor.
+  ///
+  /// In id, this message translates to:
+  /// **'Editor'**
+  String get shareSectionEditor;
+
+  /// No description provided for @shareSectionFont.
+  ///
+  /// In id, this message translates to:
+  /// **'Font'**
+  String get shareSectionFont;
+
+  /// No description provided for @shareLabelColor.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna'**
+  String get shareLabelColor;
+
+  /// No description provided for @shareLabelGradient.
+  ///
+  /// In id, this message translates to:
+  /// **'Gradasi'**
+  String get shareLabelGradient;
+
+  /// No description provided for @shareLemmaSize.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran lemma'**
+  String get shareLemmaSize;
+
+  /// No description provided for @shareBodySize.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran teks deskripsi'**
+  String get shareBodySize;
+
+  /// No description provided for @shareOverlayThickness.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketebalan overlay'**
+  String get shareOverlayThickness;
+
+  /// No description provided for @shareShowWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan kelas kata'**
+  String get shareShowWordClass;
+
+  /// No description provided for @shareShowTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan terjemahan'**
+  String get shareShowTranslation;
+
+  /// No description provided for @shareShowDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan definisi'**
+  String get shareShowDefinition;
+
+  /// No description provided for @shareShowExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan contoh kalimat'**
+  String get shareShowExample;
+
+  /// No description provided for @shareWatermarkRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Watermark SambasKu (wajib untuk foto Creative Commons)'**
+  String get shareWatermarkRequired;
+
+  /// No description provided for @shareWatermarkToggle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan watermark SambasKu'**
+  String get shareWatermarkToggle;
+
+  /// No description provided for @shareSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get shareSave;
+
+  /// No description provided for @shareShare.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan'**
+  String get shareShare;
+
+  /// No description provided for @sharePreviewCardTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Preview kartu'**
+  String get sharePreviewCardTitle;
+
+  /// No description provided for @shareLayoutEditorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur posisi'**
+  String get shareLayoutEditorTitle;
+
+  /// No description provided for @shareCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get shareCancel;
+
+  /// No description provided for @shareDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get shareDone;
+
+  /// No description provided for @shareLayoutHintPannable.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.'**
+  String get shareLayoutHintPannable;
+
+  /// No description provided for @shareLayoutHintFixed.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.'**
+  String get shareLayoutHintFixed;
+
+  /// No description provided for @shareRotateLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Rotasi {label}'**
+  String shareRotateLabel(String label);
+
+  /// No description provided for @shareDragToCrop.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser di kartu untuk mengatur crop gambar atau video'**
+  String get shareDragToCrop;
+
+  /// No description provided for @sharePickBackdropOrText.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi'**
+  String get sharePickBackdropOrText;
+
+  /// No description provided for @sharePickTextElement.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih elemen teks di kartu untuk mengatur rotasi'**
+  String get sharePickTextElement;
+
+  /// No description provided for @shareResetPosition.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset posisi'**
+  String get shareResetPosition;
+
+  /// No description provided for @shareExplorerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Media Explorer'**
+  String get shareExplorerTitle;
+
+  /// No description provided for @shareTabImages.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get shareTabImages;
+
+  /// No description provided for @shareTabVideos.
+  ///
+  /// In id, this message translates to:
+  /// **'Video'**
+  String get shareTabVideos;
+
+  /// No description provided for @shareSearchVideosHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari video…'**
+  String get shareSearchVideosHint;
+
+  /// No description provided for @shareSearchImagesHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari gambar…'**
+  String get shareSearchImagesHint;
+
+  /// No description provided for @shareSearchCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari'**
+  String get shareSearchCta;
+
+  /// No description provided for @sharePopular.
+  ///
+  /// In id, this message translates to:
+  /// **'Populer'**
+  String get sharePopular;
+
+  /// No description provided for @shareSearchResult.
+  ///
+  /// In id, this message translates to:
+  /// **'Hasil: {query}'**
+  String shareSearchResult(String query);
+
+  /// No description provided for @shareBackdropUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Latar tidak tersedia. Coba lagi dalam beberapa saat.'**
+  String get shareBackdropUnavailable;
+
+  /// No description provided for @shareNoResults.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada hasil.'**
+  String get shareNoResults;
+
+  /// No description provided for @shareVideoBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'{provider} video'**
+  String shareVideoBadge(String provider);
+
+  /// No description provided for @shareSolidColorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna polos'**
+  String get shareSolidColorTitle;
+
+  /// No description provided for @shareHexLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Hex'**
+  String get shareHexLabel;
+
+  /// No description provided for @shareApply.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai'**
+  String get shareApply;
+
+  /// No description provided for @shareTemplateFull.
+  ///
+  /// In id, this message translates to:
+  /// **'Penuh'**
+  String get shareTemplateFull;
+
+  /// No description provided for @shareTemplateEditorial.
+  ///
+  /// In id, this message translates to:
+  /// **'Editorial'**
+  String get shareTemplateEditorial;
+
+  /// No description provided for @shareTemplatePoster.
+  ///
+  /// In id, this message translates to:
+  /// **'Poster'**
+  String get shareTemplatePoster;
+
+  /// No description provided for @shareTemplateFrame.
+  ///
+  /// In id, this message translates to:
+  /// **'Bingkai'**
+  String get shareTemplateFrame;
+
+  /// No description provided for @shareTemplateSide.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisi'**
+  String get shareTemplateSide;
+
+  /// No description provided for @shareTemplateGlass.
+  ///
+  /// In id, this message translates to:
+  /// **'Kaca'**
+  String get shareTemplateGlass;
+
+  /// No description provided for @shareTemplateQuote.
+  ///
+  /// In id, this message translates to:
+  /// **'Kutipan'**
+  String get shareTemplateQuote;
+
+  /// No description provided for @shareTemplateCard.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu'**
+  String get shareTemplateCard;
+
+  /// No description provided for @shareFontClassic.
+  ///
+  /// In id, this message translates to:
+  /// **'Klasik'**
+  String get shareFontClassic;
+
+  /// No description provided for @shareFontEditorial.
+  ///
+  /// In id, this message translates to:
+  /// **'Editorial'**
+  String get shareFontEditorial;
+
+  /// No description provided for @shareFontModern.
+  ///
+  /// In id, this message translates to:
+  /// **'Modern'**
+  String get shareFontModern;
+
+  /// No description provided for @shareElementLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma'**
+  String get shareElementLemma;
+
+  /// No description provided for @shareElementTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get shareElementTranslation;
+
+  /// No description provided for @shareElementDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi'**
+  String get shareElementDefinition;
+
+  /// No description provided for @shareElementExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh'**
+  String get shareElementExample;
+
+  /// No description provided for @shareElementWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata'**
+  String get shareElementWordClass;
 }
 
 class _AppLocalizationsDelegate

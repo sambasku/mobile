@@ -302,5 +302,129 @@
   "commentSkeletonUsername": "username",
   "commentSkeletonName": "Nama Pengguna",
   "commentSkeletonBody": "Cuplikan komentar contoh untuk skeleton.",
-  "commentSkeletonDate": "baru saja"
+  "commentSkeletonDate": "baru saja",
+  "shareStockUnavailable": "Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.",
+  "sharePhoto": "Foto",
+  "shareVideo": "Video",
+  "shareCameraFailed": "Gagal membuka kamera",
+  "shareGalleryPickFailed": "Gagal memilih dari galeri",
+  "shareVideoFallbackShared": "Video tidak bisa diekspor. Dibagikan sebagai foto.",
+  "shareVideoFallbackSaved": "Video tidak bisa diekspor. Disimpan sebagai foto.",
+  "shareFailed": "Gagal membagikan: {error}",
+  "@shareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shareSavedToGallery": "Tersimpan di galeri",
+  "shareSaveFailed": "Gagal menyimpan: {error}",
+  "@shareSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shareSheetTitle": "Bagikan kartu",
+  "shareAdjustPosition": "Atur posisi",
+  "shareAdjustHintPannable": "Geser teks atau crop gambar / video",
+  "shareAdjustHintFixed": "Buka fullscreen untuk geser / putar teks",
+  "shareSectionBackdrop": "Latar",
+  "shareChipNoBackdrop": "Tanpa\nlatar",
+  "shareChipExplorer": "Explorer",
+  "shareChipGallery": "Galeri",
+  "shareChipCamera": "Kamera",
+  "shareChipWord": "Kata",
+  "shareThumbHint": "Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video",
+  "shareSectionStyle": "Gaya",
+  "shareSectionRatio": "Rasio",
+  "shareSectionMeaning": "Makna",
+  "shareMeaningAll": "Semua",
+  "shareMeaningNth": "Makna {n}",
+  "@shareMeaningNth": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSectionEditor": "Editor",
+  "shareSectionFont": "Font",
+  "shareLabelColor": "Warna",
+  "shareLabelGradient": "Gradasi",
+  "shareLemmaSize": "Ukuran lemma",
+  "shareBodySize": "Ukuran teks deskripsi",
+  "shareOverlayThickness": "Ketebalan overlay",
+  "shareShowWordClass": "Tampilkan kelas kata",
+  "shareShowTranslation": "Tampilkan terjemahan",
+  "shareShowDefinition": "Tampilkan definisi",
+  "shareShowExample": "Tampilkan contoh kalimat",
+  "shareWatermarkRequired": "Watermark SambasKu (wajib untuk foto Creative Commons)",
+  "shareWatermarkToggle": "Tampilkan watermark SambasKu",
+  "shareSave": "Simpan",
+  "shareShare": "Bagikan",
+  "sharePreviewCardTitle": "Preview kartu",
+  "shareLayoutEditorTitle": "Atur posisi",
+  "shareCancel": "Batal",
+  "shareDone": "Selesai",
+  "shareLayoutHintPannable": "Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.",
+  "shareLayoutHintFixed": "Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.",
+  "shareRotateLabel": "Rotasi {label}",
+  "@shareRotateLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "shareDragToCrop": "Geser di kartu untuk mengatur crop gambar atau video",
+  "sharePickBackdropOrText": "Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi",
+  "sharePickTextElement": "Pilih elemen teks di kartu untuk mengatur rotasi",
+  "shareResetPosition": "Reset posisi",
+  "shareExplorerTitle": "Media Explorer",
+  "shareTabImages": "Gambar",
+  "shareTabVideos": "Video",
+  "shareSearchVideosHint": "Cari video…",
+  "shareSearchImagesHint": "Cari gambar…",
+  "shareSearchCta": "Cari",
+  "sharePopular": "Populer",
+  "shareSearchResult": "Hasil: {query}",
+  "@shareSearchResult": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "shareBackdropUnavailable": "Latar tidak tersedia. Coba lagi dalam beberapa saat.",
+  "shareNoResults": "Tidak ada hasil.",
+  "shareVideoBadge": "{provider} video",
+  "@shareVideoBadge": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "shareSolidColorTitle": "Warna polos",
+  "shareHexLabel": "Hex",
+  "shareApply": "Pakai",
+  "shareTemplateFull": "Penuh",
+  "shareTemplateEditorial": "Editorial",
+  "shareTemplatePoster": "Poster",
+  "shareTemplateFrame": "Bingkai",
+  "shareTemplateSide": "Sisi",
+  "shareTemplateGlass": "Kaca",
+  "shareTemplateQuote": "Kutipan",
+  "shareTemplateCard": "Kartu",
+  "shareFontClassic": "Klasik",
+  "shareFontEditorial": "Editorial",
+  "shareFontModern": "Modern",
+  "shareElementLemma": "Lemma",
+  "shareElementTranslation": "Terjemahan",
+  "shareElementDefinition": "Definisi",
+  "shareElementExample": "Contoh",
+  "shareElementWordClass": "Kelas kata"
 }

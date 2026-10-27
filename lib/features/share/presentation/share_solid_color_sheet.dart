@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Pilih warna polos (HSV + hex). Opaque, tanpa eyedropper.
 Future<Color?> showShareSolidColorSheet(
@@ -95,7 +96,7 @@ class _ShareSolidColorSheetState extends State<_ShareSolidColorSheet> {
             ),
           ),
           const Gap(16),
-          Text('Warna polos', style: theme.typography.body.lg),
+          Text(AppLocalizations.of(context).shareSolidColorTitle, style: theme.typography.body.lg),
           const Gap(12),
           SizedBox(
             height: 160,
@@ -149,14 +150,14 @@ class _ShareSolidColorSheetState extends State<_ShareSolidColorSheet> {
                 child: FButton(
                   variant: FButtonVariant.outline,
                   onPress: () => Navigator.of(context).pop(),
-                  child: const Text('Batal'),
+                  child: Text(AppLocalizations.of(context).shareCancel),
                 ),
               ),
               const Gap(12),
               Expanded(
                 child: FButton(
                   onPress: () => Navigator.of(context).pop(color),
-                  child: const Text('Pakai'),
+                  child: Text(AppLocalizations.of(context).shareApply),
                 ),
               ),
             ],

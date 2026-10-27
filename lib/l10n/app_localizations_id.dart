@@ -670,6 +670,275 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get commentSkeletonDate => 'baru saja';
+
+  @override
+  String get shareStockUnavailable =>
+      'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.';
+
+  @override
+  String get sharePhoto => 'Foto';
+
+  @override
+  String get shareVideo => 'Video';
+
+  @override
+  String get shareCameraFailed => 'Gagal membuka kamera';
+
+  @override
+  String get shareGalleryPickFailed => 'Gagal memilih dari galeri';
+
+  @override
+  String get shareVideoFallbackShared =>
+      'Video tidak bisa diekspor. Dibagikan sebagai foto.';
+
+  @override
+  String get shareVideoFallbackSaved =>
+      'Video tidak bisa diekspor. Disimpan sebagai foto.';
+
+  @override
+  String shareFailed(String error) {
+    return 'Gagal membagikan: $error';
+  }
+
+  @override
+  String get shareSavedToGallery => 'Tersimpan di galeri';
+
+  @override
+  String shareSaveFailed(String error) {
+    return 'Gagal menyimpan: $error';
+  }
+
+  @override
+  String get shareSheetTitle => 'Bagikan kartu';
+
+  @override
+  String get shareAdjustPosition => 'Atur posisi';
+
+  @override
+  String get shareAdjustHintPannable => 'Geser teks atau crop gambar / video';
+
+  @override
+  String get shareAdjustHintFixed => 'Buka fullscreen untuk geser / putar teks';
+
+  @override
+  String get shareSectionBackdrop => 'Latar';
+
+  @override
+  String get shareChipNoBackdrop => 'Tanpa\nlatar';
+
+  @override
+  String get shareChipExplorer => 'Explorer';
+
+  @override
+  String get shareChipGallery => 'Galeri';
+
+  @override
+  String get shareChipCamera => 'Kamera';
+
+  @override
+  String get shareChipWord => 'Kata';
+
+  @override
+  String get shareThumbHint =>
+      'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video';
+
+  @override
+  String get shareSectionStyle => 'Gaya';
+
+  @override
+  String get shareSectionRatio => 'Rasio';
+
+  @override
+  String get shareSectionMeaning => 'Makna';
+
+  @override
+  String get shareMeaningAll => 'Semua';
+
+  @override
+  String shareMeaningNth(int n) {
+    return 'Makna $n';
+  }
+
+  @override
+  String get shareSectionEditor => 'Editor';
+
+  @override
+  String get shareSectionFont => 'Font';
+
+  @override
+  String get shareLabelColor => 'Warna';
+
+  @override
+  String get shareLabelGradient => 'Gradasi';
+
+  @override
+  String get shareLemmaSize => 'Ukuran lemma';
+
+  @override
+  String get shareBodySize => 'Ukuran teks deskripsi';
+
+  @override
+  String get shareOverlayThickness => 'Ketebalan overlay';
+
+  @override
+  String get shareShowWordClass => 'Tampilkan kelas kata';
+
+  @override
+  String get shareShowTranslation => 'Tampilkan terjemahan';
+
+  @override
+  String get shareShowDefinition => 'Tampilkan definisi';
+
+  @override
+  String get shareShowExample => 'Tampilkan contoh kalimat';
+
+  @override
+  String get shareWatermarkRequired =>
+      'Watermark SambasKu (wajib untuk foto Creative Commons)';
+
+  @override
+  String get shareWatermarkToggle => 'Tampilkan watermark SambasKu';
+
+  @override
+  String get shareSave => 'Simpan';
+
+  @override
+  String get shareShare => 'Bagikan';
+
+  @override
+  String get sharePreviewCardTitle => 'Preview kartu';
+
+  @override
+  String get shareLayoutEditorTitle => 'Atur posisi';
+
+  @override
+  String get shareCancel => 'Batal';
+
+  @override
+  String get shareDone => 'Selesai';
+
+  @override
+  String get shareLayoutHintPannable =>
+      'Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.';
+
+  @override
+  String get shareLayoutHintFixed =>
+      'Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.';
+
+  @override
+  String shareRotateLabel(String label) {
+    return 'Rotasi $label';
+  }
+
+  @override
+  String get shareDragToCrop =>
+      'Geser di kartu untuk mengatur crop gambar atau video';
+
+  @override
+  String get sharePickBackdropOrText =>
+      'Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi';
+
+  @override
+  String get sharePickTextElement =>
+      'Pilih elemen teks di kartu untuk mengatur rotasi';
+
+  @override
+  String get shareResetPosition => 'Reset posisi';
+
+  @override
+  String get shareExplorerTitle => 'Media Explorer';
+
+  @override
+  String get shareTabImages => 'Gambar';
+
+  @override
+  String get shareTabVideos => 'Video';
+
+  @override
+  String get shareSearchVideosHint => 'Cari video…';
+
+  @override
+  String get shareSearchImagesHint => 'Cari gambar…';
+
+  @override
+  String get shareSearchCta => 'Cari';
+
+  @override
+  String get sharePopular => 'Populer';
+
+  @override
+  String shareSearchResult(String query) {
+    return 'Hasil: $query';
+  }
+
+  @override
+  String get shareBackdropUnavailable =>
+      'Latar tidak tersedia. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get shareNoResults => 'Tidak ada hasil.';
+
+  @override
+  String shareVideoBadge(String provider) {
+    return '$provider video';
+  }
+
+  @override
+  String get shareSolidColorTitle => 'Warna polos';
+
+  @override
+  String get shareHexLabel => 'Hex';
+
+  @override
+  String get shareApply => 'Pakai';
+
+  @override
+  String get shareTemplateFull => 'Penuh';
+
+  @override
+  String get shareTemplateEditorial => 'Editorial';
+
+  @override
+  String get shareTemplatePoster => 'Poster';
+
+  @override
+  String get shareTemplateFrame => 'Bingkai';
+
+  @override
+  String get shareTemplateSide => 'Sisi';
+
+  @override
+  String get shareTemplateGlass => 'Kaca';
+
+  @override
+  String get shareTemplateQuote => 'Kutipan';
+
+  @override
+  String get shareTemplateCard => 'Kartu';
+
+  @override
+  String get shareFontClassic => 'Klasik';
+
+  @override
+  String get shareFontEditorial => 'Editorial';
+
+  @override
+  String get shareFontModern => 'Modern';
+
+  @override
+  String get shareElementLemma => 'Lemma';
+
+  @override
+  String get shareElementTranslation => 'Terjemahan';
+
+  @override
+  String get shareElementDefinition => 'Definisi';
+
+  @override
+  String get shareElementExample => 'Contoh';
+
+  @override
+  String get shareElementWordClass => 'Kelas kata';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -1338,4 +1607,273 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get commentSkeletonDate => 'baru saja';
+
+  @override
+  String get shareStockUnavailable =>
+      'Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.';
+
+  @override
+  String get sharePhoto => 'Foto';
+
+  @override
+  String get shareVideo => 'Video';
+
+  @override
+  String get shareCameraFailed => 'Gagal membuka kamera';
+
+  @override
+  String get shareGalleryPickFailed => 'Gagal memilih dari galeri';
+
+  @override
+  String get shareVideoFallbackShared =>
+      'Video tidak bisa diekspor. Dibagikan sebagai foto.';
+
+  @override
+  String get shareVideoFallbackSaved =>
+      'Video tidak bisa diekspor. Disimpan sebagai foto.';
+
+  @override
+  String shareFailed(String error) {
+    return 'Gagal membagikan: $error';
+  }
+
+  @override
+  String get shareSavedToGallery => 'Tersimpan di galeri';
+
+  @override
+  String shareSaveFailed(String error) {
+    return 'Gagal menyimpan: $error';
+  }
+
+  @override
+  String get shareSheetTitle => 'Bagikan kartu';
+
+  @override
+  String get shareAdjustPosition => 'Atur posisi';
+
+  @override
+  String get shareAdjustHintPannable => 'Geser teks atau crop gambar / video';
+
+  @override
+  String get shareAdjustHintFixed => 'Buka fullscreen untuk geser / putar teks';
+
+  @override
+  String get shareSectionBackdrop => 'Latar';
+
+  @override
+  String get shareChipNoBackdrop => 'Tanpa\nlatar';
+
+  @override
+  String get shareChipExplorer => 'Explorer';
+
+  @override
+  String get shareChipGallery => 'Galeri';
+
+  @override
+  String get shareChipCamera => 'Kamera';
+
+  @override
+  String get shareChipWord => 'Kata';
+
+  @override
+  String get shareThumbHint =>
+      'Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video';
+
+  @override
+  String get shareSectionStyle => 'Gaya';
+
+  @override
+  String get shareSectionRatio => 'Rasio';
+
+  @override
+  String get shareSectionMeaning => 'Makna';
+
+  @override
+  String get shareMeaningAll => 'Semua';
+
+  @override
+  String shareMeaningNth(int n) {
+    return 'Makna $n';
+  }
+
+  @override
+  String get shareSectionEditor => 'Editor';
+
+  @override
+  String get shareSectionFont => 'Font';
+
+  @override
+  String get shareLabelColor => 'Warna';
+
+  @override
+  String get shareLabelGradient => 'Gradasi';
+
+  @override
+  String get shareLemmaSize => 'Ukuran lemma';
+
+  @override
+  String get shareBodySize => 'Ukuran teks deskripsi';
+
+  @override
+  String get shareOverlayThickness => 'Ketebalan overlay';
+
+  @override
+  String get shareShowWordClass => 'Tampilkan kelas kata';
+
+  @override
+  String get shareShowTranslation => 'Tampilkan terjemahan';
+
+  @override
+  String get shareShowDefinition => 'Tampilkan definisi';
+
+  @override
+  String get shareShowExample => 'Tampilkan contoh kalimat';
+
+  @override
+  String get shareWatermarkRequired =>
+      'Watermark SambasKu (wajib untuk foto Creative Commons)';
+
+  @override
+  String get shareWatermarkToggle => 'Tampilkan watermark SambasKu';
+
+  @override
+  String get shareSave => 'Simpan';
+
+  @override
+  String get shareShare => 'Bagikan';
+
+  @override
+  String get sharePreviewCardTitle => 'Preview kartu';
+
+  @override
+  String get shareLayoutEditorTitle => 'Atur posisi';
+
+  @override
+  String get shareCancel => 'Batal';
+
+  @override
+  String get shareDone => 'Selesai';
+
+  @override
+  String get shareLayoutHintPannable =>
+      'Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.';
+
+  @override
+  String get shareLayoutHintFixed =>
+      'Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.';
+
+  @override
+  String shareRotateLabel(String label) {
+    return 'Rotasi $label';
+  }
+
+  @override
+  String get shareDragToCrop =>
+      'Geser di kartu untuk mengatur crop gambar atau video';
+
+  @override
+  String get sharePickBackdropOrText =>
+      'Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi';
+
+  @override
+  String get sharePickTextElement =>
+      'Pilih elemen teks di kartu untuk mengatur rotasi';
+
+  @override
+  String get shareResetPosition => 'Reset posisi';
+
+  @override
+  String get shareExplorerTitle => 'Media Explorer';
+
+  @override
+  String get shareTabImages => 'Gambar';
+
+  @override
+  String get shareTabVideos => 'Video';
+
+  @override
+  String get shareSearchVideosHint => 'Cari video…';
+
+  @override
+  String get shareSearchImagesHint => 'Cari gambar…';
+
+  @override
+  String get shareSearchCta => 'Cari';
+
+  @override
+  String get sharePopular => 'Populer';
+
+  @override
+  String shareSearchResult(String query) {
+    return 'Hasil: $query';
+  }
+
+  @override
+  String get shareBackdropUnavailable =>
+      'Latar tidak tersedia. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get shareNoResults => 'Tidak ada hasil.';
+
+  @override
+  String shareVideoBadge(String provider) {
+    return '$provider video';
+  }
+
+  @override
+  String get shareSolidColorTitle => 'Warna polos';
+
+  @override
+  String get shareHexLabel => 'Hex';
+
+  @override
+  String get shareApply => 'Pakai';
+
+  @override
+  String get shareTemplateFull => 'Penuh';
+
+  @override
+  String get shareTemplateEditorial => 'Editorial';
+
+  @override
+  String get shareTemplatePoster => 'Poster';
+
+  @override
+  String get shareTemplateFrame => 'Bingkai';
+
+  @override
+  String get shareTemplateSide => 'Sisi';
+
+  @override
+  String get shareTemplateGlass => 'Kaca';
+
+  @override
+  String get shareTemplateQuote => 'Kutipan';
+
+  @override
+  String get shareTemplateCard => 'Kartu';
+
+  @override
+  String get shareFontClassic => 'Klasik';
+
+  @override
+  String get shareFontEditorial => 'Editorial';
+
+  @override
+  String get shareFontModern => 'Modern';
+
+  @override
+  String get shareElementLemma => 'Lemma';
+
+  @override
+  String get shareElementTranslation => 'Terjemahan';
+
+  @override
+  String get shareElementDefinition => 'Definisi';
+
+  @override
+  String get shareElementExample => 'Contoh';
+
+  @override
+  String get shareElementWordClass => 'Kelas kata';
 }
