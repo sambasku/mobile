@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../providers/admin_analytics_providers.dart';
 import '../widgets/activity_daily_chart.dart';
@@ -20,13 +21,14 @@ class AdminAnalyticsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final statsAsync = ref.watch(dashboardStatsProvider);
 
     return FScaffold(
       // ListView mengatur padding sendiri.
       childPad: false,
       header: FHeader.nested(
-        title: const Text('Analitik'),
+        title: Text(l10n.analyticsTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () {
@@ -55,10 +57,8 @@ class AdminAnalyticsPage extends ConsumerWidget {
               loading: () => const _AnalyticsStatsSkeleton(),
               error: (_, _) => FAlert(
                 variant: .destructive,
-                title: const Text('Statistik gagal dimuat'),
-                subtitle: const Text(
-                  'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-                ),
+                title: Text(l10n.analyticsStatsLoadFailed),
+                subtitle: Text(l10n.analyticsStatsLoadFailedHint),
                 icon: const Icon(FLucideIcons.circleAlert),
               ),
               data: (stats) => _AnalyticsStatsBody(stats: stats),

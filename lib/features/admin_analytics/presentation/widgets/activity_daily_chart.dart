@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/format_analytics_count.dart';
 
@@ -24,13 +25,22 @@ class AnalyticsActivityDailyChart extends StatefulWidget {
 
 class _AnalyticsActivityDailyChartState
     extends State<AnalyticsActivityDailyChart> {
-  static const _series = <({String key, String short, Color color})>[
-    (key: 'contributions', short: 'Kontribusi', color: Color(0xFF2563EB)),
-    (key: 'votes', short: 'Vote', color: Color(0xFF16A34A)),
-    (key: 'comments', short: 'Komentar', color: Color(0xFFF59E0B)),
-    (key: 'newUsers', short: 'User', color: Color(0xFF0EA5E9)),
-    (key: 'searches', short: 'Cari', color: Color(0xFF8B5CF6)),
+  static const _seriesKeys = <({String key, Color color})>[
+    (key: 'contributions', color: Color(0xFF2563EB)),
+    (key: 'votes', color: Color(0xFF16A34A)),
+    (key: 'comments', color: Color(0xFFF59E0B)),
+    (key: 'newUsers', color: Color(0xFF0EA5E9)),
+    (key: 'searches', color: Color(0xFF8B5CF6)),
   ];
+
+  String _seriesLabel(AppLocalizations l10n, String key) => switch (key) {
+    'contributions' => l10n.analyticsSeriesContributions,
+    'votes' => l10n.analyticsSeriesVotes,
+    'comments' => l10n.analyticsSeriesComments,
+    'newUsers' => l10n.analyticsSeriesUsersShort,
+    'searches' => l10n.analyticsSeriesSearches,
+    _ => key,
+  };
 
   /// Tinggi area plot tetap - jangan biarkan fl_chart / ringkasan mengubah layout.
   static const _chartHeight = 140.0;
@@ -105,6 +115,7 @@ class _AnalyticsActivityDailyChartState
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final data = _window;
     final rawMax = [
       for (final p in data) ...[
@@ -135,7 +146,7 @@ class _AnalyticsActivityDailyChartState
             Row(
               children: [
                 Text(
-                  'Aktivitas ${widget.windowDays} hari',
+                  l10n.analyticsChartTitle(widget.windowDays),
                   style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -161,7 +172,7 @@ class _AnalyticsActivityDailyChartState
                   ? const SizedBox.expand()
                   : Row(
                       children: [
-                        for (final s in _series)
+                        for (final s in _seriesKeys)
                           Expanded(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -183,13 +194,15 @@ class _AnalyticsActivityDailyChartState
                                     const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(
-                                        s.short,
+                                        _seriesLabel(l10n, s.key),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: theme.typography.body.xs.copyWith(
-                                          color: theme.colors.mutedForeground,
-                                          fontSize: 10,
-                                        ),
+                                        style: theme.typography.body.xs
+                                            .copyWith(
+                                              color:
+                                                  theme.colors.mutedForeground,
+                                              fontSize: 10,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -216,7 +229,7 @@ class _AnalyticsActivityDailyChartState
               child: data.isEmpty
                   ? Center(
                       child: Text(
-                        'Belum ada data.',
+                        l10n.analyticsChartEmpty,
                         style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -326,7 +339,7 @@ class _AnalyticsActivityDailyChartState
                           ),
                         ),
                         lineBarsData: [
-                          for (final s in _series)
+                          for (final s in _seriesKeys)
                             LineChartBarData(
                               spots: _spots(data, s.key),
                               isCurved: true,

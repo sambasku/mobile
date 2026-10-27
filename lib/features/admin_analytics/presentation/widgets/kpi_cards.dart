@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../review/review_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/format_analytics_count.dart';
 
@@ -22,6 +23,7 @@ class AnalyticsKpiCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final words = stats.words;
     final contributions = stats.contributions;
     final users = stats.users;
@@ -30,20 +32,22 @@ class AnalyticsKpiCards extends StatelessWidget {
 
     final rows = <_KpiRowData>[
       _KpiRowData(
-        label: 'Kata',
+        label: l10n.analyticsKpiWords,
         subtitle: _primaryMeta([
           if (words.verified > 0)
-            'Verif ${formatAnalyticsCount(words.verified)}',
+            l10n.analyticsKpiVerified(formatAnalyticsCount(words.verified)),
           if ((words.byStatus['published'] ?? 0) > 0)
-            'Tayang ${formatAnalyticsCount(words.byStatus['published']!)}',
-        ], fallback: 'Total entri kamus'),
+            l10n.analyticsKpiPublished(
+              formatAnalyticsCount(words.byStatus['published']!),
+            ),
+        ], fallback: l10n.analyticsKpiWordsFallback),
         value: words.total,
       ),
       _KpiRowData(
-        label: 'Kontribusi',
+        label: l10n.analyticsSeriesContributions,
         subtitle: hasPending
-            ? '${formatAnalyticsCount(pending)} menunggu review'
-            : 'Tidak ada antrean',
+            ? l10n.analyticsKpiPendingReview(formatAnalyticsCount(pending))
+            : l10n.analyticsNoQueue,
         value: contributions.total,
         attention: hasPending,
         // Langsung ke deck swipe Tinder-like.
@@ -52,14 +56,15 @@ class AnalyticsKpiCards extends StatelessWidget {
             : null,
       ),
       _KpiRowData(
-        label: 'Pengguna',
-        subtitle:
-            'Online 15 mnt ${formatAnalyticsCount(users.onlineRecently)}',
+        label: l10n.analyticsKpiUsers,
+        subtitle: l10n.analyticsKpiOnline(
+          formatAnalyticsCount(users.onlineRecently),
+        ),
         value: users.active,
       ),
       _KpiRowData(
-        label: 'Mutasi 7 hari',
-        subtitle: 'Entri audit log',
+        label: l10n.analyticsKpiAuditTitle,
+        subtitle: l10n.analyticsKpiAuditSubtitle,
         value: stats.activity.auditLogsLast7Days,
       ),
     ];

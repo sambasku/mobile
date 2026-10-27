@@ -83,10 +83,7 @@ class WordsStats {
 }
 
 class ContributionsStats {
-  const ContributionsStats({
-    required this.total,
-    required this.byStatus,
-  });
+  const ContributionsStats({required this.total, required this.byStatus});
 
   final int total;
   final Map<ContributionStatusKey, int> byStatus;
@@ -135,31 +132,3 @@ class DashboardStats {
   final ProblemsStats problems;
   final VerifierApplicationsStats verifierApplications;
 }
-
-const wordStatusLabels = <String, String>{
-  'draft': 'Draft (tidak tayang)',
-  'pending_review': 'Menunggu Review',
-  'published': 'Published',
-  'rejected': 'Ditolak',
-};
-
-const contributionStatusLabels = <String, String>{
-  'pending': 'Menunggu',
-  'approved': 'Disetujui',
-  'rejected': 'Ditolak',
-  'corrected': 'Dikoreksi',
-};
-
-const roleLabelsShort = <String, String>{
-  'root': 'Root',
-  'admin': 'Admin',
-  'editor': 'Editor',
-  'reviewer': 'Verifikator',
-  'contributor': 'Kontributor',
-};
-
-const searchMissDirectionLabels = <String, String>{
-  'lemma': 'Lemma',
-  'meaning': 'Makna',
-  'example': 'Contoh',
-};

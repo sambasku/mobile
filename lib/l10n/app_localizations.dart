@@ -12976,6 +12976,288 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Opsional'**
   String get eventFormOrganizerHint;
+
+  /// No description provided for @analyticsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Analitik'**
+  String get analyticsTitle;
+
+  /// No description provided for @analyticsForbiddenTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Akses terbatas'**
+  String get analyticsForbiddenTitle;
+
+  /// No description provided for @analyticsForbiddenBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya admin dan root yang boleh membuka analitik.'**
+  String get analyticsForbiddenBody;
+
+  /// No description provided for @analyticsStatsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Statistik gagal dimuat'**
+  String get analyticsStatsLoadFailed;
+
+  /// No description provided for @analyticsStatsLoadFailedHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke server. Coba lagi dalam beberapa saat.'**
+  String get analyticsStatsLoadFailedHint;
+
+  /// No description provided for @analyticsSeriesContributions.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontribusi'**
+  String get analyticsSeriesContributions;
+
+  /// No description provided for @analyticsSeriesVotes.
+  ///
+  /// In id, this message translates to:
+  /// **'Vote'**
+  String get analyticsSeriesVotes;
+
+  /// No description provided for @analyticsSeriesComments.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get analyticsSeriesComments;
+
+  /// No description provided for @analyticsSeriesUsers.
+  ///
+  /// In id, this message translates to:
+  /// **'User baru'**
+  String get analyticsSeriesUsers;
+
+  /// No description provided for @analyticsSeriesUsersShort.
+  ///
+  /// In id, this message translates to:
+  /// **'User'**
+  String get analyticsSeriesUsersShort;
+
+  /// No description provided for @analyticsSeriesSearches.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari'**
+  String get analyticsSeriesSearches;
+
+  /// No description provided for @analyticsKpiWords.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get analyticsKpiWords;
+
+  /// No description provided for @analyticsKpiWordsFallback.
+  ///
+  /// In id, this message translates to:
+  /// **'Total entri kamus'**
+  String get analyticsKpiWordsFallback;
+
+  /// Subtul KPI kata terverifikasi; {count} = angka sudah diformat
+  ///
+  /// In id, this message translates to:
+  /// **'Verif {count}'**
+  String analyticsKpiVerified(String count);
+
+  /// Subtul KPI kata tayang; {count} = angka sudah diformat
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang {count}'**
+  String analyticsKpiPublished(String count);
+
+  /// Subtul KPI kontribusi; {count} = jumlah antrean menunggu review
+  ///
+  /// In id, this message translates to:
+  /// **'{count} menunggu review'**
+  String analyticsKpiPendingReview(String count);
+
+  /// No description provided for @analyticsKpiUsers.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengguna'**
+  String get analyticsKpiUsers;
+
+  /// Subtul KPI pengguna online 15 menit terakhir; {count} = angka sudah diformat
+  ///
+  /// In id, this message translates to:
+  /// **'Online 15 mnt {count}'**
+  String analyticsKpiOnline(String count);
+
+  /// No description provided for @analyticsKpiAuditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mutasi 7 hari'**
+  String get analyticsKpiAuditTitle;
+
+  /// No description provided for @analyticsKpiAuditSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Entri audit log'**
+  String get analyticsKpiAuditSubtitle;
+
+  /// No description provided for @analyticsVoteUp.
+  ///
+  /// In id, this message translates to:
+  /// **'Vote naik'**
+  String get analyticsVoteUp;
+
+  /// No description provided for @analyticsVoteDown.
+  ///
+  /// In id, this message translates to:
+  /// **'Vote turun'**
+  String get analyticsVoteDown;
+
+  /// Baris feed analitik untuk diskusi tanpa teks
+  ///
+  /// In id, this message translates to:
+  /// **'(diskusi tanpa teks)'**
+  String get analyticsDiscussionEmptyBody;
+
+  /// Copy search-miss di feed analitik; {term} = kata yang dicari warga
+  ///
+  /// In id, this message translates to:
+  /// **'mencari {term} tapi tidak terdapat. Bantu isi.'**
+  String analyticsSearchMissTerm(String term);
+
+  /// No description provided for @analyticsAttentionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu tindakan'**
+  String get analyticsAttentionTitle;
+
+  /// State kosong saat tidak ada antrean menunggu review
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada antrean.'**
+  String get analyticsNoQueue;
+
+  /// Judul ringkasan metrik hari ini
+  ///
+  /// In id, this message translates to:
+  /// **'Hari ini'**
+  String get analyticsTodayHeading;
+
+  /// No description provided for @analyticsAttentionReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Review kata'**
+  String get analyticsAttentionReview;
+
+  /// No description provided for @analyticsAttentionReports.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan'**
+  String get analyticsAttentionReports;
+
+  /// No description provided for @analyticsAttentionVerifier.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator'**
+  String get analyticsAttentionVerifier;
+
+  /// Judul chart aktivitas; {days} = jendela hari yang ditampilkan
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas {days} hari'**
+  String analyticsChartTitle(int days);
+
+  /// No description provided for @analyticsChartEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data.'**
+  String get analyticsChartEmpty;
+
+  /// No description provided for @analyticsFeedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas terbaru'**
+  String get analyticsFeedTitle;
+
+  /// No description provided for @analyticsFeedError.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat aktivitas.'**
+  String get analyticsFeedError;
+
+  /// No description provided for @analyticsFeedEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada aktivitas.'**
+  String get analyticsFeedEmpty;
+
+  /// No description provided for @analyticsStatusHeading.
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get analyticsStatusHeading;
+
+  /// No description provided for @analyticsTabProblems.
+  ///
+  /// In id, this message translates to:
+  /// **'Masalah'**
+  String get analyticsTabProblems;
+
+  /// No description provided for @analyticsWordPendingReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu review'**
+  String get analyticsWordPendingReview;
+
+  /// No description provided for @analyticsWordDraft.
+  ///
+  /// In id, this message translates to:
+  /// **'Draft (tidak tayang)'**
+  String get analyticsWordDraft;
+
+  /// No description provided for @analyticsWordPublished.
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get analyticsWordPublished;
+
+  /// No description provided for @analyticsWordRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get analyticsWordRejected;
+
+  /// No description provided for @analyticsProblemClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get analyticsProblemClosed;
+
+  /// No description provided for @analyticsProblemBug.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan bug'**
+  String get analyticsProblemBug;
+
+  /// No description provided for @analyticsProblemWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan kata'**
+  String get analyticsProblemWord;
+
+  /// No description provided for @analyticsVerifierPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get analyticsVerifierPending;
+
+  /// No description provided for @analyticsVerifierApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get analyticsVerifierApproved;
+
+  /// No description provided for @analyticsVerifierRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get analyticsVerifierRejected;
 }
 
 class _AppLocalizationsDelegate

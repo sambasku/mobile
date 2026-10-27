@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/format_analytics_count.dart';
 
@@ -27,13 +28,19 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
 
   final DashboardStats stats;
 
-  static const _tabs = <(_StatusTab, String)>[
-    (_StatusTab.words, 'Kata'),
-    (_StatusTab.problems, 'Masalah'),
-    (_StatusTab.verifier, 'Verifikator'),
+  static const _tabs = <_StatusTab>[
+    _StatusTab.words,
+    _StatusTab.problems,
+    _StatusTab.verifier,
   ];
 
-  List<_StatusItem> _itemsFor(_StatusTab tab) {
+  String _tabLabel(AppLocalizations l10n, _StatusTab tab) => switch (tab) {
+    _StatusTab.words => l10n.analyticsKpiWords,
+    _StatusTab.problems => l10n.analyticsTabProblems,
+    _StatusTab.verifier => l10n.analyticsAttentionVerifier,
+  };
+
+  List<_StatusItem> _itemsFor(AppLocalizations l10n, _StatusTab tab) {
     final byStatus = stats.words.byStatus;
     final problems = stats.problems;
     final verifier = stats.verifierApplications;
@@ -41,40 +48,57 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
     return switch (tab) {
       _StatusTab.words => [
         _StatusItem(
-          label: 'Menunggu review',
+          label: l10n.analyticsWordPendingReview,
           value: byStatus['pending_review'] ?? 0,
           attention: (byStatus['pending_review'] ?? 0) > 0,
         ),
-        _StatusItem(label: 'Draft (tidak tayang)', value: byStatus['draft'] ?? 0),
-        _StatusItem(label: 'Tayang', value: byStatus['published'] ?? 0),
-        _StatusItem(label: 'Ditolak', value: byStatus['rejected'] ?? 0),
+        _StatusItem(
+          label: l10n.analyticsWordDraft,
+          value: byStatus['draft'] ?? 0,
+        ),
+        _StatusItem(
+          label: l10n.analyticsWordPublished,
+          value: byStatus['published'] ?? 0,
+        ),
+        _StatusItem(
+          label: l10n.analyticsWordRejected,
+          value: byStatus['rejected'] ?? 0,
+        ),
       ],
       _StatusTab.problems => [
         _StatusItem(
-          label: 'Perlu tindakan',
+          label: l10n.analyticsAttentionTitle,
           value: problems.open,
           attention: problems.open > 0,
         ),
-        _StatusItem(label: 'Selesai', value: problems.closed),
+        _StatusItem(label: l10n.analyticsProblemClosed, value: problems.closed),
         _StatusItem(
-          label: 'Laporan bug',
-          value: problems.bySource.bugReports.open +
+          label: l10n.analyticsProblemBug,
+          value:
+              problems.bySource.bugReports.open +
               problems.bySource.bugReports.closed,
         ),
         _StatusItem(
-          label: 'Laporan kata',
-          value: problems.bySource.wordReports.open +
+          label: l10n.analyticsProblemWord,
+          value:
+              problems.bySource.wordReports.open +
               problems.bySource.wordReports.closed,
         ),
       ],
       _StatusTab.verifier => [
         _StatusItem(
-          label: 'Menunggu',
+          label: l10n.analyticsVerifierPending,
           value: verifier.pending,
           attention: verifier.pending > 0,
         ),
-        _StatusItem(label: 'Disetujui', value: verifier.approved),
-        _StatusItem(label: 'Ditolak', value: verifier.rejected),
+        _StatusItem(
+          label: l10n.analyticsVerifierApproved,
+          value: verifier.approved,
+        ),
+        _StatusItem(
+          label: l10n.analyticsVerifierRejected,
+          value: verifier.rejected,
+        ),
       ],
     };
   }
@@ -83,7 +107,8 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final selected = useState(_StatusTab.words);
-    final items = _itemsFor(selected.value);
+    final l10n = AppLocalizations.of(context);
+    final items = _itemsFor(l10n, selected.value);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -100,7 +125,7 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Status',
+                  l10n.analyticsStatusHeading,
                   style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -113,12 +138,12 @@ class AnalyticsCombinedStatusBars extends HookConsumerWidget {
                       for (var i = 0; i < _tabs.length; i++) ...[
                         if (i > 0) const Gap(6),
                         GestureDetector(
-                          onTap: () => selected.value = _tabs[i].$1,
+                          onTap: () => selected.value = _tabs[i],
                           child: FBadge(
-                            variant: selected.value == _tabs[i].$1
+                            variant: selected.value == _tabs[i]
                                 ? FBadgeVariant.primary
                                 : FBadgeVariant.secondary,
-                            child: Text(_tabs[i].$2),
+                            child: Text(_tabLabel(l10n, _tabs[i])),
                           ),
                         ),
                       ],
@@ -165,9 +190,7 @@ class _StatusRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w500,
-                color: item.attention
-                    ? accent
-                    : theme.colors.foreground,
+                color: item.attention ? accent : theme.colors.foreground,
               ),
             ),
           ),

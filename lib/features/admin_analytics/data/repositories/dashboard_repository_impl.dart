@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../../../../core/i18n/l10n.dart';
+
 import '../../../../shared/utils/public_account_name.dart';
 import '../../domain/dashboard_mappers.dart';
 import '../../domain/entities/dashboard_stats.dart';
@@ -124,7 +126,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
         final targetType = map['target_type']?.toString() ?? '';
         final targetId = map['target_id']?.toString() ?? '';
         final preview = map['target_preview']?.toString().trim() ?? '';
-        final voteLabel = value >= 0 ? 'Vote naik' : 'Vote turun';
+        final voteLabel = value >= 0
+            ? l10n.analyticsVoteUp
+            : l10n.analyticsVoteDown;
         final targetLabel = preview.isNotEmpty
             ? preview
             : (targetType.isEmpty ? 'target' : targetType);
@@ -180,8 +184,8 @@ class DashboardRepositoryImpl implements DashboardRepository {
             actorUsername: username,
             avatarUrl: avatarUrl,
             isVerifier: map['is_verifier'] == true,
-            body: bodyRaw.isEmpty ? '(diskusi tanpa teks)' : bodyRaw,
-            subtitle: 'Diskusi',
+            body: bodyRaw.isEmpty ? l10n.analyticsDiscussionEmptyBody : bodyRaw,
+            subtitle: l10n.feedKindDiscussion,
             navigatePath: '/discussions/$id',
           ),
         );
@@ -223,9 +227,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
                 map['created_at']?.toString() ??
                 map['last_searched_at']?.toString() ??
                 '',
-            actorLabel: 'Warga',
-            body: searchMissActivityBody(term),
-            subtitle: 'Kata tidak ditemukan',
+            actorLabel: l10n.feedActorFallback,
+            body: searchMissActivityBody(l10n, term),
+            subtitle: l10n.dictWordNotFound,
             navigatePath: '/contribute?$q',
           ),
         );

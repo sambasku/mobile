@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -25,13 +26,14 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(analyticsActivityFeedProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Aktivitas terbaru',
+          l10n.analyticsFeedTitle,
           style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
@@ -49,16 +51,15 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
                 skipLoadingOnReload: true,
                 loading: () => const _ActivityFeedSkeleton(),
                 error: (_, _) => AnalyticsActivityErrorRetry(
-                  message: 'Gagal memuat aktivitas.',
-                  onRetry: () =>
-                      ref.invalidate(analyticsActivityFeedProvider),
+                  message: l10n.analyticsFeedError,
+                  onRetry: () => ref.invalidate(analyticsActivityFeedProvider),
                 ),
                 data: (items) {
                   if (items.isEmpty) {
                     return Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Belum ada aktivitas.',
+                        l10n.analyticsFeedEmpty,
                         style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -96,9 +97,7 @@ class _ActivityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final dateLabel = formatRelativeCompact(
-      DateTime.tryParse(item.createdAt),
-    );
+    final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
     final canOpenProfile = isLinkablePublicUsername(item.actorUsername);
     final subtitle = item.subtitle?.trim();
     final trailingMeta = [
@@ -109,11 +108,7 @@ class _ActivityRow extends StatelessWidget {
     final content = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        UserAvatar(
-          name: item.actorLabel,
-          imageUrl: item.avatarUrl,
-          size: 28,
-        ),
+        UserAvatar(name: item.actorLabel, imageUrl: item.avatarUrl, size: 28),
         const Gap(8),
         Expanded(
           child: Column(
@@ -128,9 +123,9 @@ class _ActivityRow extends StatelessWidget {
                       isVerifier: item.isVerifier,
                       onTap: canOpenProfile
                           ? () => UserProfileRouter.open(
-                                context,
-                                item.actorUsername!,
-                              )
+                              context,
+                              item.actorUsername!,
+                            )
                           : null,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
@@ -236,6 +231,7 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
@@ -249,7 +245,7 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
         GestureDetector(
           onTap: onRetry,
           child: Text(
-            'Coba lagi',
+            l10n.commonRetry,
             style: theme.typography.body.xs.copyWith(
               color: theme.colors.primary,
               fontWeight: FontWeight.w600,

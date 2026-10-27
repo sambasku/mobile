@@ -1,3 +1,5 @@
+import '../../../../l10n/app_localizations.dart';
+
 /// Jenis entri di feed Aktivitas terbaru (Analitik).
 enum AnalyticsActivityKind { comment, vote, discussion, searchMiss }
 
@@ -45,8 +47,8 @@ class AnalyticsActivityItem {
 }
 
 /// Copy search-miss yang sudah ditayangkan di feed.
-String searchMissActivityBody(String term) {
+String searchMissActivityBody(AppLocalizations l10n, String term) {
   final t = term.trim();
   final shown = t.isEmpty ? '…' : t;
-  return 'mencari $shown tapi tidak terdapat. Bantu isi.';
+  return l10n.analyticsSearchMissTerm(shown);
 }

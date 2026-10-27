@@ -7127,6 +7127,161 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventFormOrganizerHint => 'Opsional';
+
+  @override
+  String get analyticsTitle => 'Analitik';
+
+  @override
+  String get analyticsForbiddenTitle => 'Akses terbatas';
+
+  @override
+  String get analyticsForbiddenBody =>
+      'Hanya admin dan root yang boleh membuka analitik.';
+
+  @override
+  String get analyticsStatsLoadFailed => 'Statistik gagal dimuat';
+
+  @override
+  String get analyticsStatsLoadFailedHint =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get analyticsSeriesContributions => 'Kontribusi';
+
+  @override
+  String get analyticsSeriesVotes => 'Vote';
+
+  @override
+  String get analyticsSeriesComments => 'Komentar';
+
+  @override
+  String get analyticsSeriesUsers => 'User baru';
+
+  @override
+  String get analyticsSeriesUsersShort => 'User';
+
+  @override
+  String get analyticsSeriesSearches => 'Cari';
+
+  @override
+  String get analyticsKpiWords => 'Kata';
+
+  @override
+  String get analyticsKpiWordsFallback => 'Total entri kamus';
+
+  @override
+  String analyticsKpiVerified(String count) {
+    return 'Verif $count';
+  }
+
+  @override
+  String analyticsKpiPublished(String count) {
+    return 'Tayang $count';
+  }
+
+  @override
+  String analyticsKpiPendingReview(String count) {
+    return '$count menunggu review';
+  }
+
+  @override
+  String get analyticsKpiUsers => 'Pengguna';
+
+  @override
+  String analyticsKpiOnline(String count) {
+    return 'Online 15 mnt $count';
+  }
+
+  @override
+  String get analyticsKpiAuditTitle => 'Mutasi 7 hari';
+
+  @override
+  String get analyticsKpiAuditSubtitle => 'Entri audit log';
+
+  @override
+  String get analyticsVoteUp => 'Vote naik';
+
+  @override
+  String get analyticsVoteDown => 'Vote turun';
+
+  @override
+  String get analyticsDiscussionEmptyBody => '(diskusi tanpa teks)';
+
+  @override
+  String analyticsSearchMissTerm(String term) {
+    return 'mencari $term tapi tidak terdapat. Bantu isi.';
+  }
+
+  @override
+  String get analyticsAttentionTitle => 'Perlu tindakan';
+
+  @override
+  String get analyticsNoQueue => 'Tidak ada antrean.';
+
+  @override
+  String get analyticsTodayHeading => 'Hari ini';
+
+  @override
+  String get analyticsAttentionReview => 'Review kata';
+
+  @override
+  String get analyticsAttentionReports => 'Laporan';
+
+  @override
+  String get analyticsAttentionVerifier => 'Verifikator';
+
+  @override
+  String analyticsChartTitle(int days) {
+    return 'Aktivitas $days hari';
+  }
+
+  @override
+  String get analyticsChartEmpty => 'Belum ada data.';
+
+  @override
+  String get analyticsFeedTitle => 'Aktivitas terbaru';
+
+  @override
+  String get analyticsFeedError => 'Gagal memuat aktivitas.';
+
+  @override
+  String get analyticsFeedEmpty => 'Belum ada aktivitas.';
+
+  @override
+  String get analyticsStatusHeading => 'Status';
+
+  @override
+  String get analyticsTabProblems => 'Masalah';
+
+  @override
+  String get analyticsWordPendingReview => 'Menunggu review';
+
+  @override
+  String get analyticsWordDraft => 'Draft (tidak tayang)';
+
+  @override
+  String get analyticsWordPublished => 'Tayang';
+
+  @override
+  String get analyticsWordRejected => 'Ditolak';
+
+  @override
+  String get analyticsProblemClosed => 'Selesai';
+
+  @override
+  String get analyticsProblemBug => 'Laporan bug';
+
+  @override
+  String get analyticsProblemWord => 'Laporan kata';
+
+  @override
+  String get analyticsVerifierPending => 'Menunggu';
+
+  @override
+  String get analyticsVerifierApproved => 'Disetujui';
+
+  @override
+  String get analyticsVerifierRejected => 'Ditolak';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14252,4 +14407,159 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventFormOrganizerHint => 'Opsional';
+
+  @override
+  String get analyticsTitle => 'Analitik';
+
+  @override
+  String get analyticsForbiddenTitle => 'Akses terbatas';
+
+  @override
+  String get analyticsForbiddenBody =>
+      'Hanya admin dan root yang boleh membuka analitik.';
+
+  @override
+  String get analyticsStatsLoadFailed => 'Statistik gagal dimuat';
+
+  @override
+  String get analyticsStatsLoadFailedHint =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get analyticsSeriesContributions => 'Kontribusi';
+
+  @override
+  String get analyticsSeriesVotes => 'Vote';
+
+  @override
+  String get analyticsSeriesComments => 'Komentar';
+
+  @override
+  String get analyticsSeriesUsers => 'User baru';
+
+  @override
+  String get analyticsSeriesUsersShort => 'User';
+
+  @override
+  String get analyticsSeriesSearches => 'Cari';
+
+  @override
+  String get analyticsKpiWords => 'Kata';
+
+  @override
+  String get analyticsKpiWordsFallback => 'Total entri kamus';
+
+  @override
+  String analyticsKpiVerified(String count) {
+    return 'Verif $count';
+  }
+
+  @override
+  String analyticsKpiPublished(String count) {
+    return 'Tayang $count';
+  }
+
+  @override
+  String analyticsKpiPendingReview(String count) {
+    return '$count menunggu review';
+  }
+
+  @override
+  String get analyticsKpiUsers => 'Pengguna';
+
+  @override
+  String analyticsKpiOnline(String count) {
+    return 'Online 15 mnt $count';
+  }
+
+  @override
+  String get analyticsKpiAuditTitle => 'Mutasi 7 hari';
+
+  @override
+  String get analyticsKpiAuditSubtitle => 'Entri audit log';
+
+  @override
+  String get analyticsVoteUp => 'Vote naik';
+
+  @override
+  String get analyticsVoteDown => 'Vote turun';
+
+  @override
+  String get analyticsDiscussionEmptyBody => '(diskusi tanpa teks)';
+
+  @override
+  String analyticsSearchMissTerm(String term) {
+    return 'mencari $term tapi tidak terdapat. Bantu isi.';
+  }
+
+  @override
+  String get analyticsAttentionTitle => 'Perlu tindakan';
+
+  @override
+  String get analyticsNoQueue => 'Tidak ada antrean.';
+
+  @override
+  String get analyticsTodayHeading => 'Hari ini';
+
+  @override
+  String get analyticsAttentionReview => 'Review kata';
+
+  @override
+  String get analyticsAttentionReports => 'Laporan';
+
+  @override
+  String get analyticsAttentionVerifier => 'Verifikator';
+
+  @override
+  String analyticsChartTitle(int days) {
+    return 'Aktivitas $days hari';
+  }
+
+  @override
+  String get analyticsChartEmpty => 'Belum ada data.';
+
+  @override
+  String get analyticsFeedTitle => 'Aktivitas terbaru';
+
+  @override
+  String get analyticsFeedError => 'Gagal memuat aktivitas.';
+
+  @override
+  String get analyticsFeedEmpty => 'Belum ada aktivitas.';
+
+  @override
+  String get analyticsStatusHeading => 'Status';
+
+  @override
+  String get analyticsTabProblems => 'Masalah';
+
+  @override
+  String get analyticsWordPendingReview => 'Menunggu review';
+
+  @override
+  String get analyticsWordDraft => 'Draft (tidak tayang)';
+
+  @override
+  String get analyticsWordPublished => 'Tayang';
+
+  @override
+  String get analyticsWordRejected => 'Ditolak';
+
+  @override
+  String get analyticsProblemClosed => 'Selesai';
+
+  @override
+  String get analyticsProblemBug => 'Laporan bug';
+
+  @override
+  String get analyticsProblemWord => 'Laporan kata';
+
+  @override
+  String get analyticsVerifierPending => 'Menunggu';
+
+  @override
+  String get analyticsVerifierApproved => 'Disetujui';
+
+  @override
+  String get analyticsVerifierRejected => 'Ditolak';
 }
