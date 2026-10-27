@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../core/constants/env.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/sambas_map_config.dart';
 import '../domain/entities/place.dart';
 
@@ -71,31 +72,48 @@ Uri? placeGoogleMapsUri(Place place) {
 }
 
 /// Toast info tempat tanpa koordinat (belum bisa dipetakan).
-void showPlaceNoCoordinates(BuildContext context) => showFToast(
-  context: context,
-  title: const Text('Lokasi tempat ini belum tersedia'),
-  description: const Text(
-    'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.',
-  ),
-);
+void showPlaceNoCoordinates(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
+  showFToast(
+    context: context,
+    title: Text(l10n.placeNoCoordinatesTitle),
+    description: Text(l10n.placeNoCoordinatesBody),
+  );
+}
 
-const placeTypeLabels = {
-  PlaceType.sejarah: 'Sejarah',
-  PlaceType.alam: 'Alam',
-  PlaceType.budaya: 'Budaya',
-  PlaceType.pantai: 'Pantai',
-  PlaceType.belanja: 'Belanja',
-};
-
-/// Label singkat untuk list/kartu: type wisata, atau kategori.
-String placeLabel(Place place) => switch (place.category) {
-      PlaceCategory.kuliner => 'Kuliner',
-      PlaceCategory.budaya => 'Budaya',
-      PlaceCategory.wisata => placeTypeLabels[place.type] ?? 'Wisata',
+/// Label tipe wisata; null bila tipe tidak dikenal.
+String? placeTypeLabel(AppLocalizations l10n, PlaceType? type) =>
+    switch (type) {
+      PlaceType.sejarah => l10n.placeTypeSejarah,
+      PlaceType.alam => l10n.placeTypeAlam,
+      PlaceType.budaya => l10n.placeTypeBudaya,
+      PlaceType.pantai => l10n.placeTypePantai,
+      PlaceType.belanja => l10n.placeTypeBelanja,
+      null => null,
     };
 
-void showPlaceBookmarkSoon(BuildContext context) => showFToast(
-  context: context,
-  title: const Text('Bookmark tempat belum bisa dipakai'),
-  description: const Text('Kami sedang berusaha membuatnya jadi lebih baik.'),
-);
+/// Label kategori Place (badge atas di detail).
+String placeCategoryLabel(AppLocalizations l10n, PlaceCategory category) =>
+    switch (category) {
+      PlaceCategory.kuliner => l10n.placeCategoryKuliner,
+      PlaceCategory.budaya => l10n.placeTypeBudaya,
+      PlaceCategory.wisata => l10n.placeTypeWisata,
+    };
+
+/// Label singkat untuk list/kartu: type wisata, atau kategori.
+String placeLabel(AppLocalizations l10n, Place place) =>
+    switch (place.category) {
+      PlaceCategory.kuliner => l10n.placeCategoryKuliner,
+      PlaceCategory.budaya => l10n.placeTypeBudaya,
+      PlaceCategory.wisata =>
+        placeTypeLabel(l10n, place.type) ?? l10n.placeTypeWisata,
+    };
+
+void showPlaceBookmarkSoon(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
+  showFToast(
+    context: context,
+    title: Text(l10n.placeBookmarkSoonTitle),
+    description: Text(l10n.placeBookmarkSoonBody),
+  );
+}

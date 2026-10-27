@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class PlaceContributionException implements Exception {
   const PlaceContributionException(this.message, {this.code});
@@ -75,7 +76,7 @@ class PlaceContributionApi {
     final data = _dataMap(res.data);
     final url = data['url'];
     if (url is! String || url.isEmpty) {
-      throw const PlaceContributionException('Unggah foto gagal');
+      throw PlaceContributionException(l10n.exploreUploadImageFailed);
     }
     return url;
   }
@@ -160,11 +161,11 @@ class PlaceContributionApi {
         throw PlaceContributionException(
           message is String && message.isNotEmpty
               ? message
-              : 'Gagal menyimpan. Coba lagi.',
+              : l10n.placeSaveFailed,
           code: data['error_code'] as String?,
         );
       }
-      throw const PlaceContributionException('Gagal menyimpan. Coba lagi.');
+      throw PlaceContributionException(l10n.placeSaveFailed);
     }
   }
 }

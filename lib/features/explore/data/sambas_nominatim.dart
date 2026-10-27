@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../core/i18n/l10n.dart';
 
 /// Batas produk Kabupaten Sambas. Hasil di luar ini tidak dipakai.
 bool inSambasBounds(double lat, double lng) {
@@ -78,7 +79,7 @@ class SambasNominatim {
       return _allHits(response.data);
     } on DioException catch (e) {
       if (CancelToken.isCancel(e) || seq != _seq) return const [];
-      throw const NominatimException('Pencarian gagal. Coba lagi sebentar.');
+      throw NominatimException(l10n.nominatimSearchFailed);
     }
   }
 

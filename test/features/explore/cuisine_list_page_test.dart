@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/cuisine.dart';
@@ -27,6 +29,9 @@ Future<void> _pump(WidgetTester tester) async {
     ProviderScope(
       overrides: [cuisineProvider.overrideWith((ref) async => _items)],
       child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
         home: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
           child: const FToaster(child: CuisineListPage()),
@@ -66,6 +71,9 @@ void main() {
       ProviderScope(
         overrides: [cuisineProvider.overrideWith((ref) async => null)],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: CuisineListPage()),

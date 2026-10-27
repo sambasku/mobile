@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -63,6 +65,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
   }
 
   Future<void> _cancel(PlaceProposal item) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -74,20 +77,18 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
           child: FTileGroup(
             children: [
               FTile(
-                title: const Text('Batalkan usulan?'),
+                title: Text(l10n.placeProposalsCancelTitle),
                 subtitle: Text(item.name),
               ),
               FTile(
-                title: const Text(
-                  'Usulan yang dibatalkan tidak dikirim ke peninjau.',
-                ),
+                title: Text(l10n.placeProposalsCancelBody),
               ),
               FTile(
-                title: const Text('Batalkan'),
+                title: Text(l10n.placeProposalsCancelAction),
                 onPress: () => Navigator.pop(ctx, true),
               ),
               FTile(
-                title: const Text('Tutup'),
+                title: Text(l10n.commonClose),
                 onPress: () => Navigator.pop(ctx, false),
               ),
             ],
@@ -107,11 +108,12 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulan wisata'),
+        title: Text(l10n.placeProposalsTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -133,7 +135,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                     ),
                     const Gap(10),
                     Text(
-                      'Masuk dulu untuk melihat usulan kamu',
+                      l10n.placeProposalsLoginGate,
                       style: context.theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -143,7 +145,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                     FButton(
                       variant: FButtonVariant.outline,
                       onPress: () => context.push('/login'),
-                      child: const Text('Masuk'),
+                      child: Text(l10n.commonLoginRequiredShort),
                     ),
                   ],
                 ),
@@ -155,7 +157,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
             ? _ErrorSheetOnce(
                 message: _error is PlaceContributionException
                     ? (_error! as PlaceContributionException).message
-                    : 'Gagal memuat usulan. Periksa koneksi lalu coba lagi.',
+                    : l10n.placeProposalsLoadFailedBody,
                 onRetry: _load,
               )
             : RefreshIndicator(
@@ -174,7 +176,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                         ),
                         const Gap(10),
                         Text(
-                          'Belum ada usulan',
+                          l10n.placeProposalsEmptyTitle,
                           textAlign: TextAlign.center,
                           style: context.theme.typography.body.md.copyWith(
                             fontWeight: FontWeight.w600,
@@ -182,7 +184,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
                         ),
                         const Gap(4),
                         Text(
-                          'Status usulan yang sudah direview akan muncul di sini.',
+                          l10n.placeProposalsEmptyBody,
                           textAlign: TextAlign.center,
                           style: context.theme.typography.body.sm.copyWith(
                             color: context.theme.colors.mutedForeground,
@@ -204,10 +206,10 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
   }
 }
 
-String _statusLabel(String status) => switch (status) {
-  'approved' => 'Disetujui',
-  'rejected' => 'Ditolak',
-  _ => 'Menunggu',
+String _statusLabel(AppLocalizations l10n, String status) => switch (status) {
+  'approved' => l10n.usahaStatusApproved,
+  'rejected' => l10n.usahaStatusRejected,
+  _ => l10n.usahaStatusPending,
 };
 
 FBadgeVariant _statusVariant(String status) => switch (status) {
@@ -216,37 +218,27 @@ FBadgeVariant _statusVariant(String status) => switch (status) {
   _ => FBadgeVariant.outline,
 };
 
-String _kindLabel(PlaceProposal item) =>
-    item.placeId == null ? 'Tempat baru' : 'Suntingan';
+String _kindLabel(AppLocalizations l10n, PlaceProposal item) =>
+    item.placeId == null
+    ? l10n.placeProposalsKindNew
+    : l10n.placeProposalsKindEdit;
 
-String _typeLabel(String? type) => switch (type) {
-  'sejarah' => 'Sejarah',
-  'alam' => 'Alam',
-  'budaya' => 'Budaya',
-  'pantai' => 'Pantai',
-  'belanja' => 'Belanja',
+String _typeLabel(AppLocalizations l10n, String? type) => switch (type) {
+  'sejarah' => l10n.placeTypeSejarah,
+  'alam' => l10n.placeTypeAlam,
+  'budaya' => l10n.placeTypeBudaya,
+  'pantai' => l10n.placeTypePantai,
+  'belanja' => l10n.placeTypeBelanja,
   null || '' => '',
   _ => type,
 };
 
 String _date(int seconds) {
   if (seconds <= 0) return '';
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'Mei',
-    'Jun',
-    'Jul',
-    'Agu',
-    'Sep',
-    'Okt',
-    'Nov',
-    'Des',
-  ];
   final d = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
-  return '${d.day} ${months[d.month - 1]} ${d.year}';
+  return formatDateYmd(
+    '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}',
+  );
 }
 
 class _ProposalRow extends StatelessWidget {
@@ -257,11 +249,12 @@ class _ProposalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final pending = item.status == 'pending';
-    final type = _typeLabel(item.type);
+    final type = _typeLabel(l10n, item.type);
     final meta = [
-      _kindLabel(item),
+      _kindLabel(l10n, item),
       if (type.isNotEmpty) type,
       _date(item.createdAt),
     ].where((part) => part.isNotEmpty).join(' · ');
@@ -284,14 +277,14 @@ class _ProposalRow extends StatelessWidget {
       subtitle: Text(
         item.rejectReason == null
             ? meta
-            : '$meta\nAlasan: ${item.rejectReason}',
+            : '$meta\n${l10n.placeProposalsRejectReason(item.rejectReason!)}',
       ),
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           FBadge(
             variant: _statusVariant(item.status),
-            child: Text(_statusLabel(item.status)),
+            child: Text(_statusLabel(l10n, item.status)),
           ),
           if (pending) ...[
             const Gap(8),
@@ -299,7 +292,7 @@ class _ProposalRow extends StatelessWidget {
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               onPress: onCancel,
-              child: const Text('Batalkan'),
+              child: Text(l10n.placeProposalsCancelAction),
             ),
           ],
         ],
@@ -329,7 +322,7 @@ class _ErrorSheetOnceState extends State<_ErrorSheetOnce> {
       await showAppErrorSheet(
         context,
         message: widget.message,
-        title: 'Gagal memuat usulan',
+        title: AppLocalizations.of(context).placeProposalsLoadFailedTitle,
         onRetry: widget.onRetry,
       );
     });

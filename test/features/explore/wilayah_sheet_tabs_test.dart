@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
@@ -101,6 +103,9 @@ Widget _app() => ProviderScope(
     eventBrowseProvider.overrideWith2((query) => _EventBrowseFake(query)),
   ],
   child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
     home: FTheme(
       data: foruiPalettes['zinc']!.light.touch,
       child: const WilayahSheet(

@@ -55,11 +55,3 @@ class CulinaryPlace {
     );
   }
 }
-
-/// Label status operasional untuk UI.
-String culinaryOperationalLabel(String status) => switch (status) {
-  'operating' => 'Buka',
-  'temporarily_closed' => 'Tutup sementara',
-  'permanently_closed' => 'Tutup permanen',
-  _ => 'Belum diketahui',
-};

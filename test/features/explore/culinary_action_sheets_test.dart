@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sambasku_mobile/features/explore/presentation/culinary_labels.dart';
 import 'package:sambasku_mobile/features/explore/presentation/widgets/culinary_action_sheets.dart';
 
 const _cuisine = CulinaryEditTarget.cuisine(
@@ -72,7 +73,7 @@ void main() {
   });
 
   test('enam alasan laporan sesuai kode API', () {
-    expect(culinaryReportReasons.keys.toList(), [
+    expect(culinaryReportReasons, [
       'closed',
       'wrong_location',
       'invalid_contact',

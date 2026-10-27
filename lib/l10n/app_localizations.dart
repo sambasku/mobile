@@ -9070,6 +9070,1650 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Harga belum dicantumkan'**
   String get usahaPriceUnlisted;
+
+  /// Judul halaman usulan kuliner milik user
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kuliner'**
+  String get culinaryProposalsTitle;
+
+  /// Judul halaman daftar tempat kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat kuliner'**
+  String get culinaryPlacesTitle;
+
+  /// No description provided for @culinaryProposalsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan. Periksa koneksi lalu coba lagi.'**
+  String get culinaryProposalsLoadFailed;
+
+  /// No description provided for @culinaryProposalsLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan'**
+  String get culinaryProposalsLoadFailedTitle;
+
+  /// No description provided for @culinaryProposalsLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulan kamu'**
+  String get culinaryProposalsLoginGate;
+
+  /// No description provided for @culinaryProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get culinaryProposalsEmpty;
+
+  /// No description provided for @culinaryProposalsEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah ditinjau akan muncul di sini.'**
+  String get culinaryProposalsEmptyHint;
+
+  /// No description provided for @culinaryProposalsEmptyCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kuliner baru'**
+  String get culinaryProposalsEmptyCta;
+
+  /// Judul sheet konfirmasi batal usulan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan?'**
+  String get culinaryProposalsCancelTitle;
+
+  /// No description provided for @culinaryProposalsCancelBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak dikirim ke peninjau.'**
+  String get culinaryProposalsCancelBody;
+
+  /// No description provided for @culinaryProposalsCancelFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membatalkan'**
+  String get culinaryProposalsCancelFailed;
+
+  /// Tombol batal usulan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get culinaryCancelAction;
+
+  /// Jenis pengajuan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kuliner baru'**
+  String get culinaryKindNewCuisine;
+
+  /// No description provided for @culinaryKindNewPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan tempat baru'**
+  String get culinaryKindNewPlace;
+
+  /// No description provided for @culinaryKindCuisineEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data kuliner'**
+  String get culinaryKindCuisineEdit;
+
+  /// No description provided for @culinaryKindPlaceEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data tempat'**
+  String get culinaryKindPlaceEdit;
+
+  /// No description provided for @culinaryKindLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Relasi kuliner-tempat'**
+  String get culinaryKindLink;
+
+  /// No description provided for @culinaryKindOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Status buka'**
+  String get culinaryKindOperational;
+
+  /// No description provided for @culinaryKindArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta arsip'**
+  String get culinaryKindArchive;
+
+  /// No description provided for @culinaryKindRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta tayang'**
+  String get culinaryKindRestore;
+
+  /// Alasan penolakan usulan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah ada yang mirip'**
+  String get culinaryRejectDuplicate;
+
+  /// No description provided for @culinaryRejectIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Data belum lengkap'**
+  String get culinaryRejectIncomplete;
+
+  /// No description provided for @culinaryRejectInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak valid'**
+  String get culinaryRejectInvalid;
+
+  /// No description provided for @culinaryRejectUnverifiable.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum bisa diverifikasi'**
+  String get culinaryRejectUnverifiable;
+
+  /// No description provided for @culinaryRejectAttribution.
+  ///
+  /// In id, this message translates to:
+  /// **'Atribusi gambar belum lengkap'**
+  String get culinaryRejectAttribution;
+
+  /// No description provided for @culinaryRejectViolation.
+  ///
+  /// In id, this message translates to:
+  /// **'Melanggar ketentuan'**
+  String get culinaryRejectViolation;
+
+  /// No description provided for @culinaryRejectStale.
+  ///
+  /// In id, this message translates to:
+  /// **'Data dasar sudah berubah'**
+  String get culinaryRejectStale;
+
+  /// No description provided for @culinaryRejectOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan lain'**
+  String get culinaryRejectOther;
+
+  /// Judul halaman kategori eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Eksplorasi'**
+  String get exploreHubTitle;
+
+  /// Badge kategori belum tersedia
+  ///
+  /// In id, this message translates to:
+  /// **'Segera hadir'**
+  String get exploreComingSoon;
+
+  /// Judul fallback bila kategori tidak dikenal
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get exploreCategoryFallbackTitle;
+
+  /// Subjudul fallback kategori
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori ini belum tersedia.'**
+  String get exploreCategoryUnavailable;
+
+  /// No description provided for @exploreCategoryUnavailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.'**
+  String get exploreCategoryUnavailableBody;
+
+  /// No description provided for @exploreShowComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat yang segera hadir'**
+  String get exploreShowComingSoon;
+
+  /// No description provided for @exploreHideComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan yang segera hadir'**
+  String get exploreHideComingSoon;
+
+  /// No description provided for @exploreCategoryWilayah.
+  ///
+  /// In id, this message translates to:
+  /// **'Wilayah'**
+  String get exploreCategoryWilayah;
+
+  /// No description provided for @exploreCategoryWilayahSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan dan desa di Sambas'**
+  String get exploreCategoryWilayahSubtitle;
+
+  /// No description provided for @exploreCategoryWisata.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata'**
+  String get exploreCategoryWisata;
+
+  /// No description provided for @exploreCategoryWisataSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Destinasi di Sambas'**
+  String get exploreCategoryWisataSubtitle;
+
+  /// No description provided for @exploreCategoryKuliner.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get exploreCategoryKuliner;
+
+  /// No description provided for @exploreCategoryKulinerSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Makanan khas Sambas'**
+  String get exploreCategoryKulinerSubtitle;
+
+  /// No description provided for @exploreCategoryUsahaSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'UMKM dan jasa lokal'**
+  String get exploreCategoryUsahaSubtitle;
+
+  /// No description provided for @exploreCategoryAcara.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get exploreCategoryAcara;
+
+  /// No description provided for @exploreCategoryAcaraSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Festival, pameran, dan kegiatan'**
+  String get exploreCategoryAcaraSubtitle;
+
+  /// No description provided for @exploreCategoryPermainan.
+  ///
+  /// In id, this message translates to:
+  /// **'Permainan'**
+  String get exploreCategoryPermainan;
+
+  /// No description provided for @exploreCategoryPermainanSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun dan permainan Sambas'**
+  String get exploreCategoryPermainanSubtitle;
+
+  /// No description provided for @exploreCategoryEnsiklopedia.
+  ///
+  /// In id, this message translates to:
+  /// **'Ensiklopedia'**
+  String get exploreCategoryEnsiklopedia;
+
+  /// No description provided for @exploreCategoryEnsiklopediaSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sejarah, kisah, karya, dan tradisi'**
+  String get exploreCategoryEnsiklopediaSubtitle;
+
+  /// No description provided for @exploreCategoryKomunitas.
+  ///
+  /// In id, this message translates to:
+  /// **'Komunitas'**
+  String get exploreCategoryKomunitas;
+
+  /// No description provided for @exploreCategoryKomunitasSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Grup warga dan kegiatan bersama'**
+  String get exploreCategoryKomunitasSubtitle;
+
+  /// No description provided for @exploreMapHeroTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelajahi Sambas'**
+  String get exploreMapHeroTitle;
+
+  /// No description provided for @exploreMapHeroBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta hidup Kabupaten Sambas - ketuk untuk membuka.'**
+  String get exploreMapHeroBody;
+
+  /// No description provided for @exploreMapPosterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta Sambas'**
+  String get exploreMapPosterTitle;
+
+  /// No description provided for @exploreMapPosterOpen.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk membuka peta interaktif.'**
+  String get exploreMapPosterOpen;
+
+  /// No description provided for @exploreMapPosterFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.'**
+  String get exploreMapPosterFailed;
+
+  /// No description provided for @exploreMapLoadingSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat peta'**
+  String get exploreMapLoadingSemantics;
+
+  /// No description provided for @exploreMapLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat peta...'**
+  String get exploreMapLoading;
+
+  /// Judul sheet pilih basemap
+  ///
+  /// In id, this message translates to:
+  /// **'Gaya peta'**
+  String get exploreMapStyleTitle;
+
+  /// No description provided for @exploreMapStyleFree.
+  ///
+  /// In id, this message translates to:
+  /// **'Gratis, tanpa API key'**
+  String get exploreMapStyleFree;
+
+  /// No description provided for @exploreMapStyleStreet.
+  ///
+  /// In id, this message translates to:
+  /// **'Jalan'**
+  String get exploreMapStyleStreet;
+
+  /// No description provided for @exploreMapStyleSatellite.
+  ///
+  /// In id, this message translates to:
+  /// **'Satelit'**
+  String get exploreMapStyleSatellite;
+
+  /// No description provided for @exploreMapStyleTerrain.
+  ///
+  /// In id, this message translates to:
+  /// **'Terain'**
+  String get exploreMapStyleTerrain;
+
+  /// Judul halaman profil kecamatan
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan {name}'**
+  String regionKecamatanTitle(String name);
+
+  /// Judul halaman profil desa
+  ///
+  /// In id, this message translates to:
+  /// **'Desa {name}'**
+  String regionDesaTitle(String name);
+
+  /// Jumlah desa di kecamatan
+  ///
+  /// In id, this message translates to:
+  /// **'{count} desa'**
+  String regionVillageCount(String count);
+
+  /// No description provided for @regionDesaComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.'**
+  String get regionDesaComingSoon;
+
+  /// No description provided for @regionAgendaDesa.
+  ///
+  /// In id, this message translates to:
+  /// **'Agenda di Desa {name}'**
+  String regionAgendaDesa(String name);
+
+  /// No description provided for @placeNoCoordinatesTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi tempat ini belum tersedia'**
+  String get placeNoCoordinatesTitle;
+
+  /// No description provided for @placeNoCoordinatesBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.'**
+  String get placeNoCoordinatesBody;
+
+  /// No description provided for @placeBookmarkSoonTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bookmark tempat belum bisa dipakai'**
+  String get placeBookmarkSoonTitle;
+
+  /// No description provided for @placeBookmarkSoonBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kami sedang berusaha membuatnya jadi lebih baik.'**
+  String get placeBookmarkSoonBody;
+
+  /// No description provided for @placeTypeSejarah.
+  ///
+  /// In id, this message translates to:
+  /// **'Sejarah'**
+  String get placeTypeSejarah;
+
+  /// No description provided for @placeTypeAlam.
+  ///
+  /// In id, this message translates to:
+  /// **'Alam'**
+  String get placeTypeAlam;
+
+  /// No description provided for @placeTypeBudaya.
+  ///
+  /// In id, this message translates to:
+  /// **'Budaya'**
+  String get placeTypeBudaya;
+
+  /// No description provided for @placeTypePantai.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantai'**
+  String get placeTypePantai;
+
+  /// No description provided for @placeTypeBelanja.
+  ///
+  /// In id, this message translates to:
+  /// **'Belanja'**
+  String get placeTypeBelanja;
+
+  /// Label generik destinasi wisata
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata'**
+  String get placeTypeWisata;
+
+  /// No description provided for @placeCategoryKuliner.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get placeCategoryKuliner;
+
+  /// No description provided for @culinaryStatusOperating.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get culinaryStatusOperating;
+
+  /// No description provided for @culinaryStatusTemporarilyClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup sementara'**
+  String get culinaryStatusTemporarilyClosed;
+
+  /// No description provided for @culinaryStatusPermanentlyClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup permanen'**
+  String get culinaryStatusPermanentlyClosed;
+
+  /// No description provided for @culinaryStatusUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum diketahui'**
+  String get culinaryStatusUnknown;
+
+  /// No description provided for @culinaryPlacesContribute.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan tempat kuliner'**
+  String get culinaryPlacesContribute;
+
+  /// No description provided for @culinaryPlacesSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari tempat atau penjual...'**
+  String get culinaryPlacesSearchHint;
+
+  /// No description provided for @culinaryPlacesEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tempat yang cocok.'**
+  String get culinaryPlacesEmpty;
+
+  /// No description provided for @culinaryLoginTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya'**
+  String get culinaryLoginTitle;
+
+  /// No description provided for @culinaryPlacesLoginBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.'**
+  String get culinaryPlacesLoginBody;
+
+  /// No description provided for @culinaryClaimPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim tempat ini'**
+  String get culinaryClaimPlace;
+
+  /// No description provided for @culinaryClaimPlaceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu pemilik atau pengelola sah?'**
+  String get culinaryClaimPlaceBody;
+
+  /// No description provided for @culinarySuggestEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan data'**
+  String get culinarySuggestEdit;
+
+  /// No description provided for @culinarySuggestEditPlaceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama, deskripsi, atau alamat salah?'**
+  String get culinarySuggestEditPlaceBody;
+
+  /// No description provided for @culinarySuggestOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan status buka/tutup'**
+  String get culinarySuggestOperational;
+
+  /// No description provided for @culinaryClaimManageTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim pengelolaan'**
+  String get culinaryClaimManageTitle;
+
+  /// No description provided for @culinaryClaimEvidenceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor WhatsApp atau akun media sosial pengelola'**
+  String get culinaryClaimEvidenceHint;
+
+  /// No description provided for @culinaryEvidenceShortTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukti kurang'**
+  String get culinaryEvidenceShortTitle;
+
+  /// No description provided for @culinaryEvidenceShortBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis bukti minimal 5 karakter ya.'**
+  String get culinaryEvidenceShortBody;
+
+  /// No description provided for @culinaryClaimSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim terkirim'**
+  String get culinaryClaimSent;
+
+  /// No description provided for @culinaryClaimPlaceSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan memeriksa buktinya dulu. Kamu bisa pantau statusnya nanti.'**
+  String get culinaryClaimPlaceSentBody;
+
+  /// No description provided for @culinaryClaimFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim gagal'**
+  String get culinaryClaimFailed;
+
+  /// No description provided for @culinaryOperationalSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim'**
+  String get culinaryOperationalSent;
+
+  /// No description provided for @culinaryOperationalSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Status baru akan tayang setelah admin setujui.'**
+  String get culinaryOperationalSentBody;
+
+  /// No description provided for @culinaryProposalFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan gagal'**
+  String get culinaryProposalFailed;
+
+  /// No description provided for @culinaryPlaceReportSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih. Admin akan memeriksa tempat ini.'**
+  String get culinaryPlaceReportSentBody;
+
+  /// No description provided for @culinaryReportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal melapor'**
+  String get culinaryReportFailed;
+
+  /// No description provided for @culinaryReportReasonTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang salah?'**
+  String get culinaryReportReasonTitle;
+
+  /// No description provided for @culinaryClaimEvidenceBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis bukti bahwa kamu pemilik atau pengelola sah.'**
+  String get culinaryClaimEvidenceBody;
+
+  /// No description provided for @culinaryClaimSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim klaim'**
+  String get culinaryClaimSubmit;
+
+  /// No description provided for @culinaryReasonClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat sudah tutup'**
+  String get culinaryReasonClosed;
+
+  /// No description provided for @culinaryReasonWrongLocation.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi tidak sesuai'**
+  String get culinaryReasonWrongLocation;
+
+  /// No description provided for @culinaryReasonInvalidContact.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak tidak valid'**
+  String get culinaryReasonInvalidContact;
+
+  /// No description provided for @culinaryReasonMisleading.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi menyesatkan'**
+  String get culinaryReasonMisleading;
+
+  /// No description provided for @culinaryReasonDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Dugaan duplikat'**
+  String get culinaryReasonDuplicate;
+
+  /// No description provided for @culinaryReasonAbuse.
+  ///
+  /// In id, this message translates to:
+  /// **'Dugaan pelanggaran'**
+  String get culinaryReasonAbuse;
+
+  /// No description provided for @culinaryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat'**
+  String get culinaryLoadFailed;
+
+  /// No description provided for @culinaryConnectionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke server. Coba lagi dalam beberapa saat.'**
+  String get culinaryConnectionFailed;
+
+  /// No description provided for @exploreActionsLoginBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan dan laporan butuh akun supaya bisa ditindak lanjuti.'**
+  String get exploreActionsLoginBody;
+
+  /// No description provided for @exploreReasonSheetPlaceSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang salah dengan info tempat ini?'**
+  String get exploreReasonSheetPlaceSubtitle;
+
+  /// No description provided for @exploreReasonSheetCuisineSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang salah dengan info kuliner ini?'**
+  String get exploreReasonSheetCuisineSubtitle;
+
+  /// No description provided for @exploreEditNoChangeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada perubahan'**
+  String get exploreEditNoChangeTitle;
+
+  /// No description provided for @exploreEditNoChangeBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah minimal satu isian dulu ya.'**
+  String get exploreEditNoChangeBody;
+
+  /// No description provided for @exploreEditSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim'**
+  String get exploreEditSent;
+
+  /// No description provided for @exploreEditSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan meninjau dulu. Perubahan tayang setelah disetujui.'**
+  String get exploreEditSentBody;
+
+  /// No description provided for @exploreEditFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan gagal'**
+  String get exploreEditFailed;
+
+  /// No description provided for @exploreEditPlaceTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan data tempat'**
+  String get exploreEditPlaceTitle;
+
+  /// No description provided for @exploreEditCuisineTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perbaikan data kuliner'**
+  String get exploreEditCuisineTitle;
+
+  /// No description provided for @exploreEditIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi yang kamu tahu saja. Tim admin yang memutuskan.'**
+  String get exploreEditIntro;
+
+  /// No description provided for @exploreEditPlaceNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tempat'**
+  String get exploreEditPlaceNameLabel;
+
+  /// No description provided for @exploreEditCuisineNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kuliner'**
+  String get exploreEditCuisineNameLabel;
+
+  /// No description provided for @exploreEditDescriptionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get exploreEditDescriptionLabel;
+
+  /// No description provided for @exploreEditAddressLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get exploreEditAddressLabel;
+
+  /// No description provided for @exploreEditIngredientsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahan'**
+  String get exploreEditIngredientsLabel;
+
+  /// No description provided for @exploreEditIngredientsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pisahkan dengan koma'**
+  String get exploreEditIngredientsHint;
+
+  /// No description provided for @exploreEditSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get exploreEditSubmit;
+
+  /// No description provided for @exploreNotFoundTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten tidak ditemukan'**
+  String get exploreNotFoundTitle;
+
+  /// No description provided for @exploreNotFoundBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.'**
+  String get exploreNotFoundBody;
+
+  /// No description provided for @placeCreditAuthor.
+  ///
+  /// In id, this message translates to:
+  /// **'Penulis'**
+  String get placeCreditAuthor;
+
+  /// No description provided for @placeSectionActions.
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi'**
+  String get placeSectionActions;
+
+  /// No description provided for @placeActionViewOnMap.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat di peta'**
+  String get placeActionViewOnMap;
+
+  /// No description provided for @placeActionSuggestEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perubahan'**
+  String get placeActionSuggestEdit;
+
+  /// No description provided for @placeActionAddPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah foto'**
+  String get placeActionAddPhoto;
+
+  /// No description provided for @placeAddPhotoLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk ikut mengisi'**
+  String get placeAddPhotoLoginGate;
+
+  /// No description provided for @placeActionBookmark.
+  ///
+  /// In id, this message translates to:
+  /// **'Bookmark'**
+  String get placeActionBookmark;
+
+  /// No description provided for @placeInfoHours.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam buka'**
+  String get placeInfoHours;
+
+  /// No description provided for @placeInfoEmail.
+  ///
+  /// In id, this message translates to:
+  /// **'Email'**
+  String get placeInfoEmail;
+
+  /// No description provided for @placeInfoContactNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak'**
+  String get placeInfoContactNote;
+
+  /// No description provided for @placePhotoSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get placePhotoSection;
+
+  /// No description provided for @placeSourceSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Sumber'**
+  String get placeSourceSection;
+
+  /// No description provided for @placeMorePhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat {count} foto lainnya'**
+  String placeMorePhotos(String count);
+
+  /// No description provided for @placeOtherWisataInKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata lain di kecamatan ini'**
+  String get placeOtherWisataInKecamatan;
+
+  /// No description provided for @placeOtherWisataInRegion.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata lain di {region}'**
+  String placeOtherWisataInRegion(String region);
+
+  /// No description provided for @placeAgendaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Agenda di {name}'**
+  String placeAgendaTitle(String name);
+
+  /// No description provided for @exploreMapToggleLight.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta mode terang'**
+  String get exploreMapToggleLight;
+
+  /// No description provided for @exploreMapToggleDark.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta mode gelap'**
+  String get exploreMapToggleDark;
+
+  /// No description provided for @exploreMapReload.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat ulang peta'**
+  String get exploreMapReload;
+
+  /// No description provided for @exploreMapsOpenFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Google Maps tidak bisa dibuka'**
+  String get exploreMapsOpenFailedTitle;
+
+  /// No description provided for @exploreMapsOpenFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi sebentar, ya.'**
+  String get exploreMapsOpenFailedBody;
+
+  /// No description provided for @exploreOpenInGoogleMaps.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat di Google Maps'**
+  String get exploreOpenInGoogleMaps;
+
+  /// No description provided for @explorePinsEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tempat di peta'**
+  String get explorePinsEmptyTitle;
+
+  /// No description provided for @explorePinsEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar tempat masih kosong, atau datanya gagal dimuat.'**
+  String get explorePinsEmptyBody;
+
+  /// No description provided for @exploreMapLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Peta tidak bisa dimuat'**
+  String get exploreMapLoadFailedTitle;
+
+  /// No description provided for @exploreFilterAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get exploreFilterAll;
+
+  /// No description provided for @exploreEmptyDestinations.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada destinasi yang cocok.'**
+  String get exploreEmptyDestinations;
+
+  /// No description provided for @placeSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari destinasi...'**
+  String get placeSearchHint;
+
+  /// No description provided for @placeEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada destinasi'**
+  String get placeEmptyTitle;
+
+  /// No description provided for @placeEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.'**
+  String get placeEmptyBody;
+
+  /// No description provided for @cuisineListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get cuisineListTitle;
+
+  /// No description provided for @cuisineListSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kuliner...'**
+  String get cuisineListSearchHint;
+
+  /// No description provided for @cuisineListNoMatch.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kuliner yang cocok.'**
+  String get cuisineListNoMatch;
+
+  /// No description provided for @cuisineListEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kuliner'**
+  String get cuisineListEmptyTitle;
+
+  /// No description provided for @cuisineListEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.'**
+  String get cuisineListEmptyBody;
+
+  /// No description provided for @cuisinePropose.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan kuliner'**
+  String get cuisinePropose;
+
+  /// No description provided for @cuisineDetailReportSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih. Admin akan memeriksa kuliner ini.'**
+  String get cuisineDetailReportSentBody;
+
+  /// No description provided for @cuisineDetailIngredients.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahan'**
+  String get cuisineDetailIngredients;
+
+  /// No description provided for @cuisineDetailServing.
+  ///
+  /// In id, this message translates to:
+  /// **'Cara menyajikan'**
+  String get cuisineDetailServing;
+
+  /// No description provided for @cuisineDetailSource.
+  ///
+  /// In id, this message translates to:
+  /// **'Sumber'**
+  String get cuisineDetailSource;
+
+  /// No description provided for @cuisineDetailHelpTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu lengkapi'**
+  String get cuisineDetailHelpTitle;
+
+  /// No description provided for @cuisineDetailSuggestEditBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Salah nama, deskripsi, atau bahan?'**
+  String get cuisineDetailSuggestEditBody;
+
+  /// No description provided for @cuisineDetailReportBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Data menyesatkan atau duplikat'**
+  String get cuisineDetailReportBody;
+
+  /// No description provided for @placePhotosNotFoundTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto tidak ditemukan'**
+  String get placePhotosNotFoundTitle;
+
+  /// No description provided for @placePhotosNotFoundBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat ini belum punya foto, atau datanya gagal dimuat.'**
+  String get placePhotosNotFoundBody;
+
+  /// No description provided for @placePhotosEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada foto untuk tempat ini.'**
+  String get placePhotosEmpty;
+
+  /// No description provided for @placePhotosUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah foto'**
+  String get placePhotosUpload;
+
+  /// No description provided for @placePinPickerTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih titik'**
+  String get placePinPickerTitle;
+
+  /// No description provided for @placePinPickerSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama tempat'**
+  String get placePinPickerSearchHint;
+
+  /// No description provided for @placePinPickerTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 3 huruf.'**
+  String get placePinPickerTooShort;
+
+  /// No description provided for @placePinPickerSearching.
+  ///
+  /// In id, this message translates to:
+  /// **'Mencari...'**
+  String get placePinPickerSearching;
+
+  /// No description provided for @placePinPickerNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ketemu di Kabupaten Sambas.'**
+  String get placePinPickerNotFound;
+
+  /// No description provided for @placePinPickerOutOfBounds.
+  ///
+  /// In id, this message translates to:
+  /// **'Titik harus di dalam Kabupaten Sambas.'**
+  String get placePinPickerOutOfBounds;
+
+  /// No description provided for @placePinPickerRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus koordinat'**
+  String get placePinPickerRemove;
+
+  /// No description provided for @placePinPickerUsePoint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai titik ini'**
+  String get placePinPickerUsePoint;
+
+  /// No description provided for @placeProposalsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan wisata'**
+  String get placeProposalsTitle;
+
+  /// No description provided for @placeProposalsCancelTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan?'**
+  String get placeProposalsCancelTitle;
+
+  /// No description provided for @placeProposalsCancelBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak dikirim ke peninjau.'**
+  String get placeProposalsCancelBody;
+
+  /// No description provided for @placeProposalsCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get placeProposalsCancelAction;
+
+  /// No description provided for @placeProposalsLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulan kamu'**
+  String get placeProposalsLoginGate;
+
+  /// No description provided for @placeProposalsLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan'**
+  String get placeProposalsLoadFailedTitle;
+
+  /// No description provided for @placeProposalsLoadFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan. Periksa koneksi lalu coba lagi.'**
+  String get placeProposalsLoadFailedBody;
+
+  /// No description provided for @placeProposalsEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get placeProposalsEmptyTitle;
+
+  /// No description provided for @placeProposalsEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah direview akan muncul di sini.'**
+  String get placeProposalsEmptyBody;
+
+  /// No description provided for @placeProposalsKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat baru'**
+  String get placeProposalsKindNew;
+
+  /// No description provided for @placeProposalsKindEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Suntingan'**
+  String get placeProposalsKindEdit;
+
+  /// No description provided for @placeProposalsRejectReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan: {reason}'**
+  String placeProposalsRejectReason(String reason);
+
+  /// No description provided for @culinaryFormTitleCuisine.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kuliner'**
+  String get culinaryFormTitleCuisine;
+
+  /// No description provided for @culinaryFormTitlePlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul tempat'**
+  String get culinaryFormTitlePlace;
+
+  /// No description provided for @culinaryFormTitleLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tandai penjual'**
+  String get culinaryFormTitleLink;
+
+  /// No description provided for @culinaryFormPickBoth.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kuliner dan tempatnya dulu ya.'**
+  String get culinaryFormPickBoth;
+
+  /// No description provided for @culinaryFormNameTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama minimal 3 huruf ya.'**
+  String get culinaryFormNameTooShort;
+
+  /// No description provided for @culinaryFormLinkIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu hubungkan kuliner dengan tempat yang menjualnya. Wajib masuk dulu.'**
+  String get culinaryFormLinkIntro;
+
+  /// No description provided for @culinaryFormIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.'**
+  String get culinaryFormIntro;
+
+  /// No description provided for @culinaryFormFieldCuisine.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get culinaryFormFieldCuisine;
+
+  /// No description provided for @culinaryFormSearchCuisine.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kuliner'**
+  String get culinaryFormSearchCuisine;
+
+  /// No description provided for @culinaryFormFieldPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat/penjual'**
+  String get culinaryFormFieldPlace;
+
+  /// No description provided for @culinaryFormSearchPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari tempat'**
+  String get culinaryFormSearchPlace;
+
+  /// No description provided for @culinaryFormNameCuisineLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kuliner'**
+  String get culinaryFormNameCuisineLabel;
+
+  /// No description provided for @culinaryFormNamePlaceLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tempat'**
+  String get culinaryFormNamePlaceLabel;
+
+  /// No description provided for @culinaryFormNamePlaceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tempat atau penjual'**
+  String get culinaryFormNamePlaceHint;
+
+  /// No description provided for @culinaryFormIngredientsOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahan (opsional)'**
+  String get culinaryFormIngredientsOptional;
+
+  /// No description provided for @culinaryFormAddressOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat (opsional)'**
+  String get culinaryFormAddressOptional;
+
+  /// No description provided for @culinaryFormAddressHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jalan, nomor, patokan'**
+  String get culinaryFormAddressHint;
+
+  /// No description provided for @culinaryFormLocationHintOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Patokan lokasi (opsional)'**
+  String get culinaryFormLocationHintOptional;
+
+  /// No description provided for @culinaryFormLocationHintHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Depan pasar, sebelah masjid'**
+  String get culinaryFormLocationHintHint;
+
+  /// No description provided for @culinaryFormPhotoAttribution.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto akan diatribusikan ke namamu dengan lisensi {license}.'**
+  String culinaryFormPhotoAttribution(String license);
+
+  /// No description provided for @culinaryFormSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan meninjau dulu. Terima kasih sudah bantu lengkapi data kuliner Sambas.'**
+  String get culinaryFormSentBody;
+
+  /// No description provided for @placeFormTitleCreate.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan wisata'**
+  String get placeFormTitleCreate;
+
+  /// No description provided for @placeFormPickType.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori wisata'**
+  String get placeFormPickType;
+
+  /// No description provided for @placeFormNameDescRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama dan deskripsi wajib diisi.'**
+  String get placeFormNameDescRequired;
+
+  /// No description provided for @placeFormNameInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama perlu mengandung huruf atau angka.'**
+  String get placeFormNameInvalid;
+
+  /// No description provided for @placeFormPointOutside.
+  ///
+  /// In id, this message translates to:
+  /// **'Titik harus di dalam Kabupaten Sambas.'**
+  String get placeFormPointOutside;
+
+  /// No description provided for @placeFormPhotoToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto langsung tampil'**
+  String get placeFormPhotoToast;
+
+  /// No description provided for @placeFormPhotoBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.'**
+  String get placeFormPhotoBody;
+
+  /// No description provided for @placeFormProposalBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.'**
+  String get placeFormProposalBody;
+
+  /// No description provided for @placeFormStepOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Langkah {step} dari {total}: {label}'**
+  String placeFormStepOf(int step, int total, String label);
+
+  /// No description provided for @placeFormNext.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut'**
+  String get placeFormNext;
+
+  /// No description provided for @placeFormSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get placeFormSending;
+
+  /// No description provided for @placeFormName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get placeFormName;
+
+  /// No description provided for @placeFormNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tempat'**
+  String get placeFormNameHint;
+
+  /// No description provided for @placeFormCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get placeFormCategory;
+
+  /// No description provided for @placeFormPickCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get placeFormPickCategory;
+
+  /// No description provided for @placeFormDescription.
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get placeFormDescription;
+
+  /// No description provided for @placeFormDescriptionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan tempat ini'**
+  String get placeFormDescriptionHint;
+
+  /// No description provided for @placeFormMapHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk peta untuk memilih koordinat. Opsional.'**
+  String get placeFormMapHint;
+
+  /// No description provided for @placeFormContactHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor, email, atau catatan'**
+  String get placeFormContactHint;
+
+  /// No description provided for @placeFormHoursHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional'**
+  String get placeFormHoursHint;
+
+  /// No description provided for @placeFormLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.'**
+  String get placeFormLoginGate;
+
+  /// No description provided for @placeFormStepInfo.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi umum'**
+  String get placeFormStepInfo;
+
+  /// No description provided for @placeFormStepLocation.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi'**
+  String get placeFormStepLocation;
+
+  /// No description provided for @placeFormStepContact.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontak'**
+  String get placeFormStepContact;
+
+  /// No description provided for @placeFormStepPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get placeFormStepPhoto;
+
+  /// No description provided for @placeFormSubmitPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim foto'**
+  String get placeFormSubmitPhoto;
+
+  /// No description provided for @wilayahTapKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk area kecamatan'**
+  String get wilayahTapKecamatan;
+
+  /// No description provided for @wilayahTapKecamatanHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.'**
+  String get wilayahTapKecamatanHint;
+
+  /// No description provided for @wilayahSearchVillageHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari desa...'**
+  String get wilayahSearchVillageHint;
+
+  /// No description provided for @wilayahDesaCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} desa'**
+  String wilayahDesaCount(int count);
+
+  /// No description provided for @wilayahWisataCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} wisata'**
+  String wilayahWisataCount(int count);
+
+  /// No description provided for @wilayahUsahaInKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha di kecamatan ini'**
+  String get wilayahUsahaInKecamatan;
+
+  /// No description provided for @wilayahAcaraInKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara di kecamatan ini'**
+  String get wilayahAcaraInKecamatan;
+
+  /// No description provided for @wilayahVillageListFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.'**
+  String get wilayahVillageListFailed;
+
+  /// No description provided for @wilayahReload.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat ulang'**
+  String get wilayahReload;
+
+  /// No description provided for @wilayahNoWisata.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada wisata di kecamatan ini.'**
+  String get wilayahNoWisata;
+
+  /// No description provided for @wilayahNoUsaha.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usaha di kecamatan ini.'**
+  String get wilayahNoUsaha;
+
+  /// No description provided for @wilayahNoAcara.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara di kecamatan ini.'**
+  String get wilayahNoAcara;
+
+  /// No description provided for @wilayahLoadingUsaha.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat daftar usaha...'**
+  String get wilayahLoadingUsaha;
+
+  /// No description provided for @wilayahLoadingAcara.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat acara...'**
+  String get wilayahLoadingAcara;
+
+  /// No description provided for @wilayahLoadingVillage.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat desa...'**
+  String get wilayahLoadingVillage;
+
+  /// No description provided for @wilayahLoadingVillageList.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat daftar desa...'**
+  String get wilayahLoadingVillageList;
+
+  /// No description provided for @wilayahSearchVillageCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari desa'**
+  String get wilayahSearchVillageCta;
+
+  /// No description provided for @wilayahSeeArea.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat area'**
+  String get wilayahSeeArea;
+
+  /// No description provided for @wilayahKecamatanProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil kecamatan'**
+  String get wilayahKecamatanProfile;
+
+  /// No description provided for @wilayahScrollDown.
+  ///
+  /// In id, this message translates to:
+  /// **'Gulir ke bawah'**
+  String get wilayahScrollDown;
+
+  /// No description provided for @exploreUploadImageFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah foto gagal'**
+  String get exploreUploadImageFailed;
+
+  /// No description provided for @exploreSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim. Coba lagi ya.'**
+  String get exploreSubmitFailed;
+
+  /// No description provided for @placeSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan. Coba lagi ya.'**
+  String get placeSaveFailed;
+
+  /// No description provided for @nominatimSearchFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Pencarian gagal. Coba lagi sebentar.'**
+  String get nominatimSearchFailed;
+
+  /// No description provided for @placeFormPhotoRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minimal satu foto.'**
+  String get placeFormPhotoRequired;
 }
 
 class _AppLocalizationsDelegate

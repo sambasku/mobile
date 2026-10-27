@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -131,13 +132,13 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   Future<void> _pickCategory() async {
     final picked = await showOptionPickerSheet<String>(
       context,
-      title: 'Pilih kategori wisata',
+      title: AppLocalizations.of(context).placeFormPickType,
       icon: FLucideIcons.listFilter,
       items: [
         for (final type in _types)
           OptionPickerItem(
             value: type,
-            label: _typeLabel(type),
+            label: _typeLabel(AppLocalizations.of(context), type),
             selected: type == _type,
           ),
       ],
@@ -149,10 +150,10 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   Future<void> _pickRegion() async {
     final picked = await showOptionPickerSheet<PlaceOption>(
       context,
-      title: 'Pilih kecamatan',
+      title: AppLocalizations.of(context).usahaFormPickDistrict,
       icon: FLucideIcons.mapPin,
       searchable: true,
-      searchHint: 'Cari kecamatan',
+      searchHint: AppLocalizations.of(context).usahaFormSearchDistrict,
       items: [
         for (final r in _regions)
           OptionPickerItem(
@@ -175,15 +176,15 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
 
   Future<void> _pickVillage() async {
     if (_regionId == null) {
-      _validationError('Pilih kecamatan dulu.');
+      _validationError(AppLocalizations.of(context).usahaFormDistrictRequired);
       return;
     }
     final picked = await showOptionPickerSheet<PlaceOption>(
       context,
-      title: 'Pilih desa',
+      title: AppLocalizations.of(context).usahaFormPickVillage,
       icon: FLucideIcons.mapPin,
       searchable: true,
-      searchHint: 'Cari desa',
+      searchHint: AppLocalizations.of(context).usahaFormSearchVillage,
       items: [
         for (final v in _villages)
           OptionPickerItem(
@@ -202,7 +203,11 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
 
   /// Validasi gagal -> bottom sheet (pola sama dengan form acara).
   void _validationError(String message) {
-    showAppErrorSheet(context, message: message, title: 'Lengkapi dulu ya');
+    showAppErrorSheet(
+      context,
+      message: message,
+      title: AppLocalizations.of(context).usahaFormIncompleteTitle,
+    );
   }
 
   Future<void> _openMap() async {
@@ -220,11 +225,11 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
 bool _stepOk() {
     if (_step == 0) {
       if (_name.text.trim().isEmpty || _desc.text.trim().isEmpty) {
-        _validationError('Nama dan deskripsi wajib diisi.');
+        _validationError(AppLocalizations.of(context).placeFormNameDescRequired);
         return false;
       }
       if (slugifyPlace(_name.text).isEmpty) {
-        _validationError('Nama perlu mengandung huruf atau angka.');
+        _validationError(AppLocalizations.of(context).placeFormNameInvalid);
         return false;
       }
     }
@@ -232,7 +237,7 @@ bool _stepOk() {
       final lat = _point!.latitude;
       final lng = _point!.longitude;
       if (lat < 1.0 || lat > 1.8 || lng < 108.5 || lng > 110.0) {
-        _validationError('Titik harus di dalam Kabupaten Sambas.');
+        _validationError(AppLocalizations.of(context).placeFormPointOutside);
         return false;
       }
     }
@@ -244,13 +249,16 @@ Future<void> _submit() async {
   // Upload sudah berjalan di AttachmentImagesField; submit hanya memakai
   // slot siap (pola form usul kata - upload-then-submit).
   if (_images.any((s) => s.uploading)) {
-    showFToast(context: context, title: const Text('Tunggu upload foto selesai'));
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
+    );
     return;
   }
   if (_images.any((s) => s.error)) {
     showFToast(
       context: context,
-      title: const Text('Hapus foto yang gagal diunggah dulu'),
+      title: Text(AppLocalizations.of(context).usahaFormRemoveFailedPhoto),
       variant: FToastVariant.destructive,
     );
     return;
@@ -265,11 +273,16 @@ Future<void> _submit() async {
     if (widget.mode == PlaceContributeMode.photo) {
       final slug = widget.slug;
       if (slug == null || urls.isEmpty) {
-        throw const PlaceContributionException('Pilih minimal satu foto.');
+        throw PlaceContributionException(
+            AppLocalizations.of(context).placeFormPhotoRequired,
+          );
       }
       await _api.appendImages(slug, urls);
       if (!mounted) return;
-      showFToast(context: context, title: const Text('Foto langsung tampil'));
+      showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).placeFormPhotoToast),
+    );
       context.pop();
       return;
     }
@@ -322,11 +335,12 @@ Future<void> _submit() async {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authStatusProvider);
     final title = switch (widget.mode) {
-      PlaceContributeMode.photo => 'Tambah foto',
-      PlaceContributeMode.edit => 'Usulkan perubahan',
-      PlaceContributeMode.create => 'Usulkan wisata',
+      PlaceContributeMode.photo => l10n.placeActionAddPhoto,
+      PlaceContributeMode.edit => l10n.placeActionSuggestEdit,
+      PlaceContributeMode.create => l10n.placeFormTitleCreate,
     };
     final loggedIn = auth.value?.isAuth == true;
     if (widget.mode != PlaceContributeMode.create && !_filled) {
@@ -356,16 +370,16 @@ Future<void> _submit() async {
           : !loggedIn
           ? _LoginGate(onLogin: () => context.push('/login'))
           : widget.mode == PlaceContributeMode.photo
-          ? _photoBody()
-          : _stepperBody(),
+          ? _photoBody(l10n)
+          : _stepperBody(l10n),
     );
   }
 
-  Widget _photoBody() {
+  Widget _photoBody(AppLocalizations l10n) {
     return ListView(
       children: [
         Text(
-          'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.',
+          l10n.placeFormPhotoBody,
           style: context.theme.typography.body.sm.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
@@ -377,27 +391,34 @@ Future<void> _submit() async {
           top: false,
           child: FButton(
             onPress: _busy || _images.isEmpty ? null : _submit,
-            child: Text(_busy ? 'Mengirim...' : 'Kirim foto'),
+            child: Text(
+              _busy ? l10n.placeFormSending : l10n.placeFormSubmitPhoto,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _stepperBody() {
-    const labels = ['Informasi umum', 'Lokasi', 'Kontak', 'Foto'];
+  Widget _stepperBody(AppLocalizations l10n) {
+    final labels = [
+      l10n.placeFormStepInfo,
+      l10n.placeFormStepLocation,
+      l10n.placeFormStepContact,
+      l10n.placeFormStepPhoto,
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Langkah ${_step + 1} dari 4: ${labels[_step]}',
+          l10n.placeFormStepOf(_step + 1, 4, labels[_step]),
           style: context.theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
         const Gap(4),
         Text(
-          'Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.',
+          l10n.placeFormProposalBody,
           style: context.theme.typography.body.xs.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
@@ -406,9 +427,9 @@ Future<void> _submit() async {
         Expanded(
           child: ListView(
             children: [
-              if (_step == 0) ..._identity(),
-              if (_step == 1) ..._location(),
-              if (_step == 2) ..._contactFields(),
+              if (_step == 0) ..._identity(l10n),
+              if (_step == 1) ..._location(l10n),
+              if (_step == 2) ..._contactFields(l10n),
               if (_step == 3) _imagesField(),
             ],
           ),
@@ -426,7 +447,7 @@ Future<void> _submit() async {
                         : () => setState(() {
                             _step -= 1;
                           }),
-                    child: const Text('Kembali'),
+                    child: Text(l10n.commonBack),
                   ),
                 ),
               if (_step > 0) const Gap(8),
@@ -443,8 +464,8 @@ Future<void> _submit() async {
                         },
                   child: Text(
                     _step < 3
-                        ? 'Lanjut'
-                        : (_busy ? 'Mengirim...' : 'Kirim usulan'),
+                        ? l10n.placeFormNext
+                        : (_busy ? l10n.placeFormSending : l10n.exploreEditSubmit),
                   ),
                 ),
               ),
@@ -455,34 +476,42 @@ Future<void> _submit() async {
     );
   }
 
-  List<Widget> _identity() => [
+  List<Widget> _identity(AppLocalizations l10n) => [
     FTextField(
       control: FTextFieldControl.managed(controller: _name),
-      label: const Text('Nama'),
-      hint: 'Nama tempat',
+      label: Text(l10n.placeFormName),
+      hint: l10n.placeFormNameHint,
     ),
     const Gap(12),
     _choice(
-      'Kategori',
-      _type == null ? 'Pilih kategori' : _typeLabel(_type!),
+      l10n.placeFormCategory,
+      _type == null ? l10n.placeFormPickCategory : _typeLabel(l10n, _type!),
       _pickCategory,
     ),
     const Gap(12),
     FTextField(
       control: FTextFieldControl.managed(controller: _desc),
-      label: const Text('Deskripsi'),
-      hint: 'Ceritakan tempat ini',
+      label: Text(l10n.placeFormDescription),
+      hint: l10n.placeFormDescriptionHint,
       maxLines: 4,
     ),
   ];
 
-  List<Widget> _location() => [
-    _choice('Kecamatan', _regionName ?? 'Pilih kecamatan', _pickRegion),
+  List<Widget> _location(AppLocalizations l10n) => [
+    _choice(
+      l10n.usahaFormDistrict,
+      _regionName ?? l10n.usahaFormPickDistrict,
+      _pickRegion,
+    ),
     const Gap(8),
-    _choice('Desa', _villageName ?? 'Pilih desa', _pickVillage),
+    _choice(
+      l10n.profileVillageLabel,
+      _villageName ?? l10n.usahaFormPickVillage,
+      _pickVillage,
+    ),
     const Gap(12),
     Text(
-      'Ketuk peta untuk memilih koordinat. Opsional.',
+      l10n.placeFormMapHint,
       style: context.theme.typography.body.xs.copyWith(
         color: context.theme.colors.mutedForeground,
       ),
@@ -509,22 +538,22 @@ Future<void> _submit() async {
       FButton(
         variant: .outline,
         onPress: () => setState(() => _point = null),
-        child: const Text('Hapus koordinat'),
+        child: Text(l10n.placePinPickerRemove),
       ),
     ],
   ];
 
-  List<Widget> _contactFields() => [
+  List<Widget> _contactFields(AppLocalizations l10n) => [
     FTextField(
       control: FTextFieldControl.managed(controller: _hours),
-      label: const Text('Jam buka'),
-      hint: 'Opsional',
+      label: Text(l10n.placeInfoHours),
+      hint: l10n.placeFormHoursHint,
     ),
     const Gap(12),
     FTextField(
       control: FTextFieldControl.managed(controller: _contact),
-      label: const Text('Kontak'),
-      hint: 'Nomor, email, atau catatan',
+      label: Text(l10n.placeInfoContactNote),
+      hint: l10n.placeFormContactHint,
       maxLines: 3,
     ),
   ];
@@ -573,11 +602,14 @@ class _LoginGate extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.',
+          AppLocalizations.of(context).placeFormLoginGate,
           style: context.theme.typography.body.sm,
         ),
         const Gap(16),
-        FButton(onPress: onLogin, child: const Text('Masuk')),
+        FButton(
+      onPress: onLogin,
+      child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
+    ),
       ],
     );
   }
@@ -670,12 +702,12 @@ String slugifyPlace(String name) {
   return slug;
 }
 
-String _typeLabel(String id) => switch (id) {
-  'sejarah' => 'Sejarah',
-  'alam' => 'Alam',
-  'budaya' => 'Budaya',
-  'pantai' => 'Pantai',
-  'belanja' => 'Belanja',
+String _typeLabel(AppLocalizations l10n, String id) => switch (id) {
+  'sejarah' => l10n.placeTypeSejarah,
+  'alam' => l10n.placeTypeAlam,
+  'budaya' => l10n.placeTypeBudaya,
+  'pantai' => l10n.placeTypePantai,
+  'belanja' => l10n.placeTypeBelanja,
   _ => id,
 };
 

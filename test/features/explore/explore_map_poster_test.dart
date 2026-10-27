@@ -1,10 +1,15 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/explore/presentation/widgets/explore_map_poster.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
   home: FTheme(
     data: foruiPalettes['zinc']!.light.touch,
     child: SizedBox(width: 360, height: 248, child: child),

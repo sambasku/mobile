@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+import '../domain/entities/culinary_proposal.dart';
+import '../../../../core/i18n/l10n.dart';
+
 /// Klien usulan/klaim/laporan kuliner (`/api/v1/culinary*`).
 ///
 /// Usulan boleh anonim; klaim & laporan wajib token. Pesan error server
@@ -147,13 +150,59 @@ class CulinaryContributionApi {
     ),
   );
 
-  Future<void> reportPlace(String slug, {required String reasonCode, String? note}) =>
-      _report('/api/v1/culinary/places/${Uri.encodeComponent(slug)}/reports',
-          reasonCode, note);
+  /// Usulan milik user login (semua kind: baru, edit, link, status, arsip).
+  Future<List<CulinaryProposal>> mine() async {
+    final res = await _send(
+      () => _dio.get<dynamic>('/api/v1/culinary/contributions/mine'),
+    );
+    final body = res.data;
+    final items = body is Map && body['data'] is Map
+        ? (body['data'] as Map)['items']
+        : null;
+    if (items is! List) return const [];
+    return [
+      for (final raw in items.whereType<Map>())
+        CulinaryProposal(
+          id: '${raw['id']}',
+          kind: '${raw['kind'] ?? ''}',
+          status: '${raw['status'] ?? 'pending'}',
+          createdAt: DateTime.tryParse('${raw['created_at'] ?? ''}'),
+          name: (raw['payload'] as Map?)?['name'] as String?,
+          cuisineName: raw['cuisine_name'] as String?,
+          placeName: raw['place_name'] as String?,
+          revisionNote: raw['revision_note'] as String?,
+          rejectReasonCode: raw['reject_reason_code'] as String?,
+          rejectReasonText: raw['reject_reason_text'] as String?,
+        ),
+    ];
+  }
 
-  Future<void> reportCuisine(String slug, {required String reasonCode, String? note}) =>
-      _report('/api/v1/culinary/cuisines/${Uri.encodeComponent(slug)}/reports',
-          reasonCode, note);
+  /// Batalkan usulan yang masih pending / perlu revisi.
+  Future<void> cancelContribution(String id) => _send(
+    () => _dio.delete<dynamic>(
+      '/api/v1/culinary/contributions/${Uri.encodeComponent(id)}',
+    ),
+  );
+
+  Future<void> reportPlace(
+    String slug, {
+    required String reasonCode,
+    String? note,
+  }) => _report(
+    '/api/v1/culinary/places/${Uri.encodeComponent(slug)}/reports',
+    reasonCode,
+    note,
+  );
+
+  Future<void> reportCuisine(
+    String slug, {
+    required String reasonCode,
+    String? note,
+  }) => _report(
+    '/api/v1/culinary/cuisines/${Uri.encodeComponent(slug)}/reports',
+    reasonCode,
+    note,
+  );
 
   Future<void> _report(String path, String reasonCode, String? note) => _send(
     () => _dio.post<dynamic>(
@@ -188,10 +237,12 @@ class CulinaryContributionApi {
       final url = (data['data'] as Map)['url'];
       if (url is String && url.isNotEmpty) return url;
     }
-    throw const CulinaryException('Unggah foto gagal');
+    throw CulinaryException(l10n.exploreUploadImageFailed);
   }
 
-  Future<Response<dynamic>> _send(Future<Response<dynamic>> Function() call) async {
+  Future<Response<dynamic>> _send(
+    Future<Response<dynamic>> Function() call,
+  ) async {
     try {
       return await call();
     } on DioException catch (e) {
@@ -201,11 +252,11 @@ class CulinaryContributionApi {
         throw CulinaryException(
           message is String && message.isNotEmpty
               ? message
-              : 'Gagal mengirim. Coba lagi ya.',
+              : l10n.exploreSubmitFailed,
           code: data['error_code'] as String?,
         );
       }
-      throw const CulinaryException('Gagal mengirim. Coba lagi ya.');
+      throw CulinaryException(l10n.exploreSubmitFailed);
     }
   }
 }

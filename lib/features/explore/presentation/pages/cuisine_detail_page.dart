@@ -9,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -88,13 +89,14 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: FAlert(
-          title: const Text('Konten tidak ditemukan'),
+          title: Text(l10n.exploreNotFoundTitle),
           subtitle: Text(
-            'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.',
+            l10n.exploreNotFoundBody,
             style: context.theme.typography.body.sm,
           ),
         ),
@@ -116,6 +118,8 @@ class _BodyState extends ConsumerState<_Body> {
   Future<void> _report() async {
     if (await culinaryNeedsAuth(context, ref)) return;
     if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    if (!mounted) return;
     final reason = await showCulinaryReasonSheet(context, isPlace: false);
     if (reason == null || !mounted) return;
     try {
@@ -125,14 +129,14 @@ class _BodyState extends ConsumerState<_Body> {
       if (!mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Laporan terkirim',
-        message: 'Terima kasih. Admin akan memeriksa kuliner ini.',
+        title: l10n.usahaReportSent,
+        message: l10n.cuisineDetailReportSentBody,
       );
     } on CulinaryException catch (e) {
       if (!mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Gagal melapor',
+        title: l10n.culinaryReportFailed,
         message: e.message,
       );
     }
@@ -140,6 +144,7 @@ class _BodyState extends ConsumerState<_Body> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final topInset = MediaQuery.paddingOf(context).top;
     final item = widget.item;
@@ -174,7 +179,7 @@ class _BodyState extends ConsumerState<_Body> {
                     if (item.ingredients.isNotEmpty) ...[
                       const Gap(20),
                       Text(
-                        'Bahan',
+                        l10n.cuisineDetailIngredients,
                         style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -195,7 +200,7 @@ class _BodyState extends ConsumerState<_Body> {
                     if (item.servingSuggestion != null) ...[
                       const Gap(20),
                       Text(
-                        'Cara menyajikan',
+                        l10n.cuisineDetailServing,
                         style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -212,7 +217,7 @@ class _BodyState extends ConsumerState<_Body> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: _CreditLine(
-                            label: 'Sumber',
+                            label: l10n.cuisineDetailSource,
                             name: s.name,
                             nameUrl: s.address,
                             license: s.license,
@@ -222,13 +227,13 @@ class _BodyState extends ConsumerState<_Body> {
                     ],
                     const Gap(20),
                     FTileGroup(
-                      label: const Text('Bantu lengkapi'),
+                      label: Text(l10n.cuisineDetailHelpTitle),
                       children: [
                         FTile(
                           prefix: const Icon(FLucideIcons.pencil, size: 18),
-                          title: const Text('Usul perbaikan data'),
-                          subtitle: const Text(
-                            'Salah nama, deskripsi, atau bahan?',
+                          title: Text(l10n.culinarySuggestEdit),
+                          subtitle: Text(
+                            l10n.cuisineDetailSuggestEditBody,
                           ),
                           suffix: const Icon(
                             FLucideIcons.chevronRight,
@@ -251,10 +256,8 @@ class _BodyState extends ConsumerState<_Body> {
                         ),
                         FTile(
                           prefix: const Icon(FLucideIcons.flag, size: 18),
-                          title: const Text('Laporkan masalah'),
-                          subtitle: const Text(
-                            'Data menyesatkan atau duplikat',
-                          ),
+                          title: Text(l10n.usahaReportTitle),
+                          subtitle: Text(l10n.cuisineDetailReportBody),
                           suffix: const Icon(
                             FLucideIcons.chevronRight,
                             size: 16,
@@ -273,7 +276,7 @@ class _BodyState extends ConsumerState<_Body> {
             left: 12,
             child: _HeroButton(
               icon: const Icon(FLucideIcons.arrowLeft, size: 20),
-              tooltip: 'Kembali',
+              tooltip: AppLocalizations.of(context).commonBack,
               onTap: () => _back(context),
             ),
           ),
@@ -350,7 +353,7 @@ class _Hero extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
           child: _CreditLine(
-            label: 'Foto',
+            label: AppLocalizations.of(context).sharePhoto,
             name: attribution.name,
             nameUrl: attribution.url,
             license: attribution.license,

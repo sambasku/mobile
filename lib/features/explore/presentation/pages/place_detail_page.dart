@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/models/external_link.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
@@ -119,9 +120,9 @@ class _ErrorBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: FAlert(
-          title: const Text('Konten tidak ditemukan'),
+          title: Text(AppLocalizations.of(context).exploreNotFoundTitle),
           subtitle: Text(
-            'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.',
+            AppLocalizations.of(context).exploreNotFoundBody,
             style: context.theme.typography.body.sm,
           ),
         ),
@@ -189,6 +190,7 @@ class _BodyState extends ConsumerState<_Body> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final place = widget.place;
     final topInset = MediaQuery.paddingOf(context).top;
@@ -236,13 +238,9 @@ class _BodyState extends ConsumerState<_Body> {
                         children: [
                           FBadge(
                             variant: FBadgeVariant.secondary,
-                            child: Text(switch (place.category) {
-                              PlaceCategory.kuliner => 'Kuliner',
-                              PlaceCategory.budaya => 'Budaya',
-                              PlaceCategory.wisata => 'Wisata',
-                            }),
+                            child: Text(placeCategoryLabel(l10n, place.category)),
                           ),
-                          if (placeTypeLabels[place.type] case final type?)
+                          if (placeTypeLabel(l10n, place.type) case final type?)
                             FBadge(
                               variant: FBadgeVariant.secondary,
                               child: Text(type),
@@ -280,7 +278,7 @@ class _BodyState extends ConsumerState<_Body> {
                           return Padding(
                             padding: const EdgeInsets.only(top: 6),
                             child: _CreditLine(
-                              label: 'Penulis',
+                              label: l10n.placeCreditAuthor,
                               name: username,
                               authorId: authorId,
                             ),
@@ -289,11 +287,11 @@ class _BodyState extends ConsumerState<_Body> {
                       ),
                       const Gap(16),
                       FTileGroup(
-                        label: const Text('Aksi'),
+                        label: Text(l10n.placeSectionActions),
                         children: [
                           FTile(
                             prefix: const Icon(FLucideIcons.map, size: 18),
-                            title: const Text('Lihat di peta'),
+                            title: Text(l10n.placeActionViewOnMap),
                             suffix: const Icon(
                               FLucideIcons.chevronRight,
                               size: 16,
@@ -310,7 +308,7 @@ class _BodyState extends ConsumerState<_Body> {
                           ),
                           FTile(
                             prefix: const Icon(FLucideIcons.pencil, size: 18),
-                            title: const Text('Usulkan perubahan'),
+                            title: Text(l10n.placeActionSuggestEdit),
                             suffix: const Icon(
                               FLucideIcons.chevronRight,
                               size: 16,
@@ -324,10 +322,10 @@ class _BodyState extends ConsumerState<_Body> {
                           ),
                           FTile(
                             prefix: const Icon(FLucideIcons.image, size: 18),
-                            title: const Text('Tambah foto'),
+                            title: Text(l10n.placeActionAddPhoto),
                             subtitle: auth?.isAuth == true
                                 ? null
-                                : const Text('Masuk dulu untuk ikut mengisi'),
+                                : Text(l10n.placeAddPhotoLoginGate),
                             suffix: const Icon(
                               FLucideIcons.chevronRight,
                               size: 16,
@@ -365,20 +363,20 @@ class _BodyState extends ConsumerState<_Body> {
                 children: [
                   heroButton(
                     FLucideIcons.arrowLeft,
-                    'Kembali',
+                    l10n.commonBack,
                     () => _back(context),
                   ),
                   const Spacer(),
                   heroButton(
                     FLucideIcons.bookmark,
-                    'Bookmark',
+                    l10n.placeActionBookmark,
                     () => showPlaceBookmarkSoon(context),
                   ),
                   const Gap(8),
                   Builder(
                     builder: (buttonContext) => heroButton(
                       FLucideIcons.share2,
-                      'Bagikan',
+                      l10n.shareShare,
                       () => _share(buttonContext),
                     ),
                   ),
@@ -428,6 +426,7 @@ class _CarouselState extends State<_Carousel> {
       );
     }
 
+    final l10n = AppLocalizations.of(context);
     final attribution = widget.images[_index].attribution;
 
     final hero = AspectRatio(
@@ -504,7 +503,7 @@ class _CarouselState extends State<_Carousel> {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
           child: _CreditLine(
-            label: 'Foto',
+            label: l10n.sharePhoto,
             name: attribution.name,
             nameUrl: attribution.url,
             suffix: where.isEmpty ? null : ' / $where',
@@ -608,31 +607,32 @@ class _InfoStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final rows = <({IconData icon, String value, String caption, Uri? uri})>[
       if (hours != null && hours!.trim().isNotEmpty)
         (
           icon: FLucideIcons.clock,
           value: hours!.trim(),
-          caption: 'Jam buka',
+          caption: l10n.placeInfoHours,
           uri: null,
         ),
       if (contact?.phone case final phone?)
         (
           icon: FLucideIcons.phone,
           value: phone,
-          caption: 'Telepon',
+          caption: l10n.usahaContactPhone,
           uri: Uri.parse('tel:${phone.replaceAll(' ', '')}'),
         ),
       if (contact?.email case final email?)
         (
           icon: FLucideIcons.mail,
           value: email,
-          caption: 'Email',
+          caption: l10n.placeInfoEmail,
           uri: Uri(scheme: 'mailto', path: email),
         ),
       if (contact?.note case final note?)
-        (icon: FLucideIcons.phone, value: note, caption: 'Kontak', uri: null),
+        (icon: FLucideIcons.phone, value: note, caption: l10n.placeInfoContactNote, uri: null),
     ];
     if (rows.isEmpty) return const SizedBox.shrink();
 
@@ -713,6 +713,7 @@ class _PhotoGrid extends StatelessWidget {
     final shown = images.length <= _previewCount
         ? images
         : images.sublist(0, _previewCount);
+    final l10n = AppLocalizations.of(context);
     final hidden = images.length - shown.length;
 
     return Column(
@@ -720,7 +721,7 @@ class _PhotoGrid extends StatelessWidget {
       children: [
         const Gap(12),
         Text(
-          'Foto',
+          l10n.placePhotoSection,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
@@ -761,7 +762,7 @@ class _PhotoGrid extends StatelessWidget {
           GestureDetector(
             onTap: () => context.push(ExploreRouter.placePhotosPath(slug)),
             child: Text(
-              'Lihat $hidden foto lainnya',
+              l10n.placeMorePhotos('$hidden'),
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.primary,
                 fontWeight: FontWeight.w600,
@@ -781,13 +782,14 @@ class _SourcesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Gap(20),
         Text(
-          'Sumber',
+          l10n.placeSourceSection,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
@@ -892,9 +894,10 @@ class _NearbyWisata extends ConsumerWidget {
         ?.where((r) => r.id == regionId)
         .firstOrNull
         ?.name;
+    final l10n = AppLocalizations.of(context);
     final title = regionName == null
-        ? 'Wisata lain di kecamatan ini'
-        : 'Wisata lain di $regionName';
+        ? l10n.placeOtherWisataInKecamatan
+        : l10n.placeOtherWisataInRegion(regionName);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -984,7 +987,7 @@ class _PlaceAgenda extends ConsumerWidget {
     final section = buildEventMiniList(
       context,
       events,
-      title: 'Agenda di ${place.name}',
+      title: AppLocalizations.of(context).placeAgendaTitle(place.name),
     );
     if (section == null) return const SizedBox.shrink();
     return Padding(

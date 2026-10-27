@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -57,6 +58,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cuisineAsync = ref.watch(cuisineProvider);
 
@@ -64,7 +66,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Kuliner'),
+          title: Text(l10n.cuisineListTitle),
           prefixes: [
             FHeaderAction.back(
               onPress: () =>
@@ -75,13 +77,14 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
             FHeaderAction(
               icon: const Icon(FLucideIcons.store),
               onPress: () => context.push(ExploreRouter.cuisinePlaces.path),
-              semanticsLabel: 'Tempat kuliner',
+            ),
+            FHeaderAction(
+              icon: const Icon(FLucideIcons.history),
+              onPress: () => context.push(ExploreRouter.cuisineProposals.path),
             ),
             FHeaderAction(
               icon: const Icon(FLucideIcons.plus),
-              onPress: () =>
-                  context.push(ExploreRouter.cuisineContribute.path),
-              semanticsLabel: 'Usulkan kuliner',
+              onPress: () => context.push(ExploreRouter.cuisineContribute.path),
             ),
           ],
         ),
@@ -102,7 +105,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   control: FTextFieldControl.managed(
                     onChange: _onSearchChanged,
                   ),
-                  hint: 'Cari kuliner...',
+                  hint: l10n.cuisineListSearchHint,
                   textInputAction: TextInputAction.search,
                   clearable: (value) => value.text.isNotEmpty,
                   prefixBuilder: (context, style, variants) =>
@@ -118,7 +121,7 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Belum ada kuliner yang cocok.',
+                        l10n.cuisineListNoMatch,
                         textAlign: TextAlign.center,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
@@ -190,8 +193,7 @@ class _CuisineGridTile extends StatelessWidget {
                       )
                     : CachedNetworkImageWithFallback(
                         imageUrl:
-                            displayImageUrl(cover.url, width: 360) ??
-                            cover.url,
+                            displayImageUrl(cover.url, width: 360) ?? cover.url,
                         fallbackUrl: cover.url,
                         fit: BoxFit.cover,
                       ),
@@ -221,20 +223,19 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const FAlert(
-              title: Text('Gagal memuat'),
-              subtitle: Text(
-                'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-              ),
+            FAlert(
+              title: Text(l10n.culinaryLoadFailed),
+              subtitle: Text(l10n.culinaryConnectionFailed),
             ),
             const Gap(16),
-            FButton(onPress: onRetry, child: const Text('Coba lagi')),
+            FButton(onPress: onRetry, child: Text(l10n.commonRetry)),
           ],
         ),
       ),
@@ -294,6 +295,7 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -308,14 +310,14 @@ class _EmptyBody extends StatelessWidget {
             ),
             const Gap(16),
             Text(
-              'Belum ada kuliner',
+              l10n.cuisineListEmptyTitle,
               style: theme.typography.body.lg.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
             const Gap(8),
             Text(
-              'Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.',
+              l10n.cuisineListEmptyBody,
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,

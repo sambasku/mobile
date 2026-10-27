@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/models/external_link.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/theme/forui_palette_controller.dart';
 import '../../../../core/theme/forui_palettes.dart';
@@ -79,6 +80,7 @@ class PinsPage extends HookConsumerWidget {
     required int reloadToken,
     required Future<void> Function() refreshPlaces,
   }) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final placesAsync = ref.watch(placesProvider);
@@ -161,7 +163,7 @@ class PinsPage extends HookConsumerWidget {
               child: Column(
                 children: [
                   IconButton(
-                    tooltip: 'Kembali',
+                    tooltip: l10n.commonBack,
                     onPressed: () => context.canPop()
                         ? context.pop()
                         : context.go('/explore'),
@@ -170,7 +172,7 @@ class PinsPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   IconButton(
-                    tooltip: isDark ? 'Peta mode terang' : 'Peta mode gelap',
+                    tooltip: isDark ? l10n.exploreMapToggleLight : l10n.exploreMapToggleDark,
                     onPressed: onToggleTheme,
                     style: floatingStyle,
                     icon: Icon(
@@ -180,7 +182,7 @@ class PinsPage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   IconButton(
-                    tooltip: 'Muat ulang peta',
+                    tooltip: l10n.exploreMapReload,
                     onPressed: onRetryPlaces,
                     style: floatingStyle,
                     icon: const Icon(FLucideIcons.refreshCw, size: 20),
@@ -205,6 +207,7 @@ class _PlaceCard extends StatelessWidget {
   final Place place;
 
   Future<void> _openMaps(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final uri = placeGoogleMapsUri(place);
     if (uri == null) {
       if (context.mounted) showPlaceNoCoordinates(context);
@@ -218,8 +221,8 @@ class _PlaceCard extends StatelessWidget {
     if (!ok && context.mounted) {
       showFToast(
         context: context,
-        title: const Text('Google Maps tidak bisa dibuka'),
-        description: const Text('Coba lagi sebentar, ya.'),
+        title: Text(l10n.exploreMapsOpenFailedTitle),
+        description: Text(l10n.exploreMapsOpenFailedBody),
       );
     }
   }
@@ -233,6 +236,7 @@ class _PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = place.cover;
     final radius = BorderRadius.circular(16);
@@ -296,11 +300,11 @@ class _PlaceCard extends StatelessWidget {
                           variant: FBadgeVariant.secondary,
                           child: Text(
                             place.category == PlaceCategory.kuliner
-                                ? 'Kuliner'
-                                : 'Wisata',
+                                ? l10n.placeCategoryKuliner
+                                : l10n.placeTypeWisata,
                           ),
                         ),
-                        if (placeTypeLabels[place.type] case final type?)
+                        if (placeTypeLabel(l10n, place.type) case final type?)
                           FBadge(
                             variant: FBadgeVariant.secondary,
                             child: Text(type),
@@ -313,7 +317,7 @@ class _PlaceCard extends StatelessWidget {
                         onPress: () => _openMaps(context),
                         size: FButtonSizeVariant.xs,
                         prefix: const Icon(FLucideIcons.navigation),
-                        child: const Text('Lihat di Google Maps'),
+                        child: Text(l10n.exploreOpenInGoogleMaps),
                       ),
                     ],
                   ],
@@ -334,6 +338,7 @@ class _PinsEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -341,14 +346,14 @@ class _PinsEmpty extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             FAlert(
-              title: const Text('Belum ada tempat di peta'),
+              title: Text(l10n.explorePinsEmptyTitle),
               subtitle: Text(
-                'Daftar tempat masih kosong, atau datanya gagal dimuat.',
+                l10n.explorePinsEmptyBody,
                 style: context.theme.typography.body.sm,
               ),
             ),
             const SizedBox(height: 12),
-            FButton(onPress: onRetry, child: const Text('Coba lagi')),
+            FButton(onPress: onRetry, child: Text(l10n.commonRetry)),
           ],
         ),
       ),
@@ -361,13 +366,14 @@ class _PinsError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: FAlert(
-          title: const Text('Peta tidak bisa dimuat'),
+          title: Text(l10n.exploreMapLoadFailedTitle),
           subtitle: Text(
-            'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+            l10n.culinaryConnectionFailed,
             style: context.theme.typography.body.sm,
           ),
         ),

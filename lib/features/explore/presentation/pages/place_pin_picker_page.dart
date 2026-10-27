@@ -5,9 +5,17 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../data/sambas_nominatim.dart';
 import '../../domain/sambas_map_config.dart';
 import '../widgets/sambas_map_view.dart';
+
+// Penanda hint yang perlu diterjemahkan saat render (state tidak simpan
+// teks berbahasa).
+const _hintTooShort = '\u0000hint:tooShort';
+const _hintSearching = '\u0000hint:searching';
+const _hintNotFound = '\u0000hint:notFound';
+const _hintOutOfBounds = '\u0000hint:outOfBounds';
 
 /// Hasil layar penuh. `point` null berarti titik dihapus.
 class PlacePinPick {
@@ -60,7 +68,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
       _nominatim.cancel();
       setState(() {
         _results = const [];
-        _hint = raw.trim().isEmpty ? null : 'Ketik minimal 3 huruf.';
+        _hint = raw.trim().isEmpty ? null : _hintTooShort;
       });
       return;
     }
@@ -76,7 +84,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
 
   Future<void> _search(String query, int gen) async {
     setState(() {
-      _hint = 'Mencari...';
+      _hint = _hintSearching;
       _results = const [];
     });
     try {
@@ -84,7 +92,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
       if (!mounted || gen != _gen) return;
       _lastQuery = query;
       if (hits.isEmpty) {
-        setState(() => _hint = 'Tidak ketemu di Kabupaten Sambas.');
+        setState(() => _hint = _hintNotFound);
         return;
       }
       setState(() {
@@ -112,7 +120,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
 
   void _tap(LatLng point) {
     if (!inSambasBounds(point.latitude, point.longitude)) {
-      setState(() => _hint = 'Titik harus di dalam Kabupaten Sambas.');
+      setState(() => _hint = _hintOutOfBounds);
       return;
     }
     setState(() {
@@ -142,6 +150,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final point = _point;
     return FScaffold(
@@ -149,7 +158,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
       // Keyboard tidak mengecilkan peta, jadi kamera tidak bergeser.
       resizeToAvoidBottomInset: false,
       header: FHeader.nested(
-        title: const Text('Pilih titik'),
+        title: Text(l10n.placePinPickerTitle),
         prefixes: [
           FHeaderAction.back(onPress: () => Navigator.of(context).pop()),
         ],
@@ -191,7 +200,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                         controller: _query,
                         onChange: (value) => _schedule(value.text),
                       ),
-                      hint: 'Cari nama tempat',
+                      hint: l10n.placePinPickerSearchHint,
                       prefixBuilder: (context, style, variants) =>
                           FTextField.prefixIconBuilder(
                             context,
@@ -204,7 +213,14 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
-                          _hint!,
+                          switch (_hint!) {
+                            _hintSearching => l10n.placePinPickerSearching,
+                            _hintNotFound => l10n.placePinPickerNotFound,
+                            _hintOutOfBounds =>
+                              l10n.placePinPickerOutOfBounds,
+                            _hintTooShort => l10n.placePinPickerTooShort,
+                            final label => label,
+                          },
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.typography.body.xs.copyWith(
@@ -295,7 +311,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                               setState(() => _point = null);
                               _draw();
                             },
-                            child: const Text('Hapus koordinat'),
+                            child: Text(l10n.placePinPickerRemove),
                           ),
                         ),
                         const Gap(8),
@@ -313,8 +329,8 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                                 ).pop(PlacePinPick(point)),
                           child: Text(
                             point == null && widget.initial != null
-                                ? 'Hapus koordinat'
-                                : 'Pakai titik ini',
+                                ? l10n.placePinPickerRemove
+                                : l10n.placePinPickerUsePoint,
                           ),
                         ),
                       ),

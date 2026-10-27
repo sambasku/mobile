@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/explore_category.dart';
 import '../../../event/presentation/pages/event_list_page.dart';
 import '../../../usaha/presentation/pages/usaha_list_page.dart';
@@ -19,6 +20,7 @@ class ExploreCategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final category = ExploreCategory.byId(categoryId);
     final isWisata = categoryId == 'wisata';
 
@@ -37,7 +39,7 @@ class ExploreCategoryPage extends StatelessWidget {
  : FScaffold(
             childPad: false,
             header: FHeader.nested(
-              title: Text(category?.title ?? 'Eksplorasi'),
+              title: Text(category?.titleOf(l10n) ?? l10n.exploreHubTitle),
               prefixes: [
                 FHeaderAction.back(
                   onPress: () =>
@@ -57,6 +59,7 @@ class _ComingSoonBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
 
     return Center(
@@ -73,17 +76,17 @@ class _ComingSoonBody extends StatelessWidget {
             const Gap(16),
             FBadge(
               variant: FBadgeVariant.outline,
-              child: const Text('Segera hadir'),
+              child: Text(l10n.exploreComingSoon),
             ),
             const Gap(12),
             Text(
-              category?.title ?? 'Kategori',
+              category?.titleOf(l10n) ?? l10n.exploreCategoryFallbackTitle,
               style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             const Gap(8),
             Text(
-              category?.subtitle ?? 'Kategori ini belum tersedia.',
+              category?.subtitleOf(l10n) ?? l10n.exploreCategoryUnavailable,
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
@@ -91,7 +94,7 @@ class _ComingSoonBody extends StatelessWidget {
             ),
             const Gap(12),
             Text(
-              'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.',
+              l10n.exploreCategoryUnavailableBody,
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,

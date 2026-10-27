@@ -327,6 +327,55 @@ final class CulinaryContributionApiProvider
 String _$culinaryContributionApiHash() =>
     r'16d4c964917d533ab4764d3acb5b9fbb8dc864dd';
 
+/// Usulan kuliner milik user login. Guest = list kosong (bukan error),
+/// pola sama dengan usulan acara/usaha.
+
+@ProviderFor(culinaryProposals)
+final culinaryProposalsProvider = CulinaryProposalsProvider._();
+
+/// Usulan kuliner milik user login. Guest = list kosong (bukan error),
+/// pola sama dengan usulan acara/usaha.
+
+final class CulinaryProposalsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<CulinaryProposal>>,
+          List<CulinaryProposal>,
+          FutureOr<List<CulinaryProposal>>
+        >
+    with
+        $FutureModifier<List<CulinaryProposal>>,
+        $FutureProvider<List<CulinaryProposal>> {
+  /// Usulan kuliner milik user login. Guest = list kosong (bukan error),
+  /// pola sama dengan usulan acara/usaha.
+  CulinaryProposalsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'culinaryProposalsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$culinaryProposalsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<CulinaryProposal>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<CulinaryProposal>> create(Ref ref) {
+    return culinaryProposals(ref);
+  }
+}
+
+String _$culinaryProposalsHash() => r'585fa2582abbf0446e60514d48528ed4ea3d741a';
+
 /// Daftar tempat/penjual kuliner (halaman pertama). Null = gagal (soft-fail).
 
 @ProviderFor(culinaryPlaces)

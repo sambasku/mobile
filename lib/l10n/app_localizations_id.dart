@@ -4946,6 +4946,897 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get usahaPriceUnlisted => 'Harga belum dicantumkan';
+
+  @override
+  String get culinaryProposalsTitle => 'Usulan kuliner';
+
+  @override
+  String get culinaryPlacesTitle => 'Tempat kuliner';
+
+  @override
+  String get culinaryProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get culinaryProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get culinaryProposalsLoginGate =>
+      'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get culinaryProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get culinaryProposalsEmptyHint =>
+      'Status usulan yang sudah ditinjau akan muncul di sini.';
+
+  @override
+  String get culinaryProposalsEmptyCta => 'Usul kuliner baru';
+
+  @override
+  String get culinaryProposalsCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get culinaryProposalsCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get culinaryProposalsCancelFailed => 'Gagal membatalkan';
+
+  @override
+  String get culinaryCancelAction => 'Batalkan';
+
+  @override
+  String get culinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get culinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get culinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get culinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get culinaryKindLink => 'Relasi kuliner-tempat';
+
+  @override
+  String get culinaryKindOperational => 'Status buka';
+
+  @override
+  String get culinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get culinaryKindRestore => 'Minta tayang';
+
+  @override
+  String get culinaryRejectDuplicate => 'Sudah ada yang mirip';
+
+  @override
+  String get culinaryRejectIncomplete => 'Data belum lengkap';
+
+  @override
+  String get culinaryRejectInvalid => 'Data tidak valid';
+
+  @override
+  String get culinaryRejectUnverifiable => 'Belum bisa diverifikasi';
+
+  @override
+  String get culinaryRejectAttribution => 'Atribusi gambar belum lengkap';
+
+  @override
+  String get culinaryRejectViolation => 'Melanggar ketentuan';
+
+  @override
+  String get culinaryRejectStale => 'Data dasar sudah berubah';
+
+  @override
+  String get culinaryRejectOther => 'Alasan lain';
+
+  @override
+  String get exploreHubTitle => 'Eksplorasi';
+
+  @override
+  String get exploreComingSoon => 'Segera hadir';
+
+  @override
+  String get exploreCategoryFallbackTitle => 'Kategori';
+
+  @override
+  String get exploreCategoryUnavailable => 'Kategori ini belum tersedia.';
+
+  @override
+  String get exploreCategoryUnavailableBody =>
+      'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.';
+
+  @override
+  String get exploreShowComingSoon => 'Lihat yang segera hadir';
+
+  @override
+  String get exploreHideComingSoon => 'Sembunyikan yang segera hadir';
+
+  @override
+  String get exploreCategoryWilayah => 'Wilayah';
+
+  @override
+  String get exploreCategoryWilayahSubtitle => 'Kecamatan dan desa di Sambas';
+
+  @override
+  String get exploreCategoryWisata => 'Wisata';
+
+  @override
+  String get exploreCategoryWisataSubtitle => 'Destinasi di Sambas';
+
+  @override
+  String get exploreCategoryKuliner => 'Kuliner';
+
+  @override
+  String get exploreCategoryKulinerSubtitle => 'Makanan khas Sambas';
+
+  @override
+  String get exploreCategoryUsahaSubtitle => 'UMKM dan jasa lokal';
+
+  @override
+  String get exploreCategoryAcara => 'Acara';
+
+  @override
+  String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
+
+  @override
+  String get exploreCategoryPermainan => 'Permainan';
+
+  @override
+  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+
+  @override
+  String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
+
+  @override
+  String get exploreCategoryEnsiklopediaSubtitle =>
+      'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get exploreCategoryKomunitas => 'Komunitas';
+
+  @override
+  String get exploreCategoryKomunitasSubtitle =>
+      'Grup warga dan kegiatan bersama';
+
+  @override
+  String get exploreMapHeroTitle => 'Jelajahi Sambas';
+
+  @override
+  String get exploreMapHeroBody =>
+      'Peta hidup Kabupaten Sambas - ketuk untuk membuka.';
+
+  @override
+  String get exploreMapPosterTitle => 'Peta Sambas';
+
+  @override
+  String get exploreMapPosterOpen => 'Ketuk untuk membuka peta interaktif.';
+
+  @override
+  String get exploreMapPosterFailed =>
+      'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.';
+
+  @override
+  String get exploreMapLoadingSemantics => 'Memuat peta';
+
+  @override
+  String get exploreMapLoading => 'Memuat peta...';
+
+  @override
+  String get exploreMapStyleTitle => 'Gaya peta';
+
+  @override
+  String get exploreMapStyleFree => 'Gratis, tanpa API key';
+
+  @override
+  String get exploreMapStyleStreet => 'Jalan';
+
+  @override
+  String get exploreMapStyleSatellite => 'Satelit';
+
+  @override
+  String get exploreMapStyleTerrain => 'Terain';
+
+  @override
+  String regionKecamatanTitle(String name) {
+    return 'Kecamatan $name';
+  }
+
+  @override
+  String regionDesaTitle(String name) {
+    return 'Desa $name';
+  }
+
+  @override
+  String regionVillageCount(String count) {
+    return '$count desa';
+  }
+
+  @override
+  String get regionDesaComingSoon =>
+      'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
+
+  @override
+  String regionAgendaDesa(String name) {
+    return 'Agenda di Desa $name';
+  }
+
+  @override
+  String get placeNoCoordinatesTitle => 'Lokasi tempat ini belum tersedia';
+
+  @override
+  String get placeNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get placeBookmarkSoonTitle => 'Bookmark tempat belum bisa dipakai';
+
+  @override
+  String get placeBookmarkSoonBody =>
+      'Kami sedang berusaha membuatnya jadi lebih baik.';
+
+  @override
+  String get placeTypeSejarah => 'Sejarah';
+
+  @override
+  String get placeTypeAlam => 'Alam';
+
+  @override
+  String get placeTypeBudaya => 'Budaya';
+
+  @override
+  String get placeTypePantai => 'Pantai';
+
+  @override
+  String get placeTypeBelanja => 'Belanja';
+
+  @override
+  String get placeTypeWisata => 'Wisata';
+
+  @override
+  String get placeCategoryKuliner => 'Kuliner';
+
+  @override
+  String get culinaryStatusOperating => 'Buka';
+
+  @override
+  String get culinaryStatusTemporarilyClosed => 'Tutup sementara';
+
+  @override
+  String get culinaryStatusPermanentlyClosed => 'Tutup permanen';
+
+  @override
+  String get culinaryStatusUnknown => 'Belum diketahui';
+
+  @override
+  String get culinaryPlacesContribute => 'Usulkan tempat kuliner';
+
+  @override
+  String get culinaryPlacesSearchHint => 'Cari tempat atau penjual...';
+
+  @override
+  String get culinaryPlacesEmpty => 'Belum ada tempat yang cocok.';
+
+  @override
+  String get culinaryLoginTitle => 'Masuk dulu ya';
+
+  @override
+  String get culinaryPlacesLoginBody =>
+      'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.';
+
+  @override
+  String get culinaryClaimPlace => 'Klaim tempat ini';
+
+  @override
+  String get culinaryClaimPlaceBody => 'Kamu pemilik atau pengelola sah?';
+
+  @override
+  String get culinarySuggestEdit => 'Usul perbaikan data';
+
+  @override
+  String get culinarySuggestEditPlaceBody =>
+      'Nama, deskripsi, atau alamat salah?';
+
+  @override
+  String get culinarySuggestOperational => 'Usulkan status buka/tutup';
+
+  @override
+  String get culinaryClaimManageTitle => 'Klaim pengelolaan';
+
+  @override
+  String get culinaryClaimEvidenceHint =>
+      'Nomor WhatsApp atau akun media sosial pengelola';
+
+  @override
+  String get culinaryEvidenceShortTitle => 'Bukti kurang';
+
+  @override
+  String get culinaryEvidenceShortBody => 'Tulis bukti minimal 5 karakter ya.';
+
+  @override
+  String get culinaryClaimSent => 'Klaim terkirim';
+
+  @override
+  String get culinaryClaimPlaceSentBody =>
+      'Admin akan memeriksa buktinya dulu. Kamu bisa pantau statusnya nanti.';
+
+  @override
+  String get culinaryClaimFailed => 'Klaim gagal';
+
+  @override
+  String get culinaryOperationalSent => 'Usulan terkirim';
+
+  @override
+  String get culinaryOperationalSentBody =>
+      'Status baru akan tayang setelah admin setujui.';
+
+  @override
+  String get culinaryProposalFailed => 'Usulan gagal';
+
+  @override
+  String get culinaryPlaceReportSentBody =>
+      'Terima kasih. Admin akan memeriksa tempat ini.';
+
+  @override
+  String get culinaryReportFailed => 'Gagal melapor';
+
+  @override
+  String get culinaryReportReasonTitle => 'Apa yang salah?';
+
+  @override
+  String get culinaryClaimEvidenceBody =>
+      'Tulis bukti bahwa kamu pemilik atau pengelola sah.';
+
+  @override
+  String get culinaryClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get culinaryReasonClosed => 'Tempat sudah tutup';
+
+  @override
+  String get culinaryReasonWrongLocation => 'Lokasi tidak sesuai';
+
+  @override
+  String get culinaryReasonInvalidContact => 'Kontak tidak valid';
+
+  @override
+  String get culinaryReasonMisleading => 'Informasi menyesatkan';
+
+  @override
+  String get culinaryReasonDuplicate => 'Dugaan duplikat';
+
+  @override
+  String get culinaryReasonAbuse => 'Dugaan pelanggaran';
+
+  @override
+  String get culinaryLoadFailed => 'Gagal memuat';
+
+  @override
+  String get culinaryConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get exploreActionsLoginBody =>
+      'Usul perbaikan dan laporan butuh akun supaya bisa ditindak lanjuti.';
+
+  @override
+  String get exploreReasonSheetPlaceSubtitle =>
+      'Apa yang salah dengan info tempat ini?';
+
+  @override
+  String get exploreReasonSheetCuisineSubtitle =>
+      'Apa yang salah dengan info kuliner ini?';
+
+  @override
+  String get exploreEditNoChangeTitle => 'Belum ada perubahan';
+
+  @override
+  String get exploreEditNoChangeBody => 'Ubah minimal satu isian dulu ya.';
+
+  @override
+  String get exploreEditSent => 'Usulan terkirim';
+
+  @override
+  String get exploreEditSentBody =>
+      'Admin akan meninjau dulu. Perubahan tayang setelah disetujui.';
+
+  @override
+  String get exploreEditFailed => 'Usulan gagal';
+
+  @override
+  String get exploreEditPlaceTitle => 'Usul perbaikan data tempat';
+
+  @override
+  String get exploreEditCuisineTitle => 'Usul perbaikan data kuliner';
+
+  @override
+  String get exploreEditIntro =>
+      'Isi yang kamu tahu saja. Tim admin yang memutuskan.';
+
+  @override
+  String get exploreEditPlaceNameLabel => 'Nama tempat';
+
+  @override
+  String get exploreEditCuisineNameLabel => 'Nama kuliner';
+
+  @override
+  String get exploreEditDescriptionLabel => 'Deskripsi';
+
+  @override
+  String get exploreEditAddressLabel => 'Alamat';
+
+  @override
+  String get exploreEditIngredientsLabel => 'Bahan';
+
+  @override
+  String get exploreEditIngredientsHint => 'Pisahkan dengan koma';
+
+  @override
+  String get exploreEditSubmit => 'Kirim usulan';
+
+  @override
+  String get exploreNotFoundTitle => 'Konten tidak ditemukan';
+
+  @override
+  String get exploreNotFoundBody =>
+      'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.';
+
+  @override
+  String get placeCreditAuthor => 'Penulis';
+
+  @override
+  String get placeSectionActions => 'Aksi';
+
+  @override
+  String get placeActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get placeActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get placeActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get placeAddPhotoLoginGate => 'Masuk dulu untuk ikut mengisi';
+
+  @override
+  String get placeActionBookmark => 'Bookmark';
+
+  @override
+  String get placeInfoHours => 'Jam buka';
+
+  @override
+  String get placeInfoEmail => 'Email';
+
+  @override
+  String get placeInfoContactNote => 'Kontak';
+
+  @override
+  String get placePhotoSection => 'Foto';
+
+  @override
+  String get placeSourceSection => 'Sumber';
+
+  @override
+  String placeMorePhotos(String count) {
+    return 'Lihat $count foto lainnya';
+  }
+
+  @override
+  String get placeOtherWisataInKecamatan => 'Wisata lain di kecamatan ini';
+
+  @override
+  String placeOtherWisataInRegion(String region) {
+    return 'Wisata lain di $region';
+  }
+
+  @override
+  String placeAgendaTitle(String name) {
+    return 'Agenda di $name';
+  }
+
+  @override
+  String get exploreMapToggleLight => 'Peta mode terang';
+
+  @override
+  String get exploreMapToggleDark => 'Peta mode gelap';
+
+  @override
+  String get exploreMapReload => 'Muat ulang peta';
+
+  @override
+  String get exploreMapsOpenFailedTitle => 'Google Maps tidak bisa dibuka';
+
+  @override
+  String get exploreMapsOpenFailedBody => 'Coba lagi sebentar, ya.';
+
+  @override
+  String get exploreOpenInGoogleMaps => 'Lihat di Google Maps';
+
+  @override
+  String get explorePinsEmptyTitle => 'Belum ada tempat di peta';
+
+  @override
+  String get explorePinsEmptyBody =>
+      'Daftar tempat masih kosong, atau datanya gagal dimuat.';
+
+  @override
+  String get exploreMapLoadFailedTitle => 'Peta tidak bisa dimuat';
+
+  @override
+  String get exploreFilterAll => 'Semua';
+
+  @override
+  String get exploreEmptyDestinations => 'Belum ada destinasi yang cocok.';
+
+  @override
+  String get placeSearchHint => 'Cari destinasi...';
+
+  @override
+  String get placeEmptyTitle => 'Belum ada destinasi';
+
+  @override
+  String get placeEmptyBody =>
+      'Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.';
+
+  @override
+  String get cuisineListTitle => 'Kuliner';
+
+  @override
+  String get cuisineListSearchHint => 'Cari kuliner...';
+
+  @override
+  String get cuisineListNoMatch => 'Belum ada kuliner yang cocok.';
+
+  @override
+  String get cuisineListEmptyTitle => 'Belum ada kuliner';
+
+  @override
+  String get cuisineListEmptyBody =>
+      'Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.';
+
+  @override
+  String get cuisinePropose => 'Usulkan kuliner';
+
+  @override
+  String get cuisineDetailReportSentBody =>
+      'Terima kasih. Admin akan memeriksa kuliner ini.';
+
+  @override
+  String get cuisineDetailIngredients => 'Bahan';
+
+  @override
+  String get cuisineDetailServing => 'Cara menyajikan';
+
+  @override
+  String get cuisineDetailSource => 'Sumber';
+
+  @override
+  String get cuisineDetailHelpTitle => 'Bantu lengkapi';
+
+  @override
+  String get cuisineDetailSuggestEditBody =>
+      'Salah nama, deskripsi, atau bahan?';
+
+  @override
+  String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
+
+  @override
+  String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
+
+  @override
+  String get placePhotosNotFoundBody =>
+      'Tempat ini belum punya foto, atau datanya gagal dimuat.';
+
+  @override
+  String get placePhotosEmpty => 'Belum ada foto untuk tempat ini.';
+
+  @override
+  String get placePhotosUpload => 'Unggah foto';
+
+  @override
+  String get placePinPickerTitle => 'Pilih titik';
+
+  @override
+  String get placePinPickerSearchHint => 'Cari nama tempat';
+
+  @override
+  String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
+
+  @override
+  String get placePinPickerSearching => 'Mencari...';
+
+  @override
+  String get placePinPickerNotFound => 'Tidak ketemu di Kabupaten Sambas.';
+
+  @override
+  String get placePinPickerOutOfBounds =>
+      'Titik harus di dalam Kabupaten Sambas.';
+
+  @override
+  String get placePinPickerRemove => 'Hapus koordinat';
+
+  @override
+  String get placePinPickerUsePoint => 'Pakai titik ini';
+
+  @override
+  String get placeProposalsTitle => 'Usulan wisata';
+
+  @override
+  String get placeProposalsCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get placeProposalsCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get placeProposalsCancelAction => 'Batalkan';
+
+  @override
+  String get placeProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get placeProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get placeProposalsLoadFailedBody =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get placeProposalsEmptyTitle => 'Belum ada usulan';
+
+  @override
+  String get placeProposalsEmptyBody =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get placeProposalsKindNew => 'Tempat baru';
+
+  @override
+  String get placeProposalsKindEdit => 'Suntingan';
+
+  @override
+  String placeProposalsRejectReason(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String get culinaryFormTitleCuisine => 'Usul kuliner';
+
+  @override
+  String get culinaryFormTitlePlace => 'Usul tempat';
+
+  @override
+  String get culinaryFormTitleLink => 'Tandai penjual';
+
+  @override
+  String get culinaryFormPickBoth => 'Pilih kuliner dan tempatnya dulu ya.';
+
+  @override
+  String get culinaryFormNameTooShort => 'Nama minimal 3 huruf ya.';
+
+  @override
+  String get culinaryFormLinkIntro =>
+      'Bantu hubungkan kuliner dengan tempat yang menjualnya. Wajib masuk dulu.';
+
+  @override
+  String get culinaryFormIntro =>
+      'Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.';
+
+  @override
+  String get culinaryFormFieldCuisine => 'Kuliner';
+
+  @override
+  String get culinaryFormSearchCuisine => 'Cari kuliner';
+
+  @override
+  String get culinaryFormFieldPlace => 'Tempat/penjual';
+
+  @override
+  String get culinaryFormSearchPlace => 'Cari tempat';
+
+  @override
+  String get culinaryFormNameCuisineLabel => 'Nama kuliner';
+
+  @override
+  String get culinaryFormNamePlaceLabel => 'Nama tempat';
+
+  @override
+  String get culinaryFormNamePlaceHint => 'Nama tempat atau penjual';
+
+  @override
+  String get culinaryFormIngredientsOptional => 'Bahan (opsional)';
+
+  @override
+  String get culinaryFormAddressOptional => 'Alamat (opsional)';
+
+  @override
+  String get culinaryFormAddressHint => 'Jalan, nomor, patokan';
+
+  @override
+  String get culinaryFormLocationHintOptional => 'Patokan lokasi (opsional)';
+
+  @override
+  String get culinaryFormLocationHintHint => 'Depan pasar, sebelah masjid';
+
+  @override
+  String culinaryFormPhotoAttribution(String license) {
+    return 'Foto akan diatribusikan ke namamu dengan lisensi $license.';
+  }
+
+  @override
+  String get culinaryFormSentBody =>
+      'Admin akan meninjau dulu. Terima kasih sudah bantu lengkapi data kuliner Sambas.';
+
+  @override
+  String get placeFormTitleCreate => 'Usulkan wisata';
+
+  @override
+  String get placeFormPickType => 'Pilih kategori wisata';
+
+  @override
+  String get placeFormNameDescRequired => 'Nama dan deskripsi wajib diisi.';
+
+  @override
+  String get placeFormNameInvalid => 'Nama perlu mengandung huruf atau angka.';
+
+  @override
+  String get placeFormPointOutside => 'Titik harus di dalam Kabupaten Sambas.';
+
+  @override
+  String get placeFormPhotoToast => 'Foto langsung tampil';
+
+  @override
+  String get placeFormPhotoBody =>
+      'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.';
+
+  @override
+  String get placeFormProposalBody =>
+      'Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.';
+
+  @override
+  String placeFormStepOf(int step, int total, String label) {
+    return 'Langkah $step dari $total: $label';
+  }
+
+  @override
+  String get placeFormNext => 'Lanjut';
+
+  @override
+  String get placeFormSending => 'Mengirim...';
+
+  @override
+  String get placeFormName => 'Nama';
+
+  @override
+  String get placeFormNameHint => 'Nama tempat';
+
+  @override
+  String get placeFormCategory => 'Kategori';
+
+  @override
+  String get placeFormPickCategory => 'Pilih kategori';
+
+  @override
+  String get placeFormDescription => 'Deskripsi';
+
+  @override
+  String get placeFormDescriptionHint => 'Ceritakan tempat ini';
+
+  @override
+  String get placeFormMapHint =>
+      'Ketuk peta untuk memilih koordinat. Opsional.';
+
+  @override
+  String get placeFormContactHint => 'Nomor, email, atau catatan';
+
+  @override
+  String get placeFormHoursHint => 'Opsional';
+
+  @override
+  String get placeFormLoginGate =>
+      'Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.';
+
+  @override
+  String get placeFormStepInfo => 'Informasi umum';
+
+  @override
+  String get placeFormStepLocation => 'Lokasi';
+
+  @override
+  String get placeFormStepContact => 'Kontak';
+
+  @override
+  String get placeFormStepPhoto => 'Foto';
+
+  @override
+  String get placeFormSubmitPhoto => 'Kirim foto';
+
+  @override
+  String get wilayahTapKecamatan => 'Ketuk area kecamatan';
+
+  @override
+  String get wilayahTapKecamatanHint =>
+      'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.';
+
+  @override
+  String get wilayahSearchVillageHint => 'Cari desa...';
+
+  @override
+  String wilayahDesaCount(int count) {
+    return '$count desa';
+  }
+
+  @override
+  String wilayahWisataCount(int count) {
+    return '$count wisata';
+  }
+
+  @override
+  String get wilayahUsahaInKecamatan => 'Usaha di kecamatan ini';
+
+  @override
+  String get wilayahAcaraInKecamatan => 'Acara di kecamatan ini';
+
+  @override
+  String get wilayahVillageListFailed =>
+      'Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get wilayahReload => 'Muat ulang';
+
+  @override
+  String get wilayahNoWisata => 'Belum ada wisata di kecamatan ini.';
+
+  @override
+  String get wilayahNoUsaha => 'Belum ada usaha di kecamatan ini.';
+
+  @override
+  String get wilayahNoAcara => 'Belum ada acara di kecamatan ini.';
+
+  @override
+  String get wilayahLoadingUsaha => 'Memuat daftar usaha...';
+
+  @override
+  String get wilayahLoadingAcara => 'Memuat acara...';
+
+  @override
+  String get wilayahLoadingVillage => 'Memuat desa...';
+
+  @override
+  String get wilayahLoadingVillageList => 'Memuat daftar desa...';
+
+  @override
+  String get wilayahSearchVillageCta => 'Cari desa';
+
+  @override
+  String get wilayahSeeArea => 'Lihat area';
+
+  @override
+  String get wilayahKecamatanProfile => 'Profil kecamatan';
+
+  @override
+  String get wilayahScrollDown => 'Gulir ke bawah';
+
+  @override
+  String get exploreUploadImageFailed => 'Unggah foto gagal';
+
+  @override
+  String get exploreSubmitFailed => 'Gagal mengirim. Coba lagi ya.';
+
+  @override
+  String get placeSaveFailed => 'Gagal menyimpan. Coba lagi ya.';
+
+  @override
+  String get nominatimSearchFailed => 'Pencarian gagal. Coba lagi sebentar.';
+
+  @override
+  String get placeFormPhotoRequired => 'Pilih minimal satu foto.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -9890,4 +10781,895 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get usahaPriceUnlisted => 'Harga belum dicantumkan';
+
+  @override
+  String get culinaryProposalsTitle => 'Usulan kuliner';
+
+  @override
+  String get culinaryPlacesTitle => 'Tempat kuliner';
+
+  @override
+  String get culinaryProposalsLoadFailed =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get culinaryProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get culinaryProposalsLoginGate =>
+      'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get culinaryProposalsEmpty => 'Belum ada usulan';
+
+  @override
+  String get culinaryProposalsEmptyHint =>
+      'Status usulan yang sudah ditinjau akan muncul di sini.';
+
+  @override
+  String get culinaryProposalsEmptyCta => 'Usul kuliner baru';
+
+  @override
+  String get culinaryProposalsCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get culinaryProposalsCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get culinaryProposalsCancelFailed => 'Gagal membatalkan';
+
+  @override
+  String get culinaryCancelAction => 'Batalkan';
+
+  @override
+  String get culinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get culinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get culinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get culinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get culinaryKindLink => 'Relasi kuliner-tempat';
+
+  @override
+  String get culinaryKindOperational => 'Status buka';
+
+  @override
+  String get culinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get culinaryKindRestore => 'Minta tayang';
+
+  @override
+  String get culinaryRejectDuplicate => 'Sudah ada yang mirip';
+
+  @override
+  String get culinaryRejectIncomplete => 'Data belum lengkap';
+
+  @override
+  String get culinaryRejectInvalid => 'Data tidak valid';
+
+  @override
+  String get culinaryRejectUnverifiable => 'Belum bisa diverifikasi';
+
+  @override
+  String get culinaryRejectAttribution => 'Atribusi gambar belum lengkap';
+
+  @override
+  String get culinaryRejectViolation => 'Melanggar ketentuan';
+
+  @override
+  String get culinaryRejectStale => 'Data dasar sudah berubah';
+
+  @override
+  String get culinaryRejectOther => 'Alasan lain';
+
+  @override
+  String get exploreHubTitle => 'Eksplorasi';
+
+  @override
+  String get exploreComingSoon => 'Segera hadir';
+
+  @override
+  String get exploreCategoryFallbackTitle => 'Kategori';
+
+  @override
+  String get exploreCategoryUnavailable => 'Kategori ini belum tersedia.';
+
+  @override
+  String get exploreCategoryUnavailableBody =>
+      'Kami sedang menyiapkan kontennya. Balik lagi nanti ya.';
+
+  @override
+  String get exploreShowComingSoon => 'Lihat yang segera hadir';
+
+  @override
+  String get exploreHideComingSoon => 'Sembunyikan yang segera hadir';
+
+  @override
+  String get exploreCategoryWilayah => 'Wilayah';
+
+  @override
+  String get exploreCategoryWilayahSubtitle => 'Kecamatan dan desa di Sambas';
+
+  @override
+  String get exploreCategoryWisata => 'Wisata';
+
+  @override
+  String get exploreCategoryWisataSubtitle => 'Destinasi di Sambas';
+
+  @override
+  String get exploreCategoryKuliner => 'Kuliner';
+
+  @override
+  String get exploreCategoryKulinerSubtitle => 'Makanan khas Sambas';
+
+  @override
+  String get exploreCategoryUsahaSubtitle => 'UMKM dan jasa lokal';
+
+  @override
+  String get exploreCategoryAcara => 'Acara';
+
+  @override
+  String get exploreCategoryAcaraSubtitle => 'Festival, pameran, dan kegiatan';
+
+  @override
+  String get exploreCategoryPermainan => 'Permainan';
+
+  @override
+  String get exploreCategoryPermainanSubtitle => 'Pantun dan permainan Sambas';
+
+  @override
+  String get exploreCategoryEnsiklopedia => 'Ensiklopedia';
+
+  @override
+  String get exploreCategoryEnsiklopediaSubtitle =>
+      'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get exploreCategoryKomunitas => 'Komunitas';
+
+  @override
+  String get exploreCategoryKomunitasSubtitle =>
+      'Grup warga dan kegiatan bersama';
+
+  @override
+  String get exploreMapHeroTitle => 'Jelajahi Sambas';
+
+  @override
+  String get exploreMapHeroBody =>
+      'Peta hidup Kabupaten Sambas - ketuk untuk membuka.';
+
+  @override
+  String get exploreMapPosterTitle => 'Peta Sambas';
+
+  @override
+  String get exploreMapPosterOpen => 'Ketuk untuk membuka peta interaktif.';
+
+  @override
+  String get exploreMapPosterFailed =>
+      'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.';
+
+  @override
+  String get exploreMapLoadingSemantics => 'Memuat peta';
+
+  @override
+  String get exploreMapLoading => 'Memuat peta...';
+
+  @override
+  String get exploreMapStyleTitle => 'Gaya peta';
+
+  @override
+  String get exploreMapStyleFree => 'Gratis, tanpa API key';
+
+  @override
+  String get exploreMapStyleStreet => 'Jalan';
+
+  @override
+  String get exploreMapStyleSatellite => 'Satelit';
+
+  @override
+  String get exploreMapStyleTerrain => 'Terain';
+
+  @override
+  String regionKecamatanTitle(String name) {
+    return 'Kecamatan $name';
+  }
+
+  @override
+  String regionDesaTitle(String name) {
+    return 'Desa $name';
+  }
+
+  @override
+  String regionVillageCount(String count) {
+    return '$count desa';
+  }
+
+  @override
+  String get regionDesaComingSoon =>
+      'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.';
+
+  @override
+  String regionAgendaDesa(String name) {
+    return 'Agenda di Desa $name';
+  }
+
+  @override
+  String get placeNoCoordinatesTitle => 'Lokasi tempat ini belum tersedia';
+
+  @override
+  String get placeNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get placeBookmarkSoonTitle => 'Bookmark tempat belum bisa dipakai';
+
+  @override
+  String get placeBookmarkSoonBody =>
+      'Kami sedang berusaha membuatnya jadi lebih baik.';
+
+  @override
+  String get placeTypeSejarah => 'Sejarah';
+
+  @override
+  String get placeTypeAlam => 'Alam';
+
+  @override
+  String get placeTypeBudaya => 'Budaya';
+
+  @override
+  String get placeTypePantai => 'Pantai';
+
+  @override
+  String get placeTypeBelanja => 'Belanja';
+
+  @override
+  String get placeTypeWisata => 'Wisata';
+
+  @override
+  String get placeCategoryKuliner => 'Kuliner';
+
+  @override
+  String get culinaryStatusOperating => 'Buka';
+
+  @override
+  String get culinaryStatusTemporarilyClosed => 'Tutup sementara';
+
+  @override
+  String get culinaryStatusPermanentlyClosed => 'Tutup permanen';
+
+  @override
+  String get culinaryStatusUnknown => 'Belum diketahui';
+
+  @override
+  String get culinaryPlacesContribute => 'Usulkan tempat kuliner';
+
+  @override
+  String get culinaryPlacesSearchHint => 'Cari tempat atau penjual...';
+
+  @override
+  String get culinaryPlacesEmpty => 'Belum ada tempat yang cocok.';
+
+  @override
+  String get culinaryLoginTitle => 'Masuk dulu ya';
+
+  @override
+  String get culinaryPlacesLoginBody =>
+      'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.';
+
+  @override
+  String get culinaryClaimPlace => 'Klaim tempat ini';
+
+  @override
+  String get culinaryClaimPlaceBody => 'Kamu pemilik atau pengelola sah?';
+
+  @override
+  String get culinarySuggestEdit => 'Usul perbaikan data';
+
+  @override
+  String get culinarySuggestEditPlaceBody =>
+      'Nama, deskripsi, atau alamat salah?';
+
+  @override
+  String get culinarySuggestOperational => 'Usulkan status buka/tutup';
+
+  @override
+  String get culinaryClaimManageTitle => 'Klaim pengelolaan';
+
+  @override
+  String get culinaryClaimEvidenceHint =>
+      'Nomor WhatsApp atau akun media sosial pengelola';
+
+  @override
+  String get culinaryEvidenceShortTitle => 'Bukti kurang';
+
+  @override
+  String get culinaryEvidenceShortBody => 'Tulis bukti minimal 5 karakter ya.';
+
+  @override
+  String get culinaryClaimSent => 'Klaim terkirim';
+
+  @override
+  String get culinaryClaimPlaceSentBody =>
+      'Admin akan memeriksa buktinya dulu. Kamu bisa pantau statusnya nanti.';
+
+  @override
+  String get culinaryClaimFailed => 'Klaim gagal';
+
+  @override
+  String get culinaryOperationalSent => 'Usulan terkirim';
+
+  @override
+  String get culinaryOperationalSentBody =>
+      'Status baru akan tayang setelah admin setujui.';
+
+  @override
+  String get culinaryProposalFailed => 'Usulan gagal';
+
+  @override
+  String get culinaryPlaceReportSentBody =>
+      'Terima kasih. Admin akan memeriksa tempat ini.';
+
+  @override
+  String get culinaryReportFailed => 'Gagal melapor';
+
+  @override
+  String get culinaryReportReasonTitle => 'Apa yang salah?';
+
+  @override
+  String get culinaryClaimEvidenceBody =>
+      'Tulis bukti bahwa kamu pemilik atau pengelola sah.';
+
+  @override
+  String get culinaryClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get culinaryReasonClosed => 'Tempat sudah tutup';
+
+  @override
+  String get culinaryReasonWrongLocation => 'Lokasi tidak sesuai';
+
+  @override
+  String get culinaryReasonInvalidContact => 'Kontak tidak valid';
+
+  @override
+  String get culinaryReasonMisleading => 'Informasi menyesatkan';
+
+  @override
+  String get culinaryReasonDuplicate => 'Dugaan duplikat';
+
+  @override
+  String get culinaryReasonAbuse => 'Dugaan pelanggaran';
+
+  @override
+  String get culinaryLoadFailed => 'Gagal memuat';
+
+  @override
+  String get culinaryConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get exploreActionsLoginBody =>
+      'Usul perbaikan dan laporan butuh akun supaya bisa ditindak lanjuti.';
+
+  @override
+  String get exploreReasonSheetPlaceSubtitle =>
+      'Apa yang salah dengan info tempat ini?';
+
+  @override
+  String get exploreReasonSheetCuisineSubtitle =>
+      'Apa yang salah dengan info kuliner ini?';
+
+  @override
+  String get exploreEditNoChangeTitle => 'Belum ada perubahan';
+
+  @override
+  String get exploreEditNoChangeBody => 'Ubah minimal satu isian dulu ya.';
+
+  @override
+  String get exploreEditSent => 'Usulan terkirim';
+
+  @override
+  String get exploreEditSentBody =>
+      'Admin akan meninjau dulu. Perubahan tayang setelah disetujui.';
+
+  @override
+  String get exploreEditFailed => 'Usulan gagal';
+
+  @override
+  String get exploreEditPlaceTitle => 'Usul perbaikan data tempat';
+
+  @override
+  String get exploreEditCuisineTitle => 'Usul perbaikan data kuliner';
+
+  @override
+  String get exploreEditIntro =>
+      'Isi yang kamu tahu saja. Tim admin yang memutuskan.';
+
+  @override
+  String get exploreEditPlaceNameLabel => 'Nama tempat';
+
+  @override
+  String get exploreEditCuisineNameLabel => 'Nama kuliner';
+
+  @override
+  String get exploreEditDescriptionLabel => 'Deskripsi';
+
+  @override
+  String get exploreEditAddressLabel => 'Alamat';
+
+  @override
+  String get exploreEditIngredientsLabel => 'Bahan';
+
+  @override
+  String get exploreEditIngredientsHint => 'Pisahkan dengan koma';
+
+  @override
+  String get exploreEditSubmit => 'Kirim usulan';
+
+  @override
+  String get exploreNotFoundTitle => 'Konten tidak ditemukan';
+
+  @override
+  String get exploreNotFoundBody =>
+      'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.';
+
+  @override
+  String get placeCreditAuthor => 'Penulis';
+
+  @override
+  String get placeSectionActions => 'Aksi';
+
+  @override
+  String get placeActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get placeActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get placeActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get placeAddPhotoLoginGate => 'Masuk dulu untuk ikut mengisi';
+
+  @override
+  String get placeActionBookmark => 'Bookmark';
+
+  @override
+  String get placeInfoHours => 'Jam buka';
+
+  @override
+  String get placeInfoEmail => 'Email';
+
+  @override
+  String get placeInfoContactNote => 'Kontak';
+
+  @override
+  String get placePhotoSection => 'Foto';
+
+  @override
+  String get placeSourceSection => 'Sumber';
+
+  @override
+  String placeMorePhotos(String count) {
+    return 'Lihat $count foto lainnya';
+  }
+
+  @override
+  String get placeOtherWisataInKecamatan => 'Wisata lain di kecamatan ini';
+
+  @override
+  String placeOtherWisataInRegion(String region) {
+    return 'Wisata lain di $region';
+  }
+
+  @override
+  String placeAgendaTitle(String name) {
+    return 'Agenda di $name';
+  }
+
+  @override
+  String get exploreMapToggleLight => 'Peta mode terang';
+
+  @override
+  String get exploreMapToggleDark => 'Peta mode gelap';
+
+  @override
+  String get exploreMapReload => 'Muat ulang peta';
+
+  @override
+  String get exploreMapsOpenFailedTitle => 'Google Maps tidak bisa dibuka';
+
+  @override
+  String get exploreMapsOpenFailedBody => 'Coba lagi sebentar, ya.';
+
+  @override
+  String get exploreOpenInGoogleMaps => 'Lihat di Google Maps';
+
+  @override
+  String get explorePinsEmptyTitle => 'Belum ada tempat di peta';
+
+  @override
+  String get explorePinsEmptyBody =>
+      'Daftar tempat masih kosong, atau datanya gagal dimuat.';
+
+  @override
+  String get exploreMapLoadFailedTitle => 'Peta tidak bisa dimuat';
+
+  @override
+  String get exploreFilterAll => 'Semua';
+
+  @override
+  String get exploreEmptyDestinations => 'Belum ada destinasi yang cocok.';
+
+  @override
+  String get placeSearchHint => 'Cari destinasi...';
+
+  @override
+  String get placeEmptyTitle => 'Belum ada destinasi';
+
+  @override
+  String get placeEmptyBody =>
+      'Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.';
+
+  @override
+  String get cuisineListTitle => 'Kuliner';
+
+  @override
+  String get cuisineListSearchHint => 'Cari kuliner...';
+
+  @override
+  String get cuisineListNoMatch => 'Belum ada kuliner yang cocok.';
+
+  @override
+  String get cuisineListEmptyTitle => 'Belum ada kuliner';
+
+  @override
+  String get cuisineListEmptyBody =>
+      'Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.';
+
+  @override
+  String get cuisinePropose => 'Usulkan kuliner';
+
+  @override
+  String get cuisineDetailReportSentBody =>
+      'Terima kasih. Admin akan memeriksa kuliner ini.';
+
+  @override
+  String get cuisineDetailIngredients => 'Bahan';
+
+  @override
+  String get cuisineDetailServing => 'Cara menyajikan';
+
+  @override
+  String get cuisineDetailSource => 'Sumber';
+
+  @override
+  String get cuisineDetailHelpTitle => 'Bantu lengkapi';
+
+  @override
+  String get cuisineDetailSuggestEditBody =>
+      'Salah nama, deskripsi, atau bahan?';
+
+  @override
+  String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
+
+  @override
+  String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
+
+  @override
+  String get placePhotosNotFoundBody =>
+      'Tempat ini belum punya foto, atau datanya gagal dimuat.';
+
+  @override
+  String get placePhotosEmpty => 'Belum ada foto untuk tempat ini.';
+
+  @override
+  String get placePhotosUpload => 'Unggah foto';
+
+  @override
+  String get placePinPickerTitle => 'Pilih titik';
+
+  @override
+  String get placePinPickerSearchHint => 'Cari nama tempat';
+
+  @override
+  String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
+
+  @override
+  String get placePinPickerSearching => 'Mencari...';
+
+  @override
+  String get placePinPickerNotFound => 'Tidak ketemu di Kabupaten Sambas.';
+
+  @override
+  String get placePinPickerOutOfBounds =>
+      'Titik harus di dalam Kabupaten Sambas.';
+
+  @override
+  String get placePinPickerRemove => 'Hapus koordinat';
+
+  @override
+  String get placePinPickerUsePoint => 'Pakai titik ini';
+
+  @override
+  String get placeProposalsTitle => 'Usulan wisata';
+
+  @override
+  String get placeProposalsCancelTitle => 'Batalkan usulan?';
+
+  @override
+  String get placeProposalsCancelBody =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get placeProposalsCancelAction => 'Batalkan';
+
+  @override
+  String get placeProposalsLoginGate => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get placeProposalsLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get placeProposalsLoadFailedBody =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get placeProposalsEmptyTitle => 'Belum ada usulan';
+
+  @override
+  String get placeProposalsEmptyBody =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get placeProposalsKindNew => 'Tempat baru';
+
+  @override
+  String get placeProposalsKindEdit => 'Suntingan';
+
+  @override
+  String placeProposalsRejectReason(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String get culinaryFormTitleCuisine => 'Usul kuliner';
+
+  @override
+  String get culinaryFormTitlePlace => 'Usul tempat';
+
+  @override
+  String get culinaryFormTitleLink => 'Tandai penjual';
+
+  @override
+  String get culinaryFormPickBoth => 'Pilih kuliner dan tempatnya dulu ya.';
+
+  @override
+  String get culinaryFormNameTooShort => 'Nama minimal 3 huruf ya.';
+
+  @override
+  String get culinaryFormLinkIntro =>
+      'Bantu hubungkan kuliner dengan tempat yang menjualnya. Wajib masuk dulu.';
+
+  @override
+  String get culinaryFormIntro =>
+      'Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.';
+
+  @override
+  String get culinaryFormFieldCuisine => 'Kuliner';
+
+  @override
+  String get culinaryFormSearchCuisine => 'Cari kuliner';
+
+  @override
+  String get culinaryFormFieldPlace => 'Tempat/penjual';
+
+  @override
+  String get culinaryFormSearchPlace => 'Cari tempat';
+
+  @override
+  String get culinaryFormNameCuisineLabel => 'Nama kuliner';
+
+  @override
+  String get culinaryFormNamePlaceLabel => 'Nama tempat';
+
+  @override
+  String get culinaryFormNamePlaceHint => 'Nama tempat atau penjual';
+
+  @override
+  String get culinaryFormIngredientsOptional => 'Bahan (opsional)';
+
+  @override
+  String get culinaryFormAddressOptional => 'Alamat (opsional)';
+
+  @override
+  String get culinaryFormAddressHint => 'Jalan, nomor, patokan';
+
+  @override
+  String get culinaryFormLocationHintOptional => 'Patokan lokasi (opsional)';
+
+  @override
+  String get culinaryFormLocationHintHint => 'Depan pasar, sebelah masjid';
+
+  @override
+  String culinaryFormPhotoAttribution(String license) {
+    return 'Foto akan diatribusikan ke namamu dengan lisensi $license.';
+  }
+
+  @override
+  String get culinaryFormSentBody =>
+      'Admin akan meninjau dulu. Terima kasih sudah bantu lengkapi data kuliner Sambas.';
+
+  @override
+  String get placeFormTitleCreate => 'Usulkan wisata';
+
+  @override
+  String get placeFormPickType => 'Pilih kategori wisata';
+
+  @override
+  String get placeFormNameDescRequired => 'Nama dan deskripsi wajib diisi.';
+
+  @override
+  String get placeFormNameInvalid => 'Nama perlu mengandung huruf atau angka.';
+
+  @override
+  String get placeFormPointOutside => 'Titik harus di dalam Kabupaten Sambas.';
+
+  @override
+  String get placeFormPhotoToast => 'Foto langsung tampil';
+
+  @override
+  String get placeFormPhotoBody =>
+      'Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.';
+
+  @override
+  String get placeFormProposalBody =>
+      'Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.';
+
+  @override
+  String placeFormStepOf(int step, int total, String label) {
+    return 'Langkah $step dari $total: $label';
+  }
+
+  @override
+  String get placeFormNext => 'Lanjut';
+
+  @override
+  String get placeFormSending => 'Mengirim...';
+
+  @override
+  String get placeFormName => 'Nama';
+
+  @override
+  String get placeFormNameHint => 'Nama tempat';
+
+  @override
+  String get placeFormCategory => 'Kategori';
+
+  @override
+  String get placeFormPickCategory => 'Pilih kategori';
+
+  @override
+  String get placeFormDescription => 'Deskripsi';
+
+  @override
+  String get placeFormDescriptionHint => 'Ceritakan tempat ini';
+
+  @override
+  String get placeFormMapHint =>
+      'Ketuk peta untuk memilih koordinat. Opsional.';
+
+  @override
+  String get placeFormContactHint => 'Nomor, email, atau catatan';
+
+  @override
+  String get placeFormHoursHint => 'Opsional';
+
+  @override
+  String get placeFormLoginGate =>
+      'Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.';
+
+  @override
+  String get placeFormStepInfo => 'Informasi umum';
+
+  @override
+  String get placeFormStepLocation => 'Lokasi';
+
+  @override
+  String get placeFormStepContact => 'Kontak';
+
+  @override
+  String get placeFormStepPhoto => 'Foto';
+
+  @override
+  String get placeFormSubmitPhoto => 'Kirim foto';
+
+  @override
+  String get wilayahTapKecamatan => 'Ketuk area kecamatan';
+
+  @override
+  String get wilayahTapKecamatanHint =>
+      'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.';
+
+  @override
+  String get wilayahSearchVillageHint => 'Cari desa...';
+
+  @override
+  String wilayahDesaCount(int count) {
+    return '$count desa';
+  }
+
+  @override
+  String wilayahWisataCount(int count) {
+    return '$count wisata';
+  }
+
+  @override
+  String get wilayahUsahaInKecamatan => 'Usaha di kecamatan ini';
+
+  @override
+  String get wilayahAcaraInKecamatan => 'Acara di kecamatan ini';
+
+  @override
+  String get wilayahVillageListFailed =>
+      'Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get wilayahReload => 'Muat ulang';
+
+  @override
+  String get wilayahNoWisata => 'Belum ada wisata di kecamatan ini.';
+
+  @override
+  String get wilayahNoUsaha => 'Belum ada usaha di kecamatan ini.';
+
+  @override
+  String get wilayahNoAcara => 'Belum ada acara di kecamatan ini.';
+
+  @override
+  String get wilayahLoadingUsaha => 'Memuat daftar usaha...';
+
+  @override
+  String get wilayahLoadingAcara => 'Memuat acara...';
+
+  @override
+  String get wilayahLoadingVillage => 'Memuat desa...';
+
+  @override
+  String get wilayahLoadingVillageList => 'Memuat daftar desa...';
+
+  @override
+  String get wilayahSearchVillageCta => 'Cari desa';
+
+  @override
+  String get wilayahSeeArea => 'Lihat area';
+
+  @override
+  String get wilayahKecamatanProfile => 'Profil kecamatan';
+
+  @override
+  String get wilayahScrollDown => 'Gulir ke bawah';
+
+  @override
+  String get exploreUploadImageFailed => 'Unggah foto gagal';
+
+  @override
+  String get exploreSubmitFailed => 'Gagal mengirim. Coba lagi ya.';
+
+  @override
+  String get placeSaveFailed => 'Gagal menyimpan. Coba lagi ya.';
+
+  @override
+  String get nominatimSearchFailed => 'Pencarian gagal. Coba lagi sebentar.';
+
+  @override
+  String get placeFormPhotoRequired => 'Pilih minimal satu foto.';
 }

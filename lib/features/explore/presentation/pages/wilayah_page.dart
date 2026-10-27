@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/theme_mode_controller.dart';
 import '../../../../shared/widgets/small_button.dart';
 import '../../../event/presentation/providers/event_browse_providers.dart';
@@ -483,6 +484,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final kecamatanAsync = ref.watch(regionsKecamatanProvider);
     final desaAsync = ref.watch(regionsProvider);
     final kecamatan = kecamatanAsync.value ?? const <Region>[];
@@ -544,7 +546,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
             child: Column(
               children: [
                 IconButton(
-                  tooltip: 'Kembali',
+                  tooltip: AppLocalizations.of(context).commonBack,
                   onPressed: () =>
                       context.canPop() ? context.pop() : context.go('/explore'),
                   style: _floatingButtonStyle(context),
@@ -553,8 +555,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                 const SizedBox(height: 8),
                 IconButton(
                   tooltip: Theme.of(context).brightness == Brightness.dark
-                      ? 'Peta mode terang'
-                      : 'Peta mode gelap',
+                      ? AppLocalizations.of(context).exploreMapToggleLight
+                      : AppLocalizations.of(context).exploreMapToggleDark,
                   onPressed: () => ref
                       .read(themeModeControllerProvider.notifier)
                       .toggle(Theme.of(context).brightness),
@@ -584,10 +586,16 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                     variant: FBadgeVariant.secondary,
                     child: Text(
                       selected == null
-                          ? 'Ketuk area kecamatan'
+                          ? l10n.wilayahTapKecamatan
                           : _selectedDesaId != null
-                          ? 'Desa ${desaOfSelected.where((d) => d.id == _selectedDesaId).firstOrNull?.name ?? _selectedDesaId}'
-                          : 'Kecamatan ${selected.name}',
+                          ? l10n.regionDesaTitle(
+                              desaOfSelected
+                                      .where((d) => d.id == _selectedDesaId)
+                                      .firstOrNull
+                                      ?.name ??
+                                  _selectedDesaId!,
+                            )
+                          : l10n.regionKecamatanTitle(selected.name),
                     ),
                   ),
                 ),
@@ -692,6 +700,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final kec = widget.selected;
     final kecamatanAsync = ref.watch(regionsKecamatanProvider);
@@ -741,7 +750,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
                 control: FTextFieldControl.managed(
                   onChange: (v) => setState(() => _query = v.text),
                 ),
-                hint: 'Cari desa...',
+                hint: AppLocalizations.of(context).wilayahSearchVillageHint,
                 clearable: (value) => value.text.isNotEmpty,
                 prefixBuilder: (context, style, variants) =>
                     FTextField.prefixIconBuilder(
@@ -805,7 +814,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
               const Gap(8),
               if (kec == null)
                 Text(
-                  'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
+                  l10n.wilayahTapKecamatanHint,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -813,8 +822,15 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
               else ...[
                 Text(
                   _selectedDesaId != null
-                      ? 'Desa ${desaOfSelected.where((d) => d.id == _selectedDesaId).firstOrNull?.name ?? _selectedDesaId}'
-                      : 'Kecamatan ${kec.name}',
+                      ? l10n.regionDesaTitle(
+                          desaOfSelected
+                                  .where((d) => d.id == _selectedDesaId)
+                                  .firstOrNull
+                                  ?.name ??
+                              _selectedDesaId ??
+                              '',
+                        )
+                      : l10n.regionKecamatanTitle(kec.name),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.body.lg.copyWith(
@@ -825,11 +841,13 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
                 Text(
                   switch (_tab) {
                     _SheetTab.desa => loading
-                        ? 'Memuat desa...'
-                        : '${desaOfSelected.length} desa',
-                    _SheetTab.wisata => '${wisataOfKec.length} wisata',
-                    _SheetTab.usaha => 'Usaha di kecamatan ini',
-                    _SheetTab.acara => 'Acara di kecamatan ini',
+                        ? l10n.wilayahLoadingVillage
+                        : l10n.wilayahDesaCount(desaOfSelected.length),
+                    _SheetTab.wisata => l10n.wilayahWisataCount(
+                      wisataOfKec.length,
+                    ),
+                    _SheetTab.usaha => l10n.wilayahUsahaInKecamatan,
+                    _SheetTab.acara => l10n.wilayahAcaraInKecamatan,
                   },
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
@@ -843,13 +861,13 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
                 Row(
                   children: [
                     SmallButton(
-                      label: 'Tutup',
+                      label: l10n.commonClose,
                       variant: FButtonVariant.primary,
                       onPress: () => Navigator.of(context).maybePop(),
                     ),
                     const Gap(8),
                     SmallButton(
-                      label: 'Profil kecamatan',
+                      label: l10n.wilayahKecamatanProfile,
                       onPress: () => _openKecDetail(kec),
                     ),
                   ],
@@ -878,26 +896,29 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
     List<Place> wisataOfKec,
     bool loading,
   ) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final muted = theme.typography.body.sm.copyWith(
       color: theme.colors.mutedForeground,
     );
     switch (_tab) {
       case _SheetTab.desa:
-        if (loading) return Text('Memuat daftar desa...', style: muted);
+        if (loading) {
+          return Text(l10n.wilayahLoadingVillageList, style: muted);
+        }
         if (desaOfSelected.isEmpty) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.',
+                l10n.wilayahVillageListFailed,
                 style: muted,
               ),
               const Gap(4),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(regionsProvider),
-                child: const Text('Muat ulang'),
+                child: Text(l10n.wilayahReload),
               ),
             ],
           );
@@ -913,7 +934,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
         );
       case _SheetTab.wisata:
         if (wisataOfKec.isEmpty) {
-          return Text('Belum ada wisata di kecamatan ini.', style: muted);
+          return Text(l10n.wilayahNoWisata, style: muted);
         }
         return _PlacesList(places: wisataOfKec);
       case _SheetTab.usaha:
@@ -921,21 +942,21 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
           usahaBrowseProvider(UsahaBrowseQuery(regionId: kec.id)),
         );
         if (async.isLoading) {
-          return Text('Memuat daftar usaha...', style: muted);
+          return Text(l10n.wilayahLoadingUsaha, style: muted);
         }
         final items = async.value?.items ?? const [];
         if (items.isEmpty) {
-          return Text('Belum ada usaha di kecamatan ini.', style: muted);
+          return Text(l10n.wilayahNoUsaha, style: muted);
         }
         return _UsahaList(items: items);
       case _SheetTab.acara:
         final async = ref.watch(
           eventBrowseProvider(EventBrowseQuery(regionId: kec.id)),
         );
-        if (async.isLoading) return Text('Memuat acara...', style: muted);
+        if (async.isLoading) return Text(l10n.wilayahLoadingAcara, style: muted);
         final items = async.value?.items ?? const [];
         if (items.isEmpty) {
-          return Text('Belum ada acara di kecamatan ini.', style: muted);
+          return Text(l10n.wilayahNoAcara, style: muted);
         }
         return _CappedScrollList(
           itemCount: items.length,
@@ -955,11 +976,11 @@ class _SheetChips extends StatelessWidget {
   final _SheetTab selected;
   final ValueChanged<_SheetTab> onChanged;
 
-  static const _labels = {
-    _SheetTab.desa: 'Desa',
-    _SheetTab.wisata: 'Wisata',
-    _SheetTab.usaha: 'Usaha',
-    _SheetTab.acara: 'Acara',
+  String _labelOf(AppLocalizations l10n, _SheetTab tab) => switch (tab) {
+    _SheetTab.desa => l10n.profileVillageLabel,
+    _SheetTab.wisata => l10n.placeTypeWisata,
+    _SheetTab.usaha => l10n.usahaTitle,
+    _SheetTab.acara => l10n.feedKindEvent,
   };
 
   @override
@@ -982,7 +1003,7 @@ class _SheetChips extends StatelessWidget {
                 ? FButtonVariant.primary
                 : FButtonVariant.outline,
             onPress: () => onChanged(tab),
-            child: Text(_labels[tab]!),
+            child: Text(_labelOf(AppLocalizations.of(context), tab)),
           );
         },
       ),
@@ -1054,6 +1075,7 @@ class _CompactPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final radius = BorderRadius.circular(16);
     final kec = selected;
@@ -1072,14 +1094,14 @@ class _CompactPanel extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.',
+                      l10n.wilayahTapKecamatanHint,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
                   ),
                   const Gap(8),
-                  SmallButton(label: 'Cari desa', onPress: onOpenSheet),
+                  SmallButton(label: l10n.wilayahSearchVillageCta, onPress: onOpenSheet),
                 ],
               )
             : Column(
@@ -1088,8 +1110,15 @@ class _CompactPanel extends StatelessWidget {
                 children: [
                   Text(
                     selectedDesaId != null
-                        ? 'Desa ${desaOfSelected.where((d) => d.id == selectedDesaId).firstOrNull?.name ?? selectedDesaId}'
-                        : 'Kecamatan ${kec.name}',
+                        ? l10n.regionDesaTitle(
+                            desaOfSelected
+                                    .where((d) => d.id == selectedDesaId)
+                                    .firstOrNull
+                                    ?.name ??
+                                selectedDesaId ??
+                                '',
+                          )
+                        : l10n.regionKecamatanTitle(kec.name),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.typography.body.lg.copyWith(
@@ -1099,8 +1128,8 @@ class _CompactPanel extends StatelessWidget {
                   const Gap(2),
                   Text(
                     loading
-                        ? 'Memuat daftar desa...'
-                        : '${desaOfSelected.length} desa',
+                        ? l10n.wilayahLoadingVillageList
+                        : l10n.wilayahDesaCount(desaOfSelected.length),
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -1109,13 +1138,13 @@ class _CompactPanel extends StatelessWidget {
                   Row(
                     children: [
                       SmallButton(
-                        label: 'Lihat area',
+                        label: l10n.wilayahSeeArea,
                         variant: FButtonVariant.primary,
                         onPress: onOpenSheet,
                       ),
                       const Gap(8),
                       SmallButton(
-                        label: 'Profil kecamatan',
+                        label: l10n.wilayahKecamatanProfile,
                         onPress: () => onOpenKecDetail(kec),
                       ),
                     ],
@@ -1166,6 +1195,7 @@ class _CappedScrollListState extends State<_CappedScrollList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Stack(
       children: [
@@ -1217,7 +1247,7 @@ class _CappedScrollListState extends State<_CappedScrollList> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Gulir ke bawah',
+                          l10n.wilayahScrollDown,
                           style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),

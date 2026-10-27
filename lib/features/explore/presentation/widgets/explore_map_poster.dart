@@ -3,6 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Poster statis peta Sambas.
 ///
 /// - [loading] true: placeholder selama MapLibre memuat style/tiles
@@ -28,6 +30,7 @@ class ExploreMapPoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
@@ -70,7 +73,7 @@ class ExploreMapPoster extends StatelessWidget {
                         ),
                         const Gap(10),
                         Text(
-                          'Peta Sambas',
+                          l10n.exploreMapPosterTitle,
                           style: theme.typography.body.md.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -79,8 +82,8 @@ class ExploreMapPoster extends StatelessWidget {
                         const Gap(4),
                         Text(
                           compact
-                              ? 'Ketuk untuk membuka peta interaktif.'
-                              : 'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.',
+                              ? l10n.exploreMapPosterOpen
+                              : l10n.exploreMapPosterFailed,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
@@ -113,6 +116,7 @@ class _LoadingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final icon = Icon(
       FLucideIcons.map,
@@ -121,7 +125,7 @@ class _LoadingContent extends StatelessWidget {
     );
 
     return Semantics(
-      label: 'Memuat peta',
+      label: l10n.exploreMapLoadingSemantics,
       liveRegion: true,
       excludeSemantics: true,
       child: compact
@@ -132,7 +136,7 @@ class _LoadingContent extends StatelessWidget {
                 icon,
                 const Gap(10),
                 Text(
-                  'Memuat peta...',
+                  l10n.exploreMapLoading,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),

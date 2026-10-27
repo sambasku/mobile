@@ -159,7 +159,13 @@ void main() {
     expect(find.byIcon(FLucideIcons.flag), findsNothing);
     expect(
       tester.getSemantics(find.byIcon(FLucideIcons.trash)),
-      matchesSemantics(label: 'Hapus', isButton: true, hasTapAction: true),
+      matchesSemantics(
+        label: 'Hapus',
+        isButton: true,
+        isFocusable: true,
+        hasTapAction: true,
+        hasFocusAction: true,
+      ),
     );
   });
 
@@ -178,7 +184,13 @@ void main() {
     expect(find.byIcon(FLucideIcons.trash), findsNothing);
     expect(
       tester.getSemantics(find.byIcon(FLucideIcons.flag)),
-      matchesSemantics(label: 'Laporkan', isButton: true, hasTapAction: true),
+      matchesSemantics(
+        label: 'Laporkan',
+        isButton: true,
+        isFocusable: true,
+        hasTapAction: true,
+        hasFocusAction: true,
+      ),
     );
   });
 }

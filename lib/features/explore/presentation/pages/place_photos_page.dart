@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../auth/auth_router.dart';
@@ -122,6 +123,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final placesAsync = ref.watch(placesProvider);
     final place = placesAsync.value
         ?.where((p) => p.slug == widget.slug)
@@ -136,7 +138,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
 
     return FScaffold(
       header: FHeader.nested(
-        title: Text(place?.name ?? 'Foto'),
+        title: Text(place?.name ?? l10n.sharePhoto),
         prefixes: [FHeaderAction.back(onPress: () => _back(context))],
       ),
       childPad: false,
@@ -154,26 +156,25 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
     AsyncValue<List<Place>?> placesAsync,
     Place? place,
   ) {
+    final l10n = AppLocalizations.of(context);
     if (place == null) {
       if (placesAsync.isLoading) return const _PhotosSkeleton();
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: FAlert(
-            title: Text('Foto tidak ditemukan'),
-            subtitle: Text(
-              'Tempat ini belum punya foto, atau datanya gagal dimuat.',
-            ),
+            title: Text(l10n.placePhotosNotFoundTitle),
+            subtitle: Text(l10n.placePhotosNotFoundBody),
           ),
         ),
       );
     }
     final images = [...place.images, ..._extra];
     if (images.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text('Belum ada foto untuk tempat ini.'),
+          padding: const EdgeInsets.all(24),
+          child: Text(l10n.placePhotosEmpty),
         ),
       );
     }
@@ -198,7 +199,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
               child: FButton(
                 variant: .outline,
                 onPress: _loadMore,
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             );
           }
@@ -254,7 +255,7 @@ class _UploadBar extends StatelessWidget {
             );
             if (!guest) await onReturned();
           },
-          child: const Text('Unggah foto'),
+          child: Text(AppLocalizations.of(context).placePhotosUpload),
         ),
       ),
     );

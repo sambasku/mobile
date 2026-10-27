@@ -9,6 +9,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
@@ -40,6 +41,7 @@ class ExplorePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final scroll = useScrollController();
     final landscape =
         MediaQuery.widthOf(context) > MediaQuery.heightOf(context);
@@ -133,8 +135,8 @@ class ExplorePage extends HookConsumerWidget {
                             : FBadgeVariant.outline,
                         child: Text(
                           showComingSoon.value
-                              ? 'Sembunyikan yang segera hadir'
-                              : 'Lihat yang segera hadir',
+                              ? l10n.exploreHideComingSoon
+                              : l10n.exploreShowComingSoon,
                         ),
                       ),
                     ),
@@ -158,6 +160,7 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
 
     return Material(
@@ -196,7 +199,7 @@ class _CategoryCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
-                              'Segera hadir',
+                              l10n.exploreComingSoon,
                               maxLines: 1,
                               style: theme.typography.body.sm.copyWith(
                                 fontSize: 9,
@@ -219,7 +222,7 @@ class _CategoryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        category.title,
+                        category.titleOf(l10n),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.body.sm.copyWith(
@@ -229,7 +232,7 @@ class _CategoryCard extends StatelessWidget {
                       ),
                       const Gap(2),
                       Text(
-                        category.subtitle,
+                        category.subtitleOf(l10n),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.body.sm.copyWith(

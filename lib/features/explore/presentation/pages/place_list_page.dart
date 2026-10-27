@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -20,24 +21,10 @@ import '../providers/places_browse_providers.dart';
 /// ExploreCategoryPage (kartu Wisata / Kuliner di tab Eksplorasi).
 enum PlaceListFilter { semua, alam, budaya, pantai, sejarah, belanja, kuliner }
 
-const _filterLabels = {
-  PlaceListFilter.semua: 'Semua',
-  PlaceListFilter.alam: 'Alam',
-  PlaceListFilter.budaya: 'Budaya',
-  PlaceListFilter.pantai: 'Pantai',
-  PlaceListFilter.sejarah: 'Sejarah',
-  PlaceListFilter.belanja: 'Belanja',
-  PlaceListFilter.kuliner: 'Kuliner',
-};
 
 /// Mode halaman daftar Place. Wisata dan Kuliner punya halaman sendiri,
 /// tapi sumber datanya tetap satu `places.json` (dibedakan `category`).
 enum PlacePageMode { wisata, kuliner }
-
-const _pageTitle = {
-  PlacePageMode.wisata: 'Wisata',
-  PlacePageMode.kuliner: 'Kuliner',
-};
 
 /// 3 kolom: foto kotak 1:1, nama selalu 2 baris. Tipe tidak ditampilkan.
 const _placeGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
@@ -150,6 +137,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final browseQuery = _browseQuery;
     final placesAsync = ref.watch(placesBrowseProvider(browseQuery));
@@ -165,7 +153,11 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
         child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: Text(_pageTitle[_mode] ?? 'Eksplorasi'),
+          title: Text(
+            _mode == PlacePageMode.kuliner
+                ? l10n.placeCategoryKuliner
+                : l10n.exploreCategoryWisata,
+          ),
           prefixes: [
             FHeaderAction.back(onPress: () => popOrGoExplore(context)),
           ],
@@ -254,7 +246,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Belum ada destinasi yang cocok.',
+                        l10n.exploreEmptyDestinations,
                         textAlign: TextAlign.center,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
@@ -310,7 +302,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                                         ).notifier,
                                       )
                                       .loadMore(),
-                                  child: const Text('Coba lagi'),
+                                  child: Text(l10n.commonRetry),
                                 ),
                               ),
                             ),
@@ -336,6 +328,7 @@ class _PlaceFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -348,7 +341,7 @@ class _PlaceFilterBar extends StatelessWidget {
                 variant: selected == f
                     ? FBadgeVariant.primary
                     : FBadgeVariant.secondary,
-                child: Text(_filterLabels[f]!),
+                child: Text(_filterLabel(l10n, f)),
               ),
             ),
           ],
@@ -367,7 +360,7 @@ class _SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FTextField(
       control: FTextFieldControl.managed(onChange: onChanged),
-      hint: 'Cari destinasi...',
+      hint: AppLocalizations.of(context).placeSearchHint,
       textInputAction: TextInputAction.search,
       clearable: (value) => value.text.isNotEmpty,
       prefixBuilder: (context, style, variants) => FTextField.prefixIconBuilder(
@@ -409,6 +402,7 @@ class _PlaceGridTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = place.cover;
     final titleStyle = theme.typography.body.xs.copyWith(
@@ -455,7 +449,7 @@ class _PlaceGridTile extends StatelessWidget {
                     top: 2,
                     right: 2,
                     child: IconButton(
-                      tooltip: 'Bookmark',
+                      tooltip: l10n.placeActionBookmark,
                       onPressed: () => showPlaceBookmarkSoon(context),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints.tightFor(
@@ -506,6 +500,7 @@ class _PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = place.cover;
 
@@ -561,7 +556,7 @@ class _PlaceCard extends StatelessWidget {
                     ),
                     const Gap(4),
                     Text(
-                      placeLabel(place),
+                      placeLabel(l10n, place),
                       style: theme.typography.body.xs.copyWith(
                         fontWeight: FontWeight.w500,
                         color: theme.colors.primary,
@@ -580,7 +575,7 @@ class _PlaceCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'Bookmark',
+                tooltip: AppLocalizations.of(context).placeActionBookmark,
                 onPressed: () => showPlaceBookmarkSoon(context),
                 padding: EdgeInsets.zero,
                 alignment: Alignment.topRight,
@@ -612,20 +607,19 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const FAlert(
-              title: Text('Gagal memuat'),
-              subtitle: Text(
-                'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-              ),
+            FAlert(
+              title: Text(l10n.culinaryLoadFailed),
+              subtitle: Text(l10n.culinaryConnectionFailed),
             ),
             const Gap(16),
-            FButton(onPress: onRetry, child: const Text('Coba lagi')),
+            FButton(onPress: onRetry, child: Text(l10n.commonRetry)),
           ],
         ),
       ),
@@ -723,6 +717,7 @@ class _EmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return Center(
       child: Padding(
@@ -733,14 +728,14 @@ class _EmptyBody extends StatelessWidget {
             Icon(FLucideIcons.compass, size: 48, color: theme.colors.primary),
             const Gap(16),
             Text(
-              'Belum ada destinasi',
+              l10n.placeEmptyTitle,
               style: theme.typography.body.lg.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
             const Gap(8),
             Text(
-              'Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.',
+              l10n.placeEmptyBody,
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
@@ -752,3 +747,15 @@ class _EmptyBody extends StatelessWidget {
     );
   }
 }
+
+/// Label filter daftar Place.
+String _filterLabel(AppLocalizations l10n, PlaceListFilter filter) =>
+    switch (filter) {
+      PlaceListFilter.semua => l10n.exploreFilterAll,
+      PlaceListFilter.alam => l10n.placeTypeAlam,
+      PlaceListFilter.budaya => l10n.placeTypeBudaya,
+      PlaceListFilter.pantai => l10n.placeTypePantai,
+      PlaceListFilter.sejarah => l10n.placeTypeSejarah,
+      PlaceListFilter.belanja => l10n.placeTypeBelanja,
+      PlaceListFilter.kuliner => l10n.placeCategoryKuliner,
+    };

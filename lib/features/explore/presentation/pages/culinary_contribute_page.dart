@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -59,13 +60,17 @@ class _CulinaryContributePageState
   }
 
   void _warn(String message) {
-    showAppErrorSheet(context, title: 'Lengkapi dulu ya', message: message);
+    showAppErrorSheet(
+      context,
+      title: AppLocalizations.of(context).usahaFormIncompleteTitle,
+      message: message,
+    );
   }
 
-  String get _title => switch (widget.mode) {
-    CulinaryContributeMode.cuisine => 'Usul kuliner',
-    CulinaryContributeMode.place => 'Usul tempat',
-    CulinaryContributeMode.link => 'Tandai penjual',
+  String _titleOf(AppLocalizations l10n) => switch (widget.mode) {
+    CulinaryContributeMode.cuisine => l10n.culinaryFormTitleCuisine,
+    CulinaryContributeMode.place => l10n.culinaryFormTitlePlace,
+    CulinaryContributeMode.link => l10n.culinaryFormTitleLink,
   };
 
   Future<void> _submit() async {
@@ -74,7 +79,7 @@ class _CulinaryContributePageState
       final cuisine = _cuisineSlug;
       final place = _placeSlug;
       if (cuisine == null || place == null) {
-        _warn('Pilih kuliner dan tempatnya dulu ya.');
+        _warn(AppLocalizations.of(context).culinaryFormPickBoth);
         return;
       }
       setState(() => _submitting = true);
@@ -86,7 +91,7 @@ class _CulinaryContributePageState
         if (!mounted) return;
         await showAppErrorSheet(
           context,
-          title: 'Usulan gagal',
+          title: AppLocalizations.of(context).exploreEditFailed,
           message: e.message,
         );
       } finally {
@@ -97,20 +102,23 @@ class _CulinaryContributePageState
 
     final name = _name.text.trim();
     if (name.length < 3) {
-      _warn('Nama minimal 3 huruf ya.');
+      _warn(AppLocalizations.of(context).culinaryFormNameTooShort);
       return;
     }
 
     // Upload sudah berjalan di AttachmentImagesField (pola form usul kata);
     // submit hanya memakai URL slot siap.
     if (_images.any((s) => s.uploading)) {
-      showFToast(context: context, title: const Text('Tunggu upload foto selesai'));
+      showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
+    );
       return;
     }
     if (_images.any((s) => s.error)) {
       showFToast(
         context: context,
-        title: const Text('Hapus foto yang gagal diunggah dulu'),
+        title: Text(AppLocalizations.of(context).usahaFormRemoveFailedPhoto),
         variant: FToastVariant.destructive,
       );
       return;
@@ -166,7 +174,7 @@ class _CulinaryContributePageState
       if (!mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Usulan gagal',
+        title: AppLocalizations.of(context).exploreEditFailed,
         message: e.message,
       );
     } finally {
@@ -177,9 +185,8 @@ class _CulinaryContributePageState
   Future<void> _done() async {
     await showAppErrorSheet(
       context,
-      title: 'Usulan terkirim',
-      message:
-          'Admin akan meninjau dulu. Terima kasih sudah bantu lengkapi data kuliner Sambas.',
+      title: AppLocalizations.of(context).exploreEditSent,
+      message: AppLocalizations.of(context).culinaryFormSentBody,
     );
     if (!mounted) return;
     context.canPop() ? context.pop() : context.go('/explore/cuisine');
@@ -187,13 +194,14 @@ class _CulinaryContributePageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final isLink = widget.mode == CulinaryContributeMode.link;
     final isCuisine = widget.mode == CulinaryContributeMode.cuisine;
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(_title),
+        title: Text(_titleOf(l10n)),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -211,7 +219,7 @@ class _CulinaryContributePageState
             onPress: _submitting ? null : _submit,
             child: _submitting
                 ? const FCircularProgress(size: .sm)
-                : const Text('Kirim usulan'),
+                : Text(l10n.exploreEditSubmit),
           ),
         ),
       ),
@@ -219,9 +227,7 @@ class _CulinaryContributePageState
         padding: const EdgeInsets.only(top: 8, bottom: 16),
         children: [
           Text(
-            isLink
-                ? 'Bantu hubungkan kuliner dengan tempat yang menjualnya. Wajib masuk dulu.'
-                : 'Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.',
+            isLink ? l10n.culinaryFormLinkIntro : l10n.culinaryFormIntro,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -237,8 +243,8 @@ class _CulinaryContributePageState
                 for (final c in ref.watch(cuisineProvider).value ?? [])
                   c.name: c.slug,
               },
-              label: const Text('Kuliner'),
-              hint: 'Cari kuliner',
+              label: Text(l10n.culinaryFormFieldCuisine),
+              hint: l10n.culinaryFormSearchCuisine,
               control: FSelectControl.managed(
                 initial: _cuisineSlug,
                 onChange: (value) => setState(() => _cuisineSlug = value),
@@ -251,8 +257,8 @@ class _CulinaryContributePageState
                     in ref.watch(culinaryPlacesProvider()).value?.items ?? [])
                   p.name: p.slug,
               },
-              label: const Text('Tempat/penjual'),
-              hint: 'Cari tempat',
+              label: Text(l10n.culinaryFormFieldPlace),
+              hint: l10n.culinaryFormSearchPlace,
               control: FSelectControl.managed(
                 initial: _placeSlug,
                 onChange: (value) => setState(() => _placeSlug = value),
@@ -261,36 +267,42 @@ class _CulinaryContributePageState
           ] else ...[
             FTextField(
               control: FTextFieldControl.managed(controller: _name),
-              label: Text(isCuisine ? 'Nama kuliner' : 'Nama tempat'),
-              hint: isCuisine ? 'Nama kuliner' : 'Nama tempat atau penjual',
+              label: Text(
+              isCuisine
+                  ? l10n.culinaryFormNameCuisineLabel
+                  : l10n.culinaryFormNamePlaceLabel,
+            ),
+              hint: isCuisine
+                ? l10n.culinaryFormNameCuisineLabel
+                : l10n.culinaryFormNamePlaceHint,
               textCapitalization: TextCapitalization.words,
             ),
             const Gap(10),
             FTextField(
               control: FTextFieldControl.managed(controller: _description),
-              label: const Text('Deskripsi (opsional)'),
+              label: Text(l10n.usahaFormDescription),
               maxLines: 4,
             ),
             const Gap(10),
             if (isCuisine)
               FTextField(
                 control: FTextFieldControl.managed(controller: _ingredients),
-                label: const Text('Bahan (opsional)'),
-                hint: 'Pisahkan dengan koma',
+                label: Text(l10n.culinaryFormIngredientsOptional),
+                hint: l10n.exploreEditIngredientsHint,
                 maxLines: 2,
               )
             else ...[
               FTextField(
                 control: FTextFieldControl.managed(controller: _address),
-                label: const Text('Alamat (opsional)'),
-                hint: 'Jalan, nomor, patokan',
+                label: Text(l10n.culinaryFormAddressOptional),
+                hint: l10n.culinaryFormAddressHint,
                 maxLines: 2,
               ),
               const Gap(10),
               FTextField(
                 control: FTextFieldControl.managed(controller: _locationHint),
-                label: const Text('Patokan lokasi (opsional)'),
-                hint: 'Depan pasar, sebelah masjid',
+                label: Text(l10n.culinaryFormLocationHintOptional),
+                hint: l10n.culinaryFormLocationHintHint,
               ),
             ],
           if (isCuisine) ...[
@@ -327,7 +339,7 @@ class _CulinaryContributePageState
             if (_images.isNotEmpty) ...[
               const Gap(8),
               Text(
-                'Foto akan diatribusikan ke namamu dengan lisensi $_ccBySa.',
+                l10n.culinaryFormPhotoAttribution(_ccBySa),
                 style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                 ),

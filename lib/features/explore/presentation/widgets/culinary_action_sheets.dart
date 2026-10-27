@@ -3,10 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
+import '../culinary_labels.dart';
 import '../providers/cuisine_providers.dart';
 
 /// Target usul perbaikan: kuliner (`cuisine_edit`) atau tempat (`place_edit`).
@@ -35,24 +37,15 @@ class CulinaryEditTarget {
   final List<String> ingredients;
 }
 
-/// Alasan laporan - sama dengan `CULINARY_REPORT_REASONS` di API.
-const culinaryReportReasons = {
-  'closed': 'Tempat sudah tutup',
-  'wrong_location': 'Lokasi tidak sesuai',
-  'invalid_contact': 'Kontak tidak valid',
-  'misleading': 'Informasi menyesatkan',
-  'duplicate': 'Dugaan duplikat',
-  'abuse': 'Dugaan pelanggaran',
-};
 
 /// Aksi kuliner (usul edit, lapor) wajib akun. True = user belum masuk.
 Future<bool> culinaryNeedsAuth(BuildContext context, WidgetRef ref) async {
   if (ref.read(authStatusProvider).value?.isAuth == true) return false;
+  final l10n = AppLocalizations.of(context);
   await showAppErrorSheet(
     context,
-    title: 'Masuk dulu ya',
-    message:
-        'Usul perbaikan dan laporan butuh akun supaya bisa ditindak lanjuti.',
+    title: l10n.culinaryLoginTitle,
+    message: l10n.exploreActionsLoginBody,
   );
   return true;
 }
@@ -76,17 +69,23 @@ Future<String?> showCulinaryReasonSheet(
   BuildContext context, {
   required bool isPlace,
 }) => showOptionPickerSheet<String>(
-  context,
-  title: 'Laporkan masalah',
-  icon: FLucideIcons.flag,
-  subtitle: isPlace
-      ? 'Apa yang salah dengan info tempat ini?'
-      : 'Apa yang salah dengan info kuliner ini?',
-  items: [
-    for (final entry in culinaryReportReasons.entries)
-      OptionPickerItem(value: entry.key, label: entry.value),
-  ],
-);
+      context,
+      title: AppLocalizations.of(context).usahaReportTitle,
+      icon: FLucideIcons.flag,
+      subtitle: isPlace
+          ? AppLocalizations.of(context).exploreReasonSheetPlaceSubtitle
+          : AppLocalizations.of(context).exploreReasonSheetCuisineSubtitle,
+      items: [
+        for (final code in culinaryReportReasons)
+          OptionPickerItem(
+            value: code,
+            label: culinaryReportReasonLabel(
+              AppLocalizations.of(context),
+              code,
+            ),
+          ),
+      ],
+    );
 
 /// Selisih nilai form vs data awal. Hanya field berubah yang masuk `payload`
 /// dan `fields` - server menolak usulan tanpa perubahan (`EMPTY_CHANGE`) dan
@@ -171,8 +170,8 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     if (fields.isEmpty) {
       await showAppErrorSheet(
         context,
-        title: 'Belum ada perubahan',
-        message: 'Ubah minimal satu isian dulu ya.',
+        title: AppLocalizations.of(context).exploreEditNoChangeTitle,
+        message: AppLocalizations.of(context).exploreEditNoChangeBody,
       );
       return;
     }
@@ -190,17 +189,17 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
           );
       if (!mounted) return;
       Navigator.of(context).pop();
+      final l10n = AppLocalizations.of(context);
       await showAppErrorSheet(
         context,
-        title: 'Usulan terkirim',
-        message:
-            'Admin akan meninjau dulu. Perubahan tayang setelah disetujui.',
+        title: l10n.exploreEditSent,
+        message: l10n.exploreEditSentBody,
       );
     } on CulinaryException catch (e) {
       if (!mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Usulan gagal',
+        title: AppLocalizations.of(context).exploreEditFailed,
         message: e.message,
       );
     } finally {
@@ -210,6 +209,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final target = widget.target;
     return Padding(
@@ -224,13 +224,13 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
             children: [
               Text(
                 target.isPlace
-                    ? 'Usul perbaikan data tempat'
-                    : 'Usul perbaikan data kuliner',
+                    ? l10n.exploreEditPlaceTitle
+                    : l10n.exploreEditCuisineTitle,
                 style: theme.typography.body.lg.copyWith(fontWeight: .w700),
               ),
               const Gap(4),
               Text(
-                'Isi yang kamu tahu saja. Tim admin yang memutuskan.',
+                l10n.exploreEditIntro,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -244,7 +244,9 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                       FTextField(
                         control: FTextFieldControl.managed(controller: _name),
                         label: Text(
-                          target.isPlace ? 'Nama tempat' : 'Nama kuliner',
+                          target.isPlace
+                              ? l10n.exploreEditPlaceNameLabel
+                              : l10n.exploreEditCuisineNameLabel,
                         ),
                         textCapitalization: TextCapitalization.words,
                       ),
@@ -253,7 +255,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                         control: FTextFieldControl.managed(
                           controller: _description,
                         ),
-                        label: const Text('Deskripsi'),
+                        label: Text(l10n.exploreEditDescriptionLabel),
                         maxLines: 3,
                       ),
                       const Gap(10),
@@ -262,7 +264,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                           control: FTextFieldControl.managed(
                             controller: _address,
                           ),
-                          label: const Text('Alamat'),
+                          label: Text(l10n.exploreEditAddressLabel),
                           maxLines: 2,
                         )
                       else
@@ -270,8 +272,8 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                           control: FTextFieldControl.managed(
                             controller: _ingredients,
                           ),
-                          label: const Text('Bahan'),
-                          hint: 'Pisahkan dengan koma',
+                          label: Text(l10n.exploreEditIngredientsLabel),
+                          hint: l10n.exploreEditIngredientsHint,
                           maxLines: 2,
                         ),
                     ],
@@ -283,7 +285,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                 onPress: _submitting ? null : _submit,
                 child: _submitting
                     ? const FCircularProgress(size: .sm)
-                    : const Text('Kirim usulan'),
+                    : Text(l10n.exploreEditSubmit),
               ),
             ],
           ),

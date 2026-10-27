@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/place.dart';
@@ -12,6 +14,9 @@ import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 Widget _app(Future<List<Place>?> Function() load) => ProviderScope(
   overrides: [placesProvider.overrideWith((ref) => load())],
   child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
     home: FTheme(data: foruiPalettes['zinc']!.light.touch, child: const PinsPage()),
   ),
 );

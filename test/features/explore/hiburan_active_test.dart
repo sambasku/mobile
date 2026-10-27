@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/explore/domain/explore_category.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 void main() {
   test('kategori permainan (hiburan) aktif (bukan coming soon)', () {
@@ -7,7 +8,7 @@ void main() {
     expect(hiburan, isNotNull);
     expect(hiburan!.comingSoon, isFalse,
         reason: 'Permainan harus aktif setelah pantun tayang');
-    expect(hiburan.title, 'Permainan');
+    expect(hiburan.titleOf(AppLocalizationsId()), 'Permainan');
   });
 
   test('semua kategori tetap terdaftar', () {

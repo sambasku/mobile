@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../event/presentation/providers/event_providers.dart';
 import '../../../event/presentation/widgets/event_ui.dart';
 import '../providers/regions_providers.dart';
@@ -47,6 +48,7 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final regions = ref.watch(regionsProvider).value ?? const [];
     final isKec = widget.isKecamatan;
@@ -79,18 +81,18 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
             const Gap(16),
             FBadge(
               variant: FBadgeVariant.outline,
-              child: const Text('Segera hadir'),
+              child: Text(l10n.exploreComingSoon),
             ),
             const Gap(12),
           ],
           Text(
-            isKec ? 'Kecamatan $name' : 'Desa $name',
+            isKec ? l10n.regionKecamatanTitle(name) : l10n.regionDesaTitle(name),
             style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
           ),
           if (isKec && desaCount > 0) ...[
             const Gap(4),
             Text(
-              '$desaCount desa',
+              l10n.regionVillageCount('$desaCount'),
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -99,8 +101,7 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 if (!isKec) ...[
           const Gap(12),
           Text(
-            'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat '
-            'info lengkapnya di sini ya.',
+            l10n.regionDesaComingSoon,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -112,7 +113,7 @@ if (!isKec) ...[
           buildEventMiniList(
             context,
             ref.watch(eventsForVillageProvider(region.id)).value ?? const [],
-            title: 'Agenda di Desa $name',
+            title: l10n.regionAgendaDesa(name),
           ) ??
           const SizedBox.shrink(),
       ],

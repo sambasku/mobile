@@ -2,7 +2,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/sambas_map_config.dart';
+import '../culinary_labels.dart';
 
 /// Bottomsheet pilih basemap peta (Jalan/Satelit/Terain). Ganti tap-cycle:
 /// user memilih langsung dari daftar, tak perlu menekan berulang.
@@ -17,6 +19,7 @@ Future<MapBasemap?> showBasemapPickerSheet(
     useSafeArea: true,
     useRootNavigator: true,
     builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
       final theme = sheetContext.theme;
       return Material(
         color: Theme.of(sheetContext).colorScheme.surface,
@@ -28,7 +31,7 @@ Future<MapBasemap?> showBasemapPickerSheet(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Gaya peta',
+                  l10n.exploreMapStyleTitle,
                   style: theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -38,10 +41,10 @@ Future<MapBasemap?> showBasemapPickerSheet(
                   children: [
                     for (final b in MapBasemap.values)
                       FTile(
-                        title: Text(b.label),
+                        title: Text(mapBasemapLabel(l10n, b)),
                         subtitle: Text(
                           b.attribution.isEmpty
-                              ? 'Gratis, tanpa API key'
+                              ? l10n.exploreMapStyleFree
                               : b.attribution.replaceAll('&copy;', '(c)'),
                         ),
                         prefix: Icon(switch (b) {

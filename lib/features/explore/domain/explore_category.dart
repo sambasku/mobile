@@ -1,82 +1,87 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 /// Kategori curated tab Eksplorasi (v1 statis; konten API belakangan).
+///
+/// [title] dan [subtitle] sengaja TIDAK disimpan di sini - label tinggal di
+/// ARB lewat [titleOf] / [subtitleOf] supaya domain bebas bahasa.
 class ExploreCategory {
   const ExploreCategory({
     required this.id,
-    required this.title,
-    required this.subtitle,
     required this.icon,
     this.comingSoon = true,
   });
 
   final String id;
-  final String title;
-  final String subtitle;
   final IconData icon;
 
   /// Konten API belum ada - kartu tetap tampil sebagai sasaran app.
   final bool comingSoon;
 
+  /// Judul kategori sesuai bahasa aktif.
+  String titleOf(AppLocalizations l10n) => switch (id) {
+    'wilayah' => l10n.exploreCategoryWilayah,
+    'wisata' => l10n.exploreCategoryWisata,
+    'kuliner' => l10n.exploreCategoryKuliner,
+    'usaha' => l10n.usahaTitle,
+    'acara' => l10n.exploreCategoryAcara,
+    'hiburan' => l10n.exploreCategoryPermainan,
+    'ensiklopedia' => l10n.exploreCategoryEnsiklopedia,
+    'komunitas' => l10n.exploreCategoryKomunitas,
+    _ => id,
+  };
+
+  /// Subjudul kategori sesuai bahasa aktif.
+  String subtitleOf(AppLocalizations l10n) => switch (id) {
+    'wilayah' => l10n.exploreCategoryWilayahSubtitle,
+    'wisata' => l10n.exploreCategoryWisataSubtitle,
+    'kuliner' => l10n.exploreCategoryKulinerSubtitle,
+    'usaha' => l10n.exploreCategoryUsahaSubtitle,
+    'acara' => l10n.exploreCategoryAcaraSubtitle,
+    'hiburan' => l10n.exploreCategoryPermainanSubtitle,
+    'ensiklopedia' => l10n.exploreCategoryEnsiklopediaSubtitle,
+    'komunitas' => l10n.exploreCategoryKomunitasSubtitle,
+    _ => '',
+  };
+
   static const List<ExploreCategory> all = [
     // Aktif
     ExploreCategory(
       id: 'wilayah',
-      title: 'Wilayah',
-      subtitle: 'Kecamatan dan desa di Sambas',
       icon: FLucideIcons.signpost,
       comingSoon: false,
     ),
     ExploreCategory(
       id: 'wisata',
-      title: 'Wisata',
-      subtitle: 'Destinasi di Sambas',
       icon: FLucideIcons.mapPinned,
       comingSoon: false,
     ),
     ExploreCategory(
       id: 'kuliner',
-      title: 'Kuliner',
-      subtitle: 'Makanan khas Sambas',
       icon: FLucideIcons.utensilsCrossed,
       comingSoon: false,
     ),
     ExploreCategory(
       id: 'usaha',
-      title: 'Usaha',
-      subtitle: 'UMKM dan jasa lokal',
       icon: FLucideIcons.store,
       comingSoon: false,
     ),
     ExploreCategory(
       id: 'acara',
-      title: 'Acara',
-      subtitle: 'Festival, pameran, dan kegiatan',
       icon: FLucideIcons.calendarDays,
       comingSoon: false,
     ),
     ExploreCategory(
       id: 'hiburan',
-      title: 'Permainan',
-      subtitle: 'Pantun dan permainan Sambas',
       icon: FLucideIcons.tv,
       comingSoon: false,
     ),
     // Segera
     // Gabungan Sejarah + Kisah + Karya + Tradisi + Permainan.
-    ExploreCategory(
-      id: 'ensiklopedia',
-      title: 'Ensiklopedia',
-      subtitle: 'Sejarah, kisah, karya, dan tradisi',
-      icon: FLucideIcons.bookOpen,
-    ),
-    ExploreCategory(
-      id: 'komunitas',
-      title: 'Komunitas',
-      subtitle: 'Grup warga dan kegiatan bersama',
-      icon: FLucideIcons.users,
-    ),
+    ExploreCategory(id: 'ensiklopedia', icon: FLucideIcons.bookOpen),
+    ExploreCategory(id: 'komunitas', icon: FLucideIcons.users),
   ];
 
   static ExploreCategory? byId(String id) {

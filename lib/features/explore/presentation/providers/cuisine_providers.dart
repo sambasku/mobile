@@ -1,10 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/network_providers.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
 import '../../data/datasources/cuisine_remote_datasource.dart';
 import '../../data/models/cuisine_dto.dart';
 import '../../data/repositories/cuisine_repository_impl.dart';
 import '../../domain/entities/cuisine.dart';
+import '../../domain/entities/culinary_proposal.dart';
 part 'cuisine_providers.g.dart';
 
 @riverpod
@@ -44,6 +46,15 @@ Future<CuisineDtoItem?> cuisineBySlug(Ref ref, String slug) =>
 @riverpod
 CulinaryContributionApi culinaryContributionApi(Ref ref) =>
     CulinaryContributionApi(ref.watch(dioProvider));
+
+/// Usulan kuliner milik user login. Guest = list kosong (bukan error),
+/// pola sama dengan usulan acara/usaha.
+@riverpod
+Future<List<CulinaryProposal>> culinaryProposals(Ref ref) async {
+  final auth = ref.watch(authStatusProvider).value;
+  if (!(auth?.isAuth ?? false)) return const [];
+  return ref.watch(culinaryContributionApiProvider).mine();
+}
 
 /// Daftar tempat/penjual kuliner (halaman pertama). Null = gagal (soft-fail).
 @riverpod

@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,6 +32,9 @@ void main() {
           cuisineProvider.overrideWith((ref) async => const [_dummy]),
         ],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: ExploreCategoryPage(categoryId: categoryId)),

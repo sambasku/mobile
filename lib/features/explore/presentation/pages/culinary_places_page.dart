@@ -4,11 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/culinary_contribution_api.dart';
 import '../../domain/entities/culinary_place.dart';
 import '../../explore_router.dart';
+import '../culinary_labels.dart';
 import '../providers/cuisine_providers.dart';
 import '../widgets/culinary_action_sheets.dart';
 
@@ -31,20 +33,21 @@ class _CulinaryPlacesPageState extends ConsumerState<CulinaryPlacesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final placesAsync = ref.watch(culinaryPlacesProvider(q: _query));
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tempat kuliner'),
+        title: Text(l10n.culinaryPlacesTitle),
         prefixes: [FHeaderAction.back(onPress: () => _back(context))],
         suffixes: [
           FHeaderAction(
             icon: const Icon(FLucideIcons.plus),
             onPress: () =>
                 context.push(ExploreRouter.cuisinePlaceContribute.path),
-            semanticsLabel: 'Usulkan tempat kuliner',
+            semanticsLabel: l10n.culinaryPlacesContribute,
           ),
         ],
       ),
@@ -67,7 +70,7 @@ class _CulinaryPlacesPageState extends ConsumerState<CulinaryPlacesPage> {
                   onChange: (value) =>
                       setState(() => _query = value.text.trim()),
                 ),
-                hint: 'Cari tempat atau penjual...',
+                hint: l10n.culinaryPlacesSearchHint,
                 prefixBuilder: (context, style, variants) =>
                     FTextField.prefixIconBuilder(
                       context,
@@ -81,7 +84,7 @@ class _CulinaryPlacesPageState extends ConsumerState<CulinaryPlacesPage> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      'Belum ada tempat yang cocok.',
+                      l10n.culinaryPlacesEmpty,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
@@ -111,13 +114,14 @@ class _PlaceTile extends ConsumerWidget {
   final CulinaryPlace place;
 
   Future<void> _actions(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final authed = ref.read(authStatusProvider).value?.isAuth == true;
     if (!authed) {
       await showAppErrorSheet(
         context,
-        title: 'Masuk dulu ya',
+        title: l10n.culinaryLoginTitle,
         message:
-            'Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.',
+            l10n.culinaryPlacesLoginBody,
       );
       return;
     }
@@ -130,21 +134,21 @@ class _PlaceTile extends ConsumerWidget {
         child: FTileGroup(
           children: [
             FTile(
-              title: const Text('Klaim tempat ini'),
-              subtitle: const Text('Kamu pemilik atau pengelola sah?'),
+              title: Text(l10n.culinaryClaimPlace),
+              subtitle: Text(l10n.culinaryClaimPlaceBody),
               onPress: () => Navigator.pop(ctx, 'claim'),
             ),
             FTile(
-              title: const Text('Usul perbaikan data'),
-              subtitle: const Text('Nama, deskripsi, atau alamat salah?'),
+              title: Text(l10n.culinarySuggestEdit),
+              subtitle: Text(l10n.culinarySuggestEditPlaceBody),
               onPress: () => Navigator.pop(ctx, 'edit'),
             ),
             FTile(
-              title: const Text('Usulkan status buka/tutup'),
+              title: Text(l10n.culinarySuggestOperational),
               onPress: () => Navigator.pop(ctx, 'operational'),
             ),
             FTile(
-              title: const Text('Laporkan masalah'),
+              title: Text(l10n.usahaReportTitle),
               onPress: () => Navigator.pop(ctx, 'report'),
             ),
           ],
@@ -174,18 +178,19 @@ class _PlaceTile extends ConsumerWidget {
   }
 
   Future<void> _claim(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final evidence = await _askText(
       context,
-      title: 'Klaim pengelolaan',
-      hint: 'Nomor WhatsApp atau akun media sosial pengelola',
+      title: l10n.culinaryClaimManageTitle,
+      hint: l10n.culinaryClaimEvidenceHint,
     );
     if (evidence == null) return;
     if (evidence.length < 5) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Bukti kurang',
-        message: 'Tulis bukti minimal 5 karakter ya.',
+        title: l10n.culinaryEvidenceShortTitle,
+        message: l10n.culinaryEvidenceShortBody,
       );
       return;
     }
@@ -196,27 +201,27 @@ class _PlaceTile extends ConsumerWidget {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Klaim terkirim',
-        message:
-            'Admin akan memeriksa buktinya dulu. Kamu bisa pantau statusnya nanti.',
+        title: l10n.culinaryClaimSent,
+        message: l10n.culinaryClaimPlaceSentBody,
       );
     } on CulinaryException catch (e) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Klaim gagal',
+        title: l10n.culinaryClaimFailed,
         message: e.message,
       );
     }
   }
 
   Future<void> _operational(BuildContext context, WidgetRef ref) async {
-    const labels = {
-      'operating': 'Buka',
-      'temporarily_closed': 'Tutup sementara',
-      'permanently_closed': 'Tutup permanen',
-      'unknown': 'Belum diketahui',
-    };
+    final l10n = AppLocalizations.of(context);
+    const statuses = [
+      'operating',
+      'temporarily_closed',
+      'permanently_closed',
+      'unknown',
+    ];
     final picked = await showModalBottomSheet<String>(
       context: context,
       useRootNavigator: true,
@@ -224,13 +229,13 @@ class _PlaceTile extends ConsumerWidget {
         top: false,
         child: FTileGroup(
           children: [
-            for (final entry in labels.entries)
+            for (final status in statuses)
               FTile(
-                title: Text(entry.value),
-                suffix: entry.key == place.operationalStatus
+                title: Text(culinaryOperationalLabel(l10n, status)),
+                suffix: status == place.operationalStatus
                     ? const Icon(FLucideIcons.check, size: 18)
                     : null,
-                onPress: () => Navigator.pop(ctx, entry.key),
+                onPress: () => Navigator.pop(ctx, status),
               ),
           ],
         ),
@@ -249,41 +254,34 @@ class _PlaceTile extends ConsumerWidget {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Usulan terkirim',
-        message: 'Status baru akan tayang setelah admin setujui.',
+        title: l10n.culinaryOperationalSent,
+        message: l10n.culinaryOperationalSentBody,
       );
     } on CulinaryException catch (e) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Usulan gagal',
+        title: l10n.culinaryProposalFailed,
         message: e.message,
       );
     }
   }
 
   Future<void> _report(BuildContext context, WidgetRef ref) async {
-    const reasons = {
-      'closed': 'Tempat sudah tutup',
-      'wrong_location': 'Lokasi tidak sesuai',
-      'invalid_contact': 'Kontak tidak valid',
-      'misleading': 'Informasi menyesatkan',
-      'duplicate': 'Dugaan duplikat',
-      'abuse': 'Dugaan pelanggaran',
-    };
+    final l10n = AppLocalizations.of(context);
     final picked = await showModalBottomSheet<String>(
       context: context,
       useRootNavigator: true,
       builder: (ctx) => SafeArea(
         top: false,
         child: FTileGroup(
-          label: const Text('Apa yang salah?'),
+          label: Text(l10n.culinaryReportReasonTitle),
           children: [
-            for (final entry in reasons.entries)
-              FTile(
-                title: Text(entry.value),
-                onPress: () => Navigator.pop(ctx, entry.key),
-              ),
+          for (final code in culinaryReportReasons)
+            FTile(
+              title: Text(culinaryReportReasonLabel(l10n, code)),
+              onPress: () => Navigator.pop(ctx, code),
+            ),
           ],
         ),
       ),
@@ -296,14 +294,14 @@ class _PlaceTile extends ConsumerWidget {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Laporan terkirim',
-        message: 'Terima kasih. Admin akan memeriksa tempat ini.',
+        title: l10n.usahaReportSent,
+        message: l10n.culinaryPlaceReportSentBody,
       );
     } on CulinaryException catch (e) {
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
-        title: 'Gagal melapor',
+        title: l10n.culinaryReportFailed,
         message: e.message,
       );
     }
@@ -314,6 +312,7 @@ class _PlaceTile extends ConsumerWidget {
     required String title,
     required String hint,
   }) {
+    final l10n = AppLocalizations.of(context);
     final controller = TextEditingController();
     return showModalBottomSheet<String>(
       context: context,
@@ -337,7 +336,7 @@ class _PlaceTile extends ConsumerWidget {
                 ),
                 const Gap(8),
                 Text(
-                  'Tulis bukti bahwa kamu pemilik atau pengelola sah.',
+                  l10n.culinaryClaimEvidenceBody,
                   style: ctx.theme.typography.body.sm.copyWith(
                     color: ctx.theme.colors.mutedForeground,
                   ),
@@ -351,13 +350,13 @@ class _PlaceTile extends ConsumerWidget {
                 const Gap(16),
                 FButton(
                   onPress: () => Navigator.pop(ctx, controller.text.trim()),
-                  child: const Text('Kirim klaim'),
+                  child: Text(l10n.culinaryClaimSubmit),
                 ),
                 const Gap(8),
                 FButton(
                   variant: FButtonVariant.outline,
                   onPress: () => Navigator.pop(ctx),
-                  child: const Text('Batal'),
+                  child: Text(l10n.commonCancel),
                 ),
               ],
             ),
@@ -369,6 +368,7 @@ class _PlaceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final place = this.place;
     return Material(
@@ -420,7 +420,7 @@ class _PlaceTile extends ConsumerWidget {
                     ),
                     const Gap(4),
                     Text(
-                      culinaryOperationalLabel(place.operationalStatus),
+                      culinaryOperationalLabel(l10n, place.operationalStatus),
                       style: theme.typography.body.xs.copyWith(
                         color: place.operationalStatus == 'operating'
                             ? theme.colors.primary
@@ -459,20 +459,19 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const FAlert(
-              title: Text('Gagal memuat'),
-              subtitle: Text(
-                'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-              ),
+            FAlert(
+              title: Text(l10n.culinaryLoadFailed),
+              subtitle: Text(l10n.culinaryConnectionFailed),
             ),
             const Gap(16),
-            FButton(onPress: onRetry, child: const Text('Coba lagi')),
+            FButton(onPress: onRetry, child: Text(l10n.commonRetry)),
           ],
         ),
       ),

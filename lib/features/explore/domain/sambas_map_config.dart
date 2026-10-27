@@ -12,11 +12,6 @@ enum MapBasemap {
   final String styleKey;
   final String attribution;
 
-  String get label => switch (this) {
-    MapBasemap.street => 'Jalan',
-    MapBasemap.satellite => 'Satelit',
-    MapBasemap.terrain => 'Terain',
-  };
 }
 
 /// Kamera & style default untuk peta fokus Kabupaten Sambas.

@@ -6,6 +6,7 @@ import 'presentation/pages/cuisine_detail_page.dart';
 import 'presentation/pages/cuisine_list_page.dart';
 import 'presentation/pages/culinary_contribute_page.dart';
 import 'presentation/pages/culinary_places_page.dart';
+import 'presentation/pages/culinary_proposals_page.dart';
 import 'presentation/pages/pins_page.dart';
 import 'presentation/pages/place_contribute_page.dart';
 import 'presentation/pages/place_detail_page.dart';
@@ -61,6 +62,12 @@ class ExploreRouter {
   static const cuisinePlaceContribute = RouteDefiner(
     path: '/explore/cuisine/usul-tempat',
     name: 'ExploreRouter.cuisinePlaceContribute',
+  );
+
+  /// Status usulan kuliner milik user (pola sama dengan usulan wisata/usaha).
+  static const cuisineProposals = RouteDefiner(
+    path: '/explore/cuisine/usulan',
+    name: 'ExploreRouter.cuisineProposals',
   );
 
   static const cuisineLink = RouteDefiner(
@@ -197,6 +204,11 @@ class ExploreRouter {
       name: cuisineLink.name,
       builder: (context, state) =>
           const CulinaryContributePage(mode: CulinaryContributeMode.link),
+    ),
+    GoRoute(
+      path: cuisineProposals.path,
+      name: cuisineProposals.name,
+      builder: (context, state) => const CulinaryProposalsPage(),
     ),
     GoRoute(
       path: cuisineDetail.path,

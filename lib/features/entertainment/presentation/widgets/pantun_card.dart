@@ -1,4 +1,5 @@
-import 'package:material_ui/material_ui.dart' show Colors, InkWell, Material;
+import 'package:material_ui/material_ui.dart'
+    show Colors, InkWell, Material, Tooltip;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';

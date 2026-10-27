@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -64,6 +66,9 @@ void main() {
       ProviderScope(
         overrides: [placesProvider.overrideWith((ref) async => places)],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: PlaceDetailPage(slug: 'istana')),
@@ -136,6 +141,9 @@ void main() {
       ProviderScope(
         overrides: [placesProvider.overrideWith((ref) async => places)],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: PlaceDetailPage(slug: 'istana')),
@@ -201,6 +209,9 @@ void main() {
       ProviderScope(
         overrides: [placesProvider.overrideWith((ref) async => places)],
         child: MaterialApp.router(
+          localizationsDelegates: appLocalizationDelegates,
+          locale: appTestLocale,
+          supportedLocales: appTestSupportedLocales,
           routerConfig: router,
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,
