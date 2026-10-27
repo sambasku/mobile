@@ -167,9 +167,9 @@ String _messageFrom(DioException e) {
   }
   final status = e.response?.statusCode;
   if (status == 401) return 'Sesi berakhir, silakan masuk kembali';
-  if (status == 429) return 'Terlalu banyak permintaan. Coba lagi sebentar.';
+  if (status == 429) return l10n.pantunRateLimited;
   if (status != null && status >= 500) {
-    return 'Server sedang gangguan. Coba lagi sebentar ya.';
+    return l10n.pantunServerError;
   }
   return l10n.pantunRequestFailed;
 }

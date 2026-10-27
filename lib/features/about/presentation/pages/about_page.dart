@@ -72,39 +72,23 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               const Gap(16),
-              const _AboutBlock(
-                title: 'Apa itu SambasKu?',
-                body:
-                    'Kamus digital Melayu Sambas-Indonesia yang dirawat '
-                    'bersama warga. Kamu bisa mencari arti kata, membaca '
-                    'contoh kalimat, menyimpan kata, mengusulkan kata baru, '
-                    'dan membagikan kartu kata. Usulan dari akun yang sudah '
-                    'masuk langsung tayang dengan label Menunggu pengecekan, '
-                    'lalu diperiksa verifikator.',
+              _AboutBlock(
+                title: l10n.aboutWhatTitle,
+                body: l10n.aboutWhatBody,
               ),
               const Gap(16),
               _AboutLinkBlock(
-                title: 'Sponsor & Tim Kami',
-                body:
-                    'Para pendukung operasional dan orang-orang yang '
-                    'merawat kamus ini.',
-                actionLabel: 'Lihat Sponsor & Tim Kami',
+                title: l10n.aboutSponsorTitle,
+                body: l10n.aboutSponsorBody,
+                actionLabel: l10n.aboutSponsorAction,
                 onPress: () => context.push('/about/sponsorship'),
               ),
               const Gap(16),
               _AboutLinkBlock(
-                title: 'Kode Sumber & Organisasi',
-                body:
-                    'SambasKu adalah proyek open source. Kode sumbernya '
-                    'dirilis dengan lisensi GPLv3, jadi kamu bebas '
-                    'mempelajari, mengubah, dan membagikannya sesuai '
-                    'ketentuan lisensi. Konten kamus dan datanya dirilis '
-                    'dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan '
-                    'sumber dan membagikan hasilnya dengan lisensi yang '
-                    'sama. Di GitHub juga ada profil organisasi, cara '
-                    'ikut serta, info sponsor, dan saluran komunitas.',
-      actionLabel: 'Buka di GitHub',
-      onPress: () => launchExternalUrl(AboutPage.githubUri),
+                title: l10n.aboutSourceTitle,
+                body: l10n.aboutSourceBody,
+                actionLabel: l10n.aboutSourceAction,
+                onPress: () => launchExternalUrl(AboutPage.githubUri),
               ),
             ],
           );

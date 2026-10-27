@@ -551,7 +551,7 @@ class _FeedListSkeleton extends StatelessWidget {
         username: 'warga',
         displayName: AppLocalizations.of(context).dictCitizenFallback,
       ),
-      subtitle: 'lading',
+      subtitle: AppLocalizations.of(context).dictActivitySkeletonSubtitle,
     );
 
     return SkeletonizerConfig(

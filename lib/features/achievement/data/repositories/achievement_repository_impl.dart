@@ -7,6 +7,7 @@ import '../../domain/failures/achievement_failure.dart';
 import '../../domain/repositories/achievement_repository.dart';
 import '../datasources/achievement_remote_datasource.dart';
 import '../models/achievement_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class AchievementRepositoryImpl implements AchievementRepository {
   AchievementRepositoryImpl(this._remote);
@@ -48,7 +49,7 @@ class AchievementRepositoryImpl implements AchievementRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           AchievementFailure(
-            response.message ?? 'Gagal menyimpan bingkai profil',
+            response.message ?? l10n.achievementBorderSaveFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -69,7 +70,7 @@ class AchievementRepositoryImpl implements AchievementRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           AchievementFailure(
-            response.message ?? 'Gagal memuat pencapaian',
+            response.message ?? l10n.achievementLoadFailed,
             errorCode: response.errorCode,
           ),
         );

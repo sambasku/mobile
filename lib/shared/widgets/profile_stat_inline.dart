@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Baris "angka label" stat profil ala feed: count bold + label muted,
 /// dipisah titik tengah. Dipakai tab Profil + profil publik.
@@ -76,9 +77,9 @@ class ProfileStatRow extends StatelessWidget {
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        ProfileStatInline(count: words, label: 'usul kata'),
+        ProfileStatInline(count: words, label: AppLocalizations.of(context).profileStatWords),
         const ProfileStatDot(),
-        ProfileStatInline(count: corrections, label: 'perbaikan'),
+        ProfileStatInline(count: corrections, label: AppLocalizations.of(context).profileStatCorrections),
       ],
     );
   }

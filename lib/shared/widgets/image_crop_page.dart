@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 
 import '../utils/compress_image_for_upload.dart';
 import '../utils/photo_pick_constants.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Opsi aspect ratio standar untuk crop generik (#142).
 /// [ratio] null = Bebas (full-frame, ikut rasio foto asli).
@@ -20,12 +21,16 @@ class CropAspectRatio {
 }
 
 const List<CropAspectRatio> kCropAspectRatios = [
+  // Label 'Bebas' = id lokal default; UI pakai [cropAspectDisplayLabel].
   CropAspectRatio(label: 'Bebas'),
   CropAspectRatio(label: '1:1', ratio: 1),
   CropAspectRatio(label: '4:3', ratio: 4 / 3),
   CropAspectRatio(label: '3:4', ratio: 3 / 4),
   CropAspectRatio(label: '16:9', ratio: 16 / 9),
 ];
+
+String cropAspectDisplayLabel(AppLocalizations l10n, CropAspectRatio opt) =>
+    opt.ratio == null ? l10n.cropAspectFree : opt.label;
 
 /// Crop generik dalam Flutter (tema Forui, tanpa dependensi native).
 ///
@@ -206,7 +211,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
     return FScaffold(
       childPad: false,
       header: FHeader.nested(
-        title: const Text('Potong foto'),
+        title: Text(AppLocalizations.of(context).cropPhotoTitle),
         prefixes: [
           FHeaderAction.back(onPress: () => Navigator.of(context).pop()),
         ],
@@ -216,7 +221,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
             onPress: _saving
                 ? null
                 : () => Navigator.of(context).pop(File(widget.sourcePath)),
-            child: const Text('Lewati'),
+            child: Text(AppLocalizations.of(context).cropSkip),
           ),
         ],
       ),
@@ -298,7 +303,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                         variant: _aspect == opt
                             ? FBadgeVariant.primary
                             : FBadgeVariant.secondary,
-                        child: Text(opt.label),
+                        child: Text(cropAspectDisplayLabel(AppLocalizations.of(context), opt)),
                       ),
                     ),
                 ],
@@ -311,7 +316,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
               child: FButton(
                 onPress: image == null || _saving ? null : _save,
                 prefix: _saving ? const FCircularProgress() : null,
-                child: Text(_saving ? 'Menyimpan...' : 'Pakai'),
+                child: Text(_saving ? AppLocalizations.of(context).commonSaving : AppLocalizations.of(context).profileCropUse),
               ),
             ),
           ),

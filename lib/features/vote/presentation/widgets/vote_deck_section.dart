@@ -520,7 +520,7 @@ class _VoteDeckActionBar extends StatelessWidget {
                               semanticsLabel: 'Perbaiki kata ini',
                               onPress: _rewinding ? null : onFix,
                               prefix: const Icon(FLucideIcons.pencil),
-                              child: const Text('Perbaiki'),
+                              child: Text(AppLocalizations.of(context).voteFixAction),
                             ),
                     ),
             ),
@@ -627,7 +627,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
           child: IgnorePointer(
             child: Skeletonizer(
               enabled: enabled,
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -647,7 +647,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Gap(10),
-                    Text('jenis kata', textAlign: TextAlign.center),
+                    Text(AppLocalizations.of(context).voteWordTypeLabel, textAlign: TextAlign.center),
                   ],
                 ),
               ),

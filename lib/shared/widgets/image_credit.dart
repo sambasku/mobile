@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import '../../core/models/image_attribution.dart';
 import '../../core/models/external_link.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Kredit foto stock per provider:
 /// - Unsplash/Pixabay: "Foto oleh Nama di Unsplash" (Unsplash ber-UTM).
@@ -75,7 +76,7 @@ class ImageCredit extends StatelessWidget {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        if (!compact) Text('Foto oleh ', style: base),
+        if (!compact) Text(AppLocalizations.of(context).imageCreditBy, style: base),
         part(a.name, nameUrl == null ? null : Uri.tryParse(nameUrl)),
         if (license != null) ...[
           if (!compact) Text(' di $where', style: base),

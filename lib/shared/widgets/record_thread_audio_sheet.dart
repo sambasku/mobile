@@ -13,6 +13,7 @@ import 'package:record/record.dart';
 import '../utils/error_bottom_sheet.dart';
 import '../utils/permission_helper.dart';
 import '../../features/dictionary/presentation/utils/ensure_microphone_ready.dart';
+import '../../../l10n/app_localizations.dart';
 
 enum _ThreadRecordPhase {
   idle,
@@ -190,7 +191,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
       } else if (mounted) {
         showFToast(
           context: context,
-          title: const Text('Izin mikrofon diperlukan untuk merekam'),
+          title: Text(AppLocalizations.of(context).recordMicPermissionTitle),
         );
       }
       return;
@@ -392,7 +393,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
               const Gap(12),
               FButton(
                 onPress: _stopRecording,
-                child: const Text('Selesai rekam'),
+                child: Text(AppLocalizations.of(context).recordDone),
               ),
             ] else if (_phase == _ThreadRecordPhase.preview ||
                 _phase == _ThreadRecordPhase.submitting) ...[
@@ -420,7 +421,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
                       onPress: _phase == _ThreadRecordPhase.submitting
                           ? null
                           : _reset,
-                      child: const Text('Ulangi'),
+                      child: Text(AppLocalizations.of(context).recordRetry),
                     ),
                   ),
                 ],
@@ -441,7 +442,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
               FButton(
                 onPress: _startRecording,
                 prefix: const Icon(FLucideIcons.mic, size: 16),
-                child: const Text('Mulai rekam'),
+                child: Text(AppLocalizations.of(context).recordStart),
               ),
             ],
           ],

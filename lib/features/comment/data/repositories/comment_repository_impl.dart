@@ -10,6 +10,7 @@ import '../../domain/repositories/comment_repository.dart';
 import '../datasources/comment_remote_datasource.dart';
 import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
   CommentRepositoryImpl(this._remoteDatasource, this._dio);
@@ -35,7 +36,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (response.success == false) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal memuat komentar',
+            response.message ?? l10n.commentLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -71,7 +72,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal mengirim komentar',
+            response.message ?? l10n.commentSendFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -128,7 +129,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (envelope == null || envelope['success'] != true) {
         return Either.left(
           CommentFailure(
-            (envelope?['message'] as String?) ?? 'Gagal mengirim rekaman suara',
+            (envelope?['message'] as String?) ?? l10n.commentVoiceFailed,
             errorCode: envelope?['error_code'] as String?,
           ),
         );
@@ -159,7 +160,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (response.success == false) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal menghapus komentar',
+            response.message ?? l10n.commentDeleteFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -212,7 +213,7 @@ class CommentRepositoryImpl implements CommentRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak komentar. Coba lagi dalam beberapa saat.';
+      return l10n.commentRateLimited;
     }
     if (statusCode == 401) {
       return 'Sesi berakhir, silakan masuk kembali';
@@ -221,8 +222,8 @@ class CommentRepositoryImpl implements CommentRepository {
       return 'Kamu tidak bisa menghapus komentar ini';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan, coba lagi';
+    return l10n.commonGenericError;
   }
 }

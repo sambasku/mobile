@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Bottom sheet info (bukan error merah) - mis. akun OAuth tidak bisa
 /// reset password. Pola sama dengan `showAppErrorSheet`, hanya judul
@@ -49,7 +50,7 @@ Future<void> showAppInfoSheet(
                 const Gap(16),
                 FButton(
                   onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('Mengerti'),
+                  child: Text(AppLocalizations.of(context).infoSheetUnderstood),
                 ),
               ],
             ),

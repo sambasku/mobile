@@ -5,6 +5,7 @@ import '../../domain/failures/user_profile_failure.dart';
 import '../../domain/repositories/user_profile_repository.dart';
 import '../datasources/user_profile_remote_datasource.dart';
 import '../models/public_profile_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class UserProfileRepositoryImpl implements UserProfileRepository {
   UserProfileRepositoryImpl(this._remoteDatasource);
@@ -20,7 +21,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat profil',
+            response.message ?? l10n.profileLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -56,7 +57,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat aktivitas',
+            response.message ?? l10n.profileActivityLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -110,7 +111,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat saran mention',
+            response.message ?? l10n.userProfileMentionFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -155,11 +156,11 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   String _fallbackForStatus(int? statusCode, DioException error) {
     if (statusCode == 429 ||
         error.response?.data?['error_code'] == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
+      return l10n.commonRateLimited;
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan saat memuat profil, coba lagi';
+    return l10n.userProfileGenericError;
   }
 }

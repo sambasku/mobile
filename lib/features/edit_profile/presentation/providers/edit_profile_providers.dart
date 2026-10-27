@@ -6,6 +6,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../domain/providers/edit_profile_domain_providers.dart';
 import '../models/edit_profile_state.dart';
+import '../../../../core/i18n/l10n.dart';
 
 part 'edit_profile_providers.g.dart';
 
@@ -106,7 +107,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
 
     state = state.copyWith(
       isSubmitting: false,
-      successMessage: 'Profil berhasil disimpan.',
+      successMessage: l10n.editProfileSaveSuccess,
       clearErrorMessage: true,
     );
   }

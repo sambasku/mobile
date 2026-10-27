@@ -17,6 +17,7 @@ import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/utils/error_bottom_sheet.dart';
 import '../router/app_router.dart';
+import '../i18n/l10n.dart';
 
 /// Map payload FCM / AwesomeNotifications / inbox tile → rute atau URL eksternal.
 Future<void> navigateFromNotificationPayload(
@@ -244,7 +245,7 @@ Future<void> _openExternalUrl(BuildContext? context, String raw) async {
   if (failure == null || context == null || !context.mounted) return;
   await showAppErrorSheet(
     context,
-    title: 'Tidak bisa membuka tautan',
+    title: l10n.notificationOpenLinkFailed,
     message: failure,
   );
 }

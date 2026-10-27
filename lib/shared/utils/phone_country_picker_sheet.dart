@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 
 import '../widgets/phone_country_flag.dart';
 import 'phone_country.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Bottomsheet pilih negara: Utama (ID, MY) lalu Lainnya (+ cari).
 /// List dibangun lazy (`ListView.builder`) agar buka sheet tidak ngelag.
@@ -125,7 +126,7 @@ class _PhoneCountryPickerBodyState extends State<_PhoneCountryPickerBody> {
                     setState(() => _rows = _buildRows(value.text));
                   },
                 ),
-                hint: 'Cari nama atau kode',
+                hint: AppLocalizations.of(context).phoneCountrySearchHint,
               ),
               const Gap(12),
               Expanded(

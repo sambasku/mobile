@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 import '../../core/widgets/verified_badge_icon.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Nama akun publik + centang verifikator.
 ///
@@ -38,7 +39,7 @@ class PublicAccountName extends StatelessWidget {
         ? text
         : Semantics(
             button: true,
-            label: 'Lihat profil $label',
+            label: AppLocalizations.of(context).publicAccountViewProfile(label),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: onTap,

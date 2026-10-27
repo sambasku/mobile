@@ -9,6 +9,7 @@ import '../../domain/failures/achievement_failure.dart';
 import '../providers/achievement_providers.dart';
 import '../../../achievement/achievement_router.dart';
 import 'achievement_badge_grid.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Ringkasan lencana profil: grid 3 kolom + tombol ke halaman Pencapaian.
 ///
@@ -68,7 +69,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
                     ? myAchievementsProvider()
                     : userAchievementsProvider(username!),
               ),
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),
@@ -101,7 +102,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
                   variant: FButtonVariant.outline,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => _openAll(context),
-                  child: const Text('Lihat semua pencapaian'),
+                  child: Text(AppLocalizations.of(context).achievementSeeAll),
                 ),
               ),
             ],

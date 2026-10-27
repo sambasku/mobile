@@ -7505,6 +7505,549 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventProposalLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get commonGenericError => 'Terjadi kesalahan, coba lagi';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonSettings => 'Pengaturan';
+
+  @override
+  String get verifierApplicationTitle => 'Jadi verifikator';
+
+  @override
+  String get verifierApplicationRoleTitle => 'Peran verifikator';
+
+  @override
+  String get verifierApplicationRoleIntro =>
+      'Baca ringkas apa itu verifikator dan apa saja yang dilakukan sebelum mengajukan diri.';
+
+  @override
+  String get verifierApplicationWhatIsTitle => 'Apa itu verifikator';
+
+  @override
+  String get verifierApplicationWhatIsBody =>
+      'Verifikator adalah anggota komunitas yang memeriksa usulan kata warga sebelum entri dianggap terverifikasi di kamus. Peran ini menjaga arti, contoh, dan terjemahan tetap akurat.';
+
+  @override
+  String get verifierApplicationWhatDoTitle => 'Apa yang dilakukan';
+
+  @override
+  String get verifierApplicationWhatDoBody =>
+      'Meninjau antrean kontribusi: menyetujui usulan yang tepat, menolak dengan alasan jika kurang layak, atau mengoreksi isi agar entri siap tayang. Keputusan itu menentukan apakah kata tampil sebagai Terverifikasi.';
+
+  @override
+  String get verifierApplicationUnchangedTitle => 'Yang tidak berubah';
+
+  @override
+  String get verifierApplicationUnchangedBody =>
+      'Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak dan bukti sosial pada pengajuan tidak tampil di profil publik.';
+
+  @override
+  String get verifierApplicationDataTitle => 'Data yang diminta saat ajukan';
+
+  @override
+  String get verifierApplicationDataBody =>
+      'Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong.';
+
+  @override
+  String get verifierApplicationAfterTitle => 'Setelah disetujui';
+
+  @override
+  String get verifierApplicationAfterBody =>
+      'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean tinjau kemudian muncul di Profil. Kamu akan mendapat notifikasi saat pengajuan diputuskan.';
+
+  @override
+  String get verifierApplicationApprovedTitle => 'Pengajuan disetujui';
+
+  @override
+  String get verifierApplicationApprovedBody =>
+      'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.';
+
+  @override
+  String get verifierApplicationReLoginCta => 'Masuk ulang';
+
+  @override
+  String get verifierApplicationOpeningLogin => 'Membuka halaman masuk...';
+
+  @override
+  String get verifierApplicationPendingTitle => 'Pengajuan sedang ditinjau';
+
+  @override
+  String get verifierApplicationPendingBody =>
+      'Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.';
+
+  @override
+  String get verifierApplicationLearnTitle => 'Pelajari peran verifikator';
+
+  @override
+  String get verifierApplicationLearnSubtitle =>
+      'Apa itu verifikator dan apa saja yang dilakukan';
+
+  @override
+  String get verifierApplicationNeedsRevisionTitle => 'Perlu perbaikan';
+
+  @override
+  String get verifierApplicationRejectedTitle => 'Pengajuan ditolak';
+
+  @override
+  String get verifierApplicationRejectedBody =>
+      'Data kurang lengkap. Perbaiki lalu kirim ulang.';
+
+  @override
+  String get verifierApplicationCannotSendTitle =>
+      'Pengajuan belum bisa dikirim';
+
+  @override
+  String get verifierApplicationPhoneRequired => 'Nomor HP wajib diisi.';
+
+  @override
+  String get verifierApplicationPhoneInvalid =>
+      'Nomor HP tidak valid. Contoh: 81234567890.';
+
+  @override
+  String get verifierApplicationAddressMin => 'Alamat minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationSocialMin =>
+      'Tambahkan minimal satu akun media sosial.';
+
+  @override
+  String get verifierApplicationAccountFirst => 'akun pertama';
+
+  @override
+  String verifierApplicationAccountNth(int n) {
+    return 'akun ke-$n';
+  }
+
+  @override
+  String verifierApplicationPickPlatformFor(String label) {
+    return 'Pilih platform untuk $label.';
+  }
+
+  @override
+  String verifierApplicationUsernameMinFor(String label) {
+    return 'Nama atau username $label minimal 2 karakter.';
+  }
+
+  @override
+  String verifierApplicationWaitUploadFor(String label) {
+    return 'Tunggu screenshot $label selesai diunggah.';
+  }
+
+  @override
+  String verifierApplicationUploadFailedFor(String label) {
+    return 'Screenshot $label gagal diunggah. Coba lagi.';
+  }
+
+  @override
+  String verifierApplicationUploadRequiredFor(String label) {
+    return 'Unggah screenshot profil $label.';
+  }
+
+  @override
+  String get verifierApplicationPhoneLabel => 'No. HP';
+
+  @override
+  String get verifierApplicationPhoneHint => '81234567890';
+
+  @override
+  String get verifierApplicationAddressLabel => 'Alamat';
+
+  @override
+  String get verifierApplicationAddressHint =>
+      'Alamat lengkap tempat tinggal/domisili';
+
+  @override
+  String get verifierApplicationSocialSection => 'Media sosial (minimal 1)';
+
+  @override
+  String get verifierApplicationAddSocial => 'Tambah lainnya';
+
+  @override
+  String get verifierApplicationSubmit => 'Kirim pengajuan';
+
+  @override
+  String get verifierApplicationResubmit => 'Kirim ulang';
+
+  @override
+  String get verifierApplicationSubmitting => 'Mengirim...';
+
+  @override
+  String get verifierApplicationPrivacyNote =>
+      'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.';
+
+  @override
+  String get verifierApplicationPickPlatform => 'Pilih platform';
+
+  @override
+  String get verifierApplicationPlatformLabel => 'Platform';
+
+  @override
+  String verifierApplicationPlatformNth(int n) {
+    return 'Platform $n';
+  }
+
+  @override
+  String get verifierApplicationUsernameLabel => 'Nama / username';
+
+  @override
+  String get verifierApplicationUsernameHintSite => 'nama situs atau akun';
+
+  @override
+  String get verifierApplicationUsernameHintUser => 'nama atau username';
+
+  @override
+  String get verifierApplicationScreenshotLabel => 'Screenshot profil';
+
+  @override
+  String get verifierApplicationRemoveAccount => 'Hapus akun';
+
+  @override
+  String get verifierApplicationCameraGallery => 'Kamera / galeri';
+
+  @override
+  String verifierApplicationImageTooLarge(int mb) {
+    return 'Gambar melebihi $mb MB';
+  }
+
+  @override
+  String get verifierApplicationImageProcessFailed => 'Gagal memproses gambar';
+
+  @override
+  String get verifierApplicationLoadFailed => 'Gagal memuat pengajuan';
+
+  @override
+  String get verifierApplicationSendFailed => 'Gagal mengirim pengajuan';
+
+  @override
+  String get verifierApplicationNotFound =>
+      'Pengajuan verifikator tidak ditemukan';
+
+  @override
+  String get verifierApplicationSuccessResubmit =>
+      'Pengajuan dikirim ulang. Menunggu review.';
+
+  @override
+  String get verifierApplicationSuccessSubmit =>
+      'Pengajuan terkirim. Menunggu review.';
+
+  @override
+  String get achievementTitle => 'Pencapaian';
+
+  @override
+  String get achievementSeeAll => 'Lihat semua pencapaian';
+
+  @override
+  String get achievementBorderUpdated => 'Bingkai profil diperbarui';
+
+  @override
+  String get achievementLoadFailed => 'Gagal memuat pencapaian';
+
+  @override
+  String get achievementBorderSaveFailed => 'Gagal menyimpan bingkai profil';
+
+  @override
+  String get achievementEmpty => 'Belum ada pencapaian';
+
+  @override
+  String get commentSendFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get commentDeleteFailed => 'Gagal menghapus komentar';
+
+  @override
+  String get commentVoiceFailed => 'Gagal mengirim rekaman suara';
+
+  @override
+  String get commentRateLimited =>
+      'Terlalu banyak komentar. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get voteToggleFailed => 'Gagal mengubah vote';
+
+  @override
+  String get voteCountLoadFailed => 'Gagal memuat jumlah vote';
+
+  @override
+  String get voteMineLoadFailed => 'Gagal memuat vote kamu';
+
+  @override
+  String get voteRateLimited =>
+      'Terlalu banyak vote. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get voteGenericError =>
+      'Terjadi kesalahan saat memuat vote, coba lagi';
+
+  @override
+  String get voteFixAction => 'Perbaiki';
+
+  @override
+  String get voteWordTypeLabel => 'jenis kata';
+
+  @override
+  String get linkedAccountsLoadFailed => 'Gagal memuat status akun';
+
+  @override
+  String get linkedAccountsLinkFailed => 'Gagal menambahkan ke akun terhubung';
+
+  @override
+  String get linkedAccountsUnlinkFailed => 'Gagal melepas dari akun terhubung';
+
+  @override
+  String get linkedAccountsUnlinkSuccess =>
+      'Berhasil dilepas dari akun terhubung.';
+
+  @override
+  String get userProfileMentionFailed => 'Gagal memuat saran mention';
+
+  @override
+  String get userProfileGenericError =>
+      'Terjadi kesalahan saat memuat profil, coba lagi';
+
+  @override
+  String get searchMissPopularLoadFailed =>
+      'Gagal memuat daftar pencarian populer';
+
+  @override
+  String searchMissSkeletonLemma(int n) {
+    return 'kata dicari contoh $n';
+  }
+
+  @override
+  String get searchMissSkeletonMeta => 'Sambas → Indonesia · 12× dicari';
+
+  @override
+  String get dictCategoryLoadFailed => 'Gagal memuat kategori';
+
+  @override
+  String get dictWordOfDayLoadFailed => 'Gagal memuat kata hari ini';
+
+  @override
+  String get dictAudioUploadFailed => 'Gagal mengunggah audio';
+
+  @override
+  String get dictAudioUploadFailedRetry =>
+      'Gagal mengunggah audio. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get editProfileSaveFailed => 'Gagal menyimpan profil';
+
+  @override
+  String get editProfileSaveSuccess => 'Profil berhasil disimpan.';
+
+  @override
+  String get pantunListSubtitle => 'Balas pantun 4 baris';
+
+  @override
+  String get pantunComingSoon => 'Segera';
+
+  @override
+  String get pantunRateLimited =>
+      'Terlalu banyak permintaan. Coba lagi sebentar.';
+
+  @override
+  String get pantunServerError =>
+      'Server sedang gangguan. Coba lagi sebentar ya.';
+
+  @override
+  String get reportBugUploadCredsIncomplete =>
+      'Kredensial upload tidak lengkap';
+
+  @override
+  String get reportBugResponseIncomplete => 'Response laporan tidak lengkap';
+
+  @override
+  String get paletteNeutral => 'Netral';
+
+  @override
+  String get paletteZinc => 'Zinc';
+
+  @override
+  String get paletteSlate => 'Slate';
+
+  @override
+  String get paletteBlue => 'Biru';
+
+  @override
+  String get paletteGreen => 'Hijau';
+
+  @override
+  String get paletteOrange => 'Oranye';
+
+  @override
+  String get paletteRed => 'Merah';
+
+  @override
+  String get paletteRose => 'Rose';
+
+  @override
+  String get paletteViolet => 'Violet';
+
+  @override
+  String get imageSheetCamera => 'Kamera';
+
+  @override
+  String get imageSheetGallery => 'Galeri';
+
+  @override
+  String get imageSheetFile => 'File';
+
+  @override
+  String get permissionDeniedTitle => 'Izin Ditolak';
+
+  @override
+  String get wordTypeKata => 'Kata';
+
+  @override
+  String get wordTypeIdiom => 'Idiom';
+
+  @override
+  String get wordTypePeribahasa => 'Peribahasa';
+
+  @override
+  String get wordTypeUngkapan => 'Ungkapan';
+
+  @override
+  String get wordImagePendingReview => 'Menunggu tinjauan';
+
+  @override
+  String get wordImageCensoredHint =>
+      'Gambar disensor. Ketuk untuk menampilkan.';
+
+  @override
+  String get wordImageNotYet => 'Jangan dulu';
+
+  @override
+  String get wordImageShow => 'Tampilkan';
+
+  @override
+  String get recordMicPermissionTitle =>
+      'Izin mikrofon diperlukan untuk merekam';
+
+  @override
+  String get recordDone => 'Selesai rekam';
+
+  @override
+  String get recordRetry => 'Ulangi';
+
+  @override
+  String get threadRecordVoice => 'Rekam suara';
+
+  @override
+  String get threadSend => 'Kirim';
+
+  @override
+  String get cropAspectFree => 'Bebas';
+
+  @override
+  String get cropSkip => 'Lewati';
+
+  @override
+  String get profileStatWords => 'usul kata';
+
+  @override
+  String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetUnderstood => 'Mengerti';
+
+  @override
+  String get phoneCountrySearchHint => 'Cari nama atau kode';
+
+  @override
+  String publicAccountViewProfile(String label) {
+    return 'Lihat profil $label';
+  }
+
+  @override
+  String get imageCreditBy => 'Foto oleh ';
+
+  @override
+  String profilePhotoSemantics(String name) {
+    return 'Foto profil $name';
+  }
+
+  @override
+  String get pendingCheckTitle => 'Menunggu pengecekan';
+
+  @override
+  String get adminAnalyticsSkeletonKata => 'kata';
+
+  @override
+  String get achievementBorderNone => 'Tanpa bingkai';
+
+  @override
+  String get achievementBorderNoneSubtitle => 'Tampilkan foto profil polos';
+
+  @override
+  String get paletteYellow => 'Kuning';
+
+  @override
+  String get wordTypeKataDetail => 'Satu lema. Bukan frasa.';
+
+  @override
+  String get wordTypeIdiomDetail =>
+      'Frasa yang artinya tidak sama dengan arti tiap katanya. Contoh: tangan besi.';
+
+  @override
+  String get wordTypePeribahasaDetail =>
+      'Kalimat kiasan atau nasihat yang sudah lazim.';
+
+  @override
+  String get wordTypeUngkapanDetail =>
+      'Kelompok kata yang sudah lazim dipakai bersama.';
+
+  @override
+  String get dictActivitySkeletonSubtitle => 'lading';
+
+  @override
+  String get pendingCheckWordBody =>
+      'Kata ini belum diperiksa tim Sambasku. Makna atau terjemahannya bisa saja kurang tepat.';
+
+  @override
+  String get pendingCheckAudioBody =>
+      'Audio ini belum diperiksa tim Sambasku. Pelafalannya bisa saja kurang tepat.';
+
+  @override
+  String get cropPhotoTitle => 'Potong foto';
+
+  @override
+  String get commonSaving => 'Menyimpan...';
+
+  @override
+  String get imageSheetExplorer => 'Explorer';
+
+  @override
+  String get imageSheetReset => 'Reset';
+
+  @override
+  String get imageSheetCameraOpenFailed => 'Gagal membuka kamera';
+
+  @override
+  String get imageSheetGalleryPickFailed => 'Gagal memilih dari galeri';
+
+  @override
+  String get imageSheetFilePickFailed => 'Gagal memilih file';
+
+  @override
+  String get permissionMicRequiredTitle => 'Izin mikrofon diperlukan';
+
+  @override
+  String get notificationOpenLinkFailed => 'Tidak bisa membuka tautan';
+
+  @override
+  String get verifiedBadgeSemantics => 'Verifikator, ketuk untuk info';
+
+  @override
+  String get verifiedBadgeTitle => 'Verifikator';
+
+  @override
+  String get recordStart => 'Mulai rekam';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -15008,4 +15551,547 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventProposalLoadFailedTitle => 'Gagal memuat usulan';
+
+  @override
+  String get commonGenericError => 'Terjadi kesalahan, coba lagi';
+
+  @override
+  String get commonOk => 'OK';
+
+  @override
+  String get commonSettings => 'Pengaturan';
+
+  @override
+  String get verifierApplicationTitle => 'Jadi verifikator';
+
+  @override
+  String get verifierApplicationRoleTitle => 'Peran verifikator';
+
+  @override
+  String get verifierApplicationRoleIntro =>
+      'Baca ringkas apa itu verifikator dan apa saja yang dilakukan sebelum mengajukan diri.';
+
+  @override
+  String get verifierApplicationWhatIsTitle => 'Apa itu verifikator';
+
+  @override
+  String get verifierApplicationWhatIsBody =>
+      'Verifikator adalah anggota komunitas yang memeriksa usulan kata warga sebelum entri dianggap terverifikasi di kamus. Peran ini menjaga arti, contoh, dan terjemahan tetap akurat.';
+
+  @override
+  String get verifierApplicationWhatDoTitle => 'Apa yang dilakukan';
+
+  @override
+  String get verifierApplicationWhatDoBody =>
+      'Meninjau antrean kontribusi: menyetujui usulan yang tepat, menolak dengan alasan jika kurang layak, atau mengoreksi isi agar entri siap tayang. Keputusan itu menentukan apakah kata tampil sebagai Terverifikasi.';
+
+  @override
+  String get verifierApplicationUnchangedTitle => 'Yang tidak berubah';
+
+  @override
+  String get verifierApplicationUnchangedBody =>
+      'Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak dan bukti sosial pada pengajuan tidak tampil di profil publik.';
+
+  @override
+  String get verifierApplicationDataTitle => 'Data yang diminta saat ajukan';
+
+  @override
+  String get verifierApplicationDataBody =>
+      'Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong.';
+
+  @override
+  String get verifierApplicationAfterTitle => 'Setelah disetujui';
+
+  @override
+  String get verifierApplicationAfterBody =>
+      'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean tinjau kemudian muncul di Profil. Kamu akan mendapat notifikasi saat pengajuan diputuskan.';
+
+  @override
+  String get verifierApplicationApprovedTitle => 'Pengajuan disetujui';
+
+  @override
+  String get verifierApplicationApprovedBody =>
+      'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.';
+
+  @override
+  String get verifierApplicationReLoginCta => 'Masuk ulang';
+
+  @override
+  String get verifierApplicationOpeningLogin => 'Membuka halaman masuk...';
+
+  @override
+  String get verifierApplicationPendingTitle => 'Pengajuan sedang ditinjau';
+
+  @override
+  String get verifierApplicationPendingBody =>
+      'Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.';
+
+  @override
+  String get verifierApplicationLearnTitle => 'Pelajari peran verifikator';
+
+  @override
+  String get verifierApplicationLearnSubtitle =>
+      'Apa itu verifikator dan apa saja yang dilakukan';
+
+  @override
+  String get verifierApplicationNeedsRevisionTitle => 'Perlu perbaikan';
+
+  @override
+  String get verifierApplicationRejectedTitle => 'Pengajuan ditolak';
+
+  @override
+  String get verifierApplicationRejectedBody =>
+      'Data kurang lengkap. Perbaiki lalu kirim ulang.';
+
+  @override
+  String get verifierApplicationCannotSendTitle =>
+      'Pengajuan belum bisa dikirim';
+
+  @override
+  String get verifierApplicationPhoneRequired => 'Nomor HP wajib diisi.';
+
+  @override
+  String get verifierApplicationPhoneInvalid =>
+      'Nomor HP tidak valid. Contoh: 81234567890.';
+
+  @override
+  String get verifierApplicationAddressMin => 'Alamat minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationSocialMin =>
+      'Tambahkan minimal satu akun media sosial.';
+
+  @override
+  String get verifierApplicationAccountFirst => 'akun pertama';
+
+  @override
+  String verifierApplicationAccountNth(int n) {
+    return 'akun ke-$n';
+  }
+
+  @override
+  String verifierApplicationPickPlatformFor(String label) {
+    return 'Pilih platform untuk $label.';
+  }
+
+  @override
+  String verifierApplicationUsernameMinFor(String label) {
+    return 'Nama atau username $label minimal 2 karakter.';
+  }
+
+  @override
+  String verifierApplicationWaitUploadFor(String label) {
+    return 'Tunggu screenshot $label selesai diunggah.';
+  }
+
+  @override
+  String verifierApplicationUploadFailedFor(String label) {
+    return 'Screenshot $label gagal diunggah. Coba lagi.';
+  }
+
+  @override
+  String verifierApplicationUploadRequiredFor(String label) {
+    return 'Unggah screenshot profil $label.';
+  }
+
+  @override
+  String get verifierApplicationPhoneLabel => 'No. HP';
+
+  @override
+  String get verifierApplicationPhoneHint => '81234567890';
+
+  @override
+  String get verifierApplicationAddressLabel => 'Alamat';
+
+  @override
+  String get verifierApplicationAddressHint =>
+      'Alamat lengkap tempat tinggal/domisili';
+
+  @override
+  String get verifierApplicationSocialSection => 'Media sosial (minimal 1)';
+
+  @override
+  String get verifierApplicationAddSocial => 'Tambah lainnya';
+
+  @override
+  String get verifierApplicationSubmit => 'Kirim pengajuan';
+
+  @override
+  String get verifierApplicationResubmit => 'Kirim ulang';
+
+  @override
+  String get verifierApplicationSubmitting => 'Mengirim...';
+
+  @override
+  String get verifierApplicationPrivacyNote =>
+      'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.';
+
+  @override
+  String get verifierApplicationPickPlatform => 'Pilih platform';
+
+  @override
+  String get verifierApplicationPlatformLabel => 'Platform';
+
+  @override
+  String verifierApplicationPlatformNth(int n) {
+    return 'Platform $n';
+  }
+
+  @override
+  String get verifierApplicationUsernameLabel => 'Nama / username';
+
+  @override
+  String get verifierApplicationUsernameHintSite => 'nama situs atau akun';
+
+  @override
+  String get verifierApplicationUsernameHintUser => 'nama atau username';
+
+  @override
+  String get verifierApplicationScreenshotLabel => 'Screenshot profil';
+
+  @override
+  String get verifierApplicationRemoveAccount => 'Hapus akun';
+
+  @override
+  String get verifierApplicationCameraGallery => 'Kamera / galeri';
+
+  @override
+  String verifierApplicationImageTooLarge(int mb) {
+    return 'Gambar melebihi $mb MB';
+  }
+
+  @override
+  String get verifierApplicationImageProcessFailed => 'Gagal memproses gambar';
+
+  @override
+  String get verifierApplicationLoadFailed => 'Gagal memuat pengajuan';
+
+  @override
+  String get verifierApplicationSendFailed => 'Gagal mengirim pengajuan';
+
+  @override
+  String get verifierApplicationNotFound =>
+      'Pengajuan verifikator tidak ditemukan';
+
+  @override
+  String get verifierApplicationSuccessResubmit =>
+      'Pengajuan dikirim ulang. Menunggu review.';
+
+  @override
+  String get verifierApplicationSuccessSubmit =>
+      'Pengajuan terkirim. Menunggu review.';
+
+  @override
+  String get achievementTitle => 'Pencapaian';
+
+  @override
+  String get achievementSeeAll => 'Lihat semua pencapaian';
+
+  @override
+  String get achievementBorderUpdated => 'Bingkai profil diperbarui';
+
+  @override
+  String get achievementLoadFailed => 'Gagal memuat pencapaian';
+
+  @override
+  String get achievementBorderSaveFailed => 'Gagal menyimpan bingkai profil';
+
+  @override
+  String get achievementEmpty => 'Belum ada pencapaian';
+
+  @override
+  String get commentSendFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get commentDeleteFailed => 'Gagal menghapus komentar';
+
+  @override
+  String get commentVoiceFailed => 'Gagal mengirim rekaman suara';
+
+  @override
+  String get commentRateLimited =>
+      'Terlalu banyak komentar. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get voteToggleFailed => 'Gagal mengubah vote';
+
+  @override
+  String get voteCountLoadFailed => 'Gagal memuat jumlah vote';
+
+  @override
+  String get voteMineLoadFailed => 'Gagal memuat vote kamu';
+
+  @override
+  String get voteRateLimited =>
+      'Terlalu banyak vote. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get voteGenericError =>
+      'Terjadi kesalahan saat memuat vote, coba lagi';
+
+  @override
+  String get voteFixAction => 'Perbaiki';
+
+  @override
+  String get voteWordTypeLabel => 'jenis kata';
+
+  @override
+  String get linkedAccountsLoadFailed => 'Gagal memuat status akun';
+
+  @override
+  String get linkedAccountsLinkFailed => 'Gagal menambahkan ke akun terhubung';
+
+  @override
+  String get linkedAccountsUnlinkFailed => 'Gagal melepas dari akun terhubung';
+
+  @override
+  String get linkedAccountsUnlinkSuccess =>
+      'Berhasil dilepas dari akun terhubung.';
+
+  @override
+  String get userProfileMentionFailed => 'Gagal memuat saran mention';
+
+  @override
+  String get userProfileGenericError =>
+      'Terjadi kesalahan saat memuat profil, coba lagi';
+
+  @override
+  String get searchMissPopularLoadFailed =>
+      'Gagal memuat daftar pencarian populer';
+
+  @override
+  String searchMissSkeletonLemma(int n) {
+    return 'kata dicari contoh $n';
+  }
+
+  @override
+  String get searchMissSkeletonMeta => 'Sambas → Indonesia · 12× dicari';
+
+  @override
+  String get dictCategoryLoadFailed => 'Gagal memuat kategori';
+
+  @override
+  String get dictWordOfDayLoadFailed => 'Gagal memuat kata hari ini';
+
+  @override
+  String get dictAudioUploadFailed => 'Gagal mengunggah audio';
+
+  @override
+  String get dictAudioUploadFailedRetry =>
+      'Gagal mengunggah audio. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get editProfileSaveFailed => 'Gagal menyimpan profil';
+
+  @override
+  String get editProfileSaveSuccess => 'Profil berhasil disimpan.';
+
+  @override
+  String get pantunListSubtitle => 'Balas pantun 4 baris';
+
+  @override
+  String get pantunComingSoon => 'Segera';
+
+  @override
+  String get pantunRateLimited =>
+      'Terlalu banyak permintaan. Coba lagi sebentar.';
+
+  @override
+  String get pantunServerError =>
+      'Server sedang gangguan. Coba lagi sebentar ya.';
+
+  @override
+  String get reportBugUploadCredsIncomplete =>
+      'Kredensial upload tidak lengkap';
+
+  @override
+  String get reportBugResponseIncomplete => 'Response laporan tidak lengkap';
+
+  @override
+  String get paletteNeutral => 'Netral';
+
+  @override
+  String get paletteZinc => 'Zinc';
+
+  @override
+  String get paletteSlate => 'Slate';
+
+  @override
+  String get paletteBlue => 'Biru';
+
+  @override
+  String get paletteGreen => 'Hijau';
+
+  @override
+  String get paletteOrange => 'Oranye';
+
+  @override
+  String get paletteRed => 'Merah';
+
+  @override
+  String get paletteRose => 'Rose';
+
+  @override
+  String get paletteViolet => 'Violet';
+
+  @override
+  String get imageSheetCamera => 'Kamera';
+
+  @override
+  String get imageSheetGallery => 'Galeri';
+
+  @override
+  String get imageSheetFile => 'File';
+
+  @override
+  String get permissionDeniedTitle => 'Izin Ditolak';
+
+  @override
+  String get wordTypeKata => 'Kata';
+
+  @override
+  String get wordTypeIdiom => 'Idiom';
+
+  @override
+  String get wordTypePeribahasa => 'Peribahasa';
+
+  @override
+  String get wordTypeUngkapan => 'Ungkapan';
+
+  @override
+  String get wordImagePendingReview => 'Menunggu tinjauan';
+
+  @override
+  String get wordImageCensoredHint =>
+      'Gambar disensor. Ketuk untuk menampilkan.';
+
+  @override
+  String get wordImageNotYet => 'Jangan dulu';
+
+  @override
+  String get wordImageShow => 'Tampilkan';
+
+  @override
+  String get recordMicPermissionTitle =>
+      'Izin mikrofon diperlukan untuk merekam';
+
+  @override
+  String get recordDone => 'Selesai rekam';
+
+  @override
+  String get recordRetry => 'Ulangi';
+
+  @override
+  String get threadRecordVoice => 'Rekam suara';
+
+  @override
+  String get threadSend => 'Kirim';
+
+  @override
+  String get cropAspectFree => 'Bebas';
+
+  @override
+  String get cropSkip => 'Lewati';
+
+  @override
+  String get profileStatWords => 'usul kata';
+
+  @override
+  String get profileStatCorrections => 'perbaikan';
+
+  @override
+  String get infoSheetUnderstood => 'Mengerti';
+
+  @override
+  String get phoneCountrySearchHint => 'Cari nama atau kode';
+
+  @override
+  String publicAccountViewProfile(String label) {
+    return 'Lihat profil $label';
+  }
+
+  @override
+  String get imageCreditBy => 'Foto oleh ';
+
+  @override
+  String profilePhotoSemantics(String name) {
+    return 'Foto profil $name';
+  }
+
+  @override
+  String get pendingCheckTitle => 'Menunggu pengecekan';
+
+  @override
+  String get adminAnalyticsSkeletonKata => 'kata';
+
+  @override
+  String get achievementBorderNone => 'Tanpa bingkai';
+
+  @override
+  String get achievementBorderNoneSubtitle => 'Tampilkan foto profil polos';
+
+  @override
+  String get paletteYellow => 'Kuning';
+
+  @override
+  String get wordTypeKataDetail => 'Satu lema. Bukan frasa.';
+
+  @override
+  String get wordTypeIdiomDetail =>
+      'Frasa yang artinya tidak sama dengan arti tiap katanya. Contoh: tangan besi.';
+
+  @override
+  String get wordTypePeribahasaDetail =>
+      'Kalimat kiasan atau nasihat yang sudah lazim.';
+
+  @override
+  String get wordTypeUngkapanDetail =>
+      'Kelompok kata yang sudah lazim dipakai bersama.';
+
+  @override
+  String get dictActivitySkeletonSubtitle => 'lading';
+
+  @override
+  String get pendingCheckWordBody =>
+      'Kata ini belum diperiksa tim Sambasku. Makna atau terjemahannya bisa saja kurang tepat.';
+
+  @override
+  String get pendingCheckAudioBody =>
+      'Audio ini belum diperiksa tim Sambasku. Pelafalannya bisa saja kurang tepat.';
+
+  @override
+  String get cropPhotoTitle => 'Potong foto';
+
+  @override
+  String get commonSaving => 'Menyimpan...';
+
+  @override
+  String get imageSheetExplorer => 'Explorer';
+
+  @override
+  String get imageSheetReset => 'Reset';
+
+  @override
+  String get imageSheetCameraOpenFailed => 'Gagal membuka kamera';
+
+  @override
+  String get imageSheetGalleryPickFailed => 'Gagal memilih dari galeri';
+
+  @override
+  String get imageSheetFilePickFailed => 'Gagal memilih file';
+
+  @override
+  String get permissionMicRequiredTitle => 'Izin mikrofon diperlukan';
+
+  @override
+  String get notificationOpenLinkFailed => 'Tidak bisa membuka tautan';
+
+  @override
+  String get verifiedBadgeSemantics => 'Verifikator, ketuk untuk info';
+
+  @override
+  String get verifiedBadgeTitle => 'Verifikator';
+
+  @override
+  String get recordStart => 'Mulai rekam';
 }

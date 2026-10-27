@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Skeleton tile-list untuk daftar search-miss (beranda + tab Kontribusi).
 class SearchMissSkeletonList extends StatelessWidget {
@@ -45,8 +46,8 @@ class SearchMissSkeletonList extends StatelessWidget {
                 children: [
                   for (var i = 0; i < itemCount; i++)
                     FTile(
-                      title: Text('kata dicari contoh ${i + 1}'),
-                      subtitle: const Text('Sambas → Indonesia · 12× dicari'),
+                      title: Text(AppLocalizations.of(context).searchMissSkeletonLemma(i + 1)),
+                      subtitle: Text(AppLocalizations.of(context).searchMissSkeletonMeta),
                       suffix: Icon(
                         FLucideIcons.chevronRight,
                         color: context.theme.colors.mutedForeground,

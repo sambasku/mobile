@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gal/gal.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Izin tambah ke galeri (foto atau video). False jika user menolak.
 Future<bool> requestGalleryWriteAccess() async {
@@ -29,7 +30,7 @@ void showPermissionDeniedDialog(BuildContext context) {
           FTileGroup(
             children: [
               FTile(
-                title: const Text('Izin Ditolak'),
+                title: Text(AppLocalizations.of(context).permissionDeniedTitle),
                 subtitle: const Text(
                   'Biar fitur ini jalan, izinkan akses ke galeri atau kamera dari pengaturan aplikasi.',
                 ),
@@ -41,14 +42,14 @@ void showPermissionDeniedDialog(BuildContext context) {
                     openAppSettings();
                     Navigator.of(sheetContext).pop();
                   },
-                  child: const Text('Pengaturan'),
+                  child: Text(AppLocalizations.of(context).commonSettings),
                 ),
               ),
               FTile(
                 title: const Text(''),
                 suffix: FButton(
                   onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('OK'),
+                  child: Text(AppLocalizations.of(context).commonOk),
                 ),
               ),
             ],
@@ -74,7 +75,7 @@ void showMicrophonePermissionDeniedDialog(BuildContext context) {
           FTileGroup(
             children: [
               FTile(
-                title: const Text('Izin mikrofon diperlukan'),
+                title: Text(AppLocalizations.of(context).permissionMicRequiredTitle),
                 subtitle: const Text(
                   'Akses mikrofon dimatikan untuk SambasKu. Aktifkan di Pengaturan perangkat agar bisa merekam pelafalan kata.',
                 ),
@@ -86,14 +87,14 @@ void showMicrophonePermissionDeniedDialog(BuildContext context) {
                     openAppSettings();
                     Navigator.of(sheetContext).pop();
                   },
-                  child: const Text('Pengaturan'),
+                  child: Text(AppLocalizations.of(context).commonSettings),
                 ),
               ),
               FTile(
                 title: const Text(''),
                 suffix: FButton(
                   onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('OK'),
+                  child: Text(AppLocalizations.of(context).commonOk),
                 ),
               ),
             ],

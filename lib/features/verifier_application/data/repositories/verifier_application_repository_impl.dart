@@ -7,6 +7,7 @@ import '../../domain/failures/verifier_application_failure.dart';
 import '../../domain/repositories/verifier_application_repository.dart';
 import '../datasources/verifier_application_remote_datasource.dart';
 import '../models/verifier_application_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class VerifierApplicationRepositoryImpl
     implements VerifierApplicationRepository {
@@ -25,7 +26,7 @@ class VerifierApplicationRepositoryImpl
         }
         return Either.left(
           VerifierApplicationFailure(
-            response.message ?? 'Gagal memuat pengajuan',
+            response.message ?? l10n.verifierApplicationLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -70,7 +71,7 @@ class VerifierApplicationRepositoryImpl
       if (response.success == false || response.data == null) {
         return Either.left(
           VerifierApplicationFailure(
-            response.message ?? 'Gagal mengirim pengajuan',
+            response.message ?? l10n.verifierApplicationSendFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -134,7 +135,7 @@ class VerifierApplicationRepositoryImpl
       final message = data['message'];
       if (code == 'VERIFIER_APPLICATION_NOT_FOUND') {
         return VerifierApplicationFailure(
-          'Pengajuan verifikator tidak ditemukan',
+          l10n.verifierApplicationNotFound,
           errorCode: code,
         );
       }
@@ -153,11 +154,11 @@ class VerifierApplicationRepositoryImpl
 
   String _fallback(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
+      return l10n.commonRateLimited;
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan, coba lagi';
+    return l10n.commonGenericError;
   }
 }

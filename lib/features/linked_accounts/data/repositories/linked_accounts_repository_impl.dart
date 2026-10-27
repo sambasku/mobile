@@ -6,6 +6,7 @@ import '../../domain/repositories/linked_accounts_repository.dart';
 import '../datasources/linked_accounts_remote_datasource.dart';
 import '../models/auth_providers_dto.dart';
 import '../models/github_link_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
   LinkedAccountsRepositoryImpl(this._remote);
@@ -20,7 +21,7 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal memuat status akun',
+            response.message ?? l10n.linkedAccountsLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -53,7 +54,7 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal menambahkan ke akun terhubung',
+            response.message ?? l10n.linkedAccountsLinkFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -73,13 +74,13 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal melepas dari akun terhubung',
+            response.message ?? l10n.linkedAccountsUnlinkFailed,
             errorCode: response.errorCode,
           ),
         );
       }
       return Either.right(
-        response.data?.message ?? 'Berhasil dilepas dari akun terhubung.',
+        response.data?.message ?? l10n.linkedAccountsUnlinkSuccess,
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
@@ -105,7 +106,7 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal menambahkan ke akun terhubung',
+            response.message ?? l10n.linkedAccountsLinkFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -125,13 +126,13 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal melepas dari akun terhubung',
+            response.message ?? l10n.linkedAccountsUnlinkFailed,
             errorCode: response.errorCode,
           ),
         );
       }
       return Either.right(
-        response.data?.message ?? 'Berhasil dilepas dari akun terhubung.',
+        response.data?.message ?? l10n.linkedAccountsUnlinkSuccess,
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));

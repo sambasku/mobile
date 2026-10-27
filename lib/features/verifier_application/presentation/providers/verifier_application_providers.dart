@@ -5,6 +5,7 @@ import '../../domain/entities/verifier_application.dart';
 import '../../domain/providers/verifier_application_domain_providers.dart';
 import '../../domain/usecases/submit_verifier_application_use_case.dart';
 import '../models/verifier_application_state.dart';
+import '../../../../core/i18n/l10n.dart';
 
 part 'verifier_application_providers.g.dart';
 
@@ -66,8 +67,8 @@ class VerifierApplicationNotifier extends _$VerifierApplicationNotifier {
           isSubmitting: false,
           application: application,
           successMessage: isResubmit
-              ? 'Pengajuan dikirim ulang. Menunggu review.'
-              : 'Pengajuan terkirim. Menunggu review.',
+              ? l10n.verifierApplicationSuccessResubmit
+              : l10n.verifierApplicationSuccessSubmit,
         );
         AnalyticsService.instance.log(AnalyticsEvents.verifierApplySubmit);
       },

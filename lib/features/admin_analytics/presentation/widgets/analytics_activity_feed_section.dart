@@ -170,14 +170,15 @@ class _ActivityRow extends StatelessWidget {
   }
 }
 
-const _placeholderActivity = AnalyticsActivityItem(
-  kind: AnalyticsActivityKind.comment,
-  id: 'skeleton',
-  createdAt: '2026-09-21T00:00:00.000Z',
-  actorLabel: 'Warga Sambas',
-  body: 'aktivitas singkat satu baris',
-  subtitle: 'kata',
-);
+AnalyticsActivityItem _placeholderActivity(AppLocalizations l10n) =>
+    AnalyticsActivityItem(
+      kind: AnalyticsActivityKind.comment,
+      id: 'skeleton',
+      createdAt: '2026-09-21T00:00:00.000Z',
+      actorLabel: 'Warga Sambas',
+      body: 'aktivitas singkat satu baris',
+      subtitle: l10n.adminAnalyticsSkeletonKata,
+    );
 
 class _ActivityFeedSkeleton extends StatelessWidget {
   const _ActivityFeedSkeleton();
@@ -186,6 +187,7 @@ class _ActivityFeedSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
+    final placeholder = _placeholderActivity(AppLocalizations.of(context));
     PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
@@ -205,10 +207,10 @@ class _ActivityFeedSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < _activityFeedLimit; i++)
-                const SizedBox(
+                SizedBox(
                   height: _activityRowHeight,
                   width: double.infinity,
-                  child: _ActivityRow(item: _placeholderActivity),
+                  child: _ActivityRow(item: placeholder),
                 ),
             ],
           ),

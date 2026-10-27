@@ -3,6 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Halaman penjelasan peran verifikator (statis, tanpa API).
 class VerifierRolePage extends StatelessWidget {
   const VerifierRolePage({super.key});
@@ -10,11 +12,12 @@ class VerifierRolePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Peran verifikator'),
+        title: Text(l10n.verifierApplicationRoleTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -26,53 +29,36 @@ class VerifierRolePage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
         children: [
           Text(
-            'Baca ringkas apa itu verifikator dan apa saja yang dilakukan '
-            'sebelum mengajukan diri.',
+            l10n.verifierApplicationRoleIntro,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               height: 1.4,
             ),
           ),
           const Gap(20),
-          const _RoleBlock(
-            title: 'Apa itu verifikator',
-            body:
-                'Verifikator adalah anggota komunitas yang memeriksa usulan '
-                'kata warga sebelum entri dianggap terverifikasi di kamus. '
-                'Peran ini menjaga arti, contoh, dan terjemahan tetap akurat.',
+          _RoleBlock(
+            title: l10n.verifierApplicationWhatIsTitle,
+            body: l10n.verifierApplicationWhatIsBody,
           ),
           const Gap(16),
-          const _RoleBlock(
-            title: 'Apa yang dilakukan',
-            body:
-                'Meninjau antrean kontribusi: menyetujui usulan yang tepat, '
-                'menolak dengan alasan jika kurang layak, atau mengoreksi isi '
-                'agar entri siap tayang. Keputusan itu menentukan apakah kata '
-                'tampil sebagai Terverifikasi.',
+          _RoleBlock(
+            title: l10n.verifierApplicationWhatDoTitle,
+            body: l10n.verifierApplicationWhatDoBody,
           ),
           const Gap(16),
-          const _RoleBlock(
-            title: 'Yang tidak berubah',
-            body:
-                  'Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak '
-                'dan bukti sosial pada pengajuan tidak tampil di profil publik.',
+          _RoleBlock(
+            title: l10n.verifierApplicationUnchangedTitle,
+            body: l10n.verifierApplicationUnchangedBody,
           ),
           const Gap(16),
-          const _RoleBlock(
-            title: 'Data yang diminta saat ajukan',
-            body:
-                'Nomor HP dan alamat dipakai admin untuk menghubungi dan '
-                'memastikan pemohon orang nyata dari komunitas. Username media '
-                'sosial plus tangkapan layar membuktikan akun itu milik '
-                'pemohon, bukan tautan kosong.',
+          _RoleBlock(
+            title: l10n.verifierApplicationDataTitle,
+            body: l10n.verifierApplicationDataBody,
           ),
           const Gap(16),
-          const _RoleBlock(
-            title: 'Setelah disetujui',
-            body:
-                  'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean '
-                  'tinjau kemudian muncul di Profil. Kamu akan mendapat '
-                  'notifikasi saat pengajuan diputuskan.',
+          _RoleBlock(
+            title: l10n.verifierApplicationAfterTitle,
+            body: l10n.verifierApplicationAfterBody,
           ),
         ],
       ),

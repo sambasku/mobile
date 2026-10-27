@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// Satu palet warna forui: label + varian light/dark (dipilih app sesuai brightness).
 typedef ForuiPalette = ({
   String label,
@@ -103,3 +105,19 @@ final Map<String, ForuiPalette> foruiPalettes = {
 
 
 const defaultPalette = 'zinc';
+
+
+/// Label lokal palet (id → ARB). Fallback ke [ForuiPalette.label] bawaan.
+String foruiPaletteLabel(AppLocalizations l10n, String id) => switch (id) {
+  'neutral' => l10n.paletteNeutral,
+  'zinc' => l10n.paletteZinc,
+  'slate' => l10n.paletteSlate,
+  'blue' => l10n.paletteBlue,
+  'green' => l10n.paletteGreen,
+  'orange' => l10n.paletteOrange,
+  'red' => l10n.paletteRed,
+  'rose' => l10n.paletteRose,
+  'violet' => l10n.paletteViolet,
+  'yellow' => l10n.paletteYellow,
+  _ => foruiPalettes[id]?.label ?? id,
+};

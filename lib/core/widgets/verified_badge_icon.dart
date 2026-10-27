@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import '../../shared/utils/info_bottom_sheet.dart';
 import '../theme/f_colors_x.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Lencana `badgeCheck` biru untuk PERAN verifikator (di samping nama akun).
 ///
@@ -26,7 +27,7 @@ class VerifiedBadgeIcon extends StatelessWidget {
     if (onTap == null) return icon;
     return Semantics(
       button: true,
-      label: 'Verifikator, ketuk untuk info',
+      label: AppLocalizations.of(context).verifiedBadgeSemantics,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
@@ -40,7 +41,7 @@ class VerifiedBadgeIcon extends StatelessWidget {
 /// dipakai lagi di UI - ikon sudah mewakilinya.
 Future<void> showVerifierBadgeInfo(BuildContext context) => showAppInfoSheet(
       context,
-      title: 'Verifikator',
+      title: AppLocalizations.of(context).verifiedBadgeTitle,
       message:
           'Lencana biru menandai akun verifikator: warga yang memeriksa usulan '
           'kata dan kontribusi sebelum tayang.',

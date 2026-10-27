@@ -8,6 +8,7 @@ import 'avatar_border_overlay.dart';
 import 'profile_stat_inline.dart';
 import 'public_account_name.dart';
 import 'user_avatar.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Varian header identitas profil.
 ///
@@ -135,7 +136,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                     ),
                     child: Semantics(
                       button: onAvatarTap != null,
-                      label: 'Foto profil $displayName',
+                      label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
                       child: GestureDetector(
                         onTap: onAvatarTap,
                         child: AvatarBorderOverlay(

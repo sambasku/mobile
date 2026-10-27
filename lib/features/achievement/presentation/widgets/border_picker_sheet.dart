@@ -8,6 +8,7 @@ import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
 import '../../domain/providers/achievement_domain_providers.dart';
 import '../providers/achievement_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Bottom sheet pilih bingkai profil (aturan mobile-use-bottom-sheet).
 ///
@@ -52,7 +53,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
           Navigator.of(context).pop();
           showFToast(
             context: context,
-            title: const Text('Bingkai profil diperbarui'),
+            title: Text(AppLocalizations.of(context).achievementBorderUpdated),
           );
         });
       } finally {
@@ -121,7 +122,7 @@ class _BorderPickerSheet extends HookConsumerWidget {
                       onPress: () => ref.invalidate(
                         myAchievementsProvider(rewardType: 'profile_border'),
                       ),
-                      child: const Text('Coba lagi'),
+                      child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
                 ),
@@ -133,8 +134,8 @@ class _BorderPickerSheet extends HookConsumerWidget {
                     children: [
                       FTile(
                         prefix: const Icon(FLucideIcons.circleSlash),
-                        title: const Text('Tanpa bingkai'),
-                        subtitle: const Text('Tampilkan foto profil polos'),
+                        title: Text(AppLocalizations.of(context).achievementBorderNone),
+                        subtitle: Text(AppLocalizations.of(context).achievementBorderNoneSubtitle),
                         suffix: borders.any((b) => b.isActiveBorder)
                             ? const Icon(FLucideIcons.check)
                             : null,

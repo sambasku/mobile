@@ -6,6 +6,7 @@ import '../../domain/failures/edit_profile_failure.dart';
 import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
 import '../models/my_profile_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class EditProfileRepositoryImpl implements EditProfileRepository {
   EditProfileRepositoryImpl(this._remote);
@@ -19,7 +20,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           EditProfileFailure(
-            response.message ?? 'Gagal memuat profil',
+            response.message ?? l10n.profileLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -55,7 +56,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           EditProfileFailure(
-            response.message ?? 'Gagal menyimpan profil',
+            response.message ?? l10n.editProfileSaveFailed,
             errorCode: response.errorCode,
           ),
         );

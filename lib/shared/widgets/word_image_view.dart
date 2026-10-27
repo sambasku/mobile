@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import '../../core/utils/display_image_url.dart';
 import '../../features/dictionary/domain/entities/word_detail.dart';
 import 'cached_network_image_with_fallback.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Host yang dikenal sebagai placeholder gambar staging (sementara).
 /// Deteksi interim sampai flag `is_verified` stabil di produksi.
@@ -97,7 +98,7 @@ class _PendingPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
-      label: 'Menunggu tinjauan',
+      label: AppLocalizations.of(context).wordImagePendingReview,
       child: Image.asset(
         dark ? _darkGif : _lightGif,
         fit: fit,
@@ -124,7 +125,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
     final theme = context.theme;
     return Semantics(
       button: true,
-      hint: 'Gambar disensor. Ketuk untuk menampilkan.',
+      hint: AppLocalizations.of(context).wordImageCensoredHint,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -221,14 +222,14 @@ Future<bool> confirmRevealViolenceImage(BuildContext context) async {
                       child: FButton(
                         variant: FButtonVariant.outline,
                         onPress: () => Navigator.of(sheetContext).pop(false),
-                        child: const Text('Jangan dulu'),
+                        child: Text(AppLocalizations.of(context).wordImageNotYet),
                       ),
                     ),
                     const Gap(12),
                     Expanded(
                       child: FButton(
                         onPress: () => Navigator.of(sheetContext).pop(true),
-                        child: const Text('Lihat'),
+                        child: Text(AppLocalizations.of(context).wordImageShow),
                       ),
                     ),
                   ],

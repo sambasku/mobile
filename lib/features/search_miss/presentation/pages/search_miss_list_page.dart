@@ -52,11 +52,11 @@ class SearchMissListPage extends ConsumerWidget {
           error: (_, _) => ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.only(bottom: 32),
-            children: const [
+            children: [
               FAlert(
                 variant: FAlertVariant.destructive,
-                title: Text('Gagal memuat daftar pencarian'),
-                icon: Icon(FLucideIcons.circleAlert),
+                title: Text(AppLocalizations.of(context).searchMissLoadFailed),
+                icon: const Icon(FLucideIcons.circleAlert),
               ),
             ],
           ),

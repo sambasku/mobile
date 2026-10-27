@@ -49,8 +49,6 @@ FTileMixin themeModeTile(WidgetRef ref) {
 FTileMixin paletteTile(WidgetRef ref) {
   final l10n = AppLocalizations.of(ref.context);
   final name = ref.watch(foruiPaletteControllerProvider);
-  final palette = foruiPalettes[name] ?? foruiPalettes[defaultPalette]!;
-
   // 10 palet × ~56 px ≈ 560. Cap 320 (viewport tes 800×600 → 0.4×600=240)
   // hanya memuat Netral…Hijau; "Merah" tidak ter-layout.
   final menuMaxHeight = math.max(
@@ -61,7 +59,7 @@ FTileMixin paletteTile(WidgetRef ref) {
   return FSelectMenuTile<String>(
     prefix: const Icon(FLucideIcons.palette),
     title: Text(l10n.appearancePalette),
-    details: Text(palette.label),
+    details: Text(foruiPaletteLabel(l10n, name)),
     maxHeight: menuMaxHeight,
     selectControl: FMultiValueControl.managedRadio(
       initial: name,
@@ -75,7 +73,7 @@ FTileMixin paletteTile(WidgetRef ref) {
       for (final entry in foruiPalettes.entries)
         FSelectTile(
           value: entry.key,
-          title: Text(entry.value.label),
+          title: Text(foruiPaletteLabel(l10n, entry.key)),
           details: _PaletteDot(color: entry.value.light.touch.colors.primary),
         ),
     ],

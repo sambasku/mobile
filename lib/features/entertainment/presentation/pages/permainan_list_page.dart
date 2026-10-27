@@ -6,18 +6,15 @@ import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Satu permainan di hub. Tambah entri baru cukup di [_items].
+/// Judul/subtitle diambil dari ARB lewat [id] saat render.
 class _Permainan {
   const _Permainan({
     required this.id,
-    required this.title,
-    required this.subtitle,
     required this.icon,
     this.path,
   });
 
   final String id;
-  final String title;
-  final String subtitle;
   final IconData icon;
 
   /// Null = belum tersedia (kartu tampil, tap diabaikan).
@@ -27,12 +24,18 @@ class _Permainan {
 const _items = <_Permainan>[
   _Permainan(
     id: 'pantun',
-    title: 'Pantun',
-    subtitle: 'Balas pantun 4 baris',
     icon: FLucideIcons.feather,
     path: '/entertainment/pantun',
   ),
 ];
+
+({String title, String subtitle}) _labelsFor(
+  AppLocalizations l10n,
+  String id,
+) => switch (id) {
+  'pantun' => (title: l10n.pantunTitle, subtitle: l10n.pantunListSubtitle),
+  _ => (title: id, subtitle: ''),
+};
 
 /// Hub Permainan: grid 3 kolom berisi semua permainan Sambas.
 /// Permainan baru tinggal ditambah ke [_items] - halaman ini tidak berubah.
@@ -82,6 +85,8 @@ class _PermainanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    final labels = _labelsFor(l10n, item.id);
     return Material(
       color: theme.colors.secondary,
       shape: RoundedRectangleBorder(
@@ -101,12 +106,12 @@ class _PermainanCard extends StatelessWidget {
                   Icon(item.icon, size: 20, color: theme.colors.primary),
                   if (item.path == null) ...[
                     const Gap(6),
-                    const Expanded(
+                    Expanded(
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text('Segera'),
+                          child: Text(l10n.pantunComingSoon),
                         ),
                       ),
                     ),
@@ -121,7 +126,7 @@ class _PermainanCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.title,
+                        labels.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.body.sm.copyWith(
@@ -131,7 +136,7 @@ class _PermainanCard extends StatelessWidget {
                       ),
                       const Gap(2),
                       Text(
-                        item.subtitle,
+                        labels.subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.typography.body.sm.copyWith(

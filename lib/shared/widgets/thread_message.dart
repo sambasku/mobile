@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import '../utils/public_account_name.dart';
 import 'public_account_name.dart';
 import 'user_avatar.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Label peran di header thread. Centang hijau sudah mewakili verifikator,
 /// jadi label teks tidak lagi ditampilkan (dibiarkan untuk kompatibilitas
@@ -275,7 +276,7 @@ class ThreadComposer extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Semantics(
               button: true,
-              label: 'Rekam suara',
+              label: AppLocalizations.of(context).threadRecordVoice,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -336,7 +337,7 @@ class ThreadComposer extends StatelessWidget {
             const Gap(6),
             Semantics(
               button: true,
-              label: 'Kirim',
+              label: AppLocalizations.of(context).threadSend,
               child: Material(
                 color: isSubmitting
                     ? theme.colors.primary.withValues(alpha: 0.5)
@@ -402,7 +403,7 @@ class ThreadLoginPrompt extends StatelessWidget {
         FButton(
           variant: FButtonVariant.outline,
           onPress: onLogin,
-          child: const Text('Masuk'),
+          child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
         ),
       ],
     );

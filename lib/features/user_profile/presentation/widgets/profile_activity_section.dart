@@ -307,7 +307,7 @@ class _ErrorBox extends StatelessWidget {
         FButton(
           variant: FButtonVariant.outline,
           onPress: onRetry,
-          child: const Text('Coba lagi'),
+          child: Text(AppLocalizations.of(context).commonRetry),
         ),
       ],
     );

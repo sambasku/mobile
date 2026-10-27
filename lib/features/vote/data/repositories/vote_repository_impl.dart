@@ -10,6 +10,7 @@ import '../datasources/vote_remote_datasource.dart';
 import '../models/my_vote_dto.dart';
 import '../models/vote_count_dto.dart';
 import '../models/vote_toggle_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
   return VoteDeckItem(
@@ -78,7 +79,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal mengubah vote',
+            response.message ?? l10n.voteToggleFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -112,7 +113,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal memuat jumlah vote',
+            response.message ?? l10n.voteCountLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -148,7 +149,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal memuat vote kamu',
+            response.message ?? l10n.voteMineLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -263,14 +264,14 @@ class VoteRepositoryImpl implements VoteRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak vote. Coba lagi dalam beberapa saat.';
+      return l10n.voteRateLimited;
     }
     if (statusCode == 401) {
       return 'Sesi berakhir, silakan masuk kembali';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan saat memuat vote, coba lagi';
+    return l10n.voteGenericError;
   }
 }

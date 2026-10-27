@@ -13666,6 +13666,978 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal memuat usulan'**
   String get eventProposalLoadFailedTitle;
+
+  /// No description provided for @commonGenericError.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan, coba lagi'**
+  String get commonGenericError;
+
+  /// No description provided for @commonOk.
+  ///
+  /// In id, this message translates to:
+  /// **'OK'**
+  String get commonOk;
+
+  /// No description provided for @commonSettings.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get commonSettings;
+
+  /// No description provided for @verifierApplicationTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadi verifikator'**
+  String get verifierApplicationTitle;
+
+  /// No description provided for @verifierApplicationRoleTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Peran verifikator'**
+  String get verifierApplicationRoleTitle;
+
+  /// No description provided for @verifierApplicationRoleIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca ringkas apa itu verifikator dan apa saja yang dilakukan sebelum mengajukan diri.'**
+  String get verifierApplicationRoleIntro;
+
+  /// No description provided for @verifierApplicationWhatIsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa itu verifikator'**
+  String get verifierApplicationWhatIsTitle;
+
+  /// No description provided for @verifierApplicationWhatIsBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator adalah anggota komunitas yang memeriksa usulan kata warga sebelum entri dianggap terverifikasi di kamus. Peran ini menjaga arti, contoh, dan terjemahan tetap akurat.'**
+  String get verifierApplicationWhatIsBody;
+
+  /// No description provided for @verifierApplicationWhatDoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang dilakukan'**
+  String get verifierApplicationWhatDoTitle;
+
+  /// No description provided for @verifierApplicationWhatDoBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Meninjau antrean kontribusi: menyetujui usulan yang tepat, menolak dengan alasan jika kurang layak, atau mengoreksi isi agar entri siap tayang. Keputusan itu menentukan apakah kata tampil sebagai Terverifikasi.'**
+  String get verifierApplicationWhatDoBody;
+
+  /// No description provided for @verifierApplicationUnchangedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang tidak berubah'**
+  String get verifierApplicationUnchangedTitle;
+
+  /// No description provided for @verifierApplicationUnchangedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak dan bukti sosial pada pengajuan tidak tampil di profil publik.'**
+  String get verifierApplicationUnchangedBody;
+
+  /// No description provided for @verifierApplicationDataTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Data yang diminta saat ajukan'**
+  String get verifierApplicationDataTitle;
+
+  /// No description provided for @verifierApplicationDataBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong.'**
+  String get verifierApplicationDataBody;
+
+  /// No description provided for @verifierApplicationAfterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Setelah disetujui'**
+  String get verifierApplicationAfterTitle;
+
+  /// No description provided for @verifierApplicationAfterBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean tinjau kemudian muncul di Profil. Kamu akan mendapat notifikasi saat pengajuan diputuskan.'**
+  String get verifierApplicationAfterBody;
+
+  /// No description provided for @verifierApplicationApprovedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan disetujui'**
+  String get verifierApplicationApprovedTitle;
+
+  /// No description provided for @verifierApplicationApprovedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.'**
+  String get verifierApplicationApprovedBody;
+
+  /// No description provided for @verifierApplicationReLoginCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk ulang'**
+  String get verifierApplicationReLoginCta;
+
+  /// No description provided for @verifierApplicationOpeningLogin.
+  ///
+  /// In id, this message translates to:
+  /// **'Membuka halaman masuk...'**
+  String get verifierApplicationOpeningLogin;
+
+  /// No description provided for @verifierApplicationPendingTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan sedang ditinjau'**
+  String get verifierApplicationPendingTitle;
+
+  /// No description provided for @verifierApplicationPendingBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.'**
+  String get verifierApplicationPendingBody;
+
+  /// No description provided for @verifierApplicationLearnTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelajari peran verifikator'**
+  String get verifierApplicationLearnTitle;
+
+  /// No description provided for @verifierApplicationLearnSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa itu verifikator dan apa saja yang dilakukan'**
+  String get verifierApplicationLearnSubtitle;
+
+  /// No description provided for @verifierApplicationNeedsRevisionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu perbaikan'**
+  String get verifierApplicationNeedsRevisionTitle;
+
+  /// No description provided for @verifierApplicationRejectedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan ditolak'**
+  String get verifierApplicationRejectedTitle;
+
+  /// No description provided for @verifierApplicationRejectedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Data kurang lengkap. Perbaiki lalu kirim ulang.'**
+  String get verifierApplicationRejectedBody;
+
+  /// No description provided for @verifierApplicationCannotSendTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan belum bisa dikirim'**
+  String get verifierApplicationCannotSendTitle;
+
+  /// No description provided for @verifierApplicationPhoneRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor HP wajib diisi.'**
+  String get verifierApplicationPhoneRequired;
+
+  /// No description provided for @verifierApplicationPhoneInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor HP tidak valid. Contoh: 81234567890.'**
+  String get verifierApplicationPhoneInvalid;
+
+  /// No description provided for @verifierApplicationAddressMin.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat minimal 10 karakter.'**
+  String get verifierApplicationAddressMin;
+
+  /// No description provided for @verifierApplicationSocialMin.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan minimal satu akun media sosial.'**
+  String get verifierApplicationSocialMin;
+
+  /// No description provided for @verifierApplicationAccountFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'akun pertama'**
+  String get verifierApplicationAccountFirst;
+
+  /// Label baris akun sosial; {n} = nomor baris
+  ///
+  /// In id, this message translates to:
+  /// **'akun ke-{n}'**
+  String verifierApplicationAccountNth(int n);
+
+  /// No description provided for @verifierApplicationPickPlatformFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih platform untuk {label}.'**
+  String verifierApplicationPickPlatformFor(String label);
+
+  /// No description provided for @verifierApplicationUsernameMinFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama atau username {label} minimal 2 karakter.'**
+  String verifierApplicationUsernameMinFor(String label);
+
+  /// No description provided for @verifierApplicationWaitUploadFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu screenshot {label} selesai diunggah.'**
+  String verifierApplicationWaitUploadFor(String label);
+
+  /// No description provided for @verifierApplicationUploadFailedFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Screenshot {label} gagal diunggah. Coba lagi.'**
+  String verifierApplicationUploadFailedFor(String label);
+
+  /// No description provided for @verifierApplicationUploadRequiredFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah screenshot profil {label}.'**
+  String verifierApplicationUploadRequiredFor(String label);
+
+  /// No description provided for @verifierApplicationPhoneLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'No. HP'**
+  String get verifierApplicationPhoneLabel;
+
+  /// No description provided for @verifierApplicationPhoneHint.
+  ///
+  /// In id, this message translates to:
+  /// **'81234567890'**
+  String get verifierApplicationPhoneHint;
+
+  /// No description provided for @verifierApplicationAddressLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get verifierApplicationAddressLabel;
+
+  /// No description provided for @verifierApplicationAddressHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat lengkap tempat tinggal/domisili'**
+  String get verifierApplicationAddressHint;
+
+  /// No description provided for @verifierApplicationSocialSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Media sosial (minimal 1)'**
+  String get verifierApplicationSocialSection;
+
+  /// No description provided for @verifierApplicationAddSocial.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah lainnya'**
+  String get verifierApplicationAddSocial;
+
+  /// No description provided for @verifierApplicationSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim pengajuan'**
+  String get verifierApplicationSubmit;
+
+  /// No description provided for @verifierApplicationResubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ulang'**
+  String get verifierApplicationResubmit;
+
+  /// No description provided for @verifierApplicationSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get verifierApplicationSubmitting;
+
+  /// No description provided for @verifierApplicationPrivacyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.'**
+  String get verifierApplicationPrivacyNote;
+
+  /// No description provided for @verifierApplicationPickPlatform.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih platform'**
+  String get verifierApplicationPickPlatform;
+
+  /// No description provided for @verifierApplicationPlatformLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Platform'**
+  String get verifierApplicationPlatformLabel;
+
+  /// No description provided for @verifierApplicationPlatformNth.
+  ///
+  /// In id, this message translates to:
+  /// **'Platform {n}'**
+  String verifierApplicationPlatformNth(int n);
+
+  /// No description provided for @verifierApplicationUsernameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama / username'**
+  String get verifierApplicationUsernameLabel;
+
+  /// No description provided for @verifierApplicationUsernameHintSite.
+  ///
+  /// In id, this message translates to:
+  /// **'nama situs atau akun'**
+  String get verifierApplicationUsernameHintSite;
+
+  /// No description provided for @verifierApplicationUsernameHintUser.
+  ///
+  /// In id, this message translates to:
+  /// **'nama atau username'**
+  String get verifierApplicationUsernameHintUser;
+
+  /// No description provided for @verifierApplicationScreenshotLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Screenshot profil'**
+  String get verifierApplicationScreenshotLabel;
+
+  /// No description provided for @verifierApplicationRemoveAccount.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus akun'**
+  String get verifierApplicationRemoveAccount;
+
+  /// No description provided for @verifierApplicationCameraGallery.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera / galeri'**
+  String get verifierApplicationCameraGallery;
+
+  /// No description provided for @verifierApplicationImageTooLarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar melebihi {mb} MB'**
+  String verifierApplicationImageTooLarge(int mb);
+
+  /// No description provided for @verifierApplicationImageProcessFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses gambar'**
+  String get verifierApplicationImageProcessFailed;
+
+  /// No description provided for @verifierApplicationLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pengajuan'**
+  String get verifierApplicationLoadFailed;
+
+  /// No description provided for @verifierApplicationSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim pengajuan'**
+  String get verifierApplicationSendFailed;
+
+  /// No description provided for @verifierApplicationNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan verifikator tidak ditemukan'**
+  String get verifierApplicationNotFound;
+
+  /// No description provided for @verifierApplicationSuccessResubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan dikirim ulang. Menunggu review.'**
+  String get verifierApplicationSuccessResubmit;
+
+  /// No description provided for @verifierApplicationSuccessSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan terkirim. Menunggu review.'**
+  String get verifierApplicationSuccessSubmit;
+
+  /// No description provided for @achievementTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pencapaian'**
+  String get achievementTitle;
+
+  /// No description provided for @achievementSeeAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua pencapaian'**
+  String get achievementSeeAll;
+
+  /// No description provided for @achievementBorderUpdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Bingkai profil diperbarui'**
+  String get achievementBorderUpdated;
+
+  /// No description provided for @achievementLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pencapaian'**
+  String get achievementLoadFailed;
+
+  /// No description provided for @achievementBorderSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan bingkai profil'**
+  String get achievementBorderSaveFailed;
+
+  /// No description provided for @achievementEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pencapaian'**
+  String get achievementEmpty;
+
+  /// No description provided for @commentSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim komentar'**
+  String get commentSendFailed;
+
+  /// No description provided for @commentDeleteFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus komentar'**
+  String get commentDeleteFailed;
+
+  /// No description provided for @commentVoiceFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim rekaman suara'**
+  String get commentVoiceFailed;
+
+  /// No description provided for @commentRateLimited.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak komentar. Coba lagi dalam beberapa saat.'**
+  String get commentRateLimited;
+
+  /// No description provided for @voteToggleFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah vote'**
+  String get voteToggleFailed;
+
+  /// No description provided for @voteCountLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat jumlah vote'**
+  String get voteCountLoadFailed;
+
+  /// No description provided for @voteMineLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat vote kamu'**
+  String get voteMineLoadFailed;
+
+  /// No description provided for @voteRateLimited.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak vote. Coba lagi dalam beberapa saat.'**
+  String get voteRateLimited;
+
+  /// No description provided for @voteGenericError.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan saat memuat vote, coba lagi'**
+  String get voteGenericError;
+
+  /// No description provided for @voteFixAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki'**
+  String get voteFixAction;
+
+  /// No description provided for @voteWordTypeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'jenis kata'**
+  String get voteWordTypeLabel;
+
+  /// No description provided for @linkedAccountsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat status akun'**
+  String get linkedAccountsLoadFailed;
+
+  /// No description provided for @linkedAccountsLinkFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menambahkan ke akun terhubung'**
+  String get linkedAccountsLinkFailed;
+
+  /// No description provided for @linkedAccountsUnlinkFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal melepas dari akun terhubung'**
+  String get linkedAccountsUnlinkFailed;
+
+  /// No description provided for @linkedAccountsUnlinkSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Berhasil dilepas dari akun terhubung.'**
+  String get linkedAccountsUnlinkSuccess;
+
+  /// No description provided for @userProfileMentionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat saran mention'**
+  String get userProfileMentionFailed;
+
+  /// No description provided for @userProfileGenericError.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan saat memuat profil, coba lagi'**
+  String get userProfileGenericError;
+
+  /// No description provided for @searchMissPopularLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat daftar pencarian populer'**
+  String get searchMissPopularLoadFailed;
+
+  /// No description provided for @searchMissSkeletonLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'kata dicari contoh {n}'**
+  String searchMissSkeletonLemma(int n);
+
+  /// No description provided for @searchMissSkeletonMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas → Indonesia · 12× dicari'**
+  String get searchMissSkeletonMeta;
+
+  /// No description provided for @dictCategoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kategori'**
+  String get dictCategoryLoadFailed;
+
+  /// No description provided for @dictWordOfDayLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kata hari ini'**
+  String get dictWordOfDayLoadFailed;
+
+  /// No description provided for @dictAudioUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah audio'**
+  String get dictAudioUploadFailed;
+
+  /// No description provided for @dictAudioUploadFailedRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah audio. Coba lagi dalam beberapa saat.'**
+  String get dictAudioUploadFailedRetry;
+
+  /// No description provided for @editProfileSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan profil'**
+  String get editProfileSaveFailed;
+
+  /// No description provided for @editProfileSaveSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil berhasil disimpan.'**
+  String get editProfileSaveSuccess;
+
+  /// No description provided for @pantunListSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Balas pantun 4 baris'**
+  String get pantunListSubtitle;
+
+  /// No description provided for @pantunComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Segera'**
+  String get pantunComingSoon;
+
+  /// No description provided for @pantunRateLimited.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak permintaan. Coba lagi sebentar.'**
+  String get pantunRateLimited;
+
+  /// No description provided for @pantunServerError.
+  ///
+  /// In id, this message translates to:
+  /// **'Server sedang gangguan. Coba lagi sebentar ya.'**
+  String get pantunServerError;
+
+  /// No description provided for @reportBugUploadCredsIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Kredensial upload tidak lengkap'**
+  String get reportBugUploadCredsIncomplete;
+
+  /// No description provided for @reportBugResponseIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Response laporan tidak lengkap'**
+  String get reportBugResponseIncomplete;
+
+  /// No description provided for @paletteNeutral.
+  ///
+  /// In id, this message translates to:
+  /// **'Netral'**
+  String get paletteNeutral;
+
+  /// No description provided for @paletteZinc.
+  ///
+  /// In id, this message translates to:
+  /// **'Zinc'**
+  String get paletteZinc;
+
+  /// No description provided for @paletteSlate.
+  ///
+  /// In id, this message translates to:
+  /// **'Slate'**
+  String get paletteSlate;
+
+  /// No description provided for @paletteBlue.
+  ///
+  /// In id, this message translates to:
+  /// **'Biru'**
+  String get paletteBlue;
+
+  /// No description provided for @paletteGreen.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau'**
+  String get paletteGreen;
+
+  /// No description provided for @paletteOrange.
+  ///
+  /// In id, this message translates to:
+  /// **'Oranye'**
+  String get paletteOrange;
+
+  /// No description provided for @paletteRed.
+  ///
+  /// In id, this message translates to:
+  /// **'Merah'**
+  String get paletteRed;
+
+  /// No description provided for @paletteRose.
+  ///
+  /// In id, this message translates to:
+  /// **'Rose'**
+  String get paletteRose;
+
+  /// No description provided for @paletteViolet.
+  ///
+  /// In id, this message translates to:
+  /// **'Violet'**
+  String get paletteViolet;
+
+  /// No description provided for @imageSheetCamera.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera'**
+  String get imageSheetCamera;
+
+  /// No description provided for @imageSheetGallery.
+  ///
+  /// In id, this message translates to:
+  /// **'Galeri'**
+  String get imageSheetGallery;
+
+  /// No description provided for @imageSheetFile.
+  ///
+  /// In id, this message translates to:
+  /// **'File'**
+  String get imageSheetFile;
+
+  /// No description provided for @permissionDeniedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin Ditolak'**
+  String get permissionDeniedTitle;
+
+  /// No description provided for @wordTypeKata.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get wordTypeKata;
+
+  /// No description provided for @wordTypeIdiom.
+  ///
+  /// In id, this message translates to:
+  /// **'Idiom'**
+  String get wordTypeIdiom;
+
+  /// No description provided for @wordTypePeribahasa.
+  ///
+  /// In id, this message translates to:
+  /// **'Peribahasa'**
+  String get wordTypePeribahasa;
+
+  /// No description provided for @wordTypeUngkapan.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungkapan'**
+  String get wordTypeUngkapan;
+
+  /// No description provided for @wordImagePendingReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get wordImagePendingReview;
+
+  /// No description provided for @wordImageCensoredHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar disensor. Ketuk untuk menampilkan.'**
+  String get wordImageCensoredHint;
+
+  /// No description provided for @wordImageNotYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan dulu'**
+  String get wordImageNotYet;
+
+  /// No description provided for @wordImageShow.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan'**
+  String get wordImageShow;
+
+  /// No description provided for @recordMicPermissionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan untuk merekam'**
+  String get recordMicPermissionTitle;
+
+  /// No description provided for @recordDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai rekam'**
+  String get recordDone;
+
+  /// No description provided for @recordRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi'**
+  String get recordRetry;
+
+  /// No description provided for @threadRecordVoice.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get threadRecordVoice;
+
+  /// No description provided for @threadSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get threadSend;
+
+  /// No description provided for @cropAspectFree.
+  ///
+  /// In id, this message translates to:
+  /// **'Bebas'**
+  String get cropAspectFree;
+
+  /// No description provided for @cropSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get cropSkip;
+
+  /// No description provided for @profileStatWords.
+  ///
+  /// In id, this message translates to:
+  /// **'usul kata'**
+  String get profileStatWords;
+
+  /// No description provided for @profileStatCorrections.
+  ///
+  /// In id, this message translates to:
+  /// **'perbaikan'**
+  String get profileStatCorrections;
+
+  /// No description provided for @infoSheetUnderstood.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengerti'**
+  String get infoSheetUnderstood;
+
+  /// No description provided for @phoneCountrySearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama atau kode'**
+  String get phoneCountrySearchHint;
+
+  /// No description provided for @publicAccountViewProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat profil {label}'**
+  String publicAccountViewProfile(String label);
+
+  /// No description provided for @imageCreditBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto oleh '**
+  String get imageCreditBy;
+
+  /// No description provided for @profilePhotoSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto profil {name}'**
+  String profilePhotoSemantics(String name);
+
+  /// No description provided for @pendingCheckTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu pengecekan'**
+  String get pendingCheckTitle;
+
+  /// No description provided for @adminAnalyticsSkeletonKata.
+  ///
+  /// In id, this message translates to:
+  /// **'kata'**
+  String get adminAnalyticsSkeletonKata;
+
+  /// No description provided for @achievementBorderNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa bingkai'**
+  String get achievementBorderNone;
+
+  /// No description provided for @achievementBorderNoneSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan foto profil polos'**
+  String get achievementBorderNoneSubtitle;
+
+  /// No description provided for @paletteYellow.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuning'**
+  String get paletteYellow;
+
+  /// No description provided for @wordTypeKataDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu lema. Bukan frasa.'**
+  String get wordTypeKataDetail;
+
+  /// No description provided for @wordTypeIdiomDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Frasa yang artinya tidak sama dengan arti tiap katanya. Contoh: tangan besi.'**
+  String get wordTypeIdiomDetail;
+
+  /// No description provided for @wordTypePeribahasaDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat kiasan atau nasihat yang sudah lazim.'**
+  String get wordTypePeribahasaDetail;
+
+  /// No description provided for @wordTypeUngkapanDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelompok kata yang sudah lazim dipakai bersama.'**
+  String get wordTypeUngkapanDetail;
+
+  /// No description provided for @dictActivitySkeletonSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'lading'**
+  String get dictActivitySkeletonSubtitle;
+
+  /// No description provided for @pendingCheckWordBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini belum diperiksa tim Sambasku. Makna atau terjemahannya bisa saja kurang tepat.'**
+  String get pendingCheckWordBody;
+
+  /// No description provided for @pendingCheckAudioBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Audio ini belum diperiksa tim Sambasku. Pelafalannya bisa saja kurang tepat.'**
+  String get pendingCheckAudioBody;
+
+  /// No description provided for @cropPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Potong foto'**
+  String get cropPhotoTitle;
+
+  /// No description provided for @commonSaving.
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get commonSaving;
+
+  /// No description provided for @imageSheetExplorer.
+  ///
+  /// In id, this message translates to:
+  /// **'Explorer'**
+  String get imageSheetExplorer;
+
+  /// No description provided for @imageSheetReset.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset'**
+  String get imageSheetReset;
+
+  /// No description provided for @imageSheetCameraOpenFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuka kamera'**
+  String get imageSheetCameraOpenFailed;
+
+  /// No description provided for @imageSheetGalleryPickFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memilih dari galeri'**
+  String get imageSheetGalleryPickFailed;
+
+  /// No description provided for @imageSheetFilePickFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memilih file'**
+  String get imageSheetFilePickFailed;
+
+  /// No description provided for @permissionMicRequiredTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan'**
+  String get permissionMicRequiredTitle;
+
+  /// No description provided for @notificationOpenLinkFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa membuka tautan'**
+  String get notificationOpenLinkFailed;
+
+  /// No description provided for @verifiedBadgeSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator, ketuk untuk info'**
+  String get verifiedBadgeSemantics;
+
+  /// No description provided for @verifiedBadgeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator'**
+  String get verifiedBadgeTitle;
+
+  /// No description provided for @recordStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai rekam'**
+  String get recordStart;
 }
 
 class _AppLocalizationsDelegate

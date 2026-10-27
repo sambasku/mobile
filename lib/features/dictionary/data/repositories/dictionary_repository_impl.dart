@@ -15,6 +15,7 @@ import '../datasources/dictionary_remote_datasource.dart';
 import '../models/word_audio_dto.dart';
 import '../models/word_detail_dto.dart';
 import '../models/word_summary_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class DictionaryRepositoryImpl implements DictionaryRepository {
   DictionaryRepositoryImpl(
@@ -435,7 +436,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       if (response.success == false) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Gagal memuat kategori',
+            response.message ?? l10n.dictCategoryLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -445,7 +446,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       if (items == null) {
         return Either.left(
           DictionaryFailure(
-            response.message ?? 'Gagal memuat kategori',
+            response.message ?? l10n.dictCategoryLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -457,7 +458,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     } on DioException catch (e) {
       return Either.left(
         DictionaryFailure(
-          e.message ?? 'Gagal memuat kategori',
+          e.message ?? l10n.dictCategoryLoadFailed,
           errorCode: e.response?.data?['error_code'] as String?,
         ),
       );
@@ -509,7 +510,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       if (!success) {
         return Either.left(
           DictionaryFailure(
-            errorMessage ?? 'Gagal memuat kata hari ini',
+            errorMessage ?? l10n.dictWordOfDayLoadFailed,
             errorCode: errorCode,
           ),
         );

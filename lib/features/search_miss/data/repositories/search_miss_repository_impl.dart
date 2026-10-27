@@ -6,6 +6,7 @@ import '../../domain/failures/search_miss_failure.dart';
 import '../../domain/repositories/search_miss_repository.dart';
 import '../datasources/search_miss_remote_datasource.dart';
 import '../models/search_miss_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class SearchMissRepositoryImpl implements SearchMissRepository {
   SearchMissRepositoryImpl(this._remoteDatasource);
@@ -24,7 +25,7 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       if (response.success == false) {
         return Either.left(
           SearchMissFailure(
-            response.message ?? 'Gagal memuat daftar pencarian populer',
+            response.message ?? l10n.searchMissPopularLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -34,7 +35,7 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       if (data == null) {
         return Either.left(
           SearchMissFailure(
-            response.message ?? 'Gagal memuat daftar pencarian populer',
+            response.message ?? l10n.searchMissPopularLoadFailed,
             errorCode: response.errorCode,
           ),
         );

@@ -11,6 +11,7 @@ import '../../domain/failures/achievement_failure.dart';
 import '../providers/achievement_providers.dart';
 import '../widgets/achievement_badge_grid.dart';
 import '../widgets/achievement_tile.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Semua pencapaian milik user login: lencana terbuka (grid) + katalog
 /// lengkap (dimiliki / belum dibuka). Pengganti sub-tab FTabs di profil
@@ -24,7 +25,7 @@ class MyAchievementsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Pencapaian'),
+        title: Text(AppLocalizations.of(context).achievementTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -152,7 +153,7 @@ class _ErrorState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: onRetry,
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),
