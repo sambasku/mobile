@@ -390,21 +390,25 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                                         ),
                             ),
                             if (_censoredByIndex[index] != null)
-                              const Positioned(
+                              Positioned(
                                 left: 4,
                                 top: 4,
                                 child: _MiniBadge(
-                                  label: 'S',
-                                  color: Color(0xFF3B82F6),
+                                  label: AppLocalizations.of(
+                                    context,
+                                  ).reviewDiscussionBadgeCensored,
+                                  color: const Color(0xFF3B82F6),
                                 ),
                               ),
                             if (_violenceByIndex[index])
                               Positioned(
                                 left: _censoredByIndex[index] != null ? 22 : 4,
                                 top: 4,
-                                child: const _MiniBadge(
-                                  label: 'K',
-                                  color: Color(0xFFF59E0B),
+                                child: _MiniBadge(
+                                  label: AppLocalizations.of(
+                                    context,
+                                  ).reviewDiscussionBadgeViolence,
+                                  color: const Color(0xFFF59E0B),
                                 ),
                               ),
                           ],

@@ -13456,6 +13456,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Coba kata lain, mis. nama tempat atau binatang.'**
   String get pantunSearchEmptyBody;
+
+  /// Inisial badge thumbnail foto: S = sudah disensor reviewer
+  ///
+  /// In id, this message translates to:
+  /// **'S'**
+  String get reviewDiscussionBadgeCensored;
+
+  /// Inisial badge thumbnail foto: K = ditandai kekerasan
+  ///
+  /// In id, this message translates to:
+  /// **'K'**
+  String get reviewDiscussionBadgeViolence;
 }
 
 class _AppLocalizationsDelegate

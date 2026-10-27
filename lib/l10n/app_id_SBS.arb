@@ -2544,5 +2544,9 @@
   "pantunSearchEmptyTitle": "Tidak ada pantun yang cocok",
   "@pantunSearchEmptyTitle": {},
   "pantunSearchEmptyBody": "Coba kata lain, mis. nama tempat atau binatang.",
-  "@pantunSearchEmptyBody": {}
+  "@pantunSearchEmptyBody": {},
+  "reviewDiscussionBadgeCensored": "S",
+  "@reviewDiscussionBadgeCensored": {"description": "Inisial badge thumbnail foto: S = sudah disensor reviewer"},
+  "reviewDiscussionBadgeViolence": "K",
+  "@reviewDiscussionBadgeViolence": {"description": "Inisial badge thumbnail foto: K = ditandai kekerasan"}
 }

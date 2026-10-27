@@ -7390,6 +7390,12 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get pantunSearchEmptyBody =>
       'Coba kata lain, mis. nama tempat atau binatang.';
+
+  @override
+  String get reviewDiscussionBadgeCensored => 'S';
+
+  @override
+  String get reviewDiscussionBadgeViolence => 'K';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14778,4 +14784,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get pantunSearchEmptyBody =>
       'Coba kata lain, mis. nama tempat atau binatang.';
+
+  @override
+  String get reviewDiscussionBadgeCensored => 'S';
+
+  @override
+  String get reviewDiscussionBadgeViolence => 'K';
 }

@@ -137,9 +137,9 @@ void main() {
     final without = await voteWidth(withFooter: false);
     final withFooter = await voteWidth(withFooter: true);
 
-        // Vote dan footer berbagi satu baris (gaya ThreadMessageRow), tapi
-        // Align memberi constraint longgar - lebar vote tetap natural,
-        // tidak disusutkan Spacer/Flexible seperti versi lama.
+    // Vote dan footer berbagi satu baris (gaya ThreadMessageRow), tapi
+    // Align memberi constraint longgar - lebar vote tetap natural,
+    // tidak disusutkan Spacer/Flexible seperti versi lama.
     expect(withFooter, without);
     expect(tester.widget<Icon>(find.byIcon(FLucideIcons.arrowBigUp)).size, 14);
   });

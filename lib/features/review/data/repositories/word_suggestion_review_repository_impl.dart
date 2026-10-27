@@ -5,6 +5,7 @@ import '../../../../shared/domain/word_type_options.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/repositories/word_suggestion_review_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 import 'review_repository_impl.dart';
 
 const _base = '/api/v1/admin/word-suggestions';
@@ -140,7 +141,7 @@ class WordSuggestionReviewRepositoryImpl
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat antrean usulan edit'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionsLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -153,7 +154,7 @@ class WordSuggestionReviewRepositoryImpl
       final data = asStringKeyMap(res.data?['data']);
       return Either.right(_parseDetail(data));
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat detail usulan edit'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -174,7 +175,7 @@ class WordSuggestionReviewRepositoryImpl
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menyetujui usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionApproveFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -192,7 +193,7 @@ class WordSuggestionReviewRepositoryImpl
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menolak usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionRejectFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }

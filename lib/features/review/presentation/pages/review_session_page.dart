@@ -602,7 +602,11 @@ class _ReviewCardPlaceholder extends StatelessWidget {
                         icon: FLucideIcons.layers,
                         label: AppLocalizations.of(context).reviewSessionEntryType,
                       ),
-                      _MetaChip(icon: FLucideIcons.user, label: 'kontributor'),
+                      _MetaChip(
+                        icon: FLucideIcons.user,
+                        label: AppLocalizations.of(context)
+                            .reviewContributorFallback,
+                      ),
                       _MetaChip(
                         icon: FLucideIcons.clock,
                         label: AppLocalizations.of(context).reviewSessionSkeletonDate,
