@@ -1,27 +1,26 @@
 /// Kategori usulan perubahan. [code] = `reason_code` API, kecuali
 /// [addExample] yang lewat POST /api/v1/meanings/:id/examples.
 enum SuggestCategory {
-  changeMeaning('change_meaning', 'Ubah makna', 'Perbaiki definisi atau terjemahan'),
-  changeWordClass('change_word_class', 'Ubah kelas kata', 'Nomina, verba, adjektiva, dsb.'),
-  addMeaning('add_meaning', 'Tambah makna', 'Arti lain dari kata ini'),
-  addExample('add_example', 'Tambah contoh', 'Contoh kalimat untuk satu makna'),
-  addPhoto('add_photo', 'Tambah foto', 'Foto yang menggambarkan kata ini'),
-  changePhoto('change_photo', 'Ubah foto', 'Hapus, ganti, atau pilih foto utama'),
-  synonym('synonym', 'Sinonim', 'Kata lain yang artinya sama'),
-  antonym('antonym', 'Antonim', 'Kata yang artinya berlawanan'),
+  changeMeaning('change_meaning'),
+  changeWordClass('change_word_class'),
+  addMeaning('add_meaning'),
+  addExample('add_example'),
+  addPhoto('add_photo'),
+  changePhoto('change_photo'),
+  synonym('synonym'),
+  antonym('antonym'),
   // PRD relasi-lemma: relasi bentuk + akar/turunan + kelompok makna.
-  variantOf('variant_of', 'Variasi bentuk', 'Kata ini variasi dari kata lain'),
-  nonstandardOf('nonstandard_of', 'Bentuk tidak baku', 'Kata ini bentuk tidak baku dari kata baku'),
-  derivedFrom('derived_from', 'Kata turunan', 'Kata ini diturunkan dari akar kata'),
-  meaningGroup('meaning_group', 'Kelompok makna', 'Gabungkan kata bermakna sama dalam satu kelompok'),
-  spellingVariant('spelling_variant', 'Variasi penulisan', 'Ejaan lain untuk kata yang sama'),
-  lemmaNotes('lemma_notes', 'Lainnya', 'Ejaan lemma atau catatan');
+  variantOf('variant_of'),
+  nonstandardOf('nonstandard_of'),
+  derivedFrom('derived_from'),
+  meaningGroup('meaning_group'),
+  spellingVariant('spelling_variant'),
+  lemmaNotes('lemma_notes');
 
-  const SuggestCategory(this.code, this.label, this.description);
+  const SuggestCategory(this.code);
 
+  /// `reason_code` API - stabil, bukan teks tampilan.
   final String code;
-  final String label;
-  final String description;
 
   bool get needsMeaning =>
       this == changeMeaning || this == changeWordClass || this == addExample;
@@ -31,10 +30,13 @@ enum SuggestCategory {
 List<SuggestCategory> availableSuggestCategories({
   required bool hasMeaning,
   required bool hasImage,
-}) =>
-    SuggestCategory.values
-        .where((c) => c.needsMeaning ? hasMeaning : (c != SuggestCategory.changePhoto || hasImage))
-        .toList(growable: false);
+}) => SuggestCategory.values
+    .where(
+      (c) => c.needsMeaning
+          ? hasMeaning
+          : (c != SuggestCategory.changePhoto || hasImage),
+    )
+    .toList(growable: false);
 
 /// Ubah makna: definisi dan/atau padanan. `null` = tidak ada yang berubah.
 /// Padanan dikosongkan tidak dikirim (usulan tidak menghapus padanan).
@@ -81,7 +83,11 @@ Map<String, dynamic>? buildChangeWordClass({
   if (wordClassId == null || wordClassId == originalWordClassId) return null;
   return {
     'meanings': [
-      {'meaning_id': meaningId, 'action': 'update', 'word_class_id': wordClassId},
+      {
+        'meaning_id': meaningId,
+        'action': 'update',
+        'word_class_id': wordClassId,
+      },
     ],
   };
 }
@@ -124,7 +130,8 @@ Map<String, dynamic>? buildRelations({
 }) {
   final rows = [
     for (final lemma in addLemmas.map((e) => e.trim()).toSet())
-      if (lemma.isNotEmpty) {'action': 'add', 'relation_type': relationType, 'lemma': lemma},
+      if (lemma.isNotEmpty)
+        {'action': 'add', 'relation_type': relationType, 'lemma': lemma},
     for (final id in removeWordIds)
       {'action': 'remove', 'relation_type': relationType, 'word_id': id},
   ];
@@ -147,12 +154,12 @@ Map<String, dynamic>? buildGroups({
       {
         'action': 'add',
         'name': newGroupName.trim(),
-        if (newGroupDescription != null && newGroupDescription.trim().isNotEmpty)
+        if (newGroupDescription != null &&
+            newGroupDescription.trim().isNotEmpty)
           'description': newGroupDescription.trim(),
         if (newGroupLemmas.isNotEmpty) 'lemmas': newGroupLemmas,
       },
-    for (final id in leaveGroupIds)
-      {'action': 'remove', 'group_id': id},
+    for (final id in leaveGroupIds) {'action': 'remove', 'group_id': id},
   ];
   return rows.isEmpty ? null : {'groups': rows};
 }
@@ -164,7 +171,10 @@ Map<String, dynamic>? buildVariants({
   required List<String> addForms,
   required Map<String, String> removeFormTypes,
 }) {
-  final seen = {lemma.trim().toLowerCase(), ...existingForms.map((f) => f.trim().toLowerCase())};
+  final seen = {
+    lemma.trim().toLowerCase(),
+    ...existingForms.map((f) => f.trim().toLowerCase()),
+  };
   final rows = <Map<String, dynamic>>[];
   for (final raw in addForms) {
     final form = raw.trim();
@@ -199,22 +209,23 @@ List<String> splitCsv(String raw) =>
 /// punya field di layar (tampil di sheet error).
 String? suggestFieldKey(String apiField) {
   if (apiField.endsWith('definition')) return 'definition';
-  if (apiField.contains('translation_text') || apiField.endsWith('translations')) {
+  if (apiField.contains('translation_text') ||
+      apiField.endsWith('translations')) {
     return 'padanan';
   }
   if (apiField.contains('word_class')) return 'word_class';
-    if (apiField.startsWith('relations.')) return 'relation_lemma';
-    if (apiField.startsWith('groups.')) {
-      if (apiField.endsWith('.name')) return 'name';
-      if (apiField.endsWith('.lemmas')) return 'group_lemma';
-      return null;
-    }
-    return switch (apiField) {
-      'lemma' => 'lemma',
-      'notes' => 'notes',
-      'reason_text' => 'reason',
-      'source_sentence' => 'sentence',
-      'target_sentence' => 'sentence_translation',
-      _ => null,
-    };
+  if (apiField.startsWith('relations.')) return 'relation_lemma';
+  if (apiField.startsWith('groups.')) {
+    if (apiField.endsWith('.name')) return 'name';
+    if (apiField.endsWith('.lemmas')) return 'group_lemma';
+    return null;
+  }
+  return switch (apiField) {
+    'lemma' => 'lemma',
+    'notes' => 'notes',
+    'reason_text' => 'reason',
+    'source_sentence' => 'sentence',
+    'target_sentence' => 'sentence_translation',
+    _ => null,
+  };
 }

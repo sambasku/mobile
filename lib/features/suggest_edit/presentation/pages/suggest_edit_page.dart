@@ -18,7 +18,9 @@ import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart'
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/suggest_category.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/suggest_edit_feedback.dart';
+import '../suggest_edit_labels.dart';
 import '../widgets/lemma_picker_field.dart';
 import '../widgets/word_change_history_section.dart';
 
@@ -43,6 +45,8 @@ class SuggestEditPage extends ConsumerStatefulWidget {
 }
 
 class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
+  AppLocalizations get _l10n => AppLocalizations.of(context);
+
   SuggestCategory? _category;
   String? _meaningId;
   bool _prefilled = false;
@@ -118,7 +122,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       detail.meanings.where((m) => m.id == _meaningId).firstOrNull ??
       detail.meanings.firstOrNull;
 
-  static String _padananOf(WordMeaning m) => m.translations.firstOrNull?.text ?? '';
+  static String _padananOf(WordMeaning m) =>
+      m.translations.firstOrNull?.text ?? '';
 
   void _selectMeaning(WordMeaning m) {
     _meaningId = m.id;
@@ -162,21 +167,29 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     if (data is! List) return null;
     for (final item in data) {
       if (item is! Map) continue;
-      if (item['code']?.toString().toUpperCase() == 'IDN') return item['id']?.toString();
+      if (item['code']?.toString().toUpperCase() == 'IDN') {
+        return item['id']?.toString();
+      }
     }
     return null;
   }
 
-  Future<void> _pickWordClass(List<_RefItem> items, {required bool forAdd}) async {
+  Future<void> _pickWordClass(
+    List<_RefItem> items, {
+    required bool forAdd,
+  }) async {
     final picked = await showWordClassPickerSheet(
       context,
       items: [
-        for (final e in items) WordClassPickItem(id: e.id, name: e.name, alias: e.alias),
+        for (final e in items)
+          WordClassPickItem(id: e.id, name: e.name, alias: e.alias),
       ],
       selectedId: forAdd ? _addWordClassId : _wordClassId,
     );
     if (!mounted || picked == null) return;
-    setState(() => forAdd ? _addWordClassId = picked.id : _wordClassId = picked.id);
+    setState(
+      () => forAdd ? _addWordClassId = picked.id : _wordClassId = picked.id,
+    );
   }
 
   Future<void> _pickMeaning(WordDetail detail) async {
@@ -187,12 +200,18 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           child: FTileGroup(
-            label: const Text('Pilih makna'),
+            label: Text(_l10n.suggestPickMeaning),
             children: [
               for (final m in detail.meanings)
                 FTile(
-                  title: Text(_meaningLabel(m), maxLines: 2, overflow: TextOverflow.ellipsis),
-                  suffix: m.id == _meaningOf(detail)?.id ? const Icon(FLucideIcons.check, size: 18) : null,
+                  title: Text(
+                    _meaningLabel(m),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  suffix: m.id == _meaningOf(detail)?.id
+                      ? const Icon(FLucideIcons.check, size: 18)
+                      : null,
                   onPress: () => Navigator.of(sheetContext).pop(m),
                 ),
             ],
@@ -206,7 +225,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
 
   static String _meaningLabel(WordMeaning m) {
     final code = m.wordClassCode?.trim();
-    final text = _padananOf(m).isNotEmpty ? _padananOf(m) : (m.definition ?? '-');
+    final text = _padananOf(m).isNotEmpty
+        ? _padananOf(m)
+        : (m.definition ?? '-');
     return (code == null || code.isEmpty) ? text : '$code. $text';
   }
 
@@ -216,12 +237,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final picked = await showKbbiDefinitionSheet(
       context,
       dio: dio,
-      initialLemma: padCtrl.text.trim().isNotEmpty ? padCtrl.text.trim() : _lemmaCtrl.text.trim(),
+      initialLemma: padCtrl.text.trim().isNotEmpty
+          ? padCtrl.text.trim()
+          : _lemmaCtrl.text.trim(),
     );
     if (!mounted || picked == null) return;
-    final classes = ref.read(_suggestWordClassesProvider).value ?? const <_RefItem>[];
+    final classes =
+        ref.read(_suggestWordClassesProvider).value ?? const <_RefItem>[];
     // Ubah makna tidak boleh membawa kelas kata (kategori sendiri).
-    final matched = forAdd ? _matchWordClassId(classes, picked.wordClassCode, picked.wordClassLabel) : null;
+    final matched = forAdd
+        ? _matchWordClassId(
+            classes,
+            picked.wordClassCode,
+            picked.wordClassLabel,
+          )
+        : null;
     setState(() {
       (forAdd ? _addDefinitionCtrl : _definitionCtrl).text = picked.definition;
       if (picked.lemma.trim().isNotEmpty) padCtrl.text = picked.lemma.trim();
@@ -229,12 +259,18 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     });
   }
 
-  Future<void> _showError(String message, {String title = 'Terjadi kesalahan'}) =>
-      showAppErrorSheet(context, message: message, title: title);
+  Future<void> _showError(String message, {String? title}) => showAppErrorSheet(
+    context,
+    message: message,
+    title: title ?? AppLocalizations.of(context).suggestUnexpectedError,
+  );
 
   /// Susun proposed_changes kategori aktif. `null` = belum ada perubahan;
   /// [StateError] = isian tidak bisa dipakai (pesan untuk user).
-  Future<Map<String, dynamic>?> _buildProposed(WordDetail detail, Dio dio) async {
+  Future<Map<String, dynamic>?> _buildProposed(
+    WordDetail detail,
+    Dio dio,
+  ) async {
     final meaning = _meaningOf(detail);
     switch (_category!) {
       case SuggestCategory.changeMeaning:
@@ -245,7 +281,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           definition: _definitionCtrl.text,
           originalPadanan: _padananOf(meaning),
           padanan: _padananCtrl.text,
-          padananLanguageId: padChanged ? await _resolveIdnLanguageId(dio, meaning) : null,
+          padananLanguageId: padChanged
+              ? await _resolveIdnLanguageId(dio, meaning)
+              : null,
         );
       case SuggestCategory.changeWordClass:
         return buildChangeWordClass(
@@ -267,8 +305,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return images.isEmpty ? null : {'images': images};
       case SuggestCategory.changePhoto:
         final images = [
-          for (final id in _removeImageIds) {'action': 'remove', 'image_id': id},
-          if (_setPrimaryImageId != null && !_removeImageIds.contains(_setPrimaryImageId))
+          for (final id in _removeImageIds)
+            {'action': 'remove', 'image_id': id},
+          if (_setPrimaryImageId != null &&
+              !_removeImageIds.contains(_setPrimaryImageId))
             {'action': 'set_primary', 'image_id': _setPrimaryImageId},
           ..._imageAdds(_replacementImages),
         ];
@@ -316,23 +356,23 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           notes: _notesCtrl.text,
         );
       case SuggestCategory.addExample:
-        throw StateError('Tambah contoh tidak lewat suggest-edit');
+        throw StateError(_l10n.suggestExampleFirst);
     }
   }
 
   List<Map<String, dynamic>> _imageAdds(List<ContributeImageSlot> slots) => [
-        for (final slot in slots)
-          if (slot.isReady && slot.uploaded != null)
-            {
-              'action': 'add',
-              'url': slot.uploaded!.url,
-              'provider_file_id': slot.uploaded!.providerFileId,
-              'provider': ?slot.uploaded!.provider,
-              'sha': ?slot.uploaded!.sha,
-              'alt_text': ?slot.uploaded!.altText,
-              'is_primary': slot.uploaded!.isPrimary,
-            },
-      ];
+    for (final slot in slots)
+      if (slot.isReady && slot.uploaded != null)
+        {
+          'action': 'add',
+          'url': slot.uploaded!.url,
+          'provider_file_id': slot.uploaded!.providerFileId,
+          'provider': ?slot.uploaded!.provider,
+          'sha': ?slot.uploaded!.sha,
+          'alt_text': ?slot.uploaded!.altText,
+          'is_primary': slot.uploaded!.isPrimary,
+        },
+  ];
 
   Future<void> _submit(WordDetail detail) async {
     if (_submitting || _category == null) return;
@@ -350,8 +390,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       if (!mounted) return;
       if (proposed == null) {
         await _showError(
-          'Belum ada yang diubah untuk ${_category!.label.toLowerCase()}.',
-          title: 'Belum ada perubahan',
+          _l10n.suggestNothingChangedFor(
+            suggestCategoryLabel(_category!, _l10n).toLowerCase(),
+          ),
+          title: _l10n.suggestNothingChanged,
         );
         return;
       }
@@ -380,6 +422,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             selfApplied: selfApplied,
             wordVerified: detail.isVerified,
             lemma: detail.lemma,
+            l10n: AppLocalizations.of(context),
           ),
         ),
       );
@@ -407,12 +450,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final sentence = _sentenceCtrl.text.trim();
     final translation = _sentenceTranslationCtrl.text.trim();
     if (sentence.isEmpty) {
-      setState(
-        () => _fieldErrors = {'sentence': 'Contoh kalimatnya diisi dulu ya'},
-      );
+      setState(() => _fieldErrors = {'sentence': _l10n.suggestExampleFirst});
       return;
     }
-    final targetLang = translation.isEmpty ? null : await _resolveIdnLanguageId(dio, meaning);
+    final targetLang = translation.isEmpty
+        ? null
+        : await _resolveIdnLanguageId(dio, meaning);
     final res = await dio.post<Map<String, dynamic>>(
       '/api/v1/meanings/${meaning.id}/examples',
       data: {
@@ -430,8 +473,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       context: context,
       title: Text(
         status == 'published'
-            ? 'Contoh kalimat sudah tayang.'
-            : 'Contoh kalimat masuk antrean pengecekan.',
+            ? _l10n.suggestExamplePublishedToast
+            : _l10n.suggestExampleQueuedToast,
       ),
     );
     await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
@@ -445,7 +488,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final code = data is Map ? data['error_code'] as String? : null;
     final message = data is Map && data['message'] is String
         ? data['message'] as String
-        : 'Gagal mengirim usulan. Coba lagi dalam beberapa saat.';
+        : _l10n.suggestSubmitFailed;
 
     if (code == 'RATE_LIMITED') {
       showFToast(context: context, title: Text(message));
@@ -464,7 +507,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         }
       }
       setState(() => _fieldErrors = inline);
-      if (unmapped != null) await _showError(unmapped, title: 'Periksa lagi isian');
+      if (unmapped != null) {
+        await _showError(unmapped, title: _l10n.suggestReviewForm);
+      }
       return;
     }
     if (code == 'SUGGESTION_STALE_DATA') {
@@ -484,7 +529,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     }
     await _showError(
       message,
-      title: code == 'SUGGESTION_ALREADY_PENDING' ? 'Usulan masih menunggu' : 'Terjadi kesalahan',
+      title: code == 'SUGGESTION_ALREADY_PENDING'
+          ? _l10n.suggestStillPendingTitle
+          : _l10n.suggestUnexpectedError,
     );
   }
 
@@ -496,22 +543,22 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     if (auth?.isAuth != true) {
       return FScaffold(
         header: FHeader.nested(
-          title: const Text('Usulkan Perubahan'),
+          title: Text(_l10n.suggestSuggestChangeCta),
           prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         ),
         child: Center(
           child: FButton(
             onPress: () => context.push('/login'),
-            child: const Text('Masuk dulu untuk mengusulkan'),
+            child: Text(_l10n.suggestLoginPrompt),
           ),
         ),
       );
     }
 
-    final preSubmit = suggestEditPreSubmitCopy(auth?.role);
+    final preSubmit = suggestEditPreSubmitCopy(auth?.role, _l10n);
     // Judul halaman ikut tile detail kata - satu sumber, supaya "Lengkapi
     // kata" di tile tidak membuka halaman bertajuk "Ubah Kata".
-    final headerTitle = suggestEditEntryTileCopy(auth?.role).title;
+    final headerTitle = suggestEditEntryTileCopy(auth?.role, _l10n).title;
     final isExample = _category == SuggestCategory.addExample;
 
     return FScaffold(
@@ -536,7 +583,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                   child: Text(
                     _submitting
                         ? preSubmit.ctaBusy
-                        : (isExample ? 'Kirim contoh' : preSubmit.cta),
+                        : (isExample
+                              ? _l10n.suggestSendExample
+                              : preSubmit.cta),
                   ),
                 ),
               ),
@@ -563,16 +612,25 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
       children: [
-        Text(banner, style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground)),
+        Text(
+          banner,
+          style: theme.typography.body.sm.copyWith(
+            color: theme.colors.mutedForeground,
+          ),
+        ),
         const Gap(12),
         FTileGroup(
-          label: const Text('Apa yang ingin diubah?'),
+          label: Text(_l10n.suggestWhatToChange),
           children: [
             for (final c in categories)
               FTile(
-                title: Text(c.label),
-                subtitle: Text(c.description),
-                suffix: Icon(FLucideIcons.chevronRight, size: 16, color: theme.colors.mutedForeground),
+                title: Text(suggestCategoryLabel(c, _l10n)),
+                subtitle: Text(suggestCategoryDescription(c, _l10n)),
+                suffix: Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
                 onPress: () => setState(() {
                   _category = c;
                   _fieldErrors = const {};
@@ -591,17 +649,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
       children: [
         FTile(
-          title: Text(category.label),
-          subtitle: const Text('Ketuk untuk ganti jenis usulan'),
-          suffix: Icon(FLucideIcons.chevronsUpDown, size: 16, color: theme.colors.mutedForeground),
+          title: Text(suggestCategoryLabel(category, _l10n)),
+          subtitle: Text(_l10n.suggestChangeTypeSemantics),
+          suffix: Icon(
+            FLucideIcons.chevronsUpDown,
+            size: 16,
+            color: theme.colors.mutedForeground,
+          ),
           onPress: () => setState(() => _category = null),
         ),
         const Gap(12),
         if (category.needsMeaning && detail.meanings.length > 1) ...[
-          const _FieldCaption('Makna'),
+          _FieldCaption(_l10n.suggestMeaningSection),
           _SelectField(
             selectedLabel: _meaningLabel(_meaningOf(detail)!),
-            hint: 'Pilih makna',
+            hint: _l10n.suggestPickMeaning,
             onTap: () => _pickMeaning(detail),
           ),
           const Gap(12),
@@ -611,8 +673,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _reasonTextCtrl),
-            label: const Text('Alasan (opsional)'),
-            hint: 'Contoh: sumber, penutur asli, atau KBBI',
+            label: Text(_l10n.suggestReasonLabel),
+            hint: _l10n.suggestReasonHint,
             error: _errorText('reason'),
             maxLines: 3,
             minLines: 2,
@@ -649,17 +711,19 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return [
           FTextField(
             control: FTextFieldControl.managed(controller: _sentenceCtrl),
-            label: Text('Contoh kalimat (${detail.lemma})'),
-            hint: 'Kalimat dalam bahasa Sambas',
+            label: Text(_l10n.suggestExampleSection(detail.lemma)),
+            hint: _l10n.suggestExampleLangHint,
             error: _errorText('sentence'),
             maxLines: 3,
             minLines: 2,
           ),
           const Gap(8),
           FTextField(
-            control: FTextFieldControl.managed(controller: _sentenceTranslationCtrl),
-            label: const Text('Artinya (opsional)'),
-            hint: 'Terjemahan bahasa Indonesia',
+            control: FTextFieldControl.managed(
+              controller: _sentenceTranslationCtrl,
+            ),
+            label: Text(_l10n.suggestExampleTranslationLabel),
+            hint: _l10n.suggestExampleTranslationHint,
             error: _errorText('sentence_translation'),
             maxLines: 3,
             minLines: 2,
@@ -675,12 +739,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         ];
       case SuggestCategory.changePhoto:
         return [
-          const _FieldCaption('Foto yang ada'),
+          _FieldCaption(_l10n.suggestExistingPhotos),
           for (final img in detail.images) _existingImageRow(img),
           const Gap(8),
-          const _FieldCaption(
-            'Foto pengganti (opsional)',
-            info: 'Tambahkan bila foto yang dihapus perlu diganti.',
+          _FieldCaption(
+            _l10n.suggestReplacementPhotos,
+            info: _l10n.suggestReplacementPhotosHint,
           ),
           ContributeImagesField(
             enabled: true,
@@ -696,42 +760,52 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       case SuggestCategory.nonstandardOf:
       case SuggestCategory.derivedFrom:
         final type = category.code;
-        final existing = detail.relatedWords.where((r) => r.relationType == type).toList();
+        final existing = detail.relatedWords
+            .where((r) => r.relationType == type)
+            .toList();
         final ctrl = switch (category) {
           SuggestCategory.synonym => _synonymCtrl,
           SuggestCategory.antonym => _antonymCtrl,
           _ => _relationCtrl,
         };
         final targetLabel = switch (category) {
-          SuggestCategory.derivedFrom => 'akar kata',
-          _ => 'kata rujukan',
+          SuggestCategory.derivedFrom => _l10n.suggestDerivedFromLabel,
+          _ => _l10n.suggestReferenceLabel,
         };
         return [
           LemmaPickerField(
             controller: ctrl,
-            label: 'Tambah ${category.label.toLowerCase()}',
-            hint: 'Pilih saran ketik, atau tulis lemma baru sendiri',
+            label: _l10n.suggestAddRelation(
+              suggestCategoryLabel(category, _l10n).toLowerCase(),
+            ),
+            hint: _l10n.suggestRelationPickHint,
             error: _errorText('relation_lemma'),
           ),
           const Gap(12),
           _FieldCaption(
             category == SuggestCategory.derivedFrom
-                ? 'Kata ini diturunkan dari $targetLabel di atas'
-                : 'Kata ini variasi/bentuk lain dari kata di atas',
+                ? _l10n.suggestDerivedHint(targetLabel)
+                : _l10n.suggestVariantOfHint,
             info: category == SuggestCategory.derivedFrom
-                ? 'Contoh: "ngansoh" diturunkan dari "ansoh".'
-                : 'Contoh: "tekpalat" variasi dari "taek palat".',
+                ? _l10n.suggestDerivedExample
+                : _l10n.suggestVariantExample,
           ),
           if (existing.isNotEmpty) ...[
             const Gap(12),
-            _FieldCaption('Hapus ${category.label.toLowerCase()} yang ada'),
+            _FieldCaption(
+              _l10n.suggestRemoveRelation(
+                suggestCategoryLabel(category, _l10n).toLowerCase(),
+              ),
+            ),
             for (final r in existing)
               _removeCheckbox(
                 label: r.lemma,
                 value: _removeRelationIds.contains('$type|${r.wordId}'),
-                onChange: (v) => setState(() => v
-                    ? _removeRelationIds.add('$type|${r.wordId}')
-                    : _removeRelationIds.remove('$type|${r.wordId}')),
+                onChange: (v) => setState(
+                  () => v
+                      ? _removeRelationIds.add('$type|${r.wordId}')
+                      : _removeRelationIds.remove('$type|${r.wordId}'),
+                ),
               ),
           ],
         ];
@@ -740,33 +814,35 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return [
           FTextField(
             control: FTextFieldControl.managed(controller: _groupNameCtrl),
-            label: const Text('Nama kelompok baru'),
-            hint: 'Contoh: kenapa',
+            label: Text(_l10n.suggestNewGroupName),
+            hint: _l10n.suggestNewGroupNameHint,
             error: _errorText('name'),
           ),
-        const Gap(8),
-        LemmaPickerField(
-          controller: _groupMembersCtrl,
-          label: 'Anggota lain',
-          hint: 'Pilih saran ketik, atau tulis lemma baru sendiri',
-          error: _errorText('group_lemma'),
-        ),
+          const Gap(8),
+          LemmaPickerField(
+            controller: _groupMembersCtrl,
+            label: _l10n.suggestOtherMembers,
+            hint: _l10n.suggestRelationPickHint,
+            error: _errorText('group_lemma'),
+          ),
           const Gap(12),
-          const _FieldCaption(
-            'Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.',
-            info: 'Contoh: "ngape", "jape", "jope" = kelompok "kenapa".\n\n'
-                'Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.',
+          _FieldCaption(
+            _l10n.suggestGroupExplainer,
+            info:
+                '${_l10n.suggestGroupExample}\n\n${_l10n.suggestGroupSeparateNote}',
           ),
           if (leaveTargets.isNotEmpty) ...[
             const Gap(12),
-            const _FieldCaption('Keluar dari kelompok'),
+            _FieldCaption(_l10n.suggestLeaveGroup),
             for (final g in leaveTargets)
               _removeCheckbox(
                 label: g.name,
                 value: _leaveGroupIds.contains(g.groupId),
-                onChange: (v) => setState(() => v
-                    ? _leaveGroupIds.add(g.groupId)
-                    : _leaveGroupIds.remove(g.groupId)),
+                onChange: (v) => setState(
+                  () => v
+                      ? _leaveGroupIds.add(g.groupId)
+                      : _leaveGroupIds.remove(g.groupId),
+                ),
               ),
           ],
         ];
@@ -774,18 +850,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return [
           FTextField(
             control: FTextFieldControl.managed(controller: _variantCtrl),
-            label: const Text('Tambah variasi'),
-            hint: 'Contoh: kate, katee (pisahkan dengan koma)',
+            label: Text(_l10n.suggestAddVariant),
+            hint: _l10n.suggestAddVariantHint,
           ),
           if (detail.variants.isNotEmpty) ...[
             const Gap(12),
-            const _FieldCaption('Hapus variasi yang ada'),
+            _FieldCaption(_l10n.suggestRemoveVariant),
             for (final v in detail.variants)
               _removeCheckbox(
                 label: v.form,
                 value: _removeVariants.containsKey(v.form),
-                onChange: (on) => setState(() =>
-                    on ? _removeVariants[v.form] = v.variantType : _removeVariants.remove(v.form)),
+                onChange: (on) => setState(
+                  () => on
+                      ? _removeVariants[v.form] = v.variantType
+                      : _removeVariants.remove(v.form),
+                ),
               ),
           ],
         ];
@@ -793,14 +872,14 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         return [
           FTextField(
             control: FTextFieldControl.managed(controller: _lemmaCtrl),
-            label: const Text('Lemma'),
+            label: Text(_l10n.suggestLemmaLabel),
             error: _errorText('lemma'),
           ),
           const Gap(8),
           FTextField(
             control: FTextFieldControl.managed(controller: _notesCtrl),
-            label: const Text('Catatan'),
-            hint: 'Asal kata, pemakaian, atau keterangan lain',
+            label: Text(_l10n.suggestNotesLabel),
+            hint: _l10n.suggestNotesHint,
             error: _errorText('notes'),
             maxLines: 4,
             minLines: 2,
@@ -813,14 +892,14 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _FieldCaption(
-          'Terjemahan Indonesia',
-          info: 'Satu kata/frasa setara dengan lemma.\n\nContoh: "makan". Beda dari definisi.',
+        _FieldCaption(
+          _l10n.suggestTranslationField,
+          info: _l10n.suggestTranslationHint,
         ),
         FTextField(
           control: FTextFieldControl.managed(controller: ctrl),
-          hint: 'Satu kata/frasa setara di Indonesia',
-          description: const Text('Tekan ikon buku untuk mencari definisi di KBBI'),
+          hint: _l10n.suggestTranslationSemanticsHint,
+          description: Text(_l10n.suggestKbbiSemantics),
           error: _errorText('padanan'),
           suffixBuilder: (context, style, _) => Padding(
             padding: style.clearButtonPadding,
@@ -845,13 +924,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _FieldCaption(
-          'Definisi',
-          info: 'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.',
+        _FieldCaption(
+          _l10n.suggestDefinitionLabel,
+          info: _l10n.suggestDefinitionHint,
         ),
         FTextField(
           control: FTextFieldControl.managed(controller: ctrl),
-          hint: 'Jelaskan makna kata ini',
+          hint: _l10n.suggestDefinitionPlaceholder,
           error: _errorText('definition'),
           maxLines: 3,
           minLines: 2,
@@ -862,7 +941,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
 
   Widget _wordClassField({required bool forAdd}) {
     final selectedId = forAdd ? _addWordClassId : _wordClassId;
-    return ref.watch(_suggestWordClassesProvider).when(
+    return ref
+        .watch(_suggestWordClassesProvider)
+        .when(
           loading: () => const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
             child: Center(child: FCircularProgress()),
@@ -870,7 +951,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           error: (_, _) => FButton(
             variant: .outline,
             onPress: () => ref.invalidate(_suggestWordClassesProvider),
-            child: const Text('Gagal muat kelas kata - coba lagi'),
+            child: Text(_l10n.suggestWordClassLoadFailed),
           ),
           data: (items) {
             final selected = items.where((e) => e.id == selectedId).firstOrNull;
@@ -878,12 +959,14 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _FieldCaption(
-                  forAdd ? 'Kelas kata (opsional)' : 'Kelas kata',
-                  info: 'Nomina, verba, adjektiva, dsb.',
+                  forAdd
+                      ? _l10n.suggestWordClassLabel
+                      : _l10n.suggestWordClassLabelShort,
+                  info: _l10n.suggestWordClassHint,
                 ),
                 _SelectField(
                   selectedLabel: selected?.displayLabel,
-                  hint: 'Pilih kelas kata',
+                  hint: _l10n.suggestWordClassPicker,
                   onTap: () => _pickWordClass(items, forAdd: forAdd),
                 ),
                 if (_fieldErrors['word_class'] != null)
@@ -891,7 +974,9 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       _fieldErrors['word_class']!,
-                      style: context.theme.typography.body.sm.copyWith(color: context.theme.colors.error),
+                      style: context.theme.typography.body.sm.copyWith(
+                        color: context.theme.colors.error,
+                      ),
                     ),
                   ),
               ],
@@ -911,14 +996,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             child: SizedBox(
               width: 40,
               height: 40,
-              child: CachedNetworkImageWithFallback(imageUrl: img.url, fit: BoxFit.cover),
+              child: CachedNetworkImageWithFallback(
+                imageUrl: img.url,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const Gap(10),
           Expanded(
             child: FCheckbox(
               value: removed,
-              label: Text(img.isPrimary ? 'Hapus (utama)' : 'Hapus'),
+              label: Text(
+                img.isPrimary
+                    ? _l10n.suggestRemovePrimary
+                    : _l10n.suggestRemove,
+              ),
               onChange: (val) => setState(() {
                 if (val) {
                   _removeImageIds.add(img.id);
@@ -933,7 +1025,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             FButton(
               variant: .outline,
               onPress: () => setState(() => _setPrimaryImageId = img.id),
-              child: Text(_setPrimaryImageId == img.id ? 'Utama ✓' : 'Jadikan utama'),
+              child: Text(
+                _setPrimaryImageId == img.id
+                    ? _l10n.suggestPrimaryMark
+                    : _l10n.suggestSetPrimary,
+              ),
             ),
         ],
       ),
@@ -986,11 +1082,17 @@ class _SelectField extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.body.sm.copyWith(
-                    color: hasValue ? theme.colors.foreground : theme.colors.mutedForeground,
+                    color: hasValue
+                        ? theme.colors.foreground
+                        : theme.colors.mutedForeground,
                   ),
                 ),
               ),
-              Icon(FLucideIcons.chevronsUpDown, size: 16, color: theme.colors.mutedForeground),
+              Icon(
+                FLucideIcons.chevronsUpDown,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
             ],
           ),
         ),
@@ -1040,7 +1142,10 @@ class _InfoTip extends StatelessWidget {
       constraints: const FPortalConstraints(maxWidth: 280),
       popoverBuilder: (context, _) => Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(message, style: theme.typography.body.sm.copyWith(height: 1.35)),
+        child: Text(
+          message,
+          style: theme.typography.body.sm.copyWith(height: 1.35),
+        ),
       ),
       builder: (context, controller, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -1049,7 +1154,11 @@ class _InfoTip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(2),
-        child: Icon(FLucideIcons.info, size: 14, color: theme.colors.mutedForeground),
+        child: Icon(
+          FLucideIcons.info,
+          size: 14,
+          color: theme.colors.mutedForeground,
+        ),
       ),
     );
   }
@@ -1068,7 +1177,8 @@ class _RefItem {
   final String code;
   final String? alias;
 
-  String get displayLabel => (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
+  String get displayLabel =>
+      (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
 }
 
 final _suggestWordClassesProvider = FutureProvider<List<_RefItem>>((ref) async {
@@ -1095,16 +1205,23 @@ final _suggestWordClassesProvider = FutureProvider<List<_RefItem>>((ref) async {
 String? _matchWordClassId(List<_RefItem> classes, String? code, String? label) {
   final normalizedCode = code?.trim().toLowerCase();
   if (normalizedCode != null && normalizedCode.isNotEmpty) {
-    final byCode = classes.where((c) => c.code.toLowerCase() == normalizedCode).firstOrNull;
+    final byCode = classes
+        .where((c) => c.code.toLowerCase() == normalizedCode)
+        .firstOrNull;
     if (byCode != null) return byCode.id;
     if (normalizedCode == 'a') {
-      final adj = classes.where((c) => c.code.toLowerCase() == 'adj').firstOrNull;
+      final adj = classes
+          .where((c) => c.code.toLowerCase() == 'adj')
+          .firstOrNull;
       if (adj != null) return adj.id;
     }
   }
   final normalizedLabel = label?.trim().toLowerCase();
   if (normalizedLabel != null && normalizedLabel.isNotEmpty) {
-    return classes.where((c) => c.name.toLowerCase() == normalizedLabel).firstOrNull?.id;
+    return classes
+        .where((c) => c.name.toLowerCase() == normalizedLabel)
+        .firstOrNull
+        ?.id;
   }
   return null;
 }

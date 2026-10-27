@@ -1818,6 +1818,936 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kelas kata'**
   String get shareElementWordClass;
+
+  /// No description provided for @suggestCategoryChangeMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah makna'**
+  String get suggestCategoryChangeMeaning;
+
+  /// No description provided for @suggestCategoryChangeMeaningDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki definisi atau terjemahan'**
+  String get suggestCategoryChangeMeaningDesc;
+
+  /// No description provided for @suggestCategoryChangeWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kelas kata'**
+  String get suggestCategoryChangeWordClass;
+
+  /// No description provided for @suggestCategoryChangeWordClassDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomina, verba, adjektiva, dsb.'**
+  String get suggestCategoryChangeWordClassDesc;
+
+  /// No description provided for @suggestCategoryAddMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna'**
+  String get suggestCategoryAddMeaning;
+
+  /// No description provided for @suggestCategoryAddMeaningDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Arti lain dari kata ini'**
+  String get suggestCategoryAddMeaningDesc;
+
+  /// No description provided for @suggestCategoryAddExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah contoh'**
+  String get suggestCategoryAddExample;
+
+  /// No description provided for @suggestCategoryAddExampleDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat untuk satu makna'**
+  String get suggestCategoryAddExampleDesc;
+
+  /// No description provided for @suggestCategoryAddPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah foto'**
+  String get suggestCategoryAddPhoto;
+
+  /// No description provided for @suggestCategoryAddPhotoDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto yang menggambarkan kata ini'**
+  String get suggestCategoryAddPhotoDesc;
+
+  /// No description provided for @suggestCategoryChangePhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah foto'**
+  String get suggestCategoryChangePhoto;
+
+  /// No description provided for @suggestCategoryChangePhotoDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus, ganti, atau pilih foto utama'**
+  String get suggestCategoryChangePhotoDesc;
+
+  /// No description provided for @suggestCategorySynonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim'**
+  String get suggestCategorySynonym;
+
+  /// No description provided for @suggestCategorySynonymDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata lain yang artinya sama'**
+  String get suggestCategorySynonymDesc;
+
+  /// No description provided for @suggestCategoryAntonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Antonim'**
+  String get suggestCategoryAntonym;
+
+  /// No description provided for @suggestCategoryAntonymDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang artinya berlawanan'**
+  String get suggestCategoryAntonymDesc;
+
+  /// No description provided for @suggestCategoryVariantOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi bentuk'**
+  String get suggestCategoryVariantOf;
+
+  /// No description provided for @suggestCategoryVariantOfDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini variasi dari kata lain'**
+  String get suggestCategoryVariantOfDesc;
+
+  /// No description provided for @suggestCategoryNonstandardOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Bentuk tidak baku'**
+  String get suggestCategoryNonstandardOf;
+
+  /// No description provided for @suggestCategoryNonstandardOfDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini bentuk tidak baku dari kata baku'**
+  String get suggestCategoryNonstandardOfDesc;
+
+  /// No description provided for @suggestCategoryDerivedFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata turunan'**
+  String get suggestCategoryDerivedFrom;
+
+  /// No description provided for @suggestCategoryDerivedFromDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini diturunkan dari akar kata'**
+  String get suggestCategoryDerivedFromDesc;
+
+  /// No description provided for @suggestCategoryMeaningGroup.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelompok makna'**
+  String get suggestCategoryMeaningGroup;
+
+  /// No description provided for @suggestCategoryMeaningGroupDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Gabungkan kata bermakna sama dalam satu kelompok'**
+  String get suggestCategoryMeaningGroupDesc;
+
+  /// No description provided for @suggestCategorySpellingVariant.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi penulisan'**
+  String get suggestCategorySpellingVariant;
+
+  /// No description provided for @suggestCategorySpellingVariantDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Ejaan lain untuk kata yang sama'**
+  String get suggestCategorySpellingVariantDesc;
+
+  /// No description provided for @suggestCategoryLemmaNotes.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get suggestCategoryLemmaNotes;
+
+  /// No description provided for @suggestCategoryLemmaNotesDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Ejaan lemma atau catatan'**
+  String get suggestCategoryLemmaNotesDesc;
+
+  /// No description provided for @suggestEntryTileVerifierTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki/lengkapi kata'**
+  String get suggestEntryTileVerifierTitle;
+
+  /// No description provided for @suggestEntryTileVerifierSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna, relasi, contoh, pelafalan - langsung terbit'**
+  String get suggestEntryTileVerifierSubtitle;
+
+  /// No description provided for @suggestEntryTileContributorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perubahan'**
+  String get suggestEntryTileContributorTitle;
+
+  /// No description provided for @suggestEntryTileContributorSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan kata yang sudah tayang menunggu persetujuan admin'**
+  String get suggestEntryTileContributorSubtitle;
+
+  /// No description provided for @suggestPreSubmitVerifierBanner.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.'**
+  String get suggestPreSubmitVerifierBanner;
+
+  /// No description provided for @suggestPreSubmitVerifierCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan perubahan'**
+  String get suggestPreSubmitVerifierCta;
+
+  /// No description provided for @suggestPreSubmitVerifierCtaBusy.
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get suggestPreSubmitVerifierCtaBusy;
+
+  /// No description provided for @suggestPreSubmitContributorBanner.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah yang perlu saja. Admin mereview sebelum tayang.'**
+  String get suggestPreSubmitContributorBanner;
+
+  /// No description provided for @suggestPreSubmitContributorCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Usulan'**
+  String get suggestPreSubmitContributorCta;
+
+  /// No description provided for @suggestPreSubmitContributorCtaBusy.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get suggestPreSubmitContributorCtaBusy;
+
+  /// No description provided for @suggestSuccessThisWord.
+  ///
+  /// In id, this message translates to:
+  /// **'kata ini'**
+  String get suggestSuccessThisWord;
+
+  /// No description provided for @suggestSuccessApplied.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan langsung diterapkan pada \"{label}\".'**
+  String suggestSuccessApplied(String label);
+
+  /// No description provided for @suggestSuccessQueued.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan untuk \"{label}\" masuk antrean. Isi yang sedang tayang belum berubah.'**
+  String suggestSuccessQueued(String label);
+
+  /// No description provided for @suggestSuccessPublishedPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan sudah tayang di \"{label}\". Statusnya tetap menunggu pengecekan.'**
+  String suggestSuccessPublishedPending(String label);
+
+  /// No description provided for @suggestPickMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih makna'**
+  String get suggestPickMeaning;
+
+  /// No description provided for @suggestUnexpectedError.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan'**
+  String get suggestUnexpectedError;
+
+  /// No description provided for @suggestNothingChangedFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada yang diubah untuk {category}.'**
+  String suggestNothingChangedFor(String category);
+
+  /// No description provided for @suggestNothingChanged.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada perubahan'**
+  String get suggestNothingChanged;
+
+  /// No description provided for @suggestExampleFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimatnya diisi dulu ya'**
+  String get suggestExampleFirst;
+
+  /// No description provided for @suggestExamplePublishedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat sudah tayang.'**
+  String get suggestExamplePublishedToast;
+
+  /// No description provided for @suggestExampleQueuedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat masuk antrean pengecekan.'**
+  String get suggestExampleQueuedToast;
+
+  /// No description provided for @suggestSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim usulan. Coba lagi dalam beberapa saat.'**
+  String get suggestSubmitFailed;
+
+  /// No description provided for @suggestReviewForm.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa lagi isian'**
+  String get suggestReviewForm;
+
+  /// No description provided for @suggestStillPendingTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan masih menunggu'**
+  String get suggestStillPendingTitle;
+
+  /// No description provided for @suggestSuggestChangeCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan Perubahan'**
+  String get suggestSuggestChangeCta;
+
+  /// No description provided for @suggestLoginPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan'**
+  String get suggestLoginPrompt;
+
+  /// No description provided for @suggestSendExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim contoh'**
+  String get suggestSendExample;
+
+  /// No description provided for @suggestWhatToChange.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang ingin diubah?'**
+  String get suggestWhatToChange;
+
+  /// No description provided for @suggestChangeTypeSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk ganti jenis usulan'**
+  String get suggestChangeTypeSemantics;
+
+  /// No description provided for @suggestMeaningSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get suggestMeaningSection;
+
+  /// No description provided for @suggestReasonLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan (opsional)'**
+  String get suggestReasonLabel;
+
+  /// No description provided for @suggestReasonHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: sumber, penutur asli, atau KBBI'**
+  String get suggestReasonHint;
+
+  /// No description provided for @suggestExampleSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat ({lemma})'**
+  String suggestExampleSection(String lemma);
+
+  /// No description provided for @suggestExampleLangHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat dalam bahasa Sambas'**
+  String get suggestExampleLangHint;
+
+  /// No description provided for @suggestExampleTranslationLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Artinya (opsional)'**
+  String get suggestExampleTranslationLabel;
+
+  /// No description provided for @suggestExampleTranslationHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan bahasa Indonesia'**
+  String get suggestExampleTranslationHint;
+
+  /// No description provided for @suggestExistingPhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto yang ada'**
+  String get suggestExistingPhotos;
+
+  /// No description provided for @suggestReplacementPhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto pengganti (opsional)'**
+  String get suggestReplacementPhotos;
+
+  /// No description provided for @suggestReplacementPhotosHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan bila foto yang dihapus perlu diganti.'**
+  String get suggestReplacementPhotosHint;
+
+  /// No description provided for @suggestDerivedFromLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'akar kata'**
+  String get suggestDerivedFromLabel;
+
+  /// No description provided for @suggestReferenceLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'kata rujukan'**
+  String get suggestReferenceLabel;
+
+  /// No description provided for @suggestAddRelation.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah {category}'**
+  String suggestAddRelation(String category);
+
+  /// No description provided for @suggestRelationPickHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih saran ketik, atau tulis lemma baru sendiri'**
+  String get suggestRelationPickHint;
+
+  /// No description provided for @suggestDerivedHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini diturunkan dari {target} di atas'**
+  String suggestDerivedHint(String target);
+
+  /// No description provided for @suggestVariantOfHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini variasi/bentuk lain dari kata di atas'**
+  String get suggestVariantOfHint;
+
+  /// No description provided for @suggestDerivedExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".'**
+  String get suggestDerivedExample;
+
+  /// No description provided for @suggestVariantExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: \"tekpalat\" variasi dari \"taek palat\".'**
+  String get suggestVariantExample;
+
+  /// No description provided for @suggestRemoveRelation.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus {category} yang ada'**
+  String suggestRemoveRelation(String category);
+
+  /// No description provided for @suggestNewGroupName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama kelompok baru'**
+  String get suggestNewGroupName;
+
+  /// No description provided for @suggestNewGroupNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: kenapa'**
+  String get suggestNewGroupNameHint;
+
+  /// No description provided for @suggestOtherMembers.
+  ///
+  /// In id, this message translates to:
+  /// **'Anggota lain'**
+  String get suggestOtherMembers;
+
+  /// No description provided for @suggestGroupExplainer.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.'**
+  String get suggestGroupExplainer;
+
+  /// No description provided for @suggestGroupExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: \"ngape\", \"jape\", \"jope\" = kelompok \"kenapa\".'**
+  String get suggestGroupExample;
+
+  /// No description provided for @suggestGroupSeparateNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.'**
+  String get suggestGroupSeparateNote;
+
+  /// No description provided for @suggestLeaveGroup.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar dari kelompok'**
+  String get suggestLeaveGroup;
+
+  /// No description provided for @suggestAddVariant.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah variasi'**
+  String get suggestAddVariant;
+
+  /// No description provided for @suggestAddVariantHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: kate, katee (pisahkan dengan koma)'**
+  String get suggestAddVariantHint;
+
+  /// No description provided for @suggestRemoveVariant.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus variasi yang ada'**
+  String get suggestRemoveVariant;
+
+  /// No description provided for @suggestLemmaLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma'**
+  String get suggestLemmaLabel;
+
+  /// No description provided for @suggestNotesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan'**
+  String get suggestNotesLabel;
+
+  /// No description provided for @suggestNotesHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Asal kata, pemakaian, atau keterangan lain'**
+  String get suggestNotesHint;
+
+  /// No description provided for @suggestTranslationField.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Indonesia'**
+  String get suggestTranslationField;
+
+  /// No description provided for @suggestTranslationHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata/frasa setara dengan lemma. Contoh: \"makan\". Beda dari definisi.'**
+  String get suggestTranslationHint;
+
+  /// No description provided for @suggestTranslationSemanticsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata/frasa setara di Indonesia'**
+  String get suggestTranslationSemanticsHint;
+
+  /// No description provided for @suggestKbbiSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan ikon buku untuk mencari definisi di KBBI'**
+  String get suggestKbbiSemantics;
+
+  /// No description provided for @suggestDefinitionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi'**
+  String get suggestDefinitionLabel;
+
+  /// No description provided for @suggestDefinitionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.'**
+  String get suggestDefinitionHint;
+
+  /// No description provided for @suggestDefinitionPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan makna kata ini'**
+  String get suggestDefinitionPlaceholder;
+
+  /// No description provided for @suggestWordClassLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal muat kelas kata - coba lagi'**
+  String get suggestWordClassLoadFailed;
+
+  /// No description provided for @suggestWordClassLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata (opsional)'**
+  String get suggestWordClassLabel;
+
+  /// No description provided for @suggestWordClassLabelShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata'**
+  String get suggestWordClassLabelShort;
+
+  /// No description provided for @suggestWordClassHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomina, verba, adjektiva, dsb.'**
+  String get suggestWordClassHint;
+
+  /// No description provided for @suggestWordClassPicker.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kelas kata'**
+  String get suggestWordClassPicker;
+
+  /// No description provided for @suggestRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get suggestRemove;
+
+  /// No description provided for @suggestRemovePrimary.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus (utama)'**
+  String get suggestRemovePrimary;
+
+  /// No description provided for @suggestPrimaryMark.
+  ///
+  /// In id, this message translates to:
+  /// **'Utama ✓'**
+  String get suggestPrimaryMark;
+
+  /// No description provided for @suggestSetPrimary.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan utama'**
+  String get suggestSetPrimary;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat perubahan'**
+  String get historyTitle;
+
+  /// No description provided for @historyAdded.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditambah {items}'**
+  String historyAdded(String items);
+
+  /// No description provided for @historyRemoved.
+  ///
+  /// In id, this message translates to:
+  /// **'Dihapus {items}'**
+  String historyRemoved(String items);
+
+  /// No description provided for @historySetPrimary.
+  ///
+  /// In id, this message translates to:
+  /// **'Dijadikan utama {items}'**
+  String historySetPrimary(String items);
+
+  /// No description provided for @historyDuplicateConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi duplikat'**
+  String get historyDuplicateConfirm;
+
+  /// No description provided for @historyFromSuggestion.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari usulan'**
+  String get historyFromSuggestion;
+
+  /// No description provided for @historyDirectEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit langsung'**
+  String get historyDirectEdit;
+
+  /// No description provided for @historySystem.
+  ///
+  /// In id, this message translates to:
+  /// **'Sistem'**
+  String get historySystem;
+
+  /// No description provided for @historyWordNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak ditemukan'**
+  String get historyWordNotFound;
+
+  /// No description provided for @historyUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat tidak tersedia untuk entri ini.'**
+  String get historyUnavailable;
+
+  /// No description provided for @historyLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat'**
+  String get historyLoadFailed;
+
+  /// No description provided for @historyRetryHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi sebentar.'**
+  String get historyRetryHint;
+
+  /// No description provided for @historyRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get historyRetry;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada riwayat'**
+  String get historyEmpty;
+
+  /// No description provided for @historyEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan yang diterapkan ke kata ini akan muncul di sini.'**
+  String get historyEmptyHint;
+
+  /// No description provided for @historyByActor.
+  ///
+  /// In id, this message translates to:
+  /// **'Oleh {actor}'**
+  String historyByActor(String actor);
+
+  /// No description provided for @historyReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan'**
+  String get historyReason;
+
+  /// No description provided for @historyReviewerNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan reviewer'**
+  String get historyReviewerNote;
+
+  /// No description provided for @historyChanges.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan'**
+  String get historyChanges;
+
+  /// No description provided for @historyNoDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada detail perubahan.'**
+  String get historyNoDetail;
+
+  /// No description provided for @historyBefore.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebelum: {value}'**
+  String historyBefore(String value);
+
+  /// No description provided for @historyAfter.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesudah: {value}'**
+  String historyAfter(String value);
+
+  /// No description provided for @historyClose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get historyClose;
+
+  /// No description provided for @historyFieldLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma'**
+  String get historyFieldLemma;
+
+  /// No description provided for @historyFieldNotes.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan'**
+  String get historyFieldNotes;
+
+  /// No description provided for @historyFieldDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi'**
+  String get historyFieldDefinition;
+
+  /// No description provided for @historyFieldTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get historyFieldTranslation;
+
+  /// No description provided for @historyFieldMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get historyFieldMeaning;
+
+  /// No description provided for @historyFieldExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh'**
+  String get historyFieldExample;
+
+  /// No description provided for @historyFieldVariant.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi'**
+  String get historyFieldVariant;
+
+  /// No description provided for @historyFieldCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get historyFieldCategory;
+
+  /// No description provided for @historyFieldRelation.
+  ///
+  /// In id, this message translates to:
+  /// **'Relasi'**
+  String get historyFieldRelation;
+
+  /// No description provided for @historyFieldImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get historyFieldImage;
+
+  /// No description provided for @historyFieldPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengucapan'**
+  String get historyFieldPronunciation;
+
+  /// No description provided for @historyFieldWordType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis kata'**
+  String get historyFieldWordType;
+
+  /// No description provided for @historyFieldLanguage.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get historyFieldLanguage;
+
+  /// No description provided for @historyFieldVerificationStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Status verifikasi'**
+  String get historyFieldVerificationStatus;
+
+  /// No description provided for @historyFieldStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get historyFieldStatus;
+
+  /// No description provided for @historyFieldSupport.
+  ///
+  /// In id, this message translates to:
+  /// **'Dukungan'**
+  String get historyFieldSupport;
+
+  /// No description provided for @historyFieldReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan'**
+  String get historyFieldReason;
+
+  /// No description provided for @historyFieldCorrected.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikoreksi'**
+  String get historyFieldCorrected;
+
+  /// No description provided for @historyFieldCommaSeparated.
+  ///
+  /// In id, this message translates to:
+  /// **'Pisah koma'**
+  String get historyFieldCommaSeparated;
+
+  /// No description provided for @historyFieldCreated.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat'**
+  String get historyFieldCreated;
+
+  /// No description provided for @historyFieldMergedOnCreate.
+  ///
+  /// In id, this message translates to:
+  /// **'Digabung saat buat'**
+  String get historyFieldMergedOnCreate;
+
+  /// No description provided for @historyFieldMergedOnEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Digabung saat edit'**
+  String get historyFieldMergedOnEdit;
+
+  /// No description provided for @historyFieldSelfApplied.
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan sendiri'**
+  String get historyFieldSelfApplied;
+
+  /// No description provided for @historyFieldSourceId.
+  ///
+  /// In id, this message translates to:
+  /// **'ID sumber'**
+  String get historyFieldSourceId;
+
+  /// No description provided for @historyFieldSplitOriginId.
+  ///
+  /// In id, this message translates to:
+  /// **'ID asal pisah'**
+  String get historyFieldSplitOriginId;
+
+  /// No description provided for @historyFieldMeaningId.
+  ///
+  /// In id, this message translates to:
+  /// **'ID makna'**
+  String get historyFieldMeaningId;
+
+  /// No description provided for @historyFieldMergedWordId.
+  ///
+  /// In id, this message translates to:
+  /// **'ID kata digabung'**
+  String get historyFieldMergedWordId;
 }
 
 class _AppLocalizationsDelegate

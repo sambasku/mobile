@@ -46,7 +46,8 @@ import '../../application/word_clipboard.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
-import '../../../suggest_edit/domain/suggest_edit_feedback.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../suggest_edit/presentation/suggest_edit_labels.dart';
 
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
@@ -218,8 +219,7 @@ Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
   // Vote menempel di MAKNA (0101), bukan kata: muat ulang counts makna
   // setelah detail segar diketahui. Tanpa ini tarik-refresh tidak
   // memperbarui angka vote yang tampil.
-  final meaningIds =
-      detail.meanings.map((m) => m.id).toList(growable: false);
+  final meaningIds = detail.meanings.map((m) => m.id).toList(growable: false);
   if (meaningIds.isNotEmpty) {
     await ref.read(meaningVotesControllerProvider.notifier).load(meaningIds);
   }
@@ -1014,7 +1014,10 @@ class _WordActionTileGroup extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = context.theme.colors.mutedForeground;
     final role = ref.watch(authStatusProvider).value?.role;
-    final entryCopy = suggestEditEntryTileCopy(role);
+    final entryCopy = suggestEditEntryTileCopy(
+      role,
+      AppLocalizations.of(context),
+    );
     return FTileGroup(
       children: [
         FTile(

@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../widgets/word_change_history_section.dart';
 
 /// Halaman penuh riwayat perubahan kata - GET /api/v1/words/:id/change-history.
@@ -16,7 +17,7 @@ class WordChangeHistoryPage extends StatelessWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Riwayat perubahan'),
+        title: Text(AppLocalizations.of(context).historyTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: ListView(

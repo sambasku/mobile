@@ -939,6 +939,526 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get shareElementWordClass => 'Kelas kata';
+
+  @override
+  String get suggestCategoryChangeMeaning => 'Ubah makna';
+
+  @override
+  String get suggestCategoryChangeMeaningDesc =>
+      'Perbaiki definisi atau terjemahan';
+
+  @override
+  String get suggestCategoryChangeWordClass => 'Ubah kelas kata';
+
+  @override
+  String get suggestCategoryChangeWordClassDesc =>
+      'Nomina, verba, adjektiva, dsb.';
+
+  @override
+  String get suggestCategoryAddMeaning => 'Tambah makna';
+
+  @override
+  String get suggestCategoryAddMeaningDesc => 'Arti lain dari kata ini';
+
+  @override
+  String get suggestCategoryAddExample => 'Tambah contoh';
+
+  @override
+  String get suggestCategoryAddExampleDesc => 'Contoh kalimat untuk satu makna';
+
+  @override
+  String get suggestCategoryAddPhoto => 'Tambah foto';
+
+  @override
+  String get suggestCategoryAddPhotoDesc => 'Foto yang menggambarkan kata ini';
+
+  @override
+  String get suggestCategoryChangePhoto => 'Ubah foto';
+
+  @override
+  String get suggestCategoryChangePhotoDesc =>
+      'Hapus, ganti, atau pilih foto utama';
+
+  @override
+  String get suggestCategorySynonym => 'Sinonim';
+
+  @override
+  String get suggestCategorySynonymDesc => 'Kata lain yang artinya sama';
+
+  @override
+  String get suggestCategoryAntonym => 'Antonim';
+
+  @override
+  String get suggestCategoryAntonymDesc => 'Kata yang artinya berlawanan';
+
+  @override
+  String get suggestCategoryVariantOf => 'Variasi bentuk';
+
+  @override
+  String get suggestCategoryVariantOfDesc => 'Kata ini variasi dari kata lain';
+
+  @override
+  String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
+
+  @override
+  String get suggestCategoryNonstandardOfDesc =>
+      'Kata ini bentuk tidak baku dari kata baku';
+
+  @override
+  String get suggestCategoryDerivedFrom => 'Kata turunan';
+
+  @override
+  String get suggestCategoryDerivedFromDesc =>
+      'Kata ini diturunkan dari akar kata';
+
+  @override
+  String get suggestCategoryMeaningGroup => 'Kelompok makna';
+
+  @override
+  String get suggestCategoryMeaningGroupDesc =>
+      'Gabungkan kata bermakna sama dalam satu kelompok';
+
+  @override
+  String get suggestCategorySpellingVariant => 'Variasi penulisan';
+
+  @override
+  String get suggestCategorySpellingVariantDesc =>
+      'Ejaan lain untuk kata yang sama';
+
+  @override
+  String get suggestCategoryLemmaNotes => 'Lainnya';
+
+  @override
+  String get suggestCategoryLemmaNotesDesc => 'Ejaan lemma atau catatan';
+
+  @override
+  String get suggestEntryTileVerifierTitle => 'Perbaiki/lengkapi kata';
+
+  @override
+  String get suggestEntryTileVerifierSubtitle =>
+      'Tambah makna, relasi, contoh, pelafalan - langsung terbit';
+
+  @override
+  String get suggestEntryTileContributorTitle => 'Usulkan perubahan';
+
+  @override
+  String get suggestEntryTileContributorSubtitle =>
+      'Perbaikan kata yang sudah tayang menunggu persetujuan admin';
+
+  @override
+  String get suggestPreSubmitVerifierBanner =>
+      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+
+  @override
+  String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
+
+  @override
+  String get suggestPreSubmitVerifierCtaBusy => 'Menyimpan...';
+
+  @override
+  String get suggestPreSubmitContributorBanner =>
+      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+
+  @override
+  String get suggestPreSubmitContributorCta => 'Kirim Usulan';
+
+  @override
+  String get suggestPreSubmitContributorCtaBusy => 'Mengirim...';
+
+  @override
+  String get suggestSuccessThisWord => 'kata ini';
+
+  @override
+  String suggestSuccessApplied(String label) {
+    return 'Perubahan langsung diterapkan pada \"$label\".';
+  }
+
+  @override
+  String suggestSuccessQueued(String label) {
+    return 'Usulan untuk \"$label\" masuk antrean. Isi yang sedang tayang belum berubah.';
+  }
+
+  @override
+  String suggestSuccessPublishedPending(String label) {
+    return 'Perubahan sudah tayang di \"$label\". Statusnya tetap menunggu pengecekan.';
+  }
+
+  @override
+  String get suggestPickMeaning => 'Pilih makna';
+
+  @override
+  String get suggestUnexpectedError => 'Terjadi kesalahan';
+
+  @override
+  String suggestNothingChangedFor(String category) {
+    return 'Belum ada yang diubah untuk $category.';
+  }
+
+  @override
+  String get suggestNothingChanged => 'Belum ada perubahan';
+
+  @override
+  String get suggestExampleFirst => 'Contoh kalimatnya diisi dulu ya';
+
+  @override
+  String get suggestExamplePublishedToast => 'Contoh kalimat sudah tayang.';
+
+  @override
+  String get suggestExampleQueuedToast =>
+      'Contoh kalimat masuk antrean pengecekan.';
+
+  @override
+  String get suggestSubmitFailed =>
+      'Gagal mengirim usulan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get suggestReviewForm => 'Periksa lagi isian';
+
+  @override
+  String get suggestStillPendingTitle => 'Usulan masih menunggu';
+
+  @override
+  String get suggestSuggestChangeCta => 'Usulkan Perubahan';
+
+  @override
+  String get suggestLoginPrompt => 'Masuk dulu untuk mengusulkan';
+
+  @override
+  String get suggestSendExample => 'Kirim contoh';
+
+  @override
+  String get suggestWhatToChange => 'Apa yang ingin diubah?';
+
+  @override
+  String get suggestChangeTypeSemantics => 'Ketuk untuk ganti jenis usulan';
+
+  @override
+  String get suggestMeaningSection => 'Makna';
+
+  @override
+  String get suggestReasonLabel => 'Alasan (opsional)';
+
+  @override
+  String get suggestReasonHint => 'Contoh: sumber, penutur asli, atau KBBI';
+
+  @override
+  String suggestExampleSection(String lemma) {
+    return 'Contoh kalimat ($lemma)';
+  }
+
+  @override
+  String get suggestExampleLangHint => 'Kalimat dalam bahasa Sambas';
+
+  @override
+  String get suggestExampleTranslationLabel => 'Artinya (opsional)';
+
+  @override
+  String get suggestExampleTranslationHint => 'Terjemahan bahasa Indonesia';
+
+  @override
+  String get suggestExistingPhotos => 'Foto yang ada';
+
+  @override
+  String get suggestReplacementPhotos => 'Foto pengganti (opsional)';
+
+  @override
+  String get suggestReplacementPhotosHint =>
+      'Tambahkan bila foto yang dihapus perlu diganti.';
+
+  @override
+  String get suggestDerivedFromLabel => 'akar kata';
+
+  @override
+  String get suggestReferenceLabel => 'kata rujukan';
+
+  @override
+  String suggestAddRelation(String category) {
+    return 'Tambah $category';
+  }
+
+  @override
+  String get suggestRelationPickHint =>
+      'Pilih saran ketik, atau tulis lemma baru sendiri';
+
+  @override
+  String suggestDerivedHint(String target) {
+    return 'Kata ini diturunkan dari $target di atas';
+  }
+
+  @override
+  String get suggestVariantOfHint =>
+      'Kata ini variasi/bentuk lain dari kata di atas';
+
+  @override
+  String get suggestDerivedExample =>
+      'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".';
+
+  @override
+  String get suggestVariantExample =>
+      'Contoh: \"tekpalat\" variasi dari \"taek palat\".';
+
+  @override
+  String suggestRemoveRelation(String category) {
+    return 'Hapus $category yang ada';
+  }
+
+  @override
+  String get suggestNewGroupName => 'Nama kelompok baru';
+
+  @override
+  String get suggestNewGroupNameHint => 'Contoh: kenapa';
+
+  @override
+  String get suggestOtherMembers => 'Anggota lain';
+
+  @override
+  String get suggestGroupExplainer =>
+      'Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.';
+
+  @override
+  String get suggestGroupExample =>
+      'Contoh: \"ngape\", \"jape\", \"jope\" = kelompok \"kenapa\".';
+
+  @override
+  String get suggestGroupSeparateNote =>
+      'Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.';
+
+  @override
+  String get suggestLeaveGroup => 'Keluar dari kelompok';
+
+  @override
+  String get suggestAddVariant => 'Tambah variasi';
+
+  @override
+  String get suggestAddVariantHint =>
+      'Contoh: kate, katee (pisahkan dengan koma)';
+
+  @override
+  String get suggestRemoveVariant => 'Hapus variasi yang ada';
+
+  @override
+  String get suggestLemmaLabel => 'Lemma';
+
+  @override
+  String get suggestNotesLabel => 'Catatan';
+
+  @override
+  String get suggestNotesHint => 'Asal kata, pemakaian, atau keterangan lain';
+
+  @override
+  String get suggestTranslationField => 'Terjemahan Indonesia';
+
+  @override
+  String get suggestTranslationHint =>
+      'Satu kata/frasa setara dengan lemma. Contoh: \"makan\". Beda dari definisi.';
+
+  @override
+  String get suggestTranslationSemanticsHint =>
+      'Satu kata/frasa setara di Indonesia';
+
+  @override
+  String get suggestKbbiSemantics =>
+      'Tekan ikon buku untuk mencari definisi di KBBI';
+
+  @override
+  String get suggestDefinitionLabel => 'Definisi';
+
+  @override
+  String get suggestDefinitionHint =>
+      'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.';
+
+  @override
+  String get suggestDefinitionPlaceholder => 'Jelaskan makna kata ini';
+
+  @override
+  String get suggestWordClassLoadFailed => 'Gagal muat kelas kata - coba lagi';
+
+  @override
+  String get suggestWordClassLabel => 'Kelas kata (opsional)';
+
+  @override
+  String get suggestWordClassLabelShort => 'Kelas kata';
+
+  @override
+  String get suggestWordClassHint => 'Nomina, verba, adjektiva, dsb.';
+
+  @override
+  String get suggestWordClassPicker => 'Pilih kelas kata';
+
+  @override
+  String get suggestRemove => 'Hapus';
+
+  @override
+  String get suggestRemovePrimary => 'Hapus (utama)';
+
+  @override
+  String get suggestPrimaryMark => 'Utama ✓';
+
+  @override
+  String get suggestSetPrimary => 'Jadikan utama';
+
+  @override
+  String get historyTitle => 'Riwayat perubahan';
+
+  @override
+  String historyAdded(String items) {
+    return 'Ditambah $items';
+  }
+
+  @override
+  String historyRemoved(String items) {
+    return 'Dihapus $items';
+  }
+
+  @override
+  String historySetPrimary(String items) {
+    return 'Dijadikan utama $items';
+  }
+
+  @override
+  String get historyDuplicateConfirm => 'Konfirmasi duplikat';
+
+  @override
+  String get historyFromSuggestion => 'Dari usulan';
+
+  @override
+  String get historyDirectEdit => 'Edit langsung';
+
+  @override
+  String get historySystem => 'Sistem';
+
+  @override
+  String get historyWordNotFound => 'Kata tidak ditemukan';
+
+  @override
+  String get historyUnavailable => 'Riwayat tidak tersedia untuk entri ini.';
+
+  @override
+  String get historyLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get historyRetryHint => 'Coba lagi sebentar.';
+
+  @override
+  String get historyRetry => 'Coba lagi';
+
+  @override
+  String get historyEmpty => 'Belum ada riwayat';
+
+  @override
+  String get historyEmptyHint =>
+      'Perubahan yang diterapkan ke kata ini akan muncul di sini.';
+
+  @override
+  String historyByActor(String actor) {
+    return 'Oleh $actor';
+  }
+
+  @override
+  String get historyReason => 'Alasan';
+
+  @override
+  String get historyReviewerNote => 'Catatan reviewer';
+
+  @override
+  String get historyChanges => 'Perubahan';
+
+  @override
+  String get historyNoDetail => 'Tidak ada detail perubahan.';
+
+  @override
+  String historyBefore(String value) {
+    return 'Sebelum: $value';
+  }
+
+  @override
+  String historyAfter(String value) {
+    return 'Sesudah: $value';
+  }
+
+  @override
+  String get historyClose => 'Tutup';
+
+  @override
+  String get historyFieldLemma => 'Lemma';
+
+  @override
+  String get historyFieldNotes => 'Catatan';
+
+  @override
+  String get historyFieldDefinition => 'Definisi';
+
+  @override
+  String get historyFieldTranslation => 'Terjemahan';
+
+  @override
+  String get historyFieldMeaning => 'Makna';
+
+  @override
+  String get historyFieldExample => 'Contoh';
+
+  @override
+  String get historyFieldVariant => 'Variasi';
+
+  @override
+  String get historyFieldCategory => 'Kategori';
+
+  @override
+  String get historyFieldRelation => 'Relasi';
+
+  @override
+  String get historyFieldImage => 'Gambar';
+
+  @override
+  String get historyFieldPronunciation => 'Pengucapan';
+
+  @override
+  String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldLanguage => 'Bahasa';
+
+  @override
+  String get historyFieldVerificationStatus => 'Status verifikasi';
+
+  @override
+  String get historyFieldStatus => 'Status';
+
+  @override
+  String get historyFieldSupport => 'Dukungan';
+
+  @override
+  String get historyFieldReason => 'Alasan';
+
+  @override
+  String get historyFieldCorrected => 'Dikoreksi';
+
+  @override
+  String get historyFieldCommaSeparated => 'Pisah koma';
+
+  @override
+  String get historyFieldCreated => 'Dibuat';
+
+  @override
+  String get historyFieldMergedOnCreate => 'Digabung saat buat';
+
+  @override
+  String get historyFieldMergedOnEdit => 'Digabung saat edit';
+
+  @override
+  String get historyFieldSelfApplied => 'Terapkan sendiri';
+
+  @override
+  String get historyFieldSourceId => 'ID sumber';
+
+  @override
+  String get historyFieldSplitOriginId => 'ID asal pisah';
+
+  @override
+  String get historyFieldMeaningId => 'ID makna';
+
+  @override
+  String get historyFieldMergedWordId => 'ID kata digabung';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -1876,4 +2396,524 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get shareElementWordClass => 'Kelas kata';
+
+  @override
+  String get suggestCategoryChangeMeaning => 'Ubah makna';
+
+  @override
+  String get suggestCategoryChangeMeaningDesc =>
+      'Perbaiki definisi atau terjemahan';
+
+  @override
+  String get suggestCategoryChangeWordClass => 'Ubah kelas kata';
+
+  @override
+  String get suggestCategoryChangeWordClassDesc =>
+      'Nomina, verba, adjektiva, dsb.';
+
+  @override
+  String get suggestCategoryAddMeaning => 'Tambah makna';
+
+  @override
+  String get suggestCategoryAddMeaningDesc => 'Arti lain dari kata ini';
+
+  @override
+  String get suggestCategoryAddExample => 'Tambah contoh';
+
+  @override
+  String get suggestCategoryAddExampleDesc => 'Contoh kalimat untuk satu makna';
+
+  @override
+  String get suggestCategoryAddPhoto => 'Tambah foto';
+
+  @override
+  String get suggestCategoryAddPhotoDesc => 'Foto yang menggambarkan kata ini';
+
+  @override
+  String get suggestCategoryChangePhoto => 'Ubah foto';
+
+  @override
+  String get suggestCategoryChangePhotoDesc =>
+      'Hapus, ganti, atau pilih foto utama';
+
+  @override
+  String get suggestCategorySynonym => 'Sinonim';
+
+  @override
+  String get suggestCategorySynonymDesc => 'Kata lain yang artinya sama';
+
+  @override
+  String get suggestCategoryAntonym => 'Antonim';
+
+  @override
+  String get suggestCategoryAntonymDesc => 'Kata yang artinya berlawanan';
+
+  @override
+  String get suggestCategoryVariantOf => 'Variasi bentuk';
+
+  @override
+  String get suggestCategoryVariantOfDesc => 'Kata ini variasi dari kata lain';
+
+  @override
+  String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
+
+  @override
+  String get suggestCategoryNonstandardOfDesc =>
+      'Kata ini bentuk tidak baku dari kata baku';
+
+  @override
+  String get suggestCategoryDerivedFrom => 'Kata turunan';
+
+  @override
+  String get suggestCategoryDerivedFromDesc =>
+      'Kata ini diturunkan dari akar kata';
+
+  @override
+  String get suggestCategoryMeaningGroup => 'Kelompok makna';
+
+  @override
+  String get suggestCategoryMeaningGroupDesc =>
+      'Gabungkan kata bermakna sama dalam satu kelompok';
+
+  @override
+  String get suggestCategorySpellingVariant => 'Variasi penulisan';
+
+  @override
+  String get suggestCategorySpellingVariantDesc =>
+      'Ejaan lain untuk kata yang sama';
+
+  @override
+  String get suggestCategoryLemmaNotes => 'Lainnya';
+
+  @override
+  String get suggestCategoryLemmaNotesDesc => 'Ejaan lemma atau catatan';
+
+  @override
+  String get suggestEntryTileVerifierTitle => 'Perbaiki/lengkapi kata';
+
+  @override
+  String get suggestEntryTileVerifierSubtitle =>
+      'Tambah makna, relasi, contoh, pelafalan - langsung terbit';
+
+  @override
+  String get suggestEntryTileContributorTitle => 'Usulkan perubahan';
+
+  @override
+  String get suggestEntryTileContributorSubtitle =>
+      'Perbaikan kata yang sudah tayang menunggu persetujuan admin';
+
+  @override
+  String get suggestPreSubmitVerifierBanner =>
+      'Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.';
+
+  @override
+  String get suggestPreSubmitVerifierCta => 'Simpan perubahan';
+
+  @override
+  String get suggestPreSubmitVerifierCtaBusy => 'Menyimpan...';
+
+  @override
+  String get suggestPreSubmitContributorBanner =>
+      'Ubah yang perlu saja. Admin mereview sebelum tayang.';
+
+  @override
+  String get suggestPreSubmitContributorCta => 'Kirim Usulan';
+
+  @override
+  String get suggestPreSubmitContributorCtaBusy => 'Mengirim...';
+
+  @override
+  String get suggestSuccessThisWord => 'kata ini';
+
+  @override
+  String suggestSuccessApplied(String label) {
+    return 'Perubahan langsung diterapkan pada \"$label\".';
+  }
+
+  @override
+  String suggestSuccessQueued(String label) {
+    return 'Usulan untuk \"$label\" masuk antrean. Isi yang sedang tayang belum berubah.';
+  }
+
+  @override
+  String suggestSuccessPublishedPending(String label) {
+    return 'Perubahan sudah tayang di \"$label\". Statusnya tetap menunggu pengecekan.';
+  }
+
+  @override
+  String get suggestPickMeaning => 'Pilih makna';
+
+  @override
+  String get suggestUnexpectedError => 'Terjadi kesalahan';
+
+  @override
+  String suggestNothingChangedFor(String category) {
+    return 'Belum ada yang diubah untuk $category.';
+  }
+
+  @override
+  String get suggestNothingChanged => 'Belum ada perubahan';
+
+  @override
+  String get suggestExampleFirst => 'Contoh kalimatnya diisi dulu ya';
+
+  @override
+  String get suggestExamplePublishedToast => 'Contoh kalimat sudah tayang.';
+
+  @override
+  String get suggestExampleQueuedToast =>
+      'Contoh kalimat masuk antrean pengecekan.';
+
+  @override
+  String get suggestSubmitFailed =>
+      'Gagal mengirim usulan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get suggestReviewForm => 'Periksa lagi isian';
+
+  @override
+  String get suggestStillPendingTitle => 'Usulan masih menunggu';
+
+  @override
+  String get suggestSuggestChangeCta => 'Usulkan Perubahan';
+
+  @override
+  String get suggestLoginPrompt => 'Masuk dulu untuk mengusulkan';
+
+  @override
+  String get suggestSendExample => 'Kirim contoh';
+
+  @override
+  String get suggestWhatToChange => 'Apa yang ingin diubah?';
+
+  @override
+  String get suggestChangeTypeSemantics => 'Ketuk untuk ganti jenis usulan';
+
+  @override
+  String get suggestMeaningSection => 'Makna';
+
+  @override
+  String get suggestReasonLabel => 'Alasan (opsional)';
+
+  @override
+  String get suggestReasonHint => 'Contoh: sumber, penutur asli, atau KBBI';
+
+  @override
+  String suggestExampleSection(String lemma) {
+    return 'Contoh kalimat ($lemma)';
+  }
+
+  @override
+  String get suggestExampleLangHint => 'Kalimat dalam bahasa Sambas';
+
+  @override
+  String get suggestExampleTranslationLabel => 'Artinya (opsional)';
+
+  @override
+  String get suggestExampleTranslationHint => 'Terjemahan bahasa Indonesia';
+
+  @override
+  String get suggestExistingPhotos => 'Foto yang ada';
+
+  @override
+  String get suggestReplacementPhotos => 'Foto pengganti (opsional)';
+
+  @override
+  String get suggestReplacementPhotosHint =>
+      'Tambahkan bila foto yang dihapus perlu diganti.';
+
+  @override
+  String get suggestDerivedFromLabel => 'akar kata';
+
+  @override
+  String get suggestReferenceLabel => 'kata rujukan';
+
+  @override
+  String suggestAddRelation(String category) {
+    return 'Tambah $category';
+  }
+
+  @override
+  String get suggestRelationPickHint =>
+      'Pilih saran ketik, atau tulis lemma baru sendiri';
+
+  @override
+  String suggestDerivedHint(String target) {
+    return 'Kata ini diturunkan dari $target di atas';
+  }
+
+  @override
+  String get suggestVariantOfHint =>
+      'Kata ini variasi/bentuk lain dari kata di atas';
+
+  @override
+  String get suggestDerivedExample =>
+      'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".';
+
+  @override
+  String get suggestVariantExample =>
+      'Contoh: \"tekpalat\" variasi dari \"taek palat\".';
+
+  @override
+  String suggestRemoveRelation(String category) {
+    return 'Hapus $category yang ada';
+  }
+
+  @override
+  String get suggestNewGroupName => 'Nama kelompok baru';
+
+  @override
+  String get suggestNewGroupNameHint => 'Contoh: kenapa';
+
+  @override
+  String get suggestOtherMembers => 'Anggota lain';
+
+  @override
+  String get suggestGroupExplainer =>
+      'Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.';
+
+  @override
+  String get suggestGroupExample =>
+      'Contoh: \"ngape\", \"jape\", \"jope\" = kelompok \"kenapa\".';
+
+  @override
+  String get suggestGroupSeparateNote =>
+      'Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.';
+
+  @override
+  String get suggestLeaveGroup => 'Keluar dari kelompok';
+
+  @override
+  String get suggestAddVariant => 'Tambah variasi';
+
+  @override
+  String get suggestAddVariantHint =>
+      'Contoh: kate, katee (pisahkan dengan koma)';
+
+  @override
+  String get suggestRemoveVariant => 'Hapus variasi yang ada';
+
+  @override
+  String get suggestLemmaLabel => 'Lemma';
+
+  @override
+  String get suggestNotesLabel => 'Catatan';
+
+  @override
+  String get suggestNotesHint => 'Asal kata, pemakaian, atau keterangan lain';
+
+  @override
+  String get suggestTranslationField => 'Terjemahan Indonesia';
+
+  @override
+  String get suggestTranslationHint =>
+      'Satu kata/frasa setara dengan lemma. Contoh: \"makan\". Beda dari definisi.';
+
+  @override
+  String get suggestTranslationSemanticsHint =>
+      'Satu kata/frasa setara di Indonesia';
+
+  @override
+  String get suggestKbbiSemantics =>
+      'Tekan ikon buku untuk mencari definisi di KBBI';
+
+  @override
+  String get suggestDefinitionLabel => 'Definisi';
+
+  @override
+  String get suggestDefinitionHint =>
+      'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.';
+
+  @override
+  String get suggestDefinitionPlaceholder => 'Jelaskan makna kata ini';
+
+  @override
+  String get suggestWordClassLoadFailed => 'Gagal muat kelas kata - coba lagi';
+
+  @override
+  String get suggestWordClassLabel => 'Kelas kata (opsional)';
+
+  @override
+  String get suggestWordClassLabelShort => 'Kelas kata';
+
+  @override
+  String get suggestWordClassHint => 'Nomina, verba, adjektiva, dsb.';
+
+  @override
+  String get suggestWordClassPicker => 'Pilih kelas kata';
+
+  @override
+  String get suggestRemove => 'Hapus';
+
+  @override
+  String get suggestRemovePrimary => 'Hapus (utama)';
+
+  @override
+  String get suggestPrimaryMark => 'Utama ✓';
+
+  @override
+  String get suggestSetPrimary => 'Jadikan utama';
+
+  @override
+  String get historyTitle => 'Riwayat perubahan';
+
+  @override
+  String historyAdded(String items) {
+    return 'Ditambah $items';
+  }
+
+  @override
+  String historyRemoved(String items) {
+    return 'Dihapus $items';
+  }
+
+  @override
+  String historySetPrimary(String items) {
+    return 'Dijadikan utama $items';
+  }
+
+  @override
+  String get historyDuplicateConfirm => 'Konfirmasi duplikat';
+
+  @override
+  String get historyFromSuggestion => 'Dari usulan';
+
+  @override
+  String get historyDirectEdit => 'Edit langsung';
+
+  @override
+  String get historySystem => 'Sistem';
+
+  @override
+  String get historyWordNotFound => 'Kata tidak ditemukan';
+
+  @override
+  String get historyUnavailable => 'Riwayat tidak tersedia untuk entri ini.';
+
+  @override
+  String get historyLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get historyRetryHint => 'Coba lagi sebentar.';
+
+  @override
+  String get historyRetry => 'Coba lagi';
+
+  @override
+  String get historyEmpty => 'Belum ada riwayat';
+
+  @override
+  String get historyEmptyHint =>
+      'Perubahan yang diterapkan ke kata ini akan muncul di sini.';
+
+  @override
+  String historyByActor(String actor) {
+    return 'Oleh $actor';
+  }
+
+  @override
+  String get historyReason => 'Alasan';
+
+  @override
+  String get historyReviewerNote => 'Catatan reviewer';
+
+  @override
+  String get historyChanges => 'Perubahan';
+
+  @override
+  String get historyNoDetail => 'Tidak ada detail perubahan.';
+
+  @override
+  String historyBefore(String value) {
+    return 'Sebelum: $value';
+  }
+
+  @override
+  String historyAfter(String value) {
+    return 'Sesudah: $value';
+  }
+
+  @override
+  String get historyClose => 'Tutup';
+
+  @override
+  String get historyFieldLemma => 'Lemma';
+
+  @override
+  String get historyFieldNotes => 'Catatan';
+
+  @override
+  String get historyFieldDefinition => 'Definisi';
+
+  @override
+  String get historyFieldTranslation => 'Terjemahan';
+
+  @override
+  String get historyFieldMeaning => 'Makna';
+
+  @override
+  String get historyFieldExample => 'Contoh';
+
+  @override
+  String get historyFieldVariant => 'Variasi';
+
+  @override
+  String get historyFieldCategory => 'Kategori';
+
+  @override
+  String get historyFieldRelation => 'Relasi';
+
+  @override
+  String get historyFieldImage => 'Gambar';
+
+  @override
+  String get historyFieldPronunciation => 'Pengucapan';
+
+  @override
+  String get historyFieldWordType => 'Jenis kata';
+
+  @override
+  String get historyFieldLanguage => 'Bahasa';
+
+  @override
+  String get historyFieldVerificationStatus => 'Status verifikasi';
+
+  @override
+  String get historyFieldStatus => 'Status';
+
+  @override
+  String get historyFieldSupport => 'Dukungan';
+
+  @override
+  String get historyFieldReason => 'Alasan';
+
+  @override
+  String get historyFieldCorrected => 'Dikoreksi';
+
+  @override
+  String get historyFieldCommaSeparated => 'Pisah koma';
+
+  @override
+  String get historyFieldCreated => 'Dibuat';
+
+  @override
+  String get historyFieldMergedOnCreate => 'Digabung saat buat';
+
+  @override
+  String get historyFieldMergedOnEdit => 'Digabung saat edit';
+
+  @override
+  String get historyFieldSelfApplied => 'Terapkan sendiri';
+
+  @override
+  String get historyFieldSourceId => 'ID sumber';
+
+  @override
+  String get historyFieldSplitOriginId => 'ID asal pisah';
+
+  @override
+  String get historyFieldMeaningId => 'ID makna';
+
+  @override
+  String get historyFieldMergedWordId => 'ID kata digabung';
 }
