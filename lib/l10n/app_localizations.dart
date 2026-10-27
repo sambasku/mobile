@@ -13468,6 +13468,204 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'K'**
   String get reviewDiscussionBadgeViolence;
+
+  /// Bodied rejection; {reason} = alasan penolakan
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu menolak usulan ini. Alasan: {reason}'**
+  String eventProposalRejectBody(String reason);
+
+  /// No description provided for @eventProposalRejectTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak usulan'**
+  String get eventProposalRejectTitle;
+
+  /// No description provided for @eventProposalConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Yakin ingin membatalkan usulan ini?'**
+  String get eventProposalConfirmBody;
+
+  /// No description provided for @eventProposalConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal usulan'**
+  String get eventProposalConfirmTitle;
+
+  /// No description provided for @eventProposalSubmitTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memberi usulan'**
+  String get eventProposalSubmitTitle;
+
+  /// No description provided for @eventListAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get eventListAll;
+
+  /// No description provided for @eventProposalEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan acara.'**
+  String get eventProposalEmptyBody;
+
+  /// No description provided for @eventProposalEmptyBodyAlt.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan acara yang cocok'**
+  String get eventProposalEmptyBodyAlt;
+
+  /// No description provided for @eventSearchEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada acara yang cocok'**
+  String get eventSearchEmptyTitle;
+
+  /// No description provided for @eventSearchEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain, mis. nama tempat atau binatang.'**
+  String get eventSearchEmptyBody;
+
+  /// No description provided for @eventSearchMissTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada acara'**
+  String get eventSearchMissTitle;
+
+  /// No description provided for @eventSearchMissBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara ini tidak ditemukan. Bantu usahakan'**
+  String get eventSearchMissBody;
+
+  /// No description provided for @eventSwipeApprove.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui geser kanan'**
+  String get eventSwipeApprove;
+
+  /// No description provided for @eventSwipeReject.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak geser kiri'**
+  String get eventSwipeReject;
+
+  /// No description provided for @eventSwipeSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati geser ke atas'**
+  String get eventSwipeSkip;
+
+  /// No description provided for @eventStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai'**
+  String get eventStart;
+
+  /// No description provided for @eventProposalEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara yang kamu kirim akan tampil di sini.'**
+  String get eventProposalEmptyHint;
+
+  /// No description provided for @eventProposalLoadFailedHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi internetmu lalu coba lagi ya.'**
+  String get eventProposalLoadFailedHint;
+
+  /// No description provided for @eventListEmptyNoQuery.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara'**
+  String get eventListEmptyNoQuery;
+
+  /// No description provided for @eventListEmptyQuery.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara yang cocok'**
+  String get eventListEmptyQuery;
+
+  /// No description provided for @eventListEmptyTryOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain ya.'**
+  String get eventListEmptyTryOther;
+
+  /// No description provided for @eventListEmptyProposePrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.'**
+  String get eventListEmptyProposePrompt;
+
+  /// No description provided for @eventListProposeAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan acara'**
+  String get eventListProposeAction;
+
+  /// No description provided for @eventListLoadFailedSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa koneksi internetmu lalu coba lagi ya.'**
+  String get eventListLoadFailedSub;
+
+  /// No description provided for @eventListSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari acara'**
+  String get eventListSearchHint;
+
+  /// No description provided for @eventProposalLoadFailedDefault.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan. Periksa koneksi lalu coba lagi.'**
+  String get eventProposalLoadFailedDefault;
+
+  /// No description provided for @eventProposalCancelConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan usulan?'**
+  String get eventProposalCancelConfirmTitle;
+
+  /// No description provided for @eventProposalCancelConfirmDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan yang dibatalkan tidak dikirim ke peninjau.'**
+  String get eventProposalCancelConfirmDesc;
+
+  /// No description provided for @eventProposalCancelAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get eventProposalCancelAction;
+
+  /// No description provided for @eventProposalLoginPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulan kamu'**
+  String get eventProposalLoginPrompt;
+
+  /// No description provided for @eventProposalEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get eventProposalEmptyTitle;
+
+  /// No description provided for @eventProposalEmptyReviewedHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah direview akan muncul di sini.'**
+  String get eventProposalEmptyReviewedHint;
+
+  /// No description provided for @eventProposalLoadFailedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan'**
+  String get eventProposalLoadFailedTitle;
 }
 
 class _AppLocalizationsDelegate

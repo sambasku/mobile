@@ -7396,6 +7396,115 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewDiscussionBadgeViolence => 'K';
+
+  @override
+  String eventProposalRejectBody(String reason) {
+    return 'Kamu menolak usulan ini. Alasan: $reason';
+  }
+
+  @override
+  String get eventProposalRejectTitle => 'Tolak usulan';
+
+  @override
+  String get eventProposalConfirmBody => 'Yakin ingin membatalkan usulan ini?';
+
+  @override
+  String get eventProposalConfirmTitle => 'Batal usulan';
+
+  @override
+  String get eventProposalSubmitTitle => 'Masuk dulu untuk memberi usulan';
+
+  @override
+  String get eventListAll => 'Semua';
+
+  @override
+  String get eventProposalEmptyBody => 'Belum ada usulan acara.';
+
+  @override
+  String get eventProposalEmptyBodyAlt => 'Belum ada usulan acara yang cocok';
+
+  @override
+  String get eventSearchEmptyTitle => 'Tidak ada acara yang cocok';
+
+  @override
+  String get eventSearchEmptyBody =>
+      'Coba kata lain, mis. nama tempat atau binatang.';
+
+  @override
+  String get eventSearchMissTitle => 'Tidak ada acara';
+
+  @override
+  String get eventSearchMissBody => 'Acara ini tidak ditemukan. Bantu usahakan';
+
+  @override
+  String get eventSwipeApprove => 'Disetujui geser kanan';
+
+  @override
+  String get eventSwipeReject => 'Ditolak geser kiri';
+
+  @override
+  String get eventSwipeSkip => 'Lewati geser ke atas';
+
+  @override
+  String get eventStart => 'Mulai';
+
+  @override
+  String get eventProposalEmptyHint =>
+      'Usulan acara yang kamu kirim akan tampil di sini.';
+
+  @override
+  String get eventProposalLoadFailedHint =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventListEmptyNoQuery => 'Belum ada acara';
+
+  @override
+  String get eventListEmptyQuery => 'Belum ada acara yang cocok';
+
+  @override
+  String get eventListEmptyTryOther => 'Coba kata lain ya.';
+
+  @override
+  String get eventListEmptyProposePrompt =>
+      'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.';
+
+  @override
+  String get eventListProposeAction => 'Usulkan acara';
+
+  @override
+  String get eventListLoadFailedSub =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventListSearchHint => 'Cari acara';
+
+  @override
+  String get eventProposalLoadFailedDefault =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get eventProposalCancelConfirmTitle => 'Batalkan usulan?';
+
+  @override
+  String get eventProposalCancelConfirmDesc =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get eventProposalCancelAction => 'Batalkan';
+
+  @override
+  String get eventProposalLoginPrompt => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get eventProposalEmptyTitle => 'Belum ada usulan';
+
+  @override
+  String get eventProposalEmptyReviewedHint =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get eventProposalLoadFailedTitle => 'Gagal memuat usulan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14790,4 +14899,113 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewDiscussionBadgeViolence => 'K';
+
+  @override
+  String eventProposalRejectBody(String reason) {
+    return 'Kamu menolak usulan ini. Alasan: $reason';
+  }
+
+  @override
+  String get eventProposalRejectTitle => 'Tolak usulan';
+
+  @override
+  String get eventProposalConfirmBody => 'Yakin ingin membatalkan usulan ini?';
+
+  @override
+  String get eventProposalConfirmTitle => 'Batal usulan';
+
+  @override
+  String get eventProposalSubmitTitle => 'Masuk dulu untuk memberi usulan';
+
+  @override
+  String get eventListAll => 'Semua';
+
+  @override
+  String get eventProposalEmptyBody => 'Belum ada usulan acara.';
+
+  @override
+  String get eventProposalEmptyBodyAlt => 'Belum ada usulan acara yang cocok';
+
+  @override
+  String get eventSearchEmptyTitle => 'Tidak ada acara yang cocok';
+
+  @override
+  String get eventSearchEmptyBody =>
+      'Coba kata lain, mis. nama tempat atau binatang.';
+
+  @override
+  String get eventSearchMissTitle => 'Tidak ada acara';
+
+  @override
+  String get eventSearchMissBody => 'Acara ini tidak ditemukan. Bantu usahakan';
+
+  @override
+  String get eventSwipeApprove => 'Disetujui geser kanan';
+
+  @override
+  String get eventSwipeReject => 'Ditolak geser kiri';
+
+  @override
+  String get eventSwipeSkip => 'Lewati geser ke atas';
+
+  @override
+  String get eventStart => 'Mulai';
+
+  @override
+  String get eventProposalEmptyHint =>
+      'Usulan acara yang kamu kirim akan tampil di sini.';
+
+  @override
+  String get eventProposalLoadFailedHint =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventListEmptyNoQuery => 'Belum ada acara';
+
+  @override
+  String get eventListEmptyQuery => 'Belum ada acara yang cocok';
+
+  @override
+  String get eventListEmptyTryOther => 'Coba kata lain ya.';
+
+  @override
+  String get eventListEmptyProposePrompt =>
+      'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.';
+
+  @override
+  String get eventListProposeAction => 'Usulkan acara';
+
+  @override
+  String get eventListLoadFailedSub =>
+      'Periksa koneksi internetmu lalu coba lagi ya.';
+
+  @override
+  String get eventListSearchHint => 'Cari acara';
+
+  @override
+  String get eventProposalLoadFailedDefault =>
+      'Gagal memuat usulan. Periksa koneksi lalu coba lagi.';
+
+  @override
+  String get eventProposalCancelConfirmTitle => 'Batalkan usulan?';
+
+  @override
+  String get eventProposalCancelConfirmDesc =>
+      'Usulan yang dibatalkan tidak dikirim ke peninjau.';
+
+  @override
+  String get eventProposalCancelAction => 'Batalkan';
+
+  @override
+  String get eventProposalLoginPrompt => 'Masuk dulu untuk melihat usulan kamu';
+
+  @override
+  String get eventProposalEmptyTitle => 'Belum ada usulan';
+
+  @override
+  String get eventProposalEmptyReviewedHint =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get eventProposalLoadFailedTitle => 'Gagal memuat usulan';
 }

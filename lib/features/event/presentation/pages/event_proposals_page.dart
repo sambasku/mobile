@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/event_contribution.dart';
 import '../providers/event_proposals_provider.dart';
@@ -22,7 +23,7 @@ class EventProposalsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulan acara'),
+        title: Text(AppLocalizations.of(context).eventProposalsTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -44,7 +45,7 @@ class EventProposalsPage extends ConsumerWidget {
                         ref.invalidate(eventProposalsControllerProvider),
                     message: err is EventContributionException
                         ? err.message
-                        : 'Gagal memuat usulan. Periksa koneksi lalu coba lagi.',
+                        : AppLocalizations.of(context).eventProposalLoadFailedDefault,
                   ),
                   data: (items) {
                     if (items.isEmpty) return const _EmptyBody();
@@ -71,6 +72,7 @@ class EventProposalsPage extends ConsumerWidget {
     WidgetRef ref,
     EventContribution item,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -82,7 +84,7 @@ class EventProposalsPage extends ConsumerWidget {
           child: FTileGroup(
             children: [
               FTile(
-                title: const Text('Batalkan usulan?'),
+                title: Text(l10n.eventProposalCancelConfirmTitle),
                 subtitle: Text(item.name),
               ),
               FTile(
@@ -91,11 +93,11 @@ class EventProposalsPage extends ConsumerWidget {
                 ),
               ),
               FTile(
-                title: const Text('Batalkan'),
+                title: Text(l10n.eventProposalCancelCta),
                 onPress: () => Navigator.pop(ctx, true),
               ),
               FTile(
-                title: const Text('Tutup'),
+                title: Text(l10n.commonClose),
                 onPress: () => Navigator.pop(ctx, false),
               ),
             ],
@@ -161,7 +163,7 @@ class _ProposalRow extends StatelessWidget {
         children: [
           FBadge(
             variant: _statusVariant(item.status),
-            child: Text(_statusLabel(item.status)),
+            child: Text(_statusLabel(AppLocalizations.of(context), item.status)),
           ),
           if (item.canCancel) ...[
             const Gap(8),
@@ -169,7 +171,7 @@ class _ProposalRow extends StatelessWidget {
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
               onPress: onCancel,
-              child: const Text('Batalkan'),
+              child: Text(AppLocalizations.of(context).eventProposalCancelCta),
             ),
           ],
         ],
@@ -178,12 +180,13 @@ class _ProposalRow extends StatelessWidget {
   }
 }
 
-String _statusLabel(EventContributionStatus status) => switch (status) {
-  EventContributionStatus.approved => 'Disetujui',
-  EventContributionStatus.rejected => 'Ditolak',
-  EventContributionStatus.needsRevision => 'Perlu revisi',
-  EventContributionStatus.pending => 'Menunggu',
-};
+String _statusLabel(AppLocalizations l10n, EventContributionStatus status) =>
+    switch (status) {
+      EventContributionStatus.approved => l10n.usahaStatusApproved,
+      EventContributionStatus.rejected => l10n.usahaStatusRejected,
+      EventContributionStatus.needsRevision => l10n.usahaStatusNeedsRevision,
+      EventContributionStatus.pending => l10n.usahaStatusPending,
+    };
 
 FBadgeVariant _statusVariant(EventContributionStatus status) =>
     switch (status) {
@@ -212,7 +215,7 @@ class _LoginGate extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat usulan kamu',
+              AppLocalizations.of(context).eventProposalLoginPrompt,
               style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -222,7 +225,7 @@ class _LoginGate extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -250,13 +253,13 @@ class _EmptyBody extends StatelessWidget {
         ),
         const Gap(10),
         Text(
-          'Belum ada usulan',
+          AppLocalizations.of(context).eventProposalEmptyTitle,
           textAlign: TextAlign.center,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(4),
         Text(
-          'Status usulan yang sudah direview akan muncul di sini.',
+          AppLocalizations.of(context).eventProposalEmptyReviewedHint,
           textAlign: TextAlign.center,
           style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
@@ -290,7 +293,7 @@ class _ErrorBodyState extends State<_ErrorBody> {
       await showAppErrorSheet(
         context,
         message: widget.message,
-        title: 'Gagal memuat usulan',
+        title: AppLocalizations.of(context).eventProposalLoadFailedTitle,
         onRetry: widget.onRetry,
       );
     });

@@ -11,6 +11,7 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_browse_providers.dart';
@@ -130,7 +131,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
         // Forui sudah memberi gutter dari tema - jangan tambah padding lagi.
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Acara'),
+          title: Text(AppLocalizations.of(context).eventListTitle),
           prefixes: [
             FHeaderAction.back(
               onPress: () =>
@@ -155,7 +156,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
               control: FTextFieldControl.managed(
                 onChange: (value) => _onSearchChanged(value.text),
               ),
-              hint: 'Cari acara',
+              hint: AppLocalizations.of(context).eventListSearchHint,
               textInputAction: TextInputAction.search,
               clearable: (value) => value.text.isNotEmpty,
               prefixBuilder: (context, style, variants) =>
@@ -239,7 +240,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
                                         ).notifier,
                                       )
                                       .loadMore(),
-                                  child: const Text('Coba lagi'),
+                                  child: Text(AppLocalizations.of(context).commonRetry),
                                 ),
                               ),
                             ),
@@ -281,7 +282,7 @@ class _CategoryBar extends StatelessWidget {
               variant: selectedId == null
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: const Text('Semua'),
+              child: Text(AppLocalizations.of(context).eventListAll),
             ),
           ),
           for (final category in categories) ...[
@@ -459,6 +460,7 @@ class _EmptyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView(
@@ -474,7 +476,7 @@ class _EmptyBody extends StatelessWidget {
           ),
           const Gap(10),
           Text(
-            hasQuery ? 'Belum ada acara yang cocok' : 'Belum ada acara',
+            hasQuery ? l10n.eventListEmptyQuery : l10n.eventListEmptyNoQuery,
             textAlign: TextAlign.center,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w600,
@@ -483,8 +485,8 @@ class _EmptyBody extends StatelessWidget {
           const Gap(4),
           Text(
             hasQuery
-                ? 'Coba kata lain ya.'
-                : 'Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.',
+                ? l10n.eventListEmptyTryOther
+                : l10n.eventListEmptyProposePrompt,
             textAlign: TextAlign.center,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
@@ -495,7 +497,7 @@ class _EmptyBody extends StatelessWidget {
             child: FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push(EventRouter.contribute.path),
-              child: const Text('Usulkan acara'),
+              child: Text(l10n.eventListProposeAction),
             ),
           ),
         ],
@@ -511,16 +513,17 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const FAlert(
-            title: Text('Gagal memuat acara'),
-            subtitle: Text('Periksa koneksi internetmu lalu coba lagi ya.'),
+          FAlert(
+            title: Text(l10n.eventDetailLoadFailed),
+            subtitle: Text(l10n.eventListLoadFailedSub),
           ),
           const Gap(16),
-          FButton(onPress: onRetry, child: const Text('Coba lagi')),
+          FButton(onPress: onRetry, child: Text(l10n.commonRetry)),
         ],
       ),
     );

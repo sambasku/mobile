@@ -1,3 +1,4 @@
+import '../../../../core/i18n/l10n.dart';
 import '../../domain/entities/event.dart';
 import '../../domain/entities/event_contribution.dart';
 
@@ -18,7 +19,7 @@ class EventContributionDto {
 
     return EventContribution(
       id: id,
-      name: _str(map['name']) ?? 'Usulan acara',
+      name: _str(map['name']) ?? l10n.eventProposalsTitle,
       status: status,
       eventId: _str(json['event_id']),
       categoryId: _str(map['category_id']),

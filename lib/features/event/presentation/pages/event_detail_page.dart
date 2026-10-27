@@ -58,6 +58,7 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final source = event.sourceUrl;
     final sourceLabel = eventSourceTypeLabel(AppLocalizations.of(context), event.sourceType);
     final attribution = event.sourceAttribution;
@@ -103,7 +104,7 @@ class _Body extends StatelessWidget {
         if (event.places.isNotEmpty) ...[
           const Gap(20),
           Text(
-            'Wisata terkait',
+            l10n.eventDetailRelatedPlaces,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -124,7 +125,7 @@ class _Body extends StatelessWidget {
         if (source != null && source.isNotEmpty) ...[
           const Gap(20),
           Text(
-            'Sumber resmi',
+            l10n.eventDetailOfficialSource,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -247,6 +248,7 @@ class _InfoGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final villageSlug = event.village?.slug;
     return FTileGroup(
       children: [
@@ -263,7 +265,7 @@ class _InfoGroup extends StatelessWidget {
         if (event.village != null)
           FTile(
             prefix: const Icon(FLucideIcons.building2, size: 18),
-            title: Text('Desa ${event.village!.name}'),
+            title: Text(l10n.eventDetailVillage(event.village!.name)),
             suffix: villageSlug == null
                 ? null
                 : const Icon(FLucideIcons.chevronRight, size: 16),
@@ -277,7 +279,7 @@ class _InfoGroup extends StatelessWidget {
         if (event.organizer != null && event.organizer!.isNotEmpty)
           FTile(
             prefix: const Icon(FLucideIcons.users, size: 18),
-            title: Text('Diselenggarakan oleh ${event.organizer}'),
+            title: Text(l10n.eventDetailOrganizer(event.organizer!)),
           ),
       ],
     );
@@ -290,6 +292,7 @@ class _NotFoundBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
@@ -303,7 +306,7 @@ class _NotFoundBody extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Acara ini tidak ditemukan',
+              l10n.eventDetailNotFound,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -313,7 +316,7 @@ class _NotFoundBody extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.go(EventRouter.list.path),
-              child: const Text('Lihat daftar acara'),
+              child: Text(l10n.eventDetailSeeList),
             ),
           ],
         ),
@@ -328,6 +331,7 @@ class _ErrorBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
@@ -341,7 +345,7 @@ class _ErrorBody extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Gagal memuat acara',
+              l10n.eventDetailLoadFailed,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -351,7 +355,7 @@ class _ErrorBody extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.go(EventRouter.list.path),
-              child: const Text('Lihat daftar acara'),
+              child: Text(l10n.eventDetailSeeList),
             ),
           ],
         ),
