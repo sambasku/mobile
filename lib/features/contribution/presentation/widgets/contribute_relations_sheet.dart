@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Hasil bottomsheet kelengkapan opsional (variasi / sinonim / antonim / catatan).
 class ContributeRelationsDraft {
   const ContributeRelationsDraft({
@@ -23,16 +25,20 @@ class ContributeRelationsDraft {
       notesText.trim().isEmpty;
 
   /// Ringkasan singkat untuk chip di form utama.
-  String get summaryLabel {
+  String summaryLabelOf(AppLocalizations l10n) {
     final parts = <String>[];
     final v = _commaCount(variantsText);
     final s = _commaCount(synonymsText);
     final a = _commaCount(antonymsText);
-    if (v > 0) parts.add('$v variasi');
-    if (s > 0) parts.add('$s sinonim');
-    if (a > 0) parts.add('$a antonim');
-    if (notesText.trim().isNotEmpty) parts.add('catatan');
-    return parts.isEmpty ? 'Belum ada' : parts.join(' · ');
+    if (v > 0) parts.add(l10n.contributeRelationsSummaryVariants(v));
+    if (s > 0) parts.add(l10n.contributeRelationsSummarySynonyms(s));
+    if (a > 0) parts.add(l10n.contributeRelationsSummaryAntonyms(a));
+    if (notesText.trim().isNotEmpty) {
+      parts.add(l10n.contributeRelationsSummaryNotes);
+    }
+    return parts.isEmpty
+        ? l10n.contributeRelationsEmptySummary
+        : parts.join(' · ');
   }
 
   static int _commaCount(String raw) =>
@@ -111,6 +117,7 @@ class _ContributeRelationsSheetBodyState
       .toList(growable: false);
 
   List<String> _fieldErrors({
+    required AppLocalizations l10n,
     required String label,
     required String raw,
     required int maxItems,
@@ -118,33 +125,49 @@ class _ContributeRelationsSheetBodyState
     final errors = <String>[];
     final items = _parseCsv(raw);
     if (items.length > maxItems) {
-      errors.add('Maksimal $maxItems $label');
+      errors.add(l10n.contributeRelationsMaxItems(maxItems, label));
     }
     final lemma = widget.lemma.trim().toLowerCase();
     final seen = <String>{};
     for (final item in items) {
       final lower = item.toLowerCase();
       if (lemma.isNotEmpty && lower == lemma) {
-        errors.add('"$item" sama dengan kata yang diusulkan');
+        errors.add(l10n.contributeRelationsDuplicateLemma(item));
       }
       if (!seen.add(lower)) {
-        errors.add('"$item" tertulis lebih dari sekali');
+        errors.add(l10n.contributeRelationsDuplicateItem(item));
       }
     }
     return errors;
   }
 
   List<String> _allErrors() {
+    final l10n = AppLocalizations.of(context);
     final errors = <String>[
-      ..._fieldErrors(label: 'variasi', raw: _variantsCtrl.text, maxItems: 10),
-      ..._fieldErrors(label: 'sinonim', raw: _synonymsCtrl.text, maxItems: 5),
-      ..._fieldErrors(label: 'antonim', raw: _antonymsCtrl.text, maxItems: 5),
+      ..._fieldErrors(
+        l10n: l10n,
+        label: l10n.contributeRelationsLabelVariants,
+        raw: _variantsCtrl.text,
+        maxItems: 10,
+      ),
+      ..._fieldErrors(
+        l10n: l10n,
+        label: l10n.contributeRelationsLabelSynonyms,
+        raw: _synonymsCtrl.text,
+        maxItems: 5,
+      ),
+      ..._fieldErrors(
+        l10n: l10n,
+        label: l10n.contributeRelationsLabelAntonyms,
+        raw: _antonymsCtrl.text,
+        maxItems: 5,
+      ),
     ];
     final relatedTotal =
         _parseCsv(_synonymsCtrl.text).length +
         _parseCsv(_antonymsCtrl.text).length;
     if (relatedTotal > 5) {
-      errors.add('Sinonim + antonim maksimal 5 total');
+      errors.add(l10n.contributeRelationsRelatedMax);
     }
     // Cross-duplikat antar sinonim/antonim
     final syn = _parseCsv(
@@ -152,7 +175,7 @@ class _ContributeRelationsSheetBodyState
     ).map((e) => e.toLowerCase()).toSet();
     for (final a in _parseCsv(_antonymsCtrl.text)) {
       if (syn.contains(a.toLowerCase())) {
-        errors.add('"$a" tidak boleh sinonim dan antonim sekaligus');
+        errors.add(l10n.contributeRelationsSynAntonymConflict(a));
       }
     }
     return errors;
@@ -176,6 +199,7 @@ class _ContributeRelationsSheetBodyState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final media = MediaQuery.of(context);
     final height = (media.size.height - media.viewInsets.bottom) * 0.85;
@@ -200,7 +224,7 @@ class _ContributeRelationsSheetBodyState
                   const Gap(8),
                   Expanded(
                     child: Text(
-                      'Kelengkapan opsional',
+                      l10n.contributeRelationsSheetTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.typography.body.lg.copyWith(
@@ -218,7 +242,7 @@ class _ContributeRelationsSheetBodyState
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Text(
-                'Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete\'',
+                l10n.contributeRelationsSheetIntro,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -232,8 +256,8 @@ class _ContributeRelationsSheetBodyState
                     control: FTextFieldControl.managed(
                       controller: _variantsCtrl,
                     ),
-                    label: const Text('Variasi penulisan'),
-                    hint: "ketex, kettek, kete' - dipisah koma",
+                    label: Text(l10n.contributeRelationsVariantsLabel),
+                    hint: l10n.contributeRelationsVariantsHint,
                     textInputAction: TextInputAction.next,
                   ),
                   const Gap(12),
@@ -241,8 +265,8 @@ class _ContributeRelationsSheetBodyState
                     control: FTextFieldControl.managed(
                       controller: _synonymsCtrl,
                     ),
-                    label: const Text('Sinonim'),
-                    hint: 'kata1, kata2 - dipisah koma',
+                    label: Text(l10n.contributeRelationsSynonymsLabel),
+                    hint: l10n.contributeRelationsListHint,
                     textInputAction: TextInputAction.next,
                   ),
                   const Gap(12),
@@ -250,15 +274,15 @@ class _ContributeRelationsSheetBodyState
                     control: FTextFieldControl.managed(
                       controller: _antonymsCtrl,
                     ),
-                    label: const Text('Antonim'),
-                    hint: 'kata1, kata2 - dipisah koma',
+                    label: Text(l10n.contributeRelationsAntonymsLabel),
+                    hint: l10n.contributeRelationsListHint,
                     textInputAction: TextInputAction.next,
                   ),
                   const Gap(12),
                   FTextField(
                     control: FTextFieldControl.managed(controller: _notesCtrl),
-                    label: const Text('Catatan'),
-                    hint: 'Contoh pemakaian, etimologi, dll.',
+                    label: Text(l10n.contributeRelationsNotesLabel),
+                    hint: l10n.contributeRelationsNotesHint,
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
                     minLines: 1,
@@ -285,7 +309,7 @@ class _ContributeRelationsSheetBodyState
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: FButton(
                   onPress: errors.isEmpty ? _save : null,
-                  child: const Text('Simpan'),
+                  child: Text(l10n.contributeRelationsSave),
                 ),
               ),
             ),

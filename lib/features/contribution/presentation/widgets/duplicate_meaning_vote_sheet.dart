@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Hasil pilihan user di modal makna duplikat.
 enum DuplicateMeaningVoteChoice {
   upvote,
@@ -19,6 +21,7 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
     context: context,
     showDragHandle: true,
     builder: (sheetContext) {
+      final l10n = AppLocalizations.of(sheetContext);
       final theme = sheetContext.theme;
       return SafeArea(
         child: Padding(
@@ -28,7 +31,7 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Kata ini sudah ditemukan',
+                l10n.contributeDuplicateSheetTitle,
                 style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -36,8 +39,8 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
               const Gap(8),
               Text(
                 isAuthenticated
-                    ? 'Pilih dukunganmu agar tercatat di riwayat perubahan $lemma.'
-                    : 'Masuk dulu untuk mendukung atau menolak makna yang sudah ada.',
+                    ? l10n.contributeDuplicateSheetBody(lemma)
+                    : l10n.contributeDuplicateSheetGuestBody,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -48,14 +51,14 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
                   onPress: () => Navigator.of(sheetContext).pop(
                     DuplicateMeaningVoteChoice.login,
                   ),
-                  child: const Text('Masuk untuk mendukung'),
+                  child: Text(l10n.contributeDuplicateSheetLoginCta),
                 )
               else ...[
                 FButton(
                   onPress: () => Navigator.of(sheetContext).pop(
                     DuplicateMeaningVoteChoice.upvote,
                   ),
-                  child: const Text('Dukung makna ini'),
+                  child: Text(l10n.contributeDuplicateSheetSupport),
                 ),
                 const Gap(8),
                 FButton(
@@ -63,14 +66,14 @@ Future<DuplicateMeaningVoteChoice?> showDuplicateMeaningVoteSheet({
                   onPress: () => Navigator.of(sheetContext).pop(
                     DuplicateMeaningVoteChoice.downvote,
                   ),
-                  child: const Text('Tidak mendukung'),
+                  child: Text(l10n.contributeDuplicateSheetOppose),
                 ),
               ],
               const Gap(8),
               FButton(
                 variant: FButtonVariant.ghost,
                 onPress: () => Navigator.of(sheetContext).pop(),
-                child: const Text('Batal'),
+                child: Text(l10n.commonCancel),
               ),
             ],
           ),

@@ -5837,6 +5837,609 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get placeFormPhotoRequired => 'Pilih minimal satu foto.';
+
+  @override
+  String get contributeTitle => 'Usulkan';
+
+  @override
+  String get contributeCheckFieldsTitle =>
+      'Periksa kembali isian yang ditandai merah';
+
+  @override
+  String get contributeSubmitting => 'Mengirim...';
+
+  @override
+  String get contributeSubmitCta => 'Kirim Usulan';
+
+  @override
+  String get contributeSentPending =>
+      'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+
+  @override
+  String get contributeSentGuest =>
+      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+
+  @override
+  String get contributeBulkTitle => 'Usulkan banyak sekaligus';
+
+  @override
+  String get contributeBulkSubtitle =>
+      'Isi beberapa kata dan terjemahan dalam satu layar';
+
+  @override
+  String get contributeHowToFill => 'Cara mengisi';
+
+  @override
+  String get contributeMultiClassHint =>
+      'Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? Aktifkan mode Lengkap, lalu Tambah makna.';
+
+  @override
+  String get contributeLemmaLabel => 'Kata / ungkapan Sambas *';
+
+  @override
+  String get contributeLemmaHint => 'Isi kata, peribahasa, atau ungkapan';
+
+  @override
+  String get contributeTranslationLabel => 'Terjemahan Indonesia *';
+
+  @override
+  String get contributeTranslationHint => 'Satu kata/frasa setara di Indonesia';
+
+  @override
+  String get contributeKbbiHint =>
+      'Tekan icon buku untuk mencari definisi di KBBI';
+
+  @override
+  String get contributeDefinitionLabel => 'Penjelasan arti';
+
+  @override
+  String get contributeDefinitionHint =>
+      'Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.';
+
+  @override
+  String get contributeKindLabel => 'Jenis';
+
+  @override
+  String get contributeKindHint =>
+      'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
+
+  @override
+  String get contributeRegisterLabel => 'Register';
+
+  @override
+  String get contributeRegisterHint =>
+      'Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.';
+
+  @override
+  String get contributeWarningLabel => 'Peringatan';
+
+  @override
+  String get contributeWarningHint => 'Opsional. Sensitivitas isi makna.';
+
+  @override
+  String get contributeDialectLabel => 'Dialek';
+
+  @override
+  String get contributeDialectLoadFailed => 'Gagal muat dialek';
+
+  @override
+  String get contributeDialectPick => 'Pilih dialek…';
+
+  @override
+  String get contributeMeaningLabel => 'Makna *';
+
+  @override
+  String get contributeMeaningGuide =>
+      'Satu kata bisa punya beberapa arti.\n\nTiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.\n\nKelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.';
+
+  @override
+  String get contributeAddMeaning => 'Tambah makna';
+
+  @override
+  String contributeMaxMeanings(int max) {
+    return 'Maksimal $max makna per usulan.';
+  }
+
+  @override
+  String get contributeCompletenessLabel => 'Kelengkapan';
+
+  @override
+  String get contributeCompletenessHint =>
+      'Opsional: variasi ejaan, sinonim, antonim. Dibuka di bottomsheet.';
+
+  @override
+  String get contributeCompletenessHintField =>
+      'Tambah variasi, sinonim, antonim…';
+
+  @override
+  String get contributeImagesLabel => 'Gambar';
+
+  @override
+  String get contributeImagesHint =>
+      'Opsional. Media Explorer tanpa login; kamera/galeri perlu masuk. Maks 3.';
+
+  @override
+  String get contributeRegisterConflict =>
+      'Halus dan Kasar tidak bisa dipilih bersamaan';
+
+  @override
+  String contributeKbbiFilled(String parts) {
+    return '$parts diisi dari KBBI - silakan review';
+  }
+
+  @override
+  String get contributeTranslationMissingTitle =>
+      'Isi terjemahan bahasa Indonesia';
+
+  @override
+  String contributeMeaningIncomplete(int index) {
+    return 'Makna $index: centang dulu Penjelasan arti dan/atau Terjemahan';
+  }
+
+  @override
+  String get contributeWaitUpload => 'Tunggu upload gambar selesai';
+
+  @override
+  String get contributeRemoveFailedImage =>
+      'Hapus gambar yang gagal diunggah dulu';
+
+  @override
+  String get contributeHistoryRecorded => 'Tercatat di riwayat';
+
+  @override
+  String get contributeSeeHistory => 'Lihat riwayat';
+
+  @override
+  String get contributeSentTitle => 'Usulan terkirim';
+
+  @override
+  String contributeSentPublishedBody(String lemma) {
+    return '\"$lemma\" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+  }
+
+  @override
+  String get contributeSentPublishedNoLemma =>
+      'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+
+  @override
+  String get contributeAddAnother => 'Tambah lagi';
+
+  @override
+  String get contributeSeeProposals => 'Lihat usulan';
+
+  @override
+  String get contributeGoHome => 'Ke beranda';
+
+  @override
+  String get contributeChecking => 'Memeriksa ketersediaan kata...';
+
+  @override
+  String get contributeDuplicateExists =>
+      'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.';
+
+  @override
+  String get contributeLemmaAvailable =>
+      'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.';
+
+  @override
+  String contributeMeaningN(int index) {
+    return 'Makna $index';
+  }
+
+  @override
+  String get contributeRemove => 'Hapus';
+
+  @override
+  String get contributeWhatYouKnow => 'Apa yang kamu ketahui? *';
+
+  @override
+  String get contributeWhatYouKnowGuide =>
+      'Centang yang kamu tahu (boleh keduanya).\n\n• Penjelasan arti - uraian makna berbahasa Indonesia.\n• Terjemahan - satu kata/frasa setara.\n\nForm di bawah muncul sesuai centangan.';
+
+  @override
+  String get contributeTranslationSbsLabel => 'Terjemahan Sambas *';
+
+  @override
+  String get contributeTranslationSbsHint =>
+      'Satu kata/frasa Sambas yang setara - bukan uraian panjang.';
+
+  @override
+  String get contributeTranslationIdnGuide =>
+      'Satu kata/frasa Indonesia yang setara dengan kata Sambas.\n\nContoh: “makan”. Beda dari penjelasan arti (“aktivitas memasukkan makanan ke mulut”).';
+
+  @override
+  String get contributeTranslationSbsHintField =>
+      'Terjemahan dalam bahasa Sambas';
+
+  @override
+  String get contributeWordClassLoadFailed => 'Gagal muat kelas kata';
+
+  @override
+  String get contributeWordClassLabel => 'Kelas kata *';
+
+  @override
+  String get contributeWordClassHint =>
+      'Nomina, verba, adjektiva, dsb. Bisa dibantu isi lewat ikon buku di kolom terjemahan.';
+
+  @override
+  String get contributeWordClassPick => 'Pilih kelas kata…';
+
+  @override
+  String get contributeDefinitionFieldLabel => 'Penjelasan arti *';
+
+  @override
+  String get contributeDefinitionGuide =>
+      'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.\n\nContoh: “aktivitas memasukkan makanan ke mulut”.';
+
+  @override
+  String get contributeDefinitionHintField => 'Jelaskan arti kata ini';
+
+  @override
+  String get contributeDialectLoading => 'Memuat dialek';
+
+  @override
+  String get contributeRetry => 'Ulangi';
+
+  @override
+  String get contributeModeSimple => 'Sederhana';
+
+  @override
+  String get contributeModeComplete => 'Lengkap';
+
+  @override
+  String get contributeBulkSentTitle => 'Usulan terkirim';
+
+  @override
+  String get contributeBulkPartialTitle => 'Sebagian terkirim';
+
+  @override
+  String get contributeBulkSentOne => '1 kata berhasil dikirim.';
+
+  @override
+  String contributeBulkSentMany(int sent) {
+    return '$sent kata berhasil dikirim.';
+  }
+
+  @override
+  String contributeBulkPartialBody(int sent, int failed) {
+    return '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
+  }
+
+  @override
+  String get contributeBulkFix => 'Perbaiki';
+
+  @override
+  String contributeBulkProgress(int done, int total) {
+    return 'Mengirim $done/$total...';
+  }
+
+  @override
+  String get contributeBulkResendPending => 'Kirim ulang yang belum terkirim';
+
+  @override
+  String get contributeBulkSendAll => 'Kirim semua';
+
+  @override
+  String get contributeBulkHeader => 'Usulkan banyak';
+
+  @override
+  String get contributeBulkSentPending =>
+      'Tiap kata langsung tayang dengan label Menunggu pengecekan.';
+
+  @override
+  String get contributeBulkSentGuest =>
+      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+
+  @override
+  String contributeBulkMaxRowsHint(int max) {
+    return 'Maksimal $max kata. Isi kata Sambas dan terjemahan Indonesia.';
+  }
+
+  @override
+  String get contributeBulkAddRow => 'Tambah baris';
+
+  @override
+  String contributeBulkMaxRows(int max) {
+    return 'Maksimal $max baris per sesi.';
+  }
+
+  @override
+  String get contributeBulkColumnSambas => 'Sambas';
+
+  @override
+  String get contributeBulkColumnIndonesia => 'Indonesia';
+
+  @override
+  String contributeBulkLemmaField(int n) {
+    return 'Kata Sambas baris $n';
+  }
+
+  @override
+  String contributeBulkLemmaExists(int n) {
+    return 'Kata Sambas baris $n, sudah ada di kamus';
+  }
+
+  @override
+  String contributeBulkTranslationField(int n) {
+    return 'Terjemahan Indonesia baris $n';
+  }
+
+  @override
+  String get contributeBulkRowSent => 'Terkirim';
+
+  @override
+  String contributeBulkRemoveRow(int index) {
+    return 'Hapus baris $index';
+  }
+
+  @override
+  String contributeRelationsSummaryVariants(int count) {
+    return '$count variasi';
+  }
+
+  @override
+  String contributeRelationsSummarySynonyms(int count) {
+    return '$count sinonim';
+  }
+
+  @override
+  String contributeRelationsSummaryAntonyms(int count) {
+    return '$count antonim';
+  }
+
+  @override
+  String get contributeRelationsSummaryNotes => 'catatan';
+
+  @override
+  String get contributeRelationsEmptySummary => 'Belum ada';
+
+  @override
+  String contributeRelationsMaxItems(int max, String label) {
+    return 'Maksimal $max $label';
+  }
+
+  @override
+  String contributeRelationsDuplicateLemma(String item) {
+    return '\"$item\" sama dengan kata yang diusulkan';
+  }
+
+  @override
+  String contributeRelationsDuplicateItem(String item) {
+    return '\"$item\" tertulis lebih dari sekali';
+  }
+
+  @override
+  String get contributeRelationsLabelVariants => 'variasi';
+
+  @override
+  String get contributeRelationsLabelSynonyms => 'sinonim';
+
+  @override
+  String get contributeRelationsLabelAntonyms => 'antonim';
+
+  @override
+  String get contributeRelationsRelatedMax =>
+      'Sinonim + antonim maksimal 5 total';
+
+  @override
+  String contributeRelationsSynAntonymConflict(String item) {
+    return '\"$item\" tidak boleh sinonim dan antonim sekaligus';
+  }
+
+  @override
+  String get contributeRelationsSheetTitle => 'Kelengkapan opsional';
+
+  @override
+  String get contributeRelationsSheetIntro =>
+      'Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete\'';
+
+  @override
+  String get contributeRelationsVariantsLabel => 'Variasi penulisan';
+
+  @override
+  String get contributeRelationsVariantsHint =>
+      'ketex, kettek, kete\' - dipisah koma';
+
+  @override
+  String get contributeRelationsSynonymsLabel => 'Sinonim';
+
+  @override
+  String get contributeRelationsAntonymsLabel => 'Antonim';
+
+  @override
+  String get contributeRelationsListHint => 'kata1, kata2 - dipisah koma';
+
+  @override
+  String get contributeRelationsNotesLabel => 'Catatan';
+
+  @override
+  String get contributeRelationsNotesHint =>
+      'Contoh pemakaian, etimologi, dll.';
+
+  @override
+  String get contributeRelationsSave => 'Simpan';
+
+  @override
+  String get contributeImagesGuestHint =>
+      'Masuk untuk lampirkan gambar (opsional).';
+
+  @override
+  String get contributeImagesStockHint =>
+      'Pilih foto stock lewat Media Explorer (opsional).';
+
+  @override
+  String contributeImagesAltText(String name, String provider) {
+    return 'Foto: $name / $provider';
+  }
+
+  @override
+  String get contributeDialectSheetTitle => 'Pilih dialek';
+
+  @override
+  String get contributeDialectSheetAuto => 'Default otomatis · bisa diganti';
+
+  @override
+  String get contributeDialectSheetEmpty => 'Tidak ada dialek';
+
+  @override
+  String get contributeDuplicateSheetTitle => 'Kata ini sudah ditemukan';
+
+  @override
+  String contributeDuplicateSheetBody(String lemma) {
+    return 'Pilih dukunganmu agar tercatat di riwayat perubahan $lemma.';
+  }
+
+  @override
+  String get contributeDuplicateSheetGuestBody =>
+      'Masuk dulu untuk mendukung atau menolak makna yang sudah ada.';
+
+  @override
+  String get contributeDuplicateSheetLoginCta => 'Masuk untuk mendukung';
+
+  @override
+  String get contributeDuplicateSheetSupport => 'Dukung makna ini';
+
+  @override
+  String get contributeDuplicateSheetOppose => 'Tidak mendukung';
+
+  @override
+  String get contributeKbbiSheetTitle => 'Ambil definisi dari KBBI';
+
+  @override
+  String get contributeKbbiSheetIntro =>
+      'Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.';
+
+  @override
+  String get contributeKbbiSheetSearchHint => 'mis. makan, rumah';
+
+  @override
+  String contributeKbbiSheetCount(int count) {
+    return '$count definisi - gulir untuk melihat semua';
+  }
+
+  @override
+  String get contributeKbbiSheetPrompt => 'Ketik kata untuk mencari di KBBI';
+
+  @override
+  String get contributeKbbiSheetEmpty => 'Tidak ditemukan di KBBI';
+
+  @override
+  String contributeKbbiSheetSense(int homonym, int sense) {
+    return 'makna $homonym.$sense';
+  }
+
+  @override
+  String get contributeKbbiSheetLoadFailed => 'Gagal mengambil definisi KBBI';
+
+  @override
+  String get contributeKbbiSheetSessionExpired =>
+      'Sesi berakhir - masuk lagi untuk memakai KBBI';
+
+  @override
+  String get contributeKnowledgeToggleTranslation => 'Terjemahan';
+
+  @override
+  String get contributeKnowledgeToggleDefinition => 'Penjelasan arti';
+
+  @override
+  String get contributeKnowledgeHintBothMissing =>
+      'Centang Penjelasan arti dan/atau Terjemahan. Form makna muncul setelah itu.';
+
+  @override
+  String get contributeKnowledgeHintBoth =>
+      'Isi terjemahan dan penjelasan arti.';
+
+  @override
+  String get contributeKnowledgeHintDefinition =>
+      'Isi uraian makna. Terjemahan bisa dilengkapi nanti.';
+
+  @override
+  String get contributeKnowledgeHintTranslation =>
+      'Isi terjemahan saja. Penjelasan arti bisa dilengkapi nanti.';
+
+  @override
+  String get contributeWordClassSheetTitle => 'Pilih kelas kata';
+
+  @override
+  String contributeWordClassSheetCount(int count) {
+    return '$count pilihan - ketuk untuk memilih';
+  }
+
+  @override
+  String get contributeWordClassSheetEmpty => 'Tidak ada kelas kata';
+
+  @override
+  String get contributeWordClassFallbackWork => 'kata kerja';
+
+  @override
+  String get contributeWordClassFallbackAdj => 'kata sifat';
+
+  @override
+  String get contributeWordClassFallbackNoun => 'kata benda';
+
+  @override
+  String get meaningSourceFromKbbi => 'Dari KBBI';
+
+  @override
+  String get meaningSourceFromKbbiEdited => 'Dari KBBI (diubah)';
+
+  @override
+  String get meaningSourceManual => 'Ketik manual';
+
+  @override
+  String get contributeSubmitFailed => 'Gagal mengirim usulan kata';
+
+  @override
+  String get contributeSubmitNoWordId =>
+      'Server tidak mengembalikan word_id, coba lagi nanti';
+
+  @override
+  String get contributeConfirmFailed => 'Gagal mencatat dukungan';
+
+  @override
+  String get contributeConfirmThanks =>
+      'Terima kasih. Kamu tercatat di riwayat perubahan.';
+
+  @override
+  String get contributeServerOutdated =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeRateLimited =>
+      'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeValidationFailed =>
+      'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
+
+  @override
+  String get contributeServerTrouble =>
+      'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeGenericFailed =>
+      'Terjadi kesalahan saat mengirim usulan, coba lagi';
+
+  @override
+  String get contributeUploadTokenFailed => 'Gagal mendapat token upload';
+
+  @override
+  String get contributeStorageUnavailable =>
+      'Penyimpanan gambar belum tersedia';
+
+  @override
+  String get contributeImageUploadFailed =>
+      'Gagal mengunggah gambar, coba lagi';
+
+  @override
+  String get contributeImageKitEmpty => 'Respons ImageKit kosong';
+
+  @override
+  String get contributeImageKitIncomplete => 'Respons ImageKit tidak lengkap';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -11672,4 +12275,607 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get placeFormPhotoRequired => 'Pilih minimal satu foto.';
+
+  @override
+  String get contributeTitle => 'Usulkan';
+
+  @override
+  String get contributeCheckFieldsTitle =>
+      'Periksa kembali isian yang ditandai merah';
+
+  @override
+  String get contributeSubmitting => 'Mengirim...';
+
+  @override
+  String get contributeSubmitCta => 'Kirim Usulan';
+
+  @override
+  String get contributeSentPending =>
+      'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+
+  @override
+  String get contributeSentGuest =>
+      'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+
+  @override
+  String get contributeBulkTitle => 'Usulkan banyak sekaligus';
+
+  @override
+  String get contributeBulkSubtitle =>
+      'Isi beberapa kata dan terjemahan dalam satu layar';
+
+  @override
+  String get contributeHowToFill => 'Cara mengisi';
+
+  @override
+  String get contributeMultiClassHint =>
+      'Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? Aktifkan mode Lengkap, lalu Tambah makna.';
+
+  @override
+  String get contributeLemmaLabel => 'Kata / ungkapan Sambas *';
+
+  @override
+  String get contributeLemmaHint => 'Isi kata, peribahasa, atau ungkapan';
+
+  @override
+  String get contributeTranslationLabel => 'Terjemahan Indonesia *';
+
+  @override
+  String get contributeTranslationHint => 'Satu kata/frasa setara di Indonesia';
+
+  @override
+  String get contributeKbbiHint =>
+      'Tekan icon buku untuk mencari definisi di KBBI';
+
+  @override
+  String get contributeDefinitionLabel => 'Penjelasan arti';
+
+  @override
+  String get contributeDefinitionHint =>
+      'Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.';
+
+  @override
+  String get contributeKindLabel => 'Jenis';
+
+  @override
+  String get contributeKindHint =>
+      'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.';
+
+  @override
+  String get contributeRegisterLabel => 'Register';
+
+  @override
+  String get contributeRegisterHint =>
+      'Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.';
+
+  @override
+  String get contributeWarningLabel => 'Peringatan';
+
+  @override
+  String get contributeWarningHint => 'Opsional. Sensitivitas isi makna.';
+
+  @override
+  String get contributeDialectLabel => 'Dialek';
+
+  @override
+  String get contributeDialectLoadFailed => 'Gagal muat dialek';
+
+  @override
+  String get contributeDialectPick => 'Pilih dialek…';
+
+  @override
+  String get contributeMeaningLabel => 'Makna *';
+
+  @override
+  String get contributeMeaningGuide =>
+      'Satu kata bisa punya beberapa arti.\n\nTiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.\n\nKelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.';
+
+  @override
+  String get contributeAddMeaning => 'Tambah makna';
+
+  @override
+  String contributeMaxMeanings(int max) {
+    return 'Maksimal $max makna per usulan.';
+  }
+
+  @override
+  String get contributeCompletenessLabel => 'Kelengkapan';
+
+  @override
+  String get contributeCompletenessHint =>
+      'Opsional: variasi ejaan, sinonim, antonim. Dibuka di bottomsheet.';
+
+  @override
+  String get contributeCompletenessHintField =>
+      'Tambah variasi, sinonim, antonim…';
+
+  @override
+  String get contributeImagesLabel => 'Gambar';
+
+  @override
+  String get contributeImagesHint =>
+      'Opsional. Media Explorer tanpa login; kamera/galeri perlu masuk. Maks 3.';
+
+  @override
+  String get contributeRegisterConflict =>
+      'Halus dan Kasar tidak bisa dipilih bersamaan';
+
+  @override
+  String contributeKbbiFilled(String parts) {
+    return '$parts diisi dari KBBI - silakan review';
+  }
+
+  @override
+  String get contributeTranslationMissingTitle =>
+      'Isi terjemahan bahasa Indonesia';
+
+  @override
+  String contributeMeaningIncomplete(int index) {
+    return 'Makna $index: centang dulu Penjelasan arti dan/atau Terjemahan';
+  }
+
+  @override
+  String get contributeWaitUpload => 'Tunggu upload gambar selesai';
+
+  @override
+  String get contributeRemoveFailedImage =>
+      'Hapus gambar yang gagal diunggah dulu';
+
+  @override
+  String get contributeHistoryRecorded => 'Tercatat di riwayat';
+
+  @override
+  String get contributeSeeHistory => 'Lihat riwayat';
+
+  @override
+  String get contributeSentTitle => 'Usulan terkirim';
+
+  @override
+  String contributeSentPublishedBody(String lemma) {
+    return '\"$lemma\" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+  }
+
+  @override
+  String get contributeSentPublishedNoLemma =>
+      'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.';
+
+  @override
+  String get contributeAddAnother => 'Tambah lagi';
+
+  @override
+  String get contributeSeeProposals => 'Lihat usulan';
+
+  @override
+  String get contributeGoHome => 'Ke beranda';
+
+  @override
+  String get contributeChecking => 'Memeriksa ketersediaan kata...';
+
+  @override
+  String get contributeDuplicateExists =>
+      'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.';
+
+  @override
+  String get contributeLemmaAvailable =>
+      'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.';
+
+  @override
+  String contributeMeaningN(int index) {
+    return 'Makna $index';
+  }
+
+  @override
+  String get contributeRemove => 'Hapus';
+
+  @override
+  String get contributeWhatYouKnow => 'Apa yang kamu ketahui? *';
+
+  @override
+  String get contributeWhatYouKnowGuide =>
+      'Centang yang kamu tahu (boleh keduanya).\n\n• Penjelasan arti - uraian makna berbahasa Indonesia.\n• Terjemahan - satu kata/frasa setara.\n\nForm di bawah muncul sesuai centangan.';
+
+  @override
+  String get contributeTranslationSbsLabel => 'Terjemahan Sambas *';
+
+  @override
+  String get contributeTranslationSbsHint =>
+      'Satu kata/frasa Sambas yang setara - bukan uraian panjang.';
+
+  @override
+  String get contributeTranslationIdnGuide =>
+      'Satu kata/frasa Indonesia yang setara dengan kata Sambas.\n\nContoh: “makan”. Beda dari penjelasan arti (“aktivitas memasukkan makanan ke mulut”).';
+
+  @override
+  String get contributeTranslationSbsHintField =>
+      'Terjemahan dalam bahasa Sambas';
+
+  @override
+  String get contributeWordClassLoadFailed => 'Gagal muat kelas kata';
+
+  @override
+  String get contributeWordClassLabel => 'Kelas kata *';
+
+  @override
+  String get contributeWordClassHint =>
+      'Nomina, verba, adjektiva, dsb. Bisa dibantu isi lewat ikon buku di kolom terjemahan.';
+
+  @override
+  String get contributeWordClassPick => 'Pilih kelas kata…';
+
+  @override
+  String get contributeDefinitionFieldLabel => 'Penjelasan arti *';
+
+  @override
+  String get contributeDefinitionGuide =>
+      'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.\n\nContoh: “aktivitas memasukkan makanan ke mulut”.';
+
+  @override
+  String get contributeDefinitionHintField => 'Jelaskan arti kata ini';
+
+  @override
+  String get contributeDialectLoading => 'Memuat dialek';
+
+  @override
+  String get contributeRetry => 'Ulangi';
+
+  @override
+  String get contributeModeSimple => 'Sederhana';
+
+  @override
+  String get contributeModeComplete => 'Lengkap';
+
+  @override
+  String get contributeBulkSentTitle => 'Usulan terkirim';
+
+  @override
+  String get contributeBulkPartialTitle => 'Sebagian terkirim';
+
+  @override
+  String get contributeBulkSentOne => '1 kata berhasil dikirim.';
+
+  @override
+  String contributeBulkSentMany(int sent) {
+    return '$sent kata berhasil dikirim.';
+  }
+
+  @override
+  String contributeBulkPartialBody(int sent, int failed) {
+    return '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
+  }
+
+  @override
+  String get contributeBulkFix => 'Perbaiki';
+
+  @override
+  String contributeBulkProgress(int done, int total) {
+    return 'Mengirim $done/$total...';
+  }
+
+  @override
+  String get contributeBulkResendPending => 'Kirim ulang yang belum terkirim';
+
+  @override
+  String get contributeBulkSendAll => 'Kirim semua';
+
+  @override
+  String get contributeBulkHeader => 'Usulkan banyak';
+
+  @override
+  String get contributeBulkSentPending =>
+      'Tiap kata langsung tayang dengan label Menunggu pengecekan.';
+
+  @override
+  String get contributeBulkSentGuest =>
+      'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.';
+
+  @override
+  String contributeBulkMaxRowsHint(int max) {
+    return 'Maksimal $max kata. Isi kata Sambas dan terjemahan Indonesia.';
+  }
+
+  @override
+  String get contributeBulkAddRow => 'Tambah baris';
+
+  @override
+  String contributeBulkMaxRows(int max) {
+    return 'Maksimal $max baris per sesi.';
+  }
+
+  @override
+  String get contributeBulkColumnSambas => 'Sambas';
+
+  @override
+  String get contributeBulkColumnIndonesia => 'Indonesia';
+
+  @override
+  String contributeBulkLemmaField(int n) {
+    return 'Kata Sambas baris $n';
+  }
+
+  @override
+  String contributeBulkLemmaExists(int n) {
+    return 'Kata Sambas baris $n, sudah ada di kamus';
+  }
+
+  @override
+  String contributeBulkTranslationField(int n) {
+    return 'Terjemahan Indonesia baris $n';
+  }
+
+  @override
+  String get contributeBulkRowSent => 'Terkirim';
+
+  @override
+  String contributeBulkRemoveRow(int index) {
+    return 'Hapus baris $index';
+  }
+
+  @override
+  String contributeRelationsSummaryVariants(int count) {
+    return '$count variasi';
+  }
+
+  @override
+  String contributeRelationsSummarySynonyms(int count) {
+    return '$count sinonim';
+  }
+
+  @override
+  String contributeRelationsSummaryAntonyms(int count) {
+    return '$count antonim';
+  }
+
+  @override
+  String get contributeRelationsSummaryNotes => 'catatan';
+
+  @override
+  String get contributeRelationsEmptySummary => 'Belum ada';
+
+  @override
+  String contributeRelationsMaxItems(int max, String label) {
+    return 'Maksimal $max $label';
+  }
+
+  @override
+  String contributeRelationsDuplicateLemma(String item) {
+    return '\"$item\" sama dengan kata yang diusulkan';
+  }
+
+  @override
+  String contributeRelationsDuplicateItem(String item) {
+    return '\"$item\" tertulis lebih dari sekali';
+  }
+
+  @override
+  String get contributeRelationsLabelVariants => 'variasi';
+
+  @override
+  String get contributeRelationsLabelSynonyms => 'sinonim';
+
+  @override
+  String get contributeRelationsLabelAntonyms => 'antonim';
+
+  @override
+  String get contributeRelationsRelatedMax =>
+      'Sinonim + antonim maksimal 5 total';
+
+  @override
+  String contributeRelationsSynAntonymConflict(String item) {
+    return '\"$item\" tidak boleh sinonim dan antonim sekaligus';
+  }
+
+  @override
+  String get contributeRelationsSheetTitle => 'Kelengkapan opsional';
+
+  @override
+  String get contributeRelationsSheetIntro =>
+      'Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete\'';
+
+  @override
+  String get contributeRelationsVariantsLabel => 'Variasi penulisan';
+
+  @override
+  String get contributeRelationsVariantsHint =>
+      'ketex, kettek, kete\' - dipisah koma';
+
+  @override
+  String get contributeRelationsSynonymsLabel => 'Sinonim';
+
+  @override
+  String get contributeRelationsAntonymsLabel => 'Antonim';
+
+  @override
+  String get contributeRelationsListHint => 'kata1, kata2 - dipisah koma';
+
+  @override
+  String get contributeRelationsNotesLabel => 'Catatan';
+
+  @override
+  String get contributeRelationsNotesHint =>
+      'Contoh pemakaian, etimologi, dll.';
+
+  @override
+  String get contributeRelationsSave => 'Simpan';
+
+  @override
+  String get contributeImagesGuestHint =>
+      'Masuk untuk lampirkan gambar (opsional).';
+
+  @override
+  String get contributeImagesStockHint =>
+      'Pilih foto stock lewat Media Explorer (opsional).';
+
+  @override
+  String contributeImagesAltText(String name, String provider) {
+    return 'Foto: $name / $provider';
+  }
+
+  @override
+  String get contributeDialectSheetTitle => 'Pilih dialek';
+
+  @override
+  String get contributeDialectSheetAuto => 'Default otomatis · bisa diganti';
+
+  @override
+  String get contributeDialectSheetEmpty => 'Tidak ada dialek';
+
+  @override
+  String get contributeDuplicateSheetTitle => 'Kata ini sudah ditemukan';
+
+  @override
+  String contributeDuplicateSheetBody(String lemma) {
+    return 'Pilih dukunganmu agar tercatat di riwayat perubahan $lemma.';
+  }
+
+  @override
+  String get contributeDuplicateSheetGuestBody =>
+      'Masuk dulu untuk mendukung atau menolak makna yang sudah ada.';
+
+  @override
+  String get contributeDuplicateSheetLoginCta => 'Masuk untuk mendukung';
+
+  @override
+  String get contributeDuplicateSheetSupport => 'Dukung makna ini';
+
+  @override
+  String get contributeDuplicateSheetOppose => 'Tidak mendukung';
+
+  @override
+  String get contributeKbbiSheetTitle => 'Ambil definisi dari KBBI';
+
+  @override
+  String get contributeKbbiSheetIntro =>
+      'Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.';
+
+  @override
+  String get contributeKbbiSheetSearchHint => 'mis. makan, rumah';
+
+  @override
+  String contributeKbbiSheetCount(int count) {
+    return '$count definisi - gulir untuk melihat semua';
+  }
+
+  @override
+  String get contributeKbbiSheetPrompt => 'Ketik kata untuk mencari di KBBI';
+
+  @override
+  String get contributeKbbiSheetEmpty => 'Tidak ditemukan di KBBI';
+
+  @override
+  String contributeKbbiSheetSense(int homonym, int sense) {
+    return 'makna $homonym.$sense';
+  }
+
+  @override
+  String get contributeKbbiSheetLoadFailed => 'Gagal mengambil definisi KBBI';
+
+  @override
+  String get contributeKbbiSheetSessionExpired =>
+      'Sesi berakhir - masuk lagi untuk memakai KBBI';
+
+  @override
+  String get contributeKnowledgeToggleTranslation => 'Terjemahan';
+
+  @override
+  String get contributeKnowledgeToggleDefinition => 'Penjelasan arti';
+
+  @override
+  String get contributeKnowledgeHintBothMissing =>
+      'Centang Penjelasan arti dan/atau Terjemahan. Form makna muncul setelah itu.';
+
+  @override
+  String get contributeKnowledgeHintBoth =>
+      'Isi terjemahan dan penjelasan arti.';
+
+  @override
+  String get contributeKnowledgeHintDefinition =>
+      'Isi uraian makna. Terjemahan bisa dilengkapi nanti.';
+
+  @override
+  String get contributeKnowledgeHintTranslation =>
+      'Isi terjemahan saja. Penjelasan arti bisa dilengkapi nanti.';
+
+  @override
+  String get contributeWordClassSheetTitle => 'Pilih kelas kata';
+
+  @override
+  String contributeWordClassSheetCount(int count) {
+    return '$count pilihan - ketuk untuk memilih';
+  }
+
+  @override
+  String get contributeWordClassSheetEmpty => 'Tidak ada kelas kata';
+
+  @override
+  String get contributeWordClassFallbackWork => 'kata kerja';
+
+  @override
+  String get contributeWordClassFallbackAdj => 'kata sifat';
+
+  @override
+  String get contributeWordClassFallbackNoun => 'kata benda';
+
+  @override
+  String get meaningSourceFromKbbi => 'Dari KBBI';
+
+  @override
+  String get meaningSourceFromKbbiEdited => 'Dari KBBI (diubah)';
+
+  @override
+  String get meaningSourceManual => 'Ketik manual';
+
+  @override
+  String get contributeSubmitFailed => 'Gagal mengirim usulan kata';
+
+  @override
+  String get contributeSubmitNoWordId =>
+      'Server tidak mengembalikan word_id, coba lagi nanti';
+
+  @override
+  String get contributeConfirmFailed => 'Gagal mencatat dukungan';
+
+  @override
+  String get contributeConfirmThanks =>
+      'Terima kasih. Kamu tercatat di riwayat perubahan.';
+
+  @override
+  String get contributeServerOutdated =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeRateLimited =>
+      'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeValidationFailed =>
+      'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
+
+  @override
+  String get contributeServerTrouble =>
+      'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get contributeGenericFailed =>
+      'Terjadi kesalahan saat mengirim usulan, coba lagi';
+
+  @override
+  String get contributeUploadTokenFailed => 'Gagal mendapat token upload';
+
+  @override
+  String get contributeStorageUnavailable =>
+      'Penyimpanan gambar belum tersedia';
+
+  @override
+  String get contributeImageUploadFailed =>
+      'Gagal mengunggah gambar, coba lagi';
+
+  @override
+  String get contributeImageKitEmpty => 'Respons ImageKit kosong';
+
+  @override
+  String get contributeImageKitIncomplete => 'Respons ImageKit tidak lengkap';
 }

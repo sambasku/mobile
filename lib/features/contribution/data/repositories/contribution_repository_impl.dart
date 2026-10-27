@@ -13,6 +13,7 @@ import '../models/create_word_related_word_dto.dart';
 import '../models/create_word_request_dto.dart';
 import '../models/create_word_translation_dto.dart';
 import '../models/create_word_variant_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class ContributionRepositoryImpl implements ContributionRepository {
   ContributionRepositoryImpl(this._remoteDatasource);
@@ -116,7 +117,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
       if (response.success == false) {
         return Either.left(
           ContributionFailure(
-            response.message ?? 'Gagal mengirim usulan kata',
+            response.message ?? l10n.contributeSubmitFailed,
             errorCode: response.errorCode,
             details: response.details ?? const <ApiErrorDetail>[],
           ),
@@ -127,7 +128,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
       if (data == null) {
         return Either.left(
           ContributionFailure(
-            response.message ?? 'Gagal mengirim usulan kata',
+            response.message ?? l10n.contributeSubmitFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -138,8 +139,8 @@ class ContributionRepositoryImpl implements ContributionRepository {
 
       if (wordId.isEmpty) {
         return Either.left(
-          const ContributionFailure(
-            'Server tidak mengembalikan word_id, coba lagi nanti',
+          ContributionFailure(
+            l10n.contributeSubmitNoWordId,
             errorCode: 'INTERNAL_ERROR',
           ),
         );
@@ -174,7 +175,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
       if (response.success == false) {
         return Either.left(
           ContributionFailure(
-            response.message ?? 'Gagal mencatat dukungan',
+            response.message ?? l10n.contributeConfirmFailed,
             errorCode: response.errorCode,
             details: response.details ?? const <ApiErrorDetail>[],
           ),
@@ -182,7 +183,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
       }
       final data = response.data;
       return Either.right(
-        data?.message ?? 'Terima kasih. Kamu tercatat di riwayat perubahan.',
+        data?.message ?? l10n.contributeConfirmThanks,
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
@@ -225,13 +226,9 @@ class ContributionRepositoryImpl implements ContributionRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return const ContributionFailure(
-          'Server lama merespons. Coba lagi dalam beberapa saat.',
-        );
+        return ContributionFailure(l10n.contributeServerOutdated);
       case DioExceptionType.connectionError:
-        return const ContributionFailure(
-          'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-        );
+        return ContributionFailure(l10n.contributeConnectionFailed);
       case DioExceptionType.badCertificate:
       case DioExceptionType.cancel:
       case DioExceptionType.badResponse:
@@ -245,14 +242,14 @@ class ContributionRepositoryImpl implements ContributionRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.';
+      return l10n.contributeRateLimited;
     }
     if (statusCode == 400) {
-      return 'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).';
+      return l10n.contributeValidationFailed;
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.contributeServerTrouble;
     }
-    return 'Terjadi kesalahan saat mengirim usulan, coba lagi';
+    return l10n.contributeGenericFailed;
   }
 }

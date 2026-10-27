@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/contribution/domain/meaning_source.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   group('resolveMeaningSource', () {
@@ -71,8 +74,18 @@ void main() {
   });
 
   test('meaningSourceReviewLabel', () {
-    expect(meaningSourceReviewLabel('kbbi'), 'Dari KBBI');
-    expect(meaningSourceReviewLabel('kbbi_edited'), 'Dari KBBI (diubah)');
-    expect(meaningSourceReviewLabel(null), 'Ketik manual');
+    final l10n = lookupAppLocalizations(const Locale('id'));
+    expect(
+      meaningSourceReviewLabel(l10n, 'kbbi'),
+      l10n.meaningSourceFromKbbi,
+    );
+    expect(
+      meaningSourceReviewLabel(l10n, 'kbbi_edited'),
+      l10n.meaningSourceFromKbbiEdited,
+    );
+    expect(
+      meaningSourceReviewLabel(l10n, null),
+      l10n.meaningSourceManual,
+    );
   });
 }

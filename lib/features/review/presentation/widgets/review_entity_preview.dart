@@ -519,6 +519,7 @@ class _MeaningBlock extends StatelessWidget {
         const Gap(4),
         Text(
           meaningSourceReviewLabel(
+            AppLocalizations.of(context),
             raw['meaningSource']?.toString() ??
                 raw['meaning_source']?.toString(),
           ),
@@ -795,7 +796,10 @@ class _MeaningPreview extends ConsumerWidget {
         rawDefinition.isEmpty;
 
     final className = wordClassNameFrom(classes, _str(data, 'word_class_id'));
-    final sourceLabel = meaningSourceReviewLabel(_str(data, 'meaning_source'));
+    final sourceLabel = meaningSourceReviewLabel(
+      AppLocalizations.of(context),
+      _str(data, 'meaning_source'),
+    );
 
     final translations = <_TranslationRow>[];
     final rawTranslations = data['translations'];
@@ -1089,7 +1093,10 @@ class _FieldPreview extends StatelessWidget {
         rows.add(
           _MetaRow(
             label: AppLocalizations.of(context).reviewPreviewSourceOfMeaning,
-            value: meaningSourceReviewLabel(e.value.toString()),
+            value: meaningSourceReviewLabel(
+              AppLocalizations.of(context),
+              e.value.toString(),
+            ),
             emphasize: true,
           ),
         );

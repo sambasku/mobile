@@ -13,6 +13,7 @@ import '../../../share/presentation/share_image_explorer_sheet.dart';
 import '../../data/models/create_word_image_dto.dart';
 import '../../data/providers/contribution_data_providers.dart';
 import '../../domain/repositories/contribution_repository.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Alias agar pemanggil lama (suggest edit / contribute) tetap kompilasi.
 typedef ContributeImageSlot = AttachmentImageSlot;
@@ -39,6 +40,7 @@ class ContributeImagesField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     return AttachmentImagesField(
       enabled: enabled,
       allowLocalPick: allowLocalPick,
@@ -47,9 +49,10 @@ class ContributeImagesField extends ConsumerWidget {
       images: images,
       onChanged: onChanged,
       disabledHint: allowLocalPick
-          ? 'Masuk untuk lampirkan gambar (opsional).'
-          : 'Pilih foto stock lewat Media Explorer (opsional).',
-      disabledActionLabel: enabled || !allowLocalPick ? null : 'Masuk',
+          ? l10n.contributeImagesGuestHint
+          : l10n.contributeImagesStockHint,
+      disabledActionLabel:
+          enabled || !allowLocalPick ? null : l10n.commonLoginRequiredShort,
       onDisabledAction: enabled || !allowLocalPick
           ? null
           : () {
@@ -85,6 +88,7 @@ class ContributeImagesField extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final selected = await showShareMediaExplorer(
       context,
       backgrounds: ShareBackgroundRepository(ref.read(dioProvider)),
@@ -98,7 +102,10 @@ class ContributeImagesField extends ConsumerWidget {
       url: selected.url,
       providerFileId: selected.id,
       provider: selected.provider,
-      altText: 'Foto: ${attribution.name} / ${selected.provider}',
+      altText: l10n.contributeImagesAltText(
+          attribution.name,
+          selected.provider,
+        ),
       attribution: attribution,
     );
   }

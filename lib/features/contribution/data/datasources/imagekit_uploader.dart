@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../models/upload_credentials_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 /// Hasil upload langsung ke CDN ImageKit (bukan envelope sambasku).
 class UploadedImageResult {
@@ -50,12 +51,12 @@ class ImageKitUploader {
     );
     final data = res.data;
     if (data == null) {
-      throw StateError('Respons ImageKit kosong');
+      throw StateError(l10n.contributeImageKitEmpty);
     }
     final url = data['url'] as String?;
     final fileId = data['fileId'] as String?;
     if (url == null || url.isEmpty || fileId == null || fileId.isEmpty) {
-      throw StateError('Respons ImageKit tidak lengkap');
+      throw StateError(l10n.contributeImageKitIncomplete);
     }
     return UploadedImageResult(url: url, fileId: fileId);
   }

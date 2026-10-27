@@ -10714,6 +10714,1008 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pilih minimal satu foto.'**
   String get placeFormPhotoRequired;
+
+  /// No description provided for @contributeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan'**
+  String get contributeTitle;
+
+  /// No description provided for @contributeCheckFieldsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa kembali isian yang ditandai merah'**
+  String get contributeCheckFieldsTitle;
+
+  /// No description provided for @contributeSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get contributeSubmitting;
+
+  /// No description provided for @contributeSubmitCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Usulan'**
+  String get contributeSubmitCta;
+
+  /// No description provided for @contributeSentPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'**
+  String get contributeSentPending;
+
+  /// No description provided for @contributeSentGuest.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.'**
+  String get contributeSentGuest;
+
+  /// No description provided for @contributeBulkTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan banyak sekaligus'**
+  String get contributeBulkTitle;
+
+  /// No description provided for @contributeBulkSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi beberapa kata dan terjemahan dalam satu layar'**
+  String get contributeBulkSubtitle;
+
+  /// No description provided for @contributeHowToFill.
+  ///
+  /// In id, this message translates to:
+  /// **'Cara mengisi'**
+  String get contributeHowToFill;
+
+  /// No description provided for @contributeMultiClassHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? Aktifkan mode Lengkap, lalu Tambah makna.'**
+  String get contributeMultiClassHint;
+
+  /// No description provided for @contributeLemmaLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata / ungkapan Sambas *'**
+  String get contributeLemmaLabel;
+
+  /// No description provided for @contributeLemmaHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi kata, peribahasa, atau ungkapan'**
+  String get contributeLemmaHint;
+
+  /// No description provided for @contributeTranslationLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Indonesia *'**
+  String get contributeTranslationLabel;
+
+  /// No description provided for @contributeTranslationHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata/frasa setara di Indonesia'**
+  String get contributeTranslationHint;
+
+  /// No description provided for @contributeKbbiHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan icon buku untuk mencari definisi di KBBI'**
+  String get contributeKbbiHint;
+
+  /// No description provided for @contributeDefinitionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Penjelasan arti'**
+  String get contributeDefinitionLabel;
+
+  /// No description provided for @contributeDefinitionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.'**
+  String get contributeDefinitionHint;
+
+  /// No description provided for @contributeKindLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get contributeKindLabel;
+
+  /// No description provided for @contributeKindHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.'**
+  String get contributeKindHint;
+
+  /// No description provided for @contributeRegisterLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Register'**
+  String get contributeRegisterLabel;
+
+  /// No description provided for @contributeRegisterHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.'**
+  String get contributeRegisterHint;
+
+  /// No description provided for @contributeWarningLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Peringatan'**
+  String get contributeWarningLabel;
+
+  /// No description provided for @contributeWarningHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Sensitivitas isi makna.'**
+  String get contributeWarningHint;
+
+  /// No description provided for @contributeDialectLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Dialek'**
+  String get contributeDialectLabel;
+
+  /// No description provided for @contributeDialectLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal muat dialek'**
+  String get contributeDialectLoadFailed;
+
+  /// No description provided for @contributeDialectPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dialek…'**
+  String get contributeDialectPick;
+
+  /// No description provided for @contributeMeaningLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna *'**
+  String get contributeMeaningLabel;
+
+  /// No description provided for @contributeMeaningGuide.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata bisa punya beberapa arti.\n\nTiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.\n\nKelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.'**
+  String get contributeMeaningGuide;
+
+  /// No description provided for @contributeAddMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna'**
+  String get contributeAddMeaning;
+
+  /// No description provided for @contributeMaxMeanings.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} makna per usulan.'**
+  String contributeMaxMeanings(int max);
+
+  /// No description provided for @contributeCompletenessLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelengkapan'**
+  String get contributeCompletenessLabel;
+
+  /// No description provided for @contributeCompletenessHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional: variasi ejaan, sinonim, antonim. Dibuka di bottomsheet.'**
+  String get contributeCompletenessHint;
+
+  /// No description provided for @contributeCompletenessHintField.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah variasi, sinonim, antonim…'**
+  String get contributeCompletenessHintField;
+
+  /// No description provided for @contributeImagesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get contributeImagesLabel;
+
+  /// No description provided for @contributeImagesHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Media Explorer tanpa login; kamera/galeri perlu masuk. Maks 3.'**
+  String get contributeImagesHint;
+
+  /// No description provided for @contributeRegisterConflict.
+  ///
+  /// In id, this message translates to:
+  /// **'Halus dan Kasar tidak bisa dipilih bersamaan'**
+  String get contributeRegisterConflict;
+
+  /// No description provided for @contributeKbbiFilled.
+  ///
+  /// In id, this message translates to:
+  /// **'{parts} diisi dari KBBI - silakan review'**
+  String contributeKbbiFilled(String parts);
+
+  /// No description provided for @contributeTranslationMissingTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi terjemahan bahasa Indonesia'**
+  String get contributeTranslationMissingTitle;
+
+  /// No description provided for @contributeMeaningIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna {index}: centang dulu Penjelasan arti dan/atau Terjemahan'**
+  String contributeMeaningIncomplete(int index);
+
+  /// No description provided for @contributeWaitUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload gambar selesai'**
+  String get contributeWaitUpload;
+
+  /// No description provided for @contributeRemoveFailedImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus gambar yang gagal diunggah dulu'**
+  String get contributeRemoveFailedImage;
+
+  /// No description provided for @contributeHistoryRecorded.
+  ///
+  /// In id, this message translates to:
+  /// **'Tercatat di riwayat'**
+  String get contributeHistoryRecorded;
+
+  /// No description provided for @contributeSeeHistory.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat riwayat'**
+  String get contributeSeeHistory;
+
+  /// No description provided for @contributeSentTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim'**
+  String get contributeSentTitle;
+
+  /// No description provided for @contributeSentPublishedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{lemma}\" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'**
+  String contributeSentPublishedBody(String lemma);
+
+  /// No description provided for @contributeSentPublishedNoLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'**
+  String get contributeSentPublishedNoLemma;
+
+  /// No description provided for @contributeAddAnother.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah lagi'**
+  String get contributeAddAnother;
+
+  /// No description provided for @contributeSeeProposals.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat usulan'**
+  String get contributeSeeProposals;
+
+  /// No description provided for @contributeGoHome.
+  ///
+  /// In id, this message translates to:
+  /// **'Ke beranda'**
+  String get contributeGoHome;
+
+  /// No description provided for @contributeChecking.
+  ///
+  /// In id, this message translates to:
+  /// **'Memeriksa ketersediaan kata...'**
+  String get contributeChecking;
+
+  /// No description provided for @contributeDuplicateExists.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.'**
+  String get contributeDuplicateExists;
+
+  /// No description provided for @contributeLemmaAvailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.'**
+  String get contributeLemmaAvailable;
+
+  /// No description provided for @contributeMeaningN.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna {index}'**
+  String contributeMeaningN(int index);
+
+  /// No description provided for @contributeRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get contributeRemove;
+
+  /// No description provided for @contributeWhatYouKnow.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang kamu ketahui? *'**
+  String get contributeWhatYouKnow;
+
+  /// No description provided for @contributeWhatYouKnowGuide.
+  ///
+  /// In id, this message translates to:
+  /// **'Centang yang kamu tahu (boleh keduanya).\n\n• Penjelasan arti - uraian makna berbahasa Indonesia.\n• Terjemahan - satu kata/frasa setara.\n\nForm di bawah muncul sesuai centangan.'**
+  String get contributeWhatYouKnowGuide;
+
+  /// No description provided for @contributeTranslationSbsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Sambas *'**
+  String get contributeTranslationSbsLabel;
+
+  /// No description provided for @contributeTranslationSbsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata/frasa Sambas yang setara - bukan uraian panjang.'**
+  String get contributeTranslationSbsHint;
+
+  /// No description provided for @contributeTranslationIdnGuide.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu kata/frasa Indonesia yang setara dengan kata Sambas.\n\nContoh: “makan”. Beda dari penjelasan arti (“aktivitas memasukkan makanan ke mulut”).'**
+  String get contributeTranslationIdnGuide;
+
+  /// No description provided for @contributeTranslationSbsHintField.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan dalam bahasa Sambas'**
+  String get contributeTranslationSbsHintField;
+
+  /// No description provided for @contributeWordClassLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal muat kelas kata'**
+  String get contributeWordClassLoadFailed;
+
+  /// No description provided for @contributeWordClassLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata *'**
+  String get contributeWordClassLabel;
+
+  /// No description provided for @contributeWordClassHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomina, verba, adjektiva, dsb. Bisa dibantu isi lewat ikon buku di kolom terjemahan.'**
+  String get contributeWordClassHint;
+
+  /// No description provided for @contributeWordClassPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kelas kata…'**
+  String get contributeWordClassPick;
+
+  /// No description provided for @contributeDefinitionFieldLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Penjelasan arti *'**
+  String get contributeDefinitionFieldLabel;
+
+  /// No description provided for @contributeDefinitionGuide.
+  ///
+  /// In id, this message translates to:
+  /// **'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.\n\nContoh: “aktivitas memasukkan makanan ke mulut”.'**
+  String get contributeDefinitionGuide;
+
+  /// No description provided for @contributeDefinitionHintField.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan arti kata ini'**
+  String get contributeDefinitionHintField;
+
+  /// No description provided for @contributeDialectLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat dialek'**
+  String get contributeDialectLoading;
+
+  /// No description provided for @contributeRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi'**
+  String get contributeRetry;
+
+  /// No description provided for @contributeModeSimple.
+  ///
+  /// In id, this message translates to:
+  /// **'Sederhana'**
+  String get contributeModeSimple;
+
+  /// No description provided for @contributeModeComplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkap'**
+  String get contributeModeComplete;
+
+  /// No description provided for @contributeBulkSentTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terkirim'**
+  String get contributeBulkSentTitle;
+
+  /// No description provided for @contributeBulkPartialTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebagian terkirim'**
+  String get contributeBulkPartialTitle;
+
+  /// No description provided for @contributeBulkSentOne.
+  ///
+  /// In id, this message translates to:
+  /// **'1 kata berhasil dikirim.'**
+  String get contributeBulkSentOne;
+
+  /// No description provided for @contributeBulkSentMany.
+  ///
+  /// In id, this message translates to:
+  /// **'{sent} kata berhasil dikirim.'**
+  String contributeBulkSentMany(int sent);
+
+  /// No description provided for @contributeBulkPartialBody.
+  ///
+  /// In id, this message translates to:
+  /// **'{sent} terkirim, {failed} gagal. Perbaiki baris yang gagal lalu kirim ulang.'**
+  String contributeBulkPartialBody(int sent, int failed);
+
+  /// No description provided for @contributeBulkFix.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki'**
+  String get contributeBulkFix;
+
+  /// No description provided for @contributeBulkProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim {done}/{total}...'**
+  String contributeBulkProgress(int done, int total);
+
+  /// No description provided for @contributeBulkResendPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ulang yang belum terkirim'**
+  String get contributeBulkResendPending;
+
+  /// No description provided for @contributeBulkSendAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim semua'**
+  String get contributeBulkSendAll;
+
+  /// No description provided for @contributeBulkHeader.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan banyak'**
+  String get contributeBulkHeader;
+
+  /// No description provided for @contributeBulkSentPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Tiap kata langsung tayang dengan label Menunggu pengecekan.'**
+  String get contributeBulkSentPending;
+
+  /// No description provided for @contributeBulkSentGuest.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.'**
+  String get contributeBulkSentGuest;
+
+  /// No description provided for @contributeBulkMaxRowsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} kata. Isi kata Sambas dan terjemahan Indonesia.'**
+  String contributeBulkMaxRowsHint(int max);
+
+  /// No description provided for @contributeBulkAddRow.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah baris'**
+  String get contributeBulkAddRow;
+
+  /// No description provided for @contributeBulkMaxRows.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} baris per sesi.'**
+  String contributeBulkMaxRows(int max);
+
+  /// No description provided for @contributeBulkColumnSambas.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas'**
+  String get contributeBulkColumnSambas;
+
+  /// No description provided for @contributeBulkColumnIndonesia.
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia'**
+  String get contributeBulkColumnIndonesia;
+
+  /// No description provided for @contributeBulkLemmaField.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata Sambas baris {n}'**
+  String contributeBulkLemmaField(int n);
+
+  /// No description provided for @contributeBulkLemmaExists.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata Sambas baris {n}, sudah ada di kamus'**
+  String contributeBulkLemmaExists(int n);
+
+  /// No description provided for @contributeBulkTranslationField.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Indonesia baris {n}'**
+  String contributeBulkTranslationField(int n);
+
+  /// No description provided for @contributeBulkRowSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Terkirim'**
+  String get contributeBulkRowSent;
+
+  /// No description provided for @contributeBulkRemoveRow.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus baris {index}'**
+  String contributeBulkRemoveRow(int index);
+
+  /// No description provided for @contributeRelationsSummaryVariants.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} variasi'**
+  String contributeRelationsSummaryVariants(int count);
+
+  /// No description provided for @contributeRelationsSummarySynonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} sinonim'**
+  String contributeRelationsSummarySynonyms(int count);
+
+  /// No description provided for @contributeRelationsSummaryAntonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} antonim'**
+  String contributeRelationsSummaryAntonyms(int count);
+
+  /// No description provided for @contributeRelationsSummaryNotes.
+  ///
+  /// In id, this message translates to:
+  /// **'catatan'**
+  String get contributeRelationsSummaryNotes;
+
+  /// No description provided for @contributeRelationsEmptySummary.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada'**
+  String get contributeRelationsEmptySummary;
+
+  /// No description provided for @contributeRelationsMaxItems.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} {label}'**
+  String contributeRelationsMaxItems(int max, String label);
+
+  /// No description provided for @contributeRelationsDuplicateLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{item}\" sama dengan kata yang diusulkan'**
+  String contributeRelationsDuplicateLemma(String item);
+
+  /// No description provided for @contributeRelationsDuplicateItem.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{item}\" tertulis lebih dari sekali'**
+  String contributeRelationsDuplicateItem(String item);
+
+  /// No description provided for @contributeRelationsLabelVariants.
+  ///
+  /// In id, this message translates to:
+  /// **'variasi'**
+  String get contributeRelationsLabelVariants;
+
+  /// No description provided for @contributeRelationsLabelSynonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'sinonim'**
+  String get contributeRelationsLabelSynonyms;
+
+  /// No description provided for @contributeRelationsLabelAntonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'antonim'**
+  String get contributeRelationsLabelAntonyms;
+
+  /// No description provided for @contributeRelationsRelatedMax.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim + antonim maksimal 5 total'**
+  String get contributeRelationsRelatedMax;
+
+  /// No description provided for @contributeRelationsSynAntonymConflict.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{item}\" tidak boleh sinonim dan antonim sekaligus'**
+  String contributeRelationsSynAntonymConflict(String item);
+
+  /// No description provided for @contributeRelationsSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelengkapan opsional'**
+  String get contributeRelationsSheetTitle;
+
+  /// No description provided for @contributeRelationsSheetIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete\''**
+  String get contributeRelationsSheetIntro;
+
+  /// No description provided for @contributeRelationsVariantsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi penulisan'**
+  String get contributeRelationsVariantsLabel;
+
+  /// No description provided for @contributeRelationsVariantsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'ketex, kettek, kete\' - dipisah koma'**
+  String get contributeRelationsVariantsHint;
+
+  /// No description provided for @contributeRelationsSynonymsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim'**
+  String get contributeRelationsSynonymsLabel;
+
+  /// No description provided for @contributeRelationsAntonymsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Antonim'**
+  String get contributeRelationsAntonymsLabel;
+
+  /// No description provided for @contributeRelationsListHint.
+  ///
+  /// In id, this message translates to:
+  /// **'kata1, kata2 - dipisah koma'**
+  String get contributeRelationsListHint;
+
+  /// No description provided for @contributeRelationsNotesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan'**
+  String get contributeRelationsNotesLabel;
+
+  /// No description provided for @contributeRelationsNotesHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh pemakaian, etimologi, dll.'**
+  String get contributeRelationsNotesHint;
+
+  /// No description provided for @contributeRelationsSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get contributeRelationsSave;
+
+  /// No description provided for @contributeImagesGuestHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk lampirkan gambar (opsional).'**
+  String get contributeImagesGuestHint;
+
+  /// No description provided for @contributeImagesStockHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih foto stock lewat Media Explorer (opsional).'**
+  String get contributeImagesStockHint;
+
+  /// No description provided for @contributeImagesAltText.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto: {name} / {provider}'**
+  String contributeImagesAltText(String name, String provider);
+
+  /// No description provided for @contributeDialectSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dialek'**
+  String get contributeDialectSheetTitle;
+
+  /// No description provided for @contributeDialectSheetAuto.
+  ///
+  /// In id, this message translates to:
+  /// **'Default otomatis · bisa diganti'**
+  String get contributeDialectSheetAuto;
+
+  /// No description provided for @contributeDialectSheetEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada dialek'**
+  String get contributeDialectSheetEmpty;
+
+  /// No description provided for @contributeDuplicateSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini sudah ditemukan'**
+  String get contributeDuplicateSheetTitle;
+
+  /// No description provided for @contributeDuplicateSheetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dukunganmu agar tercatat di riwayat perubahan {lemma}.'**
+  String contributeDuplicateSheetBody(String lemma);
+
+  /// No description provided for @contributeDuplicateSheetGuestBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mendukung atau menolak makna yang sudah ada.'**
+  String get contributeDuplicateSheetGuestBody;
+
+  /// No description provided for @contributeDuplicateSheetLoginCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk mendukung'**
+  String get contributeDuplicateSheetLoginCta;
+
+  /// No description provided for @contributeDuplicateSheetSupport.
+  ///
+  /// In id, this message translates to:
+  /// **'Dukung makna ini'**
+  String get contributeDuplicateSheetSupport;
+
+  /// No description provided for @contributeDuplicateSheetOppose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak mendukung'**
+  String get contributeDuplicateSheetOppose;
+
+  /// No description provided for @contributeKbbiSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ambil definisi dari KBBI'**
+  String get contributeKbbiSheetTitle;
+
+  /// No description provided for @contributeKbbiSheetIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.'**
+  String get contributeKbbiSheetIntro;
+
+  /// No description provided for @contributeKbbiSheetSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. makan, rumah'**
+  String get contributeKbbiSheetSearchHint;
+
+  /// No description provided for @contributeKbbiSheetCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} definisi - gulir untuk melihat semua'**
+  String contributeKbbiSheetCount(int count);
+
+  /// No description provided for @contributeKbbiSheetPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik kata untuk mencari di KBBI'**
+  String get contributeKbbiSheetPrompt;
+
+  /// No description provided for @contributeKbbiSheetEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ditemukan di KBBI'**
+  String get contributeKbbiSheetEmpty;
+
+  /// No description provided for @contributeKbbiSheetSense.
+  ///
+  /// In id, this message translates to:
+  /// **'makna {homonym}.{sense}'**
+  String contributeKbbiSheetSense(int homonym, int sense);
+
+  /// No description provided for @contributeKbbiSheetLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengambil definisi KBBI'**
+  String get contributeKbbiSheetLoadFailed;
+
+  /// No description provided for @contributeKbbiSheetSessionExpired.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi berakhir - masuk lagi untuk memakai KBBI'**
+  String get contributeKbbiSheetSessionExpired;
+
+  /// No description provided for @contributeKnowledgeToggleTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get contributeKnowledgeToggleTranslation;
+
+  /// No description provided for @contributeKnowledgeToggleDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Penjelasan arti'**
+  String get contributeKnowledgeToggleDefinition;
+
+  /// No description provided for @contributeKnowledgeHintBothMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'Centang Penjelasan arti dan/atau Terjemahan. Form makna muncul setelah itu.'**
+  String get contributeKnowledgeHintBothMissing;
+
+  /// No description provided for @contributeKnowledgeHintBoth.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi terjemahan dan penjelasan arti.'**
+  String get contributeKnowledgeHintBoth;
+
+  /// No description provided for @contributeKnowledgeHintDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi uraian makna. Terjemahan bisa dilengkapi nanti.'**
+  String get contributeKnowledgeHintDefinition;
+
+  /// No description provided for @contributeKnowledgeHintTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi terjemahan saja. Penjelasan arti bisa dilengkapi nanti.'**
+  String get contributeKnowledgeHintTranslation;
+
+  /// No description provided for @contributeWordClassSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kelas kata'**
+  String get contributeWordClassSheetTitle;
+
+  /// No description provided for @contributeWordClassSheetCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} pilihan - ketuk untuk memilih'**
+  String contributeWordClassSheetCount(int count);
+
+  /// No description provided for @contributeWordClassSheetEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kelas kata'**
+  String get contributeWordClassSheetEmpty;
+
+  /// No description provided for @contributeWordClassFallbackWork.
+  ///
+  /// In id, this message translates to:
+  /// **'kata kerja'**
+  String get contributeWordClassFallbackWork;
+
+  /// No description provided for @contributeWordClassFallbackAdj.
+  ///
+  /// In id, this message translates to:
+  /// **'kata sifat'**
+  String get contributeWordClassFallbackAdj;
+
+  /// No description provided for @contributeWordClassFallbackNoun.
+  ///
+  /// In id, this message translates to:
+  /// **'kata benda'**
+  String get contributeWordClassFallbackNoun;
+
+  /// No description provided for @meaningSourceFromKbbi.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari KBBI'**
+  String get meaningSourceFromKbbi;
+
+  /// No description provided for @meaningSourceFromKbbiEdited.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari KBBI (diubah)'**
+  String get meaningSourceFromKbbiEdited;
+
+  /// No description provided for @meaningSourceManual.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik manual'**
+  String get meaningSourceManual;
+
+  /// No description provided for @contributeSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim usulan kata'**
+  String get contributeSubmitFailed;
+
+  /// No description provided for @contributeSubmitNoWordId.
+  ///
+  /// In id, this message translates to:
+  /// **'Server tidak mengembalikan word_id, coba lagi nanti'**
+  String get contributeSubmitNoWordId;
+
+  /// No description provided for @contributeConfirmFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mencatat dukungan'**
+  String get contributeConfirmFailed;
+
+  /// No description provided for @contributeConfirmThanks.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih. Kamu tercatat di riwayat perubahan.'**
+  String get contributeConfirmThanks;
+
+  /// No description provided for @contributeServerOutdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Server lama merespons. Coba lagi dalam beberapa saat.'**
+  String get contributeServerOutdated;
+
+  /// No description provided for @contributeConnectionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke server. Coba lagi dalam beberapa saat.'**
+  String get contributeConnectionFailed;
+
+  /// No description provided for @contributeRateLimited.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.'**
+  String get contributeRateLimited;
+
+  /// No description provided for @contributeValidationFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Periksa kembali isianmu (beberapa kolom perlu diperbaiki).'**
+  String get contributeValidationFailed;
+
+  /// No description provided for @contributeServerTrouble.
+  ///
+  /// In id, this message translates to:
+  /// **'Server sedang gangguan. Coba lagi dalam beberapa saat.'**
+  String get contributeServerTrouble;
+
+  /// No description provided for @contributeGenericFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan saat mengirim usulan, coba lagi'**
+  String get contributeGenericFailed;
+
+  /// No description provided for @contributeUploadTokenFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mendapat token upload'**
+  String get contributeUploadTokenFailed;
+
+  /// No description provided for @contributeStorageUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyimpanan gambar belum tersedia'**
+  String get contributeStorageUnavailable;
+
+  /// No description provided for @contributeImageUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah gambar, coba lagi'**
+  String get contributeImageUploadFailed;
+
+  /// No description provided for @contributeImageKitEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Respons ImageKit kosong'**
+  String get contributeImageKitEmpty;
+
+  /// No description provided for @contributeImageKitIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Respons ImageKit tidak lengkap'**
+  String get contributeImageKitIncomplete;
 }
 
 class _AppLocalizationsDelegate

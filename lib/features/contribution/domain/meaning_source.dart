@@ -1,3 +1,5 @@
+import '../../../../l10n/app_localizations.dart';
+
 /// Provenance padanan/definisi untuk API `meanings[].meaning_source`.
 enum MeaningSource {
   manual,
@@ -76,13 +78,13 @@ MeaningSource resolveMeaningSource({
 }
 
 /// Label ringkas untuk verifikator di preview review.
-String meaningSourceReviewLabel(String? raw) {
+String meaningSourceReviewLabel(AppLocalizations l10n, String? raw) {
   switch (MeaningSource.tryParse(raw) ?? MeaningSource.manual) {
     case MeaningSource.kbbi:
-      return 'Dari KBBI';
+      return l10n.meaningSourceFromKbbi;
     case MeaningSource.kbbiEdited:
-      return 'Dari KBBI (diubah)';
+      return l10n.meaningSourceFromKbbiEdited;
     case MeaningSource.manual:
-      return 'Ketik manual';
+      return l10n.meaningSourceManual;
   }
 }

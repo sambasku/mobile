@@ -5,6 +5,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Satu pilihan dari GET /api/v1/lemma-definitions/lookup → suggestions[].
 class KbbiSuggestion {
   const KbbiSuggestion({
@@ -128,19 +130,17 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
 
       final data = resp.data;
       if (data is! Map<String, dynamic>) {
-        throw StateError('Response tidak valid');
+        throw StateError('invalid_response');
       }
       if (data['success'] != true) {
         final msg = data['message']?.toString();
         throw StateError(
-          (msg != null && msg.isNotEmpty)
-              ? msg
-              : 'Gagal mengambil definisi KBBI',
+          (msg != null && msg.isNotEmpty) ? msg : 'kbbi_lookup_failed',
         );
       }
       final payload = data['data'];
       if (payload is! Map<String, dynamic>) {
-        throw StateError('Response tidak valid');
+        throw StateError('invalid_response');
       }
       final suggestions = payload['suggestions'];
       final list = <KbbiSuggestion>[];
@@ -170,11 +170,12 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
     } on DioException catch (e) {
       if (!mounted || reqId != _reqId) return;
       final body = e.response?.data;
-      String message = 'Gagal mengambil definisi KBBI';
+      final l10n = AppLocalizations.of(context);
+      String message = l10n.contributeKbbiSheetLoadFailed;
       if (body is Map && body['message'] is String) {
         message = body['message'] as String;
       } else if (e.response?.statusCode == 401) {
-        message = 'Sesi berakhir - masuk lagi untuk memakai KBBI';
+        message = l10n.contributeKbbiSheetSessionExpired;
       }
       setState(() {
         _loading = false;
@@ -183,9 +184,18 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
       });
     } catch (e) {
       if (!mounted || reqId != _reqId) return;
+      final l10n = AppLocalizations.of(context);
+      final raw = e is StateError ? e.message : null;
+      // Sentinel kode internal -> teks UI; pesan server diteruskan apa adanya.
+      final mapped = switch (raw) {
+        'invalid_response' || 'kbbi_lookup_failed' =>
+          l10n.contributeKbbiSheetLoadFailed,
+        final String msg => msg,
+        _ => l10n.contributeKbbiSheetLoadFailed,
+      };
       setState(() {
         _loading = false;
-        _error = e.toString();
+        _error = mapped;
         _items = const [];
       });
     }
@@ -223,7 +233,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                   const Gap(8),
                   Expanded(
                     child: Text(
-                      'Ambil definisi dari KBBI',
+                      AppLocalizations.of(context).contributeKbbiSheetTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.typography.body.lg.copyWith(
@@ -241,7 +251,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Text(
-                'Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.',
+                AppLocalizations.of(context).contributeKbbiSheetIntro,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.typography.body.sm.copyWith(
@@ -253,7 +263,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: FTextField(
                 control: FTextFieldControl.managed(controller: _lemmaCtrl),
-                hint: 'mis. makan, rumah',
+                hint: AppLocalizations.of(context).contributeKbbiSheetSearchHint,
                 textInputAction: TextInputAction.search,
                 // Enter = cari sekarang (skip sisa debounce).
                 onSubmit: (_) {
@@ -286,7 +296,9 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
                 child: Text(
-                  '${_items.length} definisi - gulir untuk melihat semua',
+                  AppLocalizations.of(
+                    context,
+                  ).contributeKbbiSheetCount(_items.length),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.body.sm.copyWith(
@@ -304,7 +316,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
-                          'Ketik kata untuk mencari di KBBI',
+                          AppLocalizations.of(context).contributeKbbiSheetPrompt,
                           textAlign: TextAlign.center,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
@@ -317,7 +329,7 @@ class _KbbiDefinitionSheetBodyState extends State<_KbbiDefinitionSheetBody> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
-                          'Tidak ditemukan di KBBI',
+                          AppLocalizations.of(context).contributeKbbiSheetEmpty,
                           textAlign: TextAlign.center,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
@@ -357,7 +369,9 @@ class _KbbiSuggestionTile extends StatelessWidget {
     final theme = context.theme;
     final meta = [
       item.lemma,
-      'makna ${item.homonymIndex}.${item.senseIndex}',
+      AppLocalizations.of(
+        context,
+      ).contributeKbbiSheetSense(item.homonymIndex, item.senseIndex),
       if (item.wordClassLabel != null && item.wordClassLabel!.isNotEmpty)
         item.wordClassLabel!,
     ].join(' · ');

@@ -2,6 +2,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class WordClassPickItem {
   const WordClassPickItem({
     required this.id,
@@ -53,6 +55,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final height = _sheetHeight(context);
 
@@ -69,7 +72,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                 const Gap(8),
                 Expanded(
                   child: Text(
-                    'Pilih kelas kata',
+                    l10n.contributeWordClassSheetTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.typography.body.lg.copyWith(
@@ -87,7 +90,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: Text(
-              '${items.length} pilihan - ketuk untuk memilih',
+              l10n.contributeWordClassSheetCount(items.length),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.typography.body.sm.copyWith(
@@ -121,7 +124,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
             child: items.isEmpty
                 ? Center(
                     child: Text(
-                      'Tidak ada kelas kata',
+                      l10n.contributeWordClassSheetEmpty,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),

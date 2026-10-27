@@ -372,6 +372,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
     final state = ref.watch(submitWordProvider);
     final notifier = ref.read(submitWordProvider.notifier);
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final isAuth = ref.watch(authStatusProvider).value?.isAuth ?? false;
 
@@ -406,7 +407,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         if (failure.isValidationError) {
           showFToast(
             context: context,
-            title: const Text('Periksa kembali isian yang ditandai merah'),
+            title: Text(l10n.contributeCheckFieldsTitle),
             variant: FToastVariant.destructive,
           );
           return;
@@ -433,7 +434,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Usulkan'),
+        title: Text(l10n.contributeTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -452,7 +453,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 onPress: state.isSubmitting ? null : _submitForm,
                 prefix: state.isSubmitting ? const FCircularProgress() : null,
                 child: Text(
-                  state.isSubmitting ? 'Mengirim...' : 'Kirim Usulan',
+                  state.isSubmitting
+                      ? l10n.contributeSubmitting
+                      : l10n.contributeSubmitCta,
                 ),
               ),
             ],
@@ -463,9 +466,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
         children: [
           Text(
-            isAuth
-                ? 'Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'
-                : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.',
+            isAuth ? l10n.contributeSentPending : l10n.contributeSentGuest,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -478,17 +479,15 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                   FLucideIcons.listPlus,
                   color: theme.colors.primary,
                 ),
-                title: const Text('Usulkan banyak sekaligus'),
-                subtitle: const Text(
-                  'Isi beberapa kata dan terjemahan dalam satu layar',
-                ),
+                title: Text(l10n.contributeBulkTitle),
+                subtitle: Text(l10n.contributeBulkSubtitle),
                 suffix: const Icon(FLucideIcons.chevronRight),
                 onPress: () => context.push('/contribute/bulk'),
               ),
             ],
           ),
           const Gap(16),
-          const _FieldCaption('Cara mengisi'),
+          _FieldCaption(l10n.contributeHowToFill),
           _ContributeModeChips(
             advanced: _advanced,
             onChanged: (advanced) {
@@ -531,8 +530,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                'Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? '
-                'Aktifkan mode Lengkap, lalu Tambah makna.',
+                l10n.contributeMultiClassHint,
                 style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
               ),
             ),
@@ -541,8 +539,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           FTextField(
             control: FTextFieldControl.managed(controller: _lemmaCtrl),
             focusNode: _lemmaFocus,
-            label: const Text('Kata / ungkapan Sambas *'),
-            hint: 'Isi kata, peribahasa, atau ungkapan',
+            label: Text(l10n.contributeLemmaLabel),
+            hint: l10n.contributeLemmaHint,
             textInputAction: TextInputAction.next,
           ),
           _inlineError(notifier.errorFor('lemma')),
@@ -555,11 +553,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               control: FTextFieldControl.managed(
                 controller: _standardTranslationCtrl,
               ),
-              label: const Text('Terjemahan Indonesia *'),
-              hint: 'Satu kata/frasa setara di Indonesia',
-              description: const Text(
-                'Tekan icon buku untuk mencari definisi di KBBI',
-              ),
+              label: Text(l10n.contributeTranslationLabel),
+              hint: l10n.contributeTranslationHint,
+              description: Text(l10n.contributeKbbiHint),
               textInputAction: TextInputAction.done,
               // ponytail: FButton.icon di suffixBuilder menghasilkan
               // SemanticsNode ber-transform basi di bawah MergeSemantics
@@ -584,10 +580,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             const KbbiSourceNotice(),
             if (_standardDefinition.trim().isNotEmpty) ...[
               const Gap(16),
-              const _FieldCaption(
-                'Penjelasan arti',
-                info:
-                    'Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.',
+              _FieldCaption(
+                l10n.contributeDefinitionLabel,
+                info: l10n.contributeDefinitionHint,
               ),
               Text(
                 _standardDefinition.trim(),
@@ -595,11 +590,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               ),
             ],
             const Gap(16),
-            const _FieldCaption(
-              'Jenis',
-              info:
-                  'Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan '
-                  'berupa frasa; kata tunggal tidak perlu dipilih.',
+            _FieldCaption(
+              l10n.contributeKindLabel,
+              info: l10n.contributeKindHint,
             ),
             _WordTypeChips(
               value: _wordType,
@@ -609,11 +602,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               },
             ),
             const Gap(16),
-            const _FieldCaption(
-              'Register',
-              info:
-                  'Opsional. Gaya atau pantangan berbahasa. '
-                  'Halus dan Kasar tidak bisa dipilih bersamaan.',
+            _FieldCaption(
+              l10n.contributeRegisterLabel,
+              info: l10n.contributeRegisterHint,
             ),
             _UsageLabelChips(
               options: kRegisterUsageLabels,
@@ -621,9 +612,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             const Gap(16),
-            const _FieldCaption(
-              'Peringatan',
-              info: 'Opsional. Sensitivitas isi makna.',
+            _FieldCaption(
+              l10n.contributeWarningLabel,
+              info: l10n.contributeWarningHint,
             ),
             _UsageLabelChips(
               options: kWarningUsageLabels,
@@ -633,7 +624,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             _inlineError(notifier.errorFor('usage_labels')),
           ] else ...[
             const Gap(16),
-            const _FieldCaption('Jenis'),
+            _FieldCaption(l10n.contributeKindLabel),
             _WordTypeChips(
               value: _wordType,
               onChanged: (v) {
@@ -643,11 +634,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             ),
             _inlineError(notifier.errorFor('word_type')),
             const Gap(16),
-            const _FieldCaption(
-              'Register',
-              info:
-                  'Opsional. Gaya atau pantangan berbahasa. '
-                  'Halus dan Kasar tidak bisa dipilih bersamaan.',
+            _FieldCaption(
+              l10n.contributeRegisterLabel,
+              info: l10n.contributeRegisterHint,
             ),
             _UsageLabelChips(
               options: kRegisterUsageLabels,
@@ -655,9 +644,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               onToggle: _toggleUsageLabel,
             ),
             const Gap(16),
-            const _FieldCaption(
-              'Peringatan',
-              info: 'Opsional. Sensitivitas isi makna.',
+            _FieldCaption(
+              l10n.contributeWarningLabel,
+              info: l10n.contributeWarningHint,
             ),
             _UsageLabelChips(
               options: kWarningUsageLabels,
@@ -666,14 +655,14 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             ),
             _inlineError(notifier.errorFor('usage_labels')),
             const Gap(16),
-            const _FieldCaption('Dialek'),
+            _FieldCaption(l10n.contributeDialectLabel),
             if (sambasLanguageId == null)
               const _SelectFieldSkeleton()
             else
               dialectsAsync.when(
                 loading: () => const _SelectFieldSkeleton(),
                 error: (e, _) => _BuildReferenceError(
-                  message: 'Gagal muat dialek',
+                  message: l10n.contributeDialectLoadFailed,
                   onRetry: () => ref.invalidate(
                     _referenceDialectsProvider(sambasLanguageId),
                   ),
@@ -684,7 +673,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                       : items.where((e) => e.id == _dialectId).firstOrNull;
                   return _SelectField(
                     selectedLabel: selected?.name,
-                    hint: items.isEmpty ? '-' : 'Pilih dialek…',
+                    hint: items.isEmpty ? '-' : l10n.contributeDialectPick,
                     onTap: items.isEmpty
                         ? null
                         : () => _openDialectSheet(items),
@@ -694,12 +683,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             _inlineError(notifier.errorFor('dialect_id')),
             _inlineError(notifier.errorFor('language_id')),
             const Gap(16),
-                    const _FieldCaption(
-                      'Makna *',
-                      info:
-                          'Satu kata bisa punya beberapa arti.\n\n'
-                          'Tiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.\n\n'
-                          'Kelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.',
+                    _FieldCaption(
+                      l10n.contributeMeaningLabel,
+                      info: l10n.contributeMeaningGuide,
                     ),
             for (var i = 0; i < _meanings.length; i++) ...[
               _MeaningBlock(
@@ -727,33 +713,31 @@ class _ContributePageState extends ConsumerState<ContributePage> {
                 variant: FButtonVariant.outline,
                 onPress: _addMeaning,
                 prefix: Icon(FLucideIcons.plus, size: 16),
-                child: const Text('Tambah makna'),
+                child: Text(l10n.contributeAddMeaning),
               )
             else
               Text(
-                'Maksimal ${SubmitAnonWordUseCase.maxMeanings} makna per usulan.',
+                l10n.contributeMaxMeanings(SubmitAnonWordUseCase.maxMeanings),
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
             const Gap(16),
-            const _FieldCaption(
-              'Kelengkapan',
-              info:
-                  'Opsional: variasi ejaan, sinonim, antonim. Dibuka di bottomsheet.',
+            _FieldCaption(
+              l10n.contributeCompletenessLabel,
+              info: l10n.contributeCompletenessHint,
             ),
             _SelectField(
               selectedLabel: _relations.isEmpty
                   ? null
-                  : _relations.summaryLabel,
-              hint: 'Tambah variasi, sinonim, antonim…',
+                  : _relations.summaryLabelOf(l10n),
+              hint: l10n.contributeCompletenessHintField,
               onTap: _openRelationsSheet,
             ),
             const Gap(16),
-            const _FieldCaption(
-              'Gambar',
-              info:
-                  'Opsional. Media Explorer tanpa login; kamera/galeri perlu masuk. Maks 3.',
+            _FieldCaption(
+              l10n.contributeImagesLabel,
+              info: l10n.contributeImagesHint,
             ),
             ContributeImagesField(
               enabled: true,
@@ -814,7 +798,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (hasConflictingUsageLabels(next)) {
         showFToast(
           context: context,
-          title: const Text('Halus dan Kasar tidak bisa dipilih bersamaan'),
+          title: Text(AppLocalizations.of(context).contributeRegisterConflict),
         );
         return;
       }
@@ -902,12 +886,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       _applyingKbbiPick = false;
     });
 
-    final parts = <String>['Terjemahan'];
+    final l10n = AppLocalizations.of(context);
+    final parts = <String>[l10n.historyFieldTranslation];
     if (_standardDefinition.isNotEmpty) parts.add('definisi');
     if (matched != null) parts.add('kelas kata');
     showFToast(
       context: context,
-      title: Text('${parts.join(', ')} diisi dari KBBI - silakan review'),
+      title: Text(l10n.contributeKbbiFilled(parts.join(', '))),
     );
   }
 
@@ -952,12 +937,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       draft.applyingKbbiPick = false;
     });
 
-    final parts = <String>['Penjelasan arti'];
-    if (matched != null) parts.add('kelas kata');
-    if (picked.lemma.trim().isNotEmpty) parts.add('terjemahan');
+    final l10n = AppLocalizations.of(context);
+    final parts = <String>[l10n.contributeDefinitionLabel];
+    if (matched != null) parts.add(l10n.suggestWordClassLabelShort);
+    if (picked.lemma.trim().isNotEmpty) parts.add(l10n.historyFieldTranslation);
     showFToast(
       context: context,
-      title: Text('${parts.join(', ')} diisi dari KBBI - silakan review'),
+      title: Text(l10n.contributeKbbiFilled(parts.join(', '))),
     );
   }
 
@@ -966,7 +952,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (_standardTranslationCtrl.text.trim().isEmpty) {
         showFToast(
           context: context,
-          title: const Text('Isi terjemahan bahasa Indonesia'),
+          title: Text(AppLocalizations.of(context).contributeTranslationMissingTitle),
         );
         return;
       }
@@ -974,7 +960,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (hasConflictingUsageLabels(_usageLabels)) {
         showFToast(
           context: context,
-          title: const Text('Halus dan Kasar tidak bisa dipilih bersamaan'),
+          title: Text(AppLocalizations.of(context).contributeRegisterConflict),
         );
         return;
       }
@@ -983,7 +969,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         showFToast(
           context: context,
           title: Text(
-            'Makna ${incomplete + 1}: centang dulu Penjelasan arti dan/atau Terjemahan',
+            AppLocalizations.of(context).contributeMeaningIncomplete(
+              incomplete + 1,
+            ),
           ),
         );
         return;
@@ -991,14 +979,14 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (_images.any((e) => e.uploading)) {
         showFToast(
           context: context,
-          title: const Text('Tunggu upload gambar selesai'),
+          title: Text(AppLocalizations.of(context).contributeWaitUpload),
         );
         return;
       }
       if (_images.any((e) => e.error)) {
         showFToast(
           context: context,
-          title: const Text('Hapus gambar yang gagal diunggah dulu'),
+          title: Text(AppLocalizations.of(context).contributeRemoveFailedImage),
           variant: FToastVariant.destructive,
         );
         return;
@@ -1135,17 +1123,19 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       (message) async {
         final goHistory = await showFMessageDialog<bool>(
           context: context,
-          title: const Text('Tercatat di riwayat'),
+          title: Text(AppLocalizations.of(context).contributeHistoryRecorded),
           body: Text(message),
           actions: (dialogContext) => [
             FButton(
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Lihat riwayat'),
+              child: Text(
+                AppLocalizations.of(context).contributeSeeHistory,
+              ),
             ),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Tutup'),
+              child: Text(AppLocalizations.of(context).commonClose),
             ),
           ],
         );
@@ -1158,32 +1148,33 @@ class _ContributePageState extends ConsumerState<ContributePage> {
   }
 
   Future<void> _showSuccessDialog(BuildContext context, String lemma) async {
+    final l10n = AppLocalizations.of(context);
     final isAuth = ref.read(authStatusProvider).value?.isAuth ?? false;
     final successText = isAuth
         ? (lemma.isNotEmpty
-              ? '"$lemma" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.'
-              : 'Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.')
-        : 'Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.';
+              ? l10n.contributeSentPublishedBody(lemma)
+              : l10n.contributeSentPublishedNoLemma)
+        : l10n.contributeSentGuest;
 
     final choice = await showFMessageDialog<String>(
       context: context,
       barrierDismissible: false,
-      title: const Text('Usulan terkirim'),
+      title: Text(l10n.contributeSentTitle),
       body: Text(successText),
       actions: (dialogContext) => [
         FButton(
           onPress: () => Navigator.of(dialogContext).pop('again'),
-          child: const Text('Tambah lagi'),
+          child: Text(l10n.contributeAddAnother),
         ),
         FButton(
           variant: FButtonVariant.outline,
           onPress: () => Navigator.of(dialogContext).pop('list'),
-          child: const Text('Lihat usulan'),
+          child: Text(l10n.contributeSeeProposals),
         ),
         FButton(
           variant: FButtonVariant.ghost,
           onPress: () => Navigator.of(dialogContext).pop('home'),
-          child: const Text('Ke beranda'),
+          child: Text(l10n.contributeGoHome),
         ),
       ],
     );
@@ -1217,6 +1208,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final check = ref.watch(lemmaCheckProvider);
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
 
     if (check.checking) {
@@ -1240,7 +1232,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
           ),
           const Gap(6),
           Text(
-            'Memeriksa ketersediaan kata...',
+            l10n.contributeChecking,
             style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -1270,7 +1262,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
               const Gap(6),
               Expanded(
                 child: Text(
-                  'Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.',
+                  l10n.contributeDuplicateExists,
                   style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -1308,7 +1300,7 @@ class _LemmaCheckIndicator extends ConsumerWidget {
             const Gap(6),
             Expanded(
               child: Text(
-                'Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.',
+                l10n.contributeLemmaAvailable,
                 style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -1358,6 +1350,7 @@ class _MeaningBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -1373,7 +1366,7 @@ class _MeaningBlock extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Makna ${index + 1}',
+                    l10n.contributeMeaningN(index + 1),
                     style: theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -1384,7 +1377,7 @@ class _MeaningBlock extends StatelessWidget {
                     variant: FButtonVariant.ghost,
                     onPress: onRemove,
                     child: Text(
-                      'Hapus',
+                      l10n.contributeRemove,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.error,
                       ),
@@ -1393,13 +1386,9 @@ class _MeaningBlock extends StatelessWidget {
               ],
             ),
             const Gap(8),
-            const _FieldCaption(
-              'Apa yang kamu ketahui? *',
-              info:
-                  'Centang yang kamu tahu (boleh keduanya).\n\n'
-                  '• Penjelasan arti - uraian makna berbahasa Indonesia.\n'
-                  '• Terjemahan - satu kata/frasa setara.\n\n'
-                  'Form di bawah muncul sesuai centangan.',
+            _FieldCaption(
+              l10n.contributeWhatYouKnow,
+              info: l10n.contributeWhatYouKnowGuide,
             ),
             KnowledgeToggles(
               wantDefinition: draft.wantDefinition,
@@ -1411,6 +1400,7 @@ class _MeaningBlock extends StatelessWidget {
               padding: const EdgeInsets.only(top: 10, bottom: 4),
               child: Text(
                 knowledgeHint(
+                  l10n,
                   wantDefinition: draft.wantDefinition,
                   wantPadanan: draft.wantPadanan,
                 ),
@@ -1425,23 +1415,20 @@ class _MeaningBlock extends StatelessWidget {
                 const Gap(8),
                 _FieldCaption(
                   isTranslationMiss
-                      ? 'Terjemahan Sambas *'
-                      : 'Terjemahan Indonesia *',
+                      ? l10n.contributeTranslationSbsLabel
+                      : l10n.contributeTranslationLabel,
                   info: isTranslationMiss
-                      ? 'Satu kata/frasa Sambas yang setara - bukan uraian panjang.'
-                      : 'Satu kata/frasa Indonesia yang setara dengan kata Sambas.\n\n'
-                            'Contoh: “makan”. Beda dari penjelasan arti (“aktivitas memasukkan makanan ke mulut”).',
+                      ? l10n.contributeTranslationSbsHint
+                      : l10n.contributeTranslationIdnGuide,
                 ),
                 FTextField(
                   control: FTextFieldControl.managed(controller: draft.trCtrl),
                   hint: isTranslationMiss
-                      ? 'Terjemahan dalam bahasa Sambas'
-                      : 'Satu kata/frasa setara di Indonesia',
+                      ? l10n.contributeTranslationSbsHintField
+                      : l10n.contributeTranslationHint,
                   description: isTranslationMiss
                       ? null
-                      : const Text(
-                          'Tekan icon buku untuk mencari definisi di KBBI',
-                        ),
+                      : Text(l10n.contributeKbbiHint),
                   textInputAction: TextInputAction.next,
                   // ponytail: sama seperti suffix KBBI di atas - sembunyikan
                   // SemanticsNode suffix dari tree (bug MergeSemantics
@@ -1465,7 +1452,7 @@ class _MeaningBlock extends StatelessWidget {
               wordClassesAsync.when(
                 loading: () => const _SelectFieldSkeleton(),
                 error: (e, _) => _BuildReferenceError(
-                  message: 'Gagal muat kelas kata',
+                  message: l10n.contributeWordClassLoadFailed,
                   onRetry: onRetryWordClasses,
                 ),
                 data: (items) {
@@ -1477,14 +1464,13 @@ class _MeaningBlock extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const _FieldCaption(
-                        'Kelas kata *',
-                        info:
-                            'Nomina, verba, adjektiva, dsb. Bisa dibantu isi lewat ikon buku di kolom terjemahan.',
+                      _FieldCaption(
+                        l10n.contributeWordClassLabel,
+                        info: l10n.contributeWordClassHint,
                       ),
                       _SelectField(
                         selectedLabel: selected?.displayLabel,
-                        hint: 'Pilih kelas kata…',
+                        hint: l10n.contributeWordClassPick,
                         onTap: () => onPickWordClass(items),
                       ),
                     ],
@@ -1494,15 +1480,13 @@ class _MeaningBlock extends StatelessWidget {
               _MeaningInlineError(wordClassError),
               if (draft.wantDefinition) ...[
                 const Gap(8),
-                const _FieldCaption(
-                  'Penjelasan arti *',
-                  info:
-                      'Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.\n\n'
-                      'Contoh: “aktivitas memasukkan makanan ke mulut”.',
+                _FieldCaption(
+                  l10n.contributeDefinitionFieldLabel,
+                  info: l10n.contributeDefinitionGuide,
                 ),
                 FTextField(
                   control: FTextFieldControl.managed(controller: draft.defCtrl),
-                  hint: 'Jelaskan arti kata ini',
+                  hint: l10n.contributeDefinitionHintField,
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
                   maxLines: 3,
@@ -1676,8 +1660,8 @@ class _SelectFieldSkeleton extends StatelessWidget {
         enabled: true,
         child: IgnorePointer(
           child: _SelectField(
-            selectedLabel: 'Memuat dialek',
-            hint: 'Pilih dialek…',
+            selectedLabel: AppLocalizations.of(context).contributeDialectLoading,
+            hint: AppLocalizations.of(context).contributeDialectPick,
             onTap: null,
           ),
         ),
@@ -1866,19 +1850,14 @@ class _BuildReferenceError extends StatelessWidget {
         FButton(
           onPress: onRetry,
           variant: FButtonVariant.ghost,
-          child: const Text('Ulangi'),
+          child: Text(AppLocalizations.of(context).contributeRetry),
         ),
       ],
     );
   }
 }
 
-const _wordTypeOptions = <({String value, String label})>[
-  (value: 'word', label: 'Kata'),
-  (value: 'idiom', label: 'Idiom'),
-  (value: 'peribahasa', label: 'Peribahasa'),
-  (value: 'ungkapan', label: 'Ungkapan'),
-];
+const _wordTypeOptions = <String>['word', 'idiom', 'peribahasa', 'ungkapan'];
 
 class _ContributeModeChips extends StatelessWidget {
   const _ContributeModeChips({required this.advanced, required this.onChanged});
@@ -1892,7 +1871,7 @@ class _ContributeModeChips extends StatelessWidget {
       children: [
         Expanded(
           child: _ModeChip(
-            label: 'Sederhana',
+            label: AppLocalizations.of(context).contributeModeSimple,
             selected: !advanced,
             onTap: () => onChanged(false),
           ),
@@ -1900,7 +1879,7 @@ class _ContributeModeChips extends StatelessWidget {
         const Gap(8),
         Expanded(
           child: _ModeChip(
-            label: 'Lengkap',
+            label: AppLocalizations.of(context).contributeModeComplete,
             selected: advanced,
             onTap: () => onChanged(true),
           ),
@@ -1968,12 +1947,14 @@ class _WordTypeChips extends StatelessWidget {
       children: [
         for (final opt in _wordTypeOptions)
           GestureDetector(
-            onTap: () => onChanged(opt.value),
+            onTap: () => onChanged(opt),
             child: FBadge(
-              variant: value == opt.value
+              variant: value == opt
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: Text(opt.label),
+              child: Text(
+                wordTypeLabel(opt, AppLocalizations.of(context)),
+              ),
             ),
           ),
       ],

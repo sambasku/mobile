@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Dua toggle independen (bukan radio): Terjemahan / Penjelasan arti.
 /// Keduanya boleh aktif sekaligus; keduanya mati = belum memilih.
 class KnowledgeToggles extends StatelessWidget {
@@ -20,11 +22,12 @@ class KnowledgeToggles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: KnowledgeToggleChip(
-            label: 'Terjemahan',
+            label: l10n.contributeKnowledgeToggleTranslation,
             selected: wantPadanan,
             onTap: () => onPadananChanged(!wantPadanan),
           ),
@@ -32,7 +35,7 @@ class KnowledgeToggles extends StatelessWidget {
         const Gap(10),
         Expanded(
           child: KnowledgeToggleChip(
-            label: 'Penjelasan arti',
+            label: l10n.contributeKnowledgeToggleDefinition,
             selected: wantDefinition,
             onTap: () => onDefinitionChanged(!wantDefinition),
           ),
@@ -120,15 +123,19 @@ class KnowledgeToggleChip extends StatelessWidget {
   }
 }
 
-String knowledgeHint({required bool wantDefinition, required bool wantPadanan}) {
+String knowledgeHint(
+  AppLocalizations l10n, {
+  required bool wantDefinition,
+  required bool wantPadanan,
+}) {
   if (!wantDefinition && !wantPadanan) {
-    return 'Centang Penjelasan arti dan/atau Terjemahan. Form makna muncul setelah itu.';
+    return l10n.contributeKnowledgeHintBothMissing;
   }
   if (wantDefinition && wantPadanan) {
-    return 'Isi terjemahan dan penjelasan arti.';
+    return l10n.contributeKnowledgeHintBoth;
   }
   if (wantDefinition) {
-    return 'Isi uraian makna. Terjemahan bisa dilengkapi nanti.';
+    return l10n.contributeKnowledgeHintDefinition;
   }
-  return 'Isi terjemahan saja. Penjelasan arti bisa dilengkapi nanti.';
+  return l10n.contributeKnowledgeHintTranslation;
 }
