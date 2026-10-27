@@ -6,16 +6,29 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Badge status pelaksanaan acara.
-FBadge eventOccurrenceBadge(EventOccurrenceStatus status) {
+FBadge eventOccurrenceBadge(
+  AppLocalizations l10n,
+  EventOccurrenceStatus status,
+) {
   final (variant, label) = switch (status) {
-    EventOccurrenceStatus.upcoming => (FBadgeVariant.primary, 'Akan datang'),
-    EventOccurrenceStatus.ongoing => (FBadgeVariant.secondary, 'Berlangsung'),
-    EventOccurrenceStatus.completed => (FBadgeVariant.outline, 'Selesai'),
+    EventOccurrenceStatus.upcoming => (
+      FBadgeVariant.primary,
+      l10n.eventChipUpcoming,
+    ),
+    EventOccurrenceStatus.ongoing => (
+      FBadgeVariant.secondary,
+      l10n.eventChipOngoing,
+    ),
+    EventOccurrenceStatus.completed => (
+      FBadgeVariant.outline,
+      l10n.eventChipEnded,
+    ),
     EventOccurrenceStatus.cancelled => (
       FBadgeVariant.destructive,
-      'Dibatalkan',
+      l10n.eventChipCancelled,
     ),
   };
   return FBadge(variant: variant, child: Text(label));
@@ -111,7 +124,7 @@ class EventMiniTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      suffix: eventOccurrenceBadge(event.effectiveOccurrenceStatus),
+      suffix: eventOccurrenceBadge(AppLocalizations.of(context), event.effectiveOccurrenceStatus),
       onPress: onTap ?? () => context.push(EventRouter.detailPath(event.slug)),
     );
   }

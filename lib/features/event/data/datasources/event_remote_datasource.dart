@@ -6,6 +6,7 @@ import '../../domain/entities/event.dart';
 import '../../domain/entities/event_contribution.dart';
 import '../models/event_contribution_dto.dart';
 import '../models/event_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 /// Ukuran halaman daftar acara. Batas API 500; 50 cukup untuk layar
 /// ponsel dan sisanya lewat `next_cursor`.
@@ -162,7 +163,7 @@ class EventContributionApi {
     );
     final url = _dataMap(res.data)['url'];
     if (url is! String || url.isEmpty) {
-      throw const EventContributionException('Unggah poster gagal');
+      throw EventContributionException(l10n.eventPosterUploadFailed);
     }
     return url;
   }
@@ -179,11 +180,11 @@ class EventContributionApi {
         throw EventContributionException(
           message is String && message.isNotEmpty
               ? message
-              : 'Gagal menyimpan. Coba lagi.',
+              : l10n.eventSaveFailed,
           code: data['error_code'] as String?,
         );
       }
-      throw const EventContributionException('Gagal menyimpan. Coba lagi.');
+      throw EventContributionException(l10n.eventSaveFailed);
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Status penyimpanan acara (cuma untuk admin, publik cuma published).
 enum EventStatus { draft, published, archived }
@@ -142,21 +143,23 @@ class Event {
 }
 
 /// Label status pelaksanaan untuk UI.
-String eventOccurrenceLabel(EventOccurrenceStatus status) => switch (status) {
-  EventOccurrenceStatus.upcoming => 'Akan datang',
-  EventOccurrenceStatus.ongoing => 'Sedang berlangsung',
-  EventOccurrenceStatus.completed => 'Sudah selesai',
-  EventOccurrenceStatus.cancelled => 'Dibatalkan',
-};
+String eventOccurrenceLabel(AppLocalizations l10n, EventOccurrenceStatus status) =>
+    switch (status) {
+      EventOccurrenceStatus.upcoming => l10n.eventStatusUpcoming,
+      EventOccurrenceStatus.ongoing => l10n.eventStatusOngoing,
+      EventOccurrenceStatus.completed => l10n.eventStatusEnded,
+      EventOccurrenceStatus.cancelled => l10n.eventStatusCancelled,
+    };
 
 /// Label platform sumber. Null kalau `sourceType` kosong - UI skip badge.
-String? eventSourceTypeLabel(EventSourceType? type) => switch (type) {
-  EventSourceType.facebook => 'Facebook',
-  EventSourceType.instagram => 'Instagram',
-  EventSourceType.website => 'Website',
-  EventSourceType.tiktok => 'TikTok',
-  EventSourceType.youtube => 'YouTube',
-  EventSourceType.whatsapp => 'WhatsApp',
-  EventSourceType.other => 'Lainnya',
-  null => null,
-};
+String? eventSourceTypeLabel(AppLocalizations l10n, EventSourceType? type) =>
+    switch (type) {
+      EventSourceType.facebook => l10n.eventPlatformFacebook,
+      EventSourceType.instagram => l10n.eventPlatformInstagram,
+      EventSourceType.website => l10n.eventPlatformWebsite,
+      EventSourceType.tiktok => l10n.eventPlatformTiktok,
+      EventSourceType.youtube => l10n.eventPlatformYoutube,
+      EventSourceType.whatsapp => l10n.eventPlatformWhatsapp,
+      EventSourceType.other => l10n.eventPlatformOther,
+      null => null,
+    };

@@ -280,16 +280,6 @@ class _ProfileBody extends HookConsumerWidget {
                     ),
                   ),
                   const Gap(12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      AppLocalizations.of(context).profileActivityRecent,
-                      style: theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const Gap(8),
                 ],
               ),
             ),
@@ -299,30 +289,36 @@ class _ProfileBody extends HookConsumerWidget {
           pinned: true,
           delegate: ProfileActivityChipsHeader(
             topOffset: barOffset,
-              child: ProfileActivityChips(
-                selected: activityFilter.value,
-                onChanged: (next) {
-                  if (next == activityFilter.value) return;
-                  HapticFeedback.selectionClick();
-                  activityFilter.value = next;
-                },
+            title: Text(
+              AppLocalizations.of(context).profileActivityRecent,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ),
-          SliverPadding(
-            // Gutter horizontal manual (childPad false) + jarak bawah.
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
-            sliver: SliverToBoxAdapter(
-              child: ProfileActivityList(
-                username: profile.username,
-                profile: profile,
-                filter: activityFilter.value,
-                activityAsync: activityAsync,
-                onRetry: onRetryActivity,
-                showCta: !isOwnProfile,
-              ),
+            child: ProfileActivityChips(
+              selected: activityFilter.value,
+              onChanged: (next) {
+                if (next == activityFilter.value) return;
+                HapticFeedback.selectionClick();
+                activityFilter.value = next;
+              },
             ),
           ),
+        ),
+        SliverPadding(
+          // Gutter horizontal manual (childPad false) + jarak bawah.
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
+          sliver: SliverToBoxAdapter(
+            child: ProfileActivityList(
+              username: profile.username,
+              profile: profile,
+              filter: activityFilter.value,
+              activityAsync: activityAsync,
+              onRetry: onRetryActivity,
+              showCta: !isOwnProfile,
+            ),
+          ),
+        ),
         ],
       ),
     );

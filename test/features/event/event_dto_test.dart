@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/event/data/models/event_dto.dart';
 import 'package:sambasku_mobile/features/event/domain/entities/event.dart';
 import 'package:sambasku_mobile/features/event/presentation/widgets/event_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   group('EventDto', () {
@@ -225,14 +228,19 @@ void main() {
   });
 
   group('eventSourceTypeLabel', () {
+    final l10n = lookupAppLocalizations(const Locale('id'));
+
     test('null -> null (UI skip badge, tanpa label kosong)', () {
-      expect(eventSourceTypeLabel(null), isNull);
+      expect(eventSourceTypeLabel(l10n, null), isNull);
     });
 
     test('platform dikenal -> label Bahasa Indonesia', () {
-      expect(eventSourceTypeLabel(EventSourceType.facebook), 'Facebook');
-      expect(eventSourceTypeLabel(EventSourceType.instagram), 'Instagram');
-      expect(eventSourceTypeLabel(EventSourceType.website), 'Website');
+      expect(eventSourceTypeLabel(l10n, EventSourceType.facebook), 'Facebook');
+      expect(
+        eventSourceTypeLabel(l10n, EventSourceType.instagram),
+        'Instagram',
+      );
+      expect(eventSourceTypeLabel(l10n, EventSourceType.website), 'Website');
     });
   });
 }

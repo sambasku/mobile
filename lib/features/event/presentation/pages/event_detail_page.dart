@@ -12,6 +12,7 @@ import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_providers.dart';
 import '../widgets/event_ui.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Rasio poster hero detail acara (sama dengan hero wisata).
 const _heroAspect = 16 / 10;
@@ -29,7 +30,7 @@ class EventDetailPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Acara'),
+        title: Text(AppLocalizations.of(context).eventListTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -58,7 +59,7 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final source = event.sourceUrl;
-    final sourceLabel = eventSourceTypeLabel(event.sourceType);
+    final sourceLabel = eventSourceTypeLabel(AppLocalizations.of(context), event.sourceType);
     final attribution = event.sourceAttribution;
 
     return ListView(
@@ -80,7 +81,7 @@ class _Body extends StatelessWidget {
           spacing: 6,
           runSpacing: 6,
           children: [
-            eventOccurrenceBadge(event.effectiveOccurrenceStatus),
+            eventOccurrenceBadge(AppLocalizations.of(context), event.effectiveOccurrenceStatus),
             if (event.category != null)
               FBadge(
                 variant: FBadgeVariant.secondary,

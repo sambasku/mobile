@@ -17,6 +17,7 @@ import '../../domain/entities/event.dart';
 import '../../domain/entities/event_contribution.dart';
 import '../providers/event_proposals_provider.dart';
 import '../providers/event_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Form usulan acara. Boleh anonim - server yang mensyaratkan login
 /// hanya untuk daftar usulan pribadi.
@@ -145,7 +146,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               FButton(
                 onPress: () =>
                     Navigator.of(sheetContext).pop(selectionController.value),
-                child: const Text('Pilih tanggal'),
+                child: Text(AppLocalizations.of(sheetContext).eventPickDate),
               ),
             ],
           ),
@@ -194,7 +195,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               const Gap(12),
               FButton(
                 onPress: () => Navigator.of(sheetContext).pop(selected),
-                child: const Text('Pilih jam'),
+                child: Text(AppLocalizations.of(sheetContext).eventPickTime),
               ),
             ],
           ),
@@ -218,54 +219,58 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
 
   /// Validasi gagal -> bottom sheet (bukan teks merah inline).
   void _validationError(String message) {
-    showAppErrorSheet(context, message: message, title: 'Lengkapi dulu ya');
+    showAppErrorSheet(
+      context,
+      message: message,
+      title: AppLocalizations.of(context).eventFormIncomplete,
+    );
   }
 
   Future<void> _submit() async {
     final startsAt = _startsAt;
     final endsAt = _endsAt;
     if (_name.text.trim().isEmpty) {
-      _validationError('Nama acara wajib diisi.');
+      _validationError(AppLocalizations.of(context).eventFormNameRequired);
       return;
     }
     if (_description.text.trim().isEmpty) {
-      _validationError('Ceritakan singkat acaranya.');
+      _validationError(AppLocalizations.of(context).eventFormDescRequired);
       return;
     }
     if (_categoryId == null) {
-      _validationError('Pilih kategori acara dulu.');
+      _validationError(AppLocalizations.of(context).eventFormCategoryRequired);
       return;
     }
     if (startsAt == null || _startDate == null || _startTime == null) {
-      _validationError('Tentukan waktu mulai.');
+      _validationError(AppLocalizations.of(context).eventFormStartRequired);
       return;
     }
     if (endsAt == null || _endDate == null || _endTime == null) {
-      _validationError('Tentukan waktu selesai.');
+      _validationError(AppLocalizations.of(context).eventFormEndRequired);
       return;
     }
     if (endsAt.isBefore(startsAt)) {
-      _validationError('Waktu selesai tidak boleh sebelum waktu mulai.');
+      _validationError(AppLocalizations.of(context).eventFormEndBeforeStart);
       return;
     }
     if (_location.text.trim().isEmpty) {
-      _validationError('Tuliskan lokasi acaranya.');
+      _validationError(AppLocalizations.of(context).eventFormLocationRequired);
       return;
     }
     final sourceUrl = _sourceUrl.text.trim();
     if (sourceUrl.isNotEmpty && !sourceUrl.startsWith('https://')) {
-      _validationError('Link sumber harus diawali https://');
+      _validationError(AppLocalizations.of(context).eventFormLinkHttpsRequired);
       return;
     }
 
     // Poster diunggah segera oleh AttachmentImagesField; submit hanya memakai
     // URL slot siap (upload-then-submit seperti form usul kata).
     if (_posters.any((s) => s.uploading)) {
-      _validationError('Tunggu upload poster selesai.');
+      _validationError(AppLocalizations.of(context).eventFormWaitUpload);
       return;
     }
     if (_posters.any((s) => s.error)) {
-      _validationError('Hapus poster yang gagal diunggah dulu.');
+      _validationError(AppLocalizations.of(context).eventFormRemoveFailedPoster);
       return;
     }
     final posterUrls = [
@@ -321,7 +326,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulkan acara'),
+        title: Text(AppLocalizations.of(context).eventContributeTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -335,7 +340,11 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
             onPress: _busy ? null : _submit,
-            child: Text(_busy ? 'Mengirim...' : 'Kirim usulan'),
+            child: Text(
+              _busy
+                  ? AppLocalizations.of(context).eventSubmitting
+                  : AppLocalizations.of(context).eventSubmitCta,
+            ),
           ),
         ),
       ),
@@ -345,7 +354,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
         padding: const EdgeInsets.only(top: 8, bottom: 16),
         children: [
           Text(
-            'Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.',
+            AppLocalizations.of(context).eventFormIntro,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -353,14 +362,14 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(16),
           FTextField(
             control: FTextFieldControl.managed(controller: _name),
-            label: const Text('Nama acara'),
-            hint: 'Nama acara',
+            label: Text(AppLocalizations.of(context).eventFormNameLabel),
+            hint: AppLocalizations.of(context).eventFormNameLabel,
           ),
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _description),
-            label: const Text('Deskripsi'),
-            hint: 'Ceritakan singkat acaranya',
+            label: Text(AppLocalizations.of(context).eventFormDescLabel),
+            hint: AppLocalizations.of(context).eventFormDescHint,
             maxLines: 4,
           ),
           const Gap(12),
@@ -371,17 +380,17 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           ),
           const Gap(12),
           FTileGroup(
-            label: const Text('Jadwal'),
+            label: Text(AppLocalizations.of(context).eventFormScheduleLabel),
             children: [
               _scheduleTile(
                 icon: FLucideIcons.calendar,
-                title: 'Tanggal mulai',
+                title: AppLocalizations.of(context).eventFormStartDateLabel,
                 value: _dateLabel(_startDate),
-                placeholder: 'Pilih tanggal',
+                placeholder: AppLocalizations.of(context).eventPickDate,
                 onPress: () async {
                   final picked = await _pickDate(
                     context,
-                    title: 'Tanggal mulai',
+                    title: AppLocalizations.of(context).eventFormStartDateLabel,
                     initial: _startDate,
                   );
                   if (picked == null || !mounted) return;
@@ -397,13 +406,13 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               ),
               _scheduleTile(
                 icon: FLucideIcons.clock,
-                title: 'Jam mulai',
+                title: AppLocalizations.of(context).eventFormStartTimeLabel,
                 value: _startTime?.toString(),
-                placeholder: 'Pilih jam',
+                placeholder: AppLocalizations.of(context).eventPickTime,
                 onPress: () async {
                   final picked = await _pickTime(
                     context,
-                    title: 'Jam mulai',
+                    title: AppLocalizations.of(context).eventFormStartTimeLabel,
                     initial: _startTime ?? const FTime(8),
                   );
                   if (picked == null || !mounted) return;
@@ -412,13 +421,13 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               ),
               _scheduleTile(
                 icon: FLucideIcons.calendar,
-                title: 'Tanggal selesai',
+                title: AppLocalizations.of(context).eventFormEndDateLabel,
                 value: _dateLabel(_endDate),
-                placeholder: 'Pilih tanggal',
+                placeholder: AppLocalizations.of(context).eventPickDate,
                 onPress: () async {
                   final picked = await _pickDate(
                     context,
-                    title: 'Tanggal selesai',
+                    title: AppLocalizations.of(context).eventFormEndDateLabel,
                     initial: _endDate ?? _startDate,
                     start: _startDate,
                   );
@@ -428,13 +437,13 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               ),
               _scheduleTile(
                 icon: FLucideIcons.clock,
-                title: 'Jam selesai',
+                title: AppLocalizations.of(context).eventFormEndTimeLabel,
                 value: _endTime?.toString(),
-                placeholder: 'Pilih jam',
+                placeholder: AppLocalizations.of(context).eventPickTime,
                 onPress: () async {
                   final picked = await _pickTime(
                     context,
-                    title: 'Jam selesai',
+                    title: AppLocalizations.of(context).eventFormEndTimeLabel,
                     initial: _endTime ?? _startTime ?? const FTime(17),
                   );
                   if (picked == null || !mounted) return;
@@ -446,12 +455,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _location),
-            label: const Text('Lokasi'),
-            hint: 'Nama tempat atau alamat acara',
+            label: Text(AppLocalizations.of(context).eventFormLocationLabel),
+            hint: AppLocalizations.of(context).eventFormLocationHint,
           ),
           const Gap(12),
           Text(
-            'Ketuk peta untuk memilih koordinat. Opsional.',
+            AppLocalizations.of(context).eventFormMapHint,
             style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -466,7 +475,10 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           if (_point != null) ...[
             const Gap(6),
             Text(
-              '${_point!.latitude.toStringAsFixed(6)}, ${_point!.longitude.toStringAsFixed(6)}',
+              AppLocalizations.of(context).eventFormCoords(
+                _point!.latitude.toStringAsFixed(6),
+                _point!.longitude.toStringAsFixed(6),
+              ),
               style: theme.typography.body.xs.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -475,19 +487,19 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
             FButton(
               variant: .outline,
               onPress: () => setState(() => _point = null),
-              child: const Text('Hapus koordinat'),
+              child: Text(AppLocalizations.of(context).eventFormClearCoords),
             ),
           ],
           const Gap(12),
           Text(
-            'Poster acara',
+            AppLocalizations.of(context).eventFormPosterLabel,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const Gap(4),
         Text(
-          'Bisa lebih dari satu foto. Gambar pertama jadi sampul.',
+          AppLocalizations.of(context).eventFormPosterHint,
           style: theme.typography.body.xs.copyWith(
             color: theme.colors.mutedForeground,
           ),
@@ -523,19 +535,19 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _organizer),
-            label: const Text('Penyelenggara'),
-            hint: 'Opsional',
+            label: Text(AppLocalizations.of(context).eventFormOrganizerLabel),
+            hint: AppLocalizations.of(context).eventFormOrganizerHint,
           ),
           const Gap(20),
           Text(
-            'Sumber resmi',
+            AppLocalizations.of(context).eventFormSourceLabel,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           const Gap(4),
           Text(
-            'Kalau acaranya ada di Facebook, Instagram, atau website, tempel link-nya di sini.',
+            AppLocalizations.of(context).eventFormSourceHint,
             style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -543,8 +555,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _sourceUrl),
-            label: const Text('Link sumber'),
-            hint: 'https:// (opsional)',
+            label: Text(AppLocalizations.of(context).eventFormSourceLinkLabel),
+            hint: AppLocalizations.of(context).eventFormSourceLinkHint,
           ),
           const Gap(12),
           _SourceTypeField(
@@ -554,8 +566,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _sourceAttribution),
-            label: const Text('Kredit penerbit'),
-            hint: 'Opsional, mis. nama panitia',
+            label: Text(AppLocalizations.of(context).eventFormCreditLabel),
+            hint: AppLocalizations.of(context).eventFormCreditHint,
           ),
         ],
       ),
@@ -639,7 +651,7 @@ class _SuccessView extends StatelessWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulan acara'),
+        title: Text(AppLocalizations.of(context).eventProposalTitle),
         prefixes: [FHeaderAction.back(onPress: onBack)],
       ),
       child: Center(
@@ -655,7 +667,7 @@ class _SuccessView extends StatelessWidget {
               ),
               const Gap(12),
               Text(
-                'Usulan kamu sudah terkirim',
+                AppLocalizations.of(context).eventProposalSent,
                 textAlign: TextAlign.center,
                 style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w700,
@@ -663,7 +675,7 @@ class _SuccessView extends StatelessWidget {
               ),
               const Gap(8),
               Text(
-                'Tim kami akan meninjaunya dulu. Kalau lolos, acaranya tayang di daftar acara.',
+                AppLocalizations.of(context).eventProposalSentBody,
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
@@ -673,7 +685,7 @@ class _SuccessView extends StatelessWidget {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: onBack,
-                child: const Text('Kembali'),
+                child: Text(AppLocalizations.of(context).eventProposalBack),
               ),
             ],
           ),
@@ -698,8 +710,10 @@ class _CategoryField extends StatelessWidget {
   Widget build(BuildContext context) {
     final selected = categories.where((c) => c.id == selectedId).firstOrNull;
     return FTile(
-      title: const Text('Kategori'),
-      subtitle: Text(selected?.name ?? 'Pilih kategori'),
+      title: Text(AppLocalizations.of(context).eventCategoryLabel),
+      subtitle: Text(
+        selected?.name ?? AppLocalizations.of(context).eventCategoryPickerHint,
+      ),
       suffix: const Icon(FLucideIcons.chevronRight, size: 18),
       onPress: () => _pick(context),
     );
@@ -709,7 +723,7 @@ class _CategoryField extends StatelessWidget {
     if (categories.isEmpty) return;
     final picked = await showOptionPickerSheet<String>(
       context,
-      title: 'Pilih kategori acara',
+      title: AppLocalizations.of(context).eventCategoryPickerTitle,
       icon: FLucideIcons.listFilter,
       items: [
         for (final category in categories)
@@ -732,9 +746,12 @@ class _SourceTypeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = eventSourceTypeLabel(selected) ?? 'Pilih platform (opsional)';
+    final l10n = AppLocalizations.of(context);
+    final label =
+        eventSourceTypeLabel(l10n, selected) ??
+        l10n.eventSourcePlatformPicker;
     return FTile(
-      title: const Text('Platform sumber'),
+      title: Text(AppLocalizations.of(context).eventSourcePlatformLabel),
       subtitle: Text(label),
       suffix: const Icon(FLucideIcons.chevronRight, size: 18),
       onPress: () => _pick(context),
@@ -744,19 +761,21 @@ class _SourceTypeField extends StatelessWidget {
   Future<void> _pick(BuildContext context) async {
     final picked = await showOptionPickerSheet<EventSourceType?>(
       context,
-      title: 'Platform sumber',
+      title: AppLocalizations.of(context).eventSourcePlatformLabel,
       icon: FLucideIcons.link,
       items: [
         OptionPickerItem(
           value: null,
-          label: 'Tidak ada',
-          detail: 'Acara tanpa tautan asal',
+          label: AppLocalizations.of(context).eventSourcePlatformNone,
+          detail: AppLocalizations.of(context).eventSourcePlatformNoneDesc,
           selected: selected == null,
         ),
         for (final type in EventSourceType.values)
           OptionPickerItem(
             value: type,
-            label: eventSourceTypeLabel(type) ?? type.name,
+            label:
+                eventSourceTypeLabel(AppLocalizations.of(context), type) ??
+                type.name,
             selected: type == selected,
           ),
       ],

@@ -79,21 +79,38 @@ class ProfileActivityChips extends StatelessWidget {
 /// Delegate pinned: chip kategori menempel di bawah bar melayang.
 /// Latar opaque wajib - tanpa itu item feed tembus di belakang chip.
 class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
-  ProfileActivityChipsHeader({required this.child, this.topOffset = 0});
+  ProfileActivityChipsHeader({
+    required this.child,
+    this.title,
+    this.titleHeight = 20,
+    this.topOffset = 0,
+  });
 
   final Widget child;
+
+  /// Judul section yang collapse saat pinned (mis. "Aktivitas terbaru").
+  final Widget? title;
+
+  /// Tinggi area title untuk perhitungan collapse.
+  final double titleHeight;
 
   /// Tinggi bar melayang di atas chip (status bar + bar aksi). Chip berhenti
   /// di bawahnya, tidak menabrak status bar.
   final double topOffset;
 
   static const double _bottomGap = 8;
+  static const double _titleGap = 8;
 
   @override
-  double get minExtent => topOffset + ProfileActivityChips.height + _bottomGap;
+  double get minExtent =>
+      topOffset + ProfileActivityChips.height + _bottomGap;
 
   @override
-  double get maxExtent => topOffset + ProfileActivityChips.height + _bottomGap;
+  double get maxExtent => topOffset +
+      titleHeight +
+      _titleGap +
+      ProfileActivityChips.height +
+      _bottomGap;
 
   @override
   Widget build(
@@ -102,6 +119,10 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final theme = context.theme;
+    final titleFraction = ((maxExtent - shrinkOffset) - minExtent) /
+        (titleHeight + _titleGap);
+    final titleOpacity = titleFraction.clamp(0.0, 1.0);
+
     return ColoredBox(
       color: theme.colors.background,
       child: DecoratedBox(
@@ -121,6 +142,14 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
           children: [
             // Ruang untuk bar melayang: chip berhenti di bawahnya.
             SizedBox(height: topOffset),
+            if (title != null && titleOpacity > 0.01)
+              Opacity(
+                opacity: titleOpacity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: SizedBox(height: titleHeight, child: title),
+                ),
+              ),
             DecoratedBox(
               decoration: BoxDecoration(
                 border: Border(
@@ -138,7 +167,10 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(ProfileActivityChipsHeader oldDelegate) =>
-      oldDelegate.child != child || oldDelegate.topOffset != topOffset;
+      oldDelegate.child != child ||
+      oldDelegate.title != title ||
+      oldDelegate.titleHeight != titleHeight ||
+      oldDelegate.topOffset != topOffset;
 }
 
 /// Isi feed aktivitas sesuai filter terpilih.
