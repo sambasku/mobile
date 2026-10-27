@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/i18n/l10n.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/domain/entities/vote_view.dart';
 import '../../../vote/domain/providers/vote_domain_providers.dart';
@@ -90,7 +91,7 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
   /// Toggle vote pantun di feed. Return pesan error (null = sukses).
   Future<String?> toggleVote(Pantun pantun, int value) async {
     final current = state.value;
-    if (current == null) return 'Pantun belum dimuat';
+    if (current == null) return l10n.pantunLoadFailedShort;
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: pantun.voteTarget,
@@ -123,7 +124,7 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
   /// Hapus pantun milik sendiri dari feed. Return pesan error (null = sukses).
   Future<String?> deletePantun(Pantun pantun) async {
     final current = state.value;
-    if (current == null) return 'Pantun belum dimuat';
+    if (current == null) return l10n.pantunLoadFailedShort;
     try {
       await ref.read(pantunApiProvider).deletePantun(pantun.id);
       if (!ref.mounted) return null;
@@ -138,7 +139,7 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
     } on PantunFailure catch (e) {
       return e.message;
     } catch (_) {
-      return 'Gagal menghapus pantun. Coba lagi ya.';
+      return l10n.pantunDeleteFailed;
     }
   }
 
@@ -218,7 +219,7 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
   /// Toggle vote pantun/balasan di halaman detail. Return pesan error.
   Future<String?> toggleVote(Pantun target, int value) async {
     final current = state.value;
-    if (current == null) return 'Pantun belum dimuat';
+    if (current == null) return l10n.pantunLoadFailedShort;
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: target.voteTarget,
@@ -251,14 +252,14 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
   /// Hapus pantun pembuka milik sendiri. Return pesan error (null = sukses).
   Future<String?> deletePantun() async {
     final current = state.value;
-    if (current == null) return 'Pantun belum dimuat';
+    if (current == null) return l10n.pantunLoadFailedShort;
     try {
       await ref.read(pantunApiProvider).deletePantun(current.pantun.id);
       return null;
     } on PantunFailure catch (e) {
       return e.message;
     } catch (_) {
-      return 'Gagal menghapus pantun. Coba lagi ya.';
+      return l10n.pantunDeleteFailed;
     }
   }
 }

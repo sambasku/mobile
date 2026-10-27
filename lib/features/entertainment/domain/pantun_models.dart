@@ -40,9 +40,11 @@ class Pantun {
   final String status;
   final DateTime createdAt;
   final DateTime? updatedAt;
+
   /// Counts vote (wire `upvotes`/`downvotes`); 0 untuk API lama.
   final int upvotes;
   final int downvotes;
+
   /// 1 | -1 | null - di-seed dari GET /votes/my, bukan wire list.
   final int? myVote;
 
@@ -72,10 +74,8 @@ class Pantun {
   String get authorLabel => displayName ?? username ?? 'Seseorang';
 
   /// Target vote polymorphic: pantun pembuka vs balasan.
-  VoteTarget get voteTarget => VoteTarget(
-    type: parentId == null ? 'pantun' : 'pantun_reply',
-    id: id,
-  );
+  VoteTarget get voteTarget =>
+      VoteTarget(type: parentId == null ? 'pantun' : 'pantun_reply', id: id);
 
   Pantun copyWith({
     int? upvotes,

@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/pantun_models.dart';
@@ -39,7 +40,7 @@ class PantunVoteBar extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
+        title: Text(AppLocalizations.of(context).pantunVoteLoginRequired),
         variant: FToastVariant.primary,
       );
       context.push('/login');

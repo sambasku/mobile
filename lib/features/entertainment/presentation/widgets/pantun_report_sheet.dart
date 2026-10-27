@@ -69,10 +69,7 @@ Future<void> reportPantunFromUi(
 }
 
 class _PantunReportSheet extends ConsumerStatefulWidget {
-  const _PantunReportSheet({
-    required this.targetType,
-    required this.targetId,
-  });
+  const _PantunReportSheet({required this.targetType, required this.targetId});
 
   final String targetType;
   final String targetId;
@@ -102,12 +99,14 @@ class _PantunReportSheetState extends ConsumerState<_PantunReportSheet> {
 
     setState(() => _sending = true);
     try {
-      await ref.read(pantunApiProvider).report(
-        targetType: widget.targetType,
-        targetId: widget.targetId,
-        reasonCode: _reason,
-        note: note.isEmpty ? null : note,
-      );
+      await ref
+          .read(pantunApiProvider)
+          .report(
+            targetType: widget.targetType,
+            targetId: widget.targetId,
+            reasonCode: _reason,
+            note: note.isEmpty ? null : note,
+          );
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } on PantunFailure catch (error) {
@@ -137,7 +136,9 @@ class _PantunReportSheetState extends ConsumerState<_PantunReportSheet> {
         children: [
           Text(
             l10n.reportPantunTitle,
-            style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const Gap(4),
           Text(
@@ -180,9 +181,7 @@ class _PantunReportSheetState extends ConsumerState<_PantunReportSheet> {
           const Gap(8),
           FButton(
             onPress: _sending ? null : _submit,
-            child: Text(
-              _sending ? l10n.reportSubmitting : l10n.reportSubmit,
-            ),
+            child: Text(_sending ? l10n.reportSubmitting : l10n.reportSubmit),
           ),
         ],
       ),

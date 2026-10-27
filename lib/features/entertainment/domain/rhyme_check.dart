@@ -22,6 +22,7 @@ class RhymeLastWordUndetected extends RhymeCheckResult {
 
 class RhymeMismatch extends RhymeCheckResult {
   const RhymeMismatch(this.pairs);
+
   /// Pasangan baris (1-based) yang belum berima.
   final List<(int, int)> pairs;
 }

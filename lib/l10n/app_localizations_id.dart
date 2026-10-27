@@ -7282,6 +7282,114 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get analyticsVerifierRejected => 'Ditolak';
+
+  @override
+  String get pantunTitle => 'Pantun';
+
+  @override
+  String get pantunSend => 'Kirim';
+
+  @override
+  String get pantunWrite => 'Tulis pantun';
+
+  @override
+  String get pantunReply => 'Balas pantun';
+
+  @override
+  String get pantunDelete => 'Hapus pantun';
+
+  @override
+  String get pantunDeleteConfirm => 'Hapus';
+
+  @override
+  String get pantunCancel => 'Batal';
+
+  @override
+  String get pantunDeletedToast => 'Pantun dihapus';
+
+  @override
+  String get pantunReplyDeletedToast => 'Balasan dihapus';
+
+  @override
+  String get pantunLoadFailed => 'Gagal memuat pantun. Coba lagi ya.';
+
+  @override
+  String get pantunLoadFailedShort => 'Gagal memuat pantun';
+
+  @override
+  String get pantunSearchFailed => 'Gagal mencari pantun';
+
+  @override
+  String get pantunSendFailed =>
+      'Gagal mengirim pantun. Coba lagi sebentar ya.';
+
+  @override
+  String get pantunDeleteFailed => 'Gagal menghapus pantun. Coba lagi ya.';
+
+  @override
+  String get pantunRequestFailed => 'Gagal memproses permintaan. Coba lagi ya.';
+
+  @override
+  String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
+
+  @override
+  String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get permainanTitle => 'Permainan';
+
+  @override
+  String get permainanComingSoon => 'Segera';
+
+  @override
+  String get pantunReplyLoginRequired =>
+      'Login dulu ya sebelum membalas pantun.';
+
+  @override
+  String get pantunDeleteConfirmTitle => 'Hapus pantun?';
+
+  @override
+  String get pantunDeleteConfirmBody =>
+      'Pantun dan seluruh balasannya akan hilang dari feed.';
+
+  @override
+  String get pantunDeleteReplyConfirm => 'Hapus balasan?';
+
+  @override
+  String get pantunDeleteReplyConfirmBody =>
+      'Balasan akan dihapus dari thread pantun.';
+
+  @override
+  String get pantunReplies => 'Balasan';
+
+  @override
+  String pantunRepliesCount(int count) {
+    return 'Balasan · $count';
+  }
+
+  @override
+  String get pantunNoReplies => 'Belum ada balasan. Balas dulu, yuk.';
+
+  @override
+  String get pantunDeleteFeedConfirmBody =>
+      'Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.';
+
+  @override
+  String get pantunSearchHint => 'Cari pantun atau balasan...';
+
+  @override
+  String get pantunEmptyTitle => 'Belum ada pantun';
+
+  @override
+  String get pantunEmptyBody =>
+      'Jadi yang pertama menulis pantun Sambas di sini ya.';
+
+  @override
+  String get pantunSearchEmptyTitle => 'Tidak ada pantun yang cocok';
+
+  @override
+  String get pantunSearchEmptyBody =>
+      'Coba kata lain, mis. nama tempat atau binatang.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14562,4 +14670,112 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get analyticsVerifierRejected => 'Ditolak';
+
+  @override
+  String get pantunTitle => 'Pantun';
+
+  @override
+  String get pantunSend => 'Kirim';
+
+  @override
+  String get pantunWrite => 'Tulis pantun';
+
+  @override
+  String get pantunReply => 'Balas pantun';
+
+  @override
+  String get pantunDelete => 'Hapus pantun';
+
+  @override
+  String get pantunDeleteConfirm => 'Hapus';
+
+  @override
+  String get pantunCancel => 'Batal';
+
+  @override
+  String get pantunDeletedToast => 'Pantun dihapus';
+
+  @override
+  String get pantunReplyDeletedToast => 'Balasan dihapus';
+
+  @override
+  String get pantunLoadFailed => 'Gagal memuat pantun. Coba lagi ya.';
+
+  @override
+  String get pantunLoadFailedShort => 'Gagal memuat pantun';
+
+  @override
+  String get pantunSearchFailed => 'Gagal mencari pantun';
+
+  @override
+  String get pantunSendFailed =>
+      'Gagal mengirim pantun. Coba lagi sebentar ya.';
+
+  @override
+  String get pantunDeleteFailed => 'Gagal menghapus pantun. Coba lagi ya.';
+
+  @override
+  String get pantunRequestFailed => 'Gagal memproses permintaan. Coba lagi ya.';
+
+  @override
+  String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
+
+  @override
+  String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get permainanTitle => 'Permainan';
+
+  @override
+  String get permainanComingSoon => 'Segera';
+
+  @override
+  String get pantunReplyLoginRequired =>
+      'Login dulu ya sebelum membalas pantun.';
+
+  @override
+  String get pantunDeleteConfirmTitle => 'Hapus pantun?';
+
+  @override
+  String get pantunDeleteConfirmBody =>
+      'Pantun dan seluruh balasannya akan hilang dari feed.';
+
+  @override
+  String get pantunDeleteReplyConfirm => 'Hapus balasan?';
+
+  @override
+  String get pantunDeleteReplyConfirmBody =>
+      'Balasan akan dihapus dari thread pantun.';
+
+  @override
+  String get pantunReplies => 'Balasan';
+
+  @override
+  String pantunRepliesCount(int count) {
+    return 'Balasan · $count';
+  }
+
+  @override
+  String get pantunNoReplies => 'Belum ada balasan. Balas dulu, yuk.';
+
+  @override
+  String get pantunDeleteFeedConfirmBody =>
+      'Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.';
+
+  @override
+  String get pantunSearchHint => 'Cari pantun atau balasan...';
+
+  @override
+  String get pantunEmptyTitle => 'Belum ada pantun';
+
+  @override
+  String get pantunEmptyBody =>
+      'Jadi yang pertama menulis pantun Sambas di sini ya.';
+
+  @override
+  String get pantunSearchEmptyTitle => 'Tidak ada pantun yang cocok';
+
+  @override
+  String get pantunSearchEmptyBody =>
+      'Coba kata lain, mis. nama tempat atau binatang.';
 }

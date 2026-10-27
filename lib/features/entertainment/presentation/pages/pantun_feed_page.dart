@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../entertainment_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
@@ -22,6 +23,7 @@ class PantunFeedPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(pantunFeedProvider);
     final scroll = useScrollController();
 
@@ -56,9 +58,8 @@ class PantunFeedPage extends HookConsumerWidget {
     Future<void> deletePantun(Pantun pantun) async {
       final ok = await showPantunDeleteSheet(
         context,
-        title: 'Hapus pantun?',
-        subtitle:
-            'Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.',
+        title: l10n.pantunDeleteConfirmTitle,
+        subtitle: l10n.pantunDeleteFeedConfirmBody,
       );
       if (!ok || !context.mounted) return;
       final error = await ref
@@ -68,7 +69,7 @@ class PantunFeedPage extends HookConsumerWidget {
       if (error == null) {
         showFToast(
           context: context,
-          title: const Text('Pantun dihapus'),
+          title: Text(l10n.pantunDeletedToast),
           variant: FToastVariant.primary,
         );
         return;
@@ -79,7 +80,7 @@ class PantunFeedPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Pantun'),
+        title: Text(l10n.pantunTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -90,7 +91,7 @@ class PantunFeedPage extends HookConsumerWidget {
       ),
       footer: FButton(
         onPress: () => context.push('/entertainment/pantun/create'),
-        child: const Text('Tulis pantun'),
+        child: Text(l10n.pantunWrite),
       ),
       child: Column(
         children: [
@@ -101,7 +102,7 @@ class PantunFeedPage extends HookConsumerWidget {
                 controller: searchController,
                 onChange: (value) => rawQuery.value = value.text,
               ),
-              hint: 'Cari pantun atau balasan...',
+              hint: l10n.pantunSearchHint,
               clearable: (value) => value.text.isNotEmpty,
               textInputAction: TextInputAction.search,
               prefixBuilder: (context, style, variants) =>
@@ -126,7 +127,7 @@ class PantunFeedPage extends HookConsumerWidget {
                         icon: FLucideIcons.circleAlert,
                         title: e is PantunFailure
                             ? e.message
-                            : 'Gagal memuat pantun',
+                            : l10n.pantunLoadFailedShort,
                       ),
                       data: (state) => ListView(
                         controller: scroll,
@@ -134,12 +135,11 @@ class PantunFeedPage extends HookConsumerWidget {
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
                         children: [
                           if (state.items.isEmpty)
-                            const _MessageList(
+                            _MessageList(
                               shrink: true,
                               icon: FLucideIcons.feather,
-                              title: 'Belum ada pantun',
-                              subtitle:
-                                  'Jadi yang pertama menulis pantun Sambas di sini ya.',
+                              title: l10n.pantunEmptyTitle,
+                              subtitle: l10n.pantunEmptyBody,
                             )
                           else
                             for (final p in state.items)
@@ -153,19 +153,19 @@ class PantunFeedPage extends HookConsumerWidget {
                                   onVoteToggle: (pantun, value) => ref
                                       .read(pantunFeedProvider.notifier)
                                       .toggleVote(pantun, value),
-                    footer: p.userId == myUserId
-                        ? PantunActionRow.delete(
-                            onDelete: () => deletePantun(p),
-                          )
-                        : PantunActionRow.report(
-                            onReport: () => reportPantunFromUi(
-                              context,
-                              ref,
-                              targetType: 'pantun',
-                              targetId: p.id,
-                            ),
-                          ),
-                  ),
+                                  footer: p.userId == myUserId
+                                      ? PantunActionRow.delete(
+                                          onDelete: () => deletePantun(p),
+                                        )
+                                      : PantunActionRow.report(
+                                          onReport: () => reportPantunFromUi(
+                                            context,
+                                            ref,
+                                            targetType: 'pantun',
+                                            targetId: p.id,
+                                          ),
+                                        ),
+                                ),
                               ),
                           if (state.isLoadingMore)
                             const Padding(
@@ -193,6 +193,7 @@ class _SearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(pantunSearchProvider(query));
     return async.when(
       loading: () => const _FeedSkeleton(),
@@ -200,7 +201,7 @@ class _SearchResults extends ConsumerWidget {
         children: [
           _MessageList(
             icon: FLucideIcons.circleAlert,
-            title: e is PantunFailure ? e.message : 'Gagal mencari pantun',
+            title: e is PantunFailure ? e.message : l10n.pantunSearchFailed,
           ),
         ],
       ),
@@ -208,11 +209,11 @@ class _SearchResults extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
         children: [
           if (items.isEmpty)
-            const _MessageList(
+            _MessageList(
               shrink: true,
               icon: FLucideIcons.searchX,
-              title: 'Tidak ada pantun yang cocok',
-              subtitle: 'Coba kata lain, mis. nama tempat atau binatang.',
+              title: l10n.pantunSearchEmptyTitle,
+              subtitle: l10n.pantunSearchEmptyBody,
             )
           else
             for (final p in items)

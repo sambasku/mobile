@@ -3,6 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Satu permainan di hub. Tambah entri baru cukup di [_items].
 class _Permainan {
   const _Permainan({
@@ -42,10 +44,11 @@ class PermainanListPage extends StatelessWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Permainan'),
+        title: Text(AppLocalizations.of(context).permainanTitle),
         prefixes: [
           FHeaderAction.back(
-            onPress: () => context.canPop() ? context.pop() : context.go('/explore'),
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go('/explore'),
           ),
         ],
       ),

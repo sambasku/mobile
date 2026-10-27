@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/i18n/l10n.dart';
 import '../../../core/network/network_providers.dart';
 import '../domain/pantun_models.dart';
 
@@ -170,7 +171,7 @@ String _messageFrom(DioException e) {
   if (status != null && status >= 500) {
     return 'Server sedang gangguan. Coba lagi sebentar ya.';
   }
-  return 'Gagal memproses permintaan. Coba lagi ya.';
+  return l10n.pantunRequestFailed;
 }
 
 final pantunApiProvider = Provider<PantunApi>(

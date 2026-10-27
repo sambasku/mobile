@@ -49,9 +49,8 @@ class EntertainmentRouter {
       path: pantunCreate.path,
       name: pantunCreate.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => PantunComposePage(
-        parentId: state.uri.queryParameters['parent'],
-      ),
+      builder: (context, state) =>
+          PantunComposePage(parentId: state.uri.queryParameters['parent']),
     ),
     GoRoute(
       path: pantunDetail.path,

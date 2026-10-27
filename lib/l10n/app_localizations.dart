@@ -13258,6 +13258,204 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ditolak'**
   String get analyticsVerifierRejected;
+
+  /// No description provided for @pantunTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun'**
+  String get pantunTitle;
+
+  /// No description provided for @pantunSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get pantunSend;
+
+  /// No description provided for @pantunWrite.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pantun'**
+  String get pantunWrite;
+
+  /// No description provided for @pantunReply.
+  ///
+  /// In id, this message translates to:
+  /// **'Balas pantun'**
+  String get pantunReply;
+
+  /// No description provided for @pantunDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pantun'**
+  String get pantunDelete;
+
+  /// No description provided for @pantunDeleteConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get pantunDeleteConfirm;
+
+  /// No description provided for @pantunCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get pantunCancel;
+
+  /// No description provided for @pantunDeletedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun dihapus'**
+  String get pantunDeletedToast;
+
+  /// No description provided for @pantunReplyDeletedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan dihapus'**
+  String get pantunReplyDeletedToast;
+
+  /// No description provided for @pantunLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pantun. Coba lagi ya.'**
+  String get pantunLoadFailed;
+
+  /// No description provided for @pantunLoadFailedShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pantun'**
+  String get pantunLoadFailedShort;
+
+  /// No description provided for @pantunSearchFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mencari pantun'**
+  String get pantunSearchFailed;
+
+  /// No description provided for @pantunSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim pantun. Coba lagi sebentar ya.'**
+  String get pantunSendFailed;
+
+  /// No description provided for @pantunDeleteFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus pantun. Coba lagi ya.'**
+  String get pantunDeleteFailed;
+
+  /// No description provided for @pantunRequestFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses permintaan. Coba lagi ya.'**
+  String get pantunRequestFailed;
+
+  /// No description provided for @pantunComposeIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi keempat baris dulu ya.'**
+  String get pantunComposeIncomplete;
+
+  /// No description provided for @pantunVoteLoginRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memberi vote'**
+  String get pantunVoteLoginRequired;
+
+  /// No description provided for @permainanTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Permainan'**
+  String get permainanTitle;
+
+  /// No description provided for @permainanComingSoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Segera'**
+  String get permainanComingSoon;
+
+  /// No description provided for @pantunReplyLoginRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Login dulu ya sebelum membalas pantun.'**
+  String get pantunReplyLoginRequired;
+
+  /// No description provided for @pantunDeleteConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pantun?'**
+  String get pantunDeleteConfirmTitle;
+
+  /// No description provided for @pantunDeleteConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun dan seluruh balasannya akan hilang dari feed.'**
+  String get pantunDeleteConfirmBody;
+
+  /// No description provided for @pantunDeleteReplyConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus balasan?'**
+  String get pantunDeleteReplyConfirm;
+
+  /// No description provided for @pantunDeleteReplyConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan akan dihapus dari thread pantun.'**
+  String get pantunDeleteReplyConfirmBody;
+
+  /// No description provided for @pantunReplies.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan'**
+  String get pantunReplies;
+
+  /// Judul daftar balasan; {count} = jumlah balasan
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan · {count}'**
+  String pantunRepliesCount(int count);
+
+  /// No description provided for @pantunNoReplies.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada balasan. Balas dulu, yuk.'**
+  String get pantunNoReplies;
+
+  /// No description provided for @pantunDeleteFeedConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.'**
+  String get pantunDeleteFeedConfirmBody;
+
+  /// No description provided for @pantunSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari pantun atau balasan...'**
+  String get pantunSearchHint;
+
+  /// No description provided for @pantunEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pantun'**
+  String get pantunEmptyTitle;
+
+  /// No description provided for @pantunEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadi yang pertama menulis pantun Sambas di sini ya.'**
+  String get pantunEmptyBody;
+
+  /// No description provided for @pantunSearchEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada pantun yang cocok'**
+  String get pantunSearchEmptyTitle;
+
+  /// No description provided for @pantunSearchEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba kata lain, mis. nama tempat atau binatang.'**
+  String get pantunSearchEmptyBody;
 }
 
 class _AppLocalizationsDelegate

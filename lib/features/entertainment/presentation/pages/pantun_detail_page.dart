@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../data/pantun_api.dart';
@@ -34,7 +35,7 @@ class PantunDetailPage extends HookConsumerWidget {
       if (context.mounted) {
         await showAppErrorSheet(
           context,
-          message: 'Login dulu ya sebelum membalas pantun.',
+          message: AppLocalizations.of(context).pantunReplyLoginRequired,
         );
       }
       return;
@@ -51,10 +52,11 @@ class PantunDetailPage extends HookConsumerWidget {
     WidgetRef ref,
     Pantun reply,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showPantunDeleteSheet(
       context,
-      title: 'Hapus balasan?',
-      subtitle: 'Balasan akan dihapus dari thread pantun.',
+      title: l10n.pantunDeleteReplyConfirm,
+      subtitle: l10n.pantunDeleteReplyConfirmBody,
     );
     if (!confirmed || !context.mounted) return;
 
@@ -64,7 +66,7 @@ class PantunDetailPage extends HookConsumerWidget {
       if (context.mounted) {
         showFToast(
           context: context,
-          title: const Text('Balasan dihapus'),
+          title: Text(l10n.pantunReplyDeletedToast),
           variant: FToastVariant.primary,
         );
       }
@@ -77,10 +79,11 @@ class PantunDetailPage extends HookConsumerWidget {
 
   /// Hapus pantun pembuka milik sendiri: pop dulu (feed di-invalidate).
   Future<void> _deletePantun(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showPantunDeleteSheet(
       context,
-      title: 'Hapus pantun?',
-      subtitle: 'Pantun dan seluruh balasannya akan hilang dari feed.',
+      title: l10n.pantunDeleteConfirmTitle,
+      subtitle: l10n.pantunDeleteConfirmBody,
     );
     if (!confirmed || !context.mounted) return;
     final error = await ref
@@ -91,7 +94,7 @@ class PantunDetailPage extends HookConsumerWidget {
       ref.invalidate(pantunFeedProvider);
       showFToast(
         context: context,
-        title: const Text('Pantun dihapus'),
+        title: Text(l10n.pantunDeletedToast),
         variant: FToastVariant.primary,
       );
       context.pop();
@@ -103,6 +106,7 @@ class PantunDetailPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(pantunDetailProvider(id));
     final auth = ref.watch(authStatusProvider).value;
     final myUserId = auth?.userId;
@@ -134,12 +138,12 @@ class PantunDetailPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Pantun'),
+        title: Text(l10n.pantunTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       footer: FButton(
         onPress: () => _openReply(context, ref),
-        child: const Text('Balas pantun'),
+        child: Text(l10n.pantunReply),
       ),
       child: RefreshIndicator(
         onRefresh: () async => ref.invalidate(pantunDetailProvider(id)),
@@ -150,9 +154,7 @@ class PantunDetailPage extends HookConsumerWidget {
             children: [
               const Gap(64),
               Text(
-                e is PantunFailure
-                    ? e.message
-                    : 'Gagal memuat pantun. Coba lagi ya.',
+                e is PantunFailure ? e.message : l10n.pantunLoadFailed,
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
@@ -178,7 +180,7 @@ class PantunDetailPage extends HookConsumerWidget {
                     .toggleVote(pantun, value),
                 footer: detail.pantun.userId == myUserId
                     ? PantunActionRow.delete(
-                        label: 'Hapus pantun',
+                        label: l10n.pantunDelete,
                         onDelete: () => _deletePantun(context, ref),
                       )
                     : PantunActionRow.report(
@@ -193,8 +195,8 @@ class PantunDetailPage extends HookConsumerWidget {
               const Gap(14),
               Text(
                 detail.replies.isEmpty
-                    ? 'Balasan'
-                    : 'Balasan · ${detail.replies.length}',
+                    ? l10n.pantunReplies
+                    : l10n.pantunRepliesCount(detail.replies.length),
                 style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -202,7 +204,7 @@ class PantunDetailPage extends HookConsumerWidget {
               const Gap(8),
               if (detail.replies.isEmpty)
                 Text(
-                  'Belum ada balasan. Balas dulu, yuk.',
+                  l10n.pantunNoReplies,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -232,19 +234,19 @@ class PantunDetailPage extends HookConsumerWidget {
                                   .read(pantunDetailProvider(id).notifier)
                                   .toggleVote(pantun, value)
                             : null,
-                footer: reply.userId == myUserId
-                    ? PantunActionRow.delete(
-                        onDelete: () =>
-                            _deleteReply(context, ref, reply),
-                      )
-                    : PantunActionRow.report(
-                        onReport: () => reportPantunFromUi(
-                          context,
-                          ref,
-                          targetType: 'pantun_reply',
-                          targetId: reply.id,
-                        ),
-                      ),
+                        footer: reply.userId == myUserId
+                            ? PantunActionRow.delete(
+                                onDelete: () =>
+                                    _deleteReply(context, ref, reply),
+                              )
+                            : PantunActionRow.report(
+                                onReport: () => reportPantunFromUi(
+                                  context,
+                                  ref,
+                                  targetType: 'pantun_reply',
+                                  targetId: reply.id,
+                                ),
+                              ),
                       ),
                     ),
                   ),

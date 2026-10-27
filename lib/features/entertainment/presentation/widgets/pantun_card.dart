@@ -137,29 +137,29 @@ class PantunCard extends StatelessWidget {
                   ],
                 ),
               ),
-                    // Vote/Tindakan satu baris, gaya ThreadMessageRow:
-                    // vote rata kiri, aksi (hapus/lapor) rata kanan.
-                    if (onVoteToggle != null || footer != null) const Gap(6),
-                    if (onVoteToggle != null && footer != null)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: PantunVoteBar(
-                                pantun: pantun,
-                                onToggle: onVoteToggle!,
-                              ),
-                            ),
-                          ),
-                          footer!,
-                        ],
-                      )
-                    else if (onVoteToggle != null)
-                      PantunVoteBar(pantun: pantun, onToggle: onVoteToggle!)
-                    else
-                      ?footer,
+              // Vote/Tindakan satu baris, gaya ThreadMessageRow:
+              // vote rata kiri, aksi (hapus/lapor) rata kanan.
+              if (onVoteToggle != null || footer != null) const Gap(6),
+              if (onVoteToggle != null && footer != null)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: PantunVoteBar(
+                          pantun: pantun,
+                          onToggle: onVoteToggle!,
+                        ),
+                      ),
+                    ),
+                    footer!,
+                  ],
+                )
+              else if (onVoteToggle != null)
+                PantunVoteBar(pantun: pantun, onToggle: onVoteToggle!)
+              else
+                ?footer,
             ],
           ),
         ),
@@ -203,26 +203,24 @@ class PantunActionRow extends StatelessWidget {
     Key? key,
     required VoidCallback onDelete,
     String label = 'Hapus',
-  }) =>
-      PantunActionRow(
-        key: key,
-        icon: FLucideIcons.trash,
-        label: label,
-        onTap: onDelete,
-      );
+  }) => PantunActionRow(
+    key: key,
+    icon: FLucideIcons.trash,
+    label: label,
+    onTap: onDelete,
+  );
 
   /// Footer laporkan untuk pantun/balasan orang lain.
   factory PantunActionRow.report({
     Key? key,
     required VoidCallback onReport,
     String label = 'Laporkan',
-  }) =>
-      PantunActionRow(
-        key: key,
-        icon: FLucideIcons.flag,
-        label: label,
-        onTap: onReport,
-      );
+  }) => PantunActionRow(
+    key: key,
+    icon: FLucideIcons.flag,
+    label: label,
+    onTap: onReport,
+  );
 
   final IconData icon;
   final String label;
@@ -245,15 +243,8 @@ class PantunActionRow extends StatelessWidget {
             onTap: onTap,
             // Target sentuh 44px walau ikonnya kecil (a11y).
             child: ConstrainedBox(
-              constraints: const BoxConstraints.tightFor(
-                width: 44,
-                height: 44,
-              ),
-              child: Icon(
-                icon,
-                size: 16,
-                color: theme.colors.mutedForeground,
-              ),
+              constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+              child: Icon(icon, size: 16, color: theme.colors.mutedForeground),
             ),
           ),
         ),

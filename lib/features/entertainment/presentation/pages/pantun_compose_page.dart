@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart' show TextInputAction;
 import 'package:flutter/widgets.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -29,6 +30,7 @@ class PantunComposePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final controllers = List.generate(4, (_) => useTextEditingController());
     final focusNodes = List.generate(4, (_) => useFocusNode());
     final submitting = useState(false);
@@ -55,7 +57,7 @@ class PantunComposePage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(parentId == null ? 'Tulis pantun' : 'Balas pantun'),
+        title: Text(parentId == null ? l10n.pantunWrite : l10n.pantunReply),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       footer: Padding(
@@ -66,7 +68,7 @@ class PantunComposePage extends HookConsumerWidget {
               : null,
           child: submitting.value
               ? const FCircularProgress(size: .sm)
-              : const Text('Kirim'),
+              : Text(l10n.pantunSend),
         ),
       ),
       child: ListView(
@@ -82,8 +84,9 @@ class PantunComposePage extends HookConsumerWidget {
               // keempat baris pantun terbaca utuh saat menyusun.
               maxLines: 3,
               minLines: 1,
-              textInputAction:
-                  i < 3 ? TextInputAction.next : TextInputAction.done,
+              textInputAction: i < 3
+                  ? TextInputAction.next
+                  : TextInputAction.done,
             ),
             const Gap(12),
           ],
@@ -101,12 +104,13 @@ class PantunComposePage extends HookConsumerWidget {
     String? scheme,
     ValueNotifier<bool> submitting,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final auth = await ref.read(authStatusProvider.future);
     if (!auth.isAuth) {
       if (context.mounted) {
         await showAppErrorSheet(
           context,
-          message: 'Login dulu ya sebelum menulis pantun.',
+          message: l10n.pantunReplyLoginRequired,
         );
       }
       return;
@@ -131,10 +135,7 @@ class PantunComposePage extends HookConsumerWidget {
       if (context.mounted) await showAppErrorSheet(context, message: e.message);
     } catch (_) {
       if (context.mounted) {
-        await showAppErrorSheet(
-          context,
-          message: 'Gagal mengirim pantun. Coba lagi sebentar ya.',
-        );
+        await showAppErrorSheet(context, message: l10n.pantunSendFailed);
       }
     } finally {
       submitting.value = false;
@@ -151,52 +152,56 @@ class _RhymeStatus extends StatelessWidget {
 
   final RhymeCheckResult? check;
   final bool allFilled;
+
   /// Skema yang terdeteksi otomatis; null = belum ada yang cocok.
   final String? scheme;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     if (!allFilled) {
       return Text(
-        'Lengkapi keempat baris dulu ya.',
-        style: theme.typography.body.sm
-            .copyWith(color: theme.colors.mutedForeground),
+        l10n.pantunComposeIncomplete,
+        style: theme.typography.body.sm.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
       );
     }
     return switch (check) {
       RhymeOk(:final warning) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FBadge(
-              variant: FBadgeVariant.primary,
-              child: Text(
-                scheme == null ? 'Pola rima cocok' : 'Pola rima $scheme cocok',
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FBadge(
+            variant: FBadgeVariant.primary,
+            child: Text(
+              scheme == null ? 'Pola rima cocok' : 'Pola rima $scheme cocok',
+            ),
+          ),
+          if (warning != null) ...[
+            const Gap(6),
+            Text(
+              warning,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.primary,
+                fontSize: 12,
               ),
             ),
-            if (warning != null) ...[
-              const Gap(6),
-              Text(
-                warning,
-                style: theme.typography.body.sm
-                    .copyWith(color: theme.colors.primary, fontSize: 12),
-              ),
-            ],
           ],
-        ),
+        ],
+      ),
       RhymeMismatch(:final pairs) => FBadge(
-          variant: FBadgeVariant.destructive,
-          child: Text(
-            pairs
-                .map((p) => 'Baris ${p.$1} & ${p.$2} belum berima')
-                .join('; '),
-          ),
+        variant: FBadgeVariant.destructive,
+        child: Text(
+          pairs.map((p) => 'Baris ${p.$1} & ${p.$2} belum berima').join('; '),
         ),
+      ),
       RhymeLastWordUndetected(:final lineIndex) => FBadge(
-          variant: FBadgeVariant.destructive,
-          child: Text(
-              'Kata akhir baris ${lineIndex + 1} tidak terdeteksi. Perbaiki ya.'),
+        variant: FBadgeVariant.destructive,
+        child: Text(
+          'Kata akhir baris ${lineIndex + 1} tidak terdeteksi. Perbaiki ya.',
         ),
+      ),
       null => const SizedBox.shrink(),
     };
   }
