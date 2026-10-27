@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +31,7 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tinjauan Diskusi'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionQueueTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -46,17 +47,17 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
               Text(
                 error is DiscussionFailure
                     ? error.message
-                    : 'Gagal memuat antrean diskusi',
+                    : AppLocalizations.of(context).reviewDiscussionQueueLoadFailed,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const Gap(12),
+              Gap(12),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(discussionReviewListProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -92,7 +93,7 @@ class _QueueList extends ConsumerWidget {
                 height: constraints.maxHeight,
                 child: Center(
                   child: Text(
-                    'Tidak ada diskusi menunggu tinjauan',
+                    AppLocalizations.of(context).reviewDiscussionQueueEmpty,
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -141,12 +142,12 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
         : '';
     final extra = [
       if (when.isNotEmpty) when,
-      if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
+      if (item.linkUrl != null && item.linkUrl!.isNotEmpty) AppLocalizations.of(context).reviewDiscussionHasLink,
     ].join(' · ');
     return FTile(
       prefix: const Icon(FLucideIcons.messageSquare),
       title: Text(
-        preview.isEmpty ? '(tanpa teks)' : preview,
+        preview.isEmpty ? AppLocalizations.of(context).reviewDiscussionNoText : preview,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
@@ -245,8 +246,8 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: Text('Cuplikan diskusi contoh'),
-      subtitle: Text('Pengirim · baru saja'),
+      title: Text(AppLocalizations.of(context).reviewDiscussionSkeletonExcerpt),
+      subtitle: Text(AppLocalizations.of(context).reviewDiscussionSkeletonMeta),
     );
   }
 }

@@ -32,26 +32,13 @@ class WordSuggestionSummary {
   final int meaningsCount;
   final int imagesCount;
 
-  String get contributorLabel =>
+  String? get contributorLabel =>
       contributorDisplayName?.trim().isNotEmpty == true
           ? contributorDisplayName!.trim()
           : (contributorUsername?.trim().isNotEmpty == true
-              ? contributorUsername!.trim()
-              : 'Kontributor');
+                ? contributorUsername!.trim()
+                : null);
 
-  String get changeHint {
-    final parts = <String>[];
-    if (summaryLemma != null && summaryLemma!.isNotEmpty) {
-      parts.add('lemma');
-    }
-    if (summaryNotes != null && summaryNotes!.isNotEmpty) {
-      parts.add('catatan');
-    }
-    if (meaningsCount > 0) parts.add('makna ($meaningsCount)');
-    if (imagesCount > 0) parts.add('gambar ($imagesCount)');
-    if (parts.isEmpty) return 'Perubahan usulan';
-    return parts.join(', ');
-  }
 }
 
 class WordSuggestionListPage {
@@ -129,12 +116,12 @@ class WordSuggestionDetail {
   final int imagesAdded;
   final int imagesRemoved;
 
-  String get contributorLabel =>
+  String? get contributorLabel =>
       contributorDisplayName?.trim().isNotEmpty == true
           ? contributorDisplayName!.trim()
           : (contributorUsername?.trim().isNotEmpty == true
-              ? contributorUsername!.trim()
-              : 'Kontributor');
+                ? contributorUsername!.trim()
+                : null);
 
   bool get isPending => status == 'pending';
 }

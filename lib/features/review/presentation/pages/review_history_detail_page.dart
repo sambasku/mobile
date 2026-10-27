@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../review_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -25,14 +27,14 @@ class ReviewHistoryDetailPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Detail keputusan'),
+        title: Text(AppLocalizations.of(context).reviewHistoryDetailTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
         loading: () => const Center(child: FCircularProgress()),
         error: (error, _) => Center(
           child: Text(
-            error is ReviewFailure ? error.message : 'Gagal memuat detail',
+            error is ReviewFailure ? error.message : AppLocalizations.of(context).commonLoadFailed,
             textAlign: TextAlign.center,
           ),
         ),
@@ -75,7 +77,7 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
         ref.invalidate(reviewHistoryControllerProvider);
         showFToast(
           context: context,
-          title: const Text('Keputusan dibuka ulang'),
+          title: Text(AppLocalizations.of(context).reviewHistoryReopenedToast),
         );
         context.push(ReviewRouter.sessionPath(startId: detail.contribution.id));
       },
@@ -101,7 +103,7 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
         ref.invalidate(reviewDetailProvider(detail.contribution.id));
         showFToast(
           context: context,
-          title: const Text('Verifikasi kata dicabut'),
+          title: Text(AppLocalizations.of(context).reviewHistoryUnverifiedToast),
         );
       },
     );
@@ -119,9 +121,12 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
           detail.contribution.title,
           style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
-        const Gap(4),
+        Gap(4),
         Text(
-          '${reviewStatusLabel(detail.contribution.status)} · ${detail.contribution.contributorLabel}',
+          reviewStatusContributorLine(
+            detail.contribution,
+            AppLocalizations.of(context),
+          ),
           style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
         ),
         const Gap(16),
@@ -129,13 +134,13 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
         if (prior.isNotEmpty) ...[
           const Gap(16),
           Text(
-            'Riwayat keputusan',
+            AppLocalizations.of(context).reviewHistoryDecisions,
             style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
           ),
-          const Gap(8),
+          Gap(8),
           for (final row in prior) ...[
             Text(
-              '${reviewStatusLabel(row.status)} · ${formatDateTimeIso(row.createdAt)}',
+              '${reviewStatusLabel(row.status, AppLocalizations.of(context))} · ${formatDateTimeIso(row.createdAt)}',
               style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
             ),
             if (row.comment != null && row.comment!.trim().isNotEmpty)
@@ -151,8 +156,8 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
         const Gap(20),
         Text(
           pending
-              ? 'Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.'
-              : 'Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi hanya menghapus stempel kata.',
+              ? AppLocalizations.of(context).reviewHistoryReopenedNote
+              : AppLocalizations.of(context).reviewHistoryReopenedHold,
           style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
         ),
         const Gap(16),
@@ -163,19 +168,19 @@ class _HistoryDetailBodyState extends ConsumerState<_HistoryDetailBody> {
                 : () => context.push(
                     ReviewRouter.sessionPath(startId: detail.contribution.id),
                   ),
-            child: const Text('Lanjut tinjau'),
+            child: Text(AppLocalizations.of(context).reviewHistoryContinue),
           )
         else ...[
           FButton(
             onPress: _busy ? null : _reopen,
-            child: Text(_busy ? 'Memproses...' : 'Buka ulang'),
+            child: Text(_busy ? AppLocalizations.of(context).reviewHistoryProcessing : AppLocalizations.of(context).reviewHistoryReopen),
           ),
           if (detail.wordAlreadyVerified) ...[
-            const Gap(8),
+            Gap(8),
             FButton(
               variant: FButtonVariant.outline,
               onPress: _busy ? null : _unverify,
-              child: const Text('Cabut verifikasi'),
+              child: Text(AppLocalizations.of(context).reviewHistoryUnverify),
             ),
           ],
         ],

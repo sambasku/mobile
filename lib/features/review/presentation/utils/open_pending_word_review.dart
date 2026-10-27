@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +29,7 @@ Future<void> openPendingWordReview(
   result.match(
     (failure) {
       final message = failure.isForbidden
-          ? 'Kamu tidak berwenang meninjau usulan.'
+          ? AppLocalizations.of(context).commonForbiddenBody
           : failure.message;
       showFToast(
         context: context,
@@ -41,7 +42,7 @@ Future<void> openPendingWordReview(
       if (item == null) {
         showFToast(
           context: context,
-          title: const Text('Tidak ada usulan yang menunggu untuk kata ini.'),
+          title: Text(AppLocalizations.of(context).reviewPendingNotFound),
         );
         return;
       }

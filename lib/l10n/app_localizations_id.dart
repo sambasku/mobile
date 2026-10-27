@@ -1459,6 +1459,1161 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get historyFieldMergedWordId => 'ID kata digabung';
+
+  @override
+  String get commonCancel => 'Batal';
+
+  @override
+  String get commonRetry => 'Coba lagi';
+
+  @override
+  String get commonSave => 'Simpan';
+
+  @override
+  String get commonReject => 'Tolak';
+
+  @override
+  String get commonApprove => 'Setujui';
+
+  @override
+  String get commonSkip => 'Lewati';
+
+  @override
+  String get commonDone => 'Selesai';
+
+  @override
+  String get commonClose => 'Tutup';
+
+  @override
+  String get commonDelete => 'Hapus';
+
+  @override
+  String get commonYes => 'Ya';
+
+  @override
+  String get commonNo => 'Tidak';
+
+  @override
+  String get commonPrimary => 'Utama';
+
+  @override
+  String get commonEmptyField => 'Belum diisi';
+
+  @override
+  String get commonNoDetail => 'Tidak ada detail.';
+
+  @override
+  String get commonLoadFailed => 'Gagal memuat detail';
+
+  @override
+  String get commonForbiddenBody => 'Kamu tidak berwenang meninjau usulan.';
+
+  @override
+  String get commonForbiddenRole =>
+      'Role tidak diizinkan mengakses endpoint ini';
+
+  @override
+  String get commonVerifierArea => 'Area Verifikator';
+
+  @override
+  String get commonReason => 'Alasan';
+
+  @override
+  String get reviewEntityWord => 'Kata';
+
+  @override
+  String get reviewEntityPronunciation => 'Pelafalan';
+
+  @override
+  String get reviewEntityWordImage => 'Gambar';
+
+  @override
+  String get reviewEntityWordAudio => 'Audio';
+
+  @override
+  String get reviewEntityExample => 'Contoh kalimat';
+
+  @override
+  String get reviewEntityMeaning => 'Makna';
+
+  @override
+  String get reviewEntityOther => 'Usulan';
+
+  @override
+  String get reviewStatusPending => 'Menunggu';
+
+  @override
+  String get reviewStatusApproved => 'Disetujui';
+
+  @override
+  String get reviewStatusRejected => 'Ditolak';
+
+  @override
+  String get reviewStatusCorrected => 'Dikoreksi';
+
+  @override
+  String get reviewStatusReopened => 'Dibuka ulang';
+
+  @override
+  String get reviewStatusAll => 'Semua';
+
+  @override
+  String get reviewContributorFallback => 'Kontributor';
+
+  @override
+  String get reviewHomeStart => 'Mulai tinjau';
+
+  @override
+  String get reviewHomeContributionTitle => 'Ada usulan yang menunggu';
+
+  @override
+  String get reviewHomeContributionSubtitle =>
+      'Antrean kontribusi untuk ditinjau';
+
+  @override
+  String get reviewHomeCompleteWordTitle => 'Perbaiki/lengkapi kata';
+
+  @override
+  String get reviewHomeCompleteWordSubtitle =>
+      'Tambah makna, relasi, variasi penulisan, contoh, dan rekam pelafalan';
+
+  @override
+  String get reviewHomeSuggestionTitle => 'Usulan edit';
+
+  @override
+  String get reviewHomeSuggestionWaiting => 'Ada usulan edit yang menunggu';
+
+  @override
+  String get reviewHomeSuggestionSubtitle => 'Antrean usulan perubahan kata';
+
+  @override
+  String get reviewHomeDiscussionTitle => 'Tinjauan Diskusi';
+
+  @override
+  String get reviewHomeDiscussionWaiting => 'Ada diskusi yang menunggu';
+
+  @override
+  String get reviewHomeDiscussionSubtitle =>
+      'Antrean Ruang Diskusi untuk ditinjau';
+
+  @override
+  String get reviewHomeSearchMissTitle => 'Pencarian kosong';
+
+  @override
+  String get reviewHomeSearchMissSubtitle =>
+      'Tayangkan ke publik atau usulkan sendiri';
+
+  @override
+  String get reviewHomeHistoryTitle => 'Riwayat tinjauan';
+
+  @override
+  String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
+
+  @override
+  String get reviewQueueLoadFailed => 'Gagal memuat antrean';
+
+  @override
+  String get reviewQueueEmpty => 'Tidak ada usulan yang menunggu';
+
+  @override
+  String get reviewQueueEmptyHint =>
+      'Usulan baru dari kontributor akan muncul di sini.';
+
+  @override
+  String get reviewQueueStart => 'Mulai tinjau';
+
+  @override
+  String reviewQueueStartCount(String count) {
+    return 'Mulai tinjau ($count)';
+  }
+
+  @override
+  String reviewQueueStartMore(String count) {
+    return 'Mulai tinjau ($count+)';
+  }
+
+  @override
+  String get reviewSkeletonProposalTitle => 'Usulan kata contoh';
+
+  @override
+  String get reviewSkeletonProposalMeta =>
+      'Kata · kontributor · 21 Sep 2026 00:00';
+
+  @override
+  String get reviewSkeletonLemma => 'Lemma contoh';
+
+  @override
+  String get reviewSuggestionsTitle => 'Usulan edit';
+
+  @override
+  String get reviewSuggestionsLoadFailed => 'Gagal memuat usulan edit';
+
+  @override
+  String get reviewSuggestionsEmpty => 'Tidak ada usulan edit menunggu';
+
+  @override
+  String get reviewSuggestionDetailTitle => 'Detail usulan edit';
+
+  @override
+  String get reviewSuggestionRejectTitle => 'Tolak usulan';
+
+  @override
+  String get reviewSuggestionRejectBody =>
+      'Berikan alasan penolakan untuk kontributor.';
+
+  @override
+  String get reviewSuggestionRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewSuggestionApprovedToast => 'Usulan disetujui';
+
+  @override
+  String reviewSuggestionFrom(String contributor, String date) {
+    return 'Dari $contributor · $date';
+  }
+
+  @override
+  String reviewSuggestionReason(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String get reviewSuggestionComparison => 'Perbandingan';
+
+  @override
+  String get reviewSuggestionNoDiff => 'Tidak ada diff ringkas';
+
+  @override
+  String get reviewSuggestionApproveNote =>
+      'Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar bila perlu.';
+
+  @override
+  String reviewSuggestionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get reviewSuggestionCurrentEmpty => 'Sekarang: (kosong)';
+
+  @override
+  String get reviewSuggestionProposedEmpty => 'Usulan: (kosong)';
+
+  @override
+  String reviewSuggestionCurrent(String value) {
+    return 'Sekarang: $value';
+  }
+
+  @override
+  String reviewSuggestionProposed(String value) {
+    return 'Usulan: $value';
+  }
+
+  @override
+  String get reviewSuggestionEntryType => 'Jenis entri';
+
+  @override
+  String reviewSuggestionDiffCount(String label, String count) {
+    return '$label: $count perubahan';
+  }
+
+  @override
+  String reviewSuggestionDiffValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get reviewChangeHintLemma => 'lemma';
+
+  @override
+  String get reviewChangeHintNotes => 'catatan';
+
+  @override
+  String reviewChangeHintMeanings(int count) {
+    return 'makna ($count)';
+  }
+
+  @override
+  String reviewChangeHintImages(int count) {
+    return 'gambar ($count)';
+  }
+
+  @override
+  String get reviewChangeHintFallback => 'Perubahan usulan';
+
+  @override
+  String get reviewHistoryTitle => 'Riwayat verifikasi';
+
+  @override
+  String get reviewHistoryLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get reviewHistoryEmpty => 'Belum ada keputusan verifikasi';
+
+  @override
+  String get reviewHistoryEmptyFiltered =>
+      'Tidak ada keputusan dengan status ini';
+
+  @override
+  String get reviewHistoryDetailTitle => 'Detail keputusan';
+
+  @override
+  String get reviewHistoryDecisions => 'Riwayat keputusan';
+
+  @override
+  String get reviewHistoryReopenedToast => 'Keputusan dibuka ulang';
+
+  @override
+  String get reviewHistoryUnverifiedToast => 'Verifikasi kata dicabut';
+
+  @override
+  String get reviewHistoryReopenedNote =>
+      'Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.';
+
+  @override
+  String get reviewHistoryReopenedHold =>
+      'Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi membalik status kata.';
+
+  @override
+  String get reviewHistoryContinue => 'Lanjut tinjau';
+
+  @override
+  String get reviewHistoryProcessing => 'Memproses...';
+
+  @override
+  String get reviewHistoryReopen => 'Buka ulang';
+
+  @override
+  String get reviewHistoryUnverify => 'Cabut verifikasi';
+
+  @override
+  String get reviewHistorySkeletonMeta => 'Disetujui · 21 Sep 2026 00:00';
+
+  @override
+  String get reviewSessionQueueDone => 'Antrean selesai';
+
+  @override
+  String get reviewSessionSkipped => 'Dilewati.';
+
+  @override
+  String get reviewSessionApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewSessionRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewSessionAlreadyProcessed => 'Usulan ini sudah diproses.';
+
+  @override
+  String get reviewSessionAccessDenied => 'Akses ditolak';
+
+  @override
+  String get reviewSessionSaveFailed => 'Gagal menyimpan keputusan';
+
+  @override
+  String get reviewSessionRestoreFailed => 'Gagal mengembalikan kartu.';
+
+  @override
+  String get reviewSessionRestoredToast => 'Kartu sebelumnya dikembalikan';
+
+  @override
+  String get reviewSessionCorrectionSavedPending =>
+      'Koreksi disimpan. Usulan tetap menunggu.';
+
+  @override
+  String get reviewSessionCorrectionSavedClosed =>
+      'Koreksi disimpan dan usulan ditutup.';
+
+  @override
+  String reviewSessionCounter(int position, int total) {
+    return 'Tinjau · $position/$total';
+  }
+
+  @override
+  String reviewSessionCounterCorrect(int position, int total) {
+    return 'Koreksi · $position/$total';
+  }
+
+  @override
+  String get reviewSessionVerifiedSelf =>
+      'Sudah terverifikasi. Menyetujui hanya menutup antrean.';
+
+  @override
+  String reviewSessionVerifiedBy(String verifier) {
+    return 'Sudah terverifikasi oleh @$verifier. Menyetujui hanya menutup antrean.';
+  }
+
+  @override
+  String get reviewSessionVerifierNote => 'Catatan verifikator';
+
+  @override
+  String get reviewSessionSwipeHint =>
+      'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.';
+
+  @override
+  String get reviewSessionSkeletonTitle => 'Judul usulan contoh';
+
+  @override
+  String get reviewSessionEntryType => 'Jenis entri';
+
+  @override
+  String get reviewSessionSkeletonDate => '21 Sep 2026 00:00';
+
+  @override
+  String get reviewSessionSkeletonSection => 'Judul bagian preview';
+
+  @override
+  String get reviewSessionSkeletonBody =>
+      'Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.';
+
+  @override
+  String get reviewSessionSkeletonMeta => 'Baris meta tambahan untuk shimmer.';
+
+  @override
+  String get reviewSessionCorrect => 'Koreksi';
+
+  @override
+  String get reviewSessionBack => 'Kembali ke kartu sebelumnya';
+
+  @override
+  String get reviewSwipeApprove => 'Setujui';
+
+  @override
+  String get reviewSwipeReject => 'Tolak';
+
+  @override
+  String get reviewSwipeSkip => 'Lewati';
+
+  @override
+  String get reviewRejectReasonInaccurate => 'Kurang akurat';
+
+  @override
+  String get reviewRejectReasonSpelling => 'Ejaan atau penulisan salah';
+
+  @override
+  String get reviewRejectReasonDuplicate => 'Duplikat entri yang sudah ada';
+
+  @override
+  String get reviewRejectReasonIrrelevant => 'Tidak relevan';
+
+  @override
+  String get reviewRejectReasonMedia => 'Media (gambar/audio) tidak sesuai';
+
+  @override
+  String get reviewRejectReasonInappropriate => 'Konten tidak pantas';
+
+  @override
+  String get reviewRejectReasonIncomplete => 'Informasi kurang lengkap';
+
+  @override
+  String get reviewRejectReasonOther => 'Lainnya';
+
+  @override
+  String get reviewRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewRejectSheetBody =>
+      'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.';
+
+  @override
+  String get reviewRejectReasonLabel => 'Alasan penolakan';
+
+  @override
+  String get reviewRejectReasonHint => 'Jelaskan alasan penolakan';
+
+  @override
+  String get reviewDiscussionQueueTitle => 'Tinjauan Diskusi';
+
+  @override
+  String get reviewDiscussionQueueLoadFailed => 'Gagal memuat antrean diskusi';
+
+  @override
+  String get reviewDiscussionQueueEmpty =>
+      'Tidak ada diskusi menunggu tinjauan';
+
+  @override
+  String get reviewDiscussionDetailTitle => 'Tinjau diskusi';
+
+  @override
+  String get reviewDiscussionHasLink => 'Ada tautan';
+
+  @override
+  String get reviewDiscussionNoText => '(tanpa teks)';
+
+  @override
+  String get reviewDiscussionSkeletonExcerpt => 'Cuplikan diskusi contoh';
+
+  @override
+  String get reviewDiscussionSkeletonMeta => 'Pengirim · baru saja';
+
+  @override
+  String get reviewDiscussionApprovedToast => 'Diskusi disetujui dan tayang';
+
+  @override
+  String get reviewDiscussionRejectedToast => 'Diskusi ditolak';
+
+  @override
+  String get reviewDiscussionPhotosSafe => 'Pastikan semua foto aman';
+
+  @override
+  String reviewDiscussionApprovePhotos(
+    int approved,
+    int censored,
+    int flagged,
+  ) {
+    return 'Kamu menyetujui $approved foto ($censored tersensor · $flagged ber-flag kekerasan).';
+  }
+
+  @override
+  String get reviewDiscussionPhotoChecklist =>
+      'Pastikan foto bukan NSFW, aman ditayangkan publik, data sensitif sudah disensor bila perlu, dan flag kekerasan sudah ditempel bila perlu.';
+
+  @override
+  String get reviewDiscussionConfirmCheck => 'Saya sudah memeriksa, setujui';
+
+  @override
+  String get reviewDiscussionRejectTitle => 'Tolak diskusi';
+
+  @override
+  String get reviewDiscussionRejectReasonRequired =>
+      'Berikan alasan penolakan (wajib).';
+
+  @override
+  String get reviewDiscussionInvalidLink => 'Tautan tidak valid';
+
+  @override
+  String get reviewDiscussionCannotOpenLink => 'Tidak bisa membuka tautan';
+
+  @override
+  String get reviewDiscussionStagingImageMissing =>
+      'URL gambar staging tidak tersedia';
+
+  @override
+  String reviewDiscussionAttachmentCount(int count) {
+    return 'Lampiran gambar ($count)';
+  }
+
+  @override
+  String get reviewDiscussionTapPhotoFull =>
+      'Ketuk foto untuk melihat ukuran penuh';
+
+  @override
+  String get reviewDiscussionEditCensor => 'Edit sensor';
+
+  @override
+  String get reviewDiscussionCensor => 'Sensor';
+
+  @override
+  String reviewDiscussionForceViolence(int index) {
+    return 'Gambar $index: berisi kekerasan';
+  }
+
+  @override
+  String get reviewDiscussionForceViolenceHint =>
+      'Centang jika foto menunjukkan kekerasan';
+
+  @override
+  String reviewDiscussionForceViolenceLabel(int index) {
+    return 'Gambar $index berisi kekerasan';
+  }
+
+  @override
+  String get reviewDiscussionApprovePublish => 'Setujui & tayangkan';
+
+  @override
+  String reviewDiscussionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get reviewCensorTitle => 'Sensor gambar';
+
+  @override
+  String get reviewCensorLoadFailed =>
+      'Gagal memuat gambar. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get reviewCensorReadFailed => 'Gagal baca piksel';
+
+  @override
+  String get reviewCensorEmptyBody => 'Body kosong';
+
+  @override
+  String get reviewCensorExportFailed => 'Export gagal';
+
+  @override
+  String get reviewCensorSaveFailed => 'Gagal menyimpan hasil sensor';
+
+  @override
+  String get reviewCensorHint =>
+      'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.';
+
+  @override
+  String get reviewCensorModePixelate => 'Pixelate';
+
+  @override
+  String get reviewCensorModeBlur => 'Blur';
+
+  @override
+  String get reviewCensorModeBlock => 'Blok';
+
+  @override
+  String get reviewCensorBrushSize => 'Ukuran kuas';
+
+  @override
+  String get reviewCensorApply => 'Terapkan sensor';
+
+  @override
+  String get reviewSearchMissTitle => 'Pencarian kosong';
+
+  @override
+  String get reviewSearchMissLoadFailed => 'Gagal memuat pencarian kosong';
+
+  @override
+  String get reviewSearchMissEmpty =>
+      'Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akar yang cocok.';
+
+  @override
+  String get reviewSearchMissSwipeHint =>
+      'Kanan tayang · kiri singkirkan · atas lewati - atau ketuk kartu untuk mengusulkan.';
+
+  @override
+  String get reviewSearchMissPublish => 'Tayang';
+
+  @override
+  String get reviewSearchMissDismiss => 'Singkirkan';
+
+  @override
+  String get reviewSearchMissDone =>
+      'Selesai - semua pencarian kosong sudah ditangani.';
+
+  @override
+  String get reviewSearchMissReload => 'Muat ulang';
+
+  @override
+  String get reviewSearchMissCorrect => 'Koreksi term';
+
+  @override
+  String get reviewSearchMissCorrectHint =>
+      'Perbaiki salah ketik warga sebelum ditayangkan.';
+
+  @override
+  String get reviewSearchMissTerm => 'Term';
+
+  @override
+  String reviewSearchMissCorrectedToast(String term) {
+    return '\"$term\" dikoreksi';
+  }
+
+  @override
+  String reviewSearchMissPublishedToast(String term) {
+    return '\"$term\" tayang di beranda publik';
+  }
+
+  @override
+  String reviewSearchMissSkippedToast(String term) {
+    return '\"$term\" sudah tayang - dilewati';
+  }
+
+  @override
+  String get reviewSearchMissDirectionIdSbs => 'Indonesia → Sambas';
+
+  @override
+  String get reviewSearchMissDirectionSbsId => 'Sambas → Indonesia';
+
+  @override
+  String reviewSearchMissDirectionHits(Object count, Object direction) {
+    return '$direction · $count× dicari';
+  }
+
+  @override
+  String reviewSearchMissHits(int count) {
+    return '$count dicari';
+  }
+
+  @override
+  String get reviewSearchMissNotPublished => 'belum tayang';
+
+  @override
+  String get reviewSearchMissTapToSuggest =>
+      'Ketuk untuk mengusulkan kata ini.';
+
+  @override
+  String get reviewPreviewAudioProposal => 'Audio usulan';
+
+  @override
+  String get reviewPreviewTapToRead => 'Ketuk untuk baca selengkapnya';
+
+  @override
+  String get reviewPreviewNoMeaning => 'Tidak ada makna.';
+
+  @override
+  String get reviewPreviewProposedWord => 'Kata yang diusulkan';
+
+  @override
+  String get reviewPreviewCompleteness => 'Kelengkapan';
+
+  @override
+  String get reviewPreviewSynonyms => 'Sinonim';
+
+  @override
+  String get reviewPreviewAntonyms => 'Antonim';
+
+  @override
+  String get reviewPreviewVariants => 'Variasi';
+
+  @override
+  String reviewPreviewTranslation(String text) {
+    return 'Terjemahan: $text';
+  }
+
+  @override
+  String get reviewPreviewProposedImage => 'Gambar yang diusulkan';
+
+  @override
+  String reviewPreviewForWord(String lemma) {
+    return 'Untuk kata “$lemma”';
+  }
+
+  @override
+  String get reviewPreviewImageUrlMissing => 'URL gambar tidak tersedia.';
+
+  @override
+  String get reviewPreviewTapToEnlarge => 'Ketuk untuk perbesar';
+
+  @override
+  String get reviewPreviewAltText => 'Alt text';
+
+  @override
+  String get reviewPreviewAudioFileMissing => 'File audio tidak tersedia.';
+
+  @override
+  String get reviewPreviewDurasi => 'Durasi';
+
+  @override
+  String get reviewPreviewUkuran => 'Ukuran';
+
+  @override
+  String get reviewPreviewTipe => 'Tipe';
+
+  @override
+  String get reviewPreviewProposedPronunciation => 'Pelafalan yang diusulkan';
+
+  @override
+  String reviewPreviewNotation(String notation) {
+    return 'Notasi: $notation';
+  }
+
+  @override
+  String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
+
+  @override
+  String get reviewPreviewSourceOfMeaning => 'Sumber makna';
+
+  @override
+  String get reviewPreviewTranslationSection => 'Terjemahan';
+
+  @override
+  String get reviewPreviewTranslationEmptyDeliberate =>
+      'Kontributor sengaja tidak mengisi terjemahan.';
+
+  @override
+  String get reviewPreviewTranslationMarkedEmpty =>
+      'Ditandai ada terjemahan, tetapi belum diisi.';
+
+  @override
+  String get reviewPreviewTranslationNone => 'Belum ada terjemahan.';
+
+  @override
+  String get reviewPreviewProposedExample => 'Contoh kalimat yang diusulkan';
+
+  @override
+  String get reviewPreviewSambasSentence => 'Kalimat sambas';
+
+  @override
+  String get reviewPreviewTranslationSentence => 'Kalimat terjemahan';
+
+  @override
+  String get reviewPreviewSourceType => 'Jenis sumber';
+
+  @override
+  String get reviewPreviewProposalContent => 'Isi usulan';
+
+  @override
+  String get reviewPreviewDetailLabel => 'Detail';
+
+  @override
+  String get reviewPreviewPlayRecording => 'Putar rekaman';
+
+  @override
+  String get reviewPreviewPlayFailed => 'Gagal memutar - ketuk lagi';
+
+  @override
+  String get reviewPreviewPlaying => 'Sedang diputar';
+
+  @override
+  String get reviewPreviewTapToListen => 'Ketuk untuk mendengar';
+
+  @override
+  String get reviewPreviewFieldValue => 'Nilai';
+
+  @override
+  String get reviewPreviewFieldUrlAudio => 'URL audio';
+
+  @override
+  String get reviewPreviewFieldUrl => 'URL';
+
+  @override
+  String get reviewPreviewFieldSpeech => 'Penutur';
+
+  @override
+  String get reviewPreviewFieldAlt => 'Teks alternatif';
+
+  @override
+  String reviewPreviewDurationSec(int sec) {
+    return '$sec dtk';
+  }
+
+  @override
+  String reviewPreviewDurationMin(int min) {
+    return '$min m';
+  }
+
+  @override
+  String reviewPreviewDurationMinSec(int min, int rem) {
+    return '$min m $rem dtk';
+  }
+
+  @override
+  String reviewPreviewBytesB(int bytes) {
+    return '$bytes B';
+  }
+
+  @override
+  String reviewPreviewBytesKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String reviewPreviewBytesMb(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String reviewMeaningNumber(int index) {
+    return 'Makna $index';
+  }
+
+  @override
+  String get reviewMeaningSwapDefinition => 'Tukar definisi dan terjemahan';
+
+  @override
+  String reviewMeaningDelete(int index) {
+    return 'Hapus makna $index';
+  }
+
+  @override
+  String get reviewMeaningWordClassRequired => 'Kelas kata wajib dipilih';
+
+  @override
+  String get reviewMeaningExampleSection => 'Contoh kalimat';
+
+  @override
+  String get reviewMeaningAddExample => 'Tambah contoh';
+
+  @override
+  String get reviewMeaningExampleSambas => 'Kalimat Sambas';
+
+  @override
+  String get reviewMeaningExampleTranslation => 'Terjemahan (opsional)';
+
+  @override
+  String get reviewMeaningDeleteExample => 'Hapus contoh';
+
+  @override
+  String get reviewMeaningPickWordClass => 'Pilih kelas kata';
+
+  @override
+  String get reviewExtrasSynonymsAntonyms => 'Sinonim & antonim';
+
+  @override
+  String get reviewExtrasSynonyms => 'Sinonim';
+
+  @override
+  String get reviewExtrasAntonyms => 'Antonim';
+
+  @override
+  String reviewExtrasTypeCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String get reviewExtrasNoSynonym =>
+      'Belum ada sinonim. Cari kata di bawah untuk menambah.';
+
+  @override
+  String get reviewExtrasNoAntonym =>
+      'Belum ada antonim. Cari kata di bawah untuk menambah.';
+
+  @override
+  String reviewExtrasRemoveRelation(String lemma) {
+    return 'Hapus $lemma';
+  }
+
+  @override
+  String get reviewExtrasSearchWord => 'Cari kata yang sudah ada...';
+
+  @override
+  String get reviewExtrasMinChars => 'Ketik minimal 2 huruf.';
+
+  @override
+  String get reviewExtrasWordNotFound =>
+      'Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.';
+
+  @override
+  String get reviewVariantTitle => 'Variasi penulisan';
+
+  @override
+  String reviewVariantHint(String lemma) {
+    return 'Ejaan lain untuk \"$lemma\".';
+  }
+
+  @override
+  String reviewVariantRemove(String form) {
+    return 'Hapus $form';
+  }
+
+  @override
+  String get reviewVariantAddHint => 'Tulis variasi, mis. klintiak';
+
+  @override
+  String get reviewVariantAdd => 'Tambah';
+
+  @override
+  String get reviewVariantSameAsLemma =>
+      'Variasi tidak boleh sama dengan lemma';
+
+  @override
+  String get reviewVariantDuplicate => 'Variasi ini sudah ada';
+
+  @override
+  String reviewVariantMax(int max) {
+    return 'Maksimal $max variasi';
+  }
+
+  @override
+  String get reviewExtrasNoItems => 'Belum ada';
+
+  @override
+  String get reviewCorrectNotation => 'Notasi';
+
+  @override
+  String get reviewCorrectPronunciation => 'Pelafalan';
+
+  @override
+  String get reviewCorrectAudioUrl => 'URL audio';
+
+  @override
+  String get reviewCorrectSpeaker => 'Penutur';
+
+  @override
+  String get reviewCorrectImageUrl => 'URL gambar';
+
+  @override
+  String get reviewCorrectAltText => 'Teks alternatif';
+
+  @override
+  String get reviewCorrectSambasSentence => 'Kalimat sambas';
+
+  @override
+  String get reviewCorrectTranslationSentence => 'Kalimat terjemahan';
+
+  @override
+  String get reviewCorrectSourceType => 'Jenis sumber';
+
+  @override
+  String get reviewCorrectNotesOptional => 'Catatan (opsional)';
+
+  @override
+  String get reviewCorrectPublishVerify => 'Langsung terbitkan dan verifikasi';
+
+  @override
+  String get reviewCorrectProcessing => 'Memproses...';
+
+  @override
+  String get reviewCorrectSavePublish => 'Simpan dan terbitkan';
+
+  @override
+  String get reviewCorrectSavePending => 'Simpan, tetap menunggu';
+
+  @override
+  String get reviewCorrectCancel => 'Batal koreksi';
+
+  @override
+  String get reviewCorrectPolitenessConflict =>
+      'Halus dan Kasar tidak bisa dipilih bersamaan';
+
+  @override
+  String get reviewCorrectWordNotes => 'Catatan kata';
+
+  @override
+  String get reviewCorrectRegister => 'Register';
+
+  @override
+  String get reviewCorrectRegisterHint =>
+      'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.';
+
+  @override
+  String get reviewCorrectWarning => 'Peringatan';
+
+  @override
+  String get reviewCorrectWarningHint => 'Sensitivitas isi makna.';
+
+  @override
+  String get reviewCorrectAddMeaning => 'Tambah makna';
+
+  @override
+  String get reviewCorrectAddPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get reviewCorrectPronunciationAutoSave =>
+      'Langsung tersimpan, tidak menunggu tombol Simpan';
+
+  @override
+  String reviewCorrectPronunciationRecorded(int count) {
+    return '$count rekaman baru terkirim';
+  }
+
+  @override
+  String reviewCorrectSynonymCount(int count) {
+    return '$count sinonim';
+  }
+
+  @override
+  String reviewCorrectAntonymCount(int count) {
+    return '$count antonim';
+  }
+
+  @override
+  String get reviewCorrectLanguageUnknown => 'Bahasa kata tidak diketahui';
+
+  @override
+  String get reviewCorrectWordClassLoadFailed => 'Gagal memuat kelas kata';
+
+  @override
+  String get reviewCorrectMeaningPayloadMissing =>
+      'Payload makna tidak memuat definisi atau terjemahan.';
+
+  @override
+  String get reviewCorrectKbbiHint =>
+      'Tekan icon buku untuk mencari definisi di KBBI';
+
+  @override
+  String reviewCorrectCarriedTranslations(int count) {
+    return 'Terjemahan lain milik makna ini ($count) ikut tersimpan tanpa diubah.';
+  }
+
+  @override
+  String get reviewCorrectDefinitionFromKbbi => 'Definisi diisi dari KBBI';
+
+  @override
+  String get reviewCorrectWordType => 'Jenis entri';
+
+  @override
+  String get reviewWordTypeGeneral => 'Umum';
+
+  @override
+  String get reviewWordTypeWord => 'Kata';
+
+  @override
+  String get reviewWordTypeIdiom => 'Idiom';
+
+  @override
+  String get reviewWordTypeProverb => 'Peribahasa';
+
+  @override
+  String get reviewWordTypeExpression => 'Ungkapan';
+
+  @override
+  String get reviewInlineTypeLocked => 'Jenis tidak bisa diubah';
+
+  @override
+  String get reviewInlineTypeLockedHint =>
+      'has_component hanya untuk entri idiom/peribahasa/ungkapan';
+
+  @override
+  String get reviewPendingNotFound =>
+      'Tidak ada usulan yang menunggu untuk kata ini.';
+
+  @override
+  String get reviewRepoQueueLoadFailed => 'Gagal memuat antrean review';
+
+  @override
+  String get reviewRepoSuggestionDetailLoadFailed =>
+      'Gagal memuat detail usulan';
+
+  @override
+  String get reviewRepoReopenFailed => 'Gagal membuka ulang keputusan';
+
+  @override
+  String get reviewRepoSkipFailed => 'Gagal melewati usulan';
+
+  @override
+  String get reviewRepoRestoreFailed => 'Gagal mengembalikan usulan';
+
+  @override
+  String get reviewRepoUnverifyFailed => 'Gagal mencabut verifikasi kata';
+
+  @override
+  String get reviewRepoDecisionSaveFailed => 'Gagal menyimpan keputusan';
+
+  @override
+  String get reviewRepoSearchMissLoadFailed => 'Gagal memuat pencarian kosong';
+
+  @override
+  String get reviewRepoSearchMissPublishFailed => 'Gagal mengubah tayang';
+
+  @override
+  String get reviewRepoSearchMissCorrectFailed => 'Gagal mengoreksi term';
+
+  @override
+  String get reviewRepoSearchMissDismissFailed => 'Gagal menyingkirkan';
+
+  @override
+  String get reviewRepoSearchMissSkipFailed => 'Gagal melewati';
+
+  @override
+  String get reviewRepoSuggestionsLoadFailed =>
+      'Gagal memuat antrean usulan edit';
+
+  @override
+  String get reviewRepoSuggestionLoadFailed =>
+      'Gagal memuat detail usulan edit';
+
+  @override
+  String get reviewRepoSuggestionApproveFailed => 'Gagal menyetujui usulan';
+
+  @override
+  String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
+
+  @override
+  String reviewSearchMissHitsText(String value) {
+    return '$value dicari';
+  }
+
+  @override
+  String get reviewSearchMissVisibleSuffix => 'tayang';
+
+  @override
+  String reviewSearchMissDirectionHitsFull(
+    String direction,
+    int count,
+    String status,
+  ) {
+    return '$direction · $count× dicari · $status';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -2916,4 +4071,1159 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get historyFieldMergedWordId => 'ID kata digabung';
+
+  @override
+  String get commonCancel => 'Batal';
+
+  @override
+  String get commonRetry => 'Coba lagi';
+
+  @override
+  String get commonSave => 'Simpan';
+
+  @override
+  String get commonReject => 'Tolak';
+
+  @override
+  String get commonApprove => 'Setujui';
+
+  @override
+  String get commonSkip => 'Lewati';
+
+  @override
+  String get commonDone => 'Selesai';
+
+  @override
+  String get commonClose => 'Tutup';
+
+  @override
+  String get commonDelete => 'Hapus';
+
+  @override
+  String get commonYes => 'Ya';
+
+  @override
+  String get commonNo => 'Tidak';
+
+  @override
+  String get commonPrimary => 'Utama';
+
+  @override
+  String get commonEmptyField => 'Belum diisi';
+
+  @override
+  String get commonNoDetail => 'Tidak ada detail.';
+
+  @override
+  String get commonLoadFailed => 'Gagal memuat detail';
+
+  @override
+  String get commonForbiddenBody => 'Kamu tidak berwenang meninjau usulan.';
+
+  @override
+  String get commonForbiddenRole =>
+      'Role tidak diizinkan mengakses endpoint ini';
+
+  @override
+  String get commonVerifierArea => 'Area Verifikator';
+
+  @override
+  String get commonReason => 'Alasan';
+
+  @override
+  String get reviewEntityWord => 'Kata';
+
+  @override
+  String get reviewEntityPronunciation => 'Pelafalan';
+
+  @override
+  String get reviewEntityWordImage => 'Gambar';
+
+  @override
+  String get reviewEntityWordAudio => 'Audio';
+
+  @override
+  String get reviewEntityExample => 'Contoh kalimat';
+
+  @override
+  String get reviewEntityMeaning => 'Makna';
+
+  @override
+  String get reviewEntityOther => 'Usulan';
+
+  @override
+  String get reviewStatusPending => 'Menunggu';
+
+  @override
+  String get reviewStatusApproved => 'Disetujui';
+
+  @override
+  String get reviewStatusRejected => 'Ditolak';
+
+  @override
+  String get reviewStatusCorrected => 'Dikoreksi';
+
+  @override
+  String get reviewStatusReopened => 'Dibuka ulang';
+
+  @override
+  String get reviewStatusAll => 'Semua';
+
+  @override
+  String get reviewContributorFallback => 'Kontributor';
+
+  @override
+  String get reviewHomeStart => 'Mulai tinjau';
+
+  @override
+  String get reviewHomeContributionTitle => 'Ada usulan yang menunggu';
+
+  @override
+  String get reviewHomeContributionSubtitle =>
+      'Antrean kontribusi untuk ditinjau';
+
+  @override
+  String get reviewHomeCompleteWordTitle => 'Perbaiki/lengkapi kata';
+
+  @override
+  String get reviewHomeCompleteWordSubtitle =>
+      'Tambah makna, relasi, variasi penulisan, contoh, dan rekam pelafalan';
+
+  @override
+  String get reviewHomeSuggestionTitle => 'Usulan edit';
+
+  @override
+  String get reviewHomeSuggestionWaiting => 'Ada usulan edit yang menunggu';
+
+  @override
+  String get reviewHomeSuggestionSubtitle => 'Antrean usulan perubahan kata';
+
+  @override
+  String get reviewHomeDiscussionTitle => 'Tinjauan Diskusi';
+
+  @override
+  String get reviewHomeDiscussionWaiting => 'Ada diskusi yang menunggu';
+
+  @override
+  String get reviewHomeDiscussionSubtitle =>
+      'Antrean Ruang Diskusi untuk ditinjau';
+
+  @override
+  String get reviewHomeSearchMissTitle => 'Pencarian kosong';
+
+  @override
+  String get reviewHomeSearchMissSubtitle =>
+      'Tayangkan ke publik atau usulkan sendiri';
+
+  @override
+  String get reviewHomeHistoryTitle => 'Riwayat tinjauan';
+
+  @override
+  String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
+
+  @override
+  String get reviewQueueLoadFailed => 'Gagal memuat antrean';
+
+  @override
+  String get reviewQueueEmpty => 'Tidak ada usulan yang menunggu';
+
+  @override
+  String get reviewQueueEmptyHint =>
+      'Usulan baru dari kontributor akan muncul di sini.';
+
+  @override
+  String get reviewQueueStart => 'Mulai tinjau';
+
+  @override
+  String reviewQueueStartCount(String count) {
+    return 'Mulai tinjau ($count)';
+  }
+
+  @override
+  String reviewQueueStartMore(String count) {
+    return 'Mulai tinjau ($count+)';
+  }
+
+  @override
+  String get reviewSkeletonProposalTitle => 'Usulan kata contoh';
+
+  @override
+  String get reviewSkeletonProposalMeta =>
+      'Kata · kontributor · 21 Sep 2026 00:00';
+
+  @override
+  String get reviewSkeletonLemma => 'Lemma contoh';
+
+  @override
+  String get reviewSuggestionsTitle => 'Usulan edit';
+
+  @override
+  String get reviewSuggestionsLoadFailed => 'Gagal memuat usulan edit';
+
+  @override
+  String get reviewSuggestionsEmpty => 'Tidak ada usulan edit menunggu';
+
+  @override
+  String get reviewSuggestionDetailTitle => 'Detail usulan edit';
+
+  @override
+  String get reviewSuggestionRejectTitle => 'Tolak usulan';
+
+  @override
+  String get reviewSuggestionRejectBody =>
+      'Berikan alasan penolakan untuk kontributor.';
+
+  @override
+  String get reviewSuggestionRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewSuggestionApprovedToast => 'Usulan disetujui';
+
+  @override
+  String reviewSuggestionFrom(String contributor, String date) {
+    return 'Dari $contributor · $date';
+  }
+
+  @override
+  String reviewSuggestionReason(String reason) {
+    return 'Alasan: $reason';
+  }
+
+  @override
+  String get reviewSuggestionComparison => 'Perbandingan';
+
+  @override
+  String get reviewSuggestionNoDiff => 'Tidak ada diff ringkas';
+
+  @override
+  String get reviewSuggestionApproveNote =>
+      'Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar bila perlu.';
+
+  @override
+  String reviewSuggestionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get reviewSuggestionCurrentEmpty => 'Sekarang: (kosong)';
+
+  @override
+  String get reviewSuggestionProposedEmpty => 'Usulan: (kosong)';
+
+  @override
+  String reviewSuggestionCurrent(String value) {
+    return 'Sekarang: $value';
+  }
+
+  @override
+  String reviewSuggestionProposed(String value) {
+    return 'Usulan: $value';
+  }
+
+  @override
+  String get reviewSuggestionEntryType => 'Jenis entri';
+
+  @override
+  String reviewSuggestionDiffCount(String label, String count) {
+    return '$label: $count perubahan';
+  }
+
+  @override
+  String reviewSuggestionDiffValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get reviewChangeHintLemma => 'lemma';
+
+  @override
+  String get reviewChangeHintNotes => 'catatan';
+
+  @override
+  String reviewChangeHintMeanings(int count) {
+    return 'makna ($count)';
+  }
+
+  @override
+  String reviewChangeHintImages(int count) {
+    return 'gambar ($count)';
+  }
+
+  @override
+  String get reviewChangeHintFallback => 'Perubahan usulan';
+
+  @override
+  String get reviewHistoryTitle => 'Riwayat verifikasi';
+
+  @override
+  String get reviewHistoryLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get reviewHistoryEmpty => 'Belum ada keputusan verifikasi';
+
+  @override
+  String get reviewHistoryEmptyFiltered =>
+      'Tidak ada keputusan dengan status ini';
+
+  @override
+  String get reviewHistoryDetailTitle => 'Detail keputusan';
+
+  @override
+  String get reviewHistoryDecisions => 'Riwayat keputusan';
+
+  @override
+  String get reviewHistoryReopenedToast => 'Keputusan dibuka ulang';
+
+  @override
+  String get reviewHistoryUnverifiedToast => 'Verifikasi kata dicabut';
+
+  @override
+  String get reviewHistoryReopenedNote =>
+      'Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.';
+
+  @override
+  String get reviewHistoryReopenedHold =>
+      'Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi membalik status kata.';
+
+  @override
+  String get reviewHistoryContinue => 'Lanjut tinjau';
+
+  @override
+  String get reviewHistoryProcessing => 'Memproses...';
+
+  @override
+  String get reviewHistoryReopen => 'Buka ulang';
+
+  @override
+  String get reviewHistoryUnverify => 'Cabut verifikasi';
+
+  @override
+  String get reviewHistorySkeletonMeta => 'Disetujui · 21 Sep 2026 00:00';
+
+  @override
+  String get reviewSessionQueueDone => 'Antrean selesai';
+
+  @override
+  String get reviewSessionSkipped => 'Dilewati.';
+
+  @override
+  String get reviewSessionApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewSessionRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewSessionAlreadyProcessed => 'Usulan ini sudah diproses.';
+
+  @override
+  String get reviewSessionAccessDenied => 'Akses ditolak';
+
+  @override
+  String get reviewSessionSaveFailed => 'Gagal menyimpan keputusan';
+
+  @override
+  String get reviewSessionRestoreFailed => 'Gagal mengembalikan kartu.';
+
+  @override
+  String get reviewSessionRestoredToast => 'Kartu sebelumnya dikembalikan';
+
+  @override
+  String get reviewSessionCorrectionSavedPending =>
+      'Koreksi disimpan. Usulan tetap menunggu.';
+
+  @override
+  String get reviewSessionCorrectionSavedClosed =>
+      'Koreksi disimpan dan usulan ditutup.';
+
+  @override
+  String reviewSessionCounter(int position, int total) {
+    return 'Tinjau · $position/$total';
+  }
+
+  @override
+  String reviewSessionCounterCorrect(int position, int total) {
+    return 'Koreksi · $position/$total';
+  }
+
+  @override
+  String get reviewSessionVerifiedSelf =>
+      'Sudah terverifikasi. Menyetujui hanya menutup antrean.';
+
+  @override
+  String reviewSessionVerifiedBy(String verifier) {
+    return 'Sudah terverifikasi oleh @$verifier. Menyetujui hanya menutup antrean.';
+  }
+
+  @override
+  String get reviewSessionVerifierNote => 'Catatan verifikator';
+
+  @override
+  String get reviewSessionSwipeHint =>
+      'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.';
+
+  @override
+  String get reviewSessionSkeletonTitle => 'Judul usulan contoh';
+
+  @override
+  String get reviewSessionEntryType => 'Jenis entri';
+
+  @override
+  String get reviewSessionSkeletonDate => '21 Sep 2026 00:00';
+
+  @override
+  String get reviewSessionSkeletonSection => 'Judul bagian preview';
+
+  @override
+  String get reviewSessionSkeletonBody =>
+      'Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.';
+
+  @override
+  String get reviewSessionSkeletonMeta => 'Baris meta tambahan untuk shimmer.';
+
+  @override
+  String get reviewSessionCorrect => 'Koreksi';
+
+  @override
+  String get reviewSessionBack => 'Kembali ke kartu sebelumnya';
+
+  @override
+  String get reviewSwipeApprove => 'Setujui';
+
+  @override
+  String get reviewSwipeReject => 'Tolak';
+
+  @override
+  String get reviewSwipeSkip => 'Lewati';
+
+  @override
+  String get reviewRejectReasonInaccurate => 'Kurang akurat';
+
+  @override
+  String get reviewRejectReasonSpelling => 'Ejaan atau penulisan salah';
+
+  @override
+  String get reviewRejectReasonDuplicate => 'Duplikat entri yang sudah ada';
+
+  @override
+  String get reviewRejectReasonIrrelevant => 'Tidak relevan';
+
+  @override
+  String get reviewRejectReasonMedia => 'Media (gambar/audio) tidak sesuai';
+
+  @override
+  String get reviewRejectReasonInappropriate => 'Konten tidak pantas';
+
+  @override
+  String get reviewRejectReasonIncomplete => 'Informasi kurang lengkap';
+
+  @override
+  String get reviewRejectReasonOther => 'Lainnya';
+
+  @override
+  String get reviewRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewRejectSheetBody =>
+      'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.';
+
+  @override
+  String get reviewRejectReasonLabel => 'Alasan penolakan';
+
+  @override
+  String get reviewRejectReasonHint => 'Jelaskan alasan penolakan';
+
+  @override
+  String get reviewDiscussionQueueTitle => 'Tinjauan Diskusi';
+
+  @override
+  String get reviewDiscussionQueueLoadFailed => 'Gagal memuat antrean diskusi';
+
+  @override
+  String get reviewDiscussionQueueEmpty =>
+      'Tidak ada diskusi menunggu tinjauan';
+
+  @override
+  String get reviewDiscussionDetailTitle => 'Tinjau diskusi';
+
+  @override
+  String get reviewDiscussionHasLink => 'Ada tautan';
+
+  @override
+  String get reviewDiscussionNoText => '(tanpa teks)';
+
+  @override
+  String get reviewDiscussionSkeletonExcerpt => 'Cuplikan diskusi contoh';
+
+  @override
+  String get reviewDiscussionSkeletonMeta => 'Pengirim · baru saja';
+
+  @override
+  String get reviewDiscussionApprovedToast => 'Diskusi disetujui dan tayang';
+
+  @override
+  String get reviewDiscussionRejectedToast => 'Diskusi ditolak';
+
+  @override
+  String get reviewDiscussionPhotosSafe => 'Pastikan semua foto aman';
+
+  @override
+  String reviewDiscussionApprovePhotos(
+    int approved,
+    int censored,
+    int flagged,
+  ) {
+    return 'Kamu menyetujui $approved foto ($censored tersensor · $flagged ber-flag kekerasan).';
+  }
+
+  @override
+  String get reviewDiscussionPhotoChecklist =>
+      'Pastikan foto bukan NSFW, aman ditayangkan publik, data sensitif sudah disensor bila perlu, dan flag kekerasan sudah ditempel bila perlu.';
+
+  @override
+  String get reviewDiscussionConfirmCheck => 'Saya sudah memeriksa, setujui';
+
+  @override
+  String get reviewDiscussionRejectTitle => 'Tolak diskusi';
+
+  @override
+  String get reviewDiscussionRejectReasonRequired =>
+      'Berikan alasan penolakan (wajib).';
+
+  @override
+  String get reviewDiscussionInvalidLink => 'Tautan tidak valid';
+
+  @override
+  String get reviewDiscussionCannotOpenLink => 'Tidak bisa membuka tautan';
+
+  @override
+  String get reviewDiscussionStagingImageMissing =>
+      'URL gambar staging tidak tersedia';
+
+  @override
+  String reviewDiscussionAttachmentCount(int count) {
+    return 'Lampiran gambar ($count)';
+  }
+
+  @override
+  String get reviewDiscussionTapPhotoFull =>
+      'Ketuk foto untuk melihat ukuran penuh';
+
+  @override
+  String get reviewDiscussionEditCensor => 'Edit sensor';
+
+  @override
+  String get reviewDiscussionCensor => 'Sensor';
+
+  @override
+  String reviewDiscussionForceViolence(int index) {
+    return 'Gambar $index: berisi kekerasan';
+  }
+
+  @override
+  String get reviewDiscussionForceViolenceHint =>
+      'Centang jika foto menunjukkan kekerasan';
+
+  @override
+  String reviewDiscussionForceViolenceLabel(int index) {
+    return 'Gambar $index berisi kekerasan';
+  }
+
+  @override
+  String get reviewDiscussionApprovePublish => 'Setujui & tayangkan';
+
+  @override
+  String reviewDiscussionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get reviewCensorTitle => 'Sensor gambar';
+
+  @override
+  String get reviewCensorLoadFailed =>
+      'Gagal memuat gambar. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get reviewCensorReadFailed => 'Gagal baca piksel';
+
+  @override
+  String get reviewCensorEmptyBody => 'Body kosong';
+
+  @override
+  String get reviewCensorExportFailed => 'Export gagal';
+
+  @override
+  String get reviewCensorSaveFailed => 'Gagal menyimpan hasil sensor';
+
+  @override
+  String get reviewCensorHint =>
+      'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.';
+
+  @override
+  String get reviewCensorModePixelate => 'Pixelate';
+
+  @override
+  String get reviewCensorModeBlur => 'Blur';
+
+  @override
+  String get reviewCensorModeBlock => 'Blok';
+
+  @override
+  String get reviewCensorBrushSize => 'Ukuran kuas';
+
+  @override
+  String get reviewCensorApply => 'Terapkan sensor';
+
+  @override
+  String get reviewSearchMissTitle => 'Pencarian kosong';
+
+  @override
+  String get reviewSearchMissLoadFailed => 'Gagal memuat pencarian kosong';
+
+  @override
+  String get reviewSearchMissEmpty =>
+      'Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akar yang cocok.';
+
+  @override
+  String get reviewSearchMissSwipeHint =>
+      'Kanan tayang · kiri singkirkan · atas lewati - atau ketuk kartu untuk mengusulkan.';
+
+  @override
+  String get reviewSearchMissPublish => 'Tayang';
+
+  @override
+  String get reviewSearchMissDismiss => 'Singkirkan';
+
+  @override
+  String get reviewSearchMissDone =>
+      'Selesai - semua pencarian kosong sudah ditangani.';
+
+  @override
+  String get reviewSearchMissReload => 'Muat ulang';
+
+  @override
+  String get reviewSearchMissCorrect => 'Koreksi term';
+
+  @override
+  String get reviewSearchMissCorrectHint =>
+      'Perbaiki salah ketik warga sebelum ditayangkan.';
+
+  @override
+  String get reviewSearchMissTerm => 'Term';
+
+  @override
+  String reviewSearchMissCorrectedToast(String term) {
+    return '\"$term\" dikoreksi';
+  }
+
+  @override
+  String reviewSearchMissPublishedToast(String term) {
+    return '\"$term\" tayang di beranda publik';
+  }
+
+  @override
+  String reviewSearchMissSkippedToast(String term) {
+    return '\"$term\" sudah tayang - dilewati';
+  }
+
+  @override
+  String get reviewSearchMissDirectionIdSbs => 'Indonesia → Sambas';
+
+  @override
+  String get reviewSearchMissDirectionSbsId => 'Sambas → Indonesia';
+
+  @override
+  String reviewSearchMissDirectionHits(Object count, Object direction) {
+    return '$direction · $count× dicari';
+  }
+
+  @override
+  String reviewSearchMissHits(int count) {
+    return '$count dicari';
+  }
+
+  @override
+  String get reviewSearchMissNotPublished => 'belum tayang';
+
+  @override
+  String get reviewSearchMissTapToSuggest =>
+      'Ketuk untuk mengusulkan kata ini.';
+
+  @override
+  String get reviewPreviewAudioProposal => 'Audio usulan';
+
+  @override
+  String get reviewPreviewTapToRead => 'Ketuk untuk baca selengkapnya';
+
+  @override
+  String get reviewPreviewNoMeaning => 'Tidak ada makna.';
+
+  @override
+  String get reviewPreviewProposedWord => 'Kata yang diusulkan';
+
+  @override
+  String get reviewPreviewCompleteness => 'Kelengkapan';
+
+  @override
+  String get reviewPreviewSynonyms => 'Sinonim';
+
+  @override
+  String get reviewPreviewAntonyms => 'Antonim';
+
+  @override
+  String get reviewPreviewVariants => 'Variasi';
+
+  @override
+  String reviewPreviewTranslation(String text) {
+    return 'Terjemahan: $text';
+  }
+
+  @override
+  String get reviewPreviewProposedImage => 'Gambar yang diusulkan';
+
+  @override
+  String reviewPreviewForWord(String lemma) {
+    return 'Untuk kata “$lemma”';
+  }
+
+  @override
+  String get reviewPreviewImageUrlMissing => 'URL gambar tidak tersedia.';
+
+  @override
+  String get reviewPreviewTapToEnlarge => 'Ketuk untuk perbesar';
+
+  @override
+  String get reviewPreviewAltText => 'Alt text';
+
+  @override
+  String get reviewPreviewAudioFileMissing => 'File audio tidak tersedia.';
+
+  @override
+  String get reviewPreviewDurasi => 'Durasi';
+
+  @override
+  String get reviewPreviewUkuran => 'Ukuran';
+
+  @override
+  String get reviewPreviewTipe => 'Tipe';
+
+  @override
+  String get reviewPreviewProposedPronunciation => 'Pelafalan yang diusulkan';
+
+  @override
+  String reviewPreviewNotation(String notation) {
+    return 'Notasi: $notation';
+  }
+
+  @override
+  String get reviewPreviewProposedMeaning => 'Makna yang diusulkan';
+
+  @override
+  String get reviewPreviewSourceOfMeaning => 'Sumber makna';
+
+  @override
+  String get reviewPreviewTranslationSection => 'Terjemahan';
+
+  @override
+  String get reviewPreviewTranslationEmptyDeliberate =>
+      'Kontributor sengaja tidak mengisi terjemahan.';
+
+  @override
+  String get reviewPreviewTranslationMarkedEmpty =>
+      'Ditandai ada terjemahan, tetapi belum diisi.';
+
+  @override
+  String get reviewPreviewTranslationNone => 'Belum ada terjemahan.';
+
+  @override
+  String get reviewPreviewProposedExample => 'Contoh kalimat yang diusulkan';
+
+  @override
+  String get reviewPreviewSambasSentence => 'Kalimat sambas';
+
+  @override
+  String get reviewPreviewTranslationSentence => 'Kalimat terjemahan';
+
+  @override
+  String get reviewPreviewSourceType => 'Jenis sumber';
+
+  @override
+  String get reviewPreviewProposalContent => 'Isi usulan';
+
+  @override
+  String get reviewPreviewDetailLabel => 'Detail';
+
+  @override
+  String get reviewPreviewPlayRecording => 'Putar rekaman';
+
+  @override
+  String get reviewPreviewPlayFailed => 'Gagal memutar - ketuk lagi';
+
+  @override
+  String get reviewPreviewPlaying => 'Sedang diputar';
+
+  @override
+  String get reviewPreviewTapToListen => 'Ketuk untuk mendengar';
+
+  @override
+  String get reviewPreviewFieldValue => 'Nilai';
+
+  @override
+  String get reviewPreviewFieldUrlAudio => 'URL audio';
+
+  @override
+  String get reviewPreviewFieldUrl => 'URL';
+
+  @override
+  String get reviewPreviewFieldSpeech => 'Penutur';
+
+  @override
+  String get reviewPreviewFieldAlt => 'Teks alternatif';
+
+  @override
+  String reviewPreviewDurationSec(int sec) {
+    return '$sec dtk';
+  }
+
+  @override
+  String reviewPreviewDurationMin(int min) {
+    return '$min m';
+  }
+
+  @override
+  String reviewPreviewDurationMinSec(int min, int rem) {
+    return '$min m $rem dtk';
+  }
+
+  @override
+  String reviewPreviewBytesB(int bytes) {
+    return '$bytes B';
+  }
+
+  @override
+  String reviewPreviewBytesKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String reviewPreviewBytesMb(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String reviewMeaningNumber(int index) {
+    return 'Makna $index';
+  }
+
+  @override
+  String get reviewMeaningSwapDefinition => 'Tukar definisi dan terjemahan';
+
+  @override
+  String reviewMeaningDelete(int index) {
+    return 'Hapus makna $index';
+  }
+
+  @override
+  String get reviewMeaningWordClassRequired => 'Kelas kata wajib dipilih';
+
+  @override
+  String get reviewMeaningExampleSection => 'Contoh kalimat';
+
+  @override
+  String get reviewMeaningAddExample => 'Tambah contoh';
+
+  @override
+  String get reviewMeaningExampleSambas => 'Kalimat Sambas';
+
+  @override
+  String get reviewMeaningExampleTranslation => 'Terjemahan (opsional)';
+
+  @override
+  String get reviewMeaningDeleteExample => 'Hapus contoh';
+
+  @override
+  String get reviewMeaningPickWordClass => 'Pilih kelas kata';
+
+  @override
+  String get reviewExtrasSynonymsAntonyms => 'Sinonim & antonim';
+
+  @override
+  String get reviewExtrasSynonyms => 'Sinonim';
+
+  @override
+  String get reviewExtrasAntonyms => 'Antonim';
+
+  @override
+  String reviewExtrasTypeCount(String label, int count) {
+    return '$label ($count)';
+  }
+
+  @override
+  String get reviewExtrasNoSynonym =>
+      'Belum ada sinonim. Cari kata di bawah untuk menambah.';
+
+  @override
+  String get reviewExtrasNoAntonym =>
+      'Belum ada antonim. Cari kata di bawah untuk menambah.';
+
+  @override
+  String reviewExtrasRemoveRelation(String lemma) {
+    return 'Hapus $lemma';
+  }
+
+  @override
+  String get reviewExtrasSearchWord => 'Cari kata yang sudah ada...';
+
+  @override
+  String get reviewExtrasMinChars => 'Ketik minimal 2 huruf.';
+
+  @override
+  String get reviewExtrasWordNotFound =>
+      'Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.';
+
+  @override
+  String get reviewVariantTitle => 'Variasi penulisan';
+
+  @override
+  String reviewVariantHint(String lemma) {
+    return 'Ejaan lain untuk \"$lemma\".';
+  }
+
+  @override
+  String reviewVariantRemove(String form) {
+    return 'Hapus $form';
+  }
+
+  @override
+  String get reviewVariantAddHint => 'Tulis variasi, mis. klintiak';
+
+  @override
+  String get reviewVariantAdd => 'Tambah';
+
+  @override
+  String get reviewVariantSameAsLemma =>
+      'Variasi tidak boleh sama dengan lemma';
+
+  @override
+  String get reviewVariantDuplicate => 'Variasi ini sudah ada';
+
+  @override
+  String reviewVariantMax(int max) {
+    return 'Maksimal $max variasi';
+  }
+
+  @override
+  String get reviewExtrasNoItems => 'Belum ada';
+
+  @override
+  String get reviewCorrectNotation => 'Notasi';
+
+  @override
+  String get reviewCorrectPronunciation => 'Pelafalan';
+
+  @override
+  String get reviewCorrectAudioUrl => 'URL audio';
+
+  @override
+  String get reviewCorrectSpeaker => 'Penutur';
+
+  @override
+  String get reviewCorrectImageUrl => 'URL gambar';
+
+  @override
+  String get reviewCorrectAltText => 'Teks alternatif';
+
+  @override
+  String get reviewCorrectSambasSentence => 'Kalimat sambas';
+
+  @override
+  String get reviewCorrectTranslationSentence => 'Kalimat terjemahan';
+
+  @override
+  String get reviewCorrectSourceType => 'Jenis sumber';
+
+  @override
+  String get reviewCorrectNotesOptional => 'Catatan (opsional)';
+
+  @override
+  String get reviewCorrectPublishVerify => 'Langsung terbitkan dan verifikasi';
+
+  @override
+  String get reviewCorrectProcessing => 'Memproses...';
+
+  @override
+  String get reviewCorrectSavePublish => 'Simpan dan terbitkan';
+
+  @override
+  String get reviewCorrectSavePending => 'Simpan, tetap menunggu';
+
+  @override
+  String get reviewCorrectCancel => 'Batal koreksi';
+
+  @override
+  String get reviewCorrectPolitenessConflict =>
+      'Halus dan Kasar tidak bisa dipilih bersamaan';
+
+  @override
+  String get reviewCorrectWordNotes => 'Catatan kata';
+
+  @override
+  String get reviewCorrectRegister => 'Register';
+
+  @override
+  String get reviewCorrectRegisterHint =>
+      'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.';
+
+  @override
+  String get reviewCorrectWarning => 'Peringatan';
+
+  @override
+  String get reviewCorrectWarningHint => 'Sensitivitas isi makna.';
+
+  @override
+  String get reviewCorrectAddMeaning => 'Tambah makna';
+
+  @override
+  String get reviewCorrectAddPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get reviewCorrectPronunciationAutoSave =>
+      'Langsung tersimpan, tidak menunggu tombol Simpan';
+
+  @override
+  String reviewCorrectPronunciationRecorded(int count) {
+    return '$count rekaman baru terkirim';
+  }
+
+  @override
+  String reviewCorrectSynonymCount(int count) {
+    return '$count sinonim';
+  }
+
+  @override
+  String reviewCorrectAntonymCount(int count) {
+    return '$count antonim';
+  }
+
+  @override
+  String get reviewCorrectLanguageUnknown => 'Bahasa kata tidak diketahui';
+
+  @override
+  String get reviewCorrectWordClassLoadFailed => 'Gagal memuat kelas kata';
+
+  @override
+  String get reviewCorrectMeaningPayloadMissing =>
+      'Payload makna tidak memuat definisi atau terjemahan.';
+
+  @override
+  String get reviewCorrectKbbiHint =>
+      'Tekan icon buku untuk mencari definisi di KBBI';
+
+  @override
+  String reviewCorrectCarriedTranslations(int count) {
+    return 'Terjemahan lain milik makna ini ($count) ikut tersimpan tanpa diubah.';
+  }
+
+  @override
+  String get reviewCorrectDefinitionFromKbbi => 'Definisi diisi dari KBBI';
+
+  @override
+  String get reviewCorrectWordType => 'Jenis entri';
+
+  @override
+  String get reviewWordTypeGeneral => 'Umum';
+
+  @override
+  String get reviewWordTypeWord => 'Kata';
+
+  @override
+  String get reviewWordTypeIdiom => 'Idiom';
+
+  @override
+  String get reviewWordTypeProverb => 'Peribahasa';
+
+  @override
+  String get reviewWordTypeExpression => 'Ungkapan';
+
+  @override
+  String get reviewInlineTypeLocked => 'Jenis tidak bisa diubah';
+
+  @override
+  String get reviewInlineTypeLockedHint =>
+      'has_component hanya untuk entri idiom/peribahasa/ungkapan';
+
+  @override
+  String get reviewPendingNotFound =>
+      'Tidak ada usulan yang menunggu untuk kata ini.';
+
+  @override
+  String get reviewRepoQueueLoadFailed => 'Gagal memuat antrean review';
+
+  @override
+  String get reviewRepoSuggestionDetailLoadFailed =>
+      'Gagal memuat detail usulan';
+
+  @override
+  String get reviewRepoReopenFailed => 'Gagal membuka ulang keputusan';
+
+  @override
+  String get reviewRepoSkipFailed => 'Gagal melewati usulan';
+
+  @override
+  String get reviewRepoRestoreFailed => 'Gagal mengembalikan usulan';
+
+  @override
+  String get reviewRepoUnverifyFailed => 'Gagal mencabut verifikasi kata';
+
+  @override
+  String get reviewRepoDecisionSaveFailed => 'Gagal menyimpan keputusan';
+
+  @override
+  String get reviewRepoSearchMissLoadFailed => 'Gagal memuat pencarian kosong';
+
+  @override
+  String get reviewRepoSearchMissPublishFailed => 'Gagal mengubah tayang';
+
+  @override
+  String get reviewRepoSearchMissCorrectFailed => 'Gagal mengoreksi term';
+
+  @override
+  String get reviewRepoSearchMissDismissFailed => 'Gagal menyingkirkan';
+
+  @override
+  String get reviewRepoSearchMissSkipFailed => 'Gagal melewati';
+
+  @override
+  String get reviewRepoSuggestionsLoadFailed =>
+      'Gagal memuat antrean usulan edit';
+
+  @override
+  String get reviewRepoSuggestionLoadFailed =>
+      'Gagal memuat detail usulan edit';
+
+  @override
+  String get reviewRepoSuggestionApproveFailed => 'Gagal menyetujui usulan';
+
+  @override
+  String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
+
+  @override
+  String reviewSearchMissHitsText(String value) {
+    return '$value dicali';
+  }
+
+  @override
+  String get reviewSearchMissVisibleSuffix => 'tayang';
+
+  @override
+  String reviewSearchMissDirectionHitsFull(
+    String direction,
+    int count,
+    String status,
+  ) {
+    return '$direction · $count× dicali · $status';
+  }
 }

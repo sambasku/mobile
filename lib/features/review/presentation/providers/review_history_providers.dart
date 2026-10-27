@@ -3,20 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/entities/review_contribution.dart';
 import 'review_providers.dart';
 
-class ReviewHistoryStatusFilter {
-  const ReviewHistoryStatusFilter(this.value, this.label);
-  final String? value;
-  final String label;
-}
-
-const reviewHistoryStatusFilters = [
-  ReviewHistoryStatusFilter(null, 'Semua'),
-  ReviewHistoryStatusFilter('approved', 'Disetujui'),
-  ReviewHistoryStatusFilter('rejected', 'Ditolak'),
-  ReviewHistoryStatusFilter('corrected', 'Dikoreksi'),
-  ReviewHistoryStatusFilter('pending', 'Dibuka ulang'),
-];
-
 class ReviewHistoryState {
   const ReviewHistoryState({
     required this.items,

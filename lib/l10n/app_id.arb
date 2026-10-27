@@ -679,5 +679,689 @@
   "historyFieldSourceId": "ID sumber",
   "historyFieldSplitOriginId": "ID asal pisah",
   "historyFieldMeaningId": "ID makna",
-  "historyFieldMergedWordId": "ID kata digabung"
+  "historyFieldMergedWordId": "ID kata digabung",
+  "commonCancel": "Batal",
+  "commonRetry": "Coba lagi",
+  "commonSave": "Simpan",
+  "commonReject": "Tolak",
+  "commonApprove": "Setujui",
+  "commonSkip": "Lewati",
+  "commonDone": "Selesai",
+  "commonClose": "Tutup",
+  "commonDelete": "Hapus",
+  "commonYes": "Ya",
+  "commonNo": "Tidak",
+  "commonPrimary": "Utama",
+  "commonEmptyField": "Belum diisi",
+  "commonNoDetail": "Tidak ada detail.",
+  "commonLoadFailed": "Gagal memuat detail",
+  "commonForbiddenBody": "Kamu tidak berwenang meninjau usulan.",
+  "commonForbiddenRole": "Role tidak diizinkan mengakses endpoint ini",
+  "commonVerifierArea": "Area Verifikator",
+  "commonReason": "Alasan",
+  "reviewEntityWord": "Kata",
+  "reviewEntityPronunciation": "Pelafalan",
+  "reviewEntityWordImage": "Gambar",
+  "reviewEntityWordAudio": "Audio",
+  "reviewEntityExample": "Contoh kalimat",
+  "reviewEntityMeaning": "Makna",
+  "reviewEntityOther": "Usulan",
+  "reviewStatusPending": "Menunggu",
+  "reviewStatusApproved": "Disetujui",
+  "reviewStatusRejected": "Ditolak",
+  "reviewStatusCorrected": "Dikoreksi",
+  "reviewStatusReopened": "Dibuka ulang",
+  "reviewStatusAll": "Semua",
+  "reviewContributorFallback": "Kontributor",
+  "reviewHomeStart": "Mulai tinjau",
+  "reviewHomeContributionTitle": "Ada usulan yang menunggu",
+  "reviewHomeContributionSubtitle": "Antrean kontribusi untuk ditinjau",
+  "reviewHomeCompleteWordTitle": "Perbaiki/lengkapi kata",
+  "reviewHomeCompleteWordSubtitle": "Tambah makna, relasi, variasi penulisan, contoh, dan rekam pelafalan",
+  "reviewHomeSuggestionTitle": "Usulan edit",
+  "reviewHomeSuggestionWaiting": "Ada usulan edit yang menunggu",
+  "reviewHomeSuggestionSubtitle": "Antrean usulan perubahan kata",
+  "reviewHomeDiscussionTitle": "Tinjauan Diskusi",
+  "reviewHomeDiscussionWaiting": "Ada diskusi yang menunggu",
+  "reviewHomeDiscussionSubtitle": "Antrean Ruang Diskusi untuk ditinjau",
+  "reviewHomeSearchMissTitle": "Pencarian kosong",
+  "reviewHomeSearchMissSubtitle": "Tayangkan ke publik atau usulkan sendiri",
+  "reviewHomeHistoryTitle": "Riwayat tinjauan",
+  "reviewHomeHistorySubtitle": "Keputusan yang sudah kamu berikan",
+  "reviewQueueLoadFailed": "Gagal memuat antrean",
+  "reviewQueueEmpty": "Tidak ada usulan yang menunggu",
+  "reviewQueueEmptyHint": "Usulan baru dari kontributor akan muncul di sini.",
+  "reviewQueueStart": "Mulai tinjau",
+  "reviewQueueStartCount": "Mulai tinjau ({count})",
+  "@reviewQueueStartCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewQueueStartMore": "Mulai tinjau ({count}+)",
+  "@reviewQueueStartMore": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSkeletonProposalTitle": "Usulan kata contoh",
+  "reviewSkeletonProposalMeta": "Kata · kontributor · 21 Sep 2026 00:00",
+  "reviewSkeletonLemma": "Lemma contoh",
+  "reviewSuggestionsTitle": "Usulan edit",
+  "reviewSuggestionsLoadFailed": "Gagal memuat usulan edit",
+  "reviewSuggestionsEmpty": "Tidak ada usulan edit menunggu",
+  "reviewSuggestionDetailTitle": "Detail usulan edit",
+  "reviewSuggestionRejectTitle": "Tolak usulan",
+  "reviewSuggestionRejectBody": "Berikan alasan penolakan untuk kontributor.",
+  "reviewSuggestionRejectedToast": "Usulan ditolak",
+  "reviewSuggestionApprovedToast": "Usulan disetujui",
+  "reviewSuggestionFrom": "Dari {contributor} · {date}",
+  "@reviewSuggestionFrom": {
+    "placeholders": {
+      "contributor": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionReason": "Alasan: {reason}",
+  "@reviewSuggestionReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionComparison": "Perbandingan",
+  "reviewSuggestionNoDiff": "Tidak ada diff ringkas",
+  "reviewSuggestionApproveNote": "Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar bila perlu.",
+  "reviewSuggestionStatus": "Status: {status}",
+  "@reviewSuggestionStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionCurrentEmpty": "Sekarang: (kosong)",
+  "reviewSuggestionProposedEmpty": "Usulan: (kosong)",
+  "reviewSuggestionCurrent": "Sekarang: {value}",
+  "@reviewSuggestionCurrent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionProposed": "Usulan: {value}",
+  "@reviewSuggestionProposed": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionEntryType": "Jenis entri",
+  "reviewSuggestionDiffCount": "{label}: {count} perubahan",
+  "@reviewSuggestionDiffCount": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSuggestionDiffValue": "{label}: {value}",
+  "@reviewSuggestionDiffValue": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewChangeHintLemma": "lemma",
+  "reviewChangeHintNotes": "catatan",
+  "reviewChangeHintMeanings": "makna ({count})",
+  "@reviewChangeHintMeanings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewChangeHintImages": "gambar ({count})",
+  "@reviewChangeHintImages": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewChangeHintFallback": "Perubahan usulan",
+  "reviewHistoryTitle": "Riwayat verifikasi",
+  "reviewHistoryLoadFailed": "Gagal memuat riwayat",
+  "reviewHistoryEmpty": "Belum ada keputusan verifikasi",
+  "reviewHistoryEmptyFiltered": "Tidak ada keputusan dengan status ini",
+  "reviewHistoryDetailTitle": "Detail keputusan",
+  "reviewHistoryDecisions": "Riwayat keputusan",
+  "reviewHistoryReopenedToast": "Keputusan dibuka ulang",
+  "reviewHistoryUnverifiedToast": "Verifikasi kata dicabut",
+  "reviewHistoryReopenedNote": "Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.",
+  "reviewHistoryReopenedHold": "Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi membalik status kata.",
+  "reviewHistoryContinue": "Lanjut tinjau",
+  "reviewHistoryProcessing": "Memproses...",
+  "reviewHistoryReopen": "Buka ulang",
+  "reviewHistoryUnverify": "Cabut verifikasi",
+  "reviewHistorySkeletonMeta": "Disetujui · 21 Sep 2026 00:00",
+  "reviewSessionQueueDone": "Antrean selesai",
+  "reviewSessionSkipped": "Dilewati.",
+  "reviewSessionApprovedToast": "Usulan disetujui",
+  "reviewSessionRejectedToast": "Usulan ditolak",
+  "reviewSessionAlreadyProcessed": "Usulan ini sudah diproses.",
+  "reviewSessionAccessDenied": "Akses ditolak",
+  "reviewSessionSaveFailed": "Gagal menyimpan keputusan",
+  "reviewSessionRestoreFailed": "Gagal mengembalikan kartu.",
+  "reviewSessionRestoredToast": "Kartu sebelumnya dikembalikan",
+  "reviewSessionCorrectionSavedPending": "Koreksi disimpan. Usulan tetap menunggu.",
+  "reviewSessionCorrectionSavedClosed": "Koreksi disimpan dan usulan ditutup.",
+  "reviewSessionCounter": "Tinjau · {position}/{total}",
+  "@reviewSessionCounter": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewSessionCounterCorrect": "Koreksi · {position}/{total}",
+  "@reviewSessionCounterCorrect": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewSessionVerifiedSelf": "Sudah terverifikasi. Menyetujui hanya menutup antrean.",
+  "reviewSessionVerifiedBy": "Sudah terverifikasi oleh @{verifier}. Menyetujui hanya menutup antrean.",
+  "@reviewSessionVerifiedBy": {
+    "placeholders": {
+      "verifier": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSessionVerifierNote": "Catatan verifikator",
+  "reviewSessionSwipeHint": "Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.",
+  "reviewSessionSkeletonTitle": "Judul usulan contoh",
+  "reviewSessionEntryType": "Jenis entri",
+  "reviewSessionSkeletonDate": "21 Sep 2026 00:00",
+  "reviewSessionSkeletonSection": "Judul bagian preview",
+  "reviewSessionSkeletonBody": "Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.",
+  "reviewSessionSkeletonMeta": "Baris meta tambahan untuk shimmer.",
+  "reviewSessionCorrect": "Koreksi",
+  "reviewSessionBack": "Kembali ke kartu sebelumnya",
+  "reviewSwipeApprove": "Setujui",
+  "reviewSwipeReject": "Tolak",
+  "reviewSwipeSkip": "Lewati",
+  "reviewRejectReasonInaccurate": "Kurang akurat",
+  "reviewRejectReasonSpelling": "Ejaan atau penulisan salah",
+  "reviewRejectReasonDuplicate": "Duplikat entri yang sudah ada",
+  "reviewRejectReasonIrrelevant": "Tidak relevan",
+  "reviewRejectReasonMedia": "Media (gambar/audio) tidak sesuai",
+  "reviewRejectReasonInappropriate": "Konten tidak pantas",
+  "reviewRejectReasonIncomplete": "Informasi kurang lengkap",
+  "reviewRejectReasonOther": "Lainnya",
+  "reviewRejectSheetTitle": "Tolak usulan",
+  "reviewRejectSheetBody": "Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.",
+  "reviewRejectReasonLabel": "Alasan penolakan",
+  "reviewRejectReasonHint": "Jelaskan alasan penolakan",
+  "reviewDiscussionQueueTitle": "Tinjauan Diskusi",
+  "reviewDiscussionQueueLoadFailed": "Gagal memuat antrean diskusi",
+  "reviewDiscussionQueueEmpty": "Tidak ada diskusi menunggu tinjauan",
+  "reviewDiscussionDetailTitle": "Tinjau diskusi",
+  "reviewDiscussionHasLink": "Ada tautan",
+  "reviewDiscussionNoText": "(tanpa teks)",
+  "reviewDiscussionSkeletonExcerpt": "Cuplikan diskusi contoh",
+  "reviewDiscussionSkeletonMeta": "Pengirim · baru saja",
+  "reviewDiscussionApprovedToast": "Diskusi disetujui dan tayang",
+  "reviewDiscussionRejectedToast": "Diskusi ditolak",
+  "reviewDiscussionPhotosSafe": "Pastikan semua foto aman",
+  "reviewDiscussionApprovePhotos": "Kamu menyetujui {approved} foto ({censored} tersensor · {flagged} ber-flag kekerasan).",
+  "@reviewDiscussionApprovePhotos": {
+    "placeholders": {
+      "approved": {
+        "type": "int"
+      },
+      "censored": {
+        "type": "int"
+      },
+      "flagged": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDiscussionPhotoChecklist": "Pastikan foto bukan NSFW, aman ditayangkan publik, data sensitif sudah disensor bila perlu, dan flag kekerasan sudah ditempel bila perlu.",
+  "reviewDiscussionConfirmCheck": "Saya sudah memeriksa, setujui",
+  "reviewDiscussionRejectTitle": "Tolak diskusi",
+  "reviewDiscussionRejectReasonRequired": "Berikan alasan penolakan (wajib).",
+  "reviewDiscussionInvalidLink": "Tautan tidak valid",
+  "reviewDiscussionCannotOpenLink": "Tidak bisa membuka tautan",
+  "reviewDiscussionStagingImageMissing": "URL gambar staging tidak tersedia",
+  "reviewDiscussionAttachmentCount": "Lampiran gambar ({count})",
+  "@reviewDiscussionAttachmentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDiscussionTapPhotoFull": "Ketuk foto untuk melihat ukuran penuh",
+  "reviewDiscussionEditCensor": "Edit sensor",
+  "reviewDiscussionCensor": "Sensor",
+  "reviewDiscussionForceViolence": "Gambar {index}: berisi kekerasan",
+  "@reviewDiscussionForceViolence": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDiscussionForceViolenceHint": "Centang jika foto menunjukkan kekerasan",
+  "reviewDiscussionForceViolenceLabel": "Gambar {index} berisi kekerasan",
+  "@reviewDiscussionForceViolenceLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDiscussionApprovePublish": "Setujui & tayangkan",
+  "reviewDiscussionStatus": "Status: {status}",
+  "@reviewDiscussionStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewCensorTitle": "Sensor gambar",
+  "reviewCensorLoadFailed": "Gagal memuat gambar. Coba lagi dalam beberapa saat.",
+  "reviewCensorReadFailed": "Gagal baca piksel",
+  "reviewCensorEmptyBody": "Body kosong",
+  "reviewCensorExportFailed": "Export gagal",
+  "reviewCensorSaveFailed": "Gagal menyimpan hasil sensor",
+  "reviewCensorHint": "Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.",
+  "reviewCensorModePixelate": "Pixelate",
+  "reviewCensorModeBlur": "Blur",
+  "reviewCensorModeBlock": "Blok",
+  "reviewCensorBrushSize": "Ukuran kuas",
+  "reviewCensorApply": "Terapkan sensor",
+  "reviewSearchMissTitle": "Pencarian kosong",
+  "reviewSearchMissLoadFailed": "Gagal memuat pencarian kosong",
+  "reviewSearchMissEmpty": "Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akar yang cocok.",
+  "reviewSearchMissSwipeHint": "Kanan tayang · kiri singkirkan · atas lewati - atau ketuk kartu untuk mengusulkan.",
+  "reviewSearchMissPublish": "Tayang",
+  "reviewSearchMissDismiss": "Singkirkan",
+  "reviewSearchMissDone": "Selesai - semua pencarian kosong sudah ditangani.",
+  "reviewSearchMissReload": "Muat ulang",
+  "reviewSearchMissCorrect": "Koreksi term",
+  "reviewSearchMissCorrectHint": "Perbaiki salah ketik warga sebelum ditayangkan.",
+  "reviewSearchMissTerm": "Term",
+  "reviewSearchMissCorrectedToast": "\"{term}\" dikoreksi",
+  "@reviewSearchMissCorrectedToast": {
+    "placeholders": {
+      "term": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSearchMissPublishedToast": "\"{term}\" tayang di beranda publik",
+  "@reviewSearchMissPublishedToast": {
+    "placeholders": {
+      "term": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSearchMissSkippedToast": "\"{term}\" sudah tayang - dilewati",
+  "@reviewSearchMissSkippedToast": {
+    "placeholders": {
+      "term": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSearchMissDirectionIdSbs": "Indonesia → Sambas",
+  "reviewSearchMissDirectionSbsId": "Sambas → Indonesia",
+  "reviewSearchMissDirectionHits": "{direction} · {count}× dicari",
+  "reviewSearchMissHits": "{count} dicari",
+  "@reviewSearchMissHits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewSearchMissNotPublished": "belum tayang",
+  "reviewSearchMissTapToSuggest": "Ketuk untuk mengusulkan kata ini.",
+  "reviewPreviewAudioProposal": "Audio usulan",
+  "reviewPreviewTapToRead": "Ketuk untuk baca selengkapnya",
+  "reviewPreviewNoMeaning": "Tidak ada makna.",
+  "reviewPreviewProposedWord": "Kata yang diusulkan",
+  "reviewPreviewCompleteness": "Kelengkapan",
+  "reviewPreviewSynonyms": "Sinonim",
+  "reviewPreviewAntonyms": "Antonim",
+  "reviewPreviewVariants": "Variasi",
+  "reviewPreviewTranslation": "Terjemahan: {text}",
+  "@reviewPreviewTranslation": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPreviewProposedImage": "Gambar yang diusulkan",
+  "reviewPreviewForWord": "Untuk kata “{lemma}”",
+  "@reviewPreviewForWord": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPreviewImageUrlMissing": "URL gambar tidak tersedia.",
+  "reviewPreviewTapToEnlarge": "Ketuk untuk perbesar",
+  "reviewPreviewAltText": "Alt text",
+  "reviewPreviewAudioFileMissing": "File audio tidak tersedia.",
+  "reviewPreviewDurasi": "Durasi",
+  "reviewPreviewUkuran": "Ukuran",
+  "reviewPreviewTipe": "Tipe",
+  "reviewPreviewProposedPronunciation": "Pelafalan yang diusulkan",
+  "reviewPreviewNotation": "Notasi: {notation}",
+  "@reviewPreviewNotation": {
+    "placeholders": {
+      "notation": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPreviewProposedMeaning": "Makna yang diusulkan",
+  "reviewPreviewSourceOfMeaning": "Sumber makna",
+  "reviewPreviewTranslationSection": "Terjemahan",
+  "reviewPreviewTranslationEmptyDeliberate": "Kontributor sengaja tidak mengisi terjemahan.",
+  "reviewPreviewTranslationMarkedEmpty": "Ditandai ada terjemahan, tetapi belum diisi.",
+  "reviewPreviewTranslationNone": "Belum ada terjemahan.",
+  "reviewPreviewProposedExample": "Contoh kalimat yang diusulkan",
+  "reviewPreviewSambasSentence": "Kalimat sambas",
+  "reviewPreviewTranslationSentence": "Kalimat terjemahan",
+  "reviewPreviewSourceType": "Jenis sumber",
+  "reviewPreviewProposalContent": "Isi usulan",
+  "reviewPreviewDetailLabel": "Detail",
+  "reviewPreviewPlayRecording": "Putar rekaman",
+  "reviewPreviewPlayFailed": "Gagal memutar - ketuk lagi",
+  "reviewPreviewPlaying": "Sedang diputar",
+  "reviewPreviewTapToListen": "Ketuk untuk mendengar",
+  "reviewPreviewFieldValue": "Nilai",
+  "reviewPreviewFieldUrlAudio": "URL audio",
+  "reviewPreviewFieldUrl": "URL",
+  "reviewPreviewFieldSpeech": "Penutur",
+  "reviewPreviewFieldAlt": "Teks alternatif",
+  "reviewPreviewDurationSec": "{sec} dtk",
+  "@reviewPreviewDurationSec": {
+    "placeholders": {
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewPreviewDurationMin": "{min} m",
+  "@reviewPreviewDurationMin": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewPreviewDurationMinSec": "{min} m {rem} dtk",
+  "@reviewPreviewDurationMinSec": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "rem": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewPreviewBytesB": "{bytes} B",
+  "@reviewPreviewBytesB": {
+    "placeholders": {
+      "bytes": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewPreviewBytesKb": "{value} KB",
+  "@reviewPreviewBytesKb": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewPreviewBytesMb": "{value} MB",
+  "@reviewPreviewBytesMb": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewMeaningNumber": "Makna {index}",
+  "@reviewMeaningNumber": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewMeaningSwapDefinition": "Tukar definisi dan terjemahan",
+  "reviewMeaningDelete": "Hapus makna {index}",
+  "@reviewMeaningDelete": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewMeaningWordClassRequired": "Kelas kata wajib dipilih",
+  "reviewMeaningExampleSection": "Contoh kalimat",
+  "reviewMeaningAddExample": "Tambah contoh",
+  "reviewMeaningExampleSambas": "Kalimat Sambas",
+  "reviewMeaningExampleTranslation": "Terjemahan (opsional)",
+  "reviewMeaningDeleteExample": "Hapus contoh",
+  "reviewMeaningPickWordClass": "Pilih kelas kata",
+  "reviewExtrasSynonymsAntonyms": "Sinonim & antonim",
+  "reviewExtrasSynonyms": "Sinonim",
+  "reviewExtrasAntonyms": "Antonim",
+  "reviewExtrasTypeCount": "{label} ({count})",
+  "@reviewExtrasTypeCount": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewExtrasNoSynonym": "Belum ada sinonim. Cari kata di bawah untuk menambah.",
+  "reviewExtrasNoAntonym": "Belum ada antonim. Cari kata di bawah untuk menambah.",
+  "reviewExtrasRemoveRelation": "Hapus {lemma}",
+  "@reviewExtrasRemoveRelation": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewExtrasSearchWord": "Cari kata yang sudah ada...",
+  "reviewExtrasMinChars": "Ketik minimal 2 huruf.",
+  "reviewExtrasWordNotFound": "Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.",
+  "reviewVariantTitle": "Variasi penulisan",
+  "reviewVariantHint": "Ejaan lain untuk \"{lemma}\".",
+  "@reviewVariantHint": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewVariantRemove": "Hapus {form}",
+  "@reviewVariantRemove": {
+    "placeholders": {
+      "form": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewVariantAddHint": "Tulis variasi, mis. klintiak",
+  "reviewVariantAdd": "Tambah",
+  "reviewVariantSameAsLemma": "Variasi tidak boleh sama dengan lemma",
+  "reviewVariantDuplicate": "Variasi ini sudah ada",
+  "reviewVariantMax": "Maksimal {max} variasi",
+  "@reviewVariantMax": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewExtrasNoItems": "Belum ada",
+  "reviewCorrectNotation": "Notasi",
+  "reviewCorrectPronunciation": "Pelafalan",
+  "reviewCorrectAudioUrl": "URL audio",
+  "reviewCorrectSpeaker": "Penutur",
+  "reviewCorrectImageUrl": "URL gambar",
+  "reviewCorrectAltText": "Teks alternatif",
+  "reviewCorrectSambasSentence": "Kalimat sambas",
+  "reviewCorrectTranslationSentence": "Kalimat terjemahan",
+  "reviewCorrectSourceType": "Jenis sumber",
+  "reviewCorrectNotesOptional": "Catatan (opsional)",
+  "reviewCorrectPublishVerify": "Langsung terbitkan dan verifikasi",
+  "reviewCorrectProcessing": "Memproses...",
+  "reviewCorrectSavePublish": "Simpan dan terbitkan",
+  "reviewCorrectSavePending": "Simpan, tetap menunggu",
+  "reviewCorrectCancel": "Batal koreksi",
+  "reviewCorrectPolitenessConflict": "Halus dan Kasar tidak bisa dipilih bersamaan",
+  "reviewCorrectWordNotes": "Catatan kata",
+  "reviewCorrectRegister": "Register",
+  "reviewCorrectRegisterHint": "Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.",
+  "reviewCorrectWarning": "Peringatan",
+  "reviewCorrectWarningHint": "Sensitivitas isi makna.",
+  "reviewCorrectAddMeaning": "Tambah makna",
+  "reviewCorrectAddPronunciation": "Rekam pelafalan",
+  "reviewCorrectPronunciationAutoSave": "Langsung tersimpan, tidak menunggu tombol Simpan",
+  "reviewCorrectPronunciationRecorded": "{count} rekaman baru terkirim",
+  "@reviewCorrectPronunciationRecorded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCorrectSynonymCount": "{count} sinonim",
+  "@reviewCorrectSynonymCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCorrectAntonymCount": "{count} antonim",
+  "@reviewCorrectAntonymCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCorrectLanguageUnknown": "Bahasa kata tidak diketahui",
+  "reviewCorrectWordClassLoadFailed": "Gagal memuat kelas kata",
+  "reviewCorrectMeaningPayloadMissing": "Payload makna tidak memuat definisi atau terjemahan.",
+  "reviewCorrectKbbiHint": "Tekan icon buku untuk mencari definisi di KBBI",
+  "reviewCorrectCarriedTranslations": "Terjemahan lain milik makna ini ({count}) ikut tersimpan tanpa diubah.",
+  "@reviewCorrectCarriedTranslations": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewCorrectDefinitionFromKbbi": "Definisi diisi dari KBBI",
+  "reviewCorrectWordType": "Jenis entri",
+  "reviewWordTypeGeneral": "Umum",
+  "reviewWordTypeWord": "Kata",
+  "reviewWordTypeIdiom": "Idiom",
+  "reviewWordTypeProverb": "Peribahasa",
+  "reviewWordTypeExpression": "Ungkapan",
+  "reviewInlineTypeLocked": "Jenis tidak bisa diubah",
+  "reviewInlineTypeLockedHint": "has_component hanya untuk entri idiom/peribahasa/ungkapan",
+  "reviewPendingNotFound": "Tidak ada usulan yang menunggu untuk kata ini.",
+  "reviewRepoQueueLoadFailed": "Gagal memuat antrean review",
+  "reviewRepoSuggestionDetailLoadFailed": "Gagal memuat detail usulan",
+  "reviewRepoReopenFailed": "Gagal membuka ulang keputusan",
+  "reviewRepoSkipFailed": "Gagal melewati usulan",
+  "reviewRepoRestoreFailed": "Gagal mengembalikan usulan",
+  "reviewRepoUnverifyFailed": "Gagal mencabut verifikasi kata",
+  "reviewRepoDecisionSaveFailed": "Gagal menyimpan keputusan",
+  "reviewRepoSearchMissLoadFailed": "Gagal memuat pencarian kosong",
+  "reviewRepoSearchMissPublishFailed": "Gagal mengubah tayang",
+  "reviewRepoSearchMissCorrectFailed": "Gagal mengoreksi term",
+  "reviewRepoSearchMissDismissFailed": "Gagal menyingkirkan",
+  "reviewRepoSearchMissSkipFailed": "Gagal melewati",
+  "reviewRepoSuggestionsLoadFailed": "Gagal memuat antrean usulan edit",
+  "reviewRepoSuggestionLoadFailed": "Gagal memuat detail usulan edit",
+  "reviewRepoSuggestionApproveFailed": "Gagal menyetujui usulan",
+  "reviewRepoSuggestionRejectFailed": "Gagal menolak usulan",
+  "reviewCorrectKindLabel": "Ubah jenis atau kelas kata",
+  "reviewSearchMissHitsText": "{value} dicari",
+  "@reviewSearchMissHitsText": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSearchMissVisibleSuffix": "tayang",
+  "reviewSearchMissDirectionHitsFull": "{direction} · {count}× dicari · {status}",
+  "@reviewSearchMissDirectionHitsFull": {
+    "placeholders": {
+      "direction": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  }
 }

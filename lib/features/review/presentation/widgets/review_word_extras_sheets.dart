@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -120,7 +121,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Sinonim & antonim',
+                      AppLocalizations.of(context).reviewExtrasSynonymsAntonyms,
                       style: theme.typography.body.lg
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
@@ -128,7 +129,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                   FButton(
                     size: FButtonSizeVariant.sm,
                     onPress: () => Navigator.pop(context),
-                    child: const Text('Selesai'),
+                    child: Text(AppLocalizations.of(context).commonDone),
                   ),
                 ],
               ),
@@ -140,9 +141,9 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                     children: [
                       Row(
                         children: [
-                          for (final (type, label) in const [
-                            ('synonym', 'Sinonim'),
-                            ('antonym', 'Antonim'),
+                          for (final (type, label) in [
+                            ('synonym', AppLocalizations.of(context).reviewExtrasSynonyms),
+                            ('antonym', AppLocalizations.of(context).reviewExtrasAntonyms),
                           ]) ...[
                             Expanded(
                               child: FButton(
@@ -151,7 +152,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                                     ? FButtonVariant.primary
                                     : FButtonVariant.outline,
                                 onPress: () => setState(() => _type = type),
-                                child: Text('$label (${_ofType(type).length})'),
+                                child: Text(AppLocalizations.of(context).reviewExtrasTypeCount(label, _ofType(type).length)),
                               ),
                             ),
                             if (type == 'synonym') const Gap(8),
@@ -162,8 +163,8 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                       if (selected.isEmpty)
                         Text(
                           _type == 'synonym'
-                              ? 'Belum ada sinonim. Cari kata di bawah untuk menambah.'
-                              : 'Belum ada antonim. Cari kata di bawah untuk menambah.',
+                              ? AppLocalizations.of(context).reviewExtrasNoSynonym
+                              : AppLocalizations.of(context).reviewExtrasNoAntonym,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
@@ -186,7 +187,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                                       Icon(
                                         FLucideIcons.x,
                                         size: 12,
-                                        semanticLabel: 'Hapus ${r.lemma}',
+                                        semanticLabel: AppLocalizations.of(context).reviewExtrasRemoveRelation(r.lemma),
                                       ),
                                     ],
                                   ),
@@ -202,7 +203,7 @@ class _RelationsSheetState extends ConsumerState<_RelationsSheet> {
                               .read(wordCompleteProvider.notifier)
                               .onQueryChanged(value.text),
                         ),
-                        hint: 'Cari kata yang sudah ada...',
+                        hint: AppLocalizations.of(context).reviewExtrasSearchWord,
                         prefixBuilder: (context, style, variants) =>
                             FTextField.prefixIconBuilder(
                               context,
@@ -248,7 +249,7 @@ class _RelationResults extends StatelessWidget {
     final theme = context.theme;
     final muted = theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground);
     if (!state.isSearching) {
-      return Text('Ketik minimal 2 huruf.', style: muted);
+      return Text(AppLocalizations.of(context).reviewExtrasMinChars, style: muted);
     }
     if (state.isLoading) {
       return const Center(child: FCircularProgress());
@@ -258,7 +259,7 @@ class _RelationResults extends StatelessWidget {
     }
     if (results.isEmpty) {
       return Text(
-        'Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.',
+        AppLocalizations.of(context).reviewExtrasWordNotFound,
         style: muted,
       );
     }
@@ -334,11 +335,11 @@ class _VariantsSheetState extends State<_VariantsSheet> {
     if (form.isEmpty) return;
     final lower = form.toLowerCase();
     final error = lower == widget.lemma.trim().toLowerCase()
-        ? 'Variasi tidak boleh sama dengan lemma'
+        ? AppLocalizations.of(context).reviewVariantSameAsLemma
         : _items.any((v) => v.toLowerCase() == lower)
-        ? 'Variasi ini sudah ada'
+        ? AppLocalizations.of(context).reviewVariantDuplicate
         : _items.length >= reviewMaxVariants
-        ? 'Maksimal $reviewMaxVariants variasi'
+        ? AppLocalizations.of(context).reviewVariantMax(reviewMaxVariants)
         : null;
     setState(() {
       _error = error;
@@ -369,20 +370,20 @@ class _VariantsSheetState extends State<_VariantsSheet> {
             children: [
               Expanded(
                 child: Text(
-                  'Variasi penulisan',
+                  AppLocalizations.of(context).reviewVariantTitle,
                   style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
               FButton(
                 size: FButtonSizeVariant.sm,
                 onPress: () => Navigator.pop(context),
-                child: const Text('Selesai'),
+                child: Text(AppLocalizations.of(context).commonDone),
               ),
             ],
           ),
           const Gap(4),
           Text(
-            'Ejaan lain untuk "${widget.lemma}".',
+            AppLocalizations.of(context).reviewVariantHint(widget.lemma),
             style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
           ),
           const Gap(12),
@@ -404,7 +405,7 @@ class _VariantsSheetState extends State<_VariantsSheet> {
                           Icon(
                             FLucideIcons.x,
                             size: 12,
-                            semanticLabel: 'Hapus $form',
+                            semanticLabel: AppLocalizations.of(context).reviewVariantRemove(form),
                           ),
                         ],
                       ),
@@ -420,7 +421,7 @@ class _VariantsSheetState extends State<_VariantsSheet> {
               Expanded(
                 child: FTextField(
                   control: FTextFieldControl.managed(controller: _input),
-                  hint: 'Tulis variasi, mis. klintiak',
+                  hint: AppLocalizations.of(context).reviewVariantAddHint,
                   textInputAction: TextInputAction.done,
                   onSubmit: (_) => _add(),
                   error: _error == null ? null : Text(_error!),
@@ -430,7 +431,7 @@ class _VariantsSheetState extends State<_VariantsSheet> {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: _add,
-                child: const Text('Tambah'),
+                child: Text(AppLocalizations.of(context).reviewVariantAdd),
               ),
             ],
           ),

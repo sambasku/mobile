@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -39,17 +40,17 @@ Set<String> editableChildKeys(String entityType) => switch (entityType) {
   _ => {'source_sentence', 'target_sentence', 'source_type', 'notes'},
 };
 
-const _childFieldLabels = <String, String>{
-  'notation': 'Notasi',
-  'value': 'Pelafalan',
-  'audio_url': 'URL audio',
-  'speaker_name': 'Penutur',
-  'notes': 'Catatan',
-  'url': 'URL gambar',
-  'alt_text': 'Teks alternatif',
-  'source_sentence': 'Kalimat sambas',
-  'target_sentence': 'Kalimat terjemahan',
-  'source_type': 'Jenis sumber',
+Map<String, String> _childFieldLabels(AppLocalizations l10n) => {
+  'notation': l10n.reviewCorrectNotation,
+  'value': l10n.reviewCorrectPronunciation,
+  'audio_url': l10n.reviewCorrectAudioUrl,
+  'speaker_name': l10n.reviewCorrectSpeaker,
+  'notes': l10n.historyFieldNotes,
+  'url': l10n.reviewCorrectImageUrl,
+  'alt_text': l10n.reviewCorrectAltText,
+  'source_sentence': l10n.reviewCorrectSambasSentence,
+  'target_sentence': l10n.reviewCorrectTranslationSentence,
+  'source_type': l10n.reviewCorrectSourceType,
 };
 
 /// Form koreksi inline (dipakai di sesi review, bukan halaman terpisah).
@@ -517,7 +518,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
               FTextField(
                 control: FTextFieldControl.managed(controller: _comment),
                 enabled: !_busy,
-                label: const Text('Catatan (opsional)'),
+                label: Text(AppLocalizations.of(context).reviewCorrectNotesOptional),
               ),
             ],
           ),
@@ -537,11 +538,11 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
                 children: [
                   Row(
                     children: [
-                      const Expanded(
-                        child: Text('Langsung terbitkan dan verifikasi'),
+                      Expanded(
+                        child: Text(AppLocalizations.of(context).reviewCorrectPublishVerify),
                       ),
                       FSwitch(
-                        semanticsLabel: 'Langsung terbitkan dan verifikasi',
+                        semanticsLabel: AppLocalizations.of(context).reviewCorrectPublishVerify,
                         value: _publish,
                         enabled: !_busy,
                         onChange: (value) => setState(() => _publish = value),
@@ -554,17 +555,17 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
                     prefix: _busy ? const FCircularProgress() : null,
                     child: Text(
                       _busy
-                          ? 'Memproses…'
+                          ? AppLocalizations.of(context).reviewCorrectProcessing
                           : _publish
-                          ? 'Simpan dan terbitkan'
-                          : 'Simpan, tetap menunggu',
+                          ? AppLocalizations.of(context).reviewCorrectSavePublish
+                          : AppLocalizations.of(context).reviewCorrectSavePending,
                     ),
                   ),
                   const Gap(8),
                   FButton(
                     variant: FButtonVariant.outline,
                     onPress: _busy ? null : widget.onCancel,
-                    child: const Text('Batal koreksi'),
+                    child: Text(AppLocalizations.of(context).reviewCorrectCancel),
                   ),
                 ],
               ),
@@ -582,7 +583,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       if (hasConflictingUsageLabels({..._usageLabels, code})) {
         showFToast(
           context: context,
-          title: const Text('Halus dan Kasar tidak bisa dipilih bersamaan'),
+          title: Text(AppLocalizations.of(context).reviewCorrectPolitenessConflict),
         );
         return;
       }
@@ -598,16 +599,16 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       FTextField(
         control: FTextFieldControl.managed(controller: _lemma),
         enabled: !_busy,
-        label: const Text('Lemma'),
+        label: Text(AppLocalizations.of(context).suggestLemmaLabel),
       ),
       const Gap(12),
-      const Text('Jenis entri'),
+      Text(AppLocalizations.of(context).reviewSuggestionEntryType),
       const Gap(6),
       Wrap(
         spacing: 6,
         runSpacing: 6,
         children: [
-          for (final opt in _reviewWordTypes)
+          for (final opt in _reviewWordTypes(AppLocalizations.of(context)))
             GestureDetector(
               onTap: _busy ? null : () => setState(() => _wordType = opt.value),
               child: FBadge(
@@ -623,13 +624,13 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       FTextField(
         control: FTextFieldControl.managed(controller: _notes),
         enabled: !_busy,
-        label: const Text('Catatan kata'),
+        label: Text(AppLocalizations.of(context).reviewCorrectWordNotes),
       ),
       const Gap(12),
-      const Text('Register'),
+      Text(AppLocalizations.of(context).reviewCorrectRegister),
       const Gap(4),
       Text(
-        'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.',
+        AppLocalizations.of(context).reviewCorrectRegisterHint,
         style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
@@ -642,10 +643,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         onToggle: _toggleUsageLabel,
       ),
       const Gap(12),
-      const Text('Peringatan'),
+      Text(AppLocalizations.of(context).reviewCorrectWarning),
       const Gap(4),
       Text(
-        'Sensitivitas isi makna.',
+        AppLocalizations.of(context).reviewCorrectWarningHint,
         style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
@@ -658,7 +659,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         onToggle: _toggleUsageLabel,
       ),
       const Gap(20),
-      const _SectionLabel('Makna'),
+      _SectionLabel(AppLocalizations.of(context).shareSectionMeaning),
       const Gap(8),
       for (var i = 0; i < _meanings.length; i++) ...[
         ReviewMeaningCard(
@@ -688,10 +689,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           variant: FButtonVariant.outline,
           onPress: _busy ? null : _addMeaning,
           prefix: const Icon(FLucideIcons.plus),
-          child: const Text('Tambah makna'),
+          child: Text(AppLocalizations.of(context).reviewCorrectAddMeaning),
         ),
       const Gap(20),
-      const _SectionLabel('Kelengkapan'),
+      _SectionLabel(AppLocalizations.of(context).reviewPreviewCompleteness),
       const Gap(8),
       FTileGroup(
         enabled: !_busy,
@@ -699,16 +700,16 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         children: [
           FTile(
             prefix: const Icon(FLucideIcons.arrowLeftRight),
-            title: const Text('Sinonim & antonim'),
+            title: Text(AppLocalizations.of(context).reviewExtrasSynonymsAntonyms),
             subtitle: Text(_relationSummary()),
             suffix: const Icon(FLucideIcons.chevronRight),
             onPress: _openRelations,
           ),
           FTile(
             prefix: const Icon(FLucideIcons.spellCheck),
-            title: const Text('Variasi penulisan'),
+            title: Text(AppLocalizations.of(context).reviewVariantTitle),
             subtitle: Text(
-              _variants.isEmpty ? 'Belum ada' : _variants.join(', '),
+              _variants.isEmpty ? AppLocalizations.of(context).reviewExtrasNoItems : _variants.join(', '),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -717,11 +718,11 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           ),
           FTile(
             prefix: const Icon(FLucideIcons.mic),
-            title: const Text('Rekam pelafalan'),
+            title: Text(AppLocalizations.of(context).reviewCorrectAddPronunciation),
             subtitle: Text(
               _recordedCount == 0
-                  ? 'Langsung tersimpan, tidak menunggu tombol Simpan'
-                  : '$_recordedCount rekaman baru terkirim',
+                  ? AppLocalizations.of(context).reviewCorrectPronunciationAutoSave
+                  : AppLocalizations.of(context).reviewCorrectPronunciationRecorded(_recordedCount),
             ),
             suffix: const Icon(FLucideIcons.chevronRight),
             onPress: _openRecord,
@@ -741,10 +742,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     final antonyms = _relations
         .where((r) => r.relationType == 'antonym')
         .length;
-    if (synonyms == 0 && antonyms == 0) return 'Belum ada';
+    if (synonyms == 0 && antonyms == 0) return AppLocalizations.of(context).reviewExtrasNoItems;
     return [
-      if (synonyms > 0) '$synonyms sinonim',
-      if (antonyms > 0) '$antonyms antonim',
+      if (synonyms > 0) AppLocalizations.of(context).reviewCorrectSynonymCount(synonyms),
+      if (antonyms > 0) AppLocalizations.of(context).reviewCorrectAntonymCount(antonyms),
     ].join(', ');
   }
 
@@ -771,7 +772,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     if (languageId == null || languageId.isEmpty) {
       showFToast(
         context: context,
-        title: const Text('Bahasa kata tidak diketahui'),
+        title: Text(AppLocalizations.of(context).reviewCorrectLanguageUnknown),
       );
       return;
     }
@@ -810,7 +811,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       if (mounted) {
         showFToast(
           context: context,
-          title: const Text('Gagal memuat kelas kata'),
+          title: Text(AppLocalizations.of(context).reviewCorrectWordClassLoadFailed),
         );
       }
       return;
@@ -834,25 +835,24 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     final meaning = _childMeaning;
     if (meaning == null) {
       return [
-        const Text('Payload makna tidak memuat definisi atau terjemahan.'),
+        Text(AppLocalizations.of(context).reviewCorrectMeaningPayloadMissing),
       ];
     }
     return [
       FTextField(
         control: FTextFieldControl.managed(controller: meaning.definitionCtrl),
         enabled: !_busy,
-        label: const Text('Definisi'),
+        label: Text(AppLocalizations.of(context).suggestDefinitionLabel),
       ),
       const Gap(8),
       FTextField(
         control: FTextFieldControl.managed(controller: meaning.translationCtrl),
         enabled: !_busy,
-        label: const Text('Terjemahan'),
+        label: Text(AppLocalizations.of(context).historyFieldTranslation),
         description: meaning.carriedTranslations.isEmpty
-            ? const Text('Tekan icon buku untuk mencari definisi di KBBI')
+            ? Text(AppLocalizations.of(context).reviewCorrectKbbiHint)
             : Text(
-                'Terjemahan lain milik makna ini (${meaning.carriedTranslations.length}) '
-                'ikut tersimpan tanpa diubah.',
+                AppLocalizations.of(context).reviewCorrectCarriedTranslations(meaning.carriedTranslations.length),
               ),
         suffixBuilder: (context, style, _) => Padding(
           padding: style.clearButtonPadding,
@@ -909,7 +909,7 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         wordClassId: matched,
       );
     });
-    showFToast(context: context, title: const Text('Definisi diisi dari KBBI'));
+    showFToast(context: context, title: Text(AppLocalizations.of(context).reviewCorrectDefinitionFromKbbi));
   }
 
   List<Widget> _childForm() {
@@ -920,16 +920,16 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           enabled: !_busy,
           // Kunci tak dikenal tidak akan muncul: _childFields dibangun dari
           // allowlist, dan label selalu ada untuk tiap kunci therein.
-          label: Text(_childFieldLabels[entry.key] ?? entry.key),
+          label: Text(_childFieldLabels(AppLocalizations.of(context))[entry.key] ?? entry.key),
         ),
         const Gap(12),
       ],
       if (_hasPrimary)
         Row(
           children: [
-            const Expanded(child: Text('Utama')),
+            Expanded(child: Text(AppLocalizations.of(context).commonPrimary)),
             FSwitch(
-              semanticsLabel: 'Utama',
+              semanticsLabel: AppLocalizations.of(context).commonPrimary,
               value: _childPrimary,
               enabled: !_busy,
               onChange: (value) => setState(() => _childPrimary = value),
@@ -996,11 +996,11 @@ class _UsageLabelChips extends StatelessWidget {
   }
 }
 
-const _reviewWordTypes = <({String value, String label})>[
-  (value: 'word', label: 'Kata'),
-  (value: 'idiom', label: 'Idiom'),
-  (value: 'peribahasa', label: 'Peribahasa'),
-  (value: 'ungkapan', label: 'Ungkapan'),
+List<({String value, String label})> _reviewWordTypes(AppLocalizations l10n) => [
+  (value: 'word', label: l10n.reviewWordTypeWord),
+  (value: 'idiom', label: l10n.reviewWordTypeIdiom),
+  (value: 'peribahasa', label: l10n.reviewWordTypeProverb),
+  (value: 'ungkapan', label: l10n.reviewWordTypeExpression),
 ];
 
 /// KBBI menulis adjektiva sebagai "a", sedangkan kode internal memakai "adj".

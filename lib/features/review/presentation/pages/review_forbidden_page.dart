@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -21,7 +22,7 @@ class ReviewForbiddenPage extends StatelessWidget {
       },
       child: FScaffold(
         header: FHeader.nested(
-          title: const Text('Area Verifikator'),
+          title: Text(AppLocalizations.of(context).commonVerifierArea),
           prefixes: [
             FHeaderAction.back(onPress: () => leaveReview(context)),
           ],
@@ -35,13 +36,13 @@ class ReviewForbiddenPage extends StatelessWidget {
                 Icon(FLucideIcons.shieldOff, size: 36, color: theme.colors.mutedForeground),
                 const Gap(12),
                 Text(
-                  'Kamu tidak berwenang meninjau usulan.',
+                  AppLocalizations.of(context).commonForbiddenBody,
                   textAlign: TextAlign.center,
                   style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const Gap(8),
                 Text(
-                  message ?? 'Role tidak diizinkan mengakses endpoint ini',
+                  message ?? AppLocalizations.of(context).commonForbiddenRole,
                   textAlign: TextAlign.center,
                   style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
                 ),

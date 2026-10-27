@@ -2748,6 +2748,2026 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'ID kata digabung'**
   String get historyFieldMergedWordId;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get commonCancel;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get commonRetry;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get commonSave;
+
+  /// No description provided for @commonReject.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak'**
+  String get commonReject;
+
+  /// No description provided for @commonApprove.
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui'**
+  String get commonApprove;
+
+  /// No description provided for @commonSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get commonSkip;
+
+  /// No description provided for @commonDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get commonDone;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get commonClose;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get commonDelete;
+
+  /// No description provided for @commonYes.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya'**
+  String get commonYes;
+
+  /// No description provided for @commonNo.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak'**
+  String get commonNo;
+
+  /// No description provided for @commonPrimary.
+  ///
+  /// In id, this message translates to:
+  /// **'Utama'**
+  String get commonPrimary;
+
+  /// No description provided for @commonEmptyField.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum diisi'**
+  String get commonEmptyField;
+
+  /// No description provided for @commonNoDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada detail.'**
+  String get commonNoDetail;
+
+  /// No description provided for @commonLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat detail'**
+  String get commonLoadFailed;
+
+  /// No description provided for @commonForbiddenBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu tidak berwenang meninjau usulan.'**
+  String get commonForbiddenBody;
+
+  /// No description provided for @commonForbiddenRole.
+  ///
+  /// In id, this message translates to:
+  /// **'Role tidak diizinkan mengakses endpoint ini'**
+  String get commonForbiddenRole;
+
+  /// No description provided for @commonVerifierArea.
+  ///
+  /// In id, this message translates to:
+  /// **'Area Verifikator'**
+  String get commonVerifierArea;
+
+  /// No description provided for @commonReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan'**
+  String get commonReason;
+
+  /// No description provided for @reviewEntityWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get reviewEntityWord;
+
+  /// No description provided for @reviewEntityPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan'**
+  String get reviewEntityPronunciation;
+
+  /// No description provided for @reviewEntityWordImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get reviewEntityWordImage;
+
+  /// No description provided for @reviewEntityWordAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'Audio'**
+  String get reviewEntityWordAudio;
+
+  /// No description provided for @reviewEntityExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat'**
+  String get reviewEntityExample;
+
+  /// No description provided for @reviewEntityMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna'**
+  String get reviewEntityMeaning;
+
+  /// No description provided for @reviewEntityOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan'**
+  String get reviewEntityOther;
+
+  /// No description provided for @reviewStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get reviewStatusPending;
+
+  /// No description provided for @reviewStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get reviewStatusApproved;
+
+  /// No description provided for @reviewStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get reviewStatusRejected;
+
+  /// No description provided for @reviewStatusCorrected.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikoreksi'**
+  String get reviewStatusCorrected;
+
+  /// No description provided for @reviewStatusReopened.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuka ulang'**
+  String get reviewStatusReopened;
+
+  /// No description provided for @reviewStatusAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get reviewStatusAll;
+
+  /// No description provided for @reviewContributorFallback.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontributor'**
+  String get reviewContributorFallback;
+
+  /// No description provided for @reviewHomeStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai tinjau'**
+  String get reviewHomeStart;
+
+  /// No description provided for @reviewHomeContributionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan yang menunggu'**
+  String get reviewHomeContributionTitle;
+
+  /// No description provided for @reviewHomeContributionSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean kontribusi untuk ditinjau'**
+  String get reviewHomeContributionSubtitle;
+
+  /// No description provided for @reviewHomeCompleteWordTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki/lengkapi kata'**
+  String get reviewHomeCompleteWordTitle;
+
+  /// No description provided for @reviewHomeCompleteWordSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna, relasi, variasi penulisan, contoh, dan rekam pelafalan'**
+  String get reviewHomeCompleteWordSubtitle;
+
+  /// No description provided for @reviewHomeSuggestionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan edit'**
+  String get reviewHomeSuggestionTitle;
+
+  /// No description provided for @reviewHomeSuggestionWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan edit yang menunggu'**
+  String get reviewHomeSuggestionWaiting;
+
+  /// No description provided for @reviewHomeSuggestionSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean usulan perubahan kata'**
+  String get reviewHomeSuggestionSubtitle;
+
+  /// No description provided for @reviewHomeDiscussionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjauan Diskusi'**
+  String get reviewHomeDiscussionTitle;
+
+  /// No description provided for @reviewHomeDiscussionWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada diskusi yang menunggu'**
+  String get reviewHomeDiscussionWaiting;
+
+  /// No description provided for @reviewHomeDiscussionSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean Ruang Diskusi untuk ditinjau'**
+  String get reviewHomeDiscussionSubtitle;
+
+  /// No description provided for @reviewHomeSearchMissTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pencarian kosong'**
+  String get reviewHomeSearchMissTitle;
+
+  /// No description provided for @reviewHomeSearchMissSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tayangkan ke publik atau usulkan sendiri'**
+  String get reviewHomeSearchMissSubtitle;
+
+  /// No description provided for @reviewHomeHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat tinjauan'**
+  String get reviewHomeHistoryTitle;
+
+  /// No description provided for @reviewHomeHistorySubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Keputusan yang sudah kamu berikan'**
+  String get reviewHomeHistorySubtitle;
+
+  /// No description provided for @reviewQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean'**
+  String get reviewQueueLoadFailed;
+
+  /// No description provided for @reviewQueueEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada usulan yang menunggu'**
+  String get reviewQueueEmpty;
+
+  /// No description provided for @reviewQueueEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan baru dari kontributor akan muncul di sini.'**
+  String get reviewQueueEmptyHint;
+
+  /// No description provided for @reviewQueueStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai tinjau'**
+  String get reviewQueueStart;
+
+  /// No description provided for @reviewQueueStartCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai tinjau ({count})'**
+  String reviewQueueStartCount(String count);
+
+  /// No description provided for @reviewQueueStartMore.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai tinjau ({count}+)'**
+  String reviewQueueStartMore(String count);
+
+  /// No description provided for @reviewSkeletonProposalTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata contoh'**
+  String get reviewSkeletonProposalTitle;
+
+  /// No description provided for @reviewSkeletonProposalMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata · kontributor · 21 Sep 2026 00:00'**
+  String get reviewSkeletonProposalMeta;
+
+  /// No description provided for @reviewSkeletonLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma contoh'**
+  String get reviewSkeletonLemma;
+
+  /// No description provided for @reviewSuggestionsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan edit'**
+  String get reviewSuggestionsTitle;
+
+  /// No description provided for @reviewSuggestionsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan edit'**
+  String get reviewSuggestionsLoadFailed;
+
+  /// No description provided for @reviewSuggestionsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada usulan edit menunggu'**
+  String get reviewSuggestionsEmpty;
+
+  /// No description provided for @reviewSuggestionDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail usulan edit'**
+  String get reviewSuggestionDetailTitle;
+
+  /// No description provided for @reviewSuggestionRejectTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak usulan'**
+  String get reviewSuggestionRejectTitle;
+
+  /// No description provided for @reviewSuggestionRejectBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Berikan alasan penolakan untuk kontributor.'**
+  String get reviewSuggestionRejectBody;
+
+  /// No description provided for @reviewSuggestionRejectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ditolak'**
+  String get reviewSuggestionRejectedToast;
+
+  /// No description provided for @reviewSuggestionApprovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan disetujui'**
+  String get reviewSuggestionApprovedToast;
+
+  /// No description provided for @reviewSuggestionFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari {contributor} · {date}'**
+  String reviewSuggestionFrom(String contributor, String date);
+
+  /// No description provided for @reviewSuggestionReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan: {reason}'**
+  String reviewSuggestionReason(String reason);
+
+  /// No description provided for @reviewSuggestionComparison.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbandingan'**
+  String get reviewSuggestionComparison;
+
+  /// No description provided for @reviewSuggestionNoDiff.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada diff ringkas'**
+  String get reviewSuggestionNoDiff;
+
+  /// No description provided for @reviewSuggestionApproveNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar bila perlu.'**
+  String get reviewSuggestionApproveNote;
+
+  /// No description provided for @reviewSuggestionStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Status: {status}'**
+  String reviewSuggestionStatus(String status);
+
+  /// No description provided for @reviewSuggestionCurrentEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekarang: (kosong)'**
+  String get reviewSuggestionCurrentEmpty;
+
+  /// No description provided for @reviewSuggestionProposedEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan: (kosong)'**
+  String get reviewSuggestionProposedEmpty;
+
+  /// No description provided for @reviewSuggestionCurrent.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekarang: {value}'**
+  String reviewSuggestionCurrent(String value);
+
+  /// No description provided for @reviewSuggestionProposed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan: {value}'**
+  String reviewSuggestionProposed(String value);
+
+  /// No description provided for @reviewSuggestionEntryType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis entri'**
+  String get reviewSuggestionEntryType;
+
+  /// No description provided for @reviewSuggestionDiffCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{label}: {count} perubahan'**
+  String reviewSuggestionDiffCount(String label, String count);
+
+  /// No description provided for @reviewSuggestionDiffValue.
+  ///
+  /// In id, this message translates to:
+  /// **'{label}: {value}'**
+  String reviewSuggestionDiffValue(String label, String value);
+
+  /// No description provided for @reviewChangeHintLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'lemma'**
+  String get reviewChangeHintLemma;
+
+  /// No description provided for @reviewChangeHintNotes.
+  ///
+  /// In id, this message translates to:
+  /// **'catatan'**
+  String get reviewChangeHintNotes;
+
+  /// No description provided for @reviewChangeHintMeanings.
+  ///
+  /// In id, this message translates to:
+  /// **'makna ({count})'**
+  String reviewChangeHintMeanings(int count);
+
+  /// No description provided for @reviewChangeHintImages.
+  ///
+  /// In id, this message translates to:
+  /// **'gambar ({count})'**
+  String reviewChangeHintImages(int count);
+
+  /// No description provided for @reviewChangeHintFallback.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan usulan'**
+  String get reviewChangeHintFallback;
+
+  /// No description provided for @reviewHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat verifikasi'**
+  String get reviewHistoryTitle;
+
+  /// No description provided for @reviewHistoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat'**
+  String get reviewHistoryLoadFailed;
+
+  /// No description provided for @reviewHistoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada keputusan verifikasi'**
+  String get reviewHistoryEmpty;
+
+  /// No description provided for @reviewHistoryEmptyFiltered.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada keputusan dengan status ini'**
+  String get reviewHistoryEmptyFiltered;
+
+  /// No description provided for @reviewHistoryDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail keputusan'**
+  String get reviewHistoryDetailTitle;
+
+  /// No description provided for @reviewHistoryDecisions.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat keputusan'**
+  String get reviewHistoryDecisions;
+
+  /// No description provided for @reviewHistoryReopenedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Keputusan dibuka ulang'**
+  String get reviewHistoryReopenedToast;
+
+  /// No description provided for @reviewHistoryUnverifiedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi kata dicabut'**
+  String get reviewHistoryUnverifiedToast;
+
+  /// No description provided for @reviewHistoryReopenedNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.'**
+  String get reviewHistoryReopenedNote;
+
+  /// No description provided for @reviewHistoryReopenedHold.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi membalik status kata.'**
+  String get reviewHistoryReopenedHold;
+
+  /// No description provided for @reviewHistoryContinue.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut tinjau'**
+  String get reviewHistoryContinue;
+
+  /// No description provided for @reviewHistoryProcessing.
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses...'**
+  String get reviewHistoryProcessing;
+
+  /// No description provided for @reviewHistoryReopen.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka ulang'**
+  String get reviewHistoryReopen;
+
+  /// No description provided for @reviewHistoryUnverify.
+  ///
+  /// In id, this message translates to:
+  /// **'Cabut verifikasi'**
+  String get reviewHistoryUnverify;
+
+  /// No description provided for @reviewHistorySkeletonMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui · 21 Sep 2026 00:00'**
+  String get reviewHistorySkeletonMeta;
+
+  /// No description provided for @reviewSessionQueueDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean selesai'**
+  String get reviewSessionQueueDone;
+
+  /// No description provided for @reviewSessionSkipped.
+  ///
+  /// In id, this message translates to:
+  /// **'Dilewati.'**
+  String get reviewSessionSkipped;
+
+  /// No description provided for @reviewSessionApprovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan disetujui'**
+  String get reviewSessionApprovedToast;
+
+  /// No description provided for @reviewSessionRejectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ditolak'**
+  String get reviewSessionRejectedToast;
+
+  /// No description provided for @reviewSessionAlreadyProcessed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ini sudah diproses.'**
+  String get reviewSessionAlreadyProcessed;
+
+  /// No description provided for @reviewSessionAccessDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Akses ditolak'**
+  String get reviewSessionAccessDenied;
+
+  /// No description provided for @reviewSessionSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan keputusan'**
+  String get reviewSessionSaveFailed;
+
+  /// No description provided for @reviewSessionRestoreFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengembalikan kartu.'**
+  String get reviewSessionRestoreFailed;
+
+  /// No description provided for @reviewSessionRestoredToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu sebelumnya dikembalikan'**
+  String get reviewSessionRestoredToast;
+
+  /// No description provided for @reviewSessionCorrectionSavedPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi disimpan. Usulan tetap menunggu.'**
+  String get reviewSessionCorrectionSavedPending;
+
+  /// No description provided for @reviewSessionCorrectionSavedClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi disimpan dan usulan ditutup.'**
+  String get reviewSessionCorrectionSavedClosed;
+
+  /// No description provided for @reviewSessionCounter.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau · {position}/{total}'**
+  String reviewSessionCounter(int position, int total);
+
+  /// No description provided for @reviewSessionCounterCorrect.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi · {position}/{total}'**
+  String reviewSessionCounterCorrect(int position, int total);
+
+  /// No description provided for @reviewSessionVerifiedSelf.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah terverifikasi. Menyetujui hanya menutup antrean.'**
+  String get reviewSessionVerifiedSelf;
+
+  /// No description provided for @reviewSessionVerifiedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah terverifikasi oleh @{verifier}. Menyetujui hanya menutup antrean.'**
+  String reviewSessionVerifiedBy(String verifier);
+
+  /// No description provided for @reviewSessionVerifierNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan verifikator'**
+  String get reviewSessionVerifierNote;
+
+  /// No description provided for @reviewSessionSwipeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.'**
+  String get reviewSessionSwipeHint;
+
+  /// No description provided for @reviewSessionSkeletonTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul usulan contoh'**
+  String get reviewSessionSkeletonTitle;
+
+  /// No description provided for @reviewSessionEntryType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis entri'**
+  String get reviewSessionEntryType;
+
+  /// No description provided for @reviewSessionSkeletonDate.
+  ///
+  /// In id, this message translates to:
+  /// **'21 Sep 2026 00:00'**
+  String get reviewSessionSkeletonDate;
+
+  /// No description provided for @reviewSessionSkeletonSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul bagian preview'**
+  String get reviewSessionSkeletonSection;
+
+  /// No description provided for @reviewSessionSkeletonBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.'**
+  String get reviewSessionSkeletonBody;
+
+  /// No description provided for @reviewSessionSkeletonMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'Baris meta tambahan untuk shimmer.'**
+  String get reviewSessionSkeletonMeta;
+
+  /// No description provided for @reviewSessionCorrect.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi'**
+  String get reviewSessionCorrect;
+
+  /// No description provided for @reviewSessionBack.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali ke kartu sebelumnya'**
+  String get reviewSessionBack;
+
+  /// No description provided for @reviewSwipeApprove.
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui'**
+  String get reviewSwipeApprove;
+
+  /// No description provided for @reviewSwipeReject.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak'**
+  String get reviewSwipeReject;
+
+  /// No description provided for @reviewSwipeSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get reviewSwipeSkip;
+
+  /// No description provided for @reviewRejectReasonInaccurate.
+  ///
+  /// In id, this message translates to:
+  /// **'Kurang akurat'**
+  String get reviewRejectReasonInaccurate;
+
+  /// No description provided for @reviewRejectReasonSpelling.
+  ///
+  /// In id, this message translates to:
+  /// **'Ejaan atau penulisan salah'**
+  String get reviewRejectReasonSpelling;
+
+  /// No description provided for @reviewRejectReasonDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Duplikat entri yang sudah ada'**
+  String get reviewRejectReasonDuplicate;
+
+  /// No description provided for @reviewRejectReasonIrrelevant.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak relevan'**
+  String get reviewRejectReasonIrrelevant;
+
+  /// No description provided for @reviewRejectReasonMedia.
+  ///
+  /// In id, this message translates to:
+  /// **'Media (gambar/audio) tidak sesuai'**
+  String get reviewRejectReasonMedia;
+
+  /// No description provided for @reviewRejectReasonInappropriate.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten tidak pantas'**
+  String get reviewRejectReasonInappropriate;
+
+  /// No description provided for @reviewRejectReasonIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi kurang lengkap'**
+  String get reviewRejectReasonIncomplete;
+
+  /// No description provided for @reviewRejectReasonOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get reviewRejectReasonOther;
+
+  /// No description provided for @reviewRejectSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak usulan'**
+  String get reviewRejectSheetTitle;
+
+  /// No description provided for @reviewRejectSheetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.'**
+  String get reviewRejectSheetBody;
+
+  /// No description provided for @reviewRejectReasonLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan penolakan'**
+  String get reviewRejectReasonLabel;
+
+  /// No description provided for @reviewRejectReasonHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan alasan penolakan'**
+  String get reviewRejectReasonHint;
+
+  /// No description provided for @reviewDiscussionQueueTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjauan Diskusi'**
+  String get reviewDiscussionQueueTitle;
+
+  /// No description provided for @reviewDiscussionQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean diskusi'**
+  String get reviewDiscussionQueueLoadFailed;
+
+  /// No description provided for @reviewDiscussionQueueEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada diskusi menunggu tinjauan'**
+  String get reviewDiscussionQueueEmpty;
+
+  /// No description provided for @reviewDiscussionDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau diskusi'**
+  String get reviewDiscussionDetailTitle;
+
+  /// No description provided for @reviewDiscussionHasLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada tautan'**
+  String get reviewDiscussionHasLink;
+
+  /// No description provided for @reviewDiscussionNoText.
+  ///
+  /// In id, this message translates to:
+  /// **'(tanpa teks)'**
+  String get reviewDiscussionNoText;
+
+  /// No description provided for @reviewDiscussionSkeletonExcerpt.
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan diskusi contoh'**
+  String get reviewDiscussionSkeletonExcerpt;
+
+  /// No description provided for @reviewDiscussionSkeletonMeta.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengirim · baru saja'**
+  String get reviewDiscussionSkeletonMeta;
+
+  /// No description provided for @reviewDiscussionApprovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi disetujui dan tayang'**
+  String get reviewDiscussionApprovedToast;
+
+  /// No description provided for @reviewDiscussionRejectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi ditolak'**
+  String get reviewDiscussionRejectedToast;
+
+  /// No description provided for @reviewDiscussionPhotosSafe.
+  ///
+  /// In id, this message translates to:
+  /// **'Pastikan semua foto aman'**
+  String get reviewDiscussionPhotosSafe;
+
+  /// No description provided for @reviewDiscussionApprovePhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu menyetujui {approved} foto ({censored} tersensor · {flagged} ber-flag kekerasan).'**
+  String reviewDiscussionApprovePhotos(int approved, int censored, int flagged);
+
+  /// No description provided for @reviewDiscussionPhotoChecklist.
+  ///
+  /// In id, this message translates to:
+  /// **'Pastikan foto bukan NSFW, aman ditayangkan publik, data sensitif sudah disensor bila perlu, dan flag kekerasan sudah ditempel bila perlu.'**
+  String get reviewDiscussionPhotoChecklist;
+
+  /// No description provided for @reviewDiscussionConfirmCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya sudah memeriksa, setujui'**
+  String get reviewDiscussionConfirmCheck;
+
+  /// No description provided for @reviewDiscussionRejectTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak diskusi'**
+  String get reviewDiscussionRejectTitle;
+
+  /// No description provided for @reviewDiscussionRejectReasonRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Berikan alasan penolakan (wajib).'**
+  String get reviewDiscussionRejectReasonRequired;
+
+  /// No description provided for @reviewDiscussionInvalidLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan tidak valid'**
+  String get reviewDiscussionInvalidLink;
+
+  /// No description provided for @reviewDiscussionCannotOpenLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa membuka tautan'**
+  String get reviewDiscussionCannotOpenLink;
+
+  /// No description provided for @reviewDiscussionStagingImageMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'URL gambar staging tidak tersedia'**
+  String get reviewDiscussionStagingImageMissing;
+
+  /// No description provided for @reviewDiscussionAttachmentCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Lampiran gambar ({count})'**
+  String reviewDiscussionAttachmentCount(int count);
+
+  /// No description provided for @reviewDiscussionTapPhotoFull.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk foto untuk melihat ukuran penuh'**
+  String get reviewDiscussionTapPhotoFull;
+
+  /// No description provided for @reviewDiscussionEditCensor.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit sensor'**
+  String get reviewDiscussionEditCensor;
+
+  /// No description provided for @reviewDiscussionCensor.
+  ///
+  /// In id, this message translates to:
+  /// **'Sensor'**
+  String get reviewDiscussionCensor;
+
+  /// No description provided for @reviewDiscussionForceViolence.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar {index}: berisi kekerasan'**
+  String reviewDiscussionForceViolence(int index);
+
+  /// No description provided for @reviewDiscussionForceViolenceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Centang jika foto menunjukkan kekerasan'**
+  String get reviewDiscussionForceViolenceHint;
+
+  /// No description provided for @reviewDiscussionForceViolenceLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar {index} berisi kekerasan'**
+  String reviewDiscussionForceViolenceLabel(int index);
+
+  /// No description provided for @reviewDiscussionApprovePublish.
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui & tayangkan'**
+  String get reviewDiscussionApprovePublish;
+
+  /// No description provided for @reviewDiscussionStatus.
+  ///
+  /// In id, this message translates to:
+  /// **'Status: {status}'**
+  String reviewDiscussionStatus(String status);
+
+  /// No description provided for @reviewCensorTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sensor gambar'**
+  String get reviewCensorTitle;
+
+  /// No description provided for @reviewCensorLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat gambar. Coba lagi dalam beberapa saat.'**
+  String get reviewCensorLoadFailed;
+
+  /// No description provided for @reviewCensorReadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal baca piksel'**
+  String get reviewCensorReadFailed;
+
+  /// No description provided for @reviewCensorEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Body kosong'**
+  String get reviewCensorEmptyBody;
+
+  /// No description provided for @reviewCensorExportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Export gagal'**
+  String get reviewCensorExportFailed;
+
+  /// No description provided for @reviewCensorSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan hasil sensor'**
+  String get reviewCensorSaveFailed;
+
+  /// No description provided for @reviewCensorHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.'**
+  String get reviewCensorHint;
+
+  /// No description provided for @reviewCensorModePixelate.
+  ///
+  /// In id, this message translates to:
+  /// **'Pixelate'**
+  String get reviewCensorModePixelate;
+
+  /// No description provided for @reviewCensorModeBlur.
+  ///
+  /// In id, this message translates to:
+  /// **'Blur'**
+  String get reviewCensorModeBlur;
+
+  /// No description provided for @reviewCensorModeBlock.
+  ///
+  /// In id, this message translates to:
+  /// **'Blok'**
+  String get reviewCensorModeBlock;
+
+  /// No description provided for @reviewCensorBrushSize.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran kuas'**
+  String get reviewCensorBrushSize;
+
+  /// No description provided for @reviewCensorApply.
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan sensor'**
+  String get reviewCensorApply;
+
+  /// No description provided for @reviewSearchMissTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pencarian kosong'**
+  String get reviewSearchMissTitle;
+
+  /// No description provided for @reviewSearchMissLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pencarian kosong'**
+  String get reviewSearchMissLoadFailed;
+
+  /// No description provided for @reviewSearchMissEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akar yang cocok.'**
+  String get reviewSearchMissEmpty;
+
+  /// No description provided for @reviewSearchMissSwipeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kanan tayang · kiri singkirkan · atas lewati - atau ketuk kartu untuk mengusulkan.'**
+  String get reviewSearchMissSwipeHint;
+
+  /// No description provided for @reviewSearchMissPublish.
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get reviewSearchMissPublish;
+
+  /// No description provided for @reviewSearchMissDismiss.
+  ///
+  /// In id, this message translates to:
+  /// **'Singkirkan'**
+  String get reviewSearchMissDismiss;
+
+  /// No description provided for @reviewSearchMissDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai - semua pencarian kosong sudah ditangani.'**
+  String get reviewSearchMissDone;
+
+  /// No description provided for @reviewSearchMissReload.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat ulang'**
+  String get reviewSearchMissReload;
+
+  /// No description provided for @reviewSearchMissCorrect.
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi term'**
+  String get reviewSearchMissCorrect;
+
+  /// No description provided for @reviewSearchMissCorrectHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki salah ketik warga sebelum ditayangkan.'**
+  String get reviewSearchMissCorrectHint;
+
+  /// No description provided for @reviewSearchMissTerm.
+  ///
+  /// In id, this message translates to:
+  /// **'Term'**
+  String get reviewSearchMissTerm;
+
+  /// No description provided for @reviewSearchMissCorrectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{term}\" dikoreksi'**
+  String reviewSearchMissCorrectedToast(String term);
+
+  /// No description provided for @reviewSearchMissPublishedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{term}\" tayang di beranda publik'**
+  String reviewSearchMissPublishedToast(String term);
+
+  /// No description provided for @reviewSearchMissSkippedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'\"{term}\" sudah tayang - dilewati'**
+  String reviewSearchMissSkippedToast(String term);
+
+  /// No description provided for @reviewSearchMissDirectionIdSbs.
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia → Sambas'**
+  String get reviewSearchMissDirectionIdSbs;
+
+  /// No description provided for @reviewSearchMissDirectionSbsId.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas → Indonesia'**
+  String get reviewSearchMissDirectionSbsId;
+
+  /// No description provided for @reviewSearchMissDirectionHits.
+  ///
+  /// In id, this message translates to:
+  /// **'{direction} · {count}× dicari'**
+  String reviewSearchMissDirectionHits(Object count, Object direction);
+
+  /// No description provided for @reviewSearchMissHits.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} dicari'**
+  String reviewSearchMissHits(int count);
+
+  /// No description provided for @reviewSearchMissNotPublished.
+  ///
+  /// In id, this message translates to:
+  /// **'belum tayang'**
+  String get reviewSearchMissNotPublished;
+
+  /// No description provided for @reviewSearchMissTapToSuggest.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk mengusulkan kata ini.'**
+  String get reviewSearchMissTapToSuggest;
+
+  /// No description provided for @reviewPreviewAudioProposal.
+  ///
+  /// In id, this message translates to:
+  /// **'Audio usulan'**
+  String get reviewPreviewAudioProposal;
+
+  /// No description provided for @reviewPreviewTapToRead.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk baca selengkapnya'**
+  String get reviewPreviewTapToRead;
+
+  /// No description provided for @reviewPreviewNoMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada makna.'**
+  String get reviewPreviewNoMeaning;
+
+  /// No description provided for @reviewPreviewProposedWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang diusulkan'**
+  String get reviewPreviewProposedWord;
+
+  /// No description provided for @reviewPreviewCompleteness.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelengkapan'**
+  String get reviewPreviewCompleteness;
+
+  /// No description provided for @reviewPreviewSynonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim'**
+  String get reviewPreviewSynonyms;
+
+  /// No description provided for @reviewPreviewAntonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'Antonim'**
+  String get reviewPreviewAntonyms;
+
+  /// No description provided for @reviewPreviewVariants.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi'**
+  String get reviewPreviewVariants;
+
+  /// No description provided for @reviewPreviewTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan: {text}'**
+  String reviewPreviewTranslation(String text);
+
+  /// No description provided for @reviewPreviewProposedImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar yang diusulkan'**
+  String get reviewPreviewProposedImage;
+
+  /// No description provided for @reviewPreviewForWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk kata “{lemma}”'**
+  String reviewPreviewForWord(String lemma);
+
+  /// No description provided for @reviewPreviewImageUrlMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'URL gambar tidak tersedia.'**
+  String get reviewPreviewImageUrlMissing;
+
+  /// No description provided for @reviewPreviewTapToEnlarge.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk perbesar'**
+  String get reviewPreviewTapToEnlarge;
+
+  /// No description provided for @reviewPreviewAltText.
+  ///
+  /// In id, this message translates to:
+  /// **'Alt text'**
+  String get reviewPreviewAltText;
+
+  /// No description provided for @reviewPreviewAudioFileMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'File audio tidak tersedia.'**
+  String get reviewPreviewAudioFileMissing;
+
+  /// No description provided for @reviewPreviewDurasi.
+  ///
+  /// In id, this message translates to:
+  /// **'Durasi'**
+  String get reviewPreviewDurasi;
+
+  /// No description provided for @reviewPreviewUkuran.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran'**
+  String get reviewPreviewUkuran;
+
+  /// No description provided for @reviewPreviewTipe.
+  ///
+  /// In id, this message translates to:
+  /// **'Tipe'**
+  String get reviewPreviewTipe;
+
+  /// No description provided for @reviewPreviewProposedPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan yang diusulkan'**
+  String get reviewPreviewProposedPronunciation;
+
+  /// No description provided for @reviewPreviewNotation.
+  ///
+  /// In id, this message translates to:
+  /// **'Notasi: {notation}'**
+  String reviewPreviewNotation(String notation);
+
+  /// No description provided for @reviewPreviewProposedMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna yang diusulkan'**
+  String get reviewPreviewProposedMeaning;
+
+  /// No description provided for @reviewPreviewSourceOfMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Sumber makna'**
+  String get reviewPreviewSourceOfMeaning;
+
+  /// No description provided for @reviewPreviewTranslationSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get reviewPreviewTranslationSection;
+
+  /// No description provided for @reviewPreviewTranslationEmptyDeliberate.
+  ///
+  /// In id, this message translates to:
+  /// **'Kontributor sengaja tidak mengisi terjemahan.'**
+  String get reviewPreviewTranslationEmptyDeliberate;
+
+  /// No description provided for @reviewPreviewTranslationMarkedEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditandai ada terjemahan, tetapi belum diisi.'**
+  String get reviewPreviewTranslationMarkedEmpty;
+
+  /// No description provided for @reviewPreviewTranslationNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada terjemahan.'**
+  String get reviewPreviewTranslationNone;
+
+  /// No description provided for @reviewPreviewProposedExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat yang diusulkan'**
+  String get reviewPreviewProposedExample;
+
+  /// No description provided for @reviewPreviewSambasSentence.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat sambas'**
+  String get reviewPreviewSambasSentence;
+
+  /// No description provided for @reviewPreviewTranslationSentence.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat terjemahan'**
+  String get reviewPreviewTranslationSentence;
+
+  /// No description provided for @reviewPreviewSourceType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis sumber'**
+  String get reviewPreviewSourceType;
+
+  /// No description provided for @reviewPreviewProposalContent.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi usulan'**
+  String get reviewPreviewProposalContent;
+
+  /// No description provided for @reviewPreviewDetailLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail'**
+  String get reviewPreviewDetailLabel;
+
+  /// No description provided for @reviewPreviewPlayRecording.
+  ///
+  /// In id, this message translates to:
+  /// **'Putar rekaman'**
+  String get reviewPreviewPlayRecording;
+
+  /// No description provided for @reviewPreviewPlayFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memutar - ketuk lagi'**
+  String get reviewPreviewPlayFailed;
+
+  /// No description provided for @reviewPreviewPlaying.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang diputar'**
+  String get reviewPreviewPlaying;
+
+  /// No description provided for @reviewPreviewTapToListen.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk mendengar'**
+  String get reviewPreviewTapToListen;
+
+  /// No description provided for @reviewPreviewFieldValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai'**
+  String get reviewPreviewFieldValue;
+
+  /// No description provided for @reviewPreviewFieldUrlAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'URL audio'**
+  String get reviewPreviewFieldUrlAudio;
+
+  /// No description provided for @reviewPreviewFieldUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'URL'**
+  String get reviewPreviewFieldUrl;
+
+  /// No description provided for @reviewPreviewFieldSpeech.
+  ///
+  /// In id, this message translates to:
+  /// **'Penutur'**
+  String get reviewPreviewFieldSpeech;
+
+  /// No description provided for @reviewPreviewFieldAlt.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks alternatif'**
+  String get reviewPreviewFieldAlt;
+
+  /// No description provided for @reviewPreviewDurationSec.
+  ///
+  /// In id, this message translates to:
+  /// **'{sec} dtk'**
+  String reviewPreviewDurationSec(int sec);
+
+  /// No description provided for @reviewPreviewDurationMin.
+  ///
+  /// In id, this message translates to:
+  /// **'{min} m'**
+  String reviewPreviewDurationMin(int min);
+
+  /// No description provided for @reviewPreviewDurationMinSec.
+  ///
+  /// In id, this message translates to:
+  /// **'{min} m {rem} dtk'**
+  String reviewPreviewDurationMinSec(int min, int rem);
+
+  /// No description provided for @reviewPreviewBytesB.
+  ///
+  /// In id, this message translates to:
+  /// **'{bytes} B'**
+  String reviewPreviewBytesB(int bytes);
+
+  /// No description provided for @reviewPreviewBytesKb.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} KB'**
+  String reviewPreviewBytesKb(String value);
+
+  /// No description provided for @reviewPreviewBytesMb.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} MB'**
+  String reviewPreviewBytesMb(String value);
+
+  /// No description provided for @reviewMeaningNumber.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna {index}'**
+  String reviewMeaningNumber(int index);
+
+  /// No description provided for @reviewMeaningSwapDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Tukar definisi dan terjemahan'**
+  String get reviewMeaningSwapDefinition;
+
+  /// No description provided for @reviewMeaningDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna {index}'**
+  String reviewMeaningDelete(int index);
+
+  /// No description provided for @reviewMeaningWordClassRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata wajib dipilih'**
+  String get reviewMeaningWordClassRequired;
+
+  /// No description provided for @reviewMeaningExampleSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh kalimat'**
+  String get reviewMeaningExampleSection;
+
+  /// No description provided for @reviewMeaningAddExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah contoh'**
+  String get reviewMeaningAddExample;
+
+  /// No description provided for @reviewMeaningExampleSambas.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat Sambas'**
+  String get reviewMeaningExampleSambas;
+
+  /// No description provided for @reviewMeaningExampleTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan (opsional)'**
+  String get reviewMeaningExampleTranslation;
+
+  /// No description provided for @reviewMeaningDeleteExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus contoh'**
+  String get reviewMeaningDeleteExample;
+
+  /// No description provided for @reviewMeaningPickWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kelas kata'**
+  String get reviewMeaningPickWordClass;
+
+  /// No description provided for @reviewExtrasSynonymsAntonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim & antonim'**
+  String get reviewExtrasSynonymsAntonyms;
+
+  /// No description provided for @reviewExtrasSynonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim'**
+  String get reviewExtrasSynonyms;
+
+  /// No description provided for @reviewExtrasAntonyms.
+  ///
+  /// In id, this message translates to:
+  /// **'Antonim'**
+  String get reviewExtrasAntonyms;
+
+  /// No description provided for @reviewExtrasTypeCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{label} ({count})'**
+  String reviewExtrasTypeCount(String label, int count);
+
+  /// No description provided for @reviewExtrasNoSynonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada sinonim. Cari kata di bawah untuk menambah.'**
+  String get reviewExtrasNoSynonym;
+
+  /// No description provided for @reviewExtrasNoAntonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada antonim. Cari kata di bawah untuk menambah.'**
+  String get reviewExtrasNoAntonym;
+
+  /// No description provided for @reviewExtrasRemoveRelation.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus {lemma}'**
+  String reviewExtrasRemoveRelation(String lemma);
+
+  /// No description provided for @reviewExtrasSearchWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata yang sudah ada...'**
+  String get reviewExtrasSearchWord;
+
+  /// No description provided for @reviewExtrasMinChars.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf.'**
+  String get reviewExtrasMinChars;
+
+  /// No description provided for @reviewExtrasWordNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.'**
+  String get reviewExtrasWordNotFound;
+
+  /// No description provided for @reviewVariantTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi penulisan'**
+  String get reviewVariantTitle;
+
+  /// No description provided for @reviewVariantHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ejaan lain untuk \"{lemma}\".'**
+  String reviewVariantHint(String lemma);
+
+  /// No description provided for @reviewVariantRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus {form}'**
+  String reviewVariantRemove(String form);
+
+  /// No description provided for @reviewVariantAddHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis variasi, mis. klintiak'**
+  String get reviewVariantAddHint;
+
+  /// No description provided for @reviewVariantAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah'**
+  String get reviewVariantAdd;
+
+  /// No description provided for @reviewVariantSameAsLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi tidak boleh sama dengan lemma'**
+  String get reviewVariantSameAsLemma;
+
+  /// No description provided for @reviewVariantDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi ini sudah ada'**
+  String get reviewVariantDuplicate;
+
+  /// No description provided for @reviewVariantMax.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} variasi'**
+  String reviewVariantMax(int max);
+
+  /// No description provided for @reviewExtrasNoItems.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada'**
+  String get reviewExtrasNoItems;
+
+  /// No description provided for @reviewCorrectNotation.
+  ///
+  /// In id, this message translates to:
+  /// **'Notasi'**
+  String get reviewCorrectNotation;
+
+  /// No description provided for @reviewCorrectPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan'**
+  String get reviewCorrectPronunciation;
+
+  /// No description provided for @reviewCorrectAudioUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'URL audio'**
+  String get reviewCorrectAudioUrl;
+
+  /// No description provided for @reviewCorrectSpeaker.
+  ///
+  /// In id, this message translates to:
+  /// **'Penutur'**
+  String get reviewCorrectSpeaker;
+
+  /// No description provided for @reviewCorrectImageUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'URL gambar'**
+  String get reviewCorrectImageUrl;
+
+  /// No description provided for @reviewCorrectAltText.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks alternatif'**
+  String get reviewCorrectAltText;
+
+  /// No description provided for @reviewCorrectSambasSentence.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat sambas'**
+  String get reviewCorrectSambasSentence;
+
+  /// No description provided for @reviewCorrectTranslationSentence.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalimat terjemahan'**
+  String get reviewCorrectTranslationSentence;
+
+  /// No description provided for @reviewCorrectSourceType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis sumber'**
+  String get reviewCorrectSourceType;
+
+  /// No description provided for @reviewCorrectNotesOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get reviewCorrectNotesOptional;
+
+  /// No description provided for @reviewCorrectPublishVerify.
+  ///
+  /// In id, this message translates to:
+  /// **'Langsung terbitkan dan verifikasi'**
+  String get reviewCorrectPublishVerify;
+
+  /// No description provided for @reviewCorrectProcessing.
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses...'**
+  String get reviewCorrectProcessing;
+
+  /// No description provided for @reviewCorrectSavePublish.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan dan terbitkan'**
+  String get reviewCorrectSavePublish;
+
+  /// No description provided for @reviewCorrectSavePending.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan, tetap menunggu'**
+  String get reviewCorrectSavePending;
+
+  /// No description provided for @reviewCorrectCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal koreksi'**
+  String get reviewCorrectCancel;
+
+  /// No description provided for @reviewCorrectPolitenessConflict.
+  ///
+  /// In id, this message translates to:
+  /// **'Halus dan Kasar tidak bisa dipilih bersamaan'**
+  String get reviewCorrectPolitenessConflict;
+
+  /// No description provided for @reviewCorrectWordNotes.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan kata'**
+  String get reviewCorrectWordNotes;
+
+  /// No description provided for @reviewCorrectRegister.
+  ///
+  /// In id, this message translates to:
+  /// **'Register'**
+  String get reviewCorrectRegister;
+
+  /// No description provided for @reviewCorrectRegisterHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.'**
+  String get reviewCorrectRegisterHint;
+
+  /// No description provided for @reviewCorrectWarning.
+  ///
+  /// In id, this message translates to:
+  /// **'Peringatan'**
+  String get reviewCorrectWarning;
+
+  /// No description provided for @reviewCorrectWarningHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Sensitivitas isi makna.'**
+  String get reviewCorrectWarningHint;
+
+  /// No description provided for @reviewCorrectAddMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah makna'**
+  String get reviewCorrectAddMeaning;
+
+  /// No description provided for @reviewCorrectAddPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam pelafalan'**
+  String get reviewCorrectAddPronunciation;
+
+  /// No description provided for @reviewCorrectPronunciationAutoSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Langsung tersimpan, tidak menunggu tombol Simpan'**
+  String get reviewCorrectPronunciationAutoSave;
+
+  /// No description provided for @reviewCorrectPronunciationRecorded.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} rekaman baru terkirim'**
+  String reviewCorrectPronunciationRecorded(int count);
+
+  /// No description provided for @reviewCorrectSynonymCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} sinonim'**
+  String reviewCorrectSynonymCount(int count);
+
+  /// No description provided for @reviewCorrectAntonymCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} antonim'**
+  String reviewCorrectAntonymCount(int count);
+
+  /// No description provided for @reviewCorrectLanguageUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa kata tidak diketahui'**
+  String get reviewCorrectLanguageUnknown;
+
+  /// No description provided for @reviewCorrectWordClassLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kelas kata'**
+  String get reviewCorrectWordClassLoadFailed;
+
+  /// No description provided for @reviewCorrectMeaningPayloadMissing.
+  ///
+  /// In id, this message translates to:
+  /// **'Payload makna tidak memuat definisi atau terjemahan.'**
+  String get reviewCorrectMeaningPayloadMissing;
+
+  /// No description provided for @reviewCorrectKbbiHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan icon buku untuk mencari definisi di KBBI'**
+  String get reviewCorrectKbbiHint;
+
+  /// No description provided for @reviewCorrectCarriedTranslations.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan lain milik makna ini ({count}) ikut tersimpan tanpa diubah.'**
+  String reviewCorrectCarriedTranslations(int count);
+
+  /// No description provided for @reviewCorrectDefinitionFromKbbi.
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi diisi dari KBBI'**
+  String get reviewCorrectDefinitionFromKbbi;
+
+  /// No description provided for @reviewCorrectWordType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis entri'**
+  String get reviewCorrectWordType;
+
+  /// No description provided for @reviewWordTypeGeneral.
+  ///
+  /// In id, this message translates to:
+  /// **'Umum'**
+  String get reviewWordTypeGeneral;
+
+  /// No description provided for @reviewWordTypeWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get reviewWordTypeWord;
+
+  /// No description provided for @reviewWordTypeIdiom.
+  ///
+  /// In id, this message translates to:
+  /// **'Idiom'**
+  String get reviewWordTypeIdiom;
+
+  /// No description provided for @reviewWordTypeProverb.
+  ///
+  /// In id, this message translates to:
+  /// **'Peribahasa'**
+  String get reviewWordTypeProverb;
+
+  /// No description provided for @reviewWordTypeExpression.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungkapan'**
+  String get reviewWordTypeExpression;
+
+  /// No description provided for @reviewInlineTypeLocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis tidak bisa diubah'**
+  String get reviewInlineTypeLocked;
+
+  /// No description provided for @reviewInlineTypeLockedHint.
+  ///
+  /// In id, this message translates to:
+  /// **'has_component hanya untuk entri idiom/peribahasa/ungkapan'**
+  String get reviewInlineTypeLockedHint;
+
+  /// No description provided for @reviewPendingNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada usulan yang menunggu untuk kata ini.'**
+  String get reviewPendingNotFound;
+
+  /// No description provided for @reviewRepoQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean review'**
+  String get reviewRepoQueueLoadFailed;
+
+  /// No description provided for @reviewRepoSuggestionDetailLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat detail usulan'**
+  String get reviewRepoSuggestionDetailLoadFailed;
+
+  /// No description provided for @reviewRepoReopenFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuka ulang keputusan'**
+  String get reviewRepoReopenFailed;
+
+  /// No description provided for @reviewRepoSkipFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal melewati usulan'**
+  String get reviewRepoSkipFailed;
+
+  /// No description provided for @reviewRepoRestoreFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengembalikan usulan'**
+  String get reviewRepoRestoreFailed;
+
+  /// No description provided for @reviewRepoUnverifyFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mencabut verifikasi kata'**
+  String get reviewRepoUnverifyFailed;
+
+  /// No description provided for @reviewRepoDecisionSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan keputusan'**
+  String get reviewRepoDecisionSaveFailed;
+
+  /// No description provided for @reviewRepoSearchMissLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pencarian kosong'**
+  String get reviewRepoSearchMissLoadFailed;
+
+  /// No description provided for @reviewRepoSearchMissPublishFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah tayang'**
+  String get reviewRepoSearchMissPublishFailed;
+
+  /// No description provided for @reviewRepoSearchMissCorrectFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengoreksi term'**
+  String get reviewRepoSearchMissCorrectFailed;
+
+  /// No description provided for @reviewRepoSearchMissDismissFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyingkirkan'**
+  String get reviewRepoSearchMissDismissFailed;
+
+  /// No description provided for @reviewRepoSearchMissSkipFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal melewati'**
+  String get reviewRepoSearchMissSkipFailed;
+
+  /// No description provided for @reviewRepoSuggestionsLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean usulan edit'**
+  String get reviewRepoSuggestionsLoadFailed;
+
+  /// No description provided for @reviewRepoSuggestionLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat detail usulan edit'**
+  String get reviewRepoSuggestionLoadFailed;
+
+  /// No description provided for @reviewRepoSuggestionApproveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyetujui usulan'**
+  String get reviewRepoSuggestionApproveFailed;
+
+  /// No description provided for @reviewRepoSuggestionRejectFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menolak usulan'**
+  String get reviewRepoSuggestionRejectFailed;
+
+  /// No description provided for @reviewCorrectKindLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah jenis atau kelas kata'**
+  String get reviewCorrectKindLabel;
+
+  /// No description provided for @reviewSearchMissHitsText.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} dicari'**
+  String reviewSearchMissHitsText(String value);
+
+  /// No description provided for @reviewSearchMissVisibleSuffix.
+  ///
+  /// In id, this message translates to:
+  /// **'tayang'**
+  String get reviewSearchMissVisibleSuffix;
+
+  /// No description provided for @reviewSearchMissDirectionHitsFull.
+  ///
+  /// In id, this message translates to:
+  /// **'{direction} · {count}× dicari · {status}'**
+  String reviewSearchMissDirectionHitsFull(
+    String direction,
+    int count,
+    String status,
+  );
 }
 
 class _AppLocalizationsDelegate

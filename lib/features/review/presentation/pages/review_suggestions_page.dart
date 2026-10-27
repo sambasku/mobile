@@ -1,4 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../review_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +41,7 @@ class _ReviewSuggestionsPageState
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Usulan edit'),
+        title: Text(AppLocalizations.of(context).reviewSuggestionsTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -55,17 +57,17 @@ class _ReviewSuggestionsPageState
               Text(
                 error is ReviewFailure
                     ? error.message
-                    : 'Gagal memuat usulan edit',
+                    : AppLocalizations.of(context).reviewSuggestionsLoadFailed,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const Gap(12),
+              Gap(12),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(reviewSuggestionsListProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -82,7 +84,7 @@ class _ReviewSuggestionsPageState
                       height: constraints.maxHeight,
                       child: Center(
                         child: Text(
-                          'Tidak ada usulan edit menunggu',
+                          AppLocalizations.of(context).reviewSuggestionsEmpty,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
@@ -125,7 +127,10 @@ class _SuggestionTile extends StatelessWidget with FTileMixin {
       prefix: Icon(FLucideIcons.pencilLine, color: theme.colors.primary),
       title: Text(item.wordLemma),
       subtitle: Text(
-        '${item.contributorLabel} · ${item.changeHint} · ${formatDateTimeIso(item.createdAt)}',
+        AppLocalizations.of(context).reviewSuggestionFrom(
+        reviewSuggestionContributorLabel(item, AppLocalizations.of(context)),
+        formatDateTimeIso(item.createdAt),
+      ),
       ),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () => context.push(ReviewRouter.suggestionDetailPath(item.id)),
@@ -181,8 +186,8 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: Text('Lemma contoh'),
-      subtitle: Text('Kontributor · ringkasan · 21 Sep 2026 00:00'),
+      title: Text(AppLocalizations.of(context).reviewSkeletonLemma),
+      subtitle: Text(AppLocalizations.of(context).reviewSkeletonProposalMeta),
     );
   }
 }

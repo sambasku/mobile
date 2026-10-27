@@ -227,7 +227,7 @@ void main() {
 
       // Tidak ada request server; kartu maju ke berikutnya + toast info.
       expect(repo.setVisibleCalls, isEmpty);
-      expect(find.textContaining('sudah tayang — dilewati'), findsOneWidget);
+      expect(find.textContaining('sudah tayang - dilewati'), findsOneWidget);
       expect(find.text('nandor'), findsOneWidget);
     },
   );
@@ -269,7 +269,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.textContaining('Selesai — semua pencarian kosong'),
+      find.textContaining('semua pencarian kosong'),
       findsOneWidget,
     );
     expect(find.text('Muat ulang'), findsOneWidget);

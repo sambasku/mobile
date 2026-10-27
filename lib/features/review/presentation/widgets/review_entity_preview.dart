@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
@@ -39,7 +40,7 @@ class ReviewEntityPreview extends ConsumerWidget {
     final content = switch (type) {
       'word' => _WordPreview(detail: detail),
       'word_image' => _ImagePreview(entity: detail.entity),
-      'word_audio' => _AudioPreview(entity: detail.entity, label: 'Audio usulan'),
+      'word_audio' => _AudioPreview(entity: detail.entity, label: AppLocalizations.of(context).reviewPreviewAudioProposal),
       'pronunciation' => _PronunciationPreview(entity: detail.entity),
       'example' => _ExamplePreview(entity: detail.entity),
       'meaning' => _MeaningPreview(entity: detail.entity),
@@ -95,7 +96,7 @@ class ReviewEntityPreview extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
-                        'Ketuk untuk baca selengkapnya',
+                        AppLocalizations.of(context).reviewPreviewTapToRead,
                         style: theme.typography.body.xs.copyWith(
                           color: theme.colors.primary,
                           fontWeight: FontWeight.w600,
@@ -175,7 +176,7 @@ bool _isFlagKey(String key) =>
     key == 'is_have_translation';
 
 /// Tampilan netral untuk field yang memang tidak ada isinya.
-const _emptyValueLabel = 'Belum diisi';
+String _emptyValueLabel(AppLocalizations l10n) => l10n.commonEmptyField;
 
 /// Shimmer saat data referensi (kelas kata/bahasa) masih dimuat.
 ///
@@ -239,20 +240,20 @@ int? _int(Map<String, dynamic>? map, String key) {
   return int.tryParse(v?.toString() ?? '');
 }
 
-String _formatDurationMs(int? ms) {
+String _formatDurationMs(int? ms, AppLocalizations l10n) {
   if (ms == null || ms <= 0) return '';
   final sec = (ms / 1000).round();
-  if (sec < 60) return '$sec dtk';
+  if (sec < 60) return l10n.reviewPreviewDurationSec(sec);
   final min = sec ~/ 60;
   final rem = sec % 60;
-  return rem == 0 ? '$min m' : '$min m $rem dtk';
+  return rem == 0 ? l10n.reviewPreviewDurationMin(min) : l10n.reviewPreviewDurationMinSec(min, rem);
 }
 
-String _formatFileSize(int? bytes) {
+String _formatFileSize(int? bytes, AppLocalizations l10n) {
   if (bytes == null || bytes <= 0) return '';
-  if (bytes < 1024) return '$bytes B';
-  if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-  return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  if (bytes < 1024) return l10n.reviewPreviewBytesB(bytes);
+  if (bytes < 1024 * 1024) return l10n.reviewPreviewBytesKb((bytes / 1024).toStringAsFixed(1));
+  return l10n.reviewPreviewBytesMb((bytes / (1024 * 1024)).toStringAsFixed(1));
 }
 
 class _SectionCard extends StatelessWidget {
@@ -362,13 +363,13 @@ class _WordPreview extends StatelessWidget {
     final notes = entity['notes']?.toString().trim();
     final usageLabels = knownUsageLabels(entity['usageLabels']);
     final meanings = entity['meanings'];
-    final extras = _extras();
+    final extras = _extras(AppLocalizations.of(context));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _SectionCard(
-          title: 'Kata yang diusulkan',
+          title: AppLocalizations.of(context).reviewPreviewProposedWord,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -413,10 +414,10 @@ class _WordPreview extends StatelessWidget {
         ),
         const Gap(12),
         _SectionCard(
-          title: 'Makna',
+          title: AppLocalizations.of(context).shareSectionMeaning,
           child: meanings is! List || meanings.isEmpty
               ? Text(
-                  'Tidak ada makna.',
+                  AppLocalizations.of(context).reviewPreviewNoMeaning,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -434,7 +435,7 @@ class _WordPreview extends StatelessWidget {
         if (extras.isNotEmpty) ...[
           const Gap(12),
           _SectionCard(
-            title: 'Kelengkapan',
+            title: AppLocalizations.of(context).reviewPreviewCompleteness,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -463,7 +464,7 @@ class _WordPreview extends StatelessWidget {
   }
 
   /// Baris sinonim/antonim/variasi yang punya isi saja.
-  List<(String, List<String>)> _extras() {
+  List<(String, List<String>)> _extras(AppLocalizations l10n) {
     final entity = detail.entity;
     List<String> lemmas(String type) => [
       for (final r in _mapsOf(entity['relatedWords']))
@@ -475,9 +476,9 @@ class _WordPreview extends StatelessWidget {
         if ('${v['form'] ?? ''}'.trim().isNotEmpty) '${v['form']}'.trim(),
     ];
     return [
-      ('Sinonim', lemmas('synonym')),
-      ('Antonim', lemmas('antonym')),
-      ('Variasi', variants),
+      (l10n.reviewPreviewSynonyms, lemmas('synonym')),
+      (l10n.reviewPreviewAntonyms, lemmas('antonym')),
+      (l10n.reviewPreviewVariants, variants),
     ].where((row) => row.$2.isNotEmpty).toList();
   }
 }
@@ -508,7 +509,7 @@ class _MeaningBlock extends StatelessWidget {
         if (terjemahan != null && terjemahan.trim().isNotEmpty) ...[
           const Gap(4),
           Text(
-            'Terjemahan: $terjemahan',
+            AppLocalizations.of(context).reviewPreviewTranslation(terjemahan),
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -566,7 +567,7 @@ class _ImagePreview extends StatelessWidget {
     final lemma = entity['wordLemma']?.toString();
 
     return _SectionCard(
-      title: 'Gambar yang diusulkan',
+      title: AppLocalizations.of(context).reviewPreviewProposedImage,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -574,7 +575,7 @@ class _ImagePreview extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
-                'Untuk kata “$lemma”',
+                AppLocalizations.of(context).reviewPreviewForWord(lemma),
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -582,7 +583,7 @@ class _ImagePreview extends StatelessWidget {
             ),
           if (url == null)
             Text(
-              'URL gambar tidak tersedia.',
+              AppLocalizations.of(context).reviewPreviewImageUrlMissing,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -605,7 +606,7 @@ class _ImagePreview extends StatelessWidget {
           if (url != null) ...[
             const Gap(8),
             Text(
-              'Ketuk untuk perbesar',
+              AppLocalizations.of(context).reviewPreviewTapToEnlarge,
               style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -613,9 +614,9 @@ class _ImagePreview extends StatelessWidget {
             ),
           ],
           const Gap(10),
-          if (alt != null) _MetaRow(label: 'Alt text', value: alt),
+          if (alt != null) _MetaRow(label: AppLocalizations.of(context).reviewPreviewAltText, value: alt),
           if (primary != null)
-            _MetaRow(label: 'Utama', value: primary ? 'Ya' : 'Tidak'),
+            _MetaRow(label: AppLocalizations.of(context).commonPrimary, value: primary ? AppLocalizations.of(context).commonYes : AppLocalizations.of(context).commonNo),
         ],
       ),
     );
@@ -634,8 +635,8 @@ class _AudioPreview extends StatelessWidget {
     final data = _childData(entity);
     final url = _str(data, 'url') ?? _str(data, 'audio_url');
     final speaker = _str(data, 'speaker_name');
-    final duration = _formatDurationMs(_int(data, 'duration_ms'));
-    final size = _formatFileSize(_int(data, 'file_size'));
+    final duration = _formatDurationMs(_int(data, 'duration_ms'), AppLocalizations.of(context));
+    final size = _formatFileSize(_int(data, 'file_size'), AppLocalizations.of(context));
     final mime = _str(data, 'mime_type');
     final primary = _bool(data, 'is_primary');
     final lemma = entity['wordLemma']?.toString();
@@ -649,7 +650,7 @@ class _AudioPreview extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
-                'Untuk kata “$lemma”',
+                AppLocalizations.of(context).reviewPreviewForWord(lemma),
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -657,7 +658,7 @@ class _AudioPreview extends StatelessWidget {
             ),
           if (url == null)
             Text(
-              'File audio tidak tersedia.',
+              AppLocalizations.of(context).reviewPreviewAudioFileMissing,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -665,12 +666,12 @@ class _AudioPreview extends StatelessWidget {
           else
             _InlineAudioPlayer(url: url, speaker: speaker),
           const Gap(10),
-          if (speaker != null) _MetaRow(label: 'Penutur', value: speaker),
-          if (duration.isNotEmpty) _MetaRow(label: 'Durasi', value: duration),
-          if (size.isNotEmpty) _MetaRow(label: 'Ukuran', value: size),
-          if (mime != null) _MetaRow(label: 'Tipe', value: mime),
+          if (speaker != null) _MetaRow(label: AppLocalizations.of(context).reviewCorrectSpeaker, value: speaker),
+          if (duration.isNotEmpty) _MetaRow(label: AppLocalizations.of(context).reviewPreviewDurasi, value: duration),
+          if (size.isNotEmpty) _MetaRow(label: AppLocalizations.of(context).reviewPreviewUkuran, value: size),
+          if (mime != null) _MetaRow(label: AppLocalizations.of(context).reviewPreviewTipe, value: mime),
           if (primary != null)
-            _MetaRow(label: 'Utama', value: primary ? 'Ya' : 'Tidak'),
+            _MetaRow(label: AppLocalizations.of(context).commonPrimary, value: primary ? AppLocalizations.of(context).commonYes : AppLocalizations.of(context).commonNo),
         ],
       ),
     );
@@ -694,7 +695,7 @@ class _PronunciationPreview extends StatelessWidget {
     final lemma = entity['wordLemma']?.toString();
 
     return _SectionCard(
-      title: 'Pelafalan yang diusulkan',
+      title: AppLocalizations.of(context).reviewPreviewProposedPronunciation,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -702,7 +703,7 @@ class _PronunciationPreview extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Untuk kata “$lemma”',
+                AppLocalizations.of(context).reviewPreviewForWord(lemma),
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -719,7 +720,7 @@ class _PronunciationPreview extends StatelessWidget {
           if (notation != null) ...[
             const Gap(4),
             Text(
-              'Notasi: $notation',
+              AppLocalizations.of(context).reviewPreviewNotation(notation),
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -727,9 +728,9 @@ class _PronunciationPreview extends StatelessWidget {
           ],
           if (speaker != null) ...[
             const Gap(8),
-            _MetaRow(label: 'Penutur', value: speaker),
+            _MetaRow(label: AppLocalizations.of(context).reviewCorrectSpeaker, value: speaker),
           ],
-          if (notes != null) _MetaRow(label: 'Catatan', value: notes),
+          if (notes != null) _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
           if (audioUrl != null) ...[
             const Gap(8),
             _InlineAudioPlayer(url: audioUrl, speaker: speaker),
@@ -753,7 +754,7 @@ class _LemmaHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
-        'Untuk kata “$text”',
+        AppLocalizations.of(context).reviewPreviewForWord(text),
         style: context.theme.typography.body.sm.copyWith(
           color: context.theme.colors.mutedForeground,
         ),
@@ -817,24 +818,26 @@ class _MeaningPreview extends ConsumerWidget {
     final notes = _str(data, 'notes');
 
     return _SectionCard(
-      title: 'Makna yang diusulkan',
+      title: AppLocalizations.of(context).reviewPreviewProposedMeaning,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _LemmaHeader(entity['wordLemma']?.toString()),
           _MetaRow(
-            label: 'Definisi',
-            value: definitionMissing ? _emptyValueLabel : rawDefinition,
+            label: AppLocalizations.of(context).suggestDefinitionLabel,
+            value: definitionMissing
+              ? _emptyValueLabel(AppLocalizations.of(context))
+              : rawDefinition,
             muted: definitionMissing,
           ),
           if (className != null)
-            _MetaRow(label: 'Kelas kata', value: className)
+            _MetaRow(label: AppLocalizations.of(context).suggestWordClassLabelShort, value: className)
           else if (classLoading)
-            const _MetaRow(label: 'Kelas kata', value: '', loading: true),
-          _MetaRow(label: 'Sumber makna', value: sourceLabel, emphasize: true),
+            _MetaRow(label: AppLocalizations.of(context).suggestWordClassLabelShort, value: '', loading: true),
+          _MetaRow(label: AppLocalizations.of(context).reviewPreviewSourceOfMeaning, value: sourceLabel, emphasize: true),
           const Gap(4),
           Text(
-            'Terjemahan',
+            AppLocalizations.of(context).reviewPreviewTranslationSection,
             style: theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
               color: theme.colors.mutedForeground,
@@ -848,7 +851,7 @@ class _MeaningPreview extends ConsumerWidget {
               _TranslationRowView(row: t, theme: theme),
           if (notes != null) ...[
             const Gap(4),
-            _MetaRow(label: 'Catatan', value: notes),
+            _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
           ],
         ],
       ),
@@ -913,9 +916,9 @@ class _MeaningTranslationsEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final (text, isWarning) = switch (isHaveTranslation) {
-      false => ('Kontributor sengaja tidak mengisi terjemahan.', false),
-      true => ('Ditandai ada terjemahan, tetapi belum diisi.', true),
-      null => ('Belum ada terjemahan.', false),
+      false => (AppLocalizations.of(context).reviewPreviewTranslationEmptyDeliberate, false),
+      true => (AppLocalizations.of(context).reviewPreviewTranslationMarkedEmpty, true),
+      null => (AppLocalizations.of(context).reviewPreviewTranslationNone, false),
     };
     return Text(
       text,
@@ -955,16 +958,16 @@ class _ExamplePreview extends ConsumerWidget {
         : languageNameFrom(languages, targetLangId);
 
     return _SectionCard(
-      title: 'Contoh kalimat yang diusulkan',
+      title: AppLocalizations.of(context).reviewPreviewProposedExample,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _LemmaHeader(entity['wordLemma']?.toString()),
           if (source == null)
-            _MetaRow(label: 'Kalimat sambas', value: _emptyValueLabel, muted: true)
+            _MetaRow(label: AppLocalizations.of(context).reviewPreviewSambasSentence, value: _emptyValueLabel(AppLocalizations.of(context)), muted: true)
           else
             _SentenceBlock(
-              label: 'Kalimat sambas',
+              label: AppLocalizations.of(context).reviewPreviewSambasSentence,
               language: sourceLang,
               languageLoading: sourceLangId != null && languagesLoading,
               text: source,
@@ -972,24 +975,24 @@ class _ExamplePreview extends ConsumerWidget {
           const Gap(8),
           if (target == null)
             _MetaRow(
-              label: 'Kalimat terjemahan',
-              value: _emptyValueLabel,
+              label: AppLocalizations.of(context).reviewPreviewTranslationSentence,
+              value: _emptyValueLabel(AppLocalizations.of(context)),
               muted: true,
             )
           else
             _SentenceBlock(
-              label: 'Kalimat terjemahan',
+              label: AppLocalizations.of(context).reviewPreviewTranslationSentence,
               language: targetLang,
               languageLoading: targetLangId != null && languagesLoading,
               text: target,
             ),
           if (sourceType != null) ...[
             const Gap(8),
-            _MetaRow(label: 'Jenis sumber', value: sourceType),
+            _MetaRow(label: AppLocalizations.of(context).reviewPreviewSourceType, value: sourceType),
           ],
           if (notes != null) ...[
             const Gap(4),
-            _MetaRow(label: 'Catatan', value: notes),
+            _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
           ],
         ],
       ),
@@ -1053,26 +1056,27 @@ class _FieldPreview extends StatelessWidget {
 
   final Map<String, dynamic> entity;
 
-  static const _labels = {
-    'definition': 'Definisi',
-    'value': 'Nilai',
-    'notation': 'Notasi',
-    'audio_url': 'URL audio',
-    'speaker_name': 'Penutur',
-    'notes': 'Catatan',
-    'url': 'URL',
-    'alt_text': 'Teks alternatif',
-    'source_sentence': 'Kalimat sambas',
-    'target_sentence': 'Kalimat terjemahan',
-    'source_type': 'Jenis sumber',
-    'duration_ms': 'Durasi',
-    'file_size': 'Ukuran',
-    'mime_type': 'Tipe',
+  static Map<String, String> _labels(AppLocalizations l10n) => {
+    'definition': l10n.suggestDefinitionLabel,
+    'value': l10n.reviewPreviewFieldValue,
+    'notation': l10n.reviewCorrectNotation,
+    'audio_url': l10n.reviewCorrectAudioUrl,
+    'speaker_name': l10n.reviewCorrectSpeaker,
+    'notes': l10n.historyFieldNotes,
+    'url': l10n.reviewPreviewFieldUrl,
+    'alt_text': l10n.reviewCorrectAltText,
+    'source_sentence': l10n.reviewPreviewSambasSentence,
+    'target_sentence': l10n.reviewPreviewTranslationSentence,
+    'source_type': l10n.reviewPreviewSourceType,
+    'duration_ms': l10n.reviewPreviewDurasi,
+    'file_size': l10n.reviewPreviewUkuran,
+    'mime_type': l10n.reviewPreviewTipe,
   };
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final labels = _labels(AppLocalizations.of(context));
     final data = _childData(entity);
     final rows = <Widget>[];
 
@@ -1083,7 +1087,7 @@ class _FieldPreview extends StatelessWidget {
       if (key == 'meaning_source') {
         rows.add(
           _MetaRow(
-            label: 'Sumber makna',
+            label: AppLocalizations.of(context).reviewPreviewSourceOfMeaning,
             value: meaningSourceReviewLabel(e.value.toString()),
             emphasize: true,
           ),
@@ -1093,26 +1097,26 @@ class _FieldPreview extends StatelessWidget {
       if (e.value is List || e.value is Map) {
         // Nilaimajemuk: satu baris per elemen, tidak pernah via toString().
         for (final line in _flattenComplex(e.value)) {
-          rows.add(_MetaRow(label: _labels[key] ?? 'Detail', value: line));
+          rows.add(_MetaRow(label: labels[key] ?? AppLocalizations.of(context).reviewPreviewDetailLabel, value: line));
         }
         continue;
       }
       final text = e.value.toString().trim();
       if (text.isEmpty) continue;
-      final label = _labels[key];
+      final label = labels[key];
       if (label == null) continue; // kunci tak dikenal: lewati, jangan raw
       rows.add(_MetaRow(label: label, value: text));
     }
 
     return _SectionCard(
-      title: 'Isi usulan',
+      title: AppLocalizations.of(context).reviewPreviewProposalContent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _LemmaHeader(entity['wordLemma']?.toString()),
           if (rows.isEmpty)
             Text(
-              'Tidak ada detail.',
+              AppLocalizations.of(context).commonNoDetail,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -1235,7 +1239,7 @@ class _InlineAudioPlayerState extends State<_InlineAudioPlayer> {
     final theme = context.theme;
     final label = widget.speaker?.trim().isNotEmpty == true
         ? widget.speaker!.trim()
-        : 'Putar rekaman';
+        : AppLocalizations.of(context).reviewPreviewPlayRecording;
 
     return Material(
       color: theme.colors.background.withValues(alpha: 0.55),
@@ -1281,13 +1285,13 @@ class _InlineAudioPlayerState extends State<_InlineAudioPlayer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _error ? 'Gagal memutar - ketuk lagi' : label,
+                      _error ? AppLocalizations.of(context).reviewPreviewPlayFailed : label,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
-                      _playing ? 'Sedang diputar' : 'Ketuk untuk mendengar',
+                      _playing ? AppLocalizations.of(context).reviewPreviewPlaying : AppLocalizations.of(context).reviewPreviewTapToListen,
                       style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),

@@ -1,4 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../review_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -169,13 +171,13 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         .advanceAfterDecision(contributionId);
     if (!mounted) return;
     if (!hasNext) {
-      showFToast(context: context, title: const Text('Antrean selesai'));
+      showFToast(context: context, title: Text(AppLocalizations.of(context).reviewSessionQueueDone));
       _exitToQueue(refresh: true);
     }
   }
 
   Future<void> _afterSkip(String contributionId) async {
-    showFToast(context: context, title: const Text('Dilewati.'));
+    showFToast(context: context, title: Text(AppLocalizations.of(context).reviewSessionSkipped));
     AnalyticsService.instance.log(
       AnalyticsEvents.reviewSkip,
       params: {'contribution_id': contributionId},
@@ -185,7 +187,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
         .skipCurrent();
     if (!mounted) return;
     if (!hasNext) {
-      showFToast(context: context, title: const Text('Antrean selesai'));
+      showFToast(context: context, title: Text(AppLocalizations.of(context).reviewSessionQueueDone));
       _exitToQueue(refresh: true);
     }
   }
@@ -200,7 +202,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     );
     ref.read(reviewSubmitQueueProvider.notifier).enqueueApprove(id);
     // Jangan await: swipe harus return segera; advance sync di hot path.
-    _afterDecision('Usulan disetujui', id);
+    _afterDecision(AppLocalizations.of(context).reviewSessionApprovedToast, id);
     return true;
   }
 
@@ -218,7 +220,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
           id,
           comment: comment,
         );
-    _afterDecision('Usulan ditolak', id);
+    _afterDecision(AppLocalizations.of(context).reviewSessionRejectedToast, id);
     return true;
   }
 
@@ -244,7 +246,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       // Sudah diputus orang lain - kartu tetap di-drop, cukup info.
       showFToast(
         context: context,
-        title: Text(next.errorMessage ?? 'Usulan ini sudah diproses.'),
+        title: Text(next.errorMessage ?? AppLocalizations.of(context).reviewSessionAlreadyProcessed),
       );
       return;
     }
@@ -253,7 +255,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => ReviewForbiddenPage(
-            message: next.errorMessage ?? 'Akses ditolak',
+            message: next.errorMessage ?? AppLocalizations.of(context).reviewSessionAccessDenied,
           ),
         ),
       );
@@ -263,7 +265,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     ref.read(reviewSessionProvider.notifier).reinsertAtFront(id);
     showFToast(
       context: context,
-      title: Text(next.errorMessage ?? 'Gagal menyimpan keputusan'),
+      title: Text(next.errorMessage ?? AppLocalizations.of(context).reviewSessionSaveFailed),
       variant: FToastVariant.destructive,
     );
   }
@@ -275,7 +277,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     if (!ok) {
       showFToast(
         context: context,
-        title: const Text('Gagal mengembalikan kartu.'),
+        title: Text(AppLocalizations.of(context).reviewSessionRestoreFailed),
         variant: FToastVariant.destructive,
       );
       return;
@@ -283,7 +285,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     setState(() => _correctMode = false);
     showFToast(
       context: context,
-      title: const Text('Kartu sebelumnya dikembalikan'),
+      title: Text(AppLocalizations.of(context).reviewSessionRestoredToast),
     );
   }
 
@@ -303,7 +305,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
     }
     if (failure.isAlreadyDecided) {
       // Satu toast via _afterDecision - jangan dobel dengan toast terpisah.
-      _afterDecision('Usulan ini sudah diproses.', contributionId);
+      _afterDecision(AppLocalizations.of(context).reviewSessionAlreadyProcessed, contributionId);
       return true;
     }
     showFToast(
@@ -325,13 +327,13 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       setState(() => _correctMode = false);
       showFToast(
         context: context,
-        title: const Text('Koreksi disimpan. Usulan tetap menunggu.'),
+        title: Text(AppLocalizations.of(context).reviewSessionCorrectionSavedPending),
       );
       return;
     }
     setState(() => _pendingAction = ReviewPendingAction.correct);
     _afterDecision(
-      'Koreksi disimpan dan usulan ditutup.',
+      AppLocalizations.of(context).reviewSessionCorrectionSavedClosed,
       detail.contribution.id,
     );
   }
@@ -345,7 +347,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
       return _guardBack(
         FScaffold(
           header: FHeader.nested(
-            title: const Text('Area Verifikator'),
+            title: Text(AppLocalizations.of(context).commonVerifierArea),
             prefixes: [
               FHeaderAction.back(onPress: _onBack),
             ],
@@ -363,8 +365,8 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
 
     final pending = detailAsync.asData?.value.contribution.isPending ?? false;
     final title = _correctMode
-        ? 'Koreksi · ${session.position}/${session.total}'
-        : 'Tinjau · ${session.position}/${session.total}';
+        ? AppLocalizations.of(context).reviewSessionCounterCorrect(session.position, session.total)
+        : AppLocalizations.of(context).reviewSessionCounter(session.position, session.total);
 
     ref.listen(reviewSubmitQueueProvider, (prev, next) {
       if (next.errorSeq == 0) return;
@@ -425,7 +427,7 @@ class _ReviewSessionPageState extends ConsumerState<ReviewSessionPage> {
                     child: Text(
                       error is ReviewFailure
                           ? error.message
-                          : 'Gagal memuat detail',
+                          : AppLocalizations.of(context).commonLoadFailed,
                     ),
                   ),
                   data: (detail) {
@@ -491,11 +493,11 @@ class _ReviewViewBody extends StatelessWidget {
             children: [
               _MetaChip(
                 icon: FLucideIcons.layers,
-                label: reviewEntityLabel(item.entityType),
+                label: reviewEntityLabel(item.entityType, AppLocalizations.of(context)),
               ),
               _MetaChip(
                 icon: FLucideIcons.user,
-                label: item.contributorLabel,
+                label: item.contributorLabel ?? AppLocalizations.of(context).reviewContributorFallback,
               ),
               if (when.isNotEmpty)
                 _MetaChip(icon: FLucideIcons.clock, label: when),
@@ -506,8 +508,10 @@ class _ReviewViewBody extends StatelessWidget {
             FAlert(
               title: Text(
                 detail.verifierUsername == null
-                    ? 'Sudah terverifikasi. Menyetujui hanya menutup antrean.'
-                    : 'Sudah terverifikasi oleh @${detail.verifierUsername}. Menyetujui hanya menutup antrean.',
+                    ? AppLocalizations.of(context).reviewSessionVerifiedSelf
+                    : AppLocalizations.of(context).reviewSessionVerifiedBy(
+                  detail.verifierUsername!,
+                ),
               ),
             ),
           ],
@@ -527,14 +531,14 @@ class _ReviewViewBody extends StatelessWidget {
               (detail.reviewComment?.trim().isNotEmpty ?? false)) ...[
             const Gap(16),
             _SectionNote(
-              title: 'Catatan verifikator',
+              title: AppLocalizations.of(context).reviewSessionVerifierNote,
               body: detail.reviewComment!,
             ),
           ],
           if (item.isPending) ...[
             const Gap(16),
             Text(
-              'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.',
+              AppLocalizations.of(context).reviewSessionSwipeHint,
               style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
@@ -584,7 +588,7 @@ class _ReviewCardPlaceholder extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   Text(
-                    'Judul usulan contoh skeleton',
+                    AppLocalizations.of(context).reviewSessionSkeletonTitle,
                     style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -593,15 +597,15 @@ class _ReviewCardPlaceholder extends StatelessWidget {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: const [
+                    children: [
                       _MetaChip(
                         icon: FLucideIcons.layers,
-                        label: 'Jenis entri',
+                        label: AppLocalizations.of(context).reviewSessionEntryType,
                       ),
                       _MetaChip(icon: FLucideIcons.user, label: 'kontributor'),
                       _MetaChip(
                         icon: FLucideIcons.clock,
-                        label: '21 Sep 2026 00:00',
+                        label: AppLocalizations.of(context).reviewSessionSkeletonDate,
                       ),
                     ],
                   ),
@@ -611,18 +615,18 @@ class _ReviewCardPlaceholder extends StatelessWidget {
                       color: theme.colors.muted.withValues(alpha: 0.55),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Padding(
+                    child: Padding(
                       padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text('Judul bagian preview'),
+                          Text(AppLocalizations.of(context).reviewSessionSkeletonSection),
                           Gap(10),
                           Text(
-                            'Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.',
+                            AppLocalizations.of(context).reviewSessionSkeletonBody,
                           ),
                           Gap(8),
-                          Text('Baris meta tambahan untuk shimmer.'),
+                          Text(AppLocalizations.of(context).reviewSessionSkeletonMeta),
                         ],
                       ),
                     ),
@@ -752,7 +756,7 @@ class _ReviewActionBar extends StatelessWidget {
                     size: FButtonSizeVariant.sm,
                     onPress: _busy ? null : onCorrect,
                     prefix: const Icon(FLucideIcons.pencil),
-                    child: const Text('Koreksi'),
+                    child: Text(AppLocalizations.of(context).reviewSessionCorrect),
                   ),
                 ),
                 const Gap(8),
@@ -761,7 +765,7 @@ class _ReviewActionBar extends StatelessWidget {
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: 'Kembali ke kartu sebelumnya',
+                semanticsLabel: AppLocalizations.of(context).reviewSessionBack,
                 onPress: _busy || !canRewind ? null : onRewind,
                 child: const Icon(FLucideIcons.undo),
               ),
@@ -769,7 +773,7 @@ class _ReviewActionBar extends StatelessWidget {
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: 'Lewati',
+                semanticsLabel: AppLocalizations.of(context).commonSkip,
                 onPress: _busy ? null : onSkip,
                 child: const Icon(FLucideIcons.skipForward),
               ),
@@ -778,7 +782,7 @@ class _ReviewActionBar extends StatelessWidget {
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: 'Tolak',
+                semanticsLabel: AppLocalizations.of(context).commonReject,
                 onPress: _busy ? null : onReject,
                 child: Icon(
                   FLucideIcons.x,
@@ -789,7 +793,7 @@ class _ReviewActionBar extends StatelessWidget {
               FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: 'Setujui',
+                semanticsLabel: AppLocalizations.of(context).commonApprove,
                 onPress: _busy ? null : onApprove,
                 child: Icon(
                   FLucideIcons.check,

@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
@@ -37,9 +38,9 @@ class ReviewSwipeCard extends StatelessWidget {
       allowNestedVerticalScroll: false,
       fallbackHeight: MediaQuery.sizeOf(context).height * 0.6,
       hintId: 'review-session',
-      positiveLabel: 'Setujui',
-      negativeLabel: 'Tolak',
-      skipLabel: 'Lewati',
+      positiveLabel: AppLocalizations.of(context).reviewSwipeApprove,
+      negativeLabel: AppLocalizations.of(context).reviewSwipeReject,
+      skipLabel: AppLocalizations.of(context).reviewSwipeSkip,
       overlayStyle: SwipeDecisionOverlayStyle.icon,
       // Beda dari deck vote (↑↓): tinjau = setuju/tolak, bukan vote.
       positiveIcon: FLucideIcons.check,

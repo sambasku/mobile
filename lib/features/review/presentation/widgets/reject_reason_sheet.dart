@@ -1,19 +1,20 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 /// Alasan penolakan umum. Chip mengirim teks label sebagai comment API.
 /// Dipakai deck review (`review_session_page`) dan approve-in-place
 /// dari detail kata (`word_detail_page`) - satu sumber kebenaran.
-const kRejectReasons = <String>[
-  'Kurang akurat',
-  'Ejaan atau penulisan salah',
-  'Duplikat entri yang sudah ada',
-  'Tidak relevan',
-  'Media (gambar/audio) tidak sesuai',
-  'Konten tidak pantas',
-  'Informasi kurang lengkap',
-  'Lainnya',
+List<String> rejectReasons(AppLocalizations l10n) => [
+  l10n.reviewRejectReasonInaccurate,
+  l10n.reviewRejectReasonSpelling,
+  l10n.reviewRejectReasonDuplicate,
+  l10n.reviewRejectReasonIrrelevant,
+  l10n.reviewRejectReasonMedia,
+  l10n.reviewRejectReasonInappropriate,
+  l10n.reviewRejectReasonIncomplete,
+  l10n.reviewRejectReasonOther,
 ];
 
 /// Tampilkan sheet pemilih alasan penolakan. Kembalikan teks alasan, atau
@@ -38,7 +39,8 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
   final _controller = TextEditingController();
   String? _selected;
 
-  bool get _isOther => _selected == 'Lainnya';
+  bool _isOther(AppLocalizations l10n) =>
+      _selected == l10n.reviewRejectReasonOther;
 
   @override
   void dispose() {
@@ -48,7 +50,7 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
 
   void _submit() {
     if (_selected == null) return;
-    if (_isOther) {
+    if (_isOther(AppLocalizations.of(context))) {
       final text = _controller.text.trim();
       if (text.isEmpty) return;
       Navigator.pop(context, text);
@@ -62,9 +64,10 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
     final theme = context.theme;
     final media = MediaQuery.of(context);
     final bottom = media.viewInsets.bottom;
+    final isOther = _isOther(AppLocalizations.of(context));
     final canSubmit =
-        _selected != null && (!_isOther || _controller.text.trim().isNotEmpty);
-    // Chip + field "Lainnya" + keyboard mudah melebihi tinggi layar.
+        _selected != null && (!isOther || _controller.text.trim().isNotEmpty);
+    // Chip + field alasan Lainnya + keyboard mudah melebihi tinggi layar.
     final maxHeight = (media.size.height - bottom) * 0.9;
 
     return Padding(
@@ -89,12 +92,12 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
               ),
               const Gap(16),
               Text(
-                'Tolak usulan',
+                AppLocalizations.of(context).reviewRejectSheetTitle,
                 style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
               ),
               const Gap(4),
               Text(
-                'Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.',
+                AppLocalizations.of(context).reviewRejectSheetBody,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -104,7 +107,7 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
                 spacing: 6,
                 runSpacing: 6,
                 children: [
-                  for (final reason in kRejectReasons)
+                  for (final reason in rejectReasons(AppLocalizations.of(context)))
                     GestureDetector(
                       onTap: () => setState(() => _selected = reason),
                       child: FBadge(
@@ -116,15 +119,15 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
                     ),
                 ],
               ),
-              if (_isOther) ...[
+              if (isOther) ...[
                 const Gap(16),
                 FTextField(
                   control: FTextFieldControl.managed(
                     controller: _controller,
                     onChange: (_) => setState(() {}),
                   ),
-                  label: const Text('Alasan penolakan'),
-                  hint: 'Jelaskan alasan penolakan',
+                  label: Text(AppLocalizations.of(context).reviewRejectReasonLabel),
+                  hint: AppLocalizations.of(context).reviewRejectReasonHint,
                   maxLines: 4,
                   autofocus: true,
                 ),
@@ -136,7 +139,7 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
                     child: FButton(
                       variant: FButtonVariant.outline,
                       onPress: () => Navigator.pop(context),
-                      child: const Text('Batal'),
+                      child: Text(AppLocalizations.of(context).commonCancel),
                     ),
                   ),
                   const Gap(10),
@@ -144,7 +147,7 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
                     child: FButton(
                       variant: FButtonVariant.destructive,
                       onPress: canSubmit ? _submit : null,
-                      child: const Text('Tolak'),
+                      child: Text(AppLocalizations.of(context).commonReject),
                     ),
                   ),
                 ],

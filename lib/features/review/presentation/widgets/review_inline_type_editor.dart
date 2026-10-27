@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -72,7 +73,7 @@ class _ReviewInlineTypeEditorState
           definition: item['definition']?.toString() ?? '',
           fallbackLabel: alias.isNotEmpty
               ? alias
-              : (name.isNotEmpty ? name : 'Umum'),
+              : (name.isNotEmpty ? name : AppLocalizations.of(context).reviewWordTypeGeneral),
         ),
       );
     }
@@ -97,8 +98,8 @@ class _ReviewInlineTypeEditorState
         _hasComponent(widget.detail.entity)) {
       await showAppErrorSheet(
         context,
-        title: 'Jenis tidak bisa diubah',
-        message: 'has_component hanya untuk entri idiom/peribahasa/ungkapan',
+        title: AppLocalizations.of(context).reviewInlineTypeLocked,
+        message: AppLocalizations.of(context).reviewInlineTypeLockedHint,
       );
       return;
     }
@@ -116,7 +117,7 @@ class _ReviewInlineTypeEditorState
       if (mounted) {
         showFToast(
           context: context,
-          title: const Text('Gagal memuat kelas kata'),
+          title: Text(AppLocalizations.of(context).reviewCorrectWordClassLoadFailed),
         );
       }
       return;
@@ -197,13 +198,13 @@ class _ReviewInlineTypeEditorState
           ref.invalidate(reviewDetailProvider(widget.detail.contribution.id));
           showFToast(
             context: context,
-            title: const Text('Koreksi disimpan. Usulan tetap menunggu.'),
+            title: Text(AppLocalizations.of(context).reviewSessionCorrectionSavedPending),
           );
           return;
         }
         showFToast(
           context: context,
-          title: const Text('Koreksi disimpan dan usulan ditutup.'),
+          title: Text(AppLocalizations.of(context).reviewSessionCorrectionSavedClosed),
         );
       },
     );
@@ -224,7 +225,7 @@ class _ReviewInlineTypeEditorState
           FTileGroup(
             children: [
               FTile(
-                title: const Text('Jenis entri'),
+                title: Text(AppLocalizations.of(context).reviewSuggestionEntryType),
                 details: Text(wordTypeOptionLabel(_wordType)),
                 suffix: Icon(
                   FLucideIcons.chevronRight,
@@ -234,7 +235,7 @@ class _ReviewInlineTypeEditorState
               ),
               for (final meaning in meanings)
                 FTile(
-                  title: const Text('Kelas kata'),
+                  title: Text(AppLocalizations.of(context).suggestWordClassLabelShort),
                   subtitle:
                       meanings.length < 2 || meaning.definition.trim().isEmpty
                       ? null
