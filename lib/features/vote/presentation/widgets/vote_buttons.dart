@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Pasangan tombol upvote/downvote + count (state-icon murni, tanpa fetch).
 ///
@@ -63,6 +64,7 @@ class _VoteButtonsState extends State<VoteButtons> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final enabled = theme.colors.primary;
     final idle = theme.colors.mutedForeground;
 
@@ -84,7 +86,7 @@ class _VoteButtonsState extends State<VoteButtons> {
               idleColor: idle,
               compact: widget.compact,
               disabled: _disabled,
-              label: 'Downvote',
+              label: l10n.voteSemanticsDownvote,
               onTap: () => _vote(-1),
             ),
             Gap(widget.compact ? 8 : 12),
@@ -97,7 +99,7 @@ class _VoteButtonsState extends State<VoteButtons> {
             idleColor: idle,
             compact: widget.compact,
             disabled: _disabled,
-            label: 'Upvote',
+            label: l10n.voteSemanticsUpvote,
             onTap: () => _vote(1),
           ),
         ],

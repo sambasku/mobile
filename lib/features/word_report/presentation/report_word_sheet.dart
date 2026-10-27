@@ -2,29 +2,40 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../data/word_report_providers.dart';
 import '../data/word_report_repository.dart';
 
-const _reasons = <(String, String)>[
-  ('not_sambas', 'Bukan kosakata Sambas'),
-  ('inaccurate', 'Arti atau ejaan salah'),
-  ('duplicate', 'Duplikat entri lain'),
-  ('inappropriate', 'Tidak pantas'),
-  ('vulgar', 'Kata kasar/vulgar'),
-  ('spam', 'Spam'),
-  ('other', 'Lainnya'),
+/// Pasangan (reason_code, label ARB). Label diambil dari [AppLocalizations]
+/// saat build supaya ikut locale aktif.
+List<(String, String)> _reasons(AppLocalizations l10n) => [
+  ('not_sambas', l10n.reportReasonNotSambas),
+  ('inaccurate', l10n.reportReasonInaccurate),
+  ('duplicate', l10n.reportReasonDuplicate),
+  ('inappropriate', l10n.reportReasonInappropriate),
+  ('vulgar', l10n.reportReasonVulgar),
+  ('spam', l10n.reportReasonSpam),
+  ('other', l10n.reportReasonOther),
 ];
 
 /// Alasan khusus pelaporan gambar. Ditampilkan ketika [imageId] diisi.
 /// `reason_code` tetap `violent_image` (kontrak API); pilihan user
 /// ditambahkan ke note supaya verifikator tahu keluhannya.
-const _imageReasons = <(String, String)>[
-  ('kekerasan', 'Foto berisi kekerasan'),
-  ('seksual', 'Foto berisi konten seksual'),
-  ('tidak_pantas', 'Foto tidak pantas'),
+List<(String, String)> _imageReasons(AppLocalizations l10n) => [
+  ('kekerasan', l10n.reportImageViolence),
+  ('seksual', l10n.reportImageSexual),
+  ('tidak_pantas', l10n.reportImageInappropriate),
 ];
+
+/// Catatan yang DIKIRIM ke API (data internal verifikator) - sengaja tetap
+/// bahasa Indonesia, bukan ikut locale UI.
+const _imageNoteByCode = <String, String>{
+  'kekerasan': 'Foto berisi kekerasan',
+  'seksual': 'Foto berisi konten seksual',
+  'tidak_pantas': 'Foto tidak pantas',
+};
 
 Future<bool> showReportWordSheet(
   BuildContext context,
@@ -80,7 +91,7 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
     if (_noteRequired && note.isEmpty) {
       showFToast(
         context: context,
-        title: const Text('Catatan wajib diisi untuk alasan ini'),
+        title: Text(AppLocalizations.of(context).reportNoteRequiredToast),
       );
       return;
     }
@@ -89,9 +100,7 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
       // Laporan foto: keluhan chip ditambahkan ke catatan; reason_code yang
       // dikirim tetap violent_image sesuai kontrak API.
       final isImage = widget.imageId != null;
-      final chipNote = isImage
-          ? _imageReasons.firstWhere((r) => r.$1 == _reason).$2
-          : null;
+      final chipNote = isImage ? _imageNoteByCode[_reason] : null;
       await ref
           .read(wordReportRepositoryProvider)
           .submit(
@@ -101,7 +110,7 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
                 ? note
                 : note.isEmpty
                 ? chipNote
-                : '$chipNote. Catatan: $note',
+                : AppLocalizations.of(context).reportNoteWithChip(chipNote, note),
             imageId: widget.imageId,
           );
       if (!mounted) return;
@@ -125,6 +134,7 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + bottom),
@@ -133,7 +143,9 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            widget.imageId != null ? 'Laporkan foto' : 'Laporkan entri',
+            widget.imageId != null
+                ? AppLocalizations.of(context).reportPhotoTitle
+                : AppLocalizations.of(context).reportEntryTitle,
             style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
@@ -150,8 +162,9 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final reason
-                  in widget.imageId != null ? _imageReasons : _reasons)
+          for (final reason in widget.imageId != null
+              ? _imageReasons(l10n)
+              : _reasons(l10n))
                 GestureDetector(
                   onTap: _sending
                       ? null
@@ -172,13 +185,15 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
             maxLines: 4,
             maxLength: 1000,
             decoration: InputDecoration(
-              hintText: _noteRequired ? 'Catatan wajib' : 'Catatan (opsional)',
+              hintText: _noteRequired
+              ? l10n.reportNoteLabelRequired
+              : l10n.reportNoteLabelOptional,
             ),
           ),
           const Gap(8),
           FButton(
             onPress: _sending ? null : _submit,
-            child: Text(_sending ? 'Mengirim...' : 'Kirim laporan'),
+            child: Text(_sending ? l10n.reportSubmitting : l10n.reportSubmit),
           ),
         ],
       ),

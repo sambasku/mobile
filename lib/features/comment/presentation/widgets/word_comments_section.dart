@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
@@ -128,7 +129,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   void _promptLogin() {
     showFToast(
       context: context,
-      title: const Text('Masuk dulu untuk berkomentar'),
+      title: Text(AppLocalizations.of(context).commentLoginPrompt),
       variant: FToastVariant.primary,
     );
     context.push('/login');
@@ -147,7 +148,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
       _bodyCtrl.clear();
       showFToast(
         context: context,
-        title: const Text('Komentar terkirim'),
+        title: Text(AppLocalizations.of(context).commentSent),
         variant: FToastVariant.primary,
       );
     } else {
@@ -165,11 +166,12 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
       return;
     }
     final caption = _bodyCtrl.text.trim();
+    final l10n = AppLocalizations.of(context);
     await showRecordThreadAudioSheet(
       context,
-      title: 'Rekam komentar suara',
-      subtitle: 'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
-      submitLabel: 'Kirim rekaman',
+      title: l10n.commentRecordTitle,
+      subtitle: l10n.commentRecordBody,
+      submitLabel: l10n.commentRecordSubmit,
       onSubmit: ({required audioFile, required durationMs}) async {
         final failure = await ref
             .read(commentListControllerProvider(widget.wordId).notifier)
@@ -204,6 +206,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   }
 
   Future<void> _deleteComment(WordComment comment) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -217,22 +220,22 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
             FTileGroup(
               children: [
                 FTile(
-                  title: const Text('Hapus komentar?'),
-                  subtitle: const Text('Komentar akan ditandai sebagai dihapus oleh penulis.'),
+                  title: Text(l10n.commentDeleteTitle),
+                  subtitle: Text(l10n.commentDeleteBody),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     variant: FButtonVariant.destructive,
                     onPress: () => Navigator.of(sheetContext).pop(true),
-                    child: const Text('Hapus'),
+                    child: Text(l10n.commentDeleteConfirm),
                   ),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     onPress: () => Navigator.of(sheetContext).pop(false),
-                    child: const Text('Batal'),
+                    child: Text(l10n.commentDeleteCancel),
                   ),
                 ),
               ],
@@ -248,7 +251,8 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     if (!mounted) return;
     showFToast(
       context: context,
-      title: Text(failure == null ? 'Komentar dihapus' : failure.message),
+      title: Text(
+          failure == null ? AppLocalizations.of(context).commentDeleted : failure.message),
       variant: failure == null ? FToastVariant.primary : FToastVariant.destructive,
     );
   }
@@ -256,6 +260,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authStatusProvider).value;
     final async = ref.watch(commentListControllerProvider(widget.wordId));
     final listState = async.value;
@@ -300,7 +305,9 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
             child: async.when(
               loading: () => const _CommentsSkeleton(),
               error: (error, _) => _CommentsError(
-                message: error is CommentFailure ? error.message : 'Gagal memuat komentar',
+                message: error is CommentFailure
+                    ? error.message
+                    : AppLocalizations.of(context).commentLoadFailed,
                 onRetry: () => ref.invalidate(commentListControllerProvider(widget.wordId)),
               ),
               data: (state) => Column(
@@ -327,8 +334,8 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                           DateTime.tryParse(c.createdAt ?? ''),
                         ),
                         metaParts: [
-                          if (c.isTakenDown) 'dihapus moderator',
-                          if (c.isDeletedByAuthor) 'dihapus penulis',
+                          if (c.isTakenDown) l10n.commentTakenDownModerator,
+                          if (c.isDeletedByAuthor) l10n.commentDeletedByAuthor,
                         ],
                         isRedacted: !c.isPublished,
                         onDelete: canDelete ? () => _deleteComment(c) : null,
@@ -367,7 +374,9 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                                   .read(commentListControllerProvider(widget.wordId).notifier)
                                   .loadMore(),
                           prefix: state.isLoadingMore ? const FCircularProgress() : null,
-                          child: Text(state.isLoadingMore ? 'Memuat...' : 'Muat lainnya'),
+                          child: Text(state.isLoadingMore
+                  ? l10n.commentLoading
+                  : l10n.commentLoadMore),
                         ),
                       ),
                     ),
@@ -380,7 +389,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
           child: !_isAuth()
               ? ThreadLoginPrompt(
-                  message: 'Masuk untuk menulis komentar',
+                  message: l10n.commentLoginComposerPrompt,
                   onLogin: _promptLogin,
                 )
               : ThreadComposer(
@@ -430,7 +439,7 @@ class _CommentsError extends StatelessWidget {
     return FAlert(
       variant: FAlertVariant.destructive,
       title: Text(message),
-      subtitle: const Text('Coba lagi untuk memuat komentar.'),
+      subtitle: Text(AppLocalizations.of(context).commentLoadRetry),
     );
   }
 }

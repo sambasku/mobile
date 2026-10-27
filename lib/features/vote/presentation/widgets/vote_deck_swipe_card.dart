@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/swipe_decision_card.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Arah aksi deck: kanan = upvote, kiri = downvote, atas = lewati.
 enum VoteDeckSwipeDirection { agree, disagree, skip }
@@ -43,6 +44,7 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return SwipeDecisionCard(
       key: _cardKey,
       itemKey: widget.itemKey,
@@ -52,9 +54,9 @@ class VoteDeckSwipeCardState extends State<VoteDeckSwipeCard> {
       allowNestedVerticalScroll: false,
       fallbackHeight: 240,
       hintId: 'vote-deck',
-      positiveLabel: 'Sudah pas',
-      negativeLabel: 'Perlu dicek ulang',
-      skipLabel: 'Lewati',
+      positiveLabel: l10n.voteDeckAgree,
+      negativeLabel: l10n.voteDeckDisagree,
+      skipLabel: l10n.voteDeckSkip,
       overlayStyle: SwipeDecisionOverlayStyle.icon,
       positiveIcon: FLucideIcons.arrowBigUp,
       negativeIcon: FLucideIcons.arrowBigDown,

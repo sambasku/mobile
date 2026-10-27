@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_deck_item.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_word_card.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _nomina = VoteDeckWordClass(
   id: '01WCNOMINA000000000000000',
@@ -46,6 +47,12 @@ const _tanpaKelas = VoteDeckItem(
 Future<void> _pump(WidgetTester tester, VoteDeckItem item) async {
   await tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       home: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(

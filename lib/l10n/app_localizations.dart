@@ -888,6 +888,444 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{message} Coba lagi dalam {seconds} detik.'**
   String reportBugRateLimited(String message, String seconds);
+
+  /// No description provided for @reportEntryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan entri'**
+  String get reportEntryTitle;
+
+  /// No description provided for @reportPhotoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan foto'**
+  String get reportPhotoTitle;
+
+  /// No description provided for @reportEntryBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.'**
+  String get reportEntryBody;
+
+  /// No description provided for @reportPhotoBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan foto ini ke tim Sambasku untuk ditinjau.'**
+  String get reportPhotoBody;
+
+  /// No description provided for @reportReasonNotSambas.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukan kosakata Sambas'**
+  String get reportReasonNotSambas;
+
+  /// No description provided for @reportReasonInaccurate.
+  ///
+  /// In id, this message translates to:
+  /// **'Arti atau ejaan salah'**
+  String get reportReasonInaccurate;
+
+  /// No description provided for @reportReasonDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Duplikat entri lain'**
+  String get reportReasonDuplicate;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak pantas'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonVulgar.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata kasar/vulgar'**
+  String get reportReasonVulgar;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In id, this message translates to:
+  /// **'Spam'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportImageViolence.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto berisi kekerasan'**
+  String get reportImageViolence;
+
+  /// No description provided for @reportImageSexual.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto berisi konten seksual'**
+  String get reportImageSexual;
+
+  /// No description provided for @reportImageInappropriate.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto tidak pantas'**
+  String get reportImageInappropriate;
+
+  /// No description provided for @reportNoteRequiredToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan wajib diisi untuk alasan ini'**
+  String get reportNoteRequiredToast;
+
+  /// No description provided for @reportNoteWithChip.
+  ///
+  /// In id, this message translates to:
+  /// **'{chip}. Catatan: {note}'**
+  String reportNoteWithChip(String chip, String note);
+
+  /// No description provided for @reportNoteLabelRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan wajib'**
+  String get reportNoteLabelRequired;
+
+  /// No description provided for @reportNoteLabelOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get reportNoteLabelOptional;
+
+  /// No description provided for @reportSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim laporan'**
+  String get reportSubmit;
+
+  /// No description provided for @reportSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get reportSubmitting;
+
+  /// No description provided for @searchMissTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicari warga'**
+  String get searchMissTitle;
+
+  /// No description provided for @searchMissHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.'**
+  String get searchMissHint;
+
+  /// No description provided for @searchMissLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat daftar pencarian'**
+  String get searchMissLoadFailed;
+
+  /// No description provided for @searchMissEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata yang dicari warga. Coba lagi dalam beberapa saat, atau usulkan kata baru dari menu di atas.'**
+  String get searchMissEmpty;
+
+  /// No description provided for @searchMissDirectionIdToSbs.
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia → Sambas'**
+  String get searchMissDirectionIdToSbs;
+
+  /// No description provided for @searchMissDirectionSbsToId.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas → Indonesia'**
+  String get searchMissDirectionSbsToId;
+
+  /// No description provided for @searchMissHitCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count}× dicari'**
+  String searchMissHitCount(String count);
+
+  /// No description provided for @voteLoginPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memberi vote'**
+  String get voteLoginPrompt;
+
+  /// No description provided for @voteDeckLoginPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menilai kata'**
+  String get voteDeckLoginPrompt;
+
+  /// No description provided for @voteDeckLoginCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get voteDeckLoginCta;
+
+  /// No description provided for @voteDeckHelper.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu nilai agar arti kata lebih akurat'**
+  String get voteDeckHelper;
+
+  /// {more} = "+" bila masih ada kartu berikutnya
+  ///
+  /// In id, this message translates to:
+  /// **'sisa {count}{more}'**
+  String voteDeckRemaining(String count, String more);
+
+  /// No description provided for @voteDeckSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan penilaian'**
+  String get voteDeckSubmitFailed;
+
+  /// No description provided for @voteDeckSessionEnded.
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi berakhir. Silakan masuk kembali.'**
+  String get voteDeckSessionEnded;
+
+  /// No description provided for @voteDeckLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.'**
+  String get voteDeckLoadFailed;
+
+  /// No description provided for @voteDeckEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.'**
+  String get voteDeckEmpty;
+
+  /// No description provided for @voteDeckSavedFromDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Penilaian dari detail tersimpan'**
+  String get voteDeckSavedFromDetail;
+
+  /// No description provided for @voteDeckRewound.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu sebelumnya dikembalikan.'**
+  String get voteDeckRewound;
+
+  /// No description provided for @voteDeckFix.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki'**
+  String get voteDeckFix;
+
+  /// No description provided for @voteDeckFixSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki kata ini'**
+  String get voteDeckFixSemantics;
+
+  /// No description provided for @voteDeckProcessing.
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses…'**
+  String get voteDeckProcessing;
+
+  /// No description provided for @voteDeckRewindSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali ke kartu sebelumnya'**
+  String get voteDeckRewindSemantics;
+
+  /// No description provided for @voteDeckSkip.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati'**
+  String get voteDeckSkip;
+
+  /// No description provided for @voteDeckDisagree.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu dicek ulang'**
+  String get voteDeckDisagree;
+
+  /// No description provided for @voteDeckAgree.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah pas'**
+  String get voteDeckAgree;
+
+  /// No description provided for @voteSemanticsUpvote.
+  ///
+  /// In id, this message translates to:
+  /// **'Upvote'**
+  String get voteSemanticsUpvote;
+
+  /// No description provided for @voteSemanticsDownvote.
+  ///
+  /// In id, this message translates to:
+  /// **'Downvote'**
+  String get voteSemanticsDownvote;
+
+  /// No description provided for @voteMeaningOrder.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna ke-{order} dari {count}'**
+  String voteMeaningOrder(int order, int count);
+
+  /// No description provided for @voteEntryType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis entri'**
+  String get voteEntryType;
+
+  /// No description provided for @commentLoginPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk berkomentar'**
+  String get commentLoginPrompt;
+
+  /// No description provided for @commentLoginComposerPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk menulis komentar'**
+  String get commentLoginComposerPrompt;
+
+  /// No description provided for @commentSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar terkirim'**
+  String get commentSent;
+
+  /// No description provided for @commentRecordTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam komentar suara'**
+  String get commentRecordTitle;
+
+  /// No description provided for @commentRecordBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.'**
+  String get commentRecordBody;
+
+  /// No description provided for @commentRecordSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim rekaman'**
+  String get commentRecordSubmit;
+
+  /// No description provided for @commentDeleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus komentar?'**
+  String get commentDeleteTitle;
+
+  /// No description provided for @commentDeleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar akan ditandai sebagai dihapus oleh penulis.'**
+  String get commentDeleteBody;
+
+  /// No description provided for @commentDeleteConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get commentDeleteConfirm;
+
+  /// No description provided for @commentDeleteCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get commentDeleteCancel;
+
+  /// No description provided for @commentDeleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar dihapus'**
+  String get commentDeleted;
+
+  /// No description provided for @commentSectionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar ({count})'**
+  String commentSectionTitle(int count);
+
+  /// No description provided for @commentLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat komentar'**
+  String get commentLoadFailed;
+
+  /// No description provided for @commentLoadRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi untuk memuat komentar.'**
+  String get commentLoadRetry;
+
+  /// No description provided for @commentEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar.'**
+  String get commentEmpty;
+
+  /// No description provided for @commentTakenDownModerator.
+  ///
+  /// In id, this message translates to:
+  /// **'dihapus moderator'**
+  String get commentTakenDownModerator;
+
+  /// No description provided for @commentDeletedByAuthor.
+  ///
+  /// In id, this message translates to:
+  /// **'dihapus penulis'**
+  String get commentDeletedByAuthor;
+
+  /// No description provided for @commentLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat...'**
+  String get commentLoading;
+
+  /// No description provided for @commentLoadMore.
+  ///
+  /// In id, this message translates to:
+  /// **'Muat lainnya'**
+  String get commentLoadMore;
+
+  /// No description provided for @commentMentionSearching.
+  ///
+  /// In id, this message translates to:
+  /// **'Mencari pengguna...'**
+  String get commentMentionSearching;
+
+  /// No description provided for @commentSkeletonUsername.
+  ///
+  /// In id, this message translates to:
+  /// **'username'**
+  String get commentSkeletonUsername;
+
+  /// No description provided for @commentSkeletonName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama Pengguna'**
+  String get commentSkeletonName;
+
+  /// No description provided for @commentSkeletonBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan komentar contoh untuk skeleton.'**
+  String get commentSkeletonBody;
+
+  /// No description provided for @commentSkeletonDate.
+  ///
+  /// In id, this message translates to:
+  /// **'baru saja'**
+  String get commentSkeletonDate;
 }
 
 class _AppLocalizationsDelegate

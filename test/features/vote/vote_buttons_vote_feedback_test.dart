@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_buttons.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Parent stateful: meniru pemakai nyata yang update myVote setelah vote.
 class _Host extends StatefulWidget {
@@ -18,6 +19,12 @@ class _HostState extends State<_Host> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       home: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(

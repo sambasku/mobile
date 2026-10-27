@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../providers/meaning_vote_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'vote_buttons.dart';
 
 /// Tombol vote untuk satu baris makna (upvote/downvote + jumlah).
@@ -34,7 +35,7 @@ class MeaningVoteRow extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
+        title: Text(AppLocalizations.of(context).voteLoginPrompt),
         variant: FToastVariant.primary,
       );
       context.push('/login');

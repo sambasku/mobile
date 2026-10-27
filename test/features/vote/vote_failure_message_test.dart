@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/features/vote/data/providers/vote_data_providers.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_deck_item.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_view.dart';
@@ -100,6 +101,12 @@ void main() {
           voteRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const Scaffold(

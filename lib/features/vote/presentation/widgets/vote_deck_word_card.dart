@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/gestures/swipe_exempt.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/vote_deck_item.dart';
 
 /// Isi kartu deck (0101: per makna): lemma + definisi makna yang dinilai +
@@ -67,6 +68,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Column(
@@ -106,7 +108,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
               child: FTileGroup(
                 children: [
                   FTile(
-                    title: const Text('Jenis entri'),
+                    title: Text(l10n.voteEntryType),
                     details: Text(wordTypeLabel),
                     suffix: Icon(
                       FLucideIcons.chevronRight,

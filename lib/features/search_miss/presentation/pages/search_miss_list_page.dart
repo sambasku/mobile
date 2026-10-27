@@ -8,6 +8,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../domain/entities/search_miss.dart';
 import '../providers/search_miss_list_providers.dart';
 import '../widgets/search_miss_skeleton_list.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman list "Dicari warga" (ex-tab Kontribusi).
 class SearchMissListPage extends ConsumerWidget {
@@ -23,12 +24,13 @@ class SearchMissListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final missesAsync = ref.watch(searchMissListProvider(_limit));
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Dicari warga'),
+        title: Text(l10n.searchMissTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: RefreshIndicator(
@@ -90,7 +92,7 @@ class SearchMissListPage extends ConsumerWidget {
                     for (final item in items)
                       FTile(
                         title: Text(item.term),
-                        subtitle: Text(_missSubtitle(item)),
+                        subtitle: Text(_missSubtitle(item, l10n)),
                         suffix: Icon(
                           FLucideIcons.chevronRight,
                           color: theme.colors.mutedForeground,
@@ -127,11 +129,11 @@ class SearchMissListPage extends ConsumerWidget {
     );
   }
 
-  static String _missSubtitle(SearchMiss item) {
+  static String _missSubtitle(SearchMiss item, AppLocalizations l10n) {
     final direction = item.searchIn == 'translation'
-        ? 'Indonesia → Sambas'
-        : 'Sambas → Indonesia';
+        ? l10n.searchMissDirectionIdToSbs
+        : l10n.searchMissDirectionSbsToId;
     final hits = item.hitCount > 99 ? '99×' : '${item.hitCount}×';
-    return '$direction · $hits dicari';
+    return '$direction · ${l10n.searchMissHitCount(hits)}';
   }
 }

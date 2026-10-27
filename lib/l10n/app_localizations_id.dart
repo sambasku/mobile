@@ -433,6 +433,243 @@ class AppLocalizationsId extends AppLocalizations {
   String reportBugRateLimited(String message, String seconds) {
     return '$message Coba lagi dalam $seconds detik.';
   }
+
+  @override
+  String get reportEntryTitle => 'Laporkan entri';
+
+  @override
+  String get reportPhotoTitle => 'Laporkan foto';
+
+  @override
+  String get reportEntryBody =>
+      'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.';
+
+  @override
+  String get reportPhotoBody =>
+      'Laporkan foto ini ke tim Sambasku untuk ditinjau.';
+
+  @override
+  String get reportReasonNotSambas => 'Bukan kosakata Sambas';
+
+  @override
+  String get reportReasonInaccurate => 'Arti atau ejaan salah';
+
+  @override
+  String get reportReasonDuplicate => 'Duplikat entri lain';
+
+  @override
+  String get reportReasonInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportReasonVulgar => 'Kata kasar/vulgar';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonOther => 'Lainnya';
+
+  @override
+  String get reportImageViolence => 'Foto berisi kekerasan';
+
+  @override
+  String get reportImageSexual => 'Foto berisi konten seksual';
+
+  @override
+  String get reportImageInappropriate => 'Foto tidak pantas';
+
+  @override
+  String get reportNoteRequiredToast => 'Catatan wajib diisi untuk alasan ini';
+
+  @override
+  String reportNoteWithChip(String chip, String note) {
+    return '$chip. Catatan: $note';
+  }
+
+  @override
+  String get reportNoteLabelRequired => 'Catatan wajib';
+
+  @override
+  String get reportNoteLabelOptional => 'Catatan (opsional)';
+
+  @override
+  String get reportSubmit => 'Kirim laporan';
+
+  @override
+  String get reportSubmitting => 'Mengirim...';
+
+  @override
+  String get searchMissTitle => 'Dicari warga';
+
+  @override
+  String get searchMissHint =>
+      'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.';
+
+  @override
+  String get searchMissLoadFailed => 'Gagal memuat daftar pencarian';
+
+  @override
+  String get searchMissEmpty =>
+      'Belum ada kata yang dicari warga. Coba lagi dalam beberapa saat, atau usulkan kata baru dari menu di atas.';
+
+  @override
+  String get searchMissDirectionIdToSbs => 'Indonesia → Sambas';
+
+  @override
+  String get searchMissDirectionSbsToId => 'Sambas → Indonesia';
+
+  @override
+  String searchMissHitCount(String count) {
+    return '$count× dicari';
+  }
+
+  @override
+  String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
+
+  @override
+  String get voteDeckLoginCta => 'Masuk';
+
+  @override
+  String get voteDeckHelper => 'Bantu nilai agar arti kata lebih akurat';
+
+  @override
+  String voteDeckRemaining(String count, String more) {
+    return 'sisa $count$more';
+  }
+
+  @override
+  String get voteDeckSubmitFailed => 'Gagal menyimpan penilaian';
+
+  @override
+  String get voteDeckSessionEnded => 'Sesi berakhir. Silakan masuk kembali.';
+
+  @override
+  String get voteDeckLoadFailed =>
+      'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.';
+
+  @override
+  String get voteDeckEmpty =>
+      'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.';
+
+  @override
+  String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
+
+  @override
+  String get voteDeckRewound => 'Kartu sebelumnya dikembalikan.';
+
+  @override
+  String get voteDeckFix => 'Perbaiki';
+
+  @override
+  String get voteDeckFixSemantics => 'Perbaiki kata ini';
+
+  @override
+  String get voteDeckProcessing => 'Memproses…';
+
+  @override
+  String get voteDeckRewindSemantics => 'Kembali ke kartu sebelumnya';
+
+  @override
+  String get voteDeckSkip => 'Lewati';
+
+  @override
+  String get voteDeckDisagree => 'Perlu dicek ulang';
+
+  @override
+  String get voteDeckAgree => 'Sudah pas';
+
+  @override
+  String get voteSemanticsUpvote => 'Upvote';
+
+  @override
+  String get voteSemanticsDownvote => 'Downvote';
+
+  @override
+  String voteMeaningOrder(int order, int count) {
+    return 'Makna ke-$order dari $count';
+  }
+
+  @override
+  String get voteEntryType => 'Jenis entri';
+
+  @override
+  String get commentLoginPrompt => 'Masuk dulu untuk berkomentar';
+
+  @override
+  String get commentLoginComposerPrompt => 'Masuk untuk menulis komentar';
+
+  @override
+  String get commentSent => 'Komentar terkirim';
+
+  @override
+  String get commentRecordTitle => 'Rekam komentar suara';
+
+  @override
+  String get commentRecordBody =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.';
+
+  @override
+  String get commentRecordSubmit => 'Kirim rekaman';
+
+  @override
+  String get commentDeleteTitle => 'Hapus komentar?';
+
+  @override
+  String get commentDeleteBody =>
+      'Komentar akan ditandai sebagai dihapus oleh penulis.';
+
+  @override
+  String get commentDeleteConfirm => 'Hapus';
+
+  @override
+  String get commentDeleteCancel => 'Batal';
+
+  @override
+  String get commentDeleted => 'Komentar dihapus';
+
+  @override
+  String commentSectionTitle(int count) {
+    return 'Komentar ($count)';
+  }
+
+  @override
+  String get commentLoadFailed => 'Gagal memuat komentar';
+
+  @override
+  String get commentLoadRetry => 'Coba lagi untuk memuat komentar.';
+
+  @override
+  String get commentEmpty => 'Belum ada komentar.';
+
+  @override
+  String get commentTakenDownModerator => 'dihapus moderator';
+
+  @override
+  String get commentDeletedByAuthor => 'dihapus penulis';
+
+  @override
+  String get commentLoading => 'Memuat...';
+
+  @override
+  String get commentLoadMore => 'Muat lainnya';
+
+  @override
+  String get commentMentionSearching => 'Mencari pengguna...';
+
+  @override
+  String get commentSkeletonUsername => 'username';
+
+  @override
+  String get commentSkeletonName => 'Nama Pengguna';
+
+  @override
+  String get commentSkeletonBody => 'Cuplikan komentar contoh untuk skeleton.';
+
+  @override
+  String get commentSkeletonDate => 'baru saja';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -864,4 +1101,241 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String reportBugRateLimited(String message, String seconds) {
     return '$message Coba lagi dalam $seconds detik.';
   }
+
+  @override
+  String get reportEntryTitle => 'Laporkan entri';
+
+  @override
+  String get reportPhotoTitle => 'Laporkan foto';
+
+  @override
+  String get reportEntryBody =>
+      'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.';
+
+  @override
+  String get reportPhotoBody =>
+      'Laporkan foto ini ke tim Sambasku untuk ditinjau.';
+
+  @override
+  String get reportReasonNotSambas => 'Bukan kosakata Sambas';
+
+  @override
+  String get reportReasonInaccurate => 'Arti atau ejaan salah';
+
+  @override
+  String get reportReasonDuplicate => 'Duplikat entri lain';
+
+  @override
+  String get reportReasonInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportReasonVulgar => 'Kata kasar/vulgar';
+
+  @override
+  String get reportReasonSpam => 'Spam';
+
+  @override
+  String get reportReasonOther => 'Lainnya';
+
+  @override
+  String get reportImageViolence => 'Foto berisi kekerasan';
+
+  @override
+  String get reportImageSexual => 'Foto berisi konten seksual';
+
+  @override
+  String get reportImageInappropriate => 'Foto tidak pantas';
+
+  @override
+  String get reportNoteRequiredToast => 'Catatan wajib diisi untuk alasan ini';
+
+  @override
+  String reportNoteWithChip(String chip, String note) {
+    return '$chip. Catatan: $note';
+  }
+
+  @override
+  String get reportNoteLabelRequired => 'Catatan wajib';
+
+  @override
+  String get reportNoteLabelOptional => 'Catatan (opsional)';
+
+  @override
+  String get reportSubmit => 'Kirim laporan';
+
+  @override
+  String get reportSubmitting => 'Mengirim...';
+
+  @override
+  String get searchMissTitle => 'Dicari warga';
+
+  @override
+  String get searchMissHint =>
+      'Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.';
+
+  @override
+  String get searchMissLoadFailed => 'Gagal memuat daftar pencarian';
+
+  @override
+  String get searchMissEmpty =>
+      'Belum ada kata yang dicari warga. Coba lagi dalam beberapa saat, atau usulkan kata baru dari menu di atas.';
+
+  @override
+  String get searchMissDirectionIdToSbs => 'Indonesia → Sambas';
+
+  @override
+  String get searchMissDirectionSbsToId => 'Sambas → Indonesia';
+
+  @override
+  String searchMissHitCount(String count) {
+    return '$count× dicari';
+  }
+
+  @override
+  String get voteLoginPrompt => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get voteDeckLoginPrompt => 'Masuk dulu untuk menilai kata';
+
+  @override
+  String get voteDeckLoginCta => 'Masuk';
+
+  @override
+  String get voteDeckHelper => 'Bantu nilai agar arti kata lebih akurat';
+
+  @override
+  String voteDeckRemaining(String count, String more) {
+    return 'sisa $count$more';
+  }
+
+  @override
+  String get voteDeckSubmitFailed => 'Gagal menyimpan penilaian';
+
+  @override
+  String get voteDeckSessionEnded => 'Sesi berakhir. Silakan masuk kembali.';
+
+  @override
+  String get voteDeckLoadFailed =>
+      'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.';
+
+  @override
+  String get voteDeckEmpty =>
+      'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.';
+
+  @override
+  String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
+
+  @override
+  String get voteDeckRewound => 'Kartu sebelumnya dikembalikan.';
+
+  @override
+  String get voteDeckFix => 'Perbaiki';
+
+  @override
+  String get voteDeckFixSemantics => 'Perbaiki kata ini';
+
+  @override
+  String get voteDeckProcessing => 'Memproses…';
+
+  @override
+  String get voteDeckRewindSemantics => 'Kembali ke kartu sebelumnya';
+
+  @override
+  String get voteDeckSkip => 'Lewati';
+
+  @override
+  String get voteDeckDisagree => 'Perlu dicek ulang';
+
+  @override
+  String get voteDeckAgree => 'Sudah pas';
+
+  @override
+  String get voteSemanticsUpvote => 'Upvote';
+
+  @override
+  String get voteSemanticsDownvote => 'Downvote';
+
+  @override
+  String voteMeaningOrder(int order, int count) {
+    return 'Makna ke-$order dari $count';
+  }
+
+  @override
+  String get voteEntryType => 'Jenis entri';
+
+  @override
+  String get commentLoginPrompt => 'Masuk dulu untuk berkomentar';
+
+  @override
+  String get commentLoginComposerPrompt => 'Masuk untuk menulis komentar';
+
+  @override
+  String get commentSent => 'Komentar terkirim';
+
+  @override
+  String get commentRecordTitle => 'Rekam komentar suara';
+
+  @override
+  String get commentRecordBody =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.';
+
+  @override
+  String get commentRecordSubmit => 'Kirim rekaman';
+
+  @override
+  String get commentDeleteTitle => 'Hapus komentar?';
+
+  @override
+  String get commentDeleteBody =>
+      'Komentar akan ditandai sebagai dihapus oleh penulis.';
+
+  @override
+  String get commentDeleteConfirm => 'Hapus';
+
+  @override
+  String get commentDeleteCancel => 'Batal';
+
+  @override
+  String get commentDeleted => 'Komentar dihapus';
+
+  @override
+  String commentSectionTitle(int count) {
+    return 'Komentar ($count)';
+  }
+
+  @override
+  String get commentLoadFailed => 'Gagal memuat komentar';
+
+  @override
+  String get commentLoadRetry => 'Coba lagi untuk memuat komentar.';
+
+  @override
+  String get commentEmpty => 'Belum ada komentar.';
+
+  @override
+  String get commentTakenDownModerator => 'dihapus moderator';
+
+  @override
+  String get commentDeletedByAuthor => 'dihapus penulis';
+
+  @override
+  String get commentLoading => 'Memuat...';
+
+  @override
+  String get commentLoadMore => 'Muat lainnya';
+
+  @override
+  String get commentMentionSearching => 'Mencari pengguna...';
+
+  @override
+  String get commentSkeletonUsername => 'username';
+
+  @override
+  String get commentSkeletonName => 'Nama Pengguna';
+
+  @override
+  String get commentSkeletonBody => 'Cuplikan komentar contoh untuk skeleton.';
+
+  @override
+  String get commentSkeletonDate => 'baru saja';
 }

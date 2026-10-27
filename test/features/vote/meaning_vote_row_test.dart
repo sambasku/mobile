@@ -9,6 +9,7 @@ import 'package:sambasku_mobile/features/vote/domain/entities/vote_view.dart';
 import 'package:sambasku_mobile/features/vote/domain/failures/vote_failure.dart';
 import 'package:sambasku_mobile/features/vote/presentation/providers/meaning_vote_providers.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/meaning_vote_row.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Vote per baris makna: angka dari state batch, tombol hanya upvote.
 void main() {
@@ -36,6 +37,12 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: Scaffold(

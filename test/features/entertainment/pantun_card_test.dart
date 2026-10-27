@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show MaterialApp, Scaffold, Widget;
+import 'package:flutter/material.dart' show Locale, MaterialApp, Scaffold, Widget;
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
@@ -40,7 +41,15 @@ void main() {
   Future<void> pump(WidgetTester tester, Widget child) => tester.pumpWidget(
     FTheme(
       data: foruiPalettes['zinc']!.light.touch,
-      child: MaterialApp(home: Scaffold(body: child)),
+      child: MaterialApp(
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+        locale: const Locale('id'),
+        home: Scaffold(body: child),
+      ),
     ),
   );
 
