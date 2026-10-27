@@ -8048,6 +8048,26 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get recordStart => 'Mulai rekam';
+
+  @override
+  String attachmentMaxImages(int count) {
+    return 'Maksimal $count gambar';
+  }
+
+  @override
+  String get attachmentLoginRequired =>
+      'Masuk untuk lampirkan dari kamera atau galeri';
+
+  @override
+  String attachmentImageTooLarge(int mb) {
+    return 'Gambar melebihi $mb MB';
+  }
+
+  @override
+  String get attachmentProcessFailed => 'Gagal memproses gambar';
+
+  @override
+  String get devToolOtherUi => 'Tool UI lainnya';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -16094,4 +16114,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get recordStart => 'Mulai rekam';
+
+  @override
+  String attachmentMaxImages(int count) {
+    return 'Maksimal $count gambar';
+  }
+
+  @override
+  String get attachmentLoginRequired =>
+      'Masuk untuk lampirkan dari kamera atau galeri';
+
+  @override
+  String attachmentImageTooLarge(int mb) {
+    return 'Gambar melebihi $mb MB';
+  }
+
+  @override
+  String get attachmentProcessFailed => 'Gagal memproses gambar';
+
+  @override
+  String get devToolOtherUi => 'Tool UI lainnya';
 }

@@ -14638,6 +14638,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mulai rekam'**
   String get recordStart;
+
+  /// Toast batas jumlah lampiran; {count} = maks
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {count} gambar'**
+  String attachmentMaxImages(int count);
+
+  /// No description provided for @attachmentLoginRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk lampirkan dari kamera atau galeri'**
+  String get attachmentLoginRequired;
+
+  /// Toast batas ukuran; {mb} = MB
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar melebihi {mb} MB'**
+  String attachmentImageTooLarge(int mb);
+
+  /// No description provided for @attachmentProcessFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses gambar'**
+  String get attachmentProcessFailed;
+
+  /// Deskripsi grup inspector UI di overlay staging
+  ///
+  /// In id, this message translates to:
+  /// **'Tool UI lainnya'**
+  String get devToolOtherUi;
 }
 
 class _AppLocalizationsDelegate

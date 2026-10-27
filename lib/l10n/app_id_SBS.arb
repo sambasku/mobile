@@ -3314,5 +3314,31 @@
   "verifiedBadgeTitle": "Verifikator",
   "@verifiedBadgeTitle": {},
   "recordStart": "Mulai rekam",
-  "@recordStart": {}
+  "@recordStart": {},
+  "attachmentMaxImages": "Maksimal {count} gambar",
+  "@attachmentMaxImages": {
+    "description": "Toast batas jumlah lampiran; {count} = maks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attachmentLoginRequired": "Masuk untuk lampirkan dari kamera atau galeri",
+  "@attachmentLoginRequired": {},
+  "attachmentImageTooLarge": "Gambar melebihi {mb} MB",
+  "@attachmentImageTooLarge": {
+    "description": "Toast batas ukuran; {mb} = MB",
+    "placeholders": {
+      "mb": {
+        "type": "int"
+      }
+    }
+  },
+  "attachmentProcessFailed": "Gagal memproses gambar",
+  "@attachmentProcessFailed": {},
+  "devToolOtherUi": "Tool UI lainnya",
+  "@devToolOtherUi": {
+    "description": "Deskripsi grup inspector UI di overlay staging"
+  }
 }

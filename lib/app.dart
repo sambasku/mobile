@@ -138,7 +138,7 @@ locale: ref.watch(localeControllerProvider).toLocale(),
                             ResponseCacheInspector(),
                             DevToolGroup(
                               name: 'UI',
-                              description: 'Tool UI lainnya',
+                              description: AppLocalizations.of(context).devToolOtherUi,
                               icon: FLucideIcons.layoutDashboard,
                               color: const Color(0xFF7C3AED),
                               children: [OnboardingInspector()],

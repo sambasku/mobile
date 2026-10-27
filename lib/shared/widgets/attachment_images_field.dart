@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../core/models/image_attribution.dart';
 import '../../core/widgets/image_preview.dart';
+import '../../l10n/app_localizations.dart';
 import '../utils/image_sheet_drawer.dart';
 import 'cached_network_image_with_fallback.dart';
 import 'image_credit.dart';
@@ -148,7 +149,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   void _openPicker() {
     if (!widget.enabled || _unavailable) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
@@ -158,7 +159,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         _handleStockPick();
         return;
       }
-      _toast('Masuk untuk lampirkan dari kamera atau galeri');
+      _toast(AppLocalizations.of(context).attachmentLoginRequired);
       return;
     }
 
@@ -184,14 +185,14 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     final pick = widget.onPickStockImage;
     if (pick == null || !mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
     final uploaded = await pick();
     if (!mounted || uploaded == null) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
@@ -216,14 +217,14 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   Future<void> _handlePicked(File file) async {
     if (!mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
     try {
       final size = await file.length();
       if (size > widget.maxSizeMb * 1024 * 1024) {
-        if (mounted) _toast('Gambar melebihi ${widget.maxSizeMb} MB');
+        if (mounted) _toast(AppLocalizations.of(context).attachmentImageTooLarge(widget.maxSizeMb));
         return;
       }
 
@@ -239,7 +240,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
       await _upload(id, file, isPrimary: isPrimary, afterAdd: afterAdd);
     } catch (e) {
       debugPrint('[AttachmentImages] handle $e');
-      if (mounted) _toast('Gagal memproses gambar');
+      if (mounted) _toast(AppLocalizations.of(context).attachmentProcessFailed);
     }
   }
 
