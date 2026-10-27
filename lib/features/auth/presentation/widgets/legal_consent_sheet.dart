@@ -3,11 +3,18 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../../../../core/network/network_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../auth_router.dart';
 import '../providers/auth_status_providers.dart';
+
+/// Satu dokumen legal yang harus disetujui (versi aktif dari API).
+typedef LegalConsentDoc = ({
+  String documentType,
+  String documentVersion,
+  String title,
+  String url,
+});
 
 /// Sheet persetujuan legal non-dismissible (tap luar / drag / back tidak
 /// menutup). Muncul saat server bilang `requires_consent: true` - sumber
@@ -60,9 +67,9 @@ class _ReleaseGuardOnDisposeState
 }
 
 Future<void> _show(BuildContext context, WidgetRef ref) async {
-  // Versi dokumen aktif. Bisa gagal (offline) - sediakan retry, jangan
-  // paksa user logout hanya karena jaringan.
-  List<({String documentType, String documentVersion})>? consents;
+  // Versi + URL dokumen aktif. Bisa gagal (offline) - sediakan retry,
+  // jangan paksa user logout hanya karena jaringan.
+  List<LegalConsentDoc>? docs;
   String? loadError;
 
   Future<void> loadVersions() async {
@@ -76,17 +83,27 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
       final termsVersion = terms?['version'] as String?;
       final privacyVersion = privacy?['version'] as String?;
       if (termsVersion != null && privacyVersion != null) {
-        consents = [
-          (documentType: 'terms', documentVersion: termsVersion),
-          (documentType: 'privacy', documentVersion: privacyVersion),
+        docs = [
+          (
+            documentType: 'terms',
+            documentVersion: termsVersion,
+            title: (terms?['title'] as String?) ?? 'Syarat dan Ketentuan',
+            url: (terms?['url'] as String?) ?? AuthRouter.termsDocumentUrl,
+          ),
+          (
+            documentType: 'privacy',
+            documentVersion: privacyVersion,
+            title: (privacy?['title'] as String?) ?? 'Kebijakan Privasi',
+            url: (privacy?['url'] as String?) ?? AuthRouter.privacyDocumentUrl,
+          ),
         ];
         loadError = null;
       } else {
-        consents = null;
+        docs = null;
         loadError = 'Dokumen legal belum tersedia. Coba lagi sebentar.';
       }
     } catch (_) {
-      consents = null;
+      docs = null;
       loadError = 'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
     }
   }
@@ -95,7 +112,6 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return;
 
   var submitting = false;
-
   await showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -105,7 +121,7 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
     builder: (sheetContext) => StatefulBuilder(
       builder: (sheetContext, setState) {
         Future<void> accept() async {
-          final active = consents;
+          final active = docs;
           if (active == null || submitting) return;
           setState(() => submitting = true);
           try {
@@ -144,38 +160,75 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
           }
         }
 
+        final theme = sheetContext.theme;
+        final loaded = docs;
+
         return _ReleaseGuardOnDispose(
           child: SafeArea(
             top: false,
             child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+              // viewInsets ikut di dalam padding supaya satu ritme:
+              // kiri-kanan 20 (seragam info/error sheet), bukan full-bleed.
+              padding: EdgeInsets.fromLTRB(
+                20,
+                12,
+                20,
+                24 + MediaQuery.viewInsetsOf(sheetContext).bottom,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  FTileGroup(
-                    label: const Text('Sebelum lanjut'),
-                    children: [
-                      FTile(
-                        title: const Text('Setujui Syarat Ketentuan'),
-                        subtitle: Text(
-                          loadError ??
-                              'Kami perlu persetujuan kamu untuk Syarat Ketentuan '
-                                  'dan Kebijakan Privasi SambasKu. Baca dulu ya.',
-                        ),
-                        suffix: FButton(
-                          variant: FButtonVariant.outline,
-                          onPress: () =>
-                              context.push(AuthRouter.termsWebView.path),
-                          child: const Text('Baca'),
-                        ),
-                      ),
-                      if (loadError != null)
+                  Text(
+                    'SambasKu perlu izin kamu dulu',
+                    style: theme.typography.body.lg.copyWith(
+                      fontWeight: .w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Akun kamu dibuat lewat Google, GitHub, atau Facebook. '
+                    'Sebelum lanjut, setujui dua dokumen di bawah - kami '
+                    'pakai datamu hanya untuk menjalankan kamus ini.',
+                    style: theme.typography.body.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  if (loaded != null)
+                    FTileGroup(
+                      children: [
+                        for (final doc in loaded)
+                          FTile(
+                            title: Text(doc.title),
+                            subtitle: Text(
+                              doc.documentType == 'terms'
+                                  ? 'Aturan pakai SambasKu '
+                                        '(versi ${doc.documentVersion})'
+                                  : 'Data yang kami simpan dan cara kami '
+                                        'menjaganya '
+                                        '(versi ${doc.documentVersion})',
+                            ),
+                            suffix: FButton(
+                              variant: FButtonVariant.outline,
+                              onPress: () => context.push(
+                                AuthRouter.legalDocument.path,
+                                extra: (url: doc.url, title: doc.title),
+                              ),
+                              child: const Text('Baca'),
+                            ),
+                          ),
+                      ],
+                    )
+                  else
+                    FTileGroup(
+                      children: [
                         FTile(
-                          title: const Text('Coba muat ulang'),
-                          subtitle: const Text(
-                            'Versi dokumen terbaru belum bisa diambil. Coba lagi dalam beberapa saat.',
+                          title: const Text('Dokumen belum bisa dimuat'),
+                          subtitle: Text(
+                            loadError ??
+                                'Gagal memuat dokumen legal. Coba lagi dalam '
+                                    'beberapa saat.',
                           ),
                           suffix: FButton(
                             variant: FButtonVariant.outline,
@@ -191,42 +244,39 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                             child: const Text('Muat ulang'),
                           ),
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        FButton(
-                          onPress: consents == null || submitting
-                              ? null
-                              : accept,
-                          prefix: submitting ? const FCircularProgress() : null,
-                          child: Text(
-                            submitting ? 'Menyimpan...' : 'Setuju dan lanjut',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        FButton(
-                          variant: FButtonVariant.ghost,
-                          onPress: submitting
-                              ? null
-                              : () async {
-                                  Navigator.of(sheetContext).pop();
-                                  await ref
-                                      .read(authStatusProvider.notifier)
-                                      .logout();
-                                  if (context.mounted) {
-                                    context.go(AuthRouter.login.path);
-                                  }
-                                },
-                          child: const Text('Keluar'),
-                        ),
                       ],
                     ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Kamu bisa berhenti kapan saja dengan keluar dari akun.',
+                    style: theme.typography.body.xs.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
+                  FButton(
+                    onPress: loaded == null || submitting ? null : accept,
+                    prefix: submitting ? const FCircularProgress() : null,
+                    child: Text(
+                      submitting ? 'Menyimpan...' : 'Setuju dan lanjut',
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    onPress: submitting
+                        ? null
+                        : () async {
+                            Navigator.of(sheetContext).pop();
+                            await ref
+                                .read(authStatusProvider.notifier)
+                                .logout();
+                            if (context.mounted) {
+                              context.go(AuthRouter.login.path);
+                            }
+                          },
+                    child: const Text('Keluar'),
+                  ),
                 ],
               ),
             ),

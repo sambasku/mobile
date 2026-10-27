@@ -44,8 +44,18 @@ class AuthRouter {
     name: 'AuthRouter.termsWebView',
   );
 
+  /// WebView dokumen legal generik (Syarat ATAU Kebijakan Privasi).
+  /// `extra` = `({String url, String title})` dari `/api/v1/legal/current`.
+  static const legalDocument = RouteDefiner(
+    path: '/dokumen-legal',
+    name: 'AuthRouter.legalDocument',
+  );
+
   /// URL publik Syarat dan Ketentuan (web).
   static const termsDocumentUrl = 'https://sambasku.com/id/syarat-ketentuan';
+
+  /// URL publik Kebijakan Privasi (web).
+  static const privacyDocumentUrl = 'https://sambasku.com/id/privacy-policy';
 
   static final List<GoRoute> routes = [
     GoRoute(
@@ -66,6 +76,21 @@ class AuthRouter {
         url: termsDocumentUrl,
         title: 'Syarat dan Ketentuan',
       ),
+    ),
+    GoRoute(
+      path: legalDocument.path,
+      name: legalDocument.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        // Payload dari `/api/v1/legal/current` supaya staging membuka
+        // dokumen staging, bukan produksi.
+        final data = state.extra;
+        final payload = data is ({String url, String title}) ? data : null;
+        return LegalWebViewPage(
+          url: payload?.url ?? termsDocumentUrl,
+          title: payload?.title ?? 'Dokumen legal',
+        );
+      },
     ),
     GoRoute(
       path: verifyEmail.path,

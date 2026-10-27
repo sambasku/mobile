@@ -58,7 +58,12 @@ void main() {
     await tester.tap(find.byKey(const Key('trigger')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Setujui Syarat Ketentuan'), findsOneWidget);
+    expect(find.text('SambasKu perlu izin kamu dulu'), findsOneWidget);
+
+    // Kedua dokumen wajib bisa dibaca - accept-legal menuntut dua-duanya.
+    expect(find.text('Syarat dan Ketentuan'), findsOneWidget);
+    expect(find.text('Kebijakan Privasi'), findsOneWidget);
+    expect(find.text('Baca'), findsNWidgets(2));
 
     // Tutup sheet supaya guard global terpasang untuk test berikutnya.
     final navigator = tester.state<NavigatorState>(find.byType(Navigator).last);
@@ -72,7 +77,7 @@ void main() {
     await tester.tap(find.byKey(const Key('trigger')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Coba muat ulang'), findsOneWidget);
+    expect(find.text('Dokumen belum bisa dimuat'), findsOneWidget);
     expect(find.text('Muat ulang'), findsOneWidget);
   });
 }
