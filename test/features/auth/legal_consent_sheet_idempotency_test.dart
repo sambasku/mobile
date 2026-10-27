@@ -18,8 +18,8 @@ import 'package:sambasku_mobile/l10n/app_localizations.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  Dio stubDio({int status = 200}) => Dio(BaseOptions())
-    ..httpClientAdapter = _Adapter(status: status);
+  Dio stubDio({int status = 200}) =>
+      Dio(BaseOptions())..httpClientAdapter = _Adapter(status: status);
 
   Widget harness(Dio dio) {
     final router = GoRouter(
@@ -31,14 +31,13 @@ void main() {
     return ProviderScope(
       overrides: [dioProvider.overrideWithValue(dio)],
       child: MaterialApp.router(
-        theme: foruiPalettes['zinc']!.light.touch
-            .toApproximateMaterialTheme(),
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
         supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+        locale: const Locale('id'),
         routerConfig: router,
         builder: (context, routed) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,
@@ -116,9 +115,13 @@ class _Adapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     if (options.uri.path.endsWith('/legal/current') && status == 200) {
-      return ResponseBody.fromString(_body, 200, headers: {
-        Headers.contentTypeHeader: [Headers.jsonContentType],
-      });
+      return ResponseBody.fromString(
+        _body,
+        200,
+        headers: {
+          Headers.contentTypeHeader: [Headers.jsonContentType],
+        },
+      );
     }
     return ResponseBody.fromString('{"message":"stub"}', status);
   }

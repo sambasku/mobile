@@ -12,6 +12,7 @@ import '../../../core/constants/env.dart';
 import '../../../flavors.dart';
 import '../domain/ports/github_sign_in_port.dart';
 import 'github_oauth_callback_bus.dart';
+import '../../../core/i18n/l10n.dart';
 
 /// GitHub OAuth tanpa AppAuth.
 ///
@@ -20,7 +21,8 @@ import 'github_oauth_callback_bus.dart';
 ///   staging `sambasku-staging://app/oauth/github`
 ///   production `sambasku://app/oauth/github`
 class GithubSignInAdapter implements GithubSignInPort {
-  GithubSignInAdapter({AppLinks? appLinks}) : _appLinks = appLinks ?? AppLinks();
+  GithubSignInAdapter({AppLinks? appLinks})
+    : _appLinks = appLinks ?? AppLinks();
 
   final AppLinks _appLinks;
 
@@ -30,9 +32,7 @@ class GithubSignInAdapter implements GithubSignInPort {
   Future<GithubAuthCode?> authenticate() async {
     final clientId = Env.githubClientId?.trim();
     if (clientId == null || clientId.isEmpty) {
-      throw StateError(
-        'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
-      );
+      throw StateError(l10n.authGithubUnavailable);
     }
 
     final redirectUri = githubOAuthRedirectUri();
@@ -133,7 +133,7 @@ class GithubSignInAdapter implements GithubSignInPort {
         return null;
       }
       if (error is StateError) rethrow;
-      throw StateError('Tidak bisa masuk dengan GitHub. Coba lagi.');
+      throw StateError(l10n.authGithubFailed);
     } finally {
       resumeCancelTimer?.cancel();
       WidgetsBinding.instance.removeObserver(lifecycle);
@@ -144,8 +144,7 @@ class GithubSignInAdapter implements GithubSignInPort {
 
   static bool _isGithubOauthCallback(Uri uri) {
     final path = uri.path;
-    final pathOk =
-        path == '/oauth/github' || path.startsWith('/oauth/github/');
+    final pathOk = path == '/oauth/github' || path.startsWith('/oauth/github/');
     if (!pathOk) return false;
     final scheme = uri.scheme.toLowerCase();
     // GoRouter kadang kirim path-only / scheme terpotong; cukup path+code.

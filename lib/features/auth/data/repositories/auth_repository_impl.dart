@@ -18,6 +18,7 @@ import '../models/register_request_dto.dart';
 import '../models/resend_otp_request_dto.dart';
 import '../models/reset_password_dto.dart';
 import '../models/verify_email_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(
@@ -64,7 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return Either.left(
         AuthFailure(
-          response.message ?? 'Registrasi gagal',
+          response.message ?? l10n.authRegisterFailed,
           errorCode: response.errorCode,
         ),
       );
@@ -91,7 +92,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Login gagal',
+            response.message ?? l10n.authLoginFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -123,7 +124,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Google.',
+            response.message ?? l10n.authGoogleFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -159,7 +160,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Google.',
+            response.message ?? l10n.authGoogleFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -195,7 +196,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Facebook.',
+            response.message ?? l10n.authFacebookFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -230,7 +231,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan GitHub.',
+            response.message ?? l10n.authGithubFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -258,7 +259,7 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Verifikasi gagal',
+            response.message ?? l10n.authVerifyFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -324,9 +325,7 @@ class AuthRepositoryImpl implements AuthRepository {
           newPassword: newPassword,
         ),
       );
-      return Either.right(
-        response.data?.message ?? 'Password berhasil direset',
-      );
+      return Either.right(response.data?.message ?? l10n.authResetDone);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -430,8 +429,7 @@ class AuthRepositoryImpl implements AuthRepository {
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
         'Server lama merespons. Coba lagi dalam beberapa saat.',
-      DioExceptionType.connectionError =>
-        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError => l10n.authServerUnreachable,
       _ => 'Terjadi kesalahan, coba lagi',
     };
   }

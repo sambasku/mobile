@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/network/network_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../auth_router.dart';
 import '../providers/auth_status_providers.dart';
@@ -67,6 +68,7 @@ class _ReleaseGuardOnDisposeState
 }
 
 Future<void> _show(BuildContext context, WidgetRef ref) async {
+  final l10n = AppLocalizations.of(context);
   // Versi + URL dokumen aktif. Bisa gagal (offline) - sediakan retry,
   // jangan paksa user logout hanya karena jaringan.
   List<LegalConsentDoc>? docs;
@@ -87,24 +89,24 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
           (
             documentType: 'terms',
             documentVersion: termsVersion,
-            title: (terms?['title'] as String?) ?? 'Syarat dan Ketentuan',
+            title: (terms?['title'] as String?) ?? l10n.authTermsTitle,
             url: (terms?['url'] as String?) ?? AuthRouter.termsDocumentUrl,
           ),
           (
             documentType: 'privacy',
             documentVersion: privacyVersion,
-            title: (privacy?['title'] as String?) ?? 'Kebijakan Privasi',
+            title: (privacy?['title'] as String?) ?? l10n.authPrivacyTitle,
             url: (privacy?['url'] as String?) ?? AuthRouter.privacyDocumentUrl,
           ),
         ];
         loadError = null;
       } else {
         docs = null;
-        loadError = 'Dokumen legal belum tersedia. Coba lagi sebentar.';
+        loadError = l10n.authLegalNotReady;
       }
     } catch (_) {
       docs = null;
-      loadError = 'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
+      loadError = l10n.authDocsUnavailableBody;
     }
   }
 
@@ -155,7 +157,7 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
             final message =
                 (data is Map<String, dynamic> && data['message'] is String)
                 ? data['message'] as String
-                : 'Gagal menyimpan persetujuan. Coba lagi ya.';
+                : AppLocalizations.of(sheetContext).authConsentSaveFailed;
             await showAppErrorSheet(sheetContext, message: message);
           }
         }
@@ -180,16 +182,12 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'SambasKu perlu izin kamu dulu',
-                    style: theme.typography.body.lg.copyWith(
-                      fontWeight: .w600,
-                    ),
+                    AppLocalizations.of(sheetContext).authLegalSheetTitle,
+                    style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Akun kamu dibuat lewat Google, GitHub, atau Facebook. '
-                    'Sebelum lanjut, setujui dua dokumen di bawah - kami '
-                    'pakai datamu hanya untuk menjalankan kamus ini.',
+                    AppLocalizations.of(sheetContext).authLegalSheetBody,
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -203,11 +201,14 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                             title: Text(doc.title),
                             subtitle: Text(
                               doc.documentType == 'terms'
-                                  ? 'Aturan pakai SambasKu '
-                                        '(versi ${doc.documentVersion})'
-                                  : 'Data yang kami simpan dan cara kami '
-                                        'menjaganya '
-                                        '(versi ${doc.documentVersion})',
+                                  ? AppLocalizations.of(
+                                      sheetContext,
+                                    ).authTermsTileSubtitle(doc.documentVersion)
+                                  : AppLocalizations.of(
+                                      sheetContext,
+                                    ).authPrivacyTileSubtitle(
+                                      doc.documentVersion,
+                                    ),
                             ),
                             suffix: FButton(
                               variant: FButtonVariant.outline,
@@ -215,7 +216,9 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                                 AuthRouter.legalDocument.path,
                                 extra: (url: doc.url, title: doc.title),
                               ),
-                              child: const Text('Baca'),
+                              child: Text(
+                                AppLocalizations.of(sheetContext).authRead,
+                              ),
                             ),
                           ),
                       ],
@@ -224,11 +227,16 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                     FTileGroup(
                       children: [
                         FTile(
-                          title: const Text('Dokumen belum bisa dimuat'),
+                          title: Text(
+                            AppLocalizations.of(
+                              sheetContext,
+                            ).authDocsUnavailableTitle,
+                          ),
                           subtitle: Text(
                             loadError ??
-                                'Gagal memuat dokumen legal. Coba lagi dalam '
-                                    'beberapa saat.',
+                                AppLocalizations.of(
+                                  sheetContext,
+                                ).authDocsUnavailableBody,
                           ),
                           suffix: FButton(
                             variant: FButtonVariant.outline,
@@ -241,14 +249,16 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                                       setState(() => submitting = false);
                                     }
                                   },
-                            child: const Text('Muat ulang'),
+                            child: Text(
+                              AppLocalizations.of(sheetContext).authReload,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   const SizedBox(height: 8),
                   Text(
-                    'Kamu bisa berhenti kapan saja dengan keluar dari akun.',
+                    AppLocalizations.of(sheetContext).authStopAnytime,
                     style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
@@ -258,7 +268,11 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                     onPress: loaded == null || submitting ? null : accept,
                     prefix: submitting ? const FCircularProgress() : null,
                     child: Text(
-                      submitting ? 'Menyimpan...' : 'Setuju dan lanjut',
+                      submitting
+                          ? AppLocalizations.of(sheetContext).authSaving
+                          : AppLocalizations.of(
+                              sheetContext,
+                            ).authAcceptAndContinue,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -275,7 +289,7 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                               context.go(AuthRouter.login.path);
                             }
                           },
-                    child: const Text('Keluar'),
+                    child: Text(AppLocalizations.of(sheetContext).authExit),
                   ),
                 ],
               ),

@@ -24,8 +24,8 @@ import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Dio stub: register page mem-fetch /legal/current untuk gembok checkbox.
-Dio _stubDio() => Dio(BaseOptions())
-  ..httpClientAdapter = _LegalCurrentAdapter();
+Dio _stubDio() =>
+    Dio(BaseOptions())..httpClientAdapter = _LegalCurrentAdapter();
 
 /// Adapter minimal: GET /legal/current -> versi aktif; endpoint lain 404.
 class _LegalCurrentAdapter implements HttpClientAdapter {
@@ -42,9 +42,13 @@ class _LegalCurrentAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     if (options.uri.path.endsWith('/legal/current')) {
-      return ResponseBody.fromString(_body, 200, headers: {
-        Headers.contentTypeHeader: [Headers.jsonContentType],
-      });
+      return ResponseBody.fromString(
+        _body,
+        200,
+        headers: {
+          Headers.contentTypeHeader: [Headers.jsonContentType],
+        },
+      );
     }
     return ResponseBody.fromString('{"message":"stub"}', 404);
   }
@@ -62,24 +66,22 @@ class _StubRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async => facebookResult;
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => facebookResult;
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-      List<({String documentType, String documentVersion})>? consents,
-}) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
-
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async => Either.left(const AuthFailure('tidak dipakai'));
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> login({
@@ -124,22 +126,14 @@ class _StubRepo implements AuthRepository {
   }) async => Either.right('ok');
 }
 
-Widget _harness({
-  required Widget child,
-  required List<dynamic> overrides,
-}) {
+Widget _harness({required Widget child, required List<dynamic> overrides}) {
   // LoginPage membaca GoRouterState (query relogin); harus di bawah RouteBase.
   final router = GoRouter(
     initialLocation: '/',
-    routes: [
-      GoRoute(path: '/', builder: (context, state) => child),
-    ],
+    routes: [GoRoute(path: '/', builder: (context, state) => child)],
   );
   return ProviderScope(
-    overrides: [
-      dioProvider.overrideWithValue(_stubDio()),
-      ...overrides.cast(),
-    ],
+    overrides: [dioProvider.overrideWithValue(_stubDio()), ...overrides.cast()],
     child: MaterialApp.router(
       theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
       localizationsDelegates: [

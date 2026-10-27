@@ -8,6 +8,7 @@ import '../../core/router/route_definer.dart';
 import 'data/github_oauth_callback_bus.dart';
 import 'presentation/pages/forgot_password_page.dart';
 import 'presentation/pages/legal_webview_page.dart';
+import '../../l10n/app_localizations.dart';
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/register_page.dart';
 import 'presentation/pages/reset_password_page.dart';
@@ -33,6 +34,7 @@ class AuthRouter {
     path: '/reset-password',
     name: 'AuthRouter.resetPassword',
   );
+
   /// Deep link OAuth GitHub (`sambasku-staging://app/oauth/github`).
   /// Code ditangani [GithubSignInAdapter]; rute ini hanya mencegah 404.
   static const githubOauthCallback = RouteDefiner(
@@ -72,9 +74,9 @@ class AuthRouter {
       path: termsWebView.path,
       name: termsWebView.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => const LegalWebViewPage(
+      builder: (context, state) => LegalWebViewPage(
         url: termsDocumentUrl,
-        title: 'Syarat dan Ketentuan',
+        title: AppLocalizations.of(context).authTermsTitle,
       ),
     ),
     GoRoute(

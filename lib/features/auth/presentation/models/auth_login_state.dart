@@ -53,8 +53,9 @@ class AuthLoginState {
     bool? githubUnavailable,
   }) {
     return AuthLoginState(
-      pendingAction:
-          clearPendingAction ? null : pendingAction ?? this.pendingAction,
+      pendingAction: clearPendingAction
+          ? null
+          : pendingAction ?? this.pendingAction,
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,

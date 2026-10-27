@@ -1009,6 +1009,72 @@ abstract class AppLocalizations {
   /// **'Mengirim...'**
   String get reportSubmitting;
 
+  /// No description provided for @reportPantunAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan'**
+  String get reportPantunAction;
+
+  /// No description provided for @reportPantunTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan pantun'**
+  String get reportPantunTitle;
+
+  /// No description provided for @reportPantunSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporanmu ditinjau tim Sambasku. Pantun tetap tayang sampai diputuskan.'**
+  String get reportPantunSubtitle;
+
+  /// No description provided for @reportPantunInappropriate.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak pantas'**
+  String get reportPantunInappropriate;
+
+  /// No description provided for @reportPantunSexual.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten seksual'**
+  String get reportPantunSexual;
+
+  /// No description provided for @reportPantunHarassment.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelecehan atau perundungan'**
+  String get reportPantunHarassment;
+
+  /// No description provided for @reportPantunHateSpeech.
+  ///
+  /// In id, this message translates to:
+  /// **'Ujaran kebencian'**
+  String get reportPantunHateSpeech;
+
+  /// No description provided for @reportPantunSpam.
+  ///
+  /// In id, this message translates to:
+  /// **'Spam'**
+  String get reportPantunSpam;
+
+  /// No description provided for @reportPantunOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get reportPantunOther;
+
+  /// No description provided for @reportPantunSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih, laporanmu sudah kami terima'**
+  String get reportPantunSent;
+
+  /// No description provided for @reportPantunLoginFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya untuk melaporkan pantun'**
+  String get reportPantunLoginFirst;
+
   /// No description provided for @searchMissTitle.
   ///
   /// In id, this message translates to:
@@ -5884,6 +5950,540 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'arti pertama satu baris'**
   String get dictSkeletonGloss;
+
+  /// Toast saat user menutup sheet Google/Facebook/GitHub
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dibatalkan'**
+  String get authSignInCanceled;
+
+  /// Akun baru dari halaman masuk wajib lewat persetujuan legal di halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar dulu ya supaya bisa setujui ketentuan'**
+  String get authRegisterFirst;
+
+  /// Judul peringatan saat verifikator perlu login ulang
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk kembali'**
+  String get authReloginTitle;
+
+  /// Penjelasan peringatan login ulang verifikator
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan akunmu agar peran Verifikator aktif.'**
+  String get authReloginBody;
+
+  /// Label kolom identitas pada halaman masuk
+  ///
+  /// In id, this message translates to:
+  /// **'Email atau Username'**
+  String get authIdentifierLabel;
+
+  /// Contoh isian kolom identitas
+  ///
+  /// In id, this message translates to:
+  /// **'email@contoh.com / username'**
+  String get authIdentifierHint;
+
+  /// Label kolom password
+  ///
+  /// In id, this message translates to:
+  /// **'Password'**
+  String get authPasswordLabel;
+
+  /// Tautan ke halaman lupa password
+  ///
+  /// In id, this message translates to:
+  /// **'Lupa password?'**
+  String get authForgotPasswordQuestion;
+
+  /// Label tombol saat permintaan sedang berjalan
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses...'**
+  String get authSubmitting;
+
+  /// Tombol kirim form masuk
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get authLoginAction;
+
+  /// Label tombol masuk lewat Facebook
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan Facebook'**
+  String get authFacebookLogin;
+
+  /// Awalan kalimat menuju halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Belum punya akun? '**
+  String get authNoAccountPrefix;
+
+  /// Tombol menuju halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar'**
+  String get authRegisterAction;
+
+  /// Tombol lewati masuk
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut tanpa akun (Anonim)'**
+  String get authContinueAnonymous;
+
+  /// Tautan ke halaman laporan bug
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan masalah'**
+  String get authReportIssue;
+
+  /// Judul sheet email belum diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Email belum diverifikasi'**
+  String get authEmailUnverifiedTitle;
+
+  /// Isi sheet email belum diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.'**
+  String get authEmailUnverifiedBody;
+
+  /// Tombol menuju halaman verifikasi email
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi sekarang'**
+  String get authVerifyNow;
+
+  /// Tombol menunda verifikasi email
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti saja'**
+  String get authLater;
+
+  /// Pesan cadangan saat kena batas permintaan
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi dalam beberapa saat'**
+  String get authRateLimitedFallback;
+
+  /// Judul halaman lupa password
+  ///
+  /// In id, this message translates to:
+  /// **'Lupa password'**
+  String get authForgotTitle;
+
+  /// Judul besar halaman lupa password
+  ///
+  /// In id, this message translates to:
+  /// **'Atur ulang password'**
+  String get authResetTitle;
+
+  /// Penjelasan halaman lupa password
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.'**
+  String get authForgotBody;
+
+  /// Label kolom email
+  ///
+  /// In id, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// Tombol kirim kode reset password
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim kode reset'**
+  String get authSendCode;
+
+  /// Label tombol saat kode sedang dikirim
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get authSending;
+
+  /// Judul info bahwa akun masuk lewat provider OAuth
+  ///
+  /// In id, this message translates to:
+  /// **'Akun OAuth'**
+  String get authOauthAccountTitle;
+
+  /// Judul halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar'**
+  String get authRegisterTitle;
+
+  /// Judul besar halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Buat akun Kontributor'**
+  String get authRegisterHeadline;
+
+  /// Penjelasan halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.'**
+  String get authRegisterBody;
+
+  /// Label kolom nama
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get authNameLabel;
+
+  /// Label kolom nomor HP
+  ///
+  /// In id, this message translates to:
+  /// **'No. HP (opsional)'**
+  String get authPhoneOptionalLabel;
+
+  /// Petunjuk aturan password
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal 8 karakter, huruf + angka'**
+  String get authPasswordHint;
+
+  /// Label kolom konfirmasi password
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi Password'**
+  String get authConfirmPasswordLabel;
+
+  /// Label checkbox persetujuan dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Saya setuju Syarat dan Ketentuan'**
+  String get authAgreeTerms;
+
+  /// Tautan ke dokumen legal lengkap
+  ///
+  /// In id, this message translates to:
+  /// **'Baca dokumen lengkap di SambasKu'**
+  String get authReadFullDoc;
+
+  /// Label aksesibilitas tombol daftar lewat Google
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar dengan Google'**
+  String get authRegisterWithGoogle;
+
+  /// Label tombol daftar lewat Facebook
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar dengan Facebook'**
+  String get authRegisterWithFacebook;
+
+  /// Tombol menuju halaman masuk
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah punya akun? Masuk'**
+  String get authHaveAccount;
+
+  /// Toast saat user menutup sheet provider sosial di halaman daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar dibatalkan'**
+  String get authRegisterCanceled;
+
+  /// Pesan gagal memuat versi dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat dokumen legal'**
+  String get authLegalLoadFailed;
+
+  /// Toast setelah kode reset dikirim
+  ///
+  /// In id, this message translates to:
+  /// **'Kode baru dikirim ke email'**
+  String get authResetCodeSent;
+
+  /// Judul sheet setelah password berhasil direset
+  ///
+  /// In id, this message translates to:
+  /// **'Password berhasil direset'**
+  String get authResetSuccess;
+
+  /// Judul halaman atur password baru
+  ///
+  /// In id, this message translates to:
+  /// **'Password baru'**
+  String get authNewPasswordTitle;
+
+  /// Penjelasan saat datang lewat tautan reset
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'**
+  String get authResetLinkBody;
+
+  /// Penjelasan saat memakai kode email
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke {email} (berlaku 10 menit), lalu password baru.'**
+  String authResetCodeBody(String email);
+
+  /// Penjelasan saat email reset tidak diketahui
+  ///
+  /// In id, this message translates to:
+  /// **'Minta kodenya dulu di halaman lupa password ya.'**
+  String get authResetAskCode;
+
+  /// Label kolom kode reset password
+  ///
+  /// In id, this message translates to:
+  /// **'Kode Reset Password'**
+  String get authResetCodeLabel;
+
+  /// Label kolom konfirmasi password baru
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi password baru'**
+  String get authConfirmNewPassword;
+
+  /// Tombol simpan password baru
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan password'**
+  String get authSavePassword;
+
+  /// Tombol kirim ulang kode verifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ulang kode'**
+  String get authResendCode;
+
+  /// Tombol kirim ulang saat hitung mundur berjalan
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ulang kode ({time})'**
+  String authResendCodeCountdown(String time);
+
+  /// Pesan validasi konfirmasi password
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi password tidak sama'**
+  String get authPasswordMismatch;
+
+  /// Judul halaman verifikasi email
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi email'**
+  String get authVerifyTitle;
+
+  /// Judul besar halaman verifikasi email
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan kode 6 karakter'**
+  String get authEnterCode;
+
+  /// Penjelasan saat email tujuan tidak diketahui
+  ///
+  /// In id, this message translates to:
+  /// **'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.'**
+  String get authEmailMissing;
+
+  /// Penjelasan kode verifikasi dikirim
+  ///
+  /// In id, this message translates to:
+  /// **'Kode dikirim ke {email} (berlaku 10 menit).'**
+  String authCodeSentTo(String email);
+
+  /// Label kolom kode OTP
+  ///
+  /// In id, this message translates to:
+  /// **'Kode OTP'**
+  String get authOtpLabel;
+
+  /// Tombol verifikasi email
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi'**
+  String get authVerifyAction;
+
+  /// Pesan setelah minta kode baru
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau email terdaftar, kode baru sudah dikirim.'**
+  String get authResendOk;
+
+  /// Judul sheet persetujuan dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'SambasKu perlu izin kamu dulu'**
+  String get authLegalSheetTitle;
+
+  /// Penjelasan sheet persetujuan dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.'**
+  String get authLegalSheetBody;
+
+  /// Keterangan dokumen syarat dan ketentuan
+  ///
+  /// In id, this message translates to:
+  /// **'Aturan pakai SambasKu (versi {version})'**
+  String authTermsTileSubtitle(String version);
+
+  /// Keterangan dokumen kebijakan privasi
+  ///
+  /// In id, this message translates to:
+  /// **'Data yang kami simpan dan cara kami menjaganya (versi {version})'**
+  String authPrivacyTileSubtitle(String version);
+
+  /// Tombol membuka dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Baca'**
+  String get authRead;
+
+  /// Judul kegagalan memuat dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Dokumen belum bisa dimuat'**
+  String get authDocsUnavailableTitle;
+
+  /// Isi kegagalan memuat dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.'**
+  String get authDocsUnavailableBody;
+
+  /// Versi dokumen legal belum tersedia di server
+  ///
+  /// In id, this message translates to:
+  /// **'Dokumen legal belum tersedia. Coba lagi sebentar.'**
+  String get authLegalNotReady;
+
+  /// Tombol muat ulang dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Muat ulang'**
+  String get authReload;
+
+  /// Catatan bahwa persetujuan bisa dihentikan dengan keluar
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu bisa berhenti kapan saja dengan keluar dari akun.'**
+  String get authStopAnytime;
+
+  /// Tombol menyetujui dokumen legal
+  ///
+  /// In id, this message translates to:
+  /// **'Setuju dan lanjut'**
+  String get authAcceptAndContinue;
+
+  /// Label tombol saat persetujuan disimpan
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get authSaving;
+
+  /// Tombol keluar dari akun pada sheet persetujuan
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar'**
+  String get authExit;
+
+  /// Pesan gagal menyimpan persetujuan legal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan persetujuan. Coba lagi ya.'**
+  String get authConsentSaveFailed;
+
+  /// Label aksesibilitas tombol Google
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan Google'**
+  String get authSignInWithGoogle;
+
+  /// Label aksesibilitas tombol GitHub
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan GitHub'**
+  String get authSignInWithGithub;
+
+  /// Konfigurasi Google Sign-In di perangkat belum lengkap
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.'**
+  String get authGoogleUnavailable;
+
+  /// Kegagalan umum Google Sign-In
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa masuk dengan Google. Coba lagi.'**
+  String get authGoogleFailed;
+
+  /// Kegagalan umum Facebook Sign-In
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa masuk dengan Facebook. Coba lagi.'**
+  String get authFacebookFailed;
+
+  /// Konfigurasi GitHub OAuth belum lengkap
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.'**
+  String get authGithubUnavailable;
+
+  /// Kegagalan umum GitHub Sign-In
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa masuk dengan GitHub. Coba lagi.'**
+  String get authGithubFailed;
+
+  /// Judul dokumen syarat dan ketentuan
+  ///
+  /// In id, this message translates to:
+  /// **'Syarat dan Ketentuan'**
+  String get authTermsTitle;
+
+  /// Judul dokumen kebijakan privasi
+  ///
+  /// In id, this message translates to:
+  /// **'Kebijakan Privasi'**
+  String get authPrivacyTitle;
+
+  /// Pesan cadangan saat pendaftaran gagal tanpa pesan server
+  ///
+  /// In id, this message translates to:
+  /// **'Registrasi gagal'**
+  String get authRegisterFailed;
+
+  /// Pesan cadangan saat masuk gagal tanpa pesan server
+  ///
+  /// In id, this message translates to:
+  /// **'Login gagal'**
+  String get authLoginFailed;
+
+  /// Pesan cadangan saat verifikasi email gagal tanpa pesan server
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi gagal'**
+  String get authVerifyFailed;
+
+  /// Pesan cadangan setelah reset password tanpa pesan server
+  ///
+  /// In id, this message translates to:
+  /// **'Password berhasil direset'**
+  String get authResetDone;
+
+  /// Pesan saat tidak ada koneksi ke API
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke server. Coba lagi dalam beberapa saat.'**
+  String get authServerUnreachable;
+
+  /// Konfigurasi Facebook Sign-In belum lengkap
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan Facebook belum siap di perangkat ini.'**
+  String get authFacebookUnavailable;
 }
 
 class _AppLocalizationsDelegate

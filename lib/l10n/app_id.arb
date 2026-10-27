@@ -215,6 +215,17 @@
   "reportNoteLabelOptional": "Catatan (opsional)",
   "reportSubmit": "Kirim laporan",
   "reportSubmitting": "Mengirim...",
+  "reportPantunAction": "Laporkan",
+  "reportPantunTitle": "Laporkan pantun",
+  "reportPantunSubtitle": "Laporanmu ditinjau tim Sambasku. Pantun tetap tayang sampai diputuskan.",
+  "reportPantunInappropriate": "Tidak pantas",
+  "reportPantunSexual": "Konten seksual",
+  "reportPantunHarassment": "Pelecehan atau perundungan",
+  "reportPantunHateSpeech": "Ujaran kebencian",
+  "reportPantunSpam": "Spam",
+  "reportPantunOther": "Lainnya",
+  "reportPantunSent": "Terima kasih, laporanmu sudah kami terima",
+  "reportPantunLoginFirst": "Masuk dulu ya untuk melaporkan pantun",
   "searchMissTitle": "Dicari warga",
   "searchMissHint": "Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.",
   "searchMissLoadFailed": "Gagal memuat daftar pencarian",
@@ -1736,5 +1747,386 @@
   "dictWordOfDayShownToday": "Ditampilkan hari ini · baru minggu ini",
   "dictWordOfDayRotates": "Ditampilkan hari ini, berganti setiap hari",
   "dictSkeletonLemmaShort": "lemma contoh",
-  "dictSkeletonGloss": "arti pertama satu baris"
+  "dictSkeletonGloss": "arti pertama satu baris",
+  "authSignInCanceled": "Masuk dibatalkan",
+  "@authSignInCanceled": {
+    "description": "Toast saat user menutup sheet Google/Facebook/GitHub"
+  },
+  "authRegisterFirst": "Daftar dulu ya supaya bisa setujui ketentuan",
+  "@authRegisterFirst": {
+    "description": "Akun baru dari halaman masuk wajib lewat persetujuan legal di halaman daftar"
+  },
+  "authReloginTitle": "Masuk kembali",
+  "@authReloginTitle": {
+    "description": "Judul peringatan saat verifikator perlu login ulang"
+  },
+  "authReloginBody": "Masuk dengan akunmu agar peran Verifikator aktif.",
+  "@authReloginBody": {
+    "description": "Penjelasan peringatan login ulang verifikator"
+  },
+  "authIdentifierLabel": "Email atau Username",
+  "@authIdentifierLabel": {
+    "description": "Label kolom identitas pada halaman masuk"
+  },
+  "authIdentifierHint": "email@contoh.com / username",
+  "@authIdentifierHint": {
+    "description": "Contoh isian kolom identitas"
+  },
+  "authPasswordLabel": "Password",
+  "@authPasswordLabel": {
+    "description": "Label kolom password"
+  },
+  "authForgotPasswordQuestion": "Lupa password?",
+  "@authForgotPasswordQuestion": {
+    "description": "Tautan ke halaman lupa password"
+  },
+  "authSubmitting": "Memproses...",
+  "@authSubmitting": {
+    "description": "Label tombol saat permintaan sedang berjalan"
+  },
+  "authLoginAction": "Masuk",
+  "@authLoginAction": {
+    "description": "Tombol kirim form masuk"
+  },
+  "authFacebookLogin": "Masuk dengan Facebook",
+  "@authFacebookLogin": {
+    "description": "Label tombol masuk lewat Facebook"
+  },
+  "authNoAccountPrefix": "Belum punya akun? ",
+  "@authNoAccountPrefix": {
+    "description": "Awalan kalimat menuju halaman daftar"
+  },
+  "authRegisterAction": "Daftar",
+  "@authRegisterAction": {
+    "description": "Tombol menuju halaman daftar"
+  },
+  "authContinueAnonymous": "Lanjut tanpa akun (Anonim)",
+  "@authContinueAnonymous": {
+    "description": "Tombol lewati masuk"
+  },
+  "authReportIssue": "Laporkan masalah",
+  "@authReportIssue": {
+    "description": "Tautan ke halaman laporan bug"
+  },
+  "authEmailUnverifiedTitle": "Email belum diverifikasi",
+  "@authEmailUnverifiedTitle": {
+    "description": "Judul sheet email belum diverifikasi"
+  },
+  "authEmailUnverifiedBody": "Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.",
+  "@authEmailUnverifiedBody": {
+    "description": "Isi sheet email belum diverifikasi"
+  },
+  "authVerifyNow": "Verifikasi sekarang",
+  "@authVerifyNow": {
+    "description": "Tombol menuju halaman verifikasi email"
+  },
+  "authLater": "Nanti saja",
+  "@authLater": {
+    "description": "Tombol menunda verifikasi email"
+  },
+  "authRateLimitedFallback": "Coba lagi dalam beberapa saat",
+  "@authRateLimitedFallback": {
+    "description": "Pesan cadangan saat kena batas permintaan"
+  },
+  "authForgotTitle": "Lupa password",
+  "@authForgotTitle": {
+    "description": "Judul halaman lupa password"
+  },
+  "authResetTitle": "Atur ulang password",
+  "@authResetTitle": {
+    "description": "Judul besar halaman lupa password"
+  },
+  "authForgotBody": "Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.",
+  "@authForgotBody": {
+    "description": "Penjelasan halaman lupa password"
+  },
+  "authEmailLabel": "Email",
+  "@authEmailLabel": {
+    "description": "Label kolom email"
+  },
+  "authSendCode": "Kirim kode reset",
+  "@authSendCode": {
+    "description": "Tombol kirim kode reset password"
+  },
+  "authSending": "Mengirim...",
+  "@authSending": {
+    "description": "Label tombol saat kode sedang dikirim"
+  },
+  "authOauthAccountTitle": "Akun OAuth",
+  "@authOauthAccountTitle": {
+    "description": "Judul info bahwa akun masuk lewat provider OAuth"
+  },
+  "authRegisterTitle": "Daftar",
+  "@authRegisterTitle": {
+    "description": "Judul halaman daftar"
+  },
+  "authRegisterHeadline": "Buat akun Kontributor",
+  "@authRegisterHeadline": {
+    "description": "Judul besar halaman daftar"
+  },
+  "authRegisterBody": "Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.",
+  "@authRegisterBody": {
+    "description": "Penjelasan halaman daftar"
+  },
+  "authNameLabel": "Nama",
+  "@authNameLabel": {
+    "description": "Label kolom nama"
+  },
+  "authPhoneOptionalLabel": "No. HP (opsional)",
+  "@authPhoneOptionalLabel": {
+    "description": "Label kolom nomor HP"
+  },
+  "authPasswordHint": "Minimal 8 karakter, huruf + angka",
+  "@authPasswordHint": {
+    "description": "Petunjuk aturan password"
+  },
+  "authConfirmPasswordLabel": "Konfirmasi Password",
+  "@authConfirmPasswordLabel": {
+    "description": "Label kolom konfirmasi password"
+  },
+  "authAgreeTerms": "Saya setuju Syarat dan Ketentuan",
+  "@authAgreeTerms": {
+    "description": "Label checkbox persetujuan dokumen legal"
+  },
+  "authReadFullDoc": "Baca dokumen lengkap di SambasKu",
+  "@authReadFullDoc": {
+    "description": "Tautan ke dokumen legal lengkap"
+  },
+  "authRegisterWithGoogle": "Daftar dengan Google",
+  "@authRegisterWithGoogle": {
+    "description": "Label aksesibilitas tombol daftar lewat Google"
+  },
+  "authRegisterWithFacebook": "Daftar dengan Facebook",
+  "@authRegisterWithFacebook": {
+    "description": "Label tombol daftar lewat Facebook"
+  },
+  "authHaveAccount": "Sudah punya akun? Masuk",
+  "@authHaveAccount": {
+    "description": "Tombol menuju halaman masuk"
+  },
+  "authRegisterCanceled": "Daftar dibatalkan",
+  "@authRegisterCanceled": {
+    "description": "Toast saat user menutup sheet provider sosial di halaman daftar"
+  },
+  "authLegalLoadFailed": "Gagal memuat dokumen legal",
+  "@authLegalLoadFailed": {
+    "description": "Pesan gagal memuat versi dokumen legal"
+  },
+  "authResetCodeSent": "Kode baru dikirim ke email",
+  "@authResetCodeSent": {
+    "description": "Toast setelah kode reset dikirim"
+  },
+  "authResetSuccess": "Password berhasil direset",
+  "@authResetSuccess": {
+    "description": "Judul sheet setelah password berhasil direset"
+  },
+  "authNewPasswordTitle": "Password baru",
+  "@authNewPasswordTitle": {
+    "description": "Judul halaman atur password baru"
+  },
+  "authResetLinkBody": "Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).",
+  "@authResetLinkBody": {
+    "description": "Penjelasan saat datang lewat tautan reset"
+  },
+  "authResetCodeBody": "Masukkan kode 6 karakter 0-9A-Z yang dikirim ke {email} (berlaku 10 menit), lalu password baru.",
+  "@authResetCodeBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    },
+    "description": "Penjelasan saat memakai kode email"
+  },
+  "authResetAskCode": "Minta kodenya dulu di halaman lupa password ya.",
+  "@authResetAskCode": {
+    "description": "Penjelasan saat email reset tidak diketahui"
+  },
+  "authResetCodeLabel": "Kode Reset Password",
+  "@authResetCodeLabel": {
+    "description": "Label kolom kode reset password"
+  },
+  "authConfirmNewPassword": "Konfirmasi password baru",
+  "@authConfirmNewPassword": {
+    "description": "Label kolom konfirmasi password baru"
+  },
+  "authSavePassword": "Simpan password",
+  "@authSavePassword": {
+    "description": "Tombol simpan password baru"
+  },
+  "authResendCode": "Kirim ulang kode",
+  "@authResendCode": {
+    "description": "Tombol kirim ulang kode verifikasi"
+  },
+  "authResendCodeCountdown": "Kirim ulang kode ({time})",
+  "@authResendCodeCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    },
+    "description": "Tombol kirim ulang saat hitung mundur berjalan"
+  },
+  "authPasswordMismatch": "Konfirmasi password tidak sama",
+  "@authPasswordMismatch": {
+    "description": "Pesan validasi konfirmasi password"
+  },
+  "authVerifyTitle": "Verifikasi email",
+  "@authVerifyTitle": {
+    "description": "Judul halaman verifikasi email"
+  },
+  "authEnterCode": "Masukkan kode 6 karakter",
+  "@authEnterCode": {
+    "description": "Judul besar halaman verifikasi email"
+  },
+  "authEmailMissing": "Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.",
+  "@authEmailMissing": {
+    "description": "Penjelasan saat email tujuan tidak diketahui"
+  },
+  "authCodeSentTo": "Kode dikirim ke {email} (berlaku 10 menit).",
+  "@authCodeSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    },
+    "description": "Penjelasan kode verifikasi dikirim"
+  },
+  "authOtpLabel": "Kode OTP",
+  "@authOtpLabel": {
+    "description": "Label kolom kode OTP"
+  },
+  "authVerifyAction": "Verifikasi",
+  "@authVerifyAction": {
+    "description": "Tombol verifikasi email"
+  },
+  "authResendOk": "Kalau email terdaftar, kode baru sudah dikirim.",
+  "@authResendOk": {
+    "description": "Pesan setelah minta kode baru"
+  },
+  "authLegalSheetTitle": "SambasKu perlu izin kamu dulu",
+  "@authLegalSheetTitle": {
+    "description": "Judul sheet persetujuan dokumen legal"
+  },
+  "authLegalSheetBody": "Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.",
+  "@authLegalSheetBody": {
+    "description": "Penjelasan sheet persetujuan dokumen legal"
+  },
+  "authTermsTileSubtitle": "Aturan pakai SambasKu (versi {version})",
+  "@authTermsTileSubtitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    },
+    "description": "Keterangan dokumen syarat dan ketentuan"
+  },
+  "authPrivacyTileSubtitle": "Data yang kami simpan dan cara kami menjaganya (versi {version})",
+  "@authPrivacyTileSubtitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    },
+    "description": "Keterangan dokumen kebijakan privasi"
+  },
+  "authRead": "Baca",
+  "@authRead": {
+    "description": "Tombol membuka dokumen legal"
+  },
+  "authDocsUnavailableTitle": "Dokumen belum bisa dimuat",
+  "@authDocsUnavailableTitle": {
+    "description": "Judul kegagalan memuat dokumen legal"
+  },
+  "authDocsUnavailableBody": "Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.",
+  "@authDocsUnavailableBody": {
+    "description": "Isi kegagalan memuat dokumen legal"
+  },
+  "authLegalNotReady": "Dokumen legal belum tersedia. Coba lagi sebentar.",
+  "@authLegalNotReady": {
+    "description": "Versi dokumen legal belum tersedia di server"
+  },
+  "authReload": "Muat ulang",
+  "@authReload": {
+    "description": "Tombol muat ulang dokumen legal"
+  },
+  "authStopAnytime": "Kamu bisa berhenti kapan saja dengan keluar dari akun.",
+  "@authStopAnytime": {
+    "description": "Catatan bahwa persetujuan bisa dihentikan dengan keluar"
+  },
+  "authAcceptAndContinue": "Setuju dan lanjut",
+  "@authAcceptAndContinue": {
+    "description": "Tombol menyetujui dokumen legal"
+  },
+  "authSaving": "Menyimpan...",
+  "@authSaving": {
+    "description": "Label tombol saat persetujuan disimpan"
+  },
+  "authExit": "Keluar",
+  "@authExit": {
+    "description": "Tombol keluar dari akun pada sheet persetujuan"
+  },
+  "authConsentSaveFailed": "Gagal menyimpan persetujuan. Coba lagi ya.",
+  "@authConsentSaveFailed": {
+    "description": "Pesan gagal menyimpan persetujuan legal"
+  },
+  "authSignInWithGoogle": "Masuk dengan Google",
+  "@authSignInWithGoogle": {
+    "description": "Label aksesibilitas tombol Google"
+  },
+  "authSignInWithGithub": "Masuk dengan GitHub",
+  "@authSignInWithGithub": {
+    "description": "Label aksesibilitas tombol GitHub"
+  },
+  "authGoogleUnavailable": "Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.",
+  "@authGoogleUnavailable": {
+    "description": "Konfigurasi Google Sign-In di perangkat belum lengkap"
+  },
+  "authGoogleFailed": "Tidak bisa masuk dengan Google. Coba lagi.",
+  "@authGoogleFailed": {
+    "description": "Kegagalan umum Google Sign-In"
+  },
+  "authFacebookFailed": "Tidak bisa masuk dengan Facebook. Coba lagi.",
+  "@authFacebookFailed": {
+    "description": "Kegagalan umum Facebook Sign-In"
+  },
+  "authGithubUnavailable": "Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.",
+  "@authGithubUnavailable": {
+    "description": "Konfigurasi GitHub OAuth belum lengkap"
+  },
+  "authGithubFailed": "Tidak bisa masuk dengan GitHub. Coba lagi.",
+  "@authGithubFailed": {
+    "description": "Kegagalan umum GitHub Sign-In"
+  },
+  "authTermsTitle": "Syarat dan Ketentuan",
+  "@authTermsTitle": {
+    "description": "Judul dokumen syarat dan ketentuan"
+  },
+  "authPrivacyTitle": "Kebijakan Privasi",
+  "@authPrivacyTitle": {
+    "description": "Judul dokumen kebijakan privasi"
+  },
+  "authRegisterFailed": "Registrasi gagal",
+  "@authRegisterFailed": {
+    "description": "Pesan cadangan saat pendaftaran gagal tanpa pesan server"
+  },
+  "authLoginFailed": "Login gagal",
+  "@authLoginFailed": {
+    "description": "Pesan cadangan saat masuk gagal tanpa pesan server"
+  },
+  "authVerifyFailed": "Verifikasi gagal",
+  "@authVerifyFailed": {
+    "description": "Pesan cadangan saat verifikasi email gagal tanpa pesan server"
+  },
+  "authResetDone": "Password berhasil direset",
+  "@authResetDone": {
+    "description": "Pesan cadangan setelah reset password tanpa pesan server"
+  },
+  "authServerUnreachable": "Gagal terhubung ke server. Coba lagi dalam beberapa saat.",
+  "@authServerUnreachable": {
+    "description": "Pesan saat tidak ada koneksi ke API"
+  },
+  "authFacebookUnavailable": "Masuk dengan Facebook belum siap di perangkat ini.",
+  "@authFacebookUnavailable": {
+    "description": "Konfigurasi Facebook Sign-In belum lengkap"
+  }
 }

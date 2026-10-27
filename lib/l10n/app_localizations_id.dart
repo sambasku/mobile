@@ -499,6 +499,40 @@ class AppLocalizationsId extends AppLocalizations {
   String get reportSubmitting => 'Mengirim...';
 
   @override
+  String get reportPantunAction => 'Laporkan';
+
+  @override
+  String get reportPantunTitle => 'Laporkan pantun';
+
+  @override
+  String get reportPantunSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Pantun tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportPantunInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportPantunSexual => 'Konten seksual';
+
+  @override
+  String get reportPantunHarassment => 'Pelecehan atau perundungan';
+
+  @override
+  String get reportPantunHateSpeech => 'Ujaran kebencian';
+
+  @override
+  String get reportPantunSpam => 'Spam';
+
+  @override
+  String get reportPantunOther => 'Lainnya';
+
+  @override
+  String get reportPantunSent => 'Terima kasih, laporanmu sudah kami terima';
+
+  @override
+  String get reportPantunLoginFirst => 'Masuk dulu ya untuk melaporkan pantun';
+
+  @override
   String get searchMissTitle => 'Dicari warga';
 
   @override
@@ -3258,6 +3292,301 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictSkeletonGloss => 'arti pertama satu baris';
+
+  @override
+  String get authSignInCanceled => 'Masuk dibatalkan';
+
+  @override
+  String get authRegisterFirst =>
+      'Daftar dulu ya supaya bisa setujui ketentuan';
+
+  @override
+  String get authReloginTitle => 'Masuk kembali';
+
+  @override
+  String get authReloginBody =>
+      'Masuk dengan akunmu agar peran Verifikator aktif.';
+
+  @override
+  String get authIdentifierLabel => 'Email atau Username';
+
+  @override
+  String get authIdentifierHint => 'email@contoh.com / username';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authForgotPasswordQuestion => 'Lupa password?';
+
+  @override
+  String get authSubmitting => 'Memproses...';
+
+  @override
+  String get authLoginAction => 'Masuk';
+
+  @override
+  String get authFacebookLogin => 'Masuk dengan Facebook';
+
+  @override
+  String get authNoAccountPrefix => 'Belum punya akun? ';
+
+  @override
+  String get authRegisterAction => 'Daftar';
+
+  @override
+  String get authContinueAnonymous => 'Lanjut tanpa akun (Anonim)';
+
+  @override
+  String get authReportIssue => 'Laporkan masalah';
+
+  @override
+  String get authEmailUnverifiedTitle => 'Email belum diverifikasi';
+
+  @override
+  String get authEmailUnverifiedBody =>
+      'Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.';
+
+  @override
+  String get authVerifyNow => 'Verifikasi sekarang';
+
+  @override
+  String get authLater => 'Nanti saja';
+
+  @override
+  String get authRateLimitedFallback => 'Coba lagi dalam beberapa saat';
+
+  @override
+  String get authForgotTitle => 'Lupa password';
+
+  @override
+  String get authResetTitle => 'Atur ulang password';
+
+  @override
+  String get authForgotBody =>
+      'Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authSendCode => 'Kirim kode reset';
+
+  @override
+  String get authSending => 'Mengirim...';
+
+  @override
+  String get authOauthAccountTitle => 'Akun OAuth';
+
+  @override
+  String get authRegisterTitle => 'Daftar';
+
+  @override
+  String get authRegisterHeadline => 'Buat akun Kontributor';
+
+  @override
+  String get authRegisterBody =>
+      'Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.';
+
+  @override
+  String get authNameLabel => 'Nama';
+
+  @override
+  String get authPhoneOptionalLabel => 'No. HP (opsional)';
+
+  @override
+  String get authPasswordHint => 'Minimal 8 karakter, huruf + angka';
+
+  @override
+  String get authConfirmPasswordLabel => 'Konfirmasi Password';
+
+  @override
+  String get authAgreeTerms => 'Saya setuju Syarat dan Ketentuan';
+
+  @override
+  String get authReadFullDoc => 'Baca dokumen lengkap di SambasKu';
+
+  @override
+  String get authRegisterWithGoogle => 'Daftar dengan Google';
+
+  @override
+  String get authRegisterWithFacebook => 'Daftar dengan Facebook';
+
+  @override
+  String get authHaveAccount => 'Sudah punya akun? Masuk';
+
+  @override
+  String get authRegisterCanceled => 'Daftar dibatalkan';
+
+  @override
+  String get authLegalLoadFailed => 'Gagal memuat dokumen legal';
+
+  @override
+  String get authResetCodeSent => 'Kode baru dikirim ke email';
+
+  @override
+  String get authResetSuccess => 'Password berhasil direset';
+
+  @override
+  String get authNewPasswordTitle => 'Password baru';
+
+  @override
+  String get authResetLinkBody =>
+      'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).';
+
+  @override
+  String authResetCodeBody(String email) {
+    return 'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.';
+  }
+
+  @override
+  String get authResetAskCode =>
+      'Minta kodenya dulu di halaman lupa password ya.';
+
+  @override
+  String get authResetCodeLabel => 'Kode Reset Password';
+
+  @override
+  String get authConfirmNewPassword => 'Konfirmasi password baru';
+
+  @override
+  String get authSavePassword => 'Simpan password';
+
+  @override
+  String get authResendCode => 'Kirim ulang kode';
+
+  @override
+  String authResendCodeCountdown(String time) {
+    return 'Kirim ulang kode ($time)';
+  }
+
+  @override
+  String get authPasswordMismatch => 'Konfirmasi password tidak sama';
+
+  @override
+  String get authVerifyTitle => 'Verifikasi email';
+
+  @override
+  String get authEnterCode => 'Masukkan kode 6 karakter';
+
+  @override
+  String get authEmailMissing =>
+      'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.';
+
+  @override
+  String authCodeSentTo(String email) {
+    return 'Kode dikirim ke $email (berlaku 10 menit).';
+  }
+
+  @override
+  String get authOtpLabel => 'Kode OTP';
+
+  @override
+  String get authVerifyAction => 'Verifikasi';
+
+  @override
+  String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
+
+  @override
+  String get authLegalSheetTitle => 'SambasKu perlu izin kamu dulu';
+
+  @override
+  String get authLegalSheetBody =>
+      'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.';
+
+  @override
+  String authTermsTileSubtitle(String version) {
+    return 'Aturan pakai SambasKu (versi $version)';
+  }
+
+  @override
+  String authPrivacyTileSubtitle(String version) {
+    return 'Data yang kami simpan dan cara kami menjaganya (versi $version)';
+  }
+
+  @override
+  String get authRead => 'Baca';
+
+  @override
+  String get authDocsUnavailableTitle => 'Dokumen belum bisa dimuat';
+
+  @override
+  String get authDocsUnavailableBody =>
+      'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authLegalNotReady =>
+      'Dokumen legal belum tersedia. Coba lagi sebentar.';
+
+  @override
+  String get authReload => 'Muat ulang';
+
+  @override
+  String get authStopAnytime =>
+      'Kamu bisa berhenti kapan saja dengan keluar dari akun.';
+
+  @override
+  String get authAcceptAndContinue => 'Setuju dan lanjut';
+
+  @override
+  String get authSaving => 'Menyimpan...';
+
+  @override
+  String get authExit => 'Keluar';
+
+  @override
+  String get authConsentSaveFailed =>
+      'Gagal menyimpan persetujuan. Coba lagi ya.';
+
+  @override
+  String get authSignInWithGoogle => 'Masuk dengan Google';
+
+  @override
+  String get authSignInWithGithub => 'Masuk dengan GitHub';
+
+  @override
+  String get authGoogleUnavailable =>
+      'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authGoogleFailed => 'Tidak bisa masuk dengan Google. Coba lagi.';
+
+  @override
+  String get authFacebookFailed =>
+      'Tidak bisa masuk dengan Facebook. Coba lagi.';
+
+  @override
+  String get authGithubUnavailable =>
+      'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authGithubFailed => 'Tidak bisa masuk dengan GitHub. Coba lagi.';
+
+  @override
+  String get authTermsTitle => 'Syarat dan Ketentuan';
+
+  @override
+  String get authPrivacyTitle => 'Kebijakan Privasi';
+
+  @override
+  String get authRegisterFailed => 'Registrasi gagal';
+
+  @override
+  String get authLoginFailed => 'Login gagal';
+
+  @override
+  String get authVerifyFailed => 'Verifikasi gagal';
+
+  @override
+  String get authResetDone => 'Password berhasil direset';
+
+  @override
+  String get authServerUnreachable =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authFacebookUnavailable =>
+      'Masuk dengan Facebook belum siap di perangkat ini.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -3755,6 +4084,40 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reportSubmitting => 'Mengirim...';
 
   @override
+  String get reportPantunAction => 'Laporke';
+
+  @override
+  String get reportPantunTitle => 'Laporke pantun';
+
+  @override
+  String get reportPantunSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Pantun tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportPantunInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportPantunSexual => 'Konten seksual';
+
+  @override
+  String get reportPantunHarassment => 'Pelecehan atau perundungan';
+
+  @override
+  String get reportPantunHateSpeech => 'Ujaran kebencian';
+
+  @override
+  String get reportPantunSpam => 'Spam';
+
+  @override
+  String get reportPantunOther => 'Lainnya';
+
+  @override
+  String get reportPantunSent => 'Terima kasih, laporanmu sudah kami terima';
+
+  @override
+  String get reportPantunLoginFirst => 'Masuk dulu ya untuk melaporkan pantun';
+
+  @override
   String get searchMissTitle => 'Dicari warga';
 
   @override
@@ -6514,4 +6877,299 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictSkeletonGloss => 'arti pertama satu baris';
+
+  @override
+  String get authSignInCanceled => 'Masuk dibatalkan';
+
+  @override
+  String get authRegisterFirst =>
+      'Daftar dulu ya supaya bisa setujui ketentuan';
+
+  @override
+  String get authReloginTitle => 'Masuk kembali';
+
+  @override
+  String get authReloginBody =>
+      'Masuk dengan akunmu agar peran Verifikator aktif.';
+
+  @override
+  String get authIdentifierLabel => 'Email atau Username';
+
+  @override
+  String get authIdentifierHint => 'email@contoh.com / username';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authForgotPasswordQuestion => 'Lupa password?';
+
+  @override
+  String get authSubmitting => 'Memproses...';
+
+  @override
+  String get authLoginAction => 'Masuk';
+
+  @override
+  String get authFacebookLogin => 'Masuk dengan Facebook';
+
+  @override
+  String get authNoAccountPrefix => 'Belum punya akun? ';
+
+  @override
+  String get authRegisterAction => 'Daftar';
+
+  @override
+  String get authContinueAnonymous => 'Lanjut tanpa akun (Anonim)';
+
+  @override
+  String get authReportIssue => 'Laporkan masalah';
+
+  @override
+  String get authEmailUnverifiedTitle => 'Email belum diverifikasi';
+
+  @override
+  String get authEmailUnverifiedBody =>
+      'Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.';
+
+  @override
+  String get authVerifyNow => 'Verifikasi sekarang';
+
+  @override
+  String get authLater => 'Nanti saja';
+
+  @override
+  String get authRateLimitedFallback => 'Coba lagi dalam beberapa saat';
+
+  @override
+  String get authForgotTitle => 'Lupa password';
+
+  @override
+  String get authResetTitle => 'Atur ulang password';
+
+  @override
+  String get authForgotBody =>
+      'Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authSendCode => 'Kirim kode reset';
+
+  @override
+  String get authSending => 'Mengirim...';
+
+  @override
+  String get authOauthAccountTitle => 'Akun OAuth';
+
+  @override
+  String get authRegisterTitle => 'Daftar';
+
+  @override
+  String get authRegisterHeadline => 'Buat akun Kontributor';
+
+  @override
+  String get authRegisterBody =>
+      'Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.';
+
+  @override
+  String get authNameLabel => 'Nama';
+
+  @override
+  String get authPhoneOptionalLabel => 'No. HP (opsional)';
+
+  @override
+  String get authPasswordHint => 'Minimal 8 karakter, huruf + angka';
+
+  @override
+  String get authConfirmPasswordLabel => 'Konfirmasi Password';
+
+  @override
+  String get authAgreeTerms => 'Saya setuju Syarat dan Ketentuan';
+
+  @override
+  String get authReadFullDoc => 'Baca dokumen lengkap di SambasKu';
+
+  @override
+  String get authRegisterWithGoogle => 'Daftar dengan Google';
+
+  @override
+  String get authRegisterWithFacebook => 'Daftar dengan Facebook';
+
+  @override
+  String get authHaveAccount => 'Sudah punya akun? Masuk';
+
+  @override
+  String get authRegisterCanceled => 'Daftar dibatalkan';
+
+  @override
+  String get authLegalLoadFailed => 'Gagal memuat dokumen legal';
+
+  @override
+  String get authResetCodeSent => 'Kode baru dikirim ke email';
+
+  @override
+  String get authResetSuccess => 'Password berhasil direset';
+
+  @override
+  String get authNewPasswordTitle => 'Password baru';
+
+  @override
+  String get authResetLinkBody =>
+      'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).';
+
+  @override
+  String authResetCodeBody(String email) {
+    return 'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.';
+  }
+
+  @override
+  String get authResetAskCode =>
+      'Minta kodenya dulu di halaman lupa password ya.';
+
+  @override
+  String get authResetCodeLabel => 'Kode Reset Password';
+
+  @override
+  String get authConfirmNewPassword => 'Konfirmasi password baru';
+
+  @override
+  String get authSavePassword => 'Simpan password';
+
+  @override
+  String get authResendCode => 'Kirim ulang kode';
+
+  @override
+  String authResendCodeCountdown(String time) {
+    return 'Kirim ulang kode ($time)';
+  }
+
+  @override
+  String get authPasswordMismatch => 'Konfirmasi password tidak sama';
+
+  @override
+  String get authVerifyTitle => 'Verifikasi email';
+
+  @override
+  String get authEnterCode => 'Masukkan kode 6 karakter';
+
+  @override
+  String get authEmailMissing =>
+      'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.';
+
+  @override
+  String authCodeSentTo(String email) {
+    return 'Kode dikirim ke $email (berlaku 10 menit).';
+  }
+
+  @override
+  String get authOtpLabel => 'Kode OTP';
+
+  @override
+  String get authVerifyAction => 'Verifikasi';
+
+  @override
+  String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
+
+  @override
+  String get authLegalSheetTitle => 'SambasKu perlu izin kamu dulu';
+
+  @override
+  String get authLegalSheetBody =>
+      'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.';
+
+  @override
+  String authTermsTileSubtitle(String version) {
+    return 'Aturan pakai SambasKu (versi $version)';
+  }
+
+  @override
+  String authPrivacyTileSubtitle(String version) {
+    return 'Data yang kami simpan dan cara kami menjaganya (versi $version)';
+  }
+
+  @override
+  String get authRead => 'Baca';
+
+  @override
+  String get authDocsUnavailableTitle => 'Dokumen belum bisa dimuat';
+
+  @override
+  String get authDocsUnavailableBody =>
+      'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authLegalNotReady =>
+      'Dokumen legal belum tersedia. Coba lagi sebentar.';
+
+  @override
+  String get authReload => 'Muat ulang';
+
+  @override
+  String get authStopAnytime =>
+      'Kamu bisa berhenti kapan saja dengan keluar dari akun.';
+
+  @override
+  String get authAcceptAndContinue => 'Setuju dan lanjut';
+
+  @override
+  String get authSaving => 'Menyimpan...';
+
+  @override
+  String get authExit => 'Keluar';
+
+  @override
+  String get authConsentSaveFailed =>
+      'Gagal menyimpan persetujuan. Coba lagi ya.';
+
+  @override
+  String get authSignInWithGoogle => 'Masuk dengan Google';
+
+  @override
+  String get authSignInWithGithub => 'Masuk dengan GitHub';
+
+  @override
+  String get authGoogleUnavailable =>
+      'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authGoogleFailed => 'Tidak bisa masuk dengan Google. Coba lagi.';
+
+  @override
+  String get authFacebookFailed =>
+      'Tidak bisa masuk dengan Facebook. Coba lagi.';
+
+  @override
+  String get authGithubUnavailable =>
+      'Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authGithubFailed => 'Tidak bisa masuk dengan GitHub. Coba lagi.';
+
+  @override
+  String get authTermsTitle => 'Syarat dan Ketentuan';
+
+  @override
+  String get authPrivacyTitle => 'Kebijakan Privasi';
+
+  @override
+  String get authRegisterFailed => 'Registrasi gagal';
+
+  @override
+  String get authLoginFailed => 'Login gagal';
+
+  @override
+  String get authVerifyFailed => 'Verifikasi gagal';
+
+  @override
+  String get authResetDone => 'Password berhasil direset';
+
+  @override
+  String get authServerUnreachable =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get authFacebookUnavailable =>
+      'Masuk dengan Facebook belum siap di perangkat ini.';
 }

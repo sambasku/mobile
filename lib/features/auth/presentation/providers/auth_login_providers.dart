@@ -119,7 +119,9 @@ class AuthLoginNotifier extends _$AuthLoginNotifier {
       showUnverifiedSheet: false,
     );
     try {
-      final result = await ref.read(authLoginWithFacebookUseCaseProvider).call();
+      final result = await ref
+          .read(authLoginWithFacebookUseCaseProvider)
+          .call();
       result.match(
         (failure) => _applyFacebookFailure(failure),
         (session) => _applySocialSession(session, method: 'facebook'),

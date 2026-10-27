@@ -2,6 +2,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import '../../../core/constants/env.dart';
 import '../domain/ports/facebook_sign_in_port.dart';
+import '../../../core/i18n/l10n.dart';
 
 class FacebookSignInAdapter implements FacebookSignInPort {
   @override
@@ -16,7 +17,7 @@ class FacebookSignInAdapter implements FacebookSignInPort {
 
     if (result.status == LoginStatus.cancelled) return null;
     if (result.status != LoginStatus.success) {
-      throw StateError('Facebook login gagal');
+      throw StateError(l10n.authFacebookUnavailable);
     }
     return result.accessToken?.tokenString;
   }

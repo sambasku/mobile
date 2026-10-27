@@ -9,8 +9,10 @@ class AuthForgotState {
 
   final bool isSubmitting;
   final String? errorMessage;
+
   /// Kode error backend (mis. OAUTH_ACCOUNT) - menentukan cara tampil.
   final String? errorCode;
+
   /// Non-null = email terkirim (pesan anti-enumeration dari API).
   final String? successMessage;
 
@@ -28,9 +30,7 @@ class AuthForgotState {
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,
-      errorCode: clearErrorCode
-          ? null
-          : errorCode ?? this.errorCode,
+      errorCode: clearErrorCode ? null : errorCode ?? this.errorCode,
       successMessage: clearSuccessMessage
           ? null
           : successMessage ?? this.successMessage,

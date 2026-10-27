@@ -19,6 +19,7 @@ class AuthStatusState {
   final String? userId;
   final String? avatarUrl;
   final bool isLoggingOut;
+
   /// Server bilang user belum menyetujui terms/privacy versi aktif.
   /// Sumber kebenaran: `requires_consent` di GET /users/me (bukan flag
   /// sekali-pakai dari response login) - jadi force close tetap muncul lagi.
@@ -39,9 +40,7 @@ class AuthStatusState {
     return AuthStatusState(
       isAuth: isAuth ?? this.isAuth,
       username: username ?? this.username,
-      displayName: clearDisplayName
-          ? null
-          : (displayName ?? this.displayName),
+      displayName: clearDisplayName ? null : (displayName ?? this.displayName),
       role: role ?? this.role,
       userId: userId ?? this.userId,
       avatarUrl: clearAvatarUrl ? null : (avatarUrl ?? this.avatarUrl),

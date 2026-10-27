@@ -22,24 +22,22 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-      List<({String documentType, String documentVersion})>? consents,
-}) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
-
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, void>> register({

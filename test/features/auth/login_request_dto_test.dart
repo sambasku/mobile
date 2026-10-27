@@ -18,9 +18,6 @@ void main() {
   test('RefreshRequestDto.toJson memakai refresh_token snake_case', () {
     const dto = RefreshRequestDto(refreshToken: 'abc');
 
-    expect(dto.toJson(), {
-      'refresh_token': 'abc',
-      'client_type': 'mobile',
-    });
+    expect(dto.toJson(), {'refresh_token': 'abc', 'client_type': 'mobile'});
   });
 }

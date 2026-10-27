@@ -10,6 +10,7 @@ abstract class GoogleLoginRequestDto with _$GoogleLoginRequestDto {
   const factory GoogleLoginRequestDto({
     @JsonKey(name: 'id_token') required String idToken,
     @JsonKey(name: 'client_type') @Default('mobile') String clientType,
+
     /// Persetujuan legal - wajib untuk akun baru (mode enforce).
     @JsonKey(includeIfNull: false) List<LegalConsentDto>? consents,
   }) = _GoogleLoginRequestDto;

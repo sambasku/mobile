@@ -44,16 +44,16 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async {
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     throw UnimplementedError();
   }
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async {
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     throw UnimplementedError();
   }
 
@@ -62,8 +62,8 @@ class _FakeRepo implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
-      List<({String documentType, String documentVersion})>? consents,
-}) async {
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     throw UnimplementedError();
   }
 

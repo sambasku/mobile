@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/constants/env.dart';
 import '../../../flavors.dart';
 import '../domain/ports/google_sign_in_port.dart';
+import '../../../core/i18n/l10n.dart';
 
 class GoogleSignInAdapter implements GoogleSignInPort {
   bool _initialized = false;
@@ -19,9 +20,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
   Future<String?> authenticate() async {
     final serverClientId = Env.googleWebClientId?.trim();
     if (serverClientId == null || serverClientId.isEmpty) {
-      throw StateError(
-        'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
-      );
+      throw StateError(l10n.authGoogleUnavailable);
     }
 
     final sw = Stopwatch()..start();
@@ -52,7 +51,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
 
       if (idToken == null || idToken.trim().isEmpty) {
         sw.stop();
-        throw StateError('Tidak bisa masuk dengan Google. Coba lagi.');
+        throw StateError(l10n.authGoogleFailed);
       }
       return idToken;
     } on GoogleSignInException catch (error, stack) {
@@ -65,7 +64,7 @@ class GoogleSignInAdapter implements GoogleSignInPort {
         developer.log(
           elapsed < _instantCancelMs
               ? 'cancel instan ${elapsed}ms - indikasi config (package/SHA), '
-                  'bukan user batal'
+                    'bukan user batal'
               : 'cancel oleh user setelah ${elapsed}ms',
           name: 'auth.google',
         );
@@ -83,12 +82,10 @@ class GoogleSignInAdapter implements GoogleSignInPort {
           error,
           stack,
         );
-        throw StateError(
-          'Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.',
-        );
+        throw StateError(l10n.authGoogleUnavailable);
       }
 
-      throw StateError('Tidak bisa masuk dengan Google. Coba lagi.');
+      throw StateError(l10n.authGoogleFailed);
     } catch (error, stack) {
       _log('authenticate gagal', error, stack);
       rethrow;

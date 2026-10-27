@@ -10,6 +10,7 @@ abstract class FacebookLoginRequestDto with _$FacebookLoginRequestDto {
   const factory FacebookLoginRequestDto({
     @JsonKey(name: 'access_token') required String accessToken,
     @JsonKey(name: 'client_type') @Default('mobile') String clientType,
+
     /// Persetujuan legal - wajib untuk akun baru (mode enforce).
     @JsonKey(includeIfNull: false) List<LegalConsentDto>? consents,
   }) = _FacebookLoginRequestDto;

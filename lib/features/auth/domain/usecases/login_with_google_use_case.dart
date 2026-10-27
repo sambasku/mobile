@@ -31,9 +31,10 @@ class LoginWithGoogleUseCase {
     try {
       // ponytail: deadline menutup hang activity-result; kalau kasus
       // bertambah (mis. process death), upgrade ke resume-time recovery.
-      final idToken = await _signIn
-          .authenticate()
-          .timeout(authTimeout, onTimeout: () => null);
+      final idToken = await _signIn.authenticate().timeout(
+        authTimeout,
+        onTimeout: () => null,
+      );
       if (idToken == null) {
         return Either.left(
           const AuthFailure(
@@ -50,7 +51,10 @@ class LoginWithGoogleUseCase {
           ),
         );
       }
-      return await _repository.loginWithGoogle(idToken: idToken, consents: consents);
+      return await _repository.loginWithGoogle(
+        idToken: idToken,
+        consents: consents,
+      );
     } catch (error, stack) {
       developer.log(
         'loginWithGoogle gagal',

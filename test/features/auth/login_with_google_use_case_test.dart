@@ -44,8 +44,8 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async {
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     loginWithGoogleCalls++;
     receivedToken = idToken;
     return result;
@@ -54,17 +54,16 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-      List<({String documentType, String documentVersion})>? consents,
-}) async => throw UnimplementedError();
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGithub({
     required String code,
     required String redirectUri,
     String? codeVerifier,
-      List<({String documentType, String documentVersion})>? consents,
-}) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> login({
@@ -106,16 +105,17 @@ class _FakeRepo implements AuthRepository {
   }) async => throw UnimplementedError();
 
   @override
-  Future<Either<AuthFailure, void>> logout() async => throw UnimplementedError();
+  Future<Either<AuthFailure, void>> logout() async =>
+      throw UnimplementedError();
 }
 
 AuthSession get _session => AuthSession(
-      userId: 'u1',
-      username: 'user1',
-      displayName: 'User Satu',
-      role: 'user',
-      avatarUrl: null,
-    );
+  userId: 'u1',
+  username: 'user1',
+  displayName: 'User Satu',
+  role: 'user',
+  avatarUrl: null,
+);
 
 void main() {
   test('sukses: token diteruskan ke repo', () async {
@@ -146,19 +146,21 @@ void main() {
     expect(result.getLeft().toNullable()?.errorCode, 'EMAIL_ALREADY_EXISTS');
   });
 
-  test('batal SDK → AuthFailure GOOGLE_SIGN_IN_CANCELED, tidak panggil API',
-      () async {
-    final repo = _FakeRepo(Either.right(_session));
-    final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn(null));
+  test(
+    'batal SDK → AuthFailure GOOGLE_SIGN_IN_CANCELED, tidak panggil API',
+    () async {
+      final repo = _FakeRepo(Either.right(_session));
+      final usecase = LoginWithGoogleUseCase(repo, _FakeSignIn(null));
 
-    final result = await usecase();
+      final result = await usecase();
 
-    expect(repo.loginWithGoogleCalls, 0);
-    final failure = result.getLeft().toNullable();
-    expect(failure?.errorCode, AuthFailure.googleSignInCanceled);
-    expect(failure?.message, 'Masuk dibatalkan.');
-    expect(failure?.isSocialSignInCanceled, isTrue);
-  });
+      expect(repo.loginWithGoogleCalls, 0);
+      final failure = result.getLeft().toNullable();
+      expect(failure?.errorCode, AuthFailure.googleSignInCanceled);
+      expect(failure?.message, 'Masuk dibatalkan.');
+      expect(failure?.isSocialSignInCanceled, isTrue);
+    },
+  );
 
   test('idToken kosong → AuthFailure generik, tidak panggil API', () async {
     final repo = _FakeRepo(Either.right(_session));
@@ -173,8 +175,7 @@ void main() {
     );
   });
 
-  test('exception SDK → AuthFailure pesan singkat, tanpa detail SHA',
-      () async {
+  test('exception SDK → AuthFailure pesan singkat, tanpa detail SHA', () async {
     final repo = _FakeRepo(Either.right(_session));
     final usecase = LoginWithGoogleUseCase(repo, _ThrowingSignIn());
 
@@ -186,8 +187,7 @@ void main() {
     expect(message, 'Tidak bisa masuk dengan Google. Coba lagi.');
   });
 
-  test(
-      'authenticate menggantung (picker hilang di background) → '
+  test('authenticate menggantung (picker hilang di background) → '
       'timeout membebaskan dengan batal, bukan hang selamanya', () async {
     final repo = _FakeRepo(Either.right(_session));
     final usecase = LoginWithGoogleUseCase(

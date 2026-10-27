@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../about/about_router.dart';
 import '../../../report_bug/report_bug_router.dart';
 import '../../auth_router.dart';
@@ -65,7 +66,8 @@ class LoginPage extends HookConsumerWidget {
         showFToast(
           context: context,
           title: Text(
-            ref.read(authLoginProvider).errorMessage ?? 'Coba lagi dalam beberapa saat',
+            ref.read(authLoginProvider).errorMessage ??
+                AppLocalizations.of(context).authRateLimitedFallback,
           ),
         );
         ref.read(authLoginProvider.notifier).clearError();
@@ -74,7 +76,10 @@ class LoginPage extends HookConsumerWidget {
       if (code == AuthFailure.googleSignInCanceled ||
           code == AuthFailure.facebookSignInCanceled ||
           code == AuthFailure.githubSignInCanceled) {
-        showFToast(context: context, title: const Text('Masuk dibatalkan'));
+        showFToast(
+          context: context,
+          title: Text(AppLocalizations.of(context).authSignInCanceled),
+        );
         ref.read(authLoginProvider.notifier).acknowledgeSocialCancel();
         return;
       }
@@ -83,7 +88,7 @@ class LoginPage extends HookConsumerWidget {
       if (code == 'CONSENT_REQUIRED') {
         showFToast(
           context: context,
-          title: const Text('Daftar dulu ya supaya bisa setujui ketentuan'),
+          title: Text(AppLocalizations.of(context).authRegisterFirst),
         );
         ref.read(authLoginProvider.notifier).clearError();
         context.push(AuthRouter.register.path);
@@ -93,9 +98,9 @@ class LoginPage extends HookConsumerWidget {
     ref.listen(authLoginProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
       final code = ref.read(authLoginProvider).errorCode;
-    if (code == 'RATE_LIMITED' ||
-        code == 'CONSENT_REQUIRED' ||
-        code == AuthFailure.googleSignInCanceled ||
+      if (code == 'RATE_LIMITED' ||
+          code == 'CONSENT_REQUIRED' ||
+          code == AuthFailure.googleSignInCanceled ||
           code == AuthFailure.facebookSignInCanceled ||
           code == AuthFailure.githubSignInCanceled) {
         return;
@@ -124,14 +129,11 @@ class LoginPage extends HookConsumerWidget {
     }
 
     final canSubmit =
-        identifier.text.trim().isNotEmpty &&
-        password.text.length >= 8 &&
-        !busy;
+        identifier.text.trim().isNotEmpty && password.text.length >= 8 && !busy;
 
-    void submit() => ref.read(authLoginProvider.notifier).submit(
-          email: identifier.text.trim(),
-          password: password.text,
-        );
+    void submit() => ref
+        .read(authLoginProvider.notifier)
+        .submit(email: identifier.text.trim(), password: password.text);
 
     return FScaffold(
       childPad: true,
@@ -140,9 +142,7 @@ class LoginPage extends HookConsumerWidget {
         suffixes: [
           FHeaderAction(
             icon: const Icon(FLucideIcons.info),
-            onPress: busy
-                ? null
-                : () => context.push(AboutRouter.about.path),
+            onPress: busy ? null : () => context.push(AboutRouter.about.path),
           ),
         ],
       ),
@@ -172,26 +172,27 @@ class LoginPage extends HookConsumerWidget {
               ),
               const Gap(24),
               if (fromVerifierRelogin) ...[
-                const FAlert(
-                  title: Text('Masuk kembali'),
-                  subtitle: Text(
-                    'Masuk dengan akunmu agar peran Verifikator aktif.',
-                  ),
+                FAlert(
+                  title: Text(AppLocalizations.of(context).authReloginTitle),
+                  subtitle: Text(AppLocalizations.of(context).authReloginBody),
                 ),
                 const Gap(16),
               ],
               FTextField(
                 control: .managed(controller: identifier),
                 enabled: !busy,
-                label: const Text('Email atau Username'),
-                hint: 'email@contoh.com / username',
-                autofillHints: const [AutofillHints.email, AutofillHints.username],
+                label: Text(AppLocalizations.of(context).authIdentifierLabel),
+                hint: AppLocalizations.of(context).authIdentifierHint,
+                autofillHints: const [
+                  AutofillHints.email,
+                  AutofillHints.username,
+                ],
               ),
               const Gap(12),
               FTextField.password(
                 control: .managed(controller: password),
                 enabled: !busy,
-                label: const Text('Password'),
+                label: Text(AppLocalizations.of(context).authPasswordLabel),
                 textInputAction: .done,
                 onSubmit: canSubmit ? (_) => submit() : null,
               ),
@@ -203,14 +204,20 @@ class LoginPage extends HookConsumerWidget {
                   onPress: busy
                       ? null
                       : () => context.push(AuthRouter.forgotPassword.path),
-                  child: const Text('Lupa password?'),
+                  child: Text(
+                    AppLocalizations.of(context).authForgotPasswordQuestion,
+                  ),
                 ),
               ),
               const Gap(16),
               FButton(
                 onPress: canSubmit ? submit : null,
                 prefix: emailLoading ? const FCircularProgress() : null,
-                child: Text(emailLoading ? 'Memproses...' : 'Masuk'),
+                child: Text(
+                  emailLoading
+                      ? AppLocalizations.of(context).authSubmitting
+                      : AppLocalizations.of(context).authLoginAction,
+                ),
               ),
               if ((ref.watch(googleAuthEnabledProvider) &&
                       !state.googleUnavailable) ||
@@ -255,7 +262,7 @@ class LoginPage extends HookConsumerWidget {
                     !state.facebookUnavailable) ...[
                   const Gap(16),
                   FacebookAuthButton(
-                    label: 'Masuk dengan Facebook',
+                    label: AppLocalizations.of(context).authFacebookLogin,
                     isLoading: facebookLoading,
                     onPress: busy
                         ? null
@@ -272,9 +279,7 @@ class LoginPage extends HookConsumerWidget {
                   children: [
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTap: busy
-                          ? null
-                          : () => context.push('/register'),
+                      onTap: busy ? null : () => context.push('/register'),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text.rich(
@@ -282,11 +287,19 @@ class LoginPage extends HookConsumerWidget {
                             style: context.theme.typography.body.sm.copyWith(
                               color: context.theme.colors.foreground,
                             ),
-                            children: const [
-                              TextSpan(text: 'Belum punya akun? '),
+                            children: [
                               TextSpan(
-                                text: 'Daftar',
-                                style: TextStyle(fontWeight: FontWeight.w700),
+                                text: AppLocalizations.of(
+                                  context,
+                                ).authNoAccountPrefix,
+                              ),
+                              TextSpan(
+                                text: AppLocalizations.of(
+                                  context,
+                                ).authRegisterAction,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ],
                           ),
@@ -299,7 +312,7 @@ class LoginPage extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
-                          'Lanjut tanpa akun (Anonim)',
+                          AppLocalizations.of(context).authContinueAnonymous,
                           style: context.theme.typography.body.xs.copyWith(
                             color: context.theme.colors.mutedForeground,
                           ),
@@ -314,7 +327,7 @@ class LoginPage extends HookConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
-                          'Laporkan masalah',
+                          AppLocalizations.of(context).authReportIssue,
                           style: context.theme.typography.body.xs.copyWith(
                             color: context.theme.colors.destructive,
                             fontWeight: FontWeight.w600,
@@ -349,12 +362,12 @@ void _showEmailNotVerifiedSheet(BuildContext context, String email) {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Email belum diverifikasi',
+                  AppLocalizations.of(sheetContext).authEmailUnverifiedTitle,
                   style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                 ),
                 const Gap(8),
                 Text(
-                  'Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.',
+                  AppLocalizations.of(sheetContext).authEmailUnverifiedBody,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
@@ -367,13 +380,13 @@ void _showEmailNotVerifiedSheet(BuildContext context, String email) {
                       '${AuthRouter.verifyEmail.path}?email=${Uri.encodeComponent(email)}',
                     );
                   },
-                  child: const Text('Verifikasi sekarang'),
+                  child: Text(AppLocalizations.of(sheetContext).authVerifyNow),
                 ),
                 const Gap(8),
                 FButton(
                   variant: .ghost,
                   onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('Nanti saja'),
+                  child: Text(AppLocalizations.of(sheetContext).authLater),
                 ),
               ],
             ),

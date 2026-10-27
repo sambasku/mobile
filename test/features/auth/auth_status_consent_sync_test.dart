@@ -59,24 +59,29 @@ void main() {
     expect(
       container.read(authStatusProvider).value?.requiresLegalConsent,
       isTrue,
-      reason: 'versi legal naik tidak mengubah identitas. Tanpa fix, '
+      reason:
+          'versi legal naik tidak mengubah identitas. Tanpa fix, '
           'early-return mempertahankan false dan sheet tidak muncul.',
     );
   });
 
-  test('identitas sama + requires_consent false -> state tidak di-emit ulang', () async {
-    final container = await boot(requiresConsent: false);
+  test(
+    'identitas sama + requires_consent false -> state tidak di-emit ulang',
+    () async {
+      final container = await boot(requiresConsent: false);
 
-    final first = await container.read(authStatusProvider.notifier).future;
-    final after = container.read(authStatusProvider).value;
+      final first = await container.read(authStatusProvider.notifier).future;
+      final after = container.read(authStatusProvider).value;
 
-    expect(after?.requiresLegalConsent, isFalse);
-    expect(
-      identical(first, after),
-      isTrue,
-      reason: 'tidak ada perubahan -> objek state dipertahankan (hindari jank)',
-    );
-  });
+      expect(after?.requiresLegalConsent, isFalse);
+      expect(
+        identical(first, after),
+        isTrue,
+        reason:
+            'tidak ada perubahan -> objek state dipertahankan (hindari jank)',
+      );
+    },
+  );
 }
 
 class _FakeEditProfileRepository implements EditProfileRepository {
@@ -96,6 +101,5 @@ class _FakeEditProfileRepository implements EditProfileRepository {
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
-  }) async =>
-      Either.right(profile);
+  }) async => Either.right(profile);
 }

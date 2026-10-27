@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/phone_country.dart';
 import '../../../../shared/utils/phone_country_picker_sheet.dart';
 import '../../../../shared/utils/phone_national_digits_formatter.dart';
@@ -54,6 +55,9 @@ class RegisterPage extends HookConsumerWidget {
     final facebookLoading = state.pendingAction == AuthPendingAction.facebook;
     final githubLoading = state.pendingAction == AuthPendingAction.github;
 
+    // Dibaca di luar hook: `Localizations.of` di dalam callback useEffect
+    // mengenai init-hook assert flutter_hooks.
+    final l10n = AppLocalizations.of(context);
     useEffect(() {
       var cancelled = false;
       () async {
@@ -71,11 +75,11 @@ class RegisterPage extends HookConsumerWidget {
           legalLoadError.value = null;
         } on DioException catch (e) {
           if (!cancelled) {
-            legalLoadError.value = e.message ?? 'Gagal memuat dokumen legal';
+            legalLoadError.value = e.message ?? l10n.authLegalLoadFailed;
           }
         } catch (_) {
           if (!cancelled) {
-            legalLoadError.value = 'Gagal memuat dokumen legal';
+            legalLoadError.value = l10n.authLegalLoadFailed;
           }
         }
       }();
@@ -92,7 +96,8 @@ class RegisterPage extends HookConsumerWidget {
         showFToast(
           context: context,
           title: Text(
-            ref.read(authRegisterProvider).errorMessage ?? 'Coba lagi dalam beberapa saat',
+            ref.read(authRegisterProvider).errorMessage ??
+                AppLocalizations.of(context).authRateLimitedFallback,
           ),
         );
         ref.read(authRegisterProvider.notifier).clearError();
@@ -101,7 +106,10 @@ class RegisterPage extends HookConsumerWidget {
       if (code == AuthFailure.googleSignInCanceled ||
           code == AuthFailure.facebookSignInCanceled ||
           code == AuthFailure.githubSignInCanceled) {
-        showFToast(context: context, title: const Text('Daftar dibatalkan'));
+        showFToast(
+          context: context,
+          title: Text(AppLocalizations.of(context).authRegisterCanceled),
+        );
         ref.read(authRegisterProvider.notifier).acknowledgeSocialCancel();
       }
     });
@@ -144,6 +152,7 @@ class RegisterPage extends HookConsumerWidget {
         password.text.contains(RegExp(r'[0-9]'));
     final legalReady =
         termsVersion.value != null && privacyVersion.value != null;
+
     /// Tombol sosial di halaman Daftar WAJIB lewat checkbox legal dulu -
     /// server (mode enforce) menolak akun baru tanpa consents.
     final socialReady = acceptedLegal.value && legalReady && !busy;
@@ -156,6 +165,7 @@ class RegisterPage extends HookConsumerWidget {
         (documentType: 'privacy', documentVersion: privacy),
       ];
     }
+
     final canSubmit =
         name.text.trim().isNotEmpty &&
         email.text.contains('@') &&
@@ -193,7 +203,7 @@ class RegisterPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Daftar'),
+        title: Text(AppLocalizations.of(context).authRegisterTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -209,7 +219,7 @@ class RegisterPage extends HookConsumerWidget {
             crossAxisAlignment: .stretch,
             children: [
               Text(
-                'Buat akun Kontributor',
+                AppLocalizations.of(context).authRegisterHeadline,
                 textAlign: .center,
                 style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
@@ -218,7 +228,7 @@ class RegisterPage extends HookConsumerWidget {
               ),
               const Gap(8),
               Text(
-                'Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.',
+                AppLocalizations.of(context).authRegisterBody,
                 textAlign: .center,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
@@ -228,20 +238,22 @@ class RegisterPage extends HookConsumerWidget {
               FTextField(
                 control: .managed(controller: name),
                 enabled: !state.isSubmitting,
-                label: const Text('Nama'),
+                label: Text(AppLocalizations.of(context).authNameLabel),
                 textInputAction: .next,
               ),
               const Gap(12),
               FTextField.email(
                 control: .managed(controller: email),
                 enabled: !state.isSubmitting,
-                label: const Text('Email'),
+                label: Text(AppLocalizations.of(context).authEmailLabel),
               ),
               const Gap(12),
               FTextField(
                 control: .managed(controller: phone),
                 enabled: !state.isSubmitting,
-                label: const Text('No. HP (opsional)'),
+                label: Text(
+                  AppLocalizations.of(context).authPhoneOptionalLabel,
+                ),
                 hint: '81234567890',
                 keyboardType: .phone,
                 textInputAction: .next,
@@ -290,15 +302,17 @@ class RegisterPage extends HookConsumerWidget {
               FTextField.password(
                 control: .managed(controller: password),
                 enabled: !state.isSubmitting,
-                label: const Text('Password'),
-                hint: 'Minimal 8 karakter, huruf + angka',
+                label: Text(AppLocalizations.of(context).authPasswordLabel),
+                hint: AppLocalizations.of(context).authPasswordHint,
                 textInputAction: .next,
               ),
               const Gap(12),
               FTextField.password(
                 control: .managed(controller: confirmPassword),
                 enabled: !state.isSubmitting,
-                label: const Text('Konfirmasi Password'),
+                label: Text(
+                  AppLocalizations.of(context).authConfirmPasswordLabel,
+                ),
                 textInputAction: .done,
                 onSubmit: canSubmit ? (_) => submit() : null,
               ),
@@ -328,7 +342,7 @@ class RegisterPage extends HookConsumerWidget {
                                 : () => acceptedLegal.value =
                                       !acceptedLegal.value,
                             child: Text(
-                              'Saya setuju Syarat dan Ketentuan',
+                              AppLocalizations.of(context).authAgreeTerms,
                               style: theme.typography.body.sm.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
@@ -339,7 +353,7 @@ class RegisterPage extends HookConsumerWidget {
                             onTap: () =>
                                 context.push(AuthRouter.termsWebView.path),
                             child: Text(
-                              'Baca dokumen lengkap di SambasKu',
+                              AppLocalizations.of(context).authReadFullDoc,
                               style: theme.typography.body.xs.copyWith(
                                 color: theme.colors.primary,
                                 decoration: TextDecoration.underline,
@@ -356,7 +370,11 @@ class RegisterPage extends HookConsumerWidget {
               FButton(
                 onPress: canSubmit ? submit : null,
                 prefix: emailLoading ? const FCircularProgress() : null,
-                child: Text(emailLoading ? 'Memproses...' : 'Daftar'),
+                child: Text(
+                  emailLoading
+                      ? AppLocalizations.of(context).authSubmitting
+                      : AppLocalizations.of(context).authRegisterAction,
+                ),
               ),
               if ((ref.watch(googleAuthEnabledProvider) &&
                       !state.googleUnavailable) ||
@@ -373,7 +391,9 @@ class RegisterPage extends HookConsumerWidget {
                     if (ref.watch(googleAuthEnabledProvider) &&
                         !state.googleUnavailable)
                       GoogleAuthButton(
-                        label: 'Daftar dengan Google',
+                        label: AppLocalizations.of(
+                          context,
+                        ).authRegisterWithGoogle,
                         isLoading: googleLoading,
                         onPress: socialReady
                             ? () => ref
@@ -402,7 +422,9 @@ class RegisterPage extends HookConsumerWidget {
                     !state.facebookUnavailable) ...[
                   const Gap(16),
                   FacebookAuthButton(
-                    label: 'Daftar dengan Facebook',
+                    label: AppLocalizations.of(
+                      context,
+                    ).authRegisterWithFacebook,
                     isLoading: facebookLoading,
                     onPress: socialReady
                         ? () => ref
@@ -415,10 +437,8 @@ class RegisterPage extends HookConsumerWidget {
               const Gap(8),
               FButton(
                 variant: .ghost,
-                onPress: busy
-                    ? null
-                    : () => context.go(AuthRouter.login.path),
-                child: const Text('Sudah punya akun? Masuk'),
+                onPress: busy ? null : () => context.go(AuthRouter.login.path),
+                child: Text(AppLocalizations.of(context).authHaveAccount),
               ),
             ],
           ),
