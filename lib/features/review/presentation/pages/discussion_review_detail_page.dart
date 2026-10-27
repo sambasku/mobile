@@ -541,7 +541,11 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
-              AppLocalizations.of(context).reviewDiscussionStatus(item.statusLabel),
+              AppLocalizations.of(
+                context,
+              ).reviewDiscussionStatus(
+                item.statusLabelOf(AppLocalizations.of(context)),
+              ),
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,

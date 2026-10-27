@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Sheet rekam balasan suara Ruang Diskusi (tanpa dialek / nama penutur).
 Future<void> showRecordDiscussionReplySheet(
@@ -14,10 +15,9 @@ Future<void> showRecordDiscussionReplySheet(
 }) async {
   await showRecordThreadAudioSheet(
     context,
-    title: 'Rekam balasan suara',
-    subtitle:
-        'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom balasan sebelum merekam.',
-    submitLabel: 'Kirim rekaman',
+    title: AppLocalizations.of(context).discussionReplyRecordTitle,
+    subtitle: AppLocalizations.of(context).discussionReplyRecordSubtitle,
+    submitLabel: AppLocalizations.of(context).discussionReplyRecordSubmit,
     onSubmit: onSubmit,
   );
 }

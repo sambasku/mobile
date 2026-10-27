@@ -6,6 +6,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/domain/providers/vote_domain_providers.dart';
 import '../../data/discussion_providers.dart';
 import '../../domain/discussion_models.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class DiscussionListState {
   const DiscussionListState({
@@ -110,7 +111,7 @@ class DiscussionFeedController
   ) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
@@ -348,11 +349,11 @@ class DiscussionDetailController
   Future<DiscussionFailure?> toggleHelpVote(int value) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final item = current.item;
     if (!item.isPublished) {
-      return const DiscussionFailure('Pertanyaan belum tayang');
+      return DiscussionFailure(l10n.discussionQuestionPending);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
@@ -385,7 +386,7 @@ class DiscussionDetailController
   ) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
@@ -422,11 +423,11 @@ class DiscussionDetailController
   Future<DiscussionFailure?> createReply(String body) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final trimmed = body.trim();
     if (trimmed.isEmpty) {
-      return const DiscussionFailure('Balasan minimal 1 karakter');
+      return DiscussionFailure(l10n.discussionReplyMinLength);
     }
     state = AsyncData(current.copyWith(isSubmittingReply: true));
     final result = await ref
@@ -458,7 +459,7 @@ class DiscussionDetailController
   }) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     state = AsyncData(current.copyWith(isSubmittingReply: true));
     final result = await ref
@@ -491,7 +492,7 @@ class DiscussionDetailController
   Future<DiscussionFailure?> deleteReply(DiscussionReply reply) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final result = await ref
         .read(discussionRepositoryProvider)

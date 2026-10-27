@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../domain/discussion_models.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class DiscussionRepository {
   DiscussionRepository(this._dio);
@@ -23,7 +24,7 @@ class DiscussionRepository {
       if (data is! Map<String, dynamic>) {
         throw DioException(
           requestOptions: res.requestOptions,
-          message: 'Kredensial upload tidak lengkap',
+          message: l10n.discussionUploadCredsIncomplete,
         );
       }
       return DiscussionUploadCredentials.fromJson(data);
@@ -58,7 +59,7 @@ class DiscussionRepository {
     if (data is! Map<String, dynamic>) {
       throw DioException(
         requestOptions: res.requestOptions,
-        message: 'Response diskusi tidak lengkap',
+        message: l10n.discussionResponseIncomplete,
       );
     }
     return DiscussionSubmitResult.fromJson(data);
@@ -101,7 +102,7 @@ class DiscussionRepository {
       );
       return Either.right(unit);
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal mengirim rekaman suara'));
+      return Either.left(_mapDio(e, l10n.discussionAudioSendFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -124,7 +125,7 @@ class DiscussionRepository {
       );
       return Either.right(_parsePage(res.data));
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal memuat diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionFeedLoadFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -146,7 +147,7 @@ class DiscussionRepository {
       );
       return Either.right(_parsePage(res.data));
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal memuat riwayat diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionHistoryLoadFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -159,12 +160,12 @@ class DiscussionRepository {
       final data = (raw is Map) ? Map<String, dynamic>.from(raw) : null;
       if (data == null) {
         return Either.left(
-          const DiscussionFailure('Detail diskusi tidak lengkap'),
+          DiscussionFailure(l10n.discussionDetailIncomplete),
         );
       }
       return Either.right(DiscussionItem.fromJson(data));
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal memuat detail diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionDetailLoadFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -181,13 +182,13 @@ class DiscussionRepository {
       );
       final data = res.data?['data'];
       if (data is! Map) {
-        return Either.left(const DiscussionFailure('Balasan tidak lengkap'));
+        return Either.left(DiscussionFailure(l10n.discussionReplyIncomplete));
       }
       return Either.right(
         DiscussionReply.fromJson(Map<String, dynamic>.from(data)),
       );
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal mengirim balasan'));
+      return Either.left(_mapDio(e, l10n.discussionReplySendFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -234,14 +235,14 @@ class DiscussionRepository {
       final data = res.data?['data'];
       if (data is! Map) {
         return Either.left(
-          const DiscussionFailure('Balasan suara tidak lengkap'),
+          DiscussionFailure(l10n.discussionReplyAudioIncomplete),
         );
       }
       return Either.right(
         DiscussionReply.fromJson(Map<String, dynamic>.from(data)),
       );
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal mengirim rekaman suara'));
+      return Either.left(_mapDio(e, l10n.discussionAudioSendFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -252,7 +253,7 @@ class DiscussionRepository {
       await _dio.delete<Map<String, dynamic>>('$_base/replies/$replyId');
       return Either.right(unit);
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal menghapus balasan'));
+      return Either.left(_mapDio(e, l10n.discussionReplyDeleteFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -278,7 +279,7 @@ class DiscussionRepository {
       );
       return Either.right(_parsePage(res.data));
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal memuat antrean diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionQueueLoadFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -292,14 +293,14 @@ class DiscussionRepository {
       final raw = res.data?['data'];
       if (raw is! Map) {
         return Either.left(
-          const DiscussionFailure('Detail diskusi tidak lengkap'),
+          DiscussionFailure(l10n.discussionDetailIncomplete),
         );
       }
       return Either.right(
         DiscussionItem.fromJson(Map<String, dynamic>.from(raw)),
       );
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal memuat detail diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionDetailLoadFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -369,14 +370,14 @@ class DiscussionRepository {
       final raw = res.data?['data'];
       if (raw is! Map) {
         return Either.left(
-          const DiscussionFailure('Respons approve tidak lengkap'),
+          DiscussionFailure(l10n.discussionApproveResponseIncomplete),
         );
       }
       return Either.right(
         DiscussionItem.fromJson(Map<String, dynamic>.from(raw)),
       );
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal menyetujui diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionApproveFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -394,14 +395,14 @@ class DiscussionRepository {
       final raw = res.data?['data'];
       if (raw is! Map) {
         return Either.left(
-          const DiscussionFailure('Respons reject tidak lengkap'),
+          DiscussionFailure(l10n.discussionRejectResponseIncomplete),
         );
       }
       return Either.right(
         DiscussionItem.fromJson(Map<String, dynamic>.from(raw)),
       );
     } on DioException catch (e) {
-      return Either.left(_mapDio(e, 'Gagal menolak diskusi'));
+      return Either.left(_mapDio(e, l10n.discussionRejectFailed));
     } catch (e) {
       return Either.left(DiscussionFailure(e.toString()));
     }
@@ -430,7 +431,7 @@ class DiscussionRepository {
       if (error.response?.statusCode == 429) {
         final retry = error.response?.headers.value('retry-after');
         if (retry != null && retry.isNotEmpty) {
-          message = '$message Coba lagi dalam $retry detik.';
+          message = l10n.discussionRetryAfter(message, retry);
         }
       }
       return DiscussionFailure(
@@ -441,10 +442,8 @@ class DiscussionRepository {
     return DiscussionFailure(switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
-      DioExceptionType.receiveTimeout =>
-        'Server lama merespons. Coba lagi dalam beberapa saat.',
-      DioExceptionType.connectionError =>
-        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+      DioExceptionType.receiveTimeout => l10n.discussionServerOutdated,
+      DioExceptionType.connectionError => l10n.discussionConnectionFailed,
       _ => fallback,
     });
   }

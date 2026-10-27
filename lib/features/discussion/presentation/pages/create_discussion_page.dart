@@ -10,6 +10,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
@@ -28,6 +30,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authStatusProvider).value;
     final isAuth = auth?.isAuth ?? false;
 
@@ -57,7 +60,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     void promptLogin() {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu ya sebelum mulai diskusi'),
+        title: Text(l10n.discussionLoginFirst),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -68,7 +71,10 @@ class CreateDiscussionPage extends HookConsumerWidget {
       final text = data?.text?.trim() ?? '';
       if (text.isEmpty) {
         if (!context.mounted) return;
-        showFToast(context: context, title: const Text('Clipboard kosong'));
+        showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).discussionClipboardEmpty),
+      );
         return;
       }
       final next = body.text.isEmpty ? text : '${body.text.trim()}\n$text';
@@ -85,10 +91,9 @@ class CreateDiscussionPage extends HookConsumerWidget {
       }
       final recorded = await showRecordThreadAudioSheet(
         context,
-        title: 'Rekam untuk diskusi',
-        subtitle:
-            'Maksimal 60 detik. Rekaman dilampirkan setelah deskripsi dikirim.',
-        submitLabel: 'Pakai rekaman',
+        title: l10n.discussionRecordSheetTitle,
+        subtitle: l10n.discussionRecordSheetSubtitle,
+        submitLabel: l10n.discussionRecordSheetUse,
       );
       if (recorded != null) {
         pendingAudio.value = recorded;
@@ -117,7 +122,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           images.value.any((e) => e.uploading)) {
         showFToast(
           context: context,
-          title: const Text('Tunggu upload gambar selesai'),
+          title: Text(AppLocalizations.of(context).discussionWaitUpload),
         );
         return;
       }
@@ -134,7 +139,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
           if (context.mounted) {
             await showAppErrorSheet(
               context,
-              message: 'Tulis dulu pertanyaan atau cerita kamu ya',
+              message: l10n.discussionBodyRequired,
             );
           }
           return;
@@ -149,7 +154,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
             if (context.mounted) {
               await showAppErrorSheet(
                 context,
-                message: 'Tautan harus memakai https://',
+                message: l10n.discussionLinkHttpsRequired,
               );
             }
             return;
@@ -176,24 +181,22 @@ class CreateDiscussionPage extends HookConsumerWidget {
                   FTileGroup(
                     children: [
                       FTile(
-                        title: const Text('Semua gambar gagal'),
-                        subtitle: const Text(
-                          'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?',
-                        ),
+                        title: Text(l10n.discussionAllImagesFailed),
+                        subtitle: Text(l10n.discussionAllImagesFailedBody),
                       ),
                       FTile(
                         title: const Text(''),
                         suffix: FButton(
                           variant: FButtonVariant.destructive,
                           onPress: () => Navigator.of(sheetContext).pop(true),
-                          child: const Text('Kirim tanpa gambar'),
+                          child: Text(l10n.discussionSendWithoutImages),
                         ),
                       ),
                       FTile(
                         title: const Text(''),
                         suffix: FButton(
                           onPress: () => Navigator.of(sheetContext).pop(false),
-                          child: const Text('Batal'),
+                          child: Text(l10n.commonCancel),
                         ),
                       ),
                     ],
@@ -238,27 +241,27 @@ class CreateDiscussionPage extends HookConsumerWidget {
           context: context,
           title: Text(
             audioFailed
-                ? 'Diskusi terkirim; rekaman gagal dilampirkan'
-                : 'Permintaan terkirim, menunggu pengecekan',
+                ? l10n.discussionSentAudioFailed
+                : l10n.discussionSentPending,
           ),
         );
         context.pushReplacement(DiscussionRouter.detailPath(result.id));
       } on DioException catch (e) {
         if (context.mounted) {
-          await showAppErrorSheet(context, message: _mapDio(e));
+          await showAppErrorSheet(context, message: _mapDio(e, l10n));
         }
       } on ImageUploadUnavailable {
         if (context.mounted) {
           await showAppErrorSheet(
             context,
-            message: 'Penyimpanan gambar belum tersedia',
+            message: l10n.discussionStorageUnavailable,
           );
         }
       } catch (_) {
         if (context.mounted) {
           await showAppErrorSheet(
             context,
-            message: 'Terjadi kesalahan, coba lagi',
+            message: l10n.discussionGenericError,
           );
         }
       } finally {
@@ -274,7 +277,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Mulai diskusi'),
+        title: Text(l10n.discussionCreateTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -286,21 +289,21 @@ class CreateDiscussionPage extends HookConsumerWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const FAlert(
+          FAlert(
             icon: Icon(FLucideIcons.info),
-            title: Text('Thread kamu dicek dulu sebelum tayang'),
+            title: Text(l10n.discussionCreateAlertTitle),
             subtitle: Text(
-              'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.',
+              l10n.discussionCreateAlertBody,
             ),
           ),
           const Gap(16),
           if (!isAuth) ...[
-            const FAlert(title: Text('Masuk dulu ya sebelum mulai diskusi')),
+            FAlert(title: Text(l10n.discussionLoginFirst)),
             const Gap(8),
             FButton(
               variant: FButtonVariant.outline,
               onPress: promptLogin,
-              child: const Text('Masuk'),
+              child: Text(l10n.commonLoginRequiredShort),
             ),
             const Gap(12),
           ],
@@ -308,9 +311,8 @@ class CreateDiscussionPage extends HookConsumerWidget {
             control: FTextFieldControl.managed(controller: body),
             focusNode: bodyFocus,
             enabled: !submitting.value && isAuth,
-            label: const Text('Deskripsi'),
-            hint:
-                'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.',
+            label: Text(l10n.discussionCreateBodyLabel),
+            hint: l10n.discussionCreateBodyHint,
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             minLines: 4,
@@ -325,11 +327,11 @@ class CreateDiscussionPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   onPress: submitting.value || !isAuth ? null : pasteClipboard,
                   prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
-                  child: const Text('Tempel'),
+                  child: Text(l10n.discussionCreatePaste),
                 ),
                 const Gap(4),
                 Text(
-                  '${trimmed.length}/1000',
+                  l10n.discussionCreateCharCount(trimmed.length),
                   style: context.theme.typography.body.sm.copyWith(
                     color: context.theme.colors.mutedForeground,
                   ),
@@ -360,7 +362,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
                           if (!next) link.clear();
                         },
                   child: Text(
-                    'Sertakan link dari sosial media',
+                    l10n.discussionCreateShareLink,
                     style: context.theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -374,16 +376,15 @@ class CreateDiscussionPage extends HookConsumerWidget {
             FTextField(
               control: FTextFieldControl.managed(controller: link),
               enabled: !submitting.value && isAuth,
-              label: const Text('Tautan'),
-              hint:
-                  'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://',
+              label: Text(l10n.discussionCreateLinkLabel),
+            hint: l10n.discussionCreateLinkHint,
               keyboardType: TextInputType.url,
               textInputAction: TextInputAction.done,
             ),
           ],
           const Gap(12),
           Text(
-            'Rekam suara (opsional)',
+            l10n.discussionCreateAudioLabel,
             style: context.theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -394,21 +395,21 @@ class CreateDiscussionPage extends HookConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Rekaman siap · ${audioSec}s',
+                    l10n.discussionCreateAudioReady(audioSec),
                     style: context.theme.typography.body.sm,
                   ),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
                   onPress: submitting.value ? null : clearAudio,
-                  child: const Text('Hapus'),
+                  child: Text(l10n.commonDelete),
                 ),
                 const Gap(4),
                 FButton(
                   variant: FButtonVariant.outline,
                   onPress: submitting.value || !isAuth ? null : pickAudio,
                   prefix: const Icon(FLucideIcons.mic, size: 14),
-                  child: const Text('Ulangi'),
+                  child: Text(l10n.discussionCreateRerecord),
                 ),
               ],
             )
@@ -417,12 +418,12 @@ class CreateDiscussionPage extends HookConsumerWidget {
               variant: FButtonVariant.outline,
               onPress: submitting.value || !isAuth ? null : pickAudio,
               prefix: const Icon(FLucideIcons.mic, size: 14),
-              child: const Text('Rekam suara'),
+              child: Text(l10n.discussionCreateRecordCta),
             ),
           if (attachmentsEnabled.value) ...[
             const Gap(12),
             Text(
-              'Foto (opsional, maks 4)',
+              l10n.discussionCreatePhotoLabel,
               style: context.theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -434,8 +435,8 @@ class CreateDiscussionPage extends HookConsumerWidget {
               maxSizeMb: 5,
               images: images.value,
               onChanged: (next) => images.value = next,
-              disabledHint: 'Masuk untuk lampirkan foto.',
-              disabledActionLabel: 'Masuk',
+              disabledHint: l10n.discussionCreatePhotoLoginHint,
+              disabledActionLabel: l10n.commonLoginRequiredShort,
               onDisabledAction: promptLogin,
               onUnavailable: () {
                 attachmentsEnabled.value = false;
@@ -454,26 +455,26 @@ class CreateDiscussionPage extends HookConsumerWidget {
                   );
                 } on ImageUploadUnavailable {
                   return Either.left(
-                    const AttachmentUploadFailure(
-                      'Penyimpanan gambar belum tersedia',
+                    AttachmentUploadFailure(
+                      l10n.discussionStorageUnavailable,
                       errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
                     ),
                   );
                 } on DioException catch (e) {
                   if (e.response?.statusCode == 503) {
                     return Either.left(
-                      const AttachmentUploadFailure(
-                        'Penyimpanan gambar belum tersedia',
+                      AttachmentUploadFailure(
+                        l10n.discussionStorageUnavailable,
                         errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
                       ),
                     );
                   }
                   return Either.left(
-                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
+                    AttachmentUploadFailure(l10n.discussionImageUploadFailed),
                   );
                 } catch (_) {
                   return Either.left(
-                    const AttachmentUploadFailure('Satu gambar gagal diunggah'),
+                    AttachmentUploadFailure(l10n.discussionImageUploadFailed),
                   );
                 }
               },
@@ -485,7 +486,11 @@ class CreateDiscussionPage extends HookConsumerWidget {
                 ? () => submit()
                 : (!isAuth ? promptLogin : null),
             prefix: submitting.value ? const FCircularProgress() : null,
-            child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+            child: Text(
+              submitting.value
+                  ? l10n.discussionSending
+                  : l10n.discussionSendCta,
+            ),
           ),
         ],
       ),
@@ -493,7 +498,7 @@ class CreateDiscussionPage extends HookConsumerWidget {
   }
 }
 
-String _mapDio(DioException error) {
+String _mapDio(DioException error, AppLocalizations l10n) {
   final data = error.response?.data;
   if (data is Map &&
       data['message'] is String &&
@@ -502,7 +507,7 @@ String _mapDio(DioException error) {
     if (error.response?.statusCode == 429) {
       final retry = error.response?.headers.value('retry-after');
       if (retry != null && retry.isNotEmpty) {
-        return '$message Coba lagi dalam $retry detik.';
+        return l10n.discussionRetryAfter(message, retry);
       }
     }
     return message;
@@ -511,9 +516,9 @@ String _mapDio(DioException error) {
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
     DioExceptionType.receiveTimeout =>
-      'Server lama merespons. Coba lagi dalam beberapa saat.',
+      l10n.discussionServerOutdated,
     DioExceptionType.connectionError =>
-      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-    _ => 'Terjadi kesalahan, coba lagi',
+      l10n.discussionConnectionFailed,
+    _ => l10n.discussionGenericError,
   };
 }

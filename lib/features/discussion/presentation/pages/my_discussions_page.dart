@@ -11,14 +11,25 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/discussion_models.dart';
 import '../../discussion_router.dart';
 import '../providers/discussion_list_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
-const _statusFilters = <(String?, String)>[
-  (null, 'Semua'),
-  ('pending_review', 'Menunggu'),
-  ('published', 'Tayang'),
-  ('rejected', 'Ditolak'),
-  ('taken_down', 'Diturunkan'),
+const _statusFilters = <String?>[
+  null,
+  'pending_review',
+  'published',
+  'rejected',
+  'taken_down',
 ];
+
+String _statusFilterLabel(AppLocalizations l10n, String? status) {
+  return switch (status) {
+    null => l10n.discussionStatusAll,
+    'pending_review' => l10n.discussionStatusPending,
+    'published' => l10n.discussionStatusPublished,
+    'rejected' => l10n.discussionStatusRejected,
+    _ => l10n.discussionStatusTakenDown,
+  };
+}
 
 /// Riwayat diskusi milik user login.
 class MyDiscussionsPage extends ConsumerWidget {
@@ -31,7 +42,7 @@ class MyDiscussionsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Bantuan Saya'),
+        title: Text(AppLocalizations.of(context).discussionMyTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         suffixes: [
           FHeaderAction(
@@ -69,7 +80,7 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat riwayat diskusi kamu',
+              AppLocalizations.of(context).discussionMyLoginFirst,
               style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -77,7 +88,7 @@ class _GuestState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -91,6 +102,7 @@ class _MineList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final selected = ref.watch(myDiscussionsStatusFilterProvider);
     final async = ref.watch(myDiscussionsProvider);
@@ -101,17 +113,17 @@ class _MineList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var i = 0; i < _statusFilters.length; i++) ...[
+            for (final (i, status) in _statusFilters.indexed) ...[
               if (i > 0) const Gap(6),
               GestureDetector(
                 onTap: () => ref
                     .read(myDiscussionsStatusFilterProvider.notifier)
-                    .select(_statusFilters[i].$1),
+                    .select(status),
                 child: FBadge(
-                  variant: selected == _statusFilters[i].$1
+                  variant: selected == status
                       ? FBadgeVariant.primary
                       : FBadgeVariant.secondary,
-                  child: Text(_statusFilters[i].$2),
+                  child: Text(_statusFilterLabel(l10n, status)),
                 ),
               ),
             ],
@@ -141,7 +153,7 @@ class _MineList extends ConsumerWidget {
                   Text(
                     error is DiscussionFailure
                         ? error.message
-                        : 'Gagal memuat riwayat',
+                        : AppLocalizations.of(context).discussionMyHistoryLoadFailed,
                     textAlign: TextAlign.center,
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
@@ -151,7 +163,9 @@ class _MineList extends ConsumerWidget {
                   FButton(
                     variant: FButtonVariant.outline,
                     onPress: () => ref.invalidate(myDiscussionsProvider),
-                    child: const Text('Coba lagi'),
+                    child: Text(
+                      AppLocalizations.of(context).discussionFeedRetry,
+                    ),
                   ),
                 ],
               ),
@@ -168,7 +182,7 @@ class _MineList extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Belum ada diskusi',
+                                  AppLocalizations.of(context).discussionMyEmpty,
                                   textAlign: TextAlign.center,
                                   style: theme.typography.body.md.copyWith(
                                     fontWeight: FontWeight.w600,
@@ -176,7 +190,9 @@ class _MineList extends ConsumerWidget {
                                 ),
                                 const Gap(8),
                                 Text(
-                                  'Kirim teks atau foto yang sulit diterjemahkan.',
+                                  AppLocalizations.of(
+                                    context,
+                                  ).discussionMyEmptyBody,
                                   textAlign: TextAlign.center,
                                   style: theme.typography.body.sm.copyWith(
                                     color: theme.colors.mutedForeground,
@@ -186,7 +202,11 @@ class _MineList extends ConsumerWidget {
                                 FButton(
                                   onPress: () =>
                                       context.push(DiscussionRouter.create.path),
-                                  child: const Text('Mulai diskusi'),
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    ).discussionMyStartCta,
+                                  ),
                                 ),
                               ],
                             ),
@@ -223,7 +243,11 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
     final when = formatDateTimeIso(item.createdAt);
     final preview = item.body?.trim().isNotEmpty == true
         ? item.body!.trim()
-        : (item.images.isEmpty ? 'Tanpa teks' : '${item.images.length} foto');
+        : (item.images.isEmpty
+              ? AppLocalizations.of(context).discussionMyNoText
+              : AppLocalizations.of(
+                  context,
+                ).discussionFeedPhotos(item.images.length));
     return FTile(
       title: Text(
         preview,
@@ -232,7 +256,7 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
       ),
       subtitle: Text(
         [
-          item.statusLabel,
+          item.statusLabelOf(AppLocalizations.of(context)),
           if (when.isNotEmpty) when,
         ].join(' · '),
       ),

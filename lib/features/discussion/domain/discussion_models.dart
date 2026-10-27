@@ -1,3 +1,5 @@
+import '../../../../l10n/app_localizations.dart';
+
 // Model domain + wire mapping untuk Ruang Diskusi.
 
 import '../../vote/domain/entities/vote_target.dart';
@@ -257,11 +259,11 @@ class DiscussionItem {
   bool get hasAudio =>
       audioUrl != null && audioUrl!.trim().isNotEmpty;
 
-  String get statusLabel => switch (status) {
-    'pending_review' => 'Menunggu pengecekan',
-    'published' => 'Tayang',
-    'rejected' => 'Ditolak',
-    'taken_down' => 'Diturunkan',
+  String statusLabelOf(AppLocalizations l10n) => switch (status) {
+    'pending_review' => l10n.dictPendingCheck,
+    'published' => l10n.discussionStatusPublished,
+    'rejected' => l10n.discussionStatusRejected,
+    'taken_down' => l10n.discussionStatusTakenDown,
     _ => status,
   };
 

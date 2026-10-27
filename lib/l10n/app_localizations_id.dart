@@ -6440,6 +6440,365 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get contributeImageKitIncomplete => 'Respons ImageKit tidak lengkap';
+
+  @override
+  String get discussionLoginFirst => 'Masuk dulu ya sebelum mulai diskusi';
+
+  @override
+  String get discussionClipboardEmpty => 'Clipboard kosong';
+
+  @override
+  String get discussionRecordSheetTitle => 'Rekam untuk diskusi';
+
+  @override
+  String get discussionRecordSheetSubtitle =>
+      'Maksimal 60 detik. Rekaman dilampirkan setelah deskripsi dikirim.';
+
+  @override
+  String get discussionRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String get discussionWaitUpload => 'Tunggu upload gambar selesai';
+
+  @override
+  String get discussionBodyRequired =>
+      'Tulis dulu pertanyaan atau cerita kamu ya';
+
+  @override
+  String get discussionLinkHttpsRequired => 'Tautan harus memakai https://';
+
+  @override
+  String get discussionAllImagesFailed => 'Semua gambar gagal';
+
+  @override
+  String get discussionAllImagesFailedBody =>
+      'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?';
+
+  @override
+  String get discussionSendWithoutImages => 'Kirim tanpa gambar';
+
+  @override
+  String get discussionSentAudioFailed =>
+      'Diskusi terkirim; rekaman gagal dilampirkan';
+
+  @override
+  String get discussionSentPending =>
+      'Permintaan terkirim, menunggu pengecekan';
+
+  @override
+  String get discussionStorageUnavailable =>
+      'Penyimpanan gambar belum tersedia';
+
+  @override
+  String get discussionGenericError => 'Terjadi kesalahan, coba lagi';
+
+  @override
+  String get discussionCreateTitle => 'Mulai diskusi';
+
+  @override
+  String get discussionCreateAlertTitle =>
+      'Thread kamu dicek dulu sebelum tayang';
+
+  @override
+  String get discussionCreateAlertBody =>
+      'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.';
+
+  @override
+  String get discussionCreateLoginCta => 'Masuk';
+
+  @override
+  String get discussionCreateBodyLabel => 'Deskripsi';
+
+  @override
+  String get discussionCreateBodyHint =>
+      'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.';
+
+  @override
+  String get discussionCreatePaste => 'Tempel';
+
+  @override
+  String discussionCreateCharCount(int count) {
+    return '$count/1000';
+  }
+
+  @override
+  String get discussionCreateShareLink => 'Sertakan link dari sosial media';
+
+  @override
+  String get discussionCreateLinkLabel => 'Tautan';
+
+  @override
+  String get discussionCreateLinkHint =>
+      'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://';
+
+  @override
+  String get discussionCreateAudioLabel => 'Rekam suara (opsional)';
+
+  @override
+  String discussionCreateAudioReady(int sec) {
+    return 'Rekaman siap · ${sec}s';
+  }
+
+  @override
+  String get discussionCreateRerecord => 'Ulangi';
+
+  @override
+  String get discussionCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get discussionCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get discussionCreatePhotoLoginHint => 'Masuk untuk lampirkan foto.';
+
+  @override
+  String get discussionImageUploadFailed => 'Satu gambar gagal diunggah';
+
+  @override
+  String get discussionSending => 'Mengirim...';
+
+  @override
+  String get discussionSendCta => 'Kirim';
+
+  @override
+  String discussionRetryAfter(String message, String retry) {
+    return '$message Coba lagi dalam $retry detik.';
+  }
+
+  @override
+  String get discussionServerOutdated =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get discussionConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get discussionUploadCredsIncomplete =>
+      'Kredensial upload tidak lengkap';
+
+  @override
+  String get discussionResponseIncomplete => 'Response diskusi tidak lengkap';
+
+  @override
+  String get discussionAudioSendFailed => 'Gagal mengirim rekaman suara';
+
+  @override
+  String get discussionFeedLoadFailed => 'Gagal memuat diskusi';
+
+  @override
+  String get discussionHistoryLoadFailed => 'Gagal memuat riwayat diskusi';
+
+  @override
+  String get discussionDetailIncomplete => 'Detail diskusi tidak lengkap';
+
+  @override
+  String get discussionDetailLoadFailed => 'Gagal memuat detail diskusi';
+
+  @override
+  String get discussionReplyIncomplete => 'Balasan tidak lengkap';
+
+  @override
+  String get discussionReplySendFailed => 'Gagal mengirim balasan';
+
+  @override
+  String get discussionReplyAudioIncomplete => 'Balasan suara tidak lengkap';
+
+  @override
+  String get discussionReplyDeleteFailed => 'Gagal menghapus balasan';
+
+  @override
+  String get discussionQueueLoadFailed => 'Gagal memuat antrean diskusi';
+
+  @override
+  String get discussionApproveResponseIncomplete =>
+      'Respons approve tidak lengkap';
+
+  @override
+  String get discussionApproveFailed => 'Gagal menyetujui diskusi';
+
+  @override
+  String get discussionRejectResponseIncomplete =>
+      'Respons reject tidak lengkap';
+
+  @override
+  String get discussionRejectFailed => 'Gagal menolak diskusi';
+
+  @override
+  String get discussionLoginToReply => 'Masuk dulu untuk membalas';
+
+  @override
+  String get discussionLoginToVote => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get discussionReplySent => 'Balasan terkirim';
+
+  @override
+  String get discussionReplyDeleteTitle => 'Hapus balasan?';
+
+  @override
+  String get discussionReplyDeleteBody => 'Balasan akan dihapus dari thread.';
+
+  @override
+  String get discussionReplyDeleted => 'Balasan dihapus';
+
+  @override
+  String get discussionHelpDetailTitle => 'Detail Bantuan';
+
+  @override
+  String get discussionRetry => 'Coba lagi';
+
+  @override
+  String get discussionAlsoCurious => 'Saya juga ingin tahu';
+
+  @override
+  String get discussionRepliesLabel => 'Balasan';
+
+  @override
+  String discussionRepliesCount(int count) {
+    return 'Balasan · $count';
+  }
+
+  @override
+  String get discussionRepliesPendingLocked =>
+      'Balasan dibuka setelah permintaan ditayangkan.';
+
+  @override
+  String get discussionRepliesUnavailable =>
+      'Thread balasan tidak tersedia untuk status ini.';
+
+  @override
+  String get discussionRepliesEmpty =>
+      'Belum ada balasan. Jadilah yang pertama membantu.';
+
+  @override
+  String get discussionRepliesRemovedModerator => 'Balasan dihapus moderator';
+
+  @override
+  String get discussionRepliesRemovedAuthor => 'Balasan dihapus penulis';
+
+  @override
+  String get discussionPinned => 'Disematkan';
+
+  @override
+  String get discussionHelpfulQuestion => 'Jawaban membantu?';
+
+  @override
+  String get discussionReplyLoginCta => 'Masuk untuk membalas';
+
+  @override
+  String get discussionReplyHint => 'Tulis balasan…';
+
+  @override
+  String get discussionPhotoTapHintMany =>
+      'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain';
+
+  @override
+  String get discussionPhotoTapHintOne =>
+      'Ketuk foto untuk melihat ukuran penuh';
+
+  @override
+  String get discussionFeedTitle => 'Ruang Diskusi';
+
+  @override
+  String get discussionFeedRetry => 'Coba lagi';
+
+  @override
+  String get discussionFeedEmpty => 'Belum ada diskusi yang tayang';
+
+  @override
+  String get discussionFeedEmptyBody =>
+      'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.';
+
+  @override
+  String get discussionFeedNewThread => 'Mulai thread baru…';
+
+  @override
+  String discussionFeedPhotos(int count) {
+    return '$count foto';
+  }
+
+  @override
+  String get discussionFeedAudio => 'Suara';
+
+  @override
+  String get discussionFeedSortNewest => 'Terbaru';
+
+  @override
+  String get discussionFeedSortPopular => 'Populer';
+
+  @override
+  String get discussionFeedSortByUpvote => 'Menurut upvote';
+
+  @override
+  String get discussionFeedSortByTime => 'Menurut waktu';
+
+  @override
+  String get discussionStatusAll => 'Semua';
+
+  @override
+  String get discussionStatusPending => 'Menunggu';
+
+  @override
+  String get discussionStatusPublished => 'Tayang';
+
+  @override
+  String get discussionStatusRejected => 'Ditolak';
+
+  @override
+  String get discussionStatusTakenDown => 'Diturunkan';
+
+  @override
+  String get discussionMyTitle => 'Bantuan Saya';
+
+  @override
+  String get discussionMyLoginFirst =>
+      'Masuk dulu untuk melihat riwayat diskusi kamu';
+
+  @override
+  String get discussionMyHistoryLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get discussionMyEmpty => 'Belum ada diskusi';
+
+  @override
+  String get discussionMyEmptyBody =>
+      'Kirim teks atau foto yang sulit diterjemahkan.';
+
+  @override
+  String get discussionMyStartCta => 'Mulai diskusi';
+
+  @override
+  String get discussionMyNoText => 'Tanpa teks';
+
+  @override
+  String get discussionReplyRecordTitle => 'Rekam balasan suara';
+
+  @override
+  String get discussionReplyRecordSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom balasan sebelum merekam.';
+
+  @override
+  String get discussionReplyRecordSubmit => 'Kirim rekaman';
+
+  @override
+  String get discussionImageCensored =>
+      'Gambar disensor. Ketuk untuk menampilkan.';
+
+  @override
+  String get discussionImageViolenceTap => 'Kekerasan · ketuk untuk lihat';
+
+  @override
+  String get discussionImageViolence => 'Konten kekerasan';
+
+  @override
+  String get discussionNotReady => 'Belum siap';
+
+  @override
+  String get discussionQuestionPending => 'Pertanyaan belum tayang';
+
+  @override
+  String get discussionReplyMinLength => 'Balasan minimal 1 karakter';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -12878,4 +13237,363 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeImageKitIncomplete => 'Respons ImageKit tidak lengkap';
+
+  @override
+  String get discussionLoginFirst => 'Masuk dulu ya sebelum mulai diskusi';
+
+  @override
+  String get discussionClipboardEmpty => 'Clipboard kosong';
+
+  @override
+  String get discussionRecordSheetTitle => 'Rekam untuk diskusi';
+
+  @override
+  String get discussionRecordSheetSubtitle =>
+      'Maksimal 60 detik. Rekaman dilampirkan setelah deskripsi dikirim.';
+
+  @override
+  String get discussionRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String get discussionWaitUpload => 'Tunggu upload gambar selesai';
+
+  @override
+  String get discussionBodyRequired =>
+      'Tulis dulu pertanyaan atau cerita kamu ya';
+
+  @override
+  String get discussionLinkHttpsRequired => 'Tautan harus memakai https://';
+
+  @override
+  String get discussionAllImagesFailed => 'Semua gambar gagal';
+
+  @override
+  String get discussionAllImagesFailedBody =>
+      'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?';
+
+  @override
+  String get discussionSendWithoutImages => 'Kirim tanpa gambar';
+
+  @override
+  String get discussionSentAudioFailed =>
+      'Diskusi terkirim; rekaman gagal dilampirkan';
+
+  @override
+  String get discussionSentPending =>
+      'Permintaan terkirim, menunggu pengecekan';
+
+  @override
+  String get discussionStorageUnavailable =>
+      'Penyimpanan gambar belum tersedia';
+
+  @override
+  String get discussionGenericError => 'Terjadi kesalahan, coba lagi';
+
+  @override
+  String get discussionCreateTitle => 'Mulai diskusi';
+
+  @override
+  String get discussionCreateAlertTitle =>
+      'Thread kamu dicek dulu sebelum tayang';
+
+  @override
+  String get discussionCreateAlertBody =>
+      'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.';
+
+  @override
+  String get discussionCreateLoginCta => 'Masuk';
+
+  @override
+  String get discussionCreateBodyLabel => 'Deskripsi';
+
+  @override
+  String get discussionCreateBodyHint =>
+      'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.';
+
+  @override
+  String get discussionCreatePaste => 'Tempel';
+
+  @override
+  String discussionCreateCharCount(int count) {
+    return '$count/1000';
+  }
+
+  @override
+  String get discussionCreateShareLink => 'Sertakan link dari sosial media';
+
+  @override
+  String get discussionCreateLinkLabel => 'Tautan';
+
+  @override
+  String get discussionCreateLinkHint =>
+      'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://';
+
+  @override
+  String get discussionCreateAudioLabel => 'Rekam suara (opsional)';
+
+  @override
+  String discussionCreateAudioReady(int sec) {
+    return 'Rekaman siap · ${sec}s';
+  }
+
+  @override
+  String get discussionCreateRerecord => 'Ulangi';
+
+  @override
+  String get discussionCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get discussionCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get discussionCreatePhotoLoginHint => 'Masuk untuk lampirkan foto.';
+
+  @override
+  String get discussionImageUploadFailed => 'Satu gambar gagal diunggah';
+
+  @override
+  String get discussionSending => 'Mengirim...';
+
+  @override
+  String get discussionSendCta => 'Kirim';
+
+  @override
+  String discussionRetryAfter(String message, String retry) {
+    return '$message Coba lagi dalam $retry detik.';
+  }
+
+  @override
+  String get discussionServerOutdated =>
+      'Server lama merespons. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get discussionConnectionFailed =>
+      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get discussionUploadCredsIncomplete =>
+      'Kredensial upload tidak lengkap';
+
+  @override
+  String get discussionResponseIncomplete => 'Response diskusi tidak lengkap';
+
+  @override
+  String get discussionAudioSendFailed => 'Gagal mengirim rekaman suara';
+
+  @override
+  String get discussionFeedLoadFailed => 'Gagal memuat diskusi';
+
+  @override
+  String get discussionHistoryLoadFailed => 'Gagal memuat riwayat diskusi';
+
+  @override
+  String get discussionDetailIncomplete => 'Detail diskusi tidak lengkap';
+
+  @override
+  String get discussionDetailLoadFailed => 'Gagal memuat detail diskusi';
+
+  @override
+  String get discussionReplyIncomplete => 'Balasan tidak lengkap';
+
+  @override
+  String get discussionReplySendFailed => 'Gagal mengirim balasan';
+
+  @override
+  String get discussionReplyAudioIncomplete => 'Balasan suara tidak lengkap';
+
+  @override
+  String get discussionReplyDeleteFailed => 'Gagal menghapus balasan';
+
+  @override
+  String get discussionQueueLoadFailed => 'Gagal memuat antrean diskusi';
+
+  @override
+  String get discussionApproveResponseIncomplete =>
+      'Respons approve tidak lengkap';
+
+  @override
+  String get discussionApproveFailed => 'Gagal menyetujui diskusi';
+
+  @override
+  String get discussionRejectResponseIncomplete =>
+      'Respons reject tidak lengkap';
+
+  @override
+  String get discussionRejectFailed => 'Gagal menolak diskusi';
+
+  @override
+  String get discussionLoginToReply => 'Masuk dulu untuk membalas';
+
+  @override
+  String get discussionLoginToVote => 'Masuk dulu untuk memberi vote';
+
+  @override
+  String get discussionReplySent => 'Balasan terkirim';
+
+  @override
+  String get discussionReplyDeleteTitle => 'Hapus balasan?';
+
+  @override
+  String get discussionReplyDeleteBody => 'Balasan akan dihapus dari thread.';
+
+  @override
+  String get discussionReplyDeleted => 'Balasan dihapus';
+
+  @override
+  String get discussionHelpDetailTitle => 'Detail Bantuan';
+
+  @override
+  String get discussionRetry => 'Coba lagi';
+
+  @override
+  String get discussionAlsoCurious => 'Saya juga ingin tahu';
+
+  @override
+  String get discussionRepliesLabel => 'Balasan';
+
+  @override
+  String discussionRepliesCount(int count) {
+    return 'Balasan · $count';
+  }
+
+  @override
+  String get discussionRepliesPendingLocked =>
+      'Balasan dibuka setelah permintaan ditayangkan.';
+
+  @override
+  String get discussionRepliesUnavailable =>
+      'Thread balasan tidak tersedia untuk status ini.';
+
+  @override
+  String get discussionRepliesEmpty =>
+      'Belum ada balasan. Jadilah yang pertama membantu.';
+
+  @override
+  String get discussionRepliesRemovedModerator => 'Balasan dihapus moderator';
+
+  @override
+  String get discussionRepliesRemovedAuthor => 'Balasan dihapus penulis';
+
+  @override
+  String get discussionPinned => 'Disematkan';
+
+  @override
+  String get discussionHelpfulQuestion => 'Jawaban membantu?';
+
+  @override
+  String get discussionReplyLoginCta => 'Masuk untuk membalas';
+
+  @override
+  String get discussionReplyHint => 'Tulis balasan…';
+
+  @override
+  String get discussionPhotoTapHintMany =>
+      'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain';
+
+  @override
+  String get discussionPhotoTapHintOne =>
+      'Ketuk foto untuk melihat ukuran penuh';
+
+  @override
+  String get discussionFeedTitle => 'Ruang Diskusi';
+
+  @override
+  String get discussionFeedRetry => 'Coba lagi';
+
+  @override
+  String get discussionFeedEmpty => 'Belum ada diskusi yang tayang';
+
+  @override
+  String get discussionFeedEmptyBody =>
+      'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.';
+
+  @override
+  String get discussionFeedNewThread => 'Mulai thread baru…';
+
+  @override
+  String discussionFeedPhotos(int count) {
+    return '$count foto';
+  }
+
+  @override
+  String get discussionFeedAudio => 'Suara';
+
+  @override
+  String get discussionFeedSortNewest => 'Terbaru';
+
+  @override
+  String get discussionFeedSortPopular => 'Populer';
+
+  @override
+  String get discussionFeedSortByUpvote => 'Menurut upvote';
+
+  @override
+  String get discussionFeedSortByTime => 'Menurut waktu';
+
+  @override
+  String get discussionStatusAll => 'Semua';
+
+  @override
+  String get discussionStatusPending => 'Menunggu';
+
+  @override
+  String get discussionStatusPublished => 'Tayang';
+
+  @override
+  String get discussionStatusRejected => 'Ditolak';
+
+  @override
+  String get discussionStatusTakenDown => 'Diturunkan';
+
+  @override
+  String get discussionMyTitle => 'Bantuan Saya';
+
+  @override
+  String get discussionMyLoginFirst =>
+      'Masuk dulu untuk melihat riwayat diskusi kamu';
+
+  @override
+  String get discussionMyHistoryLoadFailed => 'Gagal memuat riwayat';
+
+  @override
+  String get discussionMyEmpty => 'Belum ada diskusi';
+
+  @override
+  String get discussionMyEmptyBody =>
+      'Kirim teks atau foto yang sulit diterjemahkan.';
+
+  @override
+  String get discussionMyStartCta => 'Mulai diskusi';
+
+  @override
+  String get discussionMyNoText => 'Tanpa teks';
+
+  @override
+  String get discussionReplyRecordTitle => 'Rekam balasan suara';
+
+  @override
+  String get discussionReplyRecordSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom balasan sebelum merekam.';
+
+  @override
+  String get discussionReplyRecordSubmit => 'Kirim rekaman';
+
+  @override
+  String get discussionImageCensored =>
+      'Gambar disensor. Ketuk untuk menampilkan.';
+
+  @override
+  String get discussionImageViolenceTap => 'Kekerasan · ketuk untuk lihat';
+
+  @override
+  String get discussionImageViolence => 'Konten kekerasan';
+
+  @override
+  String get discussionNotReady => 'Belum siap';
+
+  @override
+  String get discussionQuestionPending => 'Pertanyaan belum tayang';
+
+  @override
+  String get discussionReplyMinLength => 'Balasan minimal 1 karakter';
 }

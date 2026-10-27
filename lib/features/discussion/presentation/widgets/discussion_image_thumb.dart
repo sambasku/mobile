@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../domain/discussion_models.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Thumbnail foto diskusi: blur + CTA jika ber-flag kekerasan dan belum di-reveal.
 class DiscussionImageThumb extends StatelessWidget {
@@ -75,7 +76,7 @@ class _BlurredThumb extends StatelessWidget {
     final theme = context.theme;
     return Semantics(
       button: onReveal != null,
-      hint: 'Gambar disensor. Ketuk untuk menampilkan.',
+      hint: AppLocalizations.of(context).discussionImageCensored,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onReveal,
@@ -94,8 +95,8 @@ class _BlurredThumb extends StatelessWidget {
             Center(
               child: Text(
                 onReveal != null
-                    ? 'Kekerasan · ketuk untuk lihat'
-                    : 'Konten kekerasan',
+                    ? AppLocalizations.of(context).discussionImageViolenceTap
+                    : AppLocalizations.of(context).discussionImageViolence,
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm.copyWith(
                   color: const Color(0xFFFFFFFF),

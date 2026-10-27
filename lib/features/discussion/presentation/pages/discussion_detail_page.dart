@@ -23,6 +23,7 @@ import '../widgets/discussion_reply_audio_player.dart';
 import '../widgets/record_discussion_reply_sheet.dart';
 import '../../../comment/presentation/providers/mention_suggest_providers.dart';
 import '../../../comment/presentation/widgets/mention_suggest_overlay.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Detail diskusi + thread balasan.
 class DiscussionDetailPage extends ConsumerStatefulWidget {
@@ -68,10 +69,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
 
   bool _isAuth() => ref.read(authStatusProvider).value?.isAuth ?? false;
 
-  void _promptLogin({String message = 'Masuk dulu untuk membalas'}) {
+  void _promptLogin({String? message}) {
+    final l10n = AppLocalizations.of(context);
     showFToast(
       context: context,
-      title: Text(message),
+      title: Text(message ?? l10n.discussionLoginToReply),
       variant: FToastVariant.primary,
     );
     context.push('/login');
@@ -79,7 +81,9 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
 
   Future<void> _toggleHelpVote(int value) async {
     if (!_isAuth()) {
-      _promptLogin(message: 'Masuk dulu untuk memberi vote');
+      _promptLogin(
+        message: AppLocalizations.of(context).discussionLoginToVote,
+      );
       return;
     }
     final failure = await ref
@@ -95,7 +99,9 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
 
   Future<void> _toggleVote(DiscussionReply reply, int value) async {
     if (!_isAuth()) {
-      _promptLogin(message: 'Masuk dulu untuk memberi vote');
+      _promptLogin(
+        message: AppLocalizations.of(context).discussionLoginToVote,
+      );
       return;
     }
     final failure = await ref
@@ -122,7 +128,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
       _replyCtrl.clear();
       showFToast(
         context: context,
-        title: const Text('Balasan terkirim'),
+        title: Text(AppLocalizations.of(context).discussionReplySent),
         variant: FToastVariant.primary,
       );
       return;
@@ -160,6 +166,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   }
 
   Future<void> _deleteReply(DiscussionReply reply) async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -173,22 +180,22 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
             FTileGroup(
               children: [
                 FTile(
-                  title: const Text('Hapus balasan?'),
-                  subtitle: const Text('Balasan akan dihapus dari thread.'),
+                  title: Text(l10n.discussionReplyDeleteTitle),
+                  subtitle: Text(l10n.discussionReplyDeleteBody),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     variant: FButtonVariant.destructive,
                     onPress: () => Navigator.of(sheetContext).pop(true),
-                    child: const Text('Hapus'),
+                    child: Text(l10n.commonDelete),
                   ),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     onPress: () => Navigator.of(sheetContext).pop(false),
-                    child: const Text('Batal'),
+                    child: Text(l10n.commonCancel),
                   ),
                 ),
               ],
@@ -205,7 +212,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     if (!mounted) return;
     showFToast(
       context: context,
-      title: Text(failure == null ? 'Balasan dihapus' : failure.message),
+      title: Text(
+          failure == null
+              ? AppLocalizations.of(context).discussionReplyDeleted
+              : failure.message,
+        ),
       variant: failure == null
           ? FToastVariant.primary
           : FToastVariant.destructive,
@@ -214,6 +225,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider).value;
     final isAuth = auth?.isAuth ?? false;
@@ -224,11 +236,11 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
       header: FHeader.nested(
         title: async.maybeWhen(
           data: (state) => Text(
-            state.item.body?.trim() ?? 'Detail Bantuan',
+            state.item.body?.trim() ?? AppLocalizations.of(context).discussionHelpDetailTitle,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          orElse: () => const Text('Detail Bantuan'),
+          orElse: () => Text(AppLocalizations.of(context).discussionHelpDetailTitle),
         ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
@@ -249,7 +261,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                 Text(
                   error is DiscussionFailure
                       ? error.message
-                      : 'Gagal memuat detail',
+                      : AppLocalizations.of(context).discussionDetailLoadFailed,
                   textAlign: TextAlign.center,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
@@ -260,7 +272,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                   variant: FButtonVariant.outline,
                   onPress: () =>
                       ref.invalidate(discussionDetailProvider(widget.id)),
-                  child: const Text('Coba lagi'),
+                  child: Text(AppLocalizations.of(context).discussionRetry),
                 ),
               ],
             ),
@@ -339,7 +351,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             const Gap(10),
                             Expanded(
                               child: Text(
-                                'Saya juga ingin tahu',
+                                l10n.discussionAlsoCurious,
                                 style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
@@ -359,8 +371,8 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                       const Gap(16),
                       Text(
                         replies.isEmpty
-                            ? 'Balasan'
-                            : 'Balasan · ${replies.length}',
+                            ? l10n.discussionRepliesLabel
+                            : l10n.discussionRepliesCount(replies.length),
                         style: theme.typography.body.sm.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -369,15 +381,15 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                       if (!canReply)
                         Text(
                           item.status == 'pending_review'
-                              ? 'Balasan dibuka setelah permintaan ditayangkan.'
-                              : 'Thread balasan tidak tersedia untuk status ini.',
+                              ? l10n.discussionRepliesPendingLocked
+                              : l10n.discussionRepliesUnavailable,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         )
                       else if (replies.isEmpty)
                         Text(
-                          'Belum ada balasan. Jadilah yang pertama membantu.',
+                          l10n.discussionRepliesEmpty,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
@@ -391,13 +403,16 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             isVerifier: reply.isVerifier,
                             body: !reply.isPublished
                                 ? (reply.status == 'taken_down'
-                                      ? 'Balasan dihapus moderator'
-                                      : 'Balasan dihapus penulis')
+                                      ? l10n.discussionRepliesRemovedModerator
+                                      : l10n.discussionRepliesRemovedAuthor)
                                 : (reply.body?.trim() ?? ''),
                             dateLabel: formatRelativeAgo(
                               DateTime.tryParse(reply.createdAt),
                             ),
-                            metaParts: [if (reply.isPinned) 'Disematkan'],
+                            metaParts: [
+                            if (reply.isPinned)
+                              AppLocalizations.of(context).discussionPinned,
+                          ],
                             isRedacted: !reply.isPublished,
                             highlighted: reply.isPinned && reply.isPublished,
                             media: reply.isPublished && reply.hasAudio
@@ -436,7 +451,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                       const Gap(10),
                                       Expanded(
                                         child: Text(
-                                          'Jawaban membantu?',
+                                          AppLocalizations.of(context).discussionHelpfulQuestion,
                                           style: theme.typography.body.sm
                                               .copyWith(
                                                 color: theme
@@ -461,7 +476,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
                     child: !isAuth
                         ? ThreadLoginPrompt(
-                            message: 'Masuk untuk membalas',
+                            message: l10n.discussionReplyLoginCta,
                             onLogin: _promptLogin,
                           )
                         : ThreadComposer(
@@ -469,7 +484,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             isSubmitting: state.isSubmittingReply,
                             onSubmit: _sendReply,
                             onRecordAudio: _recordAudioReply,
-                            hint: 'Tulis balasan…',
+                            hint: l10n.discussionReplyHint,
                             suggestBuilder: _buildReplyMentionSuggest,
                           ),
                   ),
@@ -521,7 +536,9 @@ class _HelpHeader extends StatelessWidget {
               variant: item.isPublished
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: Text(item.statusLabel),
+              child: Text(
+                item.statusLabelOf(AppLocalizations.of(context)),
+              ),
             ),
           ],
         ),
@@ -648,8 +665,10 @@ class _ImageRowState extends State<_ImageRow> {
             const Gap(8),
             Text(
               multi
-                  ? 'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain'
-                  : 'Ketuk foto untuk melihat ukuran penuh',
+                  ? AppLocalizations.of(
+                      context,
+                    ).discussionPhotoTapHintMany
+                  : AppLocalizations.of(context).discussionPhotoTapHintOne,
               textAlign: TextAlign.center,
               style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,

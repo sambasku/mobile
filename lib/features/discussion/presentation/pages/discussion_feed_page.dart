@@ -18,6 +18,7 @@ import '../../domain/discussion_models.dart';
 import '../../discussion_router.dart';
 import '../providers/discussion_list_providers.dart';
 import '../widgets/discussion_image_thumb.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Feed publik ruang diskusi yang sudah tayang.
 class DiscussionFeedPage extends HookConsumerWidget {
@@ -44,7 +45,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Ruang Diskusi'),
+        title: Text(AppLocalizations.of(context).discussionFeedTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         suffixes: [
           FHeaderAction(
@@ -78,7 +79,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
               Text(
                 error is DiscussionFailure
                     ? error.message
-                    : 'Gagal memuat diskusi',
+                    : AppLocalizations.of(context).discussionFeedLoadFailed,
                 textAlign: TextAlign.center,
                 style: context.theme.typography.body.sm.copyWith(
                   color: context.theme.colors.mutedForeground,
@@ -88,7 +89,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(discussionFeedProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).discussionFeedRetry),
               ),
             ],
           ),
@@ -113,7 +114,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   ),
                   const Gap(10),
                   Text(
-                    'Belum ada diskusi yang tayang',
+                    AppLocalizations.of(context).discussionFeedEmpty,
                     textAlign: TextAlign.center,
                     style: context.theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w600,
@@ -121,7 +122,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   ),
                   const Gap(6),
                   Text(
-                    'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.',
+                    AppLocalizations.of(context).discussionFeedEmptyBody,
                     textAlign: TextAlign.center,
                     style: context.theme.typography.body.sm.copyWith(
                       color: context.theme.colors.mutedForeground,
@@ -209,7 +210,7 @@ class _NewThreadComposer extends StatelessWidget {
                 const Gap(10),
                 Expanded(
                   child: Text(
-                    'Mulai thread baru…',
+                    AppLocalizations.of(context).discussionFeedNewThread,
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                       height: 1.25,
@@ -235,7 +236,7 @@ class _FeedTile extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
+        title: Text(AppLocalizations.of(context).discussionLoginToVote),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -267,9 +268,10 @@ class _FeedTile extends ConsumerWidget {
     final body = item.body?.trim() ?? '';
     final images = item.images;
     final contextMeta = [
-      'Diskusi',
-      if (images.length > 1) '${images.length} foto',
-      if (item.hasAudio) 'Suara',
+      AppLocalizations.of(context).discussionFeedTitle,
+      if (images.length > 1)
+        AppLocalizations.of(context).discussionFeedPhotos(images.length),
+      if (item.hasAudio) AppLocalizations.of(context).discussionFeedAudio,
     ].join(' · ');
 
     // Satu foto 1:1 di kanan (seperti thumb ringkas; multi-foto hanya di detail).
@@ -400,7 +402,7 @@ class _FeedTile extends ConsumerWidget {
                     const Gap(10),
                     Expanded(
                       child: Text(
-                        'Saya juga ingin tahu',
+                        AppLocalizations.of(context).discussionAlsoCurious,
                         style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.25,
@@ -424,10 +426,14 @@ class _SortChips extends StatelessWidget {
   final String sort;
   final ValueChanged<String> onSelect;
 
-  static const _options = <({String value, String label})>[
-    (value: 'latest', label: 'Terbaru'),
-    (value: 'popular', label: 'Populer'),
-  ];
+  static const _options = <String>['latest', 'popular'];
+
+  String _labelOf(BuildContext context, String value) {
+    final l10n = AppLocalizations.of(context);
+    return value == 'popular'
+        ? l10n.discussionFeedSortPopular
+        : l10n.discussionFeedSortNewest;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -441,19 +447,21 @@ class _SortChips extends StatelessWidget {
             children: [
               for (final opt in _options)
                 GestureDetector(
-                  onTap: sort == opt.value ? null : () => onSelect(opt.value),
+                  onTap: sort == opt ? null : () => onSelect(opt),
                   child: FBadge(
-                    variant: sort == opt.value
+                    variant: sort == opt
                         ? FBadgeVariant.primary
                         : FBadgeVariant.secondary,
-                    child: Text(opt.label),
+                    child: Text(_labelOf(context, opt)),
                   ),
                 ),
             ],
           ),
         ),
         Text(
-          sort == 'popular' ? 'Menurut upvote' : 'Menurut waktu',
+          sort == 'popular'
+              ? AppLocalizations.of(context).discussionFeedSortByUpvote
+              : AppLocalizations.of(context).discussionFeedSortByTime,
           style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             fontSize: 11,

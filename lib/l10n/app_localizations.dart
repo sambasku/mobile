@@ -11716,6 +11716,654 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Respons ImageKit tidak lengkap'**
   String get contributeImageKitIncomplete;
+
+  /// No description provided for @discussionLoginFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya sebelum mulai diskusi'**
+  String get discussionLoginFirst;
+
+  /// No description provided for @discussionClipboardEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong'**
+  String get discussionClipboardEmpty;
+
+  /// No description provided for @discussionRecordSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam untuk diskusi'**
+  String get discussionRecordSheetTitle;
+
+  /// No description provided for @discussionRecordSheetSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik. Rekaman dilampirkan setelah deskripsi dikirim.'**
+  String get discussionRecordSheetSubtitle;
+
+  /// No description provided for @discussionRecordSheetUse.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai rekaman'**
+  String get discussionRecordSheetUse;
+
+  /// No description provided for @discussionWaitUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload gambar selesai'**
+  String get discussionWaitUpload;
+
+  /// No description provided for @discussionBodyRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis dulu pertanyaan atau cerita kamu ya'**
+  String get discussionBodyRequired;
+
+  /// No description provided for @discussionLinkHttpsRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan harus memakai https://'**
+  String get discussionLinkHttpsRequired;
+
+  /// No description provided for @discussionAllImagesFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua gambar gagal'**
+  String get discussionAllImagesFailed;
+
+  /// No description provided for @discussionAllImagesFailedBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?'**
+  String get discussionAllImagesFailedBody;
+
+  /// No description provided for @discussionSendWithoutImages.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim tanpa gambar'**
+  String get discussionSendWithoutImages;
+
+  /// No description provided for @discussionSentAudioFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi terkirim; rekaman gagal dilampirkan'**
+  String get discussionSentAudioFailed;
+
+  /// No description provided for @discussionSentPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Permintaan terkirim, menunggu pengecekan'**
+  String get discussionSentPending;
+
+  /// No description provided for @discussionStorageUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyimpanan gambar belum tersedia'**
+  String get discussionStorageUnavailable;
+
+  /// No description provided for @discussionGenericError.
+  ///
+  /// In id, this message translates to:
+  /// **'Terjadi kesalahan, coba lagi'**
+  String get discussionGenericError;
+
+  /// No description provided for @discussionCreateTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai diskusi'**
+  String get discussionCreateTitle;
+
+  /// No description provided for @discussionCreateAlertTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Thread kamu dicek dulu sebelum tayang'**
+  String get discussionCreateAlertTitle;
+
+  /// No description provided for @discussionCreateAlertBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.'**
+  String get discussionCreateAlertBody;
+
+  /// No description provided for @discussionCreateLoginCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get discussionCreateLoginCta;
+
+  /// No description provided for @discussionCreateBodyLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi'**
+  String get discussionCreateBodyLabel;
+
+  /// No description provided for @discussionCreateBodyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.'**
+  String get discussionCreateBodyHint;
+
+  /// No description provided for @discussionCreatePaste.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get discussionCreatePaste;
+
+  /// No description provided for @discussionCreateCharCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count}/1000'**
+  String discussionCreateCharCount(int count);
+
+  /// No description provided for @discussionCreateShareLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Sertakan link dari sosial media'**
+  String get discussionCreateShareLink;
+
+  /// No description provided for @discussionCreateLinkLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan'**
+  String get discussionCreateLinkLabel;
+
+  /// No description provided for @discussionCreateLinkHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://'**
+  String get discussionCreateLinkHint;
+
+  /// No description provided for @discussionCreateAudioLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara (opsional)'**
+  String get discussionCreateAudioLabel;
+
+  /// No description provided for @discussionCreateAudioReady.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman siap · {sec}s'**
+  String discussionCreateAudioReady(int sec);
+
+  /// No description provided for @discussionCreateRerecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi'**
+  String get discussionCreateRerecord;
+
+  /// No description provided for @discussionCreateRecordCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get discussionCreateRecordCta;
+
+  /// No description provided for @discussionCreatePhotoLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto (opsional, maks 4)'**
+  String get discussionCreatePhotoLabel;
+
+  /// No description provided for @discussionCreatePhotoLoginHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk lampirkan foto.'**
+  String get discussionCreatePhotoLoginHint;
+
+  /// No description provided for @discussionImageUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Satu gambar gagal diunggah'**
+  String get discussionImageUploadFailed;
+
+  /// No description provided for @discussionSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get discussionSending;
+
+  /// No description provided for @discussionSendCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get discussionSendCta;
+
+  /// No description provided for @discussionRetryAfter.
+  ///
+  /// In id, this message translates to:
+  /// **'{message} Coba lagi dalam {retry} detik.'**
+  String discussionRetryAfter(String message, String retry);
+
+  /// No description provided for @discussionServerOutdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Server lama merespons. Coba lagi dalam beberapa saat.'**
+  String get discussionServerOutdated;
+
+  /// No description provided for @discussionConnectionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal terhubung ke server. Coba lagi dalam beberapa saat.'**
+  String get discussionConnectionFailed;
+
+  /// No description provided for @discussionUploadCredsIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Kredensial upload tidak lengkap'**
+  String get discussionUploadCredsIncomplete;
+
+  /// No description provided for @discussionResponseIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Response diskusi tidak lengkap'**
+  String get discussionResponseIncomplete;
+
+  /// No description provided for @discussionAudioSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim rekaman suara'**
+  String get discussionAudioSendFailed;
+
+  /// No description provided for @discussionFeedLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat diskusi'**
+  String get discussionFeedLoadFailed;
+
+  /// No description provided for @discussionHistoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat diskusi'**
+  String get discussionHistoryLoadFailed;
+
+  /// No description provided for @discussionDetailIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail diskusi tidak lengkap'**
+  String get discussionDetailIncomplete;
+
+  /// No description provided for @discussionDetailLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat detail diskusi'**
+  String get discussionDetailLoadFailed;
+
+  /// No description provided for @discussionReplyIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan tidak lengkap'**
+  String get discussionReplyIncomplete;
+
+  /// No description provided for @discussionReplySendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim balasan'**
+  String get discussionReplySendFailed;
+
+  /// No description provided for @discussionReplyAudioIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan suara tidak lengkap'**
+  String get discussionReplyAudioIncomplete;
+
+  /// No description provided for @discussionReplyDeleteFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus balasan'**
+  String get discussionReplyDeleteFailed;
+
+  /// No description provided for @discussionQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat antrean diskusi'**
+  String get discussionQueueLoadFailed;
+
+  /// No description provided for @discussionApproveResponseIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Respons approve tidak lengkap'**
+  String get discussionApproveResponseIncomplete;
+
+  /// No description provided for @discussionApproveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyetujui diskusi'**
+  String get discussionApproveFailed;
+
+  /// No description provided for @discussionRejectResponseIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Respons reject tidak lengkap'**
+  String get discussionRejectResponseIncomplete;
+
+  /// No description provided for @discussionRejectFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menolak diskusi'**
+  String get discussionRejectFailed;
+
+  /// No description provided for @discussionLoginToReply.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membalas'**
+  String get discussionLoginToReply;
+
+  /// No description provided for @discussionLoginToVote.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk memberi vote'**
+  String get discussionLoginToVote;
+
+  /// No description provided for @discussionReplySent.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan terkirim'**
+  String get discussionReplySent;
+
+  /// No description provided for @discussionReplyDeleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus balasan?'**
+  String get discussionReplyDeleteTitle;
+
+  /// No description provided for @discussionReplyDeleteBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan akan dihapus dari thread.'**
+  String get discussionReplyDeleteBody;
+
+  /// No description provided for @discussionReplyDeleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan dihapus'**
+  String get discussionReplyDeleted;
+
+  /// No description provided for @discussionHelpDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail Bantuan'**
+  String get discussionHelpDetailTitle;
+
+  /// No description provided for @discussionRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get discussionRetry;
+
+  /// No description provided for @discussionAlsoCurious.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya juga ingin tahu'**
+  String get discussionAlsoCurious;
+
+  /// No description provided for @discussionRepliesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan'**
+  String get discussionRepliesLabel;
+
+  /// No description provided for @discussionRepliesCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan · {count}'**
+  String discussionRepliesCount(int count);
+
+  /// No description provided for @discussionRepliesPendingLocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan dibuka setelah permintaan ditayangkan.'**
+  String get discussionRepliesPendingLocked;
+
+  /// No description provided for @discussionRepliesUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Thread balasan tidak tersedia untuk status ini.'**
+  String get discussionRepliesUnavailable;
+
+  /// No description provided for @discussionRepliesEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada balasan. Jadilah yang pertama membantu.'**
+  String get discussionRepliesEmpty;
+
+  /// No description provided for @discussionRepliesRemovedModerator.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan dihapus moderator'**
+  String get discussionRepliesRemovedModerator;
+
+  /// No description provided for @discussionRepliesRemovedAuthor.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan dihapus penulis'**
+  String get discussionRepliesRemovedAuthor;
+
+  /// No description provided for @discussionPinned.
+  ///
+  /// In id, this message translates to:
+  /// **'Disematkan'**
+  String get discussionPinned;
+
+  /// No description provided for @discussionHelpfulQuestion.
+  ///
+  /// In id, this message translates to:
+  /// **'Jawaban membantu?'**
+  String get discussionHelpfulQuestion;
+
+  /// No description provided for @discussionReplyLoginCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk untuk membalas'**
+  String get discussionReplyLoginCta;
+
+  /// No description provided for @discussionReplyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis balasan…'**
+  String get discussionReplyHint;
+
+  /// No description provided for @discussionPhotoTapHintMany.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain'**
+  String get discussionPhotoTapHintMany;
+
+  /// No description provided for @discussionPhotoTapHintOne.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk foto untuk melihat ukuran penuh'**
+  String get discussionPhotoTapHintOne;
+
+  /// No description provided for @discussionFeedTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang Diskusi'**
+  String get discussionFeedTitle;
+
+  /// No description provided for @discussionFeedRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get discussionFeedRetry;
+
+  /// No description provided for @discussionFeedEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada diskusi yang tayang'**
+  String get discussionFeedEmpty;
+
+  /// No description provided for @discussionFeedEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.'**
+  String get discussionFeedEmptyBody;
+
+  /// No description provided for @discussionFeedNewThread.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai thread baru…'**
+  String get discussionFeedNewThread;
+
+  /// No description provided for @discussionFeedPhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} foto'**
+  String discussionFeedPhotos(int count);
+
+  /// No description provided for @discussionFeedAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara'**
+  String get discussionFeedAudio;
+
+  /// No description provided for @discussionFeedSortNewest.
+  ///
+  /// In id, this message translates to:
+  /// **'Terbaru'**
+  String get discussionFeedSortNewest;
+
+  /// No description provided for @discussionFeedSortPopular.
+  ///
+  /// In id, this message translates to:
+  /// **'Populer'**
+  String get discussionFeedSortPopular;
+
+  /// No description provided for @discussionFeedSortByUpvote.
+  ///
+  /// In id, this message translates to:
+  /// **'Menurut upvote'**
+  String get discussionFeedSortByUpvote;
+
+  /// No description provided for @discussionFeedSortByTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Menurut waktu'**
+  String get discussionFeedSortByTime;
+
+  /// No description provided for @discussionStatusAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get discussionStatusAll;
+
+  /// No description provided for @discussionStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get discussionStatusPending;
+
+  /// No description provided for @discussionStatusPublished.
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get discussionStatusPublished;
+
+  /// No description provided for @discussionStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get discussionStatusRejected;
+
+  /// No description provided for @discussionStatusTakenDown.
+  ///
+  /// In id, this message translates to:
+  /// **'Diturunkan'**
+  String get discussionStatusTakenDown;
+
+  /// No description provided for @discussionMyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantuan Saya'**
+  String get discussionMyTitle;
+
+  /// No description provided for @discussionMyLoginFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat riwayat diskusi kamu'**
+  String get discussionMyLoginFirst;
+
+  /// No description provided for @discussionMyHistoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat'**
+  String get discussionMyHistoryLoadFailed;
+
+  /// No description provided for @discussionMyEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada diskusi'**
+  String get discussionMyEmpty;
+
+  /// No description provided for @discussionMyEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim teks atau foto yang sulit diterjemahkan.'**
+  String get discussionMyEmptyBody;
+
+  /// No description provided for @discussionMyStartCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai diskusi'**
+  String get discussionMyStartCta;
+
+  /// No description provided for @discussionMyNoText.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa teks'**
+  String get discussionMyNoText;
+
+  /// No description provided for @discussionReplyRecordTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam balasan suara'**
+  String get discussionReplyRecordTitle;
+
+  /// No description provided for @discussionReplyRecordSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom balasan sebelum merekam.'**
+  String get discussionReplyRecordSubtitle;
+
+  /// No description provided for @discussionReplyRecordSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim rekaman'**
+  String get discussionReplyRecordSubmit;
+
+  /// No description provided for @discussionImageCensored.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar disensor. Ketuk untuk menampilkan.'**
+  String get discussionImageCensored;
+
+  /// No description provided for @discussionImageViolenceTap.
+  ///
+  /// In id, this message translates to:
+  /// **'Kekerasan · ketuk untuk lihat'**
+  String get discussionImageViolenceTap;
+
+  /// No description provided for @discussionImageViolence.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten kekerasan'**
+  String get discussionImageViolence;
+
+  /// No description provided for @discussionNotReady.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum siap'**
+  String get discussionNotReady;
+
+  /// No description provided for @discussionQuestionPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan belum tayang'**
+  String get discussionQuestionPending;
+
+  /// No description provided for @discussionReplyMinLength.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan minimal 1 karakter'**
+  String get discussionReplyMinLength;
 }
 
 class _AppLocalizationsDelegate
