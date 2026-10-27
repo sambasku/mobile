@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Bottom sheet error form-level (submit gagal) atau error muat data.
 ///
@@ -12,7 +13,7 @@ import 'package:gap/gap.dart';
 Future<void> showAppErrorSheet(
   BuildContext context, {
   required String message,
-  String title = 'Terjadi kesalahan',
+  String? title,
   VoidCallback? onRetry,
 }) {
   return showModalBottomSheet<void>(
@@ -31,7 +32,7 @@ Future<void> showAppErrorSheet(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  title,
+                  title ?? AppLocalizations.of(sheetContext).errorSheetTitle,
                   style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                 ),
                 const Gap(8),
@@ -52,7 +53,7 @@ Future<void> showAppErrorSheet(
                 if (onRetry == null)
                   FButton(
                     onPress: () => Navigator.of(sheetContext).pop(),
-                    child: const Text('Mengerti'),
+                    child: Text(AppLocalizations.of(sheetContext).errorSheetOk),
                   )
                 else
                   Row(
@@ -61,7 +62,7 @@ Future<void> showAppErrorSheet(
                         child: FButton(
                           variant: FButtonVariant.outline,
                           onPress: () => Navigator.of(sheetContext).pop(),
-                          child: const Text('Tutup'),
+                          child: Text(AppLocalizations.of(sheetContext).errorSheetClose),
                         ),
                       ),
                       const Gap(8),
@@ -71,7 +72,7 @@ Future<void> showAppErrorSheet(
                             Navigator.of(sheetContext).pop();
                             onRetry();
                           },
-                          child: const Text('Coba lagi'),
+                          child: Text(AppLocalizations.of(sheetContext).errorSheetRetry),
                         ),
                       ),
                     ],

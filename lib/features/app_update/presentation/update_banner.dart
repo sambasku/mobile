@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 
 import '../../../core/models/external_link.dart';
+import '../../../l10n/app_localizations.dart';
 import 'app_update_provider.dart';
 
 /// Banner info versi terbaru tersedia (issue mobile#196).
@@ -26,6 +27,7 @@ class _UpdateBannerState extends ConsumerState<UpdateBanner> {
     if (_dismissed) return const SizedBox.shrink();
 
     final update = ref.watch(appUpdateProvider);
+    final l10n = AppLocalizations.of(context);
     return update.maybeWhen(
       data: (state) {
         if (state == null) return const SizedBox.shrink();
@@ -37,7 +39,7 @@ class _UpdateBannerState extends ConsumerState<UpdateBanner> {
             children: [
               FAlert(
                 variant: FAlertVariant.primary,
-                title: Text('Versi ${release.version} sudah tersedia'),
+                title: Text(l10n.updateAvailableTitle(release.version)),
                 subtitle: Text(
                   'Update biar dapat fitur terbaru dan perbaikan bug ya.',
                 ),
@@ -49,7 +51,7 @@ class _UpdateBannerState extends ConsumerState<UpdateBanner> {
                     child: FButton(
                       size: FButtonSizeVariant.sm,
                       onPress: () => launchExternalUrl(release.storeUrl!),
-                      child: const Text('Update sekarang'),
+                      child: Text(l10n.updateNow),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -57,7 +59,7 @@ class _UpdateBannerState extends ConsumerState<UpdateBanner> {
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.sm,
                     onPress: () => setState(() => _dismissed = true),
-                    child: const Text('Nanti'),
+                    child: Text(l10n.updateLater),
                   ),
                 ],
               ),

@@ -7,6 +7,7 @@ import 'package:sambasku_mobile/features/admin_analytics/domain/entities/dashboa
 import 'package:sambasku_mobile/features/admin_analytics/presentation/pages/admin_analytics_page.dart';
 import 'package:sambasku_mobile/features/admin_analytics/presentation/providers/admin_analytics_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('halaman analitik render tanpa RenderFlex overflow', (tester) async {
@@ -18,8 +19,12 @@ void main() {
         ],
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: GoRouter(
             initialLocation: '/admin/analytics',
             routes: [

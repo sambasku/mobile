@@ -8,6 +8,7 @@ import '../../../../core/theme/forui_palette_controller.dart';
 import '../../../../core/theme/forui_palettes.dart';
 import '../../../../core/theme/font_scale_controller.dart';
 import '../../../../core/theme/theme_mode_controller.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Menu Tampilan di tab profil: mode light/dark/sistem + palet warna forui.
 /// CATATAN: fungsi (bukan widget) agar hasilnya FTileMixin → bisa jadi child FTileGroup;
@@ -44,6 +45,7 @@ FTileMixin themeModeTile(WidgetRef ref) {
 }
 
 FTileMixin paletteTile(WidgetRef ref) {
+  final l10n = AppLocalizations.of(ref.context);
   final name = ref.watch(foruiPaletteControllerProvider);
   final palette = foruiPalettes[name] ?? foruiPalettes[defaultPalette]!;
 
@@ -56,7 +58,7 @@ FTileMixin paletteTile(WidgetRef ref) {
 
   return FSelectMenuTile<String>(
     prefix: const Icon(FLucideIcons.palette),
-    title: const Text('Warna Tema'),
+    title: Text(l10n.appearancePalette),
     details: Text(palette.label),
     maxHeight: menuMaxHeight,
     selectControl: FMultiValueControl.managedRadio(

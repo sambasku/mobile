@@ -10,6 +10,7 @@ import 'package:sambasku_mobile/features/review/presentation/providers/review_pr
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_inline_type_editor.dart';
 import 'package:sambasku_mobile/shared/reference/reference_data.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _umum = '01CLASSUMUM00000000000000';
 const _nomina = '01CLASSNOMINA000000000000';
@@ -118,8 +119,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             // FToaster 0.27 butuh FTheme ancestor (akses accessibility scope).

@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/theme/f_colors_x.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Tile "Server" di halaman Profil: user memilih host API (Cloudflare /
 /// Deno Deploy / Render) + uji ping sebelum pindah, lalu menguncinya.
@@ -16,7 +17,7 @@ import '../../../../core/theme/f_colors_x.dart';
 FTileMixin apiHostTile(BuildContext context, ApiHostResolver resolver) {
   return FTile(
     prefix: const Icon(FLucideIcons.server, size: 18),
-    title: const Text('Server'),
+    title: Text(AppLocalizations.of(context).serverTileTitle),
     suffix: ListenableBuilder(
       listenable: resolver,
       builder: (_, _) => _ActiveHostLabel(resolver: resolver),
@@ -36,7 +37,7 @@ class _ActiveHostLabel extends StatelessWidget {
     final forced = resolver.forcedTierIndex;
     if (forced == null) {
       return Text(
-        'Otomatis',
+        AppLocalizations.of(context).serverAuto,
         style: TextStyle(
           fontSize: 13,
           color: context.theme.colors.mutedForeground,
@@ -177,24 +178,29 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
               children: [
                 const Icon(FLucideIcons.server, size: 20),
                 const Gap(8),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Pilih Server',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    AppLocalizations.of(context).serverPickTitle,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 FButton(
                   size: FButtonSizeVariant.sm,
                   onPress: _probing ? null : _probeAll,
-                  child: Text(_probing ? 'Ping...' : 'Ping'),
+                  child: Text(
+                    _probing
+                        ? AppLocalizations.of(context).serverPinging
+                        : AppLocalizations.of(context).serverPing,
+                  ),
                 ),
               ],
             ),
             const Gap(8),
             Text(
-              'Pilih server yang paling cepat. Hasil uji hanya menunjukkan '
-              'kondisi saat ini - Render tidur setelah ~15 menit menganggur '
-              'dan bisa butuh sampai 60 detik untuk bangun.',
+              AppLocalizations.of(context).serverPickHint,
               style: TextStyle(
                 fontSize: 11,
                 color: context.theme.colors.mutedForeground,
@@ -205,9 +211,9 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 FTile(
-                  title: const Text('Otomatis'),
-                  subtitle: const Text(
-                    'Pakai Cloudflare, pindah sendiri kalau gagal (disarankan)',
+                  title: Text(AppLocalizations.of(context).serverAuto),
+                  subtitle: Text(
+                    AppLocalizations.of(context).serverAutoSubtitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -232,10 +238,9 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
               ],
             ),
             const Gap(12),
-            if (forced != null)
-              Text(
-                'Server terkunci: pindah otomatis ke server lain dimatikan '
-                'sampai kamu pilih "Otomatis" lagi.',
+                if (forced != null)
+                  Text(
+                    AppLocalizations.of(context).serverLockedHint,
                 style: TextStyle(
                   fontSize: 11,
                   color: context.theme.colors.mutedForeground,

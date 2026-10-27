@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/network/connectivity_provider.dart';
 import 'package:sambasku_mobile/shared/widgets/offline_banner.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   test('connectivity: semua none = offline, ada wifi = online', () {
@@ -30,7 +31,15 @@ void main() {
         ],
         child: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
-          child: const MaterialApp(home: Scaffold(body: OfflineBanner())),
+          child: MaterialApp(
+        localizationsDelegates: const [
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: const [Locale('id')],
+        locale: const Locale('id'),
+        home: const Scaffold(body: OfflineBanner()),
+      ),
         ),
       ),
     );

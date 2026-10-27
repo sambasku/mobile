@@ -11,6 +11,7 @@ import 'package:sambasku_mobile/features/activity/presentation/providers/contrib
 import 'package:sambasku_mobile/features/activity/presentation/widgets/contribution_guide_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Guide swipe tab Kontribusi: hanya tap "Mengerti" yang menulis flag
 /// lokal. Full-screen overlay dengan barrierDismissible=false.
@@ -37,8 +38,12 @@ void main() {
             container = ProviderScope.containerOf(context);
             return MaterialApp(
               theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-              localizationsDelegates: FLocalizations.localizationsDelegates,
-              supportedLocales: FLocalizations.supportedLocales,
+              localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+              supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
               builder: (context, child) =>
                   FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
               home: const Scaffold(body: SizedBox.expand()),

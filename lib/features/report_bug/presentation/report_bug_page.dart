@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../shared/widgets/attachment_images_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/utils/error_bottom_sheet.dart';
 import '../../../core/services/analytics_service.dart';
 import '../../auth/presentation/providers/auth_status_providers.dart';
@@ -23,6 +24,7 @@ class ReportBugPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final description = useTextEditingController();
     useListenable(description);
     final images = useState<List<AttachmentImageSlot>>(const []);
@@ -41,7 +43,7 @@ class ReportBugPage extends HookConsumerWidget {
           images.value.any((e) => e.uploading)) {
         showFToast(
           context: context,
-          title: const Text('Tunggu upload gambar selesai'),
+          title: Text(l10n.reportBugWaitUpload),
         );
         return;
       }
@@ -73,9 +75,9 @@ class ReportBugPage extends HookConsumerWidget {
                   FTileGroup(
                     children: [
                       FTile(
-                        title: const Text('Semua gambar gagal'),
-                        subtitle: const Text(
-                          'Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?',
+                        title: Text(l10n.reportBugAllImagesFailedTitle),
+                        subtitle: Text(
+                          l10n.reportBugAllImagesFailedBody,
                         ),
                       ),
                       FTile(
@@ -83,14 +85,14 @@ class ReportBugPage extends HookConsumerWidget {
                         suffix: FButton(
                           variant: FButtonVariant.destructive,
                           onPress: () => Navigator.of(sheetContext).pop(true),
-                          child: const Text('Kirim tanpa gambar'),
+                          child: Text(l10n.reportBugSendWithoutImages),
                         ),
                       ),
                       FTile(
                         title: const Text(''),
                         suffix: FButton(
                           onPress: () => Navigator.of(sheetContext).pop(false),
-                          child: const Text('Batal'),
+                          child: Text(l10n.reportBugCancel),
                         ),
                       ),
                     ],
@@ -134,18 +136,18 @@ class ReportBugPage extends HookConsumerWidget {
         if (!context.mounted) return;
         showFToast(
           context: context,
-          title: const Text('Terima kasih, laporan kamu sudah kami terima'),
+          title: Text(l10n.reportBugThanks),
         );
         context.pop();
       } on DioException catch (e) {
         if (context.mounted) {
-          await showAppErrorSheet(context, message: _mapDio(e));
+          await showAppErrorSheet(context, message: _mapDio(e, l10n));
         }
       } catch (_) {
         if (context.mounted) {
           await showAppErrorSheet(
             context,
-            message: 'Terjadi kesalahan, coba lagi',
+            message: l10n.reportBugGenericError,
           );
         }
       } finally {
@@ -156,7 +158,7 @@ class ReportBugPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Laporkan Masalah'),
+        title: Text(l10n.reportBugTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -168,10 +170,10 @@ class ReportBugPage extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           if (isGuest) ...[
-            const FAlert(title: Text('Laporan kamu dikirim sebagai Anonim')),
+            FAlert(title: Text(l10n.reportBugGuestAnonymous)),
             const Gap(4),
             Text(
-              'Login untuk bisa melampirkan screenshot',
+              l10n.reportBugGuestLoginHint,
               style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
@@ -181,9 +183,9 @@ class ReportBugPage extends HookConsumerWidget {
           FTextField(
             control: FTextFieldControl.managed(controller: description),
             enabled: !submitting.value,
-            label: const Text('Keterangan'),
+            label: Text(l10n.reportBugDescriptionLabel),
             hint:
-                'Ceritakan apa yang terjadi, langkah reproduksi, dan yang kamu harapkan',
+                l10n.reportBugDescriptionHint,
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             minLines: 5,
@@ -201,7 +203,7 @@ class ReportBugPage extends HookConsumerWidget {
           if (attachmentsEnabled.value && !isGuest) ...[
             const Gap(8),
             Text(
-              'Lampiran (opsional, maks 4)',
+              l10n.reportBugAttachmentsLabel,
               style: context.theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -233,11 +235,9 @@ class ReportBugPage extends HookConsumerWidget {
                             FTileGroup(
                               children: [
                                 FTile(
-                                  title: const Text(
-                                    'Gambar tidak bisa diunggah',
-                                  ),
-                                  subtitle: const Text(
-                                    'Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?',
+                                  title: Text(l10n.reportBugImagesUnavailableTitle),
+                                  subtitle: Text(
+                                    l10n.reportBugImagesUnavailableBody,
                                   ),
                                 ),
                                 FTile(
@@ -246,7 +246,7 @@ class ReportBugPage extends HookConsumerWidget {
                                     variant: FButtonVariant.destructive,
                                     onPress: () =>
                                         Navigator.of(sheetContext).pop(true),
-                                    child: const Text('Kirim tanpa gambar'),
+                                    child: Text(l10n.reportBugSendWithoutImages),
                                   ),
                                 ),
                                 FTile(
@@ -254,7 +254,7 @@ class ReportBugPage extends HookConsumerWidget {
                                   suffix: FButton(
                                     onPress: () =>
                                         Navigator.of(sheetContext).pop(false),
-                                    child: const Text('Batal'),
+                                    child: Text(l10n.reportBugCancel),
                                   ),
                                 ),
                               ],
@@ -311,7 +311,7 @@ class ReportBugPage extends HookConsumerWidget {
           FButton(
             onPress: canSubmit ? () => submit() : null,
             prefix: submitting.value ? const FCircularProgress() : null,
-            child: Text(submitting.value ? 'Mengirim...' : 'Kirim'),
+            child: Text(submitting.value ? l10n.reportBugSubmitting : l10n.reportBugSubmit),
           ),
         ],
       ),
@@ -319,7 +319,7 @@ class ReportBugPage extends HookConsumerWidget {
   }
 }
 
-String _mapDio(DioException error) {
+String _mapDio(DioException error, AppLocalizations l10n) {
   final data = error.response?.data;
   if (data is Map &&
       data['message'] is String &&
@@ -328,7 +328,7 @@ String _mapDio(DioException error) {
     if (error.response?.statusCode == 429) {
       final retry = error.response?.headers.value('retry-after');
       if (retry != null && retry.isNotEmpty) {
-        return '$message Coba lagi dalam $retry detik.';
+        return l10n.reportBugRateLimited(message, retry);
       }
     }
     return message;
@@ -337,9 +337,9 @@ String _mapDio(DioException error) {
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
     DioExceptionType.receiveTimeout =>
-      'Server lama merespons. Coba lagi dalam beberapa saat.',
+      l10n.reportBugTimeout,
     DioExceptionType.connectionError =>
-      'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
-    _ => 'Terjadi kesalahan, coba lagi',
+      l10n.reportBugConnectionError,
+    _ => l10n.reportBugGenericError,
   };
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/models/external_link.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -27,11 +28,12 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tentang'),
+        title: Text(l10n.aboutTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -53,7 +55,7 @@ class AboutPage extends StatelessWidget {
               const BrandMark(size: 112),
               const Gap(8),
               Text(
-                'Kamus Digital Sambas-Indonesia',
+                AppLocalizations.of(context).aboutTagline,
                 textAlign: TextAlign.center,
                 style: theme.typography.body.xs.copyWith(
                   height: 1.2,
@@ -62,7 +64,7 @@ class AboutPage extends StatelessWidget {
               ),
               const Gap(2),
               Text(
-                'Versi $versionLabel',
+                AppLocalizations.of(context).aboutVersion(versionLabel),
                 textAlign: TextAlign.center,
                 style: theme.typography.body.xs.copyWith(
                   height: 1.2,
@@ -119,10 +121,11 @@ class SponsorshipTeamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Sponsor & Tim Kami'),
+        title: Text(l10n.aboutSponsorshipTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -132,12 +135,12 @@ class SponsorshipTeamPage extends StatelessWidget {
       ),
       child: FTabs(
         expands: true,
-        children: const [
+        children: [
           FTabEntry.entry(
-            label: Text('Sponsor & Mitra'),
-            child: _SponsorsTab(),
+            label: Text(l10n.aboutTabSponsors),
+            child: const _SponsorsTab(),
           ),
-          FTabEntry.entry(label: Text('Tim Kami'), child: _TeamTab()),
+          FTabEntry.entry(label: Text(l10n.aboutTabTeam), child: const _TeamTab()),
         ],
       ),
     );
@@ -149,17 +152,16 @@ class _SponsorsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-      children: const [
+      children: [
         _AboutBlock(
-          title: 'Ingin ikut mendukung?',
-          body:
-              'Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail '
-              'kerja sama ada di profil organisasi kami di GitHub.',
+          title: l10n.aboutSupportTitle,
+          body: l10n.aboutSupportBody,
         ),
-        Gap(16),
-        _SponsorsSection(),
+        const Gap(16),
+        const _SponsorsSection(),
       ],
     );
   }
@@ -170,30 +172,26 @@ class _TeamTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-      children: const [
+      children: [
         _AboutBlock(
-          title: 'Bersama warga Sambas',
-          body:
-              'Kamus ini dirawat orang-orang yang mengusulkan kata, '
-              'memeriksa entri, dan merekam pelafalan.',
+          title: l10n.aboutTogetherTitle,
+          body: l10n.aboutTogetherBody,
         ),
-        Gap(16),
+        const Gap(16),
         _AboutBlock(
-          title: 'Kontributor',
-          body:
-              'Mengirim kata baru atau perbaikan, dan merekam cara '
-              'mengucapkan kata agar bisa didengar. Entri tayang setelah '
-              'verifikasi.',
+          title: l10n.aboutContributorsTitle,
+          body: l10n.aboutContributorsBody,
         ),
-        Gap(16),
+        const Gap(16),
         _AboutBlock(
-          title: 'Verifikator',
-          body: 'Memeriksa usulan sebelum masuk kamus.',
+          title: l10n.aboutVerifiersTitle,
+          body: l10n.aboutVerifiersBody,
         ),
-        Gap(16),
-        _ContributorsSection(),
+        const Gap(16),
+        const _ContributorsSection(),
       ],
     );
   }
@@ -510,7 +508,7 @@ class _WebsiteAction extends StatelessWidget {
     if (!ok && context.mounted) {
       showFToast(
         context: context,
-        title: const Text('Tidak bisa membuka website'),
+        title: Text(AppLocalizations.of(context).aboutOpenWebsiteFailed),
       );
     }
   }
@@ -518,7 +516,7 @@ class _WebsiteAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: 'Buka website',
+      tooltip: AppLocalizations.of(context).aboutOpenWebsiteTooltip,
       visualDensity: VisualDensity.compact,
       icon: Icon(
         FLucideIcons.globe,

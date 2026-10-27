@@ -3,13 +3,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/widgets/busy_aware_icon.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
       theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-      localizationsDelegates: FLocalizations.localizationsDelegates,
-      supportedLocales: FLocalizations.supportedLocales,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       home: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(body: Center(child: child)),

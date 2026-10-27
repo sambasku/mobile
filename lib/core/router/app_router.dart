@@ -34,6 +34,9 @@ import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
 import '../../features/onboarding/data/onboarding_prefs.dart';
 import '../../features/onboarding/onboarding_router.dart';
+import '../../features/settings/settings_router.dart';
+import '../../l10n/app_localizations.dart';
+import '../../core/i18n/locale_prefs.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/report_bug/report_bug_router.dart';
 import '../../features/review/presentation/providers/review_suggestions_providers.dart';
@@ -95,6 +98,7 @@ class AppRouter {
       ...UsahaRouter.routes,
       ...ActivityRouter.routes,
       ...AchievementRouter.routes,
+  ...SettingsRouter.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _HomeShell(navigationShell: navigationShell),
@@ -154,7 +158,7 @@ class AppRouter {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Text('Halaman tidak ditemukan: ${state.error}'),
+          child: Text(AppLocalizations.of(context).routerNotFound(state.error.toString())),
         ),
       ),
     ),
@@ -204,13 +208,22 @@ class AppRouter {
     final wordLink = nativeWordPathFromPublicLink(state.uri);
     if (wordLink != null) return wordLink;
 
-    final onboardingDone = OnboardingPrefs.done;
-    final isOnboarding = loc == OnboardingRouter.onboarding.path;
-    final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
+final onboardingDone = OnboardingPrefs.done;
+final localeChosen = LocalePrefs.chosen;
+final isOnboarding = loc == OnboardingRouter.onboarding.path;
+final isLanguage = loc == OnboardingRouter.language.path;
+final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
 
-    if (!onboardingDone && !isOnboarding && !isDeepLinkFriendly) {
-      return OnboardingRouter.onboarding.path;
-    }
+// Slide 0 bahasa (MOBILE-I18N §7): wajib sebelum pengalaman kamus.
+// Prioritas di atas onboarding: user existing yang sudah menyelesaikan
+// onboarding lama tapi belum pernah memilih bahasa (upgrade) tetap
+// diarahkan ke sana dulu.
+if (!localeChosen && !isLanguage) {
+  return OnboardingRouter.language.path;
+}
+if (!onboardingDone && !isOnboarding && !isLanguage && !isDeepLinkFriendly) {
+  return OnboardingRouter.onboarding.path;
+}
     if (onboardingDone && isOnboarding) {
       return '/';
     }
@@ -291,6 +304,7 @@ class _HomeShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
 
     // Consent legal: server (GET /users/me) yang jadi sumber kebenaran.
@@ -361,23 +375,23 @@ class _HomeShell extends ConsumerWidget {
               }
             },
             children: [
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.house),
-                label: Text('Home'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.house),
+                label: Text(l10n.navHome),
               ),
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.compass),
-                label: Text('Eksplorasi'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.compass),
+                label: Text(l10n.navExplore),
               ),
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.circlePlus),
-                label: Text('Kontribusi'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.circlePlus),
+                label: Text(l10n.navContribute),
               ),
               FBottomNavigationBarItem(
                 icon: pendingReview
                     ? const _ProfileNavIcon(showDot: true)
                     : const Icon(FLucideIcons.userRound),
-                label: const Text('Profil'),
+                label: Text(l10n.navProfile),
               ),
             ],
           ),

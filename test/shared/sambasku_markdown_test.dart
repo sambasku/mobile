@@ -4,12 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/shared/widgets/sambasku_markdown.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Issue #160: ukuran heading/spasi artikel + edge case input.
 Widget _host(Widget child) => MaterialApp(
   theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-  localizationsDelegates: FLocalizations.localizationsDelegates,
-  supportedLocales: FLocalizations.supportedLocales,
+  localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+  supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
   home: FTheme(
     data: foruiPalettes['zinc']!.light.touch,
     child: Scaffold(body: SingleChildScrollView(child: child)),

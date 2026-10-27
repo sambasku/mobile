@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/cache/cache_providers.dart';
 import 'core/cache/evict_stale_image_assets.dart';
+import 'core/i18n/locale_prefs.dart';
 import 'core/network/auth_token_storage.dart';
 import 'core/network/failover/api_host_resolver.dart';
 import 'core/network/network_providers.dart';
@@ -91,9 +92,10 @@ Future<void> main() async {
   debugPrint('MILESTONE before-prefs'); // ignore: avoid_print
   final prefs = await SharedPreferences.getInstance();
   debugPrint('MILESTONE after-prefs'); // ignore: avoid_print
-  await ThemeModeController.preload(prefs);
-  await ForuiPaletteController.preload(prefs);
-  await FontScaleController.preload(prefs);
+await ThemeModeController.preload(prefs);
+await ForuiPaletteController.preload(prefs);
+await FontScaleController.preload(prefs);
+await LocalePrefs.preload(prefs);
   await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
 

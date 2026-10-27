@@ -7,6 +7,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../data/onboarding_prefs.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Onboarding first-install: welcome → fitur → izin notifikasi.
 ///
@@ -23,24 +24,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _index = 0;
   bool _busy = false;
+  static const _slideCount = 3;
 
-  static const _slides = [
+  List<({String title, String body, IconData icon})> _slides(
+    AppLocalizations l10n,
+  ) => [
     (
-      title: 'Selamat datang di SambasKu',
-      body:
-          'Kamus digital Sambas-Indonesia. Temukan arti kata, kenali cara bicara warga Sambas, dan ikut menjaga warisan kata.',
+      title: l10n.onboardingWelcomeTitle,
+      body: l10n.onboardingWelcomeBody,
       icon: FLucideIcons.bookOpen,
     ),
     (
-      title: 'Cari, usulkan, simpan',
-      body:
-          'Cari kata dengan cepat, usulkan kata baru atau perbaikan, dan simpan kata favorit biar gampang dibaca ulang.',
+      title: l10n.onboardingFeatureTitle,
+      body: l10n.onboardingFeatureBody,
       icon: FLucideIcons.search,
     ),
     (
-      title: 'Aktifkan notifikasi',
-      body:
-          'Kamu dapat kabar saat usulanmu disetujui. Izinkan notifikasi biar tidak ketinggalan.',
+      title: l10n.onboardingNotifTitle,
+      body: l10n.onboardingNotifBody,
       icon: FLucideIcons.bell,
     ),
   ];
@@ -68,7 +69,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _next() {
-    if (_index < _slides.length - 1) {
+    if (_index < _slideCount - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 280),
         curve: Curves.easeOutCubic,
@@ -79,7 +80,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     final theme = FTheme.of(context);
-    final isLast = _index == _slides.length - 1;
+    final l10n = AppLocalizations.of(context);
+    final slides = _slides(l10n);
+    final isLast = _index == slides.length - 1;
 
     return FScaffold(
       childPad: false,
@@ -95,10 +98,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
               Expanded(
                 child: PageView.builder(
                   controller: _controller,
-                  itemCount: _slides.length,
-                  onPageChanged: (i) => setState(() => _index = i),
-                  itemBuilder: (context, i) {
-                    final slide = _slides[i];
+              itemCount: slides.length,
+              onPageChanged: (i) => setState(() => _index = i),
+              itemBuilder: (context, i) {
+                final slide = slides[i];
                     return _SlideContent(
                       title: slide.title,
                       body: slide.body,
@@ -109,7 +112,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_slides.length, (i) {
+                children: List.generate(slides.length, (i) {
                   final active = i == _index;
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -128,29 +131,29 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 }),
               ),
               const Gap(24),
-              if (!isLast)
-                FButton(
-                  onPress: _busy ? null : _next,
-                  child: const Text('Lanjut'),
-                )
-              else ...[
-                FButton(
-                  onPress: _busy
-                      ? null
-                      : () => _finish(requestPermission: true),
-                  child: _busy
-                      ? const FCircularProgress()
-                      : const Text('Izinkan notifikasi'),
-                ),
-                const Gap(10),
-                FButton(
-                  variant: .ghost,
-                  onPress: _busy
-                      ? null
-                      : () => _finish(requestPermission: false),
-                  child: const Text('Nanti'),
-                ),
-              ],
+            if (!isLast)
+              FButton(
+                onPress: _busy ? null : _next,
+                child: Text(l10n.onboardingContinue),
+              )
+            else ...[
+              FButton(
+                onPress: _busy
+                    ? null
+                    : () => _finish(requestPermission: true),
+                child: _busy
+                    ? const FCircularProgress()
+                    : Text(l10n.onboardingAllowNotif),
+              ),
+              const Gap(10),
+              FButton(
+                variant: .ghost,
+                onPress: _busy
+                    ? null
+                    : () => _finish(requestPermission: false),
+                child: Text(l10n.onboardingLater),
+              ),
+            ],
               const Gap(8),
             ],
           ),

@@ -18,17 +18,18 @@ import '../../../admin_analytics/domain/admin_access.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../../notification/presentation/providers/notification_providers.dart';
+import '../../../settings/settings_router.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
 import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
-import '../widgets/appearance_tiles.dart';
 import '../widgets/notification_header_action.dart';
 
 /// Tab PROFILE - header identitas (avatar besar + cover) di atas menu
@@ -44,6 +45,7 @@ class ProfilePage extends HookConsumerWidget {
     final authStatus = ref.watch(authStatusProvider);
     final links = ref.watch(linkedAccountsProvider);
     final isAuth = authStatus.value?.isAuth ?? false;
+    final l10n = AppLocalizations.of(context);
     final scroll = useScrollController();
     // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
     final versionFuture = useMemoized(PackageInfo.fromPlatform);
@@ -89,7 +91,7 @@ class ProfilePage extends HookConsumerWidget {
               FHeaderAction(
                 icon: const Icon(FLucideIcons.pencil, size: 18),
                 onPress: () => context.push('/edit-profile'),
-                semanticsLabel: 'Edit profil',
+                semanticsLabel: l10n.profileEditSemantics,
               ),
             ],
           ],
@@ -122,31 +124,31 @@ class ProfilePage extends HookConsumerWidget {
                         children: [
                           if (state.isAuth) ...[
                             FTileGroup(
-                              label: const Text('Aktivitas saya'),
+                              label: Text(l10n.profileGroupActivity),
                               children: [
                                 const _NotificationTile(),
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.filePenLine,
-                                  title: 'Kontribusi Saya',
+                                  title: l10n.profileMyContributions,
                                   path: '/contributions',
                                 ),
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.bookmark,
-                                  title: 'Bookmark',
+                                  title: l10n.profileBookmarks,
                                   path: '/bookmarks',
                                 ),
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.arrowBigUp,
-                                  title: 'Vote',
+                                  title: l10n.profileVotes,
                                   path: '/votes',
                                 ),
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.messageSquare,
-                                  title: 'Komentar',
+                                  title: l10n.profileComments,
                                   path: '/comments',
                                 ),
                               ],
@@ -156,13 +158,13 @@ class ProfilePage extends HookConsumerWidget {
                                 canAccessReviewHome(state.role) ||
                                 canAccessAdminAnalytics(state.role)) ...[
                               FTileGroup(
-                                label: const Text('Peran'),
+                                label: Text(l10n.profileGroupRole),
                                 children: [
                                   if (state.role == 'contributor')
                                     _navTile(
                                       context,
                                       icon: FLucideIcons.badgeCheck,
-                                      title: 'Jadi verifikator',
+                                      title: l10n.profileBecomeVerifier,
                                       path: '/verifier-application',
                                     ),
                                   if (canAccessReviewHome(state.role))
@@ -171,7 +173,7 @@ class ProfilePage extends HookConsumerWidget {
                                     _navTile(
                                       context,
                                       icon: FLucideIcons.chartColumn,
-                                      title: 'Analitik',
+                                      title: l10n.profileAnalytics,
                                       path: AdminAnalyticsRouter.home.path,
                                     ),
                                 ],
@@ -179,12 +181,12 @@ class ProfilePage extends HookConsumerWidget {
                               _sectionGap,
                             ],
                             FTileGroup(
-                              label: const Text('Akun'),
+                              label: Text(l10n.profileGroupAccount),
                               children: [
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.link,
-                                  title: 'Akun Terhubung',
+                                  title: l10n.profileLinkedAccounts,
                                   path: '/linked-accounts',
                                 ),
                                 _navTile(
@@ -194,8 +196,8 @@ class ProfilePage extends HookConsumerWidget {
                                       links.isLoading ||
                                           links.hasPassword ||
                                           links.errorMessage != null
-                                      ? 'Ubah Password'
-                                      : 'Buat Password',
+                                      ? l10n.profileChangePassword
+                                      : l10n.profileCreatePassword,
                                   path:
                                       links.isLoading ||
                                           links.hasPassword ||
@@ -212,74 +214,65 @@ class ProfilePage extends HookConsumerWidget {
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.logIn,
-                                  title: 'Masuk / Login',
+                                  title: l10n.profileLogin,
                                   path: '/login',
                                   go: true,
                                 ),
                                 _navTile(
                                   context,
                                   icon: FLucideIcons.userRoundPlus,
-                                  title: 'Daftar',
+                                  title: l10n.profileRegister,
                                   path: '/register',
                                 ),
                               ],
                             ),
                             _sectionGap,
                           ],
-                          FTileGroup(
-                            label: const Text('Tampilan'),
-                            children: [
-                              themeModeTile(ref),
-                              paletteTile(ref),
-                              fontScaleTile(ref),
-                              apiHostTile(context, ApiHostResolver.instance),
-                            ],
-                          ),
-                          _sectionGap,
-                          FTileGroup(
-                            label: const Text('Bantuan'),
-                            children: [
-                              if (allowNotif.visible)
-                                FTile(
-                                  prefix: const Icon(
-                                    FLucideIcons.bell,
-                                    size: 18,
-                                  ),
-                                  title: const Text('Izinkan notifikasi'),
-                                  subtitle: const Text(
-                                    'Kabar saat usulanmu disetujui',
-                                  ),
-                                  enabled: !allowNotif.busy,
-                                  suffix: allowNotif.busy
-                                      ? const FCircularProgress(size: .sm)
-                                      : _chevron,
-                                  onPress: allowNotif.busy
-                                      ? null
-                                      : () => allowNotif.onPress(context),
-                                ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.info,
-                                title: 'Tentang SambasKu',
-                                path: '/about',
+                              FTileGroup(
+                                children: [
+                                  apiHostTile(context, ApiHostResolver.instance),
+                                ],
                               ),
-                              _navTile(
-                                context,
-                                icon: FLucideIcons.flag,
-                                title: 'Laporkan Masalah',
-                                path: '/report-bug',
+                              _sectionGap,
+                              FTileGroup(
+                                label: Text(l10n.profileGroupHelp),
+                                children: [
+                                  if (allowNotif.visible)
+                                    FTile(
+                                      prefix: const Icon(
+                                        FLucideIcons.bell,
+                                        size: 18,
+                                      ),
+                                      title: Text(l10n.profileAllowNotif),
+                                      subtitle: Text(
+                                        l10n.profileAllowNotifSubtitle,
+                                      ),
+                                      enabled: !allowNotif.busy,
+                                      suffix: allowNotif.busy
+                                          ? const FCircularProgress(size: .sm)
+                                          : _chevron,
+                                      onPress: allowNotif.busy
+                                          ? null
+                                          : () => allowNotif.onPress(context),
+                                    ),
+                                  _navTile(
+                                    context,
+                                    icon: FLucideIcons.settings,
+                                    title: l10n.profileSettingsTile,
+                                    subtitle: l10n.profileSettingsSubtitle,
+                                    path: SettingsRouter.root.path,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
                           if (state.isAuth) ...[
                             _sectionGap,
                             FTileGroup(
-                              label: const Text('Keluar & hapus akun'),
+                              label: Text(l10n.profileGroupLogout),
                               children: [
                                 FTile(
                                   variant: .destructive,
                                   prefix: const Icon(FLucideIcons.userRoundX),
-                                  title: const Text('Hapus akun'),
+                                  title: Text(l10n.profileDeleteAccount),
                                   suffix: _chevron,
                                   onPress: () =>
                                       context.push('/delete-account'),
@@ -290,7 +283,7 @@ class ProfilePage extends HookConsumerWidget {
                                       ? const FCircularProgress(size: .sm)
                                       : const Icon(FLucideIcons.logOut),
                                   title: Text(
-                                    state.isLoggingOut ? 'Keluar...' : 'Keluar',
+                                    state.isLoggingOut ? l10n.profileLoggingOut : l10n.profileLogout,
                                   ),
                                   enabled: !state.isLoggingOut,
                                   onPress: state.isLoggingOut
@@ -321,12 +314,12 @@ class ProfilePage extends HookConsumerWidget {
     );
   }
 
-  static String _displayNameOf(AuthStatusState? status) {
+  static String _displayNameOf(AuthStatusState? status, String fallback) {
     final display = status?.displayName?.trim();
     if (display != null && display.isNotEmpty) return display;
     final handle = status?.username?.trim();
     if (handle != null && handle.isNotEmpty) return handle;
-    return 'Pengguna';
+    return fallback;
   }
 }
 
@@ -336,12 +329,14 @@ FTile _navTile(
   BuildContext context, {
   required IconData icon,
   required String title,
+  String? subtitle,
   required String path,
   bool go = false,
 }) {
   return FTile(
     prefix: Icon(icon, size: 18),
     title: Text(title),
+    subtitle: subtitle == null ? null : Text(subtitle),
     suffix: _chevron,
     onPress: () => go ? context.go(path) : context.push(path),
   );
@@ -357,6 +352,7 @@ class _IdentitySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final isAuth = status.isAuth;
     final username = status.username?.trim();
     // Detail profil publik (bio, stat, bergabung). Tamu tidak watch.
@@ -370,8 +366,8 @@ class _IdentitySection extends ConsumerWidget {
     final border = ref.watch(myActiveBorderProvider).asData?.value?.imageUrl;
     // Tamu: label ajakan masuk tampil di header, bukan username kosong.
     final displayName = isAuth
-        ? ProfilePage._displayNameOf(status)
-        : 'Belum masuk';
+        ? ProfilePage._displayNameOf(status, l10n.profileDefaultName)
+        : l10n.profileGuestName;
 
     Future<void> openPublicProfile() async {
       // Baca state terbaru saat tap - jangan andalkan closure yang bisa stale.
@@ -387,7 +383,7 @@ class _IdentitySection extends ConsumerWidget {
       if (handle == null || handle.isEmpty) {
         showFToast(
           context: context,
-          title: const Text('Profil belum siap, coba lagi'),
+          title: Text(l10n.profileNotReadyToast),
         );
         return;
       }
@@ -429,7 +425,7 @@ class _IdentitySection extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 prefix: const Icon(FLucideIcons.externalLink, size: 14),
                 onPress: openPublicProfile,
-                child: const Text('Lihat profil publik'),
+                child: Text(l10n.profileViewPublic),
               ),
           ],
           footer: isAuth ? const ProfileAchievementTabs() : null,
@@ -469,12 +465,13 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final unread =
         ref.watch(unreadNotificationCountControllerProvider).value ?? 0;
     return FTile(
       prefix: const Icon(FLucideIcons.bell, size: 18),
-      title: const Text('Notifikasi'),
-      subtitle: unread > 0 ? Text('$unread belum dibaca') : null,
+      title: Text(l10n.profileNotifications),
+      subtitle: unread > 0 ? Text('$unread ${l10n.profileUnreadSuffix}') : null,
       suffix: _chevron,
       onPress: () => context.push(NotificationRouter.list.path),
     );
@@ -486,11 +483,12 @@ class _ReviewQueueTile extends ConsumerWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final pending = ref.watch(reviewHubHasPendingProvider).value ?? false;
     return FTile(
       prefix: const Icon(FLucideIcons.shieldCheck, size: 18),
-      title: const Text('Area Verifikator'),
-      subtitle: pending ? const Text('Ada usulan yang menunggu') : null,
+      title: Text(l10n.profileReviewArea),
+      subtitle: pending ? Text(l10n.profileReviewPending) : null,
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

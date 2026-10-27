@@ -8,15 +8,18 @@ part of 'vote_deck_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Antrean deck nilai kata (login). keepAlive + watch auth.
+/// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
+/// keepAlive + watch auth.
 
 @ProviderFor(VoteDeckController)
 final voteDeckControllerProvider = VoteDeckControllerProvider._();
 
-/// Antrean deck nilai kata (login). keepAlive + watch auth.
+/// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
+/// keepAlive + watch auth.
 final class VoteDeckControllerProvider
     extends $AsyncNotifierProvider<VoteDeckController, VoteDeckState> {
-  /// Antrean deck nilai kata (login). keepAlive + watch auth.
+  /// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
+  /// keepAlive + watch auth.
   VoteDeckControllerProvider._()
     : super(
         from: null,
@@ -37,9 +40,10 @@ final class VoteDeckControllerProvider
 }
 
 String _$voteDeckControllerHash() =>
-    r'b2da3ebffd2ba0aadf3ab0af9b72be82d04e2af7';
+    r'efd84ba726495e6e0f1b8bc2dc8ab8c5ff9169b1';
 
-/// Antrean deck nilai kata (login). keepAlive + watch auth.
+/// Antrean deck nilai per makna (login, 0101: 1 kartu = 1 makna).
+/// keepAlive + watch auth.
 
 abstract class _$VoteDeckController extends $AsyncNotifier<VoteDeckState> {
   FutureOr<VoteDeckState> build();

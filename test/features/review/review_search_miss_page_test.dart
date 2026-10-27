@@ -13,6 +13,7 @@ import 'package:sambasku_mobile/features/review/domain/failures/review_failure.d
 import 'package:sambasku_mobile/features/review/presentation/pages/review_search_miss_page.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_search_miss_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 Finder _fbtnByIcon(IconData icon) =>
     find.ancestor(of: find.byIcon(icon), matching: find.byType(FButton));
@@ -323,8 +324,12 @@ Future<void> _pumpPanel(
       ],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: GoRouter(
           initialLocation: '/review/search-misses',
           routes: [

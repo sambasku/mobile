@@ -19,6 +19,7 @@ import 'package:sambasku_mobile/features/bookmark/domain/repositories/bookmark_r
 import 'package:sambasku_mobile/features/bookmark/presentation/pages/bookmark_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
@@ -147,8 +148,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const BookmarkPage(),

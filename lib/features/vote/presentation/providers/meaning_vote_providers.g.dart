@@ -54,7 +54,7 @@ final class MeaningVotesControllerProvider
 }
 
 String _$meaningVotesControllerHash() =>
-    r'f8b7acc5de9498f55c56d8ab2ed45849fa7d78b0';
+    r'cf7db5c92031429f656e4c401ae7873b6e28662e';
 
 /// Vote makna untuk kata yang sedang dibuka (satu slot, bukan per kata).
 ///

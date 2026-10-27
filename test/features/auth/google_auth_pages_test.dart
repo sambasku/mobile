@@ -21,6 +21,7 @@ import 'package:sambasku_mobile/features/auth/presentation/providers/auth_login_
 import 'package:sambasku_mobile/flavors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Dio stub: register page mem-fetch /legal/current untuk gembok checkbox.
 Dio _stubDio() => Dio(BaseOptions())
@@ -141,8 +142,12 @@ Widget _harness({
       ],
     child: MaterialApp.router(
       theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-      localizationsDelegates: FLocalizations.localizationsDelegates,
-      supportedLocales: FLocalizations.supportedLocales,
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       routerConfig: router,
       builder: (context, routed) => FTheme(
         data: foruiPalettes['zinc']!.light.touch,

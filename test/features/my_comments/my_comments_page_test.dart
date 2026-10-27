@@ -15,6 +15,7 @@ import 'package:sambasku_mobile/features/my_comments/domain/repositories/my_comm
 import 'package:sambasku_mobile/features/my_comments/presentation/pages/my_comments_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeComments implements MyCommentRepository {
   final statuses = <String?>[];
@@ -82,8 +83,12 @@ void main() {
         ],
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,

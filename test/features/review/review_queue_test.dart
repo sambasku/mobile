@@ -16,6 +16,7 @@ import 'package:sambasku_mobile/features/review/presentation/providers/review_pr
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_gate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeReviewRepository implements ReviewRepository {
   _FakeReviewRepository({
@@ -439,8 +440,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: ReviewGate(child: Text('antrean')),
@@ -479,8 +484,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: ReviewQueuePage(),
@@ -540,8 +549,12 @@ void main() {
         container: container,
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const ReviewSessionPage(startId: idA),
@@ -626,7 +639,10 @@ void main() {
             container: container,
             child: MaterialApp(
               theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-              localizationsDelegates: FLocalizations.localizationsDelegates,
+              localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
               supportedLocales: const [Locale('id')],
               builder: (context, child) => MediaQuery(
                 data: MediaQuery.of(context).copyWith(disableAnimations: true),

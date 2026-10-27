@@ -22,6 +22,7 @@ import 'package:sambasku_mobile/features/notification/domain/entities/inbox_noti
 import 'package:sambasku_mobile/features/notification/domain/failures/notification_failure.dart';
 import 'package:sambasku_mobile/features/notification/domain/repositories/notification_repository.dart';
 import 'package:sambasku_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
 import 'package:sambasku_mobile/shared/widgets/user_avatar.dart';
@@ -200,8 +201,12 @@ void main() {
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch
               .toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+            ...FLocalizations.localizationsDelegates,
+            ...AppLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,
@@ -224,9 +229,9 @@ void main() {
 
       expect(find.text('Belum masuk'), findsOneWidget);
       expect(find.text('Masuk / Login'), findsOneWidget);
-      expect(find.text('Daftar'), findsOneWidget);
-      expect(find.text('Laporkan Masalah'), findsOneWidget);
-      expect(find.text('Keluar'), findsNothing);
+    expect(find.text('Daftar'), findsOneWidget);
+    expect(find.text('Pengaturan'), findsOneWidget);
+    expect(find.text('Keluar'), findsNothing);
     },
   );
 
@@ -418,8 +423,12 @@ void main() {
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch
               .toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+            ...FLocalizations.localizationsDelegates,
+            ...AppLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
               FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),

@@ -24,6 +24,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/providers/dictionary_
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/usecases/list_latest_words_use_case.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
+import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/flavors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -146,6 +147,7 @@ void main() {
   setUpAll(() {
     F.appFlavor = Flavor.staging;
     OnboardingPrefs.done = true;
+    LocalePrefs.chosen = true;
   });
 
   setUp(() {

@@ -10,6 +10,7 @@ import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dar
 import 'package:sambasku_mobile/features/about/presentation/providers/contributors_providers.dart';
 import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _linked = ContributorEntry(
   id: 'iamutaki',
@@ -71,7 +72,15 @@ void main() {
         ],
         child: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
-          child: MaterialApp.router(routerConfig: router),
+          child: MaterialApp.router(
+            routerConfig: router,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
+          ),
         ),
       ),
     );

@@ -19,6 +19,7 @@ import 'package:sambasku_mobile/features/review/domain/failures/review_failure.d
 import 'package:sambasku_mobile/features/review/domain/repositories/review_repository.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _wordId = '01AAAAAAAAAAAAAAAAAAAAAAAA';
 
@@ -183,8 +184,12 @@ Future<void> _pump(
       ],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,

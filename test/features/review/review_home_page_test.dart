@@ -12,6 +12,7 @@ import 'package:sambasku_mobile/features/review/presentation/providers/review_pr
 import 'package:sambasku_mobile/features/review/presentation/providers/review_suggestions_providers.dart';
 import 'package:sambasku_mobile/features/review/review_router.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   // Gate tile mengikuti canReviewQueue, sama seperti tile antrean lain:
@@ -119,8 +120,12 @@ Future<GoRouter> pumpHome(WidgetTester tester, String? role) async {
       ],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,

@@ -6,6 +6,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/app.dart';
+import 'package:sambasku_mobile/core/i18n/app_locale.dart';
+import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/core/services/analytics_service.dart';
 import 'package:sambasku_mobile/core/theme/forui_palette_controller.dart';
 import 'package:sambasku_mobile/core/theme/theme_mode_controller.dart';
@@ -96,11 +98,13 @@ class _EmptyLatestRepository implements DictionaryRepository {
 }
 
 void main() {
-  // test tidak melewati main() - flavor + onboarding wajib di-init manual
-  setUpAll(() {
-    F.appFlavor = Flavor.staging;
-    OnboardingPrefs.done = true;
-  });
+// test tidak melewati main() - flavor + onboarding wajib di-init manual
+setUpAll(() {
+F.appFlavor = Flavor.staging;
+OnboardingPrefs.done = true;
+LocalePrefs.chosen = true;
+LocalePrefs.locale = AppLocale.id;
+});
 
   setUp(() {
     AnalyticsService.debugReset();

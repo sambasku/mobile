@@ -12,6 +12,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/failures/dictionary_f
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_detail_page.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _wordId = '01AAAAAAAAAAAAAAAAAAAAAAAA';
 
@@ -83,8 +84,12 @@ Future<void> _pump(WidgetTester tester) async {
       overrides: [dictionaryRepositoryProvider.overrideWithValue(_StubRepo())],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,

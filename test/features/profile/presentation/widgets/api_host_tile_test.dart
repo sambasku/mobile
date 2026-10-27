@@ -6,6 +6,7 @@ import 'package:sambasku_mobile/core/network/failover/api_host_resolver.dart';
 import 'package:sambasku_mobile/features/profile/presentation/widgets/api_host_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           // Forui 0.27 wajib FTheme ancestor. Sheet pakai root navigator,
           // jadi FTheme harus di atas Navigator (builder), bukan di home.
           builder: (context, child) =>

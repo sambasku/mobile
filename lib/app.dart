@@ -1,9 +1,18 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:material_ui/material_ui.dart'
+    hide GlobalMaterialLocalizations;
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show
+        GlobalMaterialLocalizations,
+        GlobalWidgetsLocalizations,
+        GlobalCupertinoLocalizations;
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import 'core/i18n/app_locale.dart';
+import 'core/i18n/locale_controller.dart';
 import 'core/router/app_router.dart';
+import 'l10n/app_localizations.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/forui_palettes.dart';
 import 'core/theme/font_scale_controller.dart';
@@ -53,12 +62,22 @@ class App extends ConsumerWidget {
       themeMode: themeMode,
       theme: _materialTheme(palette.light.touch),
       darkTheme: _materialTheme(palette.dark.touch),
-      localizationsDelegates: FLocalizations.localizationsDelegates,
-      // UI hanya bahasa Indonesia. Sebelumnya dipakai seluruh daftar locale
-      // Forui, termasuk locale RTL (ar/fa/he/ur/ps) - di perangkat ber-locale
-      // RTL, Directionality dari Localizations membalik semua Row sehingga
-      // tombol Setujui/Tolak di Area Verifikator jadi terbalik (#189).
-      supportedLocales: const [Locale('id')],
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+// Registry locale (MOBILE-I18N): id + id_SBS, keduanya LTR.
+// Sebelumnya dipakai seluruh daftar locale Forui, termasuk locale RTL
+// (ar/fa/he/ur/ps) - di perangkat ber-locale RTL, Directionality dari
+// Localizations membalik semua Row sehingga tombol Setujui/Tolak di
+// Area Verifikator jadi terbalik (#189).
+supportedLocales: [
+  for (final l in AppLocale.all) l.toLocale(),
+],
+locale: ref.watch(localeControllerProvider).toLocale(),
       builder: (context, child) {
         // Forui tidak auto-switch brightness - pilih variant dari Theme Material
         final fTheme =

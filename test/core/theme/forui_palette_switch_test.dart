@@ -12,7 +12,8 @@ import 'package:sambasku_mobile/features/auth/data/providers/auth_data_providers
 import 'package:sambasku_mobile/features/auth/domain/entities/auth_session.dart';
 import 'package:sambasku_mobile/features/auth/domain/failures/auth_failure.dart';
 import 'package:sambasku_mobile/features/auth/domain/repositories/auth_repository.dart';
-import 'package:sambasku_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:sambasku_mobile/features/settings/presentation/pages/settings_page.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeAuthRepository implements AuthRepository {
@@ -97,13 +98,17 @@ class _Harness extends ConsumerWidget {
 
     return MaterialApp(
       theme: palette.light.touch.toApproximateMaterialTheme(),
-      localizationsDelegates: FLocalizations.localizationsDelegates,
-      supportedLocales: FLocalizations.supportedLocales,
+      localizationsDelegates: [
+        ...FLocalizations.localizationsDelegates,
+        ...AppLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       builder: (context, child) => FTheme(
         data: palette.light.touch,
         child: child ?? const SizedBox.shrink(),
       ),
-      home: const ProfilePage(),
+      home: const SettingsPage(),
     );
   }
 }
@@ -133,7 +138,7 @@ void main() {
         .colorScheme
         .primary;
 
-    // Warna Tema tile mungkin di bawah fold (viewport test 800x600)
+    // Warna Tema tile kini di Pengaturan (pindah dari Profil).
     await tester.scrollUntilVisible(
       find.text('Warna Tema'),
       200,
@@ -151,7 +156,7 @@ void main() {
 
     // 1) state provider berubah
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(ProfilePage)),
+      tester.element(find.byType(SettingsPage)),
     );
     expect(container.read(foruiPaletteControllerProvider), 'red');
 

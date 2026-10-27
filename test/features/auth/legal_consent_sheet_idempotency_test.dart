@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/features/auth/presentation/widgets/legal_consent_sheet.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Regresi anomali sheet consent:
 /// 1. Idempoten: panggil ganda -> hanya SATU sheet (guard _legalSheetVisible).
@@ -32,8 +33,12 @@ void main() {
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch
             .toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, routed) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,

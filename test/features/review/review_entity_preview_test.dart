@@ -9,6 +9,7 @@ import 'package:sambasku_mobile/features/review/presentation/widgets/review_enti
 import 'package:sambasku_mobile/shared/reference/reference_data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 // Id berbentuk ULID seperti yang dikirim API. Kalau salah satu bocor ke layar,
 // test ini gagal - itulah regresi yang Originally dilaporkan.
@@ -123,8 +124,12 @@ void main() {
         ],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: Scaffold(
@@ -162,8 +167,12 @@ void main() {
           ],
           child: MaterialApp(
             theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-            localizationsDelegates: FLocalizations.localizationsDelegates,
-            supportedLocales: FLocalizations.supportedLocales,
+            localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+            supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
             home: FTheme(
               data: foruiPalettes['zinc']!.light.touch,
               child: Scaffold(

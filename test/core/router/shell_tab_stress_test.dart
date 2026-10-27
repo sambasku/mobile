@@ -24,6 +24,7 @@ import 'package:sambasku_mobile/features/dictionary/domain/entities/word_summary
 import 'package:sambasku_mobile/features/dictionary/domain/failures/dictionary_failure.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_of_day_providers.dart';
+import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/flavors.dart';
 
 /// Stress anti-freeze: hammering tab shell asli (App + AppRouter.router)
@@ -109,6 +110,7 @@ void main() {
   setUpAll(() {
     F.appFlavor = Flavor.staging;
     OnboardingPrefs.done = true;
+    LocalePrefs.chosen = true;
   });
 
   setUp(() {

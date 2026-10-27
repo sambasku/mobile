@@ -11,6 +11,7 @@ import 'package:sambasku_mobile/features/user_profile/presentation/models/public
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
 import 'package:sambasku_mobile/shared/widgets/small_button.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeAuthStatus extends AuthStatusNotifier {
   _FakeAuthStatus(this.username);
@@ -69,8 +70,12 @@ Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
           ).overrideWith((ref) async => _categoryPage),
       ],
       child: MaterialApp(
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         builder: (context, child) =>
             FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         home: const PublicProfilePage(username: 'budi'),

@@ -54,8 +54,9 @@ abstract final class AnalyticsEvents {
   static const reportWordSubmit = 'report_word_submit';
   static const imageViolenceReveal = 'image_violence_reveal';
   static const reportBugSubmit = 'report_bug_submit';
-  static const onboardingComplete = 'onboarding_complete';
-  static const themeChange = 'theme_change';
+static const onboardingComplete = 'onboarding_complete';
+static const themeChange = 'theme_change';
+static const localeChosen = 'locale_chosen';
   static const reviewApprove = 'review_approve';
   static const reviewReject = 'review_reject';
   static const reviewCorrect = 'review_correct';

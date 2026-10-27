@@ -17,6 +17,7 @@ import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/contribution/presentation/pages/contribute_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _ReferenceAdapter implements HttpClientAdapter {
   @override
@@ -75,8 +76,12 @@ void main() {
         overrides: [dioProvider.overrideWithValue(dio)],
         child: MaterialApp(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: ContributePage()),

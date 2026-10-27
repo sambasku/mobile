@@ -7,6 +7,7 @@ import 'package:sambasku_mobile/core/router/app_router.dart';
 import 'package:sambasku_mobile/features/dictionary/dictionary_router.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_detail_page.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// "/words/complete" dan "/words/:id" bisa sama-sama match. Kalau urutannya
 /// terbalik, go_router memperlakukan "complete" sebagai wordId dan pemilih
@@ -41,8 +42,12 @@ void main() {
       ProviderScope(
         child: MaterialApp.router(
           theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: GoRouter(
             navigatorKey: AppRouter.rootNavigatorKey,
             routes: DictionaryRouter.routes,

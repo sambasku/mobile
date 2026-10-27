@@ -14,6 +14,7 @@ import 'package:sambasku_mobile/features/review/domain/failures/review_failure.d
 import 'package:sambasku_mobile/features/review/domain/repositories/review_repository.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeAuth extends AuthStatusNotifier {
   _FakeAuth(this.authState);
@@ -111,8 +112,12 @@ Future<GoRouter> _pump(
     UncontrolledProviderScope(
       container: container,
       child: MaterialApp.router(
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,
