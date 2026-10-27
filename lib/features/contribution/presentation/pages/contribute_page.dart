@@ -38,6 +38,7 @@ import '../widgets/word_class_picker_sheet.dart';
 import '../../data/providers/contribution_data_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/message_dialog.dart';
+import '../../../../shared/widgets/kbbi_source_notice.dart';
 
 class ContributePage extends ConsumerStatefulWidget {
   const ContributePage({
@@ -579,6 +580,8 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             ),
             _inlineError(notifier.errorForMeaning(0, 'translation_texts')),
             _inlineError(notifier.errorForMeaning(0, 'definition')),
+            const Gap(8),
+            const KbbiSourceNotice(),
             if (_standardDefinition.trim().isNotEmpty) ...[
               const Gap(16),
               const _FieldCaption(
@@ -1455,6 +1458,8 @@ class _MeaningBlock extends StatelessWidget {
                   ),
                 ),
                 _MeaningInlineError(padananError),
+                const Gap(8),
+                const KbbiSourceNotice(),
               ],
               const Gap(8),
               wordClassesAsync.when(

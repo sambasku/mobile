@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/my_votes/domain/entities/my_vote_item.dart';
+import 'package:sambasku_mobile/features/my_votes/presentation/my_vote_labels.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 MyVoteItem _item(String targetType, {MyVoteWord? word}) => MyVoteItem(
   id: 'v1',
@@ -11,10 +13,12 @@ MyVoteItem _item(String targetType, {MyVoteWord? word}) => MyVoteItem(
 );
 
 void main() {
+  final l10n = AppLocalizationsId();
+
   test('kata terhapus hanya untuk target word', () {
-    expect(_item('word').title, 'Kata sudah dihapus');
-    expect(_item('meaning').title, 'Arti');
-    expect(_item('pantun').title, 'Pantun');
+    expect(myVoteTitle(l10n, 'word', null), 'Kata sudah dihapus');
+    expect(myVoteTitle(l10n, 'meaning', null), 'Arti');
+    expect(myVoteTitle(l10n, 'pantun', null), 'Pantun');
   });
 
   test('lemma menang atas label jenis target', () {
@@ -25,21 +29,21 @@ void main() {
       isVerified: true,
     );
     final item = _item('meaning', word: word);
-    expect(item.title, 'makan');
+    expect(myVoteTitle(l10n, 'meaning', word.lemma), 'makan');
     expect(item.canOpen, isTrue);
   });
 
   test('label jenis target lengkap termasuk pantun', () {
-    expect(voteTargetLabel('pantun'), 'Pantun');
-    expect(voteTargetLabel('pantun_reply'), 'Balasan pantun');
-    expect(voteTargetLabel('discussion'), 'Pertanyaan diskusi');
-    expect(voteTargetLabel('discussion_reply'), 'Balasan diskusi');
-    expect(voteTargetLabel('word'), 'Kata');
+    expect(voteTargetLabel(l10n, 'pantun'), 'Pantun');
+    expect(voteTargetLabel(l10n, 'pantun_reply'), 'Balasan pantun');
+    expect(voteTargetLabel(l10n, 'discussion'), 'Pertanyaan diskusi');
+    expect(voteTargetLabel(l10n, 'discussion_reply'), 'Balasan diskusi');
+    expect(voteTargetLabel(l10n, 'word'), 'Kata');
   });
 
   test('subtitle pakai label jenis target', () {
     expect(
-      _item('pantun').subtitle('21 Sep 2026 10:00'),
+      myVoteSubtitle(l10n, _item('pantun'), '21 Sep 2026 10:00'),
       'Upvote · Pantun · 21 Sep 2026 10:00',
     );
   });

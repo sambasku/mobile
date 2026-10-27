@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../activity_router.dart';
 import '../providers/announcement_detail_provider.dart';
 import 'announcement_body.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Carousel pengumuman prioritas (pinned) di beranda (#134): banner ringkas
 /// swipable (judul + preview 1 baris) yang full-bleed selebar layar - jarak
@@ -97,8 +98,13 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                       width: cardWidth,
                       child: Semantics(
                         button: true,
-                        label:
-                            'Pengumuman: ${a.title}${a.expired ? ', sudah berakhir' : ''}',
+                        label: a.expired
+                            ? AppLocalizations.of(
+                                context,
+                              ).announcementSemanticsExpired(a.title)
+                            : AppLocalizations.of(
+                                context,
+                              ).announcementSemantics(a.title),
                         child: GestureDetector(
                           onTap: () => context.pushNamed(
                             ActivityRouter.announcementDetail.name,
@@ -240,7 +246,9 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Judul pengumuman prioritas',
+                                AppLocalizations.of(
+                                  context,
+                                ).announcementBannerSemantics,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: context.theme.typography.body.sm
@@ -248,7 +256,9 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                               ),
                               const Gap(2),
                               Text(
-                                'cuplikan isi pengumuman',
+                                AppLocalizations.of(
+                                  context,
+                                ).announcementBannerPreview,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: context.theme.typography.body.sm

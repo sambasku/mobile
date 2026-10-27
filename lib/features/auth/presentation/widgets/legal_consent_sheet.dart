@@ -21,7 +21,7 @@ typedef LegalConsentDoc = ({
 /// menutup). Muncul saat server bilang `requires_consent: true` - sumber
 /// kebenaran GET /users/me, jadi force close tetap memunculkannya lagi.
 ///
-/// Tutup satu-satunya jalan: "Setuju dan lanjut" (POST /accept-legal) atau
+/// Tutup satu-satunya jalan: "Setuju, lanjut" (POST /accept-legal) atau
 /// "Keluar" (logout). Forui FTileGroup, bukan AlertDialog (aturan repo).
 ///
 /// Idempoten: pemanggil boleh memanggilnya dari build (post-frame) setiap
@@ -198,27 +198,31 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
                       children: [
                         for (final doc in loaded)
                           FTile(
-                            title: Text(doc.title),
+                            title: _DocLink(
+                              label: doc.documentType == 'terms'
+                                  ? AppLocalizations.of(
+                                      sheetContext,
+                                    ).authReadTerms
+                                  : AppLocalizations.of(
+                                      sheetContext,
+                                    ).authReadPrivacy,
+                              onTap: () => context.push(
+                                AuthRouter.legalDocument.path,
+                                extra: (url: doc.url, title: doc.title),
+                              ),
+                            ),
                             subtitle: Text(
                               doc.documentType == 'terms'
                                   ? AppLocalizations.of(
                                       sheetContext,
-                                    ).authTermsTileSubtitle(doc.documentVersion)
+                                    ).authTermsTileSubtitle(
+                                      doc.documentVersion,
+                                    )
                                   : AppLocalizations.of(
                                       sheetContext,
                                     ).authPrivacyTileSubtitle(
                                       doc.documentVersion,
                                     ),
-                            ),
-                            suffix: FButton(
-                              variant: FButtonVariant.outline,
-                              onPress: () => context.push(
-                                AuthRouter.legalDocument.path,
-                                extra: (url: doc.url, title: doc.title),
-                              ),
-                              child: Text(
-                                AppLocalizations.of(sheetContext).authRead,
-                              ),
                             ),
                           ),
                       ],
@@ -299,4 +303,41 @@ Future<void> _show(BuildContext context, WidgetRef ref) async {
       },
     ),
   );
+}
+
+/// Hyperlink dokumen legal di dalam tile: teks bergaris bawah + area tap
+/// selebar baris (bukan tombol outline yang abstrak). Forui tidak punya
+/// widget link, jadi GestureDetector - InkWell butuh ancestor Material.
+class _DocLink extends StatelessWidget {
+  const _DocLink({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      link: true,
+      label: label,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          // Target sentuh minimal 44px: teks 14 + padding vertikal 8.
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            label,
+            style: theme.typography.body.md.copyWith(
+              color: theme.colors.primary,
+              fontWeight: .w600,
+              decoration: TextDecoration.underline,
+              decorationColor: theme.colors.primary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -21,17 +21,17 @@ class PantunFeedState {
 
 final pantunFeedProvider =
     AsyncNotifierProvider.autoDispose<PantunFeedController, PantunFeedState>(
-  PantunFeedController.new,
-);
+      PantunFeedController.new,
+    );
 
 class PantunFeedController extends AsyncNotifier<PantunFeedState> {
   static const _pageSize = 20;
 
   @override
   Future<PantunFeedState> build() async {
-    final page = await ref.watch(pantunApiProvider).listPublished(
-          limit: _pageSize,
-        );
+    final page = await ref
+        .watch(pantunApiProvider)
+        .listPublished(limit: _pageSize);
     final items = await _attachMyVotes(page.items);
     return PantunFeedState(
       items: items,
@@ -73,11 +73,13 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
           .read(pantunApiProvider)
           .listPublished(limit: _pageSize, cursor: current.nextCursor);
       if (!ref.mounted) return;
-      state = AsyncData(PantunFeedState(
-        items: [...current.items, ...await _attachMyVotes(page.items)],
-        nextCursor: page.nextCursor,
-        hasMore: page.hasMore,
-      ));
+      state = AsyncData(
+        PantunFeedState(
+          items: [...current.items, ...await _attachMyVotes(page.items)],
+          nextCursor: page.nextCursor,
+          hasMore: page.hasMore,
+        ),
+      );
     } catch (e) {
       if (!ref.mounted) return;
       state = AsyncData(current.copyWith(isLoadingMore: false));
@@ -95,13 +97,10 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
       value: value,
     );
     if (!ref.mounted) return null;
-    return result.match(
-      (failure) => failure.message,
-      (view) {
-        _applyVote(current, pantun.voteTarget.key, view);
-        return null;
-      },
-    );
+    return result.match((failure) => failure.message, (view) {
+      _applyVote(current, pantun.voteTarget.key, view);
+      return null;
+    });
   }
 
   void _applyVote(PantunFeedState current, String key, VoteView view) {
@@ -119,6 +118,28 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
         ],
       ),
     );
+  }
+
+  /// Hapus pantun milik sendiri dari feed. Return pesan error (null = sukses).
+  Future<String?> deletePantun(Pantun pantun) async {
+    final current = state.value;
+    if (current == null) return 'Pantun belum dimuat';
+    try {
+      await ref.read(pantunApiProvider).deletePantun(pantun.id);
+      if (!ref.mounted) return null;
+      state = AsyncData(
+        current.copyWith(
+          items: current.items
+              .where((p) => p.id != pantun.id)
+              .toList(growable: false),
+        ),
+      );
+      return null;
+    } on PantunFailure catch (e) {
+      return e.message;
+    } catch (_) {
+      return 'Gagal menghapus pantun. Coba lagi ya.';
+    }
   }
 
   Future<void> refresh() async {
@@ -146,15 +167,15 @@ extension on PantunFeedState {
 
 final pantunDetailProvider = AsyncNotifierProvider.autoDispose
     .family<PantunDetailController, PantunDetail, String>(
-  PantunDetailController.new,
-);
+      PantunDetailController.new,
+    );
 
 /// Hasil pencarian pantun (induk + balasan). autoDispose: query berganti
 /// terus saat user mengetik, data lama langsung dibuang.
 final pantunSearchProvider = FutureProvider.autoDispose
     .family<List<Pantun>, String>((ref, q) async {
-  return ref.watch(pantunApiProvider).search(q);
-});
+      return ref.watch(pantunApiProvider).search(q);
+    });
 
 class PantunDetailController extends AsyncNotifier<PantunDetail> {
   PantunDetailController(this.id);
@@ -204,29 +225,40 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
       value: value,
     );
     if (!ref.mounted) return null;
-    return result.match(
-      (failure) => failure.message,
-      (view) {
-        final key = target.voteTarget.key;
-        state = AsyncData(
-          PantunDetail(
-            current.pantun.voteTarget.key == key
-                ? _voted(current.pantun, view)
-                : current.pantun,
-            [
-              for (final r in current.replies)
-                r.voteTarget.key == key ? _voted(r, view) : r,
-            ],
-          ),
-        );
-        return null;
-      },
-    );
+    return result.match((failure) => failure.message, (view) {
+      final key = target.voteTarget.key;
+      state = AsyncData(
+        PantunDetail(
+          current.pantun.voteTarget.key == key
+              ? _voted(current.pantun, view)
+              : current.pantun,
+          [
+            for (final r in current.replies)
+              r.voteTarget.key == key ? _voted(r, view) : r,
+          ],
+        ),
+      );
+      return null;
+    });
   }
 
   Pantun _voted(Pantun p, VoteView view) => p.copyWith(
-        upvotes: view.upvotes,
-        downvotes: view.downvotes,
-        myVote: view.myVote,
-      );
+    upvotes: view.upvotes,
+    downvotes: view.downvotes,
+    myVote: view.myVote,
+  );
+
+  /// Hapus pantun pembuka milik sendiri. Return pesan error (null = sukses).
+  Future<String?> deletePantun() async {
+    final current = state.value;
+    if (current == null) return 'Pantun belum dimuat';
+    try {
+      await ref.read(pantunApiProvider).deletePantun(current.pantun.id);
+      return null;
+    } on PantunFailure catch (e) {
+      return e.message;
+    } catch (_) {
+      return 'Gagal menghapus pantun. Coba lagi ya.';
+    }
+  }
 }

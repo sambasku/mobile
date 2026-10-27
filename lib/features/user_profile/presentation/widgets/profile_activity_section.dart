@@ -7,21 +7,31 @@ import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
 import '../../domain/public_activity_mapper.dart';
 import '../providers/user_profile_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Kategori chips aktivitas profil publik, selaras feed beranda (#193):
 /// Semua | Perbaikan | Komentar. "Penilaian" tidak ada di feed utama.
 ///
 /// `wire` = query `kind` API; null = mode merge (tanpa filter).
 enum ProfileActivityFilter {
-  all(null, 'Semua'),
-  correction('contribution', 'Perbaikan'),
-  comment('comment', 'Komentar');
+  all(null),
+  correction('contribution'),
+  comment('comment');
 
-  const ProfileActivityFilter(this.kind, this.label);
+  const ProfileActivityFilter(this.kind);
 
   final String? kind;
-  final String label;
 }
+
+/// Label chip filter. Domain hanya menyimpan nilai wire.
+String profileActivityFilterLabel(
+  AppLocalizations l10n,
+  ProfileActivityFilter filter,
+) => switch (filter) {
+  ProfileActivityFilter.all => l10n.profileActivityFilterAll,
+  ProfileActivityFilter.correction => l10n.profileActivityFilterCorrection,
+  ProfileActivityFilter.comment => l10n.profileActivityFilterComment,
+};
 
 /// Baris chip kategori. Dipakai di delegate pinned dan di test.
 class ProfileActivityChips extends StatelessWidget {
@@ -56,7 +66,9 @@ class ProfileActivityChips extends StatelessWidget {
                 : FButtonVariant.outline,
             mainAxisSize: MainAxisSize.min,
             onPress: () => onChanged(filter),
-            child: Text(filter.label),
+            child: Text(
+            profileActivityFilterLabel(AppLocalizations.of(context), filter),
+          ),
           );
         },
       ),
@@ -64,20 +76,24 @@ class ProfileActivityChips extends StatelessWidget {
   }
 }
 
-/// Delegate pinned: chip kategori menempel di bawah app bar saat scroll.
+/// Delegate pinned: chip kategori menempel di bawah bar melayang.
 /// Latar opaque wajib - tanpa itu item feed tembus di belakang chip.
 class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
-  ProfileActivityChipsHeader({required this.child});
+  ProfileActivityChipsHeader({required this.child, this.topOffset = 0});
 
   final Widget child;
+
+  /// Tinggi bar melayang di atas chip (status bar + bar aksi). Chip berhenti
+  /// di bawahnya, tidak menabrak status bar.
+  final double topOffset;
 
   static const double _bottomGap = 8;
 
   @override
-  double get minExtent => ProfileActivityChips.height + _bottomGap;
+  double get minExtent => topOffset + ProfileActivityChips.height + _bottomGap;
 
   @override
-  double get maxExtent => ProfileActivityChips.height + _bottomGap;
+  double get maxExtent => topOffset + ProfileActivityChips.height + _bottomGap;
 
   @override
   Widget build(
@@ -103,6 +119,8 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Ruang untuk bar melayang: chip berhenti di bawahnya.
+            SizedBox(height: topOffset),
             DecoratedBox(
               decoration: BoxDecoration(
                 border: Border(
@@ -120,7 +138,7 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(ProfileActivityChipsHeader oldDelegate) =>
-      oldDelegate.child != child;
+      oldDelegate.child != child || oldDelegate.topOffset != topOffset;
 }
 
 /// Isi feed aktivitas sesuai filter terpilih.
@@ -148,20 +166,21 @@ class ProfileActivityList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     if (filter == ProfileActivityFilter.all) {
       return activityAsync.when(
         loading: () => const _CenteredLoader(),
         error: (err, _) => _ErrorBox(
           message: err is UserProfileFailure
               ? err.message
-              : 'Gagal memuat aktivitas',
+              : l10n.profileActivityLoadFailed,
           onRetry: onRetry,
         ),
         data: (items) => _ActivityList(
           items: items,
           profile: profile,
           showCta: showCta,
-          emptyLabel: 'Belum ada aktivitas publik.',
+          emptyLabel: l10n.profileActivityEmpty,
         ),
       );
     }
@@ -174,7 +193,7 @@ class ProfileActivityList extends ConsumerWidget {
           error: (err, _) => _ErrorBox(
             message: err is UserProfileFailure
                 ? err.message
-                : 'Gagal memuat aktivitas',
+                : l10n.profileActivityLoadFailed,
             onRetry: () =>
                 ref.invalidate(publicActivityByKindProvider(username, kind)),
           ),
@@ -182,7 +201,9 @@ class ProfileActivityList extends ConsumerWidget {
             items: state.items,
             profile: profile,
             showCta: showCta,
-            emptyLabel: 'Belum ada aktivitas ${filter.label.toLowerCase()}.',
+            emptyLabel: l10n.profileActivityEmptyFiltered(
+              profileActivityFilterLabel(l10n, filter).toLowerCase(),
+            ),
           ),
         );
   }

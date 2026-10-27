@@ -6,10 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_vote_item.dart';
 import '../../domain/failures/my_vote_failure.dart';
+import '../my_vote_labels.dart';
 import '../providers/my_votes_providers.dart';
 
 /// Riwayat vote milik user login - GET /api/v1/votes/history.
@@ -26,7 +28,7 @@ class MyVotesPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Vote'),
+        title: Text(AppLocalizations.of(context).myVotesTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: auth.when(
@@ -58,7 +60,7 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat vote kamu',
+              AppLocalizations.of(context).myVotesLoginRequired,
               style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -66,7 +68,7 @@ class _GuestState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -103,7 +105,9 @@ class _VotesList extends ConsumerWidget {
               ),
               const Gap(10),
               Text(
-                error is MyVoteFailure ? error.message : 'Gagal memuat vote',
+                error is MyVoteFailure
+              ? error.message
+              : AppLocalizations.of(context).myVotesLoadFailed,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -113,7 +117,7 @@ class _VotesList extends ConsumerWidget {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(myVotesListControllerProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -137,7 +141,9 @@ class _VotesList extends ConsumerWidget {
             children: [
               SizedBox(
                 height: constraints.maxHeight,
-                child: const Center(child: Text('Belum ada vote')),
+                child: Center(
+                child: Text(AppLocalizations.of(context).myVotesEmpty),
+              ),
               ),
             ],
           ),
@@ -165,10 +171,11 @@ class _VoteTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final date = formatDateTimeIso(item.votedAt);
     return FTile(
-      title: Text(item.title),
-      subtitle: Text(item.subtitle(date)),
+      title: Text(myVoteTitle(l10n, item.targetType, item.word?.lemma)),
+      subtitle: Text(myVoteSubtitle(l10n, item, date)),
       suffix: item.canOpen ? const Icon(FLucideIcons.chevronRight) : null,
       onPress: item.canOpen
           ? () => context.push('/words/${item.word!.id}')
@@ -184,6 +191,7 @@ class _ListSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
     return Skeletonizer(
@@ -205,8 +213,8 @@ class _ListSkeleton extends StatelessWidget {
             children: [
               for (var i = 0; i < itemCount; i++)
                 FTile(
-                  title: const Text('lemma contoh'),
-                  subtitle: const Text('Upvote · Kata · 21 Sep 2026 10:00'),
+                  title: Text(l10n.commonSkeletonLemma),
+                  subtitle: Text(l10n.myVotesSkeletonMeta),
                 ),
             ],
           ),

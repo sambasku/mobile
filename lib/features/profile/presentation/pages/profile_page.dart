@@ -26,11 +26,11 @@ import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart'
 import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
-import '../widgets/notification_header_action.dart';
 
 /// Tab PROFILE - header identitas (avatar besar + cover) di atas menu
 /// sectioned (FTileGroup). Header identitas dipakai bersama dengan
@@ -73,53 +73,63 @@ class ProfilePage extends HookConsumerWidget {
       await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
     }
 
-    return Column(
-      children: [
-        // Judul dikosongkan: nama sudah tampil besar di header identitas tepat
-        // di bawahnya, jadi mengulangnya di app bar terasa dobel.
-        FHeader(
-          title: const SizedBox.shrink(),
-          suffixes: [
-            if (isAuth) ...[
-              FHeaderData(
-                actionStyle: context.theme.headerStyles.resolve({
-                  FHeaderVariant.root,
-                  context.platformVariant,
-                }).actionStyle,
-                child: const NotificationHeaderAction(),
-              ),
-              FHeaderAction(
-                icon: const Icon(FLucideIcons.pencil, size: 18),
-                onPress: () => context.push('/edit-profile'),
-                semanticsLabel: l10n.profileEditSemantics,
-              ),
-            ],
-          ],
+    final unread = ref.watch(unreadNotificationCountControllerProvider).value;
+
+    // Cover full-bleed + bar aksi melayang: tombol tidak lagi di FHeader
+    // terpisah supaya cover bisa tembus ke belakang status bar.
+    return ProfileHeroShell(
+      // Judul baru terbaca saat cover tergulir habis.
+      title: _displayNameOf(authStatus.value, l10n.profileDefaultName),
+      coverHeight: ProfileIdentityHeader.coverHeightOf(
+        ProfileHeaderVariant.hero,
+      ),
+      actions: [
+        if (isAuth) ...[
+          ProfileHeroAction(
+            icon: FLucideIcons.bell,
+            tooltip: l10n.profileNotifications,
+            badgeCount: unread ?? 0,
+            onPress: () => context.push(NotificationRouter.list.path),
+          ),
+          ProfileHeroAction(
+            icon: FLucideIcons.pencil,
+            tooltip: l10n.profileEditSemantics,
+            onPress: () => context.push('/edit-profile'),
+          ),
+        ],
+      ],
+      scrollView: authStatus.when(
+        loading: () => const ProfileIdentityHeaderSkeleton(
+          variant: ProfileHeaderVariant.hero,
+          horizontalPadding: 12,
         ),
-        Expanded(
-          child: authStatus.when(
-            loading: () => const ProfileIdentityHeaderSkeleton(
-              variant: ProfileHeaderVariant.hero,
-            ),
-            error: (_, _) => const ProfileIdentityHeaderSkeleton(
-              variant: ProfileHeaderVariant.hero,
-            ),
-            data: (state) => RefreshIndicator(
-              onRefresh: refreshAll,
-              // SingleChildScrollView, bukan ListView: halaman ini isinya
-              // pendek dan statis. Di ListView lazy, header identitas
-              // di-dispose saat keluar cacheExtent - provider autoDispose
-              // (profil, lencana, bingkai) ikut mati dan fetch API terulang
-              // tiap balik scroll. Kolom + scroll view = semua anak tetap
-              // mounted, nol refetch.
-              child: SingleChildScrollView(
-                controller: scroll,
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    _IdentitySection(status: state),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+        error: (_, _) => const ProfileIdentityHeaderSkeleton(
+          variant: ProfileHeaderVariant.hero,
+          horizontalPadding: 12,
+        ),
+        data: (state) => RefreshIndicator(
+          onRefresh: refreshAll,
+          // Spinner mulai di bawah bar melayang, bukan di baliknya.
+          displacement:
+              MediaQuery.paddingOf(context).top +
+              ProfileHeroShell.barHeight +
+              8,
+          // SingleChildScrollView, bukan ListView: halaman ini isinya
+          // pendek dan statis. Di ListView lazy, header identitas
+          // di-dispose saat keluar cacheExtent - provider autoDispose
+          // (profil, lencana, bingkai) ikut mati dan fetch API terulang
+          // tiap balik scroll. Kolom + scroll view = semua anak tetap
+          // mounted, nol refetch.
+          child: SingleChildScrollView(
+            controller: scroll,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                _IdentitySection(status: state),
+                Padding(
+                  // Gutter 12 dulu dipasang router; sekarang di sini supaya
+                  // cover bisa full-bleed.
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
                       child: Column(
                         children: [
                           if (state.isAuth) ...[
@@ -228,42 +238,42 @@ class ProfilePage extends HookConsumerWidget {
                             ),
                             _sectionGap,
                           ],
-                              FTileGroup(
-                                children: [
-                                  apiHostTile(context, ApiHostResolver.instance),
-                                ],
-                              ),
-                              _sectionGap,
-                              FTileGroup(
-                                label: Text(l10n.profileGroupHelp),
-                                children: [
-                                  if (allowNotif.visible)
-                                    FTile(
-                                      prefix: const Icon(
-                                        FLucideIcons.bell,
-                                        size: 18,
-                                      ),
-                                      title: Text(l10n.profileAllowNotif),
-                                      subtitle: Text(
-                                        l10n.profileAllowNotifSubtitle,
-                                      ),
-                                      enabled: !allowNotif.busy,
-                                      suffix: allowNotif.busy
-                                          ? const FCircularProgress(size: .sm)
-                                          : _chevron,
-                                      onPress: allowNotif.busy
-                                          ? null
-                                          : () => allowNotif.onPress(context),
-                                    ),
-                                  _navTile(
-                                    context,
-                                    icon: FLucideIcons.settings,
-                                    title: l10n.profileSettingsTile,
-                                    subtitle: l10n.profileSettingsSubtitle,
-                                    path: SettingsRouter.root.path,
+                          FTileGroup(
+                            children: [
+                              apiHostTile(context, ApiHostResolver.instance),
+                            ],
+                          ),
+                          _sectionGap,
+                          FTileGroup(
+                            label: Text(l10n.profileGroupHelp),
+                            children: [
+                              if (allowNotif.visible)
+                                FTile(
+                                  prefix: const Icon(
+                                    FLucideIcons.bell,
+                                    size: 18,
                                   ),
-                                ],
+                                  title: Text(l10n.profileAllowNotif),
+                                  subtitle: Text(
+                                    l10n.profileAllowNotifSubtitle,
+                                  ),
+                                  enabled: !allowNotif.busy,
+                                  suffix: allowNotif.busy
+                                      ? const FCircularProgress(size: .sm)
+                                      : _chevron,
+                                  onPress: allowNotif.busy
+                                      ? null
+                                      : () => allowNotif.onPress(context),
+                                ),
+                              _navTile(
+                                context,
+                                icon: FLucideIcons.settings,
+                                title: l10n.profileSettingsTile,
+                                subtitle: l10n.profileSettingsSubtitle,
+                                path: SettingsRouter.root.path,
                               ),
+                            ],
+                          ),
                           if (state.isAuth) ...[
                             _sectionGap,
                             FTileGroup(
@@ -283,7 +293,9 @@ class ProfilePage extends HookConsumerWidget {
                                       ? const FCircularProgress(size: .sm)
                                       : const Icon(FLucideIcons.logOut),
                                   title: Text(
-                                    state.isLoggingOut ? l10n.profileLoggingOut : l10n.profileLogout,
+                                    state.isLoggingOut
+                                        ? l10n.profileLoggingOut
+                                        : l10n.profileLogout,
                                   ),
                                   enabled: !state.isLoggingOut,
                                   onPress: state.isLoggingOut
@@ -309,8 +321,6 @@ class ProfilePage extends HookConsumerWidget {
               ),
             ),
           ),
-        ),
-      ],
     );
   }
 
@@ -381,10 +391,7 @@ class _IdentitySection extends ConsumerWidget {
       }
       if (!context.mounted) return;
       if (handle == null || handle.isEmpty) {
-        showFToast(
-          context: context,
-          title: Text(l10n.profileNotReadyToast),
-        );
+        showFToast(context: context, title: Text(l10n.profileNotReadyToast));
         return;
       }
       UserProfileRouter.open(
@@ -400,6 +407,9 @@ class _IdentitySection extends ConsumerWidget {
       children: [
         ProfileIdentityHeader(
           variant: ProfileHeaderVariant.hero,
+          // Cover full-bleed (tanpa gutter); konten identitas di dalamnya
+          // tetap punya gutter 12 supaya sejajar menu di bawahnya.
+          horizontalPadding: 12,
           displayName: displayName,
           username: isAuth ? username : null,
           avatarUrl: status.avatarUrl,

@@ -8,6 +8,7 @@ import 'package:sambasku_mobile/features/linked_accounts/presentation/models/lin
 import 'package:sambasku_mobile/features/linked_accounts/presentation/pages/linked_accounts_page.dart';
 import 'package:sambasku_mobile/features/linked_accounts/presentation/providers/linked_accounts_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeNotifier extends LinkedAccountsNotifier {
   _FakeNotifier(this.initial);
@@ -26,16 +27,24 @@ Widget _host(LinkedAccountsState state, {bool githubEnabled = true}) {
     ],
     child: FTheme(
       data: foruiPalettes['zinc']!.light.touch,
-      child: const MaterialApp(home: LinkedAccountsPage()),
+      child: MaterialApp(
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('id'),
+        home: const LinkedAccountsPage(),
+      ),
     ),
   );
 }
 
 void main() {
-  test('formatLinkedDate: ISO -> "12 Sep 2026", rusak -> "Terhubung"', () {
+  test('formatLinkedDate: ISO -> "12 Sep 2026", rusak -> kosong', () {
     expect(formatLinkedDate('2026-09-12T10:00:00.000Z'), '12 Sep 2026');
     expect(formatLinkedDate('2026-01-05T00:00:00.000Z'), '5 Jan 2026');
-    expect(formatLinkedDate('bukan tanggal'), 'Terhubung');
+    expect(formatLinkedDate('bukan tanggal'), '');
   });
 
   testWidgets('satu grup, tile Google+GitHub, status ikut linked', (

@@ -13,11 +13,14 @@ class PantunApi {
     String? cursor,
     String? categoryId,
   }) async {
-    final res = await _dio.get<Map<String, dynamic>>(_base, queryParameters: {
-      'limit': limit,
-      'cursor': ?cursor,
-      'category_id': ?categoryId,
-    });
+    final res = await _dio.get<Map<String, dynamic>>(
+      _base,
+      queryParameters: {
+        'limit': limit,
+        'cursor': ?cursor,
+        'category_id': ?categoryId,
+      },
+    );
     return _pageFromJson(res.data);
   }
 
@@ -51,6 +54,7 @@ class PantunApi {
 
   Future<Pantun> create({
     required List<String> lines,
+
     /// Null = server deteksi sendiri (ABAB lalu AAAA).
     String? rhymeScheme,
     String? categoryId,
@@ -75,6 +79,7 @@ class PantunApi {
   Future<Pantun> createReply({
     required String parentId,
     required List<String> lines,
+
     /// Null = server deteksi sendiri (ABAB lalu AAAA).
     String? rhymeScheme,
     String? categoryId,
@@ -83,11 +88,11 @@ class PantunApi {
     final res = await _dio.post<Map<String, dynamic>>(
       '$_base/$parentId/replies',
       data: {
-          'lines': lines,
-          'rhyme_scheme': ?rhymeScheme,
-          'category_id': ?categoryId,
-          'language': ?language,
-        },
+        'lines': lines,
+        'rhyme_scheme': ?rhymeScheme,
+        'category_id': ?categoryId,
+        'language': ?language,
+      },
     );
     final data = res.data?['data'];
     if (data is! Map<String, dynamic>) {
@@ -97,14 +102,52 @@ class PantunApi {
   }
 
   Future<void> deleteReply(String replyId) async {
-    await _dio.delete('$_base/replies/$replyId');
+    try {
+      await _dio.delete('$_base/replies/$replyId');
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
+  /// Hapus pantun milik sendiri (soft delete di server).
+  Future<void> deletePantun(String id) async {
+    try {
+      await _dio.delete('$_base/$id');
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
+  /// Laporkan pantun/balasan untuk ditinjau admin. Konten tetap tayang.
+  /// [targetType] `pantun` | `pantun_reply`.
+  Future<void> report({
+    required String targetType,
+    required String targetId,
+    required String reasonCode,
+    String? note,
+  }) async {
+    try {
+      await _dio.post(
+        '$_base/reports',
+        data: {
+          'target_type': targetType,
+          'target_id': targetId,
+          'reason_code': reasonCode,
+          'note': ?note,
+        },
+      );
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
   }
 }
 
 PantunPage _pageFromJson(Map<String, dynamic>? envelope) {
   final data = envelope?['data'];
   final meta = envelope?['meta'];
-  if (data is! List) throw const PantunFailure('Data feed pantun tidak lengkap');
+  if (data is! List) {
+    throw const PantunFailure('Data feed pantun tidak lengkap');
+  }
   return PantunPage(
     data
         .map((e) => Pantun.fromJson(e as Map<String, dynamic>))
@@ -112,6 +155,22 @@ PantunPage _pageFromJson(Map<String, dynamic>? envelope) {
     meta is Map ? meta['next_cursor'] as String? : null,
     meta is Map ? (meta['has_more'] as bool? ?? false) : false,
   );
+}
+
+/// Pesan error dari envelope API (`message`) atau fallback status.
+String _messageFrom(DioException e) {
+  final data = e.response?.data;
+  if (data is Map<String, dynamic>) {
+    final message = data['message'];
+    if (message is String && message.isNotEmpty) return message;
+  }
+  final status = e.response?.statusCode;
+  if (status == 401) return 'Sesi berakhir, silakan masuk kembali';
+  if (status == 429) return 'Terlalu banyak permintaan. Coba lagi sebentar.';
+  if (status != null && status >= 500) {
+    return 'Server sedang gangguan. Coba lagi sebentar ya.';
+  }
+  return 'Gagal memproses permintaan. Coba lagi ya.';
 }
 
 final pantunApiProvider = Provider<PantunApi>(

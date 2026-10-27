@@ -4,6 +4,7 @@ import '../../../../core/network/network_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/activity_feed_repository.dart';
 import '../../domain/entities/feed_activity_item.dart';
+import '../../../../core/i18n/l10n.dart';
 
 final activityFeedRepositoryProvider = Provider<ActivityFeedRepository>((ref) {
   return ActivityFeedRepository(
@@ -161,7 +162,7 @@ class ActivityFeedNotifier extends Notifier<ActivityFeedState> {
       if (ref.mounted && reqId == _loadReqId) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'Gagal memuat aktivitas.',
+          errorMessage: l10n.feedLoadFailed,
           hasLoaded: true,
         );
       }

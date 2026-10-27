@@ -16,6 +16,7 @@ import '../../../vote/presentation/providers/vote_deck_providers.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 import '../providers/contribution_guide_providers.dart';
 import '../widgets/contribution_guide_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Tab KONTRIBUSI: menu usul + deck nilai kata.
 ///
@@ -151,7 +152,7 @@ class _VoteDeckStub extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Bantu nilai agar arti kata lebih akurat',
+          AppLocalizations.of(context).feedVoteDeckHint,
           style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.mutedForeground,
@@ -205,6 +206,7 @@ class _ContributeMenu extends StatelessWidget {
           Navigator.of(sheetContext).pop(path);
         }
 
+        final l10n = AppLocalizations.of(sheetContext);
         FTile tile(
           IconData icon,
           String title,
@@ -222,12 +224,12 @@ class _ContributeMenu extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             child: FTileGroup(
-              label: const Text('Menu kontribusi'),
+              label: Text(l10n.feedContributeMenu),
               children: [
                 tile(
                   FLucideIcons.plusCircle,
-                  'Usul kata baru',
-                  'Kata Sambas belum ada di kamus? Tambahkan sendiri',
+                  l10n.feedContributeNewWord,
+                  l10n.feedContributeNewWordSubtitle,
                   () {
                     AnalyticsService.instance.log(
                       AnalyticsEvents.contributeStart,
@@ -238,14 +240,14 @@ class _ContributeMenu extends StatelessWidget {
                 ),
                 tile(
                   FLucideIcons.search,
-                  'Dicari warga',
-                  'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya',
+                  l10n.feedContributeSearchMiss,
+                  l10n.feedContributeSearchMissSubtitle,
                   () => go(SearchMissRouter.list.path),
                 ),
                 tile(
                   FLucideIcons.messagesSquare,
-                  'Ruang diskusi',
-                  'Tanya arti atau bahas kata Sambas bareng warga',
+                  l10n.feedContributeDiscussion,
+                  l10n.feedContributeDiscussionSubtitle,
                   () => go(DiscussionRouter.feed.path),
                 ),
               ],
@@ -269,7 +271,7 @@ class _ContributeMenu extends StatelessWidget {
       onPress: () => _open(context),
       prefix: Icon(FLucideIcons.layoutGrid, color: theme.colors.primary),
       suffix: const Icon(FLucideIcons.chevronUp),
-      child: const Text('Menu kontribusi'),
+      child: Text(AppLocalizations.of(context).feedContributeMenu),
     );
   }
 }

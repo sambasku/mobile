@@ -7,9 +7,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../entertainment_router.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
+import '../widgets/pantun_delete_sheet.dart';
+import '../widgets/pantun_report_sheet.dart';
 
 /// Feed pantun 4 baris (kategori Hiburan) + kolom cari isi pantun.
 class PantunFeedPage extends HookConsumerWidget {
@@ -46,13 +51,41 @@ class PantunFeedPage extends HookConsumerWidget {
     }, [scroll]);
 
     final searching = query.value.isNotEmpty;
+    final myUserId = ref.watch(authStatusProvider).value?.userId;
+
+    Future<void> deletePantun(Pantun pantun) async {
+      final ok = await showPantunDeleteSheet(
+        context,
+        title: 'Hapus pantun?',
+        subtitle:
+            'Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.',
+      );
+      if (!ok || !context.mounted) return;
+      final error = await ref
+          .read(pantunFeedProvider.notifier)
+          .deletePantun(pantun);
+      if (!context.mounted) return;
+      if (error == null) {
+        showFToast(
+          context: context,
+          title: const Text('Pantun dihapus'),
+          variant: FToastVariant.primary,
+        );
+        return;
+      }
+      await showAppErrorSheet(context, message: error);
+    }
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
         title: const Text('Pantun'),
         prefixes: [
-          FHeaderAction.back(onPress: () => context.pop()),
+          FHeaderAction.back(
+            onPress: () => context.canPop()
+                ? context.pop()
+                : context.go(EntertainmentRouter.hub.path),
+          ),
         ],
       ),
       footer: FButton(
@@ -120,12 +153,26 @@ class PantunFeedPage extends HookConsumerWidget {
                                   onVoteToggle: (pantun, value) => ref
                                       .read(pantunFeedProvider.notifier)
                                       .toggleVote(pantun, value),
-                                ),
+                    footer: p.userId == myUserId
+                        ? PantunActionRow.delete(
+                            onDelete: () => deletePantun(p),
+                          )
+                        : PantunActionRow.report(
+                            onReport: () => reportPantunFromUi(
+                              context,
+                              ref,
+                              targetType: 'pantun',
+                              targetId: p.id,
+                            ),
+                          ),
+                  ),
                               ),
                           if (state.isLoadingMore)
                             const Padding(
                               padding: EdgeInsets.all(16),
-                              child: Center(child: FCircularProgress(size: .sm)),
+                              child: Center(
+                                child: FCircularProgress(size: .sm),
+                              ),
                             ),
                         ],
                       ),

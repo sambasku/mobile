@@ -8,9 +8,11 @@ import '../../../../core/services/notification_navigation.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../activity/presentation/widgets/announcement_body.dart';
 import '../../domain/entities/inbox_notification.dart';
+import '../notification_labels.dart';
 
 /// Detail pengumuman. Tombol Buka di footer menjalankan deeplink.
 class NotificationDetailPage extends StatelessWidget {
@@ -21,6 +23,7 @@ class NotificationDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final item = this.item;
     final kind = item?.actionKind?.trim();
     final value = item?.actionValue?.trim();
@@ -34,7 +37,7 @@ class NotificationDetailPage extends StatelessWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Pengumuman'),
+        title: Text(l10n.announcementTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -58,10 +61,10 @@ class NotificationDetailPage extends StatelessWidget {
                             if (!context.mounted) return;
                             showFToast(
                               context: context,
-                              title: const Text('Tautan disalin'),
+                              title: Text(l10n.notificationLinkCopied),
                             );
                           },
-                          child: const Text('Salin tautan'),
+                          child: Text(l10n.notificationCopyLink),
                         ),
                       ),
                       const Gap(8),
@@ -70,7 +73,7 @@ class NotificationDetailPage extends StatelessWidget {
                       child: FButton(
                         onPress: () =>
                             navigateFromInboxNotification(context, item),
-                        child: const Text('Buka'),
+                        child: Text(l10n.notificationOpen),
                       ),
                     ),
                   ],
@@ -80,7 +83,7 @@ class NotificationDetailPage extends StatelessWidget {
       child: item == null
           ? Center(
               child: Text(
-                'Pengumuman tidak ditemukan',
+                l10n.notificationAnnouncementMissing,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -115,7 +118,7 @@ class NotificationDetailPage extends StatelessWidget {
                       ),
                       const Gap(4),
                       Text(
-                        'Ketuk untuk melihat gambar',
+                        l10n.notificationTapImage,
                         style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -133,7 +136,7 @@ class NotificationDetailPage extends StatelessWidget {
                 const Gap(4),
                 Text(
                   [
-                    item.typeLabel,
+                    notificationTypeLabel(l10n, item.type),
                     formatDateTimeIso(item.createdAt),
                   ].where((part) => part.isNotEmpty).join(' · '),
                   style: theme.typography.body.sm.copyWith(

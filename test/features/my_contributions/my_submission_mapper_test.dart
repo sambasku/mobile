@@ -2,8 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/my_contributions/data/repositories/my_contribution_repository_impl.dart';
 import 'package:sambasku_mobile/features/my_contributions/domain/entities/my_submission.dart';
 import 'package:sambasku_mobile/features/my_contributions/domain/failures/my_contribution_failure.dart';
+import 'package:sambasku_mobile/features/my_contributions/presentation/my_contribution_labels.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 void main() {
+  final l10n = AppLocalizationsId();
+
   test('parseMySubmission list item contribution', () {
     final item = parseMySubmission({
       'id': '01HCONTRIBUTION00000000001',
@@ -24,14 +28,14 @@ void main() {
     expect(item.kind, 'contribution');
     expect(item.entityType, 'word');
     expect(item.lemma, 'makatn');
-    expect(item.displayTitle, 'makatn');
-    expect(item.kindLabel, 'Usul kata baru');
-    expect(item.statusLabel, 'Menunggu pengecekan');
+    expect(mySubmissionTitle(l10n, item), 'makatn');
+    expect(mySubmissionKindLabel(l10n, item.entityType), 'Usul kata baru');
+    expect(mySubmissionStatusLabel(l10n, item.status), 'Menunggu pengecekan');
     // Kata logged-in langsung tayang → word_id ada, bisa dibuka meski pending.
     expect(item.canOpenWord, isTrue);
     expect(item.isSuggestion, isFalse);
     expect(
-      item.listSubtitle('21 Sep 2026 07:00'),
+      mySubmissionSubtitle(l10n, item, '21 Sep 2026 07:00'),
       'Usul kata baru · Menunggu pengecekan · 21 Sep 2026 07:00',
     );
   });
@@ -54,12 +58,12 @@ void main() {
     });
 
     expect(item.isSuggestion, isTrue);
-    expect(item.kindLabel, 'Usul perubahan');
-    expect(item.statusLabel, 'Ditolak');
+    expect(mySubmissionKindLabel(l10n, item.entityType), 'Usul perubahan');
+    expect(mySubmissionStatusLabel(l10n, item.status), 'Ditolak');
     expect(item.canOpenWord, isTrue);
     expect(item.reasonCode, 'inaccurate_definition');
     expect(
-      item.listSubtitle('21 Sep 2026 08:00'),
+      mySubmissionSubtitle(l10n, item, '21 Sep 2026 08:00'),
       'Usul perubahan · Ditolak · 21 Sep 2026 08:00 · '
       'Definisi masih terlalu umum dan tidak menyebut konteks pemak...',
     );
@@ -74,8 +78,8 @@ void main() {
       createdAt: '2026-09-21T00:00:00.000Z',
       wordId: '01JDWORD',
     );
-    expect(item.displayTitle, 'Usul makna');
-    expect(item.statusLabel, 'Disetujui');
+    expect(mySubmissionTitle(l10n, item), 'Usul makna');
+    expect(mySubmissionStatusLabel(l10n, item.status), 'Disetujui');
     expect(item.canOpenWord, isTrue);
   });
 
@@ -111,7 +115,7 @@ void main() {
       'status': 'pending',
       'created_at': '',
     });
-    expect(page.displayTitle, 'Usul kata baru');
+    expect(mySubmissionTitle(l10n, page), 'Usul kata baru');
     expect(const <MySubmission>[].isEmpty, isTrue);
   });
 }

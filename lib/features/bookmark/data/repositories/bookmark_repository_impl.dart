@@ -10,6 +10,7 @@ import '../../domain/repositories/bookmark_repository.dart';
 import '../datasources/bookmark_remote_datasource.dart';
 import '../models/bookmark_item_dto.dart';
 import '../models/toggle_bookmark_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class BookmarkRepositoryImpl implements BookmarkRepository {
   BookmarkRepositoryImpl(this._remoteDatasource);
@@ -26,7 +27,7 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           BookmarkFailure(
-            response.message ?? 'Gagal mengubah bookmark',
+            response.message ?? l10n.bookmarkToggleFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -61,7 +62,7 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
       if (response.success == false) {
         return Either.left(
           BookmarkFailure(
-            response.message ?? 'Gagal memuat bookmark',
+            response.message ?? l10n.bookmarkLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -96,7 +97,7 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
       if (response.success == false) {
         return Either.left(
           BookmarkFailure(
-            response.message ?? 'Gagal memuat status bookmark',
+            response.message ?? l10n.bookmarkStatusLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -137,7 +138,7 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
       final message = data['message'];
       if (message is String && message.isNotEmpty) {
         final proper = code == 'WORD_NOT_FOUND'
-            ? 'Kata tidak ditemukan atau sudah dihapus'
+            ? l10n.bookmarkWordGone
             : message;
         return BookmarkFailure(proper, errorCode: code);
       }
@@ -149,14 +150,14 @@ class BookmarkRepositoryImpl implements BookmarkRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
+      return l10n.commonRateLimited;
     }
     if (statusCode == 401) {
-      return 'Sesi berakhir, silakan masuk kembali';
+      return l10n.commonSessionExpired;
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi dalam beberapa saat.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan saat memuat bookmark, coba lagi';
+    return l10n.bookmarkLoadFailed;
   }
 }

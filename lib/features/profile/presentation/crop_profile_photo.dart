@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 
 import '../../../shared/utils/compress_image_for_upload.dart';
 import '../../../shared/utils/photo_pick_constants.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Crop 1:1 di dalam Flutter supaya warna ikut [FTheme] (terang/gelap + palet).
 /// Batal → null. Berkas yang diunggah WebP persegi [kAvatarExportSize]×sama
@@ -150,7 +151,7 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
     return FScaffold(
       childPad: false,
       header: FHeader.nested(
-        title: const Text('Atur foto profil'),
+        title: Text(AppLocalizations.of(context).profileCropTitle),
         prefixes: [
           FHeaderAction.back(onPress: () => Navigator.of(context).pop()),
         ],
@@ -226,7 +227,11 @@ class _ProfilePhotoCropPageState extends State<ProfilePhotoCropPage> {
               child: FButton(
                 onPress: image == null || _saving ? null : _save,
                 prefix: _saving ? const FCircularProgress() : null,
-                child: Text(_saving ? 'Menyimpan...' : 'Pakai'),
+                child: Text(
+                  _saving
+                      ? AppLocalizations.of(context).authSaving
+                      : AppLocalizations.of(context).profileCropUse,
+                ),
               ),
             ),
           ),

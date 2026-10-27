@@ -65,10 +65,11 @@ class LinkedAccountsState {
   }
 }
 
-/// "Terhubung sejak 12 Sep 2026" - tanpa dep intl (tidak direct).
+/// "12 Sep 2026" untuk "Terhubung sejak {tanggal}". Kosong bila tanggal rusak
+/// (pemanggil yang memilih teks cadangan).
 String formatLinkedDate(String isoDate) {
   final date = DateTime.tryParse(isoDate);
-  if (date == null) return 'Terhubung';
+  if (date == null) return '';
   const bulan = [
     'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
     'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',

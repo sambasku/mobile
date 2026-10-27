@@ -17,6 +17,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../../../../shared/widgets/small_button.dart';
@@ -31,6 +32,7 @@ import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
@@ -119,39 +121,45 @@ class PublicProfilePage extends HookConsumerWidget {
       // FScaffold.childPad membungkus SELURUH scroll view, jadi chip ikut
       // terpasung 12px dari tepi + garis bawahnya tidak sampai ke tepi layar.
       childPad: false,
-      header: FHeader.nested(
-        title: Text(
-          _appBarTitle(
-            async: async,
-            isOwnProfile: isOwnProfile,
-            sessionDisplayName: me?.displayName,
-            initialDisplayName: initialDisplayName,
-          ),
+      // Tanpa header: cover full-bleed sampai belakang status bar, tombol
+      // back melayang di atasnya (ProfileHeroShell).
+      child: ProfileHeroShell(
+        showBack: true,
+        onBack: () => context.pop(),
+        backLabel: AppLocalizations.of(context).commonBack,
+        coverHeight: ProfileIdentityHeader.coverHeightOf(
+          ProfileHeaderVariant.compact,
         ),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      child: async.hasError
-          ? _ErrorState(
-              failure: async.error is UserProfileFailure
-                  ? async.error! as UserProfileFailure
-                  : UserProfileFailure(async.error.toString()),
-              onRetry: () {
-                ref.invalidate(publicProfileProvider(username));
-                ref.invalidate(publicActivityProvider(username));
-              },
-            )
-          : async.when(
-              loading: () => const ProfileIdentityHeaderSkeleton(),
-              error: (_, _) => const SizedBox.shrink(),
-              data: (profile) => _ProfileBody(
-                profile: profile,
-                isOwnProfile: isOwnProfile,
-                activityAsync: activityAsync,
-                onRefresh: refresh,
-                onRetryActivity: () =>
-                    ref.invalidate(publicActivityProvider(username)),
+        title: _appBarTitle(
+          l10n: AppLocalizations.of(context),
+          async: async,
+          isOwnProfile: isOwnProfile,
+          sessionDisplayName: me?.displayName,
+          initialDisplayName: initialDisplayName,
+        ),
+        scrollView: async.hasError
+            ? _ErrorState(
+                failure: async.error is UserProfileFailure
+                    ? async.error! as UserProfileFailure
+                    : UserProfileFailure(async.error.toString()),
+                onRetry: () {
+                  ref.invalidate(publicProfileProvider(username));
+                  ref.invalidate(publicActivityProvider(username));
+                },
+              )
+            : async.when(
+                loading: () => const ProfileIdentityHeaderSkeleton(),
+                error: (_, _) => const SizedBox.shrink(),
+                data: (profile) => _ProfileBody(
+                  profile: profile,
+                  isOwnProfile: isOwnProfile,
+                  activityAsync: activityAsync,
+                  onRefresh: refresh,
+                  onRetryActivity: () =>
+                      ref.invalidate(publicActivityProvider(username)),
+                ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -159,6 +167,7 @@ class PublicProfilePage extends HookConsumerWidget {
 /// Judul app bar: display name dari server, lalu sesi auth, lalu hint navigasi.
 /// Jangan pakai handle route sebagai judul.
 String _appBarTitle({
+  required AppLocalizations l10n,
   required AsyncValue<PublicProfile> async,
   required bool isOwnProfile,
   required String? sessionDisplayName,
@@ -175,7 +184,7 @@ String _appBarTitle({
   final fromRoute = initialDisplayName?.trim();
   if (fromRoute != null && fromRoute.isNotEmpty) return fromRoute;
 
-  return 'Profil';
+  return l10n.profileViewTitle;
 }
 
 class _ProfileBody extends HookConsumerWidget {
@@ -215,11 +224,17 @@ class _ProfileBody extends HookConsumerWidget {
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
     final activityFilter = useState(ProfileActivityFilter.all);
+    // Chip pinned berhenti di bawah bar melayang (status bar + bar aksi),
+    // bukan menempel ke tepi atas layar.
+    final barOffset =
+        MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
 
     return RefreshIndicator(
       onRefresh: onRefresh,
-      // Sliver (bukan ListView): baris chip kategori bisa PIN di bawah app
-      // bar - pola sama dengan feed beranda (#193).
+      // Spinner mulai di bawah bar melayang, bukan di baliknya.
+      displacement: barOffset + 8,
+      // Sliver (bukan ListView): baris chip kategori bisa PIN di bawah bar
+      // melayang - pola sama dengan feed beranda (#193).
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -255,7 +270,7 @@ class _ProfileBody extends HookConsumerWidget {
                     actions: [
                       if (isOwnProfile)
                         SmallButton(
-                          label: 'Edit',
+                          label: AppLocalizations.of(context).profileEditAction,
                           onPress: () => context.push('/edit-profile'),
                         ),
                     ],
@@ -268,7 +283,7 @@ class _ProfileBody extends HookConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      'Aktivitas terbaru',
+                      AppLocalizations.of(context).profileActivityRecent,
                       style: theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -279,10 +294,11 @@ class _ProfileBody extends HookConsumerWidget {
               ),
             ),
           ),
-          // Chip kategori menempel di bawah app bar saat scroll.
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: ProfileActivityChipsHeader(
+        // Chip kategori menempel di bawah bar melayang saat scroll.
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: ProfileActivityChipsHeader(
+            topOffset: barOffset,
               child: ProfileActivityChips(
                 selected: activityFilter.value,
                 onChanged: (next) {
@@ -330,12 +346,16 @@ class _ProfileBody extends HookConsumerWidget {
               children: [
                 FTile(
                   prefix: const Icon(FLucideIcons.camera),
-                  title: const Text('Ganti foto profil'),
+                  title: Text(
+                    AppLocalizations.of(sheetContext).profileChangePhoto,
+                  ),
                   onPress: () => Navigator.of(sheetContext).pop('photo'),
                 ),
                 FTile(
                   prefix: const Icon(FLucideIcons.frame),
-                  title: const Text('Ubah bingkai profil'),
+                  title: Text(
+                    AppLocalizations.of(sheetContext).profileChangeFrame,
+                  ),
                   onPress: () => Navigator.of(sheetContext).pop('border'),
                 ),
               ],
@@ -374,7 +394,9 @@ class _ProfileBody extends HookConsumerWidget {
           if (!context.mounted) return;
           showFToast(
             context: context,
-            title: const Text('Gagal membuka pemotong foto'),
+            title: Text(
+              AppLocalizations.of(context).profilePhotoPickerFailed,
+            ),
           );
           return;
         }
@@ -399,7 +421,9 @@ class _ProfileBody extends HookConsumerWidget {
               if (!context.mounted) return;
               showFToast(
                 context: context,
-                title: const Text('Foto profil diperbarui'),
+                title: Text(
+                  AppLocalizations.of(context).profilePhotoUpdated,
+                ),
               );
             },
           );
@@ -437,8 +461,8 @@ class _ErrorState extends StatelessWidget {
             const Gap(10),
             Text(
               failure.isNotFound
-                  ? 'Pengguna tidak ditemukan'
-                  : 'Gagal memuat profil',
+                  ? AppLocalizations.of(context).profileUserNotFound
+                  : AppLocalizations.of(context).profileLoadFailed,
               style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -456,7 +480,7 @@ class _ErrorState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: onRetry,
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),

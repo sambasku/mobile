@@ -6,6 +6,7 @@ import '../../../../core/models/external_link.dart';
 
 import '../../domain/entities/feed_activity_item.dart';
 import '../widgets/announcement_body.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman detail pengumuman (#102): payload beku dari baris feed.
 /// Action (opsional): host SambasKu = deep link in-app (route dikenal),
@@ -17,11 +18,13 @@ class AnnouncementDetailPage extends StatelessWidget {
 
   /// Snapshot tujuan tombol: host + label in-app/eksternal (#124).
   /// Host saja - full URL sengaja tidak ditampilkan.
-  String get _hostSnapshot {
+  String _hostSnapshot(BuildContext context) {
     final url = Uri.tryParse(announcement.actionUrl ?? '');
     final host = url?.host.toLowerCase() ?? '';
     if (host.isEmpty) return '';
-    return isInAppDeepLink ? '$host · buka di aplikasi' : host;
+    return isInAppDeepLink
+        ? AppLocalizations.of(context).announcementInAppHost(host)
+        : host;
   }
 
   /// Host SambasKu sendiri = kemungkinan besar ada route in-app.
@@ -107,7 +110,9 @@ class AnnouncementDetailPage extends StatelessWidget {
                             child: Text(
                               (announcement.actionLabel ?? '').trim().isNotEmpty
                                   ? announcement.actionLabel!.trim()
-                                  : 'Buka tautan',
+                                  : AppLocalizations.of(
+                                      context,
+                                    ).announcementOpenLink,
                             ),
                           ),
                         ],
@@ -117,7 +122,7 @@ class AnnouncementDetailPage extends StatelessWidget {
                     // tombol menuju tanpa memenuhi layar.
                     const Gap(6),
                     Text(
-                      _hostSnapshot,
+                      _hostSnapshot(context),
                       textAlign: TextAlign.center,
                       style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
@@ -148,7 +153,7 @@ class AnnouncementDetailPage extends StatelessWidget {
                       const Gap(8),
                       Expanded(
                         child: Text(
-                          'Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.',
+                          AppLocalizations.of(context).announcementExpiredNote,
                           style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                           ),

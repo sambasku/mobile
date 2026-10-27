@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../shared/reference/reference_data.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/kbbi_source_notice.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
@@ -870,6 +871,8 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           ),
         ),
       ),
+      const Gap(8),
+      const KbbiSourceNotice(),
       const Gap(12),
     ];
   }

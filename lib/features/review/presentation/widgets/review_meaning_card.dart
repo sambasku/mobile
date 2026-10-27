@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../shared/reference/reference_data.dart';
+import '../../../../shared/widgets/kbbi_source_notice.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../data/review_correct_body.dart';
 
@@ -227,6 +228,8 @@ class ReviewMeaningCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  const Gap(8),
+                  const KbbiSourceNotice(),
                   const Gap(12),
                   Text(
                     AppLocalizations.of(context).reviewMeaningExampleSection,

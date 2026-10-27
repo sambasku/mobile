@@ -1168,7 +1168,7 @@ abstract class AppLocalizations {
   /// No description provided for @voteDeckEmpty.
   ///
   /// In id, this message translates to:
-  /// **'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.'**
+  /// **'Antrean kosakata voting saat ini sedang kosong. Terima kasih sudah membantu meningkatkan kualitas lemma di SambasKu.'**
   String get voteDeckEmpty;
 
   /// No description provided for @voteDeckSavedFromDetail.
@@ -2443,6 +2443,12 @@ abstract class AppLocalizations {
   /// **'Tekan ikon buku untuk mencari definisi di KBBI'**
   String get suggestKbbiSemantics;
 
+  /// Info di bawah field terjemahan: sumber definisi KBBI pihak ketiga dan efek pilihan ke kolom definisi + terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.'**
+  String get kbbiSourceNotice;
+
   /// No description provided for @suggestDefinitionLabel.
   ///
   /// In id, this message translates to:
@@ -2820,6 +2826,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Batal'**
   String get commonCancel;
+
+  /// Semantics tombol kembali di bar melayang halaman ber-cover
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali'**
+  String get commonBack;
 
   /// No description provided for @commonRetry.
   ///
@@ -6314,67 +6326,73 @@ abstract class AppLocalizations {
   /// Judul sheet persetujuan dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'SambasKu perlu izin kamu dulu'**
+  /// **'Sebelum lanjut, ada dua dokumen'**
   String get authLegalSheetTitle;
 
   /// Penjelasan sheet persetujuan dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.'**
+  /// **'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.'**
   String get authLegalSheetBody;
 
   /// Keterangan dokumen syarat dan ketentuan
   ///
   /// In id, this message translates to:
-  /// **'Aturan pakai SambasKu (versi {version})'**
+  /// **'Aturan main pakai SambasKu. Versi {version}.'**
   String authTermsTileSubtitle(String version);
 
   /// Keterangan dokumen kebijakan privasi
   ///
   /// In id, this message translates to:
-  /// **'Data yang kami simpan dan cara kami menjaganya (versi {version})'**
+  /// **'Data apa yang kami simpan dan bagaimana kami menjaganya. Versi {version}.'**
   String authPrivacyTileSubtitle(String version);
 
-  /// Tombol membuka dokumen legal
+  /// Hyperlink membuka dokumen syarat dan ketentuan
   ///
   /// In id, this message translates to:
-  /// **'Baca'**
-  String get authRead;
+  /// **'Baca Syarat dan Ketentuan'**
+  String get authReadTerms;
+
+  /// Hyperlink membuka dokumen kebijakan privasi
+  ///
+  /// In id, this message translates to:
+  /// **'Baca Kebijakan Privasi'**
+  String get authReadPrivacy;
 
   /// Judul kegagalan memuat dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Dokumen belum bisa dimuat'**
+  /// **'Dokumennya belum ke-load'**
   String get authDocsUnavailableTitle;
 
   /// Isi kegagalan memuat dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.'**
+  /// **'Koneksinya mungkin sedang kurang bagus. Coba muat lagi ya.'**
   String get authDocsUnavailableBody;
 
   /// Versi dokumen legal belum tersedia di server
   ///
   /// In id, this message translates to:
-  /// **'Dokumen legal belum tersedia. Coba lagi sebentar.'**
+  /// **'Dokumennya belum siap di server. Coba sebentar lagi ya.'**
   String get authLegalNotReady;
 
   /// Tombol muat ulang dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Muat ulang'**
+  /// **'Coba muat lagi'**
   String get authReload;
 
   /// Catatan bahwa persetujuan bisa dihentikan dengan keluar
   ///
   /// In id, this message translates to:
-  /// **'Kamu bisa berhenti kapan saja dengan keluar dari akun.'**
+  /// **'Belum siap setuju? Kamu bisa keluar dulu, kapan saja.'**
   String get authStopAnytime;
 
   /// Tombol menyetujui dokumen legal
   ///
   /// In id, this message translates to:
-  /// **'Setuju dan lanjut'**
+  /// **'Setuju, lanjut'**
   String get authAcceptAndContinue;
 
   /// Label tombol saat persetujuan disimpan
@@ -6386,7 +6404,7 @@ abstract class AppLocalizations {
   /// Tombol keluar dari akun pada sheet persetujuan
   ///
   /// In id, this message translates to:
-  /// **'Keluar'**
+  /// **'Keluar dulu'**
   String get authExit;
 
   /// Pesan gagal menyimpan persetujuan legal
@@ -6484,6 +6502,1554 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Masuk dengan Facebook belum siap di perangkat ini.'**
   String get authFacebookUnavailable;
+
+  /// Chip kategori feed: semua aktivitas
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get feedCategoryAll;
+
+  /// Chip kategori feed: pencarian tanpa hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Pencarian warga'**
+  String get feedCategorySearchMiss;
+
+  /// Chip kategori feed: perbaikan kata
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan'**
+  String get feedCategoryCorrection;
+
+  /// Chip kategori feed: tempat dan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Eksplorasi'**
+  String get feedCategoryExplore;
+
+  /// Chip kategori feed: pengumuman admin
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman'**
+  String get feedCategoryAnnouncement;
+
+  /// Chip kategori feed: warga baru bergabung
+  ///
+  /// In id, this message translates to:
+  /// **'Warga'**
+  String get feedCategoryJoined;
+
+  /// Label jenis aktivitas: kata
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get feedKindWord;
+
+  /// Label jenis aktivitas: komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get feedKindComment;
+
+  /// Label jenis aktivitas: vote
+  ///
+  /// In id, this message translates to:
+  /// **'Penilaian'**
+  String get feedKindVote;
+
+  /// Label jenis aktivitas: diskusi
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi'**
+  String get feedKindDiscussion;
+
+  /// Label jenis aktivitas: foto kata
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get feedKindImage;
+
+  /// Label jenis aktivitas: rekaman suara
+  ///
+  /// In id, this message translates to:
+  /// **'Suara'**
+  String get feedKindAudio;
+
+  /// Label jenis aktivitas: cara baca
+  ///
+  /// In id, this message translates to:
+  /// **'Cara baca'**
+  String get feedKindPronunciation;
+
+  /// Label jenis aktivitas: contoh kalimat
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh'**
+  String get feedKindExample;
+
+  /// Label jenis aktivitas: pencarian tanpa hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak ditemukan'**
+  String get feedKindSearchMiss;
+
+  /// Label jenis aktivitas: warga bergabung
+  ///
+  /// In id, this message translates to:
+  /// **'Bergabung'**
+  String get feedKindWelcome;
+
+  /// Label jenis aktivitas: bagikan kartu kata
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan'**
+  String get feedKindShare;
+
+  /// Label jenis aktivitas: usulan edit
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan'**
+  String get feedKindSuggestion;
+
+  /// Label jenis aktivitas: usulan kata baru
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kata baru'**
+  String get feedKindContribution;
+
+  /// Label jenis aktivitas: verifikasi kata
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikasi'**
+  String get feedKindVerification;
+
+  /// Label jenis aktivitas: pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman'**
+  String get feedKindAnnouncement;
+
+  /// Label jenis aktivitas: foto tempat wisata
+  ///
+  /// In id, this message translates to:
+  /// **'Foto wisata'**
+  String get feedKindPlacePhoto;
+
+  /// Label jenis aktivitas: tempat wisata terbit
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata'**
+  String get feedKindPlace;
+
+  /// Label jenis aktivitas: acara terbit
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get feedKindEvent;
+
+  /// Label jenis aktivitas: usaha terbit
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha'**
+  String get feedKindUsaha;
+
+  /// Label jenis aktivitas: kuliner terbit
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get feedKindCulinary;
+
+  /// Ajakan membuka sesi tinjau usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau usulan'**
+  String get feedCtaReview;
+
+  /// Ajakan ikut vote
+  ///
+  /// In id, this message translates to:
+  /// **'Ikut menilai'**
+  String get feedCtaVote;
+
+  /// Ajakan membuka detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat arti'**
+  String get feedCtaSeeMeaning;
+
+  /// Ajakan membalas komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Balas'**
+  String get feedCtaReply;
+
+  /// Ajakan membuka diskusi
+  ///
+  /// In id, this message translates to:
+  /// **'Ikut diskusi'**
+  String get feedCtaDiscuss;
+
+  /// Ajakan membuka foto
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat foto'**
+  String get feedCtaSeePhoto;
+
+  /// Ajakan memutar audio
+  ///
+  /// In id, this message translates to:
+  /// **'Dengarkan'**
+  String get feedCtaListen;
+
+  /// Ajakan membuka cara baca
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat cara baca'**
+  String get feedCtaSeePronunciation;
+
+  /// Ajakan membuka contoh kalimat
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat contoh'**
+  String get feedCtaSeeExample;
+
+  /// Ajakan mengisi kata yang belum ada
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu isi'**
+  String get feedCtaHelpFill;
+
+  /// Ajakan membuka profil
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat profil'**
+  String get feedCtaSeeProfile;
+
+  /// Ajakan membuka kartu kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat kartu'**
+  String get feedCtaSeeCard;
+
+  /// Ajakan membuka usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat usulan'**
+  String get feedCtaSeeSuggestion;
+
+  /// Ajakan membuka kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat kata'**
+  String get feedCtaSeeWord;
+
+  /// Ajakan membuka pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Baca pengumuman'**
+  String get feedCtaReadAnnouncement;
+
+  /// Ajakan membuka tempat
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat tempat'**
+  String get feedCtaSeePlace;
+
+  /// Ajakan membuka acara
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat acara'**
+  String get feedCtaSeeEvent;
+
+  /// Ajakan membuka usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat usaha'**
+  String get feedCtaSeeUsaha;
+
+  /// Ajakan membuka kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat kuliner'**
+  String get feedCtaSeeCulinary;
+
+  /// Sebutan aktor saat data aktor tidak ada
+  ///
+  /// In id, this message translates to:
+  /// **'Warga'**
+  String get feedActorFallback;
+
+  /// Toast saat kata usulan belum ditinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini masih menunggu tinjauan verifikator'**
+  String get feedPendingToast;
+
+  /// Pesan gagal memuat feed
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat aktivitas.'**
+  String get feedLoadFailed;
+
+  /// Judul halaman pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman'**
+  String get announcementTitle;
+
+  /// Pesan pengumuman sudah dihapus
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman tidak lagi tersedia.'**
+  String get announcementGone;
+
+  /// Judul halaman pengumuman yang dipin
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman Prioritas'**
+  String get announcementPinnedTitle;
+
+  /// Kondisi kosong halaman pengumuman prioritas
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada pengumuman yang dipin'**
+  String get announcementPinnedEmpty;
+
+  /// Pesan gagal memuat pengumuman prioritas
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat pengumuman'**
+  String get announcementPinnedLoadFailed;
+
+  /// Badge pengumuman yang dipin
+  ///
+  /// In id, this message translates to:
+  /// **'Dipin'**
+  String get announcementPinnedBadge;
+
+  /// Badge pengumuman kedaluwarsa
+  ///
+  /// In id, this message translates to:
+  /// **'Berakhir'**
+  String get announcementExpiredBadge;
+
+  /// Catatan pengumuman kedaluwarsa
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.'**
+  String get announcementExpiredNote;
+
+  /// Tombol membuka tautan pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Buka tautan'**
+  String get announcementOpenLink;
+
+  /// Label aksesibilitas kartu pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman: {title}'**
+  String announcementSemantics(String title);
+
+  /// Label aksesibilitas kartu pengumuman kedaluwarsa
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman: {title}, sudah berakhir'**
+  String announcementSemanticsExpired(String title);
+
+  /// Keterangan tautan pengumuman yang dibuka di dalam aplikasi
+  ///
+  /// In id, this message translates to:
+  /// **'{host} · buka di aplikasi'**
+  String announcementInAppHost(String host);
+
+  /// Teks skeleton judul pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Judul Pengumuman'**
+  String get announcementSkeletonTitle;
+
+  /// Teks skeleton isi pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Isi pengumuman singkat untuk skeleton'**
+  String get announcementSkeletonBody;
+
+  /// Label aksesibilitas banner pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'Judul pengumuman prioritas'**
+  String get announcementBannerSemantics;
+
+  /// Teks skeleton cuplikan pengumuman
+  ///
+  /// In id, this message translates to:
+  /// **'cuplikan isi pengumuman'**
+  String get announcementBannerPreview;
+
+  /// Judul menu kontribusi di tab aktivitas
+  ///
+  /// In id, this message translates to:
+  /// **'Menu kontribusi'**
+  String get feedContributeMenu;
+
+  /// Item menu usul kata baru
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get feedContributeNewWord;
+
+  /// Keterangan item usul kata baru
+  ///
+  /// In id, this message translates to:
+  /// **'Kata Sambas belum ada di kamus? Tambahkan sendiri'**
+  String get feedContributeNewWordSubtitle;
+
+  /// Item menu daftar pencarian tanpa hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Dicari warga'**
+  String get feedContributeSearchMiss;
+
+  /// Keterangan item daftar pencarian tanpa hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya'**
+  String get feedContributeSearchMissSubtitle;
+
+  /// Item menu diskusi
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang diskusi'**
+  String get feedContributeDiscussion;
+
+  /// Keterangan item menu diskusi
+  ///
+  /// In id, this message translates to:
+  /// **'Tanya arti atau bahas kata Sambas bareng warga'**
+  String get feedContributeDiscussionSubtitle;
+
+  /// Ajakan pada kartu vote
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu nilai agar arti kata lebih akurat'**
+  String get feedVoteDeckHint;
+
+  /// Judul panduan gestur kartu vote
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu bisa digeser untuk menilai'**
+  String get feedGuideTitle;
+
+  /// Isi panduan gestur kartu vote
+  ///
+  /// In id, this message translates to:
+  /// **'Gunakan jari untuk menggeser kartu kata:\n• Geser kanan → \"Sudah pas\" (arti sudah benar)\n• Geser kiri → \"Perlu dicek ulang\" (arti kurang tepat)\n• Geser ke atas → \"Lewati\" (ragu / belum yakin)'**
+  String get feedGuideBody;
+
+  /// Label aksesibilitas latar panduan kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Panduan kontribusi'**
+  String get feedGuideBarrier;
+
+  /// Chip filter aktivitas profil publik: semua
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get profileActivityFilterAll;
+
+  /// Chip filter aktivitas profil publik: perbaikan
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan'**
+  String get profileActivityFilterCorrection;
+
+  /// Chip filter aktivitas profil publik: komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get profileActivityFilterComment;
+
+  /// Kondisi kosong aktivitas profil publik
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada aktivitas publik.'**
+  String get profileActivityEmpty;
+
+  /// Kondisi kosong aktivitas profil publik per filter
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada aktivitas {filter}.'**
+  String profileActivityEmptyFiltered(String filter);
+
+  /// Pesan gagal memuat aktivitas profil publik
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat aktivitas'**
+  String get profileActivityLoadFailed;
+
+  /// Judul bagian aktivitas terbaru
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas terbaru'**
+  String get profileActivityRecent;
+
+  /// Judul halaman potong foto profil
+  ///
+  /// In id, this message translates to:
+  /// **'Atur foto profil'**
+  String get profileCropTitle;
+
+  /// Tombol memakai hasil potong foto
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai'**
+  String get profileCropUse;
+
+  /// Pesan gagal unggah foto profil
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah foto profil'**
+  String get profilePhotoUploadFailed;
+
+  /// Pesan gagal hapus foto profil
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus foto profil'**
+  String get profilePhotoDeleteFailed;
+
+  /// Pesan gagal membuka pemotong foto
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membuka pemotong foto'**
+  String get profilePhotoPickerFailed;
+
+  /// Toast setelah foto profil berhasil diganti
+  ///
+  /// In id, this message translates to:
+  /// **'Foto profil diperbarui'**
+  String get profilePhotoUpdated;
+
+  /// Aksi mengganti foto profil
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti foto profil'**
+  String get profileChangePhoto;
+
+  /// Aksi mengubah bingkai foto profil
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah bingkai profil'**
+  String get profileChangeFrame;
+
+  /// Toast saat izin notifikasi diberikan
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi diizinkan'**
+  String get profileAllowNotifGranted;
+
+  /// Toast saat izin notifikasi ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi belum diizinkan'**
+  String get profileAllowNotifPending;
+
+  /// Judul sheet izin notifikasi dimatikan
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi dimatikan'**
+  String get profileAllowNotifOffTitle;
+
+  /// Penjelasan cara mengaktifkan notifikasi dari pengaturan perangkat
+  ///
+  /// In id, this message translates to:
+  /// **'Aktifkan notifikasi SambasKu di Pengaturan perangkat agar kabar usulan tetap sampai.'**
+  String get profileAllowNotifOffBody;
+
+  /// Tombol membuka pengaturan perangkat
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get profileOpenSettings;
+
+  /// Judul halaman edit profil
+  ///
+  /// In id, this message translates to:
+  /// **'Edit profil'**
+  String get profileEditTitle;
+
+  /// Label kolom username
+  ///
+  /// In id, this message translates to:
+  /// **'Username'**
+  String get profileUsernameLabel;
+
+  /// Aturan penulisan username
+  ///
+  /// In id, this message translates to:
+  /// **'a-z, 0-9, titik, underscore (3-30 karakter)'**
+  String get profileUsernameHint;
+
+  /// Label kolom nama tampilan
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tampilan'**
+  String get profileDisplayNameLabel;
+
+  /// Penjelasan kolom nama tampilan
+  ///
+  /// In id, this message translates to:
+  /// **'Nama yang tampil di profil publik'**
+  String get profileDisplayNameHint;
+
+  /// Label kolom bio
+  ///
+  /// In id, this message translates to:
+  /// **'Bio'**
+  String get profileBioLabel;
+
+  /// Penjelasan kolom bio
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan singkat tentangmu (opsional)'**
+  String get profileBioHint;
+
+  /// Label pilihan kecamatan
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get profileDistrictLabel;
+
+  /// Label pilihan desa
+  ///
+  /// In id, this message translates to:
+  /// **'Desa'**
+  String get profileVillageLabel;
+
+  /// Status saat wilayah sedang dimuat
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat wilayah...'**
+  String get profileRegionLoading;
+
+  /// Status saat wilayah gagal dimuat
+  ///
+  /// In id, this message translates to:
+  /// **'Wilayah belum termuat'**
+  String get profileRegionNotLoaded;
+
+  /// Placeholder saat data profil kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak diisi'**
+  String get profileNotFilled;
+
+  /// Pesan sukses menyimpan profil
+  ///
+  /// In id, this message translates to:
+  /// **'Profil berhasil disimpan.'**
+  String get profileSaveSuccess;
+
+  /// Judul halaman profil publik
+  ///
+  /// In id, this message translates to:
+  /// **'Profil'**
+  String get profileViewTitle;
+
+  /// Tombol menuju edit profil
+  ///
+  /// In id, this message translates to:
+  /// **'Edit'**
+  String get profileEditAction;
+
+  /// Pesan profil pengguna tidak ada
+  ///
+  /// In id, this message translates to:
+  /// **'Pengguna tidak ditemukan'**
+  String get profileUserNotFound;
+
+  /// Pesan gagal memuat profil publik
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat profil'**
+  String get profileLoadFailed;
+
+  /// Judul halaman ubah password
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah Password'**
+  String get passwordChangeTitle;
+
+  /// Toast setelah password diubah
+  ///
+  /// In id, this message translates to:
+  /// **'Password berhasil diubah'**
+  String get passwordChangeSuccess;
+
+  /// Tombol menuju halaman masuk setelah sesi berakhir
+  ///
+  /// In id, this message translates to:
+  /// **'Login ulang'**
+  String get passwordRelogin;
+
+  /// Label kolom password lama
+  ///
+  /// In id, this message translates to:
+  /// **'Password Lama'**
+  String get passwordOldLabel;
+
+  /// Label kolom password baru
+  ///
+  /// In id, this message translates to:
+  /// **'Password Baru'**
+  String get passwordNewLabel;
+
+  /// Label kolom konfirmasi password baru
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi Password Baru'**
+  String get passwordConfirmNewLabel;
+
+  /// Tombol menyimpan password
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan Password'**
+  String get passwordSave;
+
+  /// Catatan konsekuensi mengganti password
+  ///
+  /// In id, this message translates to:
+  /// **'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri dan kamu diminta login ulang dengan password baru.'**
+  String get passwordChangeNote;
+
+  /// Judul halaman buat password
+  ///
+  /// In id, this message translates to:
+  /// **'Buat Password'**
+  String get passwordCreateTitle;
+
+  /// Judul sheet setelah password dibuat
+  ///
+  /// In id, this message translates to:
+  /// **'Password dibuat'**
+  String get passwordCreated;
+
+  /// Penjelasan cara masuk setelah password dibuat
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan {provider} dan password baru.'**
+  String passwordCreatedBody(String provider);
+
+  /// Penjelasan sebelum membuat password
+  ///
+  /// In id, this message translates to:
+  /// **'Username kamu: {username}. Setelah password tersimpan, masuk manual menggunakan username atau email yang ditampilkan.'**
+  String passwordCreateHint(String username);
+
+  /// Judul bagian verifikasi akun
+  ///
+  /// In id, this message translates to:
+  /// **'Buktikan akun'**
+  String get passwordVerifyAccount;
+
+  /// Pesan provider masuk tidak dikenal
+  ///
+  /// In id, this message translates to:
+  /// **'Provider tidak dikenal.'**
+  String get passwordProviderUnknown;
+
+  /// Pesan provider masuk belum dikonfigurasi
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan {provider} belum siap di perangkat ini.'**
+  String passwordProviderNotReady(String provider);
+
+  /// Kata yang harus diketik untuk konfirmasi hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'HAPUS'**
+  String get deleteAccountConfirmWord;
+
+  /// Judul halaman hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus akun'**
+  String get deleteAccountTitle;
+
+  /// Penjelasan data yang dihapus saat hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, tapi tanpa namamu.'**
+  String get deleteAccountBody;
+
+  /// Label kolom kata sandi pada hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'Kata sandi'**
+  String get deleteAccountPasswordLabel;
+
+  /// Petunjuk kolom kata sandi hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'Kosongkan jika akun masuk lewat Google'**
+  String get deleteAccountPasswordHint;
+
+  /// Label kolom konfirmasi hapus akun
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik HAPUS'**
+  String get deleteAccountTypeToConfirm;
+
+  /// Label tombol saat akun sedang dihapus
+  ///
+  /// In id, this message translates to:
+  /// **'Menghapus...'**
+  String get deleteAccountDeleting;
+
+  /// Judul sheet setelah akun dihapus
+  ///
+  /// In id, this message translates to:
+  /// **'Akun dihapus'**
+  String get deleteAccountDone;
+
+  /// Judul halaman akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Akun Terhubung'**
+  String get linkedAccountsTitle;
+
+  /// Judul bagian akun masuk
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan'**
+  String get linkedAccountsSignInWith;
+
+  /// Judul konfirmasi melepas akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas {provider}?'**
+  String linkedAccountsUnlinkTitle(String provider);
+
+  /// Penjelasan setelah melepas akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu tetap bisa masuk dengan email dan password atau provider lain.'**
+  String get linkedAccountsUnlinkBody;
+
+  /// Tombol melepas akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas'**
+  String get linkedAccountsUnlink;
+
+  /// Keterangan tanggal akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Terhubung sejak {date}'**
+  String linkedAccountsLinkedSince(String date);
+
+  /// Keterangan akun terhubung siap dipakai
+  ///
+  /// In id, this message translates to:
+  /// **'Terhubung - bisa dipakai untuk masuk'**
+  String get linkedAccountsLinkedHint;
+
+  /// Keterangan akun belum terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Belum terhubung'**
+  String get linkedAccountsNotLinked;
+
+  /// Keterangan status akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Terhubung'**
+  String get linkedAccountsLinked;
+
+  /// Pesan sukses menambah akun terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'Berhasil ditambahkan ke akun terhubung.'**
+  String get linkedAccountsAdded;
+
+  /// Judul halaman notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi'**
+  String get notificationTitle;
+
+  /// Ajakan masuk untuk melihat notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat notifikasi'**
+  String get notificationLoginRequired;
+
+  /// Pesan gagal memuat notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat notifikasi'**
+  String get notificationLoadFailed;
+
+  /// Kondisi kosong daftar notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada notifikasi'**
+  String get notificationEmpty;
+
+  /// Penjelasan kondisi kosong notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Status usulan yang sudah direview akan muncul di sini.'**
+  String get notificationEmptyBody;
+
+  /// Label tombol saat menandai notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Menandai...'**
+  String get notificationMarking;
+
+  /// Tombol menandai semua notifikasi dibaca
+  ///
+  /// In id, this message translates to:
+  /// **'Tandai semua telah dibaca'**
+  String get notificationMarkAllRead;
+
+  /// Aksi membuka gambar notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat gambar'**
+  String get notificationViewImage;
+
+  /// Petunjuk gambar bisa diketuk
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk melihat gambar'**
+  String get notificationTapImage;
+
+  /// Tombol membuka tautan notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get notificationOpen;
+
+  /// Aksi menyalin tautan notifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Salin tautan'**
+  String get notificationCopyLink;
+
+  /// Toast setelah tautan disalin
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan disalin'**
+  String get notificationLinkCopied;
+
+  /// Pesan pengumuman pada notifikasi tidak ada
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman tidak ditemukan'**
+  String get notificationAnnouncementMissing;
+
+  /// Judul halaman komentar saya
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get myCommentsTitle;
+
+  /// Ajakan masuk untuk melihat komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat komentar kamu'**
+  String get myCommentsLoginRequired;
+
+  /// Pesan gagal memuat komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat komentar'**
+  String get myCommentsLoadFailed;
+
+  /// Kondisi kosong komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar'**
+  String get myCommentsEmpty;
+
+  /// Kondisi kosong komentar per filter
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada komentar dengan status ini'**
+  String get myCommentsEmptyFiltered;
+
+  /// Judul halaman kontribusi saya
+  ///
+  /// In id, this message translates to:
+  /// **'Kontribusi Saya'**
+  String get myContributionsTitle;
+
+  /// Ajakan masuk untuk melihat usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat usulanmu'**
+  String get myContributionsLoginRequired;
+
+  /// Pesan gagal memuat kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kontribusi'**
+  String get myContributionsLoadFailed;
+
+  /// Kondisi kosong daftar usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan'**
+  String get myContributionsEmpty;
+
+  /// Penjelasan kondisi kosong usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru atau perubahan akan muncul di sini.'**
+  String get myContributionsEmptyBody;
+
+  /// Status usulan menunggu pengecekan
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu pengecekan'**
+  String get myContributionPending;
+
+  /// Pesan usulan tidak ditemukan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan tidak ditemukan'**
+  String get myContributionNotFound;
+
+  /// Tombol membuka kata dari usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Buka kata'**
+  String get myContributionOpenWord;
+
+  /// Label baris status usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Status'**
+  String get myContributionStatus;
+
+  /// Label baris jenis usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get myContributionKind;
+
+  /// Label waktu usulan dikirim
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim'**
+  String get myContributionSubmitted;
+
+  /// Label waktu usulan ditinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Ditinjau'**
+  String get myContributionReviewed;
+
+  /// Label baris aksi usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi'**
+  String get myContributionAction;
+
+  /// Label baris kode alasan
+  ///
+  /// In id, this message translates to:
+  /// **'Kode alasan'**
+  String get myContributionReasonCode;
+
+  /// Label baris alasan perubahan
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan perubahan'**
+  String get myContributionChangeReason;
+
+  /// Label baris catatan peninjau
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan reviewer'**
+  String get myContributionReviewerNote;
+
+  /// Teks skeleton lemma usulan
+  ///
+  /// In id, this message translates to:
+  /// **'lemma contoh usulan'**
+  String get myContributionsSkeletonLemma;
+
+  /// Teks skeleton meta usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru · Menunggu pengecekan · 21 Sep 2026 00:00'**
+  String get myContributionsSkeletonMeta;
+
+  /// Judul halaman vote saya
+  ///
+  /// In id, this message translates to:
+  /// **'Vote'**
+  String get myVotesTitle;
+
+  /// Ajakan masuk untuk melihat vote
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat vote kamu'**
+  String get myVotesLoginRequired;
+
+  /// Pesan gagal memuat vote
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat vote'**
+  String get myVotesLoadFailed;
+
+  /// Kondisi kosong daftar vote
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada vote'**
+  String get myVotesEmpty;
+
+  /// Teks skeleton meta vote
+  ///
+  /// In id, this message translates to:
+  /// **'Upvote · Kata · 21 Sep 2026 10:00'**
+  String get myVotesSkeletonMeta;
+
+  /// Judul halaman kata tersimpan
+  ///
+  /// In id, this message translates to:
+  /// **'Bookmark'**
+  String get bookmarkTitle;
+
+  /// Ajakan masuk untuk melihat kata tersimpan
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat kata tersimpan'**
+  String get bookmarkLoginRequired;
+
+  /// Pesan gagal memuat bookmark
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat bookmark'**
+  String get bookmarkLoadFailed;
+
+  /// Kondisi kosong kata tersimpan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata tersimpan.'**
+  String get bookmarkEmpty;
+
+  /// Petunjuk cara menyimpan kata
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan ikon bookmark di halaman detail kata.'**
+  String get bookmarkEmptyHint;
+
+  /// Keterangan entri kata sudah tidak ada
+  ///
+  /// In id, this message translates to:
+  /// **'Entri tidak lagi tersedia'**
+  String get bookmarkEntryGone;
+
+  /// Aksi melepas kata dari bookmark
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas kata dari bookmark'**
+  String get bookmarkRemove;
+
+  /// Aksi menyimpan kata ke bookmark
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan kata ke bookmark'**
+  String get bookmarkAdd;
+
+  /// Tombol masuk singkat di layar yang butuh akun
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get commonLoginRequiredShort;
+
+  /// Teks skeleton lemma
+  ///
+  /// In id, this message translates to:
+  /// **'lemma contoh'**
+  String get commonSkeletonLemma;
+
+  /// Nama provider masuk Google
+  ///
+  /// In id, this message translates to:
+  /// **'Google'**
+  String get providerGoogle;
+
+  /// Nama provider masuk Facebook
+  ///
+  /// In id, this message translates to:
+  /// **'Facebook'**
+  String get providerFacebook;
+
+  /// Nama provider masuk GitHub
+  ///
+  /// In id, this message translates to:
+  /// **'GitHub'**
+  String get providerGithub;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get notificationTypeApproved;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get notificationTypeRejected;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Dikoreksi'**
+  String get notificationTypeCorrected;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Ditarik'**
+  String get notificationTypeTakenDown;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi menunggu'**
+  String get notificationTypeDiscussionPending;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi disetujui'**
+  String get notificationTypeDiscussionApproved;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi ditolak'**
+  String get notificationTypeDiscussionRejected;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi diturunkan'**
+  String get notificationTypeDiscussionTakenDown;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan diskusi'**
+  String get notificationTypeDiscussionReply;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutan diskusi'**
+  String get notificationTypeDiscussionMention;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan pantun'**
+  String get notificationTypePantunReply;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutan pantun'**
+  String get notificationTypePantunMention;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumuman'**
+  String get notificationTypeCampaign;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get notificationTypeComment;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Vote'**
+  String get notificationTypeVote;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh'**
+  String get notificationTypeExample;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan'**
+  String get notificationTypeAudio;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata disetujui'**
+  String get notificationTypePlaceApproved;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata ditolak'**
+  String get notificationTypePlaceRejected;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Acara disetujui'**
+  String get notificationTypeEventApproved;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Acara ditolak'**
+  String get notificationTypeEventRejected;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Acara perlu revisi'**
+  String get notificationTypeEventNeedsRevision;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pembaruan'**
+  String get notificationTypeUpdate;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan disetujui contoh'**
+  String get notificationSkeletonTitle;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda'**
+  String get notificationSkeletonMeta;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang · cuplikan · 21 Sep 2026'**
+  String get myCommentsSkeletonMeta;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak tersedia'**
+  String get myCommentsWordGone;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get myCommentsFilterAll;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get myCommentsFilterPublished;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Diturunkan'**
+  String get myCommentsFilterTakenDown;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Dihapus'**
+  String get myCommentsFilterDeleted;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul makna'**
+  String get mySubmissionKindMeaning;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul pengucapan'**
+  String get mySubmissionKindPronunciation;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul gambar'**
+  String get mySubmissionKindImage;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul audio'**
+  String get mySubmissionKindAudio;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul contoh'**
+  String get mySubmissionKindExample;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul perubahan'**
+  String get mySubmissionKindChange;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get mySubmissionKindNewWord;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get myVoteTargetWord;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Arti'**
+  String get myVoteTargetMeaning;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh'**
+  String get myVoteTargetExample;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan'**
+  String get myVoteTargetPronunciation;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get myVoteTargetImage;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get myVoteTargetComment;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan diskusi'**
+  String get myVoteTargetDiscussionReply;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan diskusi'**
+  String get myVoteTargetDiscussion;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun'**
+  String get myVoteTargetPantun;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan pantun'**
+  String get myVoteTargetPantunReply;
+
+  /// Label UI M3 (notification/komentar/usulan/vote)
+  ///
+  /// In id, this message translates to:
+  /// **'Kata sudah dihapus'**
+  String get myVoteWordGone;
+
+  /// Pesan error data layer M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat jumlah notifikasi'**
+  String get notificationUnreadCountFailed;
+
+  /// Pesan error data layer M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menandai notifikasi'**
+  String get notificationMarkReadFailed;
+
+  /// Pesan error data layer M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menandai semua notifikasi'**
+  String get notificationMarkAllReadFailed;
+
+  /// Pesan error data layer M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat detail usulan'**
+  String get myContributionDetailLoadFailed;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah bookmark'**
+  String get bookmarkToggleFailed;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat status bookmark'**
+  String get bookmarkStatusLoadFailed;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak ditemukan atau sudah dihapus'**
+  String get bookmarkWordGone;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.'**
+  String get commonRateLimited;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Sesi berakhir, silakan masuk kembali'**
+  String get commonSessionExpired;
+
+  /// Pesan error generik M3
+  ///
+  /// In id, this message translates to:
+  /// **'Server sedang gangguan. Coba lagi dalam beberapa saat.'**
+  String get commonServerError;
 }
 
 class _AppLocalizationsDelegate

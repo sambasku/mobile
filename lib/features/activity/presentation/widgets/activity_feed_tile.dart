@@ -22,6 +22,7 @@ import '../../../usaha/usaha_router.dart';
 import '../../activity_router.dart';
 import '../../domain/entities/feed_activity_item.dart';
 import 'activity_kind_avatar.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Satu baris feed "Aktivitas terbaru" (home + profil publik).
 class ActivityFeedTile extends ConsumerWidget {
@@ -37,15 +38,16 @@ class ActivityFeedTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final auth = ref.watch(authStatusProvider).value;
+    final l10n = AppLocalizations.of(context);
     final actorLabel = item.actor == null
-        ? 'Warga'
+        ? l10n.feedActorFallback
         : displayPublicAccountLabel(
             displayName: item.actor!.displayName,
             username: item.actor!.username,
           );
     final canOpenProfile = isLinkablePublicUsername(item.actor?.username);
     final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
-    final kindLabel = _friendlyKindLabel(item.kind);
+    final kindLabel = _friendlyKindLabel(item.kind, l10n);
     final subtitle = item.subtitle?.trim();
     final contextMeta = [
       ?kindLabel,
@@ -188,6 +190,7 @@ class ActivityFeedTile extends ConsumerWidget {
                       Text(
                         _ctaLabel(
                           item.kind,
+                          l10n,
                           pendingReview: isPendingSubmission && canReview,
                         ),
                         style: theme.typography.body.xs.copyWith(
@@ -224,9 +227,7 @@ class ActivityFeedTile extends ConsumerWidget {
                 if (isPendingSubmission && !canReview) {
                   showFToast(
                     context: context,
-                    title: const Text(
-                      'Kata ini masih menunggu tinjauan verifikator',
-                    ),
+                    title: Text(l10n.feedPendingToast),
                   );
                   return;
                 }
@@ -249,61 +250,65 @@ class ActivityFeedTile extends ConsumerWidget {
   }
 
   /// Label singkat non-teknis di meta (bukan entity_type mentah).
-  static String? _friendlyKindLabel(FeedActivityKind kind) {
+  static String? _friendlyKindLabel(FeedActivityKind kind, AppLocalizations l10n) {
     return switch (kind) {
-      FeedActivityKind.word => 'Kata',
-      FeedActivityKind.comment => 'Komentar',
-      FeedActivityKind.vote => 'Penilaian',
-      FeedActivityKind.voteUp => 'Penilaian',
-      FeedActivityKind.voteDown => 'Penilaian',
-      FeedActivityKind.discussion => 'Diskusi',
-      FeedActivityKind.wordImage => 'Foto',
-      FeedActivityKind.wordAudio => 'Suara',
-      FeedActivityKind.pronunciation => 'Cara baca',
-      FeedActivityKind.example => 'Contoh',
-      FeedActivityKind.searchMiss => 'Kata tidak ditemukan',
-      FeedActivityKind.welcome => 'Bergabung',
-      FeedActivityKind.cardShare => 'Bagikan',
-      FeedActivityKind.suggestion => 'Usulan',
-      FeedActivityKind.contribution => 'Usulan kata baru',
-      FeedActivityKind.verification => 'Verifikasi',
-      FeedActivityKind.announcement => 'Pengumuman',
-      FeedActivityKind.placePhoto => 'Foto wisata',
-      FeedActivityKind.placeListing => 'Wisata',
-      FeedActivityKind.event => 'Acara',
-      FeedActivityKind.usaha => 'Usaha',
-      FeedActivityKind.culinary => 'Kuliner',
+      FeedActivityKind.word => l10n.feedKindWord,
+      FeedActivityKind.comment => l10n.feedKindComment,
+      FeedActivityKind.vote ||
+      FeedActivityKind.voteUp ||
+      FeedActivityKind.voteDown => l10n.feedKindVote,
+      FeedActivityKind.discussion => l10n.feedKindDiscussion,
+      FeedActivityKind.wordImage => l10n.feedKindImage,
+      FeedActivityKind.wordAudio => l10n.feedKindAudio,
+      FeedActivityKind.pronunciation => l10n.feedKindPronunciation,
+      FeedActivityKind.example => l10n.feedKindExample,
+      FeedActivityKind.searchMiss => l10n.feedKindSearchMiss,
+      FeedActivityKind.welcome => l10n.feedKindWelcome,
+      FeedActivityKind.cardShare => l10n.feedKindShare,
+      FeedActivityKind.suggestion => l10n.feedKindSuggestion,
+      FeedActivityKind.contribution => l10n.feedKindContribution,
+      FeedActivityKind.verification => l10n.feedKindVerification,
+      FeedActivityKind.announcement => l10n.feedKindAnnouncement,
+      FeedActivityKind.placePhoto => l10n.feedKindPlacePhoto,
+      FeedActivityKind.placeListing => l10n.feedKindPlace,
+      FeedActivityKind.event => l10n.feedKindEvent,
+      FeedActivityKind.usaha => l10n.feedKindUsaha,
+      FeedActivityKind.culinary => l10n.feedKindCulinary,
     };
   }
 
-  static String _ctaLabel(FeedActivityKind kind, {bool pendingReview = false}) {
+  static String _ctaLabel(
+    FeedActivityKind kind,
+    AppLocalizations l10n, {
+    bool pendingReview = false,
+  }) {
     // #166: usulan pending → CTA tinjau, bukan buka detail.
     if (pendingReview && kind == FeedActivityKind.contribution) {
-      return 'Tinjau usulan';
+      return l10n.feedCtaReview;
     }
     return switch (kind) {
-      FeedActivityKind.vote => 'Ikut menilai',
-      FeedActivityKind.voteUp => 'Ikut menilai',
-      FeedActivityKind.voteDown => 'Ikut menilai',
-      FeedActivityKind.word => 'Lihat arti',
-      FeedActivityKind.comment => 'Balas',
-      FeedActivityKind.discussion => 'Ikut diskusi',
-      FeedActivityKind.wordImage => 'Lihat foto',
-      FeedActivityKind.wordAudio => 'Dengarkan',
-      FeedActivityKind.pronunciation => 'Lihat cara baca',
-      FeedActivityKind.example => 'Lihat contoh',
-      FeedActivityKind.searchMiss => 'Bantu isi',
-      FeedActivityKind.welcome => 'Lihat profil',
-      FeedActivityKind.cardShare => 'Lihat kartu',
-      FeedActivityKind.suggestion => 'Lihat usulan',
-      FeedActivityKind.contribution => 'Lihat kata',
-      FeedActivityKind.verification => 'Lihat kata',
-      FeedActivityKind.announcement => 'Baca pengumuman',
-      FeedActivityKind.placePhoto => 'Lihat tempat',
-      FeedActivityKind.placeListing => 'Lihat tempat',
-      FeedActivityKind.event => 'Lihat acara',
-      FeedActivityKind.usaha => 'Lihat usaha',
-      FeedActivityKind.culinary => 'Lihat kuliner',
+      FeedActivityKind.vote ||
+      FeedActivityKind.voteUp ||
+      FeedActivityKind.voteDown => l10n.feedCtaVote,
+      FeedActivityKind.word => l10n.feedCtaSeeMeaning,
+      FeedActivityKind.comment => l10n.feedCtaReply,
+      FeedActivityKind.discussion => l10n.feedCtaDiscuss,
+      FeedActivityKind.wordImage => l10n.feedCtaSeePhoto,
+      FeedActivityKind.wordAudio => l10n.feedCtaListen,
+      FeedActivityKind.pronunciation => l10n.feedCtaSeePronunciation,
+      FeedActivityKind.example => l10n.feedCtaSeeExample,
+      FeedActivityKind.searchMiss => l10n.feedCtaHelpFill,
+      FeedActivityKind.welcome => l10n.feedCtaSeeProfile,
+      FeedActivityKind.cardShare => l10n.feedCtaSeeCard,
+      FeedActivityKind.suggestion => l10n.feedCtaSeeSuggestion,
+      FeedActivityKind.contribution ||
+      FeedActivityKind.verification => l10n.feedCtaSeeWord,
+      FeedActivityKind.announcement => l10n.feedCtaReadAnnouncement,
+      FeedActivityKind.placePhoto ||
+      FeedActivityKind.placeListing => l10n.feedCtaSeePlace,
+      FeedActivityKind.event => l10n.feedCtaSeeEvent,
+      FeedActivityKind.usaha => l10n.feedCtaSeeUsaha,
+      FeedActivityKind.culinary => l10n.feedCtaSeeCulinary,
     };
   }
 

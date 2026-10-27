@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/pinned_home_banner.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Widget test banner pinned beranda: shrink saat kosong/error, tampil saat
 /// ada pinned, tap navigasi ke /pinned, suffix multi-pinned.
@@ -60,6 +61,12 @@ class _HangAdapter implements HttpClientAdapter {
 Widget _app(ProviderContainer container) => UncontrolledProviderScope(
   container: container,
   child: MaterialApp.router(
+    localizationsDelegates: [
+      ...AppLocalizations.localizationsDelegates,
+      ...FLocalizations.localizationsDelegates,
+    ],
+    supportedLocales: const [Locale('id')],
+    locale: const Locale('id'),
     routerConfig: GoRouter(
       routes: [
         GoRoute(path: '/', builder: (_, _) => const Scaffold(body: PinnedHomeBanner())),
@@ -221,6 +228,12 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.dark.touch,
             child: FScaffold(

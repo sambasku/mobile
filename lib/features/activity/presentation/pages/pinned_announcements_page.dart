@@ -9,6 +9,7 @@ import '../../activity_router.dart';
 import '../../domain/entities/feed_activity_item.dart';
 import '../providers/announcement_detail_provider.dart';
 import '../widgets/announcement_body.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman pengumuman yang dipin (mobile carousel / halaman pinned).
 /// - 0 item → shrink: teks "Tidak ada pengumuman yang dipin"
@@ -31,7 +32,9 @@ class _PinnedAnnouncementsPageState
 
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Pengumuman Prioritas'),
+        title: Text(
+          AppLocalizations.of(context).announcementPinnedTitle,
+        ),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       // childPad false: carousel butuh area selebar layar (pola
@@ -51,7 +54,7 @@ class _PinnedAnnouncementsPageState
     List<FeedAnnouncement> items,
   ) {
     if (items.isEmpty) {
-      return _buildEmpty(theme);
+      return _buildEmpty(context, theme);
     }
 
     if (items.length == 1) {
@@ -61,7 +64,7 @@ class _PinnedAnnouncementsPageState
     return _buildCarousel(context, theme, items);
   }
 
-  Widget _buildEmpty(FThemeData theme) {
+  Widget _buildEmpty(BuildContext context, FThemeData theme) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -75,7 +78,7 @@ class _PinnedAnnouncementsPageState
             ),
             const Gap(12),
             Text(
-              'Tidak ada pengumuman yang dipin',
+              AppLocalizations.of(context).announcementPinnedEmpty,
               textAlign: TextAlign.center,
               style: theme.typography.body.md.copyWith(
                 color: theme.colors.mutedForeground,
@@ -166,8 +169,12 @@ class _PinnedAnnouncementsPageState
                 child: _PinnedAnnouncementCard(
                   announcement: FeedAnnouncement(
                     id: 'skeleton-$i',
-                    title: 'Judul Pengumuman',
-                    body: 'Isi pengumuman singkat untuk skeleton',
+                    title: AppLocalizations.of(
+                      context,
+                    ).announcementSkeletonTitle,
+                    body: AppLocalizations.of(
+                      context,
+                    ).announcementSkeletonBody,
                     bodyType: AnnouncementBodyType.plain,
                     expired: false,
                   ),
@@ -195,7 +202,7 @@ class _PinnedAnnouncementsPageState
             ),
             const Gap(12),
             Text(
-              'Gagal memuat pengumuman',
+              AppLocalizations.of(context).announcementPinnedLoadFailed,
               textAlign: TextAlign.center,
               style: theme.typography.body.md.copyWith(
                 color: theme.colors.foreground,
@@ -214,7 +221,7 @@ class _PinnedAnnouncementsPageState
             const Gap(16),
             FButton(
               onPress: () => _refresh(ref),
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),
@@ -249,8 +256,13 @@ class _PinnedAnnouncementCard extends StatelessWidget {
       height: 1.3,
     );
     return Semantics(
-      label:
-          'Pengumuman: ${announcement.title}${announcement.expired ? ', sudah berakhir' : ''}',
+      label: announcement.expired
+          ? AppLocalizations.of(
+              context,
+            ).announcementSemanticsExpired(announcement.title)
+          : AppLocalizations.of(
+              context,
+            ).announcementSemantics(announcement.title),
       button: true,
       child: GestureDetector(
         onTap: () => _openDetail(context),
@@ -291,7 +303,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                           ),
                           const Gap(4),
                           Text(
-                            'Dipin',
+                            AppLocalizations.of(context).announcementPinnedBadge,
                             style: theme.typography.body.xs.copyWith(
                               fontWeight: FontWeight.w600,
                               color: theme.colors.primary,
@@ -314,7 +326,7 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          'Berakhir',
+                          AppLocalizations.of(context).announcementExpiredBadge,
                           style: theme.typography.body.xs.copyWith(
                             fontWeight: FontWeight.w600,
                             color: theme.colors.mutedForeground,
@@ -350,7 +362,9 @@ class _PinnedAnnouncementCard extends StatelessWidget {
                         child: Text(
                           announcement.actionLabel?.isNotEmpty == true
                               ? announcement.actionLabel!
-                              : 'Buka tautan',
+                              : AppLocalizations.of(
+                                  context,
+                                ).announcementOpenLink,
                           style: theme.typography.body.sm.copyWith(
                             color: theme.colors.primary,
                             decoration: TextDecoration.underline,

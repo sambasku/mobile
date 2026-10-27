@@ -16,11 +16,4 @@ class BookmarkWord {
 
   /// false bila entri ditarik atau tidak lagi tayang.
   final bool available;
-
-  String get wordTypeLabel => switch (wordType) {
-        'idiom' => 'Idiom',
-        'peribahasa' => 'Peribahasa',
-        'ungkapan' => 'Ungkapan',
-        _ => 'Kata',
-      };
 }

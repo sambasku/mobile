@@ -1,5 +1,4 @@
-import 'package:material_ui/material_ui.dart'
-    show RefreshIndicator, Material, InkWell, Colors, showModalBottomSheet;
+import 'package:material_ui/material_ui.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -14,6 +13,8 @@ import '../../data/pantun_api.dart';
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
+import '../widgets/pantun_delete_sheet.dart';
+import '../widgets/pantun_report_sheet.dart';
 
 /// Detail pantun pembuka + thread balasan, disusun seperti Ruang Diskusi:
 /// header konteks di atas, balasan menjorok sebagai baris thread.
@@ -22,11 +23,7 @@ import '../widgets/pantun_card.dart';
 /// (`/entertainment/pantun/:id?reply=:replyId`): halaman auto-scroll ke
 /// balasan itu dan menyorotnya sebentar.
 class PantunDetailPage extends HookConsumerWidget {
-  const PantunDetailPage({
-    super.key,
-    required this.id,
-    this.highlightReplyId,
-  });
+  const PantunDetailPage({super.key, required this.id, this.highlightReplyId});
 
   final String id;
   final String? highlightReplyId;
@@ -54,44 +51,12 @@ class PantunDetailPage extends HookConsumerWidget {
     WidgetRef ref,
     Pantun reply,
   ) async {
-    final confirmed = await showModalBottomSheet<bool>(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      barrierColor: Colors.black54,
-      builder: (sheetContext) => Padding(
-        padding: MediaQuery.of(sheetContext).viewInsets,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            FTileGroup(
-              children: [
-                FTile(
-                  title: const Text('Hapus balasan?'),
-                  subtitle: const Text('Balasan akan dihapus dari thread pantun.'),
-                ),
-                FTile(
-                  title: const SizedBox.shrink(),
-                  suffix: FButton(
-                    variant: FButtonVariant.destructive,
-                    onPress: () => Navigator.of(sheetContext).pop(true),
-                    child: const Text('Hapus'),
-                  ),
-                ),
-                FTile(
-                  title: const SizedBox.shrink(),
-                  suffix: FButton(
-                    onPress: () => Navigator.of(sheetContext).pop(false),
-                    child: const Text('Batal'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    final confirmed = await showPantunDeleteSheet(
+      context,
+      title: 'Hapus balasan?',
+      subtitle: 'Balasan akan dihapus dari thread pantun.',
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) return;
 
     try {
       await ref.read(pantunApiProvider).deleteReply(reply.id);
@@ -108,6 +73,31 @@ class PantunDetailPage extends HookConsumerWidget {
         await showAppErrorSheet(context, message: e.message);
       }
     }
+  }
+
+  /// Hapus pantun pembuka milik sendiri: pop dulu (feed di-invalidate).
+  Future<void> _deletePantun(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showPantunDeleteSheet(
+      context,
+      title: 'Hapus pantun?',
+      subtitle: 'Pantun dan seluruh balasannya akan hilang dari feed.',
+    );
+    if (!confirmed || !context.mounted) return;
+    final error = await ref
+        .read(pantunDetailProvider(id).notifier)
+        .deletePantun();
+    if (!context.mounted) return;
+    if (error == null) {
+      ref.invalidate(pantunFeedProvider);
+      showFToast(
+        context: context,
+        title: const Text('Pantun dihapus'),
+        variant: FToastVariant.primary,
+      );
+      context.pop();
+      return;
+    }
+    await showAppErrorSheet(context, message: error);
   }
 
   @override
@@ -179,13 +169,26 @@ class PantunDetailPage extends HookConsumerWidget {
                 pantun: detail.pantun,
                 onUsernameTap: isLinkablePublicUsername(detail.pantun.username)
                     ? () => UserProfileRouter.open(
-                          context,
-                          detail.pantun.username!,
-                        )
+                        context,
+                        detail.pantun.username!,
+                      )
                     : null,
                 onVoteToggle: (pantun, value) => ref
                     .read(pantunDetailProvider(id).notifier)
                     .toggleVote(pantun, value),
+                footer: detail.pantun.userId == myUserId
+                    ? PantunActionRow.delete(
+                        label: 'Hapus pantun',
+                        onDelete: () => _deletePantun(context, ref),
+                      )
+                    : PantunActionRow.report(
+                        onReport: () => reportPantunFromUi(
+                          context,
+                          ref,
+                          targetType: 'pantun',
+                          targetId: detail.pantun.id,
+                        ),
+                      ),
               ),
               const Gap(14),
               Text(
@@ -218,75 +221,34 @@ class PantunDetailPage extends HookConsumerWidget {
                       child: PantunCard(
                         pantun: reply,
                         highlighted: reply.id == highlightReplyId,
-                        onUsernameTap:
-                            isLinkablePublicUsername(reply.username)
-                                ? () => UserProfileRouter.open(
-                                      context,
-                                      reply.username!,
-                                    )
-                                : null,
+                        onUsernameTap: isLinkablePublicUsername(reply.username)
+                            ? () => UserProfileRouter.open(
+                                context,
+                                reply.username!,
+                              )
+                            : null,
                         onVoteToggle: reply.status == 'published'
                             ? (pantun, value) => ref
                                   .read(pantunDetailProvider(id).notifier)
                                   .toggleVote(pantun, value)
                             : null,
-                        footer: reply.userId == myUserId
-                            ? _ReplyDeleteRow(
-                                onDelete: () =>
-                                    _deleteReply(context, ref, reply),
-                              )
-                            : null,
+                footer: reply.userId == myUserId
+                    ? PantunActionRow.delete(
+                        onDelete: () =>
+                            _deleteReply(context, ref, reply),
+                      )
+                    : PantunActionRow.report(
+                        onReport: () => reportPantunFromUi(
+                          context,
+                          ref,
+                          targetType: 'pantun_reply',
+                          targetId: reply.id,
+                        ),
+                      ),
                       ),
                     ),
                   ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Aksi hapus milik penulis balasan, sejajar dengan footer thread diskusi.
-class _ReplyDeleteRow extends StatelessWidget {
-  const _ReplyDeleteRow({required this.onDelete});
-
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Semantics(
-        button: true,
-        label: 'Hapus balasan',
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(6),
-            onTap: onDelete,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    FLucideIcons.trash,
-                    size: 14,
-                    color: theme.colors.mutedForeground,
-                  ),
-                  const Gap(4),
-                  Text(
-                    'Hapus',
-                    style: theme.typography.body.sm.copyWith(
-                      fontSize: 11,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
       ),

@@ -40,6 +40,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.coverUrl,
     this.onAvatarTap,
     this.footer,
+    this.horizontalPadding = 16,
   });
 
   final ProfileHeaderVariant variant;
@@ -70,19 +71,33 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// Konten tambahan di bawah identitas (mis. ringkasan lencana).
   final Widget? footer;
 
+  /// Gutter kiri/kanan konten identitas. 0 bila induk sudah memasang gutter
+  /// (tab Profil: router memberi 12).
+  final double horizontalPadding;
+
   bool get _isHero => variant == ProfileHeaderVariant.hero;
 
+  /// Tinggi cover di luar status bar. Dipakai `ProfileHeroShell` untuk
+  /// menghitung kapan bar aksi jadi solid.
+  static double coverHeightOf(ProfileHeaderVariant variant) =>
+      variant == ProfileHeaderVariant.hero ? 160 : 144;
+
+  /// Tinggi bar aksi melayang (di luar status bar).
+  static const double actionBarHeight = 52;
+
   double get _avatarSize => _isHero ? 104 : 72;
-  double get _coverHeight => _isHero ? 96 : 72;
+  double get _coverHeight => coverHeightOf(variant);
   // AvatarBorderOverlay menggambar cincin di dalam kotak frame yang lebih
   // besar dari fotonya; tinggi art harus ikut frame supaya cincin tidak
   // terpotong tepi atas cover.
   double get _avatarExtent => AvatarBorderOverlay.extent(_avatarSize);
-  double get _artHeight => _coverHeight + _avatarExtent / 2;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    // Cover full-bleed: mulai dari tepi atas layar, termasuk area status bar.
+    final topInset = MediaQuery.paddingOf(context).top;
+    final artHeight = topInset + _coverHeight + _avatarExtent / 2;
     final handle = username?.trim();
     final bioText = bio?.trim();
     final verticalAlign = _isHero
@@ -95,7 +110,7 @@ class ProfileIdentityHeader extends StatelessWidget {
       children: [
         // Cover + avatar menumpuk: avatar separuh keluar dari cover.
         SizedBox(
-          height: _artHeight,
+          height: artHeight,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -103,7 +118,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                 top: 0,
                 left: 0,
                 right: 0,
-                height: _coverHeight,
+                height: topInset + _coverHeight,
                 child: _ProfileCover(url: coverUrl),
               ),
               Positioned(
@@ -115,7 +130,9 @@ class ProfileIdentityHeader extends StatelessWidget {
                       ? Alignment.bottomCenter
                       : Alignment.bottomLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(left: _isHero ? 0 : 16),
+                    padding: EdgeInsets.only(
+                      left: _isHero ? 0 : horizontalPadding,
+                    ),
                     child: Semantics(
                       button: onAvatarTap != null,
                       label: 'Foto profil $displayName',
@@ -139,7 +156,12 @@ class ProfileIdentityHeader extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(_isHero ? 16 : 16, 0, 16, 12),
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            0,
+            horizontalPadding,
+            12,
+          ),
           child: Column(
             crossAxisAlignment: verticalAlign,
             children: [
@@ -225,16 +247,45 @@ class _ProfileCover extends StatelessWidget {
     );
 
     final raw = url?.trim();
-    if (raw == null || raw.isEmpty) return fallback;
-    final display = displayImageUrl(raw, width: 1080) ?? raw;
-    return ClipRect(
-      child: Image.network(
-        display,
-        fit: BoxFit.cover,
-        gaplessPlayback: true,
-        // Cover gagal load = gradien, bukan kotak rusak.
-        errorBuilder: (_, _, _) => fallback,
-      ),
+    final Widget art;
+    if (raw == null || raw.isEmpty) {
+      art = fallback;
+    } else {
+      final display = displayImageUrl(raw, width: 1080) ?? raw;
+      art = ClipRect(
+        child: Image.network(
+          display,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          // Cover gagal load = gradien, bukan kotak rusak.
+          errorBuilder: (_, _, _) => fallback,
+        ),
+      );
+    }
+
+    // Scrim atas: ikon status bar putih dan tombol melayang tetap terbaca di
+    // atas foto apa pun. Bagian cover, jadi ikut tergulir.
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        art,
+        IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF000000).withValues(alpha: 0.45),
+                  const Color(0xFF000000).withValues(alpha: 0.12),
+                  const Color(0x00000000),
+                ],
+                stops: const [0, 0.45, 1],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -248,9 +299,11 @@ class ProfileIdentityHeaderSkeleton extends StatelessWidget {
   const ProfileIdentityHeaderSkeleton({
     super.key,
     this.variant = ProfileHeaderVariant.compact,
+    this.horizontalPadding = 16,
   });
 
   final ProfileHeaderVariant variant;
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -274,6 +327,7 @@ class ProfileIdentityHeaderSkeleton extends StatelessWidget {
         variant: variant,
         displayName: 'Nama pengguna',
         username: 'username',
+        horizontalPadding: horizontalPadding,
         stats: const ProfileStatRow(words: 0, corrections: 0),
       ),
     );

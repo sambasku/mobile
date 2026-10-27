@@ -25,19 +25,32 @@ void main() {
   ) async {
     await _pump(
       tester,
-      const ProfileIdentityHeader(
-        variant: ProfileHeaderVariant.hero,
-        displayName: 'Budi Santoso',
-        username: 'budi',
-        bio: 'Suka berkontribusi',
-        stats: _stats,
-        joinedLabel: 'Bergabung 1 Agustus 2026',
+      const MediaQuery(
+        // Status bar 24: cover full-bleed harus ikut menambah tinggi segini.
+        data: MediaQueryData(padding: EdgeInsets.only(top: 24)),
+        child: ProfileIdentityHeader(
+          variant: ProfileHeaderVariant.hero,
+          displayName: 'Budi Santoso',
+          username: 'budi',
+          bio: 'Suka berkontribusi',
+          stats: _stats,
+          joinedLabel: 'Bergabung 1 Agustus 2026',
+        ),
       ),
     );
 
     final avatar = find.byType(UserAvatar);
     expect(avatar, findsOneWidget);
     expect(tester.getSize(avatar).width, 104);
+
+    // Cover full-bleed: tinggi art = status bar + cover + separuh avatar.
+    final headerTop = tester
+        .getTopLeft(find.byType(ProfileIdentityHeader))
+        .dy;
+    expect(
+      tester.getBottomLeft(avatar).dy - headerTop,
+      closeTo(24 + 160 + 104 * 1.32 / 2, 0.5),
+    );
 
     // Dua angka yang dicari orang; sisanya sengaja tidak ditampilkan.
     for (final label in ['usul kata', 'perbaikan']) {

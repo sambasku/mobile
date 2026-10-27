@@ -21,8 +21,7 @@ class LocalePrefs {
   }
 
   /// Simpan pilihan + tandai sudah memilih (first-run gate terbuka).
-  static Future<void> set(AppLocale next,
-      [SharedPreferences? prefs]) async {
+  static Future<void> set(AppLocale next, [SharedPreferences? prefs]) async {
     final p = prefs ?? await SharedPreferences.getInstance();
     await p.setString(_localeKey, next.code);
     await p.setBool(_chosenKey, true);

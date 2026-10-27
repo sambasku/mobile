@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Tombol toggle bookmark (16-api-bookmark.md). Widget tampilan murni -
 /// TIDAK mengambil data & TIDAK menjaga login guard; caller (adapter di
 /// halaman detail) yang memegang state + guard login (pola VoteButtons).
@@ -45,12 +47,11 @@ class _BookmarkButtonState extends State<BookmarkButton> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final disabled = widget.busy || _inFlight;
+    final l10n = AppLocalizations.of(context);
 
     return Semantics(
       button: true,
-      label: widget.isBookmarked
-          ? 'Lepas kata dari bookmark'
-          : 'Simpan kata ke bookmark',
+      label: widget.isBookmarked ? l10n.bookmarkRemove : l10n.bookmarkAdd,
       child: Material(
         color: Colors.transparent,
         shape: const CircleBorder(),

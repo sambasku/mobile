@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// State shortcut "Izinkan notifikasi" untuk [ProfilePage].
 class AllowNotificationShortcut {
@@ -70,7 +71,7 @@ AllowNotificationShortcut useAllowNotificationShortcut() {
           _logAllow('granted');
           showFToast(
             context: context,
-            title: const Text('Notifikasi diizinkan'),
+            title: Text(AppLocalizations.of(context).profileAllowNotifGranted),
           );
         case NotificationAllowAction.openSettings:
           final opened = await showAllowNotificationSettingsSheet(context);
@@ -79,7 +80,9 @@ AllowNotificationShortcut useAllowNotificationShortcut() {
           _logAllow('denied');
           showFToast(
             context: context,
-            title: const Text('Notifikasi belum diizinkan'),
+            title: Text(
+              AppLocalizations.of(context).profileAllowNotifPending,
+            ),
           );
       }
     } finally {
@@ -119,9 +122,11 @@ Future<bool> showAllowNotificationSettingsSheet(BuildContext context) async {
             FTileGroup(
               children: [
                 FTile(
-                  title: const Text('Notifikasi dimatikan'),
-                  subtitle: const Text(
-                    'Aktifkan notifikasi SambasKu di Pengaturan perangkat agar kabar usulan tetap sampai.',
+                  title: Text(
+                    AppLocalizations.of(sheetContext).profileAllowNotifOffTitle,
+                  ),
+                  subtitle: Text(
+                    AppLocalizations.of(sheetContext).profileAllowNotifOffBody,
                   ),
                 ),
                 FTile(
@@ -131,14 +136,18 @@ Future<bool> showAllowNotificationSettingsSheet(BuildContext context) async {
                       openAppSettings();
                       Navigator.of(sheetContext).pop(true);
                     },
-                    child: const Text('Pengaturan'),
+                    child: Text(
+                      AppLocalizations.of(sheetContext).profileOpenSettings,
+                    ),
                   ),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     onPress: () => Navigator.of(sheetContext).pop(false),
-                    child: const Text('Batal'),
+                    child: Text(
+                      AppLocalizations.of(sheetContext).commonCancel,
+                    ),
                   ),
                 ),
               ],

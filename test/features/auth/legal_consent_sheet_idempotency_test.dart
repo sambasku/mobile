@@ -57,12 +57,13 @@ void main() {
     await tester.tap(find.byKey(const Key('trigger')));
     await tester.pumpAndSettle();
 
-    expect(find.text('SambasKu perlu izin kamu dulu'), findsOneWidget);
+    expect(find.text('Sebelum lanjut, ada dua dokumen'), findsOneWidget);
 
     // Kedua dokumen wajib bisa dibaca - accept-legal menuntut dua-duanya.
-    expect(find.text('Syarat dan Ketentuan'), findsOneWidget);
-    expect(find.text('Kebijakan Privasi'), findsOneWidget);
-    expect(find.text('Baca'), findsNWidgets(2));
+    // Label dokumen itu sendiri sudah hyperlink, tanpa tombol "Baca" abstrak.
+    expect(find.text('Baca Syarat dan Ketentuan'), findsOneWidget);
+    expect(find.text('Baca Kebijakan Privasi'), findsOneWidget);
+    expect(find.textContaining('Versi 2026-01-01'), findsNWidgets(2));
 
     // Tutup sheet supaya guard global terpasang untuk test berikutnya.
     final navigator = tester.state<NavigatorState>(find.byType(Navigator).last);
@@ -70,17 +71,16 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('gagal muat legal -> tombol Muat ulang muncul', (tester) async {
+  testWidgets('gagal muat legal -> tombol coba muat lagi muncul', (tester) async {
     await tester.pumpWidget(harness(stubDio(status: 500)));
 
     await tester.tap(find.byKey(const Key('trigger')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Dokumen belum bisa dimuat'), findsOneWidget);
-    expect(find.text('Muat ulang'), findsOneWidget);
+    expect(find.text('Dokumennya belum ke-load'), findsOneWidget);
+    expect(find.text('Coba muat lagi'), findsOneWidget);
   });
 }
-
 class _Trigger extends ConsumerWidget {
   const _Trigger();
 

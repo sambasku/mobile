@@ -142,10 +142,9 @@ class AppRouter {
               GoRoute(
                 path: '/profile',
                 name: 'ProfileRouter.profile',
-                builder: (context, state) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: ProfilePage(),
-                ),
+                // Tanpa gutter: cover profil full-bleed (gutter dipasang
+                // di dalam halaman, bukan di shell).
+                builder: (context, state) => const ProfilePage(),
               ),
             ],
           ),

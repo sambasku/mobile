@@ -17,6 +17,7 @@ import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
+import '../../../activity/presentation/activity_labels.dart';
 import '../../../activity/presentation/providers/announcement_detail_provider.dart';
 import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
@@ -399,7 +400,9 @@ class _FeedCategoryChips extends StatelessWidget {
                 ? FButtonVariant.primary
                 : FButtonVariant.outline,
             onPress: onChanged == null ? null : () => onChanged!(category),
-            child: Text(category.label),
+            child: Text(
+            feedCategoryLabel(AppLocalizations.of(context), category),
+          ),
           );
         },
       ),

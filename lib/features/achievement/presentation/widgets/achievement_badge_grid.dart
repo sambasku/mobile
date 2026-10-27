@@ -55,48 +55,69 @@ class AchievementBadgeGrid extends StatelessWidget {
       );
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 0.72,
-      ),
-      itemBuilder: (context, index) {
-        final item = items[index];
-        final url = displayImageUrl(item.badgeUrl, width: 256) ?? item.badgeUrl;
-        final cell = Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: theme.colors.border),
-          ),
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: url == null
-                    ? Icon(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 3 kolom; gap 12 antar sel. Lebar sel dihitung manual karena Wrap
+        // (bukan GridView) supaya tinggi sel ikut isi - GridView dengan
+        // childAspectRatio memaksa tinggi tetap dan menyisakan celah kosong
+        // di bawah judul.
+        final cellWidth = (constraints.maxWidth - 24) / 3;
+        return Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [for (final item in items) _cell(context, item, cellWidth)],
+        );
+      },
+    );
+  }
+
+  /// Tinggi 2 baris judul pada style `body.xs` (height 1.2).
+  double _labelHeight(BuildContext context) {
+    final style = context.theme.typography.body.xs;
+    final fontSize = style.fontSize ?? 12;
+    return fontSize * 1.2 * 2;
+  }
+
+  Widget _cell(BuildContext context, Achievement item, double width) {
+    final theme = context.theme;
+    final url = displayImageUrl(item.badgeUrl, width: 256) ?? item.badgeUrl;
+    final cell = SizedBox(
+      width: width,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.colors.border),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Kotak lencana persegi mengikuti lebar sel.
+            AspectRatio(
+              aspectRatio: 1,
+              child: url == null
+                  ? Icon(
+                      FLucideIcons.award,
+                      size: 32,
+                      color: theme.colors.mutedForeground,
+                    )
+                  : Image.network(
+                      url,
+                      fit: BoxFit.contain,
+                      gaplessPlayback: true,
+                      errorBuilder: (_, _, _) => Icon(
                         FLucideIcons.award,
                         size: 32,
                         color: theme.colors.mutedForeground,
-                      )
-                    : Image.network(
-                        url,
-                        fit: BoxFit.contain,
-                        gaplessPlayback: true,
-                        errorBuilder: (_, _, _) => Icon(
-                          FLucideIcons.award,
-                          size: 32,
-                          color: theme.colors.mutedForeground,
-                        ),
                       ),
-              ),
-              const Gap(4),
-              Text(
+                    ),
+            ),
+            const Gap(4),
+            // Tinggi 2 baris dipesan tetap: judul 1 baris tidak membuat
+            // sel lebih pendek dari tetangganya (baris jadi bergerigi).
+            SizedBox(
+              height: _labelHeight(context),
+              child: Text(
                 item.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -106,20 +127,22 @@ class AchievementBadgeGrid extends StatelessWidget {
                   height: 1.2,
                 ),
               ),
-            ],
-          ),
-        );
-        if (onItemTap == null) return cell;
-        return Semantics(
-          button: true,
-          label: item.title,
-          child: InkWell(
-            onTap: () => onItemTap!(item),
-            borderRadius: BorderRadius.circular(12),
-            child: cell,
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
+    );
+    if (onItemTap == null) return cell;
+    return Semantics(
+      button: true,
+      label: item.title,
+      // GestureDetector, bukan InkWell: InkWell butuh ancestor Material yang
+      // tidak ada di pohon Forui (crash "No Material widget found").
+      child: GestureDetector(
+        onTap: () => onItemTap!(item),
+        behavior: HitTestBehavior.opaque,
+        child: cell,
+      ),
     );
   }
 }

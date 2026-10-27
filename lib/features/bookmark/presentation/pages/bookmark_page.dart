@@ -6,8 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/word_approved_badge_icon.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../dictionary/presentation/dictionary_labels.dart';
 import '../../domain/entities/bookmark_item.dart';
 import '../../domain/failures/bookmark_failure.dart';
 import '../providers/bookmark_providers.dart';
@@ -27,7 +29,7 @@ class BookmarkPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Bookmark'),
+        title: Text(AppLocalizations.of(context).bookmarkTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       // Auth error → treat as guest (jangan spinner abadi lewat orElse).
@@ -60,7 +62,7 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat kata tersimpan',
+              AppLocalizations.of(context).bookmarkLoginRequired,
               style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -70,7 +72,7 @@ class _GuestState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -112,7 +114,7 @@ class _BookmarkList extends ConsumerWidget {
               Text(
                 error is BookmarkFailure
                     ? error.message
-                    : 'Gagal memuat bookmark',
+                    : AppLocalizations.of(context).bookmarkLoadFailed,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
@@ -123,7 +125,7 @@ class _BookmarkList extends ConsumerWidget {
                 variant: FButtonVariant.outline,
                 onPress: () =>
                     ref.invalidate(bookmarkListControllerProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -157,7 +159,7 @@ class _BookmarkList extends ConsumerWidget {
                       ),
                       const Gap(10),
                       Text(
-                        'Belum ada kata tersimpan.',
+                        AppLocalizations.of(context).bookmarkEmpty,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -165,7 +167,7 @@ class _BookmarkList extends ConsumerWidget {
                       ),
                       const Gap(4),
                       Text(
-                        'Tekan ikon bookmark di halaman detail kata.',
+                        AppLocalizations.of(context).bookmarkEmptyHint,
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -205,7 +207,9 @@ class _BookmarkRow extends ConsumerWidget {
     return FTile(
       title: Text(item.word.lemma),
       subtitle: Text(
-        unavailable ? 'Entri tidak lagi tersedia' : item.word.wordTypeLabel,
+        unavailable
+            ? AppLocalizations.of(context).bookmarkEntryGone
+            : wordTypeLabel(item.word.wordType, AppLocalizations.of(context)),
       ),
       suffix: Row(
         mainAxisSize: MainAxisSize.min,
@@ -224,7 +228,7 @@ class _BookmarkRow extends ConsumerWidget {
           ? () {
               showFToast(
                 context: context,
-                title: const Text('Entri tidak lagi tersedia'),
+                title: Text(AppLocalizations.of(context).bookmarkEntryGone),
               );
             }
           : () => context.push('/words/${item.wordId}'),
@@ -244,7 +248,7 @@ class _RemoveButton extends ConsumerWidget {
     // GestureDetector di suffix: serap tap supaya tidak ikut onPress tile.
     return Semantics(
       button: true,
-      label: 'Lepas kata dari bookmark',
+      label: AppLocalizations.of(context).bookmarkRemove,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () async {

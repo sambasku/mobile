@@ -9,6 +9,7 @@ import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/kbbi_source_notice.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
@@ -916,6 +917,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             ),
           ),
         ),
+        const Gap(8),
+        const KbbiSourceNotice(),
       ],
     );
   }

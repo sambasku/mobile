@@ -11,6 +11,7 @@ import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../explore/domain/entities/region.dart';
 import '../../../explore/presentation/providers/regions_providers.dart';
 import '../providers/edit_profile_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class EditProfilePage extends HookConsumerWidget {
   const EditProfilePage({super.key});
@@ -94,13 +95,14 @@ class EditProfilePage extends HookConsumerWidget {
       320.0,
       MediaQuery.sizeOf(context).height * 0.45,
     );
+    final l10n = AppLocalizations.of(context);
     final canPickRegion = catalogReady && !state.isSubmitting;
     final canPickVillage = canPickRegion && regionId.value != null;
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Edit profil'),
+        title: Text(l10n.profileEditTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -116,8 +118,8 @@ class EditProfilePage extends HookConsumerWidget {
                 FTextField(
                   control: .managed(controller: username),
                   enabled: !state.isSubmitting,
-                  label: const Text('Username'),
-                  hint: 'a-z, 0-9, titik, underscore (3-30 karakter)',
+                  label: Text(l10n.profileUsernameLabel),
+                  hint: l10n.profileUsernameHint,
                   maxLength: 30,
                   textInputAction: .next,
                 ),
@@ -125,8 +127,8 @@ class EditProfilePage extends HookConsumerWidget {
                 FTextField(
                   control: .managed(controller: displayName),
                   enabled: !state.isSubmitting,
-                  label: const Text('Nama tampilan'),
-                  hint: 'Nama yang tampil di profil publik',
+                  label: Text(l10n.profileDisplayNameLabel),
+                  hint: l10n.profileDisplayNameHint,
                   maxLength: 100,
                   textInputAction: .next,
                 ),
@@ -134,8 +136,8 @@ class EditProfilePage extends HookConsumerWidget {
                 FTextField(
                   control: .managed(controller: bio),
                   enabled: !state.isSubmitting,
-                  label: const Text('Bio'),
-                  hint: 'Ceritakan singkat tentangmu (opsional)',
+                  label: Text(l10n.profileBioLabel),
+                  hint: l10n.profileBioHint,
                   maxLength: 500,
                   maxLines: 4,
                   textInputAction: .done,
@@ -146,13 +148,14 @@ class EditProfilePage extends HookConsumerWidget {
                   children: [
                     _regionSelect(
                       key: ValueKey('kec-${regionId.value}'),
-                      title: 'Kecamatan',
+                      title: l10n.profileDistrictLabel,
                       value: regionId.value,
                       options: kecamatan,
                       enabled: canPickRegion,
                       loading: catalogLoading,
                       catalogReady: catalogReady,
                       maxHeight: menuMaxHeight,
+                      l10n: l10n,
                       onChange: (next) {
                         regionId.value = next;
                         final stillValid = all.any(
@@ -166,13 +169,14 @@ class EditProfilePage extends HookConsumerWidget {
                     ),
                     _regionSelect(
                       key: ValueKey('desa-${regionId.value}-${villageId.value}'),
-                      title: 'Desa',
+                      title: l10n.profileVillageLabel,
                       value: villageId.value,
                       options: desa,
                       enabled: canPickVillage,
                       loading: catalogLoading,
                       catalogReady: catalogReady,
                       maxHeight: menuMaxHeight,
+                      l10n: l10n,
                       onChange: (next) => villageId.value = next,
                     ),
                   ],
@@ -182,7 +186,7 @@ class EditProfilePage extends HookConsumerWidget {
                   onPress: canSubmit ? submit : null,
                   child: state.isSubmitting
                       ? const FCircularProgress()
-                      : const Text('Simpan'),
+                      : Text(l10n.commonSave),
                 ),
               ],
             ),
@@ -202,14 +206,15 @@ FTileMixin _regionSelect({
   required bool loading,
   required bool catalogReady,
   required double maxHeight,
+  required AppLocalizations l10n,
   required ValueChanged<String?> onChange,
 }) {
   final known = options.where((r) => r.id == value).firstOrNull;
   final details = loading
-      ? 'Memuat wilayah...'
+      ? l10n.profileRegionLoading
       : !catalogReady
-          ? 'Wilayah belum termuat'
-          : (known?.name ?? value ?? 'Tidak diisi');
+      ? l10n.profileRegionNotLoaded
+      : (known?.name ?? value ?? l10n.profileNotFilled);
   final sentinel = value ?? '';
 
   return FSelectMenuTile<String>(
@@ -227,7 +232,7 @@ FTileMixin _regionSelect({
       },
     ),
     menu: [
-      const FSelectTile(value: '', title: Text('Tidak diisi')),
+      FSelectTile(value: '', title: Text(l10n.profileNotFilled)),
       if (value != null && known == null && value.isNotEmpty)
         FSelectTile(value: value, title: Text(value)),
       for (final region in options)

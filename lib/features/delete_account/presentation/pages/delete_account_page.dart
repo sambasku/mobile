@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/delete_account_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Profil → Hapus akun. Sukses mengosongkan sesi lokal karena server
 /// sudah mencabut refresh token dan token perangkat.
@@ -37,7 +38,9 @@ class DeleteAccountPage extends HookConsumerWidget {
               FTileGroup(
                 children: [
                   FTile(
-                    title: const Text('Akun dihapus'),
+                    title: Text(
+                      AppLocalizations.of(sheetContext).deleteAccountDone,
+                    ),
                     subtitle: Text(next),
                   ),
                   FTile(
@@ -48,7 +51,9 @@ class DeleteAccountPage extends HookConsumerWidget {
                         await ref.read(authStatusProvider.notifier).logout();
                         if (context.mounted) context.go('/');
                       },
-                      child: const Text('Tutup'),
+                      child: Text(
+                        AppLocalizations.of(sheetContext).commonClose,
+                      ),
                     ),
                   ),
                 ],
@@ -75,10 +80,11 @@ class DeleteAccountPage extends HookConsumerWidget {
           confirmation: confirmation.text,
         );
 
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Hapus akun'),
+        title: Text(l10n.deleteAccountTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/profile'),
@@ -89,9 +95,7 @@ class DeleteAccountPage extends HookConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           Text(
-            'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token '
-            'notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, '
-            'tapi tanpa namamu.',
+            l10n.deleteAccountBody,
             style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
@@ -100,15 +104,15 @@ class DeleteAccountPage extends HookConsumerWidget {
           FTextField.password(
             control: .managed(controller: password),
             enabled: !state.isSubmitting,
-            label: const Text('Kata sandi'),
-            hint: 'Kosongkan jika akun masuk lewat Google',
+            label: Text(l10n.deleteAccountPasswordLabel),
+            hint: l10n.deleteAccountPasswordHint,
             textInputAction: .next,
           ),
           const Gap(12),
           FTextField(
             control: .managed(controller: confirmation),
             enabled: !state.isSubmitting,
-            label: const Text('Ketik HAPUS'),
+            label: Text(l10n.deleteAccountTypeToConfirm),
             textInputAction: .done,
             onSubmit: canSubmit ? (_) => submit() : null,
           ),
@@ -117,7 +121,11 @@ class DeleteAccountPage extends HookConsumerWidget {
             variant: .destructive,
             onPress: canSubmit ? submit : null,
             prefix: state.isSubmitting ? const FCircularProgress() : null,
-            child: Text(state.isSubmitting ? 'Menghapus...' : 'Hapus akun'),
+            child: Text(
+              state.isSubmitting
+                  ? l10n.deleteAccountDeleting
+                  : l10n.deleteAccountTitle,
+            ),
           ),
         ],
       ),

@@ -6,10 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_comment_item.dart';
 import '../../domain/failures/my_comment_failure.dart';
+import '../my_comment_labels.dart';
 import '../providers/my_comments_providers.dart';
 
 /// Komentar milik user login - GET /api/v1/comments/my.
@@ -26,7 +28,7 @@ class MyCommentsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Komentar'),
+        title: Text(AppLocalizations.of(context).myCommentsTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: auth.when(
@@ -58,7 +60,7 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat komentar kamu',
+              AppLocalizations.of(context).myCommentsLoginRequired,
               style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -66,7 +68,7 @@ class _GuestState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -100,12 +102,17 @@ class _CommentsList extends ConsumerWidget {
               GestureDetector(
                 onTap: () => ref
                     .read(myCommentsStatusFilterProvider.notifier)
-                    .select(commentStatusFilters[i].$1),
+                    .select(commentStatusFilters[i]),
                 child: FBadge(
-                  variant: selected == commentStatusFilters[i].$1
+                  variant: selected == commentStatusFilters[i]
                       ? FBadgeVariant.primary
                       : FBadgeVariant.secondary,
-                  child: Text(commentStatusFilters[i].$2),
+                  child: Text(
+                    commentStatusFilterLabel(
+                      AppLocalizations.of(context),
+                      commentStatusFilters[i],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -135,7 +142,7 @@ class _CommentsList extends ConsumerWidget {
                     Text(
                       error is MyCommentFailure
                           ? error.message
-                          : 'Gagal memuat komentar',
+                          : AppLocalizations.of(context).myCommentsLoadFailed,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
@@ -146,7 +153,7 @@ class _CommentsList extends ConsumerWidget {
                       variant: FButtonVariant.outline,
                       onPress: () =>
                           ref.invalidate(myCommentsListControllerProvider),
-                      child: const Text('Coba lagi'),
+                      child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
                 ),
@@ -158,6 +165,7 @@ class _CommentsList extends ConsumerWidget {
     }
 
     if (async.isLoading) {
+      final l10n = AppLocalizations.of(context);
       return Column(
         children: [
           chips,
@@ -167,8 +175,8 @@ class _CommentsList extends ConsumerWidget {
               child: ListView(
                 children: [
                   FTile(
-                    title: const Text('lemma contoh'),
-                    subtitle: const Text('Tayang · cuplikan · 21 Sep 2026'),
+                    title: Text(l10n.commonSkeletonLemma),
+                    subtitle: Text(l10n.myCommentsSkeletonMeta),
                   ),
                 ],
               ),
@@ -180,9 +188,10 @@ class _CommentsList extends ConsumerWidget {
 
     final state = async.requireValue;
 
+    final l10n = AppLocalizations.of(context);
     final emptyMessage = selected == null
-        ? 'Belum ada komentar'
-        : 'Tidak ada komentar dengan status ini';
+        ? l10n.myCommentsEmpty
+        : l10n.myCommentsEmptyFiltered;
 
     if (state.items.isEmpty) {
       return Column(
@@ -235,10 +244,11 @@ class _CommentTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final date = formatDateTimeIso(item.createdAt);
     return FTile(
-      title: Text(item.title),
-      subtitle: Text(item.subtitle(date)),
+      title: Text(myCommentTitle(l10n, item)),
+      subtitle: Text(myCommentSubtitle(l10n, item, date)),
       suffix: item.canOpen ? const Icon(FLucideIcons.chevronRight) : null,
       onPress: item.canOpen
           ? () => context.push('/words/${item.wordId}')

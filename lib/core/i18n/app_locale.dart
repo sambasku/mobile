@@ -21,20 +21,20 @@ enum AppLocale {
   final String label;
 
   Locale toLocale() => switch (this) {
-        AppLocale.id => const Locale('id'),
-        AppLocale.sbs => const Locale('id', 'SBS'),
-      };
+    AppLocale.id => const Locale('id'),
+    AppLocale.sbs => const Locale('id', 'SBS'),
+  };
 
   static AppLocale fromCode(String? code) => switch (code) {
-        'id_SBS' => AppLocale.sbs,
-        _ => AppLocale.id,
-      };
+    'id_SBS' => AppLocale.sbs,
+    _ => AppLocale.id,
+  };
 
   /// Mapping web ↔ app locale (helper tunggal, kontrak Section 2).
   static AppLocale fromWeb(String? bcp47) => switch (bcp47) {
-        'id-SBS' => AppLocale.sbs,
-        _ => AppLocale.id,
-      };
+    'id-SBS' => AppLocale.sbs,
+    _ => AppLocale.id,
+  };
 
   static const all = AppLocale.values;
 }

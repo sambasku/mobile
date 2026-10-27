@@ -55,4 +55,14 @@ void main() {
 
     expect(find.text('Segera hadir'), findsOneWidget);
   });
+
+  testWidgets('kategori permainan membuka hub grid, bukan feed pantun', (
+    tester,
+  ) async {
+    await pump(tester, 'hiburan');
+
+    // Hub: judul header + kartu pantun. Feed pantun langsung = bug lama.
+    expect(find.text('Permainan'), findsWidgets);
+    expect(find.text('Pantun'), findsOneWidget);
+  });
 }

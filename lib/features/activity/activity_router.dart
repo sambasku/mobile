@@ -9,6 +9,7 @@ import 'domain/entities/feed_activity_item.dart';
 import 'presentation/pages/announcement_detail_page.dart';
 import 'presentation/pages/pinned_announcements_page.dart';
 import 'presentation/providers/announcement_detail_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Router pengumuman (#102). Detail dibuka dengan `state.extra` berisi
 /// [FeedAnnouncement] beku dari baris feed - tanpa fetch ulang (payload
@@ -57,13 +58,13 @@ class AnnouncementMissingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Pengumuman'),
+        title: Text(AppLocalizations.of(context).announcementTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       childPad: true,
       child: Center(
         child: Text(
-          'Pengumuman tidak lagi tersedia.',
+          AppLocalizations.of(context).announcementGone,
           style: context.theme.typography.body.sm.copyWith(
             color: context.theme.colors.mutedForeground,
           ),
@@ -101,7 +102,7 @@ class _AnnouncementLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Pengumuman'),
+        title: Text(AppLocalizations.of(context).announcementTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       childPad: true,

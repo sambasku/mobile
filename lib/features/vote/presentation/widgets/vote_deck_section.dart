@@ -262,7 +262,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 ),
                 const Gap(10),
                 Text(
-                  'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.',
+                  l10n.voteDeckEmpty,
                   style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),

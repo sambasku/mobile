@@ -3,8 +3,12 @@ import 'package:sambasku_mobile/features/activity/domain/entities/feed_activity_
 import 'package:sambasku_mobile/features/notification/data/repositories/notification_repository_impl.dart';
 import 'package:sambasku_mobile/features/notification/domain/entities/inbox_notification.dart';
 import 'package:sambasku_mobile/features/notification/domain/failures/notification_failure.dart';
+import 'package:sambasku_mobile/features/notification/presentation/notification_labels.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 void main() {
+  final l10n = AppLocalizationsId();
+
   test('parseInboxNotification unread', () {
     final item = parseInboxNotification({
       'id': '01HNOTIF000000000000000001',
@@ -19,7 +23,7 @@ void main() {
 
     expect(item.id, '01HNOTIF000000000000000001');
     expect(item.isUnread, isTrue);
-    expect(item.typeLabel, 'Disetujui');
+    expect(notificationTypeLabel(l10n, item.type), 'Disetujui');
     expect(item.targetKind, 'contribution');
   });
 
@@ -36,7 +40,7 @@ void main() {
     });
 
     expect(item.isUnread, isFalse);
-    expect(item.typeLabel, 'Ditolak');
+    expect(notificationTypeLabel(l10n, item.type), 'Ditolak');
     expect(item.targetKind, 'suggestion');
   });
 
@@ -50,7 +54,7 @@ void main() {
       targetId: '01W',
       createdAt: '2026-09-21T00:00:00.000Z',
     );
-    expect(item.typeLabel, 'Komentar');
+    expect(notificationTypeLabel(l10n, item.type), 'Komentar');
   });
 
   test('typeLabel word_vote + action fields', () {
@@ -66,7 +70,7 @@ void main() {
       'read_at': null,
       'created_at': '2026-09-21T00:00:00.000Z',
     });
-    expect(item.typeLabel, 'Vote');
+    expect(notificationTypeLabel(l10n, item.type), 'Vote');
     expect(item.actionKind, 'word');
     expect(item.actionValue, '01W');
   });
@@ -84,7 +88,7 @@ void main() {
       'read_at': null,
       'created_at': '2026-09-21T00:00:00.000Z',
     });
-    expect(item.typeLabel, 'Contoh');
+    expect(notificationTypeLabel(l10n, item.type), 'Contoh');
   });
 
   test('typeLabel word_audio', () {
@@ -100,7 +104,7 @@ void main() {
       'read_at': null,
       'created_at': '2026-09-21T00:00:00.000Z',
     });
-    expect(item.typeLabel, 'Pelafalan');
+    expect(notificationTypeLabel(l10n, item.type), 'Pelafalan');
   });
 
   test('parseInboxNotification campaign image_url', () {
@@ -116,7 +120,7 @@ void main() {
       'read_at': null,
       'created_at': '2026-09-21T00:00:00.000Z',
     });
-    expect(item.typeLabel, 'Pengumuman');
+    expect(notificationTypeLabel(l10n, item.type), 'Pengumuman');
     expect(
       item.imageUrl,
       'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/campaigns/x.webp',
@@ -175,7 +179,7 @@ void main() {
       targetId: '01C',
       createdAt: '2026-09-21T00:00:00.000Z',
     );
-    expect(item.typeLabel, 'Pembaruan');
+    expect(notificationTypeLabel(l10n, item.type), 'Pembaruan');
     expect(item.isUnread, isTrue);
   });
 

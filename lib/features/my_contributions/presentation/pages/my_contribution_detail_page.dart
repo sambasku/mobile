@@ -6,11 +6,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../dictionary/domain/failures/dictionary_failure.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/my_submission.dart';
 import '../../domain/failures/my_contribution_failure.dart';
+import '../my_contribution_labels.dart';
 import '../providers/my_contributions_providers.dart';
 
 /// Detail satu usulan milik user - GET /api/v1/contributions/my/:kind/:id.
@@ -26,6 +28,7 @@ class MyContributionDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(myContributionDetailProvider(kind, id));
     final item = async.asData?.value;
     final wordId = item != null && item.canOpenWord ? item.wordId : null;
@@ -46,13 +49,16 @@ class MyContributionDetailPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 child: FButton(
                   onPress: () => context.push('/words/$wordId'),
-                  child: const Text('Buka kata'),
+                  child: Text(l10n.myContributionOpenWord),
                 ),
               ),
             ),
       header: FHeader.nested(
         title: Text(
-          async.maybeWhen(data: (d) => d.displayTitle, orElse: () => 'Usulan'),
+          async.maybeWhen(
+          data: (d) => mySubmissionTitle(l10n, d),
+          orElse: () => l10n.reviewEntityOther,
+        ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -99,7 +105,9 @@ class _ErrorState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              failure.isNotFound ? 'Usulan tidak ditemukan' : failure.message,
+              failure.isNotFound
+          ? AppLocalizations.of(context).myContributionNotFound
+          : failure.message,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
@@ -110,7 +118,7 @@ class _ErrorState extends StatelessWidget {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: onRetry,
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ],
@@ -127,6 +135,7 @@ class _DetailBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final created = formatDateTimeIso(item.createdAt);
     final reviewed = formatDateTimeIso(item.reviewedAt);
     final comment = item.reviewComment?.trim();
@@ -139,9 +148,9 @@ class _DetailBody extends ConsumerWidget {
         FTileGroup(
           children: [
             FTile(
-              title: const Text('Status'),
+              title: Text(l10n.myContributionStatus),
               subtitle: Text(
-                item.statusLabel,
+                mySubmissionStatusLabel(l10n, item.status),
                 style: TextStyle(
                   color: switch (item.status) {
                     'approved' => context.theme.colors.success,
@@ -155,7 +164,7 @@ class _DetailBody extends ConsumerWidget {
               prefix: item.isPendingReview
                   ? Semantics(
                       button: true,
-                      label: 'Menunggu pengecekan',
+                      label: l10n.myContributionPending,
                       child: GestureDetector(
                         onTap: () => showPendingReviewInfo(context),
                         child: const PendingReviewBadgeIcon(size: 16),
@@ -163,26 +172,29 @@ class _DetailBody extends ConsumerWidget {
                     )
                   : null,
             ),
-            FTile(title: const Text('Jenis'), subtitle: Text(item.kindLabel)),
+            FTile(
+              title: Text(l10n.myContributionKind),
+              subtitle: Text(mySubmissionKindLabel(l10n, item.entityType)),
+            ),
             if (created.isNotEmpty)
-              FTile(title: const Text('Dikirim'), subtitle: Text(created)),
+              FTile(title: Text(l10n.myContributionSubmitted), subtitle: Text(created)),
             if (reviewed.isNotEmpty)
-              FTile(title: const Text('Ditinjau'), subtitle: Text(reviewed)),
+              FTile(title: Text(l10n.myContributionReviewed), subtitle: Text(reviewed)),
             if (item.action != null && item.action!.isNotEmpty)
-              FTile(title: const Text('Aksi'), subtitle: Text(item.action!)),
+              FTile(title: Text(l10n.myContributionAction), subtitle: Text(item.action!)),
             if (reasonCode != null && reasonCode.isNotEmpty)
               FTile(
-                title: const Text('Kode alasan'),
+                title: Text(l10n.myContributionReasonCode),
                 subtitle: Text(reasonCode),
               ),
             if (reason != null && reason.isNotEmpty)
               FTile(
-                title: const Text('Alasan perubahan'),
+                title: Text(l10n.myContributionChangeReason),
                 subtitle: Text(reason),
               ),
             if (comment != null && comment.isNotEmpty)
               FTile(
-                title: const Text('Catatan reviewer'),
+                title: Text(l10n.myContributionReviewerNote),
                 subtitle: Text(comment),
               ),
           ],

@@ -13,6 +13,7 @@ import 'package:sambasku_mobile/features/auth/presentation/providers/auth_login_
 import 'package:sambasku_mobile/features/linked_accounts/presentation/models/linked_accounts_state.dart';
 import 'package:sambasku_mobile/features/linked_accounts/presentation/pages/linked_accounts_page.dart';
 import 'package:sambasku_mobile/features/linked_accounts/presentation/providers/linked_accounts_providers.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Preview driver: render LinkedAccountsPage persis dengan tema app
 /// (zinc touch) dalam dark + light, simpan PNG. Bukan test assert -
@@ -50,6 +51,12 @@ Future<void> _capture(
             darkTheme: App.materialTheme(ftheme),
             themeMode:
                 brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('id'),
             home: const LinkedAccountsPage(),
           ),
         ),

@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../features/auth/presentation/providers/auth_status_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/change_password_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman ubah password (profil → menu "Ubah Password"). Sukses =
 /// SEMUA session ter-revoke backend: tampilkan dialog lalu logout paksa
@@ -41,7 +42,9 @@ class ChangePasswordPage extends HookConsumerWidget {
               FTileGroup(
                 children: [
                   FTile(
-                    title: const Text('Password berhasil diubah'),
+                    title: Text(
+                      AppLocalizations.of(sheetContext).passwordChangeSuccess,
+                    ),
                     subtitle: Text(next),
                   ),
                   FTile(
@@ -52,7 +55,9 @@ class ChangePasswordPage extends HookConsumerWidget {
                         await ref.read(authStatusProvider.notifier).logout();
                         if (context.mounted) context.go('/login');
                       },
-                      child: const Text('Login ulang'),
+                      child: Text(
+                        AppLocalizations.of(sheetContext).passwordRelogin,
+                      ),
                     ),
                   ),
                 ],
@@ -87,10 +92,11 @@ class ChangePasswordPage extends HookConsumerWidget {
           confirmPassword: confirmPassword.text,
         );
 
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Ubah Password'),
+        title: Text(l10n.passwordChangeTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/profile'),
@@ -103,22 +109,22 @@ class ChangePasswordPage extends HookConsumerWidget {
           FTextField.password(
             control: .managed(controller: oldPassword),
             enabled: !state.isSubmitting,
-            label: const Text('Password Lama'),
+            label: Text(l10n.passwordOldLabel),
             textInputAction: .next,
           ),
           const Gap(12),
           FTextField.password(
             control: .managed(controller: newPassword),
             enabled: !state.isSubmitting,
-            label: const Text('Password Baru'),
-            hint: 'Minimal 8 karakter, huruf + angka',
+            label: Text(l10n.passwordNewLabel),
+            hint: l10n.authPasswordHint,
             textInputAction: .next,
           ),
           const Gap(12),
           FTextField.password(
             control: .managed(controller: confirmPassword),
             enabled: !state.isSubmitting,
-            label: const Text('Konfirmasi Password Baru'),
+            label: Text(l10n.passwordConfirmNewLabel),
             textInputAction: .done,
             onSubmit: canSubmit ? (_) => submit() : null,
           ),
@@ -126,12 +132,13 @@ class ChangePasswordPage extends HookConsumerWidget {
           FButton(
             onPress: canSubmit ? submit : null,
             prefix: state.isSubmitting ? const FCircularProgress() : null,
-            child: Text(state.isSubmitting ? 'Memproses...' : 'Simpan Password'),
+            child: Text(
+              state.isSubmitting ? l10n.authSubmitting : l10n.passwordSave,
+            ),
           ),
           const Gap(8),
           Text(
-            'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri '
-            'dan kamu diminta login ulang dengan password baru.',
+            l10n.passwordChangeNote,
             textAlign: .center,
             style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,

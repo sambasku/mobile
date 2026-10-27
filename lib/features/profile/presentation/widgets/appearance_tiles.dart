@@ -16,19 +16,21 @@ import '../../../../l10n/app_localizations.dart';
 /// CATATAN: wajib managedRadio (bukan lifted) - lifted itu multi-select,
 /// tap item baru menghasilkan set {lama, baru} → .first malah nilai lama.
 
-const _modeLabels = {
-  ThemeMode.system: 'Sistem',
-  ThemeMode.light: 'Terang',
-  ThemeMode.dark: 'Gelap',
+Map<ThemeMode, String> _modeLabels(AppLocalizations l10n) => {
+  ThemeMode.system: l10n.appearanceThemeSystem,
+  ThemeMode.light: l10n.appearanceThemeLight,
+  ThemeMode.dark: l10n.appearanceThemeDark,
 };
 
 FTileMixin themeModeTile(WidgetRef ref) {
+  final l10n = AppLocalizations.of(ref.context);
+  final labels = _modeLabels(l10n);
   final mode = ref.watch(themeModeControllerProvider);
 
   return FSelectMenuTile<ThemeMode>(
     prefix: const Icon(FLucideIcons.contrast),
-    title: const Text('Mode Tema'),
-    details: Text(_modeLabels[mode] ?? ''),
+    title: Text(l10n.appearanceThemeMode),
+    details: Text(labels[mode] ?? ''),
     selectControl: FMultiValueControl.managedRadio(
       initial: mode,
       onChange: (values) {
@@ -38,7 +40,7 @@ FTileMixin themeModeTile(WidgetRef ref) {
       },
     ),
     menu: [
-      for (final entry in _modeLabels.entries)
+      for (final entry in labels.entries)
         FSelectTile(value: entry.key, title: Text(entry.value)),
     ],
   );
@@ -80,13 +82,22 @@ FTileMixin paletteTile(WidgetRef ref) {
   );
 }
 
+Map<double, String> _scaleLabels(AppLocalizations l10n) => {
+  0.85: l10n.appearanceScaleSmall,
+  1.0: l10n.appearanceScaleNormal,
+  1.15: l10n.appearanceScaleLarge,
+  1.3: l10n.appearanceScaleHuge,
+};
+
 FTileMixin fontScaleTile(WidgetRef ref) {
+  final l10n = AppLocalizations.of(ref.context);
+  final scaleLabels = _scaleLabels(l10n);
   final scale = ref.watch(fontScaleControllerProvider);
 
   return FSelectMenuTile<double>(
     prefix: const Icon(FLucideIcons.aLargeSmall),
-    title: const Text('Ukuran Teks'),
-    details: Text(_scaleLabels[scale] ?? 'Normal'),
+    title: Text(l10n.appearanceFontScale),
+    details: Text(scaleLabels[scale] ?? l10n.appearanceScaleNormal),
     selectControl: FMultiValueControl.managedRadio(
       initial: scale,
       onChange: (values) {
@@ -96,7 +107,7 @@ FTileMixin fontScaleTile(WidgetRef ref) {
       },
     ),
     menu: [
-      for (final entry in _scaleLabels.entries)
+      for (final entry in scaleLabels.entries)
         FSelectTile(
           value: entry.key,
           title: Text(entry.value, style: TextStyle(fontSize: 14 * entry.key)),
@@ -104,13 +115,6 @@ FTileMixin fontScaleTile(WidgetRef ref) {
     ],
   );
 }
-
-final _scaleLabels = {
-  0.85: 'Kecil',
-  1.0: 'Normal',
-  1.15: 'Besar',
-  1.3: 'Sangat Besar',
-};
 
 class _PaletteDot extends StatelessWidget {
   const _PaletteDot({required this.color});

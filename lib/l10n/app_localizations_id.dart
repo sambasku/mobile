@@ -586,7 +586,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get voteDeckEmpty =>
-      'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.';
+      'Antrean kosakata voting saat ini sedang kosong. Terima kasih sudah membantu meningkatkan kualitas lemma di SambasKu.';
 
   @override
   String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
@@ -1295,6 +1295,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Tekan ikon buku untuk mencari definisi di KBBI';
 
   @override
+  String get kbbiSourceNotice =>
+      'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.';
+
+  @override
   String get suggestDefinitionLabel => 'Definisi';
 
   @override
@@ -1496,6 +1500,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get commonCancel => 'Batal';
+
+  @override
+  String get commonBack => 'Kembali';
 
   @override
   String get commonRetry => 'Coba lagi';
@@ -3488,51 +3495,54 @@ class AppLocalizationsId extends AppLocalizations {
   String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
 
   @override
-  String get authLegalSheetTitle => 'SambasKu perlu izin kamu dulu';
+  String get authLegalSheetTitle => 'Sebelum lanjut, ada dua dokumen';
 
   @override
   String get authLegalSheetBody =>
-      'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.';
+      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.';
 
   @override
   String authTermsTileSubtitle(String version) {
-    return 'Aturan pakai SambasKu (versi $version)';
+    return 'Aturan main pakai SambasKu. Versi $version.';
   }
 
   @override
   String authPrivacyTileSubtitle(String version) {
-    return 'Data yang kami simpan dan cara kami menjaganya (versi $version)';
+    return 'Data apa yang kami simpan dan bagaimana kami menjaganya. Versi $version.';
   }
 
   @override
-  String get authRead => 'Baca';
+  String get authReadTerms => 'Baca Syarat dan Ketentuan';
 
   @override
-  String get authDocsUnavailableTitle => 'Dokumen belum bisa dimuat';
+  String get authReadPrivacy => 'Baca Kebijakan Privasi';
+
+  @override
+  String get authDocsUnavailableTitle => 'Dokumennya belum ke-load';
 
   @override
   String get authDocsUnavailableBody =>
-      'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
+      'Koneksinya mungkin sedang kurang bagus. Coba muat lagi ya.';
 
   @override
   String get authLegalNotReady =>
-      'Dokumen legal belum tersedia. Coba lagi sebentar.';
+      'Dokumennya belum siap di server. Coba sebentar lagi ya.';
 
   @override
-  String get authReload => 'Muat ulang';
+  String get authReload => 'Coba muat lagi';
 
   @override
   String get authStopAnytime =>
-      'Kamu bisa berhenti kapan saja dengan keluar dari akun.';
+      'Belum siap setuju? Kamu bisa keluar dulu, kapan saja.';
 
   @override
-  String get authAcceptAndContinue => 'Setuju dan lanjut';
+  String get authAcceptAndContinue => 'Setuju, lanjut';
 
   @override
   String get authSaving => 'Menyimpan...';
 
   @override
-  String get authExit => 'Keluar';
+  String get authExit => 'Keluar dulu';
 
   @override
   String get authConsentSaveFailed =>
@@ -3587,6 +3597,818 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get authFacebookUnavailable =>
       'Masuk dengan Facebook belum siap di perangkat ini.';
+
+  @override
+  String get feedCategoryAll => 'Semua';
+
+  @override
+  String get feedCategorySearchMiss => 'Pencarian warga';
+
+  @override
+  String get feedCategoryCorrection => 'Perbaikan';
+
+  @override
+  String get feedCategoryExplore => 'Eksplorasi';
+
+  @override
+  String get feedCategoryAnnouncement => 'Pengumuman';
+
+  @override
+  String get feedCategoryJoined => 'Warga';
+
+  @override
+  String get feedKindWord => 'Kata';
+
+  @override
+  String get feedKindComment => 'Komentar';
+
+  @override
+  String get feedKindVote => 'Penilaian';
+
+  @override
+  String get feedKindDiscussion => 'Diskusi';
+
+  @override
+  String get feedKindImage => 'Foto';
+
+  @override
+  String get feedKindAudio => 'Suara';
+
+  @override
+  String get feedKindPronunciation => 'Cara baca';
+
+  @override
+  String get feedKindExample => 'Contoh';
+
+  @override
+  String get feedKindSearchMiss => 'Kata tidak ditemukan';
+
+  @override
+  String get feedKindWelcome => 'Bergabung';
+
+  @override
+  String get feedKindShare => 'Bagikan';
+
+  @override
+  String get feedKindSuggestion => 'Usulan';
+
+  @override
+  String get feedKindContribution => 'Usulan kata baru';
+
+  @override
+  String get feedKindVerification => 'Verifikasi';
+
+  @override
+  String get feedKindAnnouncement => 'Pengumuman';
+
+  @override
+  String get feedKindPlacePhoto => 'Foto wisata';
+
+  @override
+  String get feedKindPlace => 'Wisata';
+
+  @override
+  String get feedKindEvent => 'Acara';
+
+  @override
+  String get feedKindUsaha => 'Usaha';
+
+  @override
+  String get feedKindCulinary => 'Kuliner';
+
+  @override
+  String get feedCtaReview => 'Tinjau usulan';
+
+  @override
+  String get feedCtaVote => 'Ikut menilai';
+
+  @override
+  String get feedCtaSeeMeaning => 'Lihat arti';
+
+  @override
+  String get feedCtaReply => 'Balas';
+
+  @override
+  String get feedCtaDiscuss => 'Ikut diskusi';
+
+  @override
+  String get feedCtaSeePhoto => 'Lihat foto';
+
+  @override
+  String get feedCtaListen => 'Dengarkan';
+
+  @override
+  String get feedCtaSeePronunciation => 'Lihat cara baca';
+
+  @override
+  String get feedCtaSeeExample => 'Lihat contoh';
+
+  @override
+  String get feedCtaHelpFill => 'Bantu isi';
+
+  @override
+  String get feedCtaSeeProfile => 'Lihat profil';
+
+  @override
+  String get feedCtaSeeCard => 'Lihat kartu';
+
+  @override
+  String get feedCtaSeeSuggestion => 'Lihat usulan';
+
+  @override
+  String get feedCtaSeeWord => 'Lihat kata';
+
+  @override
+  String get feedCtaReadAnnouncement => 'Baca pengumuman';
+
+  @override
+  String get feedCtaSeePlace => 'Lihat tempat';
+
+  @override
+  String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeUsaha => 'Lihat usaha';
+
+  @override
+  String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedActorFallback => 'Warga';
+
+  @override
+  String get feedPendingToast => 'Kata ini masih menunggu tinjauan verifikator';
+
+  @override
+  String get feedLoadFailed => 'Gagal memuat aktivitas.';
+
+  @override
+  String get announcementTitle => 'Pengumuman';
+
+  @override
+  String get announcementGone => 'Pengumuman tidak lagi tersedia.';
+
+  @override
+  String get announcementPinnedTitle => 'Pengumuman Prioritas';
+
+  @override
+  String get announcementPinnedEmpty => 'Tidak ada pengumuman yang dipin';
+
+  @override
+  String get announcementPinnedLoadFailed => 'Gagal memuat pengumuman';
+
+  @override
+  String get announcementPinnedBadge => 'Dipin';
+
+  @override
+  String get announcementExpiredBadge => 'Berakhir';
+
+  @override
+  String get announcementExpiredNote =>
+      'Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.';
+
+  @override
+  String get announcementOpenLink => 'Buka tautan';
+
+  @override
+  String announcementSemantics(String title) {
+    return 'Pengumuman: $title';
+  }
+
+  @override
+  String announcementSemanticsExpired(String title) {
+    return 'Pengumuman: $title, sudah berakhir';
+  }
+
+  @override
+  String announcementInAppHost(String host) {
+    return '$host · buka di aplikasi';
+  }
+
+  @override
+  String get announcementSkeletonTitle => 'Judul Pengumuman';
+
+  @override
+  String get announcementSkeletonBody =>
+      'Isi pengumuman singkat untuk skeleton';
+
+  @override
+  String get announcementBannerSemantics => 'Judul pengumuman prioritas';
+
+  @override
+  String get announcementBannerPreview => 'cuplikan isi pengumuman';
+
+  @override
+  String get feedContributeMenu => 'Menu kontribusi';
+
+  @override
+  String get feedContributeNewWord => 'Usul kata baru';
+
+  @override
+  String get feedContributeNewWordSubtitle =>
+      'Kata Sambas belum ada di kamus? Tambahkan sendiri';
+
+  @override
+  String get feedContributeSearchMiss => 'Dicari warga';
+
+  @override
+  String get feedContributeSearchMissSubtitle =>
+      'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
+
+  @override
+  String get feedContributeDiscussion => 'Ruang diskusi';
+
+  @override
+  String get feedContributeDiscussionSubtitle =>
+      'Tanya arti atau bahas kata Sambas bareng warga';
+
+  @override
+  String get feedVoteDeckHint => 'Bantu nilai agar arti kata lebih akurat';
+
+  @override
+  String get feedGuideTitle => 'Kartu bisa digeser untuk menilai';
+
+  @override
+  String get feedGuideBody =>
+      'Gunakan jari untuk menggeser kartu kata:\n• Geser kanan → \"Sudah pas\" (arti sudah benar)\n• Geser kiri → \"Perlu dicek ulang\" (arti kurang tepat)\n• Geser ke atas → \"Lewati\" (ragu / belum yakin)';
+
+  @override
+  String get feedGuideBarrier => 'Panduan kontribusi';
+
+  @override
+  String get profileActivityFilterAll => 'Semua';
+
+  @override
+  String get profileActivityFilterCorrection => 'Perbaikan';
+
+  @override
+  String get profileActivityFilterComment => 'Komentar';
+
+  @override
+  String get profileActivityEmpty => 'Belum ada aktivitas publik.';
+
+  @override
+  String profileActivityEmptyFiltered(String filter) {
+    return 'Belum ada aktivitas $filter.';
+  }
+
+  @override
+  String get profileActivityLoadFailed => 'Gagal memuat aktivitas';
+
+  @override
+  String get profileActivityRecent => 'Aktivitas terbaru';
+
+  @override
+  String get profileCropTitle => 'Atur foto profil';
+
+  @override
+  String get profileCropUse => 'Pakai';
+
+  @override
+  String get profilePhotoUploadFailed => 'Gagal mengunggah foto profil';
+
+  @override
+  String get profilePhotoDeleteFailed => 'Gagal menghapus foto profil';
+
+  @override
+  String get profilePhotoPickerFailed => 'Gagal membuka pemotong foto';
+
+  @override
+  String get profilePhotoUpdated => 'Foto profil diperbarui';
+
+  @override
+  String get profileChangePhoto => 'Ganti foto profil';
+
+  @override
+  String get profileChangeFrame => 'Ubah bingkai profil';
+
+  @override
+  String get profileAllowNotifGranted => 'Notifikasi diizinkan';
+
+  @override
+  String get profileAllowNotifPending => 'Notifikasi belum diizinkan';
+
+  @override
+  String get profileAllowNotifOffTitle => 'Notifikasi dimatikan';
+
+  @override
+  String get profileAllowNotifOffBody =>
+      'Aktifkan notifikasi SambasKu di Pengaturan perangkat agar kabar usulan tetap sampai.';
+
+  @override
+  String get profileOpenSettings => 'Pengaturan';
+
+  @override
+  String get profileEditTitle => 'Edit profil';
+
+  @override
+  String get profileUsernameLabel => 'Username';
+
+  @override
+  String get profileUsernameHint =>
+      'a-z, 0-9, titik, underscore (3-30 karakter)';
+
+  @override
+  String get profileDisplayNameLabel => 'Nama tampilan';
+
+  @override
+  String get profileDisplayNameHint => 'Nama yang tampil di profil publik';
+
+  @override
+  String get profileBioLabel => 'Bio';
+
+  @override
+  String get profileBioHint => 'Ceritakan singkat tentangmu (opsional)';
+
+  @override
+  String get profileDistrictLabel => 'Kecamatan';
+
+  @override
+  String get profileVillageLabel => 'Desa';
+
+  @override
+  String get profileRegionLoading => 'Memuat wilayah...';
+
+  @override
+  String get profileRegionNotLoaded => 'Wilayah belum termuat';
+
+  @override
+  String get profileNotFilled => 'Tidak diisi';
+
+  @override
+  String get profileSaveSuccess => 'Profil berhasil disimpan.';
+
+  @override
+  String get profileViewTitle => 'Profil';
+
+  @override
+  String get profileEditAction => 'Edit';
+
+  @override
+  String get profileUserNotFound => 'Pengguna tidak ditemukan';
+
+  @override
+  String get profileLoadFailed => 'Gagal memuat profil';
+
+  @override
+  String get passwordChangeTitle => 'Ubah Password';
+
+  @override
+  String get passwordChangeSuccess => 'Password berhasil diubah';
+
+  @override
+  String get passwordRelogin => 'Login ulang';
+
+  @override
+  String get passwordOldLabel => 'Password Lama';
+
+  @override
+  String get passwordNewLabel => 'Password Baru';
+
+  @override
+  String get passwordConfirmNewLabel => 'Konfirmasi Password Baru';
+
+  @override
+  String get passwordSave => 'Simpan Password';
+
+  @override
+  String get passwordChangeNote =>
+      'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri dan kamu diminta login ulang dengan password baru.';
+
+  @override
+  String get passwordCreateTitle => 'Buat Password';
+
+  @override
+  String get passwordCreated => 'Password dibuat';
+
+  @override
+  String passwordCreatedBody(String provider) {
+    return 'Masuk dengan $provider dan password baru.';
+  }
+
+  @override
+  String passwordCreateHint(String username) {
+    return 'Username kamu: $username. Setelah password tersimpan, masuk manual menggunakan username atau email yang ditampilkan.';
+  }
+
+  @override
+  String get passwordVerifyAccount => 'Buktikan akun';
+
+  @override
+  String get passwordProviderUnknown => 'Provider tidak dikenal.';
+
+  @override
+  String passwordProviderNotReady(String provider) {
+    return 'Masuk dengan $provider belum siap di perangkat ini.';
+  }
+
+  @override
+  String get deleteAccountConfirmWord => 'HAPUS';
+
+  @override
+  String get deleteAccountTitle => 'Hapus akun';
+
+  @override
+  String get deleteAccountBody =>
+      'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, tapi tanpa namamu.';
+
+  @override
+  String get deleteAccountPasswordLabel => 'Kata sandi';
+
+  @override
+  String get deleteAccountPasswordHint =>
+      'Kosongkan jika akun masuk lewat Google';
+
+  @override
+  String get deleteAccountTypeToConfirm => 'Ketik HAPUS';
+
+  @override
+  String get deleteAccountDeleting => 'Menghapus...';
+
+  @override
+  String get deleteAccountDone => 'Akun dihapus';
+
+  @override
+  String get linkedAccountsTitle => 'Akun Terhubung';
+
+  @override
+  String get linkedAccountsSignInWith => 'Masuk dengan';
+
+  @override
+  String linkedAccountsUnlinkTitle(String provider) {
+    return 'Lepas $provider?';
+  }
+
+  @override
+  String get linkedAccountsUnlinkBody =>
+      'Kamu tetap bisa masuk dengan email dan password atau provider lain.';
+
+  @override
+  String get linkedAccountsUnlink => 'Lepas';
+
+  @override
+  String linkedAccountsLinkedSince(String date) {
+    return 'Terhubung sejak $date';
+  }
+
+  @override
+  String get linkedAccountsLinkedHint => 'Terhubung - bisa dipakai untuk masuk';
+
+  @override
+  String get linkedAccountsNotLinked => 'Belum terhubung';
+
+  @override
+  String get linkedAccountsLinked => 'Terhubung';
+
+  @override
+  String get linkedAccountsAdded => 'Berhasil ditambahkan ke akun terhubung.';
+
+  @override
+  String get notificationTitle => 'Notifikasi';
+
+  @override
+  String get notificationLoginRequired => 'Masuk dulu untuk melihat notifikasi';
+
+  @override
+  String get notificationLoadFailed => 'Gagal memuat notifikasi';
+
+  @override
+  String get notificationEmpty => 'Belum ada notifikasi';
+
+  @override
+  String get notificationEmptyBody =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get notificationMarking => 'Menandai...';
+
+  @override
+  String get notificationMarkAllRead => 'Tandai semua telah dibaca';
+
+  @override
+  String get notificationViewImage => 'Lihat gambar';
+
+  @override
+  String get notificationTapImage => 'Ketuk untuk melihat gambar';
+
+  @override
+  String get notificationOpen => 'Buka';
+
+  @override
+  String get notificationCopyLink => 'Salin tautan';
+
+  @override
+  String get notificationLinkCopied => 'Tautan disalin';
+
+  @override
+  String get notificationAnnouncementMissing => 'Pengumuman tidak ditemukan';
+
+  @override
+  String get myCommentsTitle => 'Komentar';
+
+  @override
+  String get myCommentsLoginRequired =>
+      'Masuk dulu untuk melihat komentar kamu';
+
+  @override
+  String get myCommentsLoadFailed => 'Gagal memuat komentar';
+
+  @override
+  String get myCommentsEmpty => 'Belum ada komentar';
+
+  @override
+  String get myCommentsEmptyFiltered => 'Tidak ada komentar dengan status ini';
+
+  @override
+  String get myContributionsTitle => 'Kontribusi Saya';
+
+  @override
+  String get myContributionsLoginRequired =>
+      'Masuk dulu untuk melihat usulanmu';
+
+  @override
+  String get myContributionsLoadFailed => 'Gagal memuat kontribusi';
+
+  @override
+  String get myContributionsEmpty => 'Belum ada usulan';
+
+  @override
+  String get myContributionsEmptyBody =>
+      'Usul kata baru atau perubahan akan muncul di sini.';
+
+  @override
+  String get myContributionPending => 'Menunggu pengecekan';
+
+  @override
+  String get myContributionNotFound => 'Usulan tidak ditemukan';
+
+  @override
+  String get myContributionOpenWord => 'Buka kata';
+
+  @override
+  String get myContributionStatus => 'Status';
+
+  @override
+  String get myContributionKind => 'Jenis';
+
+  @override
+  String get myContributionSubmitted => 'Dikirim';
+
+  @override
+  String get myContributionReviewed => 'Ditinjau';
+
+  @override
+  String get myContributionAction => 'Aksi';
+
+  @override
+  String get myContributionReasonCode => 'Kode alasan';
+
+  @override
+  String get myContributionChangeReason => 'Alasan perubahan';
+
+  @override
+  String get myContributionReviewerNote => 'Catatan reviewer';
+
+  @override
+  String get myContributionsSkeletonLemma => 'lemma contoh usulan';
+
+  @override
+  String get myContributionsSkeletonMeta =>
+      'Usul kata baru · Menunggu pengecekan · 21 Sep 2026 00:00';
+
+  @override
+  String get myVotesTitle => 'Vote';
+
+  @override
+  String get myVotesLoginRequired => 'Masuk dulu untuk melihat vote kamu';
+
+  @override
+  String get myVotesLoadFailed => 'Gagal memuat vote';
+
+  @override
+  String get myVotesEmpty => 'Belum ada vote';
+
+  @override
+  String get myVotesSkeletonMeta => 'Upvote · Kata · 21 Sep 2026 10:00';
+
+  @override
+  String get bookmarkTitle => 'Bookmark';
+
+  @override
+  String get bookmarkLoginRequired => 'Masuk dulu untuk melihat kata tersimpan';
+
+  @override
+  String get bookmarkLoadFailed => 'Gagal memuat bookmark';
+
+  @override
+  String get bookmarkEmpty => 'Belum ada kata tersimpan.';
+
+  @override
+  String get bookmarkEmptyHint => 'Tekan ikon bookmark di halaman detail kata.';
+
+  @override
+  String get bookmarkEntryGone => 'Entri tidak lagi tersedia';
+
+  @override
+  String get bookmarkRemove => 'Lepas kata dari bookmark';
+
+  @override
+  String get bookmarkAdd => 'Simpan kata ke bookmark';
+
+  @override
+  String get commonLoginRequiredShort => 'Masuk';
+
+  @override
+  String get commonSkeletonLemma => 'lemma contoh';
+
+  @override
+  String get providerGoogle => 'Google';
+
+  @override
+  String get providerFacebook => 'Facebook';
+
+  @override
+  String get providerGithub => 'GitHub';
+
+  @override
+  String get notificationTypeApproved => 'Disetujui';
+
+  @override
+  String get notificationTypeRejected => 'Ditolak';
+
+  @override
+  String get notificationTypeCorrected => 'Dikoreksi';
+
+  @override
+  String get notificationTypeTakenDown => 'Ditarik';
+
+  @override
+  String get notificationTypeDiscussionPending => 'Diskusi menunggu';
+
+  @override
+  String get notificationTypeDiscussionApproved => 'Diskusi disetujui';
+
+  @override
+  String get notificationTypeDiscussionRejected => 'Diskusi ditolak';
+
+  @override
+  String get notificationTypeDiscussionTakenDown => 'Diskusi diturunkan';
+
+  @override
+  String get notificationTypeDiscussionReply => 'Balasan diskusi';
+
+  @override
+  String get notificationTypeDiscussionMention => 'Sebutan diskusi';
+
+  @override
+  String get notificationTypePantunReply => 'Balasan pantun';
+
+  @override
+  String get notificationTypePantunMention => 'Sebutan pantun';
+
+  @override
+  String get notificationTypeCampaign => 'Pengumuman';
+
+  @override
+  String get notificationTypeComment => 'Komentar';
+
+  @override
+  String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeExample => 'Contoh';
+
+  @override
+  String get notificationTypeAudio => 'Pelafalan';
+
+  @override
+  String get notificationTypePlaceApproved => 'Wisata disetujui';
+
+  @override
+  String get notificationTypePlaceRejected => 'Wisata ditolak';
+
+  @override
+  String get notificationTypeEventApproved => 'Acara disetujui';
+
+  @override
+  String get notificationTypeEventRejected => 'Acara ditolak';
+
+  @override
+  String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeUpdate => 'Pembaruan';
+
+  @override
+  String get notificationSkeletonTitle => 'Usulan disetujui contoh';
+
+  @override
+  String get notificationSkeletonMeta =>
+      'Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda';
+
+  @override
+  String get myCommentsSkeletonMeta => 'Tayang · cuplikan · 21 Sep 2026';
+
+  @override
+  String get myCommentsWordGone => 'Kata tidak tersedia';
+
+  @override
+  String get myCommentsFilterAll => 'Semua';
+
+  @override
+  String get myCommentsFilterPublished => 'Tayang';
+
+  @override
+  String get myCommentsFilterTakenDown => 'Diturunkan';
+
+  @override
+  String get myCommentsFilterDeleted => 'Dihapus';
+
+  @override
+  String get mySubmissionKindMeaning => 'Usul makna';
+
+  @override
+  String get mySubmissionKindPronunciation => 'Usul pengucapan';
+
+  @override
+  String get mySubmissionKindImage => 'Usul gambar';
+
+  @override
+  String get mySubmissionKindAudio => 'Usul audio';
+
+  @override
+  String get mySubmissionKindExample => 'Usul contoh';
+
+  @override
+  String get mySubmissionKindChange => 'Usul perubahan';
+
+  @override
+  String get mySubmissionKindNewWord => 'Usul kata baru';
+
+  @override
+  String get myVoteTargetWord => 'Kata';
+
+  @override
+  String get myVoteTargetMeaning => 'Arti';
+
+  @override
+  String get myVoteTargetExample => 'Contoh';
+
+  @override
+  String get myVoteTargetPronunciation => 'Pelafalan';
+
+  @override
+  String get myVoteTargetImage => 'Gambar';
+
+  @override
+  String get myVoteTargetComment => 'Komentar';
+
+  @override
+  String get myVoteTargetDiscussionReply => 'Balasan diskusi';
+
+  @override
+  String get myVoteTargetDiscussion => 'Pertanyaan diskusi';
+
+  @override
+  String get myVoteTargetPantun => 'Pantun';
+
+  @override
+  String get myVoteTargetPantunReply => 'Balasan pantun';
+
+  @override
+  String get myVoteWordGone => 'Kata sudah dihapus';
+
+  @override
+  String get notificationUnreadCountFailed => 'Gagal memuat jumlah notifikasi';
+
+  @override
+  String get notificationMarkReadFailed => 'Gagal menandai notifikasi';
+
+  @override
+  String get notificationMarkAllReadFailed => 'Gagal menandai semua notifikasi';
+
+  @override
+  String get myContributionDetailLoadFailed => 'Gagal memuat detail usulan';
+
+  @override
+  String get bookmarkToggleFailed => 'Gagal mengubah bookmark';
+
+  @override
+  String get bookmarkStatusLoadFailed => 'Gagal memuat status bookmark';
+
+  @override
+  String get bookmarkWordGone => 'Kata tidak ditemukan atau sudah dihapus';
+
+  @override
+  String get commonRateLimited =>
+      'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get commonSessionExpired => 'Sesi berakhir, silakan masuk kembali';
+
+  @override
+  String get commonServerError =>
+      'Server sedang gangguan. Coba lagi dalam beberapa saat.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -4171,7 +4993,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voteDeckEmpty =>
-      'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.';
+      'Antrean kosakata voting saat ini sedang kosong. Terima kasih sudah membantu meningkatkan kualitas lemma di SambasKu.';
 
   @override
   String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
@@ -4880,6 +5702,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Tekan ikon buku untuk mencari definisi di KBBI';
 
   @override
+  String get kbbiSourceNotice =>
+      'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.';
+
+  @override
   String get suggestDefinitionLabel => 'Definisi';
 
   @override
@@ -5081,6 +5907,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get commonCancel => 'Batal';
+
+  @override
+  String get commonBack => 'Kembali';
 
   @override
   String get commonRetry => 'Coba lagi';
@@ -7073,51 +7902,54 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get authResendOk => 'Kalau email terdaftar, kode baru sudah dikirim.';
 
   @override
-  String get authLegalSheetTitle => 'SambasKu perlu izin kamu dulu';
+  String get authLegalSheetTitle => 'Sebelum lanjut, ada dua dokumen';
 
   @override
   String get authLegalSheetBody =>
-      'Akun kamu dibuat lewat Google, GitHub, atau Facebook. Sebelum lanjut, setujui dua dokumen di bawah - kami pakai datamu hanya untuk menjalankan kamus ini.';
+      'Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Dua dokumen di bawah ini singkat kok - kami pakai datamu cuma untuk menjalankan kamus ini.';
 
   @override
   String authTermsTileSubtitle(String version) {
-    return 'Aturan pakai SambasKu (versi $version)';
+    return 'Aturan main pakai SambasKu. Versi $version.';
   }
 
   @override
   String authPrivacyTileSubtitle(String version) {
-    return 'Data yang kami simpan dan cara kami menjaganya (versi $version)';
+    return 'Data apa yang kami simpan dan bagaimana kami menjaganya. Versi $version.';
   }
 
   @override
-  String get authRead => 'Baca';
+  String get authReadTerms => 'Baca Syarat dan Ketentuan';
 
   @override
-  String get authDocsUnavailableTitle => 'Dokumen belum bisa dimuat';
+  String get authReadPrivacy => 'Baca Kebijakan Privasi';
+
+  @override
+  String get authDocsUnavailableTitle => 'Dokumennya belum ke-load';
 
   @override
   String get authDocsUnavailableBody =>
-      'Gagal memuat dokumen legal. Coba lagi dalam beberapa saat.';
+      'Koneksinya mungkin sedang kurang bagus. Coba muat lagi ya.';
 
   @override
   String get authLegalNotReady =>
-      'Dokumen legal belum tersedia. Coba lagi sebentar.';
+      'Dokumennya belum siap di server. Coba sebentar lagi ya.';
 
   @override
-  String get authReload => 'Muat ulang';
+  String get authReload => 'Coba muat lagi';
 
   @override
   String get authStopAnytime =>
-      'Kamu bisa berhenti kapan saja dengan keluar dari akun.';
+      'Belum siap setuju? Kamu bisa keluar dulu, kapan saja.';
 
   @override
-  String get authAcceptAndContinue => 'Setuju dan lanjut';
+  String get authAcceptAndContinue => 'Setuju, lanjut';
 
   @override
   String get authSaving => 'Menyimpan...';
 
   @override
-  String get authExit => 'Keluar';
+  String get authExit => 'Keluar dulu';
 
   @override
   String get authConsentSaveFailed =>
@@ -7172,4 +8004,816 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get authFacebookUnavailable =>
       'Masuk dengan Facebook belum siap di perangkat ini.';
+
+  @override
+  String get feedCategoryAll => 'Semua';
+
+  @override
+  String get feedCategorySearchMiss => 'Pencarian warga';
+
+  @override
+  String get feedCategoryCorrection => 'Perbaikan';
+
+  @override
+  String get feedCategoryExplore => 'Eksplorasi';
+
+  @override
+  String get feedCategoryAnnouncement => 'Pengumuman';
+
+  @override
+  String get feedCategoryJoined => 'Warga';
+
+  @override
+  String get feedKindWord => 'Kata';
+
+  @override
+  String get feedKindComment => 'Komentar';
+
+  @override
+  String get feedKindVote => 'Penilaian';
+
+  @override
+  String get feedKindDiscussion => 'Diskusi';
+
+  @override
+  String get feedKindImage => 'Foto';
+
+  @override
+  String get feedKindAudio => 'Suara';
+
+  @override
+  String get feedKindPronunciation => 'Cara baca';
+
+  @override
+  String get feedKindExample => 'Contoh';
+
+  @override
+  String get feedKindSearchMiss => 'Kata tidak ditemukan';
+
+  @override
+  String get feedKindWelcome => 'Bergabung';
+
+  @override
+  String get feedKindShare => 'Bagikan';
+
+  @override
+  String get feedKindSuggestion => 'Usulan';
+
+  @override
+  String get feedKindContribution => 'Usulan kata baru';
+
+  @override
+  String get feedKindVerification => 'Verifikasi';
+
+  @override
+  String get feedKindAnnouncement => 'Pengumuman';
+
+  @override
+  String get feedKindPlacePhoto => 'Foto wisata';
+
+  @override
+  String get feedKindPlace => 'Wisata';
+
+  @override
+  String get feedKindEvent => 'Acara';
+
+  @override
+  String get feedKindUsaha => 'Usaha';
+
+  @override
+  String get feedKindCulinary => 'Kuliner';
+
+  @override
+  String get feedCtaReview => 'Tinjau usulan';
+
+  @override
+  String get feedCtaVote => 'Ikut menilai';
+
+  @override
+  String get feedCtaSeeMeaning => 'Lihat arti';
+
+  @override
+  String get feedCtaReply => 'Balas';
+
+  @override
+  String get feedCtaDiscuss => 'Ikut diskusi';
+
+  @override
+  String get feedCtaSeePhoto => 'Lihat foto';
+
+  @override
+  String get feedCtaListen => 'Dengarkan';
+
+  @override
+  String get feedCtaSeePronunciation => 'Lihat cara baca';
+
+  @override
+  String get feedCtaSeeExample => 'Lihat contoh';
+
+  @override
+  String get feedCtaHelpFill => 'Bantu isi';
+
+  @override
+  String get feedCtaSeeProfile => 'Lihat profil';
+
+  @override
+  String get feedCtaSeeCard => 'Lihat kartu';
+
+  @override
+  String get feedCtaSeeSuggestion => 'Lihat usulan';
+
+  @override
+  String get feedCtaSeeWord => 'Lihat kata';
+
+  @override
+  String get feedCtaReadAnnouncement => 'Baca pengumuman';
+
+  @override
+  String get feedCtaSeePlace => 'Lihat tempat';
+
+  @override
+  String get feedCtaSeeEvent => 'Lihat acara';
+
+  @override
+  String get feedCtaSeeUsaha => 'Lihat usaha';
+
+  @override
+  String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedActorFallback => 'Warga';
+
+  @override
+  String get feedPendingToast => 'Kata ini masih menunggu tinjauan verifikator';
+
+  @override
+  String get feedLoadFailed => 'Gagal memuat aktivitas.';
+
+  @override
+  String get announcementTitle => 'Pengumuman';
+
+  @override
+  String get announcementGone => 'Pengumuman tidak lagi tersedia.';
+
+  @override
+  String get announcementPinnedTitle => 'Pengumuman Prioritas';
+
+  @override
+  String get announcementPinnedEmpty => 'Tidak ada pengumuman yang dipin';
+
+  @override
+  String get announcementPinnedLoadFailed => 'Gagal memuat pengumuman';
+
+  @override
+  String get announcementPinnedBadge => 'Dipin';
+
+  @override
+  String get announcementExpiredBadge => 'Berakhir';
+
+  @override
+  String get announcementExpiredNote =>
+      'Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.';
+
+  @override
+  String get announcementOpenLink => 'Buka tautan';
+
+  @override
+  String announcementSemantics(String title) {
+    return 'Pengumuman: $title';
+  }
+
+  @override
+  String announcementSemanticsExpired(String title) {
+    return 'Pengumuman: $title, sudah berakhir';
+  }
+
+  @override
+  String announcementInAppHost(String host) {
+    return '$host · buka di aplikasi';
+  }
+
+  @override
+  String get announcementSkeletonTitle => 'Judul Pengumuman';
+
+  @override
+  String get announcementSkeletonBody =>
+      'Isi pengumuman singkat untuk skeleton';
+
+  @override
+  String get announcementBannerSemantics => 'Judul pengumuman prioritas';
+
+  @override
+  String get announcementBannerPreview => 'cuplikan isi pengumuman';
+
+  @override
+  String get feedContributeMenu => 'Menu kontribusi';
+
+  @override
+  String get feedContributeNewWord => 'Usul kata baru';
+
+  @override
+  String get feedContributeNewWordSubtitle =>
+      'Kata Sambas belum ada di kamus? Tambahkan sendiri';
+
+  @override
+  String get feedContributeSearchMiss => 'Dicari warga';
+
+  @override
+  String get feedContributeSearchMissSubtitle =>
+      'Kata yang dicari warga tapi belum ketemu. Bantu isi artinya';
+
+  @override
+  String get feedContributeDiscussion => 'Ruang diskusi';
+
+  @override
+  String get feedContributeDiscussionSubtitle =>
+      'Tanya arti atau bahas kata Sambas bareng warga';
+
+  @override
+  String get feedVoteDeckHint => 'Bantu nilai agar arti kata lebih akurat';
+
+  @override
+  String get feedGuideTitle => 'Kartu bisa digeser untuk menilai';
+
+  @override
+  String get feedGuideBody =>
+      'Gunakan jari untuk menggeser kartu kata:\n• Geser kanan → \"Sudah pas\" (arti sudah benar)\n• Geser kiri → \"Perlu dicek ulang\" (arti kurang tepat)\n• Geser ke atas → \"Lewati\" (ragu / belum yakin)';
+
+  @override
+  String get feedGuideBarrier => 'Panduan kontribusi';
+
+  @override
+  String get profileActivityFilterAll => 'Semua';
+
+  @override
+  String get profileActivityFilterCorrection => 'Perbaikan';
+
+  @override
+  String get profileActivityFilterComment => 'Komentar';
+
+  @override
+  String get profileActivityEmpty => 'Belum ada aktivitas publik.';
+
+  @override
+  String profileActivityEmptyFiltered(String filter) {
+    return 'Belum ada aktivitas $filter.';
+  }
+
+  @override
+  String get profileActivityLoadFailed => 'Gagal memuat aktivitas';
+
+  @override
+  String get profileActivityRecent => 'Aktivitas terbaru';
+
+  @override
+  String get profileCropTitle => 'Atur foto profil';
+
+  @override
+  String get profileCropUse => 'Pakai';
+
+  @override
+  String get profilePhotoUploadFailed => 'Gagal mengunggah foto profil';
+
+  @override
+  String get profilePhotoDeleteFailed => 'Gagal menghapus foto profil';
+
+  @override
+  String get profilePhotoPickerFailed => 'Gagal membuka pemotong foto';
+
+  @override
+  String get profilePhotoUpdated => 'Foto profil diperbarui';
+
+  @override
+  String get profileChangePhoto => 'Ganti foto profil';
+
+  @override
+  String get profileChangeFrame => 'Ubah bingkai profil';
+
+  @override
+  String get profileAllowNotifGranted => 'Notifikasi diizinkan';
+
+  @override
+  String get profileAllowNotifPending => 'Notifikasi belum diizinkan';
+
+  @override
+  String get profileAllowNotifOffTitle => 'Notifikasi dimatikan';
+
+  @override
+  String get profileAllowNotifOffBody =>
+      'Aktifkan notifikasi SambasKu di Pengaturan perangkat agar kabar usulan tetap sampai.';
+
+  @override
+  String get profileOpenSettings => 'Pengaturan';
+
+  @override
+  String get profileEditTitle => 'Edit profil';
+
+  @override
+  String get profileUsernameLabel => 'Username';
+
+  @override
+  String get profileUsernameHint =>
+      'a-z, 0-9, titik, underscore (3-30 karakter)';
+
+  @override
+  String get profileDisplayNameLabel => 'Nama tampilan';
+
+  @override
+  String get profileDisplayNameHint => 'Nama yang tampil di profil publik';
+
+  @override
+  String get profileBioLabel => 'Bio';
+
+  @override
+  String get profileBioHint => 'Ceritakan singkat tentangmu (opsional)';
+
+  @override
+  String get profileDistrictLabel => 'Kecamatan';
+
+  @override
+  String get profileVillageLabel => 'Desa';
+
+  @override
+  String get profileRegionLoading => 'Memuat wilayah...';
+
+  @override
+  String get profileRegionNotLoaded => 'Wilayah belum termuat';
+
+  @override
+  String get profileNotFilled => 'Tidak diisi';
+
+  @override
+  String get profileSaveSuccess => 'Profil berhasil disimpan.';
+
+  @override
+  String get profileViewTitle => 'Profil';
+
+  @override
+  String get profileEditAction => 'Edit';
+
+  @override
+  String get profileUserNotFound => 'Pengguna tidak ditemukan';
+
+  @override
+  String get profileLoadFailed => 'Gagal memuat profil';
+
+  @override
+  String get passwordChangeTitle => 'Ubah Password';
+
+  @override
+  String get passwordChangeSuccess => 'Password berhasil diubah';
+
+  @override
+  String get passwordRelogin => 'Login ulang';
+
+  @override
+  String get passwordOldLabel => 'Password Lama';
+
+  @override
+  String get passwordNewLabel => 'Password Baru';
+
+  @override
+  String get passwordConfirmNewLabel => 'Konfirmasi Password Baru';
+
+  @override
+  String get passwordSave => 'Simpan Password';
+
+  @override
+  String get passwordChangeNote =>
+      'Setelah password diganti, semua sesi (termasuk yang ini) diakhiri dan kamu diminta login ulang dengan password baru.';
+
+  @override
+  String get passwordCreateTitle => 'Buat Password';
+
+  @override
+  String get passwordCreated => 'Password dibuat';
+
+  @override
+  String passwordCreatedBody(String provider) {
+    return 'Masuk dengan $provider dan password baru.';
+  }
+
+  @override
+  String passwordCreateHint(String username) {
+    return 'Username kamu: $username. Setelah password tersimpan, masuk manual menggunakan username atau email yang ditampilkan.';
+  }
+
+  @override
+  String get passwordVerifyAccount => 'Buktikan akun';
+
+  @override
+  String get passwordProviderUnknown => 'Provider tidak dikenal.';
+
+  @override
+  String passwordProviderNotReady(String provider) {
+    return 'Masuk dengan $provider belum siap di perangkat ini.';
+  }
+
+  @override
+  String get deleteAccountConfirmWord => 'HAPUS';
+
+  @override
+  String get deleteAccountTitle => 'Hapus akun';
+
+  @override
+  String get deleteAccountBody =>
+      'Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, tapi tanpa namamu.';
+
+  @override
+  String get deleteAccountPasswordLabel => 'Kata sandi';
+
+  @override
+  String get deleteAccountPasswordHint =>
+      'Kosongkan jika akun masuk lewat Google';
+
+  @override
+  String get deleteAccountTypeToConfirm => 'Ketik HAPUS';
+
+  @override
+  String get deleteAccountDeleting => 'Menghapus...';
+
+  @override
+  String get deleteAccountDone => 'Akun dihapus';
+
+  @override
+  String get linkedAccountsTitle => 'Akun Terhubung';
+
+  @override
+  String get linkedAccountsSignInWith => 'Masuk dengan';
+
+  @override
+  String linkedAccountsUnlinkTitle(String provider) {
+    return 'Lepas $provider?';
+  }
+
+  @override
+  String get linkedAccountsUnlinkBody =>
+      'Kamu tetap bisa masuk dengan email dan password atau provider lain.';
+
+  @override
+  String get linkedAccountsUnlink => 'Lepas';
+
+  @override
+  String linkedAccountsLinkedSince(String date) {
+    return 'Terhubung sejak $date';
+  }
+
+  @override
+  String get linkedAccountsLinkedHint => 'Terhubung - bisa dipakai untuk masuk';
+
+  @override
+  String get linkedAccountsNotLinked => 'Belum terhubung';
+
+  @override
+  String get linkedAccountsLinked => 'Terhubung';
+
+  @override
+  String get linkedAccountsAdded => 'Berhasil ditambahkan ke akun terhubung.';
+
+  @override
+  String get notificationTitle => 'Notifikasi';
+
+  @override
+  String get notificationLoginRequired => 'Masuk dulu untuk melihat notifikasi';
+
+  @override
+  String get notificationLoadFailed => 'Gagal memuat notifikasi';
+
+  @override
+  String get notificationEmpty => 'Belum ada notifikasi';
+
+  @override
+  String get notificationEmptyBody =>
+      'Status usulan yang sudah direview akan muncul di sini.';
+
+  @override
+  String get notificationMarking => 'Menandai...';
+
+  @override
+  String get notificationMarkAllRead => 'Tandai semua telah dibaca';
+
+  @override
+  String get notificationViewImage => 'Lihat gambar';
+
+  @override
+  String get notificationTapImage => 'Ketuk untuk melihat gambar';
+
+  @override
+  String get notificationOpen => 'Buka';
+
+  @override
+  String get notificationCopyLink => 'Salin tautan';
+
+  @override
+  String get notificationLinkCopied => 'Tautan disalin';
+
+  @override
+  String get notificationAnnouncementMissing => 'Pengumuman tidak ditemukan';
+
+  @override
+  String get myCommentsTitle => 'Komentar';
+
+  @override
+  String get myCommentsLoginRequired =>
+      'Masuk dulu untuk melihat komentar kamu';
+
+  @override
+  String get myCommentsLoadFailed => 'Gagal memuat komentar';
+
+  @override
+  String get myCommentsEmpty => 'Belum ada komentar';
+
+  @override
+  String get myCommentsEmptyFiltered => 'Tidak ada komentar dengan status ini';
+
+  @override
+  String get myContributionsTitle => 'Kontribusi Saya';
+
+  @override
+  String get myContributionsLoginRequired =>
+      'Masuk dulu untuk melihat usulanmu';
+
+  @override
+  String get myContributionsLoadFailed => 'Gagal memuat kontribusi';
+
+  @override
+  String get myContributionsEmpty => 'Belum ada usulan';
+
+  @override
+  String get myContributionsEmptyBody =>
+      'Usul kata baru atau perubahan akan muncul di sini.';
+
+  @override
+  String get myContributionPending => 'Menunggu pengecekan';
+
+  @override
+  String get myContributionNotFound => 'Usulan tidak ditemukan';
+
+  @override
+  String get myContributionOpenWord => 'Buka kata';
+
+  @override
+  String get myContributionStatus => 'Status';
+
+  @override
+  String get myContributionKind => 'Jenis';
+
+  @override
+  String get myContributionSubmitted => 'Dikirim';
+
+  @override
+  String get myContributionReviewed => 'Ditinjau';
+
+  @override
+  String get myContributionAction => 'Aksi';
+
+  @override
+  String get myContributionReasonCode => 'Kode alasan';
+
+  @override
+  String get myContributionChangeReason => 'Alasan perubahan';
+
+  @override
+  String get myContributionReviewerNote => 'Catatan reviewer';
+
+  @override
+  String get myContributionsSkeletonLemma => 'lemma contoh usulan';
+
+  @override
+  String get myContributionsSkeletonMeta =>
+      'Usul kata baru · Menunggu pengecekan · 21 Sep 2026 00:00';
+
+  @override
+  String get myVotesTitle => 'Vote';
+
+  @override
+  String get myVotesLoginRequired => 'Masuk dulu untuk melihat vote kamu';
+
+  @override
+  String get myVotesLoadFailed => 'Gagal memuat vote';
+
+  @override
+  String get myVotesEmpty => 'Belum ada vote';
+
+  @override
+  String get myVotesSkeletonMeta => 'Upvote · Kata · 21 Sep 2026 10:00';
+
+  @override
+  String get bookmarkTitle => 'Bookmark';
+
+  @override
+  String get bookmarkLoginRequired => 'Masuk dulu untuk melihat kata tersimpan';
+
+  @override
+  String get bookmarkLoadFailed => 'Gagal memuat bookmark';
+
+  @override
+  String get bookmarkEmpty => 'Belum ada kata tersimpan.';
+
+  @override
+  String get bookmarkEmptyHint => 'Tekan ikon bookmark di halaman detail kata.';
+
+  @override
+  String get bookmarkEntryGone => 'Entri tidak lagi tersedia';
+
+  @override
+  String get bookmarkRemove => 'Lepas kata dari bookmark';
+
+  @override
+  String get bookmarkAdd => 'Simpan kata ke bookmark';
+
+  @override
+  String get commonLoginRequiredShort => 'Masuk';
+
+  @override
+  String get commonSkeletonLemma => 'lemma contoh';
+
+  @override
+  String get providerGoogle => 'Google';
+
+  @override
+  String get providerFacebook => 'Facebook';
+
+  @override
+  String get providerGithub => 'GitHub';
+
+  @override
+  String get notificationTypeApproved => 'Disetujui';
+
+  @override
+  String get notificationTypeRejected => 'Ditolak';
+
+  @override
+  String get notificationTypeCorrected => 'Dikoreksi';
+
+  @override
+  String get notificationTypeTakenDown => 'Ditarik';
+
+  @override
+  String get notificationTypeDiscussionPending => 'Diskusi menunggu';
+
+  @override
+  String get notificationTypeDiscussionApproved => 'Diskusi disetujui';
+
+  @override
+  String get notificationTypeDiscussionRejected => 'Diskusi ditolak';
+
+  @override
+  String get notificationTypeDiscussionTakenDown => 'Diskusi diturunkan';
+
+  @override
+  String get notificationTypeDiscussionReply => 'Balasan diskusi';
+
+  @override
+  String get notificationTypeDiscussionMention => 'Sebutan diskusi';
+
+  @override
+  String get notificationTypePantunReply => 'Balasan pantun';
+
+  @override
+  String get notificationTypePantunMention => 'Sebutan pantun';
+
+  @override
+  String get notificationTypeCampaign => 'Pengumuman';
+
+  @override
+  String get notificationTypeComment => 'Komentar';
+
+  @override
+  String get notificationTypeVote => 'Vote';
+
+  @override
+  String get notificationTypeExample => 'Contoh';
+
+  @override
+  String get notificationTypeAudio => 'Pelafalan';
+
+  @override
+  String get notificationTypePlaceApproved => 'Wisata disetujui';
+
+  @override
+  String get notificationTypePlaceRejected => 'Wisata ditolak';
+
+  @override
+  String get notificationTypeEventApproved => 'Acara disetujui';
+
+  @override
+  String get notificationTypeEventRejected => 'Acara ditolak';
+
+  @override
+  String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeUpdate => 'Pembaruan';
+
+  @override
+  String get notificationSkeletonTitle => 'Usulan disetujui contoh';
+
+  @override
+  String get notificationSkeletonMeta =>
+      'Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda';
+
+  @override
+  String get myCommentsSkeletonMeta => 'Tayang · cuplikan · 21 Sep 2026';
+
+  @override
+  String get myCommentsWordGone => 'Kata tidak tersedia';
+
+  @override
+  String get myCommentsFilterAll => 'Semua';
+
+  @override
+  String get myCommentsFilterPublished => 'Tayang';
+
+  @override
+  String get myCommentsFilterTakenDown => 'Diturunkan';
+
+  @override
+  String get myCommentsFilterDeleted => 'Dihapus';
+
+  @override
+  String get mySubmissionKindMeaning => 'Usul makna';
+
+  @override
+  String get mySubmissionKindPronunciation => 'Usul pengucapan';
+
+  @override
+  String get mySubmissionKindImage => 'Usul gambar';
+
+  @override
+  String get mySubmissionKindAudio => 'Usul audio';
+
+  @override
+  String get mySubmissionKindExample => 'Usul contoh';
+
+  @override
+  String get mySubmissionKindChange => 'Usul perubahan';
+
+  @override
+  String get mySubmissionKindNewWord => 'Usul kata baru';
+
+  @override
+  String get myVoteTargetWord => 'Kata';
+
+  @override
+  String get myVoteTargetMeaning => 'Arti';
+
+  @override
+  String get myVoteTargetExample => 'Contoh';
+
+  @override
+  String get myVoteTargetPronunciation => 'Pelafalan';
+
+  @override
+  String get myVoteTargetImage => 'Gambar';
+
+  @override
+  String get myVoteTargetComment => 'Komentar';
+
+  @override
+  String get myVoteTargetDiscussionReply => 'Balasan diskusi';
+
+  @override
+  String get myVoteTargetDiscussion => 'Pertanyaan diskusi';
+
+  @override
+  String get myVoteTargetPantun => 'Pantun';
+
+  @override
+  String get myVoteTargetPantunReply => 'Balasan pantun';
+
+  @override
+  String get myVoteWordGone => 'Kata sudah dihapus';
+
+  @override
+  String get notificationUnreadCountFailed => 'Gagal memuat jumlah notifikasi';
+
+  @override
+  String get notificationMarkReadFailed => 'Gagal menandai notifikasi';
+
+  @override
+  String get notificationMarkAllReadFailed => 'Gagal menandai semua notifikasi';
+
+  @override
+  String get myContributionDetailLoadFailed => 'Gagal memuat detail usulan';
+
+  @override
+  String get bookmarkToggleFailed => 'Gagal mengubah bookmark';
+
+  @override
+  String get bookmarkStatusLoadFailed => 'Gagal memuat status bookmark';
+
+  @override
+  String get bookmarkWordGone => 'Kata tidak ditemukan atau sudah dihapus';
+
+  @override
+  String get commonRateLimited =>
+      'Terlalu banyak permintaan. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get commonSessionExpired => 'Sesi berakhir, silakan masuk kembali';
+
+  @override
+  String get commonServerError =>
+      'Server sedang gangguan. Coba lagi dalam beberapa saat.';
 }

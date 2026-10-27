@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/features/activity/presentation/pages/pinned_announcements_page.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/announcement_body.dart';
 import 'package:sambasku_mobile/features/activity/presentation/providers/announcement_detail_provider.dart';
@@ -48,6 +49,12 @@ Dio _dio(int status, Object? body) =>
 Widget _app(ProviderContainer container) => UncontrolledProviderScope(
   container: container,
   child: MaterialApp.router(
+    localizationsDelegates: [
+      ...AppLocalizations.localizationsDelegates,
+      ...FLocalizations.localizationsDelegates,
+    ],
+    supportedLocales: const [Locale('id')],
+    locale: const Locale('id'),
     // Forui 0.27 wajib FTheme ancestor (tidak lagi fallback diam).
     builder: (context, child) =>
         FTheme(data: foruiPalettes[defaultPalette]!.light.touch, child: child!),

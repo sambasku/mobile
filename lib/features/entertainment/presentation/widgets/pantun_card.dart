@@ -1,3 +1,4 @@
+import 'package:material_ui/material_ui.dart' show Colors, InkWell, Material;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -12,8 +13,8 @@ import 'pantun_vote_bar.dart';
 /// Kartu pantun bergaya thread (konsisten dengan [ThreadMessageRow] di
 /// Ruang Diskusi): avatar + nama ✓ + handle + tanggal, isi 4 baris, footer.
 ///
-/// Badge pola rima (ABAB/AAAA) diberi tooltip penjelasan supaya istilahnya
-/// tidak menggantung tanpa konteks.
+/// Bait dibagi dua kelompok visual: baris 1-2 (pembayang) redup, baris 3-4
+/// (isi) tegas - pembeda struktur tanpa perlu badge pola rima.
 class PantunCard extends StatelessWidget {
   const PantunCard({
     super.key,
@@ -28,7 +29,7 @@ class PantunCard extends StatelessWidget {
   final Pantun pantun;
   final VoidCallback? onTap;
 
-  /// Konten tambahan di bawah badge rima (mis. tombol hapus balasan).
+  /// Konten tambahan di bawah baris vote (mis. aksi hapus).
   final Widget? footer;
   final VoidCallback? onUsernameTap;
 
@@ -117,38 +118,32 @@ class PantunCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (final line in pantun.lines)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2),
-                        child: Text(
-                          line,
-                          style: theme.typography.body.sm.copyWith(
-                            height: 1.5,
-                          ),
+                    for (var i = 0; i < pantun.lines.length; i++) ...[
+                      // Jeda antar kelompok: pembayang (1-2) vs isi (3-4).
+                      if (i == 2) const Gap(6),
+                      Text(
+                        pantun.lines[i],
+                        style: theme.typography.body.sm.copyWith(
+                          height: 1.5,
+                          color: i < 2
+                              ? theme.colors.mutedForeground
+                              : theme.colors.foreground,
+                          fontWeight: i < 2 ? FontWeight.w400 : FontWeight.w600,
                         ),
                       ),
+                    ],
                   ],
                 ),
               ),
-              const Gap(6),
-              Row(
-                children: [
-                  PantunRhymeBadge(scheme: pantun.rhymeScheme),
-                  if (onVoteToggle != null) ...[
-                    const Gap(10),
-                    Flexible(
-                      child: PantunVoteBar(
-                        pantun: pantun,
-                        onToggle: onVoteToggle!,
-                      ),
-                    ),
-                  ],
-                  if (footer != null) ...[
-                    const Spacer(),
-                    footer!,
-                  ],
-                ],
-              ),
+              // Vote/Tindakan di baris sendiri: tanpa kompetisi lebar,
+              // jadi panah balasan tidak menyusut (FittedBox di VoteButtons).
+              if (onVoteToggle != null || footer != null) const Gap(6),
+              if (onVoteToggle != null)
+                PantunVoteBar(pantun: pantun, onToggle: onVoteToggle!),
+              if (footer != null) ...[
+                if (onVoteToggle != null) const Gap(2),
+                Align(alignment: Alignment.centerRight, child: footer!),
+              ],
             ],
           ),
         ),
@@ -170,32 +165,83 @@ class PantunCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colors.secondary,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.colors.primary.withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: theme.colors.primary.withValues(alpha: 0.35)),
       ),
       child: Padding(padding: const EdgeInsets.all(8), child: padded),
     );
   }
 }
 
-/// Badge pola rima + tooltip penjelasan polanya.
-class PantunRhymeBadge extends StatelessWidget {
-  const PantunRhymeBadge({super.key, required this.scheme});
+/// Aksi footer milik penulis/pelapor (satu widget, dua permukaan).
+/// Hapus = [FLucideIcons.trash], Laporkan = [FLucideIcons.flag].
+class PantunActionRow extends StatelessWidget {
+  const PantunActionRow({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
-  final String scheme;
+  /// Footer hapus untuk penulis sendiri.
+  factory PantunActionRow.delete({
+    Key? key,
+    required VoidCallback onDelete,
+    String label = 'Hapus',
+  }) =>
+      PantunActionRow(
+        key: key,
+        icon: FLucideIcons.trash,
+        label: label,
+        onTap: onDelete,
+      );
 
-  static const _explain = {
-    'ABAB': 'Baris 1 & 3 berima, baris 2 & 4 berima. Pola pantun klasik.',
-    'AAAA': 'Keempat baris berima sama (pantun jenaka/kilat).',
-  };
+  /// Footer laporkan untuk pantun/balasan orang lain.
+  factory PantunActionRow.report({
+    Key? key,
+    required VoidCallback onReport,
+    String label = 'Laporkan',
+  }) =>
+      PantunActionRow(
+        key: key,
+        icon: FLucideIcons.flag,
+        label: label,
+        onTap: onReport,
+      );
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final tip = _explain[scheme] ?? 'Pola rima $scheme';
-    return FTooltip(
-      tipBuilder: (context, _) => Text(tip),
-      child: FBadge(variant: FBadgeVariant.outline, child: Text(scheme)),
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: label,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 14, color: theme.colors.mutedForeground),
+                const Gap(4),
+                Text(
+                  label,
+                  style: theme.typography.body.sm.copyWith(
+                    fontSize: 11,
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

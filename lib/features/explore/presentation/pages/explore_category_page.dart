@@ -9,7 +9,7 @@ import '../../../usaha/presentation/pages/usaha_list_page.dart';
 import '../pages/cuisine_list_page.dart';
 import '../pages/place_list_page.dart';
 import '../pages/wilayah_page.dart';
-import '../../../entertainment/presentation/pages/pantun_feed_page.dart';
+import '../../../entertainment/presentation/pages/permainan_list_page.dart';
 
 /// Detail kategori. Wisata/Cuisine = daftar Place; lainnya segera hadir.
 class ExploreCategoryPage extends StatelessWidget {
@@ -33,7 +33,7 @@ class ExploreCategoryPage extends StatelessWidget {
  : categoryId == 'usaha'
  ? const UsahaListPage()
  : categoryId == 'hiburan'
- ? const PantunFeedPage()
+ ? const PermainanListPage()
  : FScaffold(
             childPad: false,
             header: FHeader.nested(

@@ -272,6 +272,11 @@ void main() {
     expect(find.text('Dialek'), findsNothing);
     expect(find.text('Contoh'), findsNothing);
 
+    // Kembali ke atas: notice KBBI menambah tinggi, field terjemahan bisa
+    // ter-unmount oleh ListView lazy kalau tetap di posisi scroll bawah.
+    await tester.drag(find.byType(ListView), const Offset(0, 400));
+    await tester.pump();
+
     final fields = find.byType(EditableText);
     await tester.enterText(fields.at(0), 'makatn');
     await tester.enterText(fields.at(1), 'makan');

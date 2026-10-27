@@ -9,6 +9,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../linked_accounts/presentation/providers/linked_accounts_providers.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../providers/set_password_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Buat password pertama untuk akun OAuth. Dua kolom, bukti provider
 /// ulang, lalu logout karena semua refresh token dicabut.
@@ -58,11 +59,15 @@ class SetPasswordPage extends HookConsumerWidget {
               FTileGroup(
                 children: [
                   FTile(
-                    title: const Text('Password dibuat'),
+                    title: Text(
+                      AppLocalizations.of(sheetContext).passwordCreated,
+                    ),
                     subtitle: Text(
                       loginWith.isEmpty
                           ? next
-                          : 'Masuk dengan $loginWith dan password baru.',
+                          : AppLocalizations.of(
+                              sheetContext,
+                            ).passwordCreatedBody(loginWith),
                     ),
                   ),
                   FTile(
@@ -73,7 +78,9 @@ class SetPasswordPage extends HookConsumerWidget {
                         await ref.read(authStatusProvider.notifier).logout();
                         if (context.mounted) context.go('/login');
                       },
-                      child: const Text('Login ulang'),
+                      child: Text(
+                        AppLocalizations.of(sheetContext).passwordRelogin,
+                      ),
                     ),
                   ),
                 ],
@@ -111,10 +118,11 @@ class SetPasswordPage extends HookConsumerWidget {
           confirmPassword: confirmPassword.text,
         );
 
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Buat Password'),
+        title: Text(l10n.passwordCreateTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -131,16 +139,16 @@ class SetPasswordPage extends HookConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
-                      'Username kamu: $username. Setelah password tersimpan, masuk manual menggunakan username atau email yang ditampilkan.',
+                      l10n.passwordCreateHint(username),
                     ),
                   ),
                 if (providers.length > 1) ...[
                   FTileGroup(
-                    label: const Text('Buktikan akun'),
+                    label: Text(l10n.passwordVerifyAccount),
                     children: [
                       for (final provider in providers)
                         FTile(
-                          title: Text(_providerLabel(provider)),
+                          title: Text(_providerLabel(l10n, provider)),
                           suffix: selected.value == provider
                               ? const Icon(FLucideIcons.check, size: 18)
                               : null,
@@ -153,15 +161,15 @@ class SetPasswordPage extends HookConsumerWidget {
                 FTextField.password(
                   control: .managed(controller: newPassword),
                   enabled: !state.isSubmitting,
-                  label: const Text('Password Baru'),
-                  hint: 'Minimal 8 karakter, huruf + angka',
+                  label: Text(l10n.passwordNewLabel),
+                  hint: l10n.authPasswordHint,
                   textInputAction: .next,
                 ),
                 const Gap(12),
                 FTextField.password(
                   control: .managed(controller: confirmPassword),
                   enabled: !state.isSubmitting,
-                  label: const Text('Konfirmasi Password Baru'),
+                  label: Text(l10n.passwordConfirmNewLabel),
                   textInputAction: .done,
                   onSubmit: canSubmit ? (_) => submit() : null,
                 ),
@@ -170,7 +178,7 @@ class SetPasswordPage extends HookConsumerWidget {
                   onPress: canSubmit ? submit : null,
                   prefix: state.isSubmitting ? const FCircularProgress() : null,
                   child: Text(
-                    state.isSubmitting ? 'Memproses...' : 'Simpan Password',
+                    state.isSubmitting ? l10n.authSubmitting : l10n.passwordSave,
                   ),
                 ),
               ],
@@ -179,11 +187,11 @@ class SetPasswordPage extends HookConsumerWidget {
   }
 }
 
-String _providerLabel(String provider) {
+String _providerLabel(AppLocalizations l10n, String provider) {
   return switch (provider) {
-    'google' => 'Google',
-    'facebook' => 'Facebook',
-    'github' => 'GitHub',
+    'google' => l10n.providerGoogle,
+    'facebook' => l10n.providerFacebook,
+    'github' => l10n.providerGithub,
     _ => provider,
   };
 }

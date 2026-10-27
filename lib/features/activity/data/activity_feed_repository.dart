@@ -8,20 +8,17 @@ import 'map_feed_activity.dart';
 
 /// Kategori chips feed beranda (#193). Nilai = query `category` di API.
 enum FeedCategory {
-  all('all', 'Semua'),
-  searchMiss('search_miss', 'Pencarian warga'),
-  correction('correction', 'Perbaikan'),
-  explore('explore', 'Eksplorasi'),
-  announcement('announcement', 'Pengumuman'),
-  joined('joined', 'Warga');
+  all('all'),
+  searchMiss('search_miss'),
+  correction('correction'),
+  explore('explore'),
+  announcement('announcement'),
+  joined('joined');
 
-  const FeedCategory(this.wire, this.label);
+  const FeedCategory(this.wire);
 
   /// Nilai `category` yang dikirim ke API.
   final String wire;
-
-  /// Label chip di UI.
-  final String label;
 }
 
 class ActivityFeedPage {

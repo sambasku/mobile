@@ -9,6 +9,7 @@ import '../../../auth/presentation/widgets/social_icon_button.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../models/linked_accounts_state.dart';
 import '../providers/linked_accounts_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Halaman Akun Terhubung - satu FTileGroup gaya profil, tile per provider.
 ///
@@ -41,7 +42,7 @@ class LinkedAccountsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Akun Terhubung'),
+        title: Text(AppLocalizations.of(context).linkedAccountsTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -55,17 +56,17 @@ class LinkedAccountsPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 FTileGroup(
-                  label: const Text('Masuk dengan'),
+                  label: Text(AppLocalizations.of(context).linkedAccountsSignInWith),
                   children: [
                     _ProviderTile(
                       assetPath: SocialIconButton.googleAsset,
-                      title: 'Google',
+                      title: AppLocalizations.of(context).providerGoogle,
                       linked: state.googleLinked,
                       linkedAt: state.googleLinkedAt,
                       busy: state.isBusy,
                       onTap: () => state.googleLinked
                           ? _confirmUnlink(context, ref,
-                              providerName: 'Google',
+                              providerName: AppLocalizations.of(context).providerGoogle,
                               onConfirm: () => ref
                                   .read(linkedAccountsProvider.notifier)
                                   .unlinkGoogle())
@@ -76,14 +77,14 @@ class LinkedAccountsPage extends ConsumerWidget {
                     if (githubEnabled)
                       _ProviderTile(
                         assetPath: SocialIconButton.githubAsset,
-                        title: 'GitHub',
+                        title: AppLocalizations.of(context).providerGithub,
                         invertInDark: true,
                         linked: state.githubLinked,
                         linkedAt: state.githubLinkedAt,
                         busy: state.isBusy,
                         onTap: () => state.githubLinked
                             ? _confirmUnlink(context, ref,
-                                providerName: 'GitHub',
+                                providerName: AppLocalizations.of(context).providerGithub,
                                 onConfirm: () => ref
                                     .read(linkedAccountsProvider.notifier)
                                     .unlinkGithub())
@@ -117,9 +118,13 @@ class LinkedAccountsPage extends ConsumerWidget {
             FTileGroup(
               children: [
                 FTile(
-                  title: Text('Lepas $providerName?'),
-                  subtitle: const Text(
-                    'Kamu tetap bisa masuk dengan email dan password atau provider lain.',
+                  title: Text(
+                    AppLocalizations.of(
+                      sheetContext,
+                    ).linkedAccountsUnlinkTitle(providerName),
+                  ),
+                  subtitle: Text(
+                    AppLocalizations.of(sheetContext).linkedAccountsUnlinkBody,
                   ),
                 ),
                 FTile(
@@ -127,14 +132,16 @@ class LinkedAccountsPage extends ConsumerWidget {
                   suffix: FButton(
                     variant: FButtonVariant.destructive,
                     onPress: () => Navigator.of(sheetContext).pop(true),
-                    child: const Text('Lepas'),
+                    child: Text(
+            AppLocalizations.of(sheetContext).linkedAccountsUnlink,
+          ),
                   ),
                 ),
                 FTile(
                   title: const Text(''),
                   suffix: FButton(
                     onPress: () => Navigator.of(sheetContext).pop(false),
-                    child: const Text('Batal'),
+                    child: Text(AppLocalizations.of(sheetContext).commonCancel),
                   ),
                 ),
               ],
@@ -174,11 +181,12 @@ class _ProviderTile extends StatelessWidget with FTileMixin {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final dark = theme.colors.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final subtitle = linked
-        ? (linkedAt != null
-            ? 'Terhubung sejak ${formatLinkedDate(linkedAt!)}'
-            : 'Terhubung - bisa dipakai untuk masuk')
-        : 'Belum terhubung';
+        ? (linkedAt != null && formatLinkedDate(linkedAt!).isNotEmpty
+              ? l10n.linkedAccountsLinkedSince(formatLinkedDate(linkedAt!))
+              : l10n.linkedAccountsLinkedHint)
+        : l10n.linkedAccountsNotLinked;
     return FTile(
       prefix: SvgPicture.asset(
         assetPath,

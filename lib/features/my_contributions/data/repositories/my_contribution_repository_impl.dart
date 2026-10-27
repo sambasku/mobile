@@ -5,6 +5,7 @@ import '../../domain/entities/my_submission.dart';
 import '../../domain/entities/my_submission_page.dart';
 import '../../domain/failures/my_contribution_failure.dart';
 import '../../domain/repositories/my_contribution_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 
 MySubmission parseMySubmission(Map<String, dynamic> map) {
   return MySubmission(
@@ -58,7 +59,7 @@ class MyContributionRepositoryImpl implements MyContributionRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat kontribusi'));
+      return Either.left(_mapDio(error, l10n.myContributionsLoadFailed));
     } catch (error) {
       return Either.left(MyContributionFailure(error.toString()));
     }
@@ -75,11 +76,11 @@ class MyContributionRepositoryImpl implements MyContributionRepository {
       );
       final data = res.data?['data'];
       if (data is! Map) {
-        return Either.left(MyContributionFailure('Usulan tidak ditemukan'));
+        return Either.left(MyContributionFailure(l10n.myContributionNotFound));
       }
       return Either.right(parseMySubmission(Map<String, dynamic>.from(data)));
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat detail usulan'));
+      return Either.left(_mapDio(error, l10n.myContributionDetailLoadFailed));
     } catch (error) {
       return Either.left(MyContributionFailure(error.toString()));
     }
