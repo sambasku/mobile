@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../domain/failures/achievement_failure.dart';
@@ -44,10 +45,8 @@ class ProfileAchievementTabs extends ConsumerWidget {
         : ref.watch(userAchievementsProvider(username!));
 
     return async.when(
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        child: Center(child: FCircularProgress(size: .sm)),
-      ),
+      loading: () =>
+          _AchievementTabsSkeleton(showTitle: showTitle, title: title),
       error: (err, _) => Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Column(
@@ -109,6 +108,86 @@ class ProfileAchievementTabs extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Placeholder shimmer grid 3 kolom - ganti FCircularProgress saat fetch.
+class _AchievementTabsSkeleton extends StatelessWidget {
+  const _AchievementTabsSkeleton({
+    required this.showTitle,
+    required this.title,
+  });
+
+  final bool showTitle;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final isDark = theme.colors.background.computeLuminance() < 0.5;
+    final muted = theme.colors.muted;
+
+    return Skeletonizer(
+      enabled: true,
+      effect: ShimmerEffect(
+        baseColor: isDark
+            ? muted.withValues(alpha: 0.35)
+            : const Color(0xFFE7E7EA),
+        highlightColor: isDark
+            ? muted.withValues(alpha: 0.55)
+            : const Color(0xFFF4F4F5),
+        duration: const Duration(milliseconds: 1500),
+      ),
+      child: IgnorePointer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (showTitle) ...[
+              Text(
+                title,
+                style: theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Gap(8),
+            ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final cellWidth = (constraints.maxWidth - 24) / 3;
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (var i = 0; i < 3; i++)
+                      SizedBox(
+                        width: cellWidth,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: theme.colors.border),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: const Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 1,
+                                child: Bone.square(),
+                              ),
+                              Gap(4),
+                              Bone.text(words: 2),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

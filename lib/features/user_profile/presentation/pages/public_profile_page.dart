@@ -10,15 +10,18 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../../shared/widgets/profile_leveling_chip.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../../../../shared/widgets/small_button.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
@@ -32,7 +35,6 @@ import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
@@ -148,7 +150,7 @@ class PublicProfilePage extends HookConsumerWidget {
                 },
               )
             : async.when(
-                loading: () => const ProfileIdentityHeaderSkeleton(),
+                loading: () => const _PublicProfileLoadingBody(),
                 error: (_, _) => const SizedBox.shrink(),
                 data: (profile) => _ProfileBody(
                   profile: profile,
@@ -256,6 +258,9 @@ class _ProfileBody extends HookConsumerWidget {
                     borderUrl: borderUrl,
                     bio: profile.bio,
                     isVerifier: profile.isVerifier,
+                    leveling: profile.leveling == null
+                        ? null
+                        : ProfileLevelingChip(leveling: profile.leveling!),
                     stats: ProfileStatRow(
                       words: profile.wordsApproved,
                       corrections: profile.correctionsApproved,
@@ -289,9 +294,11 @@ class _ProfileBody extends HookConsumerWidget {
           pinned: true,
           delegate: ProfileActivityChipsHeader(
             topOffset: barOffset,
+            // body.sm + w700: sama dengan heading feed beranda; jangan
+            // body.md (line height 24) - titleHeight default 18 memotong teks.
             title: Text(
               AppLocalizations.of(context).profileActivityRecent,
-              style: theme.typography.body.md.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -427,6 +434,111 @@ class _ProfileBody extends HookConsumerWidget {
           if (context.mounted) uploadingAvatar.value = false;
         }
       },
+    );
+  }
+}
+
+/// Loading penuh: header + lencana + chip + feed - semua Skeletonizer,
+/// bukan spinner. Tinggi mendekati isi asli supaya scroll tidak loncat.
+class _PublicProfileLoadingBody extends StatelessWidget {
+  const _PublicProfileLoadingBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    final barOffset =
+        MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
+
+    return IgnorePointer(
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const ProfileIdentityHeaderSkeleton(
+                  footer: _BadgeGridSkeleton(),
+                ),
+                const Gap(12),
+              ],
+            ),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: ProfileActivityChipsHeader(
+              topOffset: barOffset,
+              title: Text(
+                l10n.profileActivityRecent,
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              child: ProfileActivityChips(
+                selected: ProfileActivityFilter.all,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(12, 0, 12, 32),
+            sliver: SliverToBoxAdapter(
+              child: ProfileActivityListSkeleton(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bone 3 kolom di dalam [ProfileIdentityHeaderSkeleton] (sudah Skeletonizer).
+class _BadgeGridSkeleton extends StatelessWidget {
+  const _BadgeGridSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Bone.text(
+          words: 1,
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const Gap(8),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final cellWidth = (constraints.maxWidth - 24) / 3;
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (var i = 0; i < 3; i++)
+                  SizedBox(
+                    width: cellWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colors.border),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AspectRatio(aspectRatio: 1, child: Bone.square()),
+                          Gap(4),
+                          Bone.text(words: 2),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

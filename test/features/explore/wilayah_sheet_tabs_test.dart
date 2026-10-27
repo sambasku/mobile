@@ -162,4 +162,50 @@ void main() {
 
     expect(find.text('Pawai Taiping'), findsOneWidget);
   });
+
+  testWidgets(
+    'chip Wisata kosong: tinggi sheet tidak turun dari tab Desa',
+    (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            regionsProvider.overrideWith((ref) async => [_kec, ..._desa]),
+            regionsKecamatanProvider.overrideWith((ref) async => [_kec]),
+            // Tanpa wisata di kecamatan ini → empty state.
+            placesProvider.overrideWith((ref) async => const <Place>[]),
+            usahaBrowseProvider.overrideWith2(
+              (query) => _UsahaBrowseFake(query),
+            ),
+            eventBrowseProvider.overrideWith2(
+              (query) => _EventBrowseFake(query),
+            ),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: appLocalizationDelegates,
+            locale: appTestLocale,
+            supportedLocales: appTestSupportedLocales,
+            home: FTheme(
+              data: foruiPalettes['zinc']!.light.touch,
+              child: const WilayahSheet(
+                selected: _kec,
+                initialDesaId: null,
+                onPickSearchedDesa: _noopPick,
+                onDesaTap: _noopTap,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final heightDesa = tester.getSize(find.byType(WilayahSheet)).height;
+
+      await tester.tap(find.text('Wisata'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('wisata'), findsWidgets);
+      final heightWisata = tester.getSize(find.byType(WilayahSheet)).height;
+      expect(heightWisata, heightDesa);
+    },
+  );
 }

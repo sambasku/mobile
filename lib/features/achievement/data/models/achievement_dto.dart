@@ -25,10 +25,22 @@ abstract class AchievementDto with _$AchievementDto {
     /// Unix epoch detik (format waktu wire backend).
     @JsonKey(name: 'awarded_at') int? awardedAt,
     @JsonKey(name: 'is_active_border') @Default(false) bool isActiveBorder,
+    AchievementProgressDto? progress,
   }) = _AchievementDto;
 
   factory AchievementDto.fromJson(Map<String, dynamic> json) =>
       _$AchievementDtoFromJson(json);
+}
+
+@freezed
+abstract class AchievementProgressDto with _$AchievementProgressDto {
+  const factory AchievementProgressDto({
+    required int current,
+    required int target,
+  }) = _AchievementProgressDto;
+
+  factory AchievementProgressDto.fromJson(Map<String, dynamic> json) =>
+      _$AchievementProgressDtoFromJson(json);
 }
 
 @freezed

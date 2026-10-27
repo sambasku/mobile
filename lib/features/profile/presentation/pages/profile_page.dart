@@ -28,6 +28,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../../shared/widgets/profile_leveling_chip.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../widgets/allow_notification_shortcut.dart';
 import '../widgets/api_host_tile.dart';
@@ -417,6 +418,9 @@ class _IdentitySection extends ConsumerWidget {
           bio: profile?.bio,
           isVerifier:
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
+          leveling: profile?.leveling == null
+              ? null
+              : ProfileLevelingChip(leveling: profile!.leveling!),
           stats: profile == null
               ? null
               : ProfileStatRow(

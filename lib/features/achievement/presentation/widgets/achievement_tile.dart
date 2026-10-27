@@ -2,12 +2,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/achievement.dart';
 
 /// Baris satu pencapaian (semua kategori) untuk sub-tab Pencapaian.
 ///
-/// Locked = siluet abu + label "Belum dibuka"; owned = thumbnail aset +
-/// deskripsi. FTileMixin supaya bisa jadi anak FTileGroup.
+/// Locked = siluet abu + progres (bila agregat) / "Belum dibuka";
+/// owned = thumbnail aset + deskripsi. FTileMixin supaya bisa jadi anak
+/// FTileGroup.
 class AchievementTile extends StatelessWidget with FTileMixin {
   const AchievementTile({super.key, required this.item, required this.onTap});
 
@@ -17,6 +19,7 @@ class AchievementTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final owned = item.isOwned;
     final url = owned
         ? (displayImageUrl(item.badgeUrl, width: 128) ?? item.badgeUrl)
@@ -62,6 +65,18 @@ class AchievementTile extends StatelessWidget with FTileMixin {
       );
     }
 
+    final String subtitle;
+    if (owned) {
+      subtitle = item.description;
+    } else if (item.progress != null) {
+      subtitle = l10n.achievementProgress(
+        item.progress!.current,
+        item.progress!.target,
+      );
+    } else {
+      subtitle = l10n.achievementLocked;
+    }
+
     return FTile(
       prefix: thumb,
       title: Text(
@@ -71,7 +86,7 @@ class AchievementTile extends StatelessWidget with FTileMixin {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        owned ? item.description : 'Belum dibuka',
+        subtitle,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: owned

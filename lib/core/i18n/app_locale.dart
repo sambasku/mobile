@@ -1,5 +1,7 @@
 import 'dart:ui' show Locale;
 
+import '../feature_flags.dart';
+
 /// Registry locale UI aplikasi - satu-satunya sumber daftar bahasa
 /// (kontrak docs/mobile/MOBILE-I18N.md Section 2).
 ///
@@ -36,5 +38,11 @@ enum AppLocale {
     _ => AppLocale.id,
   };
 
+  /// Semua locale terdaftar (termasuk yang di-flag off).
   static const all = AppLocale.values;
+
+  /// Locale yang boleh dipilih di UI (hormati [FeatureFlags.multiLanguageEnabled]).
+  static List<AppLocale> get selectable => FeatureFlags.multiLanguageEnabled
+      ? AppLocale.values
+      : const [AppLocale.id];
 }

@@ -13,6 +13,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/theme/theme_mode_controller.dart';
+import '../../../../shared/widgets/floating_overlay_icon_button.dart';
 import '../../../../shared/widgets/small_button.dart';
 import '../../../event/presentation/providers/event_browse_providers.dart';
 import '../../../event/presentation/widgets/event_ui.dart';
@@ -549,7 +550,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                   tooltip: AppLocalizations.of(context).commonBack,
                   onPressed: () =>
                       context.canPop() ? context.pop() : context.go('/explore'),
-                  style: _floatingButtonStyle(context),
+                  style: floatingOverlayIconButtonStyle(context),
                   icon: const Icon(FLucideIcons.arrowLeft, size: 20),
                 ),
                 const SizedBox(height: 8),
@@ -560,7 +561,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                   onPressed: () => ref
                       .read(themeModeControllerProvider.notifier)
                       .toggle(Theme.of(context).brightness),
-                  style: _floatingButtonStyle(context),
+                  style: floatingOverlayIconButtonStyle(context),
                   icon: Icon(
                     Theme.of(context).brightness == Brightness.dark
                         ? FLucideIcons.sun
@@ -890,6 +891,8 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
 
   /// Body per chip. Provider usaha/acara hanya di-watch di cabang aktif -
   /// fetch terjadi saat chip pertama dibuka (autoDispose family, lazy).
+  /// Empty/loading pakai [_sheetTabSlot] supaya tinggi sheet tidak turun
+  /// saat ganti kategori (mis. Desa berisi → Wisata kosong).
   Widget _tabBody(
     Region kec,
     List<Region> desaOfSelected,
@@ -904,23 +907,25 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
     switch (_tab) {
       case _SheetTab.desa:
         if (loading) {
-          return Text(l10n.wilayahLoadingVillageList, style: muted);
+          return _sheetTabSlot(Text(l10n.wilayahLoadingVillageList, style: muted));
         }
         if (desaOfSelected.isEmpty) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.wilayahVillageListFailed,
-                style: muted,
-              ),
-              const Gap(4),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: () => ref.invalidate(regionsProvider),
-                child: Text(l10n.wilayahReload),
-              ),
-            ],
+          return _sheetTabSlot(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.wilayahVillageListFailed,
+                  style: muted,
+                ),
+                const Gap(4),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: () => ref.invalidate(regionsProvider),
+                  child: Text(l10n.wilayahReload),
+                ),
+              ],
+            ),
           );
         }
         return _DesaList(
@@ -934,7 +939,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
         );
       case _SheetTab.wisata:
         if (wisataOfKec.isEmpty) {
-          return Text(l10n.wilayahNoWisata, style: muted);
+          return _sheetTabSlot(Text(l10n.wilayahNoWisata, style: muted));
         }
         return _PlacesList(places: wisataOfKec);
       case _SheetTab.usaha:
@@ -942,21 +947,23 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
           usahaBrowseProvider(UsahaBrowseQuery(regionId: kec.id)),
         );
         if (async.isLoading) {
-          return Text(l10n.wilayahLoadingUsaha, style: muted);
+          return _sheetTabSlot(Text(l10n.wilayahLoadingUsaha, style: muted));
         }
         final items = async.value?.items ?? const [];
         if (items.isEmpty) {
-          return Text(l10n.wilayahNoUsaha, style: muted);
+          return _sheetTabSlot(Text(l10n.wilayahNoUsaha, style: muted));
         }
         return _UsahaList(items: items);
       case _SheetTab.acara:
         final async = ref.watch(
           eventBrowseProvider(EventBrowseQuery(regionId: kec.id)),
         );
-        if (async.isLoading) return Text(l10n.wilayahLoadingAcara, style: muted);
+        if (async.isLoading) {
+          return _sheetTabSlot(Text(l10n.wilayahLoadingAcara, style: muted));
+        }
         final items = async.value?.items ?? const [];
         if (items.isEmpty) {
-          return Text(l10n.wilayahNoAcara, style: muted);
+          return _sheetTabSlot(Text(l10n.wilayahNoAcara, style: muted));
         }
         return _CappedScrollList(
           itemCount: items.length,
@@ -964,6 +971,14 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
         );
     }
   }
+
+  /// Slot tinggi tetap untuk placeholder loading/empty - samakan dengan
+  /// [_kWilayahSheetListHeight] agar ganti chip tidak mengecilkan sheet.
+  Widget _sheetTabSlot(Widget child) => SizedBox(
+        height: _kWilayahSheetListHeight,
+        width: double.infinity,
+        child: Align(alignment: Alignment.topLeft, child: child),
+      );
 }
 
 /// Chip tab isi sheet: gaya sama dengan chips kategori feed home
@@ -1156,8 +1171,13 @@ class _CompactPanel extends StatelessWidget {
   }
 }
 
-/// Daftar scrollable dengan tinggi capped (max 220) + pill floating
-/// "Gulir ke bawah" bila masih ada item di bawah viewport.
+/// Tinggi tetap area daftar di sheet Wilayah. Naik dari 220 supaya lebih
+/// banyak item terlihat; juga dipakai placeholder empty/loading supaya
+/// ganti kategori (Desa → Wisata kosong) tidak mengecilkan sheet.
+const double _kWilayahSheetListHeight = 320;
+
+/// Daftar scrollable tinggi tetap ([_kWilayahSheetListHeight]) + pill
+/// floating "Gulir ke bawah" bila masih ada item di bawah viewport.
 /// Pill hilang saat sudah sampai dasar.
 class _CappedScrollList extends StatefulWidget {
   const _CappedScrollList({required this.itemCount, required this.itemBuilder});
@@ -1199,11 +1219,10 @@ class _CappedScrollListState extends State<_CappedScrollList> {
     final theme = context.theme;
     return Stack(
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 220),
+        SizedBox(
+          height: _kWilayahSheetListHeight,
           child: ListView.builder(
             controller: _controller,
-            shrinkWrap: true,
             padding: const EdgeInsets.only(bottom: 4),
             itemCount: widget.itemCount,
             itemBuilder: widget.itemBuilder,
@@ -1387,14 +1406,3 @@ class _PlacesList extends StatelessWidget {
   }
 }
 
-/// Style tombol mengambang di atas peta: latar background + border-less,
-/// shadow tipis fungsional (bukan dekorasi). Sama dengan pins_page.
-ButtonStyle _floatingButtonStyle(BuildContext context) {
-  final theme = context.theme;
-  return IconButton.styleFrom(
-    backgroundColor: theme.colors.background,
-    foregroundColor: theme.colors.foreground,
-    elevation: 2,
-    shadowColor: Colors.black26,
-  );
-}

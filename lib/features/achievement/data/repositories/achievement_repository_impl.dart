@@ -101,6 +101,12 @@ class AchievementRepositoryImpl implements AchievementRepository {
         ? null
         : DateTime.fromMillisecondsSinceEpoch(dto.awardedAt! * 1000),
     isActiveBorder: dto.isActiveBorder,
+    progress: dto.progress == null
+        ? null
+        : AchievementProgress(
+            current: dto.progress!.current,
+            target: dto.progress!.target,
+          ),
   );
 
   AchievementFailure _mapDio(DioException error) {

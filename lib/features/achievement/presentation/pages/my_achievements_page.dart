@@ -21,11 +21,12 @@ class MyAchievementsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(myAchievementsProvider());
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(AppLocalizations.of(context).achievementTitle),
+        title: Text(l10n.achievementTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -33,7 +34,7 @@ class MyAchievementsPage extends ConsumerWidget {
         error: (err, _) => _ErrorState(
           message: err is AchievementFailure
               ? err.message
-              : 'Gagal memuat pencapaian',
+              : l10n.achievementLoadFailed,
           onRetry: () => ref.invalidate(myAchievementsProvider),
         ),
         data: (items) => _Body(items: items),
@@ -48,19 +49,27 @@ class _Body extends StatelessWidget {
   final List<Achievement> items;
 
   void _openDetail(BuildContext context, Achievement item) {
+    final l10n = AppLocalizations.of(context);
     AnalyticsService.instance.logAchievementBadgeView(code: item.code);
-    showAppInfoSheet(
-      context,
-      title: item.title,
-      message: item.isOwned
-          ? '${item.description}\n\nSudah kamu miliki'
-          : '${item.description}\n\nBelum dibuka',
-    );
+    final String message;
+    if (item.isOwned) {
+      message = l10n.achievementDetailOwned(item.description);
+    } else if (item.progress != null) {
+      message = l10n.achievementDetailLockedProgress(
+        item.description,
+        item.progress!.current,
+        item.progress!.target,
+      );
+    } else {
+      message = l10n.achievementDetailLocked(item.description);
+    }
+    showAppInfoSheet(context, title: item.title, message: message);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final owned = items.where((e) => e.isOwned).toList(growable: false);
     final locked = items.where((e) => !e.isOwned).toList(growable: false);
     final badges = AchievementBadgeGrid.topTierPerFamily(
@@ -72,7 +81,7 @@ class _Body extends StatelessWidget {
       children: [
         if (badges.isNotEmpty) ...[
           Text(
-            'Lencana terbuka',
+            l10n.achievementOpenBadges,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -83,7 +92,7 @@ class _Body extends StatelessWidget {
         ],
         if (owned.isNotEmpty) ...[
           Text(
-            'Dimiliki',
+            l10n.achievementOwnedSection,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -102,7 +111,7 @@ class _Body extends StatelessWidget {
         ],
         if (locked.isNotEmpty) ...[
           Text(
-            'Belum dibuka',
+            l10n.achievementLockedSection,
             style: theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -122,7 +131,7 @@ class _Body extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Text(
-              'Belum ada pencapaian tersedia.',
+              l10n.achievementCatalogEmpty,
               textAlign: TextAlign.center,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,

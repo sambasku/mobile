@@ -2443,11 +2443,23 @@ abstract class AppLocalizations {
   /// **'Tekan ikon buku untuk mencari definisi di KBBI'**
   String get suggestKbbiSemantics;
 
-  /// Info di bawah field terjemahan: sumber definisi KBBI pihak ketiga dan efek pilihan ke kolom definisi + terjemahan
+  /// Label singkat notice sumber KBBI di bawah field terjemahan; detail di popover info
+  ///
+  /// In id, this message translates to:
+  /// **'Dari KBBI'**
+  String get kbbiSourceNoticeShort;
+
+  /// Isi popover/tooltip info sumber KBBI: pihak ketiga dan efek pilihan ke kolom definisi + terjemahan
   ///
   /// In id, this message translates to:
   /// **'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.'**
   String get kbbiSourceNotice;
+
+  /// semanticsLabel tombol info yang membuka penjelasan sumber KBBI
+  ///
+  /// In id, this message translates to:
+  /// **'Info sumber KBBI'**
+  String get kbbiSourceNoticeInfoSemantics;
 
   /// No description provided for @suggestDefinitionLabel.
   ///
@@ -14093,6 +14105,76 @@ abstract class AppLocalizations {
   /// **'Belum ada pencapaian'**
   String get achievementEmpty;
 
+  /// Subtitle tile achievement yang belum dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dibuka'**
+  String get achievementLocked;
+
+  /// Progres locked agregat di tile achievement
+  ///
+  /// In id, this message translates to:
+  /// **'{current}/{target}'**
+  String achievementProgress(int current, int target);
+
+  /// Info sheet detail achievement yang sudah dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah kamu miliki'**
+  String get achievementOwned;
+
+  /// Isi sheet detail achievement yang sudah dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'{description}\n\nSudah kamu miliki'**
+  String achievementDetailOwned(String description);
+
+  /// Isi sheet detail achievement yang belum dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'{description}\n\nBelum dibuka'**
+  String achievementDetailLocked(String description);
+
+  /// Isi sheet detail locked dengan progres agregat
+  ///
+  /// In id, this message translates to:
+  /// **'{description}\n\nProgres: {current}/{target}'**
+  String achievementDetailLockedProgress(
+    String description,
+    int current,
+    int target,
+  );
+
+  /// Judul section lencana owned di halaman pencapaian
+  ///
+  /// In id, this message translates to:
+  /// **'Lencana terbuka'**
+  String get achievementOpenBadges;
+
+  /// Judul section katalog owned+locked
+  ///
+  /// In id, this message translates to:
+  /// **'Semua pencapaian'**
+  String get achievementCatalogSection;
+
+  /// Judul section achievement yang sudah dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'Dimiliki'**
+  String get achievementOwnedSection;
+
+  /// Judul section achievement yang belum dimiliki
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dibuka'**
+  String get achievementLockedSection;
+
+  /// Empty state halaman daftar pencapaian
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pencapaian tersedia.'**
+  String get achievementCatalogEmpty;
+
   /// No description provided for @commentSendFailed.
   ///
   /// In id, this message translates to:
@@ -14668,6 +14750,180 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tool UI lainnya'**
   String get devToolOtherUi;
+
+  /// Gelar leveling L1
+  ///
+  /// In id, this message translates to:
+  /// **'Peninjau'**
+  String get levelingTitlePeninjau;
+
+  /// Gelar leveling L2
+  ///
+  /// In id, this message translates to:
+  /// **'Pencatat'**
+  String get levelingTitlePencatat;
+
+  /// Gelar leveling L3
+  ///
+  /// In id, this message translates to:
+  /// **'Penyumbang'**
+  String get levelingTitlePenyumbang;
+
+  /// Gelar leveling L4
+  ///
+  /// In id, this message translates to:
+  /// **'Pengumpul'**
+  String get levelingTitlePengumpul;
+
+  /// Gelar leveling L5
+  ///
+  /// In id, this message translates to:
+  /// **'Penggiat'**
+  String get levelingTitlePenggiat;
+
+  /// Gelar leveling L6
+  ///
+  /// In id, this message translates to:
+  /// **'Penjaga Jejak'**
+  String get levelingTitlePenjagaJejak;
+
+  /// Gelar leveling L7
+  ///
+  /// In id, this message translates to:
+  /// **'Penghubung'**
+  String get levelingTitlePenghubung;
+
+  /// Gelar leveling L8
+  ///
+  /// In id, this message translates to:
+  /// **'Pewaris'**
+  String get levelingTitlePewaris;
+
+  /// Gelar leveling L9
+  ///
+  /// In id, this message translates to:
+  /// **'Penjaga Warisan'**
+  String get levelingTitlePenjagaWarisan;
+
+  /// Gelar leveling L10
+  ///
+  /// In id, this message translates to:
+  /// **'Sesepuh'**
+  String get levelingTitleSesepuh;
+
+  /// Gelar leveling L11
+  ///
+  /// In id, this message translates to:
+  /// **'Tetua'**
+  String get levelingTitleTetua;
+
+  /// Gelar leveling L12
+  ///
+  /// In id, this message translates to:
+  /// **'Pengayom'**
+  String get levelingTitlePengayom;
+
+  /// Gelar leveling L13
+  ///
+  /// In id, this message translates to:
+  /// **'Pelestari'**
+  String get levelingTitlePelestari;
+
+  /// Gelar leveling L14
+  ///
+  /// In id, this message translates to:
+  /// **'Empu'**
+  String get levelingTitleEmpu;
+
+  /// Gelar leveling L15
+  ///
+  /// In id, this message translates to:
+  /// **'Legenda'**
+  String get levelingTitleLegenda;
+
+  /// Chip level di header profil
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} - {title}'**
+  String levelingChipLabel(int level, String title);
+
+  /// Progress poin ke level berikutnya
+  ///
+  /// In id, this message translates to:
+  /// **'{points} / {next}'**
+  String levelingProgress(int points, int next);
+
+  /// Progress saat Level 15
+  ///
+  /// In id, this message translates to:
+  /// **'Level tertinggi sudah tercapai'**
+  String get levelingMaxReached;
+
+  /// Judul bottom sheet leveling
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} - {title}'**
+  String levelingSheetTitle(int level, String title);
+
+  /// Penjelasan singkat leveling di sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.'**
+  String get levelingSheetHint;
+
+  /// Streak di sheet leveling
+  ///
+  /// In id, this message translates to:
+  /// **'Streak {days} hari'**
+  String levelingStreakDays(int days);
+
+  /// Badge streak kecil di chip
+  ///
+  /// In id, this message translates to:
+  /// **'streak {days}'**
+  String levelingStreakBadge(int days);
+
+  /// Penjelasan window streak di sheet leveling
+  ///
+  /// In id, this message translates to:
+  /// **'Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.'**
+  String get levelingStreakWindowHint;
+
+  /// Grup preferensi notifikasi di settings
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi'**
+  String get settingsGroupNotifications;
+
+  /// Toggle notif pengingat streak
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat streak'**
+  String get settingsNotifyStreak;
+
+  /// Subtitle toggle streak
+  ///
+  /// In id, this message translates to:
+  /// **'Ingatkan kalau kamu lama tidak aktif.'**
+  String get settingsNotifyStreakHint;
+
+  /// Toggle notif naik level
+  ///
+  /// In id, this message translates to:
+  /// **'Naik level'**
+  String get settingsNotifyLevelUp;
+
+  /// Subtitle toggle naik level
+  ///
+  /// In id, this message translates to:
+  /// **'Kabari saat level kamu naik.'**
+  String get settingsNotifyLevelUpHint;
+
+  /// Toast sukses simpan preferensi notif
+  ///
+  /// In id, this message translates to:
+  /// **'Preferensi notifikasi disimpan'**
+  String get settingsNotifySaved;
 }
 
 class _AppLocalizationsDelegate

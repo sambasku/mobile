@@ -1,3 +1,26 @@
+/// Leveling derived (docs/LEVELING_AND_STREAK_IMPLEMENT.md).
+class PublicProfileLeveling {
+  const PublicProfileLeveling({
+    required this.points,
+    required this.level,
+    required this.titleCode,
+    required this.exploration,
+    required this.accuracy,
+    required this.depth,
+    required this.streakDays,
+    this.nextLevelPoints,
+  });
+
+  final int points;
+  final int level;
+  final int? nextLevelPoints;
+  final String titleCode;
+  final int exploration;
+  final int accuracy;
+  final int depth;
+  final int streakDays;
+}
+
 /// Profil publik by username (19-api-profil-publik.md).
 class PublicProfile {
   const PublicProfile({
@@ -14,6 +37,7 @@ class PublicProfile {
     this.bio,
     this.avatarUrl,
     this.activeBorderUrl,
+    this.leveling,
   });
   final String username;
   final String displayName;
@@ -30,6 +54,9 @@ class PublicProfile {
 
   /// Bingkai profil aktif (asset achievement) - null = tanpa bingkai.
   final String? activeBorderUrl;
+
+  /// Null bila API lama tanpa field leveling.
+  final PublicProfileLeveling? leveling;
 }
 
 class PublicActivityItem {

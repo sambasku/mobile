@@ -2,6 +2,7 @@
   "success": true,
   "data": {
     "username": "budi",
+    "display_name": "budi",
     "role": "reviewer",
     "is_verifier": true,
     "joined_at": "2026-08-01T00:00:00.000Z",
@@ -9,7 +10,18 @@
       "contributions_approved": 12,
       "words_approved": 4,
       "corrections_approved": 8,
-      "verifications_done": 34
+      "verifications_done": 34,
+      "comments_published": 5
+    },
+    "leveling": {
+      "points": 2250,
+      "level": 6,
+      "next_level_points": 2800,
+      "title_code": "penjaga-jejak",
+      "exploration": 150,
+      "accuracy": 42,
+      "depth": 20,
+      "streak_days": 6
     }
   }
 }

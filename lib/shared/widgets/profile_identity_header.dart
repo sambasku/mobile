@@ -35,6 +35,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.borderUrl,
     this.bio,
     this.isVerifier = false,
+    this.leveling,
     this.stats,
     this.joinedLabel,
     this.actions = const [],
@@ -55,6 +56,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   final String? borderUrl;
   final String? bio;
   final bool isVerifier;
+
+  /// Chip level + progress (opsional).
+  final Widget? leveling;
 
   /// Null = blok stat disembunyikan (tamu / profil belum termuat).
   final Widget? stats;
@@ -200,6 +204,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                   ),
                 ),
               ],
+              if (leveling != null) ...[const Gap(10), leveling!],
               if (stats != null) ...[const Gap(10), stats!],
               if (joinedLabel != null && joinedLabel!.trim().isNotEmpty) ...[
                 const Gap(6),
@@ -301,10 +306,14 @@ class ProfileIdentityHeaderSkeleton extends StatelessWidget {
     super.key,
     this.variant = ProfileHeaderVariant.compact,
     this.horizontalPadding = 16,
+    this.footer,
   });
 
   final ProfileHeaderVariant variant;
   final double horizontalPadding;
+
+  /// Konten skeleton di bawah identitas (mis. grid lencana).
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -330,6 +339,7 @@ class ProfileIdentityHeaderSkeleton extends StatelessWidget {
         username: 'username',
         horizontalPadding: horizontalPadding,
         stats: const ProfileStatRow(words: 0, corrections: 0),
+        footer: footer,
       ),
     );
   }

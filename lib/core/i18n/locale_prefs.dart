@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../feature_flags.dart';
 import 'app_locale.dart';
 
 /// Persist pilihan bahasa UI. Mirror pola [OnboardingPrefs]: seed statis
@@ -18,14 +19,22 @@ class LocalePrefs {
     final p = prefs ?? await SharedPreferences.getInstance();
     locale = AppLocale.fromCode(p.getString(_localeKey));
     chosen = p.getBool(_chosenKey) ?? false;
+
+    // Multi-bahasa off: kunci ke `id`, lewati gate first-run bahasa.
+    if (!FeatureFlags.multiLanguageEnabled) {
+      if (locale != AppLocale.id || !chosen) {
+        await set(AppLocale.id, p);
+      }
+    }
   }
 
   /// Simpan pilihan + tandai sudah memilih (first-run gate terbuka).
   static Future<void> set(AppLocale next, [SharedPreferences? prefs]) async {
+    final resolved = FeatureFlags.multiLanguageEnabled ? next : AppLocale.id;
     final p = prefs ?? await SharedPreferences.getInstance();
-    await p.setString(_localeKey, next.code);
+    await p.setString(_localeKey, resolved.code);
     await p.setBool(_chosenKey, true);
-    locale = next;
+    locale = resolved;
     chosen = true;
   }
 

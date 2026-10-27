@@ -1295,8 +1295,14 @@ class AppLocalizationsId extends AppLocalizations {
       'Tekan ikon buku untuk mencari definisi di KBBI';
 
   @override
+  String get kbbiSourceNoticeShort => 'Dari KBBI';
+
+  @override
   String get kbbiSourceNotice =>
       'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.';
+
+  @override
+  String get kbbiSourceNoticeInfoSemantics => 'Info sumber KBBI';
 
   @override
   String get suggestDefinitionLabel => 'Definisi';
@@ -7754,6 +7760,51 @@ class AppLocalizationsId extends AppLocalizations {
   String get achievementEmpty => 'Belum ada pencapaian';
 
   @override
+  String get achievementLocked => 'Belum dibuka';
+
+  @override
+  String achievementProgress(int current, int target) {
+    return '$current/$target';
+  }
+
+  @override
+  String get achievementOwned => 'Sudah kamu miliki';
+
+  @override
+  String achievementDetailOwned(String description) {
+    return '$description\n\nSudah kamu miliki';
+  }
+
+  @override
+  String achievementDetailLocked(String description) {
+    return '$description\n\nBelum dibuka';
+  }
+
+  @override
+  String achievementDetailLockedProgress(
+    String description,
+    int current,
+    int target,
+  ) {
+    return '$description\n\nProgres: $current/$target';
+  }
+
+  @override
+  String get achievementOpenBadges => 'Lencana terbuka';
+
+  @override
+  String get achievementCatalogSection => 'Semua pencapaian';
+
+  @override
+  String get achievementOwnedSection => 'Dimiliki';
+
+  @override
+  String get achievementLockedSection => 'Belum dibuka';
+
+  @override
+  String get achievementCatalogEmpty => 'Belum ada pencapaian tersedia.';
+
+  @override
   String get commentSendFailed => 'Gagal mengirim komentar';
 
   @override
@@ -8068,6 +8119,106 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get devToolOtherUi => 'Tool UI lainnya';
+
+  @override
+  String get levelingTitlePeninjau => 'Peninjau';
+
+  @override
+  String get levelingTitlePencatat => 'Pencatat';
+
+  @override
+  String get levelingTitlePenyumbang => 'Penyumbang';
+
+  @override
+  String get levelingTitlePengumpul => 'Pengumpul';
+
+  @override
+  String get levelingTitlePenggiat => 'Penggiat';
+
+  @override
+  String get levelingTitlePenjagaJejak => 'Penjaga Jejak';
+
+  @override
+  String get levelingTitlePenghubung => 'Penghubung';
+
+  @override
+  String get levelingTitlePewaris => 'Pewaris';
+
+  @override
+  String get levelingTitlePenjagaWarisan => 'Penjaga Warisan';
+
+  @override
+  String get levelingTitleSesepuh => 'Sesepuh';
+
+  @override
+  String get levelingTitleTetua => 'Tetua';
+
+  @override
+  String get levelingTitlePengayom => 'Pengayom';
+
+  @override
+  String get levelingTitlePelestari => 'Pelestari';
+
+  @override
+  String get levelingTitleEmpu => 'Empu';
+
+  @override
+  String get levelingTitleLegenda => 'Legenda';
+
+  @override
+  String levelingChipLabel(int level, String title) {
+    return 'Level $level - $title';
+  }
+
+  @override
+  String levelingProgress(int points, int next) {
+    return '$points / $next';
+  }
+
+  @override
+  String get levelingMaxReached => 'Level tertinggi sudah tercapai';
+
+  @override
+  String levelingSheetTitle(int level, String title) {
+    return 'Level $level - $title';
+  }
+
+  @override
+  String get levelingSheetHint =>
+      'Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.';
+
+  @override
+  String levelingStreakDays(int days) {
+    return 'Streak $days hari';
+  }
+
+  @override
+  String levelingStreakBadge(int days) {
+    return 'streak $days';
+  }
+
+  @override
+  String get levelingStreakWindowHint =>
+      'Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.';
+
+  @override
+  String get settingsGroupNotifications => 'Notifikasi';
+
+  @override
+  String get settingsNotifyStreak => 'Pengingat streak';
+
+  @override
+  String get settingsNotifyStreakHint =>
+      'Ingatkan kalau kamu lama tidak aktif.';
+
+  @override
+  String get settingsNotifyLevelUp => 'Naik level';
+
+  @override
+  String get settingsNotifyLevelUpHint => 'Kabari saat level kamu naik.';
+
+  @override
+  String get settingsNotifySaved => 'Preferensi notifikasi disimpan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -9361,8 +9512,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Tekan ikon buku untuk mencari definisi di KBBI';
 
   @override
+  String get kbbiSourceNoticeShort => 'Dari KBBI';
+
+  @override
   String get kbbiSourceNotice =>
       'Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.';
+
+  @override
+  String get kbbiSourceNoticeInfoSemantics => 'Info sumber KBBI';
 
   @override
   String get suggestDefinitionLabel => 'Definisi';
@@ -15820,6 +15977,51 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get achievementEmpty => 'Belum ada pencapaian';
 
   @override
+  String get achievementLocked => 'Belum dibuka';
+
+  @override
+  String achievementProgress(int current, int target) {
+    return '$current/$target';
+  }
+
+  @override
+  String get achievementOwned => 'Sudah kamu miliki';
+
+  @override
+  String achievementDetailOwned(String description) {
+    return '$description\n\nSudah kamu miliki';
+  }
+
+  @override
+  String achievementDetailLocked(String description) {
+    return '$description\n\nBelum dibuka';
+  }
+
+  @override
+  String achievementDetailLockedProgress(
+    String description,
+    int current,
+    int target,
+  ) {
+    return '$description\n\nProgres: $current/$target';
+  }
+
+  @override
+  String get achievementOpenBadges => 'Lencana terbuka';
+
+  @override
+  String get achievementCatalogSection => 'Semua pencapaian';
+
+  @override
+  String get achievementOwnedSection => 'Dimiliki';
+
+  @override
+  String get achievementLockedSection => 'Belum dibuka';
+
+  @override
+  String get achievementCatalogEmpty => 'Belum ada pencapaian tersedia.';
+
+  @override
   String get commentSendFailed => 'Gagal mengirim komentar';
 
   @override
@@ -16134,4 +16336,104 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get devToolOtherUi => 'Tool UI lainnya';
+
+  @override
+  String get levelingTitlePeninjau => 'Peninjau';
+
+  @override
+  String get levelingTitlePencatat => 'Pencatat';
+
+  @override
+  String get levelingTitlePenyumbang => 'Penyumbang';
+
+  @override
+  String get levelingTitlePengumpul => 'Pengumpul';
+
+  @override
+  String get levelingTitlePenggiat => 'Penggiat';
+
+  @override
+  String get levelingTitlePenjagaJejak => 'Penjaga Jejak';
+
+  @override
+  String get levelingTitlePenghubung => 'Penghubung';
+
+  @override
+  String get levelingTitlePewaris => 'Pewaris';
+
+  @override
+  String get levelingTitlePenjagaWarisan => 'Penjaga Warisan';
+
+  @override
+  String get levelingTitleSesepuh => 'Sesepuh';
+
+  @override
+  String get levelingTitleTetua => 'Tetua';
+
+  @override
+  String get levelingTitlePengayom => 'Pengayom';
+
+  @override
+  String get levelingTitlePelestari => 'Pelestari';
+
+  @override
+  String get levelingTitleEmpu => 'Empu';
+
+  @override
+  String get levelingTitleLegenda => 'Legenda';
+
+  @override
+  String levelingChipLabel(int level, String title) {
+    return 'Level $level - $title';
+  }
+
+  @override
+  String levelingProgress(int points, int next) {
+    return '$points / $next';
+  }
+
+  @override
+  String get levelingMaxReached => 'Level tertinggi sudah tercapai';
+
+  @override
+  String levelingSheetTitle(int level, String title) {
+    return 'Level $level - $title';
+  }
+
+  @override
+  String get levelingSheetHint =>
+      'Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.';
+
+  @override
+  String levelingStreakDays(int days) {
+    return 'Streak $days hari';
+  }
+
+  @override
+  String levelingStreakBadge(int days) {
+    return 'streak $days';
+  }
+
+  @override
+  String get levelingStreakWindowHint =>
+      'Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.';
+
+  @override
+  String get settingsGroupNotifications => 'Notifikasi';
+
+  @override
+  String get settingsNotifyStreak => 'Pengingat streak';
+
+  @override
+  String get settingsNotifyStreakHint =>
+      'Ingatkan kalau kamu lama tidak aktif.';
+
+  @override
+  String get settingsNotifyLevelUp => 'Naik level';
+
+  @override
+  String get settingsNotifyLevelUpHint => 'Kabari saat level kamu naik.';
+
+  @override
+  String get settingsNotifySaved => 'Preferensi notifikasi disimpan';
 }

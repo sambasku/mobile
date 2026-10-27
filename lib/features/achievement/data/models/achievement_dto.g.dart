@@ -21,6 +21,11 @@ _AchievementDto _$AchievementDtoFromJson(Map<String, dynamic> json) =>
       userAchievementId: json['user_achievement_id'] as String?,
       awardedAt: (json['awarded_at'] as num?)?.toInt(),
       isActiveBorder: json['is_active_border'] as bool? ?? false,
+      progress: json['progress'] == null
+          ? null
+          : AchievementProgressDto.fromJson(
+              json['progress'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$AchievementDtoToJson(_AchievementDto instance) =>
@@ -38,7 +43,19 @@ Map<String, dynamic> _$AchievementDtoToJson(_AchievementDto instance) =>
       'user_achievement_id': instance.userAchievementId,
       'awarded_at': instance.awardedAt,
       'is_active_border': instance.isActiveBorder,
+      'progress': instance.progress,
     };
+
+_AchievementProgressDto _$AchievementProgressDtoFromJson(
+  Map<String, dynamic> json,
+) => _AchievementProgressDto(
+  current: (json['current'] as num).toInt(),
+  target: (json['target'] as num).toInt(),
+);
+
+Map<String, dynamic> _$AchievementProgressDtoToJson(
+  _AchievementProgressDto instance,
+) => <String, dynamic>{'current': instance.current, 'target': instance.target};
 
 _AchievementListDto _$AchievementListDtoFromJson(Map<String, dynamic> json) =>
     _AchievementListDto(

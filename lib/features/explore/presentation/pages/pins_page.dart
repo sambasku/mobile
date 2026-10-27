@@ -11,6 +11,7 @@ import '../../../../core/theme/forui_palette_controller.dart';
 import '../../../../core/theme/forui_palettes.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/floating_overlay_icon_button.dart';
 import '../../domain/entities/place.dart';
 import '../../explore_router.dart';
 import '../place_ui.dart';
@@ -87,12 +88,7 @@ class PinsPage extends HookConsumerWidget {
     final focusPlace = placesAsync.value
         ?.where((p) => p.slug == focusSlug)
         .firstOrNull;
-    final floatingStyle = IconButton.styleFrom(
-      backgroundColor: theme.colors.background,
-      foregroundColor: theme.colors.foreground,
-      elevation: 2,
-      shadowColor: Colors.black26,
-    );
+    final floatingStyle = floatingOverlayIconButtonStyle(context);
 
     return FScaffold(
       childPad: false,

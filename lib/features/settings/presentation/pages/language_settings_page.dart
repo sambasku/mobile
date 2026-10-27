@@ -29,7 +29,7 @@ class LanguageSettingsPage extends ConsumerWidget {
         children: [
           FTileGroup(
             children: [
-              for (final locale in AppLocale.all)
+              for (final locale in AppLocale.selectable)
                 FTile(
                   title: Text(locale.label),
                   suffix: locale == current

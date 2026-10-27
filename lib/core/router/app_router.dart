@@ -36,6 +36,7 @@ import '../../features/onboarding/data/onboarding_prefs.dart';
 import '../../features/onboarding/onboarding_router.dart';
 import '../../features/settings/settings_router.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/feature_flags.dart';
 import '../../core/i18n/locale_prefs.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/report_bug/report_bug_router.dart';
@@ -207,22 +208,31 @@ class AppRouter {
     final wordLink = nativeWordPathFromPublicLink(state.uri);
     if (wordLink != null) return wordLink;
 
-final onboardingDone = OnboardingPrefs.done;
-final localeChosen = LocalePrefs.chosen;
-final isOnboarding = loc == OnboardingRouter.onboarding.path;
-final isLanguage = loc == OnboardingRouter.language.path;
-final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
+    final onboardingDone = OnboardingPrefs.done;
+    final localeChosen = LocalePrefs.chosen;
+    final isOnboarding = loc == OnboardingRouter.onboarding.path;
+    final isLanguage = loc == OnboardingRouter.language.path;
+    final isSettingsLanguage = loc == SettingsRouter.language.path;
+    final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
+    final multiLang = FeatureFlags.multiLanguageEnabled;
 
-// Slide 0 bahasa (MOBILE-I18N §7): wajib sebelum pengalaman kamus.
-// Prioritas di atas onboarding: user existing yang sudah menyelesaikan
-// onboarding lama tapi belum pernah memilih bahasa (upgrade) tetap
-// diarahkan ke sana dulu.
-if (!localeChosen && !isLanguage) {
-  return OnboardingRouter.language.path;
-}
-if (!onboardingDone && !isOnboarding && !isLanguage && !isDeepLinkFriendly) {
-  return OnboardingRouter.onboarding.path;
-}
+    // Multi-bahasa off: jangan tampilkan picker; lanjutkan onboarding biasa.
+    if (!multiLang && (isLanguage || isSettingsLanguage)) {
+      return onboardingDone
+          ? '/'
+          : OnboardingRouter.onboarding.path;
+    }
+
+    // Slide 0 bahasa (MOBILE-I18N §7): wajib sebelum pengalaman kamus.
+    // Prioritas di atas onboarding: user existing yang sudah menyelesaikan
+    // onboarding lama tapi belum pernah memilih bahasa (upgrade) tetap
+    // diarahkan ke sana dulu. Skip bila flag multi-bahasa mati.
+    if (multiLang && !localeChosen && !isLanguage) {
+      return OnboardingRouter.language.path;
+    }
+    if (!onboardingDone && !isOnboarding && !isLanguage && !isDeepLinkFriendly) {
+      return OnboardingRouter.onboarding.path;
+    }
     if (onboardingDone && isOnboarding) {
       return '/';
     }

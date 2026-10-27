@@ -64,7 +64,7 @@ class OnboardingLanguagePage extends ConsumerWidget {
                 ),
               ),
               const Gap(24),
-              for (final locale in AppLocale.all) ...[
+              for (final locale in AppLocale.selectable) ...[
                 FButton(
                   variant: locale == current
                       ? FButtonVariant.primary

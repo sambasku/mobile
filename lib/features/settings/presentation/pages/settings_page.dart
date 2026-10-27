@@ -4,12 +4,14 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/feature_flags.dart';
 import '../../../../core/i18n/locale_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../about/about_router.dart';
 import '../../../profile/presentation/widgets/appearance_tiles.dart';
 import '../../../report_bug/report_bug_router.dart';
 import '../../settings_router.dart';
+import 'notification_prefs_section.dart';
 
 /// Pengaturan aplikasi: preferensi non-identitas (bahasa, tampilan,
 /// dukungan, tentang). Guest dan user login sama-sama boleh masuk
@@ -36,19 +38,21 @@ class SettingsPage extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
         children: [
-          FTileGroup(
-            label: Text(l10n.settingsGroupLanguage),
-            children: [
-              FTile(
-                prefix: const Icon(FLucideIcons.languages, size: 18),
-                title: Text(l10n.settingsLanguageTile),
-                subtitle: Text(locale.label),
-                suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-                onPress: () => context.push(SettingsRouter.language.path),
-              ),
-            ],
-          ),
-          const Gap(8),
+          if (FeatureFlags.multiLanguageEnabled) ...[
+            FTileGroup(
+              label: Text(l10n.settingsGroupLanguage),
+              children: [
+                FTile(
+                  prefix: const Icon(FLucideIcons.languages, size: 18),
+                  title: Text(l10n.settingsLanguageTile),
+                  subtitle: Text(locale.label),
+                  suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                  onPress: () => context.push(SettingsRouter.language.path),
+                ),
+              ],
+            ),
+            const Gap(8),
+          ],
           FTileGroup(
             label: Text(l10n.settingsGroupAppearance),
             children: [
@@ -58,6 +62,7 @@ class SettingsPage extends ConsumerWidget {
             ],
           ),
           const Gap(8),
+          const NotificationPrefsSection(),
           FTileGroup(
             label: Text(l10n.settingsGroupSupport),
             children: [

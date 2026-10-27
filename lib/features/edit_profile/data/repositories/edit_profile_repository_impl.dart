@@ -41,6 +41,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
+    bool? notifyStreakReminder,
+    bool? notifyLevelUp,
   }) async {
     try {
       final response = await _remote.updateMyProfile(
@@ -51,6 +53,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
           regionId: regionId,
           villageId: villageId,
           hasReadContributionGuide: hasReadContributionGuide,
+          notifyStreakReminder: notifyStreakReminder,
+          notifyLevelUp: notifyLevelUp,
         ),
       );
       if (response.success == false || response.data == null) {
@@ -78,6 +82,8 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     avatarUrl: dto.avatarUrl,
     hasReadContributionGuide: dto.hasReadContributionGuide,
     requiresConsent: dto.requiresConsent,
+    notifyStreakReminder: dto.notifyStreakReminder,
+    notifyLevelUp: dto.notifyLevelUp,
   );
 
   EditProfileFailure _mapDio(DioException error) {

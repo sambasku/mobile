@@ -13,5 +13,7 @@ abstract interface class EditProfileRepository {
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
+    bool? notifyStreakReminder,
+    bool? notifyLevelUp,
   });
 }

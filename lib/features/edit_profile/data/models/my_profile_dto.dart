@@ -15,6 +15,10 @@ abstract class MyProfileDto with _$MyProfileDto {
     @JsonKey(name: 'has_read_contribution_guide') @Default(false) bool hasReadContributionGuide,
     /// True bila user belum menyetujui terms/privacy versi aktif.
     @JsonKey(name: 'requires_consent') @Default(false) bool requiresConsent,
+    @JsonKey(name: 'notify_streak_reminder')
+    @Default(true)
+    bool notifyStreakReminder,
+    @JsonKey(name: 'notify_level_up') @Default(true) bool notifyLevelUp,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +39,10 @@ abstract class UpdateMyProfileRequestDto with _$UpdateMyProfileRequestDto {
     // (includeIfNull default) dan ditolak validasi backend.
     @JsonKey(name: 'has_read_contribution_guide', includeIfNull: false)
     bool? hasReadContributionGuide,
+    @JsonKey(name: 'notify_streak_reminder', includeIfNull: false)
+    bool? notifyStreakReminder,
+    @JsonKey(name: 'notify_level_up', includeIfNull: false)
+    bool? notifyLevelUp,
   }) = _UpdateMyProfileRequestDto;
 
   factory UpdateMyProfileRequestDto.fromJson(Map<String, dynamic> json) =>

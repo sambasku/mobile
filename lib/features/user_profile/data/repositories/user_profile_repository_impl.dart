@@ -90,6 +90,18 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
     commentsPublished: dto.stats.commentsPublished,
     avatarUrl: dto.avatarUrl,
     activeBorderUrl: dto.activeBorderUrl,
+    leveling: dto.leveling == null
+        ? null
+        : PublicProfileLeveling(
+            points: dto.leveling!.points,
+            level: dto.leveling!.level,
+            nextLevelPoints: dto.leveling!.nextLevelPoints,
+            titleCode: dto.leveling!.titleCode,
+            exploration: dto.leveling!.exploration,
+            accuracy: dto.leveling!.accuracy,
+            depth: dto.leveling!.depth,
+            streakDays: dto.leveling!.streakDays,
+          ),
   );
 
   PublicActivityItem _mapActivity(PublicActivityItemDto dto) =>

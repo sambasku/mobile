@@ -25,6 +25,8 @@ class UpdateMyProfileUseCase {
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
+    bool? notifyStreakReminder,
+    bool? notifyLevelUp,
   }) =>
       _repository.updateMyProfile(
         username: username,
@@ -33,5 +35,7 @@ class UpdateMyProfileUseCase {
         regionId: regionId,
         villageId: villageId,
         hasReadContributionGuide: hasReadContributionGuide,
+        notifyStreakReminder: notifyStreakReminder,
+        notifyLevelUp: notifyLevelUp,
       );
 }

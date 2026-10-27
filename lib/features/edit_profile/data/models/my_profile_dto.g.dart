@@ -17,6 +17,8 @@ _MyProfileDto _$MyProfileDtoFromJson(Map<String, dynamic> json) =>
       hasReadContributionGuide:
           json['has_read_contribution_guide'] as bool? ?? false,
       requiresConsent: json['requires_consent'] as bool? ?? false,
+      notifyStreakReminder: json['notify_streak_reminder'] as bool? ?? true,
+      notifyLevelUp: json['notify_level_up'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
@@ -29,6 +31,8 @@ Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
       'avatar_url': instance.avatarUrl,
       'has_read_contribution_guide': instance.hasReadContributionGuide,
       'requires_consent': instance.requiresConsent,
+      'notify_streak_reminder': instance.notifyStreakReminder,
+      'notify_level_up': instance.notifyLevelUp,
     };
 
 _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
@@ -40,6 +44,8 @@ _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(
   regionId: json['region_id'] as String?,
   villageId: json['village_id'] as String?,
   hasReadContributionGuide: json['has_read_contribution_guide'] as bool?,
+  notifyStreakReminder: json['notify_streak_reminder'] as bool?,
+  notifyLevelUp: json['notify_level_up'] as bool?,
 );
 
 Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
@@ -51,4 +57,6 @@ Map<String, dynamic> _$UpdateMyProfileRequestDtoToJson(
   'region_id': instance.regionId,
   'village_id': instance.villageId,
   'has_read_contribution_guide': ?instance.hasReadContributionGuide,
+  'notify_streak_reminder': ?instance.notifyStreakReminder,
+  'notify_level_up': ?instance.notifyLevelUp,
 };

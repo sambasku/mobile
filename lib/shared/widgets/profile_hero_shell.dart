@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
+import 'floating_overlay_icon_button.dart';
 import 'profile_identity_header.dart' show ProfileIdentityHeader;
 
 /// Satu aksi ikon di bar melayang [ProfileHeroShell].
@@ -24,10 +25,10 @@ class ProfileHeroAction {
 /// Halaman profil dengan cover full-bleed dan bar aksi melayang di atasnya.
 ///
 /// Cover tembus ke belakang status bar; tombol (back/edit/notifikasi) mengambang
-/// di atasnya dalam lingkaran gelap transparan, lalu melebur jadi bar solid
-/// berjudul saat cover tergulir habis. Hanya bar yang bergantung pada posisi
-/// scroll - isi halaman ([scrollView]) dikirim sebagai widget utuh supaya
-/// subtree-nya tidak ikut rebuild per frame.
+/// dengan gaya sama peta eksplorasi (square rounded + elevation), lalu melebur
+/// jadi bar solid berjudul saat cover tergulir habis. Hanya bar yang bergantung
+/// pada posisi scroll - isi halaman ([scrollView]) dikirim sebagai widget utuh
+/// supaya subtree-nya tidak ikut rebuild per frame.
 class ProfileHeroShell extends StatefulWidget {
   const ProfileHeroShell({
     super.key,
@@ -122,9 +123,12 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
   Widget _buildBar(BuildContext context, double t) {
     final theme = context.theme;
     final topInset = MediaQuery.paddingOf(context).top;
+    // Inset kiri 12: sama Positioned di pins/wilayah (top = status + 8
+    // lewat tinggi bar + alignment Row).
     return Container(
       height: topInset + ProfileHeroShell.barHeight,
-      padding: EdgeInsets.only(top: topInset, left: 4, right: 4, bottom: 4),
+      padding: EdgeInsets.only(top: topInset, left: 12, right: 12),
+      alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         color: theme.colors.background.withValues(alpha: t),
         border: t > 0.9
@@ -185,45 +189,33 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
     int badgeCount = 0,
   }) {
     final theme = context.theme;
-    final foreground = Color.lerp(
-      const Color(0xFFFFFFFF),
-      theme.colors.foreground,
-      t,
-    );
-    // FTappable, bukan IconButton: pohon Forui tidak punya ancestor Material
-    // (IconButton ber-assert debugCheckHasMaterial = crash runtime).
-    return FTappable(
-      onPress: onPress,
-      semanticsLabel: tooltip ?? '',
-      child: Container(
-        width: 40,
-        height: 40,
-        margin: const EdgeInsets.symmetric(horizontal: 2),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          // Lingkaran gelap memudar seiring bar jadi solid.
-          color: const Color(0xFF000000).withValues(alpha: 0.35 * (1 - t)),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(icon, size: 20, color: foreground),
-            if (badgeCount > 0)
-              Positioned(
-                top: 7,
-                right: 7,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: theme.colors.destructive,
-                    shape: BoxShape.circle,
+    // IconButton + style shared dengan peta: padding 8, elevation 2,
+    // shadow Material - bukan BoxShadow manual / ukuran 40 tetap.
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPress,
+      style: floatingOverlayIconButtonStyle(context, fill: 1 - t),
+      icon: badgeCount > 0
+          ? Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                Icon(icon, size: 20),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: theme.colors.destructive,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
-      ),
+              ],
+            )
+          : Icon(icon, size: 20),
     );
   }
 }

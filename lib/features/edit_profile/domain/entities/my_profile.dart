@@ -8,6 +8,8 @@ class MyProfile {
     this.avatarUrl,
     this.hasReadContributionGuide = false,
     this.requiresConsent = false,
+    this.notifyStreakReminder = true,
+    this.notifyLevelUp = true,
   });
 
   final String username;
@@ -23,4 +25,10 @@ class MyProfile {
   /// Server hitung dari user_consents vs versi aktif - dipakai app untuk
   /// memunculkan sheet persetujuan setiap launch sampai user setuju.
   final bool requiresConsent;
+
+  /// Opt-in pengingat streak (cron).
+  final bool notifyStreakReminder;
+
+  /// Opt-in notifikasi naik level.
+  final bool notifyLevelUp;
 }

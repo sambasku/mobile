@@ -1,3 +1,11 @@
+/// Progress locked untuk source agregat (`GET /me/achievements`).
+class AchievementProgress {
+  const AchievementProgress({required this.current, required this.target});
+
+  final int current;
+  final int target;
+}
+
 /// Reward katalog + status kepemilikan (43-api-achievements.md).
 class Achievement {
   const Achievement({
@@ -14,6 +22,7 @@ class Achievement {
     this.userAchievementId,
     this.awardedAt,
     this.isActiveBorder = false,
+    this.progress,
   });
 
   final String id;
@@ -37,6 +46,9 @@ class Achievement {
 
   /// Border ini sedang dipakai sebagai bingkai profil.
   final bool isActiveBorder;
+
+  /// Locked agregat: current/target. Owned/kohort/manual = null.
+  final AchievementProgress? progress;
 
   bool get isOwned => userAchievementId != null;
   bool get isBorder => rewardType == 'profile_border';

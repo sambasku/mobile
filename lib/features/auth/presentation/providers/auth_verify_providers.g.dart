@@ -42,7 +42,7 @@ final class AuthVerifyNotifierProvider
 }
 
 String _$authVerifyNotifierHash() =>
-    r'2c2380c63c45b127a24225d8befcde2e1f08e9ad';
+    r'4222583b2be9c8f80f547c8279816d6eadba2288';
 
 abstract class _$AuthVerifyNotifier extends $Notifier<AuthVerifyState> {
   AuthVerifyState build();

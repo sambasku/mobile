@@ -587,9 +587,17 @@
   "suggestTranslationHint": "Satu kata/frasa setara dengan lemma. Contoh: \"makan\". Beda dari definisi.",
   "suggestTranslationSemanticsHint": "Satu kata/frasa setara di Indonesia",
   "suggestKbbiSemantics": "Tekan ikon buku untuk mencari definisi di KBBI",
+  "kbbiSourceNoticeShort": "Dari KBBI",
+  "@kbbiSourceNoticeShort": {
+    "description": "Label singkat notice sumber KBBI di bawah field terjemahan; detail di popover info"
+  },
   "kbbiSourceNotice": "Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.",
   "@kbbiSourceNotice": {
-    "description": "Info di bawah field terjemahan: sumber definisi KBBI pihak ketiga dan efek pilihan ke kolom definisi + terjemahan"
+    "description": "Isi popover/tooltip info sumber KBBI: pihak ketiga dan efek pilihan ke kolom definisi + terjemahan"
+  },
+  "kbbiSourceNoticeInfoSemantics": "Info sumber KBBI",
+  "@kbbiSourceNoticeInfoSemantics": {
+    "description": "semanticsLabel tombol info yang membuka penjelasan sumber KBBI"
   },
   "suggestDefinitionLabel": "Definisi",
   "suggestDefinitionHint": "Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.",
@@ -5186,6 +5194,65 @@
   "@achievementBorderSaveFailed": {},
   "achievementEmpty": "Belum ada pencapaian",
   "@achievementEmpty": {},
+  "achievementLocked": "Belum dibuka",
+  "@achievementLocked": {
+    "description": "Subtitle tile achievement yang belum dimiliki"
+  },
+  "achievementProgress": "{current}/{target}",
+  "@achievementProgress": {
+    "description": "Progres locked agregat di tile achievement",
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "achievementOwned": "Sudah kamu miliki",
+  "@achievementOwned": {
+    "description": "Info sheet detail achievement yang sudah dimiliki"
+  },
+  "achievementDetailOwned": "{description}\n\nSudah kamu miliki",
+  "@achievementDetailOwned": {
+    "description": "Isi sheet detail achievement yang sudah dimiliki",
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "achievementDetailLocked": "{description}\n\nBelum dibuka",
+  "@achievementDetailLocked": {
+    "description": "Isi sheet detail achievement yang belum dimiliki",
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "achievementDetailLockedProgress": "{description}\n\nProgres: {current}/{target}",
+  "@achievementDetailLockedProgress": {
+    "description": "Isi sheet detail locked dengan progres agregat",
+    "placeholders": {
+      "description": { "type": "String" },
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "achievementOpenBadges": "Lencana terbuka",
+  "@achievementOpenBadges": {
+    "description": "Judul section lencana owned di halaman pencapaian"
+  },
+  "achievementCatalogSection": "Semua pencapaian",
+  "@achievementCatalogSection": {
+    "description": "Judul section katalog owned+locked"
+  },
+  "achievementOwnedSection": "Dimiliki",
+  "@achievementOwnedSection": {
+    "description": "Judul section achievement yang sudah dimiliki"
+  },
+  "achievementLockedSection": "Belum dibuka",
+  "@achievementLockedSection": {
+    "description": "Judul section achievement yang belum dimiliki"
+  },
+  "achievementCatalogEmpty": "Belum ada pencapaian tersedia.",
+  "@achievementCatalogEmpty": {
+    "description": "Empty state halaman daftar pencapaian"
+  },
   "commentSendFailed": "Gagal mengirim komentar",
   "@commentSendFailed": {},
   "commentDeleteFailed": "Gagal menghapus komentar",
@@ -5411,5 +5478,87 @@
   "devToolOtherUi": "Tool UI lainnya",
   "@devToolOtherUi": {
     "description": "Deskripsi grup inspector UI di overlay staging"
-  }
+  },
+"levelingTitlePeninjau": "Peninjau",
+  "@levelingTitlePeninjau": { "description": "Gelar leveling L1" },
+  "levelingTitlePencatat": "Pencatat",
+  "@levelingTitlePencatat": { "description": "Gelar leveling L2" },
+  "levelingTitlePenyumbang": "Penyumbang",
+  "@levelingTitlePenyumbang": { "description": "Gelar leveling L3" },
+  "levelingTitlePengumpul": "Pengumpul",
+  "@levelingTitlePengumpul": { "description": "Gelar leveling L4" },
+  "levelingTitlePenggiat": "Penggiat",
+  "@levelingTitlePenggiat": { "description": "Gelar leveling L5" },
+  "levelingTitlePenjagaJejak": "Penjaga Jejak",
+  "@levelingTitlePenjagaJejak": { "description": "Gelar leveling L6" },
+  "levelingTitlePenghubung": "Penghubung",
+  "@levelingTitlePenghubung": { "description": "Gelar leveling L7" },
+  "levelingTitlePewaris": "Pewaris",
+  "@levelingTitlePewaris": { "description": "Gelar leveling L8" },
+  "levelingTitlePenjagaWarisan": "Penjaga Warisan",
+  "@levelingTitlePenjagaWarisan": { "description": "Gelar leveling L9" },
+  "levelingTitleSesepuh": "Sesepuh",
+  "@levelingTitleSesepuh": { "description": "Gelar leveling L10" },
+  "levelingTitleTetua": "Tetua",
+  "@levelingTitleTetua": { "description": "Gelar leveling L11" },
+  "levelingTitlePengayom": "Pengayom",
+  "@levelingTitlePengayom": { "description": "Gelar leveling L12" },
+  "levelingTitlePelestari": "Pelestari",
+  "@levelingTitlePelestari": { "description": "Gelar leveling L13" },
+  "levelingTitleEmpu": "Empu",
+  "@levelingTitleEmpu": { "description": "Gelar leveling L14" },
+  "levelingTitleLegenda": "Legenda",
+  "@levelingTitleLegenda": { "description": "Gelar leveling L15" },
+  "levelingChipLabel": "Level {level} - {title}",
+  "@levelingChipLabel": {
+    "description": "Chip level di header profil",
+    "placeholders": {
+      "level": { "type": "int" },
+      "title": { "type": "String" }
+    }
+  },
+  "levelingProgress": "{points} / {next}",
+  "@levelingProgress": {
+    "description": "Progress poin ke level berikutnya",
+    "placeholders": {
+      "points": { "type": "int" },
+      "next": { "type": "int" }
+    }
+  },
+  "levelingMaxReached": "Level tertinggi sudah tercapai",
+  "@levelingMaxReached": { "description": "Progress saat Level 15" },
+  "levelingSheetTitle": "Level {level} - {title}",
+  "@levelingSheetTitle": {
+    "description": "Judul bottom sheet leveling",
+    "placeholders": {
+      "level": { "type": "int" },
+      "title": { "type": "String" }
+    }
+  },
+  "levelingSheetHint": "Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.",
+  "@levelingSheetHint": { "description": "Penjelasan singkat leveling di sheet" },
+  "levelingStreakDays": "Streak {days} hari",
+  "@levelingStreakDays": {
+    "description": "Streak di sheet leveling",
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "levelingStreakBadge": "streak {days}",
+  "@levelingStreakBadge": {
+    "description": "Badge streak kecil di chip",
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "levelingStreakWindowHint": "Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.",
+  "@levelingStreakWindowHint": { "description": "Penjelasan window streak di sheet leveling" },
+  "settingsGroupNotifications": "Notifikasi",
+  "@settingsGroupNotifications": { "description": "Grup preferensi notifikasi di settings" },
+  "settingsNotifyStreak": "Pengingat streak",
+  "@settingsNotifyStreak": { "description": "Toggle notif pengingat streak" },
+  "settingsNotifyStreakHint": "Ingatkan kalau kamu lama tidak aktif.",
+  "@settingsNotifyStreakHint": { "description": "Subtitle toggle streak" },
+  "settingsNotifyLevelUp": "Naik level",
+  "@settingsNotifyLevelUp": { "description": "Toggle notif naik level" },
+  "settingsNotifyLevelUpHint": "Kabari saat level kamu naik.",
+  "@settingsNotifyLevelUpHint": { "description": "Subtitle toggle naik level" },
+  "settingsNotifySaved": "Preferensi notifikasi disimpan",
+  "@settingsNotifySaved": { "description": "Toast sukses simpan preferensi notif" }
 }
