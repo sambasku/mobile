@@ -1,4 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -70,7 +72,7 @@ class LetterWordsPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text('Huruf $display'),
+        title: Text(AppLocalizations.of(context).dictLetterTitle(display)),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -81,7 +83,7 @@ class LetterWordsPage extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Kata yang dimulai dengan huruf $display.',
+            AppLocalizations.of(context).dictLetterSubtitle(display),
             textAlign: TextAlign.center,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
@@ -137,7 +139,7 @@ class LetterWordsPage extends HookConsumerWidget {
                     ref.read(letterWordsProvider(letter).notifier).load(),
                 variant: FButtonVariant.outline,
                 prefix: const Icon(FLucideIcons.rotateCcw),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -159,7 +161,9 @@ class LetterWordsPage extends HookConsumerWidget {
               ),
               const Gap(8),
               Text(
-                'Belum ada kata untuk huruf ${letter.toUpperCase()}.',
+                AppLocalizations.of(
+                  context,
+                ).dictLetterEmpty(letter.toUpperCase()),
                 textAlign: TextAlign.center,
                 style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
@@ -169,7 +173,7 @@ class LetterWordsPage extends HookConsumerWidget {
               FButton(
                 onPress: () => context.push(DictionaryRouter.list.path),
                 variant: FButtonVariant.outline,
-                child: const Text('Lihat semua kata'),
+                child: Text(AppLocalizations.of(context).dictSeeAllWords),
               ),
             ],
           ),
@@ -211,7 +215,9 @@ class _WordTile extends StatelessWidget with FTileMixin {
     final gloss = item.sense?.trim();
     final subtitle = (gloss != null && gloss.isNotEmpty)
         ? gloss
-        : (item.wordType != 'word' ? item.wordTypeLabel : null);
+        : (item.wordType != 'word'
+              ? wordSummaryTypeLabel(item, AppLocalizations.of(context))
+              : null);
 
     return FTile(
       title: Text(item.lemma),
@@ -274,7 +280,7 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: const Text('kata Sambas contoh'),
+      title: Text(AppLocalizations.of(context).dictSkeletonWord),
       suffix: Icon(
         FLucideIcons.circleDashedCheck,
         size: 18,
@@ -299,7 +305,7 @@ class _LoadingMoreFooter extends StatelessWidget {
             const FCircularProgress(size: .xs),
             const Gap(8),
             Text(
-              'Memuat...',
+              AppLocalizations.of(context).dictLoading,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),

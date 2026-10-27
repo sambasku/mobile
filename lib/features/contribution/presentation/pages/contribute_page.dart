@@ -1,4 +1,6 @@
 import 'dart:async';
+import '../../../dictionary/presentation/dictionary_labels.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1999,7 +2001,7 @@ class _UsageLabelChips extends StatelessWidget {
               variant: selected.contains(code)
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: Text(usageLabelLabel(code)),
+              child: Text(usageLabelLabel(code, AppLocalizations.of(context))),
             ),
           ),
       ],

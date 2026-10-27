@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -57,9 +58,7 @@ class _WordOfDayBody extends ConsumerWidget {
       child: Material(
         color: Colors.transparent,
         clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Stack(
           fit: StackFit.passthrough,
           children: [
@@ -108,7 +107,10 @@ class _WordOfDayBody extends ConsumerWidget {
                   params: {'word_id': item.word.id},
                 );
                 context.push(
-                  DictionaryRouter.detail.path.replaceFirst(':id', item.word.id),
+                  DictionaryRouter.detail.path.replaceFirst(
+                    ':id',
+                    item.word.id,
+                  ),
                 );
               },
               child: IntrinsicHeight(
@@ -140,13 +142,15 @@ class _WordOfDayBody extends ConsumerWidget {
                                 const Gap(8),
                                 Expanded(
                                   child: Text(
-                                    'Kata hari ini',
+                                    AppLocalizations.of(context).dictWordOfDay,
                                     style: theme.typography.body.xs.copyWith(
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white,
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withValues(alpha: 0.4),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.4,
+                                          ),
                                           blurRadius: 4,
                                           offset: const Offset(0, 1),
                                         ),
@@ -157,7 +161,9 @@ class _WordOfDayBody extends ConsumerWidget {
                                 if (dateLabel.isNotEmpty)
                                   DecoratedBox(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withValues(alpha: 0.35),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.35,
+                                      ),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Padding(
@@ -167,11 +173,12 @@ class _WordOfDayBody extends ConsumerWidget {
                                       ),
                                       child: Text(
                                         dateLabel,
-                                        style: theme.typography.body.xs.copyWith(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.9,
-                                          ),
-                                        ),
+                                        style: theme.typography.body.xs
+                                            .copyWith(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.9,
+                                              ),
+                                            ),
                                       ),
                                     ),
                                   ),
@@ -205,7 +212,9 @@ class _WordOfDayBody extends ConsumerWidget {
                                   color: Colors.white.withValues(alpha: 0.9),
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withValues(alpha: 0.4),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.4,
+                                      ),
                                       blurRadius: 4,
                                       offset: const Offset(0, 1),
                                     ),
@@ -226,15 +235,21 @@ class _WordOfDayBody extends ConsumerWidget {
                                 ),
                                 child: Text(
                                   item.isNewThisWeek
-                                      ? 'Ditampilkan hari ini · baru minggu ini'
-                                      : 'Ditampilkan hari ini, berganti setiap hari',
+                                      ? AppLocalizations.of(
+                                          context,
+                                        ).dictWordOfDayShownToday
+                                      : AppLocalizations.of(
+                                          context,
+                                        ).dictWordOfDayRotates,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.typography.body.xs.copyWith(
                                     color: Colors.white.withValues(alpha: 0.85),
                                     shadows: [
                                       Shadow(
-                                        color: Colors.black.withValues(alpha: 0.4),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 4,
                                         offset: const Offset(0, 1),
                                       ),
@@ -295,7 +310,9 @@ class _WordOfDaySkeleton extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: const AssetImage('assets/images/wotd_cover.webp'),
+                        image: const AssetImage(
+                          'assets/images/wotd_cover.webp',
+                        ),
                         fit: BoxFit.cover,
                         alignment: Alignment.bottomCenter,
                       ),
@@ -320,20 +337,22 @@ class _WordOfDaySkeleton extends StatelessWidget {
                   ),
                 ),
                 // Skeleton content
-                const Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(14, 8, 10, 8),
                   child: Skeletonizer(
                     enabled: true,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Kata hari ini'),
+                        Text(AppLocalizations.of(context).dictWordOfDay),
                         Gap(6),
-                        Text('lemma contoh'),
+                        Text(
+                          AppLocalizations.of(context).dictSkeletonLemmaShort,
+                        ),
                         Gap(2),
-                        Text('arti pertama satu baris'),
+                        Text(AppLocalizations.of(context).dictSkeletonGloss),
                         Gap(4),
-                        Text('Ditampilkan hari ini, berganti setiap hari'),
+                        Text(AppLocalizations.of(context).dictWordOfDayRotates),
                       ],
                     ),
                   ),

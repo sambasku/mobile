@@ -1,4 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,7 +51,7 @@ class AudioPlayerTile extends ConsumerWidget {
 
     final durationLabel = audio.formattedDuration;
     final metaParts = <String>[
-      audio.displaySpeaker,
+      displaySpeaker(audio, AppLocalizations.of(context)),
       if (dialectName case final d? when d.isNotEmpty) d,
     ];
     final meta = metaParts.join(' · ');
@@ -121,7 +123,7 @@ class AudioPlayerTile extends ConsumerWidget {
                       const Gap(4),
                       Semantics(
                         button: true,
-                        label: 'Menunggu pengecekan',
+                        label: AppLocalizations.of(context).dictPendingCheck,
                         child: GestureDetector(
                           onTap: () => showPendingAudioReviewInfo(context),
                           child: const PendingReviewBadgeIcon(size: 14),
@@ -246,7 +248,7 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Progres pemutaran',
+      label: AppLocalizations.of(context).dictAudioProgress,
       value: '${(progress * 100).round()} persen',
       slider: enabled,
       child: LayoutBuilder(

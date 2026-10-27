@@ -36,8 +36,7 @@ class WordDetailAudioView {
 
   /// Track tetap tampil untuk tile terakhir (termasuk idle setelah selesai).
   bool get showProgress =>
-      activeAudioId != null &&
-      playbackState != AudioTilePlaybackState.error;
+      activeAudioId != null && playbackState != AudioTilePlaybackState.error;
 
   bool get canSeek =>
       playbackState == AudioTilePlaybackState.playing ||
@@ -228,10 +227,7 @@ class WordDetailAudioPlayer extends _$WordDetailAudioPlayer {
     // Play (bukan pause) → analytics sekali per tap play.
     AnalyticsService.instance.log(
       AnalyticsEvents.audioPlay,
-      params: {
-        'word_id': wordId,
-        'has_audio': 1,
-      },
+      params: {'word_id': wordId, 'has_audio': 1},
     );
 
     if (current.activeAudioId == audioId &&

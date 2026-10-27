@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -301,7 +302,7 @@ class _HomeSearchRow extends StatelessWidget {
               child: FTextField(
                 size: .sm,
                 readOnly: true,
-                hint: 'Cari kata Sambas...',
+                hint: AppLocalizations.of(context).dictSearchHint,
                 prefixBuilder: (context, style, variants) =>
                     FTextField.prefixIconBuilder(
                       context,
@@ -320,7 +321,7 @@ class _HomeSearchRow extends StatelessWidget {
           onPress: () => context.push(
             DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
           ),
-          child: const Text('A-Z'),
+          child: Text(AppLocalizations.of(context).dictAZ),
         ),
       ],
     );
@@ -340,7 +341,7 @@ class _HomeMenuTiles extends StatelessWidget {
       children: [
         FTile(
           prefix: const Icon(FLucideIcons.plus, size: 18),
-          title: const Text('Usul kata baru'),
+          title: Text(AppLocalizations.of(context).dictProposeWord),
           suffix: const Icon(FLucideIcons.chevronRight, size: 16),
           onPress: () {
             AnalyticsService.instance.log(
@@ -352,10 +353,8 @@ class _HomeMenuTiles extends StatelessWidget {
         ),
         FTile(
           prefix: const Icon(FLucideIcons.messagesSquare, size: 18),
-          title: const Text('Ruang Diskusi'),
-          subtitle: const Text(
-            'Tanya arti atau bahas kata Sambas bareng warga',
-          ),
+          title: Text(AppLocalizations.of(context).dictDiscussion),
+          subtitle: Text(AppLocalizations.of(context).dictDiscussionSubtitle),
           suffix: const Icon(FLucideIcons.chevronRight, size: 16),
           onPress: () => context.push(DiscussionRouter.feed.path),
         ),
@@ -483,7 +482,7 @@ class _FeedHeading extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 2),
       child: Text(
-        'Aktivitas terbaru',
+        AppLocalizations.of(context).dictRecentActivity,
         style: theme.typography.body.sm.copyWith(
           fontWeight: FontWeight.w700,
           color: theme.colors.foreground,
@@ -510,7 +509,7 @@ class _EmptyFeed extends StatelessWidget {
           ),
           const Gap(8),
           Text(
-            'Belum ada aktivitas.',
+            AppLocalizations.of(context).dictNoActivity,
             textAlign: TextAlign.center,
             style: theme.typography.body.md.copyWith(
               color: theme.colors.foreground,
@@ -544,10 +543,10 @@ class _FeedListSkeleton extends StatelessWidget {
       id: 'skeleton',
       kind: FeedActivityKind.comment,
       createdAt: DateTime.now().toIso8601String(),
-      body: 'aktivitas singkat satu baris',
-      actor: const FeedActivityActor(
+      body: AppLocalizations.of(context).dictActivitySkeletonLine,
+      actor: FeedActivityActor(
         username: 'warga',
-        displayName: 'Warga Sambas',
+        displayName: AppLocalizations.of(context).dictCitizenFallback,
       ),
       subtitle: 'lading',
     );

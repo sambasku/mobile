@@ -1,5 +1,4 @@
 import '../../../../core/models/image_attribution.dart';
-import '../../../../shared/utils/public_account_name.dart';
 
 /// Closed enum `usage_labels` (sinkron API / console).
 const kUsageLabels = <String>[
@@ -16,17 +15,6 @@ const kRegisterUsageLabels = <String>['kasar', 'tabu', 'informal', 'halus'];
 
 /// Peringatan: sensitivitas isi makna.
 const kWarningUsageLabels = <String>['seksual', 'diskriminatif'];
-
-/// Label UI (ID) untuk kode `usage_labels`.
-String usageLabelLabel(String code) => switch (code) {
-  'kasar' => 'Kasar',
-  'tabu' => 'Tabu',
-  'informal' => 'Informal',
-  'halus' => 'Halus',
-  'seksual' => 'Seksual',
-  'diskriminatif' => 'Diskriminatif',
-  _ => code,
-};
 
 /// Badge lebih menonjol: kasar/tabu/seksual/diskriminatif.
 bool isProminentUsageLabel(String code) =>
@@ -115,25 +103,6 @@ class WordDetail {
   final List<MeaningGroup> meaningGroups;
   final List<WordVariant> variants;
 
-  String get wordTypeLabel => switch (wordType) {
-    'idiom' => 'Idiom',
-    'peribahasa' => 'Peribahasa',
-    'ungkapan' => 'Ungkapan',
-    _ => 'Kata',
-  };
-
-  String? get creatorAttributionLabel {
-    final person = createdBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Dibuat oleh ${_attributionLabel(person)}';
-  }
-
-  String? get verifierAttributionLabel {
-    final person = verifiedBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Diverifikasi oleh ${_attributionLabel(person)}';
-  }
-
   /// Satu kalimat kalau orangnya sama, supaya nama tidak tertulis dua kali.
   bool get authoredAndVerifiedBySamePerson {
     final creator = createdBy?.username;
@@ -142,20 +111,6 @@ class WordDetail {
     final hasVerifier = verifier != null && verifier.isNotEmpty;
     if (hasCreator && hasVerifier) return creator == verifier;
     return selfVerified && hasVerifier;
-  }
-
-  String? get combinedAttributionLabel {
-    if (!authoredAndVerifiedBySamePerson) return null;
-    final person = verifiedBy ?? createdBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Dibuat dan diverifikasi oleh ${_attributionLabel(person)}';
-  }
-
-  static String _attributionLabel(WordVerifier person) {
-    final name = person.displayName.trim().isNotEmpty
-        ? person.displayName.trim()
-        : person.username;
-    return displayPublicUsername(name);
   }
 
   /// Orang yang sama dan perannya tim verifikator, bukan kontributor.
@@ -279,12 +234,6 @@ class WordAudio {
 
   bool get isPendingReview => !isVerified;
 
-  String get displaySpeaker {
-    final name = speakerName?.trim();
-    if (name != null && name.isNotEmpty) return name;
-    return 'Anonim';
-  }
-
   String? get formattedDuration {
     final ms = durationMs;
     if (ms == null || ms <= 0) return null;
@@ -362,17 +311,6 @@ class RelatedWord {
   final String lemma;
   final String relationType;
 
-  String get relationLabel => switch (relationType) {
-        'synonym' => 'Sinonim',
-        'antonym' => 'Antonim',
-        'has_component' => 'Komponen',
-        'see_also' => 'Lihat juga',
-        'derived_from' => 'Diturunkan dari',
-        // PRD relasi-lemma Section 8.1: variasi & bentuk tidak baku.
-        'variant_of' => 'Variasi dari',
-        'nonstandard_of' => 'Bentuk tidak baku dari',
-        _ => relationType,
-      };
 }
 
 /// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.
@@ -421,14 +359,6 @@ class WordVariant {
   final String? affixType;
   final String? affixValue;
   final String? notes;
-
-  String get variantTypeLabel => switch (variantType) {
-    'alternative' => 'Variasi penulisan',
-    'inflection' => 'Fleksi',
-    'derivation' => 'Derivasi',
-    'reduplication' => 'Reduplikasi',
-    _ => variantType,
-  };
 
   bool get isSpellingVariant => variantType == 'alternative';
 }

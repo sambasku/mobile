@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -34,9 +35,7 @@ void main() {
             (w) => w is CustomScrollView && w.controller != null,
           )
           .first;
-      final gesture = await tester.startGesture(
-        tester.getCenter(feedList),
-      );
+      final gesture = await tester.startGesture(tester.getCenter(feedList));
       await gesture.moveBy(const Offset(0, -50));
       await tester.pump();
       final partialHeight = tester.getSize(collapsible).height;
@@ -71,9 +70,7 @@ void main() {
         reason: 'feed harus naik mengisi ruang yang ditinggalkan header',
       );
 
-      final gestureUp = await tester.startGesture(
-        tester.getCenter(feedList),
-      );
+      final gestureUp = await tester.startGesture(tester.getCenter(feedList));
       await gestureUp.moveBy(const Offset(0, 200));
       await gestureUp.up();
       await tester.pumpAndSettle();
@@ -132,7 +129,14 @@ Future<void> pumpHome(WidgetTester tester) async {
       ],
       child: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
-        child: const MaterialApp(home: HomeSearchPage()),
+        child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const HomeSearchPage(),
+        ),
       ),
     ),
   );

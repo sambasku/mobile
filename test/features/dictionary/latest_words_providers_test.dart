@@ -84,28 +84,25 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   }) async => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({

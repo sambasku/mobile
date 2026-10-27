@@ -4768,6 +4768,1122 @@ abstract class AppLocalizations {
     int count,
     String status,
   );
+
+  /// No description provided for @dictUsageKasar.
+  ///
+  /// In id, this message translates to:
+  /// **'Kasar'**
+  String get dictUsageKasar;
+
+  /// No description provided for @dictUsageTabu.
+  ///
+  /// In id, this message translates to:
+  /// **'Tabu'**
+  String get dictUsageTabu;
+
+  /// No description provided for @dictUsageInformal.
+  ///
+  /// In id, this message translates to:
+  /// **'Informal'**
+  String get dictUsageInformal;
+
+  /// No description provided for @dictUsageHalus.
+  ///
+  /// In id, this message translates to:
+  /// **'Halus'**
+  String get dictUsageHalus;
+
+  /// No description provided for @dictUsageSeksual.
+  ///
+  /// In id, this message translates to:
+  /// **'Seksual'**
+  String get dictUsageSeksual;
+
+  /// No description provided for @dictUsageDiskriminatif.
+  ///
+  /// In id, this message translates to:
+  /// **'Diskriminatif'**
+  String get dictUsageDiskriminatif;
+
+  /// No description provided for @dictWordTypeWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get dictWordTypeWord;
+
+  /// No description provided for @dictWordTypeIdiom.
+  ///
+  /// In id, this message translates to:
+  /// **'Idiom'**
+  String get dictWordTypeIdiom;
+
+  /// No description provided for @dictWordTypeProverb.
+  ///
+  /// In id, this message translates to:
+  /// **'Peribahasa'**
+  String get dictWordTypeProverb;
+
+  /// No description provided for @dictWordTypeExpression.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungkapan'**
+  String get dictWordTypeExpression;
+
+  /// No description provided for @dictRelationSynonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinonim'**
+  String get dictRelationSynonym;
+
+  /// No description provided for @dictRelationAntonym.
+  ///
+  /// In id, this message translates to:
+  /// **'Antonim'**
+  String get dictRelationAntonym;
+
+  /// No description provided for @dictRelationComponent.
+  ///
+  /// In id, this message translates to:
+  /// **'Komponen'**
+  String get dictRelationComponent;
+
+  /// No description provided for @dictRelationSeeAlso.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat juga'**
+  String get dictRelationSeeAlso;
+
+  /// No description provided for @dictRelationDerivedFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Diturunkan dari'**
+  String get dictRelationDerivedFrom;
+
+  /// No description provided for @dictRelationVariantOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi dari'**
+  String get dictRelationVariantOf;
+
+  /// No description provided for @dictRelationNonstandardOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Bentuk tidak baku dari'**
+  String get dictRelationNonstandardOf;
+
+  /// No description provided for @dictVariantAlternative.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi penulisan'**
+  String get dictVariantAlternative;
+
+  /// No description provided for @dictVariantInflection.
+  ///
+  /// In id, this message translates to:
+  /// **'Fleksi'**
+  String get dictVariantInflection;
+
+  /// No description provided for @dictVariantDerivation.
+  ///
+  /// In id, this message translates to:
+  /// **'Derivasi'**
+  String get dictVariantDerivation;
+
+  /// No description provided for @dictVariantReduplication.
+  ///
+  /// In id, this message translates to:
+  /// **'Reduplikasi'**
+  String get dictVariantReduplication;
+
+  /// No description provided for @dictAttributionCreatedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat oleh {name}'**
+  String dictAttributionCreatedBy(String name);
+
+  /// No description provided for @dictAttributionVerifiedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Diverifikasi oleh {name}'**
+  String dictAttributionVerifiedBy(String name);
+
+  /// No description provided for @dictAttributionCreatedAndVerifiedBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat dan diverifikasi oleh {name}'**
+  String dictAttributionCreatedAndVerifiedBy(String name);
+
+  /// No description provided for @dictSpeakerAnonymous.
+  ///
+  /// In id, this message translates to:
+  /// **'Anonim'**
+  String get dictSpeakerAnonymous;
+
+  /// No description provided for @dictCopiedWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks kata disalin'**
+  String get dictCopiedWord;
+
+  /// No description provided for @dictCopiedMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna disalin'**
+  String get dictCopiedMeaning;
+
+  /// No description provided for @dictSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Sambas...'**
+  String get dictSearchHint;
+
+  /// No description provided for @dictAZ.
+  ///
+  /// In id, this message translates to:
+  /// **'A-Z'**
+  String get dictAZ;
+
+  /// No description provided for @dictProposeWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata baru'**
+  String get dictProposeWord;
+
+  /// No description provided for @dictDiscussion.
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang Diskusi'**
+  String get dictDiscussion;
+
+  /// No description provided for @dictDiscussionSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanya arti atau bahas kata Sambas bareng warga'**
+  String get dictDiscussionSubtitle;
+
+  /// No description provided for @dictRecentActivity.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktivitas terbaru'**
+  String get dictRecentActivity;
+
+  /// No description provided for @dictNoActivity.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada aktivitas.'**
+  String get dictNoActivity;
+
+  /// No description provided for @dictActivitySkeletonLine.
+  ///
+  /// In id, this message translates to:
+  /// **'aktivitas singkat satu baris'**
+  String get dictActivitySkeletonLine;
+
+  /// No description provided for @dictCitizenFallback.
+  ///
+  /// In id, this message translates to:
+  /// **'Warga Sambas'**
+  String get dictCitizenFallback;
+
+  /// No description provided for @dictLetterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Huruf {letter}'**
+  String dictLetterTitle(String letter);
+
+  /// No description provided for @dictLetterSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang dimulai dengan huruf {letter}.'**
+  String dictLetterSubtitle(String letter);
+
+  /// No description provided for @dictLetterEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata untuk huruf {letter}.'**
+  String dictLetterEmpty(String letter);
+
+  /// No description provided for @dictSeeAllWords.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua kata'**
+  String get dictSeeAllWords;
+
+  /// No description provided for @dictSkeletonWord.
+  ///
+  /// In id, this message translates to:
+  /// **'kata Sambas contoh'**
+  String get dictSkeletonWord;
+
+  /// No description provided for @dictLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat...'**
+  String get dictLoading;
+
+  /// No description provided for @dictMicPermissionTooltip.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan untuk merekam pelafalan'**
+  String get dictMicPermissionTooltip;
+
+  /// No description provided for @dictMicPermissionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon'**
+  String get dictMicPermissionTitle;
+
+  /// No description provided for @dictMicHeroTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam pelafalan butuh akses mikrofon'**
+  String get dictMicHeroTitle;
+
+  /// No description provided for @dictMicHeroBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebelum merekam, SambasKu meminta izin mikrofon. Ini hanya dipakai untuk fitur pelafalan - bukan untuk menyadap atau merekam di latar belakang.'**
+  String get dictMicHeroBody;
+
+  /// No description provided for @dictMicFactsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang perlu kamu tahu'**
+  String get dictMicFactsTitle;
+
+  /// No description provided for @dictMicFactRequiredTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon wajib'**
+  String get dictMicFactRequiredTitle;
+
+  /// No description provided for @dictMicFactRequiredBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa mencabut izin kapan saja di Pengaturan perangkat.'**
+  String get dictMicFactRequiredBody;
+
+  /// No description provided for @dictMicFactDurationTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik'**
+  String get dictMicFactDurationTitle;
+
+  /// No description provided for @dictMicFactDurationBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Cukup untuk lemma atau contoh kalimat. Format suara AAC/m4a - tanpa video.'**
+  String get dictMicFactDurationBody;
+
+  /// No description provided for @dictMicFactReviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditinjau sebelum tayang'**
+  String get dictMicFactReviewTitle;
+
+  /// No description provided for @dictMicFactReviewBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman dikirim ke server SambasKu dan masuk antrean review. Nama penutur opsional - boleh kirim tanpa nama.'**
+  String get dictMicFactReviewBody;
+
+  /// No description provided for @dictMicFactOnlyRecordTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya saat kamu merekam'**
+  String get dictMicFactOnlyRecordTitle;
+
+  /// No description provided for @dictMicFactOnlyRecordBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Mikrofon aktif hanya selama sesi rekam di layar ini. Tidak merekam diam-diam.'**
+  String get dictMicFactOnlyRecordBody;
+
+  /// No description provided for @dictMicRequesting.
+  ///
+  /// In id, this message translates to:
+  /// **'Meminta izin...'**
+  String get dictMicRequesting;
+
+  /// No description provided for @dictMicGrant.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan & izinkan mikrofon'**
+  String get dictMicGrant;
+
+  /// No description provided for @dictMicLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti saja'**
+  String get dictMicLater;
+
+  /// No description provided for @dictCompleteTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi kata'**
+  String get dictCompleteTitle;
+
+  /// No description provided for @dictCompleteSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.'**
+  String get dictCompleteSubtitle;
+
+  /// No description provided for @dictCompleteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Sambas...'**
+  String get dictCompleteHint;
+
+  /// No description provided for @dictCompleteMinChars.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf untuk mencari kata.'**
+  String get dictCompleteMinChars;
+
+  /// No description provided for @dictCompleteNoMatch.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kata yang cocok dengan \"{query}\".'**
+  String dictCompleteNoMatch(String query);
+
+  /// No description provided for @dictDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail kata'**
+  String get dictDetailTitle;
+
+  /// No description provided for @dictChangeHistory.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat perubahan'**
+  String get dictChangeHistory;
+
+  /// No description provided for @dictWordNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata tidak ditemukan'**
+  String get dictWordNotFound;
+
+  /// No description provided for @dictPendingCheck.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu pengecekan'**
+  String get dictPendingCheck;
+
+  /// No description provided for @dictUnverifiedWarning.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas'**
+  String get dictUnverifiedWarning;
+
+  /// No description provided for @dictReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau'**
+  String get dictReview;
+
+  /// No description provided for @dictImageUnderReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar sedang dalam peninjauan.'**
+  String get dictImageUnderReview;
+
+  /// No description provided for @dictLoginToReportPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melaporkan foto'**
+  String get dictLoginToReportPhoto;
+
+  /// No description provided for @dictPhotoReportSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan terkirim. Foto tetap tayang sampai ditinjau.'**
+  String get dictPhotoReportSent;
+
+  /// No description provided for @dictSeeVerifiers.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat verifikator'**
+  String get dictSeeVerifiers;
+
+  /// No description provided for @dictPronunciationLine.
+  ///
+  /// In id, this message translates to:
+  /// **'{notation} {value}'**
+  String dictPronunciationLine(String notation, String value);
+
+  /// No description provided for @dictVariantsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi penulisan'**
+  String get dictVariantsTitle;
+
+  /// No description provided for @dictVariantsAndDerived.
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi & bentuk turunan'**
+  String get dictVariantsAndDerived;
+
+  /// No description provided for @dictAppearsIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Muncul dalam'**
+  String get dictAppearsIn;
+
+  /// No description provided for @dictRelatedMeanings.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna terkait'**
+  String get dictRelatedMeanings;
+
+  /// No description provided for @dictImagePendingReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar menunggu tinjauan'**
+  String get dictImagePendingReview;
+
+  /// No description provided for @dictViolenceImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto berisi kekerasan, ketuk untuk menampilkan'**
+  String get dictViolenceImage;
+
+  /// No description provided for @dictImagePreview.
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau gambar'**
+  String get dictImagePreview;
+
+  /// No description provided for @dictImageCounter.
+  ///
+  /// In id, this message translates to:
+  /// **'{index}/{total}'**
+  String dictImageCounter(int index, int total);
+
+  /// No description provided for @dictLoginToSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menyimpan kata'**
+  String get dictLoginToSave;
+
+  /// No description provided for @dictShareLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan tautan'**
+  String get dictShareLink;
+
+  /// No description provided for @dictShareLinkSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain'**
+  String get dictShareLinkSubtitle;
+
+  /// No description provided for @dictShareCard.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan kartu'**
+  String get dictShareCard;
+
+  /// No description provided for @dictShareCardSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat kartu untuk cerita IG, WhatsApp, dan lainnya'**
+  String get dictShareCardSubtitle;
+
+  /// No description provided for @dictLoginToSuggest.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan perubahan'**
+  String get dictLoginToSuggest;
+
+  /// No description provided for @dictReportEntry.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan entri'**
+  String get dictReportEntry;
+
+  /// No description provided for @dictReportEntrySubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk entri yang tidak layak tayang, bukan perbaikan isi'**
+  String get dictReportEntrySubtitle;
+
+  /// No description provided for @dictLoginToReportEntry.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melaporkan entri'**
+  String get dictLoginToReportEntry;
+
+  /// No description provided for @dictEntryReportSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan terkirim. Entri tetap tayang sampai ditinjau.'**
+  String get dictEntryReportSent;
+
+  /// No description provided for @dictReportPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan foto'**
+  String get dictReportPhoto;
+
+  /// No description provided for @dictReportPhotoSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat'**
+  String get dictReportPhotoSubtitle;
+
+  /// No description provided for @dictPhotoReportThanks.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan foto terkirim. Terima kasih.'**
+  String get dictPhotoReportThanks;
+
+  /// No description provided for @dictMostSupported.
+  ///
+  /// In id, this message translates to:
+  /// **'Paling didukung'**
+  String get dictMostSupported;
+
+  /// No description provided for @dictContributionBy.
+  ///
+  /// In id, this message translates to:
+  /// **'oleh {name}'**
+  String dictContributionBy(String name);
+
+  /// No description provided for @dictNoTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada terjemahan'**
+  String get dictNoTranslation;
+
+  /// No description provided for @dictExampleAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'Audio contoh'**
+  String get dictExampleAudio;
+
+  /// No description provided for @dictCopyMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin makna'**
+  String get dictCopyMeaning;
+
+  /// No description provided for @dictSkeletonLemma.
+  ///
+  /// In id, this message translates to:
+  /// **'lemma contoh kata'**
+  String get dictSkeletonLemma;
+
+  /// No description provided for @dictSkeletonWordClass.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomina'**
+  String get dictSkeletonWordClass;
+
+  /// No description provided for @dictSkeletonComment.
+  ///
+  /// In id, this message translates to:
+  /// **'isi komentar skeleton beberapa kata di sini'**
+  String get dictSkeletonComment;
+
+  /// No description provided for @dictSkeletonDefinition.
+  ///
+  /// In id, this message translates to:
+  /// **'Definisi makna singkat untuk skeleton layout'**
+  String get dictSkeletonDefinition;
+
+  /// No description provided for @dictSkeletonExampleTranslation.
+  ///
+  /// In id, this message translates to:
+  /// **'terjemahan contoh'**
+  String get dictSkeletonExampleTranslation;
+
+  /// No description provided for @dictSkeletonUsername.
+  ///
+  /// In id, this message translates to:
+  /// **'nama pengguna'**
+  String get dictSkeletonUsername;
+
+  /// No description provided for @dictRoleVerifier.
+  ///
+  /// In id, this message translates to:
+  /// **'{label}, Verifikator'**
+  String dictRoleVerifier(String label);
+
+  /// No description provided for @dictAttribution.
+  ///
+  /// In id, this message translates to:
+  /// **'Atribusi'**
+  String get dictAttribution;
+
+  /// No description provided for @dictSeeProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat profil'**
+  String get dictSeeProfile;
+
+  /// No description provided for @dictProfileOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil {username}'**
+  String dictProfileOf(String username);
+
+  /// No description provided for @dictListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar Kata A-Z'**
+  String get dictListTitle;
+
+  /// No description provided for @dictLangSambas.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas'**
+  String get dictLangSambas;
+
+  /// No description provided for @dictLangIndonesia.
+  ///
+  /// In id, this message translates to:
+  /// **'Indonesia'**
+  String get dictLangIndonesia;
+
+  /// No description provided for @dictSearchIndonesianHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Indonesia...'**
+  String get dictSearchIndonesianHint;
+
+  /// No description provided for @dictSearchSambasHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari atau saring kata Sambas...'**
+  String get dictSearchSambasHint;
+
+  /// No description provided for @dictCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get dictCategory;
+
+  /// No description provided for @dictSearchIndonesianEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik kata Indonesia untuk mencari terjemahannya di Sambas.'**
+  String get dictSearchIndonesianEmpty;
+
+  /// No description provided for @dictNoPublishedWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kata terbit.'**
+  String get dictNoPublishedWord;
+
+  /// No description provided for @dictNoMatchFor.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kata untuk \"{query}\"'**
+  String dictNoMatchFor(String query);
+
+  /// No description provided for @dictNotInDictionary.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di kamus. Usulkan supaya bisa dicari orang lain.'**
+  String get dictNotInDictionary;
+
+  /// No description provided for @dictProposeThisWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul kata ini'**
+  String get dictProposeThisWord;
+
+  /// No description provided for @dictRelatedMeaningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna terkait · {subtitle}'**
+  String dictRelatedMeaningSubtitle(String subtitle);
+
+  /// No description provided for @dictSearchHistory.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat pencarian'**
+  String get dictSearchHistory;
+
+  /// No description provided for @dictRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get dictRemove;
+
+  /// No description provided for @dictAudioPlay.
+  ///
+  /// In id, this message translates to:
+  /// **'Putar audio {meta}'**
+  String dictAudioPlay(String meta);
+
+  /// No description provided for @dictAudioPause.
+  ///
+  /// In id, this message translates to:
+  /// **'Jeda audio {meta}'**
+  String dictAudioPause(String meta);
+
+  /// No description provided for @dictAudioResume.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan audio {meta}'**
+  String dictAudioResume(String meta);
+
+  /// No description provided for @dictAudioLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Memuat audio {meta}'**
+  String dictAudioLoading(String meta);
+
+  /// No description provided for @dictAudioError.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memutar {meta}, ketuk untuk coba lagi'**
+  String dictAudioError(String meta);
+
+  /// No description provided for @dictAudioErrorRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memutar audio. Coba lagi dalam beberapa saat.'**
+  String get dictAudioErrorRetry;
+
+  /// No description provided for @dictAudioProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Progres pemutaran'**
+  String get dictAudioProgress;
+
+  /// No description provided for @dictAudioProgressPercent.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent} persen'**
+  String dictAudioProgressPercent(int percent);
+
+  /// No description provided for @dictPronunciationSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan'**
+  String get dictPronunciationSection;
+
+  /// No description provided for @dictNoPronunciationAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada audio pelafalan kata'**
+  String get dictNoPronunciationAudio;
+
+  /// No description provided for @dictRecordExampleAudio.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam audio contoh'**
+  String get dictRecordExampleAudio;
+
+  /// No description provided for @dictRecordPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam pelafalan'**
+  String get dictRecordPronunciation;
+
+  /// No description provided for @dictLoginToRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk rekam pelafalan'**
+  String get dictLoginToRecord;
+
+  /// No description provided for @dictRecMicPermissionTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan untuk rekam pelafalan'**
+  String get dictRecMicPermissionTitle;
+
+  /// No description provided for @dictRecMicUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Mikrofon tidak tersedia'**
+  String get dictRecMicUnavailable;
+
+  /// No description provided for @dictRecSaveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman gagal disimpan'**
+  String get dictRecSaveFailed;
+
+  /// No description provided for @dictRecStoppedInactive.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman dihentikan karena aplikasi tidak aktif'**
+  String get dictRecStoppedInactive;
+
+  /// No description provided for @dictRecTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas'**
+  String get dictRecTooShort;
+
+  /// No description provided for @dictRecTooQuiet.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang'**
+  String get dictRecTooQuiet;
+
+  /// No description provided for @dictRecClipTooShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Potongan terlalu pendek (min {min} dtk)'**
+  String dictRecClipTooShort(String min);
+
+  /// No description provided for @dictRecPreviewFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memutar pratinjau. Coba rekam ulang atau potong ulang.'**
+  String get dictRecPreviewFailed;
+
+  /// No description provided for @dictRecLicenseTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Publikasi & Lisensi Rekaman'**
+  String get dictRecLicenseTitle;
+
+  /// No description provided for @dictRecLicenseBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.\n\nPastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.'**
+  String get dictRecLicenseBody;
+
+  /// No description provided for @dictRecAgree.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya setuju'**
+  String get dictRecAgree;
+
+  /// No description provided for @dictRecNoRecording.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada rekaman. Rekam dulu sebelum mengirim.'**
+  String get dictRecNoRecording;
+
+  /// No description provided for @dictRecNoDisplayName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.'**
+  String get dictRecNoDisplayName;
+
+  /// No description provided for @dictRecTrimFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memotong audio. Sesuaikan rentang lalu coba kirim lagi.'**
+  String get dictRecTrimFailed;
+
+  /// No description provided for @dictRecTooMany.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak, coba lagi nanti'**
+  String get dictRecTooMany;
+
+  /// No description provided for @dictRecThanks.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih, rekaman menunggu pengecekan'**
+  String get dictRecThanks;
+
+  /// No description provided for @dictRecDialectOptional.
+  ///
+  /// In id, this message translates to:
+  /// **'Dialek (opsional)'**
+  String get dictRecDialectOptional;
+
+  /// No description provided for @dictRecMaxSecondsHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} detik · cukup 1-2 kali baca kalimat'**
+  String dictRecMaxSecondsHint(int max);
+
+  /// No description provided for @dictRecMaxSecondsHintSpeak.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {max} detik · cukup 1-2 kali ucapan'**
+  String dictRecMaxSecondsHintSpeak(int max);
+
+  /// No description provided for @dictRecWaitUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu hingga pengiriman selesai'**
+  String get dictRecWaitUpload;
+
+  /// No description provided for @dictRecFinishOrCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesaikan atau batalkan rekaman dulu'**
+  String get dictRecFinishOrCancel;
+
+  /// No description provided for @dictRecSay.
+  ///
+  /// In id, this message translates to:
+  /// **'Ucapkan'**
+  String get dictRecSay;
+
+  /// No description provided for @dictRecIncludeName.
+  ///
+  /// In id, this message translates to:
+  /// **'Cantumkan nama saya sebagai penutur'**
+  String get dictRecIncludeName;
+
+  /// No description provided for @dictRecNoDisplayNameShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama tampilan belum ada di profil'**
+  String get dictRecNoDisplayNameShort;
+
+  /// No description provided for @dictRecAnonymous.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa nama (Anonim)'**
+  String get dictRecAnonymous;
+
+  /// No description provided for @dictRecFollowProfileName.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengikuti nama tampilan di profilmu'**
+  String get dictRecFollowProfileName;
+
+  /// No description provided for @dictRecHoldHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci'**
+  String get dictRecHoldHint;
+
+  /// No description provided for @dictRecRecording.
+  ///
+  /// In id, this message translates to:
+  /// **'Merekam... {elapsed}s / {max}s'**
+  String dictRecRecording(int elapsed, int max);
+
+  /// No description provided for @dictRecReleaseToStop.
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas untuk stop'**
+  String get dictRecReleaseToStop;
+
+  /// No description provided for @dictRecStop.
+  ///
+  /// In id, this message translates to:
+  /// **'Stop'**
+  String get dictRecStop;
+
+  /// No description provided for @dictRecStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai rekam'**
+  String get dictRecStart;
+
+  /// No description provided for @dictRecMicLevel.
+  ///
+  /// In id, this message translates to:
+  /// **'Level mikrofon · ketuk tombol untuk stop'**
+  String get dictRecMicLevel;
+
+  /// No description provided for @dictRecTrim.
+  ///
+  /// In id, this message translates to:
+  /// **'Potong rekaman'**
+  String get dictRecTrim;
+
+  /// No description provided for @dictRecPreparingEditor.
+  ///
+  /// In id, this message translates to:
+  /// **'Menyiapkan editor...'**
+  String get dictRecPreparingEditor;
+
+  /// No description provided for @dictRecTrimRange.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser rentang ({selection} dari {total}).'**
+  String dictRecTrimRange(String selection, String total);
+
+  /// No description provided for @dictRecTrimSelectionLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagian terpilih yang akan dikirim.'**
+  String get dictRecTrimSelectionLabel;
+
+  /// No description provided for @dictRecWaveformUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Waveform tidak tersedia - geser slider untuk memotong'**
+  String get dictRecWaveformUnavailable;
+
+  /// No description provided for @dictRecPause.
+  ///
+  /// In id, this message translates to:
+  /// **'Jeda'**
+  String get dictRecPause;
+
+  /// No description provided for @dictRecPreview.
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau'**
+  String get dictRecPreview;
+
+  /// No description provided for @dictRecAgreeBeforeSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Tekan Kirim untuk setuju soal publikasi & lisensi rekaman'**
+  String get dictRecAgreeBeforeSend;
+
+  /// No description provided for @dictRecRerecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam ulang'**
+  String get dictRecRerecord;
+
+  /// No description provided for @dictRecSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get dictRecSending;
+
+  /// No description provided for @dictRecSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get dictRecSend;
+
+  /// No description provided for @dictRecLevelSemantic.
+  ///
+  /// In id, this message translates to:
+  /// **'Level mikrofon'**
+  String get dictRecLevelSemantic;
+
+  /// No description provided for @dictWordOfDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata hari ini'**
+  String get dictWordOfDay;
+
+  /// No description provided for @dictWordOfDayShownToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditampilkan hari ini · baru minggu ini'**
+  String get dictWordOfDayShownToday;
+
+  /// No description provided for @dictWordOfDayRotates.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditampilkan hari ini, berganti setiap hari'**
+  String get dictWordOfDayRotates;
+
+  /// No description provided for @dictSkeletonLemmaShort.
+  ///
+  /// In id, this message translates to:
+  /// **'lemma contoh'**
+  String get dictSkeletonLemmaShort;
+
+  /// No description provided for @dictSkeletonGloss.
+  ///
+  /// In id, this message translates to:
+  /// **'arti pertama satu baris'**
+  String get dictSkeletonGloss;
 }
 
 class _AppLocalizationsDelegate

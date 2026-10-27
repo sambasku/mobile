@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/permission_helper.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
 import '../../application/wav_trim.dart';
@@ -20,13 +21,7 @@ import '../providers/audio_player_controller.dart';
 import '../providers/pronunciation_providers.dart';
 import '../providers/word_detail_providers.dart';
 
-enum _RecordPhase {
-  idle,
-  requestingPermission,
-  recording,
-  trim,
-  submitting,
-}
+enum _RecordPhase { idle, requestingPermission, recording, trim, submitting }
 
 /// Durasi potongan minimum (detik) - hindari cuplikan hampir kosong.
 const _minSelectionSec = 0.3;
@@ -101,6 +96,7 @@ class _RecordPronunciationSheetState
   int get _maxSeconds => widget.exampleId == null ? 15 : 30;
 
   final _recorder = AudioRecorder();
+
   /// Player khusus pratinjau - jangan pakai [wordDetailAudioPlayerProvider]
   /// supaya dispose sheet (hapus file temp) tidak merusak player detail.
   final _previewPlayer = AudioPlayer();
@@ -115,11 +111,13 @@ class _RecordPronunciationSheetState
   List<double> _peaks = const [];
   String? _previewTrimPath;
   double _ampLevel = 0;
+
   /// Peak tertinggi selama sesi rekam (0…1) - deteksi terlalu pelan.
   double _peakAmpSeen = 0;
   bool _trimBusy = false;
   bool _previewPlaying = false;
   bool _hasPreviewed = false;
+
   /// Tekan-tahan: lepas = stop. Tap singkat = mode terkunci (ketuk lagi untuk stop).
   bool _holdRecording = false;
   bool _lockedRecording = false;
@@ -127,11 +125,14 @@ class _RecordPronunciationSheetState
   DateTime? _pressDownAt;
   Timer? _tick;
   String? _error;
+
   /// Soft warning kualitas (tidak memblokir kirim).
   String? _qualityHint;
   bool _stoppingForLifecycle = false;
+
   /// Default ON saat login (nama tampilan tersedia); user bisa matikan untuk anonim.
   bool _creditSpeakerName = false;
+
   /// PDP Pasal 8: setuju publikasi; diminta lewat sheet saat menekan "Kirim"
   /// (sekali per sesi sheet).
   bool _speakerConsent = false;
@@ -139,8 +140,8 @@ class _RecordPronunciationSheetState
   String get _accountSpeakerName => widget.defaultSpeakerName.trim();
   String? get _speakerNameForUpload =>
       _creditSpeakerName && _accountSpeakerName.isNotEmpty
-          ? _accountSpeakerName
-          : null;
+      ? _accountSpeakerName
+      : null;
   String get _spoken => widget.spokenText?.trim() ?? '';
 
   bool get _blockDismiss =>
@@ -292,7 +293,7 @@ class _RecordPronunciationSheetState
       } else if (mounted) {
         showFToast(
           context: context,
-          title: const Text('Izin mikrofon diperlukan untuk rekam pelafalan'),
+          title: Text(AppLocalizations.of(context).dictMicPermissionTitle),
         );
       }
       return;
@@ -306,7 +307,7 @@ class _RecordPronunciationSheetState
         _holdRecording = false;
         _lockedRecording = false;
         _releaseWhileStarting = false;
-        _error = 'Mikrofon tidak tersedia';
+        _error = AppLocalizations.of(context).dictRecMicUnavailable;
       });
       return;
     }
@@ -331,15 +332,15 @@ class _RecordPronunciationSheetState
     _ampSub = _recorder
         .onAmplitudeChanged(const Duration(milliseconds: 80))
         .listen((amp) {
-      if (!mounted || _phase != _RecordPhase.recording) return;
-      final next = _normAmp(amp.current);
-      final smoothed = _ampLevel * 0.35 + next * 0.65;
-      if (next > _peakAmpSeen) _peakAmpSeen = next;
-      if ((smoothed - _ampLevel).abs() < 0.02 && next <= _peakAmpSeen) {
-        return;
-      }
-      setState(() => _ampLevel = smoothed);
-    });
+          if (!mounted || _phase != _RecordPhase.recording) return;
+          final next = _normAmp(amp.current);
+          final smoothed = _ampLevel * 0.35 + next * 0.65;
+          if (next > _peakAmpSeen) _peakAmpSeen = next;
+          if ((smoothed - _ampLevel).abs() < 0.02 && next <= _peakAmpSeen) {
+            return;
+          }
+          setState(() => _ampLevel = smoothed);
+        });
 
     // Lepas selama meminta izin → lanjut mode terkunci (ketuk untuk stop).
     final lockAfterRelease = _releaseWhileStarting;
@@ -402,9 +403,7 @@ class _RecordPronunciationSheetState
     }
     if (_phase != _RecordPhase.recording || !_holdRecording) return;
 
-    final held = DateTime.now().difference(
-      _pressDownAt ?? DateTime.now(),
-    );
+    final held = DateTime.now().difference(_pressDownAt ?? DateTime.now());
     // Tap singkat (<280ms): kunci rekaman, perlu ketuk lagi untuk stop.
     if (held < const Duration(milliseconds: 280)) {
       if (!mounted) return;
@@ -442,7 +441,7 @@ class _RecordPronunciationSheetState
     if (filePath == null) {
       setState(() {
         _phase = _RecordPhase.idle;
-        _error = 'Rekaman gagal disimpan';
+        _error = AppLocalizations.of(context).dictRecSaveFailed;
         _stoppingForLifecycle = false;
       });
       return;
@@ -455,7 +454,7 @@ class _RecordPronunciationSheetState
       _trimBusy = true;
       _qualityHint = null;
       _error = fromLifecycle
-          ? 'Rekaman dihentikan karena aplikasi tidak aktif'
+          ? AppLocalizations.of(context).dictRecStoppedInactive
           : null;
       _stoppingForLifecycle = false;
     });
@@ -468,9 +467,7 @@ class _RecordPronunciationSheetState
       final totalSec = total <= 0
           ? (_elapsedSec.clamp(1, _maxSeconds)).toDouble()
           : total;
-      final wavPeak = peaks.isEmpty
-          ? 0.0
-          : peaks.reduce(math.max);
+      final wavPeak = peaks.isEmpty ? 0.0 : peaks.reduce(math.max);
       final qualityHint = _buildQualityHint(
         totalSec: totalSec,
         peakAmp: math.max(_peakAmpSeen, wavPeak),
@@ -511,10 +508,10 @@ class _RecordPronunciationSheetState
     required double peakAmp,
   }) {
     if (totalSec < _minComfortSec) {
-      return 'Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas';
+      return AppLocalizations.of(context).dictRecTooShort;
     }
     if (peakAmp < _quietPeakThreshold) {
-      return 'Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang';
+      return AppLocalizations.of(context).dictRecTooQuiet;
     }
     return null;
   }
@@ -553,8 +550,9 @@ class _RecordPronunciationSheetState
     if (path == null || _trimBusy) return;
     if (_range.end - _range.start < _minSelectionSec) {
       setState(
-        () => _error =
-            'Potongan terlalu pendek (min ${_minSelectionSec.toStringAsFixed(1)} dtk)',
+        () => _error = AppLocalizations.of(
+          context,
+        ).dictRecClipTooShort(_minSelectionSec.toStringAsFixed(1)),
       );
       return;
     }
@@ -598,7 +596,7 @@ class _RecordPronunciationSheetState
       if (!mounted) return;
       setState(() {
         _previewPlaying = false;
-        _error = 'Gagal memutar pratinjau. Coba rekam ulang atau potong ulang.';
+        _error = AppLocalizations.of(context).dictRecPreviewFailed;
       });
     } finally {
       if (mounted) setState(() => _trimBusy = false);
@@ -619,16 +617,14 @@ class _RecordPronunciationSheetState
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Publikasi & Lisensi Rekaman',
-              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+              AppLocalizations.of(sheetCtx).dictRecLicenseTitle,
+              style: theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const Gap(12),
             Text(
-              'Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) '
-              'di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.\n\n'
-              'Pastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. '
-              'Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. '
-              'Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.',
+              AppLocalizations.of(sheetCtx).dictRecLicenseBody,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 height: 1.5,
@@ -637,13 +633,13 @@ class _RecordPronunciationSheetState
             const Gap(24),
             FButton(
               onPress: () => Navigator.of(sheetCtx).pop(true),
-              child: const Text('Saya setuju'),
+              child: Text(AppLocalizations.of(sheetCtx).dictRecAgree),
             ),
             const Gap(8),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => Navigator.of(sheetCtx).pop(false),
-              child: const Text('Batal'),
+              child: Text(AppLocalizations.of(sheetCtx).commonCancel),
             ),
           ],
         ),
@@ -661,20 +657,20 @@ class _RecordPronunciationSheetState
   Future<void> _submit() async {
     final path = _filePath;
     if (path == null) {
-      setState(() => _error = 'Belum ada rekaman. Rekam dulu sebelum mengirim.');
+      setState(() => _error = AppLocalizations.of(context).dictRecNoRecording);
       return;
     }
     if (_creditSpeakerName && _accountSpeakerName.isEmpty) {
       setState(
-        () => _error =
-            'Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.',
+        () => _error = AppLocalizations.of(context).dictRecNoDisplayName,
       );
       return;
     }
     if (_range.end - _range.start < _minSelectionSec) {
       setState(
-        () => _error =
-            'Potongan terlalu pendek (min ${_minSelectionSec.toStringAsFixed(1)} dtk)',
+        () => _error = AppLocalizations.of(
+          context,
+        ).dictRecClipTooShort(_minSelectionSec.toStringAsFixed(1)),
       );
       return;
     }
@@ -715,8 +711,7 @@ class _RecordPronunciationSheetState
       setState(() {
         _phase = _RecordPhase.trim;
         _trimBusy = false;
-        _error =
-            'Gagal memotong audio. Sesuaikan rentang lalu coba kirim lagi.';
+        _error = AppLocalizations.of(context).dictRecTrimFailed;
       });
       return;
     }
@@ -766,7 +761,7 @@ class _RecordPronunciationSheetState
           _phase = _RecordPhase.trim;
           _trimBusy = false;
           _error = failure.isRateLimited
-              ? 'Terlalu banyak, coba lagi nanti'
+              ? AppLocalizations.of(context).dictRecTooMany
               : failure.message;
         });
       },
@@ -784,14 +779,17 @@ class _RecordPronunciationSheetState
         );
         showFToast(
           context: context,
-          title: const Text('Terima kasih, rekaman menunggu pengecekan'),
+          title: Text(AppLocalizations.of(context).dictRecThanks),
         );
         Navigator.of(context).pop(true);
       },
     );
   }
 
-  Widget _dialectChips(FThemeData theme, AsyncValue<List<DialectOption>> async) {
+  Widget _dialectChips(
+    FThemeData theme,
+    AsyncValue<List<DialectOption>> async,
+  ) {
     return async.when(
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),
@@ -804,8 +802,10 @@ class _RecordPronunciationSheetState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Dialek (opsional)',
-              style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+              AppLocalizations.of(context).dictRecDialectOptional,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const Gap(6),
             Wrap(
@@ -851,9 +851,10 @@ class _RecordPronunciationSheetState
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
     final isExample = widget.exampleId != null;
     final selectionSec = (_range.end - _range.start).clamp(0.0, _totalSec);
+    final l10n = AppLocalizations.of(context);
     final hintMax = isExample
-        ? 'Maksimal $_maxSeconds detik · cukup 1-2 kali baca kalimat'
-        : 'Maksimal $_maxSeconds detik · cukup 1-2 kali ucapan';
+        ? l10n.dictRecMaxSecondsHint(_maxSeconds)
+        : l10n.dictRecMaxSecondsHintSpeak(_maxSeconds);
 
     return PopScope(
       canPop: !_blockDismiss,
@@ -863,281 +864,293 @@ class _RecordPronunciationSheetState
           context: context,
           title: Text(
             _phase == _RecordPhase.submitting
-                ? 'Tunggu hingga pengiriman selesai'
-                : 'Selesaikan atau batalkan rekaman dulu',
+                ? l10n.dictRecWaitUpload
+                : l10n.dictRecFinishOrCancel,
           ),
         );
       },
       child: Padding(
-      padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              isExample ? 'Rekam audio contoh' : 'Rekam pelafalan',
-              style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const Gap(4),
-            Text(
-              hintMax,
-              style: theme.typography.body.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-            ),
-            if (_spoken.isNotEmpty) ...[
-              const Gap(14),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, 16 + bottom),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Text(
-                'Ucapkan',
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              const Gap(4),
-              Text(
-                _spoken,
-                textAlign: TextAlign.center,
-                style: theme.typography.body.xl.copyWith(
+                isExample
+                    ? l10n.dictRecordExampleAudio
+                    : l10n.dictRecordPronunciation,
+                style: theme.typography.body.lg.copyWith(
                   fontWeight: FontWeight.w700,
-                  fontStyle: FontStyle.italic,
-                  height: 1.25,
                 ),
-              ),
-            ],
-            if (_showSpeakerMeta) ...[
-              const Gap(14),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text('Cantumkan nama saya sebagai penutur'),
-                  ),
-                  FSwitch(
-                    semanticsLabel: 'Cantumkan nama saya sebagai penutur',
-                    value: _creditSpeakerName,
-                    enabled: _phase != _RecordPhase.submitting,
-                    onChange: (value) =>
-                        setState(() => _creditSpeakerName = value),
-                  ),
-                ],
               ),
               const Gap(4),
               Text(
-                _creditSpeakerName
-                    ? (_accountSpeakerName.isEmpty
-                        ? 'Nama tampilan belum ada di profil'
-                        : _accountSpeakerName)
-                    : 'Tanpa nama (Anonim)',
-                style: theme.typography.body.md.copyWith(
-                  color: _creditSpeakerName && _accountSpeakerName.isNotEmpty
-                      ? null
-                      : theme.colors.mutedForeground,
-                ),
-              ),
-              if (_creditSpeakerName) ...[
-                const Gap(2),
-                Text(
-                  'Mengikuti nama tampilan di profilmu',
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ],
-              const Gap(12),
-              _dialectChips(theme, dialectsAsync),
-            ],
-            if (_phase == _RecordPhase.idle) ...[
-              const Gap(12),
-              Text(
-                'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci',
-                textAlign: TextAlign.center,
+                hintMax,
                 style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
-            ],
-            const Gap(12),
-            if (_error != null) ...[
-              Text(
-                _error!,
-                style: theme.typography.body.sm.copyWith(color: theme.colors.error),
-              ),
-              const Gap(8),
-            ],
-            if (_qualityHint != null &&
-                (_phase == _RecordPhase.trim ||
-                    _phase == _RecordPhase.submitting)) ...[
-              Text(
-                _qualityHint!,
-                style: theme.typography.body.sm.copyWith(
-                  color: theme.colors.primary,
-                ),
-              ),
-              const Gap(8),
-            ],
-            if (_phase == _RecordPhase.idle ||
-                _phase == _RecordPhase.requestingPermission ||
-                _phase == _RecordPhase.recording) ...[
-              if (_phase == _RecordPhase.recording) ...[
+              if (_spoken.isNotEmpty) ...[
+                const Gap(14),
                 Text(
-                  'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
-                  textAlign: TextAlign.center,
-                  style: theme.typography.body.md.copyWith(
+                  l10n.dictRecSay,
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Gap(10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: _ampLevel.clamp(0.05, 1.0),
-                    minHeight: 10,
-                    backgroundColor: theme.colors.secondary,
-                    color: theme.colors.error,
+                    color: theme.colors.mutedForeground,
                   ),
                 ),
                 const Gap(4),
                 Text(
-                  _holdRecording
-                      ? 'Lepas untuk stop'
-                      : 'Level mikrofon · ketuk tombol untuk stop',
+                  _spoken,
                   textAlign: TextAlign.center,
-                  style: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
+                  style: theme.typography.body.xl.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.italic,
+                    height: 1.25,
                   ),
                 ),
-                const Gap(16),
               ],
-              // Satu widget stabil agar pointer up tetap diterima setelah start.
-              _RecordRoundButton(
-                busy: _phase == _RecordPhase.requestingPermission,
-                recording: _phase == _RecordPhase.recording,
-                onPressDown: _onRecordPressDown,
-                onPressUp: _onRecordPressUp,
-                onPressCancel: _onRecordPressCancel,
-                label: switch (_phase) {
-                  _RecordPhase.requestingPermission => 'Meminta izin…',
-                  _RecordPhase.recording when _holdRecording => 'Lepas untuk stop',
-                  _RecordPhase.recording => 'Stop',
-                  _ => 'Mulai rekam',
-                },
-              ),
-            ],
-            if (_phase == _RecordPhase.trim ||
-                _phase == _RecordPhase.submitting) ...[
-              Text(
-                'Potong rekaman',
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Gap(4),
-              Text(
-                _trimBusy
-                    ? 'Menyiapkan editor…'
-                    : 'Geser rentang (${_fmt(selectionSec)} dari ${_fmt(_totalSec)}). '
-                          'Bagian terpilih yang akan dikirim.',
-                style: theme.typography.body.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              if (!_trimBusy && _totalSec > 0) ...[
-                const Gap(8),
-                SizedBox(
-                  height: 64,
-                  width: double.infinity,
-                  child: CustomPaint(
-                    painter: _WavformPainter(
-                      peaks: _peaks,
-                      selectionStart: (_range.start / _totalSec).clamp(
-                        0.0,
-                        1.0,
-                      ),
-                      selectionEnd: (_range.end / _totalSec).clamp(0.0, 1.0),
-                      barColor: theme.colors.mutedForeground.withValues(
-                        alpha: 0.35,
-                      ),
-                      selectedColor: theme.colors.primary,
-                      trackColor: theme.colors.secondary,
+              if (_showSpeakerMeta) ...[
+                const Gap(14),
+                Row(
+                  children: [
+                    Expanded(child: Text(l10n.dictRecIncludeName)),
+                    FSwitch(
+                      semanticsLabel: l10n.dictRecIncludeName,
+                      value: _creditSpeakerName,
+                      enabled: _phase != _RecordPhase.submitting,
+                      onChange: (value) =>
+                          setState(() => _creditSpeakerName = value),
                     ),
+                  ],
+                ),
+                const Gap(4),
+                Text(
+                  _creditSpeakerName
+                      ? (_accountSpeakerName.isEmpty
+                            ? l10n.dictRecNoDisplayNameShort
+                            : _accountSpeakerName)
+                      : l10n.dictRecAnonymous,
+                  style: theme.typography.body.md.copyWith(
+                    color: _creditSpeakerName && _accountSpeakerName.isNotEmpty
+                        ? null
+                        : theme.colors.mutedForeground,
                   ),
                 ),
-                if (_peaks.isEmpty) ...[
-                  const Gap(4),
+                if (_creditSpeakerName) ...[
+                  const Gap(2),
                   Text(
-                    'Waveform tidak tersedia - geser slider untuk memotong',
+                    l10n.dictRecFollowProfileName,
                     style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
                 ],
-                RangeSlider(
-                  values: _range,
-                  min: 0,
-                  max: _totalSec,
-                  divisions: (_totalSec * 20).clamp(10, 600).round(),
-                  labels: RangeLabels(_fmt(_range.start), _fmt(_range.end)),
-                  onChanged: _phase == _RecordPhase.submitting
+                const Gap(12),
+                _dialectChips(theme, dialectsAsync),
+              ],
+              if (_phase == _RecordPhase.idle) ...[
+                const Gap(12),
+                Text(
+                  l10n.dictRecHoldHint,
+                  textAlign: TextAlign.center,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
+              const Gap(12),
+              if (_error != null) ...[
+                Text(
+                  _error!,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.error,
+                  ),
+                ),
+                const Gap(8),
+              ],
+              if (_qualityHint != null &&
+                  (_phase == _RecordPhase.trim ||
+                      _phase == _RecordPhase.submitting)) ...[
+                Text(
+                  _qualityHint!,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.primary,
+                  ),
+                ),
+                const Gap(8),
+              ],
+              if (_phase == _RecordPhase.idle ||
+                  _phase == _RecordPhase.requestingPermission ||
+                  _phase == _RecordPhase.recording) ...[
+                if (_phase == _RecordPhase.recording) ...[
+                  Text(
+                    l10n.dictRecRecording(_elapsedSec, _maxSeconds),
+                    textAlign: TextAlign.center,
+                    style: theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Gap(10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: _ampLevel.clamp(0.05, 1.0),
+                      minHeight: 10,
+                      backgroundColor: theme.colors.secondary,
+                      color: theme.colors.error,
+                    ),
+                  ),
+                  const Gap(4),
+                  Text(
+                    _holdRecording
+                        ? l10n.dictRecReleaseToStop
+                        : l10n.dictRecMicLevel,
+                    textAlign: TextAlign.center,
+                    style: theme.typography.body.xs.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  const Gap(16),
+                ],
+                // Satu widget stabil agar pointer up tetap diterima setelah start.
+                _RecordRoundButton(
+                  busy: _phase == _RecordPhase.requestingPermission,
+                  recording: _phase == _RecordPhase.recording,
+                  onPressDown: _onRecordPressDown,
+                  onPressUp: _onRecordPressUp,
+                  onPressCancel: _onRecordPressCancel,
+                  label: switch (_phase) {
+                    _RecordPhase.requestingPermission => AppLocalizations.of(
+                      context,
+                    ).dictMicRequesting,
+                    _RecordPhase.recording when _holdRecording =>
+                      l10n.dictRecReleaseToStop,
+                    _RecordPhase.recording => l10n.dictRecStop,
+                    _ => l10n.dictRecStart,
+                  },
+                ),
+              ],
+              if (_phase == _RecordPhase.trim ||
+                  _phase == _RecordPhase.submitting) ...[
+                Text(
+                  l10n.dictRecTrim,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Gap(4),
+                Text(
+                  _trimBusy
+                      ? l10n.dictRecPreparingEditor
+                      : '${l10n.dictRecTrimRange(_fmt(selectionSec), _fmt(_totalSec))} '
+                            '${l10n.dictRecTrimSelectionLabel}',
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                if (!_trimBusy && _totalSec > 0) ...[
+                  const Gap(8),
+                  SizedBox(
+                    height: 64,
+                    width: double.infinity,
+                    child: CustomPaint(
+                      painter: _WavformPainter(
+                        peaks: _peaks,
+                        selectionStart: (_range.start / _totalSec).clamp(
+                          0.0,
+                          1.0,
+                        ),
+                        selectionEnd: (_range.end / _totalSec).clamp(0.0, 1.0),
+                        barColor: theme.colors.mutedForeground.withValues(
+                          alpha: 0.35,
+                        ),
+                        selectedColor: theme.colors.primary,
+                        trackColor: theme.colors.secondary,
+                      ),
+                    ),
+                  ),
+                  if (_peaks.isEmpty) ...[
+                    const Gap(4),
+                    Text(
+                      l10n.dictRecWaveformUnavailable,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                  RangeSlider(
+                    values: _range,
+                    min: 0,
+                    max: _totalSec,
+                    divisions: (_totalSec * 20).clamp(10, 600).round(),
+                    labels: RangeLabels(_fmt(_range.start), _fmt(_range.end)),
+                    onChanged: _phase == _RecordPhase.submitting
+                        ? null
+                        : _onRangeChanged,
+                  ),
+                ],
+                const Gap(8),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: (_phase == _RecordPhase.submitting || _trimBusy)
                       ? null
-                      : _onRangeChanged,
+                      : _togglePreview,
+                  prefix: Icon(
+                    _previewPlaying ? FLucideIcons.pause : FLucideIcons.play,
+                  ),
+                  child: Text(
+                    _previewPlaying ? l10n.dictRecPause : l10n.dictRecPreview,
+                  ),
+                ),
+                const Gap(6),
+                Text(
+                  l10n.dictRecAgreeBeforeSend,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FButton(
+                        variant: FButtonVariant.outline,
+                        onPress: _phase == _RecordPhase.submitting
+                            ? null
+                            : _discardAndRerecord,
+                        child: Text(l10n.dictRecRerecord),
+                      ),
+                    ),
+                    const Gap(8),
+                    Expanded(
+                      child: FButton(
+                        onPress:
+                            (_phase == _RecordPhase.submitting || _trimBusy)
+                            ? null
+                            : _submit,
+                        child: Text(
+                          _phase == _RecordPhase.submitting
+                              ? l10n.dictRecSending
+                              : l10n.dictRecSend,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
               const Gap(8),
               FButton(
-                variant: FButtonVariant.outline,
-                onPress: (_phase == _RecordPhase.submitting || _trimBusy)
+                variant: FButtonVariant.ghost,
+                onPress: _blockDismiss
                     ? null
-                    : _togglePreview,
-                prefix: Icon(
-                  _previewPlaying ? FLucideIcons.pause : FLucideIcons.play,
-                ),
-                child: Text(_previewPlaying ? 'Jeda' : 'Pratinjau'),
-              ),
-              const Gap(6),
-              Text(
-                'Tekan Kirim untuk setuju soal publikasi & lisensi rekaman',
-                style: theme.typography.body.xs.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              const Gap(12),
-              Row(
-                children: [
-                  Expanded(
-                    child: FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: _phase == _RecordPhase.submitting
-                          ? null
-                          : _discardAndRerecord,
-                      child: const Text('Rekam ulang'),
-                    ),
-                  ),
-                  const Gap(8),
-                  Expanded(
-                    child: FButton(
-                      onPress: (_phase == _RecordPhase.submitting || _trimBusy)
-                          ? null
-                          : _submit,
-                      child: Text(
-                        _phase == _RecordPhase.submitting
-                            ? 'Mengirim…'
-                            : 'Kirim',
-                      ),
-                    ),
-                  ),
-                ],
+                    : () => Navigator.of(context).pop(),
+                child: Text(l10n.commonCancel),
               ),
             ],
-            const Gap(8),
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: _blockDismiss ? null : () => Navigator.of(context).pop(),
-              child: const Text('Batal'),
-            ),
-          ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -1181,8 +1194,9 @@ class _RecordRoundButton extends StatelessWidget {
                   ? (_) => onPressDown!()
                   : null,
               onPointerUp: onPressUp != null ? (_) => onPressUp!() : null,
-              onPointerCancel:
-                  onPressCancel != null ? (_) => onPressCancel!() : null,
+              onPointerCancel: onPressCancel != null
+                  ? (_) => onPressCancel!()
+                  : null,
               child: Opacity(
                 opacity: enabled ? 1 : 0.45,
                 child: Container(
@@ -1202,9 +1216,7 @@ class _RecordRoundButton extends StatelessWidget {
                     height: recording ? 28 : 52,
                     decoration: BoxDecoration(
                       color: _red,
-                      borderRadius: BorderRadius.circular(
-                        recording ? 6 : 26,
-                      ),
+                      borderRadius: BorderRadius.circular(recording ? 6 : 26),
                     ),
                   ),
                 ),

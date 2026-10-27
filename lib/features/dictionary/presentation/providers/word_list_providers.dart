@@ -179,7 +179,11 @@ class WordListNotifier extends _$WordListNotifier {
               ),
             )
           : await ref.read(listWordsUseCaseProvider)(
-              ListWordsParams(q: state.q, cursor: state.nextCursor, category: state.category),
+              ListWordsParams(
+                q: state.q,
+                cursor: state.nextCursor,
+                category: state.category,
+              ),
             );
 
       if (!ref.mounted || reqId != _loadMoreReqId) return;
@@ -234,9 +238,9 @@ class WordListNotifier extends _$WordListNotifier {
       // hasilnya - menyimpan query tanpa hasil menumpuk riwayat dengan
       // ketikan yang salah.
       if (page.items.isNotEmpty) {
-        unawaited(ref.read(searchHistoryControllerProvider.notifier).record(
-              state.q,
-            ));
+        unawaited(
+          ref.read(searchHistoryControllerProvider.notifier).record(state.q),
+        );
       }
     }
   }

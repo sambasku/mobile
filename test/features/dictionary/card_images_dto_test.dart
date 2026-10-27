@@ -19,8 +19,10 @@ void main() {
       final dto = CardImagesDto.fromJson(json);
 
       expect(dto.version, 1);
-      expect(dto.cards['wotd']?.imageUrl,
-          'https://cdn.jsdelivr.net/gh/sambasku/data@main/mobile/assets/wotd_cover.webp');
+      expect(
+        dto.cards['wotd']?.imageUrl,
+        'https://cdn.jsdelivr.net/gh/sambasku/data@main/mobile/assets/wotd_cover.webp',
+      );
       expect(dto.cards['wotd']?.alignment, 'topCenter');
     });
 

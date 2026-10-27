@@ -17,16 +17,16 @@ const _wordId = '01AAAAAAAAAAAAAAAAAAAAAAAA';
 
 /// PRD relasi-lemma: section "Makna terkait" di detail kata.
 WordDetail _detail(List<MeaningGroup> groups) => WordDetail(
-      id: _wordId,
-      lemma: 'apam',
-      languageId: 'lang-1',
-      wordType: 'word',
-      status: 'published',
-      isVerified: true,
-      isCorrected: false,
-      meanings: const [],
-      meaningGroups: groups,
-    );
+  id: _wordId,
+  lemma: 'apam',
+  languageId: 'lang-1',
+  wordType: 'word',
+  status: 'published',
+  isVerified: true,
+  isCorrected: false,
+  meanings: const [],
+  meaningGroups: groups,
+);
 
 class _StubRepo implements DictionaryRepository {
   _StubRepo(this.groups);
@@ -37,21 +37,18 @@ class _StubRepo implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
-  }) async =>
-      Either.right(_detail(groups));
+  }) async => Either.right(_detail(groups));
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
-  }) async =>
-      Either.right(_detail(groups));
+  }) async => Either.right(_detail(groups));
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
     bool forceRefresh = false,
-  }) async =>
-      Either.right(null);
+  }) async => Either.right(null);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
@@ -83,11 +80,11 @@ Future<void> _pump(WidgetTester tester, List<MeaningGroup> groups) async {
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
         supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+        locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,
@@ -114,7 +111,11 @@ void main() {
         groupId: 'g1',
         name: 'Kumis',
         members: [
-          MeaningGroupMember(wordId: 'w2', lemma: 'misai', notes: 'lebih jarang'),
+          MeaningGroupMember(
+            wordId: 'w2',
+            lemma: 'misai',
+            notes: 'lebih jarang',
+          ),
           MeaningGroupMember(wordId: 'w3', lemma: 'kumis'),
         ],
       ),

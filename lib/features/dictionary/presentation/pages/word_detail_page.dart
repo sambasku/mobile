@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../dictionary_labels.dart';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -89,7 +90,10 @@ class WordDetailPage extends HookConsumerWidget {
         childPad: false,
         header: FHeader.nested(
           title: Text(
-            async.maybeWhen(data: (d) => d.lemma, orElse: () => 'Detail kata'),
+            async.maybeWhen(
+              data: (d) => d.lemma,
+              orElse: () => AppLocalizations.of(context).dictDetailTitle,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -97,7 +101,7 @@ class WordDetailPage extends HookConsumerWidget {
           suffixes: [
             FHeaderAction(
               icon: const Icon(FLucideIcons.history),
-              semanticsLabel: 'Riwayat perubahan',
+              semanticsLabel: AppLocalizations.of(context).dictChangeHistory,
               onPress: () => context.push('/words/$resolvedId/history'),
             ),
             _WordBookmarkHeaderAction(wordId: resolvedId),
@@ -126,8 +130,8 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(10),
                     Text(
                       isNotFound
-                          ? 'Kata tidak ditemukan'
-                          : 'Gagal memuat detail',
+                          ? AppLocalizations.of(context).dictWordNotFound
+                          : AppLocalizations.of(context).commonLoadFailed,
                       style: theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -145,7 +149,7 @@ class WordDetailPage extends HookConsumerWidget {
                     FButton(
                       variant: FButtonVariant.outline,
                       onPress: () => ref.invalidate(wordDetailProvider(wordId)),
-                      child: const Text('Coba lagi'),
+                      child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
                 ),
@@ -255,7 +259,7 @@ Future<void> _approveInPlace(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Usulan disetujui'),
+    title: Text(AppLocalizations.of(context).reviewSuggestionApprovedToast),
     variant: FToastVariant.primary,
   );
   await _refreshDetailAfterDecision(ref, wordId);
@@ -287,7 +291,7 @@ Future<void> _rejectInPlace(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Usulan ditolak'),
+    title: Text(AppLocalizations.of(context).reviewSuggestionRejectedToast),
     variant: FToastVariant.primary,
   );
   await _refreshDetailAfterDecision(ref, wordId);
@@ -326,7 +330,7 @@ class _PendingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'Menunggu pengecekan',
+      label: AppLocalizations.of(context).dictPendingCheck,
       child: GestureDetector(
         onTap: () {
           if (offerReview) {
@@ -370,7 +374,7 @@ void showPendingReviewSheet(
                   children: [
                     Expanded(
                       child: Text(
-                        'Menunggu pengecekan',
+                        AppLocalizations.of(sheetContext).dictPendingCheck,
                         style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -383,7 +387,7 @@ void showPendingReviewSheet(
                   ],
                 ),
                 Text(
-                  'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas.',
+                  AppLocalizations.of(sheetContext).dictUnverifiedWarning,
                   style: theme.typography.body.sm,
                 ),
                 const Gap(12),
@@ -397,7 +401,9 @@ void showPendingReviewSheet(
                             Navigator.of(sheetContext).pop();
                             onReject();
                           },
-                          child: const Text('Tolak'),
+                          child: Text(
+                            AppLocalizations.of(sheetContext).commonReject,
+                          ),
                         ),
                       ),
                       const Gap(8),
@@ -407,7 +413,9 @@ void showPendingReviewSheet(
                             Navigator.of(sheetContext).pop();
                             onApprove();
                           },
-                          child: const Text('Setujui'),
+                          child: Text(
+                            AppLocalizations.of(sheetContext).commonApprove,
+                          ),
                         ),
                       ),
                     ],
@@ -419,7 +427,7 @@ void showPendingReviewSheet(
                     Navigator.of(sheetContext).pop();
                     onReview();
                   },
-                  child: const Text('Tinjau'),
+                  child: Text(AppLocalizations.of(sheetContext).dictReview),
                 ),
                 const Gap(8),
               ],
@@ -489,7 +497,7 @@ class _DetailBody extends HookConsumerWidget {
       if (source.isPendingReview || isKnownPendingPlaceholderUrl(source.url)) {
         showFToast(
           context: context,
-          title: const Text('Gambar sedang dalam peninjauan.'),
+          title: Text(AppLocalizations.of(context).dictImageUnderReview),
         );
         return;
       }
@@ -522,7 +530,7 @@ class _DetailBody extends HookConsumerWidget {
       if (!auth.isAuth) {
         showFToast(
           context: context,
-          title: const Text('Masuk dulu untuk melaporkan foto'),
+          title: Text(AppLocalizations.of(context).dictLoginToReportPhoto),
         );
         context.push('/login');
         return;
@@ -535,9 +543,7 @@ class _DetailBody extends HookConsumerWidget {
       if (!context.mounted || !sent) return;
       showFToast(
         context: context,
-        title: const Text(
-          'Laporan terkirim. Foto tetap tayang sampai ditinjau.',
-        ),
+        title: Text(AppLocalizations.of(context).dictPhotoReportSent),
       );
     }
 
@@ -582,7 +588,9 @@ class _DetailBody extends HookConsumerWidget {
                           if (detail.isVerified)
                             Semantics(
                               button: true,
-                              label: 'Lihat verifikator',
+                              label: AppLocalizations.of(
+                                context,
+                              ).dictSeeVerifiers,
                               child: GestureDetector(
                                 onTap: () => showVerifierAttributionSheet(
                                   context,
@@ -609,7 +617,10 @@ class _DetailBody extends HookConsumerWidget {
                       ),
                       const Gap(2),
                       Text(
-                        detail.wordTypeLabel,
+                        wordDetailTypeLabel(
+                          detail,
+                          AppLocalizations.of(context),
+                        ),
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
@@ -657,7 +668,12 @@ class _DetailBody extends HookConsumerWidget {
                                 variant: isProminentUsageLabel(code)
                                     ? FBadgeVariant.primary
                                     : FBadgeVariant.secondary,
-                                child: Text(usageLabelLabel(code)),
+                                child: Text(
+                                  usageLabelLabel(
+                                    code,
+                                    AppLocalizations.of(context),
+                                  ),
+                                ),
                               ),
                             for (final c in detail.categories)
                               FBadge(
@@ -670,7 +686,9 @@ class _DetailBody extends HookConsumerWidget {
 
                       if (detail.meanings.isNotEmpty) ...[
                         const Gap(16),
-                        const _SectionLabel('Makna'),
+                        _SectionLabel(
+                          AppLocalizations.of(context).reviewEntityMeaning,
+                        ),
                         const Gap(6),
                         ...detail.meanings.asMap().entries.map(
                           (e) => _MeaningBlock(
@@ -695,8 +713,10 @@ class _DetailBody extends HookConsumerWidget {
                         const Gap(14),
                         _SectionLabel(
                           allSpelling
-                              ? 'Variasi penulisan'
-                              : 'Variasi & bentuk turunan',
+                              ? AppLocalizations.of(context).dictVariantsTitle
+                              : AppLocalizations.of(
+                                  context,
+                                ).dictVariantsAndDerived,
                         ),
                         const Gap(6),
                         if (compactSpelling)
@@ -717,42 +737,83 @@ class _DetailBody extends HookConsumerWidget {
                           ),
                       ],
 
-                      ..._relatedSections(detail.relatedWords),
+                      ..._relatedSections(
+                        detail.relatedWords,
+                        AppLocalizations.of(context),
+                      ),
 
                       // PRD relasi-lemma 8.3: kelompok makna. Label per grup
                       // kalau >1 grup; grup kosong sudah difilter mapper.
-                      ..._meaningGroupSections(detail.meaningGroups),
+                      ..._meaningGroupSections(
+                        detail.meaningGroups,
+                        AppLocalizations.of(context),
+                      ),
 
                       if (detail.appearsIn.isNotEmpty) ...[
                         const Gap(14),
-                        const _SectionLabel('Muncul dalam'),
+                        _SectionLabel(
+                          AppLocalizations.of(context).dictAppearsIn,
+                        ),
                         const Gap(4),
                         ...detail.appearsIn.map((r) => _RelatedRow(related: r)),
                       ],
 
-                      if (detail.combinedAttributionLabel != null ||
-                          detail.creatorAttributionLabel != null ||
-                          detail.verifierAttributionLabel != null) ...[
+                      if (combinedAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null ||
+                          creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null ||
+                          verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null) ...[
                         const Gap(18),
-                        if (detail.combinedAttributionLabel != null)
+                        if (combinedAttributionLabel(
+                              detail,
+                              AppLocalizations.of(context),
+                            ) !=
+                            null)
                           _AttributionLine(
-                            label: detail.combinedAttributionLabel!,
+                            label: combinedAttributionLabel(
+                              detail,
+                              AppLocalizations.of(context),
+                            )!,
                             username:
                                 detail.verifiedBy?.username ??
                                 detail.createdBy!.username,
                             showCheck: detail.combinedByVerifier,
                           )
                         else ...[
-                          if (detail.creatorAttributionLabel != null)
+                          if (creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null)
                             _AttributionLine(
-                              label: detail.creatorAttributionLabel!,
+                              label: creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              )!,
                               username: detail.createdBy!.username,
                               showCheck: isVerifierRole(detail.createdBy!.role),
                             ),
-                          if (detail.verifierAttributionLabel != null) ...[
+                          if (verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null) ...[
                             const Gap(2),
                             _AttributionLine(
-                              label: detail.verifierAttributionLabel!,
+                              label: verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              )!,
                               username: detail.verifiedBy!.username,
                               showCheck: isVerifierRole(
                                 detail.verifiedBy!.role,
@@ -779,13 +840,16 @@ class _DetailBody extends HookConsumerWidget {
   /// PRD relasi-lemma 8.3: render kelompok makna ("Makna terkait").
   /// Grup kosong tidak dirender; label = nama grup bila >1 grup, kalau
   /// satu pakai label tetap "Makna terkait".
-  static List<Widget> _meaningGroupSections(List<MeaningGroup> groups) {
+  static List<Widget> _meaningGroupSections(
+    List<MeaningGroup> groups,
+    AppLocalizations l10n,
+  ) {
     if (groups.isEmpty) return const [];
     final useGroupNames = groups.length > 1;
     return [
       for (final g in groups) ...[
         const Gap(14),
-        _SectionLabel(useGroupNames ? g.name : 'Makna terkait'),
+        _SectionLabel(useGroupNames ? g.name : l10n.dictRelatedMeanings),
         const Gap(4),
         for (final m in g.members) _MeaningGroupRow(member: m),
       ],
@@ -793,7 +857,10 @@ class _DetailBody extends HookConsumerWidget {
   }
 
   /// Kelompokkan relasi per tipe (Sinonim, Antonim, …) supaya jelas di UI.
-  static List<Widget> _relatedSections(List<RelatedWord> related) {
+  static List<Widget> _relatedSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n,
+  ) {
     if (related.isEmpty) return const [];
 
     const order = [
@@ -820,7 +887,7 @@ class _DetailBody extends HookConsumerWidget {
     return [
       for (final key in keys) ...[
         const Gap(14),
-        _SectionLabel(grouped[key]!.first.relationLabel),
+        _SectionLabel(relationLabel(grouped[key]!.first.relationType, l10n)),
         const Gap(4),
         ...grouped[key]!.map((r) => _RelatedRow(related: r)),
       ],
@@ -888,10 +955,10 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
                     return Semantics(
                       button: !pending,
                       label: pending
-                          ? 'Gambar menunggu tinjauan'
+                          ? AppLocalizations.of(context).dictImagePendingReview
                           : img.hasViolenceWarning && !widget.revealed
-                          ? 'Foto berisi kekerasan, ketuk untuk menampilkan'
-                          : 'Pratinjau gambar',
+                          ? AppLocalizations.of(context).dictViolenceImage
+                          : AppLocalizations.of(context).dictImagePreview,
                       child: GestureDetector(
                         onTap: () => widget.onOpenPreview(img),
                         onLongPress: pending
@@ -981,7 +1048,7 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk menyimpan kata'),
+        title: Text(AppLocalizations.of(context).dictLoginToSave),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -1022,19 +1089,15 @@ class _WordActionTileGroup extends ConsumerWidget {
       children: [
         FTile(
           prefix: const Icon(FLucideIcons.link),
-          title: const Text('Bagikan tautan'),
-          subtitle: const Text(
-            'Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain',
-          ),
+          title: Text(AppLocalizations.of(context).dictShareLink),
+          subtitle: Text(AppLocalizations.of(context).dictShareLinkSubtitle),
           suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
           onPress: () => shareWordPublicLink(context, detail),
         ),
         FTile(
           prefix: const Icon(FLucideIcons.image),
-          title: const Text('Bagikan kartu'),
-          subtitle: const Text(
-            'Buat kartu untuk cerita IG, WhatsApp, dan lainnya',
-          ),
+          title: Text(AppLocalizations.of(context).dictShareCard),
+          subtitle: Text(AppLocalizations.of(context).dictShareCardSubtitle),
           suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
           onPress: () => openWordShareSheet(context, ref, detail),
         ),
@@ -1049,7 +1112,7 @@ class _WordActionTileGroup extends ConsumerWidget {
             if (!auth.isAuth) {
               showFToast(
                 context: context,
-                title: const Text('Masuk dulu untuk mengusulkan perubahan'),
+                title: Text(AppLocalizations.of(context).dictLoginToSuggest),
               );
               context.push('/login');
               return;
@@ -1065,10 +1128,8 @@ class _WordActionTileGroup extends ConsumerWidget {
         ),
         FTile(
           prefix: const Icon(FLucideIcons.flag),
-          title: const Text('Laporkan entri'),
-          subtitle: const Text(
-            'Untuk entri yang tidak layak tayang, bukan perbaikan isi',
-          ),
+          title: Text(AppLocalizations.of(context).dictReportEntry),
+          subtitle: Text(AppLocalizations.of(context).dictReportEntrySubtitle),
           suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
           onPress: () async {
             final auth = await ref.read(authStatusProvider.future);
@@ -1076,7 +1137,9 @@ class _WordActionTileGroup extends ConsumerWidget {
             if (!auth.isAuth) {
               showFToast(
                 context: context,
-                title: const Text('Masuk dulu untuk melaporkan entri'),
+                title: Text(
+                  AppLocalizations.of(context).dictLoginToReportEntry,
+                ),
               );
               context.push('/login');
               return;
@@ -1085,18 +1148,16 @@ class _WordActionTileGroup extends ConsumerWidget {
             if (!context.mounted || !sent) return;
             showFToast(
               context: context,
-              title: const Text(
-                'Laporan terkirim. Entri tetap tayang sampai ditinjau.',
-              ),
+              title: Text(AppLocalizations.of(context).dictEntryReportSent),
             );
           },
         ),
         if (detail.images.isNotEmpty)
           FTile(
             prefix: const Icon(FLucideIcons.imageOff),
-            title: const Text('Laporkan foto'),
-            subtitle: const Text(
-              'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat',
+            title: Text(AppLocalizations.of(context).dictReportPhoto),
+            subtitle: Text(
+              AppLocalizations.of(context).dictReportPhotoSubtitle,
             ),
             suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
             onPress: () async {
@@ -1105,7 +1166,9 @@ class _WordActionTileGroup extends ConsumerWidget {
               if (!auth.isAuth) {
                 showFToast(
                   context: context,
-                  title: const Text('Masuk dulu untuk melaporkan foto'),
+                  title: Text(
+                    AppLocalizations.of(context).dictLoginToReportPhoto,
+                  ),
                 );
                 context.push('/login');
                 return;
@@ -1122,7 +1185,7 @@ class _WordActionTileGroup extends ConsumerWidget {
               if (!context.mounted || !sent) return;
               showFToast(
                 context: context,
-                title: const Text('Laporan foto terkirim. Terima kasih.'),
+                title: Text(AppLocalizations.of(context).dictPhotoReportThanks),
               );
             },
           ),
@@ -1212,13 +1275,14 @@ class _MeaningBlock extends ConsumerWidget {
                   const Gap(2),
                   FBadge(
                     variant: FBadgeVariant.secondary,
-                    child: const Text('Paling didukung'),
+                    child: Text(AppLocalizations.of(context).dictMostSupported),
                   ),
                 ],
                 if (contributor != null)
                   _AttributionLine(
-                    label:
-                        'oleh ${displayPublicUsername(contributor!.displayName)}',
+                    label: AppLocalizations.of(context).dictContributionBy(
+                      displayPublicUsername(contributor!.displayName),
+                    ),
                     username: contributor!.username,
                     showCheck: isVerifierRole(contributor!.role),
                   ),
@@ -1243,7 +1307,7 @@ class _MeaningBlock extends ConsumerWidget {
                 ] else ...[
                   const Gap(4),
                   Text(
-                    'Belum ada terjemahan',
+                    AppLocalizations.of(context).dictNoTranslation,
                     style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                       fontStyle: FontStyle.italic,
@@ -1285,7 +1349,9 @@ class _MeaningBlock extends ConsumerWidget {
                             audios: e.audios,
                             exampleId: e.id,
                             compact: true,
-                            sectionLabel: 'Audio contoh',
+                            sectionLabel: AppLocalizations.of(
+                              context,
+                            ).dictExampleAudio,
                             spokenText: e.sourceSentence,
                           ),
                         ],
@@ -1300,7 +1366,7 @@ class _MeaningBlock extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: 'Salin makna',
+            tooltip: AppLocalizations.of(context).dictCopyMeaning,
             onPressed: () => copyWordMeaningToClipboard(
               context,
               lemma: lemma,
@@ -1410,7 +1476,8 @@ class _VariantRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final meta = [
-      if (!variant.isSpellingVariant) variant.variantTypeLabel,
+      if (!variant.isSpellingVariant)
+        variantTypeLabel(variant.variantType, AppLocalizations.of(context)),
       if (variant.affixValue != null && variant.affixValue!.isNotEmpty)
         '"${variant.affixValue}"',
       if (variant.notes != null && variant.notes!.isNotEmpty) variant.notes!,
@@ -1496,7 +1563,7 @@ class _DetailSkeleton extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'lemma contoh kata',
+                                AppLocalizations.of(context).dictSkeletonLemma,
                                 style: theme.typography.body.xl.copyWith(
                                   fontWeight: FontWeight.w700,
                                   height: 1.15,
@@ -1504,7 +1571,9 @@ class _DetailSkeleton extends StatelessWidget {
                               ),
                               const Gap(2),
                               Text(
-                                'Nomina',
+                                AppLocalizations.of(
+                                  context,
+                                ).dictSkeletonWordClass,
                                 style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
@@ -1541,13 +1610,15 @@ class _DetailSkeleton extends StatelessWidget {
                       ],
                     ),
                     const Gap(16),
-                    const _SectionLabel('Makna'),
+                    _SectionLabel(
+                      AppLocalizations.of(context).reviewEntityMeaning,
+                    ),
                     const Gap(6),
                     const _MeaningSkeletonBlock(index: 1),
                     const _MeaningSkeletonBlock(index: 2),
                     const Gap(16),
                     Text(
-                      'Komentar',
+                      AppLocalizations.of(context).profileComments,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colors.mutedForeground,
@@ -1598,7 +1669,7 @@ class _MeaningSkeletonBlock extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Verba',
+                  AppLocalizations.of(context).dictSkeletonWordClass,
                   style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                     color: theme.colors.primary,
@@ -1606,7 +1677,7 @@ class _MeaningSkeletonBlock extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Definisi makna singkat untuk skeleton layout',
+                  AppLocalizations.of(context).dictSkeletonDefinition,
                   style: theme.typography.body.sm.copyWith(height: 1.35),
                 ),
                 const Gap(4),
@@ -1641,14 +1712,14 @@ class _CommentSkeletonCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'nama pengguna',
+              AppLocalizations.of(context).dictSkeletonUsername,
               style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const Gap(6),
             Text(
-              'isi komentar skeleton beberapa kata di sini',
+              AppLocalizations.of(context).dictSkeletonComment,
               style: theme.typography.body.sm,
             ),
             const Gap(10),
@@ -1739,7 +1810,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                   children: [
                     Expanded(
                       child: Text(
-                        'Atribusi',
+                        AppLocalizations.of(sheetContext).dictAttribution,
                         style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -1751,34 +1822,55 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     ),
                   ],
                 ),
-                if (detail.combinedAttributionLabel != null)
+                if (combinedAttributionLabel(
+                      detail,
+                      AppLocalizations.of(context),
+                    ) !=
+                    null)
                   Text.rich(
                     TextSpan(
                       style: theme.typography.body.sm,
                       children: _attributionSpans(
-                        detail.combinedAttributionLabel!,
+                        combinedAttributionLabel(
+                          detail,
+                          AppLocalizations.of(context),
+                        )!,
                         showCheck: detail.combinedByVerifier,
                       ),
                     ),
                   )
                 else ...[
-                  if (detail.creatorAttributionLabel != null)
+                  if (creatorAttributionLabel(
+                        detail,
+                        AppLocalizations.of(context),
+                      ) !=
+                      null)
                     Text.rich(
                       TextSpan(
                         style: theme.typography.body.sm,
                         children: _attributionSpans(
-                          detail.creatorAttributionLabel!,
+                          creatorAttributionLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          )!,
                           showCheck: isVerifierRole(detail.createdBy!.role),
                         ),
                       ),
                     ),
-                  if (detail.verifierAttributionLabel != null) ...[
+                  if (verifierAttributionLabel(
+                        detail,
+                        AppLocalizations.of(context),
+                      ) !=
+                      null) ...[
                     const Gap(4),
                     Text.rich(
                       TextSpan(
                         style: theme.typography.body.sm,
                         children: _attributionSpans(
-                          detail.verifierAttributionLabel!,
+                          verifierAttributionLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          )!,
                           showCheck: isVerifierRole(detail.verifiedBy!.role),
                         ),
                       ),
@@ -1803,8 +1895,10 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     },
                     child: Text(
                       profiles.length == 1
-                          ? 'Lihat profil'
-                          : 'Profil $username',
+                          ? AppLocalizations.of(sheetContext).dictSeeProfile
+                          : AppLocalizations.of(
+                              sheetContext,
+                            ).dictProfileOf(username),
                     ),
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../../dictionary/presentation/dictionary_labels.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 import 'package:material_ui/material_ui.dart';
@@ -400,7 +401,7 @@ class _WordPreview extends StatelessWidget {
                         variant: isProminentUsageLabel(code)
                             ? FBadgeVariant.primary
                             : FBadgeVariant.secondary,
-                        child: Text(usageLabelLabel(code)),
+                        child: Text(usageLabelLabel(code, AppLocalizations.of(context))),
                       ),
                   ],
                 ),

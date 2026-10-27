@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -244,7 +245,14 @@ Future<void> pumpHome(
       ],
       child: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
-        child: const MaterialApp(home: HomeSearchPage()),
+        child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const HomeSearchPage(),
+        ),
       ),
     ),
   );

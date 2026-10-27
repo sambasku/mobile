@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,7 +16,9 @@ import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 // (payload "lemma" sudah pas / perlu dicek ulang) — tile shared
 // ActivityFeedTile dipakai di home, bukan row duplikat tanpa username.
 void main() {
-  testWidgets('item vote di home menampilkan @username + body beku', (tester) async {
+  testWidgets('item vote di home menampilkan @username + body beku', (
+    tester,
+  ) async {
     final feedItems = [
       FeedActivityItem(
         id: 'vote1',
@@ -35,7 +38,9 @@ void main() {
     expect(find.textContaining('sudah pas'), findsOneWidget);
   });
 
-  testWidgets('item vote arah tolak menampilkan body perlu dicek ulang', (tester) async {
+  testWidgets('item vote arah tolak menampilkan body perlu dicek ulang', (
+    tester,
+  ) async {
     final feedItems = [
       FeedActivityItem(
         id: 'vote2',
@@ -53,7 +58,10 @@ void main() {
   });
 }
 
-Future<void> pumpHome(WidgetTester tester, List<FeedActivityItem> feedItems) async {
+Future<void> pumpHome(
+  WidgetTester tester,
+  List<FeedActivityItem> feedItems,
+) async {
   final wotd = WordOfDay(
     word: const WordDetail(
       id: 'w1',
@@ -83,7 +91,14 @@ Future<void> pumpHome(WidgetTester tester, List<FeedActivityItem> feedItems) asy
       ],
       child: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
-        child: const MaterialApp(home: HomeSearchPage()),
+        child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const HomeSearchPage(),
+        ),
       ),
     ),
   );

@@ -70,10 +70,7 @@ class WordCompleteNotifier extends _$WordCompleteNotifier {
           isLoading: false,
           errorMessage: failure.message,
         ),
-        (page) => state = state.copyWith(
-          isLoading: false,
-          items: page.items,
-        ),
+        (page) => state = state.copyWith(isLoading: false, items: page.items),
       );
     } catch (e) {
       if (!ref.mounted || generation != _generation) return;

@@ -22,7 +22,10 @@ void main() {
   ) async {
     await _pumpPage(tester, _FakeDictionaryRepository());
 
-    expect(find.text('Ketik minimal 2 huruf untuk mencari kata.'), findsOneWidget);
+    expect(
+      find.text('Ketik minimal 2 huruf untuk mencari kata.'),
+      findsOneWidget,
+    );
     expect(find.byType(FCircularProgress), findsNothing);
   });
 
@@ -109,16 +112,14 @@ Future<GoRouter> _pumpPage(
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
         supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+        locale: const Locale('id'),
         routerConfig: router,
-        builder: (context, child) => FTheme(
-          data: foruiPalettes['zinc']!.light.touch,
-          child: child!,
-        ),
+        builder: (context, child) =>
+            FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
       ),
     ),
   );
@@ -186,8 +187,8 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   }) => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({

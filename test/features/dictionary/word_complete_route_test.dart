@@ -41,22 +41,21 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp.router(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: GoRouter(
             navigatorKey: AppRouter.rootNavigatorKey,
             routes: DictionaryRouter.routes,
             initialLocation: DictionaryRouter.complete.path,
           ),
-          builder: (context, child) => FTheme(
-            data: foruiPalettes['zinc']!.light.touch,
-            child: child!,
-          ),
+          builder: (context, child) =>
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,7 +52,7 @@ class _MicPermissionOnboardingPageState
 
       showFToast(
         context: context,
-        title: const Text('Izin mikrofon diperlukan untuk merekam pelafalan'),
+        title: Text(AppLocalizations.of(context).dictMicPermissionTooltip),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -64,7 +65,7 @@ class _MicPermissionOnboardingPageState
 
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Izin mikrofon'),
+        title: Text(AppLocalizations.of(context).dictMicPermissionTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: _busy ? null : () => Navigator.of(context).pop(false),
@@ -98,16 +99,14 @@ class _MicPermissionOnboardingPageState
                   ),
                   const Gap(24),
                   Text(
-                    'Rekam pelafalan butuh akses mikrofon',
+                    AppLocalizations.of(context).dictMicHeroTitle,
                     style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const Gap(10),
                   Text(
-                    'Sebelum merekam, SambasKu meminta izin mikrofon. '
-                    'Ini hanya dipakai untuk fitur pelafalan - bukan untuk '
-                    'menyadap atau merekam di latar belakang.',
+                    AppLocalizations.of(context).dictMicHeroBody,
                     style: theme.typography.body.md.copyWith(
                       color: theme.colors.mutedForeground,
                       height: 1.45,
@@ -115,42 +114,42 @@ class _MicPermissionOnboardingPageState
                   ),
                   const Gap(24),
                   Text(
-                    'Yang perlu kamu tahu',
+                    AppLocalizations.of(context).dictMicFactsTitle,
                     style: theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const Gap(12),
-                  const _RequirementRow(
+                  _RequirementRow(
                     icon: FLucideIcons.mic,
-                    title: 'Izin mikrofon wajib',
-                    body:
-                        'Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa '
-                        'mencabut izin kapan saja di Pengaturan perangkat.',
+                    title: AppLocalizations.of(
+                      context,
+                    ).dictMicFactRequiredTitle,
+                    body: AppLocalizations.of(context).dictMicFactRequiredBody,
                   ),
                   const Gap(12),
-                  const _RequirementRow(
+                  _RequirementRow(
                     icon: FLucideIcons.timer,
-                    title: 'Maksimal 60 detik',
-                    body:
-                        'Cukup untuk lemma atau contoh kalimat. Format suara '
-                        'AAC/m4a - tanpa video.',
+                    title: AppLocalizations.of(
+                      context,
+                    ).dictMicFactDurationTitle,
+                    body: AppLocalizations.of(context).dictMicFactDurationBody,
                   ),
                   const Gap(12),
-                  const _RequirementRow(
+                  _RequirementRow(
                     icon: FLucideIcons.shieldCheck,
-                    title: 'Ditinjau sebelum tayang',
-                    body:
-                        'Rekaman dikirim ke server SambasKu dan masuk antrean '
-                        'review. Nama penutur opsional - boleh kirim tanpa nama.',
+                    title: AppLocalizations.of(context).dictMicFactReviewTitle,
+                    body: AppLocalizations.of(context).dictMicFactReviewBody,
                   ),
                   const Gap(12),
-                  const _RequirementRow(
+                  _RequirementRow(
                     icon: FLucideIcons.volume2,
-                    title: 'Hanya saat kamu merekam',
-                    body:
-                        'Mikrofon aktif hanya selama sesi rekam di layar ini. '
-                        'Tidak merekam diam-diam.',
+                    title: AppLocalizations.of(
+                      context,
+                    ).dictMicFactOnlyRecordTitle,
+                    body: AppLocalizations.of(
+                      context,
+                    ).dictMicFactOnlyRecordBody,
                   ),
                 ],
               ),
@@ -161,14 +160,16 @@ class _MicPermissionOnboardingPageState
             onPress: _busy ? null : _continue,
             prefix: _busy ? null : const Icon(FLucideIcons.mic),
             child: Text(
-              _busy ? 'Meminta izin…' : 'Lanjutkan & izinkan mikrofon',
+              _busy
+                  ? AppLocalizations.of(context).dictMicRequesting
+                  : AppLocalizations.of(context).dictMicGrant,
             ),
           ),
           const Gap(8),
           FButton(
             variant: FButtonVariant.ghost,
             onPress: _busy ? null : () => Navigator.of(context).pop(false),
-            child: const Text('Nanti saja'),
+            child: Text(AppLocalizations.of(context).dictMicLater),
           ),
         ],
       ),

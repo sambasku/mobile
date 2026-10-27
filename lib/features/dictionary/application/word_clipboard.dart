@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
@@ -93,7 +94,7 @@ Future<void> copyWordDetailToClipboard(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Teks kata disalin'),
+    title: Text(AppLocalizations.of(context).dictCopiedWord),
   );
 }
 
@@ -110,6 +111,6 @@ Future<void> copyWordMeaningToClipboard(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Makna disalin'),
+    title: Text(AppLocalizations.of(context).dictCopiedMeaning),
   );
 }

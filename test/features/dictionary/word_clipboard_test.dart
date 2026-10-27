@@ -8,9 +8,7 @@ void main() {
     orderIndex: 1,
     wordClassCode: 'n',
     definition: 'bulu di atas bibir',
-    translations: [
-      WordTranslation(text: 'kumis', type: 'direct'),
-    ],
+    translations: [WordTranslation(text: 'kumis', type: 'direct')],
     examples: [
       WordExample(
         id: 'e1',
@@ -38,9 +36,7 @@ void main() {
           definition: 'dimarahi',
         ),
       ],
-      variants: [
-        WordVariant(form: 'sumet', variantType: 'alternative'),
-      ],
+      variants: [WordVariant(form: 'sumet', variantType: 'alternative')],
     );
 
     final text = buildWordClipboardText(detail);

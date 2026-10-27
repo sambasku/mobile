@@ -36,16 +36,17 @@ class _RelatedGroupStub extends _StubDictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
-  }) async =>
-      Either.right(WordSearchPage(
-        items: [
-          _word('apam', sense: 'sejenis kue'),
-          _word('misai', sense: 'bulu di atas bibir', matchType: 'related_group'),
-          _word('kumis', matchType: 'related_group'),
-        ],
-        nextCursor: null,
-        hasMore: false,
-      ));
+  }) async => Either.right(
+    WordSearchPage(
+      items: [
+        _word('apam', sense: 'sejenis kue'),
+        _word('misai', sense: 'bulu di atas bibir', matchType: 'related_group'),
+        _word('kumis', matchType: 'related_group'),
+      ],
+      nextCursor: null,
+      hasMore: false,
+    ),
+  );
 }
 
 class _StubDictionaryRepository implements DictionaryRepository {
@@ -57,36 +58,34 @@ class _StubDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
-  }) async =>
-      Either.right(WordSearchPage(
-        items: [_word('apam'), _word('budu'), _word("'caci")],
-        nextCursor: null,
-        hasMore: false,
-      ));
+  }) async => Either.right(
+    WordSearchPage(
+      items: [_word('apam'), _word('budu'), _word("'caci")],
+      nextCursor: null,
+      hasMore: false,
+    ),
+  );
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({
@@ -94,16 +93,14 @@ class _StubDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({
     required int limit,
     String? cursor,
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 }
 
 void main() {
@@ -119,9 +116,8 @@ void main() {
         ),
         GoRoute(
           path: '/words/:id',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('DETAIL_SENTINEL')),
-          ),
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('DETAIL_SENTINEL'))),
         ),
       ],
     );
@@ -134,13 +130,14 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
               FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
@@ -181,9 +178,8 @@ void main() {
         ),
         GoRoute(
           path: '/words/:id',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('DETAIL_SENTINEL')),
-          ),
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('DETAIL_SENTINEL'))),
         ),
       ],
     );
@@ -194,13 +190,14 @@ void main() {
           dictionaryRepositoryProvider.overrideWithValue(_RelatedGroupStub()),
         ],
         child: MaterialApp.router(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
               FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),

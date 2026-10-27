@@ -2614,6 +2614,650 @@ class AppLocalizationsId extends AppLocalizations {
   ) {
     return '$direction · $count× dicari · $status';
   }
+
+  @override
+  String get dictUsageKasar => 'Kasar';
+
+  @override
+  String get dictUsageTabu => 'Tabu';
+
+  @override
+  String get dictUsageInformal => 'Informal';
+
+  @override
+  String get dictUsageHalus => 'Halus';
+
+  @override
+  String get dictUsageSeksual => 'Seksual';
+
+  @override
+  String get dictUsageDiskriminatif => 'Diskriminatif';
+
+  @override
+  String get dictWordTypeWord => 'Kata';
+
+  @override
+  String get dictWordTypeIdiom => 'Idiom';
+
+  @override
+  String get dictWordTypeProverb => 'Peribahasa';
+
+  @override
+  String get dictWordTypeExpression => 'Ungkapan';
+
+  @override
+  String get dictRelationSynonym => 'Sinonim';
+
+  @override
+  String get dictRelationAntonym => 'Antonim';
+
+  @override
+  String get dictRelationComponent => 'Komponen';
+
+  @override
+  String get dictRelationSeeAlso => 'Lihat juga';
+
+  @override
+  String get dictRelationDerivedFrom => 'Diturunkan dari';
+
+  @override
+  String get dictRelationVariantOf => 'Variasi dari';
+
+  @override
+  String get dictRelationNonstandardOf => 'Bentuk tidak baku dari';
+
+  @override
+  String get dictVariantAlternative => 'Variasi penulisan';
+
+  @override
+  String get dictVariantInflection => 'Fleksi';
+
+  @override
+  String get dictVariantDerivation => 'Derivasi';
+
+  @override
+  String get dictVariantReduplication => 'Reduplikasi';
+
+  @override
+  String dictAttributionCreatedBy(String name) {
+    return 'Dibuat oleh $name';
+  }
+
+  @override
+  String dictAttributionVerifiedBy(String name) {
+    return 'Diverifikasi oleh $name';
+  }
+
+  @override
+  String dictAttributionCreatedAndVerifiedBy(String name) {
+    return 'Dibuat dan diverifikasi oleh $name';
+  }
+
+  @override
+  String get dictSpeakerAnonymous => 'Anonim';
+
+  @override
+  String get dictCopiedWord => 'Teks kata disalin';
+
+  @override
+  String get dictCopiedMeaning => 'Makna disalin';
+
+  @override
+  String get dictSearchHint => 'Cari kata Sambas...';
+
+  @override
+  String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeWord => 'Usul kata baru';
+
+  @override
+  String get dictDiscussion => 'Ruang Diskusi';
+
+  @override
+  String get dictDiscussionSubtitle =>
+      'Tanya arti atau bahas kata Sambas bareng warga';
+
+  @override
+  String get dictRecentActivity => 'Aktivitas terbaru';
+
+  @override
+  String get dictNoActivity => 'Belum ada aktivitas.';
+
+  @override
+  String get dictActivitySkeletonLine => 'aktivitas singkat satu baris';
+
+  @override
+  String get dictCitizenFallback => 'Warga Sambas';
+
+  @override
+  String dictLetterTitle(String letter) {
+    return 'Huruf $letter';
+  }
+
+  @override
+  String dictLetterSubtitle(String letter) {
+    return 'Kata yang dimulai dengan huruf $letter.';
+  }
+
+  @override
+  String dictLetterEmpty(String letter) {
+    return 'Belum ada kata untuk huruf $letter.';
+  }
+
+  @override
+  String get dictSeeAllWords => 'Lihat semua kata';
+
+  @override
+  String get dictSkeletonWord => 'kata Sambas contoh';
+
+  @override
+  String get dictLoading => 'Memuat...';
+
+  @override
+  String get dictMicPermissionTooltip =>
+      'Izin mikrofon diperlukan untuk merekam pelafalan';
+
+  @override
+  String get dictMicPermissionTitle => 'Izin mikrofon';
+
+  @override
+  String get dictMicHeroTitle => 'Rekam pelafalan butuh akses mikrofon';
+
+  @override
+  String get dictMicHeroBody =>
+      'Sebelum merekam, SambasKu meminta izin mikrofon. Ini hanya dipakai untuk fitur pelafalan - bukan untuk menyadap atau merekam di latar belakang.';
+
+  @override
+  String get dictMicFactsTitle => 'Yang perlu kamu tahu';
+
+  @override
+  String get dictMicFactRequiredTitle => 'Izin mikrofon wajib';
+
+  @override
+  String get dictMicFactRequiredBody =>
+      'Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa mencabut izin kapan saja di Pengaturan perangkat.';
+
+  @override
+  String get dictMicFactDurationTitle => 'Maksimal 60 detik';
+
+  @override
+  String get dictMicFactDurationBody =>
+      'Cukup untuk lemma atau contoh kalimat. Format suara AAC/m4a - tanpa video.';
+
+  @override
+  String get dictMicFactReviewTitle => 'Ditinjau sebelum tayang';
+
+  @override
+  String get dictMicFactReviewBody =>
+      'Rekaman dikirim ke server SambasKu dan masuk antrean review. Nama penutur opsional - boleh kirim tanpa nama.';
+
+  @override
+  String get dictMicFactOnlyRecordTitle => 'Hanya saat kamu merekam';
+
+  @override
+  String get dictMicFactOnlyRecordBody =>
+      'Mikrofon aktif hanya selama sesi rekam di layar ini. Tidak merekam diam-diam.';
+
+  @override
+  String get dictMicRequesting => 'Meminta izin...';
+
+  @override
+  String get dictMicGrant => 'Lanjutkan & izinkan mikrofon';
+
+  @override
+  String get dictMicLater => 'Nanti saja';
+
+  @override
+  String get dictCompleteTitle => 'Lengkapi kata';
+
+  @override
+  String get dictCompleteSubtitle =>
+      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.';
+
+  @override
+  String get dictCompleteHint => 'Cari kata Sambas...';
+
+  @override
+  String get dictCompleteMinChars =>
+      'Ketik minimal 2 huruf untuk mencari kata.';
+
+  @override
+  String dictCompleteNoMatch(String query) {
+    return 'Tidak ada kata yang cocok dengan \"$query\".';
+  }
+
+  @override
+  String get dictDetailTitle => 'Detail kata';
+
+  @override
+  String get dictChangeHistory => 'Riwayat perubahan';
+
+  @override
+  String get dictWordNotFound => 'Kata tidak ditemukan';
+
+  @override
+  String get dictPendingCheck => 'Menunggu pengecekan';
+
+  @override
+  String get dictUnverifiedWarning =>
+      'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas';
+
+  @override
+  String get dictReview => 'Tinjau';
+
+  @override
+  String get dictImageUnderReview => 'Gambar sedang dalam peninjauan.';
+
+  @override
+  String get dictLoginToReportPhoto => 'Masuk dulu untuk melaporkan foto';
+
+  @override
+  String get dictPhotoReportSent =>
+      'Laporan terkirim. Foto tetap tayang sampai ditinjau.';
+
+  @override
+  String get dictSeeVerifiers => 'Lihat verifikator';
+
+  @override
+  String dictPronunciationLine(String notation, String value) {
+    return '$notation $value';
+  }
+
+  @override
+  String get dictVariantsTitle => 'Variasi penulisan';
+
+  @override
+  String get dictVariantsAndDerived => 'Variasi & bentuk turunan';
+
+  @override
+  String get dictAppearsIn => 'Muncul dalam';
+
+  @override
+  String get dictRelatedMeanings => 'Makna terkait';
+
+  @override
+  String get dictImagePendingReview => 'Gambar menunggu tinjauan';
+
+  @override
+  String get dictViolenceImage =>
+      'Foto berisi kekerasan, ketuk untuk menampilkan';
+
+  @override
+  String get dictImagePreview => 'Pratinjau gambar';
+
+  @override
+  String dictImageCounter(int index, int total) {
+    return '$index/$total';
+  }
+
+  @override
+  String get dictLoginToSave => 'Masuk dulu untuk menyimpan kata';
+
+  @override
+  String get dictShareLink => 'Bagikan tautan';
+
+  @override
+  String get dictShareLinkSubtitle =>
+      'Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain';
+
+  @override
+  String get dictShareCard => 'Bagikan kartu';
+
+  @override
+  String get dictShareCardSubtitle =>
+      'Buat kartu untuk cerita IG, WhatsApp, dan lainnya';
+
+  @override
+  String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
+
+  @override
+  String get dictReportEntry => 'Laporkan entri';
+
+  @override
+  String get dictReportEntrySubtitle =>
+      'Untuk entri yang tidak layak tayang, bukan perbaikan isi';
+
+  @override
+  String get dictLoginToReportEntry => 'Masuk dulu untuk melaporkan entri';
+
+  @override
+  String get dictEntryReportSent =>
+      'Laporan terkirim. Entri tetap tayang sampai ditinjau.';
+
+  @override
+  String get dictReportPhoto => 'Laporkan foto';
+
+  @override
+  String get dictReportPhotoSubtitle =>
+      'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat';
+
+  @override
+  String get dictPhotoReportThanks => 'Laporan foto terkirim. Terima kasih.';
+
+  @override
+  String get dictMostSupported => 'Paling didukung';
+
+  @override
+  String dictContributionBy(String name) {
+    return 'oleh $name';
+  }
+
+  @override
+  String get dictNoTranslation => 'Belum ada terjemahan';
+
+  @override
+  String get dictExampleAudio => 'Audio contoh';
+
+  @override
+  String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictSkeletonLemma => 'lemma contoh kata';
+
+  @override
+  String get dictSkeletonWordClass => 'Nomina';
+
+  @override
+  String get dictSkeletonComment =>
+      'isi komentar skeleton beberapa kata di sini';
+
+  @override
+  String get dictSkeletonDefinition =>
+      'Definisi makna singkat untuk skeleton layout';
+
+  @override
+  String get dictSkeletonExampleTranslation => 'terjemahan contoh';
+
+  @override
+  String get dictSkeletonUsername => 'nama pengguna';
+
+  @override
+  String dictRoleVerifier(String label) {
+    return '$label, Verifikator';
+  }
+
+  @override
+  String get dictAttribution => 'Atribusi';
+
+  @override
+  String get dictSeeProfile => 'Lihat profil';
+
+  @override
+  String dictProfileOf(String username) {
+    return 'Profil $username';
+  }
+
+  @override
+  String get dictListTitle => 'Daftar Kata A-Z';
+
+  @override
+  String get dictLangSambas => 'Sambas';
+
+  @override
+  String get dictLangIndonesia => 'Indonesia';
+
+  @override
+  String get dictSearchIndonesianHint => 'Cari kata Indonesia...';
+
+  @override
+  String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
+
+  @override
+  String get dictCategory => 'Kategori';
+
+  @override
+  String get dictSearchIndonesianEmpty =>
+      'Ketik kata Indonesia untuk mencari terjemahannya di Sambas.';
+
+  @override
+  String get dictNoPublishedWord => 'Belum ada kata terbit.';
+
+  @override
+  String dictNoMatchFor(String query) {
+    return 'Tidak ada kata untuk \"$query\"';
+  }
+
+  @override
+  String get dictNotInDictionary =>
+      'Belum ada di kamus. Usulkan supaya bisa dicari orang lain.';
+
+  @override
+  String get dictProposeThisWord => 'Usul kata ini';
+
+  @override
+  String dictRelatedMeaningSubtitle(String subtitle) {
+    return 'Makna terkait · $subtitle';
+  }
+
+  @override
+  String get dictSearchHistory => 'Riwayat pencarian';
+
+  @override
+  String get dictRemove => 'Hapus';
+
+  @override
+  String dictAudioPlay(String meta) {
+    return 'Putar audio $meta';
+  }
+
+  @override
+  String dictAudioPause(String meta) {
+    return 'Jeda audio $meta';
+  }
+
+  @override
+  String dictAudioResume(String meta) {
+    return 'Lanjutkan audio $meta';
+  }
+
+  @override
+  String dictAudioLoading(String meta) {
+    return 'Memuat audio $meta';
+  }
+
+  @override
+  String dictAudioError(String meta) {
+    return 'Gagal memutar $meta, ketuk untuk coba lagi';
+  }
+
+  @override
+  String get dictAudioErrorRetry =>
+      'Gagal memutar audio. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get dictAudioProgress => 'Progres pemutaran';
+
+  @override
+  String dictAudioProgressPercent(int percent) {
+    return '$percent persen';
+  }
+
+  @override
+  String get dictPronunciationSection => 'Pelafalan';
+
+  @override
+  String get dictNoPronunciationAudio => 'Belum ada audio pelafalan kata';
+
+  @override
+  String get dictRecordExampleAudio => 'Rekam audio contoh';
+
+  @override
+  String get dictRecordPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictRecMicPermissionTitle =>
+      'Izin mikrofon diperlukan untuk rekam pelafalan';
+
+  @override
+  String get dictRecMicUnavailable => 'Mikrofon tidak tersedia';
+
+  @override
+  String get dictRecSaveFailed => 'Rekaman gagal disimpan';
+
+  @override
+  String get dictRecStoppedInactive =>
+      'Rekaman dihentikan karena aplikasi tidak aktif';
+
+  @override
+  String get dictRecTooShort =>
+      'Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas';
+
+  @override
+  String get dictRecTooQuiet =>
+      'Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang';
+
+  @override
+  String dictRecClipTooShort(String min) {
+    return 'Potongan terlalu pendek (min $min dtk)';
+  }
+
+  @override
+  String get dictRecPreviewFailed =>
+      'Gagal memutar pratinjau. Coba rekam ulang atau potong ulang.';
+
+  @override
+  String get dictRecLicenseTitle => 'Publikasi & Lisensi Rekaman';
+
+  @override
+  String get dictRecLicenseBody =>
+      'Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.\n\nPastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.';
+
+  @override
+  String get dictRecAgree => 'Saya setuju';
+
+  @override
+  String get dictRecNoRecording =>
+      'Belum ada rekaman. Rekam dulu sebelum mengirim.';
+
+  @override
+  String get dictRecNoDisplayName =>
+      'Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.';
+
+  @override
+  String get dictRecTrimFailed =>
+      'Gagal memotong audio. Sesuaikan rentang lalu coba kirim lagi.';
+
+  @override
+  String get dictRecTooMany => 'Terlalu banyak, coba lagi nanti';
+
+  @override
+  String get dictRecThanks => 'Terima kasih, rekaman menunggu pengecekan';
+
+  @override
+  String get dictRecDialectOptional => 'Dialek (opsional)';
+
+  @override
+  String dictRecMaxSecondsHint(int max) {
+    return 'Maksimal $max detik · cukup 1-2 kali baca kalimat';
+  }
+
+  @override
+  String dictRecMaxSecondsHintSpeak(int max) {
+    return 'Maksimal $max detik · cukup 1-2 kali ucapan';
+  }
+
+  @override
+  String get dictRecWaitUpload => 'Tunggu hingga pengiriman selesai';
+
+  @override
+  String get dictRecFinishOrCancel => 'Selesaikan atau batalkan rekaman dulu';
+
+  @override
+  String get dictRecSay => 'Ucapkan';
+
+  @override
+  String get dictRecIncludeName => 'Cantumkan nama saya sebagai penutur';
+
+  @override
+  String get dictRecNoDisplayNameShort => 'Nama tampilan belum ada di profil';
+
+  @override
+  String get dictRecAnonymous => 'Tanpa nama (Anonim)';
+
+  @override
+  String get dictRecFollowProfileName => 'Mengikuti nama tampilan di profilmu';
+
+  @override
+  String get dictRecHoldHint =>
+      'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci';
+
+  @override
+  String dictRecRecording(int elapsed, int max) {
+    return 'Merekam... ${elapsed}s / ${max}s';
+  }
+
+  @override
+  String get dictRecReleaseToStop => 'Lepas untuk stop';
+
+  @override
+  String get dictRecStop => 'Stop';
+
+  @override
+  String get dictRecStart => 'Mulai rekam';
+
+  @override
+  String get dictRecMicLevel => 'Level mikrofon · ketuk tombol untuk stop';
+
+  @override
+  String get dictRecTrim => 'Potong rekaman';
+
+  @override
+  String get dictRecPreparingEditor => 'Menyiapkan editor...';
+
+  @override
+  String dictRecTrimRange(String selection, String total) {
+    return 'Geser rentang ($selection dari $total).';
+  }
+
+  @override
+  String get dictRecTrimSelectionLabel => 'Bagian terpilih yang akan dikirim.';
+
+  @override
+  String get dictRecWaveformUnavailable =>
+      'Waveform tidak tersedia - geser slider untuk memotong';
+
+  @override
+  String get dictRecPause => 'Jeda';
+
+  @override
+  String get dictRecPreview => 'Pratinjau';
+
+  @override
+  String get dictRecAgreeBeforeSend =>
+      'Tekan Kirim untuk setuju soal publikasi & lisensi rekaman';
+
+  @override
+  String get dictRecRerecord => 'Rekam ulang';
+
+  @override
+  String get dictRecSending => 'Mengirim...';
+
+  @override
+  String get dictRecSend => 'Kirim';
+
+  @override
+  String get dictRecLevelSemantic => 'Level mikrofon';
+
+  @override
+  String get dictWordOfDay => 'Kata hari ini';
+
+  @override
+  String get dictWordOfDayShownToday =>
+      'Ditampilkan hari ini · baru minggu ini';
+
+  @override
+  String get dictWordOfDayRotates =>
+      'Ditampilkan hari ini, berganti setiap hari';
+
+  @override
+  String get dictSkeletonLemmaShort => 'lemma contoh';
+
+  @override
+  String get dictSkeletonGloss => 'arti pertama satu baris';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -5212,7 +5856,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewSearchMissHitsText(String value) {
-    return '$value dicali';
+    return '$value dicari';
   }
 
   @override
@@ -5224,6 +5868,650 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
     int count,
     String status,
   ) {
-    return '$direction · $count× dicali · $status';
+    return '$direction · $count× dicari · $status';
   }
+
+  @override
+  String get dictUsageKasar => 'Kasar';
+
+  @override
+  String get dictUsageTabu => 'Tabu';
+
+  @override
+  String get dictUsageInformal => 'Informal';
+
+  @override
+  String get dictUsageHalus => 'Halus';
+
+  @override
+  String get dictUsageSeksual => 'Seksual';
+
+  @override
+  String get dictUsageDiskriminatif => 'Diskriminatif';
+
+  @override
+  String get dictWordTypeWord => 'Kata';
+
+  @override
+  String get dictWordTypeIdiom => 'Idiom';
+
+  @override
+  String get dictWordTypeProverb => 'Peribahasa';
+
+  @override
+  String get dictWordTypeExpression => 'Ungkapan';
+
+  @override
+  String get dictRelationSynonym => 'Sinonim';
+
+  @override
+  String get dictRelationAntonym => 'Antonim';
+
+  @override
+  String get dictRelationComponent => 'Komponen';
+
+  @override
+  String get dictRelationSeeAlso => 'Lihat juga';
+
+  @override
+  String get dictRelationDerivedFrom => 'Diturunkan dari';
+
+  @override
+  String get dictRelationVariantOf => 'Variasi dari';
+
+  @override
+  String get dictRelationNonstandardOf => 'Bentuk tidak baku dari';
+
+  @override
+  String get dictVariantAlternative => 'Variasi penulisan';
+
+  @override
+  String get dictVariantInflection => 'Fleksi';
+
+  @override
+  String get dictVariantDerivation => 'Derivasi';
+
+  @override
+  String get dictVariantReduplication => 'Reduplikasi';
+
+  @override
+  String dictAttributionCreatedBy(String name) {
+    return 'Dibuat oleh $name';
+  }
+
+  @override
+  String dictAttributionVerifiedBy(String name) {
+    return 'Diverifikasi oleh $name';
+  }
+
+  @override
+  String dictAttributionCreatedAndVerifiedBy(String name) {
+    return 'Dibuat dan diverifikasi oleh $name';
+  }
+
+  @override
+  String get dictSpeakerAnonymous => 'Anonim';
+
+  @override
+  String get dictCopiedWord => 'Teks kata disalin';
+
+  @override
+  String get dictCopiedMeaning => 'Makna disalin';
+
+  @override
+  String get dictSearchHint => 'Cari kata Sambas...';
+
+  @override
+  String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeWord => 'Usul kata baru';
+
+  @override
+  String get dictDiscussion => 'Ruang Diskusi';
+
+  @override
+  String get dictDiscussionSubtitle =>
+      'Tanya arti atau bahas kata Sambas bareng warga';
+
+  @override
+  String get dictRecentActivity => 'Aktivitas terbaru';
+
+  @override
+  String get dictNoActivity => 'Belum ada aktivitas.';
+
+  @override
+  String get dictActivitySkeletonLine => 'aktivitas singkat satu baris';
+
+  @override
+  String get dictCitizenFallback => 'Warga Sambas';
+
+  @override
+  String dictLetterTitle(String letter) {
+    return 'Huruf $letter';
+  }
+
+  @override
+  String dictLetterSubtitle(String letter) {
+    return 'Kata yang dimulai dengan huruf $letter.';
+  }
+
+  @override
+  String dictLetterEmpty(String letter) {
+    return 'Belum ada kata untuk huruf $letter.';
+  }
+
+  @override
+  String get dictSeeAllWords => 'Lihat semua kata';
+
+  @override
+  String get dictSkeletonWord => 'kata Sambas contoh';
+
+  @override
+  String get dictLoading => 'Memuat...';
+
+  @override
+  String get dictMicPermissionTooltip =>
+      'Izin mikrofon diperlukan untuk merekam pelafalan';
+
+  @override
+  String get dictMicPermissionTitle => 'Izin mikrofon';
+
+  @override
+  String get dictMicHeroTitle => 'Rekam pelafalan butuh akses mikrofon';
+
+  @override
+  String get dictMicHeroBody =>
+      'Sebelum merekam, SambasKu meminta izin mikrofon. Ini hanya dipakai untuk fitur pelafalan - bukan untuk menyadap atau merekam di latar belakang.';
+
+  @override
+  String get dictMicFactsTitle => 'Yang perlu kamu tahu';
+
+  @override
+  String get dictMicFactRequiredTitle => 'Izin mikrofon wajib';
+
+  @override
+  String get dictMicFactRequiredBody =>
+      'Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa mencabut izin kapan saja di Pengaturan perangkat.';
+
+  @override
+  String get dictMicFactDurationTitle => 'Maksimal 60 detik';
+
+  @override
+  String get dictMicFactDurationBody =>
+      'Cukup untuk lemma atau contoh kalimat. Format suara AAC/m4a - tanpa video.';
+
+  @override
+  String get dictMicFactReviewTitle => 'Ditinjau sebelum tayang';
+
+  @override
+  String get dictMicFactReviewBody =>
+      'Rekaman dikirim ke server SambasKu dan masuk antrean review. Nama penutur opsional - boleh kirim tanpa nama.';
+
+  @override
+  String get dictMicFactOnlyRecordTitle => 'Hanya saat kamu merekam';
+
+  @override
+  String get dictMicFactOnlyRecordBody =>
+      'Mikrofon aktif hanya selama sesi rekam di layar ini. Tidak merekam diam-diam.';
+
+  @override
+  String get dictMicRequesting => 'Meminta izin...';
+
+  @override
+  String get dictMicGrant => 'Lanjutkan & izinkan mikrofon';
+
+  @override
+  String get dictMicLater => 'Nanti saja';
+
+  @override
+  String get dictCompleteTitle => 'Lengkapi kata';
+
+  @override
+  String get dictCompleteSubtitle =>
+      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.';
+
+  @override
+  String get dictCompleteHint => 'Cari kata Sambas...';
+
+  @override
+  String get dictCompleteMinChars =>
+      'Ketik minimal 2 huruf untuk mencari kata.';
+
+  @override
+  String dictCompleteNoMatch(String query) {
+    return 'Tidak ada kata yang cocok dengan \"$query\".';
+  }
+
+  @override
+  String get dictDetailTitle => 'Detail kata';
+
+  @override
+  String get dictChangeHistory => 'Riwayat perubahan';
+
+  @override
+  String get dictWordNotFound => 'Kata tidak ditemukan';
+
+  @override
+  String get dictPendingCheck => 'Menunggu pengecekan';
+
+  @override
+  String get dictUnverifiedWarning =>
+      'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas';
+
+  @override
+  String get dictReview => 'Tinjau';
+
+  @override
+  String get dictImageUnderReview => 'Gambar sedang dalam peninjauan.';
+
+  @override
+  String get dictLoginToReportPhoto => 'Masuk dulu untuk melaporkan foto';
+
+  @override
+  String get dictPhotoReportSent =>
+      'Laporan terkirim. Foto tetap tayang sampai ditinjau.';
+
+  @override
+  String get dictSeeVerifiers => 'Lihat verifikator';
+
+  @override
+  String dictPronunciationLine(String notation, String value) {
+    return '$notation $value';
+  }
+
+  @override
+  String get dictVariantsTitle => 'Variasi penulisan';
+
+  @override
+  String get dictVariantsAndDerived => 'Variasi & bentuk turunan';
+
+  @override
+  String get dictAppearsIn => 'Muncul dalam';
+
+  @override
+  String get dictRelatedMeanings => 'Makna terkait';
+
+  @override
+  String get dictImagePendingReview => 'Gambar menunggu tinjauan';
+
+  @override
+  String get dictViolenceImage =>
+      'Foto berisi kekerasan, ketuk untuk menampilkan';
+
+  @override
+  String get dictImagePreview => 'Pratinjau gambar';
+
+  @override
+  String dictImageCounter(int index, int total) {
+    return '$index/$total';
+  }
+
+  @override
+  String get dictLoginToSave => 'Masuk dulu untuk menyimpan kata';
+
+  @override
+  String get dictShareLink => 'Bagikan tautan';
+
+  @override
+  String get dictShareLinkSubtitle =>
+      'Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain';
+
+  @override
+  String get dictShareCard => 'Bagikan kartu';
+
+  @override
+  String get dictShareCardSubtitle =>
+      'Buat kartu untuk cerita IG, WhatsApp, dan lainnya';
+
+  @override
+  String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
+
+  @override
+  String get dictReportEntry => 'Laporkan entri';
+
+  @override
+  String get dictReportEntrySubtitle =>
+      'Untuk entri yang tidak layak tayang, bukan perbaikan isi';
+
+  @override
+  String get dictLoginToReportEntry => 'Masuk dulu untuk melaporkan entri';
+
+  @override
+  String get dictEntryReportSent =>
+      'Laporan terkirim. Entri tetap tayang sampai ditinjau.';
+
+  @override
+  String get dictReportPhoto => 'Laporkan foto';
+
+  @override
+  String get dictReportPhotoSubtitle =>
+      'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat';
+
+  @override
+  String get dictPhotoReportThanks => 'Laporan foto terkirim. Terima kasih.';
+
+  @override
+  String get dictMostSupported => 'Paling didukung';
+
+  @override
+  String dictContributionBy(String name) {
+    return 'oleh $name';
+  }
+
+  @override
+  String get dictNoTranslation => 'Belum ada terjemahan';
+
+  @override
+  String get dictExampleAudio => 'Audio contoh';
+
+  @override
+  String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictSkeletonLemma => 'lemma contoh kata';
+
+  @override
+  String get dictSkeletonWordClass => 'Nomina';
+
+  @override
+  String get dictSkeletonComment =>
+      'isi komentar skeleton beberapa kata di sini';
+
+  @override
+  String get dictSkeletonDefinition =>
+      'Definisi makna singkat untuk skeleton layout';
+
+  @override
+  String get dictSkeletonExampleTranslation => 'terjemahan contoh';
+
+  @override
+  String get dictSkeletonUsername => 'nama pengguna';
+
+  @override
+  String dictRoleVerifier(String label) {
+    return '$label, Verifikator';
+  }
+
+  @override
+  String get dictAttribution => 'Atribusi';
+
+  @override
+  String get dictSeeProfile => 'Lihat profil';
+
+  @override
+  String dictProfileOf(String username) {
+    return 'Profil $username';
+  }
+
+  @override
+  String get dictListTitle => 'Daftar Kata A-Z';
+
+  @override
+  String get dictLangSambas => 'Sambas';
+
+  @override
+  String get dictLangIndonesia => 'Indonesia';
+
+  @override
+  String get dictSearchIndonesianHint => 'Cari kata Indonesia...';
+
+  @override
+  String get dictSearchSambasHint => 'Cari atau saring kata Sambas...';
+
+  @override
+  String get dictCategory => 'Kategori';
+
+  @override
+  String get dictSearchIndonesianEmpty =>
+      'Ketik kata Indonesia untuk mencari terjemahannya di Sambas.';
+
+  @override
+  String get dictNoPublishedWord => 'Belum ada kata terbit.';
+
+  @override
+  String dictNoMatchFor(String query) {
+    return 'Tidak ada kata untuk \"$query\"';
+  }
+
+  @override
+  String get dictNotInDictionary =>
+      'Belum ada di kamus. Usulkan supaya bisa dicari orang lain.';
+
+  @override
+  String get dictProposeThisWord => 'Usul kata ini';
+
+  @override
+  String dictRelatedMeaningSubtitle(String subtitle) {
+    return 'Makna terkait · $subtitle';
+  }
+
+  @override
+  String get dictSearchHistory => 'Riwayat pencarian';
+
+  @override
+  String get dictRemove => 'Hapus';
+
+  @override
+  String dictAudioPlay(String meta) {
+    return 'Putar audio $meta';
+  }
+
+  @override
+  String dictAudioPause(String meta) {
+    return 'Jeda audio $meta';
+  }
+
+  @override
+  String dictAudioResume(String meta) {
+    return 'Lanjutkan audio $meta';
+  }
+
+  @override
+  String dictAudioLoading(String meta) {
+    return 'Memuat audio $meta';
+  }
+
+  @override
+  String dictAudioError(String meta) {
+    return 'Gagal memutar $meta, ketuk untuk coba lagi';
+  }
+
+  @override
+  String get dictAudioErrorRetry =>
+      'Gagal memutar audio. Coba lagi dalam beberapa saat.';
+
+  @override
+  String get dictAudioProgress => 'Progres pemutaran';
+
+  @override
+  String dictAudioProgressPercent(int percent) {
+    return '$percent persen';
+  }
+
+  @override
+  String get dictPronunciationSection => 'Pelafalan';
+
+  @override
+  String get dictNoPronunciationAudio => 'Belum ada audio pelafalan kata';
+
+  @override
+  String get dictRecordExampleAudio => 'Rekam audio contoh';
+
+  @override
+  String get dictRecordPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictRecMicPermissionTitle =>
+      'Izin mikrofon diperlukan untuk rekam pelafalan';
+
+  @override
+  String get dictRecMicUnavailable => 'Mikrofon tidak tersedia';
+
+  @override
+  String get dictRecSaveFailed => 'Rekaman gagal disimpan';
+
+  @override
+  String get dictRecStoppedInactive =>
+      'Rekaman dihentikan karena aplikasi tidak aktif';
+
+  @override
+  String get dictRecTooShort =>
+      'Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas';
+
+  @override
+  String get dictRecTooQuiet =>
+      'Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang';
+
+  @override
+  String dictRecClipTooShort(String min) {
+    return 'Potongan terlalu pendek (min $min dtk)';
+  }
+
+  @override
+  String get dictRecPreviewFailed =>
+      'Gagal memutar pratinjau. Coba rekam ulang atau potong ulang.';
+
+  @override
+  String get dictRecLicenseTitle => 'Publikasi & Lisensi Rekaman';
+
+  @override
+  String get dictRecLicenseBody =>
+      'Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.\n\nPastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.';
+
+  @override
+  String get dictRecAgree => 'Saya setuju';
+
+  @override
+  String get dictRecNoRecording =>
+      'Belum ada rekaman. Rekam dulu sebelum mengirim.';
+
+  @override
+  String get dictRecNoDisplayName =>
+      'Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.';
+
+  @override
+  String get dictRecTrimFailed =>
+      'Gagal memotong audio. Sesuaikan rentang lalu coba kirim lagi.';
+
+  @override
+  String get dictRecTooMany => 'Terlalu banyak, coba lagi nanti';
+
+  @override
+  String get dictRecThanks => 'Terima kasih, rekaman menunggu pengecekan';
+
+  @override
+  String get dictRecDialectOptional => 'Dialek (opsional)';
+
+  @override
+  String dictRecMaxSecondsHint(int max) {
+    return 'Maksimal $max detik · cukup 1-2 kali baca kalimat';
+  }
+
+  @override
+  String dictRecMaxSecondsHintSpeak(int max) {
+    return 'Maksimal $max detik · cukup 1-2 kali ucapan';
+  }
+
+  @override
+  String get dictRecWaitUpload => 'Tunggu hingga pengiriman selesai';
+
+  @override
+  String get dictRecFinishOrCancel => 'Selesaikan atau batalkan rekaman dulu';
+
+  @override
+  String get dictRecSay => 'Ucapkan';
+
+  @override
+  String get dictRecIncludeName => 'Cantumkan nama saya sebagai penutur';
+
+  @override
+  String get dictRecNoDisplayNameShort => 'Nama tampilan belum ada di profil';
+
+  @override
+  String get dictRecAnonymous => 'Tanpa nama (Anonim)';
+
+  @override
+  String get dictRecFollowProfileName => 'Mengikuti nama tampilan di profilmu';
+
+  @override
+  String get dictRecHoldHint =>
+      'Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci';
+
+  @override
+  String dictRecRecording(int elapsed, int max) {
+    return 'Merekam... ${elapsed}s / ${max}s';
+  }
+
+  @override
+  String get dictRecReleaseToStop => 'Lepas untuk stop';
+
+  @override
+  String get dictRecStop => 'Stop';
+
+  @override
+  String get dictRecStart => 'Mulai rekam';
+
+  @override
+  String get dictRecMicLevel => 'Level mikrofon · ketuk tombol untuk stop';
+
+  @override
+  String get dictRecTrim => 'Potong rekaman';
+
+  @override
+  String get dictRecPreparingEditor => 'Menyiapkan editor...';
+
+  @override
+  String dictRecTrimRange(String selection, String total) {
+    return 'Geser rentang ($selection dari $total).';
+  }
+
+  @override
+  String get dictRecTrimSelectionLabel => 'Bagian terpilih yang akan dikirim.';
+
+  @override
+  String get dictRecWaveformUnavailable =>
+      'Waveform tidak tersedia - geser slider untuk memotong';
+
+  @override
+  String get dictRecPause => 'Jeda';
+
+  @override
+  String get dictRecPreview => 'Pratinjau';
+
+  @override
+  String get dictRecAgreeBeforeSend =>
+      'Tekan Kirim untuk setuju soal publikasi & lisensi rekaman';
+
+  @override
+  String get dictRecRerecord => 'Rekam ulang';
+
+  @override
+  String get dictRecSending => 'Mengirim...';
+
+  @override
+  String get dictRecSend => 'Kirim';
+
+  @override
+  String get dictRecLevelSemantic => 'Level mikrofon';
+
+  @override
+  String get dictWordOfDay => 'Kata hari ini';
+
+  @override
+  String get dictWordOfDayShownToday =>
+      'Ditampilkan hari ini · baru minggu ini';
+
+  @override
+  String get dictWordOfDayRotates =>
+      'Ditampilkan hari ini, berganti setiap hari';
+
+  @override
+  String get dictSkeletonLemmaShort => 'lemma contoh';
+
+  @override
+  String get dictSkeletonGloss => 'arti pertama satu baris';
 }

@@ -73,8 +73,7 @@ class _StubRepo implements DictionaryRepository {
 
   bool approved = false;
 
-  WordDetail get _detail =>
-      approved ? _verifiedDetail() : _pendingDetail();
+  WordDetail get _detail => approved ? _verifiedDetail() : _pendingDetail();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
@@ -185,11 +184,11 @@ Future<void> _pump(
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
         localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
         supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+        locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
           data: foruiPalettes['zinc']!.light.touch,
