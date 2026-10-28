@@ -5571,6 +5571,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get placePinPickerUsePoint => 'Pakai titik ini';
 
   @override
+  String get placePinPickerFallbackLabel => 'Titik di Sambas';
+
+  @override
   String get placeProposalsTitle => 'Usulan wisata';
 
   @override
@@ -13786,6 +13789,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get placePinPickerUsePoint => 'Pakai titik ini';
+
+  @override
+  String get placePinPickerFallbackLabel => 'Titik di Sambas';
 
   @override
   String get placeProposalsTitle => 'Usulan wisata';

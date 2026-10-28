@@ -1696,6 +1696,7 @@
   "placePinPickerOutOfBounds": "Titik harus di dalam Kabupaten Sambas.",
   "placePinPickerRemove": "Hapus koordinat",
   "placePinPickerUsePoint": "Pakai titik ini",
+  "placePinPickerFallbackLabel": "Titik di Sambas",
   "placeProposalsTitle": "Usulan wisata",
   "placeProposalsCancelTitle": "Batalkan usulan?",
   "placeProposalsCancelBody": "Usulan yang dibatalkan tidak dikirim ke peninjau.",

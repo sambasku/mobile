@@ -10223,6 +10223,12 @@ abstract class AppLocalizations {
   /// **'Pakai titik ini'**
   String get placePinPickerUsePoint;
 
+  /// Label fallback hasil Nominatim tanpa display_name
+  ///
+  /// In id, this message translates to:
+  /// **'Titik di Sambas'**
+  String get placePinPickerFallbackLabel;
+
   /// No description provided for @placeProposalsTitle.
   ///
   /// In id, this message translates to:

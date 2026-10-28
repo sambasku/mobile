@@ -76,7 +76,7 @@ class SambasNominatim {
         },
       );
       if (seq != _seq) return const [];
-      return _allHits(response.data);
+      return parseNominatimHits(response.data);
     } on DioException catch (e) {
       if (CancelToken.isCancel(e) || seq != _seq) return const [];
       throw NominatimException(l10n.nominatimSearchFailed);
@@ -114,7 +114,9 @@ String? cleanNominatimQuery(String raw) {
   return query;
 }
 
-List<NominatimHit> _allHits(Object? data) {
+/// Parse respons Nominatim. Buang baris invalid / di luar Sambas.
+/// Dipakai production + unit test.
+List<NominatimHit> parseNominatimHits(Object? data) {
   if (data is! List) return const [];
   final out = <NominatimHit>[];
   for (final row in data) {
@@ -127,7 +129,7 @@ List<NominatimHit> _allHits(Object? data) {
     final name = row['display_name'];
     final label = name is String && name.trim().isNotEmpty
         ? name.trim()
-        : 'Titik di Sambas';
+        : l10n.placePinPickerFallbackLabel;
     out.add(NominatimHit(lat: lat, lng: lng, label: label));
   }
   return out;
