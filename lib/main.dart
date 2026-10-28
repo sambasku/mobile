@@ -24,6 +24,7 @@ import 'core/services/device_registration_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/notification_navigation.dart';
 import 'core/services/analytics_service.dart';
+import 'core/services/crashlytics_service.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/font_scale_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
@@ -76,10 +77,6 @@ Future<void> main() async {
     orElse: () => Flavor.staging,
   );
 
-  if (F.isStaging && !F.hideDevChrome) {
-    installStagingExceptionLog();
-  }
-
   // Daftar tier API harus siap SEBELUM dioProvider dibaca di bawah - Dio
   // mengambil baseUrl awalnya dari resolver.
   ApiHostResolver.instance.configureFromEnv();
@@ -92,10 +89,10 @@ Future<void> main() async {
   debugPrint('MILESTONE before-prefs'); // ignore: avoid_print
   final prefs = await SharedPreferences.getInstance();
   debugPrint('MILESTONE after-prefs'); // ignore: avoid_print
-await ThemeModeController.preload(prefs);
-await ForuiPaletteController.preload(prefs);
-await FontScaleController.preload(prefs);
-await LocalePrefs.preload(prefs);
+  await ThemeModeController.preload(prefs);
+  await ForuiPaletteController.preload(prefs);
+  await FontScaleController.preload(prefs);
+  await LocalePrefs.preload(prefs);
   await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
 
@@ -110,10 +107,19 @@ await LocalePrefs.preload(prefs);
   // malah throw [core/no-options] sebelum runApp (layar blank).
   if (!kIsWeb) {
     await Firebase.initializeApp();
+    // Crashlytics SEBELUM ExceptionLog staging supaya sheet chain ke
+    // FlutterError.onError / PlatformDispatcher yang sudah di-set di sini.
+    await CrashlyticsService.instance.init();
+    if (F.isStaging && !F.hideDevChrome) {
+      installStagingExceptionLog();
+    }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     // Izin notifikasi diminta di onboarding slide 3, bukan di cold start.
     await NotificationService.init();
     await AnalyticsService.instance.init();
+  } else if (F.isStaging && !F.hideDevChrome) {
+    // Preview web: tanpa Firebase, tetap pasang sheet lokal bila staging.
+    installStagingExceptionLog();
   }
 
   // getToken() bisa beberapa detik di OEM tertentu. Jangan ditunggu sebelum

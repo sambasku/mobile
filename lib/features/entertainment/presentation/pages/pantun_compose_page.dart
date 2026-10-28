@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart' show TextInputAction;
 import 'package:flutter/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -7,6 +9,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/pantun_api.dart';
@@ -34,6 +37,15 @@ class PantunComposePage extends HookConsumerWidget {
     final controllers = List.generate(4, (_) => useTextEditingController());
     final focusNodes = List.generate(4, (_) => useFocusNode());
     final submitting = useState(false);
+
+    useEffect(() {
+      unawaited(
+        AnalyticsService.instance.logPantunComposeOpen(
+          isReply: parentId != null,
+        ),
+      );
+      return null;
+    }, const []);
 
     // Cek live: nilai controller dibaca saat rebuild (hook memo berganti
     // tiap frame karena kita rebuild via listenable di bawah).
@@ -126,6 +138,9 @@ class PantunComposePage extends HookConsumerWidget {
               lines: lines,
               rhymeScheme: scheme,
             );
+      unawaited(
+        AnalyticsService.instance.logPantunSubmit(isReply: parentId != null),
+      );
       if (context.mounted) {
         ref.invalidate(pantunFeedProvider);
         if (parentId != null) ref.invalidate(pantunDetailProvider(parentId!));

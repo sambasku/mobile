@@ -64,6 +64,40 @@ static const localeChosen = 'locale_chosen';
   static const verifierApplySubmit = 'verifier_apply_submit';
   static const poiOpen = 'poi_open';
   static const cuisineOpen = 'cuisine_open';
+
+  /// Detail usaha / acara / pantun dibuka.
+  static const usahaOpen = 'usaha_open';
+  static const eventOpen = 'event_open';
+  static const pantunOpen = 'pantun_open';
+
+  /// Daftar usulan milik user dibuka (bukan form kontribusi).
+  static const usulanWisataOpen = 'usulan_wisata_open';
+  static const usulanUsahaOpen = 'usulan_usaha_open';
+  static const usulanKulinerOpen = 'usulan_kuliner_open';
+  static const usulanAcaraOpen = 'usulan_acara_open';
+
+  /// Form kontribusi dibuka (sebelum kirim).
+  static const wisataContributeOpen = 'wisata_contribute_open';
+  static const usahaContributeOpen = 'usaha_contribute_open';
+  static const kulinerContributeOpen = 'kuliner_contribute_open';
+  static const acaraContributeOpen = 'acara_contribute_open';
+  static const pantunComposeOpen = 'pantun_compose_open';
+
+  /// Form kontribusi berhasil dikirim ke API.
+  static const wisataContributeSubmit = 'wisata_contribute_submit';
+  static const usahaContributeSubmit = 'usaha_contribute_submit';
+  static const kulinerContributeSubmit = 'kuliner_contribute_submit';
+  static const acaraContributeSubmit = 'acara_contribute_submit';
+  static const pantunSubmit = 'pantun_submit';
+
+  /// Aksi domain usaha / wisata / pantun di luar open+submit form.
+  static const usahaClaimsOpen = 'usaha_claims_open';
+  static const usahaClaimSubmit = 'usaha_claim_submit';
+  static const usahaSayaOpen = 'usaha_saya_open';
+  static const usahaReportSubmit = 'usaha_report_submit';
+  static const placePhotosOpen = 'place_photos_open';
+  static const pantunReportSubmit = 'pantun_report_submit';
+  static const pantunDelete = 'pantun_delete';
 }
 
 /// Abstraksi Firebase Analytics. Page/notifier memanggil ini, bukan
@@ -225,15 +259,102 @@ class AnalyticsService {
     params: {'slug': slug, 'category': category, 'entry': entry},
   );
 
-/// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
-Future<void> logCuisineOpen({required String slug}) =>
-log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
+  /// Detail cuisine dibuka dari kartu daftar. Param identitas: slug.
+  Future<void> logCuisineOpen({required String slug}) =>
+      log(AnalyticsEvents.cuisineOpen, params: {'slug': slug});
 
-/// Sub-tab pencapaian dibuka. `tab`: badge | border | pencapaian.
-Future<void> logAchievementsView({required String tab}) =>
-log(AnalyticsEvents.achievementsView, params: {'tab': tab});
+  Future<void> logUsahaOpen({required String slug}) =>
+      log(AnalyticsEvents.usahaOpen, params: {'slug': slug});
 
-/// Satu lencana dilihat/diketuk. Param identitas: code.
-Future<void> logAchievementBadgeView({required String code}) =>
-log(AnalyticsEvents.achievementBadgeView, params: {'code': code});
+  Future<void> logEventOpen({required String slug}) =>
+      log(AnalyticsEvents.eventOpen, params: {'slug': slug});
+
+  Future<void> logPantunOpen({required String pantunId}) =>
+      log(AnalyticsEvents.pantunOpen, params: {'pantun_id': pantunId});
+
+  Future<void> logUsulanWisataOpen() => log(AnalyticsEvents.usulanWisataOpen);
+
+  Future<void> logUsulanUsahaOpen() => log(AnalyticsEvents.usulanUsahaOpen);
+
+  Future<void> logUsulanKulinerOpen() => log(AnalyticsEvents.usulanKulinerOpen);
+
+  Future<void> logUsulanAcaraOpen() => log(AnalyticsEvents.usulanAcaraOpen);
+
+  /// `mode`: create | edit | photo.
+  Future<void> logWisataContributeOpen({required String mode}) => log(
+    AnalyticsEvents.wisataContributeOpen,
+    params: {'mode': mode},
+  );
+
+  Future<void> logUsahaContributeOpen() =>
+      log(AnalyticsEvents.usahaContributeOpen);
+
+  /// `mode`: cuisine | place | link.
+  Future<void> logKulinerContributeOpen({required String mode}) => log(
+    AnalyticsEvents.kulinerContributeOpen,
+    params: {'mode': mode},
+  );
+
+  Future<void> logAcaraContributeOpen() =>
+      log(AnalyticsEvents.acaraContributeOpen);
+
+  Future<void> logPantunComposeOpen({required bool isReply}) => log(
+    AnalyticsEvents.pantunComposeOpen,
+    params: {'is_reply': isReply ? 1 : 0},
+  );
+
+  /// `mode`: create | edit | photo.
+  Future<void> logWisataContributeSubmit({required String mode}) => log(
+    AnalyticsEvents.wisataContributeSubmit,
+    params: {'mode': mode},
+  );
+
+  Future<void> logUsahaContributeSubmit() =>
+      log(AnalyticsEvents.usahaContributeSubmit);
+
+  /// `mode`: cuisine | place | link.
+  Future<void> logKulinerContributeSubmit({required String mode}) => log(
+    AnalyticsEvents.kulinerContributeSubmit,
+    params: {'mode': mode},
+  );
+
+  Future<void> logAcaraContributeSubmit() =>
+      log(AnalyticsEvents.acaraContributeSubmit);
+
+  Future<void> logPantunSubmit({required bool isReply}) => log(
+    AnalyticsEvents.pantunSubmit,
+    params: {'is_reply': isReply ? 1 : 0},
+  );
+
+  Future<void> logUsahaClaimsOpen() => log(AnalyticsEvents.usahaClaimsOpen);
+
+  Future<void> logUsahaClaimSubmit({required String slug}) =>
+      log(AnalyticsEvents.usahaClaimSubmit, params: {'slug': slug});
+
+  Future<void> logUsahaSayaOpen() => log(AnalyticsEvents.usahaSayaOpen);
+
+  Future<void> logUsahaReportSubmit({required String slug}) =>
+      log(AnalyticsEvents.usahaReportSubmit, params: {'slug': slug});
+
+  Future<void> logPlacePhotosOpen({required String slug}) =>
+      log(AnalyticsEvents.placePhotosOpen, params: {'slug': slug});
+
+  /// `target_type`: pantun | pantun_reply.
+  Future<void> logPantunReportSubmit({required String targetType}) => log(
+    AnalyticsEvents.pantunReportSubmit,
+    params: {'target_type': targetType},
+  );
+
+  Future<void> logPantunDelete({required bool isReply}) => log(
+    AnalyticsEvents.pantunDelete,
+    params: {'is_reply': isReply ? 1 : 0},
+  );
+
+  /// Sub-tab pencapaian dibuka. `tab`: badge | border | pencapaian.
+  Future<void> logAchievementsView({required String tab}) =>
+      log(AnalyticsEvents.achievementsView, params: {'tab': tab});
+
+  /// Satu lencana dilihat/diketuk. Param identitas: code.
+  Future<void> logAchievementBadgeView({required String code}) =>
+      log(AnalyticsEvents.achievementBadgeView, params: {'code': code});
 }

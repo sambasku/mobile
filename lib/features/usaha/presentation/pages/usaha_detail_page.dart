@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/models/external_link.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
@@ -105,6 +108,7 @@ class UsahaDetailPage extends ConsumerWidget {
       await ref
           .read(usahaContributionApiProvider)
           .claim(slug, contactEvidence: result);
+      unawaited(AnalyticsService.instance.logUsahaClaimSubmit(slug: slug));
       if (!context.mounted) return;
       await showModalBottomSheet<void>(
         context: context,
@@ -168,6 +172,7 @@ class UsahaDetailPage extends ConsumerWidget {
       await ref
           .read(usahaContributionApiProvider)
           .report(slug, reasonCode: picked);
+      unawaited(AnalyticsService.instance.logUsahaReportSubmit(slug: slug));
       if (!context.mounted) return;
       await showAppErrorSheet(
         context,
@@ -185,14 +190,32 @@ class UsahaDetailPage extends ConsumerWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends StatefulWidget {
   const _Body({required this.usaha, required this.onClaim});
 
   final Usaha usaha;
   final VoidCallback onClaim;
 
   @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() {
+      if (!mounted) return;
+      unawaited(
+        AnalyticsService.instance.logUsahaOpen(slug: widget.usaha.slug),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final usaha = widget.usaha;
+    final onClaim = widget.onClaim;
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = usaha.coverUrl;

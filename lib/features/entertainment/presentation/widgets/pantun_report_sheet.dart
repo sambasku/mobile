@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/pantun_api.dart';
@@ -107,6 +110,11 @@ class _PantunReportSheetState extends ConsumerState<_PantunReportSheet> {
             reasonCode: _reason,
             note: note.isEmpty ? null : note,
           );
+      unawaited(
+        AnalyticsService.instance.logPantunReportSubmit(
+          targetType: widget.targetType,
+        ),
+      );
       if (!mounted) return;
       Navigator.of(context).pop(true);
     } on PantunFailure catch (error) {

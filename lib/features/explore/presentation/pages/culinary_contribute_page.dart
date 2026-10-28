@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
@@ -46,6 +49,14 @@ class _CulinaryContributePageState
   bool _submitting = false;
 
   @override
+  void initState() {
+    super.initState();
+    unawaited(
+      AnalyticsService.instance.logKulinerContributeOpen(mode: widget.mode.name),
+    );
+  }
+
+  @override
   void dispose() {
     for (final c in [
       _name,
@@ -85,6 +96,9 @@ class _CulinaryContributePageState
       setState(() => _submitting = true);
       try {
         await api.submitLink(cuisineSlug: cuisine, placeSlug: place);
+        unawaited(
+          AnalyticsService.instance.logKulinerContributeSubmit(mode: 'link'),
+        );
         if (!mounted) return;
         await _done();
       } on CulinaryException catch (e) {
@@ -168,6 +182,11 @@ class _CulinaryContributePageState
           locationHint: _locationHint.text,
         );
       }
+      unawaited(
+        AnalyticsService.instance.logKulinerContributeSubmit(
+          mode: widget.mode.name,
+        ),
+      );
       if (!mounted) return;
       await _done();
     } on CulinaryException catch (e) {

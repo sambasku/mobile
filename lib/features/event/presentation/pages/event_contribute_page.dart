@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart' hide State;
@@ -6,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
@@ -55,6 +58,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
 
   var _busy = false;
   var _done = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AnalyticsService.instance.logAcaraContributeOpen());
+  }
 
   @override
   void dispose() {
@@ -300,6 +309,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
               posterUrls: posterUrls,
             ),
           );
+      unawaited(AnalyticsService.instance.logAcaraContributeSubmit());
       if (!mounted) return;
       setState(() {
         _busy = false;

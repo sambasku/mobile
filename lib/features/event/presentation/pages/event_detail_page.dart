@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/models/external_link.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -50,17 +53,37 @@ class EventDetailPage extends ConsumerWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends StatefulWidget {
   const _Body({required this.event});
 
   final Event event;
 
   @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.microtask(() {
+      if (!mounted) return;
+      unawaited(
+        AnalyticsService.instance.logEventOpen(slug: widget.event.slug),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final event = widget.event;
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
     final source = event.sourceUrl;
-    final sourceLabel = eventSourceTypeLabel(AppLocalizations.of(context), event.sourceType);
+    final sourceLabel = eventSourceTypeLabel(
+      AppLocalizations.of(context),
+      event.sourceType,
+    );
     final attribution = event.sourceAttribution;
 
     return ListView(

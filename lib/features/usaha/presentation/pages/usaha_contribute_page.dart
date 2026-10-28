@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
@@ -44,6 +47,12 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   List<AttachmentImageSlot> _cover = const [];
   bool _wantsClaim = false;
   bool _submitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AnalyticsService.instance.logUsahaContributeOpen());
+  }
 
   @override
   void dispose() {
@@ -236,6 +245,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           wantsClaim: _wantsClaim,
         ),
       );
+      unawaited(AnalyticsService.instance.logUsahaContributeSubmit());
       if (!mounted) return;
       final goProposals = await showModalBottomSheet<bool>(
         context: context,

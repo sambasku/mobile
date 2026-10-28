@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
@@ -28,6 +31,7 @@ class _PlaceProposalsPageState extends ConsumerState<PlaceProposalsPage> {
   @override
   void initState() {
     super.initState();
+    unawaited(AnalyticsService.instance.logUsulanWisataOpen());
     WidgetsBinding.instance.addPostFrameCallback((_) => _load());
   }
 

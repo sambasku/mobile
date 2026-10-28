@@ -25,6 +25,7 @@ import '../../../achievement/presentation/providers/achievement_providers.dart';
 import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/widgets/app_version_label.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
@@ -313,7 +314,7 @@ class ProfilePage extends HookConsumerWidget {
                             ),
                           ],
                           const Gap(16),
-                          _VersionLabel(future: versionFuture),
+                          AppVersionLabel(future: versionFuture),
                         ],
                       ),
                     ),
@@ -445,31 +446,6 @@ class _IdentitySection extends ConsumerWidget {
           footer: isAuth ? const ProfileAchievementTabs() : null,
         ),
       ],
-    );
-  }
-}
-
-class _VersionLabel extends StatelessWidget {
-  const _VersionLabel({required this.future});
-
-  final Future<PackageInfo> future;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<PackageInfo>(
-      future: future,
-      builder: (context, snapshot) {
-        final info = snapshot.data;
-        if (info == null) return const SizedBox.shrink();
-        return Center(
-          child: Text(
-            'v${info.version}(${info.buildNumber})',
-            style: context.theme.typography.body.xs.copyWith(
-              color: context.theme.colors.mutedForeground,
-            ),
-          ),
-        );
-      },
     );
   }
 }

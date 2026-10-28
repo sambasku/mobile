@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart' show RefreshIndicator;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
@@ -128,6 +131,7 @@ class PantunDetailPage extends HookConsumerWidget {
 
     try {
       await ref.read(pantunApiProvider).deleteReply(reply.id);
+      unawaited(AnalyticsService.instance.logPantunDelete(isReply: true));
       ref.invalidate(pantunDetailProvider(id));
       if (context.mounted) {
         showFToast(
@@ -157,6 +161,7 @@ class PantunDetailPage extends HookConsumerWidget {
         .deletePantun();
     if (!context.mounted) return;
     if (error == null) {
+      unawaited(AnalyticsService.instance.logPantunDelete(isReply: false));
       ref.invalidate(pantunFeedProvider);
       showFToast(
         context: context,
@@ -180,6 +185,14 @@ class PantunDetailPage extends HookConsumerWidget {
     // Key per balasan: dipakai Scrollable.ensureVisible untuk deep-link.
     final replyKeys = useRef<Map<String, GlobalObjectKey>>({});
     final scrolledTo = useRef<String?>(null);
+    final pantunOpenLogged = useRef(false);
+
+    useEffect(() {
+      if (!async.hasValue || pantunOpenLogged.value) return null;
+      pantunOpenLogged.value = true;
+      unawaited(AnalyticsService.instance.logPantunOpen(pantunId: id));
+      return null;
+    }, [async.hasValue]);
 
     useEffect(() {
       final target = highlightReplyId;

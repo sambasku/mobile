@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
@@ -17,11 +20,24 @@ import '../providers/cuisine_providers.dart';
 ///
 /// Data dari `GET /api/v1/culinary/contributions/mine` (semua kind: usulan
 /// baru, usul perbaikan, relasi, status buka, arsip).
-class CulinaryProposalsPage extends ConsumerWidget {
+class CulinaryProposalsPage extends ConsumerStatefulWidget {
   const CulinaryProposalsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CulinaryProposalsPage> createState() =>
+      _CulinaryProposalsPageState();
+}
+
+class _CulinaryProposalsPageState extends ConsumerState<CulinaryProposalsPage> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AnalyticsService.instance.logUsulanKulinerOpen());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(

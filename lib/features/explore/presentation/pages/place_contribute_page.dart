@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../../core/network/network_providers.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
@@ -67,6 +68,9 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   @override
   void initState() {
     super.initState();
+    unawaited(
+      AnalyticsService.instance.logWisataContributeOpen(mode: widget.mode.name),
+    );
     _name.addListener(_syncSlug);
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadLookups());
   }
@@ -278,6 +282,9 @@ Future<void> _submit() async {
           );
       }
       await _api.appendImages(slug, urls);
+      unawaited(
+        AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
+      );
       if (!mounted) return;
       showFToast(
       context: context,
@@ -309,6 +316,11 @@ Future<void> _submit() async {
           for (final url in urls) {'url': url},
         ],
     });
+    unawaited(
+      AnalyticsService.instance.logWisataContributeSubmit(
+        mode: widget.mode.name,
+      ),
+    );
     if (!mounted) return;
     context.pushReplacement(ExploreRouter.placeProposals.path);
   } on PlaceContributionException catch (e) {

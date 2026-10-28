@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/image_preview.dart';
@@ -43,6 +46,9 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
   @override
   void initState() {
     super.initState();
+    unawaited(
+      AnalyticsService.instance.logPlacePhotosOpen(slug: widget.slug),
+    );
     _scroll.addListener(_onScroll);
   }
 

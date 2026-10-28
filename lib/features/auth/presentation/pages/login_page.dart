@@ -4,8 +4,10 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/widgets/app_version_label.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../about/about_router.dart';
@@ -38,6 +40,8 @@ class LoginPage extends HookConsumerWidget {
     final identifier = useTextEditingController();
     final password = useTextEditingController();
     final logoLoaded = useState(false);
+    // Future dibuat sekali: PackageInfo.fromPlatform panggil method channel.
+    final versionFuture = useMemoized(PackageInfo.fromPlatform);
     useListenable(identifier);
     useListenable(password);
 
@@ -130,6 +134,8 @@ class LoginPage extends HookConsumerWidget {
 
     final canSubmit =
         identifier.text.trim().isNotEmpty && password.text.length >= 8 && !busy;
+    // Layar pendek: logo lebih kecil supaya form + sosial muat tanpa scroll panjang.
+    final logoSize = MediaQuery.sizeOf(context).height < 700 ? 96.0 : 112.0;
 
     void submit() => ref
         .read(authLoginProvider.notifier)
@@ -156,7 +162,7 @@ class LoginPage extends HookConsumerWidget {
                 enabled: !logoLoaded.value,
                 child: Center(
                   child: BrandMark(
-                    size: 148,
+                    size: logoSize,
                     frameBuilder:
                         (context, child, frame, wasSynchronouslyLoaded) {
                           if ((wasSynchronouslyLoaded || frame != null) &&
@@ -170,13 +176,13 @@ class LoginPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const Gap(24),
+              const Gap(16),
               if (fromVerifierRelogin) ...[
                 FAlert(
                   title: Text(AppLocalizations.of(context).authReloginTitle),
                   subtitle: Text(AppLocalizations.of(context).authReloginBody),
                 ),
-                const Gap(16),
+                const Gap(12),
               ],
               FTextField(
                 control: .managed(controller: identifier),
@@ -209,7 +215,7 @@ class LoginPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const Gap(16),
+              const Gap(12),
               FButton(
                 onPress: canSubmit ? submit : null,
                 prefix: emailLoading ? const FCircularProgress() : null,
@@ -225,9 +231,9 @@ class LoginPage extends HookConsumerWidget {
                       !state.githubUnavailable) ||
                   (ref.watch(facebookAuthEnabledProvider) &&
                       !state.facebookUnavailable)) ...[
-                const Gap(16),
+                const Gap(12),
                 const GoogleAuthDivider(),
-                const Gap(16),
+                const Gap(12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -260,7 +266,7 @@ class LoginPage extends HookConsumerWidget {
                 ),
                 if (ref.watch(facebookAuthEnabledProvider) &&
                     !state.facebookUnavailable) ...[
-                  const Gap(16),
+                  const Gap(12),
                   FacebookAuthButton(
                     label: AppLocalizations.of(context).authFacebookLogin,
                     isLoading: facebookLoading,
@@ -272,16 +278,16 @@ class LoginPage extends HookConsumerWidget {
                   ),
                 ],
               ],
-              const Gap(16),
+              const Gap(12),
               Center(
                 child: Column(
-                  spacing: 3,
+                  spacing: 2,
                   children: [
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: busy ? null : () => context.push('/register'),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 2),
                         child: Text.rich(
                           TextSpan(
                             style: context.theme.typography.body.sm.copyWith(
@@ -310,7 +316,7 @@ class LoginPage extends HookConsumerWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: busy ? null : () => context.go('/'),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 2),
                         child: Text(
                           AppLocalizations.of(context).authContinueAnonymous,
                           style: context.theme.typography.body.xs.copyWith(
@@ -325,7 +331,7 @@ class LoginPage extends HookConsumerWidget {
                           ? null
                           : () => context.push(ReportBugRouter.reportBug.path),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 2),
                         child: Text(
                           AppLocalizations.of(context).authReportIssue,
                           style: context.theme.typography.body.xs.copyWith(
@@ -338,6 +344,8 @@ class LoginPage extends HookConsumerWidget {
                   ],
                 ),
               ),
+              const Gap(8),
+              AppVersionLabel(future: versionFuture),
             ],
           ),
         ),

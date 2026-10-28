@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -16,11 +19,23 @@ import '../usaha_labels.dart';
 import '../widgets/usaha_ui.dart';
 
 /// Usaha yang dikelola user + pengajuan perubahan (field-lock admin).
-class UsahaSayaPage extends ConsumerWidget {
+class UsahaSayaPage extends ConsumerStatefulWidget {
   const UsahaSayaPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UsahaSayaPage> createState() => _UsahaSayaPageState();
+}
+
+class _UsahaSayaPageState extends ConsumerState<UsahaSayaPage> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AnalyticsService.instance.logUsahaSayaOpen());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(

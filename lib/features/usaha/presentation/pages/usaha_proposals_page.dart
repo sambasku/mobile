@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
@@ -15,11 +18,23 @@ import '../providers/usaha_providers.dart';
 import '../usaha_labels.dart';
 
 /// Status usulan usaha milik akun yang sedang masuk.
-class UsahaProposalsPage extends ConsumerWidget {
+class UsahaProposalsPage extends ConsumerStatefulWidget {
   const UsahaProposalsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UsahaProposalsPage> createState() => _UsahaProposalsPageState();
+}
+
+class _UsahaProposalsPageState extends ConsumerState<UsahaProposalsPage> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(AnalyticsService.instance.logUsulanUsahaOpen());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final l10n = AppLocalizations.of(context);
     final authed = ref.watch(authStatusProvider).value?.isAuth == true;
     return FScaffold(
