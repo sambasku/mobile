@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:sambasku_mobile/features/comment/domain/entities/comment_edit_history.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/comment_page.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/word_comment.dart';
 import 'package:sambasku_mobile/features/comment/domain/failures/comment_failure.dart';
@@ -63,6 +64,19 @@ class _FakeCommentRepository implements CommentRepository {
     receivedCommentId = commentId;
     return deleteResult;
   }
+
+  @override
+  Future<Either<CommentFailure, WordComment>> update({
+    required String commentId,
+    required String body,
+  }) async =>
+      Either.left(const CommentFailure('tidak dipakai'));
+
+  @override
+  Future<Either<CommentFailure, CommentEditHistory>> editHistory(
+    String commentId,
+  ) async =>
+      Either.left(const CommentFailure('tidak dipakai'));
 }
 
 void main() {

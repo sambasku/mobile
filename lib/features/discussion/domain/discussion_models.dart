@@ -127,6 +127,8 @@ class DiscussionReply {
     this.upvotes = 0,
     this.downvotes = 0,
     this.myVote,
+    this.isEdited = false,
+    this.updatedAt,
   });
 
   final String id;
@@ -145,6 +147,8 @@ class DiscussionReply {
   final int upvotes;
   final int downvotes;
   final int? myVote;
+  final bool isEdited;
+  final String? updatedAt;
 
   VoteTarget get voteTarget =>
       VoteTarget(type: 'discussion_reply', id: id);
@@ -174,13 +178,18 @@ class DiscussionReply {
       createdAt: json['created_at']?.toString() ?? '',
       upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
       downvotes: (json['downvotes'] as num?)?.toInt() ?? 0,
+      isEdited: json['is_edited'] == true,
+      updatedAt: json['updated_at']?.toString(),
     );
   }
 
   DiscussionReply copyWith({
+    Object? body = _unset,
     int? upvotes,
     int? downvotes,
     Object? myVote = _unset,
+    bool? isEdited,
+    String? updatedAt,
   }) {
     return DiscussionReply(
       id: id,
@@ -188,7 +197,7 @@ class DiscussionReply {
       username: username,
       displayName: displayName,
       avatarUrl: avatarUrl,
-      body: body,
+      body: identical(body, _unset) ? this.body : body as String?,
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
@@ -199,10 +208,38 @@ class DiscussionReply {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
+      isEdited: isEdited ?? this.isEdited,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   static const Object _unset = Object();
+}
+
+class DiscussionReplyEditHistory {
+  const DiscussionReplyEditHistory({
+    required this.revisions,
+    this.currentBody,
+    this.currentUpdatedAt,
+    this.isEdited = false,
+  });
+
+  final String? currentBody;
+  final String? currentUpdatedAt;
+  final bool isEdited;
+  final List<DiscussionReplyEditRevision> revisions;
+}
+
+class DiscussionReplyEditRevision {
+  const DiscussionReplyEditRevision({
+    required this.body,
+    required this.editorId,
+    required this.createdAt,
+  });
+
+  final String body;
+  final String editorId;
+  final String createdAt;
 }
 
 class DiscussionItem {

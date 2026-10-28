@@ -665,6 +665,102 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentDeleted => 'Komentar dihapus';
 
   @override
+  String get commentEdited => 'Diedit';
+
+  @override
+  String get commentEdit => 'Sunting komentar';
+
+  @override
+  String get commentEditTitle => 'Sunting komentar';
+
+  @override
+  String get commentEditSave => 'Simpan';
+
+  @override
+  String get commentEditSuccess => 'Komentar diperbarui';
+
+  @override
+  String get commentEditEmpty => 'Komentar tidak boleh kosong';
+
+  @override
+  String get commentEditFailed => 'Gagal menyunting komentar';
+
+  @override
+  String get commentEditHistoryTitle => 'Riwayat sunting';
+
+  @override
+  String get commentEditHistoryFailed => 'Gagal memuat riwayat sunting';
+
+  @override
+  String get threadEditHistoryEmpty => 'Belum ada riwayat sunting.';
+
+  @override
+  String get threadEditHistoryUnknownTime => 'Waktu tidak diketahui';
+
+  @override
+  String get discussionReplyEditTitle => 'Sunting balasan';
+
+  @override
+  String get discussionReplyEditSave => 'Simpan';
+
+  @override
+  String get discussionReplyEditSuccess => 'Balasan diperbarui';
+
+  @override
+  String get discussionReplyEditEmpty => 'Balasan tidak boleh kosong';
+
+  @override
+  String get discussionReplyEditFailed => 'Gagal menyunting balasan';
+
+  @override
+  String get discussionReplyEditIncomplete => 'Data balasan tidak lengkap';
+
+  @override
+  String get discussionReplyEditHistoryTitle => 'Riwayat sunting balasan';
+
+  @override
+  String get discussionReplyEditHistoryFailed =>
+      'Gagal memuat riwayat sunting balasan';
+
+  @override
+  String get discussionReplyEditHistoryIncomplete =>
+      'Riwayat sunting tidak lengkap';
+
+  @override
+  String get pantunReplyEdit => 'Sunting balasan';
+
+  @override
+  String get pantunReplyEditTitle => 'Sunting balasan pantun';
+
+  @override
+  String get pantunReplyEditSave => 'Simpan';
+
+  @override
+  String get pantunReplyEditSuccess => 'Balasan pantun diperbarui';
+
+  @override
+  String get pantunReplyEditIncomplete => 'Data balasan tidak lengkap';
+
+  @override
+  String get pantunReplyEditHistoryTitle => 'Riwayat sunting balasan pantun';
+
+  @override
+  String get pantunReplyEditHistoryIncomplete =>
+      'Riwayat sunting tidak lengkap';
+
+  @override
+  String get pantunReplyEditLine1 => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunReplyEditLine2 => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunReplyEditLine3 => 'Baris 3 (isi)';
+
+  @override
+  String get pantunReplyEditLine4 => 'Baris 4 (isi)';
+
+  @override
   String commentSectionTitle(int count) {
     return 'Komentar ($count)';
   }
@@ -8883,6 +8979,102 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get commentDeleted => 'Komentar dihapus';
+
+  @override
+  String get commentEdited => 'Diedit';
+
+  @override
+  String get commentEdit => 'Sunting komentar';
+
+  @override
+  String get commentEditTitle => 'Sunting komentar';
+
+  @override
+  String get commentEditSave => 'Simpan';
+
+  @override
+  String get commentEditSuccess => 'Komentar diperbarui';
+
+  @override
+  String get commentEditEmpty => 'Komentar tidak boleh kosong';
+
+  @override
+  String get commentEditFailed => 'Gagal menyunting komentar';
+
+  @override
+  String get commentEditHistoryTitle => 'Riwayat sunting';
+
+  @override
+  String get commentEditHistoryFailed => 'Gagal memuat riwayat sunting';
+
+  @override
+  String get threadEditHistoryEmpty => 'Belum ada riwayat sunting.';
+
+  @override
+  String get threadEditHistoryUnknownTime => 'Waktu tidak diketahui';
+
+  @override
+  String get discussionReplyEditTitle => 'Sunting balasan';
+
+  @override
+  String get discussionReplyEditSave => 'Simpan';
+
+  @override
+  String get discussionReplyEditSuccess => 'Balasan diperbarui';
+
+  @override
+  String get discussionReplyEditEmpty => 'Balasan tidak boleh kosong';
+
+  @override
+  String get discussionReplyEditFailed => 'Gagal menyunting balasan';
+
+  @override
+  String get discussionReplyEditIncomplete => 'Data balasan tidak lengkap';
+
+  @override
+  String get discussionReplyEditHistoryTitle => 'Riwayat sunting balasan';
+
+  @override
+  String get discussionReplyEditHistoryFailed =>
+      'Gagal memuat riwayat sunting balasan';
+
+  @override
+  String get discussionReplyEditHistoryIncomplete =>
+      'Riwayat sunting tidak lengkap';
+
+  @override
+  String get pantunReplyEdit => 'Sunting balasan';
+
+  @override
+  String get pantunReplyEditTitle => 'Sunting balasan pantun';
+
+  @override
+  String get pantunReplyEditSave => 'Simpan';
+
+  @override
+  String get pantunReplyEditSuccess => 'Balasan pantun diperbarui';
+
+  @override
+  String get pantunReplyEditIncomplete => 'Data balasan tidak lengkap';
+
+  @override
+  String get pantunReplyEditHistoryTitle => 'Riwayat sunting balasan pantun';
+
+  @override
+  String get pantunReplyEditHistoryIncomplete =>
+      'Riwayat sunting tidak lengkap';
+
+  @override
+  String get pantunReplyEditLine1 => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunReplyEditLine2 => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunReplyEditLine3 => 'Baris 3 (isi)';
+
+  @override
+  String get pantunReplyEditLine4 => 'Baris 4 (isi)';
 
   @override
   String commentSectionTitle(int count) {

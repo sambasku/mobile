@@ -249,6 +249,20 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
     myVote: view.myVote,
   );
 
+  void replaceReply(Pantun updated) {
+    final current = state.value;
+    if (current == null) return;
+    state = AsyncData(
+      PantunDetail(
+        current.pantun,
+        [
+          for (final r in current.replies)
+            r.id == updated.id ? updated : r,
+        ],
+      ),
+    );
+  }
+
   /// Hapus pantun pembuka milik sendiri. Return pesan error (null = sukses).
   Future<String?> deletePantun() async {
     final current = state.value;

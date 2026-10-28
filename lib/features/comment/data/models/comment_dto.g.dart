@@ -22,6 +22,8 @@ _CommentDto _$CommentDtoFromJson(Map<String, dynamic> json) => _CommentDto(
   upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
   downvotes: (json['downvotes'] as num?)?.toInt() ?? 0,
   status: json['status'] as String?,
+  isEdited: json['is_edited'] as bool? ?? false,
+  updatedAt: json['updated_at'] as String?,
 );
 
 Map<String, dynamic> _$CommentDtoToJson(_CommentDto instance) =>
@@ -41,4 +43,6 @@ Map<String, dynamic> _$CommentDtoToJson(_CommentDto instance) =>
       'upvotes': instance.upvotes,
       'downvotes': instance.downvotes,
       'status': instance.status,
+      'is_edited': instance.isEdited,
+      'updated_at': instance.updatedAt,
     };

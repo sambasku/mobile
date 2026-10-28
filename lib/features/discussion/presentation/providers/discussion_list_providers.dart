@@ -489,6 +489,42 @@ class DiscussionDetailController
     );
   }
 
+  Future<DiscussionFailure?> updateReply(
+    DiscussionReply reply,
+    String body,
+  ) async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    if (body.trim().isEmpty) {
+      return DiscussionFailure(l10n.discussionReplyEditEmpty);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .updateReply(replyId: reply.id, body: body);
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (updated) {
+      state = AsyncData(
+        DiscussionDetailState(
+          item: current.item.copyWith(
+            replies: [
+              for (final r in current.item.replies)
+                r.id == reply.id
+                    ? r.copyWith(
+                        body: updated.body,
+                        isEdited: updated.isEdited,
+                        updatedAt: updated.updatedAt,
+                      )
+                    : r,
+            ],
+          ),
+        ),
+      );
+      return null;
+    });
+  }
+
   Future<DiscussionFailure?> deleteReply(DiscussionReply reply) async {
     final current = state.value;
     if (current == null) {

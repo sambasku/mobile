@@ -4,14 +4,17 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
+import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
+import '../../domain/providers/comment_domain_providers.dart';
 import '../providers/comment_providers.dart';
 import '../providers/mention_suggest_providers.dart';
 import '../widgets/mention_suggest_overlay.dart';
@@ -205,6 +208,53 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     );
   }
 
+  Future<void> _editComment(WordComment comment) async {
+    final l10n = AppLocalizations.of(context);
+    final initial = comment.body?.trim() ?? '';
+    final saved = await showThreadTextEditSheet(
+      context,
+      title: l10n.commentEditTitle,
+      initialBody: initial,
+      saveLabel: l10n.commentEditSave,
+      onSave: (body) async {
+        if (body.isEmpty) return l10n.commentEditEmpty;
+        final failure = await ref
+            .read(commentListControllerProvider(widget.wordId).notifier)
+            .updateComment(comment, body);
+        return failure?.message;
+      },
+    );
+    if (!mounted || saved == null) return;
+    showFToast(
+      context: context,
+      title: Text(l10n.commentEditSuccess),
+      variant: FToastVariant.primary,
+    );
+  }
+
+  Future<void> _showCommentEditHistory(WordComment comment) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await ref.watch(getCommentEditHistoryUseCaseProvider)(
+      comment.id,
+    );
+    if (!mounted) return;
+    result.match(
+      (failure) => showAppErrorSheet(context, message: failure.message),
+      (history) => showThreadTextEditHistorySheet(
+        context,
+        title: l10n.commentEditHistoryTitle,
+        history: ThreadTextEditHistory(
+          currentBody: history.currentBody,
+          currentUpdatedAt: history.currentUpdatedAt,
+          revisions: [
+            for (final r in history.revisions)
+              ThreadTextEditRevision(body: r.body, createdAt: r.createdAt),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _deleteComment(WordComment comment) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showModalBottomSheet<bool>(
@@ -320,7 +370,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                     )
                   else
                     ...state.items.map((c) {
-                      final canDelete =
+                      final canManage =
                           auth != null &&
                           c.isPublished &&
                           c.isOwner(auth.userId);
@@ -338,7 +388,13 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                           if (c.isDeletedByAuthor) l10n.commentDeletedByAuthor,
                         ],
                         isRedacted: !c.isPublished,
-                        onDelete: canDelete ? () => _deleteComment(c) : null,
+                        isEdited: c.isEdited,
+                        editedLabel: l10n.commentEdited,
+                        onShowEditHistory: c.isEdited
+                            ? () => _showCommentEditHistory(c)
+                            : null,
+                        onEdit: canManage ? () => _editComment(c) : null,
+                        onDelete: canManage ? () => _deleteComment(c) : null,
                         onUsernameTap: isLinkablePublicUsername(c.username)
                             ? () => UserProfileRouter.open(context, c.username!)
                             : null,

@@ -23,6 +23,8 @@ abstract class CommentDto with _$CommentDto {
     @Default(0) int upvotes,
     @Default(0) int downvotes,
     String? status,
+    @JsonKey(name: 'is_edited') @Default(false) bool isEdited,
+    @JsonKey(name: 'updated_at') String? updatedAt,
   }) = _CommentDto;
 
   factory CommentDto.fromJson(Map<String, dynamic> json) =>

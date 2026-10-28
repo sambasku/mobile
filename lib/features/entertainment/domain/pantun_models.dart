@@ -17,6 +17,7 @@ class Pantun {
     required this.createdAt,
     required this.updatedAt,
     this.isVerifier = false,
+    this.isEdited = false,
     this.upvotes = 0,
     this.downvotes = 0,
     this.myVote,
@@ -30,6 +31,7 @@ class Pantun {
 
   /// Penulis punya role verifikator (admin/editor/reviewer/root) → centang.
   final bool isVerifier;
+  final bool isEdited;
 
   /// Null = pantun pembuka; berisi id pantun = balasan.
   final String? parentId;
@@ -55,6 +57,7 @@ class Pantun {
     displayName: json['display_name'] as String?,
     avatarUrl: json['avatar_url'] as String?,
     isVerifier: json['is_verifier'] as bool? ?? false,
+    isEdited: json['is_edited'] as bool? ?? false,
     parentId: json['parent_id'] as String?,
     language: json['language'] as String? ?? 'id',
     themeId: json['theme_id'] as String?,
@@ -78,9 +81,13 @@ class Pantun {
       VoteTarget(type: parentId == null ? 'pantun' : 'pantun_reply', id: id);
 
   Pantun copyWith({
+    List<String>? lines,
+    RhymeScheme? rhymeScheme,
     int? upvotes,
     int? downvotes,
     int? myVote,
+    bool? isEdited,
+    DateTime? updatedAt,
     bool clearMyVote = false,
   }) {
     return Pantun(
@@ -92,12 +99,13 @@ class Pantun {
       parentId: parentId,
       language: language,
       themeId: themeId,
-      rhymeScheme: rhymeScheme,
-      lines: lines,
+      rhymeScheme: rhymeScheme ?? this.rhymeScheme,
+      lines: lines ?? this.lines,
       status: status,
       createdAt: createdAt,
-      updatedAt: updatedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       isVerifier: isVerifier,
+      isEdited: isEdited ?? this.isEdited,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       myVote: clearMyVote ? null : (myVote ?? this.myVote),

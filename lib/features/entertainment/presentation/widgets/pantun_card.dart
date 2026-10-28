@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -25,6 +26,9 @@ class PantunCard extends StatelessWidget {
     this.onUsernameTap,
     this.onVoteToggle,
     this.highlighted = false,
+    this.isEdited = false,
+    this.editedLabel,
+    this.onShowEditHistory,
   });
 
   final Pantun pantun;
@@ -41,6 +45,9 @@ class PantunCard extends StatelessWidget {
 
   /// Latar lembut untuk balasan yang dituju deep-link (`?reply=`).
   final bool highlighted;
+  final bool isEdited;
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +87,23 @@ class PantunCard extends StatelessWidget {
                     ),
                   ),
                   const Gap(6),
-                  Text(
-                    formatRelativeAgo(pantun.createdAt),
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontSize: 11,
-                      height: 1.2,
+                  Flexible(
+                    child: _PantunMetaRow(
+                      dateLabel: formatRelativeAgo(pantun.createdAt),
+                      isEdited: isEdited,
+                      editedLabel: editedLabel,
+                      onShowEditHistory: onShowEditHistory,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                        fontSize: 11,
+                        height: 1.2,
+                      ),
+                      editedStyle: theme.typography.body.sm.copyWith(
+                        color: theme.colors.primary,
+                        fontSize: 11,
+                        height: 1.2,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -198,6 +216,18 @@ class PantunActionRow extends StatelessWidget {
     required this.onTap,
   });
 
+  /// Footer sunting untuk penulis sendiri.
+  factory PantunActionRow.edit({
+    Key? key,
+    required VoidCallback onEdit,
+    required String label,
+  }) => PantunActionRow(
+    key: key,
+    icon: FLucideIcons.pencil,
+    label: label,
+    onTap: onEdit,
+  );
+
   /// Footer hapus untuk penulis sendiri.
   factory PantunActionRow.delete({
     Key? key,
@@ -249,6 +279,44 @@ class PantunActionRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PantunMetaRow extends StatelessWidget {
+  const _PantunMetaRow({
+    required this.dateLabel,
+    required this.isEdited,
+    required this.editedLabel,
+    required this.onShowEditHistory,
+    required this.style,
+    required this.editedStyle,
+  });
+
+  final String dateLabel;
+  final bool isEdited;
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
+  final TextStyle style;
+  final TextStyle editedStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(dateLabel, style: style),
+        if (isEdited && onShowEditHistory != null) ...[
+          Text(' · ', style: style),
+          GestureDetector(
+            onTap: onShowEditHistory,
+            child: Text(
+              editedLabel ?? AppLocalizations.of(context).commentEdited,
+              style: editedStyle,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -15,6 +15,7 @@ import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
 import '../widgets/pantun_delete_sheet.dart';
+import '../widgets/pantun_edit_reply_sheet.dart';
 import '../widgets/pantun_report_sheet.dart';
 
 /// Detail pantun pembuka + thread balasan, disusun seperti Ruang Diskusi:
@@ -45,6 +46,71 @@ class PantunDetailPage extends HookConsumerWidget {
       '/entertainment/pantun/create?parent=$id',
     );
     if (created != null) ref.invalidate(pantunDetailProvider(id));
+  }
+
+  Future<void> _editReply(
+    BuildContext context,
+    WidgetRef ref,
+    Pantun reply,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final saved = await showPantunReplyEditSheet(
+      context,
+      initialLines: reply.lines,
+      onSave: (lines, scheme) async {
+        try {
+          final updated = await ref.read(pantunApiProvider).updateReply(
+                replyId: reply.id,
+                lines: lines,
+                rhymeScheme: scheme,
+              );
+          ref.read(pantunDetailProvider(id).notifier).replaceReply(updated);
+          return null;
+        } on PantunFailure catch (e) {
+          return e.message;
+        }
+      },
+    );
+    if (!context.mounted || saved == null) return;
+    showFToast(
+      context: context,
+      title: Text(l10n.pantunReplyEditSuccess),
+      variant: FToastVariant.primary,
+    );
+  }
+
+  Future<void> _showReplyEditHistory(
+    BuildContext context,
+    WidgetRef ref,
+    Pantun reply,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      final history = await ref
+          .read(pantunApiProvider)
+          .replyEditHistory(reply.id);
+      if (!context.mounted) return;
+      await showPantunReplyEditHistorySheet(
+        context,
+        title: l10n.pantunReplyEditHistoryTitle,
+        history: PantunReplyEditHistory(
+          currentLines: history.currentLines,
+          currentRhymeScheme: history.currentRhymeScheme,
+          revisions: [
+            for (final r in history.revisions)
+              PantunReplyEditRevision(
+                lines: r.lines,
+                rhymeScheme: r.rhymeScheme,
+                createdAt: r.createdAt,
+              ),
+          ],
+        ),
+      );
+    } on PantunFailure catch (e) {
+      if (context.mounted) {
+        await showAppErrorSheet(context, message: e.message);
+      }
+    }
   }
 
   Future<void> _deleteReply(
@@ -222,6 +288,11 @@ class PantunDetailPage extends HookConsumerWidget {
                       padding: const EdgeInsets.only(left: 12),
                       child: PantunCard(
                         pantun: reply,
+                        isEdited: reply.isEdited,
+                        editedLabel: l10n.commentEdited,
+                        onShowEditHistory: reply.isEdited
+                            ? () => _showReplyEditHistory(context, ref, reply)
+                            : null,
                         highlighted: reply.id == highlightReplyId,
                         onUsernameTap: isLinkablePublicUsername(reply.username)
                             ? () => UserProfileRouter.open(
@@ -234,10 +305,22 @@ class PantunDetailPage extends HookConsumerWidget {
                                   .read(pantunDetailProvider(id).notifier)
                                   .toggleVote(pantun, value)
                             : null,
-                        footer: reply.userId == myUserId
-                            ? PantunActionRow.delete(
-                                onDelete: () =>
-                                    _deleteReply(context, ref, reply),
+                        footer: reply.userId == myUserId &&
+                                reply.status == 'published'
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  PantunActionRow.edit(
+                                    label: l10n.pantunReplyEdit,
+                                    onEdit: () =>
+                                        _editReply(context, ref, reply),
+                                  ),
+                                  PantunActionRow.delete(
+                                    label: l10n.pantunDelete,
+                                    onDelete: () =>
+                                        _deleteReply(context, ref, reply),
+                                  ),
+                                ],
                               )
                             : PantunActionRow.report(
                                 onReport: () => reportPantunFromUi(

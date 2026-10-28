@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../domain/entities/comment_edit_history.dart';
 import '../../domain/entities/comment_page.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
@@ -10,6 +11,7 @@ import '../../domain/repositories/comment_repository.dart';
 import '../datasources/comment_remote_datasource.dart';
 import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
+import '../models/update_comment_request_dto.dart';
 import '../../../../core/i18n/l10n.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
@@ -153,6 +155,95 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<Either<CommentFailure, WordComment>> update({
+    required String commentId,
+    required String body,
+  }) async {
+    try {
+      final response = await _remoteDatasource.update(
+        commentId,
+        UpdateCommentRequestDto(body: body),
+      );
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          CommentFailure(
+            response.message ?? l10n.commentEditFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return Either.right(_toEntity(response.data!));
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, fallback: l10n.commentEditFailed));
+    } catch (error) {
+      return Either.left(CommentFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<CommentFailure, CommentEditHistory>> editHistory(
+    String commentId,
+  ) async {
+    try {
+      final response = await _remoteDatasource.editHistory(commentId);
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          CommentFailure(
+            response.message ?? l10n.commentEditHistoryFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      final raw = response.data;
+      if (raw is! Map) {
+        return Either.left(
+          CommentFailure(l10n.commentEditHistoryFailed),
+        );
+      }
+      return Either.right(
+        _parseEditHistory(Map<String, dynamic>.from(raw)),
+      );
+    } on DioException catch (error) {
+      return Either.left(
+        _mapDio(error, fallback: l10n.commentEditHistoryFailed),
+      );
+    } catch (error) {
+      return Either.left(CommentFailure(error.toString()));
+    }
+  }
+
+  CommentEditHistory _parseEditHistory(Map<String, dynamic> data) {
+    final current = data['current'];
+    final revisionsRaw = data['revisions'];
+    final revisions = <CommentEditRevision>[];
+    if (revisionsRaw is List) {
+      for (final raw in revisionsRaw) {
+        if (raw is! Map) continue;
+        final map = Map<String, dynamic>.from(raw);
+        final body = map['body']?.toString();
+        if (body == null || body.isEmpty) continue;
+        revisions.add(
+          CommentEditRevision(
+            body: body,
+            editorId: map['editor_id']?.toString() ?? '',
+            createdAt: map['created_at']?.toString() ?? '',
+          ),
+        );
+      }
+    }
+    if (current is Map) {
+      final c = Map<String, dynamic>.from(current);
+      return CommentEditHistory(
+        currentBody: c['body']?.toString(),
+        currentUpdatedAt: c['updated_at']?.toString(),
+        isEdited: c['is_edited'] == true,
+        revisions: revisions,
+      );
+    }
+    return CommentEditHistory(revisions: revisions);
+  }
+
+  @override
   Future<Either<CommentFailure, void>> delete(String commentId) async {
     try {
       final response = await _remoteDatasource.delete(commentId);
@@ -189,6 +280,8 @@ class CommentRepositoryImpl implements CommentRepository {
         status: dto.status,
         upvotes: dto.upvotes,
         downvotes: dto.downvotes,
+        isEdited: dto.isEdited,
+        updatedAt: dto.updatedAt,
       );
 
   CommentFailure _mapDio(DioException error, {required String fallback}) {

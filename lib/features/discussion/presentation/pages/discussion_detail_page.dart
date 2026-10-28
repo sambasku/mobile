@@ -12,7 +12,9 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/public_account_name.dart';
+import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
+import '../../data/discussion_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
@@ -162,6 +164,52 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
         }
         return failure.message;
       },
+    );
+  }
+
+  Future<void> _editReply(DiscussionReply reply) async {
+    final l10n = AppLocalizations.of(context);
+    final saved = await showThreadTextEditSheet(
+      context,
+      title: l10n.discussionReplyEditTitle,
+      initialBody: reply.body?.trim() ?? '',
+      saveLabel: l10n.discussionReplyEditSave,
+      onSave: (body) async {
+        if (body.isEmpty) return l10n.discussionReplyEditEmpty;
+        final failure = await ref
+            .read(discussionDetailProvider(widget.id).notifier)
+            .updateReply(reply, body);
+        return failure?.message;
+      },
+    );
+    if (!mounted || saved == null) return;
+    showFToast(
+      context: context,
+      title: Text(l10n.discussionReplyEditSuccess),
+      variant: FToastVariant.primary,
+    );
+  }
+
+  Future<void> _showReplyEditHistory(DiscussionReply reply) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .replyEditHistory(reply.id);
+    if (!mounted) return;
+    result.match(
+      (failure) => showAppErrorSheet(context, message: failure.message),
+      (history) => showThreadTextEditHistorySheet(
+        context,
+        title: l10n.discussionReplyEditHistoryTitle,
+        history: ThreadTextEditHistory(
+          currentBody: history.currentBody,
+          currentUpdatedAt: history.currentUpdatedAt,
+          revisions: [
+            for (final r in history.revisions)
+              ThreadTextEditRevision(body: r.body, createdAt: r.createdAt),
+          ],
+        ),
+      ),
     );
   }
 
@@ -421,8 +469,17 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                     durationMs: reply.audioDurationMs,
                                   )
                                 : null,
-                            onDelete:
-                                reply.isPublished && reply.isOwner(auth?.userId)
+                            isEdited: reply.isEdited,
+                            editedLabel: l10n.commentEdited,
+                            onShowEditHistory: reply.isEdited
+                                ? () => _showReplyEditHistory(reply)
+                                : null,
+                            onEdit: reply.isPublished &&
+                                    reply.isOwner(auth?.userId)
+                                ? () => _editReply(reply)
+                                : null,
+                            onDelete: reply.isPublished &&
+                                    reply.isOwner(auth?.userId)
                                 ? () => _deleteReply(reply)
                                 : null,
                             onUsernameTap:

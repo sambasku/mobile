@@ -102,6 +102,44 @@ class PantunApi {
     return Pantun.fromJson(data);
   }
 
+  Future<Pantun> updateReply({
+    required String replyId,
+    required List<String> lines,
+    String? rhymeScheme,
+  }) async {
+    try {
+      final res = await _dio.patch<Map<String, dynamic>>(
+        '$_base/replies/$replyId',
+        data: {
+          'lines': lines,
+          if (rhymeScheme != null) 'rhyme_scheme': rhymeScheme,
+        },
+      );
+      final data = res.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw PantunFailure(l10n.pantunReplyEditIncomplete);
+      }
+      return Pantun.fromJson(data);
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
+  Future<PantunReplyEditHistoryWire> replyEditHistory(String replyId) async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        '$_base/replies/$replyId/edit-history',
+      );
+      final data = res.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw PantunFailure(l10n.pantunReplyEditHistoryIncomplete);
+      }
+      return PantunReplyEditHistoryWire.fromJson(data);
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
   Future<void> deleteReply(String replyId) async {
     try {
       await _dio.delete('$_base/replies/$replyId');
@@ -177,3 +215,62 @@ String _messageFrom(DioException e) {
 final pantunApiProvider = Provider<PantunApi>(
   (ref) => PantunApi(ref.watch(dioProvider)),
 );
+
+class PantunReplyEditHistoryWire {
+  PantunReplyEditHistoryWire({
+    required this.currentLines,
+    required this.currentRhymeScheme,
+    required this.revisions,
+  });
+
+  final List<String> currentLines;
+  final String currentRhymeScheme;
+  final List<PantunReplyEditRevisionWire> revisions;
+
+  factory PantunReplyEditHistoryWire.fromJson(Map<String, dynamic> json) {
+    final current = json['current'];
+    final revisionsRaw = json['revisions'];
+    final revisions = <PantunReplyEditRevisionWire>[];
+    if (revisionsRaw is List) {
+      for (final raw in revisionsRaw) {
+        if (raw is! Map<String, dynamic>) continue;
+        final linesRaw = raw['lines'];
+        if (linesRaw is! List) continue;
+        revisions.add(
+          PantunReplyEditRevisionWire(
+            lines: linesRaw.map((e) => e.toString()).toList(growable: false),
+            rhymeScheme: raw['rhyme_scheme']?.toString() ?? 'ABAB',
+            createdAt: raw['created_at']?.toString() ?? '',
+          ),
+        );
+      }
+    }
+    if (current is Map<String, dynamic>) {
+      final linesRaw = current['lines'];
+      return PantunReplyEditHistoryWire(
+        currentLines: linesRaw is List
+            ? linesRaw.map((e) => e.toString()).toList(growable: false)
+            : const [],
+        currentRhymeScheme: current['rhyme_scheme']?.toString() ?? 'ABAB',
+        revisions: revisions,
+      );
+    }
+    return PantunReplyEditHistoryWire(
+      currentLines: const [],
+      currentRhymeScheme: 'ABAB',
+      revisions: revisions,
+    );
+  }
+}
+
+class PantunReplyEditRevisionWire {
+  PantunReplyEditRevisionWire({
+    required this.lines,
+    required this.rhymeScheme,
+    required this.createdAt,
+  });
+
+  final List<String> lines;
+  final String rhymeScheme;
+  final String createdAt;
+}

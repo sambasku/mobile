@@ -20,6 +20,8 @@ class WordComment {
     this.upvotes = 0,
     this.downvotes = 0,
     this.myVote,
+    this.isEdited = false,
+    this.updatedAt,
   });
 
   final String id;
@@ -52,6 +54,8 @@ class WordComment {
   final int upvotes;
   final int downvotes;
   final int? myVote;
+  final bool isEdited;
+  final String? updatedAt;
 
   VoteTarget get voteTarget => VoteTarget(type: 'comment', id: id);
 
@@ -87,6 +91,8 @@ class WordComment {
     int? upvotes,
     int? downvotes,
     Object? myVote = _unset,
+    bool? isEdited,
+    String? updatedAt,
   }) {
     return WordComment(
       id: id,
@@ -105,6 +111,8 @@ class WordComment {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
+      isEdited: isEdited ?? this.isEdited,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 

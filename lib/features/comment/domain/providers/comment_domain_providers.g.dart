@@ -200,3 +200,100 @@ final class DeleteCommentUseCaseProvider
 
 String _$deleteCommentUseCaseHash() =>
     r'bf6918ba914b6c2cf4ff77b4def5bfa3eb0d4f99';
+
+@ProviderFor(updateCommentUseCase)
+final updateCommentUseCaseProvider = UpdateCommentUseCaseProvider._();
+
+final class UpdateCommentUseCaseProvider
+    extends
+        $FunctionalProvider<
+          UpdateCommentUseCase,
+          UpdateCommentUseCase,
+          UpdateCommentUseCase
+        >
+    with $Provider<UpdateCommentUseCase> {
+  UpdateCommentUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'updateCommentUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$updateCommentUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<UpdateCommentUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UpdateCommentUseCase create(Ref ref) {
+    return updateCommentUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UpdateCommentUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UpdateCommentUseCase>(value),
+    );
+  }
+}
+
+String _$updateCommentUseCaseHash() =>
+    r'4947cca7d74b8cb88840bbccd4393ab4643ccc46';
+
+@ProviderFor(getCommentEditHistoryUseCase)
+final getCommentEditHistoryUseCaseProvider =
+    GetCommentEditHistoryUseCaseProvider._();
+
+final class GetCommentEditHistoryUseCaseProvider
+    extends
+        $FunctionalProvider<
+          GetCommentEditHistoryUseCase,
+          GetCommentEditHistoryUseCase,
+          GetCommentEditHistoryUseCase
+        >
+    with $Provider<GetCommentEditHistoryUseCase> {
+  GetCommentEditHistoryUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getCommentEditHistoryUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getCommentEditHistoryUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetCommentEditHistoryUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GetCommentEditHistoryUseCase create(Ref ref) {
+    return getCommentEditHistoryUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetCommentEditHistoryUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetCommentEditHistoryUseCase>(value),
+    );
+  }
+}
+
+String _$getCommentEditHistoryUseCaseHash() =>
+    r'f777f37f2b790047852a82e372209a2384f02048';

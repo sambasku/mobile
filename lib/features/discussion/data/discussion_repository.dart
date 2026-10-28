@@ -248,6 +248,100 @@ class DiscussionRepository {
     }
   }
 
+  Future<Either<DiscussionFailure, DiscussionReply>> updateReply({
+    required String replyId,
+    required String body,
+  }) async {
+    try {
+      final res = await _dio.patch<Map<String, dynamic>>(
+        '$_base/replies/$replyId',
+        data: {'body': body},
+      );
+      final envelope = res.data;
+      if (envelope?['success'] != true) {
+        return Either.left(
+          DiscussionFailure(
+            (envelope?['message'] as String?) ?? l10n.discussionReplyEditFailed,
+          ),
+        );
+      }
+      final data = envelope?['data'];
+      if (data is! Map) {
+        return Either.left(
+          DiscussionFailure(l10n.discussionReplyEditIncomplete),
+        );
+      }
+      return Either.right(
+        DiscussionReply.fromJson(Map<String, dynamic>.from(data)),
+      );
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.discussionReplyEditFailed));
+    } catch (e) {
+      return Either.left(DiscussionFailure(e.toString()));
+    }
+  }
+
+  Future<Either<DiscussionFailure, DiscussionReplyEditHistory>> replyEditHistory(
+    String replyId,
+  ) async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        '$_base/replies/$replyId/edit-history',
+      );
+      final envelope = res.data;
+      if (envelope?['success'] != true) {
+        return Either.left(
+          DiscussionFailure(
+            (envelope?['message'] as String?) ??
+                l10n.discussionReplyEditHistoryFailed,
+          ),
+        );
+      }
+      final data = envelope?['data'];
+      if (data is! Map) {
+        return Either.left(
+          DiscussionFailure(l10n.discussionReplyEditHistoryIncomplete),
+        );
+      }
+      return Either.right(_parseReplyEditHistory(Map<String, dynamic>.from(data)));
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.discussionReplyEditHistoryFailed));
+    } catch (e) {
+      return Either.left(DiscussionFailure(e.toString()));
+    }
+  }
+
+  DiscussionReplyEditHistory _parseReplyEditHistory(Map<String, dynamic> data) {
+    final current = data['current'];
+    final revisionsRaw = data['revisions'];
+    final revisions = <DiscussionReplyEditRevision>[];
+    if (revisionsRaw is List) {
+      for (final raw in revisionsRaw) {
+        if (raw is! Map) continue;
+        final map = Map<String, dynamic>.from(raw);
+        final body = map['body']?.toString();
+        if (body == null || body.isEmpty) continue;
+        revisions.add(
+          DiscussionReplyEditRevision(
+            body: body,
+            editorId: map['editor_id']?.toString() ?? '',
+            createdAt: map['created_at']?.toString() ?? '',
+          ),
+        );
+      }
+    }
+    if (current is Map) {
+      final c = Map<String, dynamic>.from(current);
+      return DiscussionReplyEditHistory(
+        currentBody: c['body']?.toString(),
+        currentUpdatedAt: c['updated_at']?.toString(),
+        isEdited: c['is_edited'] == true,
+        revisions: revisions,
+      );
+    }
+    return DiscussionReplyEditHistory(revisions: revisions);
+  }
+
   Future<Either<DiscussionFailure, Unit>> deleteReply(String replyId) async {
     try {
       await _dio.delete<Map<String, dynamic>>('$_base/replies/$replyId');

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fpdart/fpdart.dart';
 
+import '../entities/comment_edit_history.dart';
 import '../entities/comment_page.dart';
 import '../entities/word_comment.dart';
 import '../failures/comment_failure.dart';
@@ -32,4 +33,14 @@ abstract interface class CommentRepository {
 
   /// Soft-delete komentar sendiri (atau oleh admin/root/reviewer).
   Future<Either<CommentFailure, void>> delete(String commentId);
+
+  /// Sunting komentar sendiri (published).
+  Future<Either<CommentFailure, WordComment>> update({
+    required String commentId,
+    required String body,
+  });
+
+  Future<Either<CommentFailure, CommentEditHistory>> editHistory(
+    String commentId,
+  );
 }

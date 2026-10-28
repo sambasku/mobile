@@ -156,6 +156,44 @@ class CommentListController extends _$CommentListController {
     );
   }
 
+  Future<CommentFailure?> updateComment(
+    WordComment comment,
+    String body,
+  ) async {
+    final current = state.value;
+    if (current == null) return null;
+    if (body.trim().isEmpty) {
+      return const CommentFailure('Komentar tidak boleh kosong');
+    }
+
+    final result = await ref.watch(updateCommentUseCaseProvider)(
+      commentId: comment.id,
+      body: body,
+    );
+    if (!ref.mounted) return null;
+    return result.match(
+      (failure) => failure,
+      (updated) {
+        final s = state.value ?? current;
+        state = AsyncData(
+          s.copyWith(
+            items: [
+              for (final c in s.items)
+                c.id == comment.id
+                    ? c.copyWith(
+                        body: updated.body,
+                        isEdited: updated.isEdited,
+                        updatedAt: updated.updatedAt,
+                      )
+                    : c,
+            ],
+          ),
+        );
+        return null;
+      },
+    );
+  }
+
   Future<CommentFailure?> delete(WordComment comment) async {
     final current = state.value;
     if (current == null) return null;

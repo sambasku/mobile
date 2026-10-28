@@ -1315,6 +1315,192 @@ abstract class AppLocalizations {
   /// **'Komentar dihapus'**
   String get commentDeleted;
 
+  /// Label meta komentar/balasan pernah disunting
+  ///
+  /// In id, this message translates to:
+  /// **'Diedit'**
+  String get commentEdited;
+
+  /// Aksesibilitas tombol sunting komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting komentar'**
+  String get commentEdit;
+
+  /// No description provided for @commentEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting komentar'**
+  String get commentEditTitle;
+
+  /// No description provided for @commentEditSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get commentEditSave;
+
+  /// No description provided for @commentEditSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar diperbarui'**
+  String get commentEditSuccess;
+
+  /// No description provided for @commentEditEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar tidak boleh kosong'**
+  String get commentEditEmpty;
+
+  /// No description provided for @commentEditFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyunting komentar'**
+  String get commentEditFailed;
+
+  /// No description provided for @commentEditHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting'**
+  String get commentEditHistoryTitle;
+
+  /// No description provided for @commentEditHistoryFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat sunting'**
+  String get commentEditHistoryFailed;
+
+  /// No description provided for @threadEditHistoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada riwayat sunting.'**
+  String get threadEditHistoryEmpty;
+
+  /// No description provided for @threadEditHistoryUnknownTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu tidak diketahui'**
+  String get threadEditHistoryUnknownTime;
+
+  /// No description provided for @discussionReplyEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting balasan'**
+  String get discussionReplyEditTitle;
+
+  /// No description provided for @discussionReplyEditSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get discussionReplyEditSave;
+
+  /// No description provided for @discussionReplyEditSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan diperbarui'**
+  String get discussionReplyEditSuccess;
+
+  /// No description provided for @discussionReplyEditEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan tidak boleh kosong'**
+  String get discussionReplyEditEmpty;
+
+  /// No description provided for @discussionReplyEditFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyunting balasan'**
+  String get discussionReplyEditFailed;
+
+  /// No description provided for @discussionReplyEditIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Data balasan tidak lengkap'**
+  String get discussionReplyEditIncomplete;
+
+  /// No description provided for @discussionReplyEditHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting balasan'**
+  String get discussionReplyEditHistoryTitle;
+
+  /// No description provided for @discussionReplyEditHistoryFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat sunting balasan'**
+  String get discussionReplyEditHistoryFailed;
+
+  /// No description provided for @discussionReplyEditHistoryIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting tidak lengkap'**
+  String get discussionReplyEditHistoryIncomplete;
+
+  /// No description provided for @pantunReplyEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting balasan'**
+  String get pantunReplyEdit;
+
+  /// No description provided for @pantunReplyEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting balasan pantun'**
+  String get pantunReplyEditTitle;
+
+  /// No description provided for @pantunReplyEditSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get pantunReplyEditSave;
+
+  /// No description provided for @pantunReplyEditSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan pantun diperbarui'**
+  String get pantunReplyEditSuccess;
+
+  /// No description provided for @pantunReplyEditIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Data balasan tidak lengkap'**
+  String get pantunReplyEditIncomplete;
+
+  /// No description provided for @pantunReplyEditHistoryTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting balasan pantun'**
+  String get pantunReplyEditHistoryTitle;
+
+  /// No description provided for @pantunReplyEditHistoryIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting tidak lengkap'**
+  String get pantunReplyEditHistoryIncomplete;
+
+  /// No description provided for @pantunReplyEditLine1.
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 1 (pembayang)'**
+  String get pantunReplyEditLine1;
+
+  /// No description provided for @pantunReplyEditLine2.
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 2 (pembayang)'**
+  String get pantunReplyEditLine2;
+
+  /// No description provided for @pantunReplyEditLine3.
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 3 (isi)'**
+  String get pantunReplyEditLine3;
+
+  /// No description provided for @pantunReplyEditLine4.
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 4 (isi)'**
+  String get pantunReplyEditLine4;
+
   /// No description provided for @commentSectionTitle.
   ///
   /// In id, this message translates to:

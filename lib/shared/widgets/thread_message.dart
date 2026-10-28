@@ -36,6 +36,10 @@ class ThreadMessageRow extends StatelessWidget {
     this.onUsernameTap,
     this.onMentionTap,
     this.onDelete,
+    this.onEdit,
+    this.isEdited = false,
+    this.editedLabel,
+    this.onShowEditHistory,
     this.media,
     this.footer,
     this.highlighted = false,
@@ -63,6 +67,14 @@ class ThreadMessageRow extends StatelessWidget {
   final bool isRedacted;
   final VoidCallback? onUsernameTap;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
+
+  /// true → tampilkan [editedLabel] di meta (tap → [onShowEditHistory]).
+  final bool isEdited;
+
+  /// Label tappable sunting (mis. dari l10n.commentEdited).
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
 
   /// Tap `@username` di body → callback (navigasi profil).
   final ValueChanged<String>? onMentionTap;
@@ -87,11 +99,6 @@ class ThreadMessageRow extends StatelessWidget {
     // handle untuk mention (issue: susah mention karena username tak terlihat).
     final showHandle =
         !isRedacted && isLinkablePublicUsername(username) && username != label;
-    final trailingMeta = [
-      if (dateLabel != null && dateLabel!.isNotEmpty) dateLabel!,
-      ...metaParts.where((p) => p.trim().isNotEmpty),
-    ].join(' · ');
-
     final nameStyle = theme.typography.body.sm.copyWith(
       fontWeight: FontWeight.w700,
       height: 1.2,
@@ -126,19 +133,26 @@ class ThreadMessageRow extends StatelessWidget {
                       style: nameStyle,
                     ),
                   ),
-                  if (trailingMeta.isNotEmpty) ...[
+                  if (_hasTrailingMeta) ...[
                     const Gap(6),
-                    Text(
-                      trailingMeta,
-                      style: metaStyle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      child: _ThreadMetaRow(
+                        dateLabel: dateLabel,
+                        metaParts: metaParts,
+                        isEdited: isEdited,
+                        editedLabel: editedLabel,
+                        onShowEditHistory: onShowEditHistory,
+                        style: metaStyle,
+                        editedStyle: metaStyle.copyWith(
+                          color: theme.colors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ],
-                  // Tanpa footer, hapus tetap di header supaya aksi tidak hilang.
-                  if (onDelete != null && footer == null) ...[
+                  if ((onEdit != null || onDelete != null) && footer == null) ...[
                     const Spacer(),
-                    _ThreadDeleteButton(onPressed: onDelete!),
+                    _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
                   ],
                 ],
               ),
@@ -182,8 +196,7 @@ class ThreadMessageRow extends StatelessWidget {
                         child: footer!,
                       ),
                     ),
-                    if (onDelete != null)
-                      _ThreadDeleteButton(onPressed: onDelete!),
+                    _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
                   ],
                 ),
               ],
@@ -209,28 +222,125 @@ class ThreadMessageRow extends StatelessWidget {
           : content,
     );
   }
+
+  bool get _hasTrailingMeta =>
+      (dateLabel != null && dateLabel!.isNotEmpty) ||
+      metaParts.any((p) => p.trim().isNotEmpty) ||
+      (isEdited && onShowEditHistory != null);
 }
 
-/// Ikon hapus di baris thread. Material transparan supaya ripple InkWell
-/// jalan di pohon Forui yang tidak punya ancestor Material.
-class _ThreadDeleteButton extends StatelessWidget {
-  const _ThreadDeleteButton({required this.onPressed});
+class _ThreadMetaRow extends StatelessWidget {
+  const _ThreadMetaRow({
+    required this.dateLabel,
+    required this.metaParts,
+    required this.isEdited,
+    required this.editedLabel,
+    required this.onShowEditHistory,
+    required this.style,
+    required this.editedStyle,
+  });
 
-  final VoidCallback onPressed;
+  final String? dateLabel;
+  final List<String> metaParts;
+  final bool isEdited;
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
+  final TextStyle style;
+  final TextStyle editedStyle;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(6),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(2),
-          child: Icon(
-            FLucideIcons.trash,
-            size: 14,
-            color: context.theme.colors.mutedForeground,
+    final children = <Widget>[];
+    void sep() {
+      if (children.isNotEmpty) {
+        children.add(Text(' · ', style: style));
+      }
+    }
+
+    if (dateLabel != null && dateLabel!.isNotEmpty) {
+      children.add(Text(dateLabel!, style: style));
+    }
+    if (isEdited && onShowEditHistory != null) {
+      sep();
+      children.add(
+        GestureDetector(
+          onTap: onShowEditHistory,
+          child: Text(
+            editedLabel ?? AppLocalizations.of(context).commentEdited,
+            style: editedStyle,
+          ),
+        ),
+      );
+    }
+    for (final part in metaParts.where((p) => p.trim().isNotEmpty)) {
+      sep();
+      children.add(Text(part, style: style));
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
+  }
+}
+
+class _ThreadRowActions extends StatelessWidget {
+  const _ThreadRowActions({this.onEdit, this.onDelete});
+
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    if (onEdit == null && onDelete == null) return const SizedBox.shrink();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (onEdit != null)
+          _ThreadIconButton(
+            icon: FLucideIcons.pencil,
+            onPressed: onEdit!,
+            semanticsLabel: AppLocalizations.of(context).commentEdit,
+          ),
+        if (onDelete != null)
+          _ThreadIconButton(
+            icon: FLucideIcons.trash,
+            onPressed: onDelete!,
+            semanticsLabel: AppLocalizations.of(context).commonDelete,
+          ),
+      ],
+    );
+  }
+}
+
+class _ThreadIconButton extends StatelessWidget {
+  const _ThreadIconButton({
+    required this.icon,
+    required this.onPressed,
+    required this.semanticsLabel,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+  final String semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Icon(
+              icon,
+              size: 14,
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
         ),
       ),

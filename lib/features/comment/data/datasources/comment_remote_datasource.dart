@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import '../../../../core/models/api_response.dart';
 import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
+import '../models/update_comment_request_dto.dart';
 
 part 'comment_remote_datasource.g.dart';
 
@@ -36,4 +37,15 @@ abstract interface class CommentRemoteDatasource {
   /// /api/v1/comments/:id. Response `{ success: true, data: null }`.
   @DELETE('/api/v1/comments/{id}')
   Future<ApiResponse<dynamic>> delete(@Path('id') String id);
+
+  /// Sunting komentar (penulis) - PATCH /api/v1/comments/:id.
+  @PATCH('/api/v1/comments/{id}')
+  Future<ApiResponse<CommentDto>> update(
+    @Path('id') String id,
+    @Body() UpdateCommentRequestDto body,
+  );
+
+  /// Riwayat sunting - GET /api/v1/comments/:id/edit-history.
+  @GET('/api/v1/comments/{id}/edit-history')
+  Future<ApiResponse<dynamic>> editHistory(@Path('id') String id);
 }
