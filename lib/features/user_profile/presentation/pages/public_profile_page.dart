@@ -19,6 +19,7 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../../shared/widgets/profile_hero_shell.dart';
 import '../../../../shared/widgets/profile_identity_header.dart';
 import '../../../../shared/widgets/profile_leveling_chip.dart';
@@ -226,107 +227,118 @@ class _ProfileBody extends HookConsumerWidget {
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
     final activityFilter = useState(ProfileActivityFilter.all);
+    // #201: controller untuk tombol kembali ke atas (+ sync scroll).
+    final scroll = useScrollController();
     // Chip pinned berhenti di bawah bar melayang (status bar + bar aksi),
     // bukan menempel ke tepi atas layar.
     final barOffset =
         MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
 
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      // Spinner mulai di bawah bar melayang, bukan di baliknya.
-      displacement: barOffset + 8,
-      // Sliver (bukan ListView): baris chip kategori bisa PIN di bawah bar
-      // melayang - pola sama dengan feed beranda (#193).
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            // Header identitas full-bleed (cover selebar layar); gutter
-            // horizontal dipasang di dalam widget header.
-            padding: EdgeInsets.zero,
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Header identitas bersama dengan tab Profil: beda varian
-                  // (compact), struktur dan ritme sama.
-                  ProfileIdentityHeader(
-                    variant: ProfileHeaderVariant.compact,
-                    displayName: profile.displayName,
-                    username: profile.username,
-                    avatarUrl: avatarSrc,
-                    borderUrl: borderUrl,
-                    bio: profile.bio,
-                    isVerifier: profile.isVerifier,
-                    leveling: profile.leveling == null
-                        ? null
-                        : ProfileLevelingChip(leveling: profile.leveling!),
-                    stats: ProfileStatRow(
-                      words: profile.wordsApproved,
-                      corrections: profile.correctionsApproved,
+    return ScrollWithBackToTop(
+      controller: scroll,
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        // Spinner mulai di bawah bar melayang, bukan di baliknya.
+        displacement: barOffset + 8,
+        // Sliver (bukan ListView): baris chip kategori bisa PIN di bawah bar
+        // melayang - pola sama dengan feed beranda (#193).
+        child: CustomScrollView(
+          controller: scroll,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              // Header identitas full-bleed (cover selebar layar); gutter
+              // horizontal dipasang di dalam widget header.
+              padding: EdgeInsets.zero,
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Header identitas bersama dengan tab Profil: beda varian
+                    // (compact), struktur dan ritme sama.
+                    ProfileIdentityHeader(
+                      variant: ProfileHeaderVariant.compact,
+                      displayName: profile.displayName,
+                      username: profile.username,
+                      avatarUrl: avatarSrc,
+                      borderUrl: borderUrl,
+                      bio: profile.bio,
+                      isVerifier: profile.isVerifier,
+                      leveling: profile.leveling == null
+                          ? null
+                          : ProfileLevelingChip(leveling: profile.leveling!),
+                      stats: ProfileStatRow(
+                        words: profile.wordsApproved,
+                        corrections: profile.correctionsApproved,
+                      ),
+                      joinedLabel: joined,
+                      onAvatarTap: isOwnProfile && !uploadingAvatar.value
+                          ? () => _showAvatarActions(
+                              context,
+                              ref,
+                              uploadingAvatar,
+                            )
+                          : canPreviewAvatar
+                          ? () => showImagePreview(context, urls: [avatarSrc])
+                          : null,
+                      actions: [
+                        if (isOwnProfile)
+                          SmallButton(
+                            label: AppLocalizations.of(
+                              context,
+                            ).profileEditAction,
+                            onPress: () => context.push('/edit-profile'),
+                          ),
+                      ],
+                      footer: ProfileAchievementTabs(
+                        username: isOwnProfile ? null : profile.username,
+                        showTitle: true,
+                      ),
                     ),
-                    joinedLabel: joined,
-                    onAvatarTap: isOwnProfile && !uploadingAvatar.value
-                        ? () =>
-                              _showAvatarActions(context, ref, uploadingAvatar)
-                        : canPreviewAvatar
-                        ? () => showImagePreview(context, urls: [avatarSrc])
-                        : null,
-                    actions: [
-                      if (isOwnProfile)
-                        SmallButton(
-                          label: AppLocalizations.of(context).profileEditAction,
-                          onPress: () => context.push('/edit-profile'),
-                        ),
-                    ],
-                    footer: ProfileAchievementTabs(
-                      username: isOwnProfile ? null : profile.username,
-                      showTitle: true,
-                    ),
+                    const Gap(12),
+                  ],
+                ),
+              ),
+            ),
+            // Chip kategori menempel di bawah bar melayang saat scroll.
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: ProfileActivityChipsHeader(
+                topOffset: barOffset,
+                // body.sm + w700: sama dengan heading feed beranda; jangan
+                // body.md (line height 24) - titleHeight default 18 memotong teks.
+                title: Text(
+                  AppLocalizations.of(context).profileActivityRecent,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  const Gap(12),
-                ],
+                ),
+                child: ProfileActivityChips(
+                  selected: activityFilter.value,
+                  onChanged: (next) {
+                    if (next == activityFilter.value) return;
+                    HapticFeedback.selectionClick();
+                    activityFilter.value = next;
+                  },
+                ),
               ),
             ),
-          ),
-        // Chip kategori menempel di bawah bar melayang saat scroll.
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: ProfileActivityChipsHeader(
-            topOffset: barOffset,
-            // body.sm + w700: sama dengan heading feed beranda; jangan
-            // body.md (line height 24) - titleHeight default 18 memotong teks.
-            title: Text(
-              AppLocalizations.of(context).profileActivityRecent,
-              style: theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w700,
+            SliverPadding(
+              // Gutter horizontal manual (childPad false) + jarak bawah.
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
+              sliver: SliverToBoxAdapter(
+                child: ProfileActivityList(
+                  username: profile.username,
+                  profile: profile,
+                  filter: activityFilter.value,
+                  activityAsync: activityAsync,
+                  onRetry: onRetryActivity,
+                  showCta: !isOwnProfile,
+                ),
               ),
             ),
-            child: ProfileActivityChips(
-              selected: activityFilter.value,
-              onChanged: (next) {
-                if (next == activityFilter.value) return;
-                HapticFeedback.selectionClick();
-                activityFilter.value = next;
-              },
-            ),
-          ),
+          ],
         ),
-        SliverPadding(
-          // Gutter horizontal manual (childPad false) + jarak bawah.
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
-          sliver: SliverToBoxAdapter(
-            child: ProfileActivityList(
-              username: profile.username,
-              profile: profile,
-              filter: activityFilter.value,
-              activityAsync: activityAsync,
-              onRetry: onRetryActivity,
-              showCta: !isOwnProfile,
-            ),
-          ),
-        ),
-        ],
       ),
     );
   }
@@ -397,9 +409,7 @@ class _ProfileBody extends HookConsumerWidget {
           if (!context.mounted) return;
           showFToast(
             context: context,
-            title: Text(
-              AppLocalizations.of(context).profilePhotoPickerFailed,
-            ),
+            title: Text(AppLocalizations.of(context).profilePhotoPickerFailed),
           );
           return;
         }
@@ -424,9 +434,7 @@ class _ProfileBody extends HookConsumerWidget {
               if (!context.mounted) return;
               showFToast(
                 context: context,
-                title: Text(
-                  AppLocalizations.of(context).profilePhotoUpdated,
-                ),
+                title: Text(AppLocalizations.of(context).profilePhotoUpdated),
               );
             },
           );
@@ -483,9 +491,7 @@ class _PublicProfileLoadingBody extends StatelessWidget {
           ),
           const SliverPadding(
             padding: EdgeInsets.fromLTRB(12, 0, 12, 32),
-            sliver: SliverToBoxAdapter(
-              child: ProfileActivityListSkeleton(),
-            ),
+            sliver: SliverToBoxAdapter(child: ProfileActivityListSkeleton()),
           ),
         ],
       ),

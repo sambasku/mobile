@@ -767,6 +767,10 @@
   "@commonBack": {
     "description": "Semantics tombol kembali di bar melayang halaman ber-cover"
   },
+  "commonBackToTop": "Kembali ke atas",
+  "@commonBackToTop": {
+    "description": "Tooltip/semantics tombol scroll ke atas di feed panjang (#201)"
+  },
   "commonRetry": "Coba lagi",
   "commonSave": "Simpan",
   "commonReject": "Tolak",
