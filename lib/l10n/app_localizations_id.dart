@@ -6860,6 +6860,30 @@ class AppLocalizationsId extends AppLocalizations {
   String get discussionFeedSortByTime => 'Menurut waktu';
 
   @override
+  String get discussionFeedSortCreated => 'Dibuat';
+
+  @override
+  String get discussionFeedSortActivity => 'Dibalas';
+
+  @override
+  String get discussionFeedSortVotes => 'Vote';
+
+  @override
+  String get discussionFeedSortReplies => 'Balasan';
+
+  @override
+  String get discussionFeedSortAsc => 'Urutan naik';
+
+  @override
+  String get discussionFeedSortDesc => 'Urutan turun';
+
+  @override
+  String get discussionFeedSortAscShort => 'Naik';
+
+  @override
+  String get discussionFeedSortDescShort => 'Turun';
+
+  @override
   String get discussionStatusAll => 'Semua';
 
   @override
@@ -15209,6 +15233,30 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get discussionFeedSortByTime => 'Menurut waktu';
+
+  @override
+  String get discussionFeedSortCreated => 'Dibuat';
+
+  @override
+  String get discussionFeedSortActivity => 'Dibalas';
+
+  @override
+  String get discussionFeedSortVotes => 'Vote';
+
+  @override
+  String get discussionFeedSortReplies => 'Balasan';
+
+  @override
+  String get discussionFeedSortAsc => 'Urutan naik';
+
+  @override
+  String get discussionFeedSortDesc => 'Urutan turun';
+
+  @override
+  String get discussionFeedSortAscShort => 'Naik';
+
+  @override
+  String get discussionFeedSortDescShort => 'Turun';
 
   @override
   String get discussionStatusAll => 'Semua';

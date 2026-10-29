@@ -15,7 +15,8 @@ class DiscussionListState {
     this.hasMore = false,
     this.isLoadingMore = false,
     this.status,
-    this.sort = 'latest',
+    this.sort = 'created',
+    this.order = 'desc',
   });
 
   final List<DiscussionItem> items;
@@ -24,6 +25,7 @@ class DiscussionListState {
   final bool isLoadingMore;
   final String? status;
   final String sort;
+  final String order;
 
   DiscussionListState copyWith({
     List<DiscussionItem>? items,
@@ -32,6 +34,7 @@ class DiscussionListState {
     bool? isLoadingMore,
     String? status,
     String? sort,
+    String? order,
     bool clearCursor = false,
   }) {
     return DiscussionListState(
@@ -41,20 +44,44 @@ class DiscussionListState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       status: status ?? this.status,
       sort: sort ?? this.sort,
+      order: order ?? this.order,
+    );
+  }
+}
+
+/// State sort feed: kunci + arah (#204).
+class DiscussionFeedSortState {
+  const DiscussionFeedSortState({
+    this.sort = 'created',
+    this.order = 'desc',
+  });
+
+  final String sort;
+  final String order;
+
+  DiscussionFeedSortState copyWith({String? sort, String? order}) {
+    return DiscussionFeedSortState(
+      sort: sort ?? this.sort,
+      order: order ?? this.order,
     );
   }
 }
 
 final discussionFeedSortProvider =
-    NotifierProvider.autoDispose<DiscussionFeedSort, String>(
+    NotifierProvider.autoDispose<DiscussionFeedSort, DiscussionFeedSortState>(
       DiscussionFeedSort.new,
     );
 
-class DiscussionFeedSort extends Notifier<String> {
+class DiscussionFeedSort extends Notifier<DiscussionFeedSortState> {
   @override
-  String build() => 'latest';
+  DiscussionFeedSortState build() => const DiscussionFeedSortState();
 
-  void select(String sort) => state = sort;
+  void selectSort(String sort) => state = state.copyWith(sort: sort);
+
+  void selectOrder(String order) => state = state.copyWith(order: order);
+
+  void toggleOrder() =>
+      state = state.copyWith(order: state.order == 'asc' ? 'desc' : 'asc');
 }
 
 final discussionFeedProvider =
@@ -69,17 +96,22 @@ class DiscussionFeedController
 
   @override
   Future<DiscussionListState> build() async {
-    final sort = ref.watch(discussionFeedSortProvider);
+    final sortState = ref.watch(discussionFeedSortProvider);
     final page = await ref
         .watch(discussionRepositoryProvider)
-        .listPublished(limit: _pageSize, sort: sort);
+        .listPublished(
+          limit: _pageSize,
+          sort: sortState.sort,
+          order: sortState.order,
+        );
     final value = page.match((failure) => throw failure, (v) => v);
     final items = await _attachMyVotes(value.items);
     return DiscussionListState(
       items: items,
       nextCursor: value.nextCursor,
       hasMore: value.hasMore,
-      sort: sort,
+      sort: sortState.sort,
+      order: sortState.order,
     );
   }
 
@@ -155,6 +187,7 @@ class DiscussionFeedController
           limit: _pageSize,
           cursor: current.nextCursor,
           sort: current.sort,
+          order: current.order,
         );
     if (!ref.mounted) return null;
     final failureOrNull = page.match(

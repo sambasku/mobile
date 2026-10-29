@@ -12485,6 +12485,54 @@ abstract class AppLocalizations {
   /// **'Menurut waktu'**
   String get discussionFeedSortByTime;
 
+  /// Chip sort feed diskusi menurut waktu dibuat (#204)
+  ///
+  /// In id, this message translates to:
+  /// **'Dibuat'**
+  String get discussionFeedSortCreated;
+
+  /// Chip sort menurut balasan terakhir
+  ///
+  /// In id, this message translates to:
+  /// **'Dibalas'**
+  String get discussionFeedSortActivity;
+
+  /// Chip sort menurut jumlah upvote
+  ///
+  /// In id, this message translates to:
+  /// **'Vote'**
+  String get discussionFeedSortVotes;
+
+  /// Chip sort menurut jumlah balasan
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan'**
+  String get discussionFeedSortReplies;
+
+  /// Semantics tombol arah sort ascending
+  ///
+  /// In id, this message translates to:
+  /// **'Urutan naik'**
+  String get discussionFeedSortAsc;
+
+  /// Semantics tombol arah sort descending
+  ///
+  /// In id, this message translates to:
+  /// **'Urutan turun'**
+  String get discussionFeedSortDesc;
+
+  /// No description provided for @discussionFeedSortAscShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Naik'**
+  String get discussionFeedSortAscShort;
+
+  /// No description provided for @discussionFeedSortDescShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Turun'**
+  String get discussionFeedSortDescShort;
+
   /// No description provided for @discussionStatusAll.
   ///
   /// In id, this message translates to:
