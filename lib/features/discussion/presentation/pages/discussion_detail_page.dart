@@ -265,6 +265,113 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     );
   }
 
+  Future<void> _editOpening(DiscussionItem item) async {
+    final l10n = AppLocalizations.of(context);
+    final saved = await showThreadTextEditSheet(
+      context,
+      title: l10n.discussionEditTitle,
+      initialBody: item.body?.trim() ?? '',
+      saveLabel: l10n.discussionEditSave,
+      onSave: (body) async {
+        if (body.isEmpty) return l10n.discussionEditEmpty;
+        final failure = await ref
+            .read(discussionDetailProvider(widget.id).notifier)
+            .updateDiscussion(body: body, linkUrl: item.linkUrl);
+        return failure?.message;
+      },
+    );
+    if (!mounted || saved == null) return;
+    showFToast(
+      context: context,
+      title: Text(l10n.discussionEditQueued),
+      variant: FToastVariant.primary,
+    );
+  }
+
+  Future<void> _showOpeningEditHistory(DiscussionItem item) async {
+    final l10n = AppLocalizations.of(context);
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .discussionEditHistory(item.id);
+    if (!mounted) return;
+    result.match(
+      (failure) => showAppErrorSheet(context, message: failure.message),
+      (history) => showThreadTextEditHistorySheet(
+        context,
+        title: l10n.discussionEditHistoryTitle,
+        history: ThreadTextEditHistory(
+          currentBody: history.currentBody,
+          currentUpdatedAt: history.currentUpdatedAt,
+          revisions: [
+            for (final r in history.revisions)
+              ThreadTextEditRevision(body: r.body, createdAt: r.createdAt),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _withdrawOpening(DiscussionItem item) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      barrierColor: Colors.black54,
+      builder: (sheetContext) => Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.discussionWithdrawTitle),
+                  subtitle: Text(l10n.discussionWithdrawBody),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    variant: FButtonVariant.destructive,
+                    onPress: () => Navigator.of(sheetContext).pop(true),
+                    child: Text(l10n.discussionWithdrawConfirm),
+                  ),
+                ),
+                FTile(
+                  title: const Text(''),
+                  suffix: FButton(
+                    onPress: () => Navigator.of(sheetContext).pop(false),
+                    child: Text(l10n.commonCancel),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final failure = await ref
+        .read(discussionDetailProvider(widget.id).notifier)
+        .deleteDiscussion();
+    if (!mounted) return;
+    if (failure != null) {
+      showFToast(
+        context: context,
+        title: Text(failure.message),
+        variant: FToastVariant.destructive,
+      );
+      return;
+    }
+    showFToast(
+      context: context,
+      title: Text(l10n.discussionWithdrawn),
+      variant: FToastVariant.primary,
+    );
+    context.pop();
+  }
+
   Future<void> _editReply(DiscussionReply reply) async {
     final l10n = AppLocalizations.of(context);
     final saved = await showThreadTextEditSheet(
@@ -455,6 +562,19 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                             item.statusLabelOf(l10n),
                         ],
                         media: _opMedia(item),
+                        isEdited: item.isEdited,
+                        editedLabel: l10n.commentEdited,
+                        onShowEditHistory: item.isEdited && item.isPublished
+                            ? () => _showOpeningEditHistory(item)
+                            : null,
+                        onEdit: item.isPublished &&
+                                item.isOwner(auth?.userId)
+                            ? () => _editOpening(item)
+                            : null,
+                        onDelete: item.isPublished &&
+                                item.isOwner(auth?.userId)
+                            ? () => _withdrawOpening(item)
+                            : null,
                         onUsernameTap: isLinkablePublicUsername(item.username)
                             ? () => UserProfileRouter.open(
                                 context,

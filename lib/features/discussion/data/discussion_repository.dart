@@ -250,6 +250,84 @@ class DiscussionRepository {
     }
   }
 
+  /// Edit OP (#202): body + link opsional → server re-queue pending_review.
+  Future<Either<DiscussionFailure, DiscussionItem>> updateDiscussion({
+    required String discussionId,
+    required String body,
+    String? linkUrl,
+  }) async {
+    try {
+      final res = await _dio.patch<Map<String, dynamic>>(
+        '$_base/$discussionId',
+        data: {
+          'body': body,
+          if (linkUrl != null) 'link_url': linkUrl.isEmpty ? null : linkUrl,
+        },
+      );
+      final envelope = res.data;
+      if (envelope?['success'] != true) {
+        return Either.left(
+          DiscussionFailure(
+            (envelope?['message'] as String?) ?? l10n.discussionEditFailed,
+          ),
+        );
+      }
+      final data = envelope?['data'];
+      if (data is! Map) {
+        return Either.left(DiscussionFailure(l10n.discussionEditIncomplete));
+      }
+      return Either.right(
+        DiscussionItem.fromJson(Map<String, dynamic>.from(data)),
+      );
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.discussionEditFailed));
+    } catch (e) {
+      return Either.left(DiscussionFailure(e.toString()));
+    }
+  }
+
+  Future<Either<DiscussionFailure, Unit>> deleteDiscussion(
+    String discussionId,
+  ) async {
+    try {
+      await _dio.delete<Map<String, dynamic>>('$_base/$discussionId');
+      return Either.right(unit);
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.discussionWithdrawFailed));
+    } catch (e) {
+      return Either.left(DiscussionFailure(e.toString()));
+    }
+  }
+
+  Future<Either<DiscussionFailure, DiscussionReplyEditHistory>>
+  discussionEditHistory(String discussionId) async {
+    try {
+      final res = await _dio.get<Map<String, dynamic>>(
+        '$_base/$discussionId/edit-history',
+      );
+      final envelope = res.data;
+      if (envelope?['success'] != true) {
+        return Either.left(
+          DiscussionFailure(
+            (envelope?['message'] as String?) ??
+                l10n.discussionEditHistoryFailed,
+          ),
+        );
+      }
+      final data = envelope?['data'];
+      if (data is! Map) {
+        return Either.left(
+          DiscussionFailure(l10n.discussionEditHistoryIncomplete),
+        );
+      }
+      return Either.right(_parseReplyEditHistory(Map<String, dynamic>.from(data)));
+    } on DioException catch (e) {
+      return Either.left(_mapDio(e, l10n.discussionEditHistoryFailed));
+    } catch (e) {
+      return Either.left(DiscussionFailure(e.toString()));
+    }
+  }
+
   Future<Either<DiscussionFailure, DiscussionReply>> updateReply({
     required String replyId,
     required String body,

@@ -15230,6 +15230,96 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Preferensi notifikasi disimpan'**
   String get settingsNotifySaved;
+
+  /// Judul sheet edit OP diskusi (#202)
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting diskusi'**
+  String get discussionEditTitle;
+
+  /// Tombol simpan edit OP - masuk antrean ulang
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim tinjauan'**
+  String get discussionEditSave;
+
+  /// Validasi body edit OP kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Deskripsi tidak boleh kosong'**
+  String get discussionEditEmpty;
+
+  /// Error PATCH diskusi OP
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyunting diskusi'**
+  String get discussionEditFailed;
+
+  /// Response edit OP tanpa data
+  ///
+  /// In id, this message translates to:
+  /// **'Data diskusi tidak lengkap'**
+  String get discussionEditIncomplete;
+
+  /// Toast sukses edit OP re-queue pending
+  ///
+  /// In id, this message translates to:
+  /// **'Suntingan dikirim - menunggu tinjauan lagi'**
+  String get discussionEditQueued;
+
+  /// Judul sheet riwayat edit OP
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting diskusi'**
+  String get discussionEditHistoryTitle;
+
+  /// Error GET edit-history OP
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat sunting diskusi'**
+  String get discussionEditHistoryFailed;
+
+  /// Response history OP rusak
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting tidak lengkap'**
+  String get discussionEditHistoryIncomplete;
+
+  /// Judul konfirmasi cabut OP (#202)
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan penayangan?'**
+  String get discussionWithdrawTitle;
+
+  /// Isi konfirmasi cabut penayangan OP
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi hilang dari feed publik. Balasan tetap tersimpan di riwayatmu.'**
+  String get discussionWithdrawBody;
+
+  /// Tombol destruktif cabut OP
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan penayangan'**
+  String get discussionWithdrawConfirm;
+
+  /// Error DELETE diskusi OP
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membatalkan penayangan'**
+  String get discussionWithdrawFailed;
+
+  /// Toast sukses cabut OP
+  ///
+  /// In id, this message translates to:
+  /// **'Penayangan dibatalkan'**
+  String get discussionWithdrawn;
+
+  /// Label status deleted_by_author OP
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get discussionStatusWithdrawn;
 }
 
 class _AppLocalizationsDelegate
