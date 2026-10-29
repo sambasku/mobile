@@ -112,7 +112,7 @@ class PantunApi {
         '$_base/replies/$replyId',
         data: {
           'lines': lines,
-          if (rhymeScheme != null) 'rhyme_scheme': rhymeScheme,
+          'rhyme_scheme': ?rhymeScheme,
         },
       );
       final data = res.data?['data'];
