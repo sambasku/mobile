@@ -8377,6 +8377,54 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get settingsNotifySaved => 'Preferensi notifikasi disimpan';
+
+  @override
+  String get discussionEditTitle => 'Sunting diskusi';
+
+  @override
+  String get discussionEditSave => 'Kirim tinjauan';
+
+  @override
+  String get discussionEditEmpty => 'Deskripsi tidak boleh kosong';
+
+  @override
+  String get discussionEditFailed => 'Gagal menyunting diskusi';
+
+  @override
+  String get discussionEditIncomplete => 'Data diskusi tidak lengkap';
+
+  @override
+  String get discussionEditQueued =>
+      'Suntingan dikirim - menunggu tinjauan lagi';
+
+  @override
+  String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';
+
+  @override
+  String get discussionEditHistoryFailed =>
+      'Gagal memuat riwayat sunting diskusi';
+
+  @override
+  String get discussionEditHistoryIncomplete => 'Riwayat sunting tidak lengkap';
+
+  @override
+  String get discussionWithdrawTitle => 'Batalkan penayangan?';
+
+  @override
+  String get discussionWithdrawBody =>
+      'Diskusi hilang dari feed publik. Balasan tetap tersimpan di riwayatmu.';
+
+  @override
+  String get discussionWithdrawConfirm => 'Batalkan penayangan';
+
+  @override
+  String get discussionWithdrawFailed => 'Gagal membatalkan penayangan';
+
+  @override
+  String get discussionWithdrawn => 'Penayangan dibatalkan';
+
+  @override
+  String get discussionStatusWithdrawn => 'Dibatalkan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -16752,4 +16800,52 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get settingsNotifySaved => 'Preferensi notifikasi disimpan';
+
+  @override
+  String get discussionEditTitle => 'Sunting diskusi';
+
+  @override
+  String get discussionEditSave => 'Kirim tinjauan';
+
+  @override
+  String get discussionEditEmpty => 'Deskripsi tidak boleh kosong';
+
+  @override
+  String get discussionEditFailed => 'Gagal menyunting diskusi';
+
+  @override
+  String get discussionEditIncomplete => 'Data diskusi tidak lengkap';
+
+  @override
+  String get discussionEditQueued =>
+      'Suntingan dikirim - menunggu tinjauan lagi';
+
+  @override
+  String get discussionEditHistoryTitle => 'Riwayat sunting diskusi';
+
+  @override
+  String get discussionEditHistoryFailed =>
+      'Gagal memuat riwayat sunting diskusi';
+
+  @override
+  String get discussionEditHistoryIncomplete => 'Riwayat sunting tidak lengkap';
+
+  @override
+  String get discussionWithdrawTitle => 'Batalkan penayangan?';
+
+  @override
+  String get discussionWithdrawBody =>
+      'Diskusi hilang dari feed publik. Balasan tetap tersimpan di riwayatmu.';
+
+  @override
+  String get discussionWithdrawConfirm => 'Batalkan penayangan';
+
+  @override
+  String get discussionWithdrawFailed => 'Gagal membatalkan penayangan';
+
+  @override
+  String get discussionWithdrawn => 'Penayangan dibatalkan';
+
+  @override
+  String get discussionStatusWithdrawn => 'Dibatalkan';
 }

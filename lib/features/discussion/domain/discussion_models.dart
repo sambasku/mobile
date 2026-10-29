@@ -266,6 +266,7 @@ class DiscussionItem {
     this.upvotes = 0,
     this.replyCount = 0,
     this.myVote,
+    this.isEdited = false,
   });
 
   final String id;
@@ -291,6 +292,7 @@ class DiscussionItem {
   /// Jumlah balasan published (dari list wire `reply_count`; detail bisa pakai replies).
   final int replyCount;
   final int? myVote;
+  final bool isEdited;
 
   VoteTarget get voteTarget => VoteTarget(type: 'discussion', id: id);
 
@@ -299,11 +301,15 @@ class DiscussionItem {
   bool get hasAudio =>
       audioUrl != null && audioUrl!.trim().isNotEmpty;
 
+  bool isOwner(String? userId) =>
+      userId != null && userId.isNotEmpty && userId == this.userId;
+
   String statusLabelOf(AppLocalizations l10n) => switch (status) {
     'pending_review' => l10n.dictPendingCheck,
     'published' => l10n.discussionStatusPublished,
     'rejected' => l10n.discussionStatusRejected,
     'taken_down' => l10n.discussionStatusTakenDown,
+    'deleted_by_author' => l10n.discussionStatusWithdrawn,
     _ => status,
   };
 
@@ -353,6 +359,7 @@ class DiscussionItem {
       updatedAt: json['updated_at']?.toString(),
       upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
       replyCount: (json['reply_count'] as num?)?.toInt() ?? 0,
+      isEdited: json['is_edited'] == true,
       replies: repliesRaw is List
           ? [
               for (final raw in repliesRaw.whereType<Map>())
@@ -368,6 +375,11 @@ class DiscussionItem {
     int? upvotes,
     int? replyCount,
     Object? myVote = _unset,
+    Object? body = _unset,
+    Object? linkUrl = _unset,
+    String? status,
+    Object? updatedAt = _unset,
+    bool? isEdited,
   }) {
     return DiscussionItem(
       id: id,
@@ -376,22 +388,25 @@ class DiscussionItem {
       displayName: displayName,
       avatarUrl: avatarUrl,
       isVerifier: isVerifier,
-      body: body,
-      linkUrl: linkUrl,
+      body: identical(body, _unset) ? this.body : body as String?,
+      linkUrl: identical(linkUrl, _unset) ? this.linkUrl : linkUrl as String?,
       images: images,
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
-      status: status,
+      status: status ?? this.status,
       pinnedReplyId: pinnedReplyId ?? this.pinnedReplyId,
       createdAt: createdAt,
       rejectionNote: rejectionNote,
       reviewedAt: reviewedAt,
-      updatedAt: updatedAt,
+      updatedAt: identical(updatedAt, _unset)
+          ? this.updatedAt
+          : updatedAt as String?,
       replies: replies ?? this.replies,
       upvotes: upvotes ?? this.upvotes,
       replyCount: replyCount ?? this.replyCount,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
+      isEdited: isEdited ?? this.isEdited,
     );
   }
 

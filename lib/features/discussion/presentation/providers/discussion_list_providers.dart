@@ -522,6 +522,54 @@ class DiscussionDetailController
     );
   }
 
+  Future<DiscussionFailure?> updateDiscussion({
+    required String body,
+    String? linkUrl,
+  }) async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    if (body.trim().isEmpty) {
+      return DiscussionFailure(l10n.discussionEditEmpty);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .updateDiscussion(
+          discussionId: discussionId,
+          body: body,
+          linkUrl: linkUrl,
+        );
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (updated) {
+      state = AsyncData(
+        DiscussionDetailState(
+          item: current.item.copyWith(
+            body: updated.body,
+            linkUrl: updated.linkUrl,
+            status: updated.status,
+            updatedAt: updated.updatedAt,
+            isEdited: updated.isEdited,
+            replies: current.item.replies,
+          ),
+        ),
+      );
+      return null;
+    });
+  }
+
+  Future<DiscussionFailure?> deleteDiscussion() async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .deleteDiscussion(discussionId);
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (_) => null);
+  }
+
   Future<DiscussionFailure?> updateReply(
     DiscussionReply reply,
     String body,
