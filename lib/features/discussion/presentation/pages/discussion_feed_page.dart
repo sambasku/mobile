@@ -399,6 +399,28 @@ class _FeedTile extends ConsumerWidget {
                       compact: true,
                       upvoteOnly: true,
                     ),
+                    const Gap(12),
+                    Semantics(
+                      label: AppLocalizations.of(context)
+                          .discussionRepliesCount(item.replyCount),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            FLucideIcons.messageSquare,
+                            size: 16,
+                            color: theme.colors.mutedForeground,
+                          ),
+                          const Gap(4),
+                          Text(
+                            '${item.replyCount}',
+                            style: theme.typography.body.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const Gap(10),
                     Expanded(
                       child: Text(

@@ -264,6 +264,7 @@ class DiscussionItem {
     this.updatedAt,
     this.replies = const [],
     this.upvotes = 0,
+    this.replyCount = 0,
     this.myVote,
   });
 
@@ -287,6 +288,8 @@ class DiscussionItem {
   final String? updatedAt;
   final List<DiscussionReply> replies;
   final int upvotes;
+  /// Jumlah balasan published (dari list wire `reply_count`; detail bisa pakai replies).
+  final int replyCount;
   final int? myVote;
 
   VoteTarget get voteTarget => VoteTarget(type: 'discussion', id: id);
@@ -349,6 +352,7 @@ class DiscussionItem {
       reviewedAt: json['reviewed_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
       upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
+      replyCount: (json['reply_count'] as num?)?.toInt() ?? 0,
       replies: repliesRaw is List
           ? [
               for (final raw in repliesRaw.whereType<Map>())
@@ -362,6 +366,7 @@ class DiscussionItem {
     List<DiscussionReply>? replies,
     String? pinnedReplyId,
     int? upvotes,
+    int? replyCount,
     Object? myVote = _unset,
   }) {
     return DiscussionItem(
@@ -385,6 +390,7 @@ class DiscussionItem {
       updatedAt: updatedAt,
       replies: replies ?? this.replies,
       upvotes: upvotes ?? this.upvotes,
+      replyCount: replyCount ?? this.replyCount,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
     );
   }
