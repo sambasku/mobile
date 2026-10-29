@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/comment_edit_history.dart';
+import 'package:sambasku_mobile/features/comment/domain/entities/comment_image.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/comment_page.dart';
 import 'package:sambasku_mobile/features/comment/domain/entities/word_comment.dart';
 import 'package:sambasku_mobile/features/comment/domain/failures/comment_failure.dart';
@@ -22,6 +23,7 @@ class _FakeCommentRepository implements CommentRepository {
   int? receivedLimit;
   String? receivedCursor;
   String? receivedBody;
+  CommentImageStaging? receivedImage;
   String? receivedCommentId;
 
   Either<CommentFailure, WordComment> createResult =
@@ -42,12 +44,24 @@ class _FakeCommentRepository implements CommentRepository {
   }
 
   @override
+  Future<CommentUploadCredentials> getUploadToken() async =>
+      const CommentUploadCredentials(
+        token: 't',
+        signature: 's',
+        expire: 0,
+        publicKey: 'pk',
+        uploadEndpoint: 'https://example.com/upload',
+      );
+
+  @override
   Future<Either<CommentFailure, WordComment>> create({
     required String wordId,
     required String body,
+    CommentImageStaging? image,
   }) async {
     receivedWordId = wordId;
     receivedBody = body;
+    receivedImage = image;
     return createResult;
   }
 

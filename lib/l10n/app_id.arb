@@ -286,6 +286,28 @@
   "commentLoginPrompt": "Masuk dulu untuk berkomentar",
   "commentLoginComposerPrompt": "Masuk untuk menulis komentar",
   "commentSent": "Komentar terkirim",
+  "commentAddPhoto": "Foto",
+  "@commentAddPhoto": {
+    "description": "Chip lampirkan foto di composer komentar"
+  },
+  "commentPhotoPending": "Foto menunggu pengecekan",
+  "@commentPhotoPending": {
+    "description": "Chip foto komentar status pending_review"
+  },
+  "commentPhotoCheckedNote": "Foto sedang dicek tim kami",
+  "@commentPhotoCheckedNote": {
+    "description": "Toast setelah kirim komentar dengan foto staging"
+  },
+  "commentPhotoUploadFailed": "Gagal mengunggah foto",
+  "@commentPhotoUploadFailed": {},
+  "commentPhotoUploading": "Mengunggah foto…",
+  "@commentPhotoUploading": {},
+  "commentRemovePhoto": "Hapus foto",
+  "@commentRemovePhoto": {
+    "description": "Aksi hapus pratinjau foto di composer komentar"
+  },
+  "commentBodyOrPhotoRequired": "Komentar atau foto wajib diisi",
+  "@commentBodyOrPhotoRequired": {},
   "commentRecordTitle": "Rekam komentar suara",
   "commentRecordBody": "Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.",
   "commentRecordSubmit": "Kirim rekaman",
@@ -5414,6 +5436,10 @@
   "@recordRetry": {},
   "threadRecordVoice": "Rekam suara",
   "@threadRecordVoice": {},
+  "threadAddPhoto": "Lampirkan foto ke komentar",
+  "@threadAddPhoto": {
+    "description": "Semantics label chip foto di composer thread"
+  },
   "threadSend": "Kirim",
   "@threadSend": {},
   "cropAspectFree": "Bebas",

@@ -18,6 +18,9 @@ _CommentDto _$CommentDtoFromJson(Map<String, dynamic> json) => _CommentDto(
   audioUrl: json['audio_url'] as String?,
   audioMimeType: json['audio_mime_type'] as String?,
   audioDurationMs: (json['audio_duration_ms'] as num?)?.toInt(),
+  image: json['image'] == null
+      ? null
+      : CommentImageDto.fromJson(json['image'] as Map<String, dynamic>),
   createdAt: json['created_at'] as String?,
   upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
   downvotes: (json['downvotes'] as num?)?.toInt() ?? 0,
@@ -39,6 +42,7 @@ Map<String, dynamic> _$CommentDtoToJson(_CommentDto instance) =>
       'audio_url': instance.audioUrl,
       'audio_mime_type': instance.audioMimeType,
       'audio_duration_ms': instance.audioDurationMs,
+      'image': instance.image,
       'created_at': instance.createdAt,
       'upvotes': instance.upvotes,
       'downvotes': instance.downvotes,

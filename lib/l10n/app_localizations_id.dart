@@ -639,6 +639,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get commentSent => 'Komentar terkirim';
 
   @override
+  String get commentAddPhoto => 'Foto';
+
+  @override
+  String get commentPhotoPending => 'Foto menunggu pengecekan';
+
+  @override
+  String get commentPhotoCheckedNote => 'Foto sedang dicek tim kami';
+
+  @override
+  String get commentPhotoUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get commentPhotoUploading => 'Mengunggah foto…';
+
+  @override
+  String get commentRemovePhoto => 'Hapus foto';
+
+  @override
+  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+
+  @override
   String get commentRecordTitle => 'Rekam komentar suara';
 
   @override
@@ -8087,6 +8108,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get threadRecordVoice => 'Rekam suara';
+
+  @override
+  String get threadAddPhoto => 'Lampirkan foto ke komentar';
 
   @override
   String get threadSend => 'Kirim';
@@ -8955,6 +8979,27 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get commentSent => 'Komentar terkirim';
 
   @override
+  String get commentAddPhoto => 'Foto';
+
+  @override
+  String get commentPhotoPending => 'Foto menunggu pengecekan';
+
+  @override
+  String get commentPhotoCheckedNote => 'Foto sedang dicek tim kami';
+
+  @override
+  String get commentPhotoUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get commentPhotoUploading => 'Mengunggah foto…';
+
+  @override
+  String get commentRemovePhoto => 'Hapus foto';
+
+  @override
+  String get commentBodyOrPhotoRequired => 'Komentar atau foto wajib diisi';
+
+  @override
   String get commentRecordTitle => 'Rekam komentar suara';
 
   @override
@@ -16403,6 +16448,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get threadRecordVoice => 'Rekam suara';
+
+  @override
+  String get threadAddPhoto => 'Lampirkan foto ke komentar';
 
   @override
   String get threadSend => 'Kirim';

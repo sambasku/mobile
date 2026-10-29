@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -5,14 +7,18 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/thread_comment_image.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
+import '../../domain/entities/comment_image.dart';
 import '../../domain/entities/word_comment.dart';
+import '../../data/providers/comment_data_providers.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../../domain/providers/comment_domain_providers.dart';
 import '../providers/comment_providers.dart';
@@ -98,6 +104,9 @@ class WordCommentsSection extends ConsumerStatefulWidget {
 
 class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   final _bodyCtrl = TextEditingController();
+  CommentImageStaging? _stagingImage;
+  String? _localPreviewPath;
+  bool _uploadingImage = false;
 
   @override
   void initState() {
@@ -138,22 +147,158 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     context.push('/login');
   }
 
+  void _clearStagingPhoto() {
+    setState(() {
+      _stagingImage = null;
+      _localPreviewPath = null;
+    });
+  }
+
+  Future<void> _pickCommentPhoto() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (_uploadingImage) return;
+    final l10n = AppLocalizations.of(context);
+    showImageSheetDrawer(
+      context,
+      filePicker: false,
+      mediaExplorerPicker: false,
+      onRemoved: _clearStagingPhoto,
+      onPicked: (file) async {
+        setState(() {
+          _uploadingImage = true;
+          _localPreviewPath = file.path;
+          _stagingImage = null;
+        });
+        try {
+          final staging = await ref
+              .read(commentImageUploadServiceProvider)
+              .upload(file);
+          if (!mounted) return;
+          setState(() {
+            _stagingImage = staging;
+            _uploadingImage = false;
+          });
+        } on CommentImageUploadUnavailable {
+          if (!mounted) return;
+          setState(() {
+            _uploadingImage = false;
+            _localPreviewPath = null;
+          });
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+        } catch (_) {
+          if (!mounted) return;
+          setState(() {
+            _uploadingImage = false;
+            _localPreviewPath = null;
+          });
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+        }
+      },
+    );
+  }
+
+  Widget? _buildPhotoPreview(BuildContext context) {
+    if (_localPreviewPath == null && _stagingImage == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final path = _localPreviewPath;
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            width: 56,
+            height: 56,
+            child: path != null
+                ? Image.file(File(path), fit: BoxFit.cover)
+                : ColoredBox(color: theme.colors.secondary),
+          ),
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            _uploadingImage ? l10n.commentPhotoUploading : l10n.commentAddPhoto,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        if (_uploadingImage)
+          const FCircularProgress(size: .sm)
+        else
+          FButton(
+            variant: FButtonVariant.ghost,
+            onPress: _clearStagingPhoto,
+            child: Text(l10n.commentRemovePhoto),
+          ),
+      ],
+    );
+  }
+
+  Widget? _commentMedia(WordComment comment) {
+    if (!comment.isPublished) return null;
+    final parts = <Widget>[];
+    if (comment.hasAudio) {
+      parts.add(
+        ThreadAudioPlayer(
+          url: comment.audioUrl!,
+          durationMs: comment.audioDurationMs,
+        ),
+      );
+    }
+    if (comment.hasImage) {
+      parts.add(ThreadCommentImage(image: comment.image!));
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
+    );
+  }
+
   Future<void> _submitText() async {
     if (!_isAuth()) {
       _promptLogin();
       return;
     }
+    if (_uploadingImage) return;
+    final l10n = AppLocalizations.of(context);
+    final hadPhoto = _stagingImage != null;
     final failure = await ref
         .read(commentListControllerProvider(widget.wordId).notifier)
-        .create(_bodyCtrl.text);
+        .create(_bodyCtrl.text, image: _stagingImage);
     if (!mounted) return;
     if (failure == null) {
       _bodyCtrl.clear();
+      _clearStagingPhoto();
       showFToast(
         context: context,
-        title: Text(AppLocalizations.of(context).commentSent),
+        title: Text(l10n.commentSent),
         variant: FToastVariant.primary,
       );
+      if (hadPhoto) {
+        showFToast(
+          context: context,
+          title: Text(l10n.commentPhotoCheckedNote),
+          variant: FToastVariant.primary,
+        );
+      }
     } else {
       showFToast(
         context: context,
@@ -400,12 +545,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                             : null,
                         onMentionTap: (mentionedUsername) =>
                             UserProfileRouter.open(context, mentionedUsername),
-                        media: c.isPublished && c.hasAudio
-                            ? ThreadAudioPlayer(
-                                url: c.audioUrl!,
-                                durationMs: c.audioDurationMs,
-                              )
-                            : null,
+                        media: _commentMedia(c),
                         footer: c.isPublished
                             ? VoteButtons(
                                 upvotes: c.upvotes,
@@ -450,9 +590,12 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                 )
               : ThreadComposer(
                   controller: _bodyCtrl,
-                  isSubmitting: listState?.isSubmitting ?? false,
+                  isSubmitting:
+                      (listState?.isSubmitting ?? false) || _uploadingImage,
                   onSubmit: _submitText,
                   onRecordAudio: _recordAudioComment,
+                  onPickImage: _pickCommentPhoto,
+                  attachmentPreview: _buildPhotoPreview(context),
                   suggestBuilder: _buildMentionSuggest,
                 ),
         ),

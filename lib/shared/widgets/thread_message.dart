@@ -349,7 +349,7 @@ class _ThreadIconButton extends StatelessWidget {
 }
 
 /// Composer thread kanonik: field multi-baris + kirim.
-/// Opsional [onRecordAudio] menampilkan chip berlabel "Rekam suara".
+/// Opsional [onRecordAudio] / [onPickImage] menampilkan chip aksi di atas field.
 /// [suggestBuilder] dipasang di atas field (mis. autocomplete mention).
 class ThreadComposer extends StatelessWidget {
   const ThreadComposer({
@@ -358,6 +358,8 @@ class ThreadComposer extends StatelessWidget {
     required this.isSubmitting,
     required this.onSubmit,
     this.onRecordAudio,
+    this.onPickImage,
+    this.attachmentPreview,
     this.suggestBuilder,
     this.hint = 'Tulis komentar…',
   });
@@ -366,8 +368,14 @@ class ThreadComposer extends StatelessWidget {
   final bool isSubmitting;
   final VoidCallback onSubmit;
 
-  /// Jika diisi, tampilkan chip "Rekam suara" di bawah field.
+  /// Jika diisi, tampilkan chip rekam suara di atas field.
   final VoidCallback? onRecordAudio;
+
+  /// Jika diisi, tampilkan chip lampirkan foto di atas field.
+  final VoidCallback? onPickImage;
+
+  /// Pratinjau lampiran (mis. thumbnail foto staging) di atas field.
+  final Widget? attachmentPreview;
 
   /// Builder opsional untuk overlay suggestion (mis. mention autocomplete).
   final Widget Function(BuildContext)? suggestBuilder;
@@ -381,52 +389,32 @@ class ThreadComposer extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (suggestBuilder != null) ...[suggestBuilder!(context), const Gap(4)],
-        if (onRecordAudio != null) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Semantics(
-              button: true,
-              label: AppLocalizations.of(context).threadRecordVoice,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: isSubmitting ? null : onRecordAudio,
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: theme.colors.border),
-                      color: isSubmitting
-                          ? theme.colors.secondary.withValues(alpha: 0.5)
-                          : theme.colors.secondary.withValues(alpha: 0.35),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            FLucideIcons.mic,
-                            size: 14,
-                            color: theme.colors.foreground,
-                          ),
-                          const Gap(6),
-                          Text(
-                            'Rekam suara',
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+        if (attachmentPreview != null) ...[
+          attachmentPreview!,
+          const Gap(8),
+        ],
+        if (onRecordAudio != null || onPickImage != null) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (onPickImage != null)
+                _ThreadComposerChip(
+                  icon: FLucideIcons.image,
+                  label: AppLocalizations.of(context).commentAddPhoto,
+                  semanticsLabel: AppLocalizations.of(context).threadAddPhoto,
+                  enabled: !isSubmitting,
+                  onTap: onPickImage!,
                 ),
-              ),
-            ),
+              if (onRecordAudio != null)
+                _ThreadComposerChip(
+                  icon: FLucideIcons.mic,
+                  label: AppLocalizations.of(context).threadRecordVoice,
+                  semanticsLabel: AppLocalizations.of(context).threadRecordVoice,
+                  enabled: !isSubmitting,
+                  onTap: onRecordAudio!,
+                ),
+            ],
           ),
           const Gap(8),
         ],
@@ -482,6 +470,63 @@ class ThreadComposer extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _ThreadComposerChip extends StatelessWidget {
+  const _ThreadComposerChip({
+    required this.icon,
+    required this.label,
+    required this.semanticsLabel,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final String semanticsLabel;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: enabled ? onTap : null,
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: theme.colors.border),
+              color: enabled
+                  ? theme.colors.secondary.withValues(alpha: 0.35)
+                  : theme.colors.secondary.withValues(alpha: 0.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 14, color: theme.colors.foreground),
+                  const Gap(6),
+                  Text(
+                    label,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

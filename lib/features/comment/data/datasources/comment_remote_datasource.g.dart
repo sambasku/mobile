@@ -95,6 +95,38 @@ class _CommentRemoteDatasource implements CommentRemoteDatasource {
   }
 
   @override
+  Future<ApiResponse<UploadCredentialsDto>> getUploadToken(
+    String folder,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'folder': folder};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<UploadCredentialsDto>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/comments/upload-token',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<UploadCredentialsDto> _value;
+    try {
+      _value = ApiResponse<UploadCredentialsDto>.fromJson(
+        _result.data!,
+        (json) => UploadCredentialsDto.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<ApiResponse<dynamic>> delete(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

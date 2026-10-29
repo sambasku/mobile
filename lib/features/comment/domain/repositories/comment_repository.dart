@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/comment_edit_history.dart';
+import '../entities/comment_image.dart';
 import '../entities/comment_page.dart';
 import '../entities/word_comment.dart';
 import '../failures/comment_failure.dart';
@@ -17,10 +18,14 @@ abstract interface class CommentRepository {
     String? cursor,
   });
 
+  /// Kredensial direct-upload ImageKit (folder `/comments`).
+  Future<CommentUploadCredentials> getUploadToken();
+
   /// Tulis komentar (login) - langsung `published` (post-moderation).
   Future<Either<CommentFailure, WordComment>> create({
     required String wordId,
     required String body,
+    CommentImageStaging? image,
   });
 
   /// Komentar suara (login) - multipart; caption opsional.

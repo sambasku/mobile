@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/i18n/l10n.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/domain/providers/vote_domain_providers.dart';
+import '../../domain/entities/comment_image.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../../domain/providers/comment_domain_providers.dart';
@@ -91,18 +93,24 @@ class CommentListController extends _$CommentListController {
   }
 
   /// Kirim komentar - langsung published; invalidate list agar sync API.
-  Future<CommentFailure?> create(String body) async {
+  Future<CommentFailure?> create(
+    String body, {
+    CommentImageStaging? image,
+  }) async {
     final current = state.value;
     if (current == null) return null;
     if (current.isSubmitting) return null;
-    if (body.trim().isEmpty) {
-      return const CommentFailure('Komentar tidak boleh kosong');
+    if (body.trim().isEmpty && image == null) {
+      return CommentFailure(l10n.commentBodyOrPhotoRequired);
     }
 
     state = AsyncData(current.copyWith(isSubmitting: true, clearSubmitFailure: true));
 
-    final result =
-        await ref.watch(createCommentUseCaseProvider)(wordId: wordId, body: body);
+    final result = await ref.watch(createCommentUseCaseProvider)(
+      wordId: wordId,
+      body: body,
+      image: image,
+    );
     return result.match(
       (failure) {
         final s = state.value ?? current;
@@ -114,7 +122,10 @@ class CommentListController extends _$CommentListController {
         ref.invalidateSelf();
         AnalyticsService.instance.log(
           AnalyticsEvents.commentSubmit,
-          params: {'word_id': wordId},
+          params: {
+            'word_id': wordId,
+            if (image != null) 'has_image': '1',
+          },
         );
         return null;
       },
