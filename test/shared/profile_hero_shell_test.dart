@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/shared/widgets/profile_hero_shell.dart';
+
+import '../helpers/l10n_delegates.dart';
 
 /// Isi halaman: satu blok tinggi supaya bisa digulir sejauh bar.
 Widget _content({double height = 1200}) => SingleChildScrollView(
@@ -15,10 +18,16 @@ Widget _content({double height = 1200}) => SingleChildScrollView(
 );
 
 Future<void> _pump(WidgetTester tester, Widget shell) async {
+  // MaterialApp wajib: IconButton + Tooltip butuh Overlay.
   await tester.pumpWidget(
     FTheme(
       data: foruiPalettes['zinc']!.light.touch,
-      child: FScaffold(child: shell),
+      child: MaterialApp(
+        localizationsDelegates: appLocalizationDelegates,
+        supportedLocales: appTestSupportedLocales,
+        locale: appTestLocale,
+        home: FScaffold(child: shell),
+      ),
     ),
   );
   await tester.pump();
@@ -37,7 +46,7 @@ void main() {
     );
 
     expect(find.text('Budi'), findsNothing);
-    expect(find.bySemanticsLabel('Kembali'), findsOneWidget);
+    expect(find.byTooltip('Kembali'), findsOneWidget);
   });
 
   testWidgets('cover tergulir habis: judul muncul (bar solid)', (tester) async {

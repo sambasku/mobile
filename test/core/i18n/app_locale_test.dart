@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/feature_flags.dart';
 import 'package:sambasku_mobile/core/i18n/app_locale.dart';
 import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
@@ -48,8 +49,14 @@ void main() {
     expect(LocalePrefs.chosen, isFalse);
     await LocalePrefs.set(AppLocale.sbs);
     expect(LocalePrefs.chosen, isTrue);
-    expect(LocalePrefs.locale, AppLocale.sbs);
+    // MULTI_LANGUAGE_ENABLED default off: sbs di-clamp ke id.
+    // Aktifkan via --dart-define=MULTI_LANGUAGE_ENABLED=true bila mau uji sbs.
+    expect(
+      LocalePrefs.locale,
+      FeatureFlags.multiLanguageEnabled ? AppLocale.sbs : AppLocale.id,
+    );
     await LocalePrefs.reset();
     expect(LocalePrefs.locale, AppLocale.id);
   });
 }
+

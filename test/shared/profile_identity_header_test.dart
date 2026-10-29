@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/shared/widgets/profile_identity_header.dart';
 import 'package:sambasku_mobile/shared/widgets/profile_stat_inline.dart';
 import 'package:sambasku_mobile/shared/widgets/user_avatar.dart';
+
+import '../helpers/l10n_delegates.dart';
 
 /// Stat ringkas 2 angka - bentuk data yang dikirim API profil publik.
 const _stats = ProfileStatRow(words: 3, corrections: 2);
@@ -13,7 +16,12 @@ Future<void> _pump(WidgetTester tester, Widget child) async {
   await tester.pumpWidget(
     FTheme(
       data: foruiPalettes['zinc']!.light.touch,
-      child: FScaffold(child: SingleChildScrollView(child: child)),
+      child: MaterialApp(
+        localizationsDelegates: appLocalizationDelegates,
+        supportedLocales: appTestSupportedLocales,
+        locale: appTestLocale,
+        home: FScaffold(child: SingleChildScrollView(child: child)),
+      ),
     ),
   );
   await tester.pump();
