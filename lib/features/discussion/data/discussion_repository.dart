@@ -111,12 +111,14 @@ class DiscussionRepository {
   Future<Either<DiscussionFailure, DiscussionPage>> listPublished({
     int limit = 20,
     String? cursor,
-    String sort = 'latest',
+    String sort = 'created',
+    String order = 'desc',
   }) async {
     try {
       final query = <String, dynamic>{
         'limit': limit,
         'sort': sort,
+        'order': order,
         if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
       };
       final res = await _dio.get<Map<String, dynamic>>(

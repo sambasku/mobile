@@ -27,8 +27,16 @@ class DiscussionFeedPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(discussionFeedProvider);
-    final sort = ref.watch(discussionFeedSortProvider);
+    final sortState = ref.watch(discussionFeedSortProvider);
     final scroll = useScrollController();
+
+    Future<void> applySortChange(VoidCallback mutate) async {
+      // Hapus cache dulu supaya rebuild (watch sort) tidak dapat halaman lama.
+      await ref
+          .read(responseCacheStoreProvider)
+          .deleteByPrefix('GET|/api/v1/discussions');
+      mutate();
+    }
 
     useEffect(() {
       void listener() {
@@ -102,9 +110,18 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   const _NewThreadComposer(),
                   const Gap(16),
                   _SortChips(
-                    sort: sort,
-                    onSelect: (s) =>
-                        ref.read(discussionFeedSortProvider.notifier).select(s),
+                    sort: sortState.sort,
+                    order: sortState.order,
+                    onSelectSort: (s) => applySortChange(
+                      () => ref
+                          .read(discussionFeedSortProvider.notifier)
+                          .selectSort(s),
+                    ),
+                    onToggleOrder: () => applySortChange(
+                      () => ref
+                          .read(discussionFeedSortProvider.notifier)
+                          .toggleOrder(),
+                    ),
                   ),
                   const Gap(24),
                   Icon(
@@ -155,10 +172,18 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: _SortChips(
-                      sort: sort,
-                      onSelect: (s) => ref
-                          .read(discussionFeedSortProvider.notifier)
-                          .select(s),
+                      sort: sortState.sort,
+                      order: sortState.order,
+                      onSelectSort: (s) => applySortChange(
+                        () => ref
+                            .read(discussionFeedSortProvider.notifier)
+                            .selectSort(s),
+                      ),
+                      onToggleOrder: () => applySortChange(
+                        () => ref
+                            .read(discussionFeedSortProvider.notifier)
+                            .toggleOrder(),
+                      ),
                     ),
                   );
                 }
@@ -443,24 +468,43 @@ class _FeedTile extends ConsumerWidget {
 }
 
 class _SortChips extends StatelessWidget {
-  const _SortChips({required this.sort, required this.onSelect});
+  const _SortChips({
+    required this.sort,
+    required this.order,
+    required this.onSelectSort,
+    required this.onToggleOrder,
+  });
 
   final String sort;
-  final ValueChanged<String> onSelect;
+  final String order;
+  final ValueChanged<String> onSelectSort;
+  final VoidCallback onToggleOrder;
 
-  static const _options = <String>['latest', 'popular'];
+  static const _options = <String>['created', 'activity', 'votes', 'replies'];
 
   String _labelOf(BuildContext context, String value) {
     final l10n = AppLocalizations.of(context);
-    return value == 'popular'
-        ? l10n.discussionFeedSortPopular
-        : l10n.discussionFeedSortNewest;
+    return switch (value) {
+      'activity' => l10n.discussionFeedSortActivity,
+      'votes' => l10n.discussionFeedSortVotes,
+      'replies' => l10n.discussionFeedSortReplies,
+      _ => l10n.discussionFeedSortCreated,
+    };
+  }
+
+  String _orderHint(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return order == 'asc'
+        ? l10n.discussionFeedSortAsc
+        : l10n.discussionFeedSortDesc;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Wrap(
@@ -469,7 +513,7 @@ class _SortChips extends StatelessWidget {
             children: [
               for (final opt in _options)
                 GestureDetector(
-                  onTap: sort == opt ? null : () => onSelect(opt),
+                  onTap: sort == opt ? null : () => onSelectSort(opt),
                   child: FBadge(
                     variant: sort == opt
                         ? FBadgeVariant.primary
@@ -480,13 +524,42 @@ class _SortChips extends StatelessWidget {
             ],
           ),
         ),
-        Text(
-          sort == 'popular'
-              ? AppLocalizations.of(context).discussionFeedSortByUpvote
-              : AppLocalizations.of(context).discussionFeedSortByTime,
-          style: theme.typography.body.sm.copyWith(
-            color: theme.colors.mutedForeground,
-            fontSize: 11,
+        const Gap(8),
+        Semantics(
+          button: true,
+          label: _orderHint(context),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: onToggleOrder,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      order == 'asc'
+                          ? FLucideIcons.arrowUpNarrowWide
+                          : FLucideIcons.arrowDownWideNarrow,
+                      size: 16,
+                      color: theme.colors.primary,
+                    ),
+                    const Gap(4),
+                    Text(
+                      order == 'asc'
+                          ? l10n.discussionFeedSortAscShort
+                          : l10n.discussionFeedSortDescShort,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.primary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ],

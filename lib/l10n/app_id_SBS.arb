@@ -2390,6 +2390,34 @@
   "@discussionFeedSortByUpvote": {},
   "discussionFeedSortByTime": "Menurut waktu",
   "@discussionFeedSortByTime": {},
+  "discussionFeedSortCreated": "Dibuat",
+  "@discussionFeedSortCreated": {
+    "description": "Chip sort feed diskusi menurut waktu dibuat (#204)"
+  },
+  "discussionFeedSortActivity": "Dibalas",
+  "@discussionFeedSortActivity": {
+    "description": "Chip sort menurut balasan terakhir"
+  },
+  "discussionFeedSortVotes": "Vote",
+  "@discussionFeedSortVotes": {
+    "description": "Chip sort menurut jumlah upvote"
+  },
+  "discussionFeedSortReplies": "Balasan",
+  "@discussionFeedSortReplies": {
+    "description": "Chip sort menurut jumlah balasan"
+  },
+  "discussionFeedSortAsc": "Urutan naik",
+  "@discussionFeedSortAsc": {
+    "description": "Semantics tombol arah sort ascending"
+  },
+  "discussionFeedSortDesc": "Urutan turun",
+  "@discussionFeedSortDesc": {
+    "description": "Semantics tombol arah sort descending"
+  },
+  "discussionFeedSortAscShort": "Naik",
+  "@discussionFeedSortAscShort": {},
+  "discussionFeedSortDescShort": "Turun",
+  "@discussionFeedSortDescShort": {},
   "discussionStatusAll": "Semua",
   "@discussionStatusAll": {},
   "discussionStatusPending": "Menunggu",
