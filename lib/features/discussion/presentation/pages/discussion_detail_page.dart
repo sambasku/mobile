@@ -11,7 +11,6 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
-import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../data/discussion_providers.dart';
@@ -79,6 +78,54 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
       variant: FToastVariant.primary,
     );
     context.push('/login');
+  }
+
+  /// Media OP (link / foto / audio) - pola Column sama `_commentMedia`.
+  Widget? _opMedia(DiscussionItem item) {
+    final parts = <Widget>[];
+    final link = item.linkUrl?.trim();
+    if (link != null && link.isNotEmpty) {
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FButton(
+            variant: FButtonVariant.outline,
+            onPress: () async {
+              final uri = Uri.tryParse(link);
+              if (uri == null) return;
+              await launchExternalUrl(uri);
+            },
+            prefix: const Icon(FLucideIcons.externalLink, size: 14),
+            child: Text(
+              link,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+      );
+    }
+    if (item.images.isNotEmpty) {
+      parts.add(_ImageRow(images: item.images));
+    }
+    if (item.hasAudio) {
+      parts.add(
+        DiscussionReplyAudioPlayer(
+          url: item.audioUrl!,
+          durationMs: item.audioDurationMs,
+        ),
+      );
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
+    );
   }
 
   Future<void> _toggleHelpVote(int value) async {
@@ -342,72 +389,57 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
                     children: [
-                      _HelpHeader(item: item),
-                      if (item.body?.trim().isNotEmpty == true) ...[
-                        const Gap(10),
-                        Text(
-                          item.body!.trim(),
-                          style: theme.typography.body.sm,
+                      // OP = pola ThreadMessageRow sama komentar/balasan (#207).
+                      ThreadMessageRow(
+                        username: item.username,
+                        displayName: item.displayName,
+                        avatarUrl: item.avatarUrl,
+                        isVerifier: item.isVerifier,
+                        body: item.body?.trim() ?? '',
+                        dateLabel: formatRelativeCompact(
+                          DateTime.tryParse(item.createdAt),
                         ),
-                      ],
-                      if (item.linkUrl?.trim().isNotEmpty == true) ...[
-                        const Gap(10),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: FButton(
-                            variant: FButtonVariant.outline,
-                            onPress: () async {
-                              final uri = Uri.tryParse(item.linkUrl!.trim());
-                              if (uri == null) return;
-                              await launchExternalUrl(uri);
-                            },
-                            prefix: const Icon(
-                              FLucideIcons.externalLink,
-                              size: 14,
+                        metaParts: [
+                          if (!item.isPublished)
+                            item.statusLabelOf(l10n),
+                        ],
+                        media: _opMedia(item),
+                        onUsernameTap: isLinkablePublicUsername(item.username)
+                            ? () => UserProfileRouter.open(
+                                context,
+                                item.username!,
+                              )
+                            : null,
+                        onMentionTap: (mentionedUsername) =>
+                            UserProfileRouter.open(
+                              context,
+                              mentionedUsername,
                             ),
-                            child: Text(
-                              item.linkUrl!.trim(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ],
-                      if (item.images.isNotEmpty) ...[
-                        const Gap(12),
-                        _ImageRow(images: item.images),
-                      ],
-                      if (item.hasAudio) ...[
-                        const Gap(12),
-                        DiscussionReplyAudioPlayer(
-                          url: item.audioUrl!,
-                          durationMs: item.audioDurationMs,
-                        ),
-                      ],
-                      if (item.isPublished) ...[
-                        const Gap(12),
-                        Row(
-                          children: [
-                            VoteButtons(
-                              upvotes: item.upvotes,
-                              downvotes: 0,
-                              myVote: item.myVote,
-                              onVote: _toggleHelpVote,
-                              compact: true,
-                              upvoteOnly: true,
-                            ),
-                            const Gap(10),
-                            Expanded(
-                              child: Text(
-                                l10n.discussionAlsoCurious,
-                                style: theme.typography.body.sm.copyWith(
-                                  color: theme.colors.mutedForeground,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        footer: item.isPublished
+                            ? Row(
+                                children: [
+                                  VoteButtons(
+                                    upvotes: item.upvotes,
+                                    downvotes: 0,
+                                    myVote: item.myVote,
+                                    onVote: _toggleHelpVote,
+                                    compact: true,
+                                    upvoteOnly: true,
+                                  ),
+                                  const Gap(10),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.discussionAlsoCurious,
+                                      style: theme.typography.body.sm.copyWith(
+                                        color: theme.colors.mutedForeground,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : null,
+                      ),
                       if (item.status == 'rejected' &&
                           (item.rejectionNote?.trim().isNotEmpty ?? false)) ...[
                         const Gap(12),
@@ -550,80 +582,6 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
           );
         },
       ),
-    );
-  }
-}
-
-class _HelpHeader extends StatelessWidget {
-  const _HelpHeader({required this.item});
-
-  final DiscussionItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final when = formatDateTimeIso(item.createdAt);
-    final username = displayPublicAccountLabel(
-      displayName: item.displayName,
-      username: item.username,
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Flexible(
-              child: PublicAccountName(
-                label: username,
-                isVerifier: item.isVerifier,
-                onTap: isLinkablePublicUsername(item.username)
-                    ? () => UserProfileRouter.open(context, item.username!)
-                    : null,
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: isLinkablePublicUsername(item.username)
-                      ? theme.colors.primary
-                      : theme.colors.foreground,
-                ),
-              ),
-            ),
-            const Gap(8),
-            FBadge(
-              variant: item.isPublished
-                  ? FBadgeVariant.primary
-                  : FBadgeVariant.secondary,
-              child: Text(
-                item.statusLabelOf(AppLocalizations.of(context)),
-              ),
-            ),
-          ],
-        ),
-        // Handle @username di baris sendiri agar mudah di-mention.
-        if (isLinkablePublicUsername(item.username) &&
-            item.username != username) ...[
-          const Gap(2),
-          Text(
-            '@${item.username}',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.typography.body.sm.copyWith(
-              color: theme.colors.mutedForeground,
-              fontSize: 11,
-            ),
-          ),
-        ],
-        if (when.isNotEmpty) ...[
-          const Gap(4),
-          Text(
-            when,
-            style: theme.typography.body.sm.copyWith(
-              color: theme.colors.mutedForeground,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ],
     );
   }
 }
