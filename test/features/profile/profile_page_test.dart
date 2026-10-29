@@ -275,9 +275,9 @@ void main() {
       );
       final label = tester.getRect(find.text('Lihat profil publik'));
       expect(btn.width, lessThan(label.width + 80));
-      // Edit profil = ikon di pojok header (semantik), bukan tile teks.
+      // Edit profil = ikon di bar melayang (IconButton tooltip), bukan tile teks.
       expect(find.text('Edit profil'), findsNothing);
-      expect(find.bySemanticsLabel('Edit profil'), findsOneWidget);
+      expect(find.byTooltip('Edit profil'), findsOneWidget);
 
       // Layout center: avatar besar (104) tepat di tengah lebar layar,
       // identitas rata tengah di bawahnya.
