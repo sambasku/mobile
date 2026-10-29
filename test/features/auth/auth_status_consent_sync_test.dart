@@ -101,5 +101,7 @@ class _FakeEditProfileRepository implements EditProfileRepository {
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
+    bool? notifyStreakReminder,
+    bool? notifyLevelUp,
   }) async => Either.right(profile);
 }
