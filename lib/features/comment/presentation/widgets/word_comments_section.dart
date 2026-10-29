@@ -9,6 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/thread_comment_image.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
@@ -104,9 +105,14 @@ class WordCommentsSection extends ConsumerStatefulWidget {
 
 class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   final _bodyCtrl = TextEditingController();
+  final _composerFocus = FocusNode();
   CommentImageStaging? _stagingImage;
   String? _localPreviewPath;
   bool _uploadingImage = false;
+  ThreadReplyDraft? _replyDraft;
+
+  /// Label chip "Membalas @…" (boleh ada walau mention di body di-skip).
+  String? _replyChipHandle;
 
   @override
   void initState() {
@@ -118,6 +124,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
   void dispose() {
     _bodyCtrl.removeListener(_onBodyChanged);
     _bodyCtrl.dispose();
+    _composerFocus.dispose();
     super.dispose();
   }
 
@@ -145,6 +152,47 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
       variant: FToastVariant.primary,
     );
     context.push('/login');
+  }
+
+  void _startReply(WordComment comment) {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    if (!comment.isPublished) return;
+    final auth = ref.read(authStatusProvider).value;
+    final draft = buildThreadReplyDraft(
+      username: comment.username,
+      body: comment.body,
+      currentUsername: auth?.username,
+    );
+    final chipHandle = isLinkablePublicUsername(comment.username)
+        ? comment.username
+        : null;
+    setState(() {
+      _replyDraft = draft;
+      _replyChipHandle = chipHandle;
+    });
+    _bodyCtrl
+      ..text = draft.text
+      ..selection = TextSelection.collapsed(offset: draft.cursor);
+    _composerFocus.requestFocus();
+  }
+
+  void _dismissReply({bool clearComposerPrefix = true}) {
+    final draft = _replyDraft;
+    if (draft != null && clearComposerPrefix) {
+      final rest = stripLeadingReplyDraft(_bodyCtrl.text, draft.prefix);
+      _bodyCtrl
+        ..text = rest
+        ..selection = TextSelection.collapsed(offset: rest.length);
+    }
+    if (_replyDraft != null || _replyChipHandle != null) {
+      setState(() {
+        _replyDraft = null;
+        _replyChipHandle = null;
+      });
+    }
   }
 
   void _clearStagingPhoto() {
@@ -286,6 +334,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     if (!mounted) return;
     if (failure == null) {
       _bodyCtrl.clear();
+      _dismissReply(clearComposerPrefix: false);
       _clearStagingPhoto();
       showFToast(
         context: context,
@@ -540,6 +589,7 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                             : null,
                         onEdit: canManage ? () => _editComment(c) : null,
                         onDelete: canManage ? () => _deleteComment(c) : null,
+                        onReply: c.isPublished ? () => _startReply(c) : null,
                         onUsernameTap: isLinkablePublicUsername(c.username)
                             ? () => UserProfileRouter.open(context, c.username!)
                             : null,
@@ -590,12 +640,22 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
                 )
               : ThreadComposer(
                   controller: _bodyCtrl,
+                  focusNode: _composerFocus,
                   isSubmitting:
                       (listState?.isSubmitting ?? false) || _uploadingImage,
                   onSubmit: _submitText,
                   onRecordAudio: _recordAudioComment,
                   onPickImage: _pickCommentPhoto,
                   attachmentPreview: _buildPhotoPreview(context),
+                  replyBanner: _replyDraft == null
+                      ? null
+                      : ThreadReplyBanner(
+                          title: _replyChipHandle != null
+                              ? l10n.threadReplyingTo(_replyChipHandle!)
+                              : l10n.threadReply,
+                          subtitle: _replyDraft!.quotePreview,
+                          onDismiss: _dismissReply,
+                        ),
                   suggestBuilder: _buildMentionSuggest,
                 ),
         ),

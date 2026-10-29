@@ -3344,6 +3344,23 @@
   "@threadRecordVoice": {},
   "threadSend": "Kirim",
   "@threadSend": {},
+  "threadReply": "Balas",
+  "@threadReply": {
+    "description": "Shortcut balas di baris komentar/balasan thread (#205)"
+  },
+  "threadReplyingTo": "Membalas @{username}",
+  "@threadReplyingTo": {
+    "description": "Chip composer saat membalas komentar tertentu",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "threadReplyDismiss": "Batal balas",
+  "@threadReplyDismiss": {
+    "description": "Semantics tombol tutup chip Membalas"
+  },
   "cropAspectFree": "Bebas",
   "@cropAspectFree": {},
   "cropSkip": "Lewati",

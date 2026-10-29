@@ -5,10 +5,17 @@ import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/shared/widgets/thread_message.dart';
 
+import '../../helpers/l10n_delegates.dart';
+
 Widget _host(Widget child) {
   return FTheme(
     data: foruiPalettes['zinc']!.light.touch,
-    child: MaterialApp(home: Scaffold(body: child)),
+    child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      supportedLocales: appTestSupportedLocales,
+      locale: appTestLocale,
+      home: Scaffold(body: child),
+    ),
   );
 }
 
@@ -53,5 +60,51 @@ void main() {
     );
 
     expect(find.text('@budi'), findsNothing);
+  });
+
+  testWidgets('tombol Balas memanggil onReply', (tester) async {
+    var tapped = false;
+    await tester.pumpWidget(
+      _host(
+        ThreadMessageRow(
+          username: 'budi',
+          body: 'Isi komentar.',
+          onReply: () => tapped = true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Balas'));
+    await tester.pump();
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('tombol Balas disembunyikan saat redacted', (tester) async {
+    await tester.pumpWidget(
+      _host(
+        ThreadMessageRow(
+          username: 'budi',
+          body: 'Isi komentar.',
+          isRedacted: true,
+          onReply: () {},
+        ),
+      ),
+    );
+
+    expect(find.text('Balas'), findsNothing);
+  });
+
+  testWidgets('leading quote dirender terpisah dari sisa body', (tester) async {
+    await tester.pumpWidget(
+      _host(
+        const ThreadMessageRow(
+          username: 'budi',
+          body: '> cuplikan lama\n\n@budi setuju',
+        ),
+      ),
+    );
+
+    expect(find.text('cuplikan lama', findRichText: true), findsOneWidget);
+    expect(find.textContaining('setuju', findRichText: true), findsOneWidget);
   });
 }

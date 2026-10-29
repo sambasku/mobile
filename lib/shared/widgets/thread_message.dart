@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../utils/public_account_name.dart';
+import '../utils/thread_reply_draft.dart';
 import 'public_account_name.dart';
 import 'user_avatar.dart';
 import '../../../l10n/app_localizations.dart';
@@ -37,6 +38,7 @@ class ThreadMessageRow extends StatelessWidget {
     this.onMentionTap,
     this.onDelete,
     this.onEdit,
+    this.onReply,
     this.isEdited = false,
     this.editedLabel,
     this.onShowEditHistory,
@@ -68,6 +70,9 @@ class ThreadMessageRow extends StatelessWidget {
   final VoidCallback? onUsernameTap;
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
+
+  /// Shortcut balas (#205): tampil bila non-null dan baris tidak redacted.
+  final VoidCallback? onReply;
 
   /// true → tampilkan [editedLabel] di meta (tap → [onShowEditHistory]).
   final bool isEdited;
@@ -150,7 +155,9 @@ class ThreadMessageRow extends StatelessWidget {
                       ),
                     ),
                   ],
-                  if ((onEdit != null || onDelete != null) && footer == null) ...[
+                  if ((onEdit != null || onDelete != null) &&
+                      footer == null &&
+                      !_showReplyAction) ...[
                     const Spacer(),
                     _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
                   ],
@@ -185,17 +192,22 @@ class ThreadMessageRow extends StatelessWidget {
                 if (body.trim().isNotEmpty) const Gap(6),
                 media!,
               ],
-              if (footer != null) ...[
+              if (footer != null || _showReplyAction || onEdit != null || onDelete != null) ...[
                 const Gap(4),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: footer!,
-                      ),
-                    ),
+                    if (footer != null)
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: footer!,
+                        ),
+                      )
+                    else
+                      const Spacer(),
+                    if (_showReplyAction)
+                      _ThreadReplyButton(onPressed: onReply!),
                     _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
                   ],
                 ),
@@ -227,6 +239,42 @@ class ThreadMessageRow extends StatelessWidget {
       (dateLabel != null && dateLabel!.isNotEmpty) ||
       metaParts.any((p) => p.trim().isNotEmpty) ||
       (isEdited && onShowEditHistory != null);
+
+  bool get _showReplyAction => onReply != null && !isRedacted;
+}
+
+class _ThreadReplyButton extends StatelessWidget {
+  const _ThreadReplyButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: l10n.threadReply,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            child: Text(
+              l10n.threadReply,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.primary,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ThreadMetaRow extends StatelessWidget {
@@ -360,7 +408,9 @@ class ThreadComposer extends StatelessWidget {
     this.onRecordAudio,
     this.onPickImage,
     this.attachmentPreview,
+    this.replyBanner,
     this.suggestBuilder,
+    this.focusNode,
     this.hint = 'Tulis komentar…',
   });
 
@@ -377,8 +427,14 @@ class ThreadComposer extends StatelessWidget {
   /// Pratinjau lampiran (mis. thumbnail foto staging) di atas field.
   final Widget? attachmentPreview;
 
+  /// Chip "Membalas @user" (#205) di atas aksi foto/mic.
+  final Widget? replyBanner;
+
   /// Builder opsional untuk overlay suggestion (mis. mention autocomplete).
   final Widget Function(BuildContext)? suggestBuilder;
+
+  /// Fokus field setelah tap Balas.
+  final FocusNode? focusNode;
   final String hint;
 
   @override
@@ -389,6 +445,10 @@ class ThreadComposer extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (suggestBuilder != null) ...[suggestBuilder!(context), const Gap(4)],
+        if (replyBanner != null) ...[
+          replyBanner!,
+          const Gap(8),
+        ],
         if (attachmentPreview != null) ...[
           attachmentPreview!,
           const Gap(8),
@@ -424,6 +484,7 @@ class ThreadComposer extends StatelessWidget {
             Expanded(
               child: FTextField(
                 control: FTextFieldControl.managed(controller: controller),
+                focusNode: focusNode,
                 hint: hint,
                 enabled: !isSubmitting,
                 keyboardType: TextInputType.multiline,
@@ -531,6 +592,87 @@ class _ThreadComposerChip extends StatelessWidget {
   }
 }
 
+/// Chip dismissible "Membalas @user" di atas composer (#205).
+class ThreadReplyBanner extends StatelessWidget {
+  const ThreadReplyBanner({
+    super.key,
+    required this.title,
+    required this.onDismiss,
+    this.subtitle,
+  });
+
+  final String title;
+  final String? subtitle;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.secondary,
+        borderRadius: BorderRadius.circular(8),
+        border: Border(
+          left: BorderSide(color: theme.colors.primary, width: 3),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                  if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
+                    const Gap(2),
+                    Text(
+                      subtitle!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Semantics(
+              button: true,
+              label: l10n.threadReplyDismiss,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: onDismiss,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      FLucideIcons.x,
+                      size: 14,
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Prompt login di kaki thread (komentar / balasan).
 class ThreadLoginPrompt extends StatelessWidget {
   const ThreadLoginPrompt({
@@ -567,6 +709,7 @@ class ThreadLoginPrompt extends StatelessWidget {
 
 /// Teks body thread dengan deteksi `@username`: mention dirender bold +
 /// warna primer, tap → [onMentionTap] (navigasi profil).
+/// Leading baris `>` dirender sebagai cuplikan quote (#205).
 class MentionBodyText extends StatelessWidget {
   const MentionBodyText({
     super.key,
@@ -595,10 +738,52 @@ class MentionBodyText extends StatelessWidget {
       fontWeight: isRedacted ? null : FontWeight.w600,
     );
 
-    return RichText(text: _buildTextSpan(body, mentionStyle));
+    final split = splitLeadingBlockquote(body);
+    final quoteStyle = style.copyWith(
+      color: theme.colors.mutedForeground,
+      fontStyle: FontStyle.italic,
+    );
+    final quoteMentionStyle = quoteStyle.copyWith(
+      color: isRedacted ? null : theme.colors.primary,
+      fontWeight: isRedacted ? null : FontWeight.w600,
+      fontStyle: FontStyle.normal,
+    );
+
+    if (split.quote.isEmpty) {
+      return RichText(text: _buildTextSpan(body, mentionStyle, style));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: theme.colors.border, width: 3),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: RichText(
+              text: _buildTextSpan(split.quote, quoteMentionStyle, quoteStyle),
+            ),
+          ),
+        ),
+        if (split.rest.trim().isNotEmpty) ...[
+          const Gap(6),
+          RichText(
+            text: _buildTextSpan(split.rest, mentionStyle, style),
+          ),
+        ],
+      ],
+    );
   }
 
-  TextSpan _buildTextSpan(String text, TextStyle mentionStyle) {
+  TextSpan _buildTextSpan(
+    String text,
+    TextStyle mentionStyle,
+    TextStyle baseStyle,
+  ) {
     final spans = <TextSpan>[];
     var lastEnd = 0;
 
@@ -624,6 +809,6 @@ class MentionBodyText extends StatelessWidget {
       spans.add(TextSpan(text: text.substring(lastEnd)));
     }
 
-    return TextSpan(children: spans, style: style);
+    return TextSpan(children: spans, style: baseStyle);
   }
 }
