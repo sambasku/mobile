@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/models/api_response.dart';
+import '../../../contribution/data/models/upload_credentials_dto.dart';
 import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
 import '../models/update_comment_request_dto.dart';
@@ -31,6 +32,12 @@ abstract interface class CommentRemoteDatasource {
   Future<ApiResponse<CommentDto>> create(
     @Path('wordId') String wordId,
     @Body() CreateCommentRequestDto body,
+  );
+
+  /// Kredensial upload foto komentar - GET /api/v1/comments/upload-token.
+  @GET('/api/v1/comments/upload-token')
+  Future<ApiResponse<UploadCredentialsDto>> getUploadToken(
+    @Query('folder') String folder,
   );
 
   /// Soft-delete komentar (penulis/verifikator) - DELETE

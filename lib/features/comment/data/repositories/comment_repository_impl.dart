@@ -4,12 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/comment_edit_history.dart';
+import '../../domain/entities/comment_image.dart';
 import '../../domain/entities/comment_page.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../../domain/repositories/comment_repository.dart';
 import '../datasources/comment_remote_datasource.dart';
 import '../models/comment_dto.dart';
+import '../models/comment_image_dto.dart';
 import '../models/create_comment_request_dto.dart';
 import '../models/update_comment_request_dto.dart';
 import '../../../../core/i18n/l10n.dart';
@@ -61,14 +63,54 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<CommentUploadCredentials> getUploadToken() async {
+    try {
+      final response = await _remoteDatasource.getUploadToken('/comments');
+      if (response.success == false || response.data == null) {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/api/v1/comments/upload-token'),
+          message: response.message ?? l10n.commentPhotoUploadFailed,
+        );
+      }
+      final dto = response.data!;
+      return CommentUploadCredentials(
+        token: dto.token,
+        signature: dto.signature,
+        expire: dto.expire,
+        publicKey: dto.publicKey,
+        uploadEndpoint: dto.uploadEndpoint,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 503) {
+        final code = (e.response?.data is Map)
+            ? (e.response!.data as Map)['error_code']
+            : null;
+        if (code == 'IMAGE_UPLOAD_UNAVAILABLE') {
+          throw const CommentImageUploadUnavailable();
+        }
+      }
+      rethrow;
+    }
+  }
+
+  @override
   Future<Either<CommentFailure, WordComment>> create({
     required String wordId,
     required String body,
+    CommentImageStaging? image,
   }) async {
     try {
       final response = await _remoteDatasource.create(
         wordId,
-        CreateCommentRequestDto(body: body),
+        CreateCommentRequestDto(
+          body: body,
+          image: image == null
+              ? null
+              : CreateCommentImageInputDto(
+                  url: image.url,
+                  providerFileId: image.providerFileId,
+                ),
+        ),
       );
 
       if (response.success == false || response.data == null) {
@@ -276,6 +318,13 @@ class CommentRepositoryImpl implements CommentRepository {
         audioUrl: dto.audioUrl,
         audioMimeType: dto.audioMimeType,
         audioDurationMs: dto.audioDurationMs,
+        image: dto.image == null
+            ? null
+            : CommentImage(
+                status: dto.image!.status,
+                publicUrl: dto.image!.publicUrl,
+                contentWarnings: dto.image!.contentWarnings,
+              ),
         createdAt: dto.createdAt,
         status: dto.status,
         upvotes: dto.upvotes,

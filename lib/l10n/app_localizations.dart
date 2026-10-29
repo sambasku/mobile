@@ -1267,6 +1267,48 @@ abstract class AppLocalizations {
   /// **'Komentar terkirim'**
   String get commentSent;
 
+  /// Chip lampirkan foto di composer komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get commentAddPhoto;
+
+  /// Chip foto komentar status pending_review
+  ///
+  /// In id, this message translates to:
+  /// **'Foto menunggu pengecekan'**
+  String get commentPhotoPending;
+
+  /// Toast setelah kirim komentar dengan foto staging
+  ///
+  /// In id, this message translates to:
+  /// **'Foto sedang dicek tim kami'**
+  String get commentPhotoCheckedNote;
+
+  /// No description provided for @commentPhotoUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah foto'**
+  String get commentPhotoUploadFailed;
+
+  /// No description provided for @commentPhotoUploading.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengunggah foto…'**
+  String get commentPhotoUploading;
+
+  /// Aksi hapus pratinjau foto di composer komentar
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus foto'**
+  String get commentRemovePhoto;
+
+  /// No description provided for @commentBodyOrPhotoRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar atau foto wajib diisi'**
+  String get commentBodyOrPhotoRequired;
+
   /// No description provided for @commentRecordTitle.
   ///
   /// In id, this message translates to:
@@ -14708,6 +14750,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Rekam suara'**
   String get threadRecordVoice;
+
+  /// Semantics label chip foto di composer thread
+  ///
+  /// In id, this message translates to:
+  /// **'Lampirkan foto ke komentar'**
+  String get threadAddPhoto;
 
   /// No description provided for @threadSend.
   ///

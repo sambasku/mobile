@@ -103,3 +103,51 @@ final class CommentRepositoryProvider
 }
 
 String _$commentRepositoryHash() => r'3de8eb3100e01fe2100ed8a4b8f8d924e92d55f5';
+
+@ProviderFor(commentImageUploadService)
+final commentImageUploadServiceProvider = CommentImageUploadServiceProvider._();
+
+final class CommentImageUploadServiceProvider
+    extends
+        $FunctionalProvider<
+          CommentImageUploadService,
+          CommentImageUploadService,
+          CommentImageUploadService
+        >
+    with $Provider<CommentImageUploadService> {
+  CommentImageUploadServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'commentImageUploadServiceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$commentImageUploadServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<CommentImageUploadService> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CommentImageUploadService create(Ref ref) {
+    return commentImageUploadService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CommentImageUploadService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CommentImageUploadService>(value),
+    );
+  }
+}
+
+String _$commentImageUploadServiceHash() =>
+    r'3da3637d7cf77cdea00289bee0b625abd736e0f8';

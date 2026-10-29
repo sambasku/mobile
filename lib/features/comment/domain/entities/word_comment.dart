@@ -1,4 +1,5 @@
 import '../../../vote/domain/entities/vote_target.dart';
+import 'comment_image.dart';
 
 /// Komentar pada lemma (09-api-comment.md). Post-moderation:
 /// published | taken_down | deleted_by_author.
@@ -15,6 +16,7 @@ class WordComment {
     this.audioUrl,
     this.audioMimeType,
     this.audioDurationMs,
+    this.image,
     this.createdAt,
     this.status,
     this.upvotes = 0,
@@ -47,6 +49,8 @@ class WordComment {
   final String? audioMimeType;
   final int? audioDurationMs;
 
+  final CommentImage? image;
+
   final String? createdAt;
 
   /// published | taken_down | deleted_by_author
@@ -71,6 +75,10 @@ class WordComment {
   bool get hasAudio =>
       audioUrl != null && audioUrl!.trim().isNotEmpty;
 
+  bool get hasImage => image != null;
+
+  bool get hasPendingImage => image?.isPendingReview ?? false;
+
   String get displayBody {
     if (isTakenDown) {
       return 'Komentar ini dihapus karena tidak memenuhi standar komunitas.';
@@ -79,7 +87,7 @@ class WordComment {
       return 'Komentar ini dihapus oleh penulis.';
     }
     if (body == null || body!.trim().isEmpty) {
-      if (hasAudio && isPublished) return '';
+      if ((hasAudio || hasImage) && isPublished) return '';
       return 'Komentar ini tidak tersedia.';
     }
     return body!;
@@ -93,6 +101,7 @@ class WordComment {
     Object? myVote = _unset,
     bool? isEdited,
     String? updatedAt,
+    CommentImage? image,
   }) {
     return WordComment(
       id: id,
@@ -106,6 +115,7 @@ class WordComment {
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
+      image: image ?? this.image,
       createdAt: createdAt,
       status: status ?? this.status,
       upvotes: upvotes ?? this.upvotes,
