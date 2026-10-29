@@ -14763,6 +14763,24 @@ abstract class AppLocalizations {
   /// **'Kirim'**
   String get threadSend;
 
+  /// Shortcut balas di baris komentar/balasan thread (#205)
+  ///
+  /// In id, this message translates to:
+  /// **'Balas'**
+  String get threadReply;
+
+  /// Chip composer saat membalas komentar tertentu
+  ///
+  /// In id, this message translates to:
+  /// **'Membalas @{username}'**
+  String threadReplyingTo(String username);
+
+  /// Semantics tombol tutup chip Membalas
+  ///
+  /// In id, this message translates to:
+  /// **'Batal balas'**
+  String get threadReplyDismiss;
+
   /// No description provided for @cropAspectFree.
   ///
   /// In id, this message translates to:

@@ -8116,6 +8116,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get threadSend => 'Kirim';
 
   @override
+  String get threadReply => 'Balas';
+
+  @override
+  String threadReplyingTo(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get threadReplyDismiss => 'Batal balas';
+
+  @override
   String get cropAspectFree => 'Bebas';
 
   @override
@@ -16454,6 +16465,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get threadSend => 'Kirim';
+
+  @override
+  String get threadReply => 'Balas';
+
+  @override
+  String threadReplyingTo(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get threadReplyDismiss => 'Batal balas';
 
   @override
   String get cropAspectFree => 'Bebas';

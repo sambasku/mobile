@@ -11,6 +11,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../data/discussion_providers.dart';
@@ -39,6 +40,9 @@ class DiscussionDetailPage extends ConsumerStatefulWidget {
 
 class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   late final TextEditingController _replyCtrl;
+  final _composerFocus = FocusNode();
+  ThreadReplyDraft? _replyDraft;
+  String? _replyChipHandle;
 
   @override
   void initState() {
@@ -51,7 +55,50 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
   void dispose() {
     _replyCtrl.removeListener(_onReplyChanged);
     _replyCtrl.dispose();
+    _composerFocus.dispose();
     super.dispose();
+  }
+
+  void _startReply({
+    required String? username,
+    required String? body,
+  }) {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final auth = ref.read(authStatusProvider).value;
+    final draft = buildThreadReplyDraft(
+      username: username,
+      body: body,
+      currentUsername: auth?.username,
+    );
+    final chipHandle =
+        isLinkablePublicUsername(username) ? username : null;
+    setState(() {
+      _replyDraft = draft;
+      _replyChipHandle = chipHandle;
+    });
+    _replyCtrl
+      ..text = draft.text
+      ..selection = TextSelection.collapsed(offset: draft.cursor);
+    _composerFocus.requestFocus();
+  }
+
+  void _dismissReply({bool clearComposerPrefix = true}) {
+    final draft = _replyDraft;
+    if (draft != null && clearComposerPrefix) {
+      final rest = stripLeadingReplyDraft(_replyCtrl.text, draft.prefix);
+      _replyCtrl
+        ..text = rest
+        ..selection = TextSelection.collapsed(offset: rest.length);
+    }
+    if (_replyDraft != null || _replyChipHandle != null) {
+      setState(() {
+        _replyDraft = null;
+        _replyChipHandle = null;
+      });
+    }
   }
 
   void _onReplyChanged() {
@@ -175,6 +222,7 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
     if (!mounted) return;
     if (failure == null) {
       _replyCtrl.clear();
+      _dismissReply(clearComposerPrefix: false);
       showFToast(
         context: context,
         title: Text(AppLocalizations.of(context).discussionReplySent),
@@ -206,7 +254,10 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
               body: caption.isEmpty ? null : caption,
             );
         if (failure == null) {
-          if (mounted) _replyCtrl.clear();
+          if (mounted) {
+            _replyCtrl.clear();
+            _dismissReply(clearComposerPrefix: false);
+          }
           return null;
         }
         return failure.message;
@@ -415,6 +466,12 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                               context,
                               mentionedUsername,
                             ),
+                        onReply: item.isPublished && canReply
+                            ? () => _startReply(
+                                  username: item.username,
+                                  body: item.body,
+                                )
+                            : null,
                         footer: item.isPublished
                             ? Row(
                                 children: [
@@ -526,6 +583,12 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                                   context,
                                   mentionedUsername,
                                 ),
+                            onReply: reply.isPublished && canReply
+                                ? () => _startReply(
+                                      username: reply.username,
+                                      body: reply.body,
+                                    )
+                                : null,
                             footer: reply.isPublished
                                 ? Row(
                                     children: [
@@ -570,10 +633,22 @@ class _DiscussionDetailPageState extends ConsumerState<DiscussionDetailPage> {
                           )
                         : ThreadComposer(
                             controller: _replyCtrl,
+                            focusNode: _composerFocus,
                             isSubmitting: state.isSubmittingReply,
                             onSubmit: _sendReply,
                             onRecordAudio: _recordAudioReply,
                             hint: l10n.discussionReplyHint,
+                            replyBanner: _replyDraft == null
+                                ? null
+                                : ThreadReplyBanner(
+                                    title: _replyChipHandle != null
+                                        ? l10n.threadReplyingTo(
+                                            _replyChipHandle!,
+                                          )
+                                        : l10n.threadReply,
+                                    subtitle: _replyDraft!.quotePreview,
+                                    onDismiss: _dismissReply,
+                                  ),
                             suggestBuilder: _buildReplyMentionSuggest,
                           ),
                   ),
