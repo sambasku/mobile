@@ -11,6 +11,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../entertainment_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
@@ -117,64 +118,69 @@ class PantunFeedPage extends HookConsumerWidget {
           Expanded(
             child: searching
                 ? _SearchResults(query: query.value)
-                : RefreshIndicator(
-                    onRefresh: () async {
-                      await ref.read(pantunFeedProvider.notifier).refresh();
-                    },
-                    child: async.when(
-                      loading: () => const _FeedSkeleton(),
-                      error: (e, _) => _MessageList(
-                        icon: FLucideIcons.circleAlert,
-                        title: e is PantunFailure
-                            ? e.message
-                            : l10n.pantunLoadFailedShort,
-                      ),
-                      data: (state) => ListView(
-                        controller: scroll,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-                        children: [
-                          if (state.items.isEmpty)
-                            _MessageList(
-                              shrink: true,
-                              icon: FLucideIcons.feather,
-                              title: l10n.pantunEmptyTitle,
-                              subtitle: l10n.pantunEmptyBody,
-                            )
-                          else
-                            for (final p in state.items)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: PantunCard(
-                                  pantun: p,
-                                  onTap: () => context.push(
-                                    '/entertainment/pantun/${p.id}',
-                                  ),
-                                  onVoteToggle: (pantun, value) => ref
-                                      .read(pantunFeedProvider.notifier)
-                                      .toggleVote(pantun, value),
-                                  footer: p.userId == myUserId
-                                      ? PantunActionRow.delete(
-                                          onDelete: () => deletePantun(p),
-                                        )
-                                      : PantunActionRow.report(
-                                          onReport: () => reportPantunFromUi(
-                                            context,
-                                            ref,
-                                            targetType: 'pantun',
-                                            targetId: p.id,
+                : ScrollWithBackToTop(
+                    // Sedikit lebih tinggi: footer "Tulis pantun" di bawah body.
+                    controller: scroll,
+                    bottom: 8,
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await ref.read(pantunFeedProvider.notifier).refresh();
+                      },
+                      child: async.when(
+                        loading: () => const _FeedSkeleton(),
+                        error: (e, _) => _MessageList(
+                          icon: FLucideIcons.circleAlert,
+                          title: e is PantunFailure
+                              ? e.message
+                              : l10n.pantunLoadFailedShort,
+                        ),
+                        data: (state) => ListView(
+                          controller: scroll,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                          children: [
+                            if (state.items.isEmpty)
+                              _MessageList(
+                                shrink: true,
+                                icon: FLucideIcons.feather,
+                                title: l10n.pantunEmptyTitle,
+                                subtitle: l10n.pantunEmptyBody,
+                              )
+                            else
+                              for (final p in state.items)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: PantunCard(
+                                    pantun: p,
+                                    onTap: () => context.push(
+                                      '/entertainment/pantun/${p.id}',
+                                    ),
+                                    onVoteToggle: (pantun, value) => ref
+                                        .read(pantunFeedProvider.notifier)
+                                        .toggleVote(pantun, value),
+                                    footer: p.userId == myUserId
+                                        ? PantunActionRow.delete(
+                                            onDelete: () => deletePantun(p),
+                                          )
+                                        : PantunActionRow.report(
+                                            onReport: () => reportPantunFromUi(
+                                              context,
+                                              ref,
+                                              targetType: 'pantun',
+                                              targetId: p.id,
+                                            ),
                                           ),
-                                        ),
+                                  ),
+                                ),
+                            if (state.isLoadingMore)
+                              const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(
+                                  child: FCircularProgress(size: .sm),
                                 ),
                               ),
-                          if (state.isLoadingMore)
-                            const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(
-                                child: FCircularProgress(size: .sm),
-                              ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

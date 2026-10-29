@@ -1628,6 +1628,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get commonBack => 'Kembali';
 
   @override
+  String get commonBackToTop => 'Kembali ke atas';
+
+  @override
   String get commonRetry => 'Coba lagi';
 
   @override
@@ -10049,6 +10052,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get commonBack => 'Kembali';
+
+  @override
+  String get commonBackToTop => 'Kembali ke atas';
 
   @override
   String get commonRetry => 'Coba lagi';

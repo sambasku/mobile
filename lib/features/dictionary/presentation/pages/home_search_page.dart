@@ -14,6 +14,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../activity/domain/entities/feed_activity_item.dart';
 import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
@@ -199,69 +200,76 @@ class HomeSearchPage extends HookConsumerWidget {
         ? 1
         : items.length + (state.isLoadingMore ? 1 : 0);
 
-    return RefreshIndicator(
-      onRefresh: () => _refresh(ref, category),
-      child: CustomScrollView(
-        controller: scroll,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          const SliverToBoxAdapter(
-            child: Padding(padding: _hPad, child: WordOfDayCard()),
-          ),
-          const SliverToBoxAdapter(child: PinnedHomeBanner()),
-          const SliverToBoxAdapter(
-            child: Padding(padding: _hPad, child: _FeedHeading()),
-          ),
-          // Chip kategori menempel di bawah app bar saat feed di-scroll
-          // (pinned) - filter tetap terjangkau tanpa scroll balik ke atas.
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _FeedCategoryChipsHeader(
-              child: _FeedCategoryChips(
-                selected: category,
-                onChanged: onCategoryChanged,
-              ),
+    // #201: Stack + tombol kembali ke atas (muncul setelah scroll).
+    return ScrollWithBackToTop(
+      controller: scroll,
+      child: RefreshIndicator(
+        onRefresh: () => _refresh(ref, category),
+        child: CustomScrollView(
+          controller: scroll,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            const SliverToBoxAdapter(
+              child: Padding(padding: _hPad, child: WordOfDayCard()),
             ),
-          ),
-          if (hasError)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                child: FAlert(
-                  variant: FAlertVariant.destructive,
-                  title: Text(state.errorMessage!),
+            const SliverToBoxAdapter(child: PinnedHomeBanner()),
+            const SliverToBoxAdapter(
+              child: Padding(padding: _hPad, child: _FeedHeading()),
+            ),
+            // Chip kategori menempel di bawah app bar saat feed di-scroll
+            // (pinned) - filter tetap terjangkau tanpa scroll balik ke atas.
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _FeedCategoryChipsHeader(
+                child: _FeedCategoryChips(
+                  selected: category,
+                  onChanged: onCategoryChanged,
                 ),
               ),
             ),
-          if (!feedReady || !state.hasLoaded)
-            const SliverToBoxAdapter(child: _FeedListSkeleton())
-          else if (items.isEmpty && state.errorMessage == null)
-            const SliverToBoxAdapter(child: _EmptyFeed())
-          else
-            SliverList.builder(
-              itemCount: bodyCount,
-              itemBuilder: (context, bodyIndex) {
-                if (bodyIndex >= items.length) {
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 12, bottom: 8),
-                    child: Center(child: FCircularProgress()),
-                  );
-                }
-                return Padding(
-                  padding: _hPad,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ActivityFeedTile(item: items[bodyIndex]),
-                      if (bodyIndex != items.length - 1)
-                        Divider(height: 1, color: context.theme.colors.border),
-                    ],
+            if (hasError)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: FAlert(
+                    variant: FAlertVariant.destructive,
+                    title: Text(state.errorMessage!),
                   ),
-                );
-              },
-            ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-        ],
+                ),
+              ),
+            if (!feedReady || !state.hasLoaded)
+              const SliverToBoxAdapter(child: _FeedListSkeleton())
+            else if (items.isEmpty && state.errorMessage == null)
+              const SliverToBoxAdapter(child: _EmptyFeed())
+            else
+              SliverList.builder(
+                itemCount: bodyCount,
+                itemBuilder: (context, bodyIndex) {
+                  if (bodyIndex >= items.length) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 12, bottom: 8),
+                      child: Center(child: FCircularProgress()),
+                    );
+                  }
+                  return Padding(
+                    padding: _hPad,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ActivityFeedTile(item: items[bodyIndex]),
+                        if (bodyIndex != items.length - 1)
+                          Divider(
+                            height: 1,
+                            color: context.theme.colors.border,
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          ],
+        ),
       ),
     );
   }
@@ -401,8 +409,8 @@ class _FeedCategoryChips extends StatelessWidget {
                 : FButtonVariant.outline,
             onPress: onChanged == null ? null : () => onChanged!(category),
             child: Text(
-            feedCategoryLabel(AppLocalizations.of(context), category),
-          ),
+              feedCategoryLabel(AppLocalizations.of(context), category),
+            ),
           );
         },
       ),

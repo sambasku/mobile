@@ -9,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -62,15 +63,17 @@ class DiscussionFeedPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          await ref
-              .read(responseCacheStoreProvider)
-              .deleteByPrefix('GET|/api/v1/discussions');
-          ref.invalidate(discussionFeedProvider);
-          await ref.read(discussionFeedProvider.future);
-        },
-        child: async.when(
+      child: ScrollWithBackToTop(
+        controller: scroll,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(responseCacheStoreProvider)
+                .deleteByPrefix('GET|/api/v1/discussions');
+            ref.invalidate(discussionFeedProvider);
+            await ref.read(discussionFeedProvider.future);
+          },
+          child: async.when(
           loading: () => const _FeedSkeleton(),
           error: (error, _) => ListView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -198,6 +201,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
               },
             );
           },
+        ),
         ),
       ),
     );

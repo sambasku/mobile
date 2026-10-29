@@ -3073,6 +3073,12 @@ abstract class AppLocalizations {
   /// **'Kembali'**
   String get commonBack;
 
+  /// Tooltip/semantics tombol scroll ke atas di feed panjang (#201)
+  ///
+  /// In id, this message translates to:
+  /// **'Kembali ke atas'**
+  String get commonBackToTop;
+
   /// No description provided for @commonRetry.
   ///
   /// In id, this message translates to:
