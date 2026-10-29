@@ -82,7 +82,6 @@ class PinsPage extends HookConsumerWidget {
     required Future<void> Function() refreshPlaces,
   }) {
     final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final placesAsync = ref.watch(placesProvider);
     final focusPlace = placesAsync.value
