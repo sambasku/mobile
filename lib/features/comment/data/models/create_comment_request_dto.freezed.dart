@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateCommentRequestDto {
 
- String get body; CreateCommentImageInputDto? get image;
+ String get body;@JsonKey(includeIfNull: false) CreateCommentImageInputDto? get image;
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $CreateCommentRequestDtoCopyWith<$Res>  {
   factory $CreateCommentRequestDtoCopyWith(CreateCommentRequestDto value, $Res Function(CreateCommentRequestDto) _then) = _$CreateCommentRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String body, CreateCommentImageInputDto? image
+ String body,@JsonKey(includeIfNull: false) CreateCommentImageInputDto? image
 });
 
 
@@ -172,7 +172,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String body,  CreateCommentImageInputDto? image)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto() when $default != null:
 return $default(_that.body,_that.image);case _:
@@ -193,7 +193,7 @@ return $default(_that.body,_that.image);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String body,  CreateCommentImageInputDto? image)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)  $default,) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto():
 return $default(_that.body,_that.image);case _:
@@ -213,7 +213,7 @@ return $default(_that.body,_that.image);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String body,  CreateCommentImageInputDto? image)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto() when $default != null:
 return $default(_that.body,_that.image);case _:
@@ -228,11 +228,11 @@ return $default(_that.body,_that.image);case _:
 @JsonSerializable()
 
 class _CreateCommentRequestDto implements CreateCommentRequestDto {
-  const _CreateCommentRequestDto({this.body = '', this.image});
+  const _CreateCommentRequestDto({this.body = '', @JsonKey(includeIfNull: false) this.image});
   factory _CreateCommentRequestDto.fromJson(Map<String, dynamic> json) => _$CreateCommentRequestDtoFromJson(json);
 
 @override@JsonKey() final  String body;
-@override final  CreateCommentImageInputDto? image;
+@override@JsonKey(includeIfNull: false) final  CreateCommentImageInputDto? image;
 
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -269,7 +269,7 @@ abstract mixin class _$CreateCommentRequestDtoCopyWith<$Res> implements $CreateC
   factory _$CreateCommentRequestDtoCopyWith(_CreateCommentRequestDto value, $Res Function(_CreateCommentRequestDto) _then) = __$CreateCommentRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String body, CreateCommentImageInputDto? image
+ String body,@JsonKey(includeIfNull: false) CreateCommentImageInputDto? image
 });
 
 

@@ -19,4 +19,4 @@ _CreateCommentRequestDto _$CreateCommentRequestDtoFromJson(
 
 Map<String, dynamic> _$CreateCommentRequestDtoToJson(
   _CreateCommentRequestDto instance,
-) => <String, dynamic>{'body': instance.body, 'image': instance.image};
+) => <String, dynamic>{'body': instance.body, 'image': ?instance.image};

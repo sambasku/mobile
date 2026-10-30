@@ -10,7 +10,8 @@ part 'create_comment_request_dto.g.dart';
 abstract class CreateCommentRequestDto with _$CreateCommentRequestDto {
   const factory CreateCommentRequestDto({
     @Default('') String body,
-    CreateCommentImageInputDto? image,
+    // Jangan serialize null - API Zod .optional() menolak "image": null.
+    @JsonKey(includeIfNull: false) CreateCommentImageInputDto? image,
   }) = _CreateCommentRequestDto;
 
   factory CreateCommentRequestDto.fromJson(Map<String, dynamic> json) =>
