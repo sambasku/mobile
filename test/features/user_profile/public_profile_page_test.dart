@@ -56,6 +56,14 @@ final _activity = [
 final _categoryPage = PublicActivityCategoryState(items: _activity);
 
 Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
+  // Surface ponsel: cover ikut rasio asset (lebar/aspect). Default 800px
+  // membuat cover ~414px; chip/feed aktivitas di bawah fold.
+  // view.physicalSize (bukan setSurfaceSize) supaya MediaQuery ikut 390.
+  tester.view.physicalSize = const Size(390, 844);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -84,6 +92,21 @@ Future<void> _pump(WidgetTester tester, {String? sessionUsername}) async {
   );
   await tester.pump();
   await tester.pump();
+
+  // Finder default skipOffstage:true - konten di bawah fold (cover tinggi +
+  // identitas + lencana) dianggap hilang. Gulir sampai chip aktivitas terlihat.
+  final chipsOffstage = find.byKey(
+    const ValueKey('profile_activity_chips'),
+    skipOffstage: false,
+  );
+  if (chipsOffstage.evaluate().isNotEmpty) {
+    await tester.scrollUntilVisible(
+      chipsOffstage,
+      240,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pump();
+  }
 }
 
 void main() {
@@ -179,8 +202,8 @@ void main() {
       reason: 'baris chip harus full-bleed dari tepi kiri layar',
     );
     expect(
-      MediaQuery.sizeOf(tester.element(chipsFinder)).width - chipsRect.right,
-      closeTo(0, 0.5),
+      chipsRect.right,
+      closeTo(tester.view.physicalSize.width, 0.5),
       reason: 'baris chip harus full-bleed sampai tepi kanan layar',
     );
   });
