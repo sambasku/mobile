@@ -175,9 +175,9 @@ jobs:
           status: draft
           releaseName: ${{ steps.version.outputs.name }} (${{ steps.version.outputs.code }})
 
-      # Deploy Huawei AppGallery ada di workflow terpisah deploy-huawei.yml
-      # (trigger manual, tag fleksibel - review Huawei lambat, tidak perlu
-      # serentak dengan Play).
+      # Deploy Huawei AppGallery: workflow terpisah deploy-huawei.yml,
+      # ikut terpicu oleh push tag v*.*.* yang sama (paralel, independen).
+      # Deploy ulang / catch-up tetap lewat workflow_dispatch di situ.
 
       # - name: Create GitHub Release
       #   uses: softprops/action-gh-release@v3
