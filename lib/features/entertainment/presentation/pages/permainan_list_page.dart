@@ -60,21 +60,29 @@ class PermainanListPage extends StatelessWidget {
           ),
         ],
       ),
-      child: GridView.builder(
-        padding: const EdgeInsets.only(top: 8, bottom: 24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          // Selaras grid Eksplorasi: foto + teks di bawah.
-          childAspectRatio: 0.78,
-        ),
-        itemCount: _items.length,
-        itemBuilder: (context, i) {
-          final item = _items[i];
-          return _PermainanCard(
-            item: item,
-            onTap: item.path == null ? null : () => context.push(item.path!),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final childAspectRatio = ExploreCoverCard.gridChildAspectRatio(
+            maxWidth: constraints.maxWidth,
+          );
+          return GridView.builder(
+            padding: const EdgeInsets.only(top: 8, bottom: 24),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: childAspectRatio,
+            ),
+            itemCount: _items.length,
+            itemBuilder: (context, i) {
+              final item = _items[i];
+              return _PermainanCard(
+                item: item,
+                onTap: item.path == null
+                    ? null
+                    : () => context.push(item.path!),
+              );
+            },
           );
         },
       ),

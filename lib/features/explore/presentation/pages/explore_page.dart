@@ -99,55 +99,61 @@ class ExplorePage extends HookConsumerWidget {
         // hanya bikin gerak mengejar dan platform view resize dobel.
         hero(),
         Expanded(
-          child: CustomScrollView(
-            controller: scroll,
-            slivers: [
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  // Gap ketat: cover penuh sudah bedakan kartu; 12 + aspect
-                  // tinggi terasa jarang setelah ikon dihapus.
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  // Lebih tinggi: foto + blok teks di bawah (bukan overlay).
-                  childAspectRatio: landscape ? 0.95 : 0.78,
-                ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final cat = categories[index];
-                  return _CategoryCard(
-                    category: cat,
-                    onTap: () => _openCategory(context, cat),
-                  );
-                }, childCount: categories.length),
-              ),
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: GestureDetector(
-                      onTap: () {
-                        AnalyticsService.instance.log(
-                          'explore_coming_soon_toggle',
-                          params: {'show': showComingSoon.value ? 0 : 1},
-                        );
-                        showComingSoon.value = !showComingSoon.value;
-                      },
-                      child: FBadge(
-                        variant: showComingSoon.value
-                            ? FBadgeVariant.primary
-                            : FBadgeVariant.outline,
-                        child: Text(
-                          showComingSoon.value
-                              ? l10n.exploreHideComingSoon
-                              : l10n.exploreShowComingSoon,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Sel grid = cover 1:1 + blok judul; rasio dihitung dari lebar
+              // agar AspectRatio di kartu tidak ter-clip.
+              final childAspectRatio = ExploreCoverCard.gridChildAspectRatio(
+                maxWidth: constraints.maxWidth,
+              );
+              return CustomScrollView(
+                controller: scroll,
+                slivers: [
+                  SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: childAspectRatio,
+                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final cat = categories[index];
+                      return _CategoryCard(
+                        category: cat,
+                        onTap: () => _openCategory(context, cat),
+                      );
+                    }, childCount: categories.length),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            AnalyticsService.instance.log(
+                              'explore_coming_soon_toggle',
+                              params: {'show': showComingSoon.value ? 0 : 1},
+                            );
+                            showComingSoon.value = !showComingSoon.value;
+                          },
+                          child: FBadge(
+                            variant: showComingSoon.value
+                                ? FBadgeVariant.primary
+                                : FBadgeVariant.outline,
+                            child: Text(
+                              showComingSoon.value
+                                  ? l10n.exploreHideComingSoon
+                                  : l10n.exploreShowComingSoon,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
-            ],
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
+                ],
+              );
+            },
           ),
         ),
       ],

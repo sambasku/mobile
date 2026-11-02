@@ -54,8 +54,8 @@ class ProfileHeroShell extends StatefulWidget {
   /// Label aksesibilitas tombol kembali (ARB `commonBack`).
   final String backLabel;
 
-  /// Tinggi cover di luar status bar. Sama dengan
-  /// [ProfileIdentityHeader.coverHeightOf] varian yang dipakai.
+  /// Tinggi cover penuh (lebar / rasio asset). Sama dengan
+  /// [ProfileIdentityHeader.coverHeightOf] varian + lebar layar.
   final double coverHeight;
 
   /// Tinggi bar di luar status bar.

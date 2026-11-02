@@ -132,6 +132,7 @@ class PublicProfilePage extends HookConsumerWidget {
         backLabel: AppLocalizations.of(context).commonBack,
         coverHeight: ProfileIdentityHeader.coverHeightOf(
           ProfileHeaderVariant.compact,
+          MediaQuery.sizeOf(context).width,
         ),
         title: _appBarTitle(
           l10n: AppLocalizations.of(context),

@@ -6,7 +6,8 @@ import 'package:sambasku_mobile/features/explore/domain/entities/region.dart'
 void main() {
   test('parse kecamatan lengkap', () {
     final dto = RegionDto.fromJson({
-      'id': 'tangaran',
+      'id': '01KECTANGARAN00000000001',
+      'slug': 'tangaran',
       'name': 'Tangaran',
       'type': 'kecamatan',
       'lat': 1.57,
@@ -14,19 +15,30 @@ void main() {
     });
     expect(dto, isNotNull);
     expect(dto!.type, RegionType.kecamatan);
+    expect(dto.slug, 'tangaran');
     expect(dto.parentId, isNull);
   });
 
   test('parse desa dengan parentId', () {
     final dto = RegionDto.fromJson({
-      'id': 'sambas/semeto',
+      'id': '01DESASEMETO000000000001',
+      'slug': 'sambas/semeto',
       'name': 'Semeto',
       'type': 'desa',
-      'parentId': 'sambas',
+      'parentId': '01KECSAMBAS0000000000001',
     });
     expect(dto, isNotNull);
     expect(dto!.type, RegionType.desa);
-    expect(dto.parentId, 'sambas');
+    expect(dto.parentId, '01KECSAMBAS0000000000001');
+  });
+
+  test('cache lama tanpa slug → slug fallback ke id', () {
+    final dto = RegionDto.fromJson({
+      'id': 'sambas',
+      'name': 'Sambas',
+      'type': 'kecamatan',
+    });
+    expect(dto!.slug, 'sambas');
   });
 
   test('field wajib absen - null (skip item)', () {

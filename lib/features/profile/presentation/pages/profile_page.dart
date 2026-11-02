@@ -84,6 +84,7 @@ class ProfilePage extends HookConsumerWidget {
       title: _displayNameOf(authStatus.value, l10n.profileDefaultName),
       coverHeight: ProfileIdentityHeader.coverHeightOf(
         ProfileHeaderVariant.hero,
+        MediaQuery.sizeOf(context).width,
       ),
       actions: [
         if (isAuth) ...[

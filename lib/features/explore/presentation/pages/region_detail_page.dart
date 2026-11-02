@@ -55,11 +55,13 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
     // Slug kecamatan = id; slug desa = kode BPS (id-nya mengandung "/").
     final region = isKec
-        ? regions.where((r) => r.id == widget.slug).firstOrNull
+        ? regions.where((r) => r.slug == widget.slug).firstOrNull
         : regions.where((r) => r.code == widget.slug).firstOrNull;
     final name = region?.name ?? widget.slug;
 
-    final desaCount = regions.where((r) => r.parentId == widget.slug).length;
+    final desaCount = region == null
+        ? 0
+        : regions.where((r) => r.parentId == region.id).length;
 
     return FScaffold(
       header: FHeader.nested(title: Text(name)),

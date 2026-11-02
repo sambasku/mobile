@@ -5,7 +5,7 @@ import '../models/regions_dto.dart';
 /// Remote datasource katalog wilayah dari API publik.
 ///
 /// `GET /api/v1/regions/catalog` satu response (bukan CDN jsDelivr).
-/// `id` dan `parent_id` di wire adalah slug, sama dengan geojson.
+/// Wire: `id`/`parent_id` = ULID (FK), `slug` = kunci geojson/route.
 class RegionsRemoteDatasource {
   RegionsRemoteDatasource(this._dio, {String? catalogPath})
     : _catalogPath = catalogPath ?? kRegionsCatalogPath;
@@ -64,6 +64,7 @@ Map<String, dynamic> regionsApiBodyToEnvelope(Object? body) {
 Map<String, dynamic> _wireRegionToCamel(Map<String, dynamic> w) {
   return {
     'id': w['id'],
+    'slug': w['slug'],
     'name': w['name'],
     'type': w['type'],
     'parentId': w['parent_id'],

@@ -16,7 +16,8 @@ import 'package:sambasku_mobile/features/usaha/domain/entities/usaha.dart';
 import 'package:sambasku_mobile/features/usaha/presentation/providers/usaha_browse_providers.dart';
 
 const _kec = Region(
-  id: 'pemangkat',
+  id: '01KECPEMangkat00000000001',
+  slug: 'pemangkat',
   name: 'Pemangkat',
   type: RegionType.kecamatan,
   lat: 1.1,
@@ -26,10 +27,11 @@ const _kec = Region(
 final _desa = List.generate(
   3,
   (i) => Region(
-    id: 'pemangkat/desa-$i',
+    id: '01DESAPEMangkat00000000$i',
+    slug: 'pemangkat/desa-$i',
     name: 'Desa $i',
     type: RegionType.desa,
-    parentId: 'pemangkat',
+    parentId: _kec.id,
     code: '610201000$i',
   ),
 );

@@ -893,7 +893,7 @@ class _NearbyWisata extends ConsumerWidget {
     final regionName = ref
         .watch(regionsProvider)
         .value
-        ?.where((r) => r.id == regionId)
+        ?.where((r) => r.slug == regionId || r.id == regionId)
         .firstOrNull
         ?.name;
     final l10n = AppLocalizations.of(context);

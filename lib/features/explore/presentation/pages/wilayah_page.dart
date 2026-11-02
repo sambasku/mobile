@@ -99,17 +99,17 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   /// panel desa, load polygon, kamera fokus ke centroid desa.
   Future<void> _pickSearchedDesa(Region desa, Region kec) async {
     setState(() {
-      _selectedKecId = kec.id;
-      _selectedDesaId = desa.id;
+      _selectedKecId = kec.slug;
+      _selectedDesaId = desa.slug;
     });
     unawaited(_applyKecColors());
-    if (_desaShownForKec != kec.id) {
-      await _loadDesaGeoJson(kec.id);
+    if (_desaShownForKec != kec.slug) {
+      await _loadDesaGeoJson(kec.slug);
     } else {
       await _applyDesaSelection();
     }
     // Fokus kamera ke centroid polygon desa (fallback: centroid kecamatan).
-    final rings = _desaRings[desa.id];
+    final rings = _desaRings[desa.slug];
     if (rings != null && rings.isNotEmpty && rings.first.isNotEmpty) {
       var latSum = 0.0, lngSum = 0.0;
       for (final p in rings.first) {
@@ -124,7 +124,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
         ),
       );
     }
-    unawaited(AnalyticsService.instance.logWilayahDesaSelect(desaId: desa.id));
+    unawaited(AnalyticsService.instance.logWilayahDesaSelect(desaId: desa.slug));
   }
 
   /// Slug kecamatan yang polygon desanya sedang tampil di peta.
@@ -458,7 +458,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
   void _openDesaSheet() {
     final selected =
         (ref.read(regionsKecamatanProvider).value ?? const <Region>[])
-            .where((k) => k.id == _selectedKecId)
+            .where((k) => k.slug == _selectedKecId)
             .firstOrNull;
     unawaited(
       showFSheet<void>(
@@ -472,10 +472,10 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
           initialDesaId: _selectedDesaId,
           onPickSearchedDesa: _pickSearchedDesa,
           onDesaTap: (desa) {
-            setState(() => _selectedDesaId = desa.id);
+            setState(() => _selectedDesaId = desa.slug);
             unawaited(_applyDesaSelection());
             unawaited(
-              AnalyticsService.instance.logWilayahDesaSelect(desaId: desa.id),
+              AnalyticsService.instance.logWilayahDesaSelect(desaId: desa.slug),
             );
           },
         ),
@@ -489,7 +489,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
     final kecamatanAsync = ref.watch(regionsKecamatanProvider);
     final desaAsync = ref.watch(regionsProvider);
     final kecamatan = kecamatanAsync.value ?? const <Region>[];
-    final selected = kecamatan.where((k) => k.id == _selectedKecId).firstOrNull;
+    final selected = kecamatan.where((k) => k.slug == _selectedKecId).firstOrNull;
     final desaOfSelected = selected == null
         ? const <Region>[]
         : (desaAsync.value ?? const <Region>[])
@@ -497,8 +497,8 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
               .toList();
 
     // Load / ganti desa polygons saat kecamatan berubah.
-    if (selected != null && _desaShownForKec != selected.id) {
-      _loadDesaGeoJson(selected.id);
+    if (selected != null && _desaShownForKec != selected.slug) {
+      _loadDesaGeoJson(selected.slug);
     }
 
     return FScaffold(
@@ -591,7 +591,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
                           : _selectedDesaId != null
                           ? l10n.regionDesaTitle(
                               desaOfSelected
-                                      .where((d) => d.id == _selectedDesaId)
+                                      .where((d) => d.slug == _selectedDesaId)
                                       .firstOrNull
                                       ?.name ??
                                   _selectedDesaId!,
@@ -616,7 +616,7 @@ class _WilayahPageState extends ConsumerState<WilayahPage> {
               selectedDesaId: _selectedDesaId,
               onOpenKecDetail: (kec) => unawaited(
                 context.push(
-                  ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.id),
+                  ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.slug),
                 ),
               ),
               onOpenSheet: _openDesaSheet,
@@ -685,7 +685,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
   }
 
   void _openKecDetail(Region kec) => unawaited(
-    context.push(ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.id)),
+    context.push(ExploreRouter.kecamatan.path.replaceFirst(':slug', kec.slug)),
   );
 
   void _openDesaDetail(Region desa) => unawaited(
@@ -719,7 +719,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
       desaAsync.value,
     );
     final placesOfKec = (placesAsync.value ?? const <Place>[])
-        .where((p) => kec != null && p.regionId == kec.id)
+        .where((p) => kec != null && p.regionId == kec.slug)
         .toList();
     // Wisata saja (kuliner punya halaman sendiri).
     final wisataOfKec = placesOfKec
@@ -825,7 +825,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
                   _selectedDesaId != null
                       ? l10n.regionDesaTitle(
                           desaOfSelected
-                                  .where((d) => d.id == _selectedDesaId)
+                                  .where((d) => d.slug == _selectedDesaId)
                                   .firstOrNull
                                   ?.name ??
                               _selectedDesaId ??
@@ -932,7 +932,7 @@ class _WilayahSheetState extends ConsumerState<WilayahSheet> {
           desa: desaOfSelected,
           selectedDesaId: _selectedDesaId,
           onDesaTap: (desa) {
-            setState(() => _selectedDesaId = desa.id);
+            setState(() => _selectedDesaId = desa.slug);
             widget.onDesaTap(desa);
           },
           onOpenDesaDetail: _openDesaDetail,
@@ -1127,7 +1127,7 @@ class _CompactPanel extends StatelessWidget {
                     selectedDesaId != null
                         ? l10n.regionDesaTitle(
                             desaOfSelected
-                                    .where((d) => d.id == selectedDesaId)
+                                    .where((d) => d.slug == selectedDesaId)
                                     .firstOrNull
                                     ?.name ??
                                 selectedDesaId ??
@@ -1310,7 +1310,7 @@ class _DesaList extends StatelessWidget {
       itemCount: desa.length,
       itemBuilder: (context, i) {
         final d = desa[i];
-        final isSelected = d.id == selectedDesaId;
+        final isSelected = d.slug == selectedDesaId;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: InkWell(

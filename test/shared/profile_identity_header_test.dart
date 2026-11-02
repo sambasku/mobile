@@ -30,11 +30,16 @@ void main() {
   testWidgets('hero: avatar 104, stat ringkas, cover placeholder', (
     tester,
   ) async {
+    const surfaceWidth = 800.0;
     await _pump(
       tester,
       const MediaQuery(
-        // Status bar 24: cover full-bleed harus ikut menambah tinggi segini.
-        data: MediaQueryData(padding: EdgeInsets.only(top: 24)),
+        // Lebar 800: tinggi cover = lebar / rasio asset hero (1032×400).
+        // Status bar overlay di atas cover (tidak menambah tinggi art).
+        data: MediaQueryData(
+          size: Size(surfaceWidth, 600),
+          padding: EdgeInsets.only(top: 24),
+        ),
         child: ProfileIdentityHeader(
           variant: ProfileHeaderVariant.hero,
           displayName: 'Budi Santoso',
@@ -50,13 +55,17 @@ void main() {
     expect(avatar, findsOneWidget);
     expect(tester.getSize(avatar).width, 104);
 
-    // Cover full-bleed: tinggi art = status bar + cover + separuh avatar.
+    // Tinggi art = cover (rasio asset) + separuh frame avatar.
     final headerTop = tester
         .getTopLeft(find.byType(ProfileIdentityHeader))
         .dy;
+    final coverH = ProfileIdentityHeader.coverHeightOf(
+      ProfileHeaderVariant.hero,
+      surfaceWidth,
+    );
     expect(
       tester.getBottomLeft(avatar).dy - headerTop,
-      closeTo(24 + 160 + 104 * 1.32 / 2, 0.5),
+      closeTo(coverH + 104 * 1.32 / 2, 0.5),
     );
 
     // Dua angka yang dicari orang; sisanya sengaja tidak ditampilkan.

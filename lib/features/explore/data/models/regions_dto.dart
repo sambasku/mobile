@@ -7,6 +7,7 @@ String regionSlug(String name) =>
 class RegionDto {
   const RegionDto({
     required this.id,
+    required this.slug,
     required this.name,
     required this.type,
     this.parentId,
@@ -16,6 +17,7 @@ class RegionDto {
   });
 
   final String id;
+  final String slug;
   final String name;
   final RegionType type;
   final String? parentId;
@@ -24,6 +26,9 @@ class RegionDto {
   final String? code; // BPS 10-digit code (desa only)
 
   /// Null = field wajib absen/tidak valid -> item di-skip (pola place_dto).
+  ///
+  /// Katalog baru: `id` ULID + `slug`. Katalog/cache lama tanpa `slug`:
+  /// `slug` fallback ke `id` (saat itu `id` masih slug).
   static RegionDto? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
     String? str(Object? key) {
@@ -40,6 +45,7 @@ class RegionDto {
 
     return RegionDto(
       id: id,
+      slug: str('slug') ?? id,
       name: name,
       type: type,
       parentId: str('parentId'),
@@ -51,6 +57,7 @@ class RegionDto {
 
   Region toEntity() => Region(
     id: id,
+    slug: slug,
     name: name,
     type: type,
     parentId: parentId,

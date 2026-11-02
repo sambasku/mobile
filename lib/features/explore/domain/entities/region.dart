@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 class Region {
   const Region({
     required this.id,
+    required this.slug,
     required this.name,
     required this.type,
     this.parentId,
@@ -13,11 +14,16 @@ class Region {
     this.code,
   });
 
+  /// ULID SoT (FK ke API: profil, usaha, acara).
   final String id;
+
+  /// Slug publik (kunci geojson / CDN / route `:slug`).
+  final String slug;
+
   final String name;
   final RegionType type;
 
-  /// Kecamatan induk (hanya desa).
+  /// ULID kecamatan induk (hanya desa).
   final String? parentId;
 
   /// Centroid (hanya kecamatan) - kamera fokus & pin.

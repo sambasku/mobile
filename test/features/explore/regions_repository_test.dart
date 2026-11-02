@@ -72,7 +72,8 @@ void main() {
         'data': {
           'regions': [
             {
-              'id': 'sambas',
+              'id': '01KECSAMBAS0000000000001',
+              'slug': 'sambas',
               'name': 'Sambas',
               'type': 'kecamatan',
               'lat': 1.34,
@@ -81,10 +82,11 @@ void main() {
               'code': null,
             },
             {
-              'id': 'sambas/semeto',
+              'id': '01DESASEMETO000000000001',
+              'slug': 'sambas/semeto',
               'name': 'Semeto',
               'type': 'desa',
-              'parent_id': 'sambas',
+              'parent_id': '01KECSAMBAS0000000000001',
               'code': '6101040029',
             },
             {'name': 'rusak - di-skip'},
@@ -97,7 +99,9 @@ void main() {
     expect(result, isNotNull);
     expect(result, hasLength(2));
     expect(result![0].name, 'Sambas');
-    expect(result[1].parentId, 'sambas');
+    expect(result[0].slug, 'sambas');
+    expect(result[1].parentId, '01KECSAMBAS0000000000001');
+    expect(result[1].slug, 'sambas/semeto');
   });
 
   test('fetch gagal -> null, tidak throw (soft-fail)', () async {

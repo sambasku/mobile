@@ -92,16 +92,29 @@ class ProfileIdentityHeader extends StatelessWidget {
 
   bool get _isHero => variant == ProfileHeaderVariant.hero;
 
-  /// Tinggi cover di luar status bar. Dipakai `ProfileHeroShell` untuk
+  /// Rasio lebar:tinggi asset default cover tab Profil (mandiri).
+  /// Sinkron dengan `assets/images/profile_cover_tab.webp` (1032×400).
+  static const double coverAspectHero = 1032 / 400;
+
+  /// Rasio lebar:tinggi asset default cover profil publik.
+  /// Sinkron dengan `assets/images/profile_cover_public.webp` (1032×534).
+  static const double coverAspectCompact = 1032 / 534;
+
+  static double coverAspectOf(ProfileHeaderVariant variant) =>
+      variant == ProfileHeaderVariant.hero
+      ? coverAspectHero
+      : coverAspectCompact;
+
+  /// Tinggi cover penuh (= lebar / rasio asset). Full-bleed dari tepi atas;
+  /// status bar menimpa bagian atas gambar. Dipakai `ProfileHeroShell` untuk
   /// menghitung kapan bar aksi jadi solid.
-  static double coverHeightOf(ProfileHeaderVariant variant) =>
-      variant == ProfileHeaderVariant.hero ? 160 : 144;
+  static double coverHeightOf(ProfileHeaderVariant variant, double width) =>
+      width / coverAspectOf(variant);
 
   /// Tinggi bar aksi melayang (di luar status bar).
   static const double actionBarHeight = 52;
 
   double get _avatarSize => _isHero ? 104 : 72;
-  double get _coverHeight => coverHeightOf(variant);
   // AvatarBorderOverlay menggambar cincin di dalam kotak frame yang lebih
   // besar dari fotonya; tinggi art harus ikut frame supaya cincin tidak
   // terpotong tepi atas cover.
@@ -110,14 +123,14 @@ class ProfileIdentityHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    // Cover full-bleed: mulai dari tepi atas layar, termasuk area status bar.
-    final topInset = MediaQuery.paddingOf(context).top;
+    // Cover mengikuti rasio asset: lebar penuh × (lebar / aspect).
+    final width = MediaQuery.sizeOf(context).width;
+    final coverHeight = coverHeightOf(variant, width);
     final hasStreak = (streakDays ?? 0) > 0;
     // Badge streak menjorok ke bawah avatar (~14px) - sisakan ruang agar
     // tidak overflow SizedBox art (dump RenderConstrainedBox / clip).
     final streakPad = hasStreak ? 14.0 : 0.0;
-    final artHeight =
-        topInset + _coverHeight + _avatarExtent / 2 + streakPad;
+    final artHeight = coverHeight + _avatarExtent / 2 + streakPad;
     final handle = username?.trim();
     final bioText = bio?.trim();
     final verticalAlign = _isHero
@@ -138,7 +151,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                 top: 0,
                 left: 0,
                 right: 0,
-                height: topInset + _coverHeight,
+                height: coverHeight,
                 child: _ProfileCover(
                   url: coverUrl,
                   asset: defaultCoverAsset(variant),
