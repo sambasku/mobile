@@ -98,13 +98,13 @@ class _EmptyLatestRepository implements DictionaryRepository {
 }
 
 void main() {
-// test tidak melewati main() - flavor + onboarding wajib di-init manual
-setUpAll(() {
-F.appFlavor = Flavor.staging;
-OnboardingPrefs.done = true;
-LocalePrefs.chosen = true;
-LocalePrefs.locale = AppLocale.id;
-});
+  // test tidak melewati main() - flavor + onboarding wajib di-init manual
+  setUpAll(() {
+    F.appFlavor = Flavor.staging;
+    OnboardingPrefs.done = true;
+    LocalePrefs.chosen = true;
+    LocalePrefs.locale = AppLocale.id;
+  });
 
   setUp(() {
     AnalyticsService.debugReset();

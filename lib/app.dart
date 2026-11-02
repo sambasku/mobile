@@ -1,5 +1,4 @@
-import 'package:material_ui/material_ui.dart'
-    hide GlobalMaterialLocalizations;
+import 'package:material_ui/material_ui.dart' hide GlobalMaterialLocalizations;
 import 'package:flutter_localizations/flutter_localizations.dart'
     show
         GlobalMaterialLocalizations,
@@ -69,15 +68,13 @@ class App extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-// Registry locale (MOBILE-I18N): id + id_SBS, keduanya LTR.
-// Sebelumnya dipakai seluruh daftar locale Forui, termasuk locale RTL
-// (ar/fa/he/ur/ps) - di perangkat ber-locale RTL, Directionality dari
-// Localizations membalik semua Row sehingga tombol Setujui/Tolak di
-// Area Verifikator jadi terbalik (#189).
-supportedLocales: [
-  for (final l in AppLocale.all) l.toLocale(),
-],
-locale: ref.watch(localeControllerProvider).toLocale(),
+      // Registry locale (MOBILE-I18N): id + id_SBS, keduanya LTR.
+      // Sebelumnya dipakai seluruh daftar locale Forui, termasuk locale RTL
+      // (ar/fa/he/ur/ps) - di perangkat ber-locale RTL, Directionality dari
+      // Localizations membalik semua Row sehingga tombol Setujui/Tolak di
+      // Area Verifikator jadi terbalik (#189).
+      supportedLocales: [for (final l in AppLocale.all) l.toLocale()],
+      locale: ref.watch(localeControllerProvider).toLocale(),
       builder: (context, child) {
         // Forui tidak auto-switch brightness - pilih variant dari Theme Material
         final fTheme =
@@ -118,14 +115,14 @@ locale: ref.watch(localeControllerProvider).toLocale(),
                 context,
               ).copyWith(textScaler: TextScaler.linear(fontScale)),
               child: FToaster(
-                  child: Column(
-                    children: [
-                      const OfflineBanner(),
-                      // Cek versi terbaru (issue mobile#196): banner update
-                      // non-blocking di atas shell. UpdateBanner sendiri yang
-                      // memutuskan tampil/tidak (versi sama / offline = hilang).
-                      const UpdateBanner(),
-                      Expanded(
+                child: Column(
+                  children: [
+                    const OfflineBanner(),
+                    // Cek versi terbaru (issue mobile#196): banner update
+                    // non-blocking di atas shell. UpdateBanner sendiri yang
+                    // memutuskan tampil/tidak (versi sama / offline = hilang).
+                    const UpdateBanner(),
+                    Expanded(
                       child: VersionBanner(
                         child: DevToolOverlay(
                           inspectors: [
@@ -138,7 +135,9 @@ locale: ref.watch(localeControllerProvider).toLocale(),
                             ResponseCacheInspector(),
                             DevToolGroup(
                               name: 'UI',
-                              description: AppLocalizations.of(context).devToolOtherUi,
+                              description: AppLocalizations.of(
+                                context,
+                              ).devToolOtherUi,
                               icon: FLucideIcons.layoutDashboard,
                               color: const Color(0xFF7C3AED),
                               children: [OnboardingInspector()],

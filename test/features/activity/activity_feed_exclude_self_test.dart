@@ -10,11 +10,11 @@ import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_st
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 
 FeedActivityItem _item(String id) => FeedActivityItem(
-      id: id,
-      kind: FeedActivityKind.comment,
-      createdAt: '2026-01-01T00:00:00Z',
-      body: 'komentar',
-    );
+  id: id,
+  kind: FeedActivityKind.comment,
+  createdAt: '2026-01-01T00:00:00Z',
+  body: 'komentar',
+);
 
 /// Adapter yang mencatat query tiap request lalu mengembalikan feed kosong
 /// dengan cursor, supaya bisa diuji tanpa network.
@@ -55,7 +55,11 @@ class _FakeActivityRepository implements ActivityFeedRepository {
   }) async {
     calls.add((cursor: cursor, excludeSelf: excludeSelf, category: category));
     if (cursor == 'page-2') {
-      return ActivityFeedPage(items: [_item('b2')], nextCursor: null, hasMore: false);
+      return ActivityFeedPage(
+        items: [_item('b2')],
+        nextCursor: null,
+        hasMore: false,
+      );
     }
     return ActivityFeedPage(
       items: [_item('a1')],
@@ -119,14 +123,16 @@ void main() {
       expect(adapter.queries.single['exclude_self'], '1');
     });
 
-    test('flag ikut pada halaman berikutnya (loadMore tidak bocorkan karya)',
-        () async {
-      final repo = ActivityFeedRepository(dio);
-      await repo.list(excludeSelf: true, cursor: 'page-2');
+    test(
+      'flag ikut pada halaman berikutnya (loadMore tidak bocorkan karya)',
+      () async {
+        final repo = ActivityFeedRepository(dio);
+        await repo.list(excludeSelf: true, cursor: 'page-2');
 
-      expect(adapter.queries.single['exclude_self'], '1');
-      expect(adapter.queries.single['cursor'], 'page-2');
-    });
+        expect(adapter.queries.single['exclude_self'], '1');
+        expect(adapter.queries.single['cursor'], 'page-2');
+      },
+    );
 
     test('limit tetap terkirim dan tidak tertimpa flag', () async {
       await ActivityFeedRepository(dio).list(limit: 50, excludeSelf: true);
@@ -139,7 +145,9 @@ void main() {
   group('excludeSelfFeedProvider: keputusan filter', () {
     Future<bool> resolve(AuthStatusState auth) async {
       final container = ProviderContainer(
-        overrides: [authStatusProvider.overrideWith(() => _FakeAuthStatus(auth))],
+        overrides: [
+          authStatusProvider.overrideWith(() => _FakeAuthStatus(auth)),
+        ],
       );
       addTearDown(container.dispose);
       await container.read(authStatusProvider.future);
@@ -161,17 +169,19 @@ void main() {
       );
     });
 
-    test('login tanpa userId → false (tampilkan semua, jangan feed kosong)',
-        () async {
-      expect(
-        await resolve(const AuthStatusState(isAuth: true, username: 'saya')),
-        isFalse,
-      );
-      expect(
-        await resolve(const AuthStatusState(isAuth: true, userId: '   ')),
-        isFalse,
-      );
-    });
+    test(
+      'login tanpa userId → false (tampilkan semua, jangan feed kosong)',
+      () async {
+        expect(
+          await resolve(const AuthStatusState(isAuth: true, username: 'saya')),
+          isFalse,
+        );
+        expect(
+          await resolve(const AuthStatusState(isAuth: true, userId: '   ')),
+          isFalse,
+        );
+      },
+    );
   });
 
   group('notifier: propagate flag + reload saat identitas berubah', () {
@@ -190,55 +200,66 @@ void main() {
       return container;
     }
 
-    test('tamu: load halaman 1 tanpa flag, loadMore juga tanpa flag',
-        () async {
+    test('tamu: load halaman 1 tanpa flag, loadMore juga tanpa flag', () async {
       final container = makeContainer(const AuthStatusState());
-      container.read(activityFeedProvider(FeedCategory.all)); // instantiate notifier dulu
+      container.read(
+        activityFeedProvider(FeedCategory.all),
+      ); // instantiate notifier dulu
       await _flush();
 
-      expect(container.read(activityFeedProvider(FeedCategory.all)).items.length, 1);
-      await container.read(activityFeedProvider(FeedCategory.all).notifier).loadMore();
+      expect(
+        container.read(activityFeedProvider(FeedCategory.all)).items.length,
+        1,
+      );
+      await container
+          .read(activityFeedProvider(FeedCategory.all).notifier)
+          .loadMore();
 
       expect(repo.calls.map((c) => c.excludeSelf), [false, false]);
       expect(repo.calls.last.cursor, 'page-2');
     });
 
     test('login: flag ikut di load DAN loadMore', () async {
-      final container =
-          makeContainer(const AuthStatusState(isAuth: true, userId: 'u1'));
+      final container = makeContainer(
+        const AuthStatusState(isAuth: true, userId: 'u1'),
+      );
       container.read(activityFeedProvider(FeedCategory.all));
       await _flush();
 
-      await container.read(activityFeedProvider(FeedCategory.all).notifier).loadMore();
+      await container
+          .read(activityFeedProvider(FeedCategory.all).notifier)
+          .loadMore();
 
       expect(repo.calls.map((c) => c.excludeSelf), [true, true]);
       expect(repo.calls.last.cursor, 'page-2');
     });
 
-    test('#167: fetch pertama menunggu authStatus resolve (tidak ada panggilan prematur)',
-        () async {
-      // Identitas baru resolve setelah jeda - sebelum fix, load() langsung
-      // menembak repo dengan excludeSelf:false (data sendiri flash).
-      final container = ProviderContainer(
-        overrides: [
-          activityFeedRepositoryProvider.overrideWithValue(repo),
-          authStatusProvider.overrideWith(
-            () => _DelayedAuthStatus(
-              const AuthStatusState(isAuth: true, userId: 'u1'),
+    test(
+      '#167: fetch pertama menunggu authStatus resolve (tidak ada panggilan prematur)',
+      () async {
+        // Identitas baru resolve setelah jeda - sebelum fix, load() langsung
+        // menembak repo dengan excludeSelf:false (data sendiri flash).
+        final container = ProviderContainer(
+          overrides: [
+            activityFeedRepositoryProvider.overrideWithValue(repo),
+            authStatusProvider.overrideWith(
+              () => _DelayedAuthStatus(
+                const AuthStatusState(isAuth: true, userId: 'u1'),
+              ),
             ),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-      container.read(activityFeedProvider(FeedCategory.all));
-      // Double flush: jeda authStatus (4 tick) + chain await di load().
-      await _flush();
-      await _flush();
+          ],
+        );
+        addTearDown(container.dispose);
+        container.read(activityFeedProvider(FeedCategory.all));
+        // Double flush: jeda authStatus (4 tick) + chain await di load().
+        await _flush();
+        await _flush();
 
-      // Semua panggilan ke repo terjadi SETELAH identitas diketahui.
-      expect(repo.calls, isNotEmpty);
-      expect(repo.calls.first.excludeSelf, isTrue);
-    });
+        // Semua panggilan ke repo terjadi SETELAH identitas diketahui.
+        expect(repo.calls, isNotEmpty);
+        expect(repo.calls.first.excludeSelf, isTrue);
+      },
+    );
   });
 
   // #193: chips kategori feed beranda. Inti yang dijaga: kategori yang belum
@@ -262,27 +283,32 @@ void main() {
       return container;
     }
 
-    test('hanya kategori all yang auto-load; kategori lain nol request',
-        () async {
-      final container = makeContainer();
-      container.read(activityFeedProvider(FeedCategory.all));
-      await _flush();
+    test(
+      'hanya kategori all yang auto-load; kategori lain nol request',
+      () async {
+        final container = makeContainer();
+        container.read(activityFeedProvider(FeedCategory.all));
+        await _flush();
 
-      // Belum pernah menyentuh chip lain: hanya 1 panggilan (kategori all).
-      expect(repo.calls, hasLength(1));
-      expect(repo.calls.single.category, FeedCategory.all);
+        // Belum pernah menyentuh chip lain: hanya 1 panggilan (kategori all).
+        expect(repo.calls, hasLength(1));
+        expect(repo.calls.single.category, FeedCategory.all);
 
-      // Instansiasi kategori lain TIDAK auto-load (state masih kosong).
-      final joined = container.read(activityFeedProvider(FeedCategory.joined));
-      await _flush();
-      expect(joined.hasLoaded, isFalse);
-      expect(repo.calls, hasLength(1));
-    });
+        // Instansiasi kategori lain TIDAK auto-load (state masih kosong).
+        final joined = container.read(
+          activityFeedProvider(FeedCategory.joined),
+        );
+        await _flush();
+        expect(joined.hasLoaded, isFalse);
+        expect(repo.calls, hasLength(1));
+      },
+    );
 
     test('ensureLoaded: fetch sekali, tap kedua nol request', () async {
       final container = makeContainer();
-      final notifier =
-          container.read(activityFeedProvider(FeedCategory.joined).notifier);
+      final notifier = container.read(
+        activityFeedProvider(FeedCategory.joined).notifier,
+      );
 
       notifier.ensureLoaded();
       await _flush();
@@ -319,7 +345,10 @@ void main() {
           .read(activityFeedProvider(FeedCategory.correction).notifier)
           .loadMore();
 
-      expect(repo.calls.map((c) => c.category), everyElement(FeedCategory.correction));
+      expect(
+        repo.calls.map((c) => c.category),
+        everyElement(FeedCategory.correction),
+      );
       expect(repo.calls.last.cursor, 'page-2');
     });
   });

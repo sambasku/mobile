@@ -258,34 +258,35 @@ void main() {
     );
   });
 
-  test('advanceAfterDecision setelah 409 menggeser seperti keputusan sukses',
-      () async {
-    final container = ProviderContainer(
-      overrides: [
-        reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
-      ],
-    );
-    addTearDown(container.dispose);
+  test(
+    'advanceAfterDecision setelah 409 menggeser seperti keputusan sukses',
+    () async {
+      final container = ProviderContainer(
+        overrides: [
+          reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
+        ],
+      );
+      addTearDown(container.dispose);
 
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const ['a', 'b'],
-      index: 0,
-    );
+      container
+          .read(reviewSessionProvider.notifier)
+          .start(ids: const ['a', 'b'], index: 0);
 
-    // Simulasi jalur UI: CONTRIBUTION_ALREADY_REVIEWED → advanceAfterDecision.
-    final failure = ReviewFailure(
-      'Kontribusi ini sudah diproses',
-      errorCode: 'CONTRIBUTION_ALREADY_REVIEWED',
-    );
-    expect(failure.isAlreadyDecided, isTrue);
+      // Simulasi jalur UI: CONTRIBUTION_ALREADY_REVIEWED → advanceAfterDecision.
+      final failure = ReviewFailure(
+        'Kontribusi ini sudah diproses',
+        errorCode: 'CONTRIBUTION_ALREADY_REVIEWED',
+      );
+      expect(failure.isAlreadyDecided, isTrue);
 
-    final hasNext = await container
-        .read(reviewSessionProvider.notifier)
-        .advanceAfterDecision('a');
+      final hasNext = await container
+          .read(reviewSessionProvider.notifier)
+          .advanceAfterDecision('a');
 
-    expect(hasNext, isTrue);
-    expect(container.read(reviewSessionProvider)?.currentId, 'b');
-  });
+      expect(hasNext, isTrue);
+      expect(container.read(reviewSessionProvider)?.currentId, 'b');
+    },
+  );
 
   test('advanceAfterDecision menggeser ke item berikutnya', () async {
     final repo = _FakeReviewRepository(
@@ -327,10 +328,9 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const ['a', 'b', 'c'],
-      index: 0,
-    );
+    container
+        .read(reviewSessionProvider.notifier)
+        .start(ids: const ['a', 'b', 'c'], index: 0);
 
     final hasNext = await container
         .read(reviewSessionProvider.notifier)
@@ -351,10 +351,9 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const ['only'],
-      index: 0,
-    );
+    container
+        .read(reviewSessionProvider.notifier)
+        .start(ids: const ['only'], index: 0);
 
     final hasNext = await container
         .read(reviewSessionProvider.notifier)
@@ -364,39 +363,40 @@ void main() {
     expect(container.read(reviewSessionProvider), isNull);
   });
 
-  test('skipCurrent menyimpan rewindSkipId; rewindSkip mengembalikan kartu',
-      () async {
-    final repo = _FakeReviewRepository();
-    final container = ProviderContainer(
-      overrides: [
-        reviewRepositoryProvider.overrideWithValue(repo),
-      ],
-    );
-    addTearDown(container.dispose);
+  test(
+    'skipCurrent menyimpan rewindSkipId; rewindSkip mengembalikan kartu',
+    () async {
+      final repo = _FakeReviewRepository();
+      final container = ProviderContainer(
+        overrides: [reviewRepositoryProvider.overrideWithValue(repo)],
+      );
+      addTearDown(container.dispose);
 
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const ['a', 'b', 'c'],
-      index: 0,
-    );
+      container
+          .read(reviewSessionProvider.notifier)
+          .start(ids: const ['a', 'b', 'c'], index: 0);
 
-    final hasNext =
-        await container.read(reviewSessionProvider.notifier).skipCurrent();
+      final hasNext = await container
+          .read(reviewSessionProvider.notifier)
+          .skipCurrent();
 
-    expect(hasNext, isTrue);
-    final afterSkip = container.read(reviewSessionProvider);
-    expect(afterSkip?.currentId, 'b');
-    expect(afterSkip?.canRewind, isTrue);
-    expect(afterSkip?.rewindSkipId, 'a');
+      expect(hasNext, isTrue);
+      final afterSkip = container.read(reviewSessionProvider);
+      expect(afterSkip?.currentId, 'b');
+      expect(afterSkip?.canRewind, isTrue);
+      expect(afterSkip?.rewindSkipId, 'a');
 
-    final ok =
-        await container.read(reviewSessionProvider.notifier).rewindSkip();
-    expect(ok, isTrue);
-    final afterRewind = container.read(reviewSessionProvider);
-    expect(afterRewind?.currentId, 'a');
-    expect(afterRewind?.canRewind, isFalse);
-    expect(afterRewind?.ids, ['a', 'b', 'c']);
-    expect(repo.unskippedIds, repo.skippedIds);
-  });
+      final ok = await container
+          .read(reviewSessionProvider.notifier)
+          .rewindSkip();
+      expect(ok, isTrue);
+      final afterRewind = container.read(reviewSessionProvider);
+      expect(afterRewind?.currentId, 'a');
+      expect(afterRewind?.canRewind, isFalse);
+      expect(afterRewind?.ids, ['a', 'b', 'c']);
+      expect(repo.unskippedIds, repo.skippedIds);
+    },
+  );
 
   test('advanceAfterDecision menghapus rewind skip', () async {
     final container = ProviderContainer(
@@ -406,10 +406,9 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const ['a', 'b', 'c'],
-      index: 0,
-    );
+    container
+        .read(reviewSessionProvider.notifier)
+        .start(ids: const ['a', 'b', 'c'], index: 0);
 
     await container.read(reviewSessionProvider.notifier).skipCurrent();
     expect(container.read(reviewSessionProvider)?.canRewind, isTrue);
@@ -439,13 +438,14 @@ void main() {
           authTokenStorageProvider.overrideWithValue(AuthTokenStorage()),
         ],
         child: MaterialApp(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: ReviewGate(child: Text('antrean')),
@@ -483,13 +483,14 @@ void main() {
           ),
         ],
         child: MaterialApp(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: ReviewQueuePage(),
@@ -539,22 +540,22 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
-    container.read(reviewSessionProvider.notifier).start(
-      ids: const [idA, idB],
-      index: 0,
-    );
+    container
+        .read(reviewSessionProvider.notifier)
+        .start(ids: const [idA, idB], index: 0);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           home: FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             child: const ReviewSessionPage(startId: idA),
@@ -572,9 +573,7 @@ void main() {
     expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     expect(find.byIcon(FLucideIcons.x), findsOneWidget);
     expect(
-      find.textContaining(
-        'Kanan setujui · kiri tolak · atas lewati',
-      ),
+      find.textContaining('Kanan setujui · kiri tolak · atas lewati'),
       findsOneWidget,
     );
 
@@ -629,20 +628,20 @@ void main() {
           ],
         );
         addTearDown(container.dispose);
-        container.read(reviewSessionProvider.notifier).start(
-          ids: const [idA],
-          index: 0,
-        );
+        container
+            .read(reviewSessionProvider.notifier)
+            .start(ids: const [idA], index: 0);
 
         await tester.pumpWidget(
           UncontrolledProviderScope(
             container: container,
             child: MaterialApp(
-              theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+              theme: foruiPalettes['zinc']!.light.touch
+                  .toApproximateMaterialTheme(),
               localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+                ...AppLocalizations.localizationsDelegates,
+                ...FLocalizations.localizationsDelegates,
+              ],
               supportedLocales: const [Locale('id')],
               builder: (context, child) => MediaQuery(
                 data: MediaQuery.of(context).copyWith(disableAnimations: true),

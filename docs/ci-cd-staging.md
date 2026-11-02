@@ -10,6 +10,13 @@ Rilis production: tag `v1.1.1` (pola `vMAJOR.MINOR.PATCH`) memicu
 termasuk draft). Hasilnya AAB flavor production, draft di track
 `production`, plus GitHub Release pada tag yang sama.
 
+Rilis Huawei AppGallery lewat workflow terpisah `.github/workflows/deploy-huawei.yml`,
+trigger manual (Actions → Deploy (Huawei AppGallery) → Run workflow). Input
+tag kosong = tag terbaru; isi `v1.2.3` untuk deploy versi lama. `versionCode`
+= `MAJOR*10000+MINOR*100+PATCH` (deterministik dari tag, tidak pakai resolver
+Play). Hasil: draft AAB di AppGallery Connect, submit review manual di AGC.
+Alasan terpisah: review Huawei lebih lama dari Play, versi kerap desinkron.
+
 ## Prerequisites
 
 1. **Repo GitHub** untuk mobile (submodule seperti `sambasku-api`), dengan

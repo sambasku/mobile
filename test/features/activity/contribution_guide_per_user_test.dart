@@ -67,9 +67,7 @@ void main() {
   /// tamu setelahnya. Tunggu build awal selesai dulu sebelum set state.
   Future<void> login(String userId) async {
     await container.read(authStatusProvider.future);
-    container
-        .read(authStatusProvider.notifier)
-        .markLoggedIn(_session(userId));
+    container.read(authStatusProvider.notifier).markLoggedIn(_session(userId));
     // Invalidasi guide supaya watch authStatus jalan
     container.invalidate(contributionGuideUnreadProvider);
   }
@@ -108,8 +106,5 @@ void main() {
   });
 }
 
-AuthSession _session(String userId) => AuthSession(
-      userId: userId,
-      username: 'u-$userId',
-      role: 'user',
-    );
+AuthSession _session(String userId) =>
+    AuthSession(userId: userId, username: 'u-$userId', role: 'user');
