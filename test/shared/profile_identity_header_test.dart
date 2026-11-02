@@ -80,8 +80,23 @@ void main() {
     expect(find.text('@budi'), findsOneWidget);
     expect(find.textContaining('Bergabung'), findsOneWidget);
 
-    // Cover placeholder = gradien, tanpa Image.network.
-    expect(find.byType(Image), findsNothing);
+    // Tanpa coverUrl: asset default tab Profil (bukan NetworkImage).
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Image &&
+            w.image is AssetImage &&
+            (w.image as AssetImage).assetName ==
+                ProfileIdentityHeader.defaultCoverAsset(
+                  ProfileHeaderVariant.hero,
+                ),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate((w) => w is Image && w.image is NetworkImage),
+      findsNothing,
+    );
   });
 
   testWidgets('compact: stats null -> blok stat disembunyikan', (tester) async {
@@ -110,7 +125,17 @@ void main() {
       ),
     );
 
-    expect(find.byType(Image), findsOneWidget);
+    // Harness test memblokir HTTP (400); errorBuilder bisa menambah
+    // Image.asset fallback. Kontrak yang diuji: NetworkImage cover ada.
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Image &&
+            w.image is NetworkImage &&
+            (w.image as NetworkImage).url.contains('cover.jpg'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('actions + footer dirender', (tester) async {
