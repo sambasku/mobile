@@ -8,12 +8,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
+import '../../../../shared/utils/photo_pick_constants.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/thread_comment_image.dart';
 import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
+import '../../../../shared/widgets/image_crop_page.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
@@ -209,21 +211,44 @@ class _WordCommentsSectionState extends ConsumerState<WordCommentsSection> {
     }
     if (_uploadingImage) return;
     final l10n = AppLocalizations.of(context);
+    // Crop generik (Bebas / 1:1 / 4:3 / …, tanpa mask lingkaran). Matikan
+    // crop bawaan sheet supaya tidak double-crop.
     showImageSheetDrawer(
       context,
       filePicker: false,
       mediaExplorerPicker: false,
+      cropEnabled: false,
+      maxWidth: kPhotoPickMaxWidth,
+      maxHeight: kPhotoPickMaxHeight,
+      imageQuality: kPhotoPickQuality,
       onRemoved: _clearStagingPhoto,
       onPicked: (file) async {
+        await Future<void>.delayed(Duration.zero);
+        if (!mounted) return;
+        final File? cropped;
+        try {
+          cropped = await cropImage(context, file.path);
+        } catch (_) {
+          if (!mounted) return;
+          showFToast(
+            context: context,
+            title: Text(l10n.commentPhotoUploadFailed),
+            variant: FToastVariant.destructive,
+          );
+          return;
+        }
+        if (cropped == null || !mounted) return;
+        final croppedFile = cropped;
+
         setState(() {
           _uploadingImage = true;
-          _localPreviewPath = file.path;
+          _localPreviewPath = croppedFile.path;
           _stagingImage = null;
         });
         try {
           final staging = await ref
               .read(commentImageUploadServiceProvider)
-              .upload(file);
+              .upload(croppedFile);
           if (!mounted) return;
           setState(() {
             _stagingImage = staging;

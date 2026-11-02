@@ -107,4 +107,27 @@ void main() {
     expect(find.text('cuplikan lama', findRichText: true), findsOneWidget);
     expect(find.textContaining('setuju', findRichText: true), findsOneWidget);
   });
+
+  testWidgets('meta panjang di lebar sempit tidak overflow', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(320, 640));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      _host(
+        const SizedBox(
+          width: 280,
+          child: ThreadMessageRow(
+            username: 'budi',
+            displayName: 'Nama Panjang Sekali Untuk Memicu Overflow',
+            body: 'Isi.',
+            dateLabel: 'Baru saja',
+            metaParts: ['Menunggu pengecekan'],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Menunggu pengecekan'), findsOneWidget);
+  });
 }

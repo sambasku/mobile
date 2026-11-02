@@ -139,6 +139,8 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    # Subdir wajib didaftarkan terpisah - `images/` tidak recursive.
+    - assets/images/explore_covers/
     - assets/svg/
     - assets/data/
     - assets/gif/

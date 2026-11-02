@@ -37,9 +37,7 @@ class EventDto {
       lat: _double(json['lat']),
       lng: _double(json['lng']),
       mapsUrl: _str(json['maps_url']),
-      posterUrls: (json['poster_urls'] as List<dynamic>? ?? const [])
-          .map((e) => e as String)
-          .toList(growable: false),
+      posterUrls: _posterUrls(json['poster_urls']),
       organizer: _str(json['organizer']),
       sourceUrl: _str(json['source_url']),
       sourceType: _sourceType(json['source_type']),
@@ -60,6 +58,21 @@ class EventDto {
     if (value is! String) return null;
     final text = value.trim();
     return text.isEmpty ? null : text;
+  }
+
+  /// API boleh kirim null di array (`z.array(z.string().nullable())`).
+  /// Cast kasar `as String` bisa gagal diam / kosongkan detail.
+  static List<String> _posterUrls(Object? raw) {
+    if (raw is! List) return const [];
+    final out = <String>[];
+    for (final item in raw) {
+      if (item is! String) continue;
+      final url = item.trim();
+      if (url.isEmpty) continue;
+      if (!(url.startsWith('https://') || url.startsWith('http://'))) continue;
+      out.add(url);
+    }
+    return List<String>.unmodifiable(out);
   }
 
   static double? _double(Object? value) =>

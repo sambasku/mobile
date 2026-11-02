@@ -128,7 +128,7 @@ class ThreadMessageRow extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Flexible(
+                  Expanded(
                     child: PublicAccountName(
                       label: label,
                       isVerifier: isVerifier,
@@ -158,7 +158,7 @@ class ThreadMessageRow extends StatelessWidget {
                   if ((onEdit != null || onDelete != null) &&
                       footer == null &&
                       !_showReplyAction) ...[
-                    const Spacer(),
+                    const Gap(4),
                     _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
                   ],
                 ],
@@ -325,9 +325,19 @@ class _ThreadMetaRow extends StatelessWidget {
       children.add(Text(part, style: style));
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    // Parent header membungkus ini dengan Flexible. Beberapa Text di Row
+    // masing-masing layout terhadap maxWidth penuh lalu dijumlah → overflow
+    // (mis. "2 jam · Menunggu pengecekan" di samping nama panjang).
+    // scaleDown menjaga GestureDetector "Diedit" tanpa TapGestureRecognizer.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
     );
   }
 }

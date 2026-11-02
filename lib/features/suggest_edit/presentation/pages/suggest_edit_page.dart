@@ -649,6 +649,18 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
       children: [
+        // Lemma kata yang sedang diusulkan - highlight supaya jelas konteks.
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Semantics(
+            label: _l10n.suggestEditingLemmaSemantics(detail.lemma),
+            child: FBadge(
+              variant: FBadgeVariant.primary,
+              child: Text(detail.lemma),
+            ),
+          ),
+        ),
+        const Gap(12),
         FTile(
           title: Text(suggestCategoryLabel(category, _l10n)),
           subtitle: Text(_l10n.suggestChangeTypeSemantics),
@@ -784,12 +796,19 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           ),
           const Gap(12),
           _FieldCaption(
-            category == SuggestCategory.derivedFrom
-                ? _l10n.suggestDerivedHint(targetLabel)
-                : _l10n.suggestVariantOfHint,
-            info: category == SuggestCategory.derivedFrom
-                ? _l10n.suggestDerivedExample
-                : _l10n.suggestVariantExample,
+            switch (category) {
+              SuggestCategory.derivedFrom =>
+                _l10n.suggestDerivedHint(targetLabel),
+              SuggestCategory.nonstandardOf =>
+                _l10n.suggestNonstandardOfHint,
+              _ => _l10n.suggestVariantOfHint,
+            },
+            info: switch (category) {
+              SuggestCategory.derivedFrom => _l10n.suggestDerivedExample,
+              SuggestCategory.nonstandardOf =>
+                _l10n.suggestNonstandardExample,
+              _ => _l10n.suggestVariantExample,
+            },
           ),
           if (existing.isNotEmpty) ...[
             const Gap(12),

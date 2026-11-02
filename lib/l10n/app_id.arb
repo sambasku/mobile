@@ -283,6 +283,21 @@
     }
   },
   "voteEntryType": "Jenis entri",
+  "voteDeckWordClass": "Kelas kata",
+  "voteDeckWordClassUnset": "Atur kelas",
+  "voteDeckWordClassReason": "Ubah kelas kata",
+  "voteDeckWordClassLoadFailed": "Gagal memuat kelas kata",
+  "voteDeckWordClassSubmitFailed": "Gagal mengirim usulan kelas kata. Coba lagi dalam beberapa saat.",
+  "@voteDeckWordClass": {
+    "description": "Judul tile shortcut ubah kelas di kartu vote"
+  },
+  "@voteDeckWordClassUnset": {
+    "description": "Placeholder tile kelas bila makna belum punya kelas"
+  },
+  "@voteDeckWordClassReason": {
+    "description": "reason_text API saat shortcut kelas dari vote deck"
+  },
+
   "commentLoginPrompt": "Masuk dulu untuk berkomentar",
   "commentLoginComposerPrompt": "Masuk untuk menulis komentar",
   "commentSent": "Komentar terkirim",
@@ -514,15 +529,15 @@
   "suggestCategoryAntonym": "Antonim",
   "suggestCategoryAntonymDesc": "Kata yang artinya berlawanan",
   "suggestCategoryVariantOf": "Variasi bentuk",
-  "suggestCategoryVariantOfDesc": "Kata ini variasi dari kata lain",
+  "suggestCategoryVariantOfDesc": "Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)",
   "suggestCategoryNonstandardOf": "Bentuk tidak baku",
-  "suggestCategoryNonstandardOfDesc": "Kata ini bentuk tidak baku dari kata baku",
+  "suggestCategoryNonstandardOfDesc": "Kata ini entri sendiri, bentuk tidak baku dari lemma baku",
   "suggestCategoryDerivedFrom": "Kata turunan",
-  "suggestCategoryDerivedFromDesc": "Kata ini diturunkan dari akar kata",
+  "suggestCategoryDerivedFromDesc": "Kata ini diturunkan dari akar kata (isi akarnya)",
   "suggestCategoryMeaningGroup": "Kelompok makna",
   "suggestCategoryMeaningGroupDesc": "Gabungkan kata bermakna sama dalam satu kelompok",
   "suggestCategorySpellingVariant": "Variasi penulisan",
-  "suggestCategorySpellingVariantDesc": "Ejaan lain untuk kata yang sama",
+  "suggestCategorySpellingVariantDesc": "Ejaan lain tanpa entri sendiri (tetap di lemma ini)",
   "suggestCategoryLemmaNotes": "Lainnya",
   "suggestCategoryLemmaNotesDesc": "Ejaan lemma atau catatan",
   "suggestEntryTileVerifierTitle": "Perbaiki/lengkapi kata",
@@ -582,6 +597,15 @@
   "suggestSendExample": "Kirim contoh",
   "suggestWhatToChange": "Apa yang ingin diubah?",
   "suggestChangeTypeSemantics": "Ketuk untuk ganti jenis usulan",
+  "suggestEditingLemmaSemantics": "Mengubah kata {lemma}",
+  "@suggestEditingLemmaSemantics": {
+    "description": "Semantics badge lemma di form usulan perubahan",
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
   "suggestMeaningSection": "Makna",
   "suggestReasonLabel": "Alasan (opsional)",
   "suggestReasonHint": "Contoh: sumber, penutur asli, atau KBBI",
@@ -619,8 +643,10 @@
     }
   },
   "suggestVariantOfHint": "Kata ini variasi/bentuk lain dari kata di atas",
-  "suggestDerivedExample": "Contoh: \"ngansoh\" diturunkan dari \"ansoh\".",
+  "suggestNonstandardOfHint": "Kata ini bentuk tidak baku dari kata baku di atas",
+  "suggestDerivedExample": "Contoh: \"teijolor\" diturunkan dari \"jolor\".",
   "suggestVariantExample": "Contoh: \"tekpalat\" variasi dari \"taek palat\".",
+  "suggestNonstandardExample": "Contoh: \"parrai\" bentuk tidak baku dari \"parai\".",
   "suggestRemoveRelation": "Hapus {category} yang ada",
   "@suggestRemoveRelation": {
     "placeholders": {
@@ -1471,6 +1497,22 @@
   "dictRelationDerivedFrom": "Diturunkan dari",
   "dictRelationVariantOf": "Variasi dari",
   "dictRelationNonstandardOf": "Bentuk tidak baku dari",
+  "dictAppearsDerivedFrom": "Kata turunan",
+  "@dictAppearsDerivedFrom": {
+    "description": "Label appears_in untuk relation_type derived_from (kata yang diturunkan dari lemma ini)"
+  },
+  "dictAppearsVariantOf": "Variasi bentuk",
+  "@dictAppearsVariantOf": {
+    "description": "Label appears_in untuk relation_type variant_of"
+  },
+  "dictAppearsNonstandardOf": "Bentuk tidak baku",
+  "@dictAppearsNonstandardOf": {
+    "description": "Label appears_in untuk relation_type nonstandard_of"
+  },
+  "dictAppearsHasComponent": "Muncul dalam",
+  "@dictAppearsHasComponent": {
+    "description": "Label appears_in untuk relation_type has_component (frasa/idiom yang memakai lemma ini)"
+  },
   "dictVariantAlternative": "Variasi penulisan",
   "dictVariantInflection": "Fleksi",
   "dictVariantDerivation": "Derivasi",
@@ -1610,6 +1652,22 @@
   "dictShareLinkSubtitle": "Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain",
   "dictShareCard": "Bagikan kartu",
   "dictShareCardSubtitle": "Buat kartu untuk cerita IG, WhatsApp, dan lainnya",
+  "dictActionShare": "Bagikan",
+  "@dictActionShare": {
+    "description": "Label singkat baris aksi detail kata"
+  },
+  "dictActionSuggest": "Usulkan",
+  "@dictActionSuggest": {
+    "description": "Label singkat baris aksi detail kata (usul edit)"
+  },
+  "dictActionReport": "Lapor",
+  "@dictActionReport": {
+    "description": "Label singkat baris aksi detail kata (lapor entri)"
+  },
+  "dictActionMore": "Lainnya",
+  "@dictActionMore": {
+    "description": "Buka sheet aksi tambahan di detail kata"
+  },
   "dictLoginToSuggest": "Masuk dulu untuk mengusulkan perubahan",
   "dictReportEntry": "Laporkan entri",
   "dictReportEntrySubtitle": "Untuk entri yang tidak layak tayang, bukan perbaikan isi",
@@ -1619,6 +1677,10 @@
   "dictReportPhotoSubtitle": "Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat",
   "dictPhotoReportThanks": "Laporan foto terkirim. Terima kasih.",
   "dictMostSupported": "Paling didukung",
+  "dictTopSupportedChip": "Top",
+  "@dictTopSupportedChip": {
+    "description": "Chip padat untuk makna dengan vote tertinggi"
+  },
   "dictContributionBy": "oleh {name}",
   "@dictContributionBy": {
     "placeholders": {
@@ -2316,6 +2378,10 @@
   "@feedKindCulinary": {
     "description": "Label jenis aktivitas: kuliner terbit"
   },
+  "feedKindPantun": "Pantun",
+  "@feedKindPantun": {
+    "description": "Label jenis aktivitas: pantun atau balasan pantun"
+  },
   "feedCtaReview": "Tinjau usulan",
   "@feedCtaReview": {
     "description": "Ajakan membuka sesi tinjau usulan"
@@ -2335,6 +2401,10 @@
   "feedCtaDiscuss": "Ikut diskusi",
   "@feedCtaDiscuss": {
     "description": "Ajakan membuka diskusi"
+  },
+  "feedCtaSeePantun": "Lihat pantun",
+  "@feedCtaSeePantun": {
+    "description": "Ajakan membuka detail pantun dari feed"
   },
   "feedCtaSeePhoto": "Lihat foto",
   "@feedCtaSeePhoto": {
@@ -5064,6 +5134,14 @@
   "@eventSwipeSkip": {},
   "eventStart": "Mulai",
   "@eventStart": {},
+  "eventEnd": "Selesai",
+  "@eventEnd": {
+    "description": "Label waktu selesai di detail acara (bukan chip status)"
+  },
+  "eventDetailNoPoster": "Belum ada poster",
+  "@eventDetailNoPoster": {
+    "description": "Placeholder hero detail acara tanpa poster_urls"
+  },
   "eventProposalEmptyHint": "Usulan acara yang kamu kirim akan tampil di sini.",
   "@eventProposalEmptyHint": {},
   "eventProposalLoadFailedHint": "Periksa koneksi internetmu lalu coba lagi ya.",

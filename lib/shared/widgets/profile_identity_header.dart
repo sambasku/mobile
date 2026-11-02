@@ -35,6 +35,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.borderUrl,
     this.bio,
     this.isVerifier = false,
+    this.streakDays,
     this.leveling,
     this.stats,
     this.joinedLabel,
@@ -57,6 +58,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   final String? bio;
   final bool isVerifier;
 
+  /// Streak aktif (>0) → badge api + angka di pojok avatar. Null/0 = sembunyi.
+  final int? streakDays;
+
   /// Chip level + progress (opsional).
   final Widget? leveling;
 
@@ -67,11 +71,17 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// Tombol di bawah identitas (mis. `Edit` di profil sendiri).
   final List<Widget> actions;
 
-  /// Cover profil. Null = placeholder gradien dari warna primer tema.
-  // ponytail: cover masih slot tampilan; sambungkan ke kolom cover_url saat
-  // fitur custom cover tersedia.
+  /// Cover profil (URL jaringan). Null/kosong = pakai [defaultCoverAsset]
+  /// sesuai [variant]; gagal load = gradien tema.
+  // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
   final VoidCallback? onAvatarTap;
+
+  /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
+  static String defaultCoverAsset(ProfileHeaderVariant variant) =>
+      variant == ProfileHeaderVariant.hero
+          ? 'assets/images/profile_cover_tab.webp'
+          : 'assets/images/profile_cover_public.webp';
 
   /// Konten tambahan di bawah identitas (mis. ringkasan lencana).
   final Widget? footer;
@@ -102,7 +112,12 @@ class ProfileIdentityHeader extends StatelessWidget {
     final theme = context.theme;
     // Cover full-bleed: mulai dari tepi atas layar, termasuk area status bar.
     final topInset = MediaQuery.paddingOf(context).top;
-    final artHeight = topInset + _coverHeight + _avatarExtent / 2;
+    final hasStreak = (streakDays ?? 0) > 0;
+    // Badge streak menjorok ke bawah avatar (~14px) - sisakan ruang agar
+    // tidak overflow SizedBox art (dump RenderConstrainedBox / clip).
+    final streakPad = hasStreak ? 14.0 : 0.0;
+    final artHeight =
+        topInset + _coverHeight + _avatarExtent / 2 + streakPad;
     final handle = username?.trim();
     final bioText = bio?.trim();
     final verticalAlign = _isHero
@@ -124,7 +139,10 @@ class ProfileIdentityHeader extends StatelessWidget {
                 left: 0,
                 right: 0,
                 height: topInset + _coverHeight,
-                child: _ProfileCover(url: coverUrl),
+                child: _ProfileCover(
+                  url: coverUrl,
+                  asset: defaultCoverAsset(variant),
+                ),
               ),
               Positioned(
                 bottom: 0,
@@ -137,20 +155,19 @@ class ProfileIdentityHeader extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
+                      bottom: streakPad,
                     ),
                     child: Semantics(
                       button: onAvatarTap != null,
                       label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
                       child: GestureDetector(
                         onTap: onAvatarTap,
-                        child: AvatarBorderOverlay(
-                          size: _avatarSize,
+                        child: _AvatarWithStreak(
+                          avatarSize: _avatarSize,
                           borderUrl: borderUrl,
-                          child: UserAvatar(
-                            name: displayName,
-                            imageUrl: avatarUrl,
-                            size: _avatarSize,
-                          ),
+                          displayName: displayName,
+                          avatarUrl: avatarUrl,
+                          streakDays: streakDays,
                         ),
                       ),
                     ),
@@ -230,11 +247,92 @@ class ProfileIdentityHeader extends StatelessWidget {
   }
 }
 
+/// Avatar + bingkai + badge streak (ikon api + angka) di pojok kanan bawah.
+class _AvatarWithStreak extends StatelessWidget {
+  const _AvatarWithStreak({
+    required this.avatarSize,
+    required this.displayName,
+    this.borderUrl,
+    this.avatarUrl,
+    this.streakDays,
+  });
+
+  final double avatarSize;
+  final String displayName;
+  final String? borderUrl;
+  final String? avatarUrl;
+  final int? streakDays;
+
+  @override
+  Widget build(BuildContext context) {
+    final days = streakDays ?? 0;
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    final avatar = AvatarBorderOverlay(
+      size: avatarSize,
+      borderUrl: borderUrl,
+      child: UserAvatar(
+        name: displayName,
+        imageUrl: avatarUrl,
+        size: avatarSize,
+      ),
+    );
+    if (days <= 0) return avatar;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        avatar,
+        Positioned(
+          right: -2,
+          bottom: -2,
+          child: Semantics(
+            label: l10n.levelingStreakDays(days),
+            child: DecoratedBox(
+              // Warna destructive = "api" tema (sama pola beta_badge).
+              decoration: BoxDecoration(
+                color: theme.colors.destructive,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5, 2, 7, 2),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      FLucideIcons.flame,
+                      size: 12,
+                      color: theme.colors.destructiveForeground,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      '$days',
+                      style: theme.typography.body.sm.copyWith(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        height: 1,
+                        color: theme.colors.destructiveForeground,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Cover profil: foto bila [url] ada, selain itu gradien primer tema.
 class _ProfileCover extends StatelessWidget {
-  const _ProfileCover({this.url});
+  const _ProfileCover({this.url, this.asset});
 
   final String? url;
+
+  /// Asset lokal dipakai bila [url] kosong / gagal. Null = langsung gradien.
+  final String? asset;
 
   @override
   Widget build(BuildContext context) {
@@ -252,10 +350,23 @@ class _ProfileCover extends StatelessWidget {
       ),
     );
 
+    Widget assetArt() {
+      final path = asset?.trim();
+      if (path == null || path.isEmpty) return fallback;
+      return ClipRect(
+        child: Image.asset(
+          path,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          errorBuilder: (_, _, _) => fallback,
+        ),
+      );
+    }
+
     final raw = url?.trim();
     final Widget art;
     if (raw == null || raw.isEmpty) {
-      art = fallback;
+      art = assetArt();
     } else {
       final display = displayImageUrl(raw, width: 1080) ?? raw;
       art = ClipRect(
@@ -263,8 +374,8 @@ class _ProfileCover extends StatelessWidget {
           display,
           fit: BoxFit.cover,
           gaplessPlayback: true,
-          // Cover gagal load = gradien, bukan kotak rusak.
-          errorBuilder: (_, _, _) => fallback,
+          // Cover jaringan gagal = asset lokal, lalu gradien.
+          errorBuilder: (_, _, _) => assetArt(),
         ),
       );
     }

@@ -327,7 +327,7 @@ class _FeedTile extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Flexible(
+                            Expanded(
                               child: PublicAccountName(
                                 label: actorLabel,
                                 isVerifier: item.isVerifier,
@@ -346,21 +346,6 @@ class _FeedTile extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            // Handle @username agar mudah di-mention.
-                            if (canOpenProfile && item.username != actorLabel) ...[
-                              const Gap(4),
-                              Flexible(
-                                child: Text(
-                                  '@${item.username}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.typography.body.xs.copyWith(
-                                    color: theme.colors.mutedForeground,
-                                    height: 1.25,
-                                  ),
-                                ),
-                              ),
-                            ],
                             if (dateLabel.isNotEmpty) ...[
                               const Gap(8),
                               Text(
@@ -373,6 +358,28 @@ class _FeedTile extends ConsumerWidget {
                             ],
                           ],
                         ),
+                        // Handle di baris sendiri - seragam activity feed /
+                        // ThreadMessageRow (nama lalu @username).
+                        if (canOpenProfile && item.username != actorLabel) ...[
+                          const Gap(2),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => UserProfileRouter.open(
+                              context,
+                              item.username!,
+                            ),
+                            child: Text(
+                              '@${item.username}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontWeight: FontWeight.w500,
+                                height: 1.25,
+                              ),
+                            ),
+                          ),
+                        ],
                         if (body.isNotEmpty) ...[
                           const Gap(4),
                           Text(

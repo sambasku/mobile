@@ -13,6 +13,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../../entertainment/entertainment_router.dart';
 import '../../../explore/explore_router.dart';
 import '../../../event/event_router.dart';
 import '../../../review/domain/review_access.dart';
@@ -150,7 +151,8 @@ class ActivityFeedTile extends ConsumerWidget {
                     // Komentar/diskusi = teks bebas user; kutipannya bukan lemma.
                     for (final (text, lemma) in switch (item.kind) {
                       FeedActivityKind.comment ||
-                      FeedActivityKind.discussion => [(item.body, false)],
+                      FeedActivityKind.discussion ||
+                      FeedActivityKind.pantun => [(item.body, false)],
                       _ => splitQuotedLemma(item.body),
                     })
                       TextSpan(
@@ -258,6 +260,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.voteUp ||
       FeedActivityKind.voteDown => l10n.feedKindVote,
       FeedActivityKind.discussion => l10n.feedKindDiscussion,
+      FeedActivityKind.pantun => l10n.feedKindPantun,
       FeedActivityKind.wordImage => l10n.feedKindImage,
       FeedActivityKind.wordAudio => l10n.feedKindAudio,
       FeedActivityKind.pronunciation => l10n.feedKindPronunciation,
@@ -293,6 +296,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.word => l10n.feedCtaSeeMeaning,
       FeedActivityKind.comment => l10n.feedCtaReply,
       FeedActivityKind.discussion => l10n.feedCtaDiscuss,
+      FeedActivityKind.pantun => l10n.feedCtaSeePantun,
       FeedActivityKind.wordImage => l10n.feedCtaSeePhoto,
       FeedActivityKind.wordAudio => l10n.feedCtaListen,
       FeedActivityKind.pronunciation => l10n.feedCtaSeePronunciation,
@@ -331,7 +335,14 @@ class ActivityFeedTile extends ConsumerWidget {
           target.id,
         );
       case 'discussion':
+        // Pantun dulu di-wire sebagai discussion (target.type discussion).
+        // Response lama / cache L1: bedakan lewat body copy tetap API.
+        if (item.body == 'Menulis pantun' || item.body == 'Membalas pantun') {
+          return EntertainmentRouter.pantunDetailPath(target.id);
+        }
         return DiscussionRouter.detailPath(target.id);
+      case 'pantun':
+        return EntertainmentRouter.pantunDetailPath(target.id);
       case 'place':
         // #187: target = slug tempat (bukan ULID) - detail publik mobile.
         return ExploreRouter.place.path.replaceFirst(':slug', target.id);

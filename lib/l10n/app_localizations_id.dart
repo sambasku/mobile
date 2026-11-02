@@ -630,6 +630,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get voteEntryType => 'Jenis entri';
 
   @override
+  String get voteDeckWordClass => 'Kelas kata';
+
+  @override
+  String get voteDeckWordClassUnset => 'Atur kelas';
+
+  @override
+  String get voteDeckWordClassReason => 'Ubah kelas kata';
+
+  @override
+  String get voteDeckWordClassLoadFailed => 'Gagal memuat kelas kata';
+
+  @override
+  String get voteDeckWordClassSubmitFailed =>
+      'Gagal mengirim usulan kelas kata. Coba lagi dalam beberapa saat.';
+
+  @override
   String get commentLoginPrompt => 'Masuk dulu untuk berkomentar';
 
   @override
@@ -1146,21 +1162,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get suggestCategoryVariantOf => 'Variasi bentuk';
 
   @override
-  String get suggestCategoryVariantOfDesc => 'Kata ini variasi dari kata lain';
+  String get suggestCategoryVariantOfDesc =>
+      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini bentuk tidak baku dari kata baku';
+      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
   String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata';
+      'Kata ini diturunkan dari akar kata (isi akarnya)';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
@@ -1174,7 +1191,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain untuk kata yang sama';
+      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
@@ -1284,6 +1301,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get suggestChangeTypeSemantics => 'Ketuk untuk ganti jenis usulan';
 
   @override
+  String suggestEditingLemmaSemantics(String lemma) {
+    return 'Mengubah kata $lemma';
+  }
+
+  @override
   String get suggestMeaningSection => 'Makna';
 
   @override
@@ -1341,12 +1363,20 @@ class AppLocalizationsId extends AppLocalizations {
       'Kata ini variasi/bentuk lain dari kata di atas';
 
   @override
+  String get suggestNonstandardOfHint =>
+      'Kata ini bentuk tidak baku dari kata baku di atas';
+
+  @override
   String get suggestDerivedExample =>
-      'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".';
+      'Contoh: \"teijolor\" diturunkan dari \"jolor\".';
 
   @override
   String get suggestVariantExample =>
       'Contoh: \"tekpalat\" variasi dari \"taek palat\".';
+
+  @override
+  String get suggestNonstandardExample =>
+      'Contoh: \"parrai\" bentuk tidak baku dari \"parai\".';
 
   @override
   String suggestRemoveRelation(String category) {
@@ -2834,6 +2864,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictRelationNonstandardOf => 'Bentuk tidak baku dari';
 
   @override
+  String get dictAppearsDerivedFrom => 'Kata turunan';
+
+  @override
+  String get dictAppearsVariantOf => 'Variasi bentuk';
+
+  @override
+  String get dictAppearsNonstandardOf => 'Bentuk tidak baku';
+
+  @override
+  String get dictAppearsHasComponent => 'Muncul dalam';
+
+  @override
   String get dictVariantAlternative => 'Variasi penulisan';
 
   @override
@@ -3076,6 +3118,18 @@ class AppLocalizationsId extends AppLocalizations {
       'Buat kartu untuk cerita IG, WhatsApp, dan lainnya';
 
   @override
+  String get dictActionShare => 'Bagikan';
+
+  @override
+  String get dictActionSuggest => 'Usulkan';
+
+  @override
+  String get dictActionReport => 'Lapor';
+
+  @override
+  String get dictActionMore => 'Lainnya';
+
+  @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
 
   @override
@@ -3104,6 +3158,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictMostSupported => 'Paling didukung';
+
+  @override
+  String get dictTopSupportedChip => 'Top';
 
   @override
   String dictContributionBy(String name) {
@@ -3803,6 +3860,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindCulinary => 'Kuliner';
 
   @override
+  String get feedKindPantun => 'Pantun';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -3816,6 +3876,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaDiscuss => 'Ikut diskusi';
+
+  @override
+  String get feedCtaSeePantun => 'Lihat pantun';
 
   @override
   String get feedCtaSeePhoto => 'Lihat foto';
@@ -7600,6 +7663,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventStart => 'Mulai';
+
+  @override
+  String get eventEnd => 'Selesai';
+
+  @override
+  String get eventDetailNoPoster => 'Belum ada poster';
 
   @override
   String get eventProposalEmptyHint =>
@@ -9056,6 +9125,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get voteEntryType => 'Jenis entri';
 
   @override
+  String get voteDeckWordClass => 'Kelas kata';
+
+  @override
+  String get voteDeckWordClassUnset => 'Atur kelas';
+
+  @override
+  String get voteDeckWordClassReason => 'Ubah kelas kata';
+
+  @override
+  String get voteDeckWordClassLoadFailed => 'Gagal memuat kelas kata';
+
+  @override
+  String get voteDeckWordClassSubmitFailed =>
+      'Gagal mengirim usulan kelas kata. Coba lagi dalam beberapa saat.';
+
+  @override
   String get commentLoginPrompt => 'Masuk dulu untuk berkomentar';
 
   @override
@@ -9572,21 +9657,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get suggestCategoryVariantOf => 'Variasi bentuk';
 
   @override
-  String get suggestCategoryVariantOfDesc => 'Kata ini variasi dari kata lain';
+  String get suggestCategoryVariantOfDesc =>
+      'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)';
 
   @override
   String get suggestCategoryNonstandardOf => 'Bentuk tidak baku';
 
   @override
   String get suggestCategoryNonstandardOfDesc =>
-      'Kata ini bentuk tidak baku dari kata baku';
+      'Kata ini entri sendiri, bentuk tidak baku dari lemma baku';
 
   @override
   String get suggestCategoryDerivedFrom => 'Kata turunan';
 
   @override
   String get suggestCategoryDerivedFromDesc =>
-      'Kata ini diturunkan dari akar kata';
+      'Kata ini diturunkan dari akar kata (isi akarnya)';
 
   @override
   String get suggestCategoryMeaningGroup => 'Kelompok makna';
@@ -9600,7 +9686,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestCategorySpellingVariantDesc =>
-      'Ejaan lain untuk kata yang sama';
+      'Ejaan lain tanpa entri sendiri (tetap di lemma ini)';
 
   @override
   String get suggestCategoryLemmaNotes => 'Lainnya';
@@ -9710,6 +9796,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get suggestChangeTypeSemantics => 'Ketuk untuk ganti jenis usulan';
 
   @override
+  String suggestEditingLemmaSemantics(String lemma) {
+    return 'Mengubah kata $lemma';
+  }
+
+  @override
   String get suggestMeaningSection => 'Makna';
 
   @override
@@ -9767,12 +9858,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Kata ini variasi/bentuk lain dari kata di atas';
 
   @override
+  String get suggestNonstandardOfHint =>
+      'Kata ini bentuk tidak baku dari kata baku di atas';
+
+  @override
   String get suggestDerivedExample =>
-      'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".';
+      'Contoh: \"teijolor\" diturunkan dari \"jolor\".';
 
   @override
   String get suggestVariantExample =>
       'Contoh: \"tekpalat\" variasi dari \"taek palat\".';
+
+  @override
+  String get suggestNonstandardExample =>
+      'Contoh: \"parrai\" bentuk tidak baku dari \"parai\".';
 
   @override
   String suggestRemoveRelation(String category) {
@@ -11260,6 +11359,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictRelationNonstandardOf => 'Bentuk tidak baku dari';
 
   @override
+  String get dictAppearsDerivedFrom => 'Kata turunan';
+
+  @override
+  String get dictAppearsVariantOf => 'Variasi bentuk';
+
+  @override
+  String get dictAppearsNonstandardOf => 'Bentuk tidak baku';
+
+  @override
+  String get dictAppearsHasComponent => 'Muncul dalam';
+
+  @override
   String get dictVariantAlternative => 'Variasi penulisan';
 
   @override
@@ -11502,6 +11613,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Buat kartu untuk cerita IG, WhatsApp, dan lainnya';
 
   @override
+  String get dictActionShare => 'Bagikan';
+
+  @override
+  String get dictActionSuggest => 'Usulkan';
+
+  @override
+  String get dictActionReport => 'Lapor';
+
+  @override
+  String get dictActionMore => 'Lainnya';
+
+  @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
 
   @override
@@ -11530,6 +11653,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictMostSupported => 'Paling didukung';
+
+  @override
+  String get dictTopSupportedChip => 'Top';
 
   @override
   String dictContributionBy(String name) {
@@ -12229,6 +12355,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindCulinary => 'Kuliner';
 
   @override
+  String get feedKindPantun => 'Pantun';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -12242,6 +12371,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaDiscuss => 'Ikut diskusi';
+
+  @override
+  String get feedCtaSeePantun => 'Lihat pantun';
 
   @override
   String get feedCtaSeePhoto => 'Lihat foto';
@@ -16026,6 +16158,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventStart => 'Mulai';
+
+  @override
+  String get eventEnd => 'Selesai';
+
+  @override
+  String get eventDetailNoPoster => 'Belum ada poster';
 
   @override
   String get eventProposalEmptyHint =>

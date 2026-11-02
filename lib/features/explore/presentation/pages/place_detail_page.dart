@@ -58,8 +58,10 @@ class PlaceDetailPage extends ConsumerWidget {
   }
 
   Widget _build(BuildContext context, WidgetRef ref) {
-    final placesAsync = ref.watch(placesProvider);
-    final place = placesAsync.value?.where((p) => p.slug == slug).firstOrNull;
+    // Jangan hanya andalkan katalog list - deep link / share / pin
+    // harus fetch GET /places/:slug bila slug belum di cache.
+    final placeAsync = ref.watch(placeBySlugProvider(slug));
+    final place = placeAsync.value;
     if (place != null) return _Body(place: place, entry: entry);
 
     return FScaffold(
@@ -67,7 +69,7 @@ class PlaceDetailPage extends ConsumerWidget {
       header: FHeader.nested(
         prefixes: [FHeaderAction.back(onPress: () => _back(context))],
       ),
-      child: placesAsync.isLoading ? const _Skeleton() : const _ErrorBody(),
+      child: placeAsync.isLoading ? const _Skeleton() : const _ErrorBody(),
     );
   }
 }

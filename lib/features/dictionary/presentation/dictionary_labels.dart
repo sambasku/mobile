@@ -41,6 +41,20 @@ String relationLabel(String relationType, AppLocalizations l10n) =>
       _ => relationType,
     };
 
+/// Label untuk `appears_in` (relasi masuk). Arah kebalikan dari
+/// [relationLabel]: mis. `derived_from` = kata yang diturunkan DARI lemma ini.
+String appearsInRelationLabel(String relationType, AppLocalizations l10n) =>
+    switch (relationType) {
+      'synonym' => l10n.dictRelationSynonym,
+      'antonym' => l10n.dictRelationAntonym,
+      'has_component' => l10n.dictAppearsHasComponent,
+      'see_also' => l10n.dictRelationSeeAlso,
+      'derived_from' => l10n.dictAppearsDerivedFrom,
+      'variant_of' => l10n.dictAppearsVariantOf,
+      'nonstandard_of' => l10n.dictAppearsNonstandardOf,
+      _ => relationType,
+    };
+
 String variantTypeLabel(String variantType, AppLocalizations l10n) =>
     switch (variantType) {
       'alternative' => l10n.dictVariantAlternative,

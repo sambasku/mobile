@@ -1249,6 +1249,36 @@ abstract class AppLocalizations {
   /// **'Jenis entri'**
   String get voteEntryType;
 
+  /// Judul tile shortcut ubah kelas di kartu vote
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas kata'**
+  String get voteDeckWordClass;
+
+  /// Placeholder tile kelas bila makna belum punya kelas
+  ///
+  /// In id, this message translates to:
+  /// **'Atur kelas'**
+  String get voteDeckWordClassUnset;
+
+  /// reason_text API saat shortcut kelas dari vote deck
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah kelas kata'**
+  String get voteDeckWordClassReason;
+
+  /// No description provided for @voteDeckWordClassLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat kelas kata'**
+  String get voteDeckWordClassLoadFailed;
+
+  /// No description provided for @voteDeckWordClassSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim usulan kelas kata. Coba lagi dalam beberapa saat.'**
+  String get voteDeckWordClassSubmitFailed;
+
   /// No description provided for @commentLoginPrompt.
   ///
   /// In id, this message translates to:
@@ -2218,7 +2248,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryVariantOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini variasi dari kata lain'**
+  /// **'Kata ini entri sendiri, variasi dari lemma lain (bukan ejaan)'**
   String get suggestCategoryVariantOfDesc;
 
   /// No description provided for @suggestCategoryNonstandardOf.
@@ -2230,7 +2260,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryNonstandardOfDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini bentuk tidak baku dari kata baku'**
+  /// **'Kata ini entri sendiri, bentuk tidak baku dari lemma baku'**
   String get suggestCategoryNonstandardOfDesc;
 
   /// No description provided for @suggestCategoryDerivedFrom.
@@ -2242,7 +2272,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategoryDerivedFromDesc.
   ///
   /// In id, this message translates to:
-  /// **'Kata ini diturunkan dari akar kata'**
+  /// **'Kata ini diturunkan dari akar kata (isi akarnya)'**
   String get suggestCategoryDerivedFromDesc;
 
   /// No description provided for @suggestCategoryMeaningGroup.
@@ -2266,7 +2296,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggestCategorySpellingVariantDesc.
   ///
   /// In id, this message translates to:
-  /// **'Ejaan lain untuk kata yang sama'**
+  /// **'Ejaan lain tanpa entri sendiri (tetap di lemma ini)'**
   String get suggestCategorySpellingVariantDesc;
 
   /// No description provided for @suggestCategoryLemmaNotes.
@@ -2455,6 +2485,12 @@ abstract class AppLocalizations {
   /// **'Ketuk untuk ganti jenis usulan'**
   String get suggestChangeTypeSemantics;
 
+  /// Semantics badge lemma di form usulan perubahan
+  ///
+  /// In id, this message translates to:
+  /// **'Mengubah kata {lemma}'**
+  String suggestEditingLemmaSemantics(String lemma);
+
   /// No description provided for @suggestMeaningSection.
   ///
   /// In id, this message translates to:
@@ -2551,10 +2587,16 @@ abstract class AppLocalizations {
   /// **'Kata ini variasi/bentuk lain dari kata di atas'**
   String get suggestVariantOfHint;
 
+  /// No description provided for @suggestNonstandardOfHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata ini bentuk tidak baku dari kata baku di atas'**
+  String get suggestNonstandardOfHint;
+
   /// No description provided for @suggestDerivedExample.
   ///
   /// In id, this message translates to:
-  /// **'Contoh: \"ngansoh\" diturunkan dari \"ansoh\".'**
+  /// **'Contoh: \"teijolor\" diturunkan dari \"jolor\".'**
   String get suggestDerivedExample;
 
   /// No description provided for @suggestVariantExample.
@@ -2562,6 +2604,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Contoh: \"tekpalat\" variasi dari \"taek palat\".'**
   String get suggestVariantExample;
+
+  /// No description provided for @suggestNonstandardExample.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: \"parrai\" bentuk tidak baku dari \"parai\".'**
+  String get suggestNonstandardExample;
 
   /// No description provided for @suggestRemoveRelation.
   ///
@@ -5195,6 +5243,30 @@ abstract class AppLocalizations {
   /// **'Bentuk tidak baku dari'**
   String get dictRelationNonstandardOf;
 
+  /// Label appears_in untuk relation_type derived_from (kata yang diturunkan dari lemma ini)
+  ///
+  /// In id, this message translates to:
+  /// **'Kata turunan'**
+  String get dictAppearsDerivedFrom;
+
+  /// Label appears_in untuk relation_type variant_of
+  ///
+  /// In id, this message translates to:
+  /// **'Variasi bentuk'**
+  String get dictAppearsVariantOf;
+
+  /// Label appears_in untuk relation_type nonstandard_of
+  ///
+  /// In id, this message translates to:
+  /// **'Bentuk tidak baku'**
+  String get dictAppearsNonstandardOf;
+
+  /// Label appears_in untuk relation_type has_component (frasa/idiom yang memakai lemma ini)
+  ///
+  /// In id, this message translates to:
+  /// **'Muncul dalam'**
+  String get dictAppearsHasComponent;
+
   /// No description provided for @dictVariantAlternative.
   ///
   /// In id, this message translates to:
@@ -5615,6 +5687,30 @@ abstract class AppLocalizations {
   /// **'Buat kartu untuk cerita IG, WhatsApp, dan lainnya'**
   String get dictShareCardSubtitle;
 
+  /// Label singkat baris aksi detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan'**
+  String get dictActionShare;
+
+  /// Label singkat baris aksi detail kata (usul edit)
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan'**
+  String get dictActionSuggest;
+
+  /// Label singkat baris aksi detail kata (lapor entri)
+  ///
+  /// In id, this message translates to:
+  /// **'Lapor'**
+  String get dictActionReport;
+
+  /// Buka sheet aksi tambahan di detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get dictActionMore;
+
   /// No description provided for @dictLoginToSuggest.
   ///
   /// In id, this message translates to:
@@ -5668,6 +5764,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Paling didukung'**
   String get dictMostSupported;
+
+  /// Chip padat untuk makna dengan vote tertinggi
+  ///
+  /// In id, this message translates to:
+  /// **'Top'**
+  String get dictTopSupportedChip;
 
   /// No description provided for @dictContributionBy.
   ///
@@ -6905,6 +7007,12 @@ abstract class AppLocalizations {
   /// **'Kuliner'**
   String get feedKindCulinary;
 
+  /// Label jenis aktivitas: pantun atau balasan pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Pantun'**
+  String get feedKindPantun;
+
   /// Ajakan membuka sesi tinjau usulan
   ///
   /// In id, this message translates to:
@@ -6934,6 +7042,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Ikut diskusi'**
   String get feedCtaDiscuss;
+
+  /// Ajakan membuka detail pantun dari feed
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat pantun'**
+  String get feedCtaSeePantun;
 
   /// Ajakan membuka foto
   ///
@@ -13864,6 +13978,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mulai'**
   String get eventStart;
+
+  /// Label waktu selesai di detail acara (bukan chip status)
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get eventEnd;
+
+  /// Placeholder hero detail acara tanpa poster_urls
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada poster'**
+  String get eventDetailNoPoster;
 
   /// No description provided for @eventProposalEmptyHint.
   ///

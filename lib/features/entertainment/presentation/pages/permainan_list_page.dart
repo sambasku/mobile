@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../explore/presentation/widgets/explore_cover_card.dart';
 
 /// Satu permainan di hub. Tambah entri baru cukup di [_items].
 /// Judul/subtitle diambil dari ARB lewat [id] saat render.
@@ -12,6 +12,7 @@ class _Permainan {
     required this.id,
     required this.icon,
     this.path,
+    this.coverAsset,
   });
 
   final String id;
@@ -19,6 +20,9 @@ class _Permainan {
 
   /// Null = belum tersedia (kartu tampil, tap diabaikan).
   final String? path;
+
+  /// Cover WebP opsional (`assets/images/explore_covers/…`).
+  final String? coverAsset;
 }
 
 const _items = <_Permainan>[
@@ -26,6 +30,7 @@ const _items = <_Permainan>[
     id: 'pantun',
     icon: FLucideIcons.feather,
     path: '/entertainment/pantun',
+    coverAsset: 'assets/images/explore_covers/pantun.webp',
   ),
 ];
 
@@ -59,9 +64,10 @@ class PermainanListPage extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8, bottom: 24),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 0.98,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          // Selaras grid Eksplorasi: foto + teks di bawah.
+          childAspectRatio: 0.78,
         ),
         itemCount: _items.length,
         itemBuilder: (context, i) {
@@ -84,74 +90,13 @@ class _PermainanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
     final l10n = AppLocalizations.of(context);
     final labels = _labelsFor(l10n, item.id);
-    return Material(
-      color: theme.colors.secondary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: theme.colors.border),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(item.icon, size: 20, color: theme.colors.primary),
-                  if (item.path == null) ...[
-                    const Gap(6),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(l10n.pantunComingSoon),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        labels.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.sm.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Gap(2),
-                      Text(
-                        labels.subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.sm.copyWith(
-                          fontSize: 9,
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return ExploreCoverCard(
+      title: labels.title,
+      onTap: onTap,
+      coverAsset: item.coverAsset,
+      badge: item.path == null ? Text(l10n.pantunComingSoon) : null,
     );
   }
 }

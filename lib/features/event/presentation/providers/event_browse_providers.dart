@@ -11,7 +11,7 @@ class EventBrowseQuery {
     this.regionId,
     this.q = '',
     this.notEnded = false,
-    this.order = 'asc',
+    this.order = 'desc',
   });
 
   final String? categoryId;
@@ -23,7 +23,7 @@ class EventBrowseQuery {
   /// Hanya acara yang belum selesai.
   final bool notEnded;
 
-  /// "asc" = paling dekat dulu, "desc" = terbaru dulu.
+  /// Urutan by created_at: "asc" = paling lama, "desc" = terbaru dulu.
   final String order;
 
   @override

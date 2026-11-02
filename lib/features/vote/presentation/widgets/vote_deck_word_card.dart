@@ -11,12 +11,20 @@ import '../../domain/entities/vote_deck_item.dart';
 /// konteks "makna ke-N". Tap kartu / footer membuka detail kata induk
 /// (semua makna, komentar) - pemilik navigasi ada di section, bukan sini.
 class VoteDeckWordCard extends ConsumerWidget {
-  const VoteDeckWordCard({super.key, required this.item, this.onOpenDetail});
+  const VoteDeckWordCard({
+    super.key,
+    required this.item,
+    this.onOpenDetail,
+    this.onWordClassTap,
+  });
 
   final VoteDeckItem item;
 
   /// Buka halaman detail kata (komentar, riwayat, …). Null = tanpa link.
   final VoidCallback? onOpenDetail;
+
+  /// Shortcut: bottom sheet kelas → suggest-edit langsung. Null = chip diam.
+  final VoidCallback? onWordClassTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,6 +35,7 @@ class VoteDeckWordCard extends ConsumerWidget {
       wordClassLabel: item.wordClassLabel,
       orderIndex: item.orderIndex,
       meaningCount: item.meaningCount,
+      onWordClassTap: onWordClassTap,
     );
   }
 }
@@ -43,6 +52,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
     this.orderIndex = 1,
     this.meaningCount = 1,
     this.onLockedTap,
+    this.onWordClassTap,
   });
 
   final String lemma;
@@ -64,6 +74,9 @@ class VoteDeckMeaningFace extends StatelessWidget {
 
   /// Tamu: tap jenis membuka login. Null = label diam.
   final VoidCallback? onLockedTap;
+
+  /// Login: tap kelas → picker + submit usulan. Null = badge read-only.
+  final VoidCallback? onWordClassTap;
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +114,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
-          // Tamu: tile terkunci (tap = login). User login: chip read-only.
+          // Tamu: tile terkunci (tap = login).
           if (onLockedTap != null) ...[
             const Gap(12),
             SwipeExemptRegion(
@@ -118,6 +131,54 @@ class VoteDeckMeaningFace extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ] else if (onWordClassTap != null) ...[
+            // Login: chip solid (bukan tile/tombol) → picker + POST suggest-edit.
+            const Gap(12),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                SwipeExemptRegion(
+                  child: FTappable(
+                    onPress: onWordClassTap,
+                    child: Semantics(
+                      button: true,
+                      label: l10n.voteDeckWordClass,
+                      child: FBadge.raw(
+                        variant: FBadgeVariant.secondary,
+                        builder: (context, style) {
+                          final label = wordClassLabel.isEmpty
+                              ? l10n.voteDeckWordClassUnset
+                              : wordClassLabel;
+                          final textStyle = style.labelTextStyle;
+                          return Padding(
+                            padding: style.padding,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(label, style: textStyle),
+                                const Gap(2),
+                                Icon(
+                                  FLucideIcons.chevronDown,
+                                  size: 12,
+                                  color: textStyle.color,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                if (wordTypeLabel != 'Kata')
+                  FBadge(
+                    variant: FBadgeVariant.outline,
+                    child: Text(wordTypeLabel),
+                  ),
+              ],
             ),
           ] else if (wordClassLabel.isNotEmpty || wordTypeLabel != 'Kata') ...[
             const Gap(12),

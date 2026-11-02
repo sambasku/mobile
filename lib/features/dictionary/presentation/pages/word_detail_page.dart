@@ -48,8 +48,6 @@ import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../suggest_edit/presentation/suggest_edit_labels.dart';
-
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
   const WordDetailPage({super.key, required this.wordId});
@@ -617,33 +615,29 @@ class _DetailBody extends HookConsumerWidget {
                       ),
                       const Gap(2),
                       Text(
-                        wordDetailTypeLabel(
-                          detail,
-                          AppLocalizations.of(context),
-                        ),
+                        [
+                          wordDetailTypeLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          ),
+                          if (detail.pronunciations.isNotEmpty)
+                            detail.pronunciations
+                                .map((p) => '${p.notation} ${p.value}')
+                                .join(' · '),
+                        ].join(' · '),
                         style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
-                      if (detail.pronunciations.isNotEmpty) ...[
-                        const Gap(4),
-                        Text(
-                          detail.pronunciations
-                              .map((p) => '${p.notation} ${p.value}')
-                              .join(' · '),
-                          style: theme.typography.body.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
 
-                      const Gap(10),
+                      // Compact: tanpa label section + lemma ulang.
+                      const Gap(6),
                       PronunciationSection(
                         wordId: wordId,
                         languageId: detail.languageId,
                         audios: detail.audios,
                         spokenText: detail.lemma,
+                        compact: true,
                       ),
 
                       if (detail.notes != null && detail.notes!.isNotEmpty) ...[
@@ -685,14 +679,11 @@ class _DetailBody extends HookConsumerWidget {
                       ],
 
                       if (detail.meanings.isNotEmpty) ...[
-                        const Gap(16),
-                        _SectionLabel(
-                          AppLocalizations.of(context).reviewEntityMeaning,
-                        ),
-                        const Gap(6),
+                        const Gap(12),
                         ...detail.meanings.asMap().entries.map(
                           (e) => _MeaningBlock(
                             index: e.key + 1,
+                            showIndex: detail.meanings.length > 1,
                             lemma: detail.lemma,
                             meaning: e.value,
                             wordId: wordId,
@@ -749,14 +740,13 @@ class _DetailBody extends HookConsumerWidget {
                         AppLocalizations.of(context),
                       ),
 
-                      if (detail.appearsIn.isNotEmpty) ...[
-                        const Gap(14),
-                        _SectionLabel(
-                          AppLocalizations.of(context).dictAppearsIn,
-                        ),
-                        const Gap(4),
-                        ...detail.appearsIn.map((r) => _RelatedRow(related: r)),
-                      ],
+                      // Relasi masuk: group per tipe supaya akar kata
+                      // menampilkan "Kata turunan" / "Bentuk tidak baku",
+                      // bukan satu keranjang "Muncul dalam".
+                      ..._appearsInSections(
+                        detail.appearsIn,
+                        AppLocalizations.of(context),
+                      ),
 
                       if (combinedAttributionLabel(
                                 detail,
@@ -823,8 +813,8 @@ class _DetailBody extends HookConsumerWidget {
                         ],
                       ],
 
-                      const Gap(16),
-                      _WordActionTileGroup(detail: detail, wordId: wordId),
+                      const Gap(12),
+                      _WordActionIconRow(detail: detail, wordId: wordId),
                     ],
                   ),
                 ),
@@ -848,10 +838,10 @@ class _DetailBody extends HookConsumerWidget {
     final useGroupNames = groups.length > 1;
     return [
       for (final g in groups) ...[
-        const Gap(14),
+        const Gap(12),
         _SectionLabel(useGroupNames ? g.name : l10n.dictRelatedMeanings),
         const Gap(4),
-        for (final m in g.members) _MeaningGroupRow(member: m),
+        _MeaningGroupChipWrap(members: g.members),
       ],
     ];
   }
@@ -860,7 +850,29 @@ class _DetailBody extends HookConsumerWidget {
   static List<Widget> _relatedSections(
     List<RelatedWord> related,
     AppLocalizations l10n,
-  ) {
+  ) =>
+      _groupedRelationSections(
+        related,
+        l10n,
+        labelFor: relationLabel,
+      );
+
+  /// Relasi masuk (`appears_in`) - label arah kebalikan dari related_words.
+  static List<Widget> _appearsInSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n,
+  ) =>
+      _groupedRelationSections(
+        related,
+        l10n,
+        labelFor: appearsInRelationLabel,
+      );
+
+  static List<Widget> _groupedRelationSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n, {
+    required String Function(String, AppLocalizations) labelFor,
+  }) {
     if (related.isEmpty) return const [];
 
     const order = [
@@ -886,10 +898,10 @@ class _DetailBody extends HookConsumerWidget {
 
     return [
       for (final key in keys) ...[
-        const Gap(14),
-        _SectionLabel(relationLabel(grouped[key]!.first.relationType, l10n)),
+        const Gap(12),
+        _SectionLabel(labelFor(grouped[key]!.first.relationType, l10n)),
         const Gap(4),
-        ...grouped[key]!.map((r) => _RelatedRow(related: r)),
+        _RelatedChipWrap(items: grouped[key]!),
       ],
     ];
   }
@@ -939,7 +951,7 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: AspectRatio(
-            aspectRatio: 16 / 10,
+            aspectRatio: 16 / 9,
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -1071,127 +1083,229 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
 }
 
 /// Aksi di atas komentar: bagikan tautan, bagikan kartu, usul perubahan.
-class _WordActionTileGroup extends ConsumerWidget {
-  const _WordActionTileGroup({required this.detail, required this.wordId});
+class _WordActionIconRow extends ConsumerWidget {
+  const _WordActionIconRow({required this.detail, required this.wordId});
 
   final WordDetail detail;
   final String wordId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final muted = context.theme.colors.mutedForeground;
-    final role = ref.watch(authStatusProvider).value?.role;
-    final entryCopy = suggestEditEntryTileCopy(
-      role,
-      AppLocalizations.of(context),
-    );
-    return FTileGroup(
+    final l10n = AppLocalizations.of(context);
+    return Row(
       children: [
-        FTile(
-          prefix: const Icon(FLucideIcons.link),
-          title: Text(AppLocalizations.of(context).dictShareLink),
-          subtitle: Text(AppLocalizations.of(context).dictShareLinkSubtitle),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () => shareWordPublicLink(context, detail),
-        ),
-        FTile(
-          prefix: const Icon(FLucideIcons.image),
-          title: Text(AppLocalizations.of(context).dictShareCard),
-          subtitle: Text(AppLocalizations.of(context).dictShareCardSubtitle),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () => openWordShareSheet(context, ref, detail),
-        ),
-        FTile(
-          prefix: const Icon(FLucideIcons.penLine),
-          title: Text(entryCopy.title),
-          subtitle: Text(entryCopy.subtitle),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () async {
-            final auth = await ref.read(authStatusProvider.future);
-            if (!context.mounted) return;
-            if (!auth.isAuth) {
-              showFToast(
-                context: context,
-                title: Text(AppLocalizations.of(context).dictLoginToSuggest),
-              );
-              context.push('/login');
-              return;
-            }
-            // #83: jaring aman - invalidate setelah kembali dari form,
-            // form sudah invalidate sendiri, ini menutup jalur batal
-            // (pop tanpa submit) agar perubahan dari device lain ikut.
-            await context.push('/suggest-edit/$wordId');
-            if (context.mounted) {
-              ref.invalidate(wordDetailProvider(wordId));
-            }
-          },
-        ),
-        FTile(
-          prefix: const Icon(FLucideIcons.flag),
-          title: Text(AppLocalizations.of(context).dictReportEntry),
-          subtitle: Text(AppLocalizations.of(context).dictReportEntrySubtitle),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () async {
-            final auth = await ref.read(authStatusProvider.future);
-            if (!context.mounted) return;
-            if (!auth.isAuth) {
-              showFToast(
-                context: context,
-                title: Text(
-                  AppLocalizations.of(context).dictLoginToReportEntry,
-                ),
-              );
-              context.push('/login');
-              return;
-            }
-            final sent = await showReportWordSheet(context, wordId);
-            if (!context.mounted || !sent) return;
-            showFToast(
-              context: context,
-              title: Text(AppLocalizations.of(context).dictEntryReportSent),
-            );
-          },
-        ),
-        if (detail.images.isNotEmpty)
-          FTile(
-            prefix: const Icon(FLucideIcons.imageOff),
-            title: Text(AppLocalizations.of(context).dictReportPhoto),
-            subtitle: Text(
-              AppLocalizations.of(context).dictReportPhotoSubtitle,
-            ),
-            suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-            onPress: () async {
-              final auth = await ref.read(authStatusProvider.future);
-              if (!context.mounted) return;
-              if (!auth.isAuth) {
-                showFToast(
-                  context: context,
-                  title: Text(
-                    AppLocalizations.of(context).dictLoginToReportPhoto,
-                  ),
-                );
-                context.push('/login');
-                return;
-              }
-              final imageId =
-                  (detail.images.where((i) => i.isPrimary).firstOrNull ??
-                          detail.images.first)
-                      .id;
-              final sent = await showReportWordSheet(
-                context,
-                wordId,
-                imageId: imageId,
-              );
-              if (!context.mounted || !sent) return;
-              showFToast(
-                context: context,
-                title: Text(AppLocalizations.of(context).dictPhotoReportThanks),
-              );
-            },
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.share2,
+            label: l10n.dictActionShare,
+            onPress: () => shareWordPublicLink(context, detail),
           ),
+        ),
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.penLine,
+            label: l10n.dictActionSuggest,
+            onPress: () => _openSuggestEdit(context, ref, wordId),
+          ),
+        ),
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.flag,
+            label: l10n.dictActionReport,
+            onPress: () => _reportEntry(context, ref, wordId),
+          ),
+        ),
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.ellipsis,
+            label: l10n.dictActionMore,
+            onPress: () => _showMoreWordActions(
+              context,
+              ref: ref,
+              detail: detail,
+              wordId: wordId,
+            ),
+          ),
+        ),
       ],
     );
   }
+}
+
+class _ActionIconButton extends StatelessWidget {
+  const _ActionIconButton({
+    required this.icon,
+    required this.label,
+    required this.onPress,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return FTappable(
+      onPress: onPress,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(icon, size: 18, color: theme.colors.foreground),
+              ),
+            ),
+            const Gap(4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _openSuggestEdit(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToSuggest),
+    );
+    context.push('/login');
+    return;
+  }
+  await context.push('/suggest-edit/$wordId');
+  if (context.mounted) {
+    ref.invalidate(wordDetailProvider(wordId));
+  }
+}
+
+Future<void> _reportEntry(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToReportEntry),
+    );
+    context.push('/login');
+    return;
+  }
+  final sent = await showReportWordSheet(context, wordId);
+  if (!context.mounted || !sent) return;
+  showFToast(
+    context: context,
+    title: Text(AppLocalizations.of(context).dictEntryReportSent),
+  );
+}
+
+Future<void> _reportPrimaryPhoto(
+  BuildContext context,
+  WidgetRef ref,
+  WordDetail detail,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToReportPhoto),
+    );
+    context.push('/login');
+    return;
+  }
+  final imageId =
+      (detail.images.where((i) => i.isPrimary).firstOrNull ?? detail.images.first)
+          .id;
+  final sent = await showReportWordSheet(context, wordId, imageId: imageId);
+  if (!context.mounted || !sent) return;
+  showFToast(
+    context: context,
+    title: Text(AppLocalizations.of(context).dictPhotoReportThanks),
+  );
+}
+
+Future<void> _showMoreWordActions(
+  BuildContext context, {
+  required WidgetRef ref,
+  required WordDetail detail,
+  required String wordId,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final muted = context.theme.colors.mutedForeground;
+  return showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) {
+      return SafeArea(
+        child: Padding(
+          padding: MediaQuery.viewInsetsOf(sheetContext),
+          child: FTileGroup(
+            children: [
+              FTile(
+                prefix: const Icon(FLucideIcons.image),
+                title: Text(l10n.dictShareCard),
+                subtitle: Text(l10n.dictShareCardSubtitle),
+                suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                onPress: () {
+                  Navigator.pop(sheetContext);
+                  openWordShareSheet(context, ref, detail);
+                },
+              ),
+              FTile(
+                prefix: const Icon(FLucideIcons.link),
+                title: Text(l10n.dictShareLink),
+                subtitle: Text(l10n.dictShareLinkSubtitle),
+                suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                onPress: () {
+                  Navigator.pop(sheetContext);
+                  shareWordPublicLink(context, detail);
+                },
+              ),
+              if (detail.images.isNotEmpty)
+                FTile(
+                  prefix: const Icon(FLucideIcons.imageOff),
+                  title: Text(l10n.dictReportPhoto),
+                  subtitle: Text(l10n.dictReportPhotoSubtitle),
+                  suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                  onPress: () {
+                    Navigator.pop(sheetContext);
+                    _reportPrimaryPhoto(context, ref, detail, wordId);
+                  },
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -1217,6 +1331,7 @@ class _SectionLabel extends StatelessWidget {
 class _MeaningBlock extends ConsumerWidget {
   const _MeaningBlock({
     required this.index,
+    required this.showIndex,
     required this.lemma,
     required this.meaning,
     required this.wordId,
@@ -1226,6 +1341,7 @@ class _MeaningBlock extends ConsumerWidget {
   });
 
   final int index;
+  final bool showIndex;
   final String lemma;
   final WordMeaning meaning;
   final String wordId;
@@ -1234,58 +1350,69 @@ class _MeaningBlock extends ConsumerWidget {
   /// Makna dengan skor vote tertinggi di kata ini (komunitas paling mendukung).
   final bool isTopSupported;
 
-  /// Terisi hanya kalau kata punya lebih dari satu makna.
+  /// Multi-makna saja: chip flat @username (tap → profil).
   final WordVerifier? contributor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final className = meaning.wordClassName;
+    final l10n = AppLocalizations.of(context);
     final definition = meaning.definition?.trim();
+    final classLabel = meaning.wordClassBracket ??
+        (meaning.wordClassName != null && meaning.wordClassName!.isNotEmpty
+            ? meaning.wordClassName
+            : null);
+    final username = contributor?.username;
+    final showContributorChip = isLinkablePublicUsername(username);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 22,
-            child: Text(
-              '$index.',
-              style: theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w700,
-                color: theme.colors.mutedForeground,
+          if (showIndex)
+            SizedBox(
+              width: 22,
+              child: Text(
+                '$index.',
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colors.mutedForeground,
+                ),
               ),
             ),
-          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (className != null && className.isNotEmpty)
-                  Text(
-                    className,
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colors.primary,
-                      fontSize: 12,
-                    ),
+                if (classLabel != null ||
+                    isTopSupported ||
+                    showContributorChip) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (classLabel != null)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(classLabel),
+                        ),
+                      if (isTopSupported)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(l10n.dictTopSupportedChip),
+                        ),
+                      if (showContributorChip)
+                        _MeaningContributorChip(
+                          label: '@${displayPublicUsername(username)}',
+                          username: username!,
+                          showCheck: isVerifierRole(contributor!.role),
+                        ),
+                    ],
                   ),
-                if (isTopSupported) ...[
-                  const Gap(2),
-                  FBadge(
-                    variant: FBadgeVariant.secondary,
-                    child: Text(AppLocalizations.of(context).dictMostSupported),
-                  ),
+                  const Gap(4),
                 ],
-                if (contributor != null)
-                  _AttributionLine(
-                    label: AppLocalizations.of(context).dictContributionBy(
-                      displayPublicUsername(contributor!.displayName),
-                    ),
-                    username: contributor!.username,
-                    showCheck: isVerifierRole(contributor!.role),
-                  ),
                 if (definition != null && definition.isNotEmpty)
                   Text(
                     definition,
@@ -1304,18 +1431,7 @@ class _MeaningBlock extends ConsumerWidget {
                       ),
                     ),
                   ),
-                ] else ...[
-                  const Gap(4),
-                  Text(
-                    AppLocalizations.of(context).dictNoTranslation,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
                 ],
-                // Vote per makna: mana makna yang paling valid di mata
-                // komunitas (upvote = makna ini tepat).
                 const Gap(6),
                 MeaningVoteRow(meaningId: meaning.id),
                 if (meaning.examples.isNotEmpty) ...[
@@ -1349,9 +1465,7 @@ class _MeaningBlock extends ConsumerWidget {
                             audios: e.audios,
                             exampleId: e.id,
                             compact: true,
-                            sectionLabel: AppLocalizations.of(
-                              context,
-                            ).dictExampleAudio,
+                            sectionLabel: l10n.dictExampleAudio,
                             spokenText: e.sourceSentence,
                           ),
                         ],
@@ -1366,7 +1480,7 @@ class _MeaningBlock extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: AppLocalizations.of(context).dictCopyMeaning,
+            tooltip: l10n.dictCopyMeaning,
             onPressed: () => copyWordMeaningToClipboard(
               context,
               lemma: lemma,
@@ -1384,37 +1498,95 @@ class _MeaningBlock extends ConsumerWidget {
   }
 }
 
-class _RelatedRow extends StatelessWidget {
-  const _RelatedRow({required this.related});
+/// Chip flat secondary: `@username` (+ centang verifikator). Tap → profil.
+class _MeaningContributorChip extends StatelessWidget {
+  const _MeaningContributorChip({
+    required this.label,
+    required this.username,
+    this.showCheck = false,
+  });
 
-  final RelatedWord related;
+  final String label;
+  final String username;
+  final bool showCheck;
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    return GestureDetector(
-      onTap: () => context.push('/words/${related.wordId}'),
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                related.lemma,
-                style: theme.typography.body.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Icon(
-              FLucideIcons.chevronRight,
-              size: 14,
-              color: theme.colors.mutedForeground,
-            ),
-          ],
+    return Semantics(
+      button: true,
+      label: showCheck ? '$label, Verifikator' : label,
+      child: FTappable(
+        onPress: () => UserProfileRouter.open(context, username),
+        child: FBadge(
+          variant: FBadgeVariant.secondary,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(label),
+              if (showCheck) ...[
+                const Gap(4),
+                const VerifiedBadgeIcon(size: 12),
+              ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _RelatedChipWrap extends StatelessWidget {
+  const _RelatedChipWrap({required this.items});
+
+  final List<RelatedWord> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final related in items)
+          FTappable(
+            onPress: () => context.push('/words/${related.wordId}'),
+            child: FBadge(
+              variant: FBadgeVariant.secondary,
+              child: Text(related.lemma),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MeaningGroupChipWrap extends StatelessWidget {
+  const _MeaningGroupChipWrap({required this.members});
+
+  final List<MeaningGroupMember> members;
+
+  @override
+  Widget build(BuildContext context) {
+    final withNotes = members.any(
+      (m) => m.notes != null && m.notes!.trim().isNotEmpty,
+    );
+    if (withNotes) {
+      return Column(
+        children: [for (final m in members) _MeaningGroupRow(member: m)],
+      );
+    }
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final member in members)
+          FTappable(
+            onPress: () => context.push('/words/${member.wordId}'),
+            child: FBadge(
+              variant: FBadgeVariant.secondary,
+              child: Text(member.lemma),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -1542,7 +1714,7 @@ class _DetailSkeleton extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: AspectRatio(
-                    aspectRatio: 16 / 10,
+                    aspectRatio: 16 / 9,
                     child: Bone(
                       width: double.infinity,
                       height: double.infinity,

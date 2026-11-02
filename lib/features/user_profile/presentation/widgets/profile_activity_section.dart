@@ -158,16 +158,21 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
               if (title != null && titleVisibleHeight > 0)
                 SizedBox(
                   height: titleVisibleHeight,
-                  // Clip saat collapse: titleBlock penuh di-align ke bawah
-                  // supaya teks tidak terpotong di atas saat masih terlihat.
+                  // Collapse: parent lebih pendek dari _titleBlock. Align biasa
+                  // mengecilkan SizedBox anak → Column (titleHeight+_titleGap)
+                  // overflow. OverflowBox jaga layout penuh; ClipRect potong
+                  // visual dari atas (align bawah).
                   child: ClipRect(
-                    child: Align(
+                    child: OverflowBox(
                       alignment: Alignment.bottomLeft,
+                      minHeight: _titleBlock,
+                      maxHeight: _titleBlock,
                       child: SizedBox(
                         height: _titleBlock,
                         child: Opacity(
                           opacity: titleOpacity,
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(

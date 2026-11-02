@@ -129,13 +129,11 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
       height: topInset + ProfileHeroShell.barHeight,
       padding: EdgeInsets.only(top: topInset, left: 12, right: 12),
       alignment: Alignment.centerLeft,
+      // Tanpa border bawah: saat chip filter pin di bawah bar (profil
+      // publik), garis di sini menempel di atas chip dan terlihat seperti
+      // hairline ganda. Latar opaque sudah cukup memisahkan bar dari isi.
       decoration: BoxDecoration(
         color: theme.colors.background.withValues(alpha: t),
-        border: t > 0.9
-            ? Border(
-                bottom: BorderSide(color: theme.colors.border, width: 0.5),
-              )
-            : null,
       ),
       child: Row(
         children: [

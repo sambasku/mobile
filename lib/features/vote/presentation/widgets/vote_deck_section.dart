@@ -20,6 +20,7 @@ import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
 import '../providers/vote_submit_queue.dart';
+import 'vote_deck_class_shortcut.dart';
 import 'vote_deck_swipe_card.dart';
 import 'vote_deck_word_card.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -308,6 +309,13 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       onOpenDetail: _rewinding
                           ? null
                           : () => _openDetail(context, item),
+                      onWordClassTap: _rewinding
+                          ? null
+                          : () => pickAndSubmitVoteDeckWordClass(
+                              context: context,
+                              ref: ref,
+                              item: item,
+                            ),
                     ),
                   ),
                 ),

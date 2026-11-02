@@ -109,6 +109,29 @@ class PlacesRemoteDatasource {
       options: Options(sendTimeout: const Duration(seconds: 5)),
     );
   }
+
+  /// Detail satu place by slug. Null jika 404 / body tidak valid.
+  Future<Map<String, dynamic>?> fetchBySlug(String slug) async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/places/${Uri.encodeComponent(slug)}',
+        options: Options(
+          receiveTimeout: const Duration(seconds: 8),
+          validateStatus: (code) =>
+              code != null && ((code >= 200 && code < 300) || code == 404),
+        ),
+      );
+      if (res.statusCode == 404) return null;
+      final body = res.data;
+      if (body is! Map) return null;
+      final data = body['data'];
+      if (data is! Map) return null;
+      return _wirePlaceToCamel(Map<String, dynamic>.from(data));
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
+      rethrow;
+    }
+  }
 }
 
 /// `next_cursor` halaman ini. Null = halaman terakhir.
@@ -215,6 +238,18 @@ Map<String, dynamic> _wirePlaceToCamel(Map<String, dynamic> w) {
     }
   }
 
+  final related = <Map<String, dynamic>>[];
+  final rawRelated = w['related'];
+  if (rawRelated is List) {
+    for (final r in rawRelated.whereType<Map>()) {
+      final kind = r['kind'];
+      // Detail API: slug; katalog lama: id.
+      final id = r['id'] ?? r['slug'];
+      if (kind is! String || id is! String || id.isEmpty) continue;
+      related.add({'kind': kind, 'id': id});
+    }
+  }
+
   return {
     'id': w['id'],
     'slug': w['slug'],
@@ -231,7 +266,7 @@ Map<String, dynamic> _wirePlaceToCamel(Map<String, dynamic> w) {
     'authorId': w['author_id'],
     'images': images,
     'sources': sources,
-    'related': <dynamic>[],
+    'related': related,
     'relatedWordIds': <dynamic>[],
   };
 }

@@ -419,6 +419,7 @@ class _IdentitySection extends ConsumerWidget {
           bio: profile?.bio,
           isVerifier:
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
+          streakDays: profile?.leveling?.streakDays,
           leveling: profile?.leveling == null
               ? null
               : ProfileLevelingChip(leveling: profile!.leveling!),

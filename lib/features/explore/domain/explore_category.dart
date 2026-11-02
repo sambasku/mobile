@@ -20,6 +20,17 @@ class ExploreCategory {
   /// Konten API belum ada - kartu tetap tampil sebagai sasaran app.
   final bool comingSoon;
 
+  /// Cover WebP di `assets/images/explore_covers/` (null = tanpa ilustrasi).
+  String? get coverAsset => switch (id) {
+    'wilayah' => 'assets/images/explore_covers/wilayah.webp',
+    'wisata' => 'assets/images/explore_covers/wisata.webp',
+    'kuliner' => 'assets/images/explore_covers/kuliner.webp',
+    'usaha' => 'assets/images/explore_covers/usaha.webp',
+    'acara' => 'assets/images/explore_covers/acara.webp',
+    'hiburan' => 'assets/images/explore_covers/permainan.webp',
+    _ => null,
+  };
+
   /// Judul kategori sesuai bahasa aktif.
   String titleOf(AppLocalizations l10n) => switch (id) {
     'wilayah' => l10n.exploreCategoryWilayah,

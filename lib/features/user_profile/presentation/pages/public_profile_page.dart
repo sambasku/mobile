@@ -264,12 +264,18 @@ class _ProfileBody extends HookConsumerWidget {
                       borderUrl: borderUrl,
                       bio: profile.bio,
                       isVerifier: profile.isVerifier,
+                      streakDays: profile.leveling?.streakDays,
                       leveling: profile.leveling == null
                           ? null
-                          : ProfileLevelingChip(leveling: profile.leveling!),
+                          : ProfileLevelingChip(
+                              leveling: profile.leveling!,
+                              // Compact header rata kiri - jangan center chip.
+                              alignCenter: false,
+                            ),
                       stats: ProfileStatRow(
                         words: profile.wordsApproved,
                         corrections: profile.correctionsApproved,
+                        alignCenter: false,
                       ),
                       joinedLabel: joined,
                       onAvatarTap: isOwnProfile && !uploadingAvatar.value
@@ -395,6 +401,8 @@ class _ProfileBody extends HookConsumerWidget {
     showImageSheetDrawer(
       context,
       filePicker: false,
+      // Hanya ProfilePhotoCropPage - jangan ImageCropPage dulu (double crop).
+      cropEnabled: false,
       maxWidth: kAvatarPickMaxWidth,
       maxHeight: kAvatarPickMaxHeight,
       imageQuality: kPhotoPickQuality,

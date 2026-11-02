@@ -194,3 +194,81 @@ final class PlacesRefreshProvider
 }
 
 String _$placesRefreshHash() => r'40869561f9485afa51d403e5b090bb6c5be558d7';
+
+/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+
+@ProviderFor(placeBySlug)
+final placeBySlugProvider = PlaceBySlugFamily._();
+
+/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+
+final class PlaceBySlugProvider
+    extends $FunctionalProvider<AsyncValue<Place?>, Place?, FutureOr<Place?>>
+    with $FutureModifier<Place?>, $FutureProvider<Place?> {
+  /// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+  PlaceBySlugProvider._({
+    required PlaceBySlugFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'placeBySlugProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$placeBySlugHash();
+
+  @override
+  String toString() {
+    return r'placeBySlugProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<Place?> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Place?> create(Ref ref) {
+    final argument = this.argument as String;
+    return placeBySlug(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlaceBySlugProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$placeBySlugHash() => r'7f3af851f127193fe1d6b51734f5396a4e453859';
+
+/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+
+final class PlaceBySlugFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<Place?>, String> {
+  PlaceBySlugFamily._()
+    : super(
+        retry: null,
+        name: r'placeBySlugProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+
+  PlaceBySlugProvider call(String slug) =>
+      PlaceBySlugProvider._(argument: slug, from: this);
+
+  @override
+  String toString() => r'placeBySlugProvider';
+}

@@ -64,17 +64,21 @@ class ProfileStatRow extends StatelessWidget {
     super.key,
     required this.words,
     required this.corrections,
+    this.alignCenter = true,
   });
 
   final int words;
   final int corrections;
+
+  /// false = profil publik compact (sejajar nama rata kiri).
+  final bool alignCenter;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 0,
       runSpacing: 2,
-      alignment: WrapAlignment.center,
+      alignment: alignCenter ? WrapAlignment.center : WrapAlignment.start,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         ProfileStatInline(count: words, label: AppLocalizations.of(context).profileStatWords),

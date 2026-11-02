@@ -33,6 +33,20 @@ class PlacesRepositoryImpl {
     }
   }
 
+  /// Detail by slug via `GET /places/:slug` (tanpa tunggu katalog penuh).
+  /// Null = 404 / gagal jaringan (soft-fail di UI).
+  Future<Place?> fetchBySlug(String slug) async {
+    final normalized = slug.trim();
+    if (normalized.isEmpty) return null;
+    try {
+      final raw = await _datasource.fetchBySlug(normalized);
+      if (raw == null) return null;
+      return PlaceDto.fromJson(raw)?.toEntity();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> recordView(String slug) => _datasource.recordView(slug);
 
   /// #187: halaman galeri foto (offset server-side). Error dilempar supaya
