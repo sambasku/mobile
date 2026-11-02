@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../shared/domain/word_type_options.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/repositories/word_suggestion_review_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 import 'review_repository_impl.dart';
 
 const _base = '/api/v1/admin/word-suggestions';
@@ -48,6 +50,19 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
   final meaningsChanged = meanings is List
       ? meanings.whereType<Map>().length
       : 0;
+  final classDiffs = <WordSuggestionFieldDiff>[];
+  if (meanings is List) {
+    for (final raw in meanings.whereType<Map>()) {
+      final changes = raw['changes'];
+      if (changes is! List) continue;
+      for (final change in changes.whereType<Map>()) {
+        if (change['label']?.toString() != 'Kelas kata') continue;
+        if (change['changed'] != true) continue;
+        classDiffs.add(_parseFieldDiff(change));
+      }
+    }
+  }
+  final wordType = _parseFieldDiff(diff['word_type']);
 
   List countList(Object? raw, String key) {
     final map = asStringKeyMap(raw);
@@ -68,7 +83,15 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
     createdAt: suggestion['created_at']?.toString() ?? '',
     lemmaDiff: _parseFieldDiff(diff['lemma']),
     notesDiff: _parseFieldDiff(diff['notes']),
+    wordTypeDiff: WordSuggestionFieldDiff(
+      current: wordTypeOptionLabel(wordType.current),
+      proposed: wordType.proposed == null
+          ? null
+          : wordTypeOptionLabel(wordType.proposed),
+      changed: wordType.changed,
+    ),
     meaningsChanged: meaningsChanged,
+    classDiffs: classDiffs,
     categoriesAdded: countList(categories, 'added').length,
     categoriesRemoved: countList(categories, 'removed').length,
     relationsAdded: countList(relations, 'added').length,
@@ -118,7 +141,7 @@ class WordSuggestionReviewRepositoryImpl
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat antrean usulan edit'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionsLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -131,7 +154,7 @@ class WordSuggestionReviewRepositoryImpl
       final data = asStringKeyMap(res.data?['data']);
       return Either.right(_parseDetail(data));
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat detail usulan edit'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -152,7 +175,7 @@ class WordSuggestionReviewRepositoryImpl
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menyetujui usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionApproveFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -170,7 +193,7 @@ class WordSuggestionReviewRepositoryImpl
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menolak usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionRejectFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }

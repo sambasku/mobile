@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,8 +25,9 @@ class AudioPlayerTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final WordDetailAudioView view =
-        ref.watch(wordDetailAudioPlayerProvider(wordId));
+    final WordDetailAudioView view = ref.watch(
+      wordDetailAudioPlayerProvider(wordId),
+    );
     final AudioTilePlaybackState playback = view.stateFor(audio.id);
     final isActive = view.activeAudioId == audio.id;
     final showBar = isActive && view.showProgress;
@@ -48,7 +51,7 @@ class AudioPlayerTile extends ConsumerWidget {
 
     final durationLabel = audio.formattedDuration;
     final metaParts = <String>[
-      audio.displaySpeaker,
+      displaySpeaker(audio, AppLocalizations.of(context)),
       if (dialectName case final d? when d.isNotEmpty) d,
     ];
     final meta = metaParts.join(' · ');
@@ -56,8 +59,8 @@ class AudioPlayerTile extends ConsumerWidget {
     final effectiveDuration = isActive && view.duration > Duration.zero
         ? view.duration
         : (audio.durationMs != null && audio.durationMs! > 0
-            ? Duration(milliseconds: audio.durationMs!)
-            : Duration.zero);
+              ? Duration(milliseconds: audio.durationMs!)
+              : Duration.zero);
 
     final timeLabel = isActive && effectiveDuration > Duration.zero
         ? '${_fmt(view.position)} / ${_fmt(effectiveDuration)}'
@@ -67,7 +70,8 @@ class AudioPlayerTile extends ConsumerWidget {
       AudioTilePlaybackState.playing => 'Jeda audio $meta',
       AudioTilePlaybackState.paused => 'Lanjutkan audio $meta',
       AudioTilePlaybackState.loading => 'Memuat audio $meta',
-      AudioTilePlaybackState.error => 'Gagal memutar $meta, ketuk untuk coba lagi',
+      AudioTilePlaybackState.error =>
+        'Gagal memutar $meta, ketuk untuk coba lagi',
       AudioTilePlaybackState.idle => 'Putar audio $meta',
     };
 
@@ -110,7 +114,7 @@ class AudioPlayerTile extends ConsumerWidget {
                         meta,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -119,7 +123,7 @@ class AudioPlayerTile extends ConsumerWidget {
                       const Gap(4),
                       Semantics(
                         button: true,
-                        label: 'Menunggu pengecekan',
+                        label: AppLocalizations.of(context).dictPendingCheck,
                         child: GestureDetector(
                           onTap: () => showPendingAudioReviewInfo(context),
                           child: const PendingReviewBadgeIcon(size: 14),
@@ -132,7 +136,7 @@ class AudioPlayerTile extends ConsumerWidget {
                         timeLabel,
                         maxLines: 1,
                         softWrap: false,
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
@@ -151,7 +155,9 @@ class AudioPlayerTile extends ConsumerWidget {
                         ? (ratio) {
                             ref
                                 .read(
-                                  wordDetailAudioPlayerProvider(wordId).notifier,
+                                  wordDetailAudioPlayerProvider(
+                                    wordId,
+                                  ).notifier,
                                 )
                                 .seekRatio(ratio);
                           }
@@ -185,7 +191,7 @@ class AudioPlayerTile extends ConsumerWidget {
       showFToast(
         context: context,
         title: const Text(
-          'Gagal memutar audio. Periksa koneksi lalu coba lagi.',
+          'Gagal memutar audio. Coba lagi dalam beberapa saat.',
         ),
         variant: FToastVariant.destructive,
       );
@@ -242,7 +248,7 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Progres pemutaran',
+      label: AppLocalizations.of(context).dictAudioProgress,
       value: '${(progress * 100).round()} persen',
       slider: enabled,
       child: LayoutBuilder(

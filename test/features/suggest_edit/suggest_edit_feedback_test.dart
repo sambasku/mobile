@@ -1,11 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/suggest_edit/domain/suggest_edit_feedback.dart';
+import 'package:sambasku_mobile/features/suggest_edit/presentation/suggest_edit_labels.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 void main() {
+  final l10n = AppLocalizationsId();
+
   group('suggestEditEntryTileCopy', () {
     test('verifikator: lengkapi kata tanpa antrean', () {
       for (final role in ['admin', 'editor', 'root', 'reviewer']) {
-        final copy = suggestEditEntryTileCopy(role);
+        final copy = suggestEditEntryTileCopy(role, l10n);
         expect(copy.title, 'Perbaiki/lengkapi kata');
         // Nama kapabilitas yang bisa ditambahkan, bukan sekadar "ubah".
         expect(copy.subtitle, contains('makna'));
@@ -17,7 +21,7 @@ void main() {
 
     test('kontributor / null: usulkan + menunggu persetujuan', () {
       for (final role in ['contributor', null]) {
-        final copy = suggestEditEntryTileCopy(role);
+        final copy = suggestEditEntryTileCopy(role, l10n);
         expect(copy.title, 'Usulkan perubahan');
         expect(copy.subtitle, contains('menunggu persetujuan'));
       }
@@ -27,7 +31,7 @@ void main() {
   group('suggestEditPreSubmitCopy', () {
     test('verifikator: banner self-apply + CTA simpan', () {
       for (final role in ['admin', 'editor', 'root', 'reviewer']) {
-        final copy = suggestEditPreSubmitCopy(role);
+        final copy = suggestEditPreSubmitCopy(role, l10n);
         expect(copy.cta, 'Simpan perubahan');
         expect(copy.ctaBusy, 'Menyimpan...');
         expect(copy.banner, contains('langsung diterapkan'));
@@ -36,7 +40,7 @@ void main() {
     });
 
     test('kontributor: banner antrean + CTA kirim usulan', () {
-      final copy = suggestEditPreSubmitCopy('contributor');
+      final copy = suggestEditPreSubmitCopy('contributor', l10n);
       expect(copy.cta, 'Kirim Usulan');
       expect(copy.ctaBusy, 'Mengirim...');
       expect(copy.banner, contains('mereview sebelum tayang'));
@@ -66,10 +70,7 @@ void main() {
 
     test('tanpa status: fallback role verifikator', () {
       expect(
-        suggestEditWasSelfApplied(
-          responseStatus: null,
-          actorRole: 'reviewer',
-        ),
+        suggestEditWasSelfApplied(responseStatus: null, actorRole: 'reviewer'),
         isTrue,
       );
       expect(
@@ -89,6 +90,7 @@ void main() {
           selfApplied: true,
           wordVerified: true,
           lemma: 'kete',
+          l10n: l10n,
         ),
         'Perubahan langsung diterapkan pada "kete".',
       );
@@ -100,6 +102,7 @@ void main() {
           selfApplied: false,
           wordVerified: true,
           lemma: 'kete',
+          l10n: l10n,
         ),
         contains('masuk antrean'),
       );
@@ -111,6 +114,7 @@ void main() {
           selfApplied: false,
           wordVerified: false,
           lemma: 'kete',
+          l10n: l10n,
         ),
         contains('menunggu pengecekan'),
       );

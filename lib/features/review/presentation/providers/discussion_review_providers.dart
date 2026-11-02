@@ -84,6 +84,7 @@ class DiscussionReviewListController
       limit: _pageSize,
       cursor: current.nextCursor,
     );
+    if (!ref.mounted) return;
     page.match(
       (failure) {
         state = AsyncData(current.copyWith(isLoadingMore: false));

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -13,6 +13,7 @@ import '../../../../core/services/notification_navigation.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -20,6 +21,7 @@ import '../../domain/entities/inbox_notification.dart';
 import '../../domain/failures/notification_failure.dart';
 import '../../domain/providers/notification_domain_providers.dart';
 import '../../notification_router.dart';
+import '../notification_labels.dart';
 import '../providers/notification_providers.dart';
 
 class NotificationInboxPage extends HookConsumerWidget {
@@ -37,7 +39,7 @@ class NotificationInboxPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Notifikasi'),
+        title: Text(AppLocalizations.of(context).notificationTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: auth.when(
@@ -69,15 +71,15 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat notifikasi',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+              AppLocalizations.of(context).notificationLoginRequired,
+              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -120,8 +122,8 @@ class _InboxList extends HookConsumerWidget {
               Text(
                 error is NotificationFailure
                     ? error.message
-                    : 'Gagal memuat notifikasi',
-                style: theme.typography.sm.copyWith(
+                    : AppLocalizations.of(context).notificationLoadFailed,
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -131,7 +133,7 @@ class _InboxList extends HookConsumerWidget {
                 variant: FButtonVariant.outline,
                 onPress: () =>
                     ref.invalidate(notificationInboxListControllerProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -187,16 +189,16 @@ class _InboxList extends HookConsumerWidget {
                       ),
                       const Gap(10),
                       Text(
-                        'Belum ada notifikasi',
-                        style: theme.typography.md.copyWith(
+                        AppLocalizations.of(context).notificationEmpty,
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const Gap(4),
                       Text(
-                        'Status usulan yang sudah direview akan muncul di sini.',
-                        style: theme.typography.sm.copyWith(
+                        AppLocalizations.of(context).notificationEmptyBody,
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -223,8 +225,8 @@ class _InboxList extends HookConsumerWidget {
               prefix: markingAll.value ? const FCircularProgress() : null,
               child: Text(
                 markingAll.value
-                    ? 'Menandai...'
-                    : 'Tandai semua telah dibaca',
+                    ? AppLocalizations.of(context).notificationMarking
+                    : AppLocalizations.of(context).notificationMarkAllRead,
               ),
             ),
           ),
@@ -253,6 +255,7 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final date = formatDateTimeIso(item.createdAt);
     final theme = context.theme;
     final isCampaign = item.type == 'campaign' || item.targetKind == 'campaign';
@@ -269,7 +272,11 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
         ),
       ),
       subtitle: Text(
-        [item.typeLabel, if (date.isNotEmpty) date, item.body].join(' · '),
+        [
+          notificationTypeLabel(l10n, item.type),
+          if (date.isNotEmpty) date,
+          item.body,
+        ].join(' · '),
       ),
       prefix: Badge(
         isLabelVisible: item.isUnread,
@@ -289,7 +296,7 @@ class _NotificationTile extends ConsumerWidget with FTileMixin {
               children: [
                 Semantics(
                   button: true,
-                  label: 'Lihat gambar',
+                  label: l10n.notificationViewImage,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: rawImage == null || rawImage.isEmpty
@@ -349,7 +356,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -360,7 +367,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -386,9 +393,10 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FTile(
-      title: Text('Usulan disetujui contoh'),
-      subtitle: Text('Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda'),
+      title: Text(l10n.notificationSkeletonTitle),
+      subtitle: Text(l10n.notificationSkeletonMeta),
     );
   }
 }

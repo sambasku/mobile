@@ -13,7 +13,10 @@ class LoginWithGithubUseCase {
   final AuthRepository _repository;
   final GithubSignInPort _signIn;
 
-  Future<Either<AuthFailure, AuthSession>> call() async {
+  /// [consents] diisi hanya dari halaman Daftar (checkbox legal wajib).
+  Future<Either<AuthFailure, AuthSession>> call({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     try {
       final auth = await _signIn.authenticate();
       if (auth == null) {
@@ -32,10 +35,11 @@ class LoginWithGithubUseCase {
           ),
         );
       }
-      return _repository.loginWithGithub(
+      return await _repository.loginWithGithub(
         code: auth.code,
         redirectUri: auth.redirectUri,
         codeVerifier: auth.codeVerifier,
+        consents: consents,
       );
     } catch (error, stack) {
       developer.log(

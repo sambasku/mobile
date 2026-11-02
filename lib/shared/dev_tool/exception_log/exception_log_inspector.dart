@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -98,7 +98,7 @@ class _ExceptionDetailPage extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Exception',
-                    style: theme.typography.xl.copyWith(
+                    style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -118,7 +118,7 @@ class _ExceptionDetailPage extends StatelessWidget {
             const Gap(16),
             Expanded(
               child: SingleChildScrollView(
-                child: SelectableText(text, style: theme.typography.sm),
+                child: SelectableText(text, style: theme.typography.body.sm),
               ),
             ),
           ],
@@ -137,7 +137,7 @@ class _EmptyExceptions extends StatelessWidget {
     return Center(
       child: Text(
         'Belum ada exception',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
       ),

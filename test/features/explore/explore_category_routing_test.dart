@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/cuisine.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/explore_category_page.dart';
 import 'package:sambasku_mobile/features/explore/presentation/providers/cuisine_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _dummy = Cuisine(
   id: 'x',
@@ -29,8 +32,11 @@ void main() {
           cuisineProvider.overrideWith((ref) async => const [_dummy]),
         ],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: ExploreCategoryPage(categoryId: categoryId)),
           ),
         ),
@@ -53,5 +59,15 @@ void main() {
     await pump(tester, 'ngasal');
 
     expect(find.text('Segera hadir'), findsOneWidget);
+  });
+
+  testWidgets('kategori permainan membuka hub grid, bukan feed pantun', (
+    tester,
+  ) async {
+    await pump(tester, 'hiburan');
+
+    // Hub: judul header + kartu pantun. Feed pantun langsung = bug lama.
+    expect(find.text('Permainan'), findsWidgets);
+    expect(find.text('Pantun'), findsOneWidget);
   });
 }

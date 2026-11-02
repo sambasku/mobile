@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 /// List compact gaya panel Analitik (`kpi_cards.dart`): satu kartu luar
@@ -96,7 +96,7 @@ class CompactRow extends StatelessWidget {
                 subtitle!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: subtitleColor ?? theme.colors.mutedForeground,
                 ),
               )
@@ -117,7 +117,7 @@ class CompactRow extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                     color: titleColor,
                   ),

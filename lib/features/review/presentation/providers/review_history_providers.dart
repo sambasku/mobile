@@ -3,20 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../domain/entities/review_contribution.dart';
 import 'review_providers.dart';
 
-class ReviewHistoryStatusFilter {
-  const ReviewHistoryStatusFilter(this.value, this.label);
-  final String? value;
-  final String label;
-}
-
-const reviewHistoryStatusFilters = [
-  ReviewHistoryStatusFilter(null, 'Semua'),
-  ReviewHistoryStatusFilter('approved', 'Disetujui'),
-  ReviewHistoryStatusFilter('rejected', 'Ditolak'),
-  ReviewHistoryStatusFilter('corrected', 'Dikoreksi'),
-  ReviewHistoryStatusFilter('pending', 'Dibuka ulang'),
-];
-
 class ReviewHistoryState {
   const ReviewHistoryState({
     required this.items,
@@ -56,9 +42,12 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
   String? get statusFilter => _statusFilter;
 
   Future<void> setStatusFilter(String? status) async {
+    if (!ref.mounted) return;
     _statusFilter = status;
     state = const AsyncLoading();
-    state = await AsyncValue.guard(_fetch);
+    final next = await AsyncValue.guard(_fetch);
+    if (!ref.mounted) return;
+    state = next;
   }
 
   Future<ReviewHistoryState> _fetch({String? cursor}) async {
@@ -81,6 +70,7 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
   }
 
   Future<void> loadMore() async {
+    if (!ref.mounted) return;
     final current = state.value;
     if (current == null || !current.hasMore || current.nextCursor == null) {
       return;
@@ -92,6 +82,7 @@ class ReviewHistoryController extends AsyncNotifier<ReviewHistoryState> {
       limit: _limit,
       cursor: current.nextCursor,
     );
+    if (!ref.mounted) return;
     result.fold(
       (failure) => state = AsyncError(failure, StackTrace.current),
       (page) {

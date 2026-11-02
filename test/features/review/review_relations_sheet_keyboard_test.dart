@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -39,6 +40,12 @@ void main() {
         child: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
           child: MaterialApp(
+            localizationsDelegates: const [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
             home: Builder(
               builder: (context) => Scaffold(
                 body: Center(
@@ -94,6 +101,12 @@ void main() {
         child: FTheme(
           data: foruiPalettes['zinc']!.light.touch,
           child: MaterialApp(
+            localizationsDelegates: const [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
             home: Builder(
               builder: (context) => Scaffold(
                 body: Center(

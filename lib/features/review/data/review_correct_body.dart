@@ -1,3 +1,5 @@
+import '../../dictionary/domain/entities/word_detail.dart';
+
 /// Contoh kalimat di form koreksi. [sourceIndex] = posisi contoh asal di
 /// `meanings[i].examples` entity (null = contoh baru dari verifikator).
 typedef CorrectExampleEdit = ({String source, String target, int? sourceIndex});
@@ -211,6 +213,75 @@ Map<String, dynamic> _map(Object? raw) {
 /// string kosong DITOLAK choiceId (min 1), jadi kosong dikirim sebagai null.
 /// `meaning_source` tidak ada di skema correct-meaning (server strip) - tidak
 /// dikirim; server mempertahankan source yang tersimpan.
+/// Koreksi ringan dari kartu tinjau: jenis entri dan kelas Umum,
+/// sisa field dibawa dari entity. `publish: false` supaya usulan tetap antre.
+Map<String, dynamic> buildInlineWordCorrectBody({
+  required Map<String, dynamic> entity,
+  required String wordType,
+  Map<int, String> wordClassByMeaningIndex = const {},
+}) {
+  final rawMeanings = _list(entity['meanings']);
+  final meanings = <CorrectMeaningEdit>[];
+  for (var i = 0; i < rawMeanings.length; i++) {
+    final raw = _map(rawMeanings[i]);
+    final translations = _list(raw['translations']);
+    final first = translations.isEmpty ? const <String, dynamic>{} : _map(translations.first);
+    final examples = <CorrectExampleEdit>[];
+    final rawExamples = _list(raw['examples']);
+    for (var e = 0; e < rawExamples.length; e++) {
+      final example = _map(rawExamples[e]);
+      final source = example['sourceSentence']?.toString() ?? '';
+      if (source.trim().isEmpty) continue;
+      examples.add((
+        source: source,
+        target: example['targetSentence']?.toString() ?? '',
+        sourceIndex: e,
+      ));
+    }
+    final override = wordClassByMeaningIndex[i]?.trim();
+    meanings.add((
+      sourceIndex: i,
+      definition: raw['definition']?.toString() ?? '',
+      translation: first['translationText']?.toString() ?? '',
+      translationLanguageId: first['languageId']?.toString(),
+      wordClassId: (override != null && override.isNotEmpty) ? override : null,
+      meaningSource:
+          raw['meaningSource']?.toString() ??
+          raw['meaning_source']?.toString() ??
+          'manual',
+      examples: examples,
+    ));
+  }
+
+  final related = <CorrectRelationEdit>[];
+  for (final raw in _list(entity['relatedWords'])) {
+    final row = _map(raw);
+    final wordId = row['wordId']?.toString() ?? '';
+    final relationType = row['relationType']?.toString() ?? '';
+    if (wordId.isEmpty || relationType.isEmpty) continue;
+    related.add((wordId: wordId, relationType: relationType));
+  }
+
+  final variants = <String>[
+    for (final raw in _list(entity['variants']))
+      if (_map(raw)['form']?.toString().trim().isNotEmpty ?? false)
+        _map(raw)['form'].toString().trim(),
+  ];
+
+  return buildWordCorrectBody(
+    entity: entity,
+    lemma: entity['lemma']?.toString() ?? '',
+    notes: entity['notes']?.toString(),
+    wordType: wordType,
+    usageLabels: knownUsageLabels(entity['usageLabels']),
+    meanings: meanings,
+    relatedWords: related,
+    variants: variants,
+    publish: false,
+    comment: 'Ubah jenis atau kelas kata',
+  );
+}
+
 Map<String, dynamic> buildMeaningCorrectBody({
   required String definition,
   String? wordClassId,

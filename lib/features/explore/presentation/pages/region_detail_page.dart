@@ -1,11 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../event/presentation/providers/event_providers.dart';
+import '../../../event/presentation/widgets/event_ui.dart';
 import '../providers/regions_providers.dart';
 import '../widgets/district_markdown_view.dart';
 
@@ -18,7 +21,7 @@ class RegionDetailPage extends ConsumerStatefulWidget {
   const RegionDetailPage.desa({super.key, required this.slug})
     : isKecamatan = false;
 
-  /// Kecamatan: slug id `regions.json`. Desa: kode BPS (id).
+  /// Kecamatan: slug id katalog wilayah. Desa: kode BPS (id).
   final String slug;
 
   final bool isKecamatan;
@@ -45,17 +48,20 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final regions = ref.watch(regionsProvider).value ?? const [];
     final isKec = widget.isKecamatan;
 
     // Slug kecamatan = id; slug desa = kode BPS (id-nya mengandung "/").
     final region = isKec
-        ? regions.where((r) => r.id == widget.slug).firstOrNull
+        ? regions.where((r) => r.slug == widget.slug).firstOrNull
         : regions.where((r) => r.code == widget.slug).firstOrNull;
     final name = region?.name ?? widget.slug;
 
-    final desaCount = regions.where((r) => r.parentId == widget.slug).length;
+    final desaCount = region == null
+        ? 0
+        : regions.where((r) => r.parentId == region.id).length;
 
     return FScaffold(
       header: FHeader.nested(title: Text(name)),
@@ -77,34 +83,42 @@ class _RegionDetailPageState extends ConsumerState<RegionDetailPage> {
             const Gap(16),
             FBadge(
               variant: FBadgeVariant.outline,
-              child: const Text('Segera hadir'),
+              child: Text(l10n.exploreComingSoon),
             ),
             const Gap(12),
           ],
           Text(
-            isKec ? 'Kecamatan $name' : 'Desa $name',
-            style: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
+            isKec ? l10n.regionKecamatanTitle(name) : l10n.regionDesaTitle(name),
+            style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
           ),
           if (isKec && desaCount > 0) ...[
             const Gap(4),
             Text(
-              '$desaCount desa',
-              style: theme.typography.sm.copyWith(
+              l10n.regionVillageCount('$desaCount'),
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
           ],
-          if (!isKec) ...[
-            const Gap(12),
-            Text(
-              'Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat '
-              'info lengkapnya di sini ya.',
-              style: theme.typography.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
+if (!isKec) ...[
+          const Gap(12),
+          Text(
+            l10n.regionDesaComingSoon,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
             ),
-          ],
+          ),
         ],
+        // Agenda desa (hanya desa): acara dengan village_id = desa ini.
+        // Slug wilayah (id katalog publik) diterima API sebagai village_id.
+        if (!isKec && region != null)
+          buildEventMiniList(
+            context,
+            ref.watch(eventsForVillageProvider(region.id)).value ?? const [],
+            title: l10n.regionAgendaDesa(name),
+          ) ??
+          const SizedBox.shrink(),
+      ],
       ),
     );
   }

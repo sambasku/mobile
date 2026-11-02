@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
+import '../../../core/i18n/l10n.dart';
 
 class PronunciationUploadFailure {
   const PronunciationUploadFailure(this.message, {this.errorCode});
@@ -34,14 +35,17 @@ class PronunciationAudioUploadService {
       final name = audioFile.path.split(Platform.pathSeparator).last;
       final lower = name.toLowerCase();
       final (mimeType, filename) = lower.endsWith('.wav')
-          ? (DioMediaType('audio', 'wav'), name.endsWith('.wav') ? name : 'recording.wav')
+          ? (
+              DioMediaType('audio', 'wav'),
+              name.endsWith('.wav') ? name : 'recording.wav',
+            )
           : lower.endsWith('.webm')
-              ? (DioMediaType('audio', 'webm'), 'recording.webm')
-              : lower.endsWith('.ogg')
-                  ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
-                  : lower.endsWith('.mp3')
-                      ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
-                      : (DioMediaType('audio', 'mp4'), 'recording.m4a');
+          ? (DioMediaType('audio', 'webm'), 'recording.webm')
+          : lower.endsWith('.ogg')
+          ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
+          : lower.endsWith('.mp3')
+          ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
+          : (DioMediaType('audio', 'mp4'), 'recording.m4a');
 
       final trimmedSpeaker = speakerName?.trim();
       final formData = FormData.fromMap({
@@ -68,7 +72,7 @@ class PronunciationAudioUploadService {
       if (body != null && body['success'] == false) {
         return Either.left(
           PronunciationUploadFailure(
-            body['message']?.toString() ?? 'Gagal mengunggah audio',
+            body['message']?.toString() ?? l10n.dictAudioUploadFailed,
             errorCode: body['error_code']?.toString(),
           ),
         );
@@ -97,7 +101,7 @@ class PronunciationAudioUploadService {
       }
       return Either.left(
         PronunciationUploadFailure(
-          e.message ?? 'Gagal mengunggah audio, periksa koneksi',
+          e.message ?? l10n.dictAudioUploadFailedRetry,
         ),
       );
     } catch (e) {

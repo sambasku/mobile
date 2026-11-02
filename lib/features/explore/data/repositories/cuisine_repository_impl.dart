@@ -1,43 +1,53 @@
-import '../../../../core/cache/cache_entry.dart';
-import '../../../../core/cache/cache_key.dart';
-import '../../../../core/cache/cached_json_client.dart';
 import '../../domain/entities/cuisine.dart';
 import '../datasources/cuisine_remote_datasource.dart';
 import '../models/cuisine_dto.dart';
 
-/// Impl repository cuisine.
-///
-/// Alur sama dengan PlacesRepositoryImpl: cache L1 (referenceStatic,
-/// fresh 24 jam + SWR) → miss/stale → fetch jsDelivr → DTO → entity.
-/// Error apa pun → null (soft-fail), jangan pernah crash UI.
+/// Repository katalog kuliner (API publik). Tanpa cache lokal: data
+/// kuliner dikoreksi cepat lewat moderasi, cache akan sajikan info usang.
 class CuisineRepositoryImpl {
-  CuisineRepositoryImpl(this._datasource, this._cache);
+  CuisineRepositoryImpl(this._datasource);
 
   final CuisineRemoteDatasource _datasource;
-  final CachedJsonClient _cache;
 
-  static const _cacheKey = '/cdn/cuisines.json';
+  Future<CuisinePage> listPage({
+    int limit = cuisinesPageSize,
+    String? before,
+    String? categoryId,
+    String? q,
+  }) => _datasource.fetchPage(
+    limit: limit,
+    before: before,
+    categoryId: categoryId,
+    q: q,
+  );
 
-  Future<List<Cuisine>?> getCuisines({bool forceRefresh = false}) async {
-    try {
-      final envelope = await _cache.getOrFetch(
-        key: buildCacheKey(method: 'GET', path: _cacheKey),
-        cacheClass: CacheClass.referenceStatic,
-        forceRefresh: forceRefresh,
-        fetch: _fetchEnvelope,
-      );
-      return CuisineDto.fromJson(envelope).toEntity();
-    } catch (_) {
-      return null;
+  Future<CuisineDtoItem?> getBySlug(String slug) => _datasource.fetchBySlug(slug);
+
+  Future<CulinaryPlacePage> places({
+    int limit = cuisinesPageSize,
+    String? before,
+    String? q,
+    String? type,
+    String? operationalStatus,
+  }) => _datasource.fetchPlaces(
+    limit: limit,
+    before: before,
+    q: q,
+    type: type,
+    operationalStatus: operationalStatus,
+  );
+
+  /// Seluruh kuliner (maks [cuisinesMaxPages] halaman) - dipakai halaman
+  /// list yang masih filter client-side.
+  Future<List<Cuisine>> getAll({String? q}) async {
+    final items = <Cuisine>[];
+    String? cursor;
+    for (var page = 0; page < cuisinesMaxPages; page++) {
+      final result = await listPage(before: cursor, q: q);
+      items.addAll(result.items.map((e) => e.toEntity()));
+      cursor = result.nextCursor;
+      if (cursor == null) break;
     }
-  }
-
-  Future<Map<String, dynamic>> _fetchEnvelope() async {
-    final resp = await _datasource.fetchRaw();
-    final body = resp.data;
-    if (body is! Map) {
-      throw StateError('Body cuisines.json bukan object');
-    }
-    return Map<String, dynamic>.from(body);
+    return items;
   }
 }

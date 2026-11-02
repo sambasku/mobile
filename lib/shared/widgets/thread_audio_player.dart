@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
@@ -128,7 +128,7 @@ class _ThreadAudioPlayerState extends State<ThreadAudioPlayer> {
                 const Gap(8),
                 Text(
                   _durationLabel,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),

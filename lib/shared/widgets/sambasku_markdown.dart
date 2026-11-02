@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../core/models/external_link.dart';
 
 import '../../core/widgets/image_preview.dart';
 import 'cached_network_image_with_fallback.dart';
@@ -16,7 +16,11 @@ import 'cached_network_image_with_fallback.dart';
 /// - link: hanya https -> browser eksternal (skema lain diabaikan)
 /// - tabel: lebar kolom mengikuti isi, scroll horizontal bila melebihi layar
 class SambaskuMarkdown extends StatelessWidget {
-  const SambaskuMarkdown({super.key, required this.data, this.selectable = true});
+  const SambaskuMarkdown({
+    super.key,
+    required this.data,
+    this.selectable = true,
+  });
 
   final String data;
 
@@ -31,7 +35,7 @@ class SambaskuMarkdown extends StatelessWidget {
     return MarkdownBody(
       data: data,
       selectable: selectable,
-      sizedImageBuilder: buildSambaskuMarkdownImage,
+      imageBuilder: buildSambaskuMarkdownImage,
       onTapLink: (text, href, title) => openSambaskuMarkdownHref(href),
       styleSheet: sambaskuMarkdownStyleSheet(context),
     );
@@ -44,14 +48,15 @@ class SambaskuMarkdown extends StatelessWidget {
 /// `sm` (16) sama dengan layar lain; heading turun dari xl2/xl/lg
 /// (30/22/20) ke xl/md/sm (22/18/16) supaya tidak mendominasi layar kecil.
 /// Korpus artikel memakai h1-h5, tabel, daftar, gambar, link, dan hr.
-@visibleForTesting
 MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
   final theme = context.theme;
-  final typo = theme.typography;
+  final typo = theme.typography.body;
   final colors = theme.colors;
   const bold = FontWeight.w700;
-
-  return MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+  // ponytail: `MarkdownStyleSheet.fromTheme` butuh ThemeData flutter/material,
+  // sedangkan app sudah pakai material_ui (forui 0.27). Semua field yang
+  // dipakai diisi eksplisit dari token forui; sisanya default null.
+  return MarkdownStyleSheet(
     p: typo.sm.copyWith(height: 1.5),
     h1: typo.xl.copyWith(fontWeight: bold, height: 1.3),
     h2: typo.md.copyWith(fontWeight: bold, height: 1.3),
@@ -98,13 +103,13 @@ MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
 }
 
 /// Gambar di body markdown: lebar penuh, tinggi ikut rasio asli (expand:
-/// false) kecuali md menyebut ukuran eksplisit; tap -> preview fullscreen
-/// dengan pinch-zoom.
-Widget buildSambaskuMarkdownImage(MarkdownImageConfig config) {
-  final src = config.uri.toString();
+/// false); tap -> preview fullscreen dengan pinch-zoom.
+// ponytail: flutter_markdown_plus membuang fragmen `#WxH` sebelum memanggil
+// imageBuilder, jadi ukuran eksplisit di md diabaikan. Tambah lagi bila ada
+// konten yang butuh (parse sendiri dari `data`).
+Widget buildSambaskuMarkdownImage(Uri uri, String? title, String? alt) {
+  final src = uri.toString();
   if (src.isEmpty) return const SizedBox.shrink();
-  final alt = config.alt;
-  final sized = config.width != null || config.height != null;
   return Builder(
     builder: (context) => GestureDetector(
       onTap: () => showImagePreview(context, urls: [src]),
@@ -113,22 +118,12 @@ Widget buildSambaskuMarkdownImage(MarkdownImageConfig config) {
         child: Semantics(
           button: true,
           label: alt != null && alt.isNotEmpty ? alt : 'Lihat gambar',
-          child: sized
-              ? SizedBox(
-                  width: config.width,
-                  height: config.height,
-                  child: CachedNetworkImageWithFallback(
-                    imageUrl: src,
-                    fallbackUrl: src,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              : CachedNetworkImageWithFallback(
-                  imageUrl: src,
-                  fallbackUrl: src,
-                  fit: BoxFit.contain,
-                  expand: false,
-                ),
+          child: CachedNetworkImageWithFallback(
+            imageUrl: src,
+            fallbackUrl: src,
+            fit: BoxFit.contain,
+            expand: false,
+          ),
         ),
       ),
     ),
@@ -141,7 +136,5 @@ void openSambaskuMarkdownHref(String? href) {
   if (href == null || href.isEmpty) return;
   final uri = Uri.tryParse(href);
   if (uri == null || !uri.isScheme('https')) return;
-  unawaited(
-    launchUrl(uri, mode: LaunchMode.externalApplication).catchError((_) => false),
-  );
+  unawaited(launchExternalUrl(uri));
 }

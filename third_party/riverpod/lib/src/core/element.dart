@@ -31,7 +31,7 @@ base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
 void Function()? debugCanModifyProviders;
 
 /// A Future-like that support synchronous completion.
-@internal
+@publicInMisc
 @publicInCodegen
 typedef WhenComplete = void Function(void Function() cb)?;
 
@@ -615,12 +615,11 @@ depending on itself.
   /// to dependencies that are no-longer used.
   void _performRebuild() {
     runOnDispose();
-    final ref =
-        this.ref = $Ref(
-          this,
-          isFirstBuild: false,
-          isReload: _didChangeDependency,
-        );
+    final ref = this.ref = $Ref(
+      this,
+      isFirstBuild: false,
+      isReload: _didChangeDependency,
+    );
     final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -686,10 +685,11 @@ depending on itself.
 
   var _isFlushing = false;
 
-  /// A utility for re-initializing a provider when needed.
+  /// Recomputes the state of the provider if necessary.
   ///
-  /// Calling [flush] will only re-initialize the provider if it needs to rerun.
-  /// This can involve:
+  /// This is called when:
+  /// - a provider is read
+  /// - a provider is listened
   /// - a previous call to [Ref.invalidateSelf]
   /// - a dependency of the provider has changed (such as when using [Ref.watch]).
   ///
@@ -827,13 +827,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     runOnDispose();
     mayNeedDispose();
 
-    // Jangan jadwalkan refresh saat flush atau saat provider masih pause.
-    // Resume TickerMode di tengah build overlay memanggil flush, yang
-    // meng-invalidate saudara di graph. scheduleProviderRefresh di situ
-    // setState pada ProviderScope (markNeedsBuild during build).
-    // Rebuild yang perlu sudah terjadi di flush yang sedang berjalan,
-    // atau saat resume berikutnya.
-    if (!_isFlushing && isActive) {
+    if (
+    // It is redundant to request for a refresh during flushing as the rebuild
+    // will happen immediately
+    !_isFlushing
+        // Don't schedule refresh for paused providers. Those are paused afterall!
+        &&
+        isActive) {
       container.scheduler.scheduleProviderRefresh(this);
     }
 
@@ -1018,17 +1018,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(ProviderSubscriptionImpl<Object?> sub) {
-    assert(
-      !sub.isPaused && sub.impl.active,
-      'Expected subscription to be active and not paused',
-    );
-
     _onChangeSubscription(sub, () {
+      sub._attachedToElement = true;
+
       if (sub.weak) {
         weakDependents.add(sub);
       } else {
         final dependents = this.dependents ??= [];
         dependents.add(sub);
+
+        if (sub.isPaused || !sub.impl.active) pausedActiveSubscriptionCount++;
       }
 
       if (sub.source case ProviderNode(:final element)) {
@@ -1036,6 +1035,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         subs.add(sub);
       }
     });
+
+    // The provider was initialized with a paused subscription. As such, we
+    // need to immediately call onCancel to respect life-cycles.
+    if (!sub.weak &&
+        !_didCancelOnce &&
+        !isActive &&
+        (sub.isPaused || !sub.impl.active)) {
+      _didCancelOnce = true;
+      _runCallbacks(container, ref?._onCancelListeners);
+      onCancel();
+    }
   }
 
   void removeDependentSubscription(
@@ -1191,6 +1201,13 @@ $this''',
       // No state change, so do nothing
     }
 
+    if (listenerCount < previousListenerCount) {
+      _runCallbacks(container, ref?._onRemoveListeners);
+      mayNeedDispose();
+    } else if (listenerCount > previousListenerCount) {
+      _runCallbacks(container, ref?._onAddListeners);
+    }
+
     // Fork: invalidasi yang tiba saat pause/inaktif tidak menjadwalkan
     // refresh (lihat invalidateSelf). Saat elemen kembali aktif - resume,
     // reactivate, atau listener baru - dan state masih pending,
@@ -1199,13 +1216,6 @@ $this''',
     // task scheduler juga cek ulang isActive saat dijalankan.
     if (!wasActive && isActive && _mustRecomputeState && !_isFlushing) {
       container.scheduler.scheduleProviderRefresh(this);
-    }
-
-    if (listenerCount < previousListenerCount) {
-      _runCallbacks(container, ref?._onRemoveListeners);
-      mayNeedDispose();
-    } else if (listenerCount > previousListenerCount) {
-      _runCallbacks(container, ref?._onAddListeners);
     }
   }
 

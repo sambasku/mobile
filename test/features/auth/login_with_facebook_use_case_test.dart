@@ -27,6 +27,7 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     loginWithFacebookCalls++;
     receivedToken = accessToken;
@@ -36,6 +37,7 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => throw UnimplementedError();
 
   @override
@@ -43,9 +45,8 @@ class _FakeRepo implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
-
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> login({
@@ -127,19 +128,21 @@ void main() {
     expect(failure?.message, contains('Email sudah terdaftar'));
   });
 
-  test('batal SDK → AuthFailure FACEBOOK_SIGN_IN_CANCELED, tidak panggil API',
-      () async {
-    final repo = _FakeRepo(Either.right(session));
-    final usecase = LoginWithFacebookUseCase(repo, _FakeSignIn(null));
+  test(
+    'batal SDK → AuthFailure FACEBOOK_SIGN_IN_CANCELED, tidak panggil API',
+    () async {
+      final repo = _FakeRepo(Either.right(session));
+      final usecase = LoginWithFacebookUseCase(repo, _FakeSignIn(null));
 
-    final result = await usecase();
-    final failure = result.getLeft().toNullable();
+      final result = await usecase();
+      final failure = result.getLeft().toNullable();
 
-    expect(repo.loginWithFacebookCalls, 0);
-    expect(failure?.errorCode, AuthFailure.facebookSignInCanceled);
-    expect(failure?.message, 'Masuk dibatalkan.');
-    expect(failure?.isSocialSignInCanceled, isTrue);
-  });
+      expect(repo.loginWithFacebookCalls, 0);
+      expect(failure?.errorCode, AuthFailure.facebookSignInCanceled);
+      expect(failure?.message, 'Masuk dibatalkan.');
+      expect(failure?.isSocialSignInCanceled, isTrue);
+    },
+  );
 
   test('accessToken kosong → AuthFailure generik, tidak panggil API', () async {
     final repo = _FakeRepo(Either.right(session));

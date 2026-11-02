@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -11,15 +11,43 @@ import 'package:sambasku_mobile/features/dictionary/domain/entities/word_summary
 import 'package:sambasku_mobile/features/dictionary/domain/failures/dictionary_failure.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_list_page.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
-WordSummary _word(String lemma) => WordSummary(
+WordSummary _word(String lemma, {String? sense, String? matchType}) =>
+    WordSummary(
       id: lemma.padRight(26, '0'),
       lemma: lemma,
       languageCode: 'SBS',
       wordType: 'word',
       status: 'published',
       isVerified: true,
+      sense: sense,
+      matchType: matchType,
     );
+
+/// PRD relasi-lemma: hasil perluasan kelompok makna dibedakan di subtitle.
+class _RelatedGroupStub extends _StubDictionaryRepository {
+  @override
+  Future<Either<DictionaryFailure, WordSearchPage>> listWords({
+    required String q,
+    required int limit,
+    String? category,
+    String? cursor,
+    String? letter,
+    bool? isVerified,
+  }) async => Either.right(
+    WordSearchPage(
+      items: [
+        _word('apam', sense: 'sejenis kue'),
+        _word('misai', sense: 'bulu di atas bibir', matchType: 'related_group'),
+        _word('kumis', matchType: 'related_group'),
+      ],
+      nextCursor: null,
+      hasMore: false,
+    ),
+  );
+}
 
 class _StubDictionaryRepository implements DictionaryRepository {
   @override
@@ -30,36 +58,34 @@ class _StubDictionaryRepository implements DictionaryRepository {
     String? cursor,
     String? letter,
     bool? isVerified,
-  }) async =>
-      Either.right(WordSearchPage(
-        items: [_word('apam'), _word('budu'), _word("'caci")],
-        nextCursor: null,
-        hasMore: false,
-      ));
+  }) async => Either.right(
+    WordSearchPage(
+      items: [_word('apam'), _word('budu'), _word("'caci")],
+      nextCursor: null,
+      hasMore: false,
+    ),
+  );
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
     String lemma, {
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({
@@ -67,16 +93,14 @@ class _StubDictionaryRepository implements DictionaryRepository {
     required int limit,
     String? cursor,
     String searchIn = 'lemma',
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({
     required int limit,
     String? cursor,
     bool forceRefresh = false,
-  }) async =>
-      throw UnimplementedError();
+  }) async => throw UnimplementedError();
 }
 
 void main() {
@@ -92,9 +116,8 @@ void main() {
         ),
         GoRoute(
           path: '/words/:id',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('DETAIL_SENTINEL')),
-          ),
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('DETAIL_SENTINEL'))),
         ),
       ],
     );
@@ -107,12 +130,17 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
-              FTheme(data: FThemes.zinc.light.touch, child: child!),
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );
@@ -135,5 +163,61 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('DETAIL_SENTINEL'), findsOneWidget);
     expect(find.text('apam'), findsNothing);
+  });
+
+  // PRD relasi-lemma: hasil perluasan grup diberi penanda, hasil langsung tidak.
+  testWidgets('subtitle "Makna terkait" hanya untuk hasil related_group', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      initialLocation: '/words',
+      routes: [
+        GoRoute(
+          path: '/words',
+          builder: (context, state) => const WordListPage(),
+        ),
+        GoRoute(
+          path: '/words/:id',
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('DETAIL_SENTINEL'))),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dictionaryRepositoryProvider.overrideWithValue(_RelatedGroupStub()),
+        ],
+        child: MaterialApp.router(
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
+          routerConfig: router,
+          builder: (context, child) =>
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
+        ),
+      ),
+    );
+
+    await tester.runAsync(() async {
+      for (var i = 0; i < 5; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+    });
+    await tester.pumpAndSettle();
+
+    // Hasil langsung: subtitle tetap gloss apa adanya.
+    expect(find.text('sejenis kue'), findsOneWidget);
+    expect(find.text('Makna terkait · sejenis kue'), findsNothing);
+
+    // Hasil perluasan grup: penanda + gloss, atau penanda saja.
+    expect(find.text('Makna terkait · bulu di atas bibir'), findsOneWidget);
+    expect(find.text('Makna terkait'), findsOneWidget);
   });
 }

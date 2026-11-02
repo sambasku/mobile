@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 /// Mode basemap peta. Nilai = style OpenFreeMap terkait.
@@ -12,11 +12,6 @@ enum MapBasemap {
   final String styleKey;
   final String attribution;
 
-  String get label => switch (this) {
-    MapBasemap.street => 'Jalan',
-    MapBasemap.satellite => 'Satelit',
-    MapBasemap.terrain => 'Terain',
-  };
 }
 
 /// Kamera & style default untuk peta fokus Kabupaten Sambas.

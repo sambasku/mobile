@@ -6,6 +6,7 @@ import '../../domain/failures/search_miss_failure.dart';
 import '../../domain/repositories/search_miss_repository.dart';
 import '../datasources/search_miss_remote_datasource.dart';
 import '../models/search_miss_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class SearchMissRepositoryImpl implements SearchMissRepository {
   SearchMissRepositoryImpl(this._remoteDatasource);
@@ -24,7 +25,7 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       if (response.success == false) {
         return Either.left(
           SearchMissFailure(
-            response.message ?? 'Gagal memuat daftar pencarian populer',
+            response.message ?? l10n.searchMissPopularLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -34,7 +35,7 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       if (data == null) {
         return Either.left(
           SearchMissFailure(
-            response.message ?? 'Gagal memuat daftar pencarian populer',
+            response.message ?? l10n.searchMissPopularLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -44,7 +45,10 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       return Either.right(data.map(_toEntity).toList());
     } on DioException catch (error) {
       return Either.left(
-        _mapDio(error, fallback: 'Gagal memuat, coba cek koneksi internet'),
+        _mapDio(
+          error,
+          fallback: 'Gagal memuat. Coba lagi dalam beberapa saat.',
+        ),
       );
     } catch (error) {
       return Either.left(SearchMissFailure(error.toString()));
@@ -72,9 +76,13 @@ class SearchMissRepositoryImpl implements SearchMissRepository {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return const SearchMissFailure('Koneksi lambat, coba lagi');
+        return const SearchMissFailure(
+          'Server lama merespons. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.connectionError:
-        return const SearchMissFailure('Tidak ada koneksi internet');
+        return const SearchMissFailure(
+          'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
+        );
       case DioExceptionType.badCertificate:
       case DioExceptionType.badResponse:
       case DioExceptionType.cancel:

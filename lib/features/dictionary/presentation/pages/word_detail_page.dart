@@ -1,17 +1,20 @@
 import 'dart:async';
+import '../dictionary_labels.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/ulid.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_providers.dart';
+import '../../../review/presentation/utils/open_pending_word_review.dart';
 import '../../../review/presentation/providers/review_submit_queue.dart';
 import '../../../review/presentation/widgets/reject_reason_sheet.dart';
 import '../../../bookmark/presentation/providers/bookmark_providers.dart';
@@ -24,11 +27,11 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
-import '../../../vote/domain/entities/vote_target.dart';
-import '../../../vote/domain/failures/vote_failure.dart';
-import '../../../vote/presentation/providers/vote_providers.dart';
+import '../../../vote/presentation/providers/meaning_vote_providers.dart';
+import '../../../vote/presentation/widgets/meaning_vote_row.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/failures/dictionary_failure.dart';
@@ -37,14 +40,14 @@ import '../providers/word_detail_providers.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../share/data/share_background_repository.dart';
+import '../../../share/domain/word_public_url.dart';
 import '../../../share/presentation/share_sheet.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../application/word_clipboard.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
-import '../../../suggest_edit/domain/suggest_edit_feedback.dart';
-
+import '../../../../l10n/app_localizations.dart';
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
   const WordDetailPage({super.key, required this.wordId});
@@ -85,7 +88,10 @@ class WordDetailPage extends HookConsumerWidget {
         childPad: false,
         header: FHeader.nested(
           title: Text(
-            async.maybeWhen(data: (d) => d.lemma, orElse: () => 'Detail kata'),
+            async.maybeWhen(
+              data: (d) => d.lemma,
+              orElse: () => AppLocalizations.of(context).dictDetailTitle,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -93,7 +99,7 @@ class WordDetailPage extends HookConsumerWidget {
           suffixes: [
             FHeaderAction(
               icon: const Icon(FLucideIcons.history),
-              semanticsLabel: 'Riwayat perubahan',
+              semanticsLabel: AppLocalizations.of(context).dictChangeHistory,
               onPress: () => context.push('/words/$resolvedId/history'),
             ),
             _WordBookmarkHeaderAction(wordId: resolvedId),
@@ -122,9 +128,9 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(10),
                     Text(
                       isNotFound
-                          ? 'Kata tidak ditemukan'
-                          : 'Gagal memuat detail',
-                      style: theme.typography.md.copyWith(
+                          ? AppLocalizations.of(context).dictWordNotFound
+                          : AppLocalizations.of(context).commonLoadFailed,
+                      style: theme.typography.body.md.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
@@ -132,7 +138,7 @@ class WordDetailPage extends HookConsumerWidget {
                     const Gap(6),
                     Text(
                       failure.message,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                       textAlign: TextAlign.center,
@@ -141,7 +147,7 @@ class WordDetailPage extends HookConsumerWidget {
                     FButton(
                       variant: FButtonVariant.outline,
                       onPress: () => ref.invalidate(wordDetailProvider(wordId)),
-                      child: const Text('Coba lagi'),
+                      child: Text(AppLocalizations.of(context).commonRetry),
                     ),
                   ],
                 ),
@@ -170,6 +176,32 @@ void openWordShareSheet(
   );
 }
 
+/// Share teks + URL kanonik `/id/words/<lemma>` ke sheet sistem.
+Future<void> shareWordPublicLink(
+  BuildContext context,
+  WordDetail detail,
+) async {
+  final text = wordShareLinkMessage(detail.lemma);
+  if (text.trim().isEmpty) return;
+  AnalyticsService.instance.log(
+    AnalyticsEvents.shareStart,
+    params: {'word_id': detail.id, 'surface': 'link'},
+  );
+  final box = context.findRenderObject() as RenderBox?;
+  await SharePlus.instance.share(
+    ShareParams(
+      text: text,
+      sharePositionOrigin: box == null
+          ? null
+          : box.localToGlobal(Offset.zero) & box.size,
+    ),
+  );
+  AnalyticsService.instance.log(
+    AnalyticsEvents.shareComplete,
+    params: {'word_id': detail.id, 'surface': 'link'},
+  );
+}
+
 /// Pull-to-refresh: hard miss L1 detail dulu, lalu invalidate family
 /// (+ vote/bookmark/komentar) dan tunggu fetch supaya indikator selesai.
 Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
@@ -179,75 +211,45 @@ Future<void> _refreshWordDetail(WidgetRef ref, String wordId) async {
   } else {
     await ref.read(getWordByLemmaUseCaseProvider)(key, forceRefresh: true);
   }
-  final voteTarget = VoteTarget(type: 'word', id: wordId);
   ref.invalidate(wordDetailProvider(wordId));
-  ref.invalidate(voteControllerProvider(voteTarget));
   ref.invalidate(bookmarkToggleControllerProvider(wordId));
   ref.invalidate(commentListControllerProvider(wordId));
-  await Future.wait([
-    ref.read(wordDetailProvider(wordId).future),
-    ref.read(commentListControllerProvider(wordId).future),
-  ]);
+  final detailFuture = ref.read(wordDetailProvider(wordId).future);
+  final commentsFuture = ref.read(commentListControllerProvider(wordId).future);
+  final detail = await detailFuture;
+  await commentsFuture;
+  // Vote menempel di MAKNA (0101), bukan kata: muat ulang counts makna
+  // setelah detail segar diketahui. Tanpa ini tarik-refresh tidak
+  // memperbarui angka vote yang tampil.
+  final meaningIds = detail.meanings.map((m) => m.id).toList(growable: false);
+  if (meaningIds.isNotEmpty) {
+    await ref.read(meaningVotesControllerProvider.notifier).load(meaningIds);
+  }
 }
 
 Future<void> _openWordReview(
   BuildContext context,
   WidgetRef ref,
   String wordId,
-) async {
-  final result = await ref
-      .read(reviewRepositoryProvider)
-      .list(status: 'pending', wordId: wordId, limit: 20);
-  if (!context.mounted) return;
-  result.match(
-    (failure) {
-      final message = failure.isForbidden
-          ? 'Kamu tidak berwenang meninjau usulan.'
-          : failure.message;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    },
-    (page) {
-      if (page.items.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tidak ada usulan yang menunggu untuk kata ini.'),
-          ),
-        );
-        return;
-      }
-      if (page.items.length == 1) {
-        context.push('/review/${page.items.first.id}');
-        return;
-      }
-      context.push('/review/queue?wordId=$wordId');
-    },
-  );
-}
+) => openPendingWordReview(context, ref, wordId);
 
 Future<void> _approveInPlace(
   BuildContext context,
   WidgetRef ref,
   String wordId,
 ) async {
-  final connection = await ref.read(reviewRepositoryProvider).list(
-        status: 'pending',
-        wordId: wordId,
-        limit: 20,
-      );
+  final connection = await ref
+      .read(reviewRepositoryProvider)
+      .list(status: 'pending', wordId: wordId, limit: 20);
   if (!context.mounted) return;
-  final pendingId = connection.match(
-    (failure) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-      return null;
-    },
-    (page) => page.items.firstOrNull?.id,
-  );
+  final pendingId = connection.match((failure) {
+    showFToast(
+      context: context,
+      title: Text(failure.message),
+      variant: FToastVariant.destructive,
+    );
+    return null;
+  }, (page) => page.items.firstOrNull?.id);
   if (pendingId == null) return;
   final queue = ref.read(reviewSubmitQueueProvider.notifier);
   queue.enqueueApprove(pendingId);
@@ -255,7 +257,7 @@ Future<void> _approveInPlace(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Usulan disetujui'),
+    title: Text(AppLocalizations.of(context).reviewSuggestionApprovedToast),
     variant: FToastVariant.primary,
   );
   await _refreshDetailAfterDecision(ref, wordId);
@@ -268,23 +270,18 @@ Future<void> _rejectInPlace(
 ) async {
   final comment = await showRejectReasonSheet(context);
   if (comment == null || !context.mounted) return;
-  final connection = await ref.read(reviewRepositoryProvider).list(
-        status: 'pending',
-        wordId: wordId,
-        limit: 20,
-      );
+  final connection = await ref
+      .read(reviewRepositoryProvider)
+      .list(status: 'pending', wordId: wordId, limit: 20);
   if (!context.mounted) return;
-  final pendingId = connection.match(
-    (failure) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-      return null;
-    },
-    (page) => page.items.firstOrNull?.id,
-  );
+  final pendingId = connection.match((failure) {
+    showFToast(
+      context: context,
+      title: Text(failure.message),
+      variant: FToastVariant.destructive,
+    );
+    return null;
+  }, (page) => page.items.firstOrNull?.id);
   if (pendingId == null) return;
   final queue = ref.read(reviewSubmitQueueProvider.notifier);
   queue.enqueueReject(pendingId, comment: comment);
@@ -292,7 +289,7 @@ Future<void> _rejectInPlace(
   if (!context.mounted) return;
   showFToast(
     context: context,
-    title: const Text('Usulan ditolak'),
+    title: Text(AppLocalizations.of(context).reviewSuggestionRejectedToast),
     variant: FToastVariant.primary,
   );
   await _refreshDetailAfterDecision(ref, wordId);
@@ -301,10 +298,7 @@ Future<void> _rejectInPlace(
 /// Bypass L1 cache (forceRefresh) lalu invalidate family + await — persis
 /// pola `_refreshWordDetail` tapi tanpa invalidasi provider lain (vote/
 /// bookmark/komentar) yang bukan bagian dari keputusan review.
-Future<void> _refreshDetailAfterDecision(
-  WidgetRef ref,
-  String wordId,
-) async {
+Future<void> _refreshDetailAfterDecision(WidgetRef ref, String wordId) async {
   final key = wordId.trim();
   if (looksLikeUlid(key)) {
     await ref.read(getWordByIdUseCaseProvider)(key, forceRefresh: true);
@@ -334,7 +328,7 @@ class _PendingStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'Menunggu pengecekan',
+      label: AppLocalizations.of(context).dictPendingCheck,
       child: GestureDetector(
         onTap: () {
           if (offerReview) {
@@ -378,8 +372,8 @@ void showPendingReviewSheet(
                   children: [
                     Expanded(
                       child: Text(
-                        'Menunggu pengecekan',
-                        style: theme.typography.lg.copyWith(
+                        AppLocalizations.of(sheetContext).dictPendingCheck,
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -391,8 +385,8 @@ void showPendingReviewSheet(
                   ],
                 ),
                 Text(
-                  'Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas.',
-                  style: theme.typography.sm,
+                  AppLocalizations.of(sheetContext).dictUnverifiedWarning,
+                  style: theme.typography.body.sm,
                 ),
                 const Gap(12),
                 if (onApprove != null && onReject != null) ...[
@@ -405,7 +399,9 @@ void showPendingReviewSheet(
                             Navigator.of(sheetContext).pop();
                             onReject();
                           },
-                          child: const Text('Tolak'),
+                          child: Text(
+                            AppLocalizations.of(sheetContext).commonReject,
+                          ),
                         ),
                       ),
                       const Gap(8),
@@ -415,7 +411,9 @@ void showPendingReviewSheet(
                             Navigator.of(sheetContext).pop();
                             onApprove();
                           },
-                          child: const Text('Setujui'),
+                          child: Text(
+                            AppLocalizations.of(sheetContext).commonApprove,
+                          ),
                         ),
                       ),
                     ],
@@ -427,7 +425,7 @@ void showPendingReviewSheet(
                     Navigator.of(sheetContext).pop();
                     onReview();
                   },
-                  child: const Text('Tinjau'),
+                  child: Text(AppLocalizations.of(sheetContext).dictReview),
                 ),
                 const Gap(8),
               ],
@@ -449,10 +447,25 @@ class _DetailBody extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
     final violenceRevealed = useState(false);
+    // Vote makna: state batch (counts + my-votes) untuk semua makna kata ini.
+    final meaningVotes = ref.watch(meaningVotesControllerProvider);
     useEffect(() {
       violenceRevealed.value = false;
       return null;
     }, [wordId]);
+
+    // Vote per makna: 1 batch (counts + my-votes) untuk semua makna kata
+    // ini. Gagal load tidak boleh blok halaman - tombol vote tetap tampil
+    // dengan angka 0 dan toggle tetap jalan (server yang-source state).
+    useEffect(() {
+      final ids = detail.meanings.map((m) => m.id).toList(growable: false);
+      if (ids.isEmpty) return null;
+      ref
+          .read(meaningVotesControllerProvider.notifier)
+          .load(ids)
+          .catchError((_) {});
+      return null;
+    }, [detail.id]);
 
     // Foto utama dulu, sisanya urutan API.
     final orderedImages = [
@@ -482,7 +495,7 @@ class _DetailBody extends HookConsumerWidget {
       if (source.isPendingReview || isKnownPendingPlaceholderUrl(source.url)) {
         showFToast(
           context: context,
-          title: const Text('Gambar sedang dalam peninjauan.'),
+          title: Text(AppLocalizations.of(context).dictImageUnderReview),
         );
         return;
       }
@@ -515,7 +528,7 @@ class _DetailBody extends HookConsumerWidget {
       if (!auth.isAuth) {
         showFToast(
           context: context,
-          title: const Text('Masuk dulu untuk melaporkan foto'),
+          title: Text(AppLocalizations.of(context).dictLoginToReportPhoto),
         );
         context.push('/login');
         return;
@@ -528,9 +541,7 @@ class _DetailBody extends HookConsumerWidget {
       if (!context.mounted || !sent) return;
       showFToast(
         context: context,
-        title: const Text(
-          'Laporan terkirim. Foto tetap tayang sampai ditinjau.',
-        ),
+        title: Text(AppLocalizations.of(context).dictPhotoReportSent),
       );
     }
 
@@ -566,7 +577,7 @@ class _DetailBody extends HookConsumerWidget {
                           Expanded(
                             child: Text(
                               detail.lemma,
-                              style: theme.typography.xl.copyWith(
+                              style: theme.typography.body.xl.copyWith(
                                 fontWeight: FontWeight.w700,
                                 height: 1.15,
                               ),
@@ -575,13 +586,15 @@ class _DetailBody extends HookConsumerWidget {
                           if (detail.isVerified)
                             Semantics(
                               button: true,
-                              label: 'Lihat verifikator',
+                              label: AppLocalizations.of(
+                                context,
+                              ).dictSeeVerifiers,
                               child: GestureDetector(
                                 onTap: () => showVerifierAttributionSheet(
                                   context,
                                   detail,
                                 ),
-                                child: const VerifiedBadgeIcon(),
+                                child: const WordApprovedBadgeIcon(),
                               ),
                             )
                           else
@@ -593,52 +606,45 @@ class _DetailBody extends HookConsumerWidget {
                                   ),
                               onReview: () =>
                                   _openWordReview(context, ref, wordId),
-                              onApprove: () => _approveInPlace(
-                                context,
-                                ref,
-                                wordId,
-                              ),
-                              onReject: () => _rejectInPlace(
-                                context,
-                                ref,
-                                wordId,
-                              ),
+                              onApprove: () =>
+                                  _approveInPlace(context, ref, wordId),
+                              onReject: () =>
+                                  _rejectInPlace(context, ref, wordId),
                             ),
                         ],
                       ),
                       const Gap(2),
                       Text(
-                        detail.wordTypeLabel,
-                        style: theme.typography.sm.copyWith(
+                        [
+                          wordDetailTypeLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          ),
+                          if (detail.pronunciations.isNotEmpty)
+                            detail.pronunciations
+                                .map((p) => '${p.notation} ${p.value}')
+                                .join(' · '),
+                        ].join(' · '),
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
-                      if (detail.pronunciations.isNotEmpty) ...[
-                        const Gap(4),
-                        Text(
-                          detail.pronunciations
-                              .map((p) => '${p.notation} ${p.value}')
-                              .join(' · '),
-                          style: theme.typography.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
 
-                      const Gap(10),
+                      // Compact: tanpa label section + lemma ulang.
+                      const Gap(6),
                       PronunciationSection(
                         wordId: wordId,
                         languageId: detail.languageId,
                         audios: detail.audios,
                         spokenText: detail.lemma,
+                        compact: true,
                       ),
 
                       if (detail.notes != null && detail.notes!.isNotEmpty) ...[
                         const Gap(8),
                         Text(
                           detail.notes!,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                         ),
@@ -656,7 +662,12 @@ class _DetailBody extends HookConsumerWidget {
                                 variant: isProminentUsageLabel(code)
                                     ? FBadgeVariant.primary
                                     : FBadgeVariant.secondary,
-                                child: Text(usageLabelLabel(code)),
+                                child: Text(
+                                  usageLabelLabel(
+                                    code,
+                                    AppLocalizations.of(context),
+                                  ),
+                                ),
                               ),
                             for (final c in detail.categories)
                               FBadge(
@@ -667,20 +678,24 @@ class _DetailBody extends HookConsumerWidget {
                         ),
                       ],
 
-                      const Gap(10),
-                      _WordVoteBar(wordId: wordId),
-
                       if (detail.meanings.isNotEmpty) ...[
-                        const Gap(16),
-                        const _SectionLabel('Makna'),
-                        const Gap(6),
+                        const Gap(12),
                         ...detail.meanings.asMap().entries.map(
                           (e) => _MeaningBlock(
                             index: e.key + 1,
+                            showIndex: detail.meanings.length > 1,
                             lemma: detail.lemma,
                             meaning: e.value,
                             wordId: wordId,
                             languageId: detail.languageId,
+                            isTopSupported:
+                                meaningVotes.topMeaningId(
+                                  detail.meanings.map((m) => m.id),
+                                ) ==
+                                e.value.id,
+                            contributor: detail.meanings.length > 1
+                                ? (e.value.createdBy ?? detail.createdBy)
+                                : null,
                           ),
                         ),
                       ],
@@ -689,8 +704,10 @@ class _DetailBody extends HookConsumerWidget {
                         const Gap(14),
                         _SectionLabel(
                           allSpelling
-                              ? 'Variasi penulisan'
-                              : 'Variasi & bentuk turunan',
+                              ? AppLocalizations.of(context).dictVariantsTitle
+                              : AppLocalizations.of(
+                                  context,
+                                ).dictVariantsAndDerived,
                         ),
                         const Gap(6),
                         if (compactSpelling)
@@ -711,47 +728,93 @@ class _DetailBody extends HookConsumerWidget {
                           ),
                       ],
 
-                      ..._relatedSections(detail.relatedWords),
+                      ..._relatedSections(
+                        detail.relatedWords,
+                        AppLocalizations.of(context),
+                      ),
 
-                      if (detail.appearsIn.isNotEmpty) ...[
-                        const Gap(14),
-                        const _SectionLabel('Muncul dalam'),
-                        const Gap(4),
-                        ...detail.appearsIn.map((r) => _RelatedRow(related: r)),
-                      ],
+                      // PRD relasi-lemma 8.3: kelompok makna. Label per grup
+                      // kalau >1 grup; grup kosong sudah difilter mapper.
+                      ..._meaningGroupSections(
+                        detail.meaningGroups,
+                        AppLocalizations.of(context),
+                      ),
 
-                      if (detail.combinedAttributionLabel != null ||
-                          detail.creatorAttributionLabel != null ||
-                          detail.verifierAttributionLabel != null) ...[
+                      // Relasi masuk: group per tipe supaya akar kata
+                      // menampilkan "Kata turunan" / "Bentuk tidak baku",
+                      // bukan satu keranjang "Muncul dalam".
+                      ..._appearsInSections(
+                        detail.appearsIn,
+                        AppLocalizations.of(context),
+                      ),
+
+                      if (combinedAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null ||
+                          creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null ||
+                          verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null) ...[
                         const Gap(18),
-                        if (detail.combinedAttributionLabel != null)
+                        if (combinedAttributionLabel(
+                              detail,
+                              AppLocalizations.of(context),
+                            ) !=
+                            null)
                           _AttributionLine(
-                            label: detail.combinedAttributionLabel!,
+                            label: combinedAttributionLabel(
+                              detail,
+                              AppLocalizations.of(context),
+                            )!,
                             username:
                                 detail.verifiedBy?.username ??
                                 detail.createdBy!.username,
-                            badge: detail.combinedByVerifier
-                                ? 'Verifikator'
-                                : null,
+                            showCheck: detail.combinedByVerifier,
                           )
                         else ...[
-                          if (detail.creatorAttributionLabel != null)
+                          if (creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null)
                             _AttributionLine(
-                              label: detail.creatorAttributionLabel!,
+                              label: creatorAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              )!,
                               username: detail.createdBy!.username,
+                              showCheck: isVerifierRole(detail.createdBy!.role),
                             ),
-                          if (detail.verifierAttributionLabel != null) ...[
+                          if (verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              ) !=
+                              null) ...[
                             const Gap(2),
                             _AttributionLine(
-                              label: detail.verifierAttributionLabel!,
+                              label: verifierAttributionLabel(
+                                detail,
+                                AppLocalizations.of(context),
+                              )!,
                               username: detail.verifiedBy!.username,
+                              showCheck: isVerifierRole(
+                                detail.verifiedBy!.role,
+                              ),
                             ),
                           ],
                         ],
                       ],
 
-                      const Gap(16),
-                      _WordActionTileGroup(detail: detail, wordId: wordId),
+                      const Gap(12),
+                      _WordActionIconRow(detail: detail, wordId: wordId),
                     ],
                   ),
                 ),
@@ -764,14 +827,62 @@ class _DetailBody extends HookConsumerWidget {
     );
   }
 
+  /// PRD relasi-lemma 8.3: render kelompok makna ("Makna terkait").
+  /// Grup kosong tidak dirender; label = nama grup bila >1 grup, kalau
+  /// satu pakai label tetap "Makna terkait".
+  static List<Widget> _meaningGroupSections(
+    List<MeaningGroup> groups,
+    AppLocalizations l10n,
+  ) {
+    if (groups.isEmpty) return const [];
+    final useGroupNames = groups.length > 1;
+    return [
+      for (final g in groups) ...[
+        const Gap(12),
+        _SectionLabel(useGroupNames ? g.name : l10n.dictRelatedMeanings),
+        const Gap(4),
+        _MeaningGroupChipWrap(members: g.members),
+      ],
+    ];
+  }
+
   /// Kelompokkan relasi per tipe (Sinonim, Antonim, …) supaya jelas di UI.
-  static List<Widget> _relatedSections(List<RelatedWord> related) {
+  static List<Widget> _relatedSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n,
+  ) =>
+      _groupedRelationSections(
+        related,
+        l10n,
+        labelFor: relationLabel,
+      );
+
+  /// Relasi masuk (`appears_in`) - label arah kebalikan dari related_words.
+  static List<Widget> _appearsInSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n,
+  ) =>
+      _groupedRelationSections(
+        related,
+        l10n,
+        labelFor: appearsInRelationLabel,
+      );
+
+  static List<Widget> _groupedRelationSections(
+    List<RelatedWord> related,
+    AppLocalizations l10n, {
+    required String Function(String, AppLocalizations) labelFor,
+  }) {
     if (related.isEmpty) return const [];
 
     const order = [
+      // PRD relasi-lemma 8.1/8.2: bentuk tidak baku & variasi paling atas,
+      // lalu turunan, baru sinonim/antonim dan sisanya.
+      'nonstandard_of',
+      'variant_of',
+      'derived_from',
       'synonym',
       'antonym',
-      'derived_from',
       'has_component',
       'see_also',
     ];
@@ -787,10 +898,10 @@ class _DetailBody extends HookConsumerWidget {
 
     return [
       for (final key in keys) ...[
-        const Gap(14),
-        _SectionLabel(grouped[key]!.first.relationLabel),
+        const Gap(12),
+        _SectionLabel(labelFor(grouped[key]!.first.relationType, l10n)),
         const Gap(4),
-        ...grouped[key]!.map((r) => _RelatedRow(related: r)),
+        _RelatedChipWrap(items: grouped[key]!),
       ],
     ];
   }
@@ -840,7 +951,7 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: AspectRatio(
-            aspectRatio: 16 / 10,
+            aspectRatio: 16 / 9,
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -856,10 +967,10 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
                     return Semantics(
                       button: !pending,
                       label: pending
-                          ? 'Gambar menunggu tinjauan'
+                          ? AppLocalizations.of(context).dictImagePendingReview
                           : img.hasViolenceWarning && !widget.revealed
-                          ? 'Foto berisi kekerasan, ketuk untuk menampilkan'
-                          : 'Pratinjau gambar',
+                          ? AppLocalizations.of(context).dictViolenceImage
+                          : AppLocalizations.of(context).dictImagePreview,
                       child: GestureDetector(
                         onTap: () => widget.onOpenPreview(img),
                         onLongPress: pending
@@ -890,7 +1001,7 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
                       ),
                       child: Text(
                         '${_index + 1}/${images.length}',
-                        style: theme.typography.xs.copyWith(
+                        style: theme.typography.body.xs.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -914,110 +1025,9 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
   }
 }
 
-const _votePrompt = 'Vote';
-
-class _WordVoteBar extends ConsumerWidget {
-  const _WordVoteBar({required this.wordId});
-
-  final String wordId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-    final target = VoteTarget(type: 'word', id: wordId);
-    final async = ref.watch(voteControllerProvider(target));
-
-    ref.listen(voteControllerProvider(target), (prev, next) {
-      if (next.hasError && !(prev?.hasError ?? false)) {
-        final err = next.error;
-        showFToast(
-          context: context,
-          title: Text(err is VoteFailure ? err.message : 'Gagal memuat vote'),
-          variant: FToastVariant.destructive,
-        );
-      }
-    });
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 50) return const SizedBox.shrink();
-
-        return async.when(
-          loading: () => Skeletonizer(
-            enabled: true,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _votePrompt,
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ),
-                const Gap(8),
-                const VoteButtonsSkeleton(compact: true),
-              ],
-            ),
-          ),
-          error: (_, _) => const SizedBox.shrink(),
-          data: (view) => Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _votePrompt,
-                  style: theme.typography.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-              ),
-              const Gap(8),
-              VoteButtons(
-                upvotes: view.upvotes,
-                downvotes: view.downvotes,
-                myVote: view.myVote,
-                compact: true,
-                onVote: (value) => _vote(context, ref, target, value),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _vote(
-    BuildContext context,
-    WidgetRef ref,
-    VoteTarget target,
-    int value,
-  ) async {
-    final auth = ref.read(authStatusProvider).value;
-    if (!(auth?.isAuth ?? false)) {
-      showFToast(
-        context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
-        variant: FToastVariant.primary,
-      );
-      context.push('/login');
-      return;
-    }
-    final failure = await ref
-        .read(voteControllerProvider(target).notifier)
-        .toggle(value);
-    if (failure != null && context.mounted) {
-      showFToast(
-        context: context,
-        title: Text(failure.message),
-        variant: FToastVariant.destructive,
-      );
-    }
-  }
-}
-
 /// Tombol bookmark di header detail kata (16-api-bookmark.md). Widget
 /// tombolnya murni tampilan - guard login + toast failure ada di sini
-/// (pola _vote pada _WordVoteBar).
+/// (pola _vote pada vote per makna).
 class _WordBookmarkHeaderAction extends ConsumerWidget {
   const _WordBookmarkHeaderAction({required this.wordId});
 
@@ -1050,7 +1060,7 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk menyimpan kata'),
+        title: Text(AppLocalizations.of(context).dictLoginToSave),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -1072,120 +1082,230 @@ class _WordBookmarkHeaderAction extends ConsumerWidget {
   }
 }
 
-/// Aksi di atas komentar: bagikan kartu + usul perubahan.
-class _WordActionTileGroup extends ConsumerWidget {
-  const _WordActionTileGroup({required this.detail, required this.wordId});
+/// Aksi di atas komentar: bagikan tautan, bagikan kartu, usul perubahan.
+class _WordActionIconRow extends ConsumerWidget {
+  const _WordActionIconRow({required this.detail, required this.wordId});
 
   final WordDetail detail;
   final String wordId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final muted = context.theme.colors.mutedForeground;
-    final role = ref.watch(authStatusProvider).value?.role;
-    final entryCopy = suggestEditEntryTileCopy(role);
-    return FTileGroup(
+    final l10n = AppLocalizations.of(context);
+    return Row(
       children: [
-        FTile(
-          prefix: const Icon(FLucideIcons.image),
-          title: const Text('Bagikan kartu'),
-          subtitle: const Text(
-            'Buat kartu untuk cerita IG, WhatsApp, dan lainnya',
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.share2,
+            label: l10n.dictActionShare,
+            onPress: () => shareWordPublicLink(context, detail),
           ),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () => openWordShareSheet(context, ref, detail),
         ),
-        FTile(
-          prefix: const Icon(FLucideIcons.penLine),
-          title: Text(entryCopy.title),
-          subtitle: Text(entryCopy.subtitle),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () async {
-            final auth = await ref.read(authStatusProvider.future);
-            if (!context.mounted) return;
-            if (!auth.isAuth) {
-              showFToast(
-                context: context,
-                title: const Text('Masuk dulu untuk mengusulkan perubahan'),
-              );
-              context.push('/login');
-              return;
-            }
-            // #83: jaring aman - invalidate setelah kembali dari form,
-            // form sudah invalidate sendiri, ini menutup jalur batal
-            // (pop tanpa submit) agar perubahan dari device lain ikut.
-            await context.push('/suggest-edit/$wordId');
-            if (context.mounted) {
-              ref.invalidate(wordDetailProvider(wordId));
-            }
-          },
-        ),
-        FTile(
-          prefix: const Icon(FLucideIcons.flag),
-          title: const Text('Laporkan entri'),
-          subtitle: const Text(
-            'Untuk entri yang tidak layak tayang, bukan perbaikan isi',
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.penLine,
+            label: l10n.dictActionSuggest,
+            onPress: () => _openSuggestEdit(context, ref, wordId),
           ),
-          suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-          onPress: () async {
-            final auth = await ref.read(authStatusProvider.future);
-            if (!context.mounted) return;
-            if (!auth.isAuth) {
-              showFToast(
-                context: context,
-                title: const Text('Masuk dulu untuk melaporkan entri'),
-              );
-              context.push('/login');
-              return;
-            }
-            final sent = await showReportWordSheet(context, wordId);
-            if (!context.mounted || !sent) return;
-            showFToast(
-              context: context,
-              title: const Text(
-                'Laporan terkirim. Entri tetap tayang sampai ditinjau.',
-              ),
-            );
-          },
         ),
-        if (detail.images.isNotEmpty)
-          FTile(
-            prefix: const Icon(FLucideIcons.imageOff),
-            title: const Text('Laporkan foto'),
-            subtitle: const Text(
-              'Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat',
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.flag,
+            label: l10n.dictActionReport,
+            onPress: () => _reportEntry(context, ref, wordId),
+          ),
+        ),
+        Expanded(
+          child: _ActionIconButton(
+            icon: FLucideIcons.ellipsis,
+            label: l10n.dictActionMore,
+            onPress: () => _showMoreWordActions(
+              context,
+              ref: ref,
+              detail: detail,
+              wordId: wordId,
             ),
-            suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
-            onPress: () async {
-              final auth = await ref.read(authStatusProvider.future);
-              if (!context.mounted) return;
-              if (!auth.isAuth) {
-                showFToast(
-                  context: context,
-                  title: const Text('Masuk dulu untuk melaporkan foto'),
-                );
-                context.push('/login');
-                return;
-              }
-              final imageId =
-                  (detail.images.where((i) => i.isPrimary).firstOrNull ??
-                          detail.images.first)
-                      .id;
-              final sent = await showReportWordSheet(
-                context,
-                wordId,
-                imageId: imageId,
-              );
-              if (!context.mounted || !sent) return;
-              showFToast(
-                context: context,
-                title: const Text('Laporan foto terkirim. Terima kasih.'),
-              );
-            },
           ),
+        ),
       ],
     );
   }
+}
+
+class _ActionIconButton extends StatelessWidget {
+  const _ActionIconButton({
+    required this.icon,
+    required this.label,
+    required this.onPress,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return FTappable(
+      onPress: onPress,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(icon, size: 18, color: theme.colors.foreground),
+              ),
+            ),
+            const Gap(4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _openSuggestEdit(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToSuggest),
+    );
+    context.push('/login');
+    return;
+  }
+  await context.push('/suggest-edit/$wordId');
+  if (context.mounted) {
+    ref.invalidate(wordDetailProvider(wordId));
+  }
+}
+
+Future<void> _reportEntry(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToReportEntry),
+    );
+    context.push('/login');
+    return;
+  }
+  final sent = await showReportWordSheet(context, wordId);
+  if (!context.mounted || !sent) return;
+  showFToast(
+    context: context,
+    title: Text(AppLocalizations.of(context).dictEntryReportSent),
+  );
+}
+
+Future<void> _reportPrimaryPhoto(
+  BuildContext context,
+  WidgetRef ref,
+  WordDetail detail,
+  String wordId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToReportPhoto),
+    );
+    context.push('/login');
+    return;
+  }
+  final imageId =
+      (detail.images.where((i) => i.isPrimary).firstOrNull ?? detail.images.first)
+          .id;
+  final sent = await showReportWordSheet(context, wordId, imageId: imageId);
+  if (!context.mounted || !sent) return;
+  showFToast(
+    context: context,
+    title: Text(AppLocalizations.of(context).dictPhotoReportThanks),
+  );
+}
+
+Future<void> _showMoreWordActions(
+  BuildContext context, {
+  required WidgetRef ref,
+  required WordDetail detail,
+  required String wordId,
+}) {
+  final l10n = AppLocalizations.of(context);
+  final muted = context.theme.colors.mutedForeground;
+  return showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) {
+      return SafeArea(
+        child: Padding(
+          padding: MediaQuery.viewInsetsOf(sheetContext),
+          child: FTileGroup(
+            children: [
+              FTile(
+                prefix: const Icon(FLucideIcons.image),
+                title: Text(l10n.dictShareCard),
+                subtitle: Text(l10n.dictShareCardSubtitle),
+                suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                onPress: () {
+                  Navigator.pop(sheetContext);
+                  openWordShareSheet(context, ref, detail);
+                },
+              ),
+              FTile(
+                prefix: const Icon(FLucideIcons.link),
+                title: Text(l10n.dictShareLink),
+                subtitle: Text(l10n.dictShareLinkSubtitle),
+                suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                onPress: () {
+                  Navigator.pop(sheetContext);
+                  shareWordPublicLink(context, detail);
+                },
+              ),
+              if (detail.images.isNotEmpty)
+                FTile(
+                  prefix: const Icon(FLucideIcons.imageOff),
+                  title: Text(l10n.dictReportPhoto),
+                  subtitle: Text(l10n.dictReportPhotoSubtitle),
+                  suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                  onPress: () {
+                    Navigator.pop(sheetContext);
+                    _reportPrimaryPhoto(context, ref, detail, wordId);
+                  },
+                ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -1198,7 +1318,7 @@ class _SectionLabel extends StatelessWidget {
     final theme = context.theme;
     return Text(
       text.toUpperCase(),
-      style: theme.typography.sm.copyWith(
+      style: theme.typography.body.sm.copyWith(
         fontWeight: FontWeight.w700,
         letterSpacing: 0.06,
         color: theme.colors.mutedForeground,
@@ -1208,59 +1328,95 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _MeaningBlock extends StatelessWidget {
+class _MeaningBlock extends ConsumerWidget {
   const _MeaningBlock({
     required this.index,
+    required this.showIndex,
     required this.lemma,
     required this.meaning,
     required this.wordId,
     required this.languageId,
+    required this.isTopSupported,
+    this.contributor,
   });
 
   final int index;
+  final bool showIndex;
   final String lemma;
   final WordMeaning meaning;
   final String wordId;
   final String languageId;
 
+  /// Makna dengan skor vote tertinggi di kata ini (komunitas paling mendukung).
+  final bool isTopSupported;
+
+  /// Multi-makna saja: chip flat @username (tap → profil).
+  final WordVerifier? contributor;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final className = meaning.wordClassName;
+    final l10n = AppLocalizations.of(context);
     final definition = meaning.definition?.trim();
+    final classLabel = meaning.wordClassBracket ??
+        (meaning.wordClassName != null && meaning.wordClassName!.isNotEmpty
+            ? meaning.wordClassName
+            : null);
+    final username = contributor?.username;
+    final showContributorChip = isLinkablePublicUsername(username);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 22,
-            child: Text(
-              '$index.',
-              style: theme.typography.sm.copyWith(
-                fontWeight: FontWeight.w700,
-                color: theme.colors.mutedForeground,
+          if (showIndex)
+            SizedBox(
+              width: 22,
+              child: Text(
+                '$index.',
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: theme.colors.mutedForeground,
+                ),
               ),
             ),
-          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (className != null && className.isNotEmpty)
-                  Text(
-                    className,
-                    style: theme.typography.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colors.primary,
-                      fontSize: 12,
-                    ),
+                if (classLabel != null ||
+                    isTopSupported ||
+                    showContributorChip) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (classLabel != null)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(classLabel),
+                        ),
+                      if (isTopSupported)
+                        FBadge(
+                          variant: FBadgeVariant.secondary,
+                          child: Text(l10n.dictTopSupportedChip),
+                        ),
+                      if (showContributorChip)
+                        _MeaningContributorChip(
+                          label: '@${displayPublicUsername(username)}',
+                          username: username!,
+                          showCheck: isVerifierRole(contributor!.role),
+                        ),
+                    ],
                   ),
+                  const Gap(4),
+                ],
                 if (definition != null && definition.isNotEmpty)
                   Text(
                     definition,
-                    style: theme.typography.sm.copyWith(height: 1.35),
+                    style: theme.typography.body.sm.copyWith(height: 1.35),
                   ),
                 if (meaning.translations.isNotEmpty) ...[
                   const Gap(4),
@@ -1269,22 +1425,15 @@ class _MeaningBlock extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
                         '→ ${t.text}',
-                        style: theme.typography.sm.copyWith(
+                        style: theme.typography.body.sm.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                ] else ...[
-                  const Gap(4),
-                  Text(
-                    'Belum ada terjemahan',
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
                 ],
+                const Gap(6),
+                MeaningVoteRow(meaningId: meaning.id),
                 if (meaning.examples.isNotEmpty) ...[
                   const Gap(4),
                   ...meaning.examples.map((e) {
@@ -1296,7 +1445,7 @@ class _MeaningBlock extends StatelessWidget {
                         children: [
                           Text(
                             e.sourceSentence,
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               fontStyle: FontStyle.italic,
                               height: 1.3,
                             ),
@@ -1304,7 +1453,7 @@ class _MeaningBlock extends StatelessWidget {
                           if (translation != null && translation.isNotEmpty)
                             Text(
                               translation,
-                              style: theme.typography.sm.copyWith(
+                              style: theme.typography.body.sm.copyWith(
                                 color: theme.colors.mutedForeground,
                                 height: 1.3,
                               ),
@@ -1316,7 +1465,7 @@ class _MeaningBlock extends StatelessWidget {
                             audios: e.audios,
                             exampleId: e.id,
                             compact: true,
-                            sectionLabel: 'Audio contoh',
+                            sectionLabel: l10n.dictExampleAudio,
                             spokenText: e.sourceSentence,
                           ),
                         ],
@@ -1331,7 +1480,7 @@ class _MeaningBlock extends StatelessWidget {
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: 'Salin makna',
+            tooltip: l10n.dictCopyMeaning,
             onPressed: () => copyWordMeaningToClipboard(
               context,
               lemma: lemma,
@@ -1349,27 +1498,133 @@ class _MeaningBlock extends StatelessWidget {
   }
 }
 
-class _RelatedRow extends StatelessWidget {
-  const _RelatedRow({required this.related});
+/// Chip flat secondary: `@username` (+ centang verifikator). Tap → profil.
+class _MeaningContributorChip extends StatelessWidget {
+  const _MeaningContributorChip({
+    required this.label,
+    required this.username,
+    this.showCheck = false,
+  });
 
-  final RelatedWord related;
+  final String label;
+  final String username;
+  final bool showCheck;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: showCheck ? '$label, Verifikator' : label,
+      child: FTappable(
+        onPress: () => UserProfileRouter.open(context, username),
+        child: FBadge(
+          variant: FBadgeVariant.secondary,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(label),
+              if (showCheck) ...[
+                const Gap(4),
+                const VerifiedBadgeIcon(size: 12),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RelatedChipWrap extends StatelessWidget {
+  const _RelatedChipWrap({required this.items});
+
+  final List<RelatedWord> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final related in items)
+          FTappable(
+            onPress: () => context.push('/words/${related.wordId}'),
+            child: FBadge(
+              variant: FBadgeVariant.secondary,
+              child: Text(related.lemma),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MeaningGroupChipWrap extends StatelessWidget {
+  const _MeaningGroupChipWrap({required this.members});
+
+  final List<MeaningGroupMember> members;
+
+  @override
+  Widget build(BuildContext context) {
+    final withNotes = members.any(
+      (m) => m.notes != null && m.notes!.trim().isNotEmpty,
+    );
+    if (withNotes) {
+      return Column(
+        children: [for (final m in members) _MeaningGroupRow(member: m)],
+      );
+    }
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final member in members)
+          FTappable(
+            onPress: () => context.push('/words/${member.wordId}'),
+            child: FBadge(
+              variant: FBadgeVariant.secondary,
+              child: Text(member.lemma),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MeaningGroupRow extends StatelessWidget {
+  const _MeaningGroupRow({required this.member});
+
+  final MeaningGroupMember member;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final notes = member.notes;
     return GestureDetector(
-      onTap: () => context.push('/words/${related.wordId}'),
+      onTap: () => context.push('/words/${member.wordId}'),
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Row(
           children: [
             Expanded(
-              child: Text(
-                related.lemma,
-                style: theme.typography.sm.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    member.lemma,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (notes != null && notes.isNotEmpty)
+                    Text(
+                      notes,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                ],
               ),
             ),
             Icon(
@@ -1393,7 +1648,8 @@ class _VariantRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final meta = [
-      if (!variant.isSpellingVariant) variant.variantTypeLabel,
+      if (!variant.isSpellingVariant)
+        variantTypeLabel(variant.variantType, AppLocalizations.of(context)),
       if (variant.affixValue != null && variant.affixValue!.isNotEmpty)
         '"${variant.affixValue}"',
       if (variant.notes != null && variant.notes!.isNotEmpty) variant.notes!,
@@ -1411,7 +1667,7 @@ class _VariantRow extends StatelessWidget {
             Expanded(
               child: Text(
                 meta,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   fontSize: 11,
                 ),
@@ -1433,7 +1689,7 @@ class _DetailSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -1446,7 +1702,7 @@ class _DetailSkeleton extends StatelessWidget {
     // Mirror struktur [_DetailBody]: carousel full-bleed → meta → vote → makna.
     // Komentar ada di bar bawah.
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -1458,7 +1714,7 @@ class _DetailSkeleton extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: AspectRatio(
-                    aspectRatio: 16 / 10,
+                    aspectRatio: 16 / 9,
                     child: Bone(
                       width: double.infinity,
                       height: double.infinity,
@@ -1479,23 +1735,25 @@ class _DetailSkeleton extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'lemma contoh kata',
-                                style: theme.typography.xl.copyWith(
+                                AppLocalizations.of(context).dictSkeletonLemma,
+                                style: theme.typography.body.xl.copyWith(
                                   fontWeight: FontWeight.w700,
                                   height: 1.15,
                                 ),
                               ),
                               const Gap(2),
                               Text(
-                                'Nomina',
-                                style: theme.typography.sm.copyWith(
+                                AppLocalizations.of(
+                                  context,
+                                ).dictSkeletonWordClass,
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                               ),
                               const Gap(4),
                               Text(
                                 '/ma.kan/',
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                   fontStyle: FontStyle.italic,
                                 ),
@@ -1523,30 +1781,17 @@ class _DetailSkeleton extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Gap(10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _votePrompt,
-                            style: theme.typography.sm.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        ),
-                        const Gap(8),
-                        const VoteButtonsSkeleton(compact: true),
-                      ],
-                    ),
                     const Gap(16),
-                    const _SectionLabel('Makna'),
+                    _SectionLabel(
+                      AppLocalizations.of(context).reviewEntityMeaning,
+                    ),
                     const Gap(6),
                     const _MeaningSkeletonBlock(index: 1),
                     const _MeaningSkeletonBlock(index: 2),
                     const Gap(16),
                     Text(
-                      'Komentar',
-                      style: theme.typography.sm.copyWith(
+                      AppLocalizations.of(context).profileComments,
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colors.mutedForeground,
                         fontSize: 11,
@@ -1585,7 +1830,7 @@ class _MeaningSkeletonBlock extends StatelessWidget {
             width: 22,
             child: Text(
               '$index.',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.mutedForeground,
               ),
@@ -1596,21 +1841,21 @@ class _MeaningSkeletonBlock extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Verba',
-                  style: theme.typography.sm.copyWith(
+                  AppLocalizations.of(context).dictSkeletonWordClass,
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                     color: theme.colors.primary,
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  'Definisi makna singkat untuk skeleton layout',
-                  style: theme.typography.sm.copyWith(height: 1.35),
+                  AppLocalizations.of(context).dictSkeletonDefinition,
+                  style: theme.typography.body.sm.copyWith(height: 1.35),
                 ),
                 const Gap(4),
                 Text(
                   '→ terjemahan contoh',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1630,21 +1875,29 @@ class _CommentSkeletonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     return FCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'nama pengguna',
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const Gap(6),
-          Text(
-            'isi komentar skeleton beberapa kata di sini',
-            style: theme.typography.sm,
-          ),
-          const Gap(10),
-          const VoteButtonsSkeleton(compact: true),
-        ],
+      // forui 0.27: FCard tidak lagi membungkus child dengan padding
+      // default (0.22 wrap Content padding 16). Padding dipakai supaya isi
+      // tidak menempel border kartu.
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppLocalizations.of(context).dictSkeletonUsername,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(6),
+            Text(
+              AppLocalizations.of(context).dictSkeletonComment,
+              style: theme.typography.body.sm,
+            ),
+            const Gap(10),
+            const VoteButtonsSkeleton(compact: true),
+          ],
+        ),
       ),
     );
   }
@@ -1654,24 +1907,24 @@ class _AttributionLine extends StatelessWidget {
   const _AttributionLine({
     required this.label,
     required this.username,
-    this.badge,
+    this.showCheck = false,
   });
 
   final String label;
   final String username;
-  final String? badge;
+  final bool showCheck;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final tappable = isLinkablePublicUsername(username);
-    final textStyle = theme.typography.sm.copyWith(
+    final textStyle = theme.typography.body.sm.copyWith(
       color: theme.colors.mutedForeground,
       fontWeight: FontWeight.w500,
     );
     return Semantics(
       button: tappable,
-      label: badge == null ? label : '$label, $badge',
+      label: showCheck ? '$label, Verifikator' : label,
       child: GestureDetector(
         onTap: tappable
             ? () => UserProfileRouter.open(context, username)
@@ -1679,38 +1932,27 @@ class _AttributionLine extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             style: textStyle,
-            children: [
-              TextSpan(text: label),
-              if (badge != null)
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 1,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colors.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        badge!,
-                        style: theme.typography.xs.copyWith(
-                          color: theme.colors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
+            children: _attributionSpans(label, showCheck: showCheck),
           ),
         ),
       ),
     );
   }
+}
+
+/// Kalimat atribusi + centang. Menggantikan chip teks "Verifikator".
+List<InlineSpan> _attributionSpans(String label, {required bool showCheck}) {
+  return [
+    TextSpan(text: label),
+    if (showCheck)
+      const WidgetSpan(
+        alignment: PlaceholderAlignment.middle,
+        child: Padding(
+          padding: EdgeInsets.only(left: 4),
+          child: VerifiedBadgeIcon(size: 14),
+        ),
+      ),
+  ];
 }
 
 void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
@@ -1740,8 +1982,8 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                   children: [
                     Expanded(
                       child: Text(
-                        'Atribusi',
-                        style: theme.typography.lg.copyWith(
+                        AppLocalizations.of(sheetContext).dictAttribution,
+                        style: theme.typography.body.lg.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1752,32 +1994,58 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     ),
                   ],
                 ),
-                if (detail.combinedAttributionLabel != null) ...[
-                  Text(
-                    detail.combinedAttributionLabel!,
-                    style: theme.typography.sm,
-                  ),
-                  if (detail.combinedByVerifier) ...[
-                    const Gap(6),
-                    Text(
-                      'Verifikator',
-                      style: theme.typography.xs.copyWith(
-                        color: theme.colors.primary,
-                        fontWeight: FontWeight.w600,
+                if (combinedAttributionLabel(
+                      detail,
+                      AppLocalizations.of(context),
+                    ) !=
+                    null)
+                  Text.rich(
+                    TextSpan(
+                      style: theme.typography.body.sm,
+                      children: _attributionSpans(
+                        combinedAttributionLabel(
+                          detail,
+                          AppLocalizations.of(context),
+                        )!,
+                        showCheck: detail.combinedByVerifier,
                       ),
                     ),
-                  ],
-                ] else ...[
-                  if (detail.creatorAttributionLabel != null)
-                    Text(
-                      detail.creatorAttributionLabel!,
-                      style: theme.typography.sm,
+                  )
+                else ...[
+                  if (creatorAttributionLabel(
+                        detail,
+                        AppLocalizations.of(context),
+                      ) !=
+                      null)
+                    Text.rich(
+                      TextSpan(
+                        style: theme.typography.body.sm,
+                        children: _attributionSpans(
+                          creatorAttributionLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          )!,
+                          showCheck: isVerifierRole(detail.createdBy!.role),
+                        ),
+                      ),
                     ),
-                  if (detail.verifierAttributionLabel != null) ...[
+                  if (verifierAttributionLabel(
+                        detail,
+                        AppLocalizations.of(context),
+                      ) !=
+                      null) ...[
                     const Gap(4),
-                    Text(
-                      detail.verifierAttributionLabel!,
-                      style: theme.typography.sm,
+                    Text.rich(
+                      TextSpan(
+                        style: theme.typography.body.sm,
+                        children: _attributionSpans(
+                          verifierAttributionLabel(
+                            detail,
+                            AppLocalizations.of(context),
+                          )!,
+                          showCheck: isVerifierRole(detail.verifiedBy!.role),
+                        ),
+                      ),
                     ),
                   ],
                 ],
@@ -1785,7 +2053,7 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                   const Gap(4),
                   Text(
                     verifiedAt,
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -1799,8 +2067,10 @@ void showVerifierAttributionSheet(BuildContext context, WordDetail detail) {
                     },
                     child: Text(
                       profiles.length == 1
-                          ? 'Lihat profil'
-                          : 'Profil $username',
+                          ? AppLocalizations.of(sheetContext).dictSeeProfile
+                          : AppLocalizations.of(
+                              sheetContext,
+                            ).dictProfileOf(username),
                     ),
                   ),
                 ],

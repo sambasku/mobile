@@ -2,18 +2,22 @@ import '../../domain/entities/cuisine.dart';
 import '../../domain/entities/place.dart';
 import 'place_dto.dart';
 
-/// DTO JSON `cuisines.json` di CDN (repo `data` via jsDelivr).
+/// DTO kuliner dari API `/api/v1/culinary/cuisines`.
+///
+/// Menerima dua bentuk kunci: snake_case (wire API: `is_main`,
+/// `origin_region`, `serving_suggestion`) dan camelCase lama
+/// (`cuisines.json` CDN: `isMain`, `region`, `servingSuggestion`) supaya
+/// seed lama dan test lama tetap jalan.
 ///
 /// Parse defensif seperti PlaceDto: item tanpa field wajib di-skip -
-/// satu item rusak tidak mematikan seluruh koleksi. `ingredients` dan
-/// `tags` elemen non-string di-skip.
+/// satu item rusak tidak mematikan seluruh koleksi.
 class CuisineDto {
   const CuisineDto({required this.cuisines});
 
   final List<CuisineDtoItem> cuisines;
 
   factory CuisineDto.fromJson(Map<String, dynamic> json) {
-    final raw = json['cuisines'];
+    final raw = json['cuisines'] ?? json['items'];
     final list = raw is List ? raw : const [];
     return CuisineDto(
       cuisines: list
@@ -23,6 +27,10 @@ class CuisineDto {
           .toList(),
     );
   }
+
+  /// Satu item wire API (bukan envelope).
+  static CuisineDtoItem? itemFromJson(Map<String, dynamic> json) =>
+      CuisineDtoItem.fromJson(json);
 
   List<Cuisine> toEntity() => cuisines.map((e) => e.toEntity()).toList();
 }
@@ -40,6 +48,7 @@ class CuisineDtoItem {
     required this.tags,
     required this.sources,
     this.servingSuggestion,
+    this.places = const [],
   });
 
   final String id;
@@ -52,6 +61,7 @@ class CuisineDtoItem {
   final List<String> tags;
   final String? servingSuggestion;
   final List<PlaceSource> sources;
+  final List<CuisinePlaceRef> places;
 
   /// Null = field wajib absen → item di-skip.
   static CuisineDtoItem? fromJson(Map<String, dynamic> json) {
@@ -60,40 +70,59 @@ class CuisineDtoItem {
       return v is String && v.trim().isNotEmpty ? v.trim() : null;
     }
 
+    String? optStr(String snake, String camel) => str(snake) ?? str(camel);
+
     final id = str('id');
     final slug = str('slug');
     final name = str('name');
-    final description = str('description');
-    final region = str('region');
-    if (id == null ||
-        slug == null ||
-        name == null ||
-        description == null ||
-        region == null) {
-      return null;
-    }
+    // API mengizinkan deskripsi null; CDN lama mewajibkannya.
+    final description = optStr('description', 'description') ?? '';
+    // Region API = `origin_region`, CDN lama = `region`.
+    final region = optStr('origin_region', 'region') ?? '';
+    if (id == null || slug == null || name == null) return null;
 
     // Reuse parser image & source PlaceDto: skema atribusi sama.
     final images = <PlaceImage>[];
     final rawImages = json['images'];
     if (rawImages is List) {
       for (final raw in rawImages.whereType<Map>()) {
-        final img = PlaceDto.imageFromJson(Map<String, dynamic>.from(raw));
+        final map = Map<String, dynamic>.from(raw);
+        final img = PlaceDto.imageFromJson(map);
         if (img == null) continue;
         final hasMain = images.any((e) => e.isMain);
+        final isMain = map['is_main'] == true || map['isMain'] == true;
         images.add(
           PlaceImage(
             url: img.url,
-            isMain: img.isMain && !hasMain || (!hasMain && images.isEmpty),
+            isMain: isMain && !hasMain || (!hasMain && images.isEmpty),
             attribution: img.attribution,
           ),
         );
       }
     }
 
-    String? optStr(String key) {
-      final v = json[key];
-      return v is String && v.trim().isNotEmpty ? v.trim() : null;
+    final places = <CuisinePlaceRef>[];
+    final rawPlaces = json['places'];
+    if (rawPlaces is List) {
+      for (final raw in rawPlaces.whereType<Map>()) {
+        final placeSlug = raw['place_slug'] ?? raw['placeSlug'];
+        final placeName = raw['place_name'] ?? raw['placeName'];
+        if (placeSlug is! String || placeSlug.isEmpty) continue;
+        final availability = raw['availability'];
+        final note = raw['note'];
+        places.add(
+          CuisinePlaceRef(
+            placeSlug: placeSlug,
+            placeName: placeName is String && placeName.isNotEmpty
+                ? placeName
+                : placeSlug,
+            availability: availability is String && availability.isNotEmpty
+                ? availability
+                : 'unknown',
+            note: note is String && note.trim().isNotEmpty ? note.trim() : null,
+          ),
+        );
+      }
     }
 
     return CuisineDtoItem(
@@ -105,8 +134,9 @@ class CuisineDtoItem {
       ingredients: stringList(json['ingredients']),
       region: region,
       tags: stringList(json['tags']),
-      servingSuggestion: optStr('servingSuggestion'),
+      servingSuggestion: optStr('serving_suggestion', 'servingSuggestion'),
       sources: parseSources(json['sources']),
+      places: places,
     );
   }
 
@@ -121,6 +151,7 @@ class CuisineDtoItem {
     tags: tags,
     servingSuggestion: servingSuggestion,
     sources: sources,
+    places: places,
   );
 }
 
@@ -134,7 +165,12 @@ List<PlaceSource> parseSources(Object? rawSources) {
   final sources = <PlaceSource>[];
   if (rawSources is List) {
     for (final raw in rawSources.whereType<Map>()) {
-      final s = PlaceDto.sourceFromJson(Map<String, dynamic>.from(raw));
+      final map = Map<String, dynamic>.from(raw);
+      final s = PlaceDto.sourceFromJson({
+        ...map,
+        // Wire API pakai license_url; CDN lama licenseUrl.
+        'licenseUrl': map['license_url'] ?? map['licenseUrl'],
+      });
       if (s != null) sources.add(s);
     }
   }

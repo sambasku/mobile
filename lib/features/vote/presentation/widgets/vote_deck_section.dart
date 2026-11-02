@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -20,8 +20,10 @@ import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
 import '../providers/vote_submit_queue.dart';
+import 'vote_deck_class_shortcut.dart';
 import 'vote_deck_swipe_card.dart';
 import 'vote_deck_word_card.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Aksi yang sedang diproses di deck vote (spinner hanya di rewind).
 enum VotePendingAction { rewind }
@@ -54,11 +56,13 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authStatusProvider);
     final deck = ref.watch(voteDeckControllerProvider).value;
     final remaining = deck == null || deck.items.isEmpty
         ? null
-        : 'sisa ${deck.items.length}${deck.hasMore ? '+' : ''}';
+        : l10n.voteDeckRemaining(
+            '${deck.items.length}', deck.hasMore ? '+' : '');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,10 +71,10 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
           children: [
             Expanded(
               child: Text(
-                'Bantu nilai agar arti kata lebih akurat',
+                l10n.voteDeckHelper,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w700,
                   color: theme.colors.mutedForeground,
                 ),
@@ -80,7 +84,7 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
               const Gap(8),
               Text(
                 remaining,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   color: theme.colors.mutedForeground,
                   fontWeight: FontWeight.w600,
                 ),
@@ -119,6 +123,7 @@ class _GuestDeck extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final samples = ref.watch(voteDeckGuestSamplesProvider);
 
     return Column(
@@ -134,24 +139,25 @@ class _GuestDeck extends ConsumerWidget {
               }
               final w = items.first;
               return _CardShell(
-                child: VoteDeckWordFace(
+                child: VoteDeckMeaningFace(
                   lemma: w.lemma,
                   sense: w.sense,
-                  wordType: w.wordTypeLabel,
+                  wordTypeLabel: w.wordTypeLabel,
+                  onLockedTap: () => context.push('/login'),
                 ),
               );
             },
           ),
         ),
         const Gap(12),
-        const FAlert(
-          title: Text('Masuk dulu untuk menilai kata'),
-          icon: Icon(FLucideIcons.logIn),
+        FAlert(
+          title: Text(l10n.voteDeckLoginPrompt),
+          icon: const Icon(FLucideIcons.logIn),
         ),
         const Gap(8),
         FButton(
           onPress: () => context.push('/login'),
-          child: const Text('Masuk'),
+          child: Text(l10n.voteDeckLoginCta),
         ),
         const Gap(12),
       ],
@@ -188,6 +194,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(voteDeckControllerProvider);
 
     ref.listen(voteSubmitQueueProvider, (prev, next) {
@@ -198,7 +205,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         ref.read(voteDeckControllerProvider.notifier).reinsertFront(failed);
       }
       if (!context.mounted) return;
-      final message = next.errorMessage ?? 'Gagal menyimpan penilaian';
+      final message = next.errorMessage ?? l10n.voteDeckSubmitFailed;
       showFToast(context: context, title: Text(message));
     });
 
@@ -221,8 +228,8 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                   : FAlertVariant.destructive,
               title: Text(
                 sessionEnded
-                    ? 'Sesi berakhir. Silakan masuk kembali.'
-                    : 'Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.',
+                    ? l10n.voteDeckSessionEnded
+                    : l10n.voteDeckLoadFailed,
               ),
               icon: Icon(
                 sessionEnded ? FLucideIcons.logIn : FLucideIcons.circleAlert,
@@ -235,7 +242,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
               const Gap(6),
               Text(
                 detail,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -256,8 +263,8 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 ),
                 const Gap(10),
                 Text(
-                  'Kamu sudah menilai semua kata di antrean. Terima kasih membantu warga lain.',
-                  style: theme.typography.sm.copyWith(
+                  l10n.voteDeckEmpty,
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                   textAlign: TextAlign.center,
@@ -279,7 +286,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         }
 
         final item = state.items.first;
-        if (state.items.length > 1) _prefetchDetail(state.items[1].id);
+        if (state.items.length > 1) _prefetchDetail(state.items[1].wordId);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -302,6 +309,13 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       onOpenDetail: _rewinding
                           ? null
                           : () => _openDetail(context, item),
+                      onWordClassTap: _rewinding
+                          ? null
+                          : () => pickAndSubmitVoteDeckWordClass(
+                              context: context,
+                              ref: ref,
+                              item: item,
+                            ),
                     ),
                   ),
                 ),
@@ -335,9 +349,18 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       item: item,
                       direction: VoteDeckSwipeDirection.agree,
                     ),
-              onRewind: () => _rewind(context, ref),
-              // Kartu tidak digeser: deck keepAlive, kembali ke kata yang sama.
-              onFix: () => context.push('/suggest-edit/${item.id}'),
+                  onRewind: () => _rewind(context, ref),
+                  // Kartu tidak digeser: deck keepAlive, kembali ke kata yang
+                  // sama. Invalidate setelah form tertutup supaya chip kelas
+                  // kata tidak basi bila usulan di-self-apply (issue #159).
+                  onFix: () async {
+                    await context.push('/suggest-edit/${item.wordId}');
+                    if (context.mounted) {
+                      await ref
+                          .read(voteDeckControllerProvider.notifier)
+                          .refresh();
+                    }
+                  },
             ),
           ],
         );
@@ -358,12 +381,12 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   /// sudah dinilai; logikanya di controller karena widget ini dispose
   /// selama route root terbuka.
   Future<void> _openDetail(BuildContext context, VoteDeckItem item) async {
-    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
+    ref.read(wordDetailAudioPlayerProvider(item.wordId).notifier).stop();
     final deck = ref.read(voteDeckControllerProvider.notifier);
     final dropped = await deck.openDetail(
       item,
       () => context.push(
-        DictionaryRouter.detail.path.replaceFirst(':id', item.id),
+        DictionaryRouter.detail.path.replaceFirst(':id', item.wordId),
       ),
     );
     // Context widget ini mungkin sudah dispose: toast lewat navigator root
@@ -372,7 +395,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     if (!dropped || root == null || !root.mounted) return;
     showFToast(
       context: root,
-      title: const Text('Penilaian dari detail tersimpan'),
+      title: Text(AppLocalizations.of(context).voteDeckSavedFromDetail),
     );
   }
 
@@ -397,7 +420,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
   }) async {
     if (_rewinding) return false;
     // AnimatedSwitcher menahan kartu lama ~220ms; audio berhenti saat swipe.
-    ref.read(wordDetailAudioPlayerProvider(item.id).notifier).stop();
+    ref.read(wordDetailAudioPlayerProvider(item.wordId).notifier).stop();
 
     if (direction == VoteDeckSwipeDirection.skip) {
       ref.read(voteDeckControllerProvider.notifier).skipAndAdvance(item);
@@ -415,7 +438,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
         'direction': direction == VoteDeckSwipeDirection.agree
             ? 'right'
             : 'left',
-        'word_id': item.id,
+        'meaning_id': item.id,
       },
     );
     return true;
@@ -438,7 +461,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
     }
     showFToast(
       context: context,
-      title: const Text('Kartu sebelumnya dikembalikan.'),
+      title: Text(AppLocalizations.of(context).voteDeckRewound),
     );
   }
 }
@@ -471,6 +494,7 @@ class _VoteDeckActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.colors.background,
@@ -504,7 +528,7 @@ class _VoteDeckActionBar extends StatelessWidget {
                               semanticsLabel: 'Perbaiki kata ini',
                               onPress: _rewinding ? null : onFix,
                               prefix: const Icon(FLucideIcons.pencil),
-                              child: const Text('Perbaiki'),
+                              child: Text(AppLocalizations.of(context).voteFixAction),
                             ),
                     ),
             ),
@@ -525,7 +549,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Lewati',
+              semanticsLabel: l10n.voteDeckSkip,
               onPress: _rewinding || onSkip == null ? null : onSkip,
               child: const Icon(FLucideIcons.skipForward),
             ),
@@ -534,7 +558,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Perlu dicek ulang',
+              semanticsLabel: l10n.voteDeckDisagree,
               onPress: _rewinding || onDisagree == null ? null : onDisagree,
               child: Icon(
                 FLucideIcons.arrowBigDown,
@@ -545,7 +569,7 @@ class _VoteDeckActionBar extends StatelessWidget {
             FButton.icon(
               variant: FButtonVariant.outline,
               size: FButtonSizeVariant.sm,
-              semanticsLabel: 'Sudah pas',
+              semanticsLabel: l10n.voteDeckAgree,
               onPress: _rewinding || onAgree == null ? null : onAgree,
               child: Icon(FLucideIcons.arrowBigUp, color: theme.colors.success),
             ),
@@ -589,7 +613,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
     final theme = context.theme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -607,11 +631,11 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
       ),
       child: SizedBox.expand(
         child: SkeletonizerConfig(
-          data: SkeletonizerConfigData(effect: shimmer),
+          data: SkeletonizerConfigData(effectResolver: shimmerResolver),
           child: IgnorePointer(
             child: Skeletonizer(
               enabled: enabled,
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -631,7 +655,7 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Gap(10),
-                    Text('jenis kata', textAlign: TextAlign.center),
+                    Text(AppLocalizations.of(context).voteWordTypeLabel, textAlign: TextAlign.center),
                   ],
                 ),
               ),

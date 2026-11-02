@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -50,6 +51,7 @@ class _DiscussionImageCensorEditorPageState
   }
 
   Future<void> _load() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _loading = true;
       _error = null;
@@ -61,7 +63,7 @@ class _DiscussionImageCensorEditorPageState
       );
       final bytes = res.data;
       if (bytes == null || bytes.isEmpty) {
-        throw StateError('Body kosong');
+        throw StateError(l10n.reviewCensorEmptyBody);
       }
       final codec = await ui.instantiateImageCodec(
         Uint8List.fromList(bytes),
@@ -70,7 +72,7 @@ class _DiscussionImageCensorEditorPageState
       final frame = await codec.getNextFrame();
       final img = frame.image;
       final rgba = await img.toByteData(format: ui.ImageByteFormat.rawRgba);
-      if (rgba == null) throw StateError('Gagal baca piksel');
+      if (rgba == null) throw StateError(l10n.reviewCensorReadFailed);
       if (!mounted) {
         img.dispose();
         return;
@@ -86,7 +88,7 @@ class _DiscussionImageCensorEditorPageState
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Gagal memuat gambar. Periksa koneksi / URL staging.';
+        _error = AppLocalizations.of(context).reviewCensorLoadFailed;
       });
     }
   }
@@ -167,8 +169,8 @@ class _DiscussionImageCensorEditorPageState
     final block = mode == DiscussionCensorBrushMode.pixelate
         ? (radius ~/ 3).clamp(4, 24)
         : mode == DiscussionCensorBrushMode.blur
-            ? (radius ~/ 4).clamp(3, 16)
-            : 1;
+        ? (radius ~/ 4).clamp(3, 16)
+        : 1;
 
     for (var y = cy - radius; y <= cy + radius; y++) {
       if (y < 0 || y >= height) continue;
@@ -211,10 +213,11 @@ class _DiscussionImageCensorEditorPageState
   Future<void> _export() async {
     final img = _image;
     if (img == null || _busy) return;
+    final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
       final bd = await img.toByteData(format: ui.ImageByteFormat.png);
-      if (bd == null) throw StateError('Export gagal');
+      if (bd == null) throw StateError(l10n.reviewCensorExportFailed);
       final bytes = bd.buffer.asUint8List();
       if (!mounted) return;
       widget.onApply(bytes);
@@ -223,7 +226,7 @@ class _DiscussionImageCensorEditorPageState
       if (!mounted) return;
       showFToast(
         context: context,
-        title: const Text('Gagal menyimpan hasil sensor'),
+        title: Text(AppLocalizations.of(context).reviewCensorSaveFailed),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -236,7 +239,7 @@ class _DiscussionImageCensorEditorPageState
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Sensor gambar'),
+        title: Text(AppLocalizations.of(context).reviewCensorTitle),
         prefixes: [
           FHeaderAction.back(onPress: () => Navigator.of(context).pop(false)),
         ],
@@ -250,112 +253,105 @@ class _DiscussionImageCensorEditorPageState
       child: _loading
           ? const Center(child: FCircularProgress())
           : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(_error!, textAlign: TextAlign.center),
-                      const Gap(12),
-                      FButton(
-                        variant: FButtonVariant.outline,
-                        onPress: _load,
-                        child: const Text('Coba lagi'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_error!, textAlign: TextAlign.center),
+                  const Gap(12),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: _load,
+                    child: Text(AppLocalizations.of(context).commonRetry),
                   ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                ],
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  AppLocalizations.of(context).reviewCensorHint,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(8),
+                Wrap(
+                  spacing: 8,
                   children: [
-                    Text(
-                      'Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.',
-                      style: theme.typography.sm.copyWith(
-                        color: theme.colors.mutedForeground,
+                    for (final mode in DiscussionCensorBrushMode.values)
+                      FButton(
+                        variant: _mode == mode
+                            ? FButtonVariant.primary
+                            : FButtonVariant.outline,
+                        onPress: () => setState(() => _mode = mode),
+                        child: Text(switch (mode) {
+                          DiscussionCensorBrushMode.pixelate => AppLocalizations.of(context).reviewCensorModePixelate,
+                          DiscussionCensorBrushMode.blur => AppLocalizations.of(context).reviewCensorModeBlur,
+                          DiscussionCensorBrushMode.block => AppLocalizations.of(context).reviewCensorModeBlock,
+                        }),
                       ),
-                    ),
-                    const Gap(8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        for (final mode in DiscussionCensorBrushMode.values)
-                          FButton(
-                            variant: _mode == mode
-                                ? FButtonVariant.primary
-                                : FButtonVariant.outline,
-                            onPress: () => setState(() => _mode = mode),
-                            child: Text(switch (mode) {
-                              DiscussionCensorBrushMode.pixelate => 'Pixelate',
-                              DiscussionCensorBrushMode.blur => 'Blur',
-                              DiscussionCensorBrushMode.block => 'Blok',
-                            }),
-                          ),
-                      ],
-                    ),
-                    const Gap(8),
-                    Text(
-                      'Ukuran kuas',
-                      style: theme.typography.sm,
-                    ),
-                    Slider(
-                      value: _brushRadius,
-                      min: 12,
-                      max: 64,
-                      onChanged: (v) => setState(() => _brushRadius = v),
-                    ),
-                    const Gap(8),
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final img = _image!;
-                          final maxW = constraints.maxWidth;
-                          final maxH = constraints.maxHeight;
-                          final scale = (maxW / img.width < maxH / img.height)
-                              ? maxW / img.width
-                              : maxH / img.height;
-                          final w = img.width * scale;
-                          final h = img.height * scale;
-                          return Center(
-                            child: SizedBox(
-                              width: w,
-                              height: h,
-                              child: GestureDetector(
-                                onPanStart: (d) => _applyBrush(
-                                  d.localPosition,
-                                  Size(w, h),
-                                ),
-                                onPanUpdate: (d) => _applyBrush(
-                                  d.localPosition,
-                                  Size(w, h),
-                                ),
-                                child: RawImage(
-                                  image: img,
-                                  fit: BoxFit.fill,
-                                  width: w,
-                                  height: h,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const Gap(12),
-                    FButton(
-                      onPress: _busy ? null : _export,
-                      child: _busy
-                          ? const FCircularProgress()
-                          : const Text('Terapkan sensor'),
-                    ),
-                    const Gap(8),
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: _busy
-                          ? null
-                          : () => Navigator.of(context).pop(false),
-                      child: const Text('Batal'),
-                    ),
                   ],
                 ),
+                const Gap(8),
+                Text(AppLocalizations.of(context).reviewCensorBrushSize, style: theme.typography.body.sm),
+                Slider(
+                  value: _brushRadius,
+                  min: 12,
+                  max: 64,
+                  onChanged: (v) => setState(() => _brushRadius = v),
+                ),
+                const Gap(8),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final img = _image!;
+                      final maxW = constraints.maxWidth;
+                      final maxH = constraints.maxHeight;
+                      final scale = (maxW / img.width < maxH / img.height)
+                          ? maxW / img.width
+                          : maxH / img.height;
+                      final w = img.width * scale;
+                      final h = img.height * scale;
+                      return Center(
+                        child: SizedBox(
+                          width: w,
+                          height: h,
+                          child: GestureDetector(
+                            onPanStart: (d) =>
+                                _applyBrush(d.localPosition, Size(w, h)),
+                            onPanUpdate: (d) =>
+                                _applyBrush(d.localPosition, Size(w, h)),
+                            child: RawImage(
+                              image: img,
+                              fit: BoxFit.fill,
+                              width: w,
+                              height: h,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const Gap(12),
+                FButton(
+                  onPress: _busy ? null : _export,
+                  child: _busy
+                      ? const FCircularProgress()
+                      : Text(AppLocalizations.of(context).reviewCensorApply),
+                ),
+                const Gap(8),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: _busy
+                      ? null
+                      : () => Navigator.of(context).pop(false),
+                  child: Text(AppLocalizations.of(context).commonCancel),
+                ),
+              ],
+            ),
     );
   }
 }

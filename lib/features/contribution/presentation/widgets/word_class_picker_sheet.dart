@@ -1,16 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class WordClassPickItem {
-  const WordClassPickItem({required this.id, required this.name, this.alias});
+  const WordClassPickItem({
+    required this.id,
+    required this.name,
+    this.alias,
+    this.code,
+  });
 
   final String id;
   final String name;
   final String? alias;
+  final String? code;
 
   String get displayLabel =>
-      (alias == null || alias!.isEmpty) ? name : '$name ($alias)';
+      (alias == null || alias!.isEmpty || code == 'umum') ? name : '$name ($alias)';
 }
 
 /// Bottom sheet pilih kelas kata - list scrollable, aman untuk banyak opsi.
@@ -47,6 +55,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final height = _sheetHeight(context);
 
@@ -63,10 +72,10 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                 const Gap(8),
                 Expanded(
                   child: Text(
-                    'Pilih kelas kata',
+                    l10n.contributeWordClassSheetTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -81,22 +90,42 @@ class _WordClassPickerSheetBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
             child: Text(
-              '${items.length} pilihan - ketuk untuk memilih',
+              l10n.contributeWordClassSheetCount(items.length),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 12,
               ),
             ),
           ),
+          if (_shortcuts(items) case final shortcuts when shortcuts.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final item in shortcuts)
+                    FButton(
+                      variant: item.id == selectedId
+                          ? FButtonVariant.primary
+                          : FButtonVariant.outline,
+                      size: FButtonSizeVariant.xs,
+                      mainAxisSize: MainAxisSize.min,
+                      onPress: () => Navigator.of(context).pop(item),
+                      child: Text(_shortcutLabel(item)),
+                    ),
+                ],
+              ),
+            ),
           const Divider(height: 1),
           Expanded(
             child: items.isEmpty
                 ? Center(
                     child: Text(
-                      'Tidak ada kelas kata',
-                      style: theme.typography.sm.copyWith(
+                      l10n.contributeWordClassSheetEmpty,
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -126,9 +155,7 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                     children: [
                                       Text(
                                         item.name,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: theme.typography.sm.copyWith(
+                                        style: theme.typography.body.sm.copyWith(
                                           fontWeight: selected
                                               ? FontWeight.w700
                                               : FontWeight.w500,
@@ -138,13 +165,13 @@ class _WordClassPickerSheetBody extends StatelessWidget {
                                         ),
                                       ),
                                       if (item.alias != null &&
-                                          item.alias!.isNotEmpty) ...[
+                                          item.alias!.isNotEmpty &&
+                                          item.code?.toLowerCase() !=
+                                              'umum') ...[
                                         const Gap(2),
                                         Text(
                                           item.alias!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: theme.typography.sm.copyWith(
+                                          style: theme.typography.body.sm.copyWith(
                                             color: theme.colors.mutedForeground,
                                             fontSize: 12,
                                           ),
@@ -171,4 +198,36 @@ class _WordClassPickerSheetBody extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Urutan yang diminta di sheet: Kata Kerja, Kata Sifat, Kata Benda.
+const _shortcutCodes = ['v', 'adj', 'n'];
+
+const _shortcutAliases = {
+  'v': 'kata kerja',
+  'adj': 'kata sifat',
+  'n': 'kata benda',
+};
+
+List<WordClassPickItem> _shortcuts(List<WordClassPickItem> items) {
+  final picked = <WordClassPickItem>[];
+  for (final code in _shortcutCodes) {
+    for (final item in items) {
+      final itemCode = item.code?.trim().toLowerCase() ?? '';
+      final alias = item.alias?.trim().toLowerCase() ?? '';
+      final name = item.name.trim().toLowerCase();
+      final label = _shortcutAliases[code];
+      if (itemCode == code || alias == label || name == label) {
+        picked.add(item);
+        break;
+      }
+    }
+  }
+  return picked;
+}
+
+String _shortcutLabel(WordClassPickItem item) {
+  final alias = item.alias?.trim() ?? '';
+  if (alias.isNotEmpty) return alias;
+  return item.name;
 }

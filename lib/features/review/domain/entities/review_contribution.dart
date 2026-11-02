@@ -31,39 +31,25 @@ class ReviewItem {
 
   bool get isPending => status == 'pending';
 
-  /// Nama tampilan kontributor; fallback username lalu anonim.
-  String get contributorLabel {
+  /// Nama tampilan kontributor (null = anonim; label locale di presentation).
+  String? get contributorLabel {
     final display = contributorDisplayName?.trim();
     if (display != null && display.isNotEmpty) return display;
     final handle = contributorUsername?.trim();
     if (handle != null && handle.isNotEmpty) return handle;
-    return 'anonim';
+    return null;
   }
 
-  String get title {
+  /// Judul baris: lemma, atau kode entity (label locale di presentation).
+  String get title => titleOrEntityType;
+
+  /// Kode entity saat lemma kosong - siap dipetakan ke label locale.
+  String get titleOrEntityType {
     final lemma = wordLemma?.trim();
     if (lemma != null && lemma.isNotEmpty) return lemma;
-    return reviewFallbackTitle(entityType);
+    return entityType;
   }
 }
-
-String reviewFallbackTitle(String entityType) => switch (entityType) {
-  'word' => 'Kata',
-  'pronunciation' => 'Pelafalan',
-  'word_image' => 'Gambar',
-  'word_audio' => 'Audio',
-  'example' => 'Contoh kalimat',
-  'meaning' => 'Makna',
-  _ => 'Usulan',
-};
-
-String reviewStatusLabel(String status) => switch (status) {
-  'pending' => 'Menunggu',
-  'approved' => 'Disetujui',
-  'rejected' => 'Ditolak',
-  'corrected' => 'Dikoreksi',
-  _ => status,
-};
 
 class ReviewListPage {
   const ReviewListPage({

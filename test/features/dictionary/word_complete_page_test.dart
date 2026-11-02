@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,6 +13,8 @@ import 'package:sambasku_mobile/features/dictionary/domain/providers/dictionary_
 import 'package:sambasku_mobile/features/dictionary/domain/repositories/dictionary_repository.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/usecases/search_words_use_case.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/pages/word_complete_page.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('awalnya meminta minimal 2 huruf, bukan layar kosong', (
@@ -20,7 +22,10 @@ void main() {
   ) async {
     await _pumpPage(tester, _FakeDictionaryRepository());
 
-    expect(find.text('Ketik minimal 2 huruf untuk mencari kata.'), findsOneWidget);
+    expect(
+      find.text('Ketik minimal 2 huruf untuk mencari kata.'),
+      findsOneWidget,
+    );
     expect(find.byType(FCircularProgress), findsNothing);
   });
 
@@ -105,14 +110,16 @@ Future<GoRouter> _pumpPage(
         searchWordsUseCaseProvider.overrideWithValue(SearchWordsUseCase(repo)),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: const [Locale('id')],
+        locale: const Locale('id'),
         routerConfig: router,
-        builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
-          child: child!,
-        ),
+        builder: (context, child) =>
+            FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
       ),
     ),
   );
@@ -180,8 +187,8 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   }) => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({

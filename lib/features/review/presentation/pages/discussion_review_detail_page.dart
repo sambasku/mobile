@@ -1,21 +1,24 @@
 import 'dart:typed_data';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../discussion/data/discussion_providers.dart';
 import '../../../discussion/domain/discussion_models.dart';
 import '../providers/discussion_review_providers.dart';
 import '../widgets/discussion_image_censor_editor.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 /// Detail diskusi pending + Setujui / Tolak (+ sensor multi-foto).
 class DiscussionReviewDetailPage extends ConsumerWidget {
@@ -30,7 +33,7 @@ class DiscussionReviewDetailPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tinjau diskusi'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionDetailTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -39,7 +42,7 @@ class DiscussionReviewDetailPage extends ConsumerWidget {
           child: Text(
             error is DiscussionFailure
                 ? error.message
-                : 'Gagal memuat detail',
+                : AppLocalizations.of(context).commonLoadFailed,
             textAlign: TextAlign.center,
           ),
         ),
@@ -85,7 +88,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
     if (src == null || src.isEmpty) {
       showFToast(
         context: context,
-        title: const Text('URL gambar staging tidak tersedia'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionStagingImageMissing),
       );
       return;
     }
@@ -142,7 +145,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
           invalidateDiscussionReview(ref);
           showFToast(
             context: context,
-            title: const Text('Diskusi disetujui dan tayang'),
+            title: Text(AppLocalizations.of(context).reviewDiscussionApprovedToast),
           );
           context.pop();
         },
@@ -168,34 +171,32 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Pastikan semua foto aman',
-                  style: context.theme.typography.lg.copyWith(
+                  AppLocalizations.of(context).reviewDiscussionPhotosSafe,
+                  style: context.theme.typography.body.lg.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const Gap(8),
                 Text(
-                  'Kamu menyetujui $_n foto ($m tersensor · $k ber-flag kekerasan).',
+                  AppLocalizations.of(context).reviewDiscussionApprovePhotos(_n, m, k),
                 ),
                 const Gap(8),
                 Text(
-                  'Pastikan foto bukan NSFW, aman ditayangkan publik, '
-                  'data sensitif sudah disensor bila perlu, dan flag kekerasan '
-                  'sudah ditempel bila perlu.',
-                  style: context.theme.typography.sm.copyWith(
+                  AppLocalizations.of(context).reviewDiscussionPhotoChecklist,
+                  style: context.theme.typography.body.sm.copyWith(
                     color: context.theme.colors.mutedForeground,
                   ),
                 ),
                 const Gap(16),
                 FButton(
                   onPress: () => Navigator.of(sheetContext).pop(true),
-                  child: const Text('Saya sudah memeriksa, setujui'),
+                  child: Text(AppLocalizations.of(context).reviewDiscussionConfirmCheck),
                 ),
                 const Gap(8),
                 FButton(
                   variant: FButtonVariant.outline,
                   onPress: () => Navigator.of(sheetContext).pop(false),
-                  child: const Text('Batal'),
+                  child: Text(AppLocalizations.of(context).commonCancel),
                 ),
               ],
             ),
@@ -209,43 +210,37 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
   Future<void> _reject() async {
     if (_busy || !_isPending) return;
     final controller = TextEditingController();
-    final note = await showFDialog<String>(
+    final note = await showFMessageDialog<String>(
       context: context,
-      builder: (dialogContext, style, animation) {
-        return FDialog(
-          style: style,
-          animation: animation,
-          title: const Text('Tolak diskusi'),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Berikan alasan penolakan (wajib).'),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: controller),
-                label: const Text('Alasan'),
-                maxLines: 3,
-              ),
-            ],
+      title: Text(AppLocalizations.of(context).reviewDiscussionRejectTitle),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(AppLocalizations.of(context).reviewDiscussionRejectReasonRequired),
+          const Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            label: Text(AppLocalizations.of(context).commonReason),
+            maxLines: 3,
           ),
-          actions: [
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            FButton(
-              onPress: () {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                Navigator.of(dialogContext).pop(text);
-              },
-              child: const Text('Tolak'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: Text(AppLocalizations.of(context).commonCancel),
+        ),
+        FButton(
+          onPress: () {
+            final text = controller.text.trim();
+            if (text.isEmpty) return;
+            Navigator.of(dialogContext).pop(text);
+          },
+          child: Text(AppLocalizations.of(context).commonReject),
+        ),
+      ],
     );
     controller.dispose();
     if (note == null || note.isEmpty || !mounted) return;
@@ -266,7 +261,7 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
         invalidateDiscussionReview(ref);
         showFToast(
           context: context,
-          title: const Text('Diskusi ditolak'),
+          title: Text(AppLocalizations.of(context).reviewDiscussionRejectedToast),
         );
         context.pop();
       },
@@ -278,15 +273,15 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
     if (uri == null || uri.scheme != 'https') {
       showFToast(
         context: context,
-        title: const Text('Tautan tidak valid'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionInvalidLink),
       );
       return;
     }
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final ok = await launchExternalUrl(uri);
     if (!ok && mounted) {
       showFToast(
         context: context,
-        title: const Text('Tidak bisa membuka tautan'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionCannotOpenLink),
       );
     }
   }
@@ -308,9 +303,10 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
         Expanded(
           child: ListView(
             children: [
-              Text(
-                name,
-                style: theme.typography.sm.copyWith(
+              PublicAccountName(
+                label: name,
+                isVerifier: item.isVerifier,
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -318,15 +314,15 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                 const Gap(4),
                 Text(
                   formatRelativeCompact(DateTime.tryParse(item.createdAt)),
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
               ],
               const Gap(16),
               Text(
-                body.isEmpty ? '(tanpa teks)' : body,
-                style: theme.typography.sm,
+                body.isEmpty ? AppLocalizations.of(context).reviewDiscussionNoText : body,
+                style: theme.typography.body.sm,
               ),
               if (link != null && link.isNotEmpty) ...[
                 const Gap(12),
@@ -344,8 +340,8 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
               if (_n > 0) ...[
                 const Gap(16),
                 Text(
-                  'Lampiran gambar ($_n)',
-                  style: theme.typography.sm.copyWith(
+                  AppLocalizations.of(context).reviewDiscussionAttachmentCount(_n),
+                  style: theme.typography.body.sm.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -394,21 +390,25 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                                         ),
                             ),
                             if (_censoredByIndex[index] != null)
-                              const Positioned(
+                              Positioned(
                                 left: 4,
                                 top: 4,
                                 child: _MiniBadge(
-                                  label: 'S',
-                                  color: Color(0xFF3B82F6),
+                                  label: AppLocalizations.of(
+                                    context,
+                                  ).reviewDiscussionBadgeCensored,
+                                  color: const Color(0xFF3B82F6),
                                 ),
                               ),
                             if (_violenceByIndex[index])
                               Positioned(
                                 left: _censoredByIndex[index] != null ? 22 : 4,
                                 top: 4,
-                                child: const _MiniBadge(
-                                  label: 'K',
-                                  color: Color(0xFFF59E0B),
+                                child: _MiniBadge(
+                                  label: AppLocalizations.of(
+                                    context,
+                                  ).reviewDiscussionBadgeViolence,
+                                  color: const Color(0xFFF59E0B),
                                 ),
                               ),
                           ],
@@ -467,9 +467,9 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            'Ketuk foto untuk melihat ukuran penuh',
+                            AppLocalizations.of(context).reviewDiscussionTapPhotoFull,
                             textAlign: TextAlign.center,
-                            style: theme.typography.xs.copyWith(
+                            style: theme.typography.body.xs.copyWith(
                               color: theme.colors.mutedForeground,
                               height: 1.3,
                             ),
@@ -491,8 +491,8 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                               : () => _openCensorEditorSmart(active),
                           child: Text(
                             _censoredByIndex[active] != null
-                                ? 'Edit sensor'
-                                : 'Sensor',
+                                ? AppLocalizations.of(context).reviewDiscussionEditCensor
+                                : AppLocalizations.of(context).reviewDiscussionCensor,
                           ),
                         ),
                       ),
@@ -501,20 +501,20 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
                         FButton(
                           variant: FButtonVariant.ghost,
                           onPress: _busy ? null : () => _clearCensor(active),
-                          child: const Text('Batalkan'),
+                          child: Text(AppLocalizations.of(context).commonCancel),
                         ),
                       ],
                     ],
                   ),
                   const Gap(8),
                   FTile(
-                    title: Text('Gambar ${active + 1}: berisi kekerasan'),
-                    subtitle: const Text(
-                      'Centang jika foto menunjukkan kekerasan',
+                    title: Text(AppLocalizations.of(context).reviewDiscussionForceViolence(active + 1)),
+                    subtitle: Text(
+                      AppLocalizations.of(context).reviewDiscussionForceViolenceHint,
                     ),
                     suffix: FSwitch(
                       semanticsLabel:
-                          'Gambar ${active + 1} berisi kekerasan',
+                          AppLocalizations.of(context).reviewDiscussionForceViolenceLabel(active + 1),
                       value: _violenceByIndex[active],
                       enabled: !_busy,
                       onChange: (v) =>
@@ -529,25 +529,29 @@ class _DiscussionReviewBodyState extends ConsumerState<_DiscussionReviewBody> {
         ),
         if (_isPending) ...[
           FButton(
-            onPress: _busy ? null : _approve,
-            child: _busy
-                ? const FCircularProgress()
-                : const Text('Setujui & tayangkan'),
+            variant: FButtonVariant.outline,
+            onPress: _busy ? null : _reject,
+            child: Text(AppLocalizations.of(context).commonReject),
           ),
           const Gap(8),
           FButton(
-            variant: FButtonVariant.outline,
-            onPress: _busy ? null : _reject,
-            child: const Text('Tolak'),
+            onPress: _busy ? null : _approve,
+            child: _busy
+                ? const FCircularProgress()
+                : Text(AppLocalizations.of(context).reviewDiscussionApprovePublish),
           ),
           const Gap(12),
         ] else
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
-              'Status: ${item.statusLabel}',
+              AppLocalizations.of(
+                context,
+              ).reviewDiscussionStatus(
+                item.statusLabelOf(AppLocalizations.of(context)),
+              ),
               textAlign: TextAlign.center,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

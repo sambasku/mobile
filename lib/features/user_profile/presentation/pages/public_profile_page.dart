@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart' show RefreshIndicator;
+import 'package:material_ui/material_ui.dart'
+    show RefreshIndicator, showModalBottomSheet;
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -12,22 +14,28 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
-import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/image_sheet_drawer.dart';
 import '../../../../shared/utils/photo_pick_constants.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/widgets/profile_hero_shell.dart';
+import '../../../../shared/widgets/profile_identity_header.dart';
+import '../../../../shared/widgets/profile_leveling_chip.dart';
 import '../../../../shared/widgets/profile_stat_inline.dart';
 import '../../../../shared/widgets/small_button.dart';
+import '../../../achievement/presentation/providers/achievement_providers.dart';
+import '../../../achievement/presentation/widgets/border_picker_sheet.dart';
+import '../../../achievement/presentation/widgets/profile_achievement_tabs.dart';
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
-import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../profile/data/avatar_upload_service.dart';
 import '../../../profile/presentation/crop_profile_photo.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
-import '../../domain/public_activity_mapper.dart';
 import '../providers/user_profile_providers.dart';
+import '../widgets/profile_activity_section.dart';
 
 /// Halaman profil publik - GET /api/v1/users/:username (+ activity).
 /// Avatar bisa diganti hanya jika username = user yang sedang login.
@@ -111,40 +119,51 @@ class PublicProfilePage extends HookConsumerWidget {
     }
 
     return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(
-          _appBarTitle(
-            async: async,
-            isOwnProfile: isOwnProfile,
-            sessionDisplayName: me?.displayName,
-            initialDisplayName: initialDisplayName,
-          ),
+      // childPad: false - gutter horizontal dipasang manual per sliver supaya
+      // baris chip kategori bisa full-bleed seperti feed beranda (#193).
+      // FScaffold.childPad membungkus SELURUH scroll view, jadi chip ikut
+      // terpasung 12px dari tepi + garis bawahnya tidak sampai ke tepi layar.
+      childPad: false,
+      // Tanpa header: cover full-bleed sampai belakang status bar, tombol
+      // back melayang di atasnya (ProfileHeroShell).
+      child: ProfileHeroShell(
+        showBack: true,
+        onBack: () => context.pop(),
+        backLabel: AppLocalizations.of(context).commonBack,
+        coverHeight: ProfileIdentityHeader.coverHeightOf(
+          ProfileHeaderVariant.compact,
+          MediaQuery.sizeOf(context).width,
         ),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      child: async.hasError
-          ? _ErrorState(
-              failure: async.error is UserProfileFailure
-                  ? async.error! as UserProfileFailure
-                  : UserProfileFailure(async.error.toString()),
-              onRetry: () {
-                ref.invalidate(publicProfileProvider(username));
-                ref.invalidate(publicActivityProvider(username));
-              },
-            )
-          : async.when(
-              loading: () => const Center(child: FCircularProgress()),
-              error: (_, _) => const SizedBox.shrink(),
-              data: (profile) => _ProfileBody(
-                profile: profile,
-                isOwnProfile: isOwnProfile,
-                activityAsync: activityAsync,
-                onRefresh: refresh,
-                onRetryActivity: () =>
-                    ref.invalidate(publicActivityProvider(username)),
+        title: _appBarTitle(
+          l10n: AppLocalizations.of(context),
+          async: async,
+          isOwnProfile: isOwnProfile,
+          sessionDisplayName: me?.displayName,
+          initialDisplayName: initialDisplayName,
+        ),
+        scrollView: async.hasError
+            ? _ErrorState(
+                failure: async.error is UserProfileFailure
+                    ? async.error! as UserProfileFailure
+                    : UserProfileFailure(async.error.toString()),
+                onRetry: () {
+                  ref.invalidate(publicProfileProvider(username));
+                  ref.invalidate(publicActivityProvider(username));
+                },
+              )
+            : async.when(
+                loading: () => const _PublicProfileLoadingBody(),
+                error: (_, _) => const SizedBox.shrink(),
+                data: (profile) => _ProfileBody(
+                  profile: profile,
+                  isOwnProfile: isOwnProfile,
+                  activityAsync: activityAsync,
+                  onRefresh: refresh,
+                  onRetryActivity: () =>
+                      ref.invalidate(publicActivityProvider(username)),
+                ),
               ),
-            ),
+      ),
     );
   }
 }
@@ -152,6 +171,7 @@ class PublicProfilePage extends HookConsumerWidget {
 /// Judul app bar: display name dari server, lalu sesi auth, lalu hint navigasi.
 /// Jangan pakai handle route sebagai judul.
 String _appBarTitle({
+  required AppLocalizations l10n,
   required AsyncValue<PublicProfile> async,
   required bool isOwnProfile,
   required String? sessionDisplayName,
@@ -168,7 +188,7 @@ String _appBarTitle({
   final fromRoute = initialDisplayName?.trim();
   if (fromRoute != null && fromRoute.isNotEmpty) return fromRoute;
 
-  return 'Profil';
+  return l10n.profileViewTitle;
 }
 
 class _ProfileBody extends HookConsumerWidget {
@@ -195,157 +215,183 @@ class _ProfileBody extends HookConsumerWidget {
         ? ref.watch(authStatusProvider).value?.avatarUrl
         : null;
     final avatarSrc = sessionAvatar ?? profile.avatarUrl;
+    // Bingkai profil: profil sendiri baca live dari /me/achievements supaya
+    // langsung berubah setelah pilih bingkai; profil orang lain pakai wire
+    // active_border_url dari profil publik.
+    final myBorder = isOwnProfile
+        ? ref.watch(myActiveBorderProvider).asData?.value
+        : null;
+    final borderUrl = isOwnProfile
+        ? myBorder?.imageUrl
+        : profile.activeBorderUrl;
     final canPreviewAvatar =
         !isOwnProfile && avatarSrc != null && avatarSrc.trim().isNotEmpty;
     final uploadingAvatar = useState(false);
+    final activityFilter = useState(ProfileActivityFilter.all);
+    // #201: controller untuk tombol kembali ke atas (+ sync scroll).
+    final scroll = useScrollController();
+    // Chip pinned berhenti di bawah bar melayang (status bar + bar aksi),
+    // bukan menempel ke tepi atas layar.
+    final barOffset =
+        MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
 
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Semantics(
-                button:
-                    (isOwnProfile && !uploadingAvatar.value) ||
-                    canPreviewAvatar,
-                label: isOwnProfile
-                    ? 'Ganti foto profil'
-                    : canPreviewAvatar
-                    ? 'Lihat foto profil'
-                    : 'Foto profil',
-                child: GestureDetector(
-                  onTap: isOwnProfile && !uploadingAvatar.value
-                      ? () =>
-                            _pickAndUploadAvatar(context, ref, uploadingAvatar)
-                      : canPreviewAvatar
-                      ? () => showImagePreview(context, urls: [avatarSrc])
-                      : null,
-                  child: _Avatar(
-                    name: profile.displayName,
-                    imageUrl: avatarSrc,
-                    size: 56,
-                    showEditBadge: isOwnProfile,
-                    uploading: uploadingAvatar.value,
-                  ),
-                ),
-              ),
-              const Gap(12),
-              Expanded(
+    return ScrollWithBackToTop(
+      controller: scroll,
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        // Spinner mulai di bawah bar melayang, bukan di baliknya.
+        displacement: barOffset + 8,
+        // Sliver (bukan ListView): baris chip kategori bisa PIN di bawah bar
+        // melayang - pola sama dengan feed beranda (#193).
+        child: CustomScrollView(
+          controller: scroll,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              // Header identitas full-bleed (cover selebar layar); gutter
+              // horizontal dipasang di dalam widget header.
+              padding: EdgeInsets.zero,
+              sliver: SliverToBoxAdapter(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      profile.displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.typography.lg.copyWith(
-                        fontWeight: FontWeight.w700,
-                        height: 1.2,
+                    // Header identitas bersama dengan tab Profil: beda varian
+                    // (compact), struktur dan ritme sama.
+                    ProfileIdentityHeader(
+                      variant: ProfileHeaderVariant.compact,
+                      displayName: profile.displayName,
+                      username: profile.username,
+                      avatarUrl: avatarSrc,
+                      borderUrl: borderUrl,
+                      bio: profile.bio,
+                      isVerifier: profile.isVerifier,
+                      streakDays: profile.leveling?.streakDays,
+                      leveling: profile.leveling == null
+                          ? null
+                          : ProfileLevelingChip(
+                              leveling: profile.leveling!,
+                              // Compact header rata kiri - jangan center chip.
+                              alignCenter: false,
+                            ),
+                      stats: ProfileStatRow(
+                        words: profile.wordsApproved,
+                        corrections: profile.correctionsApproved,
+                        alignCenter: false,
+                      ),
+                      joinedLabel: joined,
+                      onAvatarTap: isOwnProfile && !uploadingAvatar.value
+                          ? () => _showAvatarActions(
+                              context,
+                              ref,
+                              uploadingAvatar,
+                            )
+                          : canPreviewAvatar
+                          ? () => showImagePreview(context, urls: [avatarSrc])
+                          : null,
+                      actions: [
+                        if (isOwnProfile)
+                          SmallButton(
+                            label: AppLocalizations.of(
+                              context,
+                            ).profileEditAction,
+                            onPress: () => context.push('/edit-profile'),
+                          ),
+                      ],
+                      footer: ProfileAchievementTabs(
+                        username: isOwnProfile ? null : profile.username,
+                        showTitle: true,
                       ),
                     ),
-                    if (profile.displayName != profile.username) ...[
-                      const Gap(1),
-                      Text(
-                        '@${profile.username}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
-                      ),
-                    ],
-                    if (profile.bio != null &&
-                        profile.bio!.trim().isNotEmpty) ...[
-                      const Gap(6),
-                      Text(
-                        profile.bio!,
-                        style: theme.typography.sm,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                    const Gap(12),
                   ],
                 ),
               ),
-              if (isOwnProfile) ...[
-                const Gap(8),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: SmallButton(
-                    label: 'Edit',
-                    onPress: () => context.push('/edit-profile'),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          const Gap(10),
-          ProfileStatRow(
-            words: profile.wordsApproved,
-            corrections: profile.correctionsApproved,
-          ),
-          const Gap(6),
-          ProfileMetaRow(joinedLabel: joined, isVerifier: profile.isVerifier),
-          const Gap(16),
-          Text(
-            'Aktivitas terbaru',
-            style: theme.typography.md.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const Gap(8),
-          activityAsync.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
-              child: Center(child: FCircularProgress()),
             ),
-            error: (err, _) => Column(
-              children: [
-                FAlert(
-                  variant: FAlertVariant.destructive,
-                  title: Text(
-                    err is UserProfileFailure
-                        ? err.message
-                        : 'Gagal memuat aktivitas',
+            // Chip kategori menempel di bawah bar melayang saat scroll.
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: ProfileActivityChipsHeader(
+                topOffset: barOffset,
+                // body.sm + w700: sama dengan heading feed beranda; jangan
+                // body.md (line height 24) - titleHeight default 18 memotong teks.
+                title: Text(
+                  AppLocalizations.of(context).profileActivityRecent,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const Gap(8),
-                FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: onRetryActivity,
-                  child: const Text('Coba lagi'),
+                child: ProfileActivityChips(
+                  selected: activityFilter.value,
+                  onChanged: (next) {
+                    if (next == activityFilter.value) return;
+                    HapticFeedback.selectionClick();
+                    activityFilter.value = next;
+                  },
                 ),
-              ],
+              ),
             ),
-            data: (items) {
-              if (items.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text(
-                    'Belum ada aktivitas publik.',
-                    style: theme.typography.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                );
-              }
-              return Column(
-                children: [
-                  for (final item in items)
-                    ActivityFeedTile(
-                      item: mapPublicActivityToFeed(item, profile),
-                      // Aksi/CTA ke karya sendiri tidak relevan di profil sendiri.
-                      showCta: !isOwnProfile,
-                    ),
-                ],
-              );
-            },
-          ),
-        ],
+            SliverPadding(
+              // Gutter horizontal manual (childPad false) + jarak bawah.
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
+              sliver: SliverToBoxAdapter(
+                child: ProfileActivityList(
+                  username: profile.username,
+                  profile: profile,
+                  filter: activityFilter.value,
+                  activityAsync: activityAsync,
+                  onRetry: onRetryActivity,
+                  showCta: !isOwnProfile,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  /// Bottom sheet tap avatar sendiri: ganti foto atau ubah bingkai.
+  Future<void> _showAvatarActions(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> uploadingAvatar,
+  ) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: const Icon(FLucideIcons.camera),
+                  title: Text(
+                    AppLocalizations.of(sheetContext).profileChangePhoto,
+                  ),
+                  onPress: () => Navigator.of(sheetContext).pop('photo'),
+                ),
+                FTile(
+                  prefix: const Icon(FLucideIcons.frame),
+                  title: Text(
+                    AppLocalizations.of(sheetContext).profileChangeFrame,
+                  ),
+                  onPress: () => Navigator.of(sheetContext).pop('border'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!context.mounted) return;
+    if (action == 'photo') {
+      await _pickAndUploadAvatar(context, ref, uploadingAvatar);
+    } else if (action == 'border') {
+      await showBorderPickerSheet(context);
+    }
   }
 
   Future<void> _pickAndUploadAvatar(
@@ -356,6 +402,8 @@ class _ProfileBody extends HookConsumerWidget {
     showImageSheetDrawer(
       context,
       filePicker: false,
+      // Hanya ProfilePhotoCropPage - jangan ImageCropPage dulu (double crop).
+      cropEnabled: false,
       maxWidth: kAvatarPickMaxWidth,
       maxHeight: kAvatarPickMaxHeight,
       imageQuality: kPhotoPickQuality,
@@ -370,7 +418,7 @@ class _ProfileBody extends HookConsumerWidget {
           if (!context.mounted) return;
           showFToast(
             context: context,
-            title: const Text('Gagal membuka pemotong foto'),
+            title: Text(AppLocalizations.of(context).profilePhotoPickerFailed),
           );
           return;
         }
@@ -395,7 +443,7 @@ class _ProfileBody extends HookConsumerWidget {
               if (!context.mounted) return;
               showFToast(
                 context: context,
-                title: const Text('Foto profil diperbarui'),
+                title: Text(AppLocalizations.of(context).profilePhotoUpdated),
               );
             },
           );
@@ -407,120 +455,106 @@ class _ProfileBody extends HookConsumerWidget {
   }
 }
 
-class _Avatar extends StatelessWidget {
-  const _Avatar({
-    required this.name,
-    this.imageUrl,
-    this.size = 40,
-    this.showEditBadge = false,
-    this.uploading = false,
-  });
-
-  final String name;
-  final String? imageUrl;
-  final double size;
-  final bool showEditBadge;
-  final bool uploading;
+/// Loading penuh: header + lencana + chip + feed - semua Skeletonizer,
+/// bukan spinner. Tinggi mendekati isi asli supaya scroll tidak loncat.
+class _PublicProfileLoadingBody extends StatelessWidget {
+  const _PublicProfileLoadingBody();
 
   @override
   Widget build(BuildContext context) {
-    if (uploading) {
-      return Skeletonizer(enabled: true, child: Bone.circle(size: size));
-    }
-
     final theme = context.theme;
-    final display = displayImageUrl(imageUrl, width: 256) ?? imageUrl;
-    final Widget face;
-    if (display != null && display.isNotEmpty) {
-      face = ClipOval(
-        child: Image.network(
-          display,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) {
-            if (imageUrl != null &&
-                imageUrl!.isNotEmpty &&
-                imageUrl != display) {
-              return Image.network(
-                imageUrl!,
-                width: size,
-                height: size,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    _InitialsAvatar(name: name, size: size, theme: theme),
-              );
-            }
-            return _InitialsAvatar(name: name, size: size, theme: theme);
-          },
-        ),
-      );
-    } else {
-      face = _InitialsAvatar(name: name, size: size, theme: theme);
-    }
+    final l10n = AppLocalizations.of(context);
+    final barOffset =
+        MediaQuery.paddingOf(context).top + ProfileHeroShell.barHeight;
 
-    if (!showEditBadge) return face;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        face,
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              color: theme.colors.primary,
-              shape: BoxShape.circle,
-              border: Border.all(color: theme.colors.background, width: 2),
-            ),
-            child: Icon(
-              FLucideIcons.camera,
-              size: 13,
-              color: theme.colors.primaryForeground,
+    return IgnorePointer(
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const ProfileIdentityHeaderSkeleton(
+                  footer: _BadgeGridSkeleton(),
+                ),
+                const Gap(12),
+              ],
             ),
           ),
-        ),
-      ],
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: ProfileActivityChipsHeader(
+              topOffset: barOffset,
+              title: Text(
+                l10n.profileActivityRecent,
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              child: ProfileActivityChips(
+                selected: ProfileActivityFilter.all,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(12, 0, 12, 32),
+            sliver: SliverToBoxAdapter(child: ProfileActivityListSkeleton()),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _InitialsAvatar extends StatelessWidget {
-  const _InitialsAvatar({required this.name, required this.size, this.theme});
-
-  final String name;
-  final double size;
-  final FThemeData? theme;
+/// Bone 3 kolom di dalam [ProfileIdentityHeaderSkeleton] (sudah Skeletonizer).
+class _BadgeGridSkeleton extends StatelessWidget {
+  const _BadgeGridSkeleton();
 
   @override
   Widget build(BuildContext context) {
-    final t = theme ?? context.theme;
-    final initials = _initials(name);
-    return FAvatar.raw(
-      size: size,
-      style: .delta(backgroundColor: t.colors.primary.withValues(alpha: 0.12)),
-      child: Text(
-        initials,
-        style: t.typography.md.copyWith(
-          fontWeight: FontWeight.w700,
-          color: t.colors.primary,
-          height: 1,
+    final theme = context.theme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Bone.text(
+          words: 1,
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
-      ),
+        const Gap(8),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final cellWidth = (constraints.maxWidth - 24) / 3;
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                for (var i = 0; i < 3; i++)
+                  SizedBox(
+                    width: cellWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.colors.border),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AspectRatio(aspectRatio: 1, child: Bone.square()),
+                          Gap(4),
+                          Bone.text(words: 2),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ],
     );
-  }
-
-  static String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    final word = parts.first;
-    if (word.length >= 2) return word.substring(0, 2).toUpperCase();
-    return word.toUpperCase();
   }
 }
 
@@ -535,7 +569,8 @@ class _ErrorState extends StatelessWidget {
     final theme = context.theme;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
+        // Gutter horizontal manual (childPad false di FScaffold).
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -549,15 +584,17 @@ class _ErrorState extends StatelessWidget {
             const Gap(10),
             Text(
               failure.isNotFound
-                  ? 'Pengguna tidak ditemukan'
-                  : 'Gagal memuat profil',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+                  ? AppLocalizations.of(context).profileUserNotFound
+                  : AppLocalizations.of(context).profileLoadFailed,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               textAlign: TextAlign.center,
             ),
             const Gap(6),
             Text(
               failure.message,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
@@ -566,7 +603,7 @@ class _ErrorState extends StatelessWidget {
             FButton(
               variant: FButtonVariant.outline,
               onPress: onRetry,
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),

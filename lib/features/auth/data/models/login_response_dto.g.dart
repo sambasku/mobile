@@ -29,6 +29,7 @@ _LoginResponseDto _$LoginResponseDtoFromJson(Map<String, dynamic> json) =>
       accessToken: json['access_token'] as String,
       expiresIn: (json['expires_in'] as num).toInt(),
       refreshToken: json['refresh_token'] as String?,
+      requiresConsent: json['requires_consent'] as bool? ?? false,
       user: LoginUserDto.fromJson(json['user'] as Map<String, dynamic>),
     );
 
@@ -37,5 +38,6 @@ Map<String, dynamic> _$LoginResponseDtoToJson(_LoginResponseDto instance) =>
       'access_token': instance.accessToken,
       'expires_in': instance.expiresIn,
       'refresh_token': instance.refreshToken,
+      'requires_consent': instance.requiresConsent,
       'user': instance.user,
     };

@@ -217,6 +217,23 @@ void main() {
     },
   );
 
+  test('koreksi ringan kartu tinjau: publish false dan kelas yang berubah', () {
+    final body = buildInlineWordCorrectBody(
+      entity: _entity,
+      wordType: 'ungkapan',
+      wordClassByMeaningIndex: {0: '01CLASSKERJA0000000000000'},
+    );
+    expect(body['publish'], isFalse);
+    expect(body['word_type'], 'ungkapan');
+    expect(body['comment'], 'Ubah jenis atau kelas kata');
+    final meanings = body['meanings'] as List;
+    expect((meanings[0] as Map)['word_class_id'], '01CLASSKERJA0000000000000');
+    expect((meanings[1] as Map)['word_class_id'], _verba);
+    expect(body['related_words'], [
+      {'word_id': 'W-OLD', 'relation_type': 'synonym'},
+    ]);
+  });
+
   test(
     'koreksi makna: word_class_id terisi dikirim apa adanya, comment kosong tidak dikirim',
     () {

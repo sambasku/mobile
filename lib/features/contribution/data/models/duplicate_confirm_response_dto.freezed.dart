@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'duplicate_confirm_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'duplicate_confirm_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $DuplicateConfirmResponseDtoCopyWith<DuplicateConfirmResponseDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateConfirmResponseDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.meaningId, meaningId) || other.meaningId == meaningId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.message, message) || other.message == message));
+  final _this = this as DuplicateConfirmResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateConfirmResponseDto&&(identical(other.wordId, _this.wordId) || other.wordId == _this.wordId)&&(identical(other.meaningId, _this.meaningId) || other.meaningId == _this.meaningId)&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.myVote, _this.myVote) || other.myVote == _this.myVote)&&(identical(other.upvotes, _this.upvotes) || other.upvotes == _this.upvotes)&&(identical(other.downvotes, _this.downvotes) || other.downvotes == _this.downvotes)&&(identical(other.message, _this.message) || other.message == _this.message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordId,meaningId,lemma,myVote,upvotes,downvotes,message);
+int get hashCode {
+  final _this = this as DuplicateConfirmResponseDto;
+  return Object.hash(runtimeType,_this.wordId,_this.meaningId,_this.lemma,_this.myVote,_this.upvotes,_this.downvotes,_this.message);
+}
 
 @override
 String toString() {
-  return 'DuplicateConfirmResponseDto(wordId: $wordId, meaningId: $meaningId, lemma: $lemma, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes, message: $message)';
+  final _this = this as DuplicateConfirmResponseDto;
+  return 'DuplicateConfirmResponseDto(wordId: ${_this.wordId}, meaningId: ${_this.meaningId}, lemma: ${_this.lemma}, myVote: ${_this.myVote}, upvotes: ${_this.upvotes}, downvotes: ${_this.downvotes}, message: ${_this.message})';
 }
 
 
@@ -66,7 +72,7 @@ class _$DuplicateConfirmResponseDtoCopyWithImpl<$Res>
 /// Create a copy of DuplicateConfirmResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? wordId = null,Object? meaningId = null,Object? lemma = null,Object? myVote = freezed,Object? upvotes = null,Object? downvotes = null,Object? message = null,}) {
-  return _then(_self.copyWith(
+  return _then(DuplicateConfirmResponseDto(
 wordId: null == wordId ? _self.wordId : wordId // ignore: cast_nullable_to_non_nullable
 as String,meaningId: null == meaningId ? _self.meaningId : meaningId // ignore: cast_nullable_to_non_nullable
 as String,lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
@@ -239,16 +245,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DuplicateConfirmResponseDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.meaningId, meaningId) || other.meaningId == meaningId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DuplicateConfirmResponseDto&&(identical(other.wordId, wordId) || other.wordId == wordId)&&(identical(other.meaningId, meaningId) || other.meaningId == meaningId)&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.myVote, myVote) || other.myVote == myVote)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes)&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,wordId,meaningId,lemma,myVote,upvotes,downvotes,message);
+int get hashCode {
+    return Object.hash(runtimeType,wordId,meaningId,lemma,myVote,upvotes,downvotes,message);
+}
 
 @override
 String toString() {
-  return 'DuplicateConfirmResponseDto(wordId: $wordId, meaningId: $meaningId, lemma: $lemma, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes, message: $message)';
+    return 'DuplicateConfirmResponseDto(wordId: $wordId, meaningId: $meaningId, lemma: $lemma, myVote: $myVote, upvotes: $upvotes, downvotes: $downvotes, message: $message)';
 }
 
 

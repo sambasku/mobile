@@ -57,6 +57,38 @@ void main() {
 
     expect(dto.usageLabels, ['kasar', 'informal']);
   });
+
+  // PRD relasi-lemma: wire pakai snake_case (group_id, word_id, notes).
+  test('WordDetailDto mem-parse meaning_groups', () {
+    final dto = WordDetailDto.fromJson({
+      ...sometDetail,
+      'meaning_groups': [
+        {
+          'group_id': 'g1',
+          'name': 'Kumis',
+          'description': null,
+          'members': [
+            {'word_id': 'w2', 'lemma': 'misai', 'notes': 'lebih jarang'},
+            {'word_id': 'w3', 'lemma': 'kumis', 'notes': null},
+          ],
+        },
+      ],
+    });
+
+    expect(dto.meaningGroups, hasLength(1));
+    final group = dto.meaningGroups.first;
+    expect(group.groupId, 'g1');
+    expect(group.name, 'Kumis');
+    expect(group.description, isNull);
+    expect(group.members.map((m) => m.lemma), ['misai', 'kumis']);
+    expect(group.members.first.notes, 'lebih jarang');
+    expect(group.members.last.notes, isNull);
+  });
+
+  test('payload lama tanpa meaning_groups = list kosong', () {
+    final dto = WordDetailDto.fromJson(sometDetail);
+    expect(dto.meaningGroups, isEmpty);
+  });
 }
 
 final sometDetail = <String, dynamic>{

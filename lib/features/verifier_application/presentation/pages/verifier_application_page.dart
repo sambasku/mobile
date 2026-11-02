@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -21,6 +21,8 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/data/providers/contribution_data_providers.dart';
 import '../../domain/entities/verifier_application.dart';
 import '../../verifier_application_router.dart';
+import '../../../../core/i18n/l10n.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../providers/verifier_application_providers.dart';
 
 const _platforms = <String, String>{
@@ -43,8 +45,8 @@ String _normalizeUsername(String raw) {
   return value;
 }
 
-class _SocialDraft {
-  const _SocialDraft({
+class SocialDraft {
+  const SocialDraft({
     this.platform,
     this.username = '',
     this.screenshotUrl,
@@ -72,7 +74,7 @@ class _SocialDraft {
       !uploading &&
       !error;
 
-  _SocialDraft copyWith({
+  SocialDraft copyWith({
     String? platform,
     String? username,
     String? screenshotUrl,
@@ -82,7 +84,7 @@ class _SocialDraft {
     bool? error,
     bool clearRemoteScreenshot = false,
   }) {
-    return _SocialDraft(
+    return SocialDraft(
       platform: platform ?? this.platform,
       username: username ?? this.username,
       screenshotUrl: clearRemoteScreenshot
@@ -98,6 +100,48 @@ class _SocialDraft {
   }
 }
 
+/// Validasi form sebelum kirim. Kosong = siap kirim.
+///
+/// Diambil keluar dari `build` supaya bisa diuji tanpa widget test.
+List<String> verifierFormErrors({
+  required String phoneDigits,
+  required String address,
+  required List<SocialDraft> social,
+}) {
+  final errors = <String>[];
+  if (phoneDigits.isEmpty) {
+    errors.add(l10n.verifierApplicationPhoneRequired);
+  } else if (!RegExp(r'^\d{8,15}$').hasMatch(phoneDigits)) {
+    errors.add(l10n.verifierApplicationPhoneInvalid);
+  }
+  if (address.trim().length < 10) {
+    errors.add(l10n.verifierApplicationAddressMin);
+  }
+  if (social.isEmpty) {
+    errors.add(l10n.verifierApplicationSocialMin);
+  }
+  for (var i = 0; i < social.length; i++) {
+    final row = social[i];
+    final label = i == 0
+        ? l10n.verifierApplicationAccountFirst
+        : l10n.verifierApplicationAccountNth(i + 1);
+    if (!row.platformReady) {
+      errors.add(l10n.verifierApplicationPickPlatformFor(label));
+    }
+    if (_normalizeUsername(row.username).length < 2) {
+      errors.add(l10n.verifierApplicationUsernameMinFor(label));
+    }
+    if (row.uploading) {
+      errors.add(l10n.verifierApplicationWaitUploadFor(label));
+    } else if (row.error) {
+      errors.add(l10n.verifierApplicationUploadFailedFor(label));
+    } else if (!row.screenshotReady) {
+      errors.add(l10n.verifierApplicationUploadRequiredFor(label));
+    }
+  }
+  return errors;
+}
+
 class VerifierApplicationPage extends HookConsumerWidget {
   const VerifierApplicationPage({super.key});
 
@@ -107,7 +151,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final phone = useTextEditingController();
     final address = useTextEditingController();
     final phoneCountry = useState(kPhoneCountryId);
-    final social = useState<List<_SocialDraft>>([const _SocialDraft()]);
+    final social = useState<List<SocialDraft>>([const SocialDraft()]);
     final isReLogging = useState(false);
     useListenable(phone);
     useListenable(address);
@@ -122,10 +166,10 @@ class VerifierApplicationPage extends HookConsumerWidget {
       phone.text = parsed.national;
       address.text = next.address;
       social.value = next.socialLinks.isEmpty
-          ? [const _SocialDraft()]
+          ? [const SocialDraft()]
           : next.socialLinks
                 .map(
-                  (l) => _SocialDraft(
+                  (l) => SocialDraft(
                     platform: l.platform,
                     username: l.username,
                     screenshotUrl: l.screenshot.url,
@@ -162,8 +206,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
     final needsRevision = application?.needsRevision == true;
     final readOnly = state.isSubmitting;
 
+    // Baris tidak lengkap dilewati di sini; validasi di `submit()` yang
+    // menjelaskan ke user kenapa belum bisa dikirim.
     final links = <SocialLink>[];
-    var allReady = social.value.isNotEmpty;
     for (final row in social.value) {
       final username = _normalizeUsername(row.username);
       final platform = row.platform;
@@ -171,7 +216,6 @@ class VerifierApplicationPage extends HookConsumerWidget {
           platform == null ||
           username.length < 2 ||
           !row.screenshotReady) {
-        allReady = false;
         continue;
       }
       links.add(
@@ -185,24 +229,30 @@ class VerifierApplicationPage extends HookConsumerWidget {
         ),
       );
     }
-    final canSubmit =
-        !readOnly &&
-        !state.isLoading &&
-        !pending &&
-        !approved &&
-        phone.text.trim().isNotEmpty &&
-        address.text.trim().length >= 10 &&
-        allReady &&
-        links.length == social.value.length;
+    final blocked = readOnly || state.isLoading || pending || approved;
 
     void submit() {
+      final phoneDigits = toInternationalPhoneDigits(
+        phoneCountry.value,
+        phone.text.trim(),
+      );
+      final errors = verifierFormErrors(
+        phoneDigits: phoneDigits,
+        address: address.text.trim(),
+        social: social.value,
+      );
+      if (errors.isNotEmpty) {
+        showAppErrorSheet(
+          context,
+          title: AppLocalizations.of(context).verifierApplicationCannotSendTitle,
+          message: errors.map((e) => '- $e').join('\n'),
+        );
+        return;
+      }
       ref
           .read(verifierApplicationProvider.notifier)
           .submit(
-            phone: toInternationalPhoneDigits(
-              phoneCountry.value,
-              phone.text.trim(),
-            ),
+            phone: phoneDigits,
             address: address.text.trim(),
             socialLinks: links,
           );
@@ -229,7 +279,7 @@ class VerifierApplicationPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Jadi verifikator'),
+        title: Text(AppLocalizations.of(context).verifierApplicationTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -248,9 +298,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     const Center(child: FCircularProgress()),
                     const Gap(16),
                     Text(
-                      'Membuka halaman masuk...',
+                      AppLocalizations.of(context).verifierApplicationOpeningLogin,
                       textAlign: .center,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -274,18 +324,18 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     ),
                     const Gap(20),
                     Text(
-                      'Pengajuan disetujui',
+                      AppLocalizations.of(context).verifierApplicationApprovedTitle,
                       textAlign: .center,
-                      style: theme.typography.xl.copyWith(
+                      style: theme.typography.body.xl.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colors.success,
                       ),
                     ),
                     const Gap(8),
                     Text(
-                      'Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.',
+                      AppLocalizations.of(context).verifierApplicationApprovedBody,
                       textAlign: .center,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
@@ -293,14 +343,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     FButton(
                       onPress: reLogin,
                       prefix: const Icon(FLucideIcons.logIn),
-                      child: const Text('Masuk ulang'),
+                      child: Text(AppLocalizations.of(context).verifierApplicationReLoginCta),
                     ),
                   ],
                 ] else if (pending) ...[
-                  const FAlert(
-                    title: Text('Pengajuan sedang ditinjau'),
+                  FAlert(
+                    title: Text(AppLocalizations.of(context).verifierApplicationPendingTitle),
                     subtitle: Text(
-                      'Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.',
+                      AppLocalizations.of(context).verifierApplicationPendingBody,
                     ),
                   ),
                 ] else ...[
@@ -308,9 +358,9 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     children: [
                       FTile(
                         prefix: const Icon(FLucideIcons.badgeCheck),
-                        title: const Text('Pelajari peran verifikator'),
-                        subtitle: const Text(
-                          'Apa itu verifikator dan apa saja yang dilakukan',
+                        title: Text(AppLocalizations.of(context).verifierApplicationLearnTitle),
+                        subtitle: Text(
+                          AppLocalizations.of(context).verifierApplicationLearnSubtitle,
                         ),
                         suffix: const Icon(FLucideIcons.chevronRight),
                         onPress: () =>
@@ -322,16 +372,16 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   if (needsRevision) ...[
                     FAlert(
                       variant: .destructive,
-                      title: const Text('Perlu perbaikan'),
+                      title: Text(AppLocalizations.of(context).verifierApplicationNeedsRevisionTitle),
                       subtitle: Text(application!.adminComment!.trim()),
                     ),
                     const Gap(12),
                   ] else if (rejected) ...[
-                    const FAlert(
+                    FAlert(
                       variant: .destructive,
-                      title: Text('Pengajuan ditolak'),
+                      title: Text(AppLocalizations.of(context).verifierApplicationRejectedTitle),
                       subtitle: Text(
-                        'Data kurang lengkap. Perbaiki lalu kirim ulang.',
+                        AppLocalizations.of(context).verifierApplicationRejectedBody,
                       ),
                     ),
                     const Gap(12),
@@ -339,8 +389,8 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   FTextField(
                     control: .managed(controller: phone),
                     enabled: !readOnly,
-                    label: const Text('No. HP'),
-                    hint: '81234567890',
+                    label: Text(AppLocalizations.of(context).verifierApplicationPhoneLabel),
+                    hint: AppLocalizations.of(context).verifierApplicationPhoneHint,
                     keyboardType: .phone,
                     textInputAction: .next,
                     inputFormatters: const [PhoneNationalDigitsFormatter()],
@@ -371,10 +421,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
                                 const Gap(6),
                                 Text(
                                   phoneCountry.value.prefixLabel,
-                                  style: context.theme.typography.sm.copyWith(
-                                    color: context.theme.colors.mutedForeground,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: context.theme.typography.body.sm
+                                      .copyWith(
+                                        color: context
+                                            .theme
+                                            .colors
+                                            .mutedForeground,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
                                 Icon(
                                   FLucideIcons.chevronDown,
@@ -390,8 +444,8 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   FTextField(
                     control: .managed(controller: address),
                     enabled: !readOnly,
-                    label: const Text('Alamat'),
-                    hint: 'Alamat lengkap tempat tinggal/domisili',
+                    label: Text(AppLocalizations.of(context).verifierApplicationAddressLabel),
+                    hint: AppLocalizations.of(context).verifierApplicationAddressHint,
                     keyboardType: TextInputType.multiline,
                     textInputAction: TextInputAction.newline,
                     minLines: 3,
@@ -399,8 +453,8 @@ class VerifierApplicationPage extends HookConsumerWidget {
                   ),
                   const Gap(16),
                   Text(
-                    'Media sosial (minimal 1)',
-                    style: context.theme.typography.sm.copyWith(
+                    AppLocalizations.of(context).verifierApplicationSocialSection,
+                    style: context.theme.typography.body.sm.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -429,30 +483,30 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     FButton(
                       variant: .outline,
                       onPress: () {
-                        social.value = [...social.value, const _SocialDraft()];
+                        social.value = [...social.value, const SocialDraft()];
                       },
-                      child: const Text('Tambah lainnya'),
+                      child: Text(AppLocalizations.of(context).verifierApplicationAddSocial),
                     ),
                   ],
                   const Gap(16),
                   FButton(
-                    onPress: canSubmit ? submit : null,
+                    onPress: blocked ? null : submit,
                     prefix: state.isSubmitting
                         ? const FCircularProgress()
                         : null,
                     child: Text(
                       state.isSubmitting
-                          ? 'Mengirim...'
+                          ? AppLocalizations.of(context).verifierApplicationSubmitting
                           : rejected
-                          ? 'Kirim ulang'
-                          : 'Kirim pengajuan',
+                          ? AppLocalizations.of(context).verifierApplicationResubmit
+                          : AppLocalizations.of(context).verifierApplicationSubmit,
                     ),
                   ),
                   const Gap(8),
                   Text(
-                    'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.',
+                    AppLocalizations.of(context).verifierApplicationPrivacyNote,
                     textAlign: .center,
-                    style: context.theme.typography.sm.copyWith(
+                    style: context.theme.typography.body.sm.copyWith(
                       color: context.theme.colors.mutedForeground,
                     ),
                   ),
@@ -475,10 +529,10 @@ class _SocialRow extends ConsumerStatefulWidget {
   });
 
   final int index;
-  final _SocialDraft draft;
+  final SocialDraft draft;
   final bool enabled;
   final bool canRemove;
-  final ValueChanged<_SocialDraft> onChanged;
+  final ValueChanged<SocialDraft> onChanged;
   final VoidCallback onRemove;
 
   @override
@@ -526,8 +580,8 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
                 crossAxisAlignment: .start,
                 children: [
                   Text(
-                    'Pilih platform',
-                    style: theme.typography.lg.copyWith(
+                    AppLocalizations.of(context).verifierApplicationPickPlatform,
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -578,7 +632,7 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
     try {
       final size = await file.length();
       if (size > _maxScreenshotMb * 1024 * 1024) {
-        if (mounted) _toast('Gambar melebihi $_maxScreenshotMb MB');
+        if (mounted) _toast(AppLocalizations.of(context).verifierApplicationImageTooLarge(_maxScreenshotMb));
         return;
       }
 
@@ -625,7 +679,7 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
       );
     } catch (e) {
       debugPrint('[ImageSheet] verifier screenshot $e');
-      if (mounted) _toast('Gagal memproses gambar');
+      if (mounted) _toast(AppLocalizations.of(context).verifierApplicationImageProcessFailed);
     }
   }
 
@@ -640,13 +694,14 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
   @override
   Widget build(BuildContext context) {
     final selected = widget.draft.platform;
+    final l10n = AppLocalizations.of(context);
     final label = selected == null
-        ? 'Pilih platform'
+        ? l10n.verifierApplicationPickPlatform
         : (_platforms[selected] ?? selected);
     final theme = context.theme;
     final hint = selected == 'website'
-        ? 'nama situs atau akun'
-        : 'nama atau username';
+        ? l10n.verifierApplicationUsernameHintSite
+        : l10n.verifierApplicationUsernameHintUser;
 
     return Column(
       crossAxisAlignment: .start,
@@ -656,7 +711,9 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
             FTile(
               title: Text(label),
               subtitle: Text(
-                widget.index == 0 ? 'Platform' : 'Platform ${widget.index + 1}',
+                widget.index == 0
+                    ? l10n.verifierApplicationPlatformLabel
+                    : l10n.verifierApplicationPlatformNth(widget.index + 1),
               ),
               suffix: Icon(
                 FLucideIcons.chevronDown,
@@ -675,15 +732,15 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
                 widget.onChanged(widget.draft.copyWith(username: value.text)),
           ),
           enabled: widget.enabled,
-          label: const Text('Nama / username'),
+          label: Text(l10n.verifierApplicationUsernameLabel),
           hint: hint,
           keyboardType: TextInputType.text,
           textInputAction: .next,
         ),
         const Gap(8),
         Text(
-          'Screenshot profil',
-          style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+          l10n.verifierApplicationScreenshotLabel,
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(6),
         _ScreenshotSlot(
@@ -699,7 +756,7 @@ class _SocialRowState extends ConsumerState<_SocialRow> {
               variant: .ghost,
               onPress: widget.onRemove,
               prefix: const Icon(FLucideIcons.trash, size: 16),
-              child: const Text('Hapus akun'),
+              child: Text(l10n.verifierApplicationRemoveAccount),
             ),
           ),
         ],
@@ -715,7 +772,7 @@ class _ScreenshotSlot extends StatelessWidget {
     required this.onTap,
   });
 
-  final _SocialDraft draft;
+  final SocialDraft draft;
   final bool enabled;
   final VoidCallback onTap;
 
@@ -749,8 +806,8 @@ class _ScreenshotSlot extends StatelessWidget {
             Icon(FLucideIcons.camera, color: theme.colors.mutedForeground),
             const Gap(4),
             Text(
-              'Kamera / galeri',
-              style: theme.typography.sm.copyWith(
+              AppLocalizations.of(context).verifierApplicationCameraGallery,
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
                 fontSize: 11,
               ),

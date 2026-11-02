@@ -6,8 +6,10 @@ import '../services/rate_limit_device_id.dart';
 import 'auth_token_storage.dart';
 import 'failover/api_host_resolver.dart';
 import 'failover/failover_interceptor.dart';
+import 'interceptors/app_version_interceptor.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/device_id_interceptor.dart';
+import 'interceptors/locale_header_interceptor.dart';
 import 'interceptors/network_monitor_interceptor.dart';
 
 part 'network_providers.g.dart';
@@ -44,6 +46,8 @@ Dio dio(Ref ref) {
     ),
   );
   dio.interceptors.add(DeviceIdInterceptor(RateLimitDeviceIdService()));
+  dio.interceptors.add(AppVersionInterceptor());
+  dio.interceptors.add(LocaleHeaderInterceptor());
   dio.interceptors.add(
     AuthInterceptor(
       tokenStorage: ref.watch(authTokenStorageProvider),

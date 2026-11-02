@@ -45,6 +45,9 @@ class DeviceRegistrationService {
       }
     });
 
+    // onRegistered (firebase_messaging 17) mengirim Firebase Installation ID,
+    // bukan token FCM yang backend pakai untuk kirim push.
+    // ignore: deprecated_member_use
     _fcmSub = _messaging.onTokenRefresh.listen((newToken) {
       _lastFcmToken = newToken;
       _registerIfAuth();
@@ -82,6 +85,8 @@ class DeviceRegistrationService {
 
     // Selalu ambil token terbaru. Cold start sering kosong karena izin
     // belum diberikan; login setelah Izinkan harus fetch ulang di sini.
+    // getToken deprecated di firebase_messaging 17, penggantinya FID.
+    // ignore: deprecated_member_use
     final fresh = await _messaging.getToken() ?? '';
     if (fresh.isNotEmpty) {
       _lastFcmToken = fresh;

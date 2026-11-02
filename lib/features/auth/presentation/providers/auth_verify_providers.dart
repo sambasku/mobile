@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/i18n/l10n.dart';
+
 import '../../domain/providers/auth_domain_providers.dart';
 import '../../domain/usecases/verify_email_use_case.dart';
 import '../models/auth_verify_state.dart';
@@ -62,7 +64,7 @@ class AuthVerifyNotifier extends _$AuthVerifyNotifier {
       (_) {
         state = state.copyWith(
           isResending: false,
-          resendMessage: 'Kalau email terdaftar, kode baru sudah dikirim.',
+          resendMessage: l10n.authResendOk,
         );
       },
     );

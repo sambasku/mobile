@@ -69,6 +69,15 @@ String formatDateYmd(String? ymd) {
   return '$day ${_months[month - 1]} $year';
 }
 
+/// Tanggal ringkas untuk kartu grid: `17 Nov`, plus tahun kalau beda tahun.
+String formatDateShort(DateTime? value, {DateTime? now}) {
+  if (value == null) return '';
+  final local = value.toLocal();
+  final clock = now ?? DateTime.now();
+  final base = '${local.day} ${_months[local.month - 1]}';
+  return local.year == clock.year ? base : '$base ${local.year}';
+}
+
 /// Jarak relatif singkat: `baru saja`, `5 menit lalu`, `2 jam lalu`,
 /// `3 hari lalu`, lalu `21 Sep 2026` (≥7 hari).
 String formatRelativeAgo(DateTime? value, {DateTime? now}) {

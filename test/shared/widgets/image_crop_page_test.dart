@@ -112,4 +112,56 @@ void main() {
       expect(clamped.dy, 100.0);
     });
   });
+
+  group('free crop helpers', () {
+    test('containImageRect letterboxes landscape in tall avail', () {
+      final r = containImageRect(
+        imageWidth: 2000,
+        imageHeight: 1000,
+        avail: const Size(400, 800),
+      );
+      expect(r.width, 400);
+      expect(r.height, 200);
+      expect(r.top, 300);
+    });
+
+    test('clampFreeNorm enforces min size and bounds', () {
+      final tiny = clampFreeNorm(const Rect.fromLTWH(0.9, 0.9, 0.01, 0.01));
+      expect(tiny.width, greaterThanOrEqualTo(0.12));
+      expect(tiny.height, greaterThanOrEqualTo(0.12));
+      expect(tiny.right, lessThanOrEqualTo(1.0));
+      expect(tiny.bottom, lessThanOrEqualTo(1.0));
+    });
+
+    test('freeCropToSource maps display crop to image pixels', () {
+      const display = Rect.fromLTWH(10, 20, 200, 100);
+      const crop = Rect.fromLTWH(60, 45, 100, 50); // half of display, centered-ish
+      final src = freeCropToSource(
+        cropDisplay: crop,
+        imageDisplay: display,
+        imageWidth: 2000,
+        imageHeight: 1000,
+      );
+      expect(src.left, 500);
+      expect(src.top, 250);
+      expect(src.width, 1000);
+      expect(src.height, 500);
+    });
+
+    test('freeCropToDisplay round-trips with freeCropToSource for full frame', () {
+      const display = Rect.fromLTWH(0, 0, 300, 150);
+      const norm = Rect.fromLTWH(0, 0, 1, 1);
+      final crop = freeCropToDisplay(norm, display);
+      final src = freeCropToSource(
+        cropDisplay: crop,
+        imageDisplay: display,
+        imageWidth: 900,
+        imageHeight: 450,
+      );
+      expect(src.left, 0);
+      expect(src.top, 0);
+      expect(src.width, 900);
+      expect(src.height, 450);
+    });
+  });
 }

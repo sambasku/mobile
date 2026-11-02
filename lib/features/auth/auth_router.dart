@@ -8,6 +8,7 @@ import '../../core/router/route_definer.dart';
 import 'data/github_oauth_callback_bus.dart';
 import 'presentation/pages/forgot_password_page.dart';
 import 'presentation/pages/legal_webview_page.dart';
+import '../../l10n/app_localizations.dart';
 import 'presentation/pages/login_page.dart';
 import 'presentation/pages/register_page.dart';
 import 'presentation/pages/reset_password_page.dart';
@@ -33,6 +34,7 @@ class AuthRouter {
     path: '/reset-password',
     name: 'AuthRouter.resetPassword',
   );
+
   /// Deep link OAuth GitHub (`sambasku-staging://app/oauth/github`).
   /// Code ditangani [GithubSignInAdapter]; rute ini hanya mencegah 404.
   static const githubOauthCallback = RouteDefiner(
@@ -44,8 +46,18 @@ class AuthRouter {
     name: 'AuthRouter.termsWebView',
   );
 
+  /// WebView dokumen legal generik (Syarat ATAU Kebijakan Privasi).
+  /// `extra` = `({String url, String title})` dari `/api/v1/legal/current`.
+  static const legalDocument = RouteDefiner(
+    path: '/dokumen-legal',
+    name: 'AuthRouter.legalDocument',
+  );
+
   /// URL publik Syarat dan Ketentuan (web).
   static const termsDocumentUrl = 'https://sambasku.com/id/syarat-ketentuan';
+
+  /// URL publik Kebijakan Privasi (web).
+  static const privacyDocumentUrl = 'https://sambasku.com/id/privacy-policy';
 
   static final List<GoRoute> routes = [
     GoRoute(
@@ -62,10 +74,25 @@ class AuthRouter {
       path: termsWebView.path,
       name: termsWebView.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) => const LegalWebViewPage(
+      builder: (context, state) => LegalWebViewPage(
         url: termsDocumentUrl,
-        title: 'Syarat dan Ketentuan',
+        title: AppLocalizations.of(context).authTermsTitle,
       ),
+    ),
+    GoRoute(
+      path: legalDocument.path,
+      name: legalDocument.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        // Payload dari `/api/v1/legal/current` supaya staging membuka
+        // dokumen staging, bukan produksi.
+        final data = state.extra;
+        final payload = data is ({String url, String title}) ? data : null;
+        return LegalWebViewPage(
+          url: payload?.url ?? termsDocumentUrl,
+          title: payload?.title ?? 'Dokumen legal',
+        );
+      },
     ),
     GoRoute(
       path: verifyEmail.path,

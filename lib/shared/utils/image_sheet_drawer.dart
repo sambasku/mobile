@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,6 +10,7 @@ import 'compress_image_for_upload.dart';
 import 'permission_helper.dart';
 import 'photo_pick_constants.dart';
 import '../widgets/image_crop_page.dart';
+import '../../../l10n/app_localizations.dart';
 
 enum PhotoPickSource { camera, gallery, file, mediaExplorer }
 
@@ -23,6 +24,7 @@ void showImageSheetDrawer(
   Function(File image)? onPicked,
   Function(File image, PhotoPickSource source)? onPickedWithSource,
   Function()? onRemoved,
+
   /// Dipanggil setelah sheet ditutup - buka Media Explorer (stock).
   VoidCallback? onMediaExplorer,
   bool cameraPicker = true,
@@ -34,6 +36,7 @@ void showImageSheetDrawer(
   double maxWidth = kPhotoPickMaxWidth,
   double maxHeight = kPhotoPickMaxHeight,
   int imageQuality = kPhotoPickQuality,
+
   /// Tampilkan ImageCropPage setelah pick (default true).
   /// Setel false untuk share_sheet atau konteks tanpa crop.
   bool cropEnabled = true,
@@ -71,7 +74,10 @@ void showImageSheetDrawer(
                   children: [
                     const Text(
                       'Pilih Sumber',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.of(sheetContext).pop(),
@@ -98,7 +104,7 @@ void showImageSheetDrawer(
                       if (cameraPicker)
                         _SourceButton(
                           icon: Icons.camera_alt_outlined,
-                          label: 'Kamera',
+                          label: AppLocalizations.of(context).imageSheetCamera,
                           onTap: () => openCamera(
                             sheetContext,
                             imagePicker,
@@ -118,7 +124,7 @@ void showImageSheetDrawer(
                       if (galleryPicker)
                         _SourceButton(
                           icon: Icons.photo_outlined,
-                          label: 'Galeri',
+                          label: AppLocalizations.of(context).imageSheetGallery,
                           onTap: () => pickImageFromGallery(
                             sheetContext,
                             imagePicker,
@@ -138,7 +144,7 @@ void showImageSheetDrawer(
                       if (filePicker)
                         _SourceButton(
                           icon: Icons.insert_drive_file_outlined,
-                          label: 'File',
+                          label: AppLocalizations.of(context).imageSheetFile,
                           onTap: () => pickImageFromFile(
                             sheetContext,
                             (picked) => deliver(picked, (file) {
@@ -154,7 +160,7 @@ void showImageSheetDrawer(
                       if (mediaExplorerPicker && onMediaExplorer != null)
                         _SourceButton(
                           icon: Icons.travel_explore_outlined,
-                          label: 'Explorer',
+                          label: AppLocalizations.of(context).imageSheetExplorer,
                           onTap: () {
                             // Pop dulu, baru buka Media Explorer setelah animasi
                             // sheet sumber selesai. Kalau showModal langsung di
@@ -169,7 +175,7 @@ void showImageSheetDrawer(
                         ),
                       _SourceButton(
                         icon: Icons.restart_alt,
-                        label: 'Reset',
+                        label: AppLocalizations.of(context).imageSheetReset,
                         onTap: () => onRemoved?.call(),
                       ),
                     ];
@@ -234,9 +240,9 @@ Future<void> openCamera(
   } catch (e, st) {
     debugPrint('[Camera] $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka kamera')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).imageSheetCameraOpenFailed)));
     }
   }
 }
@@ -271,7 +277,7 @@ Future<void> pickImageFromGallery(
     debugPrint('[Gallery] $e\n$st');
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memilih dari galeri')),
+        SnackBar(content: Text(AppLocalizations.of(context).imageSheetGalleryPickFailed)),
       );
     }
   }
@@ -312,9 +318,9 @@ Future<void> pickImageFromFile(
   } catch (e, st) {
     debugPrint('[ImageSheet] file pick $e\n$st');
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memilih file')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).imageSheetFilePickFailed)));
     }
   }
 }

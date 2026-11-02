@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +14,8 @@ import 'package:sambasku_mobile/features/my_votes/domain/failures/my_vote_failur
 import 'package:sambasku_mobile/features/my_votes/domain/repositories/my_vote_repository.dart';
 import 'package:sambasku_mobile/features/my_votes/presentation/pages/my_votes_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeVotes implements MyVoteRepository {
   _FakeVotes(this._result);
@@ -67,12 +69,16 @@ void main() {
           myVoteRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: child!,
           ),
         ),

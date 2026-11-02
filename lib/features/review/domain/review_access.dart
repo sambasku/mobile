@@ -37,14 +37,3 @@ const correctableEntityTypes = <String>{
 bool canCorrectEntityType(String entityType) =>
     correctableEntityTypes.contains(entityType);
 
-const reviewEntityLabels = <String, String>{
-  'word': 'Kata',
-  'pronunciation': 'Pelafalan',
-  'word_image': 'Gambar',
-  'word_audio': 'Audio',
-  'example': 'Contoh kalimat',
-  'meaning': 'Makna',
-};
-
-String reviewEntityLabel(String entityType) =>
-    reviewEntityLabels[entityType] ?? entityType;

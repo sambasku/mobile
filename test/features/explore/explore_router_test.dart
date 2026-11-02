@@ -20,7 +20,7 @@ void main() {
     expect(nameOf('/explore/place/istana'), ExploreRouter.place.name);
   });
 
-  test('placeArticlePath menghasilkan path match route artikel (#168)', () {
+test('placePhotosPath membuka linimasa foto, bukan detail slug foto', () {
     final router = GoRouter(
       routes: [
         GoRoute(path: '/', builder: (_, _) => const SizedBox()),
@@ -29,15 +29,13 @@ void main() {
     );
     addTearDown(router.dispose);
 
-    // Bug lama: path literal ':slug' + query (?slug=...) tidak match route
-    // artikel -> halaman artikel kosong (issue #168).
-    expect(ExploreRouter.placeArticlePath('istana'),
-        '/explore/place/istana/artikel');
-    expect(ExploreRouter.placeArticlePath('istana').contains(':slug'), false);
-
+    expect(
+      ExploreRouter.placePhotosPath('istana'),
+      '/explore/place/istana/foto',
+    );
     final match = router.configuration
-        .findMatch(Uri.parse(ExploreRouter.placeArticlePath('istana')))
+        .findMatch(Uri.parse(ExploreRouter.placePhotosPath('istana')))
         .last;
-    expect(match.route.name, ExploreRouter.placeArticle.name);
+    expect(match.route.name, ExploreRouter.placePhotos.name);
   });
 }

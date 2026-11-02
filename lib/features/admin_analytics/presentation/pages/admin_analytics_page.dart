@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show RefreshIndicator, Theme;
+import 'package:material_ui/material_ui.dart' show RefreshIndicator, Theme;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../providers/admin_analytics_providers.dart';
 import '../widgets/activity_daily_chart.dart';
@@ -20,13 +21,14 @@ class AdminAnalyticsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final statsAsync = ref.watch(dashboardStatsProvider);
 
     return FScaffold(
       // ListView mengatur padding sendiri.
       childPad: false,
       header: FHeader.nested(
-        title: const Text('Analitik'),
+        title: Text(l10n.analyticsTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () {
@@ -55,8 +57,8 @@ class AdminAnalyticsPage extends ConsumerWidget {
               loading: () => const _AnalyticsStatsSkeleton(),
               error: (_, _) => FAlert(
                 variant: .destructive,
-                title: const Text('Statistik gagal dimuat'),
-                subtitle: const Text('Periksa koneksi lalu coba lagi.'),
+                title: Text(l10n.analyticsStatsLoadFailed),
+                subtitle: Text(l10n.analyticsStatsLoadFailedHint),
                 icon: const Icon(FLucideIcons.circleAlert),
               ),
               data: (stats) => _AnalyticsStatsBody(stats: stats),
@@ -99,7 +101,7 @@ class _AnalyticsStatsSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -110,7 +112,7 @@ class _AnalyticsStatsSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: const IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -133,15 +135,8 @@ const _placeholderStats = DashboardStats(
       'rejected': 3,
     },
   ),
-  contributions: ContributionsStats(
-    total: 240,
-    byStatus: {'pending': 6},
-  ),
-  users: UsersStats(
-    active: 80,
-    onlineRecently: 5,
-    byRole: {},
-  ),
+  contributions: ContributionsStats(total: 240, byStatus: {'pending': 6}),
+  users: UsersStats(active: 80, onlineRecently: 5, byRole: {}),
   activity: ActivityStats(
     auditLogsLast7Days: 42,
     dailyLast30Days: [

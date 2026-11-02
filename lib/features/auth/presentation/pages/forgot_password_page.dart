@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -6,8 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../auth_router.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_forgot_providers.dart';
+import '../../domain/failures/auth_failure.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 
 /// Minta kode reset 6 karakter 0-9A-Z. Response API selalu sama (anti-enumeration).
 class ForgotPasswordPage extends HookConsumerWidget {
@@ -28,6 +31,21 @@ class ForgotPasswordPage extends HookConsumerWidget {
 
     ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
+      // Akun OAuth: info, bukan error - reset password memang tidak
+      // bisa diproses, user perlu tahu harus lewat provider.
+      final code = ref.read(authForgotProvider).errorCode;
+      if (code == AuthFailure.oauthAccount) {
+        showAppInfoSheet(
+          context,
+          message: next,
+          title: AppLocalizations.of(context).authOauthAccountTitle,
+        ).whenComplete(() {
+          if (context.mounted) {
+            ref.read(authForgotProvider.notifier).clearError();
+          }
+        });
+        return;
+      }
       showAppErrorSheet(context, message: next).whenComplete(() {
         if (context.mounted) {
           ref.read(authForgotProvider.notifier).clearError();
@@ -44,7 +62,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Lupa password'),
+        title: Text(AppLocalizations.of(context).authForgotTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -60,18 +78,18 @@ class ForgotPasswordPage extends HookConsumerWidget {
             crossAxisAlignment: .stretch,
             children: [
               Text(
-                'Atur ulang password',
+                AppLocalizations.of(context).authResetTitle,
                 textAlign: .center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
                   color: theme.colors.foreground,
                 ),
               ),
               const Gap(8),
               Text(
-                'Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.',
+                AppLocalizations.of(context).authForgotBody,
                 textAlign: .center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -79,7 +97,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               FTextField.email(
                 control: .managed(controller: email),
                 enabled: !state.isSubmitting,
-                label: const Text('Email'),
+                label: Text(AppLocalizations.of(context).authEmailLabel),
                 textInputAction: .done,
                 onSubmit: canSubmit ? (_) => submit() : null,
               ),
@@ -88,7 +106,9 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 onPress: canSubmit ? submit : null,
                 prefix: state.isSubmitting ? const FCircularProgress() : null,
                 child: Text(
-                  state.isSubmitting ? 'Mengirim...' : 'Kirim kode reset',
+                  state.isSubmitting
+                      ? AppLocalizations.of(context).authSending
+                      : AppLocalizations.of(context).authSendCode,
                 ),
               ),
             ],

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,6 +24,8 @@ import 'package:sambasku_mobile/features/contribution/presentation/pages/contrib
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_detail_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Adapter Dio yang selalu gagal - reference (bahasa/kelas kata/dialek)
 /// masuk kondisi error tanpa menunggu timer jaringan.
@@ -145,11 +147,15 @@ void main() {
           ),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: ContributePage()),
           ),
         ),
@@ -173,7 +179,7 @@ void main() {
     await pumpContribute(
       tester,
       failure: const ContributionFailure(
-        'Terlalu banyak usulan dikirim. Coba lagi nanti.',
+        'Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.',
         errorCode: 'RATE_LIMITED',
       ),
     );
@@ -183,7 +189,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(FToast),
-        matching: find.text('Terlalu banyak usulan dikirim. Coba lagi nanti.'),
+        matching: find.text('Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.'),
       ),
       findsOneWidget,
     );
@@ -239,11 +245,15 @@ void main() {
           submitAnonWordUseCaseProvider.overrideWithValue(usecase),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: ContributePage()),
           ),
         ),
@@ -255,9 +265,17 @@ void main() {
 
     expect(find.text('Kata / ungkapan Sambas *'), findsOneWidget);
     expect(find.text('Terjemahan Indonesia *'), findsOneWidget);
+    // "Jenis" ada di bawah fold (ListView lazy) - scroll dulu sebelum cek.
+    await tester.drag(find.byType(ListView), const Offset(0, -400));
+    await tester.pump();
     expect(find.text('Jenis'), findsOneWidget);
     expect(find.text('Dialek'), findsNothing);
     expect(find.text('Contoh'), findsNothing);
+
+    // Kembali ke atas: notice KBBI menambah tinggi, field terjemahan bisa
+    // ter-unmount oleh ListView lazy kalau tetap di posisi scroll bawah.
+    await tester.drag(find.byType(ListView), const Offset(0, 400));
+    await tester.pump();
 
     final fields = find.byType(EditableText);
     await tester.enterText(fields.at(0), 'makatn');
@@ -337,13 +355,20 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
-          home: FTheme(
-            data: FThemes.zinc.light.touch,
-            child: const FToaster(child: ContributePage()),
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
+          // Seperti app.dart: FTheme di builder (di atas Navigator) supaya
+          // route bottom sheet ikut kebagian tema/aksesibilitas Forui.
+          builder: (_, child) => FTheme(
+            data: foruiPalettes['zinc']!.light.touch,
+            child: FToaster(child: child!),
           ),
+          home: const ContributePage(),
         ),
       ),
     );
@@ -361,11 +386,13 @@ void main() {
     await tester.enterText(fields.at(0), lemma);
     await tester.enterText(fields.at(1), 'makan');
     await tester.tap(find.text('Kirim Usulan'));
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    // Dialog sukses muncul, tutup lewat "Tambah lagi" (tanpa navigasi).
+    // Bottom sheet sukses muncul, tutup lewat "Tambah lagi" (tanpa navigasi).
     expect(find.text('Usulan terkirim'), findsOneWidget);
     await tester.tap(find.text('Tambah lagi'));
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
     // Riverpod: kedua kunci ter-invalidate → builder jalan lagi.

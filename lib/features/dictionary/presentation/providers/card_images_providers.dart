@@ -15,10 +15,10 @@ CardImagesRemoteDatasource cardImagesRemoteDatasource(Ref ref) =>
 
 @riverpod
 CardImagesRepository cardImagesRepository(Ref ref) => CardImagesRepositoryImpl(
-      ref.watch(cardImagesRemoteDatasourceProvider),
-      ref.watch(dioProvider),
-      ref.watch(cachedJsonClientProvider),
-    );
+  ref.watch(cardImagesRemoteDatasourceProvider),
+  ref.watch(dioProvider),
+  ref.watch(cachedJsonClientProvider),
+);
 
 /// Config card dari CDN. Null = offline/JSON rusak → pakai asset bundled.
 /// referenceStatic: fresh 24 jam + SWR, update terlihat ≤24 jam.

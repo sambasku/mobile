@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -11,6 +11,7 @@ import '../../auth_router.dart';
 import '../../otp_code.dart';
 import '../otp_code_formatter.dart';
 import '../providers/auth_verify_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 
 const _resendCooldown = Duration(minutes: 2);
@@ -94,7 +95,7 @@ class VerifyEmailPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Verifikasi email'),
+        title: Text(AppLocalizations.of(context).authVerifyTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -110,9 +111,9 @@ class VerifyEmailPage extends HookConsumerWidget {
             crossAxisAlignment: .stretch,
             children: [
               Text(
-                'Masukkan kode 6 karakter',
+                AppLocalizations.of(context).authEnterCode,
                 textAlign: .center,
-                style: theme.typography.xl.copyWith(
+                style: theme.typography.body.xl.copyWith(
                   fontWeight: .w600,
                   color: theme.colors.foreground,
                 ),
@@ -120,10 +121,10 @@ class VerifyEmailPage extends HookConsumerWidget {
               const Gap(8),
               Text(
                 email.isEmpty
-                    ? 'Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.'
-                    : 'Kode dikirim ke $email (berlaku 10 menit).',
+                    ? AppLocalizations.of(context).authEmailMissing
+                    : AppLocalizations.of(context).authCodeSentTo(email),
                 textAlign: .center,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
@@ -139,7 +140,9 @@ class VerifyEmailPage extends HookConsumerWidget {
                 builder: (context, style, variants, child) =>
                     Center(child: child),
                 enabled: !state.isSubmitting && email.isNotEmpty,
-                label: const Center(child: Text('Kode OTP')),
+                label: Center(
+                  child: Text(AppLocalizations.of(context).authOtpLabel),
+                ),
                 autofocus: email.isNotEmpty,
                 keyboardType: .text,
                 textCapitalization: .characters,
@@ -152,7 +155,9 @@ class VerifyEmailPage extends HookConsumerWidget {
                 onPress: canSubmit ? submit : null,
                 prefix: state.isSubmitting ? const FCircularProgress() : null,
                 child: Text(
-                  state.isSubmitting ? 'Memproses...' : 'Verifikasi',
+                  state.isSubmitting
+                      ? AppLocalizations.of(context).authSubmitting
+                      : AppLocalizations.of(context).authVerifyAction,
                 ),
               ),
               const Gap(8),
@@ -166,10 +171,12 @@ class VerifyEmailPage extends HookConsumerWidget {
                 prefix: state.isResending ? const FCircularProgress() : null,
                 child: Text(
                   state.isResending
-                      ? 'Mengirim...'
+                      ? AppLocalizations.of(context).authSending
                       : remaining.value > 0
-                      ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                      : 'Kirim ulang kode',
+                      ? AppLocalizations.of(context).authResendCodeCountdown(
+                          _formatCooldown(remaining.value),
+                        )
+                      : AppLocalizations.of(context).authResendCode,
                 ),
               ),
             ],

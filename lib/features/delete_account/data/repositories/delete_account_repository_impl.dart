@@ -29,7 +29,10 @@ class DeleteAccountRepositoryImpl implements DeleteAccountRepository {
       );
     } on DioException catch (error) {
       return Either.left(
-        DeleteAccountFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
+        DeleteAccountFailure(
+          _mapDioError(error),
+          errorCode: _mapErrorCode(error),
+        ),
       );
     } catch (error) {
       return Either.left(DeleteAccountFailure(error.toString()));
@@ -45,8 +48,10 @@ class DeleteAccountRepositoryImpl implements DeleteAccountRepository {
     return switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
-      DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+      DioExceptionType.receiveTimeout =>
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     };
   }

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,9 +22,12 @@ import 'package:sambasku_mobile/features/notification/domain/entities/inbox_noti
 import 'package:sambasku_mobile/features/notification/domain/failures/notification_failure.dart';
 import 'package:sambasku_mobile/features/notification/domain/repositories/notification_repository.dart';
 import 'package:sambasku_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/features/user_profile/domain/entities/public_profile.dart';
 import 'package:sambasku_mobile/features/user_profile/presentation/providers/user_profile_providers.dart';
+import 'package:sambasku_mobile/shared/widgets/user_avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _profile = PublicProfile(
   username: 'budi',
@@ -50,11 +53,13 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
@@ -62,6 +67,7 @@ class _FakeAuthRepository implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
@@ -193,12 +199,17 @@ void main() {
           ...extraOverrides.cast<dynamic>(),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
+          localizationsDelegates: [
+            ...FLocalizations.localizationsDelegates,
+            ...AppLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: child ?? const SizedBox.shrink()),
           ),
         ),
@@ -218,9 +229,9 @@ void main() {
 
       expect(find.text('Belum masuk'), findsOneWidget);
       expect(find.text('Masuk / Login'), findsOneWidget);
-      expect(find.text('Daftar'), findsOneWidget);
-      expect(find.text('Laporkan Masalah'), findsOneWidget);
-      expect(find.text('Keluar'), findsNothing);
+    expect(find.text('Daftar'), findsOneWidget);
+    expect(find.text('Pengaturan'), findsOneWidget);
+    expect(find.text('Keluar'), findsNothing);
     },
   );
 
@@ -243,13 +254,55 @@ void main() {
       expect(find.text('@budi'), findsOneWidget);
       expect(find.text('Bio percobaan'), findsOneWidget);
       expect(find.textContaining('usul kata'), findsOneWidget);
-    expect(find.textContaining('perbaikan'), findsOneWidget);
-      expect(find.text('Verifikator'), findsOneWidget);
+      expect(find.textContaining('perbaikan'), findsOneWidget);
+      // Label teks "Verifikator" dihapus: centang hijau yang mewakili,
+      // tap ikon membuka penjelasan.
+      expect(find.text('Verifikator'), findsNothing);
+      // Dua centang di profil sendiri: samping nama + baris meta.
+      expect(
+        find.bySemanticsLabel('Verifikator, ketuk untuk info'),
+        findsWidgets,
+      );
       // Label role lama tidak boleh tampil lagi.
       expect(find.text('Reviewer'), findsNothing);
       expect(find.text('Kontributor'), findsNothing);
-      // Desain baru: edit profil dari profil publik (tap header), bukan tile.
+
+      // CTA eksplisit ke profil publik (header juga bisa di-tap).
+      expect(find.text('Lihat profil publik'), findsOneWidget);
+      // Tombol shrink-wrap (bukan full width) - sejajar tombol kecil lain.
+      final btn = tester.getRect(
+        find.widgetWithText(FButton, 'Lihat profil publik'),
+      );
+      final label = tester.getRect(find.text('Lihat profil publik'));
+      expect(btn.width, lessThan(label.width + 80));
+      // Edit profil = ikon di bar melayang (IconButton tooltip), bukan tile teks.
       expect(find.text('Edit profil'), findsNothing);
+      expect(find.byTooltip('Edit profil'), findsOneWidget);
+
+      // Layout center: avatar besar (104) tepat di tengah lebar layar,
+      // identitas rata tengah di bawahnya.
+      final avatar = find.byType(UserAvatar);
+      expect(tester.getSize(avatar).width, 104);
+      final screenCenter = tester.view.physicalSize.width / 2;
+      expect(tester.getCenter(avatar).dx, closeTo(screenCenter, 1));
+      expect(tester.getCenter(find.text('@budi')).dx, closeTo(screenCenter, 1));
+      expect(
+        tester.getTopLeft(find.text('@budi')).dy,
+        greaterThan(tester.getBottomLeft(avatar).dy),
+        reason: 'handle ada di bawah avatar, bukan di sampingnya',
+      );
+
+      // Tap centang hijau → sheet penjelasan peran verifikator.
+      await tester.tap(
+        find.bySemanticsLabel('Verifikator, ketuk untuk info').first,
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('Verifikator'), findsOneWidget);
+      expect(find.textContaining('memeriksa usulan'), findsOneWidget);
+      await tester.tap(find.text('Mengerti'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
     },
   );
 
@@ -282,6 +335,27 @@ void main() {
 
     expect(find.text('halaman login'), findsOneWidget);
     expect(find.text('Keluar'), findsNothing);
+  });
+
+  testWidgets('sudah login - verifikator hanya punya satu centang (di nama)', (
+    tester,
+  ) async {
+    await pumpProfile(
+      tester,
+      prefs: {
+        'isAuth': true,
+        'sessionUsername': 'budi',
+        'sessionRole': 'reviewer',
+      },
+      secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
+      extraOverrides: [
+        publicProfileProvider('budi').overrideWith((ref) async => _profile),
+      ],
+    );
+
+    // Nama dapat centang via PublicAccountName; baris "Bergabung" tidak.
+    expect(find.byIcon(FLucideIcons.badgeCheck), findsOneWidget);
+    expect(find.textContaining('Bergabung'), findsOneWidget);
   });
 
   testWidgets('sudah login - tile Vote dan Komentar membuka route', (
@@ -347,12 +421,17 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
+          localizationsDelegates: [
+            ...FLocalizations.localizationsDelegates,
+            ...AppLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) =>
-              FTheme(data: FThemes.zinc.light.touch, child: child!),
+              FTheme(data: foruiPalettes['zinc']!.light.touch, child: child!),
         ),
       ),
     );
@@ -378,6 +457,57 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('halaman komentar'), findsOneWidget);
+  });
+
+  testWidgets('scroll tidak memicu fetch ulang header profil', (tester) async {
+    // Regresi: header dulu anak ListView lazy. Begitu tergulir keluar
+    // cacheExtent, widget di-dispose, provider autoDispose mati, dan API
+    // dipanggil lagi tiap balik scroll. Sekarang header harus tetap
+    // mounted - jumlah fetch tidak bertambah setelah scroll.
+    //
+    // Viewport sengaja pendek: dengan layar tinggi semua konten muat dan
+    // ListView lama pun tidak pernah men-dispose header, jadi bug tidak
+    // terdeteksi.
+    var fetches = 0;
+    await pumpProfile(
+      tester,
+      prefs: {
+        'isAuth': true,
+        'sessionUsername': 'budi',
+        'sessionRole': 'contributor',
+      },
+      secure: {'accessToken': 'test-access', 'refreshToken': 'test-refresh'},
+      extraOverrides: [
+        publicProfileProvider('budi').overrideWith((ref) async {
+          fetches++;
+          return _profile;
+        }),
+      ],
+    );
+    final afterFirstLoad = fetches;
+
+    // Pendekkan viewport SETELAH pump: `pumpProfile` menyetel 800x2400, dan
+    // dengan layar tinggi semua konten muat sehingga sliver tidak pernah
+    // men-dispose header - bug tidak terdeteksi.
+    tester.view.physicalSize = const Size(800, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // jumpTo, bukan drag: drag ke atas lalu balik melewati tepi atas
+    // memicu RefreshIndicator sungguhan, jadi yang terukur bukan bug ini.
+    final position = tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position;
+    position.jumpTo(position.maxScrollExtent);
+    await tester.pump(const Duration(milliseconds: 300));
+    position.jumpTo(0);
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(fetches, afterFirstLoad, reason: 'header tetap mounted saat scroll');
   });
 
   testWidgets('label versi tampil paling bawah profil', (tester) async {

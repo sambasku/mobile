@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../../../core/network/api_error_text.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
 import '../../domain/repositories/review_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 
 const _base = '/api/v1/admin/contributions';
 
@@ -72,6 +74,9 @@ class ReviewRepositoryImpl implements ReviewRepository {
           'entity_type': ?entityType,
           if (mine) 'mine': true,
           if (hideSkipped) 'hide_skipped': true,
+          // Antrean global diacak server per user supaya lemma tidak seragam.
+          // Riwayat (mine) tetap kronologis.
+          if (!mine) 'randomize': true,
           if (wordId != null && wordId.isNotEmpty) 'word_id': wordId,
           if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         },
@@ -93,7 +98,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat antrean review'));
+      return Either.left(_mapDio(error, l10n.reviewRepoQueueLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -115,7 +120,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat detail usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSuggestionDetailLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -159,7 +164,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal membuka ulang keputusan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoReopenFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -171,7 +176,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
       await _dio.post<Map<String, dynamic>>('$_base/$id/skip');
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal melewati usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSkipFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -183,7 +188,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
       await _dio.delete<Map<String, dynamic>>('$_base/$id/skip');
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal mengembalikan usulan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoRestoreFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -195,7 +200,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
       await _dio.post<Map<String, dynamic>>('/api/v1/admin/words/$wordId/unverify');
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal mencabut verifikasi kata'));
+      return Either.left(_mapDio(error, l10n.reviewRepoUnverifyFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -217,7 +222,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menyimpan keputusan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoDecisionSaveFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -227,7 +232,7 @@ class ReviewRepositoryImpl implements ReviewRepository {
     final data = error.response?.data;
     if (data is Map) {
       return ReviewFailure(
-        data['message']?.toString() ?? fallback,
+        apiErrorText(data, fallback),
         errorCode: data['error_code']?.toString(),
       );
     }

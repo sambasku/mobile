@@ -7,6 +7,7 @@ import '../../domain/failures/contribution_failure.dart';
 import '../datasources/image_remote_datasource.dart';
 import '../datasources/imagekit_uploader.dart';
 import '../models/create_word_image_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 /// Upload bukti ImageKit (folder privat). Dipakai pengajuan verifikator.
 /// Gambar kata kontributor: [WordImageUploadService] → ImageKit `/words`.
@@ -27,7 +28,7 @@ class PrivateImageUploadService {
       if (tokenRes.success == false || tokenRes.data == null) {
         return Either.left(
           ContributionFailure(
-            tokenRes.message ?? 'Gagal mendapat token upload',
+            tokenRes.message ?? l10n.contributeUploadTokenFailed,
             errorCode: tokenRes.errorCode,
           ),
         );
@@ -58,7 +59,7 @@ class PrivateImageUploadService {
             ContributionFailure(
               message is String && message.isNotEmpty
                   ? message
-                  : 'Penyimpanan gambar belum tersedia',
+                  : l10n.contributeStorageUnavailable,
               errorCode: 'IMAGE_UPLOAD_UNAVAILABLE',
             ),
           );
@@ -68,11 +69,11 @@ class PrivateImageUploadService {
         }
       }
       return Either.left(
-        const ContributionFailure('Gagal mengunggah gambar, coba lagi'),
+        ContributionFailure(l10n.contributeImageUploadFailed),
       );
     } catch (_) {
       return Either.left(
-        const ContributionFailure('Gagal mengunggah gambar, coba lagi'),
+        ContributionFailure(l10n.contributeImageUploadFailed),
       );
     }
   }

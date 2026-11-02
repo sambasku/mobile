@@ -12,7 +12,10 @@ class LoginWithFacebookUseCase {
   final AuthRepository _repository;
   final FacebookSignInPort _signIn;
 
-  Future<Either<AuthFailure, AuthSession>> call() async {
+  /// [consents] diisi hanya dari halaman Daftar (checkbox legal wajib).
+  Future<Either<AuthFailure, AuthSession>> call({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     try {
       final accessToken = await _signIn.authenticate();
       if (accessToken == null) {
@@ -31,7 +34,10 @@ class LoginWithFacebookUseCase {
           ),
         );
       }
-      return _repository.loginWithFacebook(accessToken: accessToken);
+      return await _repository.loginWithFacebook(
+        accessToken: accessToken,
+        consents: consents,
+      );
     } catch (_) {
       return Either.left(
         const AuthFailure('Tidak bisa masuk dengan Facebook. Coba lagi.'),

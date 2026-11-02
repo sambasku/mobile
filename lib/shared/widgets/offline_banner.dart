@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../core/network/connectivity_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Banner tipis di atas konten saat device offline. Animasi height supaya
 /// layout tidak lompat. Dipasang sekali di App.builder - global untuk
@@ -38,12 +39,12 @@ class OfflineBanner extends ConsumerWidget {
                         color: Colors.white,
                       ),
                       const Gap(8),
-                      Expanded(
-                        child: Text(
-                          'Kamu lagi offline. Nampilin data tersimpan.',
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context).offlineBanner,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.typography.sm.copyWith(
+                          style: theme.typography.body.sm.copyWith(
                             color: Colors.white,
                           ),
                         ),

@@ -56,6 +56,7 @@ void main() {
       final place = dto!.toEntity();
       expect(place.category, PlaceCategory.wisata);
       expect(place.type, PlaceType.sejarah);
+      expect(place.authorId, isNull); // tanpa field -> null
       expect(place.images.length, 2);
       expect(place.images.first.isMain, isTrue);
       expect(place.images.first.attribution?.license, 'CC BY-SA 4.0');
@@ -65,6 +66,32 @@ void main() {
       expect(place.related.first.kind, PlaceRelatedKind.place);
       expect(place.sources.length, 1);
       expect(place.sources.first.licenseUrl, isNotNull);
+    });
+
+    test('v2: authorId place + attribution terbaca', () {
+      final dto = PlaceDto.fromJson(const {
+        'id': '01M3ZWJ0KH7TCJ1K7KDDJE92D7',
+        'slug': 'istana-alwatzikoebillah',
+        'name': 'Istana Alwatzikoebillah',
+        'category': 'wisata',
+        'shortDescription': 'x',
+        'authorId': 'iamutaki',
+        'images': [
+          {
+            'url': 'https://cdn.jsdelivr.net/gh/sambasku/images@main/a.webp',
+            'isMain': true,
+            'attribution': {
+              'name': 'Arsa Irfandi',
+              'provider': 'sambasku',
+              'authorId': 'arsa-irfandi',
+            },
+          },
+        ],
+      });
+      final place = dto!.toEntity();
+      expect(place.authorId, 'iamutaki');
+      expect(place.images.first.attribution?.authorId, 'arsa-irfandi');
+      expect(place.images.first.attribution?.provider, 'sambasku');
     });
 
     test('kuliner: type selalu null walau JSON isi', () {
@@ -202,6 +229,46 @@ void main() {
       expect(dto.toEntity().first.slug, 'ok');
     });
 
+    test('contact objek {phone, email} ter-parse', () {
+      final place = PlaceDto.fromJson(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'wisata',
+        'shortDescription': 'd',
+        'contact': {'phone': '081257579828', 'email': 'pokdarwis@gmail.com'},
+      })!.toEntity();
+      expect(place.contact?.phone, '081257579828');
+      expect(place.contact?.email, 'pokdarwis@gmail.com');
+    });
+
+    test('contact teks rusak [object Object] jadi null', () {
+      for (final raw in ['[object Object]', '[object object]', '  ', null]) {
+        final place = PlaceDto.fromJson({
+          'id': 'X',
+          'slug': 's',
+          'name': 'n',
+          'category': 'wisata',
+          'shortDescription': 'd',
+          'contact': raw,
+        })!.toEntity();
+        expect(place.contact, isNull, reason: '$raw');
+      }
+    });
+
+    test('contact string nomor dan email baris baru ter-parse', () {
+      final place = PlaceDto.fromJson(const {
+        'id': 'X',
+        'slug': 's',
+        'name': 'n',
+        'category': 'wisata',
+        'shortDescription': 'd',
+        'contact': '0812-1000-2190\npokdarwis@gmail.com',
+      })!.toEntity();
+      expect(place.contact?.phone, '0812-1000-2190');
+      expect(place.contact?.email, 'pokdarwis@gmail.com');
+    });
+
     test('ImageAttribution snake_case license_url ter-parse', () {
       final a = ImageAttribution.fromJson(const {
         'name': 'Zhilal Darma',
@@ -280,18 +347,21 @@ void main() {
       }
     });
 
-    test('tanpa mapsUrl & tanpa koordinat → uri null, tombol tak bisa dibuka', () {
-      final place = placeOf(const {
-        'id': 'X',
-        'slug': 's',
-        'name': 'n',
-        'category': 'wisata',
-        'shortDescription': 'd',
-      });
-      expect(place.mapsUrl, isNull);
-      expect(place.canOpenMaps, isFalse);
-      expect(placeGoogleMapsUri(place), isNull);
-    });
+    test(
+      'tanpa mapsUrl & tanpa koordinat → uri null, tombol tak bisa dibuka',
+      () {
+        final place = placeOf(const {
+          'id': 'X',
+          'slug': 's',
+          'name': 'n',
+          'category': 'wisata',
+          'shortDescription': 'd',
+        });
+        expect(place.mapsUrl, isNull);
+        expect(place.canOpenMaps, isFalse);
+        expect(placeGoogleMapsUri(place), isNull);
+      },
+    );
 
     test('mapsUrl tanpa koordinat tetap bisa buka maps', () {
       final place = placeOf(const {

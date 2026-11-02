@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 import 'package:sambasku_mobile/features/admin_analytics/domain/admin_access.dart';
 import 'package:sambasku_mobile/features/admin_analytics/domain/dashboard_mappers.dart';
@@ -42,8 +45,10 @@ void main() {
       );
     }
 
+    final l10n = lookupAppLocalizations(const Locale('id'));
+
     test('menghitung delta vs hari sebelumnya', () {
-      final metrics = buildTodayVsYesterday([
+      final metrics = buildTodayVsYesterday(l10n, [
         point(date: '2026-09-25', contributions: 2, votes: 10, comments: 1),
         point(
           date: '2026-09-26',
@@ -75,7 +80,7 @@ void main() {
     });
 
     test('sembunyikan delta jika hanya satu titik', () {
-      final metrics = buildTodayVsYesterday([
+      final metrics = buildTodayVsYesterday(l10n, [
         point(date: '2026-09-26', contributions: 3),
       ]);
       expect(
@@ -166,11 +171,7 @@ void main() {
           'word_reports': {'open': 2, 'closed': 2},
         },
       },
-      'verifier_applications': {
-        'pending': 2,
-        'approved': 4,
-        'rejected': 1,
-      },
+      'verifier_applications': {'pending': 2, 'approved': 4, 'rejected': 1},
     };
 
     test('memetakan wire + pad tetap 30 hari WIB', () {
@@ -184,8 +185,9 @@ void main() {
       expect(stats.activity.dailyLast30Days.last.date, '2026-09-27');
       expect(stats.activity.dailyLast30Days.last.contributions, 2);
       expect(stats.activity.dailyLast30Days.last.votes, 5);
-      final sep20 = stats.activity.dailyLast30Days
-          .firstWhere((p) => p.date == '2026-09-20');
+      final sep20 = stats.activity.dailyLast30Days.firstWhere(
+        (p) => p.date == '2026-09-20',
+      );
       expect(sep20.contributions, 1);
       expect(sep20.comments, 2);
       expect(sep20.newUsers, 1);
@@ -217,13 +219,14 @@ void main() {
   });
 
   group('searchMissActivityBody', () {
+    final l10n = lookupAppLocalizations(const Locale('id'));
     test('copy bantu isi', () {
       expect(
-        searchMissActivityBody('kalintiak'),
+        searchMissActivityBody(l10n, 'kalintiak'),
         'mencari kalintiak tapi tidak terdapat. Bantu isi.',
       );
       expect(
-        searchMissActivityBody('  '),
+        searchMissActivityBody(l10n, '  '),
         'mencari … tapi tidak terdapat. Bantu isi.',
       );
     });
@@ -312,11 +315,7 @@ void main() {
                   '2026-09-${(28 - i).toString().padLeft(2, '0')}T12:00:00.000Z',
             ),
       ];
-      final merged = mergeAnalyticsActivity(
-        items,
-        perKindCap: 5,
-        limit: 12,
-      );
+      final merged = mergeAnalyticsActivity(items, perKindCap: 5, limit: 12);
       expect(merged, hasLength(12));
     });
   });

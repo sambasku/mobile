@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -39,7 +40,7 @@ class ReviewHomePage extends ConsumerWidget {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Area Verifikator'),
+          title: Text(AppLocalizations.of(context).commonVerifierArea),
           prefixes: [FHeaderAction.back(onPress: () => leaveReview(context))],
         ),
         // Align mengendurkan tinggi. Tanpa ini FScaffold memaksa FTileGroup
@@ -50,11 +51,11 @@ class ReviewHomePage extends ConsumerWidget {
             children: [
               if (showContribution)
                 FTile(
-                  prefix: const Icon(FLucideIcons.play),
-                  title: const Text('Mulai tinjau'),
+                  prefix: Icon(FLucideIcons.play),
+                  title: Text(AppLocalizations.of(context).reviewHomeStart),
                   subtitle: contribPending
-                      ? const Text('Ada usulan yang menunggu')
-                      : const Text('Antrean kontribusi untuk ditinjau'),
+                      ? Text(AppLocalizations.of(context).reviewHomeContributionTitle)
+                      : Text(AppLocalizations.of(context).reviewHomeContributionSubtitle),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -69,22 +70,21 @@ class ReviewHomePage extends ConsumerWidget {
               // antrean, jadi tidak boleh mendominasi posisi pertama.
               if (showContribution)
                 FTile(
-                  prefix: const Icon(FLucideIcons.sparkles),
-                  title: const Text('Perbaiki/lengkapi kata'),
-                  subtitle: const Text(
-                    'Tambah makna, relasi, variasi penulisan, contoh, '
-                    'dan rekam pelafalan',
+                  prefix: Icon(FLucideIcons.sparkles),
+                  title: Text(AppLocalizations.of(context).reviewHomeCompleteWordTitle),
+                  subtitle: Text(
+                    AppLocalizations.of(context).reviewHomeCompleteWordSubtitle,
                   ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => context.push(DictionaryRouter.complete.path),
                 ),
               if (showContribution)
                 FTile(
-                  prefix: const Icon(FLucideIcons.pencilLine),
-                  title: const Text('Usulan edit'),
+                  prefix: Icon(FLucideIcons.pencilLine),
+                  title: Text(AppLocalizations.of(context).reviewHomeSuggestionTitle),
                   subtitle: suggestionsPending
-                      ? const Text('Ada usulan edit yang menunggu')
-                      : const Text('Antrean usulan perubahan kata'),
+                      ? Text(AppLocalizations.of(context).reviewHomeSuggestionWaiting)
+                      : Text(AppLocalizations.of(context).reviewHomeSuggestionSubtitle),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -96,11 +96,11 @@ class ReviewHomePage extends ConsumerWidget {
                 ),
               if (showDiscussion)
                 FTile(
-                  prefix: const Icon(FLucideIcons.messagesSquare),
-                  title: const Text('Tinjauan Diskusi'),
+                  prefix: Icon(FLucideIcons.messagesSquare),
+                  title: Text(AppLocalizations.of(context).reviewHomeDiscussionTitle),
                   subtitle: discussionPending
-                      ? const Text('Ada diskusi yang menunggu')
-                      : const Text('Antrean Ruang Diskusi untuk ditinjau'),
+                      ? Text(AppLocalizations.of(context).reviewHomeDiscussionWaiting)
+                      : Text(AppLocalizations.of(context).reviewHomeDiscussionSubtitle),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -113,19 +113,19 @@ class ReviewHomePage extends ConsumerWidget {
               // #88: gerbang tayang pencarian kosong + peluang usul langsung.
               if (showContribution)
                 FTile(
-                  prefix: const Icon(FLucideIcons.search),
-                  title: const Text('Pencarian kosong'),
-                  subtitle: const Text(
-                    'Tayangkan ke publik atau usulkan sendiri',
+                  prefix: Icon(FLucideIcons.search),
+                  title: Text(AppLocalizations.of(context).reviewHomeSearchMissTitle),
+                  subtitle: Text(
+                    AppLocalizations.of(context).reviewHomeSearchMissSubtitle,
                   ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => context.push(ReviewRouter.searchMisses.path),
                 ),
               if (showContribution)
                 FTile(
-                  prefix: const Icon(FLucideIcons.history),
-                  title: const Text('Riwayat tinjauan'),
-                  subtitle: const Text('Keputusan yang sudah kamu berikan'),
+                  prefix: Icon(FLucideIcons.history),
+                  title: Text(AppLocalizations.of(context).reviewHomeHistoryTitle),
+                  subtitle: Text(AppLocalizations.of(context).reviewHomeHistorySubtitle),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => context.push(ReviewRouter.history.path),
                 ),

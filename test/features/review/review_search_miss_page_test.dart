@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -12,6 +12,8 @@ import 'package:sambasku_mobile/features/review/domain/entities/review_search_mi
 import 'package:sambasku_mobile/features/review/domain/failures/review_failure.dart';
 import 'package:sambasku_mobile/features/review/presentation/pages/review_search_miss_page.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_search_miss_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 Finder _fbtnByIcon(IconData icon) =>
     find.ancestor(of: find.byIcon(icon), matching: find.byType(FButton));
@@ -225,7 +227,7 @@ void main() {
 
       // Tidak ada request server; kartu maju ke berikutnya + toast info.
       expect(repo.setVisibleCalls, isEmpty);
-      expect(find.textContaining('sudah tayang — dilewati'), findsOneWidget);
+      expect(find.textContaining('sudah tayang - dilewati'), findsOneWidget);
       expect(find.text('nandor'), findsOneWidget);
     },
   );
@@ -267,7 +269,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.textContaining('Selesai — semua pencarian kosong'),
+      find.textContaining('semua pencarian kosong'),
       findsOneWidget,
     );
     expect(find.text('Muat ulang'), findsOneWidget);
@@ -321,9 +323,13 @@ Future<void> _pumpPanel(
         reviewSearchMissProvider.overrideWith((ref) async => items),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: GoRouter(
           initialLocation: '/review/search-misses',
           routes: [
@@ -337,8 +343,10 @@ Future<void> _pumpPanel(
             ),
           ],
         ),
-        builder: (context, child) => FToaster(
-          child: FTheme(data: FThemes.zinc.light.touch, child: child!),
+        builder: (context, child) => FTheme(
+          data: foruiPalettes['zinc']!.light.touch,
+          // FToaster 0.27 butuh FTheme ancestor (akses accessibility scope).
+          child: FToaster(child: child!),
         ),
       ),
     ),

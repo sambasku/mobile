@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 
 /// Token semantik yang tidak ada di [FColors] Forui 0.22.
@@ -20,4 +20,12 @@ extension FColorsX on FColors {
   Color get warning => brightness == Brightness.dark
       ? const Color(0xFFFBBF24)
       : const Color(0xFFF59E0B);
+
+  /// Biru peran verifikator - pembeda dari hijau status kata approved.
+  ///
+  /// Light: `#2A66FF`. Dark diputer lebih terang (`#5B8CFF`) supaya
+  /// kontras cukup (~5:1) di kartu zinc gelap.
+  Color get verifierBlue => brightness == Brightness.dark
+      ? const Color(0xFF5B8CFF)
+      : const Color(0xFF2A66FF);
 }

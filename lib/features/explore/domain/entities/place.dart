@@ -1,7 +1,7 @@
 import '../../../../core/models/image_attribution.dart';
 
 /// Kategori Place. Satu koleksi, dibedakan category (WISATA_START.md).
-enum PlaceCategory { wisata, kuliner }
+enum PlaceCategory { wisata, kuliner, budaya }
 
 /// Type hanya untuk wisata; kuliner null.
 enum PlaceType { sejarah, alam, budaya, pantai, belanja }
@@ -45,6 +45,19 @@ class PlaceRelated {
   final String id;
 }
 
+/// Kontak tempat. Kosong / teks rusak `[object Object]` tidak masuk ke sini.
+class PlaceContact {
+  const PlaceContact({this.phone, this.email, this.note});
+
+  final String? phone;
+  final String? email;
+
+  /// Teks kontak yang bukan nomor atau email.
+  final String? note;
+
+  bool get isEmpty => phone == null && email == null && note == null;
+}
+
 class Place {
   const Place({
     required this.id,
@@ -57,6 +70,7 @@ class Place {
     this.mapsUrl,
     required this.shortDescription,
     this.regionId,
+    this.authorId,
     required this.images,
     required this.hours,
     required this.contact,
@@ -91,11 +105,15 @@ class Place {
   /// Id kecamatan (Region.id) tempat place ini berada; null = belum dipetakan.
   final String? regionId;
 
+  /// Id kontributor SambasKu (contributors.json) - penulis artikel place;
+  /// tap kredit membuka profil publik in-app. Null = tanpa kredit penulis.
+  final String? authorId;
+
   /// Sudah dinormalisasi DTO: entry `isMain` pertama yang menang,
   /// tanpa true = pertama dianggap main.
   final List<PlaceImage> images;
   final String? hours;
-  final String? contact;
+  final PlaceContact? contact;
   final List<PlaceRelated> related;
   final List<PlaceSource> sources;
 

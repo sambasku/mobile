@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -7,11 +7,13 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/entities/my_submission.dart';
 import '../../domain/failures/my_contribution_failure.dart';
 import '../../my_contributions_router.dart';
+import '../my_contribution_labels.dart';
 import '../providers/my_contributions_providers.dart';
 import '../widgets/submission_status_icon.dart';
 
@@ -29,7 +31,7 @@ class MyContributionsPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Kontribusi Saya'),
+        title: Text(AppLocalizations.of(context).myContributionsTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: auth.when(
@@ -61,15 +63,15 @@ class _GuestState extends StatelessWidget {
             ),
             const Gap(10),
             Text(
-              'Masuk dulu untuk melihat usulanmu',
-              style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+              AppLocalizations.of(context).myContributionsLoginRequired,
+              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const Gap(16),
             FButton(
               variant: FButtonVariant.outline,
               onPress: () => context.push('/login'),
-              child: const Text('Masuk'),
+              child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
             ),
           ],
         ),
@@ -108,8 +110,8 @@ class _ContributionsList extends ConsumerWidget {
               Text(
                 error is MyContributionFailure
                     ? error.message
-                    : 'Gagal memuat kontribusi',
-                style: theme.typography.sm.copyWith(
+                    : AppLocalizations.of(context).myContributionsLoadFailed,
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
@@ -119,7 +121,7 @@ class _ContributionsList extends ConsumerWidget {
                 variant: FButtonVariant.outline,
                 onPress: () =>
                     ref.invalidate(myContributionsListControllerProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -155,16 +157,16 @@ class _ContributionsList extends ConsumerWidget {
                       ),
                       const Gap(10),
                       Text(
-                        'Belum ada usulan',
-                        style: theme.typography.md.copyWith(
+                        AppLocalizations.of(context).myContributionsEmpty,
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const Gap(4),
                       Text(
-                        'Usul kata baru atau perubahan akan muncul di sini.',
-                        style: theme.typography.sm.copyWith(
+                        AppLocalizations.of(context).myContributionsEmptyBody,
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -199,6 +201,7 @@ class _SubmissionTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final date = formatDateTimeIso(item.createdAt);
     final statusColor = switch (item.status) {
@@ -209,25 +212,20 @@ class _SubmissionTile extends StatelessWidget with FTileMixin {
     };
 
     final subtitleSpans = <InlineSpan>[
-      TextSpan(text: '${item.kindLabel} · '),
+      TextSpan(text: '${mySubmissionKindLabel(l10n, item.entityType)} · '),
       TextSpan(
-        text: item.statusLabel,
+        text: mySubmissionStatusLabel(l10n, item.status),
         style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
       ),
       if (date.isNotEmpty) TextSpan(text: ' · $date'),
     ];
     if (item.status == 'rejected') {
-      final comment = item.reviewComment?.trim() ?? '';
-      if (comment.isNotEmpty) {
-        final short = comment.length > 60
-            ? '${comment.substring(0, 60)}...'
-            : comment;
-        subtitleSpans.add(TextSpan(text: ' · $short'));
-      }
+      final short = submissionReviewSnippet(item.reviewComment);
+      if (short.isNotEmpty) subtitleSpans.add(TextSpan(text: ' · $short'));
     }
 
     return FTile(
-      title: Text(item.displayTitle),
+      title: Text(mySubmissionTitle(l10n, item)),
       subtitle: Text.rich(TextSpan(children: subtitleSpans)),
       prefix: SubmissionStatusIcon(status: item.status),
       suffix: const Icon(FLucideIcons.chevronRight),
@@ -248,7 +246,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -259,7 +257,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -285,11 +283,10 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FTile(
-      title: const Text('lemma contoh usulan'),
-      subtitle: const Text(
-        'Usul kata baru · Menunggu pengecekan · 21 Sep 2026 00:00',
-      ),
+      title: Text(l10n.myContributionsSkeletonLemma),
+      subtitle: Text(l10n.myContributionsSkeletonMeta),
     );
   }
 }

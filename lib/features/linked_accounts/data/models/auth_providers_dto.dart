@@ -7,6 +7,7 @@ part 'auth_providers_dto.g.dart';
 abstract class AuthProvidersDto with _$AuthProvidersDto {
   const factory AuthProvidersDto({
     @Default([]) List<AuthProviderItemDto> providers,
+    @Default(false) @JsonKey(name: 'has_password') bool hasPassword,
   }) = _AuthProvidersDto;
 
   factory AuthProvidersDto.fromJson(Map<String, dynamic> json) =>

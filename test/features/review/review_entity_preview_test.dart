@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -8,6 +8,8 @@ import 'package:sambasku_mobile/features/review/domain/entities/review_contribut
 import 'package:sambasku_mobile/features/review/presentation/widgets/review_entity_preview.dart';
 import 'package:sambasku_mobile/shared/reference/reference_data.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 // Id berbentuk ULID seperti yang dikirim API. Kalau salah satu bocor ke layar,
 // test ini gagal - itulah regresi yang Originally dilaporkan.
@@ -121,11 +123,15 @@ void main() {
           referenceLanguagesProvider.overrideWith((ref) async => _languages),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: Scaffold(
               body: SingleChildScrollView(
                 child: SizedBox(
@@ -160,11 +166,15 @@ void main() {
             ),
           ],
           child: MaterialApp(
-            theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-            localizationsDelegates: FLocalizations.localizationsDelegates,
-            supportedLocales: FLocalizations.supportedLocales,
+            theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+            localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+            supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
             home: FTheme(
-              data: FThemes.zinc.light.touch,
+              data: foruiPalettes['zinc']!.light.touch,
               child: Scaffold(
                 body: SingleChildScrollView(
                   child: SizedBox(

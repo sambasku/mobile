@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -12,12 +12,16 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/theme/f_colors_x.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../models/bulk_submit_word_state.dart';
+import '../providers/bulk_lemma_check_provider.dart';
 import '../providers/bulk_submit_word_providers.dart';
 import '../utils/invalidate_word_detail.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 class BulkContributePage extends ConsumerStatefulWidget {
   const BulkContributePage({super.key});
@@ -163,50 +167,46 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
   }
 
   Future<void> _showBatchResultDialog(BulkSubmitWordState state) async {
+    final l10n = AppLocalizations.of(context);
     final sent = state.sentCount;
     final failed = state.failedCount;
     final allOk = state.allSendableSucceeded && failed == 0;
 
-    final title = allOk ? 'Usulan terkirim' : 'Sebagian terkirim';
+    final title = allOk
+        ? l10n.contributeBulkSentTitle
+        : l10n.contributeBulkPartialTitle;
     final body = allOk
-        ? (sent == 1
-              ? '1 kata berhasil dikirim.'
-              : '$sent kata berhasil dikirim.')
-        : '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
+        ? (sent == 1 ? l10n.contributeBulkSentOne : l10n.contributeBulkSentMany(sent))
+        : l10n.contributeBulkPartialBody(sent, failed);
 
-    final choice = await showFDialog<String>(
+    final choice = await showFMessageDialog<String>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext, style, animation) => FDialog(
-        style: style,
-        animation: animation,
-        direction: Axis.vertical,
-        title: Text(title),
-        body: Text(body),
-        actions: [
-          if (allOk) ...[
-            FButton(
-              onPress: () => Navigator.of(dialogContext).pop('list'),
-              child: const Text('Lihat usulan'),
-            ),
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop('back'),
-              child: const Text('Kembali'),
-            ),
-          ] else ...[
-            FButton(
-              onPress: () => Navigator.of(dialogContext).pop('stay'),
-              child: const Text('Perbaiki'),
-            ),
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop('list'),
-              child: const Text('Lihat usulan'),
-            ),
-          ],
+      title: Text(title),
+      body: Text(body),
+      actions: (dialogContext) => [
+        if (allOk) ...[
+          FButton(
+            onPress: () => Navigator.of(dialogContext).pop('list'),
+            child: Text(l10n.contributeSeeProposals),
+          ),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => Navigator.of(dialogContext).pop('back'),
+            child: Text(l10n.commonBack),
+          ),
+        ] else ...[
+          FButton(
+            onPress: () => Navigator.of(dialogContext).pop('stay'),
+            child: Text(l10n.contributeBulkFix),
+          ),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => Navigator.of(dialogContext).pop('list'),
+            child: Text(l10n.contributeSeeProposals),
+          ),
         ],
-      ),
+      ],
     );
 
     if (!mounted) return;
@@ -229,6 +229,7 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final state = ref.watch(bulkSubmitWordProvider);
     final notifier = ref.read(bulkSubmitWordProvider.notifier);
@@ -259,11 +260,10 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
       if (!context.mounted) return;
       final latest = ref.read(bulkSubmitWordProvider);
       // Issue #28: buang cache detail untuk tiap kata yang baru terkirim.
-      for (final row
-          in latest.rows.where((r) => r.wordId?.isNotEmpty == true)) {
-        unawaited(
-          invalidateWordDetailCaches(ref, row.wordId!, row.lemma),
-        );
+      for (final row in latest.rows.where(
+        (r) => r.wordId?.isNotEmpty == true,
+      )) {
+        unawaited(invalidateWordDetailCaches(ref, row.wordId!, row.lemma));
       }
       _showBatchResultDialog(latest);
     });
@@ -289,14 +289,14 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
           )
         : state.progressDone;
     final footerLabel = state.isSubmitting
-        ? 'Mengirim $progressCurrent/${state.progressTotal}...'
+        ? l10n.contributeBulkProgress(progressCurrent, state.progressTotal)
         : (state.isRetryMode
-              ? 'Kirim ulang yang belum terkirim'
-              : 'Kirim semua');
+              ? l10n.contributeBulkResendPending
+              : l10n.contributeBulkSendAll);
 
     return FScaffold(
       header: FHeader.nested(
-        title: const Text('Usulkan banyak'),
+        title: Text(l10n.contributeBulkHeader),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -321,17 +321,15 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
         padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
         children: [
           Text(
-            isAuth
-                ? 'Tiap kata langsung tayang dengan label Menunggu pengecekan.'
-                : 'Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.',
-            style: theme.typography.sm.copyWith(
+            isAuth ? l10n.contributeBulkSentPending : l10n.contributeBulkSentGuest,
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
           const Gap(4),
           Text(
-            'Maksimal ${BulkSubmitWordState.maxRows} kata. Isi kata Sambas dan terjemahan Indonesia.',
-            style: theme.typography.sm.copyWith(
+            l10n.contributeBulkMaxRowsHint(BulkSubmitWordState.maxRows),
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -348,12 +346,12 @@ class _BulkContributePageState extends ConsumerState<BulkContributePage> {
               variant: FButtonVariant.outline,
               onPress: state.isSubmitting ? null : notifier.addRow,
               prefix: const Icon(FLucideIcons.plus),
-              child: const Text('Tambah baris'),
+              child: Text(l10n.contributeBulkAddRow),
             )
           else
             Text(
-              'Maksimal ${BulkSubmitWordState.maxRows} baris per sesi.',
-              style: theme.typography.sm.copyWith(
+              l10n.contributeBulkMaxRows(BulkSubmitWordState.maxRows),
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -420,7 +418,7 @@ class _BulkTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final style = theme.typography.xs.copyWith(
+    final style = theme.typography.body.xs.copyWith(
       fontWeight: FontWeight.w600,
       color: theme.colors.mutedForeground,
     );
@@ -433,7 +431,10 @@ class _BulkTableHeader extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Text('Sambas', style: style),
+              child: Text(
+                AppLocalizations.of(context).contributeBulkColumnSambas,
+                style: style,
+              ),
             ),
           ),
           Expanded(
@@ -441,7 +442,10 @@ class _BulkTableHeader extends StatelessWidget {
               decoration: BoxDecoration(border: divider),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Text('Indonesia', style: style),
+                child: Text(
+                  AppLocalizations.of(context).contributeBulkColumnIndonesia,
+                  style: style,
+                ),
               ),
             ),
           ),
@@ -455,7 +459,7 @@ class _BulkTableHeader extends StatelessWidget {
   }
 }
 
-class _BulkTableRow extends StatelessWidget {
+class _BulkTableRow extends ConsumerWidget {
   const _BulkTableRow({
     required this.index,
     required this.row,
@@ -475,13 +479,23 @@ class _BulkTableRow extends StatelessWidget {
   final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final locked = !row.isEditable || row.status == BulkRowSubmitStatus.sending;
     final n = index + 1;
     final error = row.errorMessage?.trim();
     final failed = row.status == BulkRowSubmitStatus.failed;
     final divider = Border(left: BorderSide(color: borderColor));
+    final lemma = ctrls?.lemmaCtrl.text ?? row.lemma;
+    final existingWordId = ref.watch(
+      bulkLemmaCheckProvider.select((marks) {
+        final key = lemma.trim().toLowerCase();
+        final mark = marks[key];
+        if (mark == null || !mark.exists) return null;
+        return mark.wordId;
+      }),
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -498,9 +512,35 @@ class _BulkTableRow extends StatelessWidget {
                 child: _cell(
                   controller: ctrls?.lemmaCtrl,
                   hint: index == 0 ? 'ngupi' : null,
-                  semanticsLabel: 'Kata Sambas baris $n',
+                  semanticsLabel: existingWordId == null
+                      ? l10n.contributeBulkLemmaField(n)
+                      : l10n.contributeBulkLemmaExists(n),
                   locked: locked,
                   textInputAction: TextInputAction.next,
+                  // Issue #181: icon di ujung lemma, bukan kolom baru.
+                  // ExcludeSemantics: FButton/ikon di suffix Forui 0.22
+                  // bentrok dengan MergeSemantics field.
+                  suffixBuilder: existingWordId == null
+                      ? null
+                      : (context, style, _) => Padding(
+                          padding: style.clearButtonPadding,
+                          child: ExcludeSemantics(
+                            child: GestureDetector(
+                              onTap: () {
+                                AnalyticsService.instance.logWordOpen(
+                                  wordId: existingWordId,
+                                  source: 'bulk_lemma',
+                                );
+                                context.push('/words/$existingWordId');
+                              },
+                              child: Icon(
+                                FLucideIcons.circleAlert,
+                                size: 16,
+                                color: theme.colors.warning,
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
               ),
               Expanded(
@@ -509,7 +549,7 @@ class _BulkTableRow extends StatelessWidget {
                   child: _cell(
                     controller: ctrls?.translationCtrl,
                     hint: index == 0 ? 'minum kopi' : null,
-                    semanticsLabel: 'Terjemahan Indonesia baris $n',
+                    semanticsLabel: l10n.contributeBulkTranslationField(n),
                     locked: locked,
                     textInputAction: TextInputAction.done,
                   ),
@@ -520,7 +560,7 @@ class _BulkTableRow extends StatelessWidget {
                 child: SizedBox(
                   width: _bulkActionWidth,
                   height: 40,
-                  child: Center(child: _action(theme)),
+                  child: Center(child: _action(context, theme)),
                 ),
               ),
             ],
@@ -530,7 +570,7 @@ class _BulkTableRow extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Text(
                 error,
-                style: theme.typography.xs.copyWith(color: theme.colors.error),
+                style: theme.typography.body.xs.copyWith(color: theme.colors.error),
               ),
             ),
         ],
@@ -544,6 +584,7 @@ class _BulkTableRow extends StatelessWidget {
     required String semanticsLabel,
     required bool locked,
     required TextInputAction textInputAction,
+    FFieldIconBuilder<FTextFieldStyle>? suffixBuilder,
   }) {
     if (controller == null) return const SizedBox(height: 40);
     return Semantics(
@@ -556,11 +597,13 @@ class _BulkTableRow extends StatelessWidget {
         enabled: !locked,
         readOnly: locked,
         textInputAction: textInputAction,
+        suffixBuilder: suffixBuilder,
       ),
     );
   }
 
-  Widget _action(FThemeData theme) {
+  Widget _action(BuildContext context, FThemeData theme) {
+    final l10n = AppLocalizations.of(context);
     final failed = row.status == BulkRowSubmitStatus.failed;
     switch (row.status) {
       case BulkRowSubmitStatus.sending:
@@ -579,7 +622,7 @@ class _BulkTableRow extends StatelessWidget {
           FLucideIcons.circleCheck,
           size: 16,
           color: theme.colors.primary,
-          semanticLabel: 'Terkirim',
+          semanticLabel: l10n.contributeBulkRowSent,
         );
       case BulkRowSubmitStatus.idle:
       case BulkRowSubmitStatus.failed:
@@ -592,7 +635,7 @@ class _BulkTableRow extends StatelessWidget {
             FLucideIcons.trash2,
             size: 16,
             color: failed ? theme.colors.error : theme.colors.mutedForeground,
-            semanticLabel: 'Hapus baris ${index + 1}',
+            semanticLabel: l10n.contributeBulkRemoveRow(index + 1),
           ),
         );
     }

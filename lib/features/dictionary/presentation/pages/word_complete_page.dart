@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -34,9 +36,7 @@ class _WordCompletePageState extends ConsumerState<WordCompletePage> {
   }
 
   void _onSearchChanged() {
-    ref
-        .read(wordCompleteProvider.notifier)
-        .onQueryChanged(_searchCtrl.text);
+    ref.read(wordCompleteProvider.notifier).onQueryChanged(_searchCtrl.text);
   }
 
   @override
@@ -55,16 +55,15 @@ class _WordCompletePageState extends ConsumerState<WordCompletePage> {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Lengkapi kata'),
+        title: Text(AppLocalizations.of(context).dictCompleteTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, '
-            'variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.',
-            style: theme.typography.sm.copyWith(
+            AppLocalizations.of(context).dictCompleteSubtitle,
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -72,7 +71,7 @@ class _WordCompletePageState extends ConsumerState<WordCompletePage> {
           FTextField(
             control: FTextFieldControl.managed(controller: _searchCtrl),
             focusNode: _searchFocus,
-            hint: 'Cari kata Sambas...',
+            hint: AppLocalizations.of(context).dictCompleteHint,
             textInputAction: TextInputAction.search,
             prefixBuilder: (context, style, variants) =>
                 FTextField.prefixIconBuilder(
@@ -106,7 +105,7 @@ class _Results extends ConsumerWidget {
           children: [
             Text(
               state.errorMessage!,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
@@ -117,7 +116,7 @@ class _Results extends ConsumerWidget {
               onPress: () => ref
                   .read(wordCompleteProvider.notifier)
                   .onQueryChanged(state.q),
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),
@@ -130,14 +129,16 @@ class _Results extends ConsumerWidget {
 
     if (!state.isSearching) {
       return _Hint(
-        message: 'Ketik minimal 2 huruf untuk mencari kata.',
+        message: AppLocalizations.of(context).dictCompleteMinChars,
         icon: FLucideIcons.search,
       );
     }
 
     if (state.items.isEmpty) {
       return _Hint(
-        message: 'Tidak ada kata yang cocok dengan "${state.q.trim()}".',
+        message: AppLocalizations.of(
+          context,
+        ).dictCompleteNoMatch(state.q.trim()),
         icon: FLucideIcons.searchX,
       );
     }
@@ -166,7 +167,7 @@ class _Hint extends StatelessWidget {
           const Gap(8),
           Text(
             message,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
             textAlign: TextAlign.center,
@@ -191,11 +192,13 @@ class _WordTile extends StatelessWidget with FTileMixin {
       title: Text(item.lemma),
       subtitle: Text(
         (gloss == null || gloss.isEmpty)
-            ? item.wordTypeLabel
-            : '$gloss - ${item.wordTypeLabel}',
+            ? wordSummaryTypeLabel(item, AppLocalizations.of(context))
+            : '$gloss - ${wordSummaryTypeLabel(item, AppLocalizations.of(context))}',
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: theme.typography.sm.copyWith(color: theme.colors.mutedForeground),
+        style: theme.typography.body.sm.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
       ),
       suffix: Icon(
         FLucideIcons.chevronRight,

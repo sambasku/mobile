@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'create_word_image_dto.dart';
@@ -9,6 +9,7 @@ part of 'create_word_image_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -31,16 +32,21 @@ $CreateWordImageDtoCopyWith<CreateWordImageDto> get copyWith => _$CreateWordImag
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordImageDto&&(identical(other.url, url) || other.url == url)&&(identical(other.providerFileId, providerFileId) || other.providerFileId == providerFileId)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.sha, sha) || other.sha == sha)&&(identical(other.altText, altText) || other.altText == altText)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&const DeepCollectionEquality().equals(other.contentWarnings, contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, attribution));
+  final _this = this as CreateWordImageDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordImageDto&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.providerFileId, _this.providerFileId) || other.providerFileId == _this.providerFileId)&&(identical(other.provider, _this.provider) || other.provider == _this.provider)&&(identical(other.sha, _this.sha) || other.sha == _this.sha)&&(identical(other.altText, _this.altText) || other.altText == _this.altText)&&(identical(other.isPrimary, _this.isPrimary) || other.isPrimary == _this.isPrimary)&&const DeepCollectionEquality().equals(other.contentWarnings, _this.contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _this.attribution));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,providerFileId,provider,sha,altText,isPrimary,const DeepCollectionEquality().hash(contentWarnings),const DeepCollectionEquality().hash(attribution));
+int get hashCode {
+  final _this = this as CreateWordImageDto;
+  return Object.hash(runtimeType,_this.url,_this.providerFileId,_this.provider,_this.sha,_this.altText,_this.isPrimary,const DeepCollectionEquality().hash(_this.contentWarnings),const DeepCollectionEquality().hash(_this.attribution));
+}
 
 @override
 String toString() {
-  return 'CreateWordImageDto(url: $url, providerFileId: $providerFileId, provider: $provider, sha: $sha, altText: $altText, isPrimary: $isPrimary, contentWarnings: $contentWarnings, attribution: $attribution)';
+  final _this = this as CreateWordImageDto;
+  return 'CreateWordImageDto(url: ${_this.url}, providerFileId: ${_this.providerFileId}, provider: ${_this.provider}, sha: ${_this.sha}, altText: ${_this.altText}, isPrimary: ${_this.isPrimary}, contentWarnings: ${_this.contentWarnings}, attribution: ${_this.attribution})';
 }
 
 
@@ -69,7 +75,7 @@ class _$CreateWordImageDtoCopyWithImpl<$Res>
 /// Create a copy of CreateWordImageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? url = null,Object? providerFileId = null,Object? provider = freezed,Object? sha = freezed,Object? altText = freezed,Object? isPrimary = null,Object? contentWarnings = null,Object? attribution = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CreateWordImageDto(
 url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,providerFileId: null == providerFileId ? _self.providerFileId : providerFileId // ignore: cast_nullable_to_non_nullable
 as String,provider: freezed == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
@@ -219,7 +225,7 @@ return $default(_that.url,_that.providerFileId,_that.provider,_that.sha,_that.al
 @JsonSerializable()
 
 class _CreateWordImageDto implements CreateWordImageDto {
-  const _CreateWordImageDto({required this.url, @JsonKey(name: 'provider_file_id') required this.providerFileId, @JsonKey(includeIfNull: false) this.provider, @JsonKey(includeIfNull: false) this.sha, @JsonKey(name: 'alt_text', includeIfNull: false) this.altText, @JsonKey(name: 'is_primary') this.isPrimary = false, @JsonKey(name: 'content_warnings') final  List<String> contentWarnings = const [], @JsonKey(includeIfNull: false) final  Map<String, dynamic>? attribution}): _contentWarnings = contentWarnings,_attribution = attribution;
+  const _CreateWordImageDto({required this.url, @JsonKey(name: 'provider_file_id') required this.providerFileId, @JsonKey(includeIfNull: false) this.provider, @JsonKey(includeIfNull: false) this.sha, @JsonKey(name: 'alt_text', includeIfNull: false) this.altText, @JsonKey(name: 'is_primary') this.isPrimary = false, @JsonKey(name: 'content_warnings')  List<String> contentWarnings = const [], @JsonKey(includeIfNull: false)  Map<String, dynamic>? attribution}): _contentWarnings = contentWarnings,_attribution = attribution;
   factory _CreateWordImageDto.fromJson(Map<String, dynamic> json) => _$CreateWordImageDtoFromJson(json);
 
 @override final  String url;
@@ -263,16 +269,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordImageDto&&(identical(other.url, url) || other.url == url)&&(identical(other.providerFileId, providerFileId) || other.providerFileId == providerFileId)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.sha, sha) || other.sha == sha)&&(identical(other.altText, altText) || other.altText == altText)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&const DeepCollectionEquality().equals(other._contentWarnings, _contentWarnings)&&const DeepCollectionEquality().equals(other._attribution, _attribution));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordImageDto&&(identical(other.url, url) || other.url == url)&&(identical(other.providerFileId, providerFileId) || other.providerFileId == providerFileId)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.sha, sha) || other.sha == sha)&&(identical(other.altText, altText) || other.altText == altText)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&const DeepCollectionEquality().equals(other.contentWarnings, _contentWarnings)&&const DeepCollectionEquality().equals(other.attribution, _attribution));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,providerFileId,provider,sha,altText,isPrimary,const DeepCollectionEquality().hash(_contentWarnings),const DeepCollectionEquality().hash(_attribution));
+int get hashCode {
+    return Object.hash(runtimeType,url,providerFileId,provider,sha,altText,isPrimary,const DeepCollectionEquality().hash(_contentWarnings),const DeepCollectionEquality().hash(_attribution));
+}
 
 @override
 String toString() {
-  return 'CreateWordImageDto(url: $url, providerFileId: $providerFileId, provider: $provider, sha: $sha, altText: $altText, isPrimary: $isPrimary, contentWarnings: $contentWarnings, attribution: $attribution)';
+    return 'CreateWordImageDto(url: $url, providerFileId: $providerFileId, provider: $provider, sha: $sha, altText: $altText, isPrimary: $isPrimary, contentWarnings: $contentWarnings, attribution: $attribution)';
 }
 
 

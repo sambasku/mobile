@@ -1,3 +1,5 @@
+import '../../../../l10n/app_localizations.dart';
+
 /// Jenis entri di feed Aktivitas terbaru (Analitik).
 enum AnalyticsActivityKind { comment, vote, discussion, searchMiss }
 
@@ -11,6 +13,7 @@ class AnalyticsActivityItem {
     required this.body,
     this.actorUsername,
     this.avatarUrl,
+    this.isVerifier = false,
     this.subtitle,
     this.navigatePath,
   });
@@ -30,6 +33,9 @@ class AnalyticsActivityItem {
   /// URL avatar; null → placeholder inisial di [UserAvatar].
   final String? avatarUrl;
 
+  /// Centang verifikator di samping nama.
+  final bool isVerifier;
+
   /// Teks utama (body komentar, ringkasan vote, dsb.).
   final String body;
 
@@ -41,8 +47,8 @@ class AnalyticsActivityItem {
 }
 
 /// Copy search-miss yang sudah ditayangkan di feed.
-String searchMissActivityBody(String term) {
+String searchMissActivityBody(AppLocalizations l10n, String term) {
   final t = term.trim();
   final shown = t.isEmpty ? '…' : t;
-  return 'mencari $shown tapi tidak terdapat. Bantu isi.';
+  return l10n.analyticsSearchMissTerm(shown);
 }

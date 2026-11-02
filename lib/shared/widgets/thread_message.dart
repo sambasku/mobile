@@ -1,13 +1,17 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
-import '../../core/widgets/verified_badge_icon.dart';
 import '../utils/public_account_name.dart';
+import '../utils/thread_reply_draft.dart';
+import 'public_account_name.dart';
 import 'user_avatar.dart';
+import '../../../l10n/app_localizations.dart';
 
-/// Label peran di header thread (hanya Verifikator yang ditampilkan).
+/// Label peran di header thread. Centang hijau sudah mewakili verifikator,
+/// jadi label teks tidak lagi ditampilkan (dibiarkan untuk kompatibilitas
+/// caller lama).
 String threadAuthorRoleLabel({required bool isVerifier}) =>
     isVerifier ? 'Verifikator' : 'Kontributor';
 
@@ -15,8 +19,9 @@ String threadAuthorRoleLabel({required bool isVerifier}) =>
 ///
 /// ```
 /// [Avatar] Nama ✓  2h
+///          @username
 ///          isi komentar…
-///          [footer]
+///          [footer]                    [hapus]
 /// ```
 class ThreadMessageRow extends StatelessWidget {
   const ThreadMessageRow({
@@ -32,6 +37,11 @@ class ThreadMessageRow extends StatelessWidget {
     this.onUsernameTap,
     this.onMentionTap,
     this.onDelete,
+    this.onEdit,
+    this.onReply,
+    this.isEdited = false,
+    this.editedLabel,
+    this.onShowEditHistory,
     this.media,
     this.footer,
     this.highlighted = false,
@@ -59,6 +69,17 @@ class ThreadMessageRow extends StatelessWidget {
   final bool isRedacted;
   final VoidCallback? onUsernameTap;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
+
+  /// Shortcut balas (#205): tampil bila non-null dan baris tidak redacted.
+  final VoidCallback? onReply;
+
+  /// true → tampilkan [editedLabel] di meta (tap → [onShowEditHistory]).
+  final bool isEdited;
+
+  /// Label tappable sunting (mis. dari l10n.commentEdited).
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
 
   /// Tap `@username` di body → callback (navigasi profil).
   final ValueChanged<String>? onMentionTap;
@@ -79,19 +100,18 @@ class ThreadMessageRow extends StatelessWidget {
       displayName: displayName,
       username: username,
     );
-    final trailingMeta = [
-      if (dateLabel != null && dateLabel!.isNotEmpty) dateLabel!,
-      ...metaParts.where((p) => p.trim().isNotEmpty),
-    ].join(' · ');
-
-    final nameStyle = theme.typography.sm.copyWith(
+    // Tampilkan @username bila label memakai display name - user perlu tahu
+    // handle untuk mention (issue: susah mention karena username tak terlihat).
+    final showHandle =
+        !isRedacted && isLinkablePublicUsername(username) && username != label;
+    final nameStyle = theme.typography.body.sm.copyWith(
       fontWeight: FontWeight.w700,
       height: 1.2,
       color: onUsernameTap == null || isRedacted
           ? theme.colors.foreground
           : theme.colors.primary,
     );
-    final metaStyle = theme.typography.sm.copyWith(
+    final metaStyle = theme.typography.body.sm.copyWith(
       color: theme.colors.mutedForeground,
       fontSize: 11,
       height: 1.2,
@@ -108,75 +128,59 @@ class ThreadMessageRow extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Flexible(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: onUsernameTap == null || isRedacted
-                              ? Text(
-                                  label,
-                                  style: nameStyle,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              : Semantics(
-                                  button: true,
-                                  label: 'Lihat profil $label',
-                                  child: GestureDetector(
-                                    onTap: onUsernameTap,
-                                    child: Text(
-                                      label,
-                                      style: nameStyle,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                        ),
-                        if (isVerifier) ...[
-                          const Gap(3),
-                          const VerifiedBadgeIcon(size: 13),
-                        ],
-                      ],
+                  Expanded(
+                    child: PublicAccountName(
+                      label: label,
+                      isVerifier: isVerifier,
+                      onTap: onUsernameTap == null || isRedacted
+                          ? null
+                          : onUsernameTap,
+                      style: nameStyle,
                     ),
                   ),
-                  if (trailingMeta.isNotEmpty) ...[
+                  if (_hasTrailingMeta) ...[
                     const Gap(6),
-                    Text(
-                      trailingMeta,
-                      style: metaStyle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  if (onDelete != null) ...[
-                    const Spacer(),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(6),
-                        onTap: onDelete,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Icon(
-                            FLucideIcons.trash,
-                            size: 14,
-                            color: theme.colors.mutedForeground,
-                          ),
+                    Flexible(
+                      child: _ThreadMetaRow(
+                        dateLabel: dateLabel,
+                        metaParts: metaParts,
+                        isEdited: isEdited,
+                        editedLabel: editedLabel,
+                        onShowEditHistory: onShowEditHistory,
+                        style: metaStyle,
+                        editedStyle: metaStyle.copyWith(
+                          color: theme.colors.primary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
+                  if ((onEdit != null || onDelete != null) &&
+                      footer == null &&
+                      !_showReplyAction) ...[
+                    const Gap(4),
+                    _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
+                  ],
                 ],
               ),
+              // Handle @username di baris sendiri di bawah nama - user perlu
+              // tahu handle untuk mention (issue: username tak terlihat).
+              if (showHandle) ...[
+                const Gap(2),
+                Text(
+                  '@$username',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: metaStyle,
+                ),
+              ],
               const Gap(3),
               if (body.trim().isNotEmpty)
                 MentionBodyText(
                   body: body,
                   isRedacted: isRedacted,
                   onMentionTap: onMentionTap,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     height: 1.35,
                     fontStyle: isRedacted ? FontStyle.italic : FontStyle.normal,
                     color: isRedacted
@@ -188,7 +192,26 @@ class ThreadMessageRow extends StatelessWidget {
                 if (body.trim().isNotEmpty) const Gap(6),
                 media!,
               ],
-              if (footer != null) ...[const Gap(4), footer!],
+              if (footer != null || _showReplyAction || onEdit != null || onDelete != null) ...[
+                const Gap(4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (footer != null)
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: footer!,
+                        ),
+                      )
+                    else
+                      const Spacer(),
+                    if (_showReplyAction)
+                      _ThreadReplyButton(onPressed: onReply!),
+                    _ThreadRowActions(onEdit: onEdit, onDelete: onDelete),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
@@ -206,18 +229,185 @@ class ThreadMessageRow extends StatelessWidget {
                   color: theme.colors.primary.withValues(alpha: 0.35),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: content,
-              ),
+              child: Padding(padding: const EdgeInsets.all(8), child: content),
             )
           : content,
+    );
+  }
+
+  bool get _hasTrailingMeta =>
+      (dateLabel != null && dateLabel!.isNotEmpty) ||
+      metaParts.any((p) => p.trim().isNotEmpty) ||
+      (isEdited && onShowEditHistory != null);
+
+  bool get _showReplyAction => onReply != null && !isRedacted;
+}
+
+class _ThreadReplyButton extends StatelessWidget {
+  const _ThreadReplyButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: l10n.threadReply,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            child: Text(
+              l10n.threadReply,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.primary,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThreadMetaRow extends StatelessWidget {
+  const _ThreadMetaRow({
+    required this.dateLabel,
+    required this.metaParts,
+    required this.isEdited,
+    required this.editedLabel,
+    required this.onShowEditHistory,
+    required this.style,
+    required this.editedStyle,
+  });
+
+  final String? dateLabel;
+  final List<String> metaParts;
+  final bool isEdited;
+  final String? editedLabel;
+  final VoidCallback? onShowEditHistory;
+  final TextStyle style;
+  final TextStyle editedStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+    void sep() {
+      if (children.isNotEmpty) {
+        children.add(Text(' · ', style: style));
+      }
+    }
+
+    if (dateLabel != null && dateLabel!.isNotEmpty) {
+      children.add(Text(dateLabel!, style: style));
+    }
+    if (isEdited && onShowEditHistory != null) {
+      sep();
+      children.add(
+        GestureDetector(
+          onTap: onShowEditHistory,
+          child: Text(
+            editedLabel ?? AppLocalizations.of(context).commentEdited,
+            style: editedStyle,
+          ),
+        ),
+      );
+    }
+    for (final part in metaParts.where((p) => p.trim().isNotEmpty)) {
+      sep();
+      children.add(Text(part, style: style));
+    }
+
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    // Parent header membungkus ini dengan Flexible. Beberapa Text di Row
+    // masing-masing layout terhadap maxWidth penuh lalu dijumlah → overflow
+    // (mis. "2 jam · Menunggu pengecekan" di samping nama panjang).
+    // scaleDown menjaga GestureDetector "Diedit" tanpa TapGestureRecognizer.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
+  }
+}
+
+class _ThreadRowActions extends StatelessWidget {
+  const _ThreadRowActions({this.onEdit, this.onDelete});
+
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    if (onEdit == null && onDelete == null) return const SizedBox.shrink();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (onEdit != null)
+          _ThreadIconButton(
+            icon: FLucideIcons.pencil,
+            onPressed: onEdit!,
+            semanticsLabel: AppLocalizations.of(context).commentEdit,
+          ),
+        if (onDelete != null)
+          _ThreadIconButton(
+            icon: FLucideIcons.trash,
+            onPressed: onDelete!,
+            semanticsLabel: AppLocalizations.of(context).commonDelete,
+          ),
+      ],
+    );
+  }
+}
+
+class _ThreadIconButton extends StatelessWidget {
+  const _ThreadIconButton({
+    required this.icon,
+    required this.onPressed,
+    required this.semanticsLabel,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+  final String semanticsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Icon(
+              icon,
+              size: 14,
+              color: context.theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
 /// Composer thread kanonik: field multi-baris + kirim.
-/// Opsional [onRecordAudio] menampilkan chip berlabel "Rekam suara".
+/// Opsional [onRecordAudio] / [onPickImage] menampilkan chip aksi di atas field.
 /// [suggestBuilder] dipasang di atas field (mis. autocomplete mention).
 class ThreadComposer extends StatelessWidget {
   const ThreadComposer({
@@ -226,17 +416,35 @@ class ThreadComposer extends StatelessWidget {
     required this.isSubmitting,
     required this.onSubmit,
     this.onRecordAudio,
+    this.onPickImage,
+    this.attachmentPreview,
+    this.replyBanner,
     this.suggestBuilder,
+    this.focusNode,
     this.hint = 'Tulis komentar…',
   });
 
   final TextEditingController controller;
   final bool isSubmitting;
   final VoidCallback onSubmit;
-  /// Jika diisi, tampilkan chip "Rekam suara" di bawah field.
+
+  /// Jika diisi, tampilkan chip rekam suara di atas field.
   final VoidCallback? onRecordAudio;
+
+  /// Jika diisi, tampilkan chip lampirkan foto di atas field.
+  final VoidCallback? onPickImage;
+
+  /// Pratinjau lampiran (mis. thumbnail foto staging) di atas field.
+  final Widget? attachmentPreview;
+
+  /// Chip "Membalas @user" (#205) di atas aksi foto/mic.
+  final Widget? replyBanner;
+
   /// Builder opsional untuk overlay suggestion (mis. mention autocomplete).
   final Widget Function(BuildContext)? suggestBuilder;
+
+  /// Fokus field setelah tap Balas.
+  final FocusNode? focusNode;
   final String hint;
 
   @override
@@ -246,58 +454,37 @@ class ThreadComposer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (suggestBuilder != null) ...[
-          suggestBuilder!(context),
-          const Gap(4),
+        if (suggestBuilder != null) ...[suggestBuilder!(context), const Gap(4)],
+        if (replyBanner != null) ...[
+          replyBanner!,
+          const Gap(8),
         ],
-        if (onRecordAudio != null) ...[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Semantics(
-              button: true,
-              label: 'Rekam suara',
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  onTap: isSubmitting ? null : onRecordAudio,
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: theme.colors.border,
-                      ),
-                      color: isSubmitting
-                          ? theme.colors.secondary.withValues(alpha: 0.5)
-                          : theme.colors.secondary.withValues(alpha: 0.35),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            FLucideIcons.mic,
-                            size: 14,
-                            color: theme.colors.foreground,
-                          ),
-                          const Gap(6),
-                          Text(
-                            'Rekam suara',
-                            style: theme.typography.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+        if (attachmentPreview != null) ...[
+          attachmentPreview!,
+          const Gap(8),
+        ],
+        if (onRecordAudio != null || onPickImage != null) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (onPickImage != null)
+                _ThreadComposerChip(
+                  icon: FLucideIcons.image,
+                  label: AppLocalizations.of(context).commentAddPhoto,
+                  semanticsLabel: AppLocalizations.of(context).threadAddPhoto,
+                  enabled: !isSubmitting,
+                  onTap: onPickImage!,
                 ),
-              ),
-            ),
+              if (onRecordAudio != null)
+                _ThreadComposerChip(
+                  icon: FLucideIcons.mic,
+                  label: AppLocalizations.of(context).threadRecordVoice,
+                  semanticsLabel: AppLocalizations.of(context).threadRecordVoice,
+                  enabled: !isSubmitting,
+                  onTap: onRecordAudio!,
+                ),
+            ],
           ),
           const Gap(8),
         ],
@@ -307,6 +494,7 @@ class ThreadComposer extends StatelessWidget {
             Expanded(
               child: FTextField(
                 control: FTextFieldControl.managed(controller: controller),
+                focusNode: focusNode,
                 hint: hint,
                 enabled: !isSubmitting,
                 keyboardType: TextInputType.multiline,
@@ -318,7 +506,7 @@ class ThreadComposer extends StatelessWidget {
             const Gap(6),
             Semantics(
               button: true,
-              label: 'Kirim',
+              label: AppLocalizations.of(context).threadSend,
               child: Material(
                 color: isSubmitting
                     ? theme.colors.primary.withValues(alpha: 0.5)
@@ -357,6 +545,144 @@ class ThreadComposer extends StatelessWidget {
   }
 }
 
+class _ThreadComposerChip extends StatelessWidget {
+  const _ThreadComposerChip({
+    required this.icon,
+    required this.label,
+    required this.semanticsLabel,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final String semanticsLabel;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: enabled ? onTap : null,
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: theme.colors.border),
+              color: enabled
+                  ? theme.colors.secondary.withValues(alpha: 0.35)
+                  : theme.colors.secondary.withValues(alpha: 0.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 14, color: theme.colors.foreground),
+                  const Gap(6),
+                  Text(
+                    label,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Chip dismissible "Membalas @user" di atas composer (#205).
+class ThreadReplyBanner extends StatelessWidget {
+  const ThreadReplyBanner({
+    super.key,
+    required this.title,
+    required this.onDismiss,
+    this.subtitle,
+  });
+
+  final String title;
+  final String? subtitle;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.secondary,
+        borderRadius: BorderRadius.circular(8),
+        border: Border(
+          left: BorderSide(color: theme.colors.primary, width: 3),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 8, 4, 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colors.primary,
+                    ),
+                  ),
+                  if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
+                    const Gap(2),
+                    Text(
+                      subtitle!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Semantics(
+              button: true,
+              label: l10n.threadReplyDismiss,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: onDismiss,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      FLucideIcons.x,
+                      size: 14,
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Prompt login di kaki thread (komentar / balasan).
 class ThreadLoginPrompt extends StatelessWidget {
   const ThreadLoginPrompt({
@@ -376,7 +702,7 @@ class ThreadLoginPrompt extends StatelessWidget {
         Expanded(
           child: Text(
             message,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -384,7 +710,7 @@ class ThreadLoginPrompt extends StatelessWidget {
         FButton(
           variant: FButtonVariant.outline,
           onPress: onLogin,
-          child: const Text('Masuk'),
+          child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
         ),
       ],
     );
@@ -393,6 +719,7 @@ class ThreadLoginPrompt extends StatelessWidget {
 
 /// Teks body thread dengan deteksi `@username`: mention dirender bold +
 /// warna primer, tap → [onMentionTap] (navigasi profil).
+/// Leading baris `>` dirender sebagai cuplikan quote (#205).
 class MentionBodyText extends StatelessWidget {
   const MentionBodyText({
     super.key,
@@ -409,8 +736,9 @@ class MentionBodyText extends StatelessWidget {
   /// Callback dengan username yang di-tap (tanpa `@`).
   final ValueChanged<String>? onMentionTap;
 
-  static final RegExp _mentionRe =
-      RegExp(r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])');
+  static final RegExp _mentionRe = RegExp(
+    r'@([a-zA-Z0-9_.\-]{2,30})(?![a-zA-Z0-9_.\-])',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -420,12 +748,52 @@ class MentionBodyText extends StatelessWidget {
       fontWeight: isRedacted ? null : FontWeight.w600,
     );
 
-    return RichText(
-      text: _buildTextSpan(body, mentionStyle),
+    final split = splitLeadingBlockquote(body);
+    final quoteStyle = style.copyWith(
+      color: theme.colors.mutedForeground,
+      fontStyle: FontStyle.italic,
+    );
+    final quoteMentionStyle = quoteStyle.copyWith(
+      color: isRedacted ? null : theme.colors.primary,
+      fontWeight: isRedacted ? null : FontWeight.w600,
+      fontStyle: FontStyle.normal,
+    );
+
+    if (split.quote.isEmpty) {
+      return RichText(text: _buildTextSpan(body, mentionStyle, style));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(color: theme.colors.border, width: 3),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: RichText(
+              text: _buildTextSpan(split.quote, quoteMentionStyle, quoteStyle),
+            ),
+          ),
+        ),
+        if (split.rest.trim().isNotEmpty) ...[
+          const Gap(6),
+          RichText(
+            text: _buildTextSpan(split.rest, mentionStyle, style),
+          ),
+        ],
+      ],
     );
   }
 
-  TextSpan _buildTextSpan(String text, TextStyle mentionStyle) {
+  TextSpan _buildTextSpan(
+    String text,
+    TextStyle mentionStyle,
+    TextStyle baseStyle,
+  ) {
     final spans = <TextSpan>[];
     var lastEnd = 0;
 
@@ -436,23 +804,21 @@ class MentionBodyText extends StatelessWidget {
       final username = match.group(1)!;
       // `anonim` = akun sistem, dirender sebagai teks biasa.
       final isRealMention = username.toLowerCase() != 'anonim';
-      spans.add(TextSpan(
-        text: match.group(0),
-        style: isRealMention ? mentionStyle : null,
-        recognizer: isRealMention && onMentionTap != null
-            ? (TapGestureRecognizer()
-              ..onTap = () => onMentionTap!(username))
-            : null,
-      ));
+      spans.add(
+        TextSpan(
+          text: match.group(0),
+          style: isRealMention ? mentionStyle : null,
+          recognizer: isRealMention && onMentionTap != null
+              ? (TapGestureRecognizer()..onTap = () => onMentionTap!(username))
+              : null,
+        ),
+      );
       lastEnd = match.end;
     }
     if (lastEnd < text.length) {
       spans.add(TextSpan(text: text.substring(lastEnd)));
     }
 
-    return TextSpan(
-      children: spans,
-      style: style,
-    );
+    return TextSpan(children: spans, style: baseStyle);
   }
 }

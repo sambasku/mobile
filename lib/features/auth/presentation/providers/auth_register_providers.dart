@@ -74,7 +74,10 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     }
   }
 
-  Future<void> submitGoogle() async {
+  /// [consents] wajib di halaman Daftar: checkbox legal harus dicentang.
+  Future<void> submitGoogle({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
@@ -85,7 +88,9 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       clearSession: true,
     );
     try {
-      final result = await ref.read(authLoginWithGoogleUseCaseProvider).call();
+      final result = await ref
+          .read(authLoginWithGoogleUseCaseProvider)
+          .call(consents: consents);
       result.match(
         (failure) => _applyGoogleFailure(failure),
         (session) => _applySocialSession(session, method: 'google'),
@@ -95,7 +100,9 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     }
   }
 
-  Future<void> submitFacebook() async {
+  Future<void> submitFacebook({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
@@ -106,8 +113,9 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       clearSession: true,
     );
     try {
-      final result =
-          await ref.read(authLoginWithFacebookUseCaseProvider).call();
+      final result = await ref
+          .read(authLoginWithFacebookUseCaseProvider)
+          .call(consents: consents);
       result.match(
         (failure) => _applyFacebookFailure(failure),
         (session) => _applySocialSession(session, method: 'facebook'),
@@ -117,7 +125,9 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
     }
   }
 
-  Future<void> submitGithub() async {
+  Future<void> submitGithub({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     if (_inFlight) return;
     _inFlight = true;
     state = state.copyWith(
@@ -128,7 +138,9 @@ class AuthRegisterNotifier extends _$AuthRegisterNotifier {
       clearSession: true,
     );
     try {
-      final result = await ref.read(authLoginWithGithubUseCaseProvider).call();
+      final result = await ref
+          .read(authLoginWithGithubUseCaseProvider)
+          .call(consents: consents);
       result.match(
         (failure) => _applyGithubFailure(failure),
         (session) => _applySocialSession(session, method: 'github'),

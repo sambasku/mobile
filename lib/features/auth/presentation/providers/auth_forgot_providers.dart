@@ -1,8 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../../domain/providers/auth_domain_providers.dart';
 import '../models/auth_forgot_state.dart';
-
 part 'auth_forgot_providers.g.dart';
 
 @riverpod
@@ -14,6 +12,7 @@ class AuthForgotNotifier extends _$AuthForgotNotifier {
     state = state.copyWith(
       isSubmitting: true,
       clearErrorMessage: true,
+      clearErrorCode: true,
       clearSuccessMessage: true,
     );
 
@@ -25,17 +24,18 @@ class AuthForgotNotifier extends _$AuthForgotNotifier {
       (failure) => state = state.copyWith(
         isSubmitting: false,
         errorMessage: failure.message,
+        errorCode: failure.errorCode,
         clearSuccessMessage: true,
       ),
       (message) => state = state.copyWith(
         isSubmitting: false,
         successMessage: message,
         clearErrorMessage: true,
+        clearErrorCode: true,
       ),
     );
   }
 
-  void clearError() {
-    state = state.copyWith(clearErrorMessage: true);
-  }
+  void clearError() =>
+      state = state.copyWith(clearErrorMessage: true, clearErrorCode: true);
 }

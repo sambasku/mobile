@@ -6,6 +6,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/domain/providers/vote_domain_providers.dart';
 import '../../data/discussion_providers.dart';
 import '../../domain/discussion_models.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class DiscussionListState {
   const DiscussionListState({
@@ -14,7 +15,8 @@ class DiscussionListState {
     this.hasMore = false,
     this.isLoadingMore = false,
     this.status,
-    this.sort = 'latest',
+    this.sort = 'created',
+    this.order = 'desc',
   });
 
   final List<DiscussionItem> items;
@@ -23,6 +25,7 @@ class DiscussionListState {
   final bool isLoadingMore;
   final String? status;
   final String sort;
+  final String order;
 
   DiscussionListState copyWith({
     List<DiscussionItem>? items,
@@ -31,6 +34,7 @@ class DiscussionListState {
     bool? isLoadingMore,
     String? status,
     String? sort,
+    String? order,
     bool clearCursor = false,
   }) {
     return DiscussionListState(
@@ -40,20 +44,44 @@ class DiscussionListState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       status: status ?? this.status,
       sort: sort ?? this.sort,
+      order: order ?? this.order,
+    );
+  }
+}
+
+/// State sort feed: kunci + arah (#204).
+class DiscussionFeedSortState {
+  const DiscussionFeedSortState({
+    this.sort = 'created',
+    this.order = 'desc',
+  });
+
+  final String sort;
+  final String order;
+
+  DiscussionFeedSortState copyWith({String? sort, String? order}) {
+    return DiscussionFeedSortState(
+      sort: sort ?? this.sort,
+      order: order ?? this.order,
     );
   }
 }
 
 final discussionFeedSortProvider =
-    NotifierProvider.autoDispose<DiscussionFeedSort, String>(
+    NotifierProvider.autoDispose<DiscussionFeedSort, DiscussionFeedSortState>(
       DiscussionFeedSort.new,
     );
 
-class DiscussionFeedSort extends Notifier<String> {
+class DiscussionFeedSort extends Notifier<DiscussionFeedSortState> {
   @override
-  String build() => 'latest';
+  DiscussionFeedSortState build() => const DiscussionFeedSortState();
 
-  void select(String sort) => state = sort;
+  void selectSort(String sort) => state = state.copyWith(sort: sort);
+
+  void selectOrder(String order) => state = state.copyWith(order: order);
+
+  void toggleOrder() =>
+      state = state.copyWith(order: state.order == 'asc' ? 'desc' : 'asc');
 }
 
 final discussionFeedProvider =
@@ -68,17 +96,22 @@ class DiscussionFeedController
 
   @override
   Future<DiscussionListState> build() async {
-    final sort = ref.watch(discussionFeedSortProvider);
+    final sortState = ref.watch(discussionFeedSortProvider);
     final page = await ref
         .watch(discussionRepositoryProvider)
-        .listPublished(limit: _pageSize, sort: sort);
+        .listPublished(
+          limit: _pageSize,
+          sort: sortState.sort,
+          order: sortState.order,
+        );
     final value = page.match((failure) => throw failure, (v) => v);
     final items = await _attachMyVotes(value.items);
     return DiscussionListState(
       items: items,
       nextCursor: value.nextCursor,
       hasMore: value.hasMore,
-      sort: sort,
+      sort: sortState.sort,
+      order: sortState.order,
     );
   }
 
@@ -110,13 +143,14 @@ class DiscussionFeedController
   ) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: item.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -153,7 +187,9 @@ class DiscussionFeedController
           limit: _pageSize,
           cursor: current.nextCursor,
           sort: current.sort,
+          order: current.order,
         );
+    if (!ref.mounted) return null;
     final failureOrNull = page.match(
       (failure) => failure,
       (_) => null,
@@ -164,6 +200,7 @@ class DiscussionFeedController
     }
     final value = page.match((_) => throw StateError('unreachable'), (v) => v);
     final more = await _attachMyVotes(value.items);
+    if (!ref.mounted) return null;
     state = AsyncData(
       current.copyWith(
         items: [...current.items, ...more],
@@ -235,6 +272,7 @@ class MyDiscussionsController
           cursor: current.nextCursor,
           status: current.status,
         );
+    if (!ref.mounted) return null;
     return page.match(
       (failure) {
         state = AsyncData(current.copyWith(isLoadingMore: false));
@@ -344,17 +382,18 @@ class DiscussionDetailController
   Future<DiscussionFailure?> toggleHelpVote(int value) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final item = current.item;
     if (!item.isPublished) {
-      return const DiscussionFailure('Pertanyaan belum tayang');
+      return DiscussionFailure(l10n.discussionQuestionPending);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: item.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -380,13 +419,14 @@ class DiscussionDetailController
   ) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
 
     final result = await ref.watch(toggleVoteUseCaseProvider)(
       target: reply.voteTarget,
       value: value,
     );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) => DiscussionFailure(
         failure.message,
@@ -416,16 +456,17 @@ class DiscussionDetailController
   Future<DiscussionFailure?> createReply(String body) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final trimmed = body.trim();
     if (trimmed.isEmpty) {
-      return const DiscussionFailure('Balasan minimal 1 karakter');
+      return DiscussionFailure(l10n.discussionReplyMinLength);
     }
     state = AsyncData(current.copyWith(isSubmittingReply: true));
     final result = await ref
         .read(discussionRepositoryProvider)
         .createReply(discussionId: discussionId, body: trimmed);
+    if (!ref.mounted) return null;
     return result.match(
       (failure) {
         state = AsyncData(current.copyWith(isSubmittingReply: false));
@@ -451,7 +492,7 @@ class DiscussionDetailController
   }) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     state = AsyncData(current.copyWith(isSubmittingReply: true));
     final result = await ref
@@ -462,6 +503,7 @@ class DiscussionDetailController
           durationMs: durationMs,
           body: body,
         );
+    if (!ref.mounted) return null;
     return result.match(
       (failure) {
         state = AsyncData(current.copyWith(isSubmittingReply: false));
@@ -480,14 +522,99 @@ class DiscussionDetailController
     );
   }
 
+  Future<DiscussionFailure?> updateDiscussion({
+    required String body,
+    String? linkUrl,
+  }) async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    if (body.trim().isEmpty) {
+      return DiscussionFailure(l10n.discussionEditEmpty);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .updateDiscussion(
+          discussionId: discussionId,
+          body: body,
+          linkUrl: linkUrl,
+        );
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (updated) {
+      state = AsyncData(
+        DiscussionDetailState(
+          item: current.item.copyWith(
+            body: updated.body,
+            linkUrl: updated.linkUrl,
+            status: updated.status,
+            updatedAt: updated.updatedAt,
+            isEdited: updated.isEdited,
+            replies: current.item.replies,
+          ),
+        ),
+      );
+      return null;
+    });
+  }
+
+  Future<DiscussionFailure?> deleteDiscussion() async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .deleteDiscussion(discussionId);
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (_) => null);
+  }
+
+  Future<DiscussionFailure?> updateReply(
+    DiscussionReply reply,
+    String body,
+  ) async {
+    final current = state.value;
+    if (current == null) {
+      return DiscussionFailure(l10n.discussionNotReady);
+    }
+    if (body.trim().isEmpty) {
+      return DiscussionFailure(l10n.discussionReplyEditEmpty);
+    }
+    final result = await ref
+        .read(discussionRepositoryProvider)
+        .updateReply(replyId: reply.id, body: body);
+    if (!ref.mounted) return null;
+    return result.match((failure) => failure, (updated) {
+      state = AsyncData(
+        DiscussionDetailState(
+          item: current.item.copyWith(
+            replies: [
+              for (final r in current.item.replies)
+                r.id == reply.id
+                    ? r.copyWith(
+                        body: updated.body,
+                        isEdited: updated.isEdited,
+                        updatedAt: updated.updatedAt,
+                      )
+                    : r,
+            ],
+          ),
+        ),
+      );
+      return null;
+    });
+  }
+
   Future<DiscussionFailure?> deleteReply(DiscussionReply reply) async {
     final current = state.value;
     if (current == null) {
-      return const DiscussionFailure('Belum siap');
+      return DiscussionFailure(l10n.discussionNotReady);
     }
     final result = await ref
         .read(discussionRepositoryProvider)
         .deleteReply(reply.id);
+    if (!ref.mounted) return null;
     return result.match((failure) => failure, (_) {
       state = AsyncData(
         DiscussionDetailState(

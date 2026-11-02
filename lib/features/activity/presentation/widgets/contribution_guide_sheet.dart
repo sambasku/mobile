@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../providers/contribution_guide_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Full-screen overlay guide sekali di kunjungan pertama tab Kontribusi.
 /// Satu-satunya cara menutup = tap tombol "Mengerti".
@@ -12,7 +13,7 @@ Future<void> showContributionGuideSheet(BuildContext context) {
     context: context,
     barrierDismissible: false,
     barrierColor: Colors.black.withValues(alpha: 0.5),
-    barrierLabel: 'Guide kontribusi',
+    barrierLabel: AppLocalizations.of(context).feedGuideBarrier,
     transitionDuration: const Duration(milliseconds: 200),
     pageBuilder: (context, animation, secondaryAnimation) => _GuideContent(),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -49,20 +50,17 @@ class _GuideContent extends ConsumerWidget {
                       ),
                       const Gap(16),
                       Text(
-                        'Kartu bisa digeser untuk menilai',
+                        AppLocalizations.of(context).feedGuideTitle,
                         textAlign: TextAlign.center,
-                        style: theme.typography.xl.copyWith(
+                        style: theme.typography.body.xl.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const Gap(12),
                       Text(
-                        'Gunakan jari untuk menggeser kartu kata:\n'
-                        '• Geser kanan → "Sudah pas" (arti sudah benar)\n'
-                        '• Geser kiri → "Perlu dicek ulang" (arti kurang tepat)\n'
-                        '• Geser ke atas → "Lewati" (ragu / belum yakin)',
+                        AppLocalizations.of(context).feedGuideBody,
                         textAlign: TextAlign.center,
-                        style: theme.typography.md.copyWith(
+                        style: theme.typography.body.md.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.5,
                         ),
@@ -73,7 +71,7 @@ class _GuideContent extends ConsumerWidget {
                           markContributionGuideRead(ref);
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Mengerti'),
+                        child: Text(AppLocalizations.of(context).errorSheetOk),
                       ),
                     ],
                   ),

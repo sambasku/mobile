@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 /// Poster statis peta Sambas.
 ///
@@ -28,6 +30,7 @@ class ExploreMapPoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final brightness = Theme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
@@ -70,8 +73,8 @@ class ExploreMapPoster extends StatelessWidget {
                         ),
                         const Gap(10),
                         Text(
-                          'Peta Sambas',
-                          style: theme.typography.md.copyWith(
+                          l10n.exploreMapPosterTitle,
+                          style: theme.typography.body.md.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                           textAlign: TextAlign.center,
@@ -79,9 +82,9 @@ class ExploreMapPoster extends StatelessWidget {
                         const Gap(4),
                         Text(
                           compact
-                              ? 'Ketuk untuk membuka peta interaktif.'
-                              : 'Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.',
-                          style: theme.typography.sm.copyWith(
+                              ? l10n.exploreMapPosterOpen
+                              : l10n.exploreMapPosterFailed,
+                          style: theme.typography.body.sm.copyWith(
                             color: theme.colors.mutedForeground,
                           ),
                           textAlign: TextAlign.center,
@@ -113,6 +116,7 @@ class _LoadingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final icon = Icon(
       FLucideIcons.map,
@@ -121,7 +125,7 @@ class _LoadingContent extends StatelessWidget {
     );
 
     return Semantics(
-      label: 'Memuat peta',
+      label: l10n.exploreMapLoadingSemantics,
       liveRegion: true,
       excludeSemantics: true,
       child: compact
@@ -132,8 +136,8 @@ class _LoadingContent extends StatelessWidget {
                 icon,
                 const Gap(10),
                 Text(
-                  'Memuat peta...',
-                  style: theme.typography.sm.copyWith(
+                  l10n.exploreMapLoading,
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                   textAlign: TextAlign.center,
@@ -157,13 +161,13 @@ class _ShimmerSweep extends StatelessWidget {
 
     return ExcludeSemantics(
       child: SkeletonizerConfig(
-        data: SkeletonizerConfigData(
-          effect: ShimmerEffect(
-            baseColor: highlight.withValues(alpha: 0),
-            highlightColor: highlight,
-            duration: const Duration(milliseconds: 1500),
-          ),
+      data: SkeletonizerConfigData(
+        effectResolver: (_) => ShimmerEffect(
+          baseColor: highlight.withValues(alpha: 0),
+          highlightColor: highlight,
+          duration: const Duration(milliseconds: 1500),
         ),
+      ),
         child: const Skeletonizer.zone(enabled: true, child: Bone()),
       ),
     );

@@ -59,11 +59,7 @@ class LetterWordsNotifier extends _$LetterWordsNotifier {
 
     try {
       final result = await ref.read(listWordsUseCaseProvider)(
-        ListWordsParams(
-          q: '',
-          letter: letter,
-          limit: 50,
-        ),
+        ListWordsParams(q: '', letter: letter, limit: 50),
       );
 
       if (!ref.mounted || reqId != _loadReqId) return;
@@ -83,10 +79,7 @@ class LetterWordsNotifier extends _$LetterWordsNotifier {
       );
     } catch (e) {
       if (ref.mounted && reqId == _loadReqId) {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: e.toString(),
-        );
+        state = state.copyWith(isLoading: false, errorMessage: e.toString());
       }
     } finally {
       if (reqId == _loadReqId) {

@@ -1,16 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import '../../l10n/app_localizations.dart';
 
-/// Bottom sheet error form-level (submit gagal).
+/// Bottom sheet error form-level (submit gagal) atau error muat data.
 ///
-/// Jangan pakai untuk `RATE_LIMITED` (toast), validasi per-field (inline),
-/// atau empty/load list (FAlert di body). Lihat
-/// Pola baku error sheet.
+/// Jangan pakai untuk `RATE_LIMITED` (toast) atau validasi per-field (inline).
+/// Lihat Pola baku error sheet.
+///
+/// `onRetry` opsional: kalau diisi, sheet menampilkan "Coba lagi" di samping
+/// "Mengerti" supaya user tidak perlu menutup sheet lalu menekan tombol lain.
 Future<void> showAppErrorSheet(
   BuildContext context, {
   required String message,
-  String title = 'Terjadi kesalahan',
+  String? title,
+  VoidCallback? onRetry,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -28,8 +32,8 @@ Future<void> showAppErrorSheet(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  title,
-                  style: theme.typography.lg.copyWith(fontWeight: .w600),
+                  title ?? AppLocalizations.of(sheetContext).errorSheetTitle,
+                  style: theme.typography.body.lg.copyWith(fontWeight: .w600),
                 ),
                 const Gap(8),
                 ConstrainedBox(
@@ -39,17 +43,40 @@ Future<void> showAppErrorSheet(
                   child: SingleChildScrollView(
                     child: Text(
                       message,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),
                   ),
                 ),
                 const Gap(16),
-                FButton(
-                  onPress: () => Navigator.of(sheetContext).pop(),
-                  child: const Text('Mengerti'),
-                ),
+                if (onRetry == null)
+                  FButton(
+                    onPress: () => Navigator.of(sheetContext).pop(),
+                    child: Text(AppLocalizations.of(sheetContext).errorSheetOk),
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FButton(
+                          variant: FButtonVariant.outline,
+                          onPress: () => Navigator.of(sheetContext).pop(),
+                          child: Text(AppLocalizations.of(sheetContext).errorSheetClose),
+                        ),
+                      ),
+                      const Gap(8),
+                      Expanded(
+                        child: FButton(
+                          onPress: () {
+                            Navigator.of(sheetContext).pop();
+                            onRetry();
+                          },
+                          child: Text(AppLocalizations.of(sheetContext).errorSheetRetry),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

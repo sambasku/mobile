@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import 'social_icon_button.dart';
 
 export 'social_icon_button.dart' show GoogleAuthDivider;
@@ -23,7 +24,7 @@ class GoogleAuthButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SocialIconButton(
       assetPath: SocialIconButton.googleAsset,
-      semanticLabel: label ?? 'Masuk dengan Google',
+      semanticLabel: label ?? AppLocalizations.of(context).authSignInWithGoogle,
       isLoading: isLoading,
       onPress: onPress,
     );

@@ -26,13 +26,16 @@ class ChangePasswordRepositoryImpl implements ChangePasswordRepository {
         ),
       );
       return Either.right(
-        response.data?.message ?? 'Password berhasil diubah. Silakan login kembali.',
+        response.data?.message ??
+            'Password berhasil diubah. Silakan login kembali.',
       );
     } on DioException catch (error) {
-      return Either.left(ChangePasswordFailure(
-        _mapDioError(error),
-        errorCode: _mapErrorCode(error),
-      ));
+      return Either.left(
+        ChangePasswordFailure(
+          _mapDioError(error),
+          errorCode: _mapErrorCode(error),
+        ),
+      );
     } catch (error) {
       return Either.left(ChangePasswordFailure(error.toString()));
     }
@@ -49,8 +52,10 @@ class ChangePasswordRepositoryImpl implements ChangePasswordRepository {
     return switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
-      DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+      DioExceptionType.receiveTimeout =>
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     };
   }

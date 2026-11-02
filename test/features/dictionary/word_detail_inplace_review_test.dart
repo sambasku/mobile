@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/core/widgets/pending_review_badge_icon.dart';
-import 'package:sambasku_mobile/core/widgets/verified_badge_icon.dart';
+import 'package:sambasku_mobile/core/widgets/word_approved_badge_icon.dart';
 import 'package:sambasku_mobile/features/dictionary/data/providers/dictionary_data_providers.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_of_day.dart';
@@ -18,6 +18,8 @@ import 'package:sambasku_mobile/features/review/domain/entities/review_contribut
 import 'package:sambasku_mobile/features/review/domain/failures/review_failure.dart';
 import 'package:sambasku_mobile/features/review/domain/repositories/review_repository.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _wordId = '01AAAAAAAAAAAAAAAAAAAAAAAA';
 
@@ -71,8 +73,7 @@ class _StubRepo implements DictionaryRepository {
 
   bool approved = false;
 
-  WordDetail get _detail =>
-      approved ? _verifiedDetail() : _pendingDetail();
+  WordDetail get _detail => approved ? _verifiedDetail() : _pendingDetail();
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
@@ -181,12 +182,16 @@ Future<void> _pump(
         authStatusProvider.overrideWith(() => _FakeAuthStatus('reviewer')),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+        localizationsDelegates: [
+          ...AppLocalizations.localizationsDelegates,
+          ...FLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: const [Locale('id')],
+        locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: FToaster(child: child!),
         ),
       ),
@@ -215,7 +220,7 @@ void main() {
     await tester.tap(find.text('Setujui'));
     await tester.pumpAndSettle();
     expect(reviewRepo.approved, 1);
-    expect(find.byType(VerifiedBadgeIcon), findsOneWidget);
+    expect(find.byType(WordApprovedBadgeIcon), findsOneWidget);
     expect(find.byType(PendingReviewBadgeIcon), findsNothing);
   });
 }

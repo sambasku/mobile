@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +20,8 @@ import 'package:sambasku_mobile/features/review/presentation/widgets/review_corr
 import 'package:sambasku_mobile/features/review/review_router.dart';
 import 'package:sambasku_mobile/shared/reference/reference_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _idA = '01REVIEWITEM0000000000000A';
 const _idB = '01REVIEWITEM0000000000000B';
@@ -290,12 +292,16 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp.router(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           routerConfig: router,
           builder: (context, child) => FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: FToaster(child: child!),
           ),
         ),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker_android/image_picker_android.dart';
@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'core/cache/cache_providers.dart';
 import 'core/cache/evict_stale_image_assets.dart';
+import 'core/i18n/locale_prefs.dart';
 import 'core/network/auth_token_storage.dart';
 import 'core/network/failover/api_host_resolver.dart';
 import 'core/network/network_providers.dart';
@@ -23,6 +24,7 @@ import 'core/services/device_registration_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/notification_navigation.dart';
 import 'core/services/analytics_service.dart';
+import 'core/services/crashlytics_service.dart';
 import 'core/theme/forui_palette_controller.dart';
 import 'core/theme/font_scale_controller.dart';
 import 'core/theme/theme_mode_controller.dart';
@@ -75,10 +77,6 @@ Future<void> main() async {
     orElse: () => Flavor.staging,
   );
 
-  if (F.isStaging && !F.hideDevChrome) {
-    installStagingExceptionLog();
-  }
-
   // Daftar tier API harus siap SEBELUM dioProvider dibaca di bawah - Dio
   // mengambil baseUrl awalnya dari resolver.
   ApiHostResolver.instance.configureFromEnv();
@@ -94,6 +92,7 @@ Future<void> main() async {
   await ThemeModeController.preload(prefs);
   await ForuiPaletteController.preload(prefs);
   await FontScaleController.preload(prefs);
+  await LocalePrefs.preload(prefs);
   await SearchHistoryController.preload(prefs);
   await OnboardingPrefs.preload(prefs);
 
@@ -108,10 +107,19 @@ Future<void> main() async {
   // malah throw [core/no-options] sebelum runApp (layar blank).
   if (!kIsWeb) {
     await Firebase.initializeApp();
+    // Crashlytics SEBELUM ExceptionLog staging supaya sheet chain ke
+    // FlutterError.onError / PlatformDispatcher yang sudah di-set di sini.
+    await CrashlyticsService.instance.init();
+    if (F.isStaging && !F.hideDevChrome) {
+      installStagingExceptionLog();
+    }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     // Izin notifikasi diminta di onboarding slide 3, bukan di cold start.
     await NotificationService.init();
     await AnalyticsService.instance.init();
+  } else if (F.isStaging && !F.hideDevChrome) {
+    // Preview web: tanpa Firebase, tetap pasang sheet lokal bila staging.
+    installStagingExceptionLog();
   }
 
   // getToken() bisa beberapa detik di OEM tertentu. Jangan ditunggu sebelum

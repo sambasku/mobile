@@ -42,7 +42,7 @@ final class LinkedAccountsNotifierProvider
 }
 
 String _$linkedAccountsNotifierHash() =>
-    r'f03d227c5263634de5f8bbfe30d6e60c901fbbeb';
+    r'ebaefdcca8f48fc143d53c79f9affa20e16b126e';
 
 abstract class _$LinkedAccountsNotifier extends $Notifier<LinkedAccountsState> {
   LinkedAccountsState build();

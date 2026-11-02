@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/activity/presentation/widgets/pinned_home_banner.dart';
-import 'package:sambasku_mobile/features/discussion/presentation/widgets/discussion_home_banner.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 /// Widget test banner pinned beranda: shrink saat kosong/error, tampil saat
 /// ada pinned, tap navigasi ke /pinned, suffix multi-pinned.
@@ -60,6 +61,12 @@ class _HangAdapter implements HttpClientAdapter {
 Widget _app(ProviderContainer container) => UncontrolledProviderScope(
   container: container,
   child: MaterialApp.router(
+    localizationsDelegates: [
+      ...AppLocalizations.localizationsDelegates,
+      ...FLocalizations.localizationsDelegates,
+    ],
+    supportedLocales: const [Locale('id')],
+    locale: const Locale('id'),
     routerConfig: GoRouter(
       routes: [
         GoRoute(path: '/', builder: (_, _) => const Scaffold(body: PinnedHomeBanner())),
@@ -206,7 +213,7 @@ void main() {
     expect(dotColor(1), isNot(dotColor(0)));
   });
 
-  testWidgets('geometri kartu seragam dengan banner Ruang Diskusi', (
+  testWidgets('geometri kartu: tinggi 82, gutter 12 full-bleed', (
     tester,
   ) async {
     final container = ProviderContainer(
@@ -221,13 +228,18 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.dark.touch,
+            data: foruiPalettes['zinc']!.dark.touch,
             child: FScaffold(
-              childPad: true,
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
-                children: const [DiscussionHomeBanner(), PinnedHomeBanner()],
+                children: const [PinnedHomeBanner()],
               ),
             ),
           ),
@@ -236,15 +248,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Kartu = Material Diskusi vs Container dalam PinnedHomeBanner.
-    final disc = tester.getRect(
-      find
-          .descendant(
-            of: find.byType(DiscussionHomeBanner),
-            matching: find.byType(Material),
-          )
-          .first,
-    );
+    final list = tester.getRect(find.byType(ListView).first);
     final pin = tester.getRect(
       find
           .descendant(
@@ -253,15 +257,9 @@ void main() {
           )
           .first,
     );
-    // Full-bleed: banner memasang gutter 12 sendiri (shell tak lagi mempad),
-    // jadi kartunya 24 lebih sempit dari kartu feed di konteks berpad ini,
-    // tapi tetap center dan setinggi kartu Ruang Diskusi.
-    expect(pin.center.dx, closeTo(disc.center.dx, 0.5));
-    expect(pin.width, lessThan(disc.width));
-    expect(pin.height, disc.height);
-
-    // Spasi vertikal minimal antar kartu beranda (kompromi: cukup terlihat
-    // sebagai pemisah, tidak memaksa scroll panjang).
-    expect(pin.top - disc.bottom, greaterThanOrEqualTo(4));
+    // Full-bleed: banner memasang gutter 12 sendiri (shell tak mempad).
+    expect(pin.left - list.left, closeTo(12, 0.5));
+    expect(list.right - pin.right, closeTo(12, 0.5));
+    expect(pin.height, 82);
   });
 }

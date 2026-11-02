@@ -18,6 +18,7 @@ import '../models/register_request_dto.dart';
 import '../models/resend_otp_request_dto.dart';
 import '../models/reset_password_dto.dart';
 import '../models/verify_email_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(
@@ -64,7 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return Either.left(
         AuthFailure(
-          response.message ?? 'Registrasi gagal',
+          response.message ?? l10n.authRegisterFailed,
           errorCode: response.errorCode,
         ),
       );
@@ -91,13 +92,13 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Login gagal',
+            response.message ?? l10n.authLoginFailed,
             errorCode: response.errorCode,
           ),
         );
       }
 
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -110,27 +111,31 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken),
+        GoogleLoginRequestDto(
+          idToken: idToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Google.',
+            response.message ?? l10n.authGoogleFailed,
             errorCode: response.errorCode,
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       // ponytail: 1x retry untuk response hilang setelah picker menaruh
       // app ke background; backend idempotent (identity lookup dulu),
       // user tidak dobel. Kalau race makin sering: queue + resume.
       if (_isTransientNetworkError(error)) {
-        return _loginWithGoogleOnce(idToken);
+        return await _loginWithGoogleOnce(idToken, consents);
       }
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -142,21 +147,25 @@ class AuthRepositoryImpl implements AuthRepository {
 
   Future<Either<AuthFailure, AuthSession>> _loginWithGoogleOnce(
     String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   ) async {
     try {
       final response = await _remoteDatasource.loginWithGoogle(
-        GoogleLoginRequestDto(idToken: idToken),
+        GoogleLoginRequestDto(
+          idToken: idToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Google.',
+            response.message ?? l10n.authGoogleFailed,
             errorCode: response.errorCode,
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -174,21 +183,25 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithFacebook(
-        FacebookLoginRequestDto(accessToken: accessToken),
+        FacebookLoginRequestDto(
+          accessToken: accessToken,
+          consents: _toConsentDtos(consents),
+        ),
       );
       final payload = response.data;
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan Facebook.',
+            response.message ?? l10n.authFacebookFailed,
             errorCode: response.errorCode,
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -203,6 +216,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
+    List<({String documentType, String documentVersion})>? consents,
   }) async {
     try {
       final response = await _remoteDatasource.loginWithGithub(
@@ -210,18 +224,19 @@ class AuthRepositoryImpl implements AuthRepository {
           code: code,
           redirectUri: redirectUri,
           codeVerifier: codeVerifier,
+          consents: _toConsentDtos(consents),
         ),
       );
       final payload = response.data;
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Tidak bisa masuk dengan GitHub.',
+            response.message ?? l10n.authGithubFailed,
             errorCode: response.errorCode,
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -244,12 +259,12 @@ class AuthRepositoryImpl implements AuthRepository {
       if (payload == null) {
         return Either.left(
           AuthFailure(
-            response.message ?? 'Verifikasi gagal',
+            response.message ?? l10n.authVerifyFailed,
             errorCode: response.errorCode,
           ),
         );
       }
-      return _persistSession(payload);
+      return await _persistSession(payload);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -310,9 +325,7 @@ class AuthRepositoryImpl implements AuthRepository {
           newPassword: newPassword,
         ),
       );
-      return Either.right(
-        response.data?.message ?? 'Password berhasil direset',
-      );
+      return Either.right(response.data?.message ?? l10n.authResetDone);
     } on DioException catch (error) {
       return Either.left(
         AuthFailure(_mapDioError(error), errorCode: _mapErrorCode(error)),
@@ -320,6 +333,21 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (error) {
       return Either.left(AuthFailure(error.toString()));
     }
+  }
+
+  /// Record domain -> DTO wire. Null saat tidak ada consent (login page).
+  List<LegalConsentDto>? _toConsentDtos(
+    List<({String documentType, String documentVersion})>? consents,
+  ) {
+    if (consents == null) return null;
+    return consents
+        .map(
+          (c) => LegalConsentDto(
+            documentType: c.documentType,
+            documentVersion: c.documentVersion,
+          ),
+        )
+        .toList();
   }
 
   Future<Either<AuthFailure, AuthSession>> _persistSession(
@@ -355,6 +383,7 @@ class AuthRepositoryImpl implements AuthRepository {
         displayName: payload.user.displayName,
         role: payload.user.role,
         avatarUrl: payload.user.avatarUrl,
+        requiresConsent: payload.requiresConsent,
       ),
     );
   }
@@ -398,8 +427,9 @@ class AuthRepositoryImpl implements AuthRepository {
     return switch (error.type) {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
-      DioExceptionType.receiveTimeout => 'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+      DioExceptionType.receiveTimeout =>
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError => l10n.authServerUnreachable,
       _ => 'Terjadi kesalahan, coba lagi',
     };
   }

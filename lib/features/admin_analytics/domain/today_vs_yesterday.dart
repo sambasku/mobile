@@ -1,3 +1,4 @@
+import '../../../../l10n/app_localizations.dart';
 import 'entities/dashboard_stats.dart';
 import 'format_analytics_count.dart';
 
@@ -19,12 +20,19 @@ class TodayVsYesterdayMetric {
   final int? delta;
 }
 
-const _metrics = <({TodayMetricKey key, String label})>[
-  (key: TodayMetricKey.contributions, label: 'Kontribusi'),
-  (key: TodayMetricKey.votes, label: 'Vote'),
-  (key: TodayMetricKey.comments, label: 'Komentar'),
-  (key: TodayMetricKey.newUsers, label: 'User baru'),
+const _metrics = <TodayMetricKey>[
+  TodayMetricKey.contributions,
+  TodayMetricKey.votes,
+  TodayMetricKey.comments,
+  TodayMetricKey.newUsers,
 ];
+
+String _metricLabel(AppLocalizations l10n, TodayMetricKey key) => switch (key) {
+  TodayMetricKey.contributions => l10n.analyticsSeriesContributions,
+  TodayMetricKey.votes => l10n.analyticsSeriesVotes,
+  TodayMetricKey.comments => l10n.analyticsSeriesComments,
+  TodayMetricKey.newUsers => l10n.analyticsSeriesUsers,
+};
 
 int _valueFor(ActivityDailyPoint point, TodayMetricKey key) => switch (key) {
   TodayMetricKey.contributions => point.contributions,
@@ -36,14 +44,15 @@ int _valueFor(ActivityDailyPoint point, TodayMetricKey key) => switch (key) {
 /// Bandingkan titik terakhir (hari ini WIB) dengan hari sebelumnya.
 /// Kurang dari 2 titik → delta null.
 List<TodayVsYesterdayMetric> buildTodayVsYesterday(
+  AppLocalizations l10n,
   List<ActivityDailyPoint> points,
 ) {
   if (points.isEmpty) {
     return [
       for (final m in _metrics)
         TodayVsYesterdayMetric(
-          key: m.key,
-          label: m.label,
+          key: m,
+          label: _metricLabel(l10n, m),
           today: 0,
           yesterday: null,
           delta: null,
@@ -57,16 +66,13 @@ List<TodayVsYesterdayMetric> buildTodayVsYesterday(
   return [
     for (final m in _metrics)
       TodayVsYesterdayMetric(
-        key: m.key,
-        label: m.label,
-        today: _valueFor(todayPoint, m.key),
-        yesterday: yesterdayPoint == null
-            ? null
-            : _valueFor(yesterdayPoint, m.key),
+        key: m,
+        label: _metricLabel(l10n, m),
+        today: _valueFor(todayPoint, m),
+        yesterday: yesterdayPoint == null ? null : _valueFor(yesterdayPoint, m),
         delta: yesterdayPoint == null
             ? null
-            : _valueFor(todayPoint, m.key) -
-                _valueFor(yesterdayPoint, m.key),
+            : _valueFor(todayPoint, m) - _valueFor(yesterdayPoint, m),
       ),
   ];
 }

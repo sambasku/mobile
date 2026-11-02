@@ -1,5 +1,4 @@
 import '../../../../core/models/image_attribution.dart';
-import '../../../../shared/utils/public_account_name.dart';
 
 /// Closed enum `usage_labels` (sinkron API / console).
 const kUsageLabels = <String>[
@@ -16,17 +15,6 @@ const kRegisterUsageLabels = <String>['kasar', 'tabu', 'informal', 'halus'];
 
 /// Peringatan: sensitivitas isi makna.
 const kWarningUsageLabels = <String>['seksual', 'diskriminatif'];
-
-/// Label UI (ID) untuk kode `usage_labels`.
-String usageLabelLabel(String code) => switch (code) {
-  'kasar' => 'Kasar',
-  'tabu' => 'Tabu',
-  'informal' => 'Informal',
-  'halus' => 'Halus',
-  'seksual' => 'Seksual',
-  'diskriminatif' => 'Diskriminatif',
-  _ => code,
-};
 
 /// Badge lebih menonjol: kasar/tabu/seksual/diskriminatif.
 bool isProminentUsageLabel(String code) =>
@@ -83,6 +71,7 @@ class WordDetail {
     this.images = const [],
     this.relatedWords = const [],
     this.appearsIn = const [],
+    this.meaningGroups = const [],
     this.variants = const [],
   });
 
@@ -108,26 +97,11 @@ class WordDetail {
   final List<WordImage> images;
   final List<RelatedWord> relatedWords;
   final List<RelatedWord> appearsIn;
+
+  /// PRD relasi-lemma: kelompok makna published yang memuat kata ini.
+  /// Kosong = kata tidak punya kelompok (bagian UI tidak dirender).
+  final List<MeaningGroup> meaningGroups;
   final List<WordVariant> variants;
-
-  String get wordTypeLabel => switch (wordType) {
-    'idiom' => 'Idiom',
-    'peribahasa' => 'Peribahasa',
-    'ungkapan' => 'Ungkapan',
-    _ => 'Kata',
-  };
-
-  String? get creatorAttributionLabel {
-    final person = createdBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Dibuat oleh ${_attributionLabel(person)}';
-  }
-
-  String? get verifierAttributionLabel {
-    final person = verifiedBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Diverifikasi oleh ${_attributionLabel(person)}';
-  }
 
   /// Satu kalimat kalau orangnya sama, supaya nama tidak tertulis dua kali.
   bool get authoredAndVerifiedBySamePerson {
@@ -137,20 +111,6 @@ class WordDetail {
     final hasVerifier = verifier != null && verifier.isNotEmpty;
     if (hasCreator && hasVerifier) return creator == verifier;
     return selfVerified && hasVerifier;
-  }
-
-  String? get combinedAttributionLabel {
-    if (!authoredAndVerifiedBySamePerson) return null;
-    final person = verifiedBy ?? createdBy;
-    if (person == null || person.username.isEmpty) return null;
-    return 'Dibuat dan diverifikasi oleh ${_attributionLabel(person)}';
-  }
-
-  static String _attributionLabel(WordVerifier person) {
-    final name = person.displayName.trim().isNotEmpty
-        ? person.displayName.trim()
-        : person.username;
-    return displayPublicUsername(name);
   }
 
   /// Orang yang sama dan perannya tim verifikator, bukan kontributor.
@@ -185,6 +145,8 @@ class WordMeaning {
     this.wordClassName,
     this.definition,
     required this.orderIndex,
+    // WIP review-flow: kontributor per makna (belum di-commit).
+    this.createdBy,
     this.translations = const [],
     this.examples = const [],
   });
@@ -197,6 +159,9 @@ class WordMeaning {
   final String? wordClassName;
   final String? definition;
   final int orderIndex;
+
+  /// Kontributor makna ini (WIP review-flow, belum di-commit).
+  final WordVerifier? createdBy;
   final List<WordTranslation> translations;
   final List<WordExample> examples;
 
@@ -268,12 +233,6 @@ class WordAudio {
   final bool isVerified;
 
   bool get isPendingReview => !isVerified;
-
-  String get displaySpeaker {
-    final name = speakerName?.trim();
-    if (name != null && name.isNotEmpty) return name;
-    return 'Anonim';
-  }
 
   String? get formattedDuration {
     final ms = durationMs;
@@ -352,14 +311,38 @@ class RelatedWord {
   final String lemma;
   final String relationType;
 
-  String get relationLabel => switch (relationType) {
-    'synonym' => 'Sinonim',
-    'antonym' => 'Antonim',
-    'has_component' => 'Komponen',
-    'see_also' => 'Lihat juga',
-    'derived_from' => 'Diturunkan dari',
-    _ => relationType,
-  };
+}
+
+/// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.
+class MeaningGroup {
+  const MeaningGroup({
+    required this.groupId,
+    required this.name,
+    this.description,
+    this.members = const [],
+  });
+
+  final String groupId;
+  final String name;
+  final String? description;
+
+  /// Anggota lain dalam kelompok ini (kata ini sendiri tidak diulang).
+  final List<MeaningGroupMember> members;
+}
+
+/// PRD relasi-lemma: satu lema anggota kelompok makna.
+class MeaningGroupMember {
+  const MeaningGroupMember({
+    required this.wordId,
+    required this.lemma,
+    this.notes,
+  });
+
+  final String wordId;
+  final String lemma;
+
+  /// Catatan nuansa/konteks dari pengelola (opsional).
+  final String? notes;
 }
 
 class WordVariant {
@@ -376,14 +359,6 @@ class WordVariant {
   final String? affixType;
   final String? affixValue;
   final String? notes;
-
-  String get variantTypeLabel => switch (variantType) {
-    'alternative' => 'Variasi penulisan',
-    'inflection' => 'Fleksi',
-    'derivation' => 'Derivasi',
-    'reduplication' => 'Reduplikasi',
-    _ => variantType,
-  };
 
   bool get isSpellingVariant => variantType == 'alternative';
 }

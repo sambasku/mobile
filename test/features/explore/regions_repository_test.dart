@@ -45,11 +45,15 @@ class _FakeDatasource implements RegionsRemoteDatasource {
   @override
   Future<dio.Response<dynamic>> fetchRaw() async => _FakeResponse(body);
   @override
+  Future<Map<String, dynamic>> fetchCatalogEnvelope() async =>
+      regionsApiBodyToEnvelope(body);
+  @override
   Future<RegionsDto> fetchRegions() async {
     throw UnimplementedError();
   }
+
   @override
-  String get configUrl => 'fake';
+  String get catalogPath => 'fake';
 }
 
 class _FakeResponse implements dio.Response<dynamic> {
@@ -64,18 +68,30 @@ void main() {
   test('JSON valid -> daftar region (desa + kecamatan)', () async {
     final repo = RegionsRepositoryImpl(
       _FakeDatasource({
-        'version': 1,
-        'regions': [
-          {
-            'id': 'sambas',
-            'name': 'Sambas',
-            'type': 'kecamatan',
-            'lat': 1.34,
-            'lng': 109.31,
-          },
-          {'id': 'sambas/semeto', 'name': 'Semeto', 'type': 'desa', 'parentId': 'sambas'},
-          {'name': 'rusak - di-skip'},
-        ],
+        'success': true,
+        'data': {
+          'regions': [
+            {
+              'id': '01KECSAMBAS0000000000001',
+              'slug': 'sambas',
+              'name': 'Sambas',
+              'type': 'kecamatan',
+              'lat': 1.34,
+              'lng': 109.31,
+              'parent_id': null,
+              'code': null,
+            },
+            {
+              'id': '01DESASEMETO000000000001',
+              'slug': 'sambas/semeto',
+              'name': 'Semeto',
+              'type': 'desa',
+              'parent_id': '01KECSAMBAS0000000000001',
+              'code': '6101040029',
+            },
+            {'name': 'rusak - di-skip'},
+          ],
+        },
       }),
       CachedJsonClient(_MemStore()),
     );
@@ -83,7 +99,9 @@ void main() {
     expect(result, isNotNull);
     expect(result, hasLength(2));
     expect(result![0].name, 'Sambas');
-    expect(result[1].parentId, 'sambas');
+    expect(result[0].slug, 'sambas');
+    expect(result[1].parentId, '01KECSAMBAS0000000000001');
+    expect(result[1].slug, 'sambas/semeto');
   });
 
   test('fetch gagal -> null, tidak throw (soft-fail)', () async {
@@ -97,7 +115,10 @@ void main() {
 
   test('body rusak (regions bukan list) -> null', () async {
     final repo = RegionsRepositoryImpl(
-      _FakeDatasource({'regions': 'bukan-list'}),
+      _FakeDatasource({
+        'success': true,
+        'data': {'regions': 'bukan-list'},
+      }),
       CachedJsonClient(_MemStore()),
     );
     expect(await repo.getRegions(), isNull);

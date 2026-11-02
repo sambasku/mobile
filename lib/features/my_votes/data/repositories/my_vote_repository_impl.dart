@@ -5,6 +5,7 @@ import '../../domain/entities/my_vote_item.dart';
 import '../../domain/entities/my_vote_page.dart';
 import '../../domain/failures/my_vote_failure.dart';
 import '../../domain/repositories/my_vote_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 
 MyVoteItem parseMyVoteItem(Map<String, dynamic> map) {
   final rawWord = map['word'];
@@ -73,10 +74,10 @@ class MyVoteRepositoryImpl implements MyVoteRepository {
     final data = error.response?.data;
     if (data is Map) {
       return MyVoteFailure(
-        data['message']?.toString() ?? 'Gagal memuat vote',
+        data['message']?.toString() ?? l10n.myVotesLoadFailed,
         errorCode: data['error_code']?.toString(),
       );
     }
-    return MyVoteFailure('Gagal memuat vote');
+    return MyVoteFailure(l10n.myVotesLoadFailed);
   }
 }

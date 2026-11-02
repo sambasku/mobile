@@ -5,6 +5,7 @@ import '../../domain/failures/user_profile_failure.dart';
 import '../../domain/repositories/user_profile_repository.dart';
 import '../datasources/user_profile_remote_datasource.dart';
 import '../models/public_profile_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class UserProfileRepositoryImpl implements UserProfileRepository {
   UserProfileRepositoryImpl(this._remoteDatasource);
@@ -20,7 +21,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat profil',
+            response.message ?? l10n.profileLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -34,7 +35,13 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   @override
-  Future<Either<UserProfileFailure, ({List<PublicActivityItem> items, String? nextCursor})>> getActivity(
+  Future<
+    Either<
+      UserProfileFailure,
+      ({List<PublicActivityItem> items, String? nextCursor})
+    >
+  >
+  getActivity(
     String username, {
     String? kind,
     int? limit,
@@ -50,7 +57,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat aktivitas',
+            response.message ?? l10n.profileActivityLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -68,23 +75,37 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   PublicProfile _mapProfile(PublicProfileDto dto) => PublicProfile(
-        username: dto.username,
-        displayName: (dto.displayName == null || dto.displayName!.trim().isEmpty)
-            ? dto.username
-            : dto.displayName!,
-        bio: dto.bio,
-        role: dto.role,
-        isVerifier: dto.isVerifier,
-        joinedAt: dto.joinedAt,
-        contributionsApproved: dto.stats.contributionsApproved,
-        wordsApproved: dto.stats.wordsApproved,
-        correctionsApproved: dto.stats.correctionsApproved,
-        verificationsDone: dto.stats.verificationsDone,
-        commentsPublished: dto.stats.commentsPublished,
-        avatarUrl: dto.avatarUrl,
-      );
+    username: dto.username,
+    displayName: (dto.displayName == null || dto.displayName!.trim().isEmpty)
+        ? dto.username
+        : dto.displayName!,
+    bio: dto.bio,
+    role: dto.role,
+    isVerifier: dto.isVerifier,
+    joinedAt: dto.joinedAt,
+    contributionsApproved: dto.stats.contributionsApproved,
+    wordsApproved: dto.stats.wordsApproved,
+    correctionsApproved: dto.stats.correctionsApproved,
+    verificationsDone: dto.stats.verificationsDone,
+    commentsPublished: dto.stats.commentsPublished,
+    avatarUrl: dto.avatarUrl,
+    activeBorderUrl: dto.activeBorderUrl,
+    leveling: dto.leveling == null
+        ? null
+        : PublicProfileLeveling(
+            points: dto.leveling!.points,
+            level: dto.leveling!.level,
+            nextLevelPoints: dto.leveling!.nextLevelPoints,
+            titleCode: dto.leveling!.titleCode,
+            exploration: dto.leveling!.exploration,
+            accuracy: dto.leveling!.accuracy,
+            depth: dto.leveling!.depth,
+            streakDays: dto.leveling!.streakDays,
+          ),
+  );
 
-  PublicActivityItem _mapActivity(PublicActivityItemDto dto) => PublicActivityItem(
+  PublicActivityItem _mapActivity(PublicActivityItemDto dto) =>
+      PublicActivityItem(
         id: dto.id,
         kind: dto.kind,
         occurredAt: dto.occurredAt,
@@ -102,7 +123,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           UserProfileFailure(
-            response.message ?? 'Gagal memuat saran mention',
+            response.message ?? l10n.userProfileMentionFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -129,7 +150,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   UserProfileFailure _mapDio(DioException error) {
     final response = error.response?.data;
     if (response != null && response['error_code'] == 'USER_NOT_FOUND') {
-      return UserProfileFailure('Pengguna tidak ditemukan', errorCode: 'USER_NOT_FOUND');
+      return UserProfileFailure(
+        'Pengguna tidak ditemukan',
+        errorCode: 'USER_NOT_FOUND',
+      );
     }
     final message = response?['message'];
     if (message != null && message.isNotEmpty) {
@@ -142,12 +166,13 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   }
 
   String _fallbackForStatus(int? statusCode, DioException error) {
-    if (statusCode == 429 || error.response?.data?['error_code'] == 'RATE_LIMITED') {
-      return 'Terlalu banyak permintaan. Coba lagi nanti.';
+    if (statusCode == 429 ||
+        error.response?.data?['error_code'] == 'RATE_LIMITED') {
+      return l10n.commonRateLimited;
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan saat memuat profil, coba lagi';
+    return l10n.userProfileGenericError;
   }
 }

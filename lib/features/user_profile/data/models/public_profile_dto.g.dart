@@ -15,9 +15,15 @@ _PublicProfileDto _$PublicProfileDtoFromJson(Map<String, dynamic> json) =>
       isVerifier: json['is_verifier'] as bool? ?? false,
       joinedAt: json['joined_at'] as String,
       avatarUrl: json['avatar_url'] as String?,
+      activeBorderUrl: json['active_border_url'] as String?,
       stats: PublicProfileStatsDto.fromJson(
         json['stats'] as Map<String, dynamic>,
       ),
+      leveling: json['leveling'] == null
+          ? null
+          : PublicProfileLevelingDto.fromJson(
+              json['leveling'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$PublicProfileDtoToJson(_PublicProfileDto instance) =>
@@ -29,7 +35,9 @@ Map<String, dynamic> _$PublicProfileDtoToJson(_PublicProfileDto instance) =>
       'is_verifier': instance.isVerifier,
       'joined_at': instance.joinedAt,
       'avatar_url': instance.avatarUrl,
+      'active_border_url': instance.activeBorderUrl,
       'stats': instance.stats,
+      'leveling': instance.leveling,
     };
 
 _PublicProfileStatsDto _$PublicProfileStatsDtoFromJson(
@@ -50,6 +58,32 @@ Map<String, dynamic> _$PublicProfileStatsDtoToJson(
   'corrections_approved': instance.correctionsApproved,
   'verifications_done': instance.verificationsDone,
   'comments_published': instance.commentsPublished,
+};
+
+_PublicProfileLevelingDto _$PublicProfileLevelingDtoFromJson(
+  Map<String, dynamic> json,
+) => _PublicProfileLevelingDto(
+  points: (json['points'] as num?)?.toInt() ?? 0,
+  level: (json['level'] as num?)?.toInt() ?? 1,
+  nextLevelPoints: (json['next_level_points'] as num?)?.toInt(),
+  titleCode: json['title_code'] as String? ?? 'peninjau',
+  exploration: (json['exploration'] as num?)?.toInt() ?? 0,
+  accuracy: (json['accuracy'] as num?)?.toInt() ?? 0,
+  depth: (json['depth'] as num?)?.toInt() ?? 0,
+  streakDays: (json['streak_days'] as num?)?.toInt() ?? 0,
+);
+
+Map<String, dynamic> _$PublicProfileLevelingDtoToJson(
+  _PublicProfileLevelingDto instance,
+) => <String, dynamic>{
+  'points': instance.points,
+  'level': instance.level,
+  'next_level_points': instance.nextLevelPoints,
+  'title_code': instance.titleCode,
+  'exploration': instance.exploration,
+  'accuracy': instance.accuracy,
+  'depth': instance.depth,
+  'streak_days': instance.streakDays,
 };
 
 _PublicActivityItemDto _$PublicActivityItemDtoFromJson(

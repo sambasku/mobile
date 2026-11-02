@@ -1,0 +1,2470 @@
+key,indonesia,sambas,catatan
+aboutContributorsBody,"Mengirim kata baru atau perbaikan, dan merekam cara mengucapkan kata agar bisa didengar. Entri tayang setelah verifikasi.",,
+aboutContributorsTitle,Kontributor,,
+aboutOpenWebsiteFailed,Tidak bisa membuka website,,
+aboutOpenWebsiteTooltip,Buka website,,
+aboutSourceAction,Buka di GitHub,,
+aboutSourceBody,"SambasKu adalah proyek open source. Kode sumbernya dirilis dengan lisensi GPLv3, jadi kamu bebas mempelajari, mengubah, dan membagikannya sesuai ketentuan lisensi. Konten kamus dan datanya dirilis dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan sumber dan membagikan hasilnya dengan lisensi yang sama. Di GitHub juga ada profil organisasi, cara ikut serta, info sponsor, dan saluran komunitas.",,
+aboutSourceTitle,Kode Sumber & Organisasi,,
+aboutSponsorAction,Lihat Sponsor & Tim Kami,,
+aboutSponsorBody,Para pendukung operasional dan orang-orang yang merawat kamus ini.,,
+aboutSponsorTitle,Sponsor & Tim Kami,,
+aboutSponsorsSectionTitle,Sponsor & Mitra,,
+aboutSponsorsTooltip,"Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.",,
+aboutSponsorshipTitle,Sponsor & Tim Kami,,
+aboutSupportBody,Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail kerja sama ada di profil organisasi kami di GitHub.,,
+aboutSupportTitle,Ingin ikut mendukung?,,
+aboutTabSponsors,Sponsor & Mitra,,
+aboutTabTeam,Tim Kami,,
+aboutTagline,Kamus Digital Sambas-Indonesia,,
+aboutTitle,Tentang,,
+aboutTogetherBody,"Kamus ini dirawat orang-orang yang mengusulkan kata, memeriksa entri, dan merekam pelafalan.",,
+aboutTogetherTitle,Bersama warga Sambas,,
+aboutVerifiersBody,Memeriksa usulan sebelum masuk kamus.,,
+aboutVerifiersTitle,Verifikator,,
+aboutVersion,Versi {version},,Baris versi app | Pertahankan placeholder: {version}
+aboutWhatBody,"Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.",,
+aboutWhatTitle,Apa itu SambasKu?,,
+achievementBorderNone,Tanpa bingkai,,
+achievementBorderNoneSubtitle,Tampilkan foto profil polos,,
+achievementBorderSaveFailed,Gagal menyimpan bingkai profil,,
+achievementBorderUpdated,Bingkai profil diperbarui,,
+achievementEmpty,Belum ada pencapaian,,
+achievementLoadFailed,Gagal memuat pencapaian,,
+achievementSeeAll,Lihat semua pencapaian,,
+achievementTitle,Pencapaian,,
+adminAnalyticsSkeletonKata,kata,,
+analyticsAttentionReports,Laporan,,
+analyticsAttentionReview,Review kata,,
+analyticsAttentionTitle,Perlu tindakan,,
+analyticsAttentionVerifier,Verifikator,,
+analyticsChartEmpty,Belum ada data.,,
+analyticsChartTitle,Aktivitas {days} hari,,Judul chart aktivitas; {days} = jendela hari yang ditampilkan | Pertahankan placeholder: {days}
+analyticsDiscussionEmptyBody,(diskusi tanpa teks),,Baris feed analitik untuk diskusi tanpa teks
+analyticsFeedEmpty,Belum ada aktivitas.,,
+analyticsFeedError,Gagal memuat aktivitas.,,
+analyticsFeedTitle,Aktivitas terbaru,,
+analyticsForbiddenBody,Hanya admin dan root yang boleh membuka analitik.,,
+analyticsForbiddenTitle,Akses terbatas,,
+analyticsKpiAuditSubtitle,Entri audit log,,
+analyticsKpiAuditTitle,Mutasi 7 hari,,
+analyticsKpiOnline,Online 15 mnt {count},,Subtul KPI pengguna online 15 menit terakhir; {count} = angka sudah diformat | Pertahankan placeholder: {count}
+analyticsKpiPendingReview,{count} menunggu review,,Subtul KPI kontribusi; {count} = jumlah antrean menunggu review | Pertahankan placeholder: {count}
+analyticsKpiPublished,Tayang {count},,Subtul KPI kata tayang; {count} = angka sudah diformat | Pertahankan placeholder: {count}
+analyticsKpiUsers,Pengguna,,
+analyticsKpiVerified,Verif {count},,Subtul KPI kata terverifikasi; {count} = angka sudah diformat | Pertahankan placeholder: {count}
+analyticsKpiWords,Kata,,
+analyticsKpiWordsFallback,Total entri kamus,,
+analyticsNoQueue,Tidak ada antrean.,,State kosong saat tidak ada antrean menunggu review
+analyticsProblemBug,Laporan bug,,
+analyticsProblemClosed,Selesai,,
+analyticsProblemWord,Laporan kata,,
+analyticsSearchMissTerm,mencari {term} tapi tidak terdapat. Bantu isi.,,Copy search-miss di feed analitik; {term} = kata yang dicari warga | Pertahankan placeholder: {term}
+analyticsSeriesComments,Komentar,,
+analyticsSeriesContributions,Kontribusi,,
+analyticsSeriesSearches,Cari,,
+analyticsSeriesUsers,User baru,,
+analyticsSeriesUsersShort,User,,
+analyticsSeriesVotes,Vote,,
+analyticsStatsLoadFailed,Statistik gagal dimuat,,
+analyticsStatsLoadFailedHint,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,
+analyticsStatusHeading,Status,,
+analyticsTabProblems,Masalah,,
+analyticsTitle,Analitik,,
+analyticsTodayHeading,Hari ini,,Judul ringkasan metrik hari ini
+analyticsVerifierApproved,Disetujui,,
+analyticsVerifierPending,Menunggu,,
+analyticsVerifierRejected,Ditolak,,
+analyticsVoteDown,Vote turun,,
+analyticsVoteUp,Vote naik,,
+analyticsWordDraft,Draft (tidak tayang),,
+analyticsWordPendingReview,Menunggu review,,
+analyticsWordPublished,Tayang,,
+analyticsWordRejected,Ditolak,,
+announcementBannerPreview,cuplikan isi pengumuman,,Teks skeleton cuplikan pengumuman
+announcementBannerSemantics,Judul pengumuman prioritas,,Label aksesibilitas banner pengumuman
+announcementExpiredBadge,Berakhir,,Badge pengumuman kedaluwarsa
+announcementExpiredNote,"Pengumuman ini sudah berakhir, tapi tetap bisa dibaca.",,Catatan pengumuman kedaluwarsa
+announcementGone,Pengumuman tidak lagi tersedia.,,Pesan pengumuman sudah dihapus
+announcementInAppHost,{host} · buka di aplikasi,,Keterangan tautan pengumuman yang dibuka di dalam aplikasi | Pertahankan placeholder: {host}
+announcementOpenLink,Buka tautan,,Tombol membuka tautan pengumuman
+announcementPinnedBadge,Dipin,,Badge pengumuman yang dipin
+announcementPinnedEmpty,Tidak ada pengumuman yang dipin,,Kondisi kosong halaman pengumuman prioritas
+announcementPinnedLoadFailed,Gagal memuat pengumuman,,Pesan gagal memuat pengumuman prioritas
+announcementPinnedTitle,Pengumuman Prioritas,,Judul halaman pengumuman yang dipin
+announcementSemantics,Pengumuman: {title},,Label aksesibilitas kartu pengumuman | Pertahankan placeholder: {title}
+announcementSemanticsExpired,"Pengumuman: {title}, sudah berakhir",,Label aksesibilitas kartu pengumuman kedaluwarsa | Pertahankan placeholder: {title}
+announcementSkeletonBody,Isi pengumuman singkat untuk skeleton,,Teks skeleton isi pengumuman
+announcementSkeletonTitle,Judul Pengumuman,,Teks skeleton judul pengumuman
+announcementTitle,Pengumuman,,Judul halaman pengumuman
+appearanceFontScale,Ukuran Teks,,
+appearancePalette,Warna Tema,,
+appearanceScaleHuge,Sangat Besar,,
+appearanceScaleLarge,Besar,,
+appearanceScaleNormal,Normal,,
+appearanceScaleSmall,Kecil,,
+appearanceThemeDark,Gelap,,
+appearanceThemeLight,Terang,,
+appearanceThemeMode,Mode Tema,,
+appearanceThemeSystem,Sistem,,
+attachmentImageTooLarge,Gambar melebihi {mb} MB,,Toast batas ukuran; {mb} = MB | Pertahankan placeholder: {mb}
+attachmentLoginRequired,Masuk untuk lampirkan dari kamera atau galeri,,
+attachmentMaxImages,Maksimal {count} gambar,,Toast batas jumlah lampiran; {count} = maks | Pertahankan placeholder: {count}
+attachmentProcessFailed,Gagal memproses gambar,,
+authAcceptAndContinue,"Setuju, lanjut",,Tombol menyetujui dokumen legal
+authAgreeTerms,Saya setuju Syarat dan Ketentuan,,Label checkbox persetujuan dokumen legal
+authCodeSentTo,Kode dikirim ke {email} (berlaku 10 menit).,,Penjelasan kode verifikasi dikirim | Pertahankan placeholder: {email}
+authConfirmNewPassword,Konfirmasi password baru,,Label kolom konfirmasi password baru
+authConfirmPasswordLabel,Konfirmasi Password,,Label kolom konfirmasi password
+authConsentSaveFailed,Gagal menyimpan persetujuan. Coba lagi ya.,,Pesan gagal menyimpan persetujuan legal
+authContinueAnonymous,Lanjut tanpa akun (Anonim),,Tombol lewati masuk
+authDocsUnavailableBody,Koneksinya mungkin sedang kurang bagus. Coba muat lagi ya.,,Isi kegagalan memuat dokumen legal
+authDocsUnavailableTitle,Dokumennya belum ke-load,,Judul kegagalan memuat dokumen legal
+authEmailLabel,Email,,Label kolom email
+authEmailMissing,Emailnya tidak ada. Balik ke daftar atau masuk lagi ya.,,Penjelasan saat email tujuan tidak diketahui
+authEmailUnverifiedBody,"Cek email kamu untuk kode OTP 6 karakter 0-9A-Z, verifikasi dulu sebelum masuk.",,Isi sheet email belum diverifikasi
+authEmailUnverifiedTitle,Email belum diverifikasi,,Judul sheet email belum diverifikasi
+authEnterCode,Masukkan kode 6 karakter,,Judul besar halaman verifikasi email
+authExit,Keluar dulu,,Tombol keluar dari akun pada sheet persetujuan
+authFacebookFailed,Tidak bisa masuk dengan Facebook. Coba lagi.,,Kegagalan umum Facebook Sign-In
+authFacebookLogin,Masuk dengan Facebook,,Label tombol masuk lewat Facebook
+authFacebookUnavailable,Masuk dengan Facebook belum siap di perangkat ini.,,Konfigurasi Facebook Sign-In belum lengkap
+authForgotBody,"Tulis email akunmu. Kalau terdaftar, kami kirim kode 6 karakter 0-9A-Z ke email.",,Penjelasan halaman lupa password
+authForgotPasswordQuestion,Lupa password?,,Tautan ke halaman lupa password
+authForgotTitle,Lupa password,,Judul halaman lupa password
+authGithubFailed,Tidak bisa masuk dengan GitHub. Coba lagi.,,Kegagalan umum GitHub Sign-In
+authGithubUnavailable,Masuk dengan GitHub belum siap di perangkat ini. Coba lagi dalam beberapa saat.,,Konfigurasi GitHub OAuth belum lengkap
+authGoogleFailed,Tidak bisa masuk dengan Google. Coba lagi.,,Kegagalan umum Google Sign-In
+authGoogleUnavailable,Masuk dengan Google belum siap di perangkat ini. Coba lagi dalam beberapa saat.,,Konfigurasi Google Sign-In di perangkat belum lengkap
+authHaveAccount,Sudah punya akun? Masuk,,Tombol menuju halaman masuk
+authIdentifierHint,email@contoh.com / username,,Contoh isian kolom identitas
+authIdentifierLabel,Email atau Username,,Label kolom identitas pada halaman masuk
+authLater,Nanti saja,,Tombol menunda verifikasi email
+authLegalLoadFailed,Gagal memuat dokumen legal,,Pesan gagal memuat versi dokumen legal
+authLegalNotReady,Dokumennya belum siap di server. Coba sebentar lagi ya.,,Versi dokumen legal belum tersedia di server
+authLegalSheetBody,"Kamu masuk lewat Google, GitHub, atau Facebook, jadi kami belum punya catatan persetujuanmu. Silakan baca dulu dokumen di bawah ini, ya.",,Penjelasan sheet persetujuan dokumen legal
+authLegalSheetTitle,Syarat dan Kebijakan Privasi,,Judul sheet persetujuan dokumen legal
+authLoginAction,Masuk,,Tombol kirim form masuk
+authLoginFailed,Login gagal,,Pesan cadangan saat masuk gagal tanpa pesan server
+authNameLabel,Nama,,Label kolom nama
+authNewPasswordTitle,Password baru,,Judul halaman atur password baru
+authNoAccountPrefix,Belum punya akun? ,,Awalan kalimat menuju halaman daftar
+authOauthAccountTitle,Akun OAuth,,Judul info bahwa akun masuk lewat provider OAuth
+authOtpLabel,Kode OTP,,Label kolom kode OTP
+authPasswordHint,"Minimal 8 karakter, huruf + angka",,Petunjuk aturan password
+authPasswordLabel,Password,,Label kolom password
+authPasswordMismatch,Konfirmasi password tidak sama,,Pesan validasi konfirmasi password
+authPhoneOptionalLabel,No. HP (opsional),,Label kolom nomor HP
+authPrivacyTileSubtitle,Data apa yang kami simpan dan bagaimana kami menjaganya. Versi {version}.,,Keterangan dokumen kebijakan privasi | Pertahankan placeholder: {version}
+authPrivacyTitle,Kebijakan Privasi,,Judul dokumen kebijakan privasi
+authRateLimitedFallback,Coba lagi dalam beberapa saat,,Pesan cadangan saat kena batas permintaan
+authReadFullDoc,Baca dokumen lengkap di SambasKu,,Tautan ke dokumen legal lengkap
+authReadPrivacy,Baca Kebijakan Privasi,,Hyperlink membuka dokumen kebijakan privasi
+authReadTerms,Baca Syarat dan Ketentuan,,Hyperlink membuka dokumen syarat dan ketentuan
+authRegisterAction,Daftar,,Tombol menuju halaman daftar
+authRegisterBody,Kami kirim kode 6 karakter 0-9A-Z ke emailmu. Verifikasi dulu sebelum masuk ya.,,Penjelasan halaman daftar
+authRegisterCanceled,Daftar dibatalkan,,Toast saat user menutup sheet provider sosial di halaman daftar
+authRegisterFailed,Registrasi gagal,,Pesan cadangan saat pendaftaran gagal tanpa pesan server
+authRegisterFirst,Daftar dulu ya supaya bisa setujui ketentuan,,Akun baru dari halaman masuk wajib lewat persetujuan legal di halaman daftar
+authRegisterHeadline,Buat akun Kontributor,,Judul besar halaman daftar
+authRegisterTitle,Daftar,,Judul halaman daftar
+authRegisterWithFacebook,Daftar dengan Facebook,,Label tombol daftar lewat Facebook
+authRegisterWithGoogle,Daftar dengan Google,,Label aksesibilitas tombol daftar lewat Google
+authReload,Coba muat lagi,,Tombol muat ulang dokumen legal
+authReloginBody,Masuk dengan akunmu agar peran Verifikator aktif.,,Penjelasan peringatan login ulang verifikator
+authReloginTitle,Masuk kembali,,Judul peringatan saat verifikator perlu login ulang
+authReportIssue,Laporkan masalah,,Tautan ke halaman laporan bug
+authResendCode,Kirim ulang kode,,Tombol kirim ulang kode verifikasi
+authResendCodeCountdown,Kirim ulang kode ({time}),,Tombol kirim ulang saat hitung mundur berjalan | Pertahankan placeholder: {time}
+authResendOk,"Kalau email terdaftar, kode baru sudah dikirim.",,Pesan setelah minta kode baru
+authResetAskCode,Minta kodenya dulu di halaman lupa password ya.,,Penjelasan saat email reset tidak diketahui
+authResetCodeBody,"Masukkan kode 6 karakter 0-9A-Z yang dikirim ke {email} (berlaku 10 menit), lalu password baru.",,Penjelasan saat memakai kode email | Pertahankan placeholder: {email}
+authResetCodeLabel,Kode Reset Password,,Label kolom kode reset password
+authResetCodeSent,Kode baru dikirim ke email,,Toast setelah kode reset dikirim
+authResetDone,Password berhasil direset,,Pesan cadangan setelah reset password tanpa pesan server
+authResetLinkBody,"Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).",,Penjelasan saat datang lewat tautan reset
+authResetSuccess,Password berhasil direset,,Judul sheet setelah password berhasil direset
+authResetTitle,Atur ulang password,,Judul besar halaman lupa password
+authSavePassword,Simpan password,,Tombol simpan password baru
+authSaving,Menyimpan...,,Label tombol saat persetujuan disimpan
+authSendCode,Kirim kode reset,,Tombol kirim kode reset password
+authSending,Mengirim...,,Label tombol saat kode sedang dikirim
+authServerUnreachable,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,Pesan saat tidak ada koneksi ke API
+authSignInCanceled,Masuk dibatalkan,,Toast saat user menutup sheet Google/Facebook/GitHub
+authSignInWithGithub,Masuk dengan GitHub,,Label aksesibilitas tombol GitHub
+authSignInWithGoogle,Masuk dengan Google,,Label aksesibilitas tombol Google
+authStopAnytime,"Belum siap setuju? Kamu bisa keluar dulu, kapan saja.",,Catatan bahwa persetujuan bisa dihentikan dengan keluar
+authSubmitting,Memproses...,,Label tombol saat permintaan sedang berjalan
+authTermsTileSubtitle,Ketentuan pemakaian layanan. Versi {version}.,,Keterangan dokumen syarat dan ketentuan | Pertahankan placeholder: {version}
+authTermsTitle,Syarat dan Ketentuan,,Judul dokumen syarat dan ketentuan
+authVerifyAction,Verifikasi,,Tombol verifikasi email
+authVerifyFailed,Verifikasi gagal,,Pesan cadangan saat verifikasi email gagal tanpa pesan server
+authVerifyNow,Verifikasi sekarang,,Tombol menuju halaman verifikasi email
+authVerifyTitle,Verifikasi email,,Judul halaman verifikasi email
+bookmarkAdd,Simpan kata ke bookmark,,Aksi menyimpan kata ke bookmark
+bookmarkEmpty,Belum ada kata tersimpan.,,Kondisi kosong kata tersimpan
+bookmarkEmptyHint,Tekan ikon bookmark di halaman detail kata.,,Petunjuk cara menyimpan kata
+bookmarkEntryGone,Entri tidak lagi tersedia,,Keterangan entri kata sudah tidak ada
+bookmarkLoadFailed,Gagal memuat bookmark,,Pesan gagal memuat bookmark
+bookmarkLoginRequired,Masuk dulu untuk melihat kata tersimpan,,Ajakan masuk untuk melihat kata tersimpan
+bookmarkRemove,Lepas kata dari bookmark,,Aksi melepas kata dari bookmark
+bookmarkStatusLoadFailed,Gagal memuat status bookmark,,Pesan error generik M3
+bookmarkTitle,Bookmark,,Judul halaman kata tersimpan
+bookmarkToggleFailed,Gagal mengubah bookmark,,Pesan error generik M3
+bookmarkWordGone,Kata tidak ditemukan atau sudah dihapus,,Pesan error generik M3
+commentDeleteBody,Komentar akan ditandai sebagai dihapus oleh penulis.,,
+commentDeleteCancel,Batal,,
+commentDeleteConfirm,Hapus,,
+commentDeleteFailed,Gagal menghapus komentar,,
+commentDeleteTitle,Hapus komentar?,,
+commentDeleted,Komentar dihapus,,
+commentDeletedByAuthor,dihapus penulis,,
+commentEmpty,Belum ada komentar.,,
+commentLoadFailed,Gagal memuat komentar,,
+commentLoadMore,Muat lainnya,,
+commentLoadRetry,Coba lagi untuk memuat komentar.,,
+commentLoading,Memuat...,,
+commentLoginComposerPrompt,Masuk untuk menulis komentar,,
+commentLoginPrompt,Masuk dulu untuk berkomentar,,
+commentMentionSearching,Mencari pengguna...,,
+commentRateLimited,Terlalu banyak komentar. Coba lagi dalam beberapa saat.,,
+commentRecordBody,Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.,,
+commentRecordSubmit,Kirim rekaman,,
+commentRecordTitle,Rekam komentar suara,,
+commentSectionTitle,Komentar ({count}),,Pertahankan placeholder: {count}
+commentSendFailed,Gagal mengirim komentar,,
+commentSent,Komentar terkirim,,
+commentSkeletonBody,Cuplikan komentar contoh untuk skeleton.,,
+commentSkeletonDate,baru saja,,
+commentSkeletonName,Nama Pengguna,,
+commentSkeletonUsername,username,,
+commentTakenDownModerator,dihapus moderator,,
+commentVoiceFailed,Gagal mengirim rekaman suara,,
+commonApprove,Setujui,,
+commonBack,Kembali,,Semantics tombol kembali di bar melayang halaman ber-cover
+commonCancel,Batal,,
+commonClose,Tutup,,
+commonDelete,Hapus,,
+commonDone,Selesai,,
+commonEmptyField,Belum diisi,,
+commonForbiddenBody,Kamu tidak berwenang meninjau usulan.,,
+commonForbiddenRole,Role tidak diizinkan mengakses endpoint ini,,
+commonGenericError,"Terjadi kesalahan, coba lagi",,
+commonLoadFailed,Gagal memuat detail,,
+commonLoginRequiredShort,Masuk,,Tombol masuk singkat di layar yang butuh akun
+commonNo,Tidak,,
+commonNoDetail,Tidak ada detail.,,
+commonOk,OK,,
+commonPrimary,Utama,,
+commonRateLimited,Terlalu banyak permintaan. Coba lagi dalam beberapa saat.,,Pesan error generik M3
+commonReason,Alasan,,
+commonReject,Tolak,,
+commonRetry,Coba lagi,,
+commonSave,Simpan,,
+commonSaving,Menyimpan...,,
+commonServerError,Server sedang gangguan. Coba lagi dalam beberapa saat.,,Pesan error generik M3
+commonSessionExpired,"Sesi berakhir, silakan masuk kembali",,Pesan error generik M3
+commonSettings,Pengaturan,,
+commonSkeletonLemma,lemma contoh,,Teks skeleton lemma
+commonSkip,Lewati,,
+commonVerifierArea,Area Verifikator,,
+commonYes,Ya,,
+contributeAddAnother,Tambah lagi,,
+contributeAddMeaning,Tambah makna,,
+contributeBulkAddRow,Tambah baris,,
+contributeBulkColumnIndonesia,Indonesia,,
+contributeBulkColumnSambas,Sambas,,
+contributeBulkFix,Perbaiki,,
+contributeBulkHeader,Usulkan banyak,,
+contributeBulkLemmaExists,"Kata Sambas baris {n}, sudah ada di kamus",,Pertahankan placeholder: {n}
+contributeBulkLemmaField,Kata Sambas baris {n},,Pertahankan placeholder: {n}
+contributeBulkMaxRows,Maksimal {max} baris per sesi.,,Pertahankan placeholder: {max}
+contributeBulkMaxRowsHint,Maksimal {max} kata. Isi kata Sambas dan terjemahan Indonesia.,,Pertahankan placeholder: {max}
+contributeBulkPartialBody,"{sent} terkirim, {failed} gagal. Perbaiki baris yang gagal lalu kirim ulang.",,"Pertahankan placeholder: {sent}, {failed}"
+contributeBulkPartialTitle,Sebagian terkirim,,
+contributeBulkProgress,Mengirim {done}/{total}...,,"Pertahankan placeholder: {done}, {total}"
+contributeBulkRemoveRow,Hapus baris {index},,Pertahankan placeholder: {index}
+contributeBulkResendPending,Kirim ulang yang belum terkirim,,
+contributeBulkRowSent,Terkirim,,
+contributeBulkSendAll,Kirim semua,,
+contributeBulkSentGuest,Dikirim sebagai tamu. Kata belum tayang sampai tim memeriksa.,,
+contributeBulkSentMany,{sent} kata berhasil dikirim.,,Pertahankan placeholder: {sent}
+contributeBulkSentOne,1 kata berhasil dikirim.,,
+contributeBulkSentPending,Tiap kata langsung tayang dengan label Menunggu pengecekan.,,
+contributeBulkSentTitle,Usulan terkirim,,
+contributeBulkSubtitle,Isi beberapa kata dan terjemahan dalam satu layar,,
+contributeBulkTitle,Usulkan banyak sekaligus,,
+contributeBulkTranslationField,Terjemahan Indonesia baris {n},,Pertahankan placeholder: {n}
+contributeCheckFieldsTitle,Periksa kembali isian yang ditandai merah,,
+contributeChecking,Memeriksa ketersediaan kata...,,
+contributeCompletenessHint,"Opsional: variasi ejaan, sinonim, antonim. Dibuka di bottomsheet.",,
+contributeCompletenessHintField,"Tambah variasi, sinonim, antonim…",,
+contributeCompletenessLabel,Kelengkapan,,
+contributeConfirmFailed,Gagal mencatat dukungan,,
+contributeConfirmThanks,Terima kasih. Kamu tercatat di riwayat perubahan.,,
+contributeConnectionFailed,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,
+contributeDefinitionFieldLabel,Penjelasan arti *,,
+contributeDefinitionGuide,"Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.
+
+Contoh: “aktivitas memasukkan makanan ke mulut”.",,
+contributeDefinitionHint,Muncul setelah satu makna dipilih dari KBBI. Tetap jika terjemahan dikosongkan; hilang jika terjemahan diganti kata lain.,,
+contributeDefinitionHintField,Jelaskan arti kata ini,,
+contributeDefinitionLabel,Penjelasan arti,,
+contributeDialectLabel,Dialek,,
+contributeDialectLoadFailed,Gagal muat dialek,,
+contributeDialectLoading,Memuat dialek,,
+contributeDialectPick,Pilih dialek…,,
+contributeDialectSheetAuto,Default otomatis · bisa diganti,,
+contributeDialectSheetEmpty,Tidak ada dialek,,
+contributeDialectSheetTitle,Pilih dialek,,
+contributeDuplicateExists,Kata ini sudah ada di kamus. Kamu tetap boleh kirim usulan untuk menambah makna baru.,,
+contributeDuplicateSheetBody,Pilih dukunganmu agar tercatat di riwayat perubahan {lemma}.,,Pertahankan placeholder: {lemma}
+contributeDuplicateSheetGuestBody,Masuk dulu untuk mendukung atau menolak makna yang sudah ada.,,
+contributeDuplicateSheetLoginCta,Masuk untuk mendukung,,
+contributeDuplicateSheetOppose,Tidak mendukung,,
+contributeDuplicateSheetSupport,Dukung makna ini,,
+contributeDuplicateSheetTitle,Kata ini sudah ditemukan,,
+contributeGenericFailed,"Terjadi kesalahan saat mengirim usulan, coba lagi",,
+contributeGoHome,Ke beranda,,
+contributeHistoryRecorded,Tercatat di riwayat,,
+contributeHowToFill,Cara mengisi,,
+contributeImageKitEmpty,Respons ImageKit kosong,,
+contributeImageKitIncomplete,Respons ImageKit tidak lengkap,,
+contributeImageUploadFailed,"Gagal mengunggah gambar, coba lagi",,
+contributeImagesAltText,Foto: {name} / {provider},,"Pertahankan placeholder: {name}, {provider}"
+contributeImagesGuestHint,Masuk untuk lampirkan gambar (opsional).,,
+contributeImagesHint,Opsional. Media Explorer tanpa login; kamera/galeri perlu masuk. Maks 3.,,
+contributeImagesLabel,Gambar,,
+contributeImagesStockHint,Pilih foto stock lewat Media Explorer (opsional).,,
+contributeKbbiFilled,{parts} diisi dari KBBI - silakan review,,Pertahankan placeholder: {parts}
+contributeKbbiHint,Tekan icon buku untuk mencari definisi di KBBI,,
+contributeKbbiSheetCount,{count} definisi - gulir untuk melihat semua,,Pertahankan placeholder: {count}
+contributeKbbiSheetEmpty,Tidak ditemukan di KBBI,,
+contributeKbbiSheetIntro,Ketik kata Indonesia - hasil muncul otomatis. Pilih satu untuk mengisi form.,,
+contributeKbbiSheetLoadFailed,Gagal mengambil definisi KBBI,,
+contributeKbbiSheetPrompt,Ketik kata untuk mencari di KBBI,,
+contributeKbbiSheetSearchHint,"mis. makan, rumah",,
+contributeKbbiSheetSense,makna {homonym}.{sense},,"Pertahankan placeholder: {homonym}, {sense}"
+contributeKbbiSheetSessionExpired,Sesi berakhir - masuk lagi untuk memakai KBBI,,
+contributeKbbiSheetTitle,Ambil definisi dari KBBI,,
+contributeKindHint,Opsional. Pilih Idiom/Peribahasa/Ungkapan bila usulan berupa frasa; kata tunggal tidak perlu dipilih.,,
+contributeKindLabel,Jenis,,
+contributeKnowledgeHintBoth,Isi terjemahan dan penjelasan arti.,,
+contributeKnowledgeHintBothMissing,Centang Penjelasan arti dan/atau Terjemahan. Form makna muncul setelah itu.,,
+contributeKnowledgeHintDefinition,Isi uraian makna. Terjemahan bisa dilengkapi nanti.,,
+contributeKnowledgeHintTranslation,Isi terjemahan saja. Penjelasan arti bisa dilengkapi nanti.,,
+contributeKnowledgeToggleDefinition,Penjelasan arti,,
+contributeKnowledgeToggleTranslation,Terjemahan,,
+contributeLemmaAvailable,Kata belum terdaftar di kamus. Silakan lanjut kirim usulan.,,
+contributeLemmaHint,"Isi kata, peribahasa, atau ungkapan",,
+contributeLemmaLabel,Kata / ungkapan Sambas *,,
+contributeMaxMeanings,Maksimal {max} makna per usulan.,,Pertahankan placeholder: {max}
+contributeMeaningGuide,"Satu kata bisa punya beberapa arti.
+
+Tiap blok: centang Penjelasan arti dan/atau Terjemahan, isi kelas kata.
+
+Kelas kata mengikuti tiap makna - kata bisa jadi kata benda di makna pertama, kata kerja di makna kedua. Pakai Tambah makna.",,
+contributeMeaningIncomplete,Makna {index}: centang dulu Penjelasan arti dan/atau Terjemahan,,Pertahankan placeholder: {index}
+contributeMeaningLabel,Makna *,,
+contributeMeaningN,Makna {index},,Pertahankan placeholder: {index}
+contributeModeComplete,Lengkap,,
+contributeModeSimple,Sederhana,,
+contributeMultiClassHint,"Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? Aktifkan mode Lengkap, lalu Tambah makna.",,
+contributeRateLimited,Terlalu banyak usulan dikirim. Coba lagi dalam beberapa saat.,,
+contributeRegisterConflict,Halus dan Kasar tidak bisa dipilih bersamaan,,
+contributeRegisterHint,Opsional. Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa dipilih bersamaan.,,
+contributeRegisterLabel,Register,,
+contributeRelationsAntonymsLabel,Antonim,,
+contributeRelationsDuplicateItem,"""{item}"" tertulis lebih dari sekali",,Pertahankan placeholder: {item}
+contributeRelationsDuplicateLemma,"""{item}"" sama dengan kata yang diusulkan",,Pertahankan placeholder: {item}
+contributeRelationsEmptySummary,Belum ada,,
+contributeRelationsLabelAntonyms,antonim,,
+contributeRelationsLabelSynonyms,sinonim,,
+contributeRelationsLabelVariants,variasi,,
+contributeRelationsListHint,"kata1, kata2 - dipisah koma",,
+contributeRelationsMaxItems,Maksimal {max} {label},,"Pertahankan placeholder: {max}, {label}"
+contributeRelationsNotesHint,"Contoh pemakaian, etimologi, dll.",,
+contributeRelationsNotesLabel,Catatan,,
+contributeRelationsRelatedMax,Sinonim + antonim maksimal 5 total,,
+contributeRelationsSave,Simpan,,
+contributeRelationsSheetIntro,"Beberapa item: pisahkan dengan koma. Contoh: ketex, kettek, kete'",,
+contributeRelationsSheetTitle,Kelengkapan opsional,,
+contributeRelationsSummaryAntonyms,{count} antonim,,Pertahankan placeholder: {count}
+contributeRelationsSummaryNotes,catatan,,
+contributeRelationsSummarySynonyms,{count} sinonim,,Pertahankan placeholder: {count}
+contributeRelationsSummaryVariants,{count} variasi,,Pertahankan placeholder: {count}
+contributeRelationsSynAntonymConflict,"""{item}"" tidak boleh sinonim dan antonim sekaligus",,Pertahankan placeholder: {item}
+contributeRelationsSynonymsLabel,Sinonim,,
+contributeRelationsVariantsHint,"ketex, kettek, kete' - dipisah koma",,
+contributeRelationsVariantsLabel,Variasi penulisan,,
+contributeRemove,Hapus,,
+contributeRemoveFailedImage,Hapus gambar yang gagal diunggah dulu,,
+contributeRetry,Ulangi,,
+contributeSeeHistory,Lihat riwayat,,
+contributeSeeProposals,Lihat usulan,,
+contributeSentGuest,"Dikirim sebagai tamu. Katanya belum tayang, tim cek dulu sebelum tampil.",,
+contributeSentPending,Katanya langsung tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.,,
+contributeSentPublishedBody,"""{lemma}"" sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.",,Pertahankan placeholder: {lemma}
+contributeSentPublishedNoLemma,Kata sudah tayang dengan label Menunggu pengecekan. Tim kami cek kemudian.,,
+contributeSentTitle,Usulan terkirim,,
+contributeServerOutdated,Server lama merespons. Coba lagi dalam beberapa saat.,,
+contributeServerTrouble,Server sedang gangguan. Coba lagi dalam beberapa saat.,,
+contributeStorageUnavailable,Penyimpanan gambar belum tersedia,,
+contributeSubmitCta,Kirim Usulan,,
+contributeSubmitFailed,Gagal mengirim usulan kata,,
+contributeSubmitNoWordId,"Server tidak mengembalikan word_id, coba lagi nanti",,
+contributeSubmitting,Mengirim...,,
+contributeTitle,Usulkan,,
+contributeTranslationHint,Satu kata/frasa setara di Indonesia,,
+contributeTranslationIdnGuide,"Satu kata/frasa Indonesia yang setara dengan kata Sambas.
+
+Contoh: “makan”. Beda dari penjelasan arti (“aktivitas memasukkan makanan ke mulut”).",,
+contributeTranslationLabel,Terjemahan Indonesia *,,
+contributeTranslationMissingTitle,Isi terjemahan bahasa Indonesia,,
+contributeTranslationSbsHint,Satu kata/frasa Sambas yang setara - bukan uraian panjang.,,
+contributeTranslationSbsHintField,Terjemahan dalam bahasa Sambas,,
+contributeTranslationSbsLabel,Terjemahan Sambas *,,
+contributeUploadTokenFailed,Gagal mendapat token upload,,
+contributeValidationFailed,Periksa kembali isianmu (beberapa kolom perlu diperbaiki).,,
+contributeWaitUpload,Tunggu upload gambar selesai,,
+contributeWarningHint,Opsional. Sensitivitas isi makna.,,
+contributeWarningLabel,Peringatan,,
+contributeWhatYouKnow,Apa yang kamu ketahui? *,,
+contributeWhatYouKnowGuide,"Centang yang kamu tahu (boleh keduanya).
+
+• Penjelasan arti - uraian makna berbahasa Indonesia.
+• Terjemahan - satu kata/frasa setara.
+
+Form di bawah muncul sesuai centangan.",,
+contributeWordClassFallbackAdj,kata sifat,,
+contributeWordClassFallbackNoun,kata benda,,
+contributeWordClassFallbackWork,kata kerja,,
+contributeWordClassHint,"Nomina, verba, adjektiva, dsb. Bisa dibantu isi lewat ikon buku di kolom terjemahan.",,
+contributeWordClassLabel,Kelas kata *,,
+contributeWordClassLoadFailed,Gagal muat kelas kata,,
+contributeWordClassPick,Pilih kelas kata…,,
+contributeWordClassSheetCount,{count} pilihan - ketuk untuk memilih,,Pertahankan placeholder: {count}
+contributeWordClassSheetEmpty,Tidak ada kelas kata,,
+contributeWordClassSheetTitle,Pilih kelas kata,,
+cropAspectFree,Bebas,,
+cropPhotoTitle,Potong foto,,
+cropSkip,Lewati,,
+cuisineDetailHelpTitle,Bantu lengkapi,,
+cuisineDetailIngredients,Bahan,,
+cuisineDetailReportBody,Data menyesatkan atau duplikat,,
+cuisineDetailReportSentBody,Terima kasih. Admin akan memeriksa kuliner ini.,,
+cuisineDetailServing,Cara menyajikan,,
+cuisineDetailSource,Sumber,,
+cuisineDetailSuggestEditBody,"Salah nama, deskripsi, atau bahan?",,
+cuisineListEmptyBody,Konten kuliner khas Sambas sedang disiapkan. Balik lagi nanti ya.,,
+cuisineListEmptyTitle,Belum ada kuliner,,
+cuisineListNoMatch,Belum ada kuliner yang cocok.,,
+cuisineListSearchHint,Cari kuliner...,,
+cuisineListTitle,Kuliner,,
+cuisinePropose,Usulkan kuliner,,
+culinaryCancelAction,Batalkan,,Tombol batal usulan kuliner
+culinaryClaimEvidenceBody,Tulis bukti bahwa kamu pemilik atau pengelola sah.,,
+culinaryClaimEvidenceHint,Nomor WhatsApp atau akun media sosial pengelola,,
+culinaryClaimFailed,Klaim gagal,,
+culinaryClaimManageTitle,Klaim pengelolaan,,
+culinaryClaimPlace,Klaim tempat ini,,
+culinaryClaimPlaceBody,Kamu pemilik atau pengelola sah?,,
+culinaryClaimPlaceSentBody,Admin akan memeriksa buktinya dulu. Kamu bisa pantau statusnya nanti.,,
+culinaryClaimSent,Klaim terkirim,,
+culinaryClaimSubmit,Kirim klaim,,
+culinaryConnectionFailed,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,
+culinaryEvidenceShortBody,Tulis bukti minimal 5 karakter ya.,,
+culinaryEvidenceShortTitle,Bukti kurang,,
+culinaryFormAddressHint,"Jalan, nomor, patokan",,
+culinaryFormAddressOptional,Alamat (opsional),,
+culinaryFormFieldCuisine,Kuliner,,
+culinaryFormFieldPlace,Tempat/penjual,,
+culinaryFormIngredientsOptional,Bahan (opsional),,
+culinaryFormIntro,"Isi yang kamu tahu saja. Nama wajib, sisanya boleh menyusul - admin bisa melengkapi.",,
+culinaryFormLinkIntro,Bantu hubungkan kuliner dengan tempat yang menjualnya. Wajib masuk dulu.,,
+culinaryFormLocationHintHint,"Depan pasar, sebelah masjid",,
+culinaryFormLocationHintOptional,Patokan lokasi (opsional),,
+culinaryFormNameCuisineLabel,Nama kuliner,,
+culinaryFormNamePlaceHint,Nama tempat atau penjual,,
+culinaryFormNamePlaceLabel,Nama tempat,,
+culinaryFormNameTooShort,Nama minimal 3 huruf ya.,,
+culinaryFormPhotoAttribution,Foto akan diatribusikan ke namamu dengan lisensi {license}.,,Pertahankan placeholder: {license}
+culinaryFormPickBoth,Pilih kuliner dan tempatnya dulu ya.,,
+culinaryFormSearchCuisine,Cari kuliner,,
+culinaryFormSearchPlace,Cari tempat,,
+culinaryFormSentBody,Admin akan meninjau dulu. Terima kasih sudah bantu lengkapi data kuliner Sambas.,,
+culinaryFormTitleCuisine,Usul kuliner,,
+culinaryFormTitleLink,Tandai penjual,,
+culinaryFormTitlePlace,Usul tempat,,
+culinaryKindArchive,Minta arsip,,
+culinaryKindCuisineEdit,Perbaikan data kuliner,,
+culinaryKindLink,Relasi kuliner-tempat,,
+culinaryKindNewCuisine,Usulan kuliner baru,,Jenis pengajuan kuliner
+culinaryKindNewPlace,Usulan tempat baru,,
+culinaryKindOperational,Status buka,,
+culinaryKindPlaceEdit,Perbaikan data tempat,,
+culinaryKindRestore,Minta tayang,,
+culinaryLoadFailed,Gagal memuat,,
+culinaryLoginTitle,Masuk dulu ya,,
+culinaryOperationalSent,Usulan terkirim,,
+culinaryOperationalSentBody,Status baru akan tayang setelah admin setujui.,,
+culinaryPlaceReportSentBody,Terima kasih. Admin akan memeriksa tempat ini.,,
+culinaryPlacesContribute,Usulkan tempat kuliner,,
+culinaryPlacesEmpty,Belum ada tempat yang cocok.,,
+culinaryPlacesLoginBody,"Klaim, usul status, dan laporan butuh akun supaya bisa ditindak lanjuti.",,
+culinaryPlacesSearchHint,Cari tempat atau penjual...,,
+culinaryPlacesTitle,Tempat kuliner,,Judul halaman daftar tempat kuliner
+culinaryProposalFailed,Usulan gagal,,
+culinaryProposalsCancelBody,Usulan yang dibatalkan tidak dikirim ke peninjau.,,
+culinaryProposalsCancelFailed,Gagal membatalkan,,
+culinaryProposalsCancelTitle,Batalkan usulan?,,Judul sheet konfirmasi batal usulan kuliner
+culinaryProposalsEmpty,Belum ada usulan,,
+culinaryProposalsEmptyCta,Usul kuliner baru,,
+culinaryProposalsEmptyHint,Status usulan yang sudah ditinjau akan muncul di sini.,,
+culinaryProposalsLoadFailed,Gagal memuat usulan. Periksa koneksi lalu coba lagi.,,
+culinaryProposalsLoadFailedTitle,Gagal memuat usulan,,
+culinaryProposalsLoginGate,Masuk dulu untuk melihat usulan kamu,,
+culinaryProposalsTitle,Usulan kuliner,,Judul halaman usulan kuliner milik user
+culinaryReasonAbuse,Dugaan pelanggaran,,
+culinaryReasonClosed,Tempat sudah tutup,,
+culinaryReasonDuplicate,Dugaan duplikat,,
+culinaryReasonInvalidContact,Kontak tidak valid,,
+culinaryReasonMisleading,Informasi menyesatkan,,
+culinaryReasonWrongLocation,Lokasi tidak sesuai,,
+culinaryRejectAttribution,Atribusi gambar belum lengkap,,
+culinaryRejectDuplicate,Sudah ada yang mirip,,Alasan penolakan usulan kuliner
+culinaryRejectIncomplete,Data belum lengkap,,
+culinaryRejectInvalid,Data tidak valid,,
+culinaryRejectOther,Alasan lain,,
+culinaryRejectStale,Data dasar sudah berubah,,
+culinaryRejectUnverifiable,Belum bisa diverifikasi,,
+culinaryRejectViolation,Melanggar ketentuan,,
+culinaryReportFailed,Gagal melapor,,
+culinaryReportReasonTitle,Apa yang salah?,,
+culinaryStatusOperating,Buka,,
+culinaryStatusPermanentlyClosed,Tutup permanen,,
+culinaryStatusTemporarilyClosed,Tutup sementara,,
+culinaryStatusUnknown,Belum diketahui,,
+culinarySuggestEdit,Usul perbaikan data,,
+culinarySuggestEditPlaceBody,"Nama, deskripsi, atau alamat salah?",,
+culinarySuggestOperational,Usulkan status buka/tutup,,
+deleteAccountBody,"Nama, email, nomor HP, kata sandi, foto profil, sesi, dan token notifikasi akan kami hapus. Kata yang sudah tayang tetap ada, tapi tanpa namamu.",,Penjelasan data yang dihapus saat hapus akun
+deleteAccountConfirmWord,HAPUS,,Kata yang harus diketik untuk konfirmasi hapus akun
+deleteAccountDeleting,Menghapus...,,Label tombol saat akun sedang dihapus
+deleteAccountDone,Akun dihapus,,Judul sheet setelah akun dihapus
+deleteAccountPasswordHint,Kosongkan jika akun masuk lewat Google,,Petunjuk kolom kata sandi hapus akun
+deleteAccountPasswordLabel,Kata sandi,,Label kolom kata sandi pada hapus akun
+deleteAccountTitle,Hapus akun,,Judul halaman hapus akun
+deleteAccountTypeToConfirm,Ketik HAPUS,,Label kolom konfirmasi hapus akun
+devToolOtherUi,Tool UI lainnya,,Deskripsi grup inspector UI di overlay staging
+dictAZ,A-Z,,
+dictActivitySkeletonLine,aktivitas singkat satu baris,,
+dictActivitySkeletonSubtitle,lading,,
+dictAppearsIn,Muncul dalam,,
+dictAttribution,Atribusi,,
+dictAttributionCreatedAndVerifiedBy,Dibuat dan diverifikasi oleh {name},,Pertahankan placeholder: {name}
+dictAttributionCreatedBy,Dibuat oleh {name},,Pertahankan placeholder: {name}
+dictAttributionVerifiedBy,Diverifikasi oleh {name},,Pertahankan placeholder: {name}
+dictAudioError,"Gagal memutar {meta}, ketuk untuk coba lagi",,Pertahankan placeholder: {meta}
+dictAudioErrorRetry,Gagal memutar audio. Coba lagi dalam beberapa saat.,,
+dictAudioLoading,Memuat audio {meta},,Pertahankan placeholder: {meta}
+dictAudioPause,Jeda audio {meta},,Pertahankan placeholder: {meta}
+dictAudioPlay,Putar audio {meta},,Pertahankan placeholder: {meta}
+dictAudioProgress,Progres pemutaran,,
+dictAudioProgressPercent,{percent} persen,,Pertahankan placeholder: {percent}
+dictAudioResume,Lanjutkan audio {meta},,Pertahankan placeholder: {meta}
+dictAudioUploadFailed,Gagal mengunggah audio,,
+dictAudioUploadFailedRetry,Gagal mengunggah audio. Coba lagi dalam beberapa saat.,,
+dictCategory,Kategori,,
+dictCategoryLoadFailed,Gagal memuat kategori,,
+dictChangeHistory,Riwayat perubahan,,
+dictCitizenFallback,Warga Sambas,,
+dictCompleteHint,Cari kata Sambas...,,
+dictCompleteMinChars,Ketik minimal 2 huruf untuk mencari kata.,,
+dictCompleteNoMatch,"Tidak ada kata yang cocok dengan ""{query}"".",,Pertahankan placeholder: {query}
+dictCompleteSubtitle,"Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.",,
+dictCompleteTitle,Lengkapi kata,,
+dictContributionBy,oleh {name},,Pertahankan placeholder: {name}
+dictCopiedMeaning,Makna disalin,,
+dictCopiedWord,Teks kata disalin,,
+dictCopyMeaning,Salin makna,,
+dictDetailTitle,Detail kata,,
+dictDiscussion,Ruang Diskusi,,
+dictDiscussionSubtitle,Tanya arti atau bahas kata Sambas bareng warga,,
+dictEntryReportSent,Laporan terkirim. Entri tetap tayang sampai ditinjau.,,
+dictExampleAudio,Audio contoh,,
+dictImageCounter,{index}/{total},,"Pertahankan placeholder: {index}, {total}"
+dictImagePendingReview,Gambar menunggu tinjauan,,
+dictImagePreview,Pratinjau gambar,,
+dictImageUnderReview,Gambar sedang dalam peninjauan.,,
+dictLangIndonesia,Indonesia,,
+dictLangSambas,Sambas,,
+dictLetterEmpty,Belum ada kata untuk huruf {letter}.,,Pertahankan placeholder: {letter}
+dictLetterSubtitle,Kata yang dimulai dengan huruf {letter}.,,Pertahankan placeholder: {letter}
+dictLetterTitle,Huruf {letter},,Pertahankan placeholder: {letter}
+dictListTitle,Daftar Kata A-Z,,
+dictLoading,Memuat...,,
+dictLoginToRecord,Masuk dulu untuk rekam pelafalan,,
+dictLoginToReportEntry,Masuk dulu untuk melaporkan entri,,
+dictLoginToReportPhoto,Masuk dulu untuk melaporkan foto,,
+dictLoginToSave,Masuk dulu untuk menyimpan kata,,
+dictLoginToSuggest,Masuk dulu untuk mengusulkan perubahan,,
+dictMicFactDurationBody,Cukup untuk lemma atau contoh kalimat. Format suara AAC/m4a - tanpa video.,,
+dictMicFactDurationTitle,Maksimal 60 detik,,
+dictMicFactOnlyRecordBody,Mikrofon aktif hanya selama sesi rekam di layar ini. Tidak merekam diam-diam.,,
+dictMicFactOnlyRecordTitle,Hanya saat kamu merekam,,
+dictMicFactRequiredBody,"Tanpa izin, tombol rekam tidak bisa mulai. Kamu bisa mencabut izin kapan saja di Pengaturan perangkat.",,
+dictMicFactRequiredTitle,Izin mikrofon wajib,,
+dictMicFactReviewBody,Rekaman dikirim ke server SambasKu dan masuk antrean review. Nama penutur opsional - boleh kirim tanpa nama.,,
+dictMicFactReviewTitle,Ditinjau sebelum tayang,,
+dictMicFactsTitle,Yang perlu kamu tahu,,
+dictMicGrant,Lanjutkan & izinkan mikrofon,,
+dictMicHeroBody,"Sebelum merekam, SambasKu meminta izin mikrofon. Ini hanya dipakai untuk fitur pelafalan - bukan untuk menyadap atau merekam di latar belakang.",,
+dictMicHeroTitle,Rekam pelafalan butuh akses mikrofon,,
+dictMicLater,Nanti saja,,
+dictMicPermissionTitle,Izin mikrofon,,
+dictMicPermissionTooltip,Izin mikrofon diperlukan untuk merekam pelafalan,,
+dictMicRequesting,Meminta izin...,,
+dictMostSupported,Paling didukung,,
+dictNoActivity,Belum ada aktivitas.,,
+dictNoMatchFor,"Tidak ada kata untuk ""{query}""",,Pertahankan placeholder: {query}
+dictNoPronunciationAudio,Belum ada audio pelafalan kata,,
+dictNoPublishedWord,Belum ada kata terbit.,,
+dictNoTranslation,Belum ada terjemahan,,
+dictNotInDictionary,Belum ada di kamus. Usulkan supaya bisa dicari orang lain.,,
+dictPendingCheck,Menunggu pengecekan,,
+dictPhotoReportSent,Laporan terkirim. Foto tetap tayang sampai ditinjau.,,
+dictPhotoReportThanks,Laporan foto terkirim. Terima kasih.,,
+dictProfileOf,Profil {username},,Pertahankan placeholder: {username}
+dictPronunciationLine,{notation} {value},,"Pertahankan placeholder: {notation}, {value}"
+dictPronunciationSection,Pelafalan,,
+dictProposeThisWord,Usul kata ini,,
+dictProposeWord,Usul kata baru,,
+dictRecAgree,Saya setuju,,
+dictRecAgreeBeforeSend,Tekan Kirim untuk setuju soal publikasi & lisensi rekaman,,
+dictRecAnonymous,Tanpa nama (Anonim),,
+dictRecClipTooShort,Potongan terlalu pendek (min {min} dtk),,Pertahankan placeholder: {min}
+dictRecDialectOptional,Dialek (opsional),,
+dictRecFinishOrCancel,Selesaikan atau batalkan rekaman dulu,,
+dictRecFollowProfileName,Mengikuti nama tampilan di profilmu,,
+dictRecHoldHint,"Tahan untuk rekam, lepas untuk stop · ketuk singkat untuk kunci",,
+dictRecIncludeName,Cantumkan nama saya sebagai penutur,,
+dictRecLevelSemantic,Level mikrofon,,
+dictRecLicenseBody,"Suara penutur akan dipublikasikan di SambasKu (situs dan aplikasi) di bawah lisensi CC BY-SA 4.0, dan bisa didengar siapa saja.
+
+Pastikan penutur yang bersuara tahu dan setuju rekamannya dipakai. Penutur tidak harus punya aplikasi, cukup setuju saat kamu merekam. Rekaman bisa diminta dihapus kapan saja lewat mail@sambasku.com.",,
+dictRecLicenseTitle,Publikasi & Lisensi Rekaman,,
+dictRecMaxSecondsHint,Maksimal {max} detik · cukup 1-2 kali baca kalimat,,Pertahankan placeholder: {max}
+dictRecMaxSecondsHintSpeak,Maksimal {max} detik · cukup 1-2 kali ucapan,,Pertahankan placeholder: {max}
+dictRecMicLevel,Level mikrofon · ketuk tombol untuk stop,,
+dictRecMicPermissionTitle,Izin mikrofon diperlukan untuk rekam pelafalan,,
+dictRecMicUnavailable,Mikrofon tidak tersedia,,
+dictRecNoDisplayName,"Nama tampilan tidak tersedia. Matikan opsi nama, atau perbarui profil dulu.",,
+dictRecNoDisplayNameShort,Nama tampilan belum ada di profil,,
+dictRecNoRecording,Belum ada rekaman. Rekam dulu sebelum mengirim.,,
+dictRecPause,Jeda,,
+dictRecPreparingEditor,Menyiapkan editor...,,
+dictRecPreview,Pratinjau,,
+dictRecPreviewFailed,Gagal memutar pratinjau. Coba rekam ulang atau potong ulang.,,
+dictRecRecording,Merekam... {elapsed}s / {max}s,,"Pertahankan placeholder: {elapsed}, {max}"
+dictRecReleaseToStop,Lepas untuk stop,,
+dictRecRerecord,Rekam ulang,,
+dictRecSaveFailed,Rekaman gagal disimpan,,
+dictRecSay,Ucapkan,,
+dictRecSend,Kirim,,
+dictRecSending,Mengirim...,,
+dictRecStart,Mulai rekam,,
+dictRecStop,Stop,,
+dictRecStoppedInactive,Rekaman dihentikan karena aplikasi tidak aktif,,
+dictRecThanks,"Terima kasih, rekaman menunggu pengecekan",,
+dictRecTooMany,"Terlalu banyak, coba lagi nanti",,
+dictRecTooQuiet,Suara terdengar pelan - dekatkan mikrofon lalu rekam ulang,,
+dictRecTooShort,Rekaman terlalu singkat - coba ucapkan sekali lagi dengan jelas,,
+dictRecTrim,Potong rekaman,,
+dictRecTrimFailed,Gagal memotong audio. Sesuaikan rentang lalu coba kirim lagi.,,
+dictRecTrimRange,Geser rentang ({selection} dari {total}).,,"Pertahankan placeholder: {selection}, {total}"
+dictRecTrimSelectionLabel,Bagian terpilih yang akan dikirim.,,
+dictRecWaitUpload,Tunggu hingga pengiriman selesai,,
+dictRecWaveformUnavailable,Waveform tidak tersedia - geser slider untuk memotong,,
+dictRecentActivity,Aktivitas terbaru,,
+dictRecordExampleAudio,Rekam audio contoh,,
+dictRecordPronunciation,Rekam pelafalan,,
+dictRelatedMeaningSubtitle,Makna terkait · {subtitle},,Pertahankan placeholder: {subtitle}
+dictRelatedMeanings,Makna terkait,,
+dictRelationAntonym,Antonim,,
+dictRelationComponent,Komponen,,
+dictRelationDerivedFrom,Diturunkan dari,,
+dictRelationNonstandardOf,Bentuk tidak baku dari,,
+dictRelationSeeAlso,Lihat juga,,
+dictRelationSynonym,Sinonim,,
+dictRelationVariantOf,Variasi dari,,
+dictRemove,Hapus,,
+dictReportEntry,Laporkan entri,,
+dictReportEntrySubtitle,"Untuk entri yang tidak layak tayang, bukan perbaikan isi",,
+dictReportPhoto,Laporkan foto,,
+dictReportPhotoSubtitle,Foto bermasalah ditandai agar orang lain harus ketuk dulu sebelum melihat,,
+dictReview,Tinjau,,
+dictRoleVerifier,"{label}, Verifikator",,Pertahankan placeholder: {label}
+dictSearchHint,Cari kata Sambas...,,
+dictSearchHistory,Riwayat pencarian,,
+dictSearchIndonesianEmpty,Ketik kata Indonesia untuk mencari terjemahannya di Sambas.,,
+dictSearchIndonesianHint,Cari kata Indonesia...,,
+dictSearchSambasHint,Cari atau saring kata Sambas...,,
+dictSeeAllWords,Lihat semua kata,,
+dictSeeProfile,Lihat profil,,
+dictSeeVerifiers,Lihat verifikator,,
+dictShareCard,Bagikan kartu,,
+dictShareCardSubtitle,"Buat kartu untuk cerita IG, WhatsApp, dan lainnya",,
+dictShareLink,Bagikan tautan,,
+dictShareLinkSubtitle,"Kirim link detail kata ke WhatsApp, grup, dan aplikasi lain",,
+dictSkeletonComment,isi komentar skeleton beberapa kata di sini,,
+dictSkeletonDefinition,Definisi makna singkat untuk skeleton layout,,
+dictSkeletonExampleTranslation,terjemahan contoh,,
+dictSkeletonGloss,arti pertama satu baris,,
+dictSkeletonLemma,lemma contoh kata,,
+dictSkeletonLemmaShort,lemma contoh,,
+dictSkeletonUsername,nama pengguna,,
+dictSkeletonWord,kata Sambas contoh,,
+dictSkeletonWordClass,Nomina,,
+dictSpeakerAnonymous,Anonim,,
+dictUnverifiedWarning,"Kata ini belum dicek tim SambasKu, jadi makna atau terjemahannya bisa saja kurang pas",,
+dictUsageDiskriminatif,Diskriminatif,,
+dictUsageHalus,Halus,,
+dictUsageInformal,Informal,,
+dictUsageKasar,Kasar,,
+dictUsageSeksual,Seksual,,
+dictUsageTabu,Tabu,,
+dictVariantAlternative,Variasi penulisan,,
+dictVariantDerivation,Derivasi,,
+dictVariantInflection,Fleksi,,
+dictVariantReduplication,Reduplikasi,,
+dictVariantsAndDerived,Variasi & bentuk turunan,,
+dictVariantsTitle,Variasi penulisan,,
+dictViolenceImage,"Foto berisi kekerasan, ketuk untuk menampilkan",,
+dictWordNotFound,Kata tidak ditemukan,,
+dictWordOfDay,Kata hari ini,,
+dictWordOfDayLoadFailed,Gagal memuat kata hari ini,,
+dictWordOfDayRotates,"Ditampilkan hari ini, berganti setiap hari",,
+dictWordOfDayShownToday,Ditampilkan hari ini · baru minggu ini,,
+dictWordTypeExpression,Ungkapan,,
+dictWordTypeIdiom,Idiom,,
+dictWordTypeProverb,Peribahasa,,
+dictWordTypeWord,Kata,,
+discussionAllImagesFailed,Semua gambar gagal,,
+discussionAllImagesFailedBody,Teks tetap bisa dikirim tanpa lampiran. Lanjutkan?,,
+discussionAlsoCurious,Saya juga ingin tahu,,
+discussionApproveFailed,Gagal menyetujui diskusi,,
+discussionApproveResponseIncomplete,Respons approve tidak lengkap,,
+discussionAudioSendFailed,Gagal mengirim rekaman suara,,
+discussionBodyRequired,Tulis dulu pertanyaan atau cerita kamu ya,,
+discussionClipboardEmpty,Clipboard kosong,,
+discussionConnectionFailed,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,
+discussionCreateAlertBody,"Ceritakan apa yang mau kamu tanyakan atau bahas. Foto dan suara opsional. Setelah disetujui, warga lain bisa langsung membalas.",,
+discussionCreateAlertTitle,Thread kamu dicek dulu sebelum tayang,,
+discussionCreateAudioLabel,Rekam suara (opsional),,
+discussionCreateAudioReady,Rekaman siap · {sec}s,,Pertahankan placeholder: {sec}
+discussionCreateBodyHint,"Tulis pertanyaan atau cerita kamu di sini. Semakin jelas konteksnya, semakin mudah warga membantu.",,
+discussionCreateBodyLabel,Deskripsi,,
+discussionCreateCharCount,{count}/1000,,Pertahankan placeholder: {count}
+discussionCreateLinkHint,"Tempel link Instagram, TikTok, YouTube, dll. Harus diawali https://",,
+discussionCreateLinkLabel,Tautan,,
+discussionCreateLoginCta,Masuk,,
+discussionCreatePaste,Tempel,,
+discussionCreatePhotoLabel,"Foto (opsional, maks 4)",,
+discussionCreatePhotoLoginHint,Masuk untuk lampirkan foto.,,
+discussionCreateRecordCta,Rekam suara,,
+discussionCreateRerecord,Ulangi,,
+discussionCreateShareLink,Sertakan link dari sosial media,,
+discussionCreateTitle,Mulai diskusi,,
+discussionDetailIncomplete,Detail diskusi tidak lengkap,,
+discussionDetailLoadFailed,Gagal memuat detail diskusi,,
+discussionFeedAudio,Suara,,
+discussionFeedEmpty,Belum ada diskusi yang tayang,,
+discussionFeedEmptyBody,Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.,,
+discussionFeedLoadFailed,Gagal memuat diskusi,,
+discussionFeedNewThread,Mulai thread baru…,,
+discussionFeedPhotos,{count} foto,,Pertahankan placeholder: {count}
+discussionFeedRetry,Coba lagi,,
+discussionFeedSortByTime,Menurut waktu,,
+discussionFeedSortByUpvote,Menurut upvote,,
+discussionFeedSortNewest,Terbaru,,
+discussionFeedSortPopular,Populer,,
+discussionFeedTitle,Ruang Diskusi,,
+discussionGenericError,"Terjadi kesalahan, coba lagi",,
+discussionHelpDetailTitle,Detail Bantuan,,
+discussionHelpfulQuestion,Jawaban membantu?,,
+discussionHistoryLoadFailed,Gagal memuat riwayat diskusi,,
+discussionImageCensored,Gambar disensor. Ketuk untuk menampilkan.,,
+discussionImageUploadFailed,Satu gambar gagal diunggah,,
+discussionImageViolence,Konten kekerasan,,
+discussionImageViolenceTap,Kekerasan · ketuk untuk lihat,,
+discussionLinkHttpsRequired,Tautan harus memakai https://,,
+discussionLoginFirst,Masuk dulu ya sebelum mulai diskusi,,
+discussionLoginToReply,Masuk dulu untuk membalas,,
+discussionLoginToVote,Masuk dulu untuk memberi vote,,
+discussionMyEmpty,Belum ada diskusi,,
+discussionMyEmptyBody,Kirim teks atau foto yang sulit diterjemahkan.,,
+discussionMyHistoryLoadFailed,Gagal memuat riwayat,,
+discussionMyLoginFirst,Masuk dulu untuk melihat riwayat diskusi kamu,,
+discussionMyNoText,Tanpa teks,,
+discussionMyStartCta,Mulai diskusi,,
+discussionMyTitle,Bantuan Saya,,
+discussionNotReady,Belum siap,,
+discussionPhotoTapHintMany,Ketuk foto untuk melihat ukuran penuh · geser untuk foto lain,,
+discussionPhotoTapHintOne,Ketuk foto untuk melihat ukuran penuh,,
+discussionPinned,Disematkan,,
+discussionQuestionPending,Pertanyaan belum tayang,,
+discussionQueueLoadFailed,Gagal memuat antrean diskusi,,
+discussionRecordSheetSubtitle,Maksimal 60 detik. Rekaman dilampirkan setelah deskripsi dikirim.,,
+discussionRecordSheetTitle,Rekam untuk diskusi,,
+discussionRecordSheetUse,Pakai rekaman,,
+discussionRejectFailed,Gagal menolak diskusi,,
+discussionRejectResponseIncomplete,Respons reject tidak lengkap,,
+discussionRepliesCount,Balasan · {count},,Pertahankan placeholder: {count}
+discussionRepliesEmpty,Belum ada balasan. Jadilah yang pertama membantu.,,
+discussionRepliesLabel,Balasan,,
+discussionRepliesPendingLocked,Balasan dibuka setelah permintaan ditayangkan.,,
+discussionRepliesRemovedAuthor,Balasan dihapus penulis,,
+discussionRepliesRemovedModerator,Balasan dihapus moderator,,
+discussionRepliesUnavailable,Thread balasan tidak tersedia untuk status ini.,,
+discussionReplyAudioIncomplete,Balasan suara tidak lengkap,,
+discussionReplyDeleteBody,Balasan akan dihapus dari thread.,,
+discussionReplyDeleteFailed,Gagal menghapus balasan,,
+discussionReplyDeleteTitle,Hapus balasan?,,
+discussionReplyDeleted,Balasan dihapus,,
+discussionReplyHint,Tulis balasan…,,
+discussionReplyIncomplete,Balasan tidak lengkap,,
+discussionReplyLoginCta,Masuk untuk membalas,,
+discussionReplyMinLength,Balasan minimal 1 karakter,,
+discussionReplyRecordSubmit,Kirim rekaman,,
+discussionReplyRecordSubtitle,Maksimal 60 detik. Caption teks bisa ditambahkan di kolom balasan sebelum merekam.,,
+discussionReplyRecordTitle,Rekam balasan suara,,
+discussionReplySendFailed,Gagal mengirim balasan,,
+discussionReplySent,Balasan terkirim,,
+discussionResponseIncomplete,Response diskusi tidak lengkap,,
+discussionRetry,Coba lagi,,
+discussionRetryAfter,{message} Coba lagi dalam {retry} detik.,,"Pertahankan placeholder: {message}, {retry}"
+discussionSendCta,Kirim,,
+discussionSendWithoutImages,Kirim tanpa gambar,,
+discussionSending,Mengirim...,,
+discussionSentAudioFailed,Diskusi terkirim; rekaman gagal dilampirkan,,
+discussionSentPending,"Permintaan terkirim, menunggu pengecekan",,
+discussionServerOutdated,Server lama merespons. Coba lagi dalam beberapa saat.,,
+discussionStatusAll,Semua,,
+discussionStatusPending,Menunggu,,
+discussionStatusPublished,Tayang,,
+discussionStatusRejected,Ditolak,,
+discussionStatusTakenDown,Diturunkan,,
+discussionStorageUnavailable,Penyimpanan gambar belum tersedia,,
+discussionUploadCredsIncomplete,Kredensial upload tidak lengkap,,
+discussionWaitUpload,Tunggu upload gambar selesai,,
+editProfileSaveFailed,Gagal menyimpan profil,,
+editProfileSaveSuccess,Profil berhasil disimpan.,,
+errorSheetClose,Tutup,,
+errorSheetOk,Mengerti,,
+errorSheetRetry,Coba lagi,,
+errorSheetTitle,Terjadi kesalahan,,
+eventCategoryLabel,Kategori,,
+eventCategoryPickerHint,Pilih kategori,,
+eventCategoryPickerTitle,Pilih kategori acara,,
+eventChipCancelled,Dibatalkan,,
+eventChipEnded,Selesai,,
+eventChipOngoing,Berlangsung,,
+eventChipUpcoming,Akan datang,,
+eventContributeTitle,Usulkan acara,,
+eventDateRange,{start} - {end},,"Pertahankan placeholder: {start}, {end}"
+eventDetailLoadFailed,Gagal memuat acara,,
+eventDetailNotFound,Acara ini tidak ditemukan,,
+eventDetailOfficialSource,Sumber resmi,,
+eventDetailOrganizer,Diselenggarakan oleh {name},,Pertahankan placeholder: {name}
+eventDetailPosterCounter,{current}/{total},,"Pertahankan placeholder: {current}, {total}"
+eventDetailRelatedPlaces,Wisata terkait,,
+eventDetailSeeList,Lihat daftar acara,,
+eventDetailTitle,Acara,,
+eventDetailVillage,Desa {name},,Pertahankan placeholder: {name}
+eventFormCategoryRequired,Pilih kategori acara dulu.,,
+eventFormClearCoords,Hapus koordinat,,
+eventFormCoords,"{lat}, {lng}",,"Pertahankan placeholder: {lat}, {lng}"
+eventFormCreditHint,"Opsional, mis. nama panitia",,
+eventFormCreditLabel,Kredit penerbit,,
+eventFormDescHint,Ceritakan singkat acaranya,,
+eventFormDescLabel,Deskripsi,,
+eventFormDescRequired,Ceritakan singkat acaranya.,,
+eventFormEndBeforeStart,Waktu selesai tidak boleh sebelum waktu mulai.,,
+eventFormEndDateLabel,Tanggal selesai,,
+eventFormEndRequired,Tentukan waktu selesai.,,
+eventFormEndTimeLabel,Jam selesai,,
+eventFormIncomplete,Lengkapi dulu ya,,
+eventFormIntro,Ceritakan acaranya. Usulan akan ditinjau dulu sebelum tayang ke publik.,,
+eventFormLinkHttpsRequired,Link sumber harus diawali https://,,
+eventFormLocationHint,Nama tempat atau alamat acara,,
+eventFormLocationLabel,Lokasi,,
+eventFormLocationRequired,Tuliskan lokasi acaranya.,,
+eventFormMapHint,Ketuk peta untuk memilih koordinat. Opsional.,,
+eventFormNameLabel,Nama acara,,
+eventFormNameRequired,Nama acara wajib diisi.,,
+eventFormOrganizerHint,Opsional,,
+eventFormOrganizerLabel,Penyelenggara,,
+eventFormPosterHint,Bisa lebih dari satu foto. Gambar pertama jadi sampul.,,
+eventFormPosterLabel,Poster acara,,
+eventFormRemoveFailedPoster,Hapus poster yang gagal diunggah dulu.,,
+eventFormScheduleLabel,Jadwal,,
+eventFormSourceHint,"Kalau acaranya ada di Facebook, Instagram, atau website, tempel link-nya di sini.",,
+eventFormSourceLabel,Sumber resmi,,
+eventFormSourceLinkHint,https:// (opsional),,
+eventFormSourceLinkLabel,Link sumber,,
+eventFormStartDateLabel,Tanggal mulai,,
+eventFormStartRequired,Tentukan waktu mulai.,,
+eventFormStartTimeLabel,Jam mulai,,
+eventFormWaitUpload,Tunggu upload poster selesai.,,
+eventListAll,Semua,,
+eventListEmpty,Belum ada acara,,
+eventListEmptyFiltered,Belum ada acara yang cocok,,
+eventListEmptyHint,"Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.",,
+eventListEmptyNoQuery,Belum ada acara,,
+eventListEmptyProposePrompt,"Kalau ada acara di sekitarmu, bisa kamu usulkan sendiri.",,
+eventListEmptyQuery,Belum ada acara yang cocok,,
+eventListEmptySearchHint,Coba kata lain ya.,,
+eventListEmptyTryOther,Coba kata lain ya.,,
+eventListFilterAll,Semua,,
+eventListLoadFailed,Gagal memuat acara,,
+eventListLoadFailedBody,Periksa koneksi internetmu lalu coba lagi ya.,,
+eventListLoadFailedSub,Periksa koneksi internetmu lalu coba lagi ya.,,
+eventListProposeAction,Usulkan acara,,
+eventListProposeCta,Usulkan acara,,
+eventListRetry,Coba lagi,,
+eventListSearch,Cari acara,,
+eventListSearchHint,Cari acara,,
+eventListTitle,Acara,,
+eventPickDate,Pilih tanggal,,
+eventPickTime,Pilih jam,,
+eventPlatformFacebook,Facebook,,
+eventPlatformInstagram,Instagram,,
+eventPlatformOther,Lainnya,,
+eventPlatformTiktok,TikTok,,
+eventPlatformWebsite,Website,,
+eventPlatformWhatsapp,WhatsApp,,
+eventPlatformYoutube,YouTube,,
+eventPosterUploadFailed,Unggah poster gagal,,
+eventProposalBack,Kembali,,
+eventProposalCancelAction,Batalkan,,
+eventProposalCancelBody,Usulan yang dibatalkan tidak dikirim ke peninjau.,,
+eventProposalCancelConfirmDesc,Usulan yang dibatalkan tidak dikirim ke peninjau.,,
+eventProposalCancelConfirmTitle,Batalkan usulan?,,
+eventProposalCancelCta,Batalkan,,
+eventProposalCancelTitle,Batalkan usulan?,,
+eventProposalConfirmBody,Yakin ingin membatalkan usulan ini?,,
+eventProposalConfirmTitle,Batal usulan,,
+eventProposalEmptyBody,Belum ada usulan acara.,,
+eventProposalEmptyBodyAlt,Belum ada usulan acara yang cocok,,
+eventProposalEmptyHint,Usulan acara yang kamu kirim akan tampil di sini.,,
+eventProposalEmptyReviewedHint,Status usulan yang sudah direview akan muncul di sini.,,
+eventProposalEmptyTitle,Belum ada usulan,,
+eventProposalLoadFailedDefault,Gagal memuat usulan. Periksa koneksi lalu coba lagi.,,
+eventProposalLoadFailedHint,Periksa koneksi internetmu lalu coba lagi ya.,,
+eventProposalLoadFailedTitle,Gagal memuat usulan,,
+eventProposalLoginPrompt,Masuk dulu untuk melihat usulan kamu,,
+eventProposalRejectBody,Kamu menolak usulan ini. Alasan: {reason},,Bodied rejection; {reason} = alasan penolakan | Pertahankan placeholder: {reason}
+eventProposalRejectTitle,Tolak usulan,,
+eventProposalSent,Usulan kamu sudah terkirim,,
+eventProposalSentBody,"Tim kami akan meninjaunya dulu. Kalau lolos, acaranya tayang di daftar acara.",,
+eventProposalStatusApproved,Disetujui,,
+eventProposalStatusPending,Menunggu,,
+eventProposalStatusRejected,Ditolak,,
+eventProposalStatusRevision,Perlu revisi,,
+eventProposalSubmitTitle,Masuk dulu untuk memberi usulan,,
+eventProposalTitle,Usulan acara,,
+eventProposalsEmpty,Belum ada usulan,,
+eventProposalsEmptyHint,Status usulan yang sudah direview akan muncul di sini.,,
+eventProposalsLoadFailed,Gagal memuat usulan. Periksa koneksi lalu coba lagi.,,
+eventProposalsLoadFailedShort,Gagal memuat usulan,,
+eventProposalsLoginGate,Masuk dulu untuk melihat usulan kamu,,
+eventProposalsTitle,Usulan acara,,
+eventSaveFailed,Gagal menyimpan. Coba lagi.,,
+eventSearchEmptyBody,"Coba kata lain, mis. nama tempat atau binatang.",,
+eventSearchEmptyTitle,Tidak ada acara yang cocok,,
+eventSearchMissBody,Acara ini tidak ditemukan. Bantu usahakan,,
+eventSearchMissTitle,Tidak ada acara,,
+eventSourcePlatformLabel,Platform sumber,,
+eventSourcePlatformNone,Tidak ada,,
+eventSourcePlatformNoneDesc,Acara tanpa tautan asal,,
+eventSourcePlatformPicker,Pilih platform (opsional),,
+eventStart,Mulai,,
+eventStatusCancelled,Dibatalkan,,
+eventStatusEnded,Sudah selesai,,
+eventStatusOngoing,Sedang berlangsung,,
+eventStatusUpcoming,Akan datang,,
+eventSubmitCta,Kirim usulan,,
+eventSubmitting,Mengirim...,,
+eventSwipeApprove,Disetujui geser kanan,,
+eventSwipeReject,Ditolak geser kiri,,
+eventSwipeSkip,Lewati geser ke atas,,
+exploreActionsLoginBody,Usul perbaikan dan laporan butuh akun supaya bisa ditindak lanjuti.,,
+exploreCategoryAcara,Acara,,
+exploreCategoryAcaraSubtitle,"Festival, pameran, dan kegiatan",,
+exploreCategoryEnsiklopedia,Ensiklopedia,,
+exploreCategoryEnsiklopediaSubtitle,"Sejarah, kisah, karya, dan tradisi",,
+exploreCategoryFallbackTitle,Kategori,,Judul fallback bila kategori tidak dikenal
+exploreCategoryKomunitas,Komunitas,,
+exploreCategoryKomunitasSubtitle,Grup warga dan kegiatan bersama,,
+exploreCategoryKuliner,Kuliner,,
+exploreCategoryKulinerSubtitle,Makanan khas Sambas,,
+exploreCategoryPermainan,Permainan,,
+exploreCategoryPermainanSubtitle,Pantun dan permainan Sambas,,
+exploreCategoryUnavailable,Kategori ini belum tersedia.,,Subjudul fallback kategori
+exploreCategoryUnavailableBody,Kami sedang menyiapkan kontennya. Balik lagi nanti ya.,,
+exploreCategoryUsahaSubtitle,UMKM dan jasa lokal,,
+exploreCategoryWilayah,Wilayah,,
+exploreCategoryWilayahSubtitle,Kecamatan dan desa di Sambas,,
+exploreCategoryWisata,Wisata,,
+exploreCategoryWisataSubtitle,Destinasi di Sambas,,
+exploreComingSoon,Segera hadir,,Badge kategori belum tersedia
+exploreEditAddressLabel,Alamat,,
+exploreEditCuisineNameLabel,Nama kuliner,,
+exploreEditCuisineTitle,Usul perbaikan data kuliner,,
+exploreEditDescriptionLabel,Deskripsi,,
+exploreEditFailed,Usulan gagal,,
+exploreEditIngredientsHint,Pisahkan dengan koma,,
+exploreEditIngredientsLabel,Bahan,,
+exploreEditIntro,Isi yang kamu tahu saja. Tim admin yang memutuskan.,,
+exploreEditNoChangeBody,Ubah minimal satu isian dulu ya.,,
+exploreEditNoChangeTitle,Belum ada perubahan,,
+exploreEditPlaceNameLabel,Nama tempat,,
+exploreEditPlaceTitle,Usul perbaikan data tempat,,
+exploreEditSent,Usulan terkirim,,
+exploreEditSentBody,Admin akan meninjau dulu. Perubahan tayang setelah disetujui.,,
+exploreEditSubmit,Kirim usulan,,
+exploreEmptyDestinations,Belum ada destinasi yang cocok.,,
+exploreFilterAll,Semua,,
+exploreHideComingSoon,Sembunyikan yang segera hadir,,
+exploreHubTitle,Eksplorasi,,Judul halaman kategori eksplorasi
+exploreMapHeroBody,Peta hidup Kabupaten Sambas - ketuk untuk membuka.,,
+exploreMapHeroTitle,Jelajahi Sambas,,
+exploreMapLoadFailedTitle,Peta tidak bisa dimuat,,
+exploreMapLoading,Memuat peta...,,
+exploreMapLoadingSemantics,Memuat peta,,
+exploreMapPosterFailed,Peta tidak bisa dimuat. Periksa jaringan lalu coba lagi.,,
+exploreMapPosterOpen,Ketuk untuk membuka peta interaktif.,,
+exploreMapPosterTitle,Peta Sambas,,
+exploreMapReload,Muat ulang peta,,
+exploreMapStyleFree,"Gratis, tanpa API key",,
+exploreMapStyleSatellite,Satelit,,
+exploreMapStyleStreet,Jalan,,
+exploreMapStyleTerrain,Terain,,
+exploreMapStyleTitle,Gaya peta,,Judul sheet pilih basemap
+exploreMapToggleDark,Peta mode gelap,,
+exploreMapToggleLight,Peta mode terang,,
+exploreMapsOpenFailedBody,"Coba lagi sebentar, ya.",,
+exploreMapsOpenFailedTitle,Google Maps tidak bisa dibuka,,
+exploreNotFoundBody,Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.,,
+exploreNotFoundTitle,Konten tidak ditemukan,,
+exploreOpenInGoogleMaps,Lihat di Google Maps,,
+explorePinsEmptyBody,"Daftar tempat masih kosong, atau datanya gagal dimuat.",,
+explorePinsEmptyTitle,Belum ada tempat di peta,,
+exploreReasonSheetCuisineSubtitle,Apa yang salah dengan info kuliner ini?,,
+exploreReasonSheetPlaceSubtitle,Apa yang salah dengan info tempat ini?,,
+exploreShowComingSoon,Lihat yang segera hadir,,
+exploreSubmitFailed,Gagal mengirim. Coba lagi ya.,,
+exploreUploadImageFailed,Unggah foto gagal,,
+feedActorFallback,Warga,,Sebutan aktor saat data aktor tidak ada
+feedCategoryAll,Semua,,Chip kategori feed: semua aktivitas
+feedCategoryAnnouncement,Pengumuman,,Chip kategori feed: pengumuman admin
+feedCategoryCorrection,Perbaikan,,Chip kategori feed: perbaikan kata
+feedCategoryExplore,Eksplorasi,,Chip kategori feed: tempat dan kuliner
+feedCategoryJoined,Warga,,Chip kategori feed: warga baru bergabung
+feedCategorySearchMiss,Pencarian warga,,Chip kategori feed: pencarian tanpa hasil
+feedContributeDiscussion,Ruang diskusi,,Item menu diskusi
+feedContributeDiscussionSubtitle,Tanya arti atau bahas kata Sambas bareng warga,,Keterangan item menu diskusi
+feedContributeMenu,Menu kontribusi,,Judul menu kontribusi di tab aktivitas
+feedContributeNewWord,Usul kata baru,,Item menu usul kata baru
+feedContributeNewWordSubtitle,Kata Sambas belum ada di kamus? Tambahkan sendiri,,Keterangan item usul kata baru
+feedContributeSearchMiss,Dicari warga,,Item menu daftar pencarian tanpa hasil
+feedContributeSearchMissSubtitle,Kata yang dicari warga tapi belum ketemu. Bantu isi artinya,,Keterangan item daftar pencarian tanpa hasil
+feedCtaDiscuss,Ikut diskusi,,Ajakan membuka diskusi
+feedCtaHelpFill,Bantu isi,,Ajakan mengisi kata yang belum ada
+feedCtaListen,Dengarkan,,Ajakan memutar audio
+feedCtaReadAnnouncement,Baca pengumuman,,Ajakan membuka pengumuman
+feedCtaReply,Balas,,Ajakan membalas komentar
+feedCtaReview,Tinjau usulan,,Ajakan membuka sesi tinjau usulan
+feedCtaSeeCard,Lihat kartu,,Ajakan membuka kartu kata
+feedCtaSeeCulinary,Lihat kuliner,,Ajakan membuka kuliner
+feedCtaSeeEvent,Lihat acara,,Ajakan membuka acara
+feedCtaSeeExample,Lihat contoh,,Ajakan membuka contoh kalimat
+feedCtaSeeMeaning,Lihat arti,,Ajakan membuka detail kata
+feedCtaSeePhoto,Lihat foto,,Ajakan membuka foto
+feedCtaSeePlace,Lihat tempat,,Ajakan membuka tempat
+feedCtaSeeProfile,Lihat profil,,Ajakan membuka profil
+feedCtaSeePronunciation,Lihat cara baca,,Ajakan membuka cara baca
+feedCtaSeeSuggestion,Lihat usulan,,Ajakan membuka usulan
+feedCtaSeeUsaha,Lihat usaha,,Ajakan membuka usaha
+feedCtaSeeWord,Lihat kata,,Ajakan membuka kata
+feedCtaVote,Ikut menilai,,Ajakan ikut vote
+feedGuideBarrier,Panduan kontribusi,,Label aksesibilitas latar panduan kontribusi
+feedGuideBody,"Gunakan jari untuk menggeser kartu kata:
+• Geser kanan → ""Sudah pas"" (arti sudah benar)
+• Geser kiri → ""Perlu dicek ulang"" (arti kurang tepat)
+• Geser ke atas → ""Lewati"" (ragu / belum yakin)",,Isi panduan gestur kartu vote
+feedGuideTitle,Kartu bisa digeser untuk menilai,,Judul panduan gestur kartu vote
+feedKindAnnouncement,Pengumuman,,Label jenis aktivitas: pengumuman
+feedKindAudio,Suara,,Label jenis aktivitas: rekaman suara
+feedKindComment,Komentar,,Label jenis aktivitas: komentar
+feedKindContribution,Usulan kata baru,,Label jenis aktivitas: usulan kata baru
+feedKindCulinary,Kuliner,,Label jenis aktivitas: kuliner terbit
+feedKindDiscussion,Diskusi,,Label jenis aktivitas: diskusi
+feedKindEvent,Acara,,Label jenis aktivitas: acara terbit
+feedKindExample,Contoh,,Label jenis aktivitas: contoh kalimat
+feedKindImage,Foto,,Label jenis aktivitas: foto kata
+feedKindPlace,Wisata,,Label jenis aktivitas: tempat wisata terbit
+feedKindPlacePhoto,Foto wisata,,Label jenis aktivitas: foto tempat wisata
+feedKindPronunciation,Cara baca,,Label jenis aktivitas: cara baca
+feedKindSearchMiss,Kata tidak ditemukan,,Label jenis aktivitas: pencarian tanpa hasil
+feedKindShare,Bagikan,,Label jenis aktivitas: bagikan kartu kata
+feedKindSuggestion,Usulan,,Label jenis aktivitas: usulan edit
+feedKindUsaha,Usaha,,Label jenis aktivitas: usaha terbit
+feedKindVerification,Verifikasi,,Label jenis aktivitas: verifikasi kata
+feedKindVote,Penilaian,,Label jenis aktivitas: vote
+feedKindWelcome,Bergabung,,Label jenis aktivitas: warga bergabung
+feedKindWord,Kata,,Label jenis aktivitas: kata
+feedLoadFailed,Gagal memuat aktivitas.,,Pesan gagal memuat feed
+feedPendingToast,Kata ini masih menunggu tinjauan verifikator,,Toast saat kata usulan belum ditinjau
+feedVoteDeckHint,Bantu nilai agar arti kata lebih akurat,,Ajakan pada kartu vote
+historyAdded,Ditambah {items},,Pertahankan placeholder: {items}
+historyAfter,Sesudah: {value},,Pertahankan placeholder: {value}
+historyBefore,Sebelum: {value},,Pertahankan placeholder: {value}
+historyByActor,Oleh {actor},,Pertahankan placeholder: {actor}
+historyChanges,Perubahan,,
+historyClose,Tutup,,
+historyDirectEdit,Edit langsung,,
+historyDuplicateConfirm,Konfirmasi duplikat,,
+historyEmpty,Belum ada riwayat,,
+historyEmptyHint,Perubahan yang diterapkan ke kata ini akan muncul di sini.,,
+historyFieldCategory,Kategori,,
+historyFieldCommaSeparated,Pisah koma,,
+historyFieldCorrected,Dikoreksi,,
+historyFieldCreated,Dibuat,,
+historyFieldDefinition,Definisi,,
+historyFieldExample,Contoh,,
+historyFieldImage,Gambar,,
+historyFieldLanguage,Bahasa,,
+historyFieldLemma,Lemma,,
+historyFieldMeaning,Makna,,
+historyFieldMeaningId,ID makna,,
+historyFieldMergedOnCreate,Digabung saat buat,,
+historyFieldMergedOnEdit,Digabung saat edit,,
+historyFieldMergedWordId,ID kata digabung,,
+historyFieldNotes,Catatan,,
+historyFieldPronunciation,Pengucapan,,
+historyFieldReason,Alasan,,
+historyFieldRelation,Relasi,,
+historyFieldSelfApplied,Terapkan sendiri,,
+historyFieldSourceId,ID sumber,,
+historyFieldSplitOriginId,ID asal pisah,,
+historyFieldStatus,Status,,
+historyFieldSupport,Dukungan,,
+historyFieldTranslation,Terjemahan,,
+historyFieldVariant,Variasi,,
+historyFieldVerificationStatus,Status verifikasi,,
+historyFieldWordType,Jenis kata,,
+historyFromSuggestion,Dari usulan,,
+historyLoadFailed,Gagal memuat riwayat,,
+historyNoDetail,Tidak ada detail perubahan.,,
+historyReason,Alasan,,
+historyRemoved,Dihapus {items},,Pertahankan placeholder: {items}
+historyRetry,Coba lagi,,
+historyRetryHint,Coba lagi sebentar.,,
+historyReviewerNote,Catatan reviewer,,
+historySetPrimary,Dijadikan utama {items},,Pertahankan placeholder: {items}
+historySystem,Sistem,,
+historyTitle,Riwayat perubahan,,
+historyUnavailable,Riwayat tidak tersedia untuk entri ini.,,
+historyWordNotFound,Kata tidak ditemukan,,
+imageCreditBy,Foto oleh ,,
+imageSheetCamera,Kamera,,
+imageSheetCameraOpenFailed,Gagal membuka kamera,,
+imageSheetExplorer,Explorer,,
+imageSheetFile,File,,
+imageSheetFilePickFailed,Gagal memilih file,,
+imageSheetGallery,Galeri,,
+imageSheetGalleryPickFailed,Gagal memilih dari galeri,,
+imageSheetReset,Reset,,
+infoSheetUnderstood,Mengerti,,
+kbbiSourceNotice,Definisi diambil dari KBBI pihak ketiga. Yang kamu pilih mengisi kolom definisi dan terjemahan - periksa sebelum kirim.,,Info di bawah field terjemahan: sumber definisi KBBI pihak ketiga dan efek pilihan ke kolom definisi + terjemahan
+languagePickerNote,Mengubah bahasa antarmuka. Arah pencarian kamus tidak ikut berubah.,,Catatan di picker bahasa: locale UI beda dari arah pencarian kamus
+languagePickerTitle,Bahasa aplikasi,,Judul halaman pilih bahasa di Pengaturan
+levelingChipLabel,Level {level} - {title},,"Chip level di header profil | Pertahankan placeholder: {level}, {title}"
+levelingMaxReached,Level tertinggi sudah tercapai,,Progress saat Level 15
+levelingProgress,{points} / {next},,"Progress poin ke level berikutnya | Pertahankan placeholder: {points}, {next}"
+levelingSheetHint,"Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.",,Penjelasan singkat leveling di sheet
+levelingSheetTitle,Level {level} - {title},,"Judul bottom sheet leveling | Pertahankan placeholder: {level}, {title}"
+levelingStreakBadge,streak {days},,Badge streak kecil di chip | Pertahankan placeholder: {days}
+levelingStreakDays,Streak {days} hari,,Streak di sheet leveling | Pertahankan placeholder: {days}
+levelingTitleEmpu,Empu,,Gelar leveling L14
+levelingTitleLegenda,Legenda,,Gelar leveling L15
+levelingTitlePelestari,Pelestari,,Gelar leveling L13
+levelingTitlePencatat,Pencatat,,Gelar leveling L2
+levelingTitlePengayom,Pengayom,,Gelar leveling L12
+levelingTitlePenggiat,Penggiat,,Gelar leveling L5
+levelingTitlePenghubung,Penghubung,,Gelar leveling L7
+levelingTitlePengumpul,Pengumpul,,Gelar leveling L4
+levelingTitlePeninjau,Peninjau,,Gelar leveling L1
+levelingTitlePenjagaJejak,Penjaga Jejak,,Gelar leveling L6
+levelingTitlePenjagaWarisan,Penjaga Warisan,,Gelar leveling L9
+levelingTitlePenyumbang,Penyumbang,,Gelar leveling L3
+levelingTitlePewaris,Pewaris,,Gelar leveling L8
+levelingTitleSesepuh,Sesepuh,,Gelar leveling L10
+levelingTitleTetua,Tetua,,Gelar leveling L11
+linkedAccountsAdded,Berhasil ditambahkan ke akun terhubung.,,Pesan sukses menambah akun terhubung
+linkedAccountsLinkFailed,Gagal menambahkan ke akun terhubung,,
+linkedAccountsLinked,Terhubung,,Keterangan status akun terhubung
+linkedAccountsLinkedHint,Terhubung - bisa dipakai untuk masuk,,Keterangan akun terhubung siap dipakai
+linkedAccountsLinkedSince,Terhubung sejak {date},,Keterangan tanggal akun terhubung | Pertahankan placeholder: {date}
+linkedAccountsLoadFailed,Gagal memuat status akun,,
+linkedAccountsNotLinked,Belum terhubung,,Keterangan akun belum terhubung
+linkedAccountsSignInWith,Masuk dengan,,Judul bagian akun masuk
+linkedAccountsTitle,Akun Terhubung,,Judul halaman akun terhubung
+linkedAccountsUnlink,Lepas,,Tombol melepas akun terhubung
+linkedAccountsUnlinkBody,Kamu tetap bisa masuk dengan email dan password atau provider lain.,,Penjelasan setelah melepas akun terhubung
+linkedAccountsUnlinkFailed,Gagal melepas dari akun terhubung,,
+linkedAccountsUnlinkSuccess,Berhasil dilepas dari akun terhubung.,,
+linkedAccountsUnlinkTitle,Lepas {provider}?,,Judul konfirmasi melepas akun terhubung | Pertahankan placeholder: {provider}
+meaningSourceFromKbbi,Dari KBBI,,
+meaningSourceFromKbbiEdited,Dari KBBI (diubah),,
+meaningSourceManual,Ketik manual,,
+myCommentsEmpty,Belum ada komentar,,Kondisi kosong komentar
+myCommentsEmptyFiltered,Tidak ada komentar dengan status ini,,Kondisi kosong komentar per filter
+myCommentsFilterAll,Semua,,Label UI M3 (notification/komentar/usulan/vote)
+myCommentsFilterDeleted,Dihapus,,Label UI M3 (notification/komentar/usulan/vote)
+myCommentsFilterPublished,Tayang,,Label UI M3 (notification/komentar/usulan/vote)
+myCommentsFilterTakenDown,Diturunkan,,Label UI M3 (notification/komentar/usulan/vote)
+myCommentsLoadFailed,Gagal memuat komentar,,Pesan gagal memuat komentar
+myCommentsLoginRequired,Masuk dulu untuk melihat komentar kamu,,Ajakan masuk untuk melihat komentar
+myCommentsSkeletonMeta,Tayang · cuplikan · 21 Sep 2026,,Label UI M3 (notification/komentar/usulan/vote)
+myCommentsTitle,Komentar,,Judul halaman komentar saya
+myCommentsWordGone,Kata tidak tersedia,,Label UI M3 (notification/komentar/usulan/vote)
+myContributionAction,Aksi,,Label baris aksi usulan
+myContributionChangeReason,Alasan perubahan,,Label baris alasan perubahan
+myContributionDetailLoadFailed,Gagal memuat detail usulan,,Pesan error data layer M3
+myContributionKind,Jenis,,Label baris jenis usulan
+myContributionNotFound,Usulan tidak ditemukan,,Pesan usulan tidak ditemukan
+myContributionOpenWord,Buka kata,,Tombol membuka kata dari usulan
+myContributionPending,Menunggu pengecekan,,Status usulan menunggu pengecekan
+myContributionReasonCode,Kode alasan,,Label baris kode alasan
+myContributionReviewed,Ditinjau,,Label waktu usulan ditinjau
+myContributionReviewerNote,Catatan reviewer,,Label baris catatan peninjau
+myContributionStatus,Status,,Label baris status usulan
+myContributionSubmitted,Dikirim,,Label waktu usulan dikirim
+myContributionsEmpty,Belum ada usulan,,Kondisi kosong daftar usulan
+myContributionsEmptyBody,Usul kata baru atau perubahan akan muncul di sini.,,Penjelasan kondisi kosong usulan
+myContributionsLoadFailed,Gagal memuat kontribusi,,Pesan gagal memuat kontribusi
+myContributionsLoginRequired,Masuk dulu untuk melihat usulanmu,,Ajakan masuk untuk melihat usulan
+myContributionsSkeletonLemma,lemma contoh usulan,,Teks skeleton lemma usulan
+myContributionsSkeletonMeta,Usul kata baru · Menunggu pengecekan · 21 Sep 2026 00:00,,Teks skeleton meta usulan
+myContributionsTitle,Kontribusi Saya,,Judul halaman kontribusi saya
+mySubmissionKindAudio,Usul audio,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindChange,Usul perubahan,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindExample,Usul contoh,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindImage,Usul gambar,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindMeaning,Usul makna,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindNewWord,Usul kata baru,,Label UI M3 (notification/komentar/usulan/vote)
+mySubmissionKindPronunciation,Usul pengucapan,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetComment,Komentar,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetDiscussion,Pertanyaan diskusi,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetDiscussionReply,Balasan diskusi,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetExample,Contoh,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetImage,Gambar,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetMeaning,Arti,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetPantun,Pantun,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetPantunReply,Balasan pantun,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetPronunciation,Pelafalan,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteTargetWord,Kata,,Label UI M3 (notification/komentar/usulan/vote)
+myVoteWordGone,Kata sudah dihapus,,Label UI M3 (notification/komentar/usulan/vote)
+myVotesEmpty,Belum ada vote,,Kondisi kosong daftar vote
+myVotesLoadFailed,Gagal memuat vote,,Pesan gagal memuat vote
+myVotesLoginRequired,Masuk dulu untuk melihat vote kamu,,Ajakan masuk untuk melihat vote
+myVotesSkeletonMeta,Upvote · Kata · 21 Sep 2026 10:00,,Teks skeleton meta vote
+myVotesTitle,Vote,,Judul halaman vote saya
+navContribute,Kontribusi,,
+navExplore,Eksplorasi,,
+navHome,Home,,
+navProfile,Profil,,
+nominatimSearchFailed,Pencarian gagal. Coba lagi sebentar.,,
+notificationAnnouncementMissing,Pengumuman tidak ditemukan,,Pesan pengumuman pada notifikasi tidak ada
+notificationCopyLink,Salin tautan,,Aksi menyalin tautan notifikasi
+notificationEmpty,Belum ada notifikasi,,Kondisi kosong daftar notifikasi
+notificationEmptyBody,Status usulan yang sudah direview akan muncul di sini.,,Penjelasan kondisi kosong notifikasi
+notificationLinkCopied,Tautan disalin,,Toast setelah tautan disalin
+notificationLoadFailed,Gagal memuat notifikasi,,Pesan gagal memuat notifikasi
+notificationLoginRequired,Masuk dulu untuk melihat notifikasi,,Ajakan masuk untuk melihat notifikasi
+notificationMarkAllRead,Tandai semua telah dibaca,,Tombol menandai semua notifikasi dibaca
+notificationMarkAllReadFailed,Gagal menandai semua notifikasi,,Pesan error data layer M3
+notificationMarkReadFailed,Gagal menandai notifikasi,,Pesan error data layer M3
+notificationMarking,Menandai...,,Label tombol saat menandai notifikasi
+notificationOpen,Buka,,Tombol membuka tautan notifikasi
+notificationOpenLinkFailed,Tidak bisa membuka tautan,,
+notificationSkeletonMeta,Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda,,Label UI M3 (notification/komentar/usulan/vote)
+notificationSkeletonTitle,Usulan disetujui contoh,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTapImage,Ketuk untuk melihat gambar,,Petunjuk gambar bisa diketuk
+notificationTitle,Notifikasi,,Judul halaman notifikasi
+notificationTypeApproved,Disetujui,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeAudio,Pelafalan,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeCampaign,Pengumuman,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeComment,Komentar,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeCorrected,Dikoreksi,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionApproved,Diskusi disetujui,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionMention,Sebutan diskusi,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionPending,Diskusi menunggu,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionRejected,Diskusi ditolak,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionReply,Balasan diskusi,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeDiscussionTakenDown,Diskusi diturunkan,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeEventApproved,Acara disetujui,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeEventNeedsRevision,Acara perlu revisi,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeEventRejected,Acara ditolak,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeExample,Contoh,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypePantunMention,Sebutan pantun,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypePantunReply,Balasan pantun,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypePlaceApproved,Wisata disetujui,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypePlaceRejected,Wisata ditolak,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeRejected,Ditolak,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeTakenDown,Ditarik,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeUpdate,Pembaruan,,Label UI M3 (notification/komentar/usulan/vote)
+notificationTypeVote,Vote,,Label UI M3 (notification/komentar/usulan/vote)
+notificationUnreadCountFailed,Gagal memuat jumlah notifikasi,,Pesan error data layer M3
+notificationViewImage,Lihat gambar,,Aksi membuka gambar notifikasi
+offlineBanner,Kamu lagi offline. Nampilin data tersimpan.,,
+onboardingAllowNotif,Izinkan notifikasi,,
+onboardingContinue,Lanjut,,Tombol lanjut antar slide onboarding
+onboardingFeatureBody,"Cari kata dengan cepat, usulkan kata baru atau perbaikan, dan simpan kata favorit biar gampang dibaca ulang.",,
+onboardingFeatureTitle,"Cari, usulkan, simpan",,
+onboardingLanguageBody,Pilih bahasa antarmuka aplikasi. Kamu bisa mengubahnya kapan saja di Pengaturan.,,Penjelasan slide 0 onboarding
+onboardingLanguageTitle,Pilih bahasa,,Judul slide 0 onboarding: pilih bahasa antarmuka
+onboardingLater,Nanti,,
+onboardingNotifBody,Kamu dapat kabar saat usulanmu disetujui. Izinkan notifikasi biar tidak ketinggalan.,,
+onboardingNotifTitle,Aktifkan notifikasi,,
+onboardingWelcomeBody,"Kamus digital Sambas-Indonesia. Temukan arti kata, kenali cara bicara warga Sambas, dan ikut menjaga warisan kata.",,
+onboardingWelcomeTitle,Selamat datang di SambasKu,,
+paletteBlue,Biru,,
+paletteGreen,Hijau,,
+paletteNeutral,Netral,,
+paletteOrange,Oranye,,
+paletteRed,Merah,,
+paletteRose,Rose,,
+paletteSlate,Slate,,
+paletteViolet,Violet,,
+paletteYellow,Kuning,,
+paletteZinc,Zinc,,
+pantunCancel,Batal,,
+pantunComingSoon,Segera,,
+pantunComposeIncomplete,Lengkapi keempat baris dulu ya.,,
+pantunDelete,Hapus pantun,,
+pantunDeleteConfirm,Hapus,,
+pantunDeleteConfirmBody,Pantun dan seluruh balasannya akan hilang dari feed.,,
+pantunDeleteConfirmTitle,Hapus pantun?,,
+pantunDeleteFailed,Gagal menghapus pantun. Coba lagi ya.,,
+pantunDeleteFeedConfirmBody,Pantun akan hilang dari feed. Tindakan ini tidak bisa dibatalkan.,,
+pantunDeleteReplyConfirm,Hapus balasan?,,
+pantunDeleteReplyConfirmBody,Balasan akan dihapus dari thread pantun.,,
+pantunDeletedToast,Pantun dihapus,,
+pantunEmptyBody,Jadi yang pertama menulis pantun Sambas di sini ya.,,
+pantunEmptyTitle,Belum ada pantun,,
+pantunListSubtitle,Balas pantun 4 baris,,
+pantunLoadFailed,Gagal memuat pantun. Coba lagi ya.,,
+pantunLoadFailedShort,Gagal memuat pantun,,
+pantunNoReplies,"Belum ada balasan. Balas dulu, yuk.",,
+pantunRateLimited,Terlalu banyak permintaan. Coba lagi sebentar.,,
+pantunReplies,Balasan,,
+pantunRepliesCount,Balasan · {count},,Judul daftar balasan; {count} = jumlah balasan | Pertahankan placeholder: {count}
+pantunReply,Balas pantun,,
+pantunReplyDeletedToast,Balasan dihapus,,
+pantunReplyLoginRequired,Login dulu ya sebelum membalas pantun.,,
+pantunRequestFailed,Gagal memproses permintaan. Coba lagi ya.,,
+pantunSearchEmptyBody,"Coba kata lain, mis. nama tempat atau binatang.",,
+pantunSearchEmptyTitle,Tidak ada pantun yang cocok,,
+pantunSearchFailed,Gagal mencari pantun,,
+pantunSearchHint,Cari pantun atau balasan...,,
+pantunSend,Kirim,,
+pantunSendFailed,Gagal mengirim pantun. Coba lagi sebentar ya.,,
+pantunServerError,Server sedang gangguan. Coba lagi sebentar ya.,,
+pantunTitle,Pantun,,
+pantunVoteLoginRequired,Masuk dulu untuk memberi vote,,
+pantunWrite,Tulis pantun,,
+passwordChangeNote,"Setelah password diganti, semua sesi (termasuk yang ini) diakhiri dan kamu diminta login ulang dengan password baru.",,Catatan konsekuensi mengganti password
+passwordChangeSuccess,Password berhasil diubah,,Toast setelah password diubah
+passwordChangeTitle,Ubah Password,,Judul halaman ubah password
+passwordConfirmNewLabel,Konfirmasi Password Baru,,Label kolom konfirmasi password baru
+passwordCreateHint,"Username kamu: {username}. Setelah password tersimpan, masuk manual menggunakan username atau email yang ditampilkan.",,Penjelasan sebelum membuat password | Pertahankan placeholder: {username}
+passwordCreateTitle,Buat Password,,Judul halaman buat password
+passwordCreated,Password dibuat,,Judul sheet setelah password dibuat
+passwordCreatedBody,Masuk dengan {provider} dan password baru.,,Penjelasan cara masuk setelah password dibuat | Pertahankan placeholder: {provider}
+passwordNewLabel,Password Baru,,Label kolom password baru
+passwordOldLabel,Password Lama,,Label kolom password lama
+passwordProviderNotReady,Masuk dengan {provider} belum siap di perangkat ini.,,Pesan provider masuk belum dikonfigurasi | Pertahankan placeholder: {provider}
+passwordProviderUnknown,Provider tidak dikenal.,,Pesan provider masuk tidak dikenal
+passwordRelogin,Login ulang,,Tombol menuju halaman masuk setelah sesi berakhir
+passwordSave,Simpan Password,,Tombol menyimpan password
+passwordVerifyAccount,Buktikan akun,,Judul bagian verifikasi akun
+pendingCheckAudioBody,Audio ini belum diperiksa tim Sambasku. Pelafalannya bisa saja kurang tepat.,,
+pendingCheckTitle,Menunggu pengecekan,,
+pendingCheckWordBody,Kata ini belum diperiksa tim Sambasku. Makna atau terjemahannya bisa saja kurang tepat.,,
+permainanComingSoon,Segera,,
+permainanTitle,Permainan,,
+permissionDeniedTitle,Izin Ditolak,,
+permissionMicRequiredTitle,Izin mikrofon diperlukan,,
+phoneCountrySearchHint,Cari nama atau kode,,
+placeActionAddPhoto,Tambah foto,,
+placeActionBookmark,Bookmark,,
+placeActionSuggestEdit,Usulkan perubahan,,
+placeActionViewOnMap,Lihat di peta,,
+placeAddPhotoLoginGate,Masuk dulu untuk ikut mengisi,,
+placeAgendaTitle,Agenda di {name},,Pertahankan placeholder: {name}
+placeBookmarkSoonBody,Kami sedang berusaha membuatnya jadi lebih baik.,,
+placeBookmarkSoonTitle,Bookmark tempat belum bisa dipakai,,
+placeCategoryKuliner,Kuliner,,
+placeCreditAuthor,Penulis,,
+placeEmptyBody,Konten wisata dan kuliner sedang disiapkan. Balik lagi nanti ya.,,
+placeEmptyTitle,Belum ada destinasi,,
+placeFormCategory,Kategori,,
+placeFormContactHint,"Nomor, email, atau catatan",,
+placeFormDescription,Deskripsi,,
+placeFormDescriptionHint,Ceritakan tempat ini,,
+placeFormHoursHint,Opsional,,
+placeFormLoginGate,Masuk dulu untuk mengusulkan tempat. Nama kamu tercantum sebagai kredit.,,
+placeFormMapHint,Ketuk peta untuk memilih koordinat. Opsional.,,
+placeFormName,Nama,,
+placeFormNameDescRequired,Nama dan deskripsi wajib diisi.,,
+placeFormNameHint,Nama tempat,,
+placeFormNameInvalid,Nama perlu mengandung huruf atau angka.,,
+placeFormNext,Lanjut,,
+placeFormPhotoBody,Nama kamu tercantum sebagai kredit. Foto ke tempat yang sudah terbit langsung tampil.,,
+placeFormPhotoRequired,Pilih minimal satu foto.,,
+placeFormPhotoToast,Foto langsung tampil,,
+placeFormPickCategory,Pilih kategori,,
+placeFormPickType,Pilih kategori wisata,,
+placeFormPointOutside,Titik harus di dalam Kabupaten Sambas.,,
+placeFormProposalBody,Nama kamu tercantum sebagai kredit. Usulan akan ditinjau terlebih dahulu sebelum tayang ke publik.,,
+placeFormSending,Mengirim...,,
+placeFormStepContact,Kontak,,
+placeFormStepInfo,Informasi umum,,
+placeFormStepLocation,Lokasi,,
+placeFormStepOf,Langkah {step} dari {total}: {label},,"Pertahankan placeholder: {step}, {total}, {label}"
+placeFormStepPhoto,Foto,,
+placeFormSubmitPhoto,Kirim foto,,
+placeFormTitleCreate,Usulkan wisata,,
+placeInfoContactNote,Kontak,,
+placeInfoEmail,Email,,
+placeInfoHours,Jam buka,,
+placeMorePhotos,Lihat {count} foto lainnya,,Pertahankan placeholder: {count}
+placeNoCoordinatesBody,"Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",,
+placeNoCoordinatesTitle,Lokasi tempat ini belum tersedia,,
+placeOtherWisataInKecamatan,Wisata lain di kecamatan ini,,
+placeOtherWisataInRegion,Wisata lain di {region},,Pertahankan placeholder: {region}
+placePhotoSection,Foto,,
+placePhotosEmpty,Belum ada foto untuk tempat ini.,,
+placePhotosNotFoundBody,"Tempat ini belum punya foto, atau datanya gagal dimuat.",,
+placePhotosNotFoundTitle,Foto tidak ditemukan,,
+placePhotosUpload,Unggah foto,,
+placePinPickerNotFound,Tidak ketemu di Kabupaten Sambas.,,
+placePinPickerOutOfBounds,Titik harus di dalam Kabupaten Sambas.,,
+placePinPickerRemove,Hapus koordinat,,
+placePinPickerSearchHint,Cari nama tempat,,
+placePinPickerSearching,Mencari...,,
+placePinPickerTitle,Pilih titik,,
+placePinPickerTooShort,Ketik minimal 3 huruf.,,
+placePinPickerUsePoint,Pakai titik ini,,
+placeProposalsCancelAction,Batalkan,,
+placeProposalsCancelBody,Usulan yang dibatalkan tidak dikirim ke peninjau.,,
+placeProposalsCancelTitle,Batalkan usulan?,,
+placeProposalsEmptyBody,Status usulan yang sudah direview akan muncul di sini.,,
+placeProposalsEmptyTitle,Belum ada usulan,,
+placeProposalsKindEdit,Suntingan,,
+placeProposalsKindNew,Tempat baru,,
+placeProposalsLoadFailedBody,Gagal memuat usulan. Periksa koneksi lalu coba lagi.,,
+placeProposalsLoadFailedTitle,Gagal memuat usulan,,
+placeProposalsLoginGate,Masuk dulu untuk melihat usulan kamu,,
+placeProposalsRejectReason,Alasan: {reason},,Pertahankan placeholder: {reason}
+placeProposalsTitle,Usulan wisata,,
+placeSaveFailed,Gagal menyimpan. Coba lagi ya.,,
+placeSearchHint,Cari destinasi...,,
+placeSectionActions,Aksi,,
+placeSourceSection,Sumber,,
+placeTypeAlam,Alam,,
+placeTypeBelanja,Belanja,,
+placeTypeBudaya,Budaya,,
+placeTypePantai,Pantai,,
+placeTypeSejarah,Sejarah,,
+placeTypeWisata,Wisata,,Label generik destinasi wisata
+profileActivityEmpty,Belum ada aktivitas publik.,,Kondisi kosong aktivitas profil publik
+profileActivityEmptyFiltered,Belum ada aktivitas {filter}.,,Kondisi kosong aktivitas profil publik per filter | Pertahankan placeholder: {filter}
+profileActivityFilterAll,Semua,,Chip filter aktivitas profil publik: semua
+profileActivityFilterComment,Komentar,,Chip filter aktivitas profil publik: komentar
+profileActivityFilterCorrection,Perbaikan,,Chip filter aktivitas profil publik: perbaikan
+profileActivityLoadFailed,Gagal memuat aktivitas,,Pesan gagal memuat aktivitas profil publik
+profileActivityRecent,Aktivitas terbaru,,Judul bagian aktivitas terbaru
+profileAllowNotif,Izinkan notifikasi,,
+profileAllowNotifGranted,Notifikasi diizinkan,,Toast saat izin notifikasi diberikan
+profileAllowNotifOffBody,Aktifkan notifikasi SambasKu di Pengaturan perangkat agar kabar usulan tetap sampai.,,Penjelasan cara mengaktifkan notifikasi dari pengaturan perangkat
+profileAllowNotifOffTitle,Notifikasi dimatikan,,Judul sheet izin notifikasi dimatikan
+profileAllowNotifPending,Notifikasi belum diizinkan,,Toast saat izin notifikasi ditolak
+profileAllowNotifSubtitle,Kabar saat usulanmu disetujui,,
+profileAnalytics,Analitik,,
+profileBecomeVerifier,Jadi verifikator,,
+profileBioHint,Ceritakan singkat tentangmu (opsional),,Penjelasan kolom bio
+profileBioLabel,Bio,,Label kolom bio
+profileBookmarks,Bookmark,,
+profileChangeFrame,Ubah bingkai profil,,Aksi mengubah bingkai foto profil
+profileChangePassword,Ubah Password,,
+profileChangePhoto,Ganti foto profil,,Aksi mengganti foto profil
+profileComments,Komentar,,
+profileCreatePassword,Buat Password,,
+profileCropTitle,Atur foto profil,,Judul halaman potong foto profil
+profileCropUse,Pakai,,Tombol memakai hasil potong foto
+profileDefaultName,Pengguna,,
+profileDeleteAccount,Hapus akun,,
+profileDisplayNameHint,Nama yang tampil di profil publik,,Penjelasan kolom nama tampilan
+profileDisplayNameLabel,Nama tampilan,,Label kolom nama tampilan
+profileDistrictLabel,Kecamatan,,Label pilihan kecamatan
+profileEditAction,Edit,,Tombol menuju edit profil
+profileEditSemantics,Edit profil,,
+profileEditTitle,Edit profil,,Judul halaman edit profil
+profileGroupAccount,Akun,,
+profileGroupActivity,Aktivitas saya,,
+profileGroupHelp,Bantuan,,
+profileGroupLogout,Keluar & hapus akun,,
+profileGroupRole,Peran,,
+profileGuestName,Belum masuk,,
+profileLinkedAccounts,Akun Terhubung,,
+profileLoadFailed,Gagal memuat profil,,Pesan gagal memuat profil publik
+profileLoggingOut,Keluar...,,
+profileLogin,Masuk / Login,,
+profileLogout,Keluar,,
+profileMyContributions,Kontribusi Saya,,
+profileNotFilled,Tidak diisi,,Placeholder saat data profil kosong
+profileNotReadyToast,"Profil belum siap, coba lagi",,
+profileNotifications,Notifikasi,,
+profileOpenSettings,Pengaturan,,Tombol membuka pengaturan perangkat
+profilePhotoDeleteFailed,Gagal menghapus foto profil,,Pesan gagal hapus foto profil
+profilePhotoPickerFailed,Gagal membuka pemotong foto,,Pesan gagal membuka pemotong foto
+profilePhotoSemantics,Foto profil {name},,Pertahankan placeholder: {name}
+profilePhotoUpdated,Foto profil diperbarui,,Toast setelah foto profil berhasil diganti
+profilePhotoUploadFailed,Gagal mengunggah foto profil,,Pesan gagal unggah foto profil
+profileRegionLoading,Memuat wilayah...,,Status saat wilayah sedang dimuat
+profileRegionNotLoaded,Wilayah belum termuat,,Status saat wilayah gagal dimuat
+profileRegister,Daftar,,
+profileReviewArea,Area Verifikator,,
+profileReviewPending,Ada usulan yang menunggu,,
+profileSaveSuccess,Profil berhasil disimpan.,,Pesan sukses menyimpan profil
+profileSettingsSubtitle,"Bahasa, tampilan, tentang",,
+profileSettingsTile,Pengaturan,,
+profileStatCorrections,perbaikan,,
+profileStatWords,usul kata,,
+profileUnreadSuffix,belum dibaca,,"Dipakai sebagai subtitle: ""{count} belum dibaca"" (count di luar key ini)"
+profileUserNotFound,Pengguna tidak ditemukan,,Pesan profil pengguna tidak ada
+profileUsernameHint,"a-z, 0-9, titik, underscore (3-30 karakter)",,Aturan penulisan username
+profileUsernameLabel,Username,,Label kolom username
+profileViewPublic,Lihat profil publik,,
+profileViewTitle,Profil,,Judul halaman profil publik
+profileVillageLabel,Desa,,Label pilihan desa
+profileVotes,Vote,,
+providerFacebook,Facebook,,Nama provider masuk Facebook
+providerGithub,GitHub,,Nama provider masuk GitHub
+providerGoogle,Google,,Nama provider masuk Google
+publicAccountViewProfile,Lihat profil {label},,Pertahankan placeholder: {label}
+recordDone,Selesai rekam,,
+recordMicPermissionTitle,Izin mikrofon diperlukan untuk merekam,,
+recordRetry,Ulangi,,
+recordStart,Mulai rekam,,
+regionAgendaDesa,Agenda di Desa {name},,Pertahankan placeholder: {name}
+regionDesaComingSoon,Profil desa ini sedang kami siapkan. Nanti kamu bisa lihat info lengkapnya di sini ya.,,
+regionDesaTitle,Desa {name},,Judul halaman profil desa | Pertahankan placeholder: {name}
+regionKecamatanTitle,Kecamatan {name},,Judul halaman profil kecamatan | Pertahankan placeholder: {name}
+regionVillageCount,{count} desa,,Jumlah desa di kecamatan | Pertahankan placeholder: {count}
+reportBugAllImagesFailedBody,Keterangan tetap bisa dikirim tanpa lampiran. Lanjutkan?,,
+reportBugAllImagesFailedTitle,Semua gambar gagal,,
+reportBugAttachmentsLabel,"Lampiran (opsional, maks 4)",,
+reportBugCancel,Batal,,
+reportBugConnectionError,Gagal terhubung ke server. Coba lagi dalam beberapa saat.,,
+reportBugDescriptionHint,"Ceritakan apa yang terjadi, langkah reproduksi, dan yang kamu harapkan",,
+reportBugDescriptionLabel,Keterangan,,
+reportBugGenericError,"Terjadi kesalahan, coba lagi",,
+reportBugGuestAnonymous,Laporan kamu dikirim sebagai Anonim,,
+reportBugGuestLoginHint,Login untuk bisa melampirkan screenshot,,
+reportBugImagesUnavailableBody,Penyimpanan gambar sedang tidak tersedia. Kirim laporan tanpa lampiran?,,
+reportBugImagesUnavailableTitle,Gambar tidak bisa diunggah,,
+reportBugRateLimited,{message} Coba lagi dalam {seconds} detik.,,"Pesan server + sisa detik | Pertahankan placeholder: {message}, {seconds}"
+reportBugResponseIncomplete,Response laporan tidak lengkap,,
+reportBugSendWithoutImages,Kirim tanpa gambar,,
+reportBugSubmit,Kirim,,
+reportBugSubmitting,Mengirim...,,
+reportBugThanks,"Terima kasih, laporan kamu sudah kami terima",,
+reportBugTimeout,Server lama merespons. Coba lagi dalam beberapa saat.,,
+reportBugTitle,Laporkan Masalah,,
+reportBugUploadCredsIncomplete,Kredensial upload tidak lengkap,,
+reportBugWaitUpload,Tunggu upload gambar selesai,,
+reportEntryBody,Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.,,
+reportEntryTitle,Laporkan entri,,
+reportImageInappropriate,Foto tidak pantas,,
+reportImageSexual,Foto berisi konten seksual,,
+reportImageViolence,Foto berisi kekerasan,,
+reportNoteLabelOptional,Catatan (opsional),,
+reportNoteLabelRequired,Catatan wajib,,
+reportNoteRequiredToast,Catatan wajib diisi untuk alasan ini,,
+reportNoteWithChip,{chip}. Catatan: {note},,"Pertahankan placeholder: {chip}, {note}"
+reportPantunAction,Laporkan,,
+reportPantunHarassment,Pelecehan atau perundungan,,
+reportPantunHateSpeech,Ujaran kebencian,,
+reportPantunInappropriate,Tidak pantas,,
+reportPantunLoginFirst,Masuk dulu ya untuk melaporkan pantun,,
+reportPantunOther,Lainnya,,
+reportPantunSent,"Terima kasih, laporanmu sudah kami terima",,
+reportPantunSexual,Konten seksual,,
+reportPantunSpam,Spam,,
+reportPantunSubtitle,Laporanmu ditinjau tim Sambasku. Pantun tetap tayang sampai diputuskan.,,
+reportPantunTitle,Laporkan pantun,,
+reportPhotoBody,Laporkan foto ini ke tim Sambasku untuk ditinjau.,,
+reportPhotoTitle,Laporkan foto,,
+reportReasonDuplicate,Duplikat entri lain,,
+reportReasonInaccurate,Arti atau ejaan salah,,
+reportReasonInappropriate,Tidak pantas,,
+reportReasonNotSambas,Bukan kosakata Sambas,,
+reportReasonOther,Lainnya,,
+reportReasonSpam,Spam,,
+reportReasonVulgar,Kata kasar/vulgar,,
+reportSubmit,Kirim laporan,,
+reportSubmitting,Mengirim...,,
+reviewCensorApply,Terapkan sensor,,
+reviewCensorBrushSize,Ukuran kuas,,
+reviewCensorEmptyBody,Body kosong,,
+reviewCensorExportFailed,Export gagal,,
+reviewCensorHint,"Geser jari untuk menyensor. Mode: pixelate, blur, atau blok.",,
+reviewCensorLoadFailed,Gagal memuat gambar. Coba lagi dalam beberapa saat.,,
+reviewCensorModeBlock,Blok,,
+reviewCensorModeBlur,Blur,,
+reviewCensorModePixelate,Pixelate,,
+reviewCensorReadFailed,Gagal baca piksel,,
+reviewCensorSaveFailed,Gagal menyimpan hasil sensor,,
+reviewCensorTitle,Sensor gambar,,
+reviewChangeHintFallback,Perubahan usulan,,
+reviewChangeHintImages,gambar ({count}),,Pertahankan placeholder: {count}
+reviewChangeHintLemma,lemma,,
+reviewChangeHintMeanings,makna ({count}),,Pertahankan placeholder: {count}
+reviewChangeHintNotes,catatan,,
+reviewContributorFallback,Kontributor,,
+reviewCorrectAddMeaning,Tambah makna,,
+reviewCorrectAddPronunciation,Rekam pelafalan,,
+reviewCorrectAltText,Teks alternatif,,
+reviewCorrectAntonymCount,{count} antonim,,Pertahankan placeholder: {count}
+reviewCorrectAudioUrl,URL audio,,
+reviewCorrectCancel,Batal koreksi,,
+reviewCorrectCarriedTranslations,Terjemahan lain milik makna ini ({count}) ikut tersimpan tanpa diubah.,,Pertahankan placeholder: {count}
+reviewCorrectDefinitionFromKbbi,Definisi diisi dari KBBI,,
+reviewCorrectImageUrl,URL gambar,,
+reviewCorrectKbbiHint,Tekan icon buku untuk mencari definisi di KBBI,,
+reviewCorrectKindLabel,Ubah jenis atau kelas kata,,
+reviewCorrectLanguageUnknown,Bahasa kata tidak diketahui,,
+reviewCorrectMeaningPayloadMissing,Payload makna tidak memuat definisi atau terjemahan.,,
+reviewCorrectNotation,Notasi,,
+reviewCorrectNotesOptional,Catatan (opsional),,
+reviewCorrectPolitenessConflict,Halus dan Kasar tidak bisa dipilih bersamaan,,
+reviewCorrectProcessing,Memproses...,,
+reviewCorrectPronunciation,Pelafalan,,
+reviewCorrectPronunciationAutoSave,"Langsung tersimpan, tidak menunggu tombol Simpan",,
+reviewCorrectPronunciationRecorded,{count} rekaman baru terkirim,,Pertahankan placeholder: {count}
+reviewCorrectPublishVerify,Langsung terbitkan dan verifikasi,,
+reviewCorrectRegister,Register,,
+reviewCorrectRegisterHint,Gaya atau pantangan berbahasa. Halus dan Kasar tidak bisa bersamaan.,,
+reviewCorrectSambasSentence,Kalimat sambas,,
+reviewCorrectSavePending,"Simpan, tetap menunggu",,
+reviewCorrectSavePublish,Simpan dan terbitkan,,
+reviewCorrectSourceType,Jenis sumber,,
+reviewCorrectSpeaker,Penutur,,
+reviewCorrectSynonymCount,{count} sinonim,,Pertahankan placeholder: {count}
+reviewCorrectTranslationSentence,Kalimat terjemahan,,
+reviewCorrectWarning,Peringatan,,
+reviewCorrectWarningHint,Sensitivitas isi makna.,,
+reviewCorrectWordClassLoadFailed,Gagal memuat kelas kata,,
+reviewCorrectWordNotes,Catatan kata,,
+reviewCorrectWordType,Jenis entri,,
+reviewDiscussionApprovePhotos,Kamu menyetujui {approved} foto ({censored} tersensor · {flagged} ber-flag kekerasan).,,"Pertahankan placeholder: {approved}, {censored}, {flagged}"
+reviewDiscussionApprovePublish,Setujui & tayangkan,,
+reviewDiscussionApprovedToast,Diskusi disetujui dan tayang,,
+reviewDiscussionAttachmentCount,Lampiran gambar ({count}),,Pertahankan placeholder: {count}
+reviewDiscussionBadgeCensored,S,,Inisial badge thumbnail foto: S = sudah disensor reviewer
+reviewDiscussionBadgeViolence,K,,Inisial badge thumbnail foto: K = ditandai kekerasan
+reviewDiscussionCannotOpenLink,Tidak bisa membuka tautan,,
+reviewDiscussionCensor,Sensor,,
+reviewDiscussionConfirmCheck,"Saya sudah memeriksa, setujui",,
+reviewDiscussionDetailTitle,Tinjau diskusi,,
+reviewDiscussionEditCensor,Edit sensor,,
+reviewDiscussionForceViolence,Gambar {index}: berisi kekerasan,,Pertahankan placeholder: {index}
+reviewDiscussionForceViolenceHint,Centang jika foto menunjukkan kekerasan,,
+reviewDiscussionForceViolenceLabel,Gambar {index} berisi kekerasan,,Pertahankan placeholder: {index}
+reviewDiscussionHasLink,Ada tautan,,
+reviewDiscussionInvalidLink,Tautan tidak valid,,
+reviewDiscussionNoText,(tanpa teks),,
+reviewDiscussionPhotoChecklist,"Pastikan foto bukan NSFW, aman ditayangkan publik, data sensitif sudah disensor bila perlu, dan flag kekerasan sudah ditempel bila perlu.",,
+reviewDiscussionPhotosSafe,Pastikan semua foto aman,,
+reviewDiscussionQueueEmpty,Tidak ada diskusi menunggu tinjauan,,
+reviewDiscussionQueueLoadFailed,Gagal memuat antrean diskusi,,
+reviewDiscussionQueueTitle,Tinjauan Diskusi,,
+reviewDiscussionRejectReasonRequired,Berikan alasan penolakan (wajib).,,
+reviewDiscussionRejectTitle,Tolak diskusi,,
+reviewDiscussionRejectedToast,Diskusi ditolak,,
+reviewDiscussionSkeletonExcerpt,Cuplikan diskusi contoh,,
+reviewDiscussionSkeletonMeta,Pengirim · baru saja,,
+reviewDiscussionStagingImageMissing,URL gambar staging tidak tersedia,,
+reviewDiscussionStatus,Status: {status},,Pertahankan placeholder: {status}
+reviewDiscussionTapPhotoFull,Ketuk foto untuk melihat ukuran penuh,,
+reviewEntityExample,Contoh kalimat,,
+reviewEntityMeaning,Makna,,
+reviewEntityOther,Usulan,,
+reviewEntityPronunciation,Pelafalan,,
+reviewEntityWord,Kata,,
+reviewEntityWordAudio,Audio,,
+reviewEntityWordImage,Gambar,,
+reviewExtrasAntonyms,Antonim,,
+reviewExtrasMinChars,Ketik minimal 2 huruf.,,
+reviewExtrasNoAntonym,Belum ada antonim. Cari kata di bawah untuk menambah.,,
+reviewExtrasNoItems,Belum ada,,
+reviewExtrasNoSynonym,Belum ada sinonim. Cari kata di bawah untuk menambah.,,
+reviewExtrasRemoveRelation,Hapus {lemma},,Pertahankan placeholder: {lemma}
+reviewExtrasSearchWord,Cari kata yang sudah ada...,,
+reviewExtrasSynonyms,Sinonim,,
+reviewExtrasSynonymsAntonyms,Sinonim & antonim,,
+reviewExtrasTypeCount,{label} ({count}),,"Pertahankan placeholder: {label}, {count}"
+reviewExtrasWordNotFound,Kata tidak ditemukan. Hanya kata yang sudah ada di kamus yang bisa dipilih.,,
+reviewHistoryContinue,Lanjut tinjau,,
+reviewHistoryDecisions,Riwayat keputusan,,
+reviewHistoryDetailTitle,Detail keputusan,,
+reviewHistoryEmpty,Belum ada keputusan verifikasi,,
+reviewHistoryEmptyFiltered,Tidak ada keputusan dengan status ini,,
+reviewHistoryLoadFailed,Gagal memuat riwayat,,
+reviewHistoryProcessing,Memproses...,,
+reviewHistoryReopen,Buka ulang,,
+reviewHistoryReopenedHold,Buka ulang menahan item dari antrean global sampai ada keputusan baru. Cabut verifikasi membalik status kata.,,
+reviewHistoryReopenedNote,Usulan ini sedang dibuka ulang. Lanjut tinjau untuk memberi keputusan baru.,,
+reviewHistoryReopenedToast,Keputusan dibuka ulang,,
+reviewHistorySkeletonMeta,Disetujui · 21 Sep 2026 00:00,,
+reviewHistoryTitle,Riwayat verifikasi,,
+reviewHistoryUnverifiedToast,Verifikasi kata dicabut,,
+reviewHistoryUnverify,Cabut verifikasi,,
+reviewHomeCompleteWordSubtitle,"Tambah makna, relasi, variasi penulisan, contoh, dan rekam pelafalan",,
+reviewHomeCompleteWordTitle,Perbaiki/lengkapi kata,,
+reviewHomeContributionSubtitle,Antrean kontribusi untuk ditinjau,,
+reviewHomeContributionTitle,Ada usulan yang menunggu,,
+reviewHomeDiscussionSubtitle,Antrean Ruang Diskusi untuk ditinjau,,
+reviewHomeDiscussionTitle,Tinjauan Diskusi,,
+reviewHomeDiscussionWaiting,Ada diskusi yang menunggu,,
+reviewHomeHistorySubtitle,Keputusan yang sudah kamu berikan,,
+reviewHomeHistoryTitle,Riwayat tinjauan,,
+reviewHomeSearchMissSubtitle,Tayangkan ke publik atau usulkan sendiri,,
+reviewHomeSearchMissTitle,Pencarian kosong,,
+reviewHomeStart,Mulai tinjau,,
+reviewHomeSuggestionSubtitle,Antrean usulan perubahan kata,,
+reviewHomeSuggestionTitle,Usulan edit,,
+reviewHomeSuggestionWaiting,Ada usulan edit yang menunggu,,
+reviewInlineTypeLocked,Jenis tidak bisa diubah,,
+reviewInlineTypeLockedHint,has_component hanya untuk entri idiom/peribahasa/ungkapan,,
+reviewMeaningAddExample,Tambah contoh,,
+reviewMeaningDelete,Hapus makna {index},,Pertahankan placeholder: {index}
+reviewMeaningDeleteExample,Hapus contoh,,
+reviewMeaningExampleSambas,Kalimat Sambas,,
+reviewMeaningExampleSection,Contoh kalimat,,
+reviewMeaningExampleTranslation,Terjemahan (opsional),,
+reviewMeaningNumber,Makna {index},,Pertahankan placeholder: {index}
+reviewMeaningPickWordClass,Pilih kelas kata,,
+reviewMeaningSwapDefinition,Tukar definisi dan terjemahan,,
+reviewMeaningWordClassRequired,Kelas kata wajib dipilih,,
+reviewPendingNotFound,Tidak ada usulan yang menunggu untuk kata ini.,,
+reviewPreviewAltText,Alt text,,
+reviewPreviewAntonyms,Antonim,,
+reviewPreviewAudioFileMissing,File audio tidak tersedia.,,
+reviewPreviewAudioProposal,Audio usulan,,
+reviewPreviewBytesB,{bytes} B,,Pertahankan placeholder: {bytes}
+reviewPreviewBytesKb,{value} KB,,Pertahankan placeholder: {value}
+reviewPreviewBytesMb,{value} MB,,Pertahankan placeholder: {value}
+reviewPreviewCompleteness,Kelengkapan,,
+reviewPreviewDetailLabel,Detail,,
+reviewPreviewDurasi,Durasi,,
+reviewPreviewDurationMin,{min} m,,Pertahankan placeholder: {min}
+reviewPreviewDurationMinSec,{min} m {rem} dtk,,"Pertahankan placeholder: {min}, {rem}"
+reviewPreviewDurationSec,{sec} dtk,,Pertahankan placeholder: {sec}
+reviewPreviewFieldAlt,Teks alternatif,,
+reviewPreviewFieldSpeech,Penutur,,
+reviewPreviewFieldUrl,URL,,
+reviewPreviewFieldUrlAudio,URL audio,,
+reviewPreviewFieldValue,Nilai,,
+reviewPreviewForWord,Untuk kata “{lemma}”,,Pertahankan placeholder: {lemma}
+reviewPreviewImageUrlMissing,URL gambar tidak tersedia.,,
+reviewPreviewNoMeaning,Tidak ada makna.,,
+reviewPreviewNotation,Notasi: {notation},,Pertahankan placeholder: {notation}
+reviewPreviewPlayFailed,Gagal memutar - ketuk lagi,,
+reviewPreviewPlayRecording,Putar rekaman,,
+reviewPreviewPlaying,Sedang diputar,,
+reviewPreviewProposalContent,Isi usulan,,
+reviewPreviewProposedExample,Contoh kalimat yang diusulkan,,
+reviewPreviewProposedImage,Gambar yang diusulkan,,
+reviewPreviewProposedMeaning,Makna yang diusulkan,,
+reviewPreviewProposedPronunciation,Pelafalan yang diusulkan,,
+reviewPreviewProposedWord,Kata yang diusulkan,,
+reviewPreviewSambasSentence,Kalimat sambas,,
+reviewPreviewSourceOfMeaning,Sumber makna,,
+reviewPreviewSourceType,Jenis sumber,,
+reviewPreviewSynonyms,Sinonim,,
+reviewPreviewTapToEnlarge,Ketuk untuk perbesar,,
+reviewPreviewTapToListen,Ketuk untuk mendengar,,
+reviewPreviewTapToRead,Ketuk untuk baca selengkapnya,,
+reviewPreviewTipe,Tipe,,
+reviewPreviewTranslation,Terjemahan: {text},,Pertahankan placeholder: {text}
+reviewPreviewTranslationEmptyDeliberate,Kontributor sengaja tidak mengisi terjemahan.,,
+reviewPreviewTranslationMarkedEmpty,"Ditandai ada terjemahan, tetapi belum diisi.",,
+reviewPreviewTranslationNone,Belum ada terjemahan.,,
+reviewPreviewTranslationSection,Terjemahan,,
+reviewPreviewTranslationSentence,Kalimat terjemahan,,
+reviewPreviewUkuran,Ukuran,,
+reviewPreviewVariants,Variasi,,
+reviewQueueEmpty,Tidak ada usulan yang menunggu,,
+reviewQueueEmptyHint,Usulan baru dari kontributor akan muncul di sini.,,
+reviewQueueLoadFailed,Gagal memuat antrean,,
+reviewQueueStart,Mulai tinjau,,
+reviewQueueStartCount,Mulai tinjau ({count}),,Pertahankan placeholder: {count}
+reviewQueueStartMore,Mulai tinjau ({count}+),,Pertahankan placeholder: {count}
+reviewRejectReasonDuplicate,Duplikat entri yang sudah ada,,
+reviewRejectReasonHint,Jelaskan alasan penolakan,,
+reviewRejectReasonInaccurate,Kurang akurat,,
+reviewRejectReasonInappropriate,Konten tidak pantas,,
+reviewRejectReasonIncomplete,Informasi kurang lengkap,,
+reviewRejectReasonIrrelevant,Tidak relevan,,
+reviewRejectReasonLabel,Alasan penolakan,,
+reviewRejectReasonMedia,Media (gambar/audio) tidak sesuai,,
+reviewRejectReasonOther,Lainnya,,
+reviewRejectReasonSpelling,Ejaan atau penulisan salah,,
+reviewRejectSheetBody,Pilih alasan agar kontributor tahu apa yang perlu diperbaiki.,,
+reviewRejectSheetTitle,Tolak usulan,,
+reviewRepoDecisionSaveFailed,Gagal menyimpan keputusan,,
+reviewRepoQueueLoadFailed,Gagal memuat antrean review,,
+reviewRepoReopenFailed,Gagal membuka ulang keputusan,,
+reviewRepoRestoreFailed,Gagal mengembalikan usulan,,
+reviewRepoSearchMissCorrectFailed,Gagal mengoreksi term,,
+reviewRepoSearchMissDismissFailed,Gagal menyingkirkan,,
+reviewRepoSearchMissLoadFailed,Gagal memuat pencarian kosong,,
+reviewRepoSearchMissPublishFailed,Gagal mengubah tayang,,
+reviewRepoSearchMissSkipFailed,Gagal melewati,,
+reviewRepoSkipFailed,Gagal melewati usulan,,
+reviewRepoSuggestionApproveFailed,Gagal menyetujui usulan,,
+reviewRepoSuggestionDetailLoadFailed,Gagal memuat detail usulan,,
+reviewRepoSuggestionLoadFailed,Gagal memuat detail usulan edit,,
+reviewRepoSuggestionRejectFailed,Gagal menolak usulan,,
+reviewRepoSuggestionsLoadFailed,Gagal memuat antrean usulan edit,,
+reviewRepoUnverifyFailed,Gagal mencabut verifikasi kata,,
+reviewSearchMissCorrect,Koreksi term,,
+reviewSearchMissCorrectHint,Perbaiki salah ketik warga sebelum ditayangkan.,,
+reviewSearchMissCorrectedToast,"""{term}"" dikoreksi",,Pertahankan placeholder: {term}
+reviewSearchMissDirectionHits,{direction} · {count}× dicari,,
+reviewSearchMissDirectionHitsFull,{direction} · {count}× dicari · {status},,"Pertahankan placeholder: {direction}, {count}, {status}"
+reviewSearchMissDirectionIdSbs,Indonesia → Sambas,,
+reviewSearchMissDirectionSbsId,Sambas → Indonesia,,
+reviewSearchMissDismiss,Singkirkan,,
+reviewSearchMissDone,Selesai - semua pencarian kosong sudah ditangani.,,
+reviewSearchMissEmpty,Belum ada pencarian kosong yang belum terjawab. Warga yang mencari kata belum ada akar yang cocok.,,
+reviewSearchMissHits,{count} dicari,,Pertahankan placeholder: {count}
+reviewSearchMissHitsText,{value} dicari,,Pertahankan placeholder: {value}
+reviewSearchMissLoadFailed,Gagal memuat pencarian kosong,,
+reviewSearchMissNotPublished,belum tayang,,
+reviewSearchMissPublish,Tayang,,
+reviewSearchMissPublishedToast,"""{term}"" tayang di beranda publik",,Pertahankan placeholder: {term}
+reviewSearchMissReload,Muat ulang,,
+reviewSearchMissSkippedToast,"""{term}"" sudah tayang - dilewati",,Pertahankan placeholder: {term}
+reviewSearchMissSwipeHint,Kanan tayang · kiri singkirkan · atas lewati - atau ketuk kartu untuk mengusulkan.,,
+reviewSearchMissTapToSuggest,Ketuk untuk mengusulkan kata ini.,,
+reviewSearchMissTerm,Term,,
+reviewSearchMissTitle,Pencarian kosong,,
+reviewSearchMissVisibleSuffix,tayang,,
+reviewSessionAccessDenied,Akses ditolak,,
+reviewSessionAlreadyProcessed,Usulan ini sudah diproses.,,
+reviewSessionApprovedToast,Usulan disetujui,,
+reviewSessionBack,Kembali ke kartu sebelumnya,,
+reviewSessionCorrect,Koreksi,,
+reviewSessionCorrectionSavedClosed,Koreksi disimpan dan usulan ditutup.,,
+reviewSessionCorrectionSavedPending,Koreksi disimpan. Usulan tetap menunggu.,,
+reviewSessionCounter,Tinjau · {position}/{total},,"Pertahankan placeholder: {position}, {total}"
+reviewSessionCounterCorrect,Koreksi · {position}/{total},,"Pertahankan placeholder: {position}, {total}"
+reviewSessionEntryType,Jenis entri,,
+reviewSessionQueueDone,Antrean selesai,,
+reviewSessionRejectedToast,Usulan ditolak,,
+reviewSessionRestoreFailed,Gagal mengembalikan kartu.,,
+reviewSessionRestoredToast,Kartu sebelumnya dikembalikan,,
+reviewSessionSaveFailed,Gagal menyimpan keputusan,,
+reviewSessionSkeletonBody,Isi ringkas usulan agar kerangka kartu mendekati layout asli saat loading.,,
+reviewSessionSkeletonDate,21 Sep 2026 00:00,,
+reviewSessionSkeletonMeta,Baris meta tambahan untuk shimmer.,,
+reviewSessionSkeletonSection,Judul bagian preview,,
+reviewSessionSkeletonTitle,Judul usulan contoh,,
+reviewSessionSkipped,Dilewati.,,
+reviewSessionSwipeHint,Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.,,
+reviewSessionVerifiedBy,Sudah terverifikasi oleh @{verifier}. Menyetujui hanya menutup antrean.,,Pertahankan placeholder: {verifier}
+reviewSessionVerifiedSelf,Sudah terverifikasi. Menyetujui hanya menutup antrean.,,
+reviewSessionVerifierNote,Catatan verifikator,,
+reviewSkeletonLemma,Lemma contoh,,
+reviewSkeletonProposalMeta,Kata · kontributor · 21 Sep 2026 00:00,,
+reviewSkeletonProposalTitle,Usulan kata contoh,,
+reviewStatusAll,Semua,,
+reviewStatusApproved,Disetujui,,
+reviewStatusCorrected,Dikoreksi,,
+reviewStatusPending,Menunggu,,
+reviewStatusRejected,Ditolak,,
+reviewStatusReopened,Dibuka ulang,,
+reviewSuggestionApproveNote,Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar bila perlu.,,
+reviewSuggestionApprovedToast,Usulan disetujui,,
+reviewSuggestionComparison,Perbandingan,,
+reviewSuggestionCurrent,Sekarang: {value},,Pertahankan placeholder: {value}
+reviewSuggestionCurrentEmpty,Sekarang: (kosong),,
+reviewSuggestionDetailTitle,Detail usulan edit,,
+reviewSuggestionDiffCount,{label}: {count} perubahan,,"Pertahankan placeholder: {label}, {count}"
+reviewSuggestionDiffValue,{label}: {value},,"Pertahankan placeholder: {label}, {value}"
+reviewSuggestionEntryType,Jenis entri,,
+reviewSuggestionFrom,Dari {contributor} · {date},,"Pertahankan placeholder: {contributor}, {date}"
+reviewSuggestionNoDiff,Tidak ada diff ringkas,,
+reviewSuggestionProposed,Usulan: {value},,Pertahankan placeholder: {value}
+reviewSuggestionProposedEmpty,Usulan: (kosong),,
+reviewSuggestionReason,Alasan: {reason},,Pertahankan placeholder: {reason}
+reviewSuggestionRejectBody,Berikan alasan penolakan untuk kontributor.,,
+reviewSuggestionRejectTitle,Tolak usulan,,
+reviewSuggestionRejectedToast,Usulan ditolak,,
+reviewSuggestionStatus,Status: {status},,Pertahankan placeholder: {status}
+reviewSuggestionsEmpty,Tidak ada usulan edit menunggu,,
+reviewSuggestionsLoadFailed,Gagal memuat usulan edit,,
+reviewSuggestionsTitle,Usulan edit,,
+reviewSwipeApprove,Setujui,,
+reviewSwipeReject,Tolak,,
+reviewSwipeSkip,Lewati,,
+reviewVariantAdd,Tambah,,
+reviewVariantAddHint,"Tulis variasi, mis. klintiak",,
+reviewVariantDuplicate,Variasi ini sudah ada,,
+reviewVariantHint,"Ejaan lain untuk ""{lemma}"".",,Pertahankan placeholder: {lemma}
+reviewVariantMax,Maksimal {max} variasi,,Pertahankan placeholder: {max}
+reviewVariantRemove,Hapus {form},,Pertahankan placeholder: {form}
+reviewVariantSameAsLemma,Variasi tidak boleh sama dengan lemma,,
+reviewVariantTitle,Variasi penulisan,,
+reviewWordTypeExpression,Ungkapan,,
+reviewWordTypeGeneral,Umum,,
+reviewWordTypeIdiom,Idiom,,
+reviewWordTypeProverb,Peribahasa,,
+reviewWordTypeWord,Kata,,
+routerNotFound,Halaman tidak ditemukan: {error},,Halaman error router; {error} = path/uri yang gagal | Pertahankan placeholder: {error}
+searchMissDirectionIdToSbs,Indonesia → Sambas,,
+searchMissDirectionSbsToId,Sambas → Indonesia,,
+searchMissEmpty,"Belum ada kata yang dicari warga. Coba lagi dalam beberapa saat, atau usulkan kata baru dari menu di atas.",,
+searchMissHint,"Pilih kata yang warga cari tapi belum ada, nanti form usulannya terbuka.",,
+searchMissHitCount,{count}× dicari,,Pertahankan placeholder: {count}
+searchMissLoadFailed,Gagal memuat daftar pencarian,,
+searchMissPopularLoadFailed,Gagal memuat daftar pencarian populer,,
+searchMissSkeletonLemma,kata dicari contoh {n},,Pertahankan placeholder: {n}
+searchMissSkeletonMeta,Sambas → Indonesia · 12× dicari,,
+searchMissTitle,Dicari warga,,
+serverAuto,Otomatis,,
+serverAutoSubtitle,"Pakai Cloudflare, pindah sendiri kalau gagal (disarankan)",,
+serverLockedHint,"Server terkunci: pindah otomatis ke server lain dimatikan sampai kamu pilih ""Otomatis"" lagi.",,
+serverPickHint,Pilih server yang paling cepat. Hasil uji hanya menunjukkan kondisi saat ini - Render tidur setelah ~15 menit menganggur dan bisa butuh sampai 60 detik untuk bangun.,,
+serverPickTitle,Pilih Server,,
+serverPing,Ping,,
+serverPinging,Ping...,,
+serverTileTitle,Server,,
+settingsAboutApp,Tentang SambasKu,,
+settingsGroupAbout,Tentang,,
+settingsGroupAppearance,Tampilan,,
+settingsGroupLanguage,Bahasa,,
+settingsGroupSupport,Dukungan,,
+settingsLanguageSubtitle,Bahasa antarmuka aplikasi,,
+settingsLanguageTile,Bahasa aplikasi,,
+settingsReportBug,Laporkan Masalah,,
+settingsTitle,Pengaturan,,
+shareAdjustHintFixed,Buka fullscreen untuk geser / putar teks,,
+shareAdjustHintPannable,Geser teks atau crop gambar / video,,
+shareAdjustPosition,Atur posisi,,
+shareApply,Pakai,,
+shareBackdropUnavailable,Latar tidak tersedia. Coba lagi dalam beberapa saat.,,
+shareBodySize,Ukuran teks deskripsi,,
+shareCameraFailed,Gagal membuka kamera,,
+shareCancel,Batal,,
+shareChipCamera,Kamera,,
+shareChipExplorer,Explorer,,
+shareChipGallery,Galeri,,
+shareChipNoBackdrop,"Tanpa
+latar",,
+shareChipWord,Kata,,
+shareDone,Selesai,,
+shareDragToCrop,Geser di kartu untuk mengatur crop gambar atau video,,
+shareElementDefinition,Definisi,,
+shareElementExample,Contoh,,
+shareElementLemma,Lemma,,
+shareElementTranslation,Terjemahan,,
+shareElementWordClass,Kelas kata,,
+shareExplorerTitle,Media Explorer,,
+shareFailed,Gagal membagikan: {error},,Pertahankan placeholder: {error}
+shareFontClassic,Klasik,,
+shareFontEditorial,Editorial,,
+shareFontModern,Modern,,
+shareGalleryPickFailed,Gagal memilih dari galeri,,
+shareHexLabel,Hex,,
+shareLabelColor,Warna,,
+shareLabelGradient,Gradasi,,
+shareLayoutEditorTitle,Atur posisi,,
+shareLayoutHintFixed,Ketuk teks berborder untuk menggeser. Garis putus-putus = tengah.,,
+shareLayoutHintPannable,Ketuk teks untuk menggesernya. Area kosong menggeser gambar. Garis putus-putus = tengah.,,
+shareLemmaSize,Ukuran lemma,,
+shareMeaningAll,Semua,,
+shareMeaningNth,Makna {n},,Pertahankan placeholder: {n}
+shareNoResults,Tidak ada hasil.,,
+shareOverlayThickness,Ketebalan overlay,,
+sharePhoto,Foto,,
+sharePickBackdropOrText,"Pilih Latar untuk geser gambar, atau ketuk teks untuk rotasi",,
+sharePickTextElement,Pilih elemen teks di kartu untuk mengatur rotasi,,
+sharePopular,Populer,,
+sharePreviewCardTitle,Preview kartu,,
+shareResetPosition,Reset posisi,,
+shareRotateLabel,Rotasi {label},,Pertahankan placeholder: {label}
+shareSave,Simpan,,
+shareSaveFailed,Gagal menyimpan: {error},,Pertahankan placeholder: {error}
+shareSavedToGallery,Tersimpan di galeri,,
+shareSearchCta,Cari,,
+shareSearchImagesHint,Cari gambar…,,
+shareSearchResult,Hasil: {query},,Pertahankan placeholder: {query}
+shareSearchVideosHint,Cari video…,,
+shareSectionBackdrop,Latar,,
+shareSectionEditor,Editor,,
+shareSectionFont,Font,,
+shareSectionMeaning,Makna,,
+shareSectionRatio,Rasio,,
+shareSectionStyle,Gaya,,
+shareShare,Bagikan,,
+shareSheetTitle,Bagikan kartu,,
+shareShowDefinition,Tampilkan definisi,,
+shareShowExample,Tampilkan contoh kalimat,,
+shareShowTranslation,Tampilkan terjemahan,,
+shareShowWordClass,Tampilkan kelas kata,,
+shareSolidColorTitle,Warna polos,,
+shareStockUnavailable,"Latar stok tidak tersedia. Pakai tanpa latar, galeri, kamera, atau gambar kata.",,
+shareTabImages,Gambar,,
+shareTabVideos,Video,,
+shareTemplateCard,Kartu,,
+shareTemplateEditorial,Editorial,,
+shareTemplateFrame,Bingkai,,
+shareTemplateFull,Penuh,,
+shareTemplateGlass,Kaca,,
+shareTemplatePoster,Poster,,
+shareTemplateQuote,Kutipan,,
+shareTemplateSide,Sisi,,
+shareThumbHint,Tahan thumb untuk preview fullscreen · Explorer untuk cari gambar atau video,,
+shareVideo,Video,,
+shareVideoBadge,{provider} video,,Pertahankan placeholder: {provider}
+shareVideoFallbackSaved,Video tidak bisa diekspor. Disimpan sebagai foto.,,
+shareVideoFallbackShared,Video tidak bisa diekspor. Dibagikan sebagai foto.,,
+shareWatermarkRequired,Watermark SambasKu (wajib untuk foto Creative Commons),,
+shareWatermarkToggle,Tampilkan watermark SambasKu,,
+suggestAddRelation,Tambah {category},,Pertahankan placeholder: {category}
+suggestAddVariant,Tambah variasi,,
+suggestAddVariantHint,"Contoh: kate, katee (pisahkan dengan koma)",,
+suggestCategoryAddExample,Tambah contoh,,
+suggestCategoryAddExampleDesc,Contoh kalimat untuk satu makna,,
+suggestCategoryAddMeaning,Tambah makna,,
+suggestCategoryAddMeaningDesc,Arti lain dari kata ini,,
+suggestCategoryAddPhoto,Tambah foto,,
+suggestCategoryAddPhotoDesc,Foto yang menggambarkan kata ini,,
+suggestCategoryAntonym,Antonim,,
+suggestCategoryAntonymDesc,Kata yang artinya berlawanan,,
+suggestCategoryChangeMeaning,Ubah makna,,
+suggestCategoryChangeMeaningDesc,Perbaiki definisi atau terjemahan,,
+suggestCategoryChangePhoto,Ubah foto,,
+suggestCategoryChangePhotoDesc,"Hapus, ganti, atau pilih foto utama",,
+suggestCategoryChangeWordClass,Ubah kelas kata,,
+suggestCategoryChangeWordClassDesc,"Nomina, verba, adjektiva, dsb.",,
+suggestCategoryDerivedFrom,Kata turunan,,
+suggestCategoryDerivedFromDesc,Kata ini diturunkan dari akar kata,,
+suggestCategoryLemmaNotes,Lainnya,,
+suggestCategoryLemmaNotesDesc,Ejaan lemma atau catatan,,
+suggestCategoryMeaningGroup,Kelompok makna,,
+suggestCategoryMeaningGroupDesc,Gabungkan kata bermakna sama dalam satu kelompok,,
+suggestCategoryNonstandardOf,Bentuk tidak baku,,
+suggestCategoryNonstandardOfDesc,Kata ini bentuk tidak baku dari kata baku,,
+suggestCategorySpellingVariant,Variasi penulisan,,
+suggestCategorySpellingVariantDesc,Ejaan lain untuk kata yang sama,,
+suggestCategorySynonym,Sinonim,,
+suggestCategorySynonymDesc,Kata lain yang artinya sama,,
+suggestCategoryVariantOf,Variasi bentuk,,
+suggestCategoryVariantOfDesc,Kata ini variasi dari kata lain,,
+suggestChangeTypeSemantics,Ketuk untuk ganti jenis usulan,,
+suggestDefinitionHint,Uraian makna berbahasa Indonesia - bukan terjemahan satu kata.,,
+suggestDefinitionLabel,Definisi,,
+suggestDefinitionPlaceholder,Jelaskan makna kata ini,,
+suggestDerivedExample,"Contoh: ""ngansoh"" diturunkan dari ""ansoh"".",,
+suggestDerivedFromLabel,akar kata,,
+suggestDerivedHint,Kata ini diturunkan dari {target} di atas,,Pertahankan placeholder: {target}
+suggestEntryTileContributorSubtitle,Perbaikan kata yang sudah tayang menunggu persetujuan admin,,
+suggestEntryTileContributorTitle,Usulkan perubahan,,
+suggestEntryTileVerifierSubtitle,"Tambah makna, relasi, contoh, pelafalan - langsung terbit",,
+suggestEntryTileVerifierTitle,Perbaiki/lengkapi kata,,
+suggestExampleFirst,Contoh kalimatnya diisi dulu ya,,
+suggestExampleLangHint,Kalimat dalam bahasa Sambas,,
+suggestExamplePublishedToast,Contoh kalimat sudah tayang.,,
+suggestExampleQueuedToast,Contoh kalimat masuk antrean pengecekan.,,
+suggestExampleSection,Contoh kalimat ({lemma}),,Pertahankan placeholder: {lemma}
+suggestExampleTranslationHint,Terjemahan bahasa Indonesia,,
+suggestExampleTranslationLabel,Artinya (opsional),,
+suggestExistingPhotos,Foto yang ada,,
+suggestGroupExample,"Contoh: ""ngape"", ""jape"", ""jope"" = kelompok ""kenapa"".",,
+suggestGroupExplainer,Kelompok menghimpun kata bermakna sama. Kata ini otomatis jadi anggota.,,
+suggestGroupSeparateNote,Kata tetap jadi entri terpisah - kelompok hanya mengelompokkan.,,
+suggestKbbiSemantics,Tekan ikon buku untuk mencari definisi di KBBI,,
+suggestLeaveGroup,Keluar dari kelompok,,
+suggestLemmaLabel,Lemma,,
+suggestLoginPrompt,Masuk dulu untuk mengusulkan,,
+suggestMeaningSection,Makna,,
+suggestNewGroupName,Nama kelompok baru,,
+suggestNewGroupNameHint,Contoh: kenapa,,
+suggestNotesHint,"Asal kata, pemakaian, atau keterangan lain",,
+suggestNotesLabel,Catatan,,
+suggestNothingChanged,Belum ada perubahan,,
+suggestNothingChangedFor,Belum ada yang diubah untuk {category}.,,Pertahankan placeholder: {category}
+suggestOtherMembers,Anggota lain,,
+suggestPickMeaning,Pilih makna,,
+suggestPreSubmitContributorBanner,Ubah yang perlu saja. Admin mereview sebelum tayang.,,
+suggestPreSubmitContributorCta,Kirim Usulan,,
+suggestPreSubmitContributorCtaBusy,Mengirim...,,
+suggestPreSubmitVerifierBanner,"Ubah yang perlu saja. Perubahan langsung diterapkan, tanpa antrean.",,
+suggestPreSubmitVerifierCta,Simpan perubahan,,
+suggestPreSubmitVerifierCtaBusy,Menyimpan...,,
+suggestPrimaryMark,Utama ✓,,
+suggestReasonHint,"Contoh: sumber, penutur asli, atau KBBI",,
+suggestReasonLabel,Alasan (opsional),,
+suggestReferenceLabel,kata rujukan,,
+suggestRelationPickHint,"Pilih saran ketik, atau tulis lemma baru sendiri",,
+suggestRemove,Hapus,,
+suggestRemovePrimary,Hapus (utama),,
+suggestRemoveRelation,Hapus {category} yang ada,,Pertahankan placeholder: {category}
+suggestRemoveVariant,Hapus variasi yang ada,,
+suggestReplacementPhotos,Foto pengganti (opsional),,
+suggestReplacementPhotosHint,Tambahkan bila foto yang dihapus perlu diganti.,,
+suggestReviewForm,Periksa lagi isian,,
+suggestSendExample,Kirim contoh,,
+suggestSetPrimary,Jadikan utama,,
+suggestStillPendingTitle,Usulan masih menunggu,,
+suggestSubmitFailed,Gagal mengirim usulan. Coba lagi dalam beberapa saat.,,
+suggestSuccessApplied,"Perubahan langsung diterapkan pada ""{label}"".",,Pertahankan placeholder: {label}
+suggestSuccessPublishedPending,"Perubahan sudah tayang di ""{label}"". Statusnya tetap menunggu pengecekan.",,Pertahankan placeholder: {label}
+suggestSuccessQueued,"Usulan untuk ""{label}"" masuk antrean. Isi yang sedang tayang belum berubah.",,Pertahankan placeholder: {label}
+suggestSuccessThisWord,kata ini,,
+suggestSuggestChangeCta,Usulkan Perubahan,,
+suggestTranslationField,Terjemahan Indonesia,,
+suggestTranslationHint,"Satu kata/frasa setara dengan lemma. Contoh: ""makan"". Beda dari definisi.",,
+suggestTranslationSemanticsHint,Satu kata/frasa setara di Indonesia,,
+suggestUnexpectedError,Terjadi kesalahan,,
+suggestVariantExample,"Contoh: ""tekpalat"" variasi dari ""taek palat"".",,
+suggestVariantOfHint,Kata ini variasi/bentuk lain dari kata di atas,,
+suggestWhatToChange,Apa yang ingin diubah?,,
+suggestWordClassHint,"Nomina, verba, adjektiva, dsb.",,
+suggestWordClassLabel,Kelas kata (opsional),,
+suggestWordClassLabelShort,Kelas kata,,
+suggestWordClassLoadFailed,Gagal muat kelas kata - coba lagi,,
+suggestWordClassPicker,Pilih kelas kata,,
+threadRecordVoice,Rekam suara,,
+threadSend,Kirim,,
+updateAvailableBody,Update biar dapat fitur terbaru dan perbaikan bug ya.,,
+updateAvailableTitle,Versi {version} sudah tersedia,,Banner update | Pertahankan placeholder: {version}
+updateLater,Nanti,,
+updateNow,Update sekarang,,
+usahaBackToList,Kembali ke daftar usaha,,
+usahaCancelAction,Batalkan,,
+usahaCatalog,Katalog,,
+usahaCatalogEmpty,Katalog masih kosong,,
+usahaCatalogPick,Pilih item untuk diubah atau dihapus,,
+usahaChangeFailed,Gagal mengajukan,,
+usahaChangeSent,Pengajuan terkirim,,
+usahaChangeSentBody,Admin akan meninjau dulu. Statusnya muncul di Usulan saya.,,
+usahaClaimCancelBody,Kamu bisa ajukan klaim baru kapan saja.,,
+usahaClaimCancelFailed,Gagal membatalkan,,
+usahaClaimCancelTitle,Batalkan klaim?,,
+usahaClaimEvidence,Bukti kontak,,
+usahaClaimEvidenceHint,Nomor WhatsApp atau akun media sosial pengelola,,
+usahaClaimEvidenceShort,Tulis bukti minimal 5 karakter ya.,,
+usahaClaimEvidenceShortTitle,Bukti kurang,,
+usahaClaimFailed,Klaim gagal,,
+usahaClaimLoginBody,"Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.",,
+usahaClaimSent,Klaim terkirim,,
+usahaClaimSentBody,Admin akan memeriksa buktimu. Hasilnya muncul di halaman klaim.,,
+usahaClaimSheetBody,"Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.",,
+usahaClaimSheetTitle,Klaim usaha ini,,
+usahaClaimStatusCancelled,Dibatalkan,,Status klaim usaha
+usahaClaimSubmit,Kirim klaim,,
+usahaClaimsEmpty,Belum ada klaim,,
+usahaClaimsEmptyHint,"Buka detail usaha lalu pilih ""Ini usaha saya"" untuk mengajukan klaim.",,
+usahaClaimsLoadFailed,Gagal memuat klaim. Periksa koneksi lalu coba lagi.,,
+usahaClaimsLoadFailedTitle,Gagal memuat klaim,,
+usahaClaimsLoginGate,Masuk dulu untuk melihat klaim kamu,,
+usahaClaimsTitle,Klaim saya,,
+usahaClosedPermanentlyBody,Info tetap kami simpan sebagai catatan sejarah.,,
+usahaClosedPermanentlyTitle,Usaha ini sudah tutup permanen,,
+usahaContactEmpty,Kontak belum dicantumkan.,,
+usahaContactMap,Peta,,
+usahaContactPhone,Telepon,,
+usahaContactSocial,Media sosial,,
+usahaContactWebsite,Website,,
+usahaContactWhatsapp,WhatsApp,,
+usahaContributeAction,Usulkan usaha,,
+usahaFilterAll,Semua,,Chip filter kategori usaha
+usahaFormAddress,Alamat atau petunjuk lokasi (opsional),,
+usahaFormAddressHint,"Jalan, nomor, atau patokan",,
+usahaFormCategory,Kategori,,
+usahaFormClaim,Ini usaha saya,,
+usahaFormClaimBody,"Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.",,
+usahaFormContactSection,Kontak (opsional),,
+usahaFormDescription,Deskripsi (opsional),,
+usahaFormDescriptionHint,Apa yang dijual atau jasa yang ditawarkan,,
+usahaFormDistrict,Kecamatan,,
+usahaFormDistrictMissing,Pilih kecamatan lokasi usaha dulu.,,
+usahaFormDistrictRequired,Pilih kecamatan dulu ya.,,
+usahaFormIncompleteTitle,Lengkapi dulu ya,,
+usahaFormIntro,"Isi yang kamu tahu saja. Nama dan kecamatan wajib, sisanya boleh menyusul - admin bisa melengkapi.",,
+usahaFormKind,Jenis usaha,,
+usahaFormKindLabel,Jenis,,
+usahaFormMapPin,Tandai di peta (opsional),,
+usahaFormMapPinHint,Bantu pengunjung menemukan lokasi,,
+usahaFormName,Nama usaha,,
+usahaFormNameHint,Nama usaha atau jasa,,
+usahaFormNameTooShort,Nama usaha minimal 3 huruf ya.,,
+usahaFormNotSelected,Belum dipilih,,
+usahaFormPhone,No. HP,,
+usahaFormPickCategory,Pilih kategori usaha,,
+usahaFormPickDistrict,Pilih kecamatan,,
+usahaFormPickVillage,Pilih desa,,
+usahaFormRemoveFailedPhoto,Hapus foto yang gagal diunggah dulu,,
+usahaFormRequired,Wajib dipilih,,
+usahaFormSearchCategory,Cari kategori,,
+usahaFormSearchDistrict,Cari kecamatan,,
+usahaFormSearchVillage,Cari desa,,
+usahaFormSocial,Media sosial (https),,
+usahaFormVillage,Desa (opsional),,
+usahaFormWaitUpload,Tunggu upload foto selesai,,
+usahaFormWebsite,Website (https),,
+usahaItemDescription,Keterangan (opsional),,
+usahaItemName,Nama item,,
+usahaItemNameHint,Nama item atau layanan,,
+usahaItemNameShort,Nama item minimal 2 huruf ya.,,
+usahaItemNameShortTitle,Nama kurang,,
+usahaItemPrice,Harga (opsional),,
+usahaItemPriceHint,Mis. Rp 15.000 / mulai Rp 50.000,,
+usahaItemSubmit,Kirim ke admin,,
+usahaKindArchive,Minta arsip,,
+usahaKindBoth,Produk dan jasa,,
+usahaKindItemAdd,Tambah item,,
+usahaKindItemDelete,Hapus item,,
+usahaKindItemEdit,Ubah item,,
+usahaKindNew,Usulan baru,,Jenis pengajuan usaha
+usahaKindOperational,Status buka,,
+usahaKindProduct,Produk,,Jenis usaha
+usahaKindProfile,Perubahan profil,,
+usahaKindRestore,Minta tayang,,
+usahaKindService,Jasa,,
+usahaLeaveForNow,Biarkan dulu,,
+usahaListEmptyHint,Punya usaha atau tahu usaha di sekitarmu? Boleh kamu usulkan.,,
+usahaListEmptyQuery,Belum ada usaha yang cocok,,
+usahaListEmptyQueryHint,Coba kata lain ya.,,
+usahaListEmptyRegistered,Belum ada usaha terdaftar,,
+usahaLoadFailed,Gagal memuat usaha,,
+usahaLoadFailedBody,Periksa koneksi internetmu lalu coba lagi ya.,,
+usahaLoginFirstTitle,Masuk dulu ya,,
+usahaManage,Kelola,,
+usahaManageArchive,Minta arsipkan,,
+usahaManageArchiveBody,Usaha disembunyikan dari daftar publik,,
+usahaManageCatalog,Kelola katalog,,
+usahaManageCatalogBody,Ubah atau hapus item yang sudah ada,,
+usahaManageClaimBody,Ajukan klaim pengelolaan ke admin,,
+usahaManageItemAdd,Tambah item katalog,,
+usahaManageOperational,Ubah status buka,,
+usahaManagePickChange,Pilih perubahan yang mau diajukan ke admin,,
+usahaManageRestore,Minta tayang lagi,,
+usahaManagedByOwner,Dikelola pemilik,,
+usahaNevermind,Tidak jadi,,
+usahaNotFound,Usaha ini tidak ditemukan,,
+usahaOperationalOpen,Buka,,
+usahaOperationalPermanentlyClosed,Tutup permanen,,
+usahaOperationalTemporarilyClosed,Tutup sementara,,
+usahaOperationalUnknown,Belum ada info buka,,Label status buka usaha
+usahaPendingChanges,{count} perubahan menunggu,,Baris ringkas jumlah perubahan pending di usaha saya | Pertahankan placeholder: {count}
+usahaPriceUnlisted,Harga belum dicantumkan,,
+usahaProposalCancelBody,Usulan yang dibatalkan tidak bisa dikembalikan.,,
+usahaProposalCancelTitle,Batalkan usulan?,,
+usahaProposalFailed,Usulan gagal,,
+usahaProposalSent,Usulan terkirim,,
+usahaProposalSentBody,Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.,,
+usahaProposalsEmpty,Belum ada usulan,,
+usahaProposalsEmptyHint,Status usulan yang sudah ditinjau akan muncul di sini.,,
+usahaProposalsLoadFailed,Gagal memuat usulan. Periksa koneksi lalu coba lagi.,,
+usahaProposalsLoadFailedTitle,Gagal memuat usulan,,
+usahaProposalsLoginGate,Masuk dulu untuk melihat usulan kamu,,
+usahaProposalsTitle,Usulan usaha,,
+usahaRejectClaimConflict,Usaha sudah diklaim orang lain,,
+usahaRejectDefault,Ditolak,,Fallback saat alasan penolakan kosong
+usahaRejectDuplicate,Usaha serupa sudah terdaftar,,Label kode alasan penolakan usaha
+usahaRejectEvidenceInsufficient,Bukti belum cukup,,
+usahaRejectIncomplete,Informasi belum lengkap,,
+usahaRejectInvalid,Data tidak valid,,
+usahaRejectNotOwner,Bukan pengelola sah,,
+usahaRejectOther,Alasan lain,,
+usahaRejectStale,Data sudah berubah,,
+usahaRejectViolation,Melanggar ketentuan,,
+usahaReportAbuse,Penyalahgunaan,,
+usahaReportClosed,Usaha sudah tutup,,Alasan laporan usaha
+usahaReportDuplicate,Duplikat,,
+usahaReportFailed,Gagal melapor,,
+usahaReportInvalidContact,Kontak tidak valid,,
+usahaReportLoginBody,Laporan butuh akun supaya kami bisa tindak lanjuti.,,
+usahaReportMisleading,Info menyesatkan,,
+usahaReportSent,Laporan terkirim,,
+usahaReportSentBody,Terima kasih. Admin akan memeriksa info usaha ini.,,
+usahaReportSubtitle,Apa yang salah dengan info usaha ini?,,
+usahaReportTitle,Laporkan masalah,,
+usahaReportWrongLocation,Lokasi salah,,
+usahaSaveFailed,Gagal menyimpan. Coba lagi ya.,,Pesan error generik simpan usaha
+usahaSayaEmpty,Belum ada usaha yang kamu kelola,,
+usahaSayaEmptyHint,"Ajukan klaim di halaman detail usaha. Setelah disetujui admin, usahamu muncul di sini.",,
+usahaSayaLoadFailed,Gagal memuat usaha kamu. Periksa koneksi lalu coba lagi.,,
+usahaSayaLoginGate,Masuk dulu untuk mengelola usaha kamu,,
+usahaSayaTitle,Usaha saya,,
+usahaSearchHint,Cari usaha atau jasa,,
+usahaSeeClaims,Lihat klaim saya,,
+usahaSeeList,Lihat daftar usaha,,
+usahaSeeProposals,Lihat usulan saya,,
+usahaStatusApproved,Disetujui,,Status usulan/klaim usaha
+usahaStatusNeedsRevision,Perlu revisi,,
+usahaStatusPending,Menunggu,,
+usahaStatusRejected,Ditolak,,
+usahaSubmitProposal,Kirim usulan,,
+usahaSubmittedAt,Diajukan {date},,Baris waktu pengajuan klaim/usulan | Pertahankan placeholder: {date}
+usahaTitle,Usaha,,Judul halaman katalog usaha
+usahaUploadImageFailed,Unggah foto gagal,,Pesan error upload foto usaha
+userProfileGenericError,"Terjadi kesalahan saat memuat profil, coba lagi",,
+userProfileMentionFailed,Gagal memuat saran mention,,
+verifiedBadgeSemantics,"Verifikator, ketuk untuk info",,
+verifiedBadgeTitle,Verifikator,,
+verifierApplicationAccountFirst,akun pertama,,
+verifierApplicationAccountNth,akun ke-{n},,Label baris akun sosial; {n} = nomor baris | Pertahankan placeholder: {n}
+verifierApplicationAddSocial,Tambah lainnya,,
+verifierApplicationAddressHint,Alamat lengkap tempat tinggal/domisili,,
+verifierApplicationAddressLabel,Alamat,,
+verifierApplicationAddressMin,Alamat minimal 10 karakter.,,
+verifierApplicationAfterBody,Masuk ulang agar peran Verifikator aktif di aplikasi. Antrean tinjau kemudian muncul di Profil. Kamu akan mendapat notifikasi saat pengajuan diputuskan.,,
+verifierApplicationAfterTitle,Setelah disetujui,,
+verifierApplicationApprovedBody,"Selamat, kamu resmi jadi verifikator. Login ulang biar perannya aktif di aplikasi.",,
+verifierApplicationApprovedTitle,Pengajuan disetujui,,
+verifierApplicationCameraGallery,Kamera / galeri,,
+verifierApplicationCannotSendTitle,Pengajuan belum bisa dikirim,,
+verifierApplicationDataBody,"Nomor HP dan alamat dipakai admin untuk menghubungi dan memastikan pemohon orang nyata dari komunitas. Username media sosial plus tangkapan layar membuktikan akun itu milik pemohon, bukan tautan kosong.",,
+verifierApplicationDataTitle,Data yang diminta saat ajukan,,
+verifierApplicationImageProcessFailed,Gagal memproses gambar,,
+verifierApplicationImageTooLarge,Gambar melebihi {mb} MB,,Pertahankan placeholder: {mb}
+verifierApplicationLearnSubtitle,Apa itu verifikator dan apa saja yang dilakukan,,
+verifierApplicationLearnTitle,Pelajari peran verifikator,,
+verifierApplicationLoadFailed,Gagal memuat pengajuan,,
+verifierApplicationNeedsRevisionTitle,Perlu perbaikan,,
+verifierApplicationNotFound,Pengajuan verifikator tidak ditemukan,,
+verifierApplicationOpeningLogin,Membuka halaman masuk...,,
+verifierApplicationPendingBody,Tim admin masih meninjau pengajuanmu. Nanti kamu dapat notifikasi begitu ada keputusan.,,
+verifierApplicationPendingTitle,Pengajuan sedang ditinjau,,
+verifierApplicationPhoneHint,81234567890,,
+verifierApplicationPhoneInvalid,Nomor HP tidak valid. Contoh: 81234567890.,,
+verifierApplicationPhoneLabel,No. HP,,
+verifierApplicationPhoneRequired,Nomor HP wajib diisi.,,
+verifierApplicationPickPlatform,Pilih platform,,
+verifierApplicationPickPlatformFor,Pilih platform untuk {label}.,,Pertahankan placeholder: {label}
+verifierApplicationPlatformLabel,Platform,,
+verifierApplicationPlatformNth,Platform {n},,Pertahankan placeholder: {n}
+verifierApplicationPrivacyNote,"Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.",,
+verifierApplicationReLoginCta,Masuk ulang,,
+verifierApplicationRejectedBody,Data kurang lengkap. Perbaiki lalu kirim ulang.,,
+verifierApplicationRejectedTitle,Pengajuan ditolak,,
+verifierApplicationRemoveAccount,Hapus akun,,
+verifierApplicationResubmit,Kirim ulang,,
+verifierApplicationRoleIntro,Baca ringkas apa itu verifikator dan apa saja yang dilakukan sebelum mengajukan diri.,,
+verifierApplicationRoleTitle,Peran verifikator,,
+verifierApplicationScreenshotLabel,Screenshot profil,,
+verifierApplicationSendFailed,Gagal mengirim pengajuan,,
+verifierApplicationSocialMin,Tambahkan minimal satu akun media sosial.,,
+verifierApplicationSocialSection,Media sosial (minimal 1),,
+verifierApplicationSubmit,Kirim pengajuan,,
+verifierApplicationSubmitting,Mengirim...,,
+verifierApplicationSuccessResubmit,Pengajuan dikirim ulang. Menunggu review.,,
+verifierApplicationSuccessSubmit,Pengajuan terkirim. Menunggu review.,,
+verifierApplicationTitle,Jadi verifikator,,
+verifierApplicationUnchangedBody,Kamu tetap bisa mengusulkan kata seperti biasa. Data kontak dan bukti sosial pada pengajuan tidak tampil di profil publik.,,
+verifierApplicationUnchangedTitle,Yang tidak berubah,,
+verifierApplicationUploadFailedFor,Screenshot {label} gagal diunggah. Coba lagi.,,Pertahankan placeholder: {label}
+verifierApplicationUploadRequiredFor,Unggah screenshot profil {label}.,,Pertahankan placeholder: {label}
+verifierApplicationUsernameHintSite,nama situs atau akun,,
+verifierApplicationUsernameHintUser,nama atau username,,
+verifierApplicationUsernameLabel,Nama / username,,
+verifierApplicationUsernameMinFor,Nama atau username {label} minimal 2 karakter.,,Pertahankan placeholder: {label}
+verifierApplicationWaitUploadFor,Tunggu screenshot {label} selesai diunggah.,,Pertahankan placeholder: {label}
+verifierApplicationWhatDoBody,"Meninjau antrean kontribusi: menyetujui usulan yang tepat, menolak dengan alasan jika kurang layak, atau mengoreksi isi agar entri siap tayang. Keputusan itu menentukan apakah kata tampil sebagai Terverifikasi.",,
+verifierApplicationWhatDoTitle,Apa yang dilakukan,,
+verifierApplicationWhatIsBody,"Verifikator adalah anggota komunitas yang memeriksa usulan kata warga sebelum entri dianggap terverifikasi di kamus. Peran ini menjaga arti, contoh, dan terjemahan tetap akurat.",,
+verifierApplicationWhatIsTitle,Apa itu verifikator,,
+voteCountLoadFailed,Gagal memuat jumlah vote,,
+voteDeckAgree,Sudah pas,,
+voteDeckDisagree,Perlu dicek ulang,,
+voteDeckEmpty,Antrean kosakata voting saat ini sedang kosong. Terima kasih sudah membantu meningkatkan kualitas lemma di SambasKu.,,
+voteDeckFix,Perbaiki,,
+voteDeckFixSemantics,Perbaiki kata ini,,
+voteDeckHelper,Bantu nilai agar arti kata lebih akurat,,
+voteDeckLoadFailed,Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.,,
+voteDeckLoginCta,Masuk,,
+voteDeckLoginPrompt,Masuk dulu untuk menilai kata,,
+voteDeckProcessing,Memproses…,,
+voteDeckRemaining,sisa {count}{more},,"{more} = ""+"" bila masih ada kartu berikutnya | Pertahankan placeholder: {count}, {more}"
+voteDeckRewindSemantics,Kembali ke kartu sebelumnya,,
+voteDeckRewound,Kartu sebelumnya dikembalikan.,,
+voteDeckSavedFromDetail,Penilaian dari detail tersimpan,,
+voteDeckSessionEnded,Sesi berakhir. Silakan masuk kembali.,,
+voteDeckSkip,Lewati,,
+voteDeckSubmitFailed,Gagal menyimpan penilaian,,
+voteEntryType,Jenis entri,,
+voteFixAction,Perbaiki,,
+voteGenericError,"Terjadi kesalahan saat memuat vote, coba lagi",,
+voteLoginPrompt,Masuk dulu untuk memberi vote,,
+voteMeaningOrder,Makna ke-{order} dari {count},,"Pertahankan placeholder: {order}, {count}"
+voteMineLoadFailed,Gagal memuat vote kamu,,
+voteRateLimited,Terlalu banyak vote. Coba lagi dalam beberapa saat.,,
+voteSemanticsDownvote,Downvote,,
+voteSemanticsUpvote,Upvote,,
+voteToggleFailed,Gagal mengubah vote,,
+voteWordTypeLabel,jenis kata,,
+wilayahAcaraInKecamatan,Acara di kecamatan ini,,
+wilayahDesaCount,{count} desa,,Pertahankan placeholder: {count}
+wilayahKecamatanProfile,Profil kecamatan,,
+wilayahLoadingAcara,Memuat acara...,,
+wilayahLoadingUsaha,Memuat daftar usaha...,,
+wilayahLoadingVillage,Memuat desa...,,
+wilayahLoadingVillageList,Memuat daftar desa...,,
+wilayahNoAcara,Belum ada acara di kecamatan ini.,,
+wilayahNoUsaha,Belum ada usaha di kecamatan ini.,,
+wilayahNoWisata,Belum ada wisata di kecamatan ini.,,
+wilayahReload,Muat ulang,,
+wilayahScrollDown,Gulir ke bawah,,
+wilayahSearchVillageCta,Cari desa,,
+wilayahSearchVillageHint,Cari desa...,,
+wilayahSeeArea,Lihat area,,
+wilayahTapKecamatan,Ketuk area kecamatan,,
+wilayahTapKecamatanHint,Ketuk salah satu area kecamatan untuk melihat desa di dalamnya.,,
+wilayahUsahaInKecamatan,Usaha di kecamatan ini,,
+wilayahVillageListFailed,Daftar desa belum bisa dimuat. Coba lagi dalam beberapa saat.,,
+wilayahWisataCount,{count} wisata,,Pertahankan placeholder: {count}
+wordImageCensoredHint,Gambar disensor. Ketuk untuk menampilkan.,,
+wordImageNotYet,Jangan dulu,,
+wordImagePendingReview,Menunggu tinjauan,,
+wordImageShow,Tampilkan,,
+wordTypeIdiom,Idiom,,
+wordTypeIdiomDetail,Frasa yang artinya tidak sama dengan arti tiap katanya. Contoh: tangan besi.,,
+wordTypeKata,Kata,,
+wordTypeKataDetail,Satu lema. Bukan frasa.,,
+wordTypePeribahasa,Peribahasa,,
+wordTypePeribahasaDetail,Kalimat kiasan atau nasihat yang sudah lazim.,,
+wordTypeUngkapan,Ungkapan,,
+wordTypeUngkapanDetail,Kelompok kata yang sudah lazim dipakai bersama.,,

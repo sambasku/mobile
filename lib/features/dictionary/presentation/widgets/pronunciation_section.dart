@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,8 @@ class PronunciationSection extends ConsumerWidget {
     required this.audios,
     this.exampleId,
     this.compact = false,
-    this.sectionLabel = 'Pelafalan',
+    this.sectionLabel,
+
     /// Teks yang dilafalkan: lemma (audio kata) atau kalimat contoh.
     this.spokenText,
   });
@@ -32,7 +34,7 @@ class PronunciationSection extends ConsumerWidget {
   final List<WordAudio> audios;
   final String? exampleId;
   final bool compact;
-  final String sectionLabel;
+  final String? sectionLabel;
   final String? spokenText;
 
   @override
@@ -51,7 +53,8 @@ class PronunciationSection extends ConsumerWidget {
 
     final dialectsAsync = ref.watch(wordDialectsProvider(languageId));
     final dialectMap = {
-      for (final d in dialectsAsync.value ?? const <DialectOption>[]) d.id: d.name,
+      for (final d in dialectsAsync.value ?? const <DialectOption>[])
+        d.id: d.name,
     };
 
     return Column(
@@ -59,8 +62,9 @@ class PronunciationSection extends ConsumerWidget {
       children: [
         if (!compact) ...[
           Text(
-            sectionLabel,
-            style: context.theme.typography.sm.copyWith(
+            sectionLabel ??
+                AppLocalizations.of(context).dictPronunciationSection,
+            style: context.theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 0.06,
               color: context.theme.colors.mutedForeground,
@@ -74,7 +78,7 @@ class PronunciationSection extends ConsumerWidget {
             spoken,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: context.theme.typography.sm.copyWith(
+            style: context.theme.typography.body.sm.copyWith(
               fontWeight: FontWeight.w700,
               fontStyle: FontStyle.italic,
               height: 1.3,
@@ -97,8 +101,8 @@ class PronunciationSection extends ConsumerWidget {
           ),
         ] else if (!compact) ...[
           Text(
-            'Belum ada audio pelafalan kata',
-            style: context.theme.typography.sm.copyWith(
+            AppLocalizations.of(context).dictNoPronunciationAudio,
+            style: context.theme.typography.body.sm.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
           ),
@@ -119,7 +123,11 @@ class PronunciationSection extends ConsumerWidget {
                   ? null
                   : context.theme.colors.primary,
             ),
-            child: Text(compact ? 'Rekam audio contoh' : 'Rekam pelafalan'),
+            child: Text(
+              compact
+                  ? AppLocalizations.of(context).dictRecordExampleAudio
+                  : AppLocalizations.of(context).dictRecordPronunciation,
+            ),
           ),
         ],
       ],
@@ -132,7 +140,7 @@ class PronunciationSection extends ConsumerWidget {
     if (!auth.isAuth) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk rekam pelafalan'),
+        title: Text(AppLocalizations.of(context).dictLoginToRecord),
       );
       context.push('/login');
       return;

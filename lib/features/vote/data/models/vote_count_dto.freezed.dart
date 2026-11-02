@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'vote_count_dto.dart';
@@ -9,6 +9,7 @@ part of 'vote_count_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $VoteCountDtoCopyWith<VoteCountDto> get copyWith => _$VoteCountDtoCopyWithImpl<V
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteCountDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
+  final _this = this as VoteCountDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VoteCountDto&&(identical(other.targetType, _this.targetType) || other.targetType == _this.targetType)&&(identical(other.targetId, _this.targetId) || other.targetId == _this.targetId)&&(identical(other.upvotes, _this.upvotes) || other.upvotes == _this.upvotes)&&(identical(other.downvotes, _this.downvotes) || other.downvotes == _this.downvotes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,upvotes,downvotes);
+int get hashCode {
+  final _this = this as VoteCountDto;
+  return Object.hash(runtimeType,_this.targetType,_this.targetId,_this.upvotes,_this.downvotes);
+}
 
 @override
 String toString() {
-  return 'VoteCountDto(targetType: $targetType, targetId: $targetId, upvotes: $upvotes, downvotes: $downvotes)';
+  final _this = this as VoteCountDto;
+  return 'VoteCountDto(targetType: ${_this.targetType}, targetId: ${_this.targetId}, upvotes: ${_this.upvotes}, downvotes: ${_this.downvotes})';
 }
 
 
@@ -66,7 +72,7 @@ class _$VoteCountDtoCopyWithImpl<$Res>
 /// Create a copy of VoteCountDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? targetType = null,Object? targetId = null,Object? upvotes = null,Object? downvotes = null,}) {
-  return _then(_self.copyWith(
+  return _then(VoteCountDto(
 targetType: null == targetType ? _self.targetType : targetType // ignore: cast_nullable_to_non_nullable
 as String,targetId: null == targetId ? _self.targetId : targetId // ignore: cast_nullable_to_non_nullable
 as String,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteCountDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VoteCountDto&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.targetId, targetId) || other.targetId == targetId)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,targetType,targetId,upvotes,downvotes);
+int get hashCode {
+    return Object.hash(runtimeType,targetType,targetId,upvotes,downvotes);
+}
 
 @override
 String toString() {
-  return 'VoteCountDto(targetType: $targetType, targetId: $targetId, upvotes: $upvotes, downvotes: $downvotes)';
+    return 'VoteCountDto(targetType: $targetType, targetId: $targetId, upvotes: $upvotes, downvotes: $downvotes)';
 }
 
 

@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/shared/widgets/word_image_view.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+
+import '../../helpers/l10n_delegates.dart';
 
 WordImage _pending() => const WordImage(
   id: 'img-1',
@@ -13,17 +16,24 @@ WordImage _pending() => const WordImage(
 
 Future<void> _pump(WidgetTester tester, Brightness brightness) async {
   await tester.pumpWidget(
-    Material(
-      child: Theme(
+    MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      supportedLocales: appTestSupportedLocales,
+      locale: appTestLocale,
+      // Theme eksplisit di bawah MaterialApp: _PendingPlaceholder baca
+      // Theme.of(context).brightness (bukan themeMode MaterialApp).
+      home: Theme(
         data: ThemeData(brightness: brightness),
         child: FTheme(
           data: brightness == Brightness.dark
-              ? FThemes.zinc.dark.touch
-              : FThemes.zinc.light.touch,
-          child: SizedBox(
-            width: 320,
-            height: 200,
-            child: WordImageView(image: _pending(), revealed: false),
+              ? foruiPalettes['zinc']!.dark.touch
+              : foruiPalettes['zinc']!.light.touch,
+          child: Scaffold(
+            body: SizedBox(
+              width: 320,
+              height: 200,
+              child: WordImageView(image: _pending(), revealed: false),
+            ),
           ),
         ),
       ),

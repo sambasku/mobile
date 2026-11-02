@@ -42,7 +42,8 @@ void main() {
     expect(
       container.read(authStatusProvider).value?.isAuth ?? true,
       isFalse,
-      reason: '#127: stale isAuth=true membuat deck vote 401 '
+      reason:
+          '#127: stale isAuth=true membuat deck vote 401 '
           '"Token tidak disertakan" yang tak sembuh walau di-refresh',
     );
   });

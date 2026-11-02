@@ -28,11 +28,13 @@ class _FakeRepo implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => throw UnimplementedError();
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
+    List<({String documentType, String documentVersion})>? consents,
   }) async => throw UnimplementedError();
 
   @override
@@ -40,9 +42,8 @@ class _FakeRepo implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
-      Either.left(const AuthFailure('tidak dipakai pada test ini'));
-
+    List<({String documentType, String documentVersion})>? consents,
+  }) async => Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, void>> register({
@@ -107,5 +108,22 @@ void main() {
     final result = await usecase('budi@test.com');
     final failure = result.getLeft().toNullable();
     expect(failure?.errorCode, 'RATE_LIMITED');
+  });
+
+  test('akun OAuth - error_code OAUTH_ACCOUNT terdeteksi', () async {
+    final repo = _FakeRepo(
+      Either.left(
+        const AuthFailure(
+          'Akun kamu login dengan layanan OAuth Google, reset password tidak bisa diproses di sini. Atur password lewat Google.',
+          errorCode: 'OAUTH_ACCOUNT',
+        ),
+      ),
+    );
+    final usecase = ForgotPasswordUseCase(repo);
+
+    final result = await usecase('budi@test.com');
+    final failure = result.getLeft().toNullable();
+    expect(failure?.errorCode, AuthFailure.oauthAccount);
+    expect(failure?.isOAuthAccount, isTrue);
   });
 }

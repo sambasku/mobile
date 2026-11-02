@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'auth_providers_dto.dart';
@@ -9,13 +9,14 @@ part of 'auth_providers_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$AuthProvidersDto {
 
- List<AuthProviderItemDto> get providers;
+ List<AuthProviderItemDto> get providers;@JsonKey(name: 'has_password') bool get hasPassword;
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,21 @@ $AuthProvidersDtoCopyWith<AuthProvidersDto> get copyWith => _$AuthProvidersDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProvidersDto&&const DeepCollectionEquality().equals(other.providers, providers));
+  final _this = this as AuthProvidersDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProvidersDto&&const DeepCollectionEquality().equals(other.providers, _this.providers)&&(identical(other.hasPassword, _this.hasPassword) || other.hasPassword == _this.hasPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(providers));
+int get hashCode {
+  final _this = this as AuthProvidersDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.providers),_this.hasPassword);
+}
 
 @override
 String toString() {
-  return 'AuthProvidersDto(providers: $providers)';
+  final _this = this as AuthProvidersDto;
+  return 'AuthProvidersDto(providers: ${_this.providers}, hasPassword: ${_this.hasPassword})';
 }
 
 
@@ -48,7 +54,7 @@ abstract mixin class $AuthProvidersDtoCopyWith<$Res>  {
   factory $AuthProvidersDtoCopyWith(AuthProvidersDto value, $Res Function(AuthProvidersDto) _then) = _$AuthProvidersDtoCopyWithImpl;
 @useResult
 $Res call({
- List<AuthProviderItemDto> providers
+ List<AuthProviderItemDto> providers,@JsonKey(name: 'has_password') bool hasPassword
 });
 
 
@@ -65,10 +71,11 @@ class _$AuthProvidersDtoCopyWithImpl<$Res>
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? providers = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? providers = null,Object? hasPassword = null,}) {
+  return _then(AuthProvidersDto(
 providers: null == providers ? _self.providers : providers // ignore: cast_nullable_to_non_nullable
-as List<AuthProviderItemDto>,
+as List<AuthProviderItemDto>,hasPassword: null == hasPassword ? _self.hasPassword : hasPassword // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -153,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto() when $default != null:
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   return orElse();
 
 }
@@ -174,10 +181,10 @@ return $default(_that.providers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)  $default,) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto():
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +201,10 @@ return $default(_that.providers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<AuthProviderItemDto> providers)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<AuthProviderItemDto> providers, @JsonKey(name: 'has_password')  bool hasPassword)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthProvidersDto() when $default != null:
-return $default(_that.providers);case _:
+return $default(_that.providers,_that.hasPassword);case _:
   return null;
 
 }
@@ -209,7 +216,7 @@ return $default(_that.providers);case _:
 @JsonSerializable()
 
 class _AuthProvidersDto implements AuthProvidersDto {
-  const _AuthProvidersDto({final  List<AuthProviderItemDto> providers = const []}): _providers = providers;
+  const _AuthProvidersDto({ List<AuthProviderItemDto> providers = const [], @JsonKey(name: 'has_password') this.hasPassword = false}): _providers = providers;
   factory _AuthProvidersDto.fromJson(Map<String, dynamic> json) => _$AuthProvidersDtoFromJson(json);
 
  final  List<AuthProviderItemDto> _providers;
@@ -219,6 +226,7 @@ class _AuthProvidersDto implements AuthProvidersDto {
   return EqualUnmodifiableListView(_providers);
 }
 
+@override@JsonKey(name: 'has_password') final  bool hasPassword;
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProvidersDto&&const DeepCollectionEquality().equals(other._providers, _providers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProvidersDto&&const DeepCollectionEquality().equals(other.providers, _providers)&&(identical(other.hasPassword, hasPassword) || other.hasPassword == hasPassword));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_providers));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_providers),hasPassword);
+}
 
 @override
 String toString() {
-  return 'AuthProvidersDto(providers: $providers)';
+    return 'AuthProvidersDto(providers: $providers, hasPassword: $hasPassword)';
 }
 
 
@@ -253,7 +263,7 @@ abstract mixin class _$AuthProvidersDtoCopyWith<$Res> implements $AuthProvidersD
   factory _$AuthProvidersDtoCopyWith(_AuthProvidersDto value, $Res Function(_AuthProvidersDto) _then) = __$AuthProvidersDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<AuthProviderItemDto> providers
+ List<AuthProviderItemDto> providers,@JsonKey(name: 'has_password') bool hasPassword
 });
 
 
@@ -270,10 +280,11 @@ class __$AuthProvidersDtoCopyWithImpl<$Res>
 
 /// Create a copy of AuthProvidersDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? providers = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? providers = null,Object? hasPassword = null,}) {
   return _then(_AuthProvidersDto(
 providers: null == providers ? _self._providers : providers // ignore: cast_nullable_to_non_nullable
-as List<AuthProviderItemDto>,
+as List<AuthProviderItemDto>,hasPassword: null == hasPassword ? _self.hasPassword : hasPassword // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -297,16 +308,21 @@ $AuthProviderItemDtoCopyWith<AuthProviderItemDto> get copyWith => _$AuthProvider
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProviderItemDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+  final _this = this as AuthProviderItemDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthProviderItemDto&&(identical(other.provider, _this.provider) || other.provider == _this.provider)&&(identical(other.linkedAt, _this.linkedAt) || other.linkedAt == _this.linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+  final _this = this as AuthProviderItemDto;
+  return Object.hash(runtimeType,_this.provider,_this.linkedAt);
+}
 
 @override
 String toString() {
-  return 'AuthProviderItemDto(provider: $provider, linkedAt: $linkedAt)';
+  final _this = this as AuthProviderItemDto;
+  return 'AuthProviderItemDto(provider: ${_this.provider}, linkedAt: ${_this.linkedAt})';
 }
 
 
@@ -335,7 +351,7 @@ class _$AuthProviderItemDtoCopyWithImpl<$Res>
 /// Create a copy of AuthProviderItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? linkedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(AuthProviderItemDto(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,linkedAt: null == linkedAt ? _self.linkedAt : linkedAt // ignore: cast_nullable_to_non_nullable
 as String,
@@ -498,16 +514,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProviderItemDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthProviderItemDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+    return Object.hash(runtimeType,provider,linkedAt);
+}
 
 @override
 String toString() {
-  return 'AuthProviderItemDto(provider: $provider, linkedAt: $linkedAt)';
+    return 'AuthProviderItemDto(provider: $provider, linkedAt: $linkedAt)';
 }
 
 
@@ -563,16 +581,21 @@ $GoogleLinkRequestDtoCopyWith<GoogleLinkRequestDto> get copyWith => _$GoogleLink
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLinkRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken));
+  final _this = this as GoogleLinkRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLinkRequestDto&&(identical(other.idToken, _this.idToken) || other.idToken == _this.idToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idToken);
+int get hashCode {
+  final _this = this as GoogleLinkRequestDto;
+  return Object.hash(runtimeType,_this.idToken);
+}
 
 @override
 String toString() {
-  return 'GoogleLinkRequestDto(idToken: $idToken)';
+  final _this = this as GoogleLinkRequestDto;
+  return 'GoogleLinkRequestDto(idToken: ${_this.idToken})';
 }
 
 
@@ -601,7 +624,7 @@ class _$GoogleLinkRequestDtoCopyWithImpl<$Res>
 /// Create a copy of GoogleLinkRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? idToken = null,}) {
-  return _then(_self.copyWith(
+  return _then(GoogleLinkRequestDto(
 idToken: null == idToken ? _self.idToken : idToken // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -762,16 +785,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLinkRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLinkRequestDto&&(identical(other.idToken, idToken) || other.idToken == idToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idToken);
+int get hashCode {
+    return Object.hash(runtimeType,idToken);
+}
 
 @override
 String toString() {
-  return 'GoogleLinkRequestDto(idToken: $idToken)';
+    return 'GoogleLinkRequestDto(idToken: $idToken)';
 }
 
 
@@ -826,16 +851,21 @@ $GoogleLinkResponseDtoCopyWith<GoogleLinkResponseDto> get copyWith => _$GoogleLi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+  final _this = this as GoogleLinkResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GoogleLinkResponseDto&&(identical(other.provider, _this.provider) || other.provider == _this.provider)&&(identical(other.linkedAt, _this.linkedAt) || other.linkedAt == _this.linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+  final _this = this as GoogleLinkResponseDto;
+  return Object.hash(runtimeType,_this.provider,_this.linkedAt);
+}
 
 @override
 String toString() {
-  return 'GoogleLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
+  final _this = this as GoogleLinkResponseDto;
+  return 'GoogleLinkResponseDto(provider: ${_this.provider}, linkedAt: ${_this.linkedAt})';
 }
 
 
@@ -864,7 +894,7 @@ class _$GoogleLinkResponseDtoCopyWithImpl<$Res>
 /// Create a copy of GoogleLinkResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? provider = null,Object? linkedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(GoogleLinkResponseDto(
 provider: null == provider ? _self.provider : provider // ignore: cast_nullable_to_non_nullable
 as String,linkedAt: null == linkedAt ? _self.linkedAt : linkedAt // ignore: cast_nullable_to_non_nullable
 as String,
@@ -1027,16 +1057,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GoogleLinkResponseDto&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.linkedAt, linkedAt) || other.linkedAt == linkedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,provider,linkedAt);
+int get hashCode {
+    return Object.hash(runtimeType,provider,linkedAt);
+}
 
 @override
 String toString() {
-  return 'GoogleLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
+    return 'GoogleLinkResponseDto(provider: $provider, linkedAt: $linkedAt)';
 }
 
 
@@ -1092,16 +1124,21 @@ $UnlinkMessageDtoCopyWith<UnlinkMessageDto> get copyWith => _$UnlinkMessageDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnlinkMessageDto&&(identical(other.message, message) || other.message == message));
+  final _this = this as UnlinkMessageDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnlinkMessageDto&&(identical(other.message, _this.message) || other.message == _this.message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+  final _this = this as UnlinkMessageDto;
+  return Object.hash(runtimeType,_this.message);
+}
 
 @override
 String toString() {
-  return 'UnlinkMessageDto(message: $message)';
+  final _this = this as UnlinkMessageDto;
+  return 'UnlinkMessageDto(message: ${_this.message})';
 }
 
 
@@ -1130,7 +1167,7 @@ class _$UnlinkMessageDtoCopyWithImpl<$Res>
 /// Create a copy of UnlinkMessageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? message = null,}) {
-  return _then(_self.copyWith(
+  return _then(UnlinkMessageDto(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -1291,16 +1328,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UnlinkMessageDto&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UnlinkMessageDto&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'UnlinkMessageDto(message: $message)';
+    return 'UnlinkMessageDto(message: $message)';
 }
 
 

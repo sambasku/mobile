@@ -22,6 +22,7 @@ FeedActivityItem? mapFeedActivityItem(Map<String, dynamic> map) {
       username: m['username']?.toString(),
       displayName: m['display_name']?.toString(),
       avatarUrl: _nonEmptyUrl(m['avatar_url']),
+      isVerifier: m['is_verifier'] == true,
     );
   }
 

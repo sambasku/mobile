@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../shared/reference/reference_data.dart';
+import '../../../../shared/widgets/kbbi_source_notice.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../data/review_correct_body.dart';
 
@@ -141,8 +143,8 @@ class ReviewMeaningCard extends ConsumerWidget {
             Row(
               children: [
                 Text(
-                  'Makna ${index + 1}',
-                  style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+                  AppLocalizations.of(context).reviewMeaningNumber(index + 1),
+                  style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
                 Flexible(
@@ -154,8 +156,8 @@ class ReviewMeaningCard extends ConsumerWidget {
                           : FBadgeVariant.destructive,
                       child: Text(
                         draft.hasWordClass
-                            ? (classLabel ?? 'Kelas kata')
-                            : 'Pilih kelas kata',
+                            ? (classLabel ?? AppLocalizations.of(context).suggestWordClassLabelShort)
+                            : AppLocalizations.of(context).reviewMeaningPickWordClass,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -165,7 +167,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                 FButton.icon(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
-                  semanticsLabel: 'Tukar definisi dan terjemahan',
+                  semanticsLabel: AppLocalizations.of(context).reviewMeaningSwapDefinition,
                   onPress: busy ? null : onSwap,
                   child: const Icon(FLucideIcons.arrowUpDown),
                 ),
@@ -173,7 +175,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                   FButton.icon(
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.sm,
-                    semanticsLabel: 'Hapus makna ${index + 1}',
+                    semanticsLabel: AppLocalizations.of(context).reviewMeaningDelete(index + 1),
                     onPress: busy ? null : onRemove,
                     child: Icon(
                       FLucideIcons.trash2,
@@ -185,8 +187,8 @@ class ReviewMeaningCard extends ConsumerWidget {
             if (missingClass) ...[
               const Gap(4),
               Text(
-                'Kelas kata wajib dipilih',
-                style: theme.typography.xs.copyWith(color: theme.colors.destructive),
+                AppLocalizations.of(context).reviewMeaningWordClassRequired,
+                style: theme.typography.body.xs.copyWith(color: theme.colors.destructive),
               ),
             ],
             Padding(
@@ -200,7 +202,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                       controller: draft.definitionCtrl,
                     ),
                     enabled: !busy,
-                    label: const Text('Definisi'),
+                    label: Text(AppLocalizations.of(context).suggestDefinitionLabel),
                   ),
                   const Gap(8),
                   FTextField(
@@ -208,9 +210,9 @@ class ReviewMeaningCard extends ConsumerWidget {
                       controller: draft.translationCtrl,
                     ),
                     enabled: !busy,
-                    label: const Text('Terjemahan'),
-                    description: const Text(
-                      'Tekan icon buku untuk mencari definisi di KBBI',
+                    label: Text(AppLocalizations.of(context).historyFieldTranslation),
+                    description: Text(
+                      AppLocalizations.of(context).reviewCorrectKbbiHint,
                     ),
                     // Label aksesibilitas ada di description field. Node tombol
                     // sendiri, saat kartu masih di bawah lipatan, dapat rect
@@ -226,10 +228,12 @@ class ReviewMeaningCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  const Gap(8),
+                  const KbbiSourceNotice(),
                   const Gap(12),
                   Text(
-                    'Contoh kalimat',
-                    style: theme.typography.xs.copyWith(
+                    AppLocalizations.of(context).reviewMeaningExampleSection,
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                       fontWeight: FontWeight.w600,
                     ),
@@ -252,7 +256,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                 size: FButtonSizeVariant.sm,
                 onPress: busy ? null : onAddExample,
                 prefix: const Icon(FLucideIcons.plus),
-                child: const Text('Tambah contoh'),
+                child: Text(AppLocalizations.of(context).reviewMeaningAddExample),
               ),
             ),
           ],
@@ -285,7 +289,7 @@ class _ExampleRow extends StatelessWidget {
               FTextField(
                 control: FTextFieldControl.managed(controller: draft.sourceCtrl),
                 enabled: !busy,
-                hint: 'Kalimat Sambas',
+                hint: AppLocalizations.of(context).reviewMeaningExampleSambas,
                 minLines: 1,
                 maxLines: 3,
               ),
@@ -293,7 +297,7 @@ class _ExampleRow extends StatelessWidget {
               FTextField(
                 control: FTextFieldControl.managed(controller: draft.targetCtrl),
                 enabled: !busy,
-                hint: 'Terjemahan (opsional)',
+                hint: AppLocalizations.of(context).reviewMeaningExampleTranslation,
                 minLines: 1,
                 maxLines: 3,
               ),
@@ -303,7 +307,7 @@ class _ExampleRow extends StatelessWidget {
         FButton.icon(
           variant: FButtonVariant.ghost,
           size: FButtonSizeVariant.sm,
-          semanticsLabel: 'Hapus contoh',
+          semanticsLabel: AppLocalizations.of(context).reviewMeaningDeleteExample,
           onPress: busy ? null : onRemove,
           child: const Icon(FLucideIcons.x),
         ),

@@ -3,13 +3,18 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../../domain/entities/comment_edit_history.dart';
+import '../../domain/entities/comment_image.dart';
 import '../../domain/entities/comment_page.dart';
 import '../../domain/entities/word_comment.dart';
 import '../../domain/failures/comment_failure.dart';
 import '../../domain/repositories/comment_repository.dart';
 import '../datasources/comment_remote_datasource.dart';
 import '../models/comment_dto.dart';
+import '../models/comment_image_dto.dart';
 import '../models/create_comment_request_dto.dart';
+import '../models/update_comment_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class CommentRepositoryImpl implements CommentRepository {
   CommentRepositoryImpl(this._remoteDatasource, this._dio);
@@ -35,7 +40,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (response.success == false) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal memuat komentar',
+            response.message ?? l10n.commentLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -58,20 +63,60 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<CommentUploadCredentials> getUploadToken() async {
+    try {
+      final response = await _remoteDatasource.getUploadToken('/comments');
+      if (response.success == false || response.data == null) {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/api/v1/comments/upload-token'),
+          message: response.message ?? l10n.commentPhotoUploadFailed,
+        );
+      }
+      final dto = response.data!;
+      return CommentUploadCredentials(
+        token: dto.token,
+        signature: dto.signature,
+        expire: dto.expire,
+        publicKey: dto.publicKey,
+        uploadEndpoint: dto.uploadEndpoint,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 503) {
+        final code = (e.response?.data is Map)
+            ? (e.response!.data as Map)['error_code']
+            : null;
+        if (code == 'IMAGE_UPLOAD_UNAVAILABLE') {
+          throw const CommentImageUploadUnavailable();
+        }
+      }
+      rethrow;
+    }
+  }
+
+  @override
   Future<Either<CommentFailure, WordComment>> create({
     required String wordId,
     required String body,
+    CommentImageStaging? image,
   }) async {
     try {
       final response = await _remoteDatasource.create(
         wordId,
-        CreateCommentRequestDto(body: body),
+        CreateCommentRequestDto(
+          body: body,
+          image: image == null
+              ? null
+              : CreateCommentImageInputDto(
+                  url: image.url,
+                  providerFileId: image.providerFileId,
+                ),
+        ),
       );
 
       if (response.success == false || response.data == null) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal mengirim komentar',
+            response.message ?? l10n.commentSendFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -128,7 +173,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (envelope == null || envelope['success'] != true) {
         return Either.left(
           CommentFailure(
-            (envelope?['message'] as String?) ?? 'Gagal mengirim rekaman suara',
+            (envelope?['message'] as String?) ?? l10n.commentVoiceFailed,
             errorCode: envelope?['error_code'] as String?,
           ),
         );
@@ -152,6 +197,95 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<Either<CommentFailure, WordComment>> update({
+    required String commentId,
+    required String body,
+  }) async {
+    try {
+      final response = await _remoteDatasource.update(
+        commentId,
+        UpdateCommentRequestDto(body: body),
+      );
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          CommentFailure(
+            response.message ?? l10n.commentEditFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      return Either.right(_toEntity(response.data!));
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error, fallback: l10n.commentEditFailed));
+    } catch (error) {
+      return Either.left(CommentFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<CommentFailure, CommentEditHistory>> editHistory(
+    String commentId,
+  ) async {
+    try {
+      final response = await _remoteDatasource.editHistory(commentId);
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          CommentFailure(
+            response.message ?? l10n.commentEditHistoryFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      final raw = response.data;
+      if (raw is! Map) {
+        return Either.left(
+          CommentFailure(l10n.commentEditHistoryFailed),
+        );
+      }
+      return Either.right(
+        _parseEditHistory(Map<String, dynamic>.from(raw)),
+      );
+    } on DioException catch (error) {
+      return Either.left(
+        _mapDio(error, fallback: l10n.commentEditHistoryFailed),
+      );
+    } catch (error) {
+      return Either.left(CommentFailure(error.toString()));
+    }
+  }
+
+  CommentEditHistory _parseEditHistory(Map<String, dynamic> data) {
+    final current = data['current'];
+    final revisionsRaw = data['revisions'];
+    final revisions = <CommentEditRevision>[];
+    if (revisionsRaw is List) {
+      for (final raw in revisionsRaw) {
+        if (raw is! Map) continue;
+        final map = Map<String, dynamic>.from(raw);
+        final body = map['body']?.toString();
+        if (body == null || body.isEmpty) continue;
+        revisions.add(
+          CommentEditRevision(
+            body: body,
+            editorId: map['editor_id']?.toString() ?? '',
+            createdAt: map['created_at']?.toString() ?? '',
+          ),
+        );
+      }
+    }
+    if (current is Map) {
+      final c = Map<String, dynamic>.from(current);
+      return CommentEditHistory(
+        currentBody: c['body']?.toString(),
+        currentUpdatedAt: c['updated_at']?.toString(),
+        isEdited: c['is_edited'] == true,
+        revisions: revisions,
+      );
+    }
+    return CommentEditHistory(revisions: revisions);
+  }
+
+  @override
   Future<Either<CommentFailure, void>> delete(String commentId) async {
     try {
       final response = await _remoteDatasource.delete(commentId);
@@ -159,7 +293,7 @@ class CommentRepositoryImpl implements CommentRepository {
       if (response.success == false) {
         return Either.left(
           CommentFailure(
-            response.message ?? 'Gagal menghapus komentar',
+            response.message ?? l10n.commentDeleteFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -184,10 +318,19 @@ class CommentRepositoryImpl implements CommentRepository {
         audioUrl: dto.audioUrl,
         audioMimeType: dto.audioMimeType,
         audioDurationMs: dto.audioDurationMs,
+        image: dto.image == null
+            ? null
+            : CommentImage(
+                status: dto.image!.status,
+                publicUrl: dto.image!.publicUrl,
+                contentWarnings: dto.image!.contentWarnings,
+              ),
         createdAt: dto.createdAt,
         status: dto.status,
         upvotes: dto.upvotes,
         downvotes: dto.downvotes,
+        isEdited: dto.isEdited,
+        updatedAt: dto.updatedAt,
       );
 
   CommentFailure _mapDio(DioException error, {required String fallback}) {
@@ -212,7 +355,7 @@ class CommentRepositoryImpl implements CommentRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak komentar. Coba lagi nanti.';
+      return l10n.commentRateLimited;
     }
     if (statusCode == 401) {
       return 'Sesi berakhir, silakan masuk kembali';
@@ -221,8 +364,8 @@ class CommentRepositoryImpl implements CommentRepository {
       return 'Kamu tidak bisa menghapus komentar ini';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan, coba lagi';
+    return l10n.commonGenericError;
   }
 }

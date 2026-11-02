@@ -5,6 +5,7 @@ import '../../domain/entities/my_comment_item.dart';
 import '../../domain/entities/my_comment_page.dart';
 import '../../domain/failures/my_comment_failure.dart';
 import '../../domain/repositories/my_comment_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 
 MyCommentItem parseMyCommentItem(Map<String, dynamic> map) {
   final lemma = map['word_lemma']?.toString();
@@ -66,10 +67,10 @@ class MyCommentRepositoryImpl implements MyCommentRepository {
     final data = error.response?.data;
     if (data is Map) {
       return MyCommentFailure(
-        data['message']?.toString() ?? 'Gagal memuat komentar',
+        data['message']?.toString() ?? l10n.myCommentsLoadFailed,
         errorCode: data['error_code']?.toString(),
       );
     }
-    return MyCommentFailure('Gagal memuat komentar');
+    return MyCommentFailure(l10n.myCommentsLoadFailed);
   }
 }

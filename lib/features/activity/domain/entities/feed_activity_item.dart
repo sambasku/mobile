@@ -17,6 +17,12 @@ enum FeedActivityKind {
   voteUp,
   voteDown,
   announcement,
+  placePhoto,
+  placeListing,
+  event,
+  usaha,
+  culinary,
+  pantun,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -55,6 +61,18 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.voteDown;
     case 'announcement':
       return FeedActivityKind.announcement;
+    case 'place_photo':
+      return FeedActivityKind.placePhoto;
+    case 'place_listing':
+      return FeedActivityKind.placeListing;
+    case 'event':
+      return FeedActivityKind.event;
+    case 'usaha':
+      return FeedActivityKind.usaha;
+    case 'culinary':
+      return FeedActivityKind.culinary;
+    case 'pantun':
+      return FeedActivityKind.pantun;
     default:
       return null;
   }
@@ -77,11 +95,17 @@ List<(String, bool)> splitQuotedLemma(String body) {
 }
 
 class FeedActivityActor {
-  const FeedActivityActor({this.username, this.displayName, this.avatarUrl});
+  const FeedActivityActor({
+    this.username,
+    this.displayName,
+    this.avatarUrl,
+    this.isVerifier = false,
+  });
 
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
 }
 
 /// #144: arah pencarian search-miss (lemma = kata Sambas, translation = kata

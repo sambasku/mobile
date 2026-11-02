@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/failures/review_failure.dart';
 import '../providers/review_suggestions_providers.dart';
+import '../../../../shared/utils/message_dialog.dart';
 
 /// Detail usulan edit + Setujui / Tolak.
 class ReviewSuggestionDetailPage extends ConsumerWidget {
@@ -22,14 +24,14 @@ class ReviewSuggestionDetailPage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Detail usulan edit'),
+        title: Text(AppLocalizations.of(context).reviewSuggestionDetailTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
         loading: () => const Center(child: FCircularProgress()),
         error: (error, _) => Center(
           child: Text(
-            error is ReviewFailure ? error.message : 'Gagal memuat detail',
+            error is ReviewFailure ? error.message : AppLocalizations.of(context).commonLoadFailed,
             textAlign: TextAlign.center,
           ),
         ),
@@ -73,7 +75,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
         invalidateReviewSuggestions(ref);
         showFToast(
           context: context,
-          title: const Text('Usulan disetujui'),
+          title: Text(AppLocalizations.of(context).reviewSuggestionApprovedToast),
         );
         context.pop();
       },
@@ -83,43 +85,37 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
   Future<void> _reject() async {
     if (_busy || !detail.isPending) return;
     final controller = TextEditingController();
-    final comment = await showFDialog<String>(
+    final comment = await showFMessageDialog<String>(
       context: context,
-      builder: (dialogContext, style, animation) {
-        return FDialog(
-          style: style,
-          animation: animation,
-          title: const Text('Tolak usulan'),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Berikan alasan penolakan untuk kontributor.'),
-              const Gap(12),
-              FTextField(
-                control: FTextFieldControl.managed(controller: controller),
-                label: const Text('Alasan'),
-                maxLines: 3,
-              ),
-            ],
+      title: Text(AppLocalizations.of(context).reviewSuggestionRejectTitle),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(AppLocalizations.of(context).reviewSuggestionRejectBody),
+          Gap(12),
+          FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            label: Text(AppLocalizations.of(context).commonReason),
+            maxLines: 3,
           ),
-          actions: [
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            FButton(
-              onPress: () {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                Navigator.of(dialogContext).pop(text);
-              },
-              child: const Text('Tolak'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: Text(AppLocalizations.of(context).commonCancel),
+        ),
+        FButton(
+          onPress: () {
+            final text = controller.text.trim();
+            if (text.isEmpty) return;
+            Navigator.of(dialogContext).pop(text);
+          },
+          child: Text(AppLocalizations.of(context).commonReject),
+        ),
+      ],
     );
     controller.dispose();
     if (!mounted || comment == null || comment.trim().isEmpty) return;
@@ -141,7 +137,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
         invalidateReviewSuggestions(ref);
         showFToast(
           context: context,
-          title: const Text('Usulan ditolak'),
+          title: Text(AppLocalizations.of(context).reviewSuggestionRejectedToast),
         );
         context.pop();
       },
@@ -155,67 +151,81 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
       children: [
         Text(
           detail.wordLemma,
-          style: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
+          style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(4),
         Text(
-          'Dari ${detail.contributorLabel} · ${formatDateTimeIso(detail.createdAt)}',
-          style: theme.typography.sm.copyWith(
+          AppLocalizations.of(context).reviewSuggestionFrom(detail.contributorLabel ?? '-', formatDateTimeIso(detail.createdAt)),
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
           ),
         ),
         const Gap(12),
         Text(
-          'Alasan: ${detail.reason}',
-          style: theme.typography.sm,
+          AppLocalizations.of(context).reviewSuggestionReason(detail.reason),
+          style: theme.typography.body.sm,
         ),
         const Gap(20),
         Text(
-          'Perbandingan',
-          style: theme.typography.md.copyWith(fontWeight: FontWeight.w600),
+          AppLocalizations.of(context).reviewSuggestionComparison,
+          style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w600),
         ),
         const Gap(8),
         if (detail.lemmaDiff.changed)
           _DiffRow(
-            label: 'Lemma',
+            label: AppLocalizations.of(context).historyFieldLemma,
             current: detail.lemmaDiff.current,
             proposed: detail.lemmaDiff.proposed,
           ),
         if (detail.notesDiff.changed)
           _DiffRow(
-            label: 'Catatan',
+            label: AppLocalizations.of(context).historyFieldNotes,
             current: detail.notesDiff.current,
             proposed: detail.notesDiff.proposed,
           ),
+        if (detail.wordTypeDiff.changed)
+          _DiffRow(
+            label: AppLocalizations.of(context).reviewSuggestionEntryType,
+            current: detail.wordTypeDiff.current,
+            proposed: detail.wordTypeDiff.proposed,
+          ),
+        for (final klass in detail.classDiffs)
+          _DiffRow(
+            label: AppLocalizations.of(context).suggestWordClassLabelShort,
+            current: klass.current,
+            proposed: klass.proposed,
+          ),
         if (detail.meaningsChanged > 0)
-          _CountRow(label: 'Makna', count: detail.meaningsChanged),
+          _CountRow(label: AppLocalizations.of(context).shareSectionMeaning, count: detail.meaningsChanged),
         if (detail.categoriesAdded > 0 || detail.categoriesRemoved > 0)
           _CountRow(
-            label: 'Kategori',
+            label: AppLocalizations.of(context).historyFieldCategory,
             count: detail.categoriesAdded + detail.categoriesRemoved,
             detail:
                 '+${detail.categoriesAdded} / -${detail.categoriesRemoved}',
           ),
         if (detail.relationsAdded > 0 || detail.relationsRemoved > 0)
           _CountRow(
-            label: 'Relasi',
+            label: AppLocalizations.of(context).historyFieldRelation,
             count: detail.relationsAdded + detail.relationsRemoved,
             detail: '+${detail.relationsAdded} / -${detail.relationsRemoved}',
           ),
         if (detail.variantsAdded > 0 || detail.variantsRemoved > 0)
           _CountRow(
-            label: 'Varian',
+            label: AppLocalizations.of(context).historyFieldVariant,
             count: detail.variantsAdded + detail.variantsRemoved,
             detail: '+${detail.variantsAdded} / -${detail.variantsRemoved}',
           ),
         if (detail.imagesAdded > 0 || detail.imagesRemoved > 0)
           _CountRow(
-            label: 'Gambar',
+            label: AppLocalizations.of(context).historyFieldImage,
             count: detail.imagesAdded + detail.imagesRemoved,
             detail: '+${detail.imagesAdded} / -${detail.imagesRemoved}',
           ),
         if (!detail.lemmaDiff.changed &&
             !detail.notesDiff.changed &&
+            !detail.wordTypeDiff.changed &&
+            detail.classDiffs.isEmpty &&
             detail.meaningsChanged == 0 &&
             detail.categoriesAdded == 0 &&
             detail.categoriesRemoved == 0 &&
@@ -226,8 +236,8 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
             detail.imagesAdded == 0 &&
             detail.imagesRemoved == 0)
           Text(
-            'Tidak ada diff ringkas',
-            style: theme.typography.sm.copyWith(
+            AppLocalizations.of(context).reviewSuggestionNoDiff,
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -237,26 +247,26 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
-                'Setujui akan mempromosikan semua gambar staging (ImageKit) ke GitHub. Sensor/tolak per gambar hanya di console.',
-                style: theme.typography.sm.copyWith(
+                AppLocalizations.of(context).reviewSuggestionApproveNote,
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
               ),
             ),
           FButton(
-            onPress: _busy ? null : _approve,
-            child: Text(_busy ? 'Memproses...' : 'Setujui'),
+            variant: FButtonVariant.outline,
+            onPress: _busy ? null : _reject,
+            child: Text(AppLocalizations.of(context).commonReject),
           ),
           const Gap(8),
           FButton(
-            variant: FButtonVariant.outline,
-            onPress: _busy ? null : _reject,
-            child: const Text('Tolak'),
+            onPress: _busy ? null : _approve,
+            child: Text(_busy ? AppLocalizations.of(context).reviewHistoryProcessing : AppLocalizations.of(context).commonApprove),
           ),
         ] else
           Text(
-            'Status: ${detail.status}',
-            style: theme.typography.sm.copyWith(
+            AppLocalizations.of(context).reviewSuggestionStatus(detail.status),
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -286,18 +296,22 @@ class _DiffRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: theme.typography.sm.copyWith(fontWeight: FontWeight.w600),
+            style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
           Text(
-            'Sekarang: ${current?.trim().isNotEmpty == true ? current : '-'}',
-            style: theme.typography.sm.copyWith(
+            current?.trim().isNotEmpty == true
+          ? AppLocalizations.of(context).reviewSuggestionCurrent(current!)
+          : AppLocalizations.of(context).reviewSuggestionCurrentEmpty,
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
           Text(
-            'Usulan: ${proposed?.trim().isNotEmpty == true ? proposed : '-'}',
-            style: theme.typography.sm,
+            proposed?.trim().isNotEmpty == true
+          ? AppLocalizations.of(context).reviewSuggestionProposed(proposed!)
+          : AppLocalizations.of(context).reviewSuggestionProposedEmpty,
+            style: theme.typography.body.sm,
           ),
         ],
       ),
@@ -322,8 +336,8 @@ class _CountRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
-        detail != null ? '$label: $detail' : '$label: $count perubahan',
-        style: theme.typography.sm,
+        detail != null ? AppLocalizations.of(context).reviewSuggestionDiffValue(label, detail!) : AppLocalizations.of(context).reviewSuggestionDiffCount(label, '$count'),
+        style: theme.typography.body.sm,
       ),
     );
   }

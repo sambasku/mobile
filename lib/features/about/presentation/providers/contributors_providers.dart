@@ -15,10 +15,23 @@ ContributorsRemoteDatasource contributorsRemoteDatasource(Ref ref) =>
 @riverpod
 Future<List<ContributorEntry>?> contributors(Ref ref) async {
   try {
-    return await ref
+    final list = await ref
         .watch(contributorsRemoteDatasourceProvider)
         .fetchContributors();
+    return list;
   } catch (_) {
     return null;
   }
+}
+
+/// Map id → username untuk lookup kredit internal (penulis artikel/foto).
+/// Null = offline/JSON rusak. Lookup lokal, tanpa fetch tambahan.
+@riverpod
+Future<Map<String, String>?> contributorsIdToUsername(Ref ref) async {
+  final list = await ref.watch(contributorsProvider.future);
+  if (list == null) return null;
+  return {
+    for (final c in list)
+      if (c.username != null) c.id: c.username!,
+  };
 }

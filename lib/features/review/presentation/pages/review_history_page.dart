@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../review_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -39,17 +41,17 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var i = 0; i < reviewHistoryStatusFilters.length; i++) ...[
+            for (var i = 0; i < reviewHistoryStatusFilters(AppLocalizations.of(context)).length; i++) ...[
               if (i > 0) const Gap(6),
               GestureDetector(
                 onTap: () => ref
                     .read(reviewHistoryControllerProvider.notifier)
-                    .setStatusFilter(reviewHistoryStatusFilters[i].value),
+                    .setStatusFilter(reviewHistoryStatusFilters(AppLocalizations.of(context))[i].value),
                 child: FBadge(
-                  variant: filter == reviewHistoryStatusFilters[i].value
+                  variant: filter == reviewHistoryStatusFilters(AppLocalizations.of(context))[i].value
                       ? FBadgeVariant.primary
                       : FBadgeVariant.secondary,
-                  child: Text(reviewHistoryStatusFilters[i].label),
+                  child: Text(reviewHistoryStatusFilters(AppLocalizations.of(context))[i].label),
                 ),
               ),
             ],
@@ -66,7 +68,7 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Riwayat verifikasi'),
+        title: Text(AppLocalizations.of(context).reviewHistoryTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: Column(
@@ -91,8 +93,8 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
                       Text(
                         error is ReviewFailure
                             ? error.message
-                            : 'Gagal memuat riwayat',
-                        style: theme.typography.sm.copyWith(
+                            : AppLocalizations.of(context).reviewHistoryLoadFailed,
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -102,7 +104,7 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
                         variant: FButtonVariant.outline,
                         onPress: () =>
                             ref.invalidate(reviewHistoryControllerProvider),
-                        child: const Text('Coba lagi'),
+                        child: Text(AppLocalizations.of(context).commonRetry),
                       ),
                     ],
                   ),
@@ -110,8 +112,8 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
               ),
               data: (state) {
                 final emptyMessage = filter == null
-                    ? 'Belum ada keputusan verifikasi'
-                    : 'Tidak ada keputusan dengan status ini';
+                    ? AppLocalizations.of(context).reviewHistoryEmpty
+                    : AppLocalizations.of(context).reviewHistoryEmptyFiltered;
 
                 if (state.items.isEmpty) {
                   return RefreshIndicator(
@@ -125,7 +127,7 @@ class _ReviewHistoryPageState extends ConsumerState<ReviewHistoryPage> {
                             child: Center(
                               child: Text(
                                 emptyMessage,
-                                style: theme.typography.sm.copyWith(
+                                style: theme.typography.body.sm.copyWith(
                                   color: theme.colors.mutedForeground,
                                 ),
                                 textAlign: TextAlign.center,
@@ -181,7 +183,7 @@ class _HistoryTile extends StatelessWidget with FTileMixin {
         TextSpan(
           children: [
             TextSpan(
-              text: reviewStatusLabel(decision),
+              text: reviewStatusLabel(decision, AppLocalizations.of(context)),
               style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
             ),
             if (date.isNotEmpty) TextSpan(text: ' · $date'),
@@ -202,7 +204,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -213,7 +215,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -240,8 +242,8 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: const Text('Lemma contoh'),
-      subtitle: const Text('Disetujui · 21 Sep 2026 00:00'),
+      title: Text(AppLocalizations.of(context).reviewSkeletonLemma),
+      subtitle: Text(AppLocalizations.of(context).reviewHistorySkeletonMeta),
     );
   }
 }

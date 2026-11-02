@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'legal_webview_policy.dart';
@@ -54,10 +54,8 @@ class _LegalWebViewPageState extends State<LegalWebViewPage> {
 
   Future<void> _openExternal(String url) async {
     final uri = Uri.parse(url);
-    // Best-effort: gagal buka eksternal → diam (tetap preventNavigation).
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {}
+    // Best-effort: gagal buka eksternal -> diam (tetap preventNavigation).
+    await launchExternalUrl(uri);
   }
 
   @override

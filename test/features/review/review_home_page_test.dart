@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -11,6 +11,8 @@ import 'package:sambasku_mobile/features/review/presentation/providers/discussio
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_suggestions_providers.dart';
 import 'package:sambasku_mobile/features/review/review_router.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   // Gate tile mengikuti canReviewQueue, sama seperti tile antrean lain:
@@ -117,12 +119,16 @@ Future<GoRouter> pumpHome(WidgetTester tester, String? role) async {
         discussionReviewHasPendingProvider.overrideWith((ref) async => false),
       ],
       child: MaterialApp.router(
-        theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-        localizationsDelegates: FLocalizations.localizationsDelegates,
-        supportedLocales: FLocalizations.supportedLocales,
+        theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+        localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+        supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
         routerConfig: router,
         builder: (context, child) => FTheme(
-          data: FThemes.zinc.light.touch,
+          data: foruiPalettes['zinc']!.light.touch,
           child: child!,
         ),
       ),

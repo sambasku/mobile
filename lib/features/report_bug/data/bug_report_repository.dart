@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../domain/bug_report_models.dart';
+import '../../../core/i18n/l10n.dart';
 
 class BugReportRepository {
   BugReportRepository(this._dio);
@@ -17,7 +18,7 @@ class BugReportRepository {
       if (data is! Map<String, dynamic>) {
         throw DioException(
           requestOptions: res.requestOptions,
-          message: 'Kredensial upload tidak lengkap',
+          message: l10n.reportBugUploadCredsIncomplete,
         );
       }
       return UploadCredentials.fromJson(data);
@@ -53,7 +54,7 @@ class BugReportRepository {
     if (data is! Map<String, dynamic>) {
       throw DioException(
         requestOptions: res.requestOptions,
-        message: 'Response laporan tidak lengkap',
+        message: l10n.reportBugResponseIncomplete,
       );
     }
     return BugReportSubmitResult.fromJson(data);

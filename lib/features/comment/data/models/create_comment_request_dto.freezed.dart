@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'create_comment_request_dto.dart';
@@ -9,13 +9,14 @@ part of 'create_comment_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$CreateCommentRequestDto {
 
- String get body;
+ String get body;@JsonKey(includeIfNull: false) CreateCommentImageInputDto? get image;
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,21 @@ $CreateCommentRequestDtoCopyWith<CreateCommentRequestDto> get copyWith => _$Crea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateCommentRequestDto&&(identical(other.body, body) || other.body == body));
+  final _this = this as CreateCommentRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateCommentRequestDto&&(identical(other.body, _this.body) || other.body == _this.body)&&(identical(other.image, _this.image) || other.image == _this.image));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,body);
+int get hashCode {
+  final _this = this as CreateCommentRequestDto;
+  return Object.hash(runtimeType,_this.body,_this.image);
+}
 
 @override
 String toString() {
-  return 'CreateCommentRequestDto(body: $body)';
+  final _this = this as CreateCommentRequestDto;
+  return 'CreateCommentRequestDto(body: ${_this.body}, image: ${_this.image})';
 }
 
 
@@ -48,11 +54,11 @@ abstract mixin class $CreateCommentRequestDtoCopyWith<$Res>  {
   factory $CreateCommentRequestDtoCopyWith(CreateCommentRequestDto value, $Res Function(CreateCommentRequestDto) _then) = _$CreateCommentRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String body
+ String body,@JsonKey(includeIfNull: false) CreateCommentImageInputDto? image
 });
 
 
-
+$CreateCommentImageInputDtoCopyWith<$Res>? get image;
 
 }
 /// @nodoc
@@ -65,13 +71,26 @@ class _$CreateCommentRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? body = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? body = null,Object? image = freezed,}) {
+  return _then(CreateCommentRequestDto(
 body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,
+as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as CreateCommentImageInputDto?,
   ));
 }
+/// Create a copy of CreateCommentRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CreateCommentImageInputDtoCopyWith<$Res>? get image {
+    if (_self.image == null) {
+    return null;
+  }
 
+  return $CreateCommentImageInputDtoCopyWith<$Res>(_self.image!, (value) {
+    return _then(_self.copyWith(image: value));
+  });
+}
 }
 
 
@@ -153,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String body)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto() when $default != null:
-return $default(_that.body);case _:
+return $default(_that.body,_that.image);case _:
   return orElse();
 
 }
@@ -174,10 +193,10 @@ return $default(_that.body);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String body)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)  $default,) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto():
-return $default(_that.body);case _:
+return $default(_that.body,_that.image);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +213,10 @@ return $default(_that.body);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String body)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String body, @JsonKey(includeIfNull: false)  CreateCommentImageInputDto? image)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateCommentRequestDto() when $default != null:
-return $default(_that.body);case _:
+return $default(_that.body,_that.image);case _:
   return null;
 
 }
@@ -209,10 +228,11 @@ return $default(_that.body);case _:
 @JsonSerializable()
 
 class _CreateCommentRequestDto implements CreateCommentRequestDto {
-  const _CreateCommentRequestDto({required this.body});
+  const _CreateCommentRequestDto({this.body = '', @JsonKey(includeIfNull: false) this.image});
   factory _CreateCommentRequestDto.fromJson(Map<String, dynamic> json) => _$CreateCommentRequestDtoFromJson(json);
 
-@override final  String body;
+@override@JsonKey() final  String body;
+@override@JsonKey(includeIfNull: false) final  CreateCommentImageInputDto? image;
 
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateCommentRequestDto&&(identical(other.body, body) || other.body == body));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateCommentRequestDto&&(identical(other.body, body) || other.body == body)&&(identical(other.image, image) || other.image == image));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,body);
+int get hashCode {
+    return Object.hash(runtimeType,body,image);
+}
 
 @override
 String toString() {
-  return 'CreateCommentRequestDto(body: $body)';
+    return 'CreateCommentRequestDto(body: $body, image: $image)';
 }
 
 
@@ -247,11 +269,11 @@ abstract mixin class _$CreateCommentRequestDtoCopyWith<$Res> implements $CreateC
   factory _$CreateCommentRequestDtoCopyWith(_CreateCommentRequestDto value, $Res Function(_CreateCommentRequestDto) _then) = __$CreateCommentRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String body
+ String body,@JsonKey(includeIfNull: false) CreateCommentImageInputDto? image
 });
 
 
-
+@override $CreateCommentImageInputDtoCopyWith<$Res>? get image;
 
 }
 /// @nodoc
@@ -264,14 +286,27 @@ class __$CreateCommentRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateCommentRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? body = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? body = null,Object? image = freezed,}) {
   return _then(_CreateCommentRequestDto(
 body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,
+as String,image: freezed == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as CreateCommentImageInputDto?,
   ));
 }
 
+/// Create a copy of CreateCommentRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CreateCommentImageInputDtoCopyWith<$Res>? get image {
+    if (_self.image == null) {
+    return null;
+  }
 
+  return $CreateCommentImageInputDtoCopyWith<$Res>(_self.image!, (value) {
+    return _then(_self.copyWith(image: value));
+  });
+}
 }
 
 // dart format on

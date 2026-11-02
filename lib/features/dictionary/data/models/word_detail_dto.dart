@@ -31,6 +31,10 @@ abstract class WordDetailDto with _$WordDetailDto {
     @Default([])
     List<RelatedWordDto> relatedWords,
     @JsonKey(name: 'appears_in') @Default([]) List<RelatedWordDto> appearsIn,
+
+    /// PRD relasi-lemma: kelompok makna (published saja).
+    @JsonKey(name: 'meaning_groups') @Default([]) List<MeaningGroupDto> meaningGroups,
+
     @Default([]) List<WordVariantDto> variants,
 
     /// Hanya diisi GET /words/today; detail biasa mengabaikan (null/false).
@@ -62,6 +66,8 @@ abstract class MeaningDto with _$MeaningDto {
     @JsonKey(name: 'inherited_from_meaning_id') String? inheritedFromMeaningId,
     String? definition,
     @JsonKey(name: 'order_index') @Default(0) int orderIndex,
+    // WIP review-flow: kontributor per makna (belum di-commit).
+    @JsonKey(name: 'created_by') WordVerifierDto? createdBy,
     @Default([]) List<TranslationDto> translations,
     @Default([]) List<ExampleDto> examples,
   }) = _MeaningDto;
@@ -172,6 +178,33 @@ abstract class RelatedWordDto with _$RelatedWordDto {
 
   factory RelatedWordDto.fromJson(Map<String, dynamic> json) =>
       _$RelatedWordDtoFromJson(json);
+}
+
+/// PRD relasi-lemma: anggota satu kelompok makna.
+@freezed
+abstract class MeaningGroupMemberDto with _$MeaningGroupMemberDto {
+  const factory MeaningGroupMemberDto({
+    @JsonKey(name: 'word_id') required String wordId,
+    required String lemma,
+    String? notes,
+  }) = _MeaningGroupMemberDto;
+
+  factory MeaningGroupMemberDto.fromJson(Map<String, dynamic> json) =>
+      _$MeaningGroupMemberDtoFromJson(json);
+}
+
+/// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.
+@freezed
+abstract class MeaningGroupDto with _$MeaningGroupDto {
+  const factory MeaningGroupDto({
+    @JsonKey(name: 'group_id') required String groupId,
+    required String name,
+    String? description,
+    @Default([]) List<MeaningGroupMemberDto> members,
+  }) = _MeaningGroupDto;
+
+  factory MeaningGroupDto.fromJson(Map<String, dynamic> json) =>
+      _$MeaningGroupDtoFromJson(json);
 }
 
 @freezed

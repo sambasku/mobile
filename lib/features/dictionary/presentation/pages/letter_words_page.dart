@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -7,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/letter_words_state.dart';
@@ -70,7 +72,7 @@ class LetterWordsPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text('Huruf $display'),
+        title: Text(AppLocalizations.of(context).dictLetterTitle(display)),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop() ? context.pop() : context.go('/'),
@@ -81,9 +83,9 @@ class LetterWordsPage extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Kata yang dimulai dengan huruf $display.',
+            AppLocalizations.of(context).dictLetterSubtitle(display),
             textAlign: TextAlign.center,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
               height: 1.4,
             ),
@@ -127,7 +129,7 @@ class LetterWordsPage extends HookConsumerWidget {
               Text(
                 state.errorMessage!,
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
@@ -137,7 +139,7 @@ class LetterWordsPage extends HookConsumerWidget {
                     ref.read(letterWordsProvider(letter).notifier).load(),
                 variant: FButtonVariant.outline,
                 prefix: const Icon(FLucideIcons.rotateCcw),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -159,9 +161,11 @@ class LetterWordsPage extends HookConsumerWidget {
               ),
               const Gap(8),
               Text(
-                'Belum ada kata untuk huruf ${letter.toUpperCase()}.',
+                AppLocalizations.of(
+                  context,
+                ).dictLetterEmpty(letter.toUpperCase()),
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
@@ -169,7 +173,7 @@ class LetterWordsPage extends HookConsumerWidget {
               FButton(
                 onPress: () => context.push(DictionaryRouter.list.path),
                 variant: FButtonVariant.outline,
-                child: const Text('Lihat semua kata'),
+                child: Text(AppLocalizations.of(context).dictSeeAllWords),
               ),
             ],
           ),
@@ -211,13 +215,15 @@ class _WordTile extends StatelessWidget with FTileMixin {
     final gloss = item.sense?.trim();
     final subtitle = (gloss != null && gloss.isNotEmpty)
         ? gloss
-        : (item.wordType != 'word' ? item.wordTypeLabel : null);
+        : (item.wordType != 'word'
+              ? wordSummaryTypeLabel(item, AppLocalizations.of(context))
+              : null);
 
     return FTile(
       title: Text(item.lemma),
       subtitle: subtitle != null ? Text(subtitle) : null,
       suffix: item.isVerified
-          ? const VerifiedBadgeIcon()
+          ? const WordApprovedBadgeIcon()
           : const PendingReviewBadgeIcon(),
       onPress: () {
         context.push(DictionaryRouter.detail.path.replaceFirst(':id', item.id));
@@ -236,7 +242,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -247,7 +253,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -274,9 +280,9 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: const Text('kata Sambas contoh'),
+      title: Text(AppLocalizations.of(context).dictSkeletonWord),
       suffix: Icon(
-        FLucideIcons.badgeCheck,
+        FLucideIcons.circleDashedCheck,
         size: 18,
         color: context.theme.colors.mutedForeground,
       ),
@@ -299,8 +305,8 @@ class _LoadingMoreFooter extends StatelessWidget {
             const FCircularProgress(size: .xs),
             const Gap(8),
             Text(
-              'Memuat...',
-              style: theme.typography.sm.copyWith(
+              AppLocalizations.of(context).dictLoading,
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

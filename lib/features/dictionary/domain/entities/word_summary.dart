@@ -8,6 +8,8 @@ class WordSummary {
     required this.status,
     required this.isVerified,
     this.matchedTranslation,
+    this.matchedVariant,
+    this.matchType,
     this.sense,
     this.approvedAt,
     this.usageLabels = const [],
@@ -23,6 +25,16 @@ class WordSummary {
   /// Relasi terjemahan yang cocok (hanya search_in=translation):
   /// tampilkan sebagai "makan → makatn".
   final String? matchedTranslation;
+
+  /// Form variasi penulisan yang cocok (doc 11).
+  final String? matchedVariant;
+
+  /// PRD relasi-lemma: 'related_group' = hasil ini datang dari perluasan
+  /// kelompok makna, bukan cocok langsung. Null = hasil langsung.
+  final String? matchType;
+
+  /// Hasil perluasan kelompok makna (bukan hasil pencarian langsung).
+  bool get isRelatedGroupMatch => matchType == 'related_group';
 
   /// Satu baris arti.
   /// - GET /words/latest: definisi atau terjemahan pertama.

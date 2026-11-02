@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/review_search_miss.dart';
 import '../../domain/failures/review_failure.dart';
+import '../../../../core/i18n/l10n.dart';
 
 const _base = '/api/v1/admin/search-misses';
 
@@ -57,7 +58,7 @@ class ReviewSearchMissRepositoryImpl {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat pencarian kosong'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSearchMissLoadFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -73,7 +74,7 @@ class ReviewSearchMissRepositoryImpl {
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal mengubah tayang'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSearchMissPublishFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -89,7 +90,7 @@ class ReviewSearchMissRepositoryImpl {
       );
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal mengoreksi term'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSearchMissCorrectFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -101,7 +102,7 @@ class ReviewSearchMissRepositoryImpl {
       await _dio.post<Map<String, dynamic>>('$_base/$id/dismiss');
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menyingkirkan'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSearchMissDismissFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }
@@ -114,7 +115,7 @@ class ReviewSearchMissRepositoryImpl {
       await _dio.post<Map<String, dynamic>>('$_base/$id/skip');
       return Either.right(unit);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal melewati'));
+      return Either.left(_mapDio(error, l10n.reviewRepoSearchMissSkipFailed));
     } catch (error) {
       return Either.left(ReviewFailure(error.toString()));
     }

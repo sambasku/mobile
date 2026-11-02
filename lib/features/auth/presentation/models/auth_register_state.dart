@@ -50,8 +50,9 @@ class AuthRegisterState {
     bool? githubUnavailable,
   }) {
     return AuthRegisterState(
-      pendingAction:
-          clearPendingAction ? null : pendingAction ?? this.pendingAction,
+      pendingAction: clearPendingAction
+          ? null
+          : pendingAction ?? this.pendingAction,
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,

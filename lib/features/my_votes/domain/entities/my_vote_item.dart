@@ -30,25 +30,4 @@ class MyVoteItem {
   final MyVoteWord? word;
 
   bool get canOpen => word != null;
-
-  String get title => word?.lemma ?? 'Kata sudah dihapus';
-
-  String subtitle(String date) {
-    final direction = value == 1 ? 'Upvote' : 'Downvote';
-    return '$direction · ${voteTargetLabel(targetType)} · $date';
-  }
-}
-
-String voteTargetLabel(String targetType) {
-  return switch (targetType) {
-    'word' => 'Kata',
-    'meaning' => 'Arti',
-    'example' => 'Contoh',
-    'pronunciation' => 'Pelafalan',
-    'word_image' => 'Gambar',
-    'comment' => 'Komentar',
-    'discussion_reply' => 'Balasan diskusi',
-    'discussion' => 'Pertanyaan diskusi',
-    _ => targetType,
-  };
 }

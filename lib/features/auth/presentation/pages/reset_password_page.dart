@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -12,7 +12,10 @@ import '../../otp_code.dart';
 import '../otp_code_formatter.dart';
 import '../providers/auth_forgot_providers.dart';
 import '../providers/auth_reset_providers.dart';
+import '../../domain/failures/auth_failure.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 
 const _resendCooldown = Duration(minutes: 2);
 
@@ -61,11 +64,14 @@ class ResetPasswordPage extends HookConsumerWidget {
       remaining.value = _resendCooldown.inSeconds;
       showFToast(
         context: context,
-        title: const Text('Kode baru dikirim ke email'),
+        title: Text(AppLocalizations.of(context).authResetCodeSent),
       );
     });
 
-    ref.listen(authResetProvider.select((s) => s.successMessage), (_, next) async {
+    ref.listen(authResetProvider.select((s) => s.successMessage), (
+      _,
+      next,
+    ) async {
       if (next == null || !context.mounted) return;
       await showModalBottomSheet<void>(
         context: context,
@@ -80,7 +86,7 @@ class ResetPasswordPage extends HookConsumerWidget {
               FTileGroup(
                 children: [
                   FTile(
-                    title: const Text('Password berhasil direset'),
+                    title: Text(AppLocalizations.of(context).authResetSuccess),
                     subtitle: Text(next),
                   ),
                   FTile(
@@ -90,7 +96,9 @@ class ResetPasswordPage extends HookConsumerWidget {
                         Navigator.of(sheetContext).pop();
                         context.go(AuthRouter.login.path);
                       },
-                      child: const Text('Masuk'),
+                      child: Text(
+                        AppLocalizations.of(sheetContext).authLoginAction,
+                      ),
                     ),
                   ),
                 ],
@@ -112,6 +120,20 @@ class ResetPasswordPage extends HookConsumerWidget {
 
     ref.listen(authForgotProvider.select((s) => s.errorMessage), (_, next) {
       if (next == null || !context.mounted) return;
+      // Akun OAuth: info, bukan error (lihat forgot_password_page).
+      final code = ref.read(authForgotProvider).errorCode;
+      if (code == AuthFailure.oauthAccount) {
+        showAppInfoSheet(
+          context,
+          message: next,
+          title: AppLocalizations.of(context).authOauthAccountTitle,
+        ).whenComplete(() {
+          if (context.mounted) {
+            ref.read(authForgotProvider.notifier).clearError();
+          }
+        });
+        return;
+      }
       showAppErrorSheet(context, message: next).whenComplete(() {
         if (context.mounted) {
           ref.read(authForgotProvider.notifier).clearError();
@@ -151,7 +173,7 @@ class ResetPasswordPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Password baru'),
+        title: Text(AppLocalizations.of(context).authNewPasswordTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -165,11 +187,11 @@ class ResetPasswordPage extends HookConsumerWidget {
         children: [
           Text(
             hasTokenFromLink
-                ? 'Tautan diterima. Buat password baru (minimal 8 karakter, huruf + angka).'
+                ? AppLocalizations.of(context).authResetLinkBody
                 : email.contains('@')
-                ? 'Masukkan kode 6 karakter 0-9A-Z yang dikirim ke $email (berlaku 10 menit), lalu password baru.'
-                : 'Minta kodenya dulu di halaman lupa password ya.',
-            style: theme.typography.sm.copyWith(
+                ? AppLocalizations.of(context).authResetCodeBody(email)
+                : AppLocalizations.of(context).authResetAskCode,
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -186,7 +208,9 @@ class ResetPasswordPage extends HookConsumerWidget {
               builder: (context, style, variants, child) =>
                   Center(child: child),
               enabled: !state.isSubmitting && email.contains('@'),
-              label: const Center(child: Text('Kode Reset Password')),
+              label: Center(
+                child: Text(AppLocalizations.of(context).authResetCodeLabel),
+              ),
               autofocus: email.contains('@'),
               keyboardType: .text,
               textCapitalization: .characters,
@@ -198,15 +222,15 @@ class ResetPasswordPage extends HookConsumerWidget {
           FTextField.password(
             control: .managed(controller: newPassword),
             enabled: !state.isSubmitting,
-            label: const Text('Password baru'),
-            hint: 'Minimal 8 karakter, huruf + angka',
+            label: Text(AppLocalizations.of(context).authNewPasswordTitle),
+            hint: AppLocalizations.of(context).authPasswordHint,
             textInputAction: .next,
           ),
           const Gap(12),
           FTextField.password(
             control: .managed(controller: confirmPassword),
             enabled: !state.isSubmitting,
-            label: const Text('Konfirmasi password baru'),
+            label: Text(AppLocalizations.of(context).authConfirmNewPassword),
             textInputAction: .done,
             onSubmit: canSubmit ? (_) => submit() : null,
           ),
@@ -215,7 +239,9 @@ class ResetPasswordPage extends HookConsumerWidget {
             onPress: canSubmit ? submit : null,
             prefix: state.isSubmitting ? const FCircularProgress() : null,
             child: Text(
-              state.isSubmitting ? 'Memproses...' : 'Simpan password',
+              state.isSubmitting
+                  ? AppLocalizations.of(context).authSubmitting
+                  : AppLocalizations.of(context).authSavePassword,
             ),
           ),
           if (!hasTokenFromLink) ...[
@@ -230,10 +256,12 @@ class ResetPasswordPage extends HookConsumerWidget {
               prefix: forgot.isSubmitting ? const FCircularProgress() : null,
               child: Text(
                 forgot.isSubmitting
-                    ? 'Mengirim...'
+                    ? AppLocalizations.of(context).authSending
                     : remaining.value > 0
-                    ? 'Kirim ulang kode (${_formatCooldown(remaining.value)})'
-                    : 'Kirim ulang kode',
+                    ? AppLocalizations.of(context).authResendCodeCountdown(
+                        _formatCooldown(remaining.value),
+                      )
+                    : AppLocalizations.of(context).authResendCode,
               ),
             ),
           ],

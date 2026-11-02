@@ -17,7 +17,9 @@ import 'package:sambasku_mobile/features/vote/presentation/providers/vote_provid
 import 'package:shared_preferences/shared_preferences.dart';
 
 VoteDeckItem _item(String id) => VoteDeckItem(
+      // 0101: id = ID makna, wordId = kata induk.
       id: id,
+      wordId: 'word-$id',
       lemma: 'kata-$id',
       languageId: 'lang',
       languageCode: 'id',
@@ -25,6 +27,7 @@ VoteDeckItem _item(String id) => VoteDeckItem(
       status: 'published',
       isVerified: true,
       approvedAt: '2026-01-01T00:00:00.000Z',
+      orderIndex: 1,
       sense: 'arti $id',
     );
 
@@ -74,14 +77,14 @@ class _FakeDeckRepo implements VoteRepository {
   }
 
   @override
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async {
-    skipped.add(wordId);
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async {
+    skipped.add(meaningId);
     return Either.right(unit);
   }
 
   @override
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async {
-    unskipped.add(wordId);
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId) async {
+    unskipped.add(meaningId);
     return Either.right(unit);
   }
 }
@@ -207,7 +210,7 @@ void main() {
   test('openDetail: vote di detail = kartu dibuang + bisa di-undo', () async {
     final initial = await ready();
     final first = initial.items.first;
-    final target = VoteTarget(type: 'word', id: first.id);
+    final target = VoteTarget(type: 'meaning', id: first.id);
 
     final dropped = await container
         .read(voteDeckControllerProvider.notifier)
@@ -227,7 +230,7 @@ void main() {
   test('openDetail: kembali tanpa vote = kartu tetap di depan', () async {
     final initial = await ready();
     final first = initial.items.first;
-    final target = VoteTarget(type: 'word', id: first.id);
+    final target = VoteTarget(type: 'meaning', id: first.id);
 
     final dropped = await container
         .read(voteDeckControllerProvider.notifier)

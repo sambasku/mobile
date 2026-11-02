@@ -12,7 +12,11 @@ abstract class PublicProfileDto with _$PublicProfileDto {
     @JsonKey(name: 'is_verifier') @Default(false) bool isVerifier,
     @JsonKey(name: 'joined_at') required String joinedAt,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
+
+    /// URL aset bingkai profil aktif (achievement reward_type profile_border).
+    @JsonKey(name: 'active_border_url') String? activeBorderUrl,
     required PublicProfileStatsDto stats,
+    PublicProfileLevelingDto? leveling,
   }) = _PublicProfileDto;
 
   factory PublicProfileDto.fromJson(Map<String, dynamic> json) =>
@@ -22,7 +26,9 @@ abstract class PublicProfileDto with _$PublicProfileDto {
 @freezed
 abstract class PublicProfileStatsDto with _$PublicProfileStatsDto {
   const factory PublicProfileStatsDto({
-    @JsonKey(name: 'contributions_approved') @Default(0) int contributionsApproved,
+    @JsonKey(name: 'contributions_approved')
+    @Default(0)
+    int contributionsApproved,
     @JsonKey(name: 'words_approved') @Default(0) int wordsApproved,
     @JsonKey(name: 'corrections_approved') @Default(0) int correctionsApproved,
     @JsonKey(name: 'verifications_done') @Default(0) int verificationsDone,
@@ -31,6 +37,23 @@ abstract class PublicProfileStatsDto with _$PublicProfileStatsDto {
 
   factory PublicProfileStatsDto.fromJson(Map<String, dynamic> json) =>
       _$PublicProfileStatsDtoFromJson(json);
+}
+
+@freezed
+abstract class PublicProfileLevelingDto with _$PublicProfileLevelingDto {
+  const factory PublicProfileLevelingDto({
+    @Default(0) int points,
+    @Default(1) int level,
+    @JsonKey(name: 'next_level_points') int? nextLevelPoints,
+    @JsonKey(name: 'title_code') @Default('peninjau') String titleCode,
+    @Default(0) int exploration,
+    @Default(0) int accuracy,
+    @Default(0) int depth,
+    @JsonKey(name: 'streak_days') @Default(0) int streakDays,
+  }) = _PublicProfileLevelingDto;
+
+  factory PublicProfileLevelingDto.fromJson(Map<String, dynamic> json) =>
+      _$PublicProfileLevelingDtoFromJson(json);
 }
 
 @freezed

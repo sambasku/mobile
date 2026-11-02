@@ -1,34 +1,43 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/about/about_router.dart';
+import '../../features/achievement/achievement_router.dart';
 import '../../features/activity/presentation/pages/activity_page.dart';
 import '../../features/admin_analytics/admin_analytics_router.dart';
 import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
+import '../../features/auth/presentation/widgets/legal_consent_sheet.dart';
 import '../../features/bookmark/bookmark_router.dart';
 import '../../features/my_comments/my_comments_router.dart';
 import '../../features/my_votes/my_votes_router.dart';
 import '../../features/change_password/change_password_router.dart';
+import '../../features/set_password/set_password_router.dart';
 import '../../features/delete_account/delete_account_router.dart';
 import '../../features/edit_profile/edit_profile_router.dart';
 import '../../features/linked_accounts/linked_accounts_router.dart';
 import '../../features/contribution/contribution_router.dart';
 import '../../features/dictionary/dictionary_router.dart';
+import '../../features/share/domain/word_public_url.dart';
 import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
+import '../../features/event/event_router.dart';
+import '../../features/usaha/usaha_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
-import '../../features/dictionary/presentation/providers/word_of_day_providers.dart';
 import '../../features/onboarding/data/onboarding_prefs.dart';
 import '../../features/onboarding/onboarding_router.dart';
+import '../../features/settings/settings_router.dart';
+import '../../l10n/app_localizations.dart';
+import '../../core/feature_flags.dart';
+import '../../core/i18n/locale_prefs.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/report_bug/report_bug_router.dart';
 import '../../features/review/presentation/providers/review_suggestions_providers.dart';
@@ -36,6 +45,7 @@ import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
 import '../../features/activity/activity_router.dart';
 import '../../features/discussion/discussion_router.dart';
+import '../../features/entertainment/entertainment_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/splash/splash_router.dart';
@@ -64,6 +74,7 @@ class AppRouter {
       ...OnboardingRouter.routes,
       ...AuthRouter.routes,
       ...ChangePasswordRouter.routes,
+      ...SetPasswordRouter.routes,
       ...DeleteAccountRouter.routes,
       ...EditProfileRouter.routes,
       ...LinkedAccountsRouter.routes,
@@ -79,11 +90,16 @@ class AppRouter {
       ...VerifierApplicationRouter.routes,
       ...ReportBugRouter.routes,
       ...DiscussionRouter.routes,
+      ...EntertainmentRouter.routes,
       ...ReviewRouter.routes,
       ...AdminAnalyticsRouter.routes,
       ...SearchMissRouter.routes,
       ...ExploreRouter.routes,
+      ...EventRouter.routes,
+      ...UsahaRouter.routes,
       ...ActivityRouter.routes,
+      ...AchievementRouter.routes,
+  ...SettingsRouter.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _HomeShell(navigationShell: navigationShell),
@@ -127,10 +143,9 @@ class AppRouter {
               GoRoute(
                 path: '/profile',
                 name: 'ProfileRouter.profile',
-                builder: (context, state) => const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: ProfilePage(),
-                ),
+                // Tanpa gutter: cover profil full-bleed (gutter dipasang
+                // di dalam halaman, bukan di shell).
+                builder: (context, state) => const ProfilePage(),
               ),
             ],
           ),
@@ -143,7 +158,7 @@ class AppRouter {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Text('Halaman tidak ditemukan: ${state.error}'),
+          child: Text(AppLocalizations.of(context).routerNotFound(state.error.toString())),
         ),
       ),
     ),
@@ -189,11 +204,33 @@ class AppRouter {
       if (slug.isNotEmpty) return '/explore/place/$slug?entry=link';
     }
 
-    final onboardingDone = OnboardingPrefs.done;
-    final isOnboarding = loc == OnboardingRouter.onboarding.path;
-    final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
+    // Link share kata: /id/words/<lemma> → detail native (route /words/:id).
+    final wordLink = nativeWordPathFromPublicLink(state.uri);
+    if (wordLink != null) return wordLink;
 
-    if (!onboardingDone && !isOnboarding && !isDeepLinkFriendly) {
+    final onboardingDone = OnboardingPrefs.done;
+    final localeChosen = LocalePrefs.chosen;
+    final isOnboarding = loc == OnboardingRouter.onboarding.path;
+    final isLanguage = loc == OnboardingRouter.language.path;
+    final isSettingsLanguage = loc == SettingsRouter.language.path;
+    final isDeepLinkFriendly = _isDeepLinkFriendlyPath(path);
+    final multiLang = FeatureFlags.multiLanguageEnabled;
+
+    // Multi-bahasa off: jangan tampilkan picker; lanjutkan onboarding biasa.
+    if (!multiLang && (isLanguage || isSettingsLanguage)) {
+      return onboardingDone
+          ? '/'
+          : OnboardingRouter.onboarding.path;
+    }
+
+    // Slide 0 bahasa (MOBILE-I18N §7): wajib sebelum pengalaman kamus.
+    // Prioritas di atas onboarding: user existing yang sudah menyelesaikan
+    // onboarding lama tapi belum pernah memilih bahasa (upgrade) tetap
+    // diarahkan ke sana dulu. Skip bila flag multi-bahasa mati.
+    if (multiLang && !localeChosen && !isLanguage) {
+      return OnboardingRouter.language.path;
+    }
+    if (!onboardingDone && !isOnboarding && !isLanguage && !isDeepLinkFriendly) {
       return OnboardingRouter.onboarding.path;
     }
     if (onboardingDone && isOnboarding) {
@@ -217,6 +254,15 @@ class AppRouter {
       }
     }
 
+    // Halaman Pencapaian butuh sesi; tamu diarahkan ke login seperti profil.
+    if (loc == AchievementRouter.list.path) {
+      final isAuth = await _tokenStorage.getIsAuthForGate();
+      if (!isAuth) {
+        tfLog('redirect $loc -> ${AuthRouter.login.path} auth=false');
+        return AuthRouter.login.path;
+      }
+    }
+
     return null;
   }
 
@@ -233,11 +279,14 @@ class AppRouter {
       return true;
     }
     if (path.startsWith('/words/')) return true;
+    if (path.startsWith('/id/words/')) return true;
     if (path.startsWith('/huruf/')) return true;
     if (path.startsWith('/users/')) return true;
     if (path.startsWith('/wisata/')) return true;
     if (path.startsWith('/explore/place/')) return true;
+    if (path.startsWith('/acara')) return true;
     if (path.startsWith('/discussions')) return true;
+    if (path.startsWith('/entertainment')) return true;
     return false;
   }
 }
@@ -264,7 +313,26 @@ class _HomeShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final pendingReview = ref.watch(reviewHubHasPendingProvider).value ?? false;
+
+    // Consent legal: server (GET /users/me) yang jadi sumber kebenaran.
+    // Sheet non-dismissible - user agree dulu atau keluar.
+    //
+    // Pakai post-frame di setiap build, BUKAN ref.listen: setelah login
+    // sosial `markLoggedIn` menyetel requiresLegalConsent=true SEBELUM
+    // shell ini mount, jadi listener tidak pernah melihat transisi
+    // false->true dan user lolos tanpa sheet sampai restart. Guard
+    // idempoten di showLegalConsentSheet mencegah sheet ganda.
+    final needsConsent = ref.watch(
+      authStatusProvider.select((s) => s.value?.requiresLegalConsent ?? false),
+    );
+    if (needsConsent) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        unawaited(showLegalConsentSheet(context, ref));
+      });
+    }
     // resizeToAvoidBottomInset false: keyboard tidak dorong bottom nav
     // (nested scaffold + inset = overflow / "geser drawer")
     // footerDecoration dikosongkan - FBottomNavigationBar sudah punya top border
@@ -309,28 +377,30 @@ class _HomeShell extends ConsumerWidget {
               if (openingHome) {
                 // keepAlive + IndexedStack tidak membangun ulang Home, jadi
                 // kata yang baru disetujui tetap tersembunyi sampai di-refresh.
-                ref.invalidate(wordOfDayProvider);
+                // WOTD TIDAK di-invalidate: pilihan harian deterministik per
+                // tanggal WIB + server kirim Cache-Control, invalidate cuma
+                // membuang keepAlive tanpa hasil berbeda.
                 ref.read(latestWordsProvider.notifier).load();
               }
             },
             children: [
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.house),
-                label: Text('Home'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.house),
+                label: Text(l10n.navHome),
               ),
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.compass),
-                label: Text('Eksplorasi'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.compass),
+                label: Text(l10n.navExplore),
               ),
-              const FBottomNavigationBarItem(
-                icon: Icon(FLucideIcons.circlePlus),
-                label: Text('Kontribusi'),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.circlePlus),
+                label: Text(l10n.navContribute),
               ),
               FBottomNavigationBarItem(
                 icon: pendingReview
                     ? const _ProfileNavIcon(showDot: true)
                     : const Icon(FLucideIcons.userRound),
-                label: const Text('Profil'),
+                label: Text(l10n.navProfile),
               ),
             ],
           ),

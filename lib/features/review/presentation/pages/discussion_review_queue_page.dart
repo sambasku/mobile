@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../../discussion/domain/discussion_models.dart';
@@ -29,7 +31,7 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tinjauan Diskusi'),
+        title: Text(AppLocalizations.of(context).reviewDiscussionQueueTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
       child: async.when(
@@ -45,17 +47,17 @@ class DiscussionReviewQueuePage extends ConsumerWidget {
               Text(
                 error is DiscussionFailure
                     ? error.message
-                    : 'Gagal memuat antrean diskusi',
-                style: theme.typography.sm.copyWith(
+                    : AppLocalizations.of(context).reviewDiscussionQueueLoadFailed,
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const Gap(12),
+              Gap(12),
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(discussionReviewListProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).commonRetry),
               ),
             ],
           ),
@@ -91,8 +93,8 @@ class _QueueList extends ConsumerWidget {
                 height: constraints.maxHeight,
                 child: Center(
                   child: Text(
-                    'Tidak ada diskusi menunggu tinjauan',
-                    style: theme.typography.sm.copyWith(
+                    AppLocalizations.of(context).reviewDiscussionQueueEmpty,
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                     textAlign: TextAlign.center,
@@ -134,20 +136,42 @@ class _DiscussionTile extends StatelessWidget with FTileMixin {
         ? item.images.first.displaySource
         : null;
     final thumbUrl = thumb == null ? null : (displayImageUrl(thumb) ?? thumb);
+    final theme = context.theme;
+    final when = item.createdAt.isNotEmpty
+        ? formatRelativeCompact(DateTime.tryParse(item.createdAt))
+        : '';
+    final extra = [
+      if (when.isNotEmpty) when,
+      if (item.linkUrl != null && item.linkUrl!.isNotEmpty) AppLocalizations.of(context).reviewDiscussionHasLink,
+    ].join(' · ');
     return FTile(
       prefix: const Icon(FLucideIcons.messageSquare),
       title: Text(
-        preview.isEmpty ? '(tanpa teks)' : preview,
+        preview.isEmpty ? AppLocalizations.of(context).reviewDiscussionNoText : preview,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(
-        [
-          name,
-          if (item.createdAt.isNotEmpty)
-            formatRelativeCompact(DateTime.tryParse(item.createdAt)),
-          if (item.linkUrl != null && item.linkUrl!.isNotEmpty) 'Ada tautan',
-        ].where((e) => e.isNotEmpty).join(' · '),
+      subtitle: Row(
+        children: [
+          Flexible(
+            child: PublicAccountName(
+              label: name,
+              isVerifier: item.isVerifier,
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
+          if (extra.isNotEmpty)
+            Text(
+              ' · $extra',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.typography.body.xs.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+        ],
       ),
       suffix: thumbUrl != null
           ? Row(
@@ -184,7 +208,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -195,7 +219,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -222,8 +246,8 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: Text('Cuplikan diskusi contoh'),
-      subtitle: Text('Pengirim · baru saja'),
+      title: Text(AppLocalizations.of(context).reviewDiscussionSkeletonExcerpt),
+      subtitle: Text(AppLocalizations.of(context).reviewDiscussionSkeletonMeta),
     );
   }
 }

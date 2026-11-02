@@ -24,13 +24,17 @@ class LoginWithGoogleUseCase {
     this.authTimeout = const Duration(seconds: 90),
   });
 
-  Future<Either<AuthFailure, AuthSession>> call() async {
+  /// [consents] diisi hanya dari halaman Daftar (checkbox legal wajib).
+  Future<Either<AuthFailure, AuthSession>> call({
+    List<({String documentType, String documentVersion})>? consents,
+  }) async {
     try {
       // ponytail: deadline menutup hang activity-result; kalau kasus
       // bertambah (mis. process death), upgrade ke resume-time recovery.
-      final idToken = await _signIn
-          .authenticate()
-          .timeout(authTimeout, onTimeout: () => null);
+      final idToken = await _signIn.authenticate().timeout(
+        authTimeout,
+        onTimeout: () => null,
+      );
       if (idToken == null) {
         return Either.left(
           const AuthFailure(
@@ -47,7 +51,10 @@ class LoginWithGoogleUseCase {
           ),
         );
       }
-      return _repository.loginWithGoogle(idToken: idToken);
+      return await _repository.loginWithGoogle(
+        idToken: idToken,
+        consents: consents,
+      );
     } catch (error, stack) {
       developer.log(
         'loginWithGoogle gagal',

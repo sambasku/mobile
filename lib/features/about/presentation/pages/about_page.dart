@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -27,11 +28,12 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
 
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Tentang'),
+        title: Text(l10n.aboutTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -53,59 +55,40 @@ class AboutPage extends StatelessWidget {
               const BrandMark(size: 112),
               const Gap(8),
               Text(
-                'Kamus Digital Sambas-Indonesia',
+                AppLocalizations.of(context).aboutTagline,
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   height: 1.2,
                   color: theme.colors.mutedForeground,
                 ),
               ),
               const Gap(2),
               Text(
-                'Versi $versionLabel',
+                AppLocalizations.of(context).aboutVersion(versionLabel),
                 textAlign: TextAlign.center,
-                style: theme.typography.xs.copyWith(
+                style: theme.typography.body.xs.copyWith(
                   height: 1.2,
                   color: theme.colors.mutedForeground,
                 ),
               ),
               const Gap(16),
-              const _AboutBlock(
-                title: 'Apa itu SambasKu?',
-                body:
-                    'Kamus digital Melayu Sambas-Indonesia yang dirawat '
-                    'bersama warga. Kamu bisa mencari arti kata, membaca '
-                    'contoh kalimat, menyimpan kata, mengusulkan kata baru, '
-                    'dan membagikan kartu kata. Usulan dari akun yang sudah '
-                    'masuk langsung tayang dengan label Menunggu pengecekan, '
-                    'lalu diperiksa verifikator.',
+              _AboutBlock(
+                title: l10n.aboutWhatTitle,
+                body: l10n.aboutWhatBody,
               ),
               const Gap(16),
               _AboutLinkBlock(
-                title: 'Sponsor & Tim Kami',
-                body:
-                    'Para pendukung operasional dan orang-orang yang '
-                    'merawat kamus ini.',
-                actionLabel: 'Lihat Sponsor & Tim Kami',
+                title: l10n.aboutSponsorTitle,
+                body: l10n.aboutSponsorBody,
+                actionLabel: l10n.aboutSponsorAction,
                 onPress: () => context.push('/about/sponsorship'),
               ),
               const Gap(16),
               _AboutLinkBlock(
-                title: 'Kode Sumber & Organisasi',
-                body:
-                    'SambasKu adalah proyek open source. Kode sumbernya '
-                    'dirilis dengan lisensi GPLv3, jadi kamu bebas '
-                    'mempelajari, mengubah, dan membagikannya sesuai '
-                    'ketentuan lisensi. Konten kamus dan datanya dirilis '
-                    'dengan lisensi CC BY-SA 4.0, jadi wajib mencantumkan '
-                    'sumber dan membagikan hasilnya dengan lisensi yang '
-                    'sama. Di GitHub juga ada profil organisasi, cara '
-                    'ikut serta, info sponsor, dan saluran komunitas.',
-                actionLabel: 'Buka di GitHub',
-                onPress: () => launchUrl(
-                  AboutPage.githubUri,
-                  mode: LaunchMode.externalApplication,
-                ),
+                title: l10n.aboutSourceTitle,
+                body: l10n.aboutSourceBody,
+                actionLabel: l10n.aboutSourceAction,
+                onPress: () => launchExternalUrl(AboutPage.githubUri),
               ),
             ],
           );
@@ -122,10 +105,11 @@ class SponsorshipTeamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Sponsor & Tim Kami'),
+        title: Text(l10n.aboutSponsorshipTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -135,12 +119,12 @@ class SponsorshipTeamPage extends StatelessWidget {
       ),
       child: FTabs(
         expands: true,
-        children: const [
+        children: [
           FTabEntry.entry(
-            label: Text('Sponsor & Mitra'),
-            child: _SponsorsTab(),
+            label: Text(l10n.aboutTabSponsors),
+            child: const _SponsorsTab(),
           ),
-          FTabEntry.entry(label: Text('Tim Kami'), child: _TeamTab()),
+          FTabEntry.entry(label: Text(l10n.aboutTabTeam), child: const _TeamTab()),
         ],
       ),
     );
@@ -152,17 +136,16 @@ class _SponsorsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-      children: const [
+      children: [
         _AboutBlock(
-          title: 'Ingin ikut mendukung?',
-          body:
-              'Dukungan bisa lewat GitHub Sponsors atau Saweria. Detail '
-              'kerja sama ada di profil organisasi kami di GitHub.',
+          title: l10n.aboutSupportTitle,
+          body: l10n.aboutSupportBody,
         ),
-        Gap(16),
-        _SponsorsSection(),
+        const Gap(16),
+        const _SponsorsSection(),
       ],
     );
   }
@@ -173,30 +156,26 @@ class _TeamTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-      children: const [
+      children: [
         _AboutBlock(
-          title: 'Bersama warga Sambas',
-          body:
-              'Kamus ini dirawat orang-orang yang mengusulkan kata, '
-              'memeriksa entri, dan merekam pelafalan.',
+          title: l10n.aboutTogetherTitle,
+          body: l10n.aboutTogetherBody,
         ),
-        Gap(16),
+        const Gap(16),
         _AboutBlock(
-          title: 'Kontributor',
-          body:
-              'Mengirim kata baru atau perbaikan, dan merekam cara '
-              'mengucapkan kata agar bisa didengar. Entri tayang setelah '
-              'verifikasi.',
+          title: l10n.aboutContributorsTitle,
+          body: l10n.aboutContributorsBody,
         ),
-        Gap(16),
+        const Gap(16),
         _AboutBlock(
-          title: 'Verifikator',
-          body: 'Memeriksa usulan sebelum masuk kamus.',
+          title: l10n.aboutVerifiersTitle,
+          body: l10n.aboutVerifiersBody,
         ),
-        Gap(16),
-        _ContributorsSection(),
+        const Gap(16),
+        const _ContributorsSection(),
       ],
     );
   }
@@ -226,7 +205,7 @@ class _ContributorsSection extends ConsumerWidget {
       children: [
         Text(
           'Tim Kami',
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -274,7 +253,7 @@ class _ContributorTile extends StatelessWidget {
             children: [
               Text(
                 contributor.name,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.foreground,
                 ),
@@ -282,7 +261,7 @@ class _ContributorTile extends StatelessWidget {
               if (contributor.roles.isNotEmpty)
                 Text(
                   contributor.roles.join(', '),
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     height: 1.4,
                   ),
@@ -290,7 +269,7 @@ class _ContributorTile extends StatelessWidget {
               const Gap(2),
               Text(
                 contributor.note,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   color: theme.colors.mutedForeground,
                   height: 1.4,
                 ),
@@ -304,7 +283,7 @@ class _ContributorTile extends StatelessWidget {
     // #100: punya akun SambasKu -> tap buka profil publik in-app.
     // Tanpa username -> tile polos (tidak interaktif).
     // #147: url website -> ikon globe buka browser eksternal.
-    final username = contributor.sambaskuUsername;
+    final username = contributor.username;
     if (username == null && contributor.url == null) return tile;
     return Material(
       color: Colors.transparent,
@@ -359,7 +338,7 @@ class _SponsorsSection extends ConsumerWidget {
           children: [
             Text(
               'Sponsor & Mitra',
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.foreground,
               ),
@@ -400,11 +379,7 @@ class _SponsorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final subtitleParts = [
-      ?sponsor.description,
-      if (sponsor.note.trim().isNotEmpty) sponsor.note,
-    ];
-    final subtitle = subtitleParts.join(' - ');
+    final note = sponsor.note.trim();
 
     final tile = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -431,16 +406,26 @@ class _SponsorTile extends StatelessWidget {
             children: [
               Text(
                 sponsor.name,
-                style: theme.typography.sm.copyWith(
+                style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.foreground,
                 ),
               ),
-              if (subtitleParts.isNotEmpty) ...[
+              if (sponsor.description case final desc?) ...[
                 const Gap(2),
                 Text(
-                  subtitle,
-                  style: theme.typography.sm.copyWith(
+                  desc,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (note.isNotEmpty) ...[
+                const Gap(4),
+                Text(
+                  note,
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     height: 1.4,
                   ),
@@ -454,7 +439,7 @@ class _SponsorTile extends StatelessWidget {
 
     // #100: sama dengan _ContributorTile - profil SambasKu bila ada.
     // #147: url website -> ikon globe buka browser eksternal.
-    final username = sponsor.sambaskuUsername;
+    final username = sponsor.username;
     if (username == null && sponsor.url == null) return tile;
     return Material(
       color: Colors.transparent,
@@ -499,7 +484,7 @@ class _WebsiteAction extends StatelessWidget {
     try {
       final uri = Uri.tryParse(url);
       if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
-        ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+        ok = await launchExternalUrl(uri);
       }
     } catch (_) {
       ok = false;
@@ -507,7 +492,7 @@ class _WebsiteAction extends StatelessWidget {
     if (!ok && context.mounted) {
       showFToast(
         context: context,
-        title: const Text('Tidak bisa membuka website'),
+        title: Text(AppLocalizations.of(context).aboutOpenWebsiteFailed),
       );
     }
   }
@@ -515,7 +500,7 @@ class _WebsiteAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: 'Buka website',
+      tooltip: AppLocalizations.of(context).aboutOpenWebsiteTooltip,
       visualDensity: VisualDensity.compact,
       icon: Icon(
         FLucideIcons.globe,
@@ -596,7 +581,7 @@ class _AboutBlock extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -604,7 +589,7 @@ class _AboutBlock extends StatelessWidget {
         const Gap(4),
         Text(
           body,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.4,
           ),
@@ -635,7 +620,7 @@ class _AboutLinkBlock extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
@@ -643,7 +628,7 @@ class _AboutLinkBlock extends StatelessWidget {
         const Gap(4),
         Text(
           body,
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             height: 1.4,
           ),

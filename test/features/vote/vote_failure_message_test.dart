@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/auth/presentation/models/auth_status_state.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:sambasku_mobile/features/vote/data/providers/vote_data_providers.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_deck_item.dart';
 import 'package:sambasku_mobile/features/vote/domain/entities/vote_view.dart';
@@ -15,6 +16,7 @@ import 'package:sambasku_mobile/features/vote/domain/usecases/get_vote_deck_use_
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_section.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 class _FakeAuthStatus extends AuthStatusNotifier {
   @override
@@ -54,11 +56,11 @@ class _FailDeckRepo implements VoteRepository {
       Either.right(VoteView(target: target, upvotes: 0, downvotes: 0));
 
   @override
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async =>
       Either.right(unit);
 
   @override
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async =>
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId) async =>
       Either.right(unit);
 }
 
@@ -99,8 +101,14 @@ void main() {
           voteRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const Scaffold(
               body: SizedBox(
               width: 800,

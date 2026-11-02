@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -8,6 +8,7 @@ import 'package:gap/gap.dart';
 import '../../../core/cache/cache_entry.dart';
 import '../../../core/cache/cache_policy.dart';
 import '../../../core/cache/cache_providers.dart';
+import '../../utils/message_dialog.dart';
 import '../../../core/cache/response_cache_store.dart';
 import '../../../core/utils/format_datetime.dart';
 import '../dev_tool_inspector.dart';
@@ -111,25 +112,21 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
   }
 
   Future<bool> _confirm({required String title, required String body}) async {
-    final result = await showFDialog<bool>(
+    final result = await showFMessageDialog<bool>(
       context: context,
-      builder: (dialogContext, style, animation) => FDialog(
-        style: style,
-        animation: animation,
-        title: Text(title),
-        body: Text(body),
-        actions: [
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Batal'),
-          ),
-          FButton(
-            onPress: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
+      title: Text(title),
+      body: Text(body),
+      actions: (dialogContext) => [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () => Navigator.of(dialogContext).pop(false),
+          child: const Text('Batal'),
+        ),
+        FButton(
+          onPress: () => Navigator.of(dialogContext).pop(true),
+          child: const Text('Hapus'),
+        ),
+      ],
     );
     return result ?? false;
   }
@@ -236,7 +233,7 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
                     child: Text(
                       '${_store.entryCount} · ${_formatBytes(total)} / '
                       '${_formatBytes(budget)}',
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                         color: theme.colors.foreground,
                       ),
@@ -282,7 +279,7 @@ class _ResponseCachePageState extends State<_ResponseCachePage> {
               ? Center(
                   child: Text(
                     'Kosong',
-                    style: theme.typography.sm.copyWith(
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -344,7 +341,7 @@ class _CacheTile extends StatelessWidget with FTileMixin {
         ' · ${formatDateTime(meta.cachedAt)}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: theme.typography.xs.copyWith(
+        style: theme.typography.body.xs.copyWith(
           color: theme.colors.mutedForeground,
         ),
       ),
@@ -396,7 +393,7 @@ class _ResponseCacheDetailPage extends StatelessWidget {
                 Expanded(
                   child: Text(
                     'Cache entry',
-                    style: theme.typography.xl.copyWith(
+                    style: theme.typography.body.xl.copyWith(
                       fontWeight: FontWeight.w700,
                       color: theme.colors.foreground,
                     ),
@@ -432,7 +429,7 @@ class _ResponseCacheDetailPage extends StatelessWidget {
             const Gap(8),
             Text(
               entry.key,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w600,
                 color: theme.colors.foreground,
               ),
@@ -442,7 +439,7 @@ class _ResponseCacheDetailPage extends StatelessWidget {
               '${entry.scope.name} · ${_formatBytes(entry.sizeBytes)} · '
               'schema ${entry.schemaVersion} · '
               '${formatDateTime(entry.cachedAt)}',
-              style: theme.typography.xs.copyWith(
+              style: theme.typography.body.xs.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -451,7 +448,7 @@ class _ResponseCacheDetailPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: SelectableText(
                   pretty,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     fontFamily: 'monospace',
                     fontSize: 11,
                     color: theme.colors.foreground,

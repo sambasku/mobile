@@ -10,10 +10,13 @@ import '../datasources/vote_remote_datasource.dart';
 import '../models/my_vote_dto.dart';
 import '../models/vote_count_dto.dart';
 import '../models/vote_toggle_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
   return VoteDeckItem(
+    // 0101: id = ID makna (target vote), word_id = kata induk.
     id: map['id']?.toString() ?? '',
+    wordId: map['word_id']?.toString() ?? '',
     lemma: map['lemma']?.toString() ?? '',
     languageId: map['language_id']?.toString() ?? '',
     languageCode: map['language_code']?.toString() ?? '',
@@ -22,12 +25,34 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
     isVerified: map['is_verified'] == true,
     approvedAt: map['approved_at']?.toString() ?? '',
     sense: map['sense']?.toString(),
+    orderIndex: map['order_index'] is int
+        ? map['order_index'] as int
+        : int.tryParse('${map['order_index']}') ?? 1,
+    meaningCount: map['meaning_count'] is int
+        ? map['meaning_count'] as int
+        : int.tryParse('${map['meaning_count']}') ?? 1,
+    wordClass: _parseWordClass(map['word_class']),
     upvotes: map['upvotes'] is int
         ? map['upvotes'] as int
         : int.tryParse('${map['upvotes']}') ?? 0,
     downvotes: map['downvotes'] is int
         ? map['downvotes'] as int
         : int.tryParse('${map['downvotes']}') ?? 0,
+  );
+}
+
+/// Kelas kata per makna dari wire (`{id, code, name, alias}`); null bila
+/// API tidak mengirim (makna belum diisi kelas / versi API lama).
+VoteDeckWordClass? _parseWordClass(Object? raw) {
+  if (raw is! Map) return null;
+  final id = raw['id']?.toString() ?? '';
+  if (id.isEmpty) return null;
+  final alias = raw['alias']?.toString().trim();
+  return VoteDeckWordClass(
+    id: id,
+    code: raw['code']?.toString() ?? '',
+    name: raw['name']?.toString() ?? '',
+    alias: (alias == null || alias.isEmpty) ? null : alias,
   );
 }
 
@@ -54,7 +79,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal mengubah vote',
+            response.message ?? l10n.voteToggleFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -88,7 +113,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal memuat jumlah vote',
+            response.message ?? l10n.voteCountLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -124,7 +149,7 @@ class VoteRepositoryImpl implements VoteRepository {
       if (response.success == false) {
         return Either.left(
           VoteFailure(
-            response.message ?? 'Gagal memuat vote kamu',
+            response.message ?? l10n.voteMineLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -184,11 +209,11 @@ class VoteRepositoryImpl implements VoteRepository {
   }
 
   @override
-  Future<Either<VoteFailure, Unit>> skipWord(String wordId) async {
+  Future<Either<VoteFailure, Unit>> skipMeaning(String meaningId) async {
     try {
       await _dio.post<Map<String, dynamic>>(
         '/api/v1/votes/skips',
-        data: {'word_id': wordId},
+        data: {'meaning_id': meaningId},
       );
       return Either.right(unit);
     } on DioException catch (error) {
@@ -201,9 +226,9 @@ class VoteRepositoryImpl implements VoteRepository {
   }
 
   @override
-  Future<Either<VoteFailure, Unit>> unskipWord(String wordId) async {
+  Future<Either<VoteFailure, Unit>> unskipMeaning(String meaningId) async {
     try {
-      await _dio.delete<Map<String, dynamic>>('/api/v1/votes/skips/$wordId');
+      await _dio.delete<Map<String, dynamic>>('/api/v1/votes/skips/$meaningId');
       return Either.right(unit);
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
@@ -239,14 +264,14 @@ class VoteRepositoryImpl implements VoteRepository {
 
   String _fallbackForStatus(int? statusCode, String? errorCode) {
     if (statusCode == 429 || errorCode == 'RATE_LIMITED') {
-      return 'Terlalu banyak vote. Coba lagi nanti.';
+      return l10n.voteRateLimited;
     }
     if (statusCode == 401) {
       return 'Sesi berakhir, silakan masuk kembali';
     }
     if (statusCode != null && statusCode >= 500) {
-      return 'Server sedang gangguan. Coba lagi nanti.';
+      return l10n.commonServerError;
     }
-    return 'Terjadi kesalahan saat memuat vote, coba lagi';
+    return l10n.voteGenericError;
   }
 }

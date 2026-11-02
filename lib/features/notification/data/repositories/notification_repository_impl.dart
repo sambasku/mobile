@@ -6,6 +6,7 @@ import '../../domain/entities/inbox_notification.dart';
 import '../../domain/entities/inbox_notification_page.dart';
 import '../../domain/failures/notification_failure.dart';
 import '../../domain/repositories/notification_repository.dart';
+import '../../../../core/i18n/l10n.dart';
 
 InboxNotification parseInboxNotification(Map<String, dynamic> map) {
   final rawImage = map['image_url']?.toString();
@@ -60,7 +61,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         ),
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat notifikasi'));
+      return Either.left(_mapDio(error, l10n.notificationLoadFailed));
     } catch (error) {
       return Either.left(NotificationFailure(error.toString()));
     }
@@ -76,7 +77,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final count = data is Map ? data['unread_count'] : 0;
       return Either.right(count is int ? count : int.tryParse('$count') ?? 0);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal memuat jumlah notifikasi'));
+      return Either.left(_mapDio(error, l10n.notificationUnreadCountFailed));
     } catch (error) {
       return Either.left(NotificationFailure(error.toString()));
     }
@@ -91,7 +92,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final data = res.data?['data'];
       return Either.right(data is Map && data['already_read'] == true);
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menandai notifikasi'));
+      return Either.left(_mapDio(error, l10n.notificationMarkReadFailed));
     } catch (error) {
       return Either.left(NotificationFailure(error.toString()));
     }
@@ -109,7 +110,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         updated is int ? updated : int.tryParse('$updated') ?? 0,
       );
     } on DioException catch (error) {
-      return Either.left(_mapDio(error, 'Gagal menandai semua notifikasi'));
+      return Either.left(_mapDio(error, l10n.notificationMarkAllReadFailed));
     } catch (error) {
       return Either.left(NotificationFailure(error.toString()));
     }

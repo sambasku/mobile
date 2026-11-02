@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sambasku_mobile/features/explore/domain/entities/cuisine.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/cuisine_list_page.dart';
 import 'package:sambasku_mobile/features/explore/presentation/providers/cuisine_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 
 const _cuisine = Cuisine(
   id: 'x',
@@ -29,8 +32,11 @@ void main() {
           cuisineProvider.overrideWith((ref) async => const [_cuisine]),
         ],
         child: MaterialApp(
+      localizationsDelegates: appLocalizationDelegates,
+      locale: appTestLocale,
+      supportedLocales: appTestSupportedLocales,
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: CuisineListPage()),
           ),
         ),
@@ -58,6 +64,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Bubur Pedas Sambas'), findsNothing);
-    expect(find.text('Belum ada cuisine yang cocok.'), findsOneWidget);
+    expect(find.text('Belum ada kuliner yang cocok.'), findsOneWidget);
   });
 }

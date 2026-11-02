@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/models/api_response.dart';
+import '../../../contribution/data/models/upload_credentials_dto.dart';
 import '../models/comment_dto.dart';
 import '../models/create_comment_request_dto.dart';
+import '../models/update_comment_request_dto.dart';
 
 part 'comment_remote_datasource.g.dart';
 
@@ -32,8 +34,25 @@ abstract interface class CommentRemoteDatasource {
     @Body() CreateCommentRequestDto body,
   );
 
+  /// Kredensial upload foto komentar - GET /api/v1/comments/upload-token.
+  @GET('/api/v1/comments/upload-token')
+  Future<ApiResponse<UploadCredentialsDto>> getUploadToken(
+    @Query('folder') String folder,
+  );
+
   /// Soft-delete komentar (penulis/verifikator) - DELETE
   /// /api/v1/comments/:id. Response `{ success: true, data: null }`.
   @DELETE('/api/v1/comments/{id}')
   Future<ApiResponse<dynamic>> delete(@Path('id') String id);
+
+  /// Sunting komentar (penulis) - PATCH /api/v1/comments/:id.
+  @PATCH('/api/v1/comments/{id}')
+  Future<ApiResponse<CommentDto>> update(
+    @Path('id') String id,
+    @Body() UpdateCommentRequestDto body,
+  );
+
+  /// Riwayat sunting - GET /api/v1/comments/:id/edit-history.
+  @GET('/api/v1/comments/{id}/edit-history')
+  Future<ApiResponse<dynamic>> editHistory(@Path('id') String id);
 }

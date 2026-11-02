@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -9,6 +9,8 @@ import 'package:sambasku_mobile/features/about/presentation/providers/contributo
 import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_providers.dart';
 import 'package:sambasku_mobile/features/about/data/datasources/contributors_remote_datasource.dart';
 import 'package:sambasku_mobile/features/about/data/datasources/sponsors_remote_datasource.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _contributor = ContributorEntry(
   id: 'budi',
@@ -54,8 +56,14 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: SponsorshipTeamPage()),
           ),
         ),
@@ -78,8 +86,14 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: SponsorshipTeamPage()),
           ),
         ),
@@ -100,8 +114,14 @@ void main() {
           sponsorsProvider.overrideWith((ref) async => [_sponsor]),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: SponsorshipTeamPage()),
           ),
         ),
@@ -127,8 +147,14 @@ void main() {
           sponsorsProvider.overrideWith((ref) async => null),
         ],
         child: MaterialApp(
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const FToaster(child: SponsorshipTeamPage()),
           ),
         ),

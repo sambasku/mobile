@@ -13,6 +13,10 @@ void main() {
       expect(json.containsKey('has_read_contribution_guide'), isFalse);
       expect(json['display_name'], 'Kapsaloy');
       expect(json.containsKey('bio'), isTrue, reason: 'bio null = kosongkan');
+      expect(json.containsKey('region_id'), isTrue);
+      expect(json['region_id'], isNull);
+      expect(json.containsKey('village_id'), isTrue);
+      expect(json['village_id'], isNull);
     });
 
     test('true tetap dikirim', () {

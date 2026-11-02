@@ -6,6 +6,7 @@ import '../../domain/failures/edit_profile_failure.dart';
 import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
 import '../models/my_profile_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class EditProfileRepositoryImpl implements EditProfileRepository {
   EditProfileRepositoryImpl(this._remote);
@@ -19,7 +20,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           EditProfileFailure(
-            response.message ?? 'Gagal memuat profil',
+            response.message ?? l10n.profileLoadFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -37,7 +38,11 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? regionId,
+    String? villageId,
     bool? hasReadContributionGuide,
+    bool? notifyStreakReminder,
+    bool? notifyLevelUp,
   }) async {
     try {
       final response = await _remote.updateMyProfile(
@@ -45,13 +50,17 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
           username: username,
           displayName: displayName,
           bio: bio,
+          regionId: regionId,
+          villageId: villageId,
           hasReadContributionGuide: hasReadContributionGuide,
+          notifyStreakReminder: notifyStreakReminder,
+          notifyLevelUp: notifyLevelUp,
         ),
       );
       if (response.success == false || response.data == null) {
         return Either.left(
           EditProfileFailure(
-            response.message ?? 'Gagal menyimpan profil',
+            response.message ?? l10n.editProfileSaveFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -65,12 +74,17 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   }
 
   MyProfile _map(MyProfileDto dto) => MyProfile(
-        username: dto.username,
-        displayName: dto.displayName,
-        bio: dto.bio,
-        avatarUrl: dto.avatarUrl,
-        hasReadContributionGuide: dto.hasReadContributionGuide,
-      );
+    username: dto.username,
+    displayName: dto.displayName,
+    bio: dto.bio,
+    regionId: dto.regionId,
+    villageId: dto.villageId,
+    avatarUrl: dto.avatarUrl,
+    hasReadContributionGuide: dto.hasReadContributionGuide,
+    requiresConsent: dto.requiresConsent,
+    notifyStreakReminder: dto.notifyStreakReminder,
+    notifyLevelUp: dto.notifyLevelUp,
+  );
 
   EditProfileFailure _mapDio(DioException error) {
     final data = error.response?.data;
@@ -88,8 +102,9 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     });
   }

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
 import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 
 /// Ikon status untuk tile list Kontribusi Saya. Semua status punya ikon
 /// supaya tinggi tile seragam - tidak ada gap prefix kosong pada usulan
@@ -17,7 +17,7 @@ class SubmissionStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     return switch (status) {
-      'approved' => VerifiedBadgeIcon(size: size),
+      'approved' => WordApprovedBadgeIcon(size: size),
       'rejected' => Icon(
         FLucideIcons.circleX,
         size: size,

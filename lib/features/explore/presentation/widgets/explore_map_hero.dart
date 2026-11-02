@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
 import 'sambas_map_view.dart';
@@ -26,6 +27,7 @@ class ExploreMapHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     // Gradient/overlay mengecil ikut tinggi hero (landscape pendek).
     final gradientHeight = (height * 0.45).clamp(64.0, 112.0);
@@ -71,10 +73,10 @@ class ExploreMapHero extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Jelajahi Sambas',
+                    l10n.exploreMapHeroTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.typography.lg.copyWith(
+                    style: theme.typography.body.lg.copyWith(
                       fontWeight: FontWeight.w700,
                       fontSize: height < 160 ? 16 : null,
                     ),
@@ -82,10 +84,10 @@ class ExploreMapHero extends StatelessWidget {
                   if (height >= 130) ...[
                     const Gap(4),
                     Text(
-                      'Peta hidup Kabupaten Sambas - ketuk untuk membuka.',
+                      l10n.exploreMapHeroBody,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.typography.sm.copyWith(
+                      style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),
                     ),

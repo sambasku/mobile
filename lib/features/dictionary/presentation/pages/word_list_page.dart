@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../dictionary_labels.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -7,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/widgets/pending_review_badge_icon.dart';
-import '../../../../core/widgets/verified_badge_icon.dart';
+import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../dictionary_router.dart';
 import '../../domain/entities/word_summary.dart';
 import '../models/word_list_state.dart';
@@ -93,7 +95,7 @@ class WordListPage extends HookConsumerWidget {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Daftar Kata A-Z'),
+          title: Text(AppLocalizations.of(context).dictListTitle),
           prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         ),
         child: Column(
@@ -109,7 +111,7 @@ class WordListPage extends HookConsumerWidget {
                           ? FButtonVariant.primary
                           : FButtonVariant.outline,
                       onPress: () => notifier.onSearchInChanged('lemma'),
-                      child: const Text('Sambas'),
+                      child: Text(AppLocalizations.of(context).dictLangSambas),
                     ),
                   ),
                   const Gap(8),
@@ -120,7 +122,9 @@ class WordListPage extends HookConsumerWidget {
                           ? FButtonVariant.primary
                           : FButtonVariant.outline,
                       onPress: () => notifier.onSearchInChanged('translation'),
-                      child: const Text('Indonesia'),
+                      child: Text(
+                        AppLocalizations.of(context).dictLangIndonesia,
+                      ),
                     ),
                   ),
                 ],
@@ -133,8 +137,8 @@ class WordListPage extends HookConsumerWidget {
               ),
               focusNode: focusNode,
               hint: state.searchIn == 'translation'
-                  ? 'Cari kata Indonesia...'
-                  : 'Cari atau saring kata Sambas...',
+                  ? AppLocalizations.of(context).dictSearchIndonesianHint
+                  : AppLocalizations.of(context).dictSearchSambasHint,
               clearable: (value) => value.text.isNotEmpty,
               prefixBuilder: (context, style, variants) =>
                   FTextField.prefixIconBuilder(
@@ -156,7 +160,7 @@ class WordListPage extends HookConsumerWidget {
                       initial: state.category,
                       onChange: (value) => notifier.onCategoryChanged(value),
                     ),
-                    label: const Text('Kategori'),
+                    label: Text(AppLocalizations.of(context).dictCategory),
                     clearable: true,
                     size: .sm,
                   ),
@@ -225,21 +229,21 @@ class WordListPage extends HookConsumerWidget {
               const Gap(8),
               Text(
                 askIndonesia
-                    ? 'Ketik kata Indonesia untuk mencari terjemahannya di Sambas.'
+                    ? AppLocalizations.of(context).dictSearchIndonesianEmpty
                     : query.isEmpty
-                    ? 'Belum ada kata terbit.'
-                    : 'Tidak ada kata untuk "$query"',
+                    ? AppLocalizations.of(context).dictNoPublishedWord
+                    : AppLocalizations.of(context).dictNoMatchFor(query),
                 textAlign: TextAlign.center,
-                style: theme.typography.md.copyWith(
+                style: theme.typography.body.md.copyWith(
                   color: theme.colors.foreground,
                 ),
               ),
               if (query.isNotEmpty) ...[
                 const Gap(4),
                 Text(
-                  'Belum ada di kamus. Usulkan supaya bisa dicari orang lain.',
+                  AppLocalizations.of(context).dictNotInDictionary,
                   textAlign: TextAlign.center,
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -254,7 +258,7 @@ class WordListPage extends HookConsumerWidget {
                     ).query;
                     context.push('/contribute?$params');
                   },
-                  child: const Text('Usul kata ini'),
+                  child: Text(AppLocalizations.of(context).dictProposeThisWord),
                 ),
               ],
               if (!askIndonesia) ...[
@@ -263,7 +267,7 @@ class WordListPage extends HookConsumerWidget {
                   onPress: () => ref.read(wordListProvider.notifier).load(),
                   variant: FButtonVariant.outline,
                   prefix: const Icon(FLucideIcons.rotateCcw),
-                  child: const Text('Coba lagi'),
+                  child: Text(AppLocalizations.of(context).commonRetry),
                 ),
               ],
             ],
@@ -325,14 +329,22 @@ class _WordTile extends StatelessWidget with FTileMixin {
         matched.isNotEmpty) {
       subtitle = matched;
     } else if (searchIn != 'translation' && item.wordType != 'word') {
-      subtitle = item.wordTypeLabel;
+      subtitle = wordSummaryTypeLabel(item, AppLocalizations.of(context));
+    }
+
+    // PRD relasi-lemma: tandai hasil yang datang dari perluasan kelompok
+    // makna, supaya user tahu ini bukan cocok langsung.
+    if (item.isRelatedGroupMatch) {
+      subtitle = subtitle == null
+          ? AppLocalizations.of(context).dictRelatedMeanings
+          : AppLocalizations.of(context).dictRelatedMeaningSubtitle(subtitle);
     }
 
     return FTile(
       title: Text(item.lemma),
       subtitle: subtitle != null ? Text(subtitle) : null,
       suffix: item.isVerified
-          ? const VerifiedBadgeIcon()
+          ? const WordApprovedBadgeIcon()
           : const PendingReviewBadgeIcon(),
       onPress: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -352,7 +364,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -363,7 +375,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -390,9 +402,9 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: const Text('kata Sambas contoh'),
+      title: Text(AppLocalizations.of(context).dictSkeletonWord),
       suffix: Icon(
-        FLucideIcons.badgeCheck,
+        FLucideIcons.circleDashedCheck,
         size: 18,
         color: context.theme.colors.mutedForeground,
       ),
@@ -415,8 +427,8 @@ class _LoadingMoreFooter extends StatelessWidget {
             const FCircularProgress(size: .xs),
             const Gap(8),
             Text(
-              'Memuat...',
-              style: theme.typography.sm.copyWith(
+              AppLocalizations.of(context).dictLoading,
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),
@@ -455,8 +467,8 @@ class _SearchHistorySection extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Riwayat pencarian',
-                  style: theme.typography.sm.copyWith(
+                  AppLocalizations.of(context).dictSearchHistory,
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                     fontWeight: FontWeight.w600,
                   ),
@@ -470,8 +482,8 @@ class _SearchHistorySection extends StatelessWidget {
                     vertical: 4,
                   ),
                   child: Text(
-                    'Hapus',
-                    style: theme.typography.sm.copyWith(
+                    AppLocalizations.of(context).commonDelete,
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.primary,
                     ),
                   ),

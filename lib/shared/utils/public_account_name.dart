@@ -16,10 +16,7 @@ String displayPublicUsername(String? username) {
 }
 
 /// Label orang di UI: prefer [displayName], fallback [username].
-String displayPublicAccountLabel({
-  String? displayName,
-  String? username,
-}) {
+String displayPublicAccountLabel({String? displayName, String? username}) {
   final trimmed = displayName?.trim();
   if (trimmed != null &&
       trimmed.isNotEmpty &&

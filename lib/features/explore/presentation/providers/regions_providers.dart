@@ -18,7 +18,7 @@ RegionsRepositoryImpl regionsRepository(Ref ref) => RegionsRepositoryImpl(
   ref.watch(cachedJsonClientProvider),
 );
 
-/// Katalog wilayah (19 kecamatan + desa) dari CDN.
+/// Katalog wilayah (19 kecamatan + desa) dari `GET /api/v1/regions/catalog`.
 /// Null = offline/JSON rusak (soft-fail). referenceStatic: fresh 24 jam + SWR.
 @riverpod
 Future<List<Region>?> regions(Ref ref) =>

@@ -21,7 +21,9 @@ void main() {
       repo = _FakeDictionaryRepository();
       container = ProviderContainer(
         overrides: [
-          searchWordsUseCaseProvider.overrideWithValue(SearchWordsUseCase(repo)),
+          searchWordsUseCaseProvider.overrideWithValue(
+            SearchWordsUseCase(repo),
+          ),
         ],
       );
       // Provider auto-dispose: tanpa listener ia dibuang setelah tiap read,
@@ -34,17 +36,18 @@ void main() {
 
     WordCompleteState state() => container.read(wordCompleteProvider);
 
-    test('di bawah 2 karakter: tidak fetch, tidak loading, hasil dikosongkan', () {
-      state();
-      container
-          .read(wordCompleteProvider.notifier)
-          .onQueryChanged('a');
+    test(
+      'di bawah 2 karakter: tidak fetch, tidak loading, hasil dikosongkan',
+      () {
+        state();
+        container.read(wordCompleteProvider.notifier).onQueryChanged('a');
 
-      expect(repo.calls, isEmpty);
-      expect(state().isLoading, isFalse);
-      expect(state().isSearching, isFalse);
-      expect(state().items, isEmpty);
-    });
+        expect(repo.calls, isEmpty);
+        expect(state().isLoading, isFalse);
+        expect(state().isSearching, isFalse);
+        expect(state().items, isEmpty);
+      },
+    );
 
     test('ketik cepat berulang: hanya query terakhir yang di-fetch', () async {
       state();
@@ -210,8 +213,8 @@ class _FakeDictionaryRepository implements DictionaryRepository {
   }) => throw UnimplementedError();
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async =>
-      const Right(<WordCategory>[]);
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  listCategories() async => const Right(<WordCategory>[]);
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({

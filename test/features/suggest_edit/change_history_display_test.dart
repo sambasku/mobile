@@ -1,7 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/suggest_edit/presentation/widgets/word_change_history_section.dart';
+import 'package:sambasku_mobile/l10n/app_localizations_id.dart';
 
 void main() {
+  final l10n = AppLocalizationsId();
+
   group('isTechnicalChangeField', () {
     test('returns true for fields ending with _id', () {
       expect(isTechnicalChangeField('contribution_id'), isTrue);
@@ -54,59 +57,65 @@ void main() {
 
   group('friendlyChangeValue', () {
     test('returns null for empty string', () {
-      expect(friendlyChangeValue(''), isNull);
-      expect(friendlyChangeValue('   '), isNull);
+      expect(friendlyChangeValue('', l10n), isNull);
+      expect(friendlyChangeValue('   ', l10n), isNull);
     });
 
     test('returns null for ULID (26 char Crockford base32)', () {
       const ulid = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
-      expect(friendlyChangeValue(ulid), isNull);
+      expect(friendlyChangeValue(ulid, l10n), isNull);
       // lowercase also matches
-      expect(friendlyChangeValue(ulid.toLowerCase()), isNull);
+      expect(friendlyChangeValue(ulid.toLowerCase(), l10n), isNull);
     });
 
     test('returns null for JSON object without added/removed/set_primary', () {
       const json = '{"status":"published","reason_code":"spam"}';
-      expect(friendlyChangeValue(json), isNull);
-      expect(friendlyChangeValue('{"foo":"bar"}'), isNull);
+      expect(friendlyChangeValue(json, l10n), isNull);
+      expect(friendlyChangeValue('{"foo":"bar"}', l10n), isNull);
     });
 
     test('summarizes JSON with added/removed', () {
       expect(
-        friendlyChangeValue('{"added":[{"id":"1"}],"removed":[]}'),
+        friendlyChangeValue('{"added":[{"id":"1"}],"removed":[]}', l10n),
         'Ditambah 1',
       );
       expect(
-        friendlyChangeValue('{"added":[],"removed":[{"id":"1"},{"id":"2"}]}'),
+        friendlyChangeValue(
+          '{"added":[],"removed":[{"id":"1"},{"id":"2"}]}',
+          l10n,
+        ),
         'Dihapus 2',
       );
       expect(
-        friendlyChangeValue('{"added":[1],"removed":[1],"set_primary":[1]}'),
+        friendlyChangeValue(
+          '{"added":[1],"removed":[1],"set_primary":[1]}',
+          l10n,
+        ),
         'Ditambah 1, Dihapus 1, Dijadikan utama 1',
       );
     });
 
     test('returns original string for non-JSON, non-ULID values', () {
-      expect(friendlyChangeValue('kata baru'), 'kata baru');
-      expect(friendlyChangeValue('Sebelum: lama'), 'Sebelum: lama');
-      expect(friendlyChangeValue('-'), '-');
-      expect(friendlyChangeValue('some text'), 'some text');
+      expect(friendlyChangeValue('kata baru', l10n), 'kata baru');
+      expect(friendlyChangeValue('Sebelum: lama', l10n), 'Sebelum: lama');
+      expect(friendlyChangeValue('-', l10n), '-');
+      expect(friendlyChangeValue('some text', l10n), 'some text');
     });
 
     test('returns null for JSON array', () {
-      expect(friendlyChangeValue('[1,2,3]'), isNull);
+      expect(friendlyChangeValue('[1,2,3]', l10n), isNull);
     });
 
     test('returns null for JSON boolean/number primitives', () {
-      expect(friendlyChangeValue('true'), isNull);
-      expect(friendlyChangeValue('false'), isNull);
-      expect(friendlyChangeValue('123'), isNull);
-      expect(friendlyChangeValue('0'), isNull);
+      expect(friendlyChangeValue('true', l10n), isNull);
+      expect(friendlyChangeValue('false', l10n), isNull);
+      expect(friendlyChangeValue('123', l10n), isNull);
+      expect(friendlyChangeValue('0', l10n), isNull);
     });
 
     test('handles invalid JSON gracefully', () {
-      expect(friendlyChangeValue('{not json}'), '{not json}');
-      expect(friendlyChangeValue('just text'), 'just text');
+      expect(friendlyChangeValue('{not json}', l10n), '{not json}');
+      expect(friendlyChangeValue('just text', l10n), 'just text');
     });
   });
 }

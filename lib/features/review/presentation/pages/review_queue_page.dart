@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
+import '../review_labels.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +11,6 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
-import '../../domain/review_access.dart';
 import '../../review_router.dart';
 import '../providers/review_providers.dart';
 import '../utils/leave_review.dart';
@@ -44,7 +45,7 @@ class ReviewQueuePage extends ConsumerWidget {
       child: FScaffold(
         childPad: true,
         header: FHeader.nested(
-          title: const Text('Mulai tinjau'),
+          title: Text(AppLocalizations.of(context).reviewQueueStart),
           prefixes: [
             FHeaderAction.back(
               onPress: () {
@@ -68,7 +69,7 @@ class ReviewQueuePage extends ConsumerWidget {
           error: (error, _) => _ErrorState(
             message: error is ReviewFailure
                 ? error.message
-                : 'Gagal memuat antrean',
+                : AppLocalizations.of(context).reviewQueueLoadFailed,
             onRetry: () => ref.invalidate(reviewQueueProvider(query)),
           ),
           data: (state) => _QueueList(query: query, state: state),
@@ -113,16 +114,16 @@ class _QueueList extends ConsumerWidget {
                       ),
                       const Gap(10),
                       Text(
-                        'Tidak ada usulan yang menunggu',
-                        style: theme.typography.md.copyWith(
+                        AppLocalizations.of(context).reviewQueueEmpty,
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const Gap(4),
                       Text(
-                        'Usulan baru dari kontributor akan muncul di sini.',
-                        style: theme.typography.sm.copyWith(
+                        AppLocalizations.of(context).reviewQueueEmptyHint,
+                        style: theme.typography.body.sm.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                         textAlign: TextAlign.center,
@@ -156,7 +157,9 @@ class _QueueList extends ConsumerWidget {
           onPress: () => openSession(),
           prefix: const Icon(FLucideIcons.play),
           child: Text(
-            'Mulai tinjau (${state.items.length}${state.hasMore ? '+' : ''})',
+            state.hasMore
+          ? AppLocalizations.of(context).reviewQueueStartMore('${state.items.length}')
+          : AppLocalizations.of(context).reviewQueueStartCount('${state.items.length}'),
           ),
         ),
         const Gap(12),
@@ -191,11 +194,11 @@ class _ReviewTile extends StatelessWidget with FTileMixin {
     final theme = context.theme;
     final date = formatDateTimeIso(item.createdAt);
     return FTile(
-      title: Text(item.title),
+      title: Text(reviewTitle(item, AppLocalizations.of(context))),
       subtitle: Text(
         [
-          reviewEntityLabel(item.entityType),
-          item.contributorLabel,
+          reviewEntityLabel(item.entityType, AppLocalizations.of(context)),
+          item.contributorLabel ?? AppLocalizations.of(context).reviewContributorFallback,
           if (date.isNotEmpty) date,
         ].join(' · '),
       ),
@@ -229,16 +232,16 @@ class _ErrorState extends StatelessWidget {
             const Gap(10),
             Text(
               message,
-              style: theme.typography.sm.copyWith(
+              style: theme.typography.body.sm.copyWith(
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
             ),
-            const Gap(16),
+            Gap(16),
             FButton(
               variant: FButtonVariant.outline,
               onPress: onRetry,
-              child: const Text('Coba lagi'),
+              child: Text(AppLocalizations.of(context).commonRetry),
             ),
           ],
         ),
@@ -257,7 +260,7 @@ class _ListSkeleton extends StatelessWidget {
     final materialBrightness = Theme.of(context).brightness;
     final isDark = materialBrightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -268,7 +271,7 @@ class _ListSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -295,8 +298,8 @@ class _SkeletonTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     return FTile(
-      title: Text('Usulan kata contoh'),
-      subtitle: Text('Kata · kontributor · 21 Sep 2026 00:00'),
+      title: Text(AppLocalizations.of(context).reviewSkeletonProposalTitle),
+      subtitle: Text(AppLocalizations.of(context).reviewSkeletonProposalMeta),
     );
   }
 }

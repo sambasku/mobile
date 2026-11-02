@@ -1,17 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:sambasku_mobile/core/gestures/swipe_exempt.dart';
 import 'package:sambasku_mobile/features/vote/presentation/widgets/vote_deck_swipe_card.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
-      theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-      localizationsDelegates: FLocalizations.localizationsDelegates,
-      supportedLocales: FLocalizations.supportedLocales,
+      theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+      localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+      supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
       home: FTheme(
-        data: FThemes.zinc.light.touch,
+        data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(
           body: Center(
             child: SizedBox(
@@ -178,6 +185,61 @@ void main() {
     await tester.pumpWidget(card('h2'));
     await tester.pump(const Duration(seconds: 3));
     expect(haptics, hasLength(2));
+  });
+
+  testWidgets('geser di chip jenis tidak memanggil onSwiped', (tester) async {
+    VoteDeckSwipeDirection? got;
+    var taps = 0;
+
+    await tester.pumpWidget(
+      wrap(
+        VoteDeckSwipeCard(
+          itemKey: 'jenis',
+          enabled: true,
+          onSwiped: (direction) async {
+            got = direction;
+            return true;
+          },
+          child: Column(
+            children: [
+              SwipeExemptRegion(
+                child: SizedBox(
+                  height: 48,
+                  width: double.infinity,
+                  child: GestureDetector(
+                    onTap: () => taps++,
+                    child: const Center(child: Text('jenis')),
+                  ),
+                ),
+              ),
+              const Expanded(child: Center(child: Text('kartu'))),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('jenis'));
+    await tester.pump();
+    expect(taps, 1);
+    expect(got, isNull);
+
+    await tester.timedDrag(
+      find.text('jenis'),
+      const Offset(180, 0),
+      const Duration(milliseconds: 120),
+    );
+    await tester.pumpAndSettle();
+    expect(got, isNull);
+
+    await tester.timedDrag(
+      find.text('kartu'),
+      const Offset(180, 0),
+      const Duration(milliseconds: 120),
+    );
+    await tester.pumpAndSettle();
+    expect(got, VoteDeckSwipeDirection.agree);
   });
 }
 

@@ -1,12 +1,13 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../core/utils/display_image_url.dart';
 import '../../features/dictionary/domain/entities/word_detail.dart';
 import 'cached_network_image_with_fallback.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Host yang dikenal sebagai placeholder gambar staging (sementara).
 /// Deteksi interim sampai flag `is_verified` stabil di produksi.
@@ -97,7 +98,7 @@ class _PendingPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
-      label: 'Menunggu tinjauan',
+      label: AppLocalizations.of(context).wordImagePendingReview,
       child: Image.asset(
         dark ? _darkGif : _lightGif,
         fit: fit,
@@ -124,7 +125,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
     final theme = context.theme;
     return Semantics(
       button: true,
-      hint: 'Gambar disensor. Ketuk untuk menampilkan.',
+      hint: AppLocalizations.of(context).wordImageCensoredHint,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -160,7 +161,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       'Foto berisi kekerasan',
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w600,
                       ),
@@ -169,7 +170,7 @@ class _BlurredViolenceThumb extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Lihat foto',
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: Colors.white,
                         decoration: TextDecoration.underline,
                         decorationColor: Colors.white,
@@ -205,12 +206,12 @@ Future<bool> confirmRevealViolenceImage(BuildContext context) async {
               children: [
                 Text(
                   'Lihat foto ini?',
-                  style: theme.typography.lg.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const Gap(8),
                 Text(
                   'Foto ini memperlihatkan kekerasan. Kalau ada orang di dekatmu, mereka juga bisa melihat.',
-                  style: theme.typography.sm.copyWith(
+                  style: theme.typography.body.sm.copyWith(
                     color: theme.colors.mutedForeground,
                   ),
                 ),
@@ -221,14 +222,14 @@ Future<bool> confirmRevealViolenceImage(BuildContext context) async {
                       child: FButton(
                         variant: FButtonVariant.outline,
                         onPress: () => Navigator.of(sheetContext).pop(false),
-                        child: const Text('Jangan dulu'),
+                        child: Text(AppLocalizations.of(context).wordImageNotYet),
                       ),
                     ),
                     const Gap(12),
                     Expanded(
                       child: FButton(
                         onPress: () => Navigator.of(sheetContext).pop(true),
-                        child: const Text('Lihat'),
+                        child: Text(AppLocalizations.of(context).wordImageShow),
                       ),
                     ),
                   ],

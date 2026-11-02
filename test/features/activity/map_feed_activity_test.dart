@@ -44,6 +44,27 @@ void main() {
       expect(parseFeedActivityKind('suggestion'), FeedActivityKind.suggestion);
     });
 
+    test('pantun dikenali + target.type pantun', () {
+      expect(parseFeedActivityKind('pantun'), FeedActivityKind.pantun);
+      final item = mapFeedActivityItem({
+        'id': 'pantun:01',
+        'kind': 'pantun',
+        'created_at': '2026-10-31T12:00:00.000Z',
+        'actor': {
+          'username': 'budi',
+          'display_name': 'Budi',
+          'avatar_url': null,
+        },
+        'body': 'Membalas pantun',
+        'subtitle': null,
+        'target': {'type': 'pantun', 'id': '01PANTUN'},
+      });
+      expect(item, isNotNull);
+      expect(item!.kind, FeedActivityKind.pantun);
+      expect(item.target?.type, 'pantun');
+      expect(item.target?.id, '01PANTUN');
+    });
+
     test('kind tidak dikenal diabaikan', () {
       expect(
         mapFeedActivityItem({

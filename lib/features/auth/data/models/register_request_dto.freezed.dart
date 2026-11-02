@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'register_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'register_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $LegalConsentDtoCopyWith<LegalConsentDto> get copyWith => _$LegalConsentDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LegalConsentDto&&(identical(other.documentType, documentType) || other.documentType == documentType)&&(identical(other.documentVersion, documentVersion) || other.documentVersion == documentVersion));
+  final _this = this as LegalConsentDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LegalConsentDto&&(identical(other.documentType, _this.documentType) || other.documentType == _this.documentType)&&(identical(other.documentVersion, _this.documentVersion) || other.documentVersion == _this.documentVersion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,documentType,documentVersion);
+int get hashCode {
+  final _this = this as LegalConsentDto;
+  return Object.hash(runtimeType,_this.documentType,_this.documentVersion);
+}
 
 @override
 String toString() {
-  return 'LegalConsentDto(documentType: $documentType, documentVersion: $documentVersion)';
+  final _this = this as LegalConsentDto;
+  return 'LegalConsentDto(documentType: ${_this.documentType}, documentVersion: ${_this.documentVersion})';
 }
 
 
@@ -66,7 +72,7 @@ class _$LegalConsentDtoCopyWithImpl<$Res>
 /// Create a copy of LegalConsentDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? documentType = null,Object? documentVersion = null,}) {
-  return _then(_self.copyWith(
+  return _then(LegalConsentDto(
 documentType: null == documentType ? _self.documentType : documentType // ignore: cast_nullable_to_non_nullable
 as String,documentVersion: null == documentVersion ? _self.documentVersion : documentVersion // ignore: cast_nullable_to_non_nullable
 as String,
@@ -229,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LegalConsentDto&&(identical(other.documentType, documentType) || other.documentType == documentType)&&(identical(other.documentVersion, documentVersion) || other.documentVersion == documentVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LegalConsentDto&&(identical(other.documentType, documentType) || other.documentType == documentType)&&(identical(other.documentVersion, documentVersion) || other.documentVersion == documentVersion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,documentType,documentVersion);
+int get hashCode {
+    return Object.hash(runtimeType,documentType,documentVersion);
+}
 
 @override
 String toString() {
-  return 'LegalConsentDto(documentType: $documentType, documentVersion: $documentVersion)';
+    return 'LegalConsentDto(documentType: $documentType, documentVersion: $documentVersion)';
 }
 
 
@@ -294,16 +302,21 @@ $RegisterRequestDtoCopyWith<RegisterRequestDto> get copyWith => _$RegisterReques
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequestDto&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.clientId, clientId) || other.clientId == clientId)&&const DeepCollectionEquality().equals(other.consents, consents));
+  final _this = this as RegisterRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequestDto&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.password, _this.password) || other.password == _this.password)&&(identical(other.confirmPassword, _this.confirmPassword) || other.confirmPassword == _this.confirmPassword)&&(identical(other.clientId, _this.clientId) || other.clientId == _this.clientId)&&const DeepCollectionEquality().equals(other.consents, _this.consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email,phone,password,confirmPassword,clientId,const DeepCollectionEquality().hash(consents));
+int get hashCode {
+  final _this = this as RegisterRequestDto;
+  return Object.hash(runtimeType,_this.name,_this.email,_this.phone,_this.password,_this.confirmPassword,_this.clientId,const DeepCollectionEquality().hash(_this.consents));
+}
 
 @override
 String toString() {
-  return 'RegisterRequestDto(name: $name, email: $email, phone: $phone, password: $password, confirmPassword: $confirmPassword, clientId: $clientId, consents: $consents)';
+  final _this = this as RegisterRequestDto;
+  return 'RegisterRequestDto(name: ${_this.name}, email: ${_this.email}, phone: ${_this.phone}, password: ${_this.password}, confirmPassword: ${_this.confirmPassword}, clientId: ${_this.clientId}, consents: ${_this.consents})';
 }
 
 
@@ -332,7 +345,7 @@ class _$RegisterRequestDtoCopyWithImpl<$Res>
 /// Create a copy of RegisterRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? email = null,Object? phone = freezed,Object? password = null,Object? confirmPassword = null,Object? clientId = null,Object? consents = null,}) {
-  return _then(_self.copyWith(
+  return _then(RegisterRequestDto(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
@@ -481,7 +494,7 @@ return $default(_that.name,_that.email,_that.phone,_that.password,_that.confirmP
 @JsonSerializable()
 
 class _RegisterRequestDto implements RegisterRequestDto {
-  const _RegisterRequestDto({required this.name, required this.email, @JsonKey(includeIfNull: false) this.phone, required this.password, @JsonKey(name: 'confirm_password') required this.confirmPassword, @JsonKey(name: 'client_id') this.clientId = 'sambasku-mobile', required final  List<LegalConsentDto> consents}): _consents = consents;
+  const _RegisterRequestDto({required this.name, required this.email, @JsonKey(includeIfNull: false) this.phone, required this.password, @JsonKey(name: 'confirm_password') required this.confirmPassword, @JsonKey(name: 'client_id') this.clientId = 'sambasku-mobile', required  List<LegalConsentDto> consents}): _consents = consents;
   factory _RegisterRequestDto.fromJson(Map<String, dynamic> json) => _$RegisterRequestDtoFromJson(json);
 
 @override final  String name;
@@ -511,16 +524,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequestDto&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.clientId, clientId) || other.clientId == clientId)&&const DeepCollectionEquality().equals(other._consents, _consents));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequestDto&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password)&&(identical(other.confirmPassword, confirmPassword) || other.confirmPassword == confirmPassword)&&(identical(other.clientId, clientId) || other.clientId == clientId)&&const DeepCollectionEquality().equals(other.consents, _consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,email,phone,password,confirmPassword,clientId,const DeepCollectionEquality().hash(_consents));
+int get hashCode {
+    return Object.hash(runtimeType,name,email,phone,password,confirmPassword,clientId,const DeepCollectionEquality().hash(_consents));
+}
 
 @override
 String toString() {
-  return 'RegisterRequestDto(name: $name, email: $email, phone: $phone, password: $password, confirmPassword: $confirmPassword, clientId: $clientId, consents: $consents)';
+    return 'RegisterRequestDto(name: $name, email: $email, phone: $phone, password: $password, confirmPassword: $confirmPassword, clientId: $clientId, consents: $consents)';
 }
 
 
@@ -581,16 +596,21 @@ $RegisterResponseDtoCopyWith<RegisterResponseDto> get copyWith => _$RegisterResp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterResponseDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.verificationRequired, verificationRequired) || other.verificationRequired == verificationRequired));
+  final _this = this as RegisterResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterResponseDto&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.verificationRequired, _this.verificationRequired) || other.verificationRequired == _this.verificationRequired));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,username,email,phone,verificationRequired);
+int get hashCode {
+  final _this = this as RegisterResponseDto;
+  return Object.hash(runtimeType,_this.userId,_this.username,_this.email,_this.phone,_this.verificationRequired);
+}
 
 @override
 String toString() {
-  return 'RegisterResponseDto(userId: $userId, username: $username, email: $email, phone: $phone, verificationRequired: $verificationRequired)';
+  final _this = this as RegisterResponseDto;
+  return 'RegisterResponseDto(userId: ${_this.userId}, username: ${_this.username}, email: ${_this.email}, phone: ${_this.phone}, verificationRequired: ${_this.verificationRequired})';
 }
 
 
@@ -619,7 +639,7 @@ class _$RegisterResponseDtoCopyWithImpl<$Res>
 /// Create a copy of RegisterResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? username = null,Object? email = null,Object? phone = freezed,Object? verificationRequired = null,}) {
-  return _then(_self.copyWith(
+  return _then(RegisterResponseDto(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -788,16 +808,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterResponseDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.verificationRequired, verificationRequired) || other.verificationRequired == verificationRequired));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterResponseDto&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.verificationRequired, verificationRequired) || other.verificationRequired == verificationRequired));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,username,email,phone,verificationRequired);
+int get hashCode {
+    return Object.hash(runtimeType,userId,username,email,phone,verificationRequired);
+}
 
 @override
 String toString() {
-  return 'RegisterResponseDto(userId: $userId, username: $username, email: $email, phone: $phone, verificationRequired: $verificationRequired)';
+    return 'RegisterResponseDto(userId: $userId, username: $username, email: $email, phone: $phone, verificationRequired: $verificationRequired)';
 }
 
 

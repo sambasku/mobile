@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -9,10 +9,12 @@ import 'package:sambasku_mobile/features/about/data/datasources/sponsors_remote_
 import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dart';
 import 'package:sambasku_mobile/features/about/presentation/providers/contributors_providers.dart';
 import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_providers.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 const _linked = ContributorEntry(
   id: 'iamutaki',
-  sambaskuUsername: 'ibnulmutaki',
+  username: 'ibnulmutaki',
   name: 'Ibnul Mutaki',
   roles: ['developer', 'maintainer'],
   note: 'Penggagas dan pengelola repositori',
@@ -22,7 +24,7 @@ const _linked = ContributorEntry(
 
 const _withUrl = ContributorEntry(
   id: 'iamutaki',
-  sambaskuUsername: 'ibnulmutaki',
+  username: 'ibnulmutaki',
   name: 'Ibnul Mutaki',
   roles: ['developer'],
   note: 'Penggagas',
@@ -50,7 +52,7 @@ const _plain = ContributorEntry(
   since: '2020-01-01',
 );
 
-/// #100: tile dengan sambaskuUsername tap -> profil publik SambasKu;
+/// #100: tile dengan username tap -> profil publik SambasKu;
 /// tanpa username -> tile polos (tidak interaktif).
 void main() {
   Future<void> pumpPage(
@@ -69,8 +71,16 @@ void main() {
           ),
         ],
         child: FTheme(
-          data: FThemes.zinc.light.touch,
-          child: MaterialApp.router(routerConfig: router),
+          data: foruiPalettes['zinc']!.light.touch,
+          child: MaterialApp.router(
+            routerConfig: router,
+            localizationsDelegates: [
+              ...AppLocalizations.localizationsDelegates,
+              ...FLocalizations.localizationsDelegates,
+            ],
+            supportedLocales: const [Locale('id')],
+            locale: const Locale('id'),
+          ),
         ),
       ),
     );
@@ -99,7 +109,7 @@ void main() {
     ],
   );
 
-  testWidgets('tap contributor dengan sambaskuUsername -> /users/ibnulmutaki', (
+  testWidgets('tap contributor dengan username -> /users/ibnulmutaki', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(800, 2000);
@@ -119,7 +129,7 @@ void main() {
     expect(find.text('PROFILE:ibnulmutaki'), findsOneWidget);
   });
 
-  testWidgets('tanpa sambaskuUsername -> tidak ada InkWell', (tester) async {
+  testWidgets('tanpa username -> tidak ada InkWell', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -179,7 +189,10 @@ void main() {
       await tester.tap(find.byIcon(FLucideIcons.globe));
       await tester.pumpAndSettle();
 
-      expect(launched, ['https://iamutaki.com']);
+      // Link eksternal otomatis ber-UTM (rule external-link-utm).
+      expect(launched, [
+        'https://iamutaki.com?utm_source=sambasku.com&utm_medium=referral',
+      ]);
       expect(find.text('PROFILE:ibnulmutaki'), findsNothing);
     });
 

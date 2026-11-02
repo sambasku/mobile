@@ -4,7 +4,9 @@ import '../../data/providers/comment_data_providers.dart';
 import '../usecases/create_comment_audio_use_case.dart';
 import '../usecases/create_comment_use_case.dart';
 import '../usecases/delete_comment_use_case.dart';
+import '../usecases/get_comment_edit_history_use_case.dart';
 import '../usecases/list_word_comments_use_case.dart';
+import '../usecases/update_comment_use_case.dart';
 
 part 'comment_domain_providers.g.dart';
 
@@ -23,3 +25,11 @@ CreateCommentAudioUseCase createCommentAudioUseCase(Ref ref) =>
 @riverpod
 DeleteCommentUseCase deleteCommentUseCase(Ref ref) =>
     DeleteCommentUseCase(ref.watch(commentRepositoryProvider));
+
+@riverpod
+UpdateCommentUseCase updateCommentUseCase(Ref ref) =>
+    UpdateCommentUseCase(ref.watch(commentRepositoryProvider));
+
+@riverpod
+GetCommentEditHistoryUseCase getCommentEditHistoryUseCase(Ref ref) =>
+    GetCommentEditHistoryUseCase(ref.watch(commentRepositoryProvider));

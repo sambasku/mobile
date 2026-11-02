@@ -34,4 +34,37 @@ void main() {
     // label UI: "makan → makatn"
     expect('${dto.matchedTranslation} → ${dto.lemma}', 'makan → makatn');
   });
+
+  // PRD relasi-lemma: penanda hasil perluasan kelompok makna.
+  test('WordSummaryDto mem-parse match_type + matched_variant', () {
+    final dto = WordSummaryDto.fromJson({
+      'id': '01AAAAAAAAAAAAAAAAAAAAAAAA',
+      'lemma': 'misai',
+      'language_id': 'lang-1',
+      'language_code': 'SBS',
+      'word_type': 'word',
+      'status': 'published',
+      'is_verified': true,
+      'match_type': 'related_group',
+      'matched_variant': 'misay',
+    });
+
+    expect(dto.matchType, 'related_group');
+    expect(dto.matchedVariant, 'misay');
+  });
+
+  test('payload lama tanpa match_type = null (hasil langsung)', () {
+    final dto = WordSummaryDto.fromJson({
+      'id': '01AAAAAAAAAAAAAAAAAAAAAAAA',
+      'lemma': 'makatn',
+      'language_id': 'lang-1',
+      'language_code': 'SBS',
+      'word_type': 'word',
+      'status': 'published',
+      'is_verified': true,
+    });
+
+    expect(dto.matchType, isNull);
+    expect(dto.matchedVariant, isNull);
+  });
 }

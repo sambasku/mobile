@@ -1,3 +1,5 @@
+import '../../../../l10n/app_localizations.dart';
+
 // Model domain + wire mapping untuk Ruang Diskusi.
 
 import '../../vote/domain/entities/vote_target.dart';
@@ -125,6 +127,8 @@ class DiscussionReply {
     this.upvotes = 0,
     this.downvotes = 0,
     this.myVote,
+    this.isEdited = false,
+    this.updatedAt,
   });
 
   final String id;
@@ -143,6 +147,8 @@ class DiscussionReply {
   final int upvotes;
   final int downvotes;
   final int? myVote;
+  final bool isEdited;
+  final String? updatedAt;
 
   VoteTarget get voteTarget =>
       VoteTarget(type: 'discussion_reply', id: id);
@@ -172,13 +178,18 @@ class DiscussionReply {
       createdAt: json['created_at']?.toString() ?? '',
       upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
       downvotes: (json['downvotes'] as num?)?.toInt() ?? 0,
+      isEdited: json['is_edited'] == true,
+      updatedAt: json['updated_at']?.toString(),
     );
   }
 
   DiscussionReply copyWith({
+    Object? body = _unset,
     int? upvotes,
     int? downvotes,
     Object? myVote = _unset,
+    bool? isEdited,
+    String? updatedAt,
   }) {
     return DiscussionReply(
       id: id,
@@ -186,7 +197,7 @@ class DiscussionReply {
       username: username,
       displayName: displayName,
       avatarUrl: avatarUrl,
-      body: body,
+      body: identical(body, _unset) ? this.body : body as String?,
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
@@ -197,10 +208,38 @@ class DiscussionReply {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
+      isEdited: isEdited ?? this.isEdited,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   static const Object _unset = Object();
+}
+
+class DiscussionReplyEditHistory {
+  const DiscussionReplyEditHistory({
+    required this.revisions,
+    this.currentBody,
+    this.currentUpdatedAt,
+    this.isEdited = false,
+  });
+
+  final String? currentBody;
+  final String? currentUpdatedAt;
+  final bool isEdited;
+  final List<DiscussionReplyEditRevision> revisions;
+}
+
+class DiscussionReplyEditRevision {
+  const DiscussionReplyEditRevision({
+    required this.body,
+    required this.editorId,
+    required this.createdAt,
+  });
+
+  final String body;
+  final String editorId;
+  final String createdAt;
 }
 
 class DiscussionItem {
@@ -210,6 +249,7 @@ class DiscussionItem {
     required this.username,
     this.displayName,
     this.avatarUrl,
+    this.isVerifier = false,
     required this.body,
     this.linkUrl,
     required this.images,
@@ -224,7 +264,9 @@ class DiscussionItem {
     this.updatedAt,
     this.replies = const [],
     this.upvotes = 0,
+    this.replyCount = 0,
     this.myVote,
+    this.isEdited = false,
   });
 
   final String id;
@@ -232,6 +274,7 @@ class DiscussionItem {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final bool isVerifier;
   final String? body;
   final String? linkUrl;
   final List<DiscussionImage> images;
@@ -246,7 +289,10 @@ class DiscussionItem {
   final String? updatedAt;
   final List<DiscussionReply> replies;
   final int upvotes;
+  /// Jumlah balasan published (dari list wire `reply_count`; detail bisa pakai replies).
+  final int replyCount;
   final int? myVote;
+  final bool isEdited;
 
   VoteTarget get voteTarget => VoteTarget(type: 'discussion', id: id);
 
@@ -255,11 +301,15 @@ class DiscussionItem {
   bool get hasAudio =>
       audioUrl != null && audioUrl!.trim().isNotEmpty;
 
-  String get statusLabel => switch (status) {
-    'pending_review' => 'Menunggu pengecekan',
-    'published' => 'Tayang',
-    'rejected' => 'Ditolak',
-    'taken_down' => 'Diturunkan',
+  bool isOwner(String? userId) =>
+      userId != null && userId.isNotEmpty && userId == this.userId;
+
+  String statusLabelOf(AppLocalizations l10n) => switch (status) {
+    'pending_review' => l10n.dictPendingCheck,
+    'published' => l10n.discussionStatusPublished,
+    'rejected' => l10n.discussionStatusRejected,
+    'taken_down' => l10n.discussionStatusTakenDown,
+    'deleted_by_author' => l10n.discussionStatusWithdrawn,
     _ => status,
   };
 
@@ -289,6 +339,7 @@ class DiscussionItem {
       username: json['username']?.toString(),
       displayName: json['display_name']?.toString(),
       avatarUrl: json['avatar_url']?.toString(),
+      isVerifier: json['is_verifier'] == true,
       body: json['body']?.toString(),
       linkUrl: json['link_url']?.toString(),
       images: imagesRaw is List
@@ -307,6 +358,8 @@ class DiscussionItem {
       reviewedAt: json['reviewed_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
       upvotes: (json['upvotes'] as num?)?.toInt() ?? 0,
+      replyCount: (json['reply_count'] as num?)?.toInt() ?? 0,
+      isEdited: json['is_edited'] == true,
       replies: repliesRaw is List
           ? [
               for (final raw in repliesRaw.whereType<Map>())
@@ -320,28 +373,40 @@ class DiscussionItem {
     List<DiscussionReply>? replies,
     String? pinnedReplyId,
     int? upvotes,
+    int? replyCount,
     Object? myVote = _unset,
+    Object? body = _unset,
+    Object? linkUrl = _unset,
+    String? status,
+    Object? updatedAt = _unset,
+    bool? isEdited,
   }) {
     return DiscussionItem(
       id: id,
       userId: userId,
       username: username,
       displayName: displayName,
-      body: body,
-      linkUrl: linkUrl,
+      avatarUrl: avatarUrl,
+      isVerifier: isVerifier,
+      body: identical(body, _unset) ? this.body : body as String?,
+      linkUrl: identical(linkUrl, _unset) ? this.linkUrl : linkUrl as String?,
       images: images,
       audioUrl: audioUrl,
       audioMimeType: audioMimeType,
       audioDurationMs: audioDurationMs,
-      status: status,
+      status: status ?? this.status,
       pinnedReplyId: pinnedReplyId ?? this.pinnedReplyId,
       createdAt: createdAt,
       rejectionNote: rejectionNote,
       reviewedAt: reviewedAt,
-      updatedAt: updatedAt,
+      updatedAt: identical(updatedAt, _unset)
+          ? this.updatedAt
+          : updatedAt as String?,
       replies: replies ?? this.replies,
       upvotes: upvotes ?? this.upvotes,
+      replyCount: replyCount ?? this.replyCount,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,
+      isEdited: isEdited ?? this.isEdited,
     );
   }
 

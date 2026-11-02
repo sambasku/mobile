@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +18,8 @@ import 'package:sambasku_mobile/features/bookmark/domain/failures/bookmark_failu
 import 'package:sambasku_mobile/features/bookmark/domain/repositories/bookmark_repository.dart';
 import 'package:sambasku_mobile/features/bookmark/presentation/pages/bookmark_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
+import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
@@ -30,13 +32,15 @@ class _FakeAuthRepository implements AuthRepository {
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithGoogle({
     required String idToken,
-  }) async =>
+      List<({String documentType, String documentVersion})>? consents,
+}) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
   Future<Either<AuthFailure, AuthSession>> loginWithFacebook({
     required String accessToken,
-  }) async =>
+      List<({String documentType, String documentVersion})>? consents,
+}) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
   @override
@@ -44,7 +48,8 @@ class _FakeAuthRepository implements AuthRepository {
     required String code,
     required String redirectUri,
     String? codeVerifier,
-  }) async =>
+      List<({String documentType, String documentVersion})>? consents,
+}) async =>
       Either.left(const AuthFailure('tidak dipakai pada test ini'));
 
 
@@ -142,11 +147,15 @@ void main() {
           bookmarkRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp(
-          theme: FThemes.zinc.light.touch.toApproximateMaterialTheme(),
-          localizationsDelegates: FLocalizations.localizationsDelegates,
-          supportedLocales: FLocalizations.supportedLocales,
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+        ...AppLocalizations.localizationsDelegates,
+        ...FLocalizations.localizationsDelegates,
+      ],
+          supportedLocales: const [Locale('id')],
+      locale: const Locale('id'),
           home: FTheme(
-            data: FThemes.zinc.light.touch,
+            data: foruiPalettes['zinc']!.light.touch,
             child: const BookmarkPage(),
           ),
         ),

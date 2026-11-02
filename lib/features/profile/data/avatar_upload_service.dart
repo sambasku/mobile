@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
+import '../../../core/i18n/l10n.dart';
 
 /// Upload / hapus avatar milik user login.
 class AvatarUploadService {
@@ -26,15 +27,15 @@ class AvatarUploadService {
         final url = data['avatar_url'] as String?;
         if (url != null && url.isNotEmpty) return Either.right(url);
       }
-      return Either.left('Gagal mengunggah foto profil');
+      return Either.left(l10n.profilePhotoUploadFailed);
     } on DioException catch (e) {
       final msg = e.response?.data;
       if (msg is Map && msg['message'] is String) {
         return Either.left(msg['message'] as String);
       }
-      return Either.left('Gagal mengunggah foto profil');
+      return Either.left(l10n.profilePhotoUploadFailed);
     } catch (_) {
-      return Either.left('Gagal mengunggah foto profil');
+      return Either.left(l10n.profilePhotoUploadFailed);
     }
   }
 
@@ -47,9 +48,9 @@ class AvatarUploadService {
       if (msg is Map && msg['message'] is String) {
         return Either.left(msg['message'] as String);
       }
-      return Either.left('Gagal menghapus foto profil');
+      return Either.left(l10n.profilePhotoDeleteFailed);
     } catch (_) {
-      return Either.left('Gagal menghapus foto profil');
+      return Either.left(l10n.profilePhotoDeleteFailed);
     }
   }
 }

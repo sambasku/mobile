@@ -9,6 +9,13 @@ void main() {
     expect(formatDateYmd('bukan-tanggal'), '');
   });
 
+  test('formatDateShort: tanggal ringkas, tahun hanya kalau beda tahun', () {
+    final now = DateTime(2026, 10, 23);
+    expect(formatDateShort(null, now: now), '');
+    expect(formatDateShort(DateTime(2026, 11, 17), now: now), '17 Nov');
+    expect(formatDateShort(DateTime(2025, 11, 17), now: now), '17 Nov 2025');
+  });
+
   test('formatRelativeAgo: singkat bahasa Indonesia', () {
     final now = DateTime(2026, 9, 28, 17, 0);
     expect(formatRelativeAgo(null, now: now), '');

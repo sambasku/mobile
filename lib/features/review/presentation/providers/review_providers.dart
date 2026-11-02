@@ -111,6 +111,7 @@ class ReviewQueueController extends AsyncNotifier<ReviewQueueState> {
       cursor: current.nextCursor,
       hideSkipped: true,
     );
+    if (!ref.mounted) return;
     page.match(
       (failure) {
         state = AsyncData(current.copyWith(isLoadingMore: false));

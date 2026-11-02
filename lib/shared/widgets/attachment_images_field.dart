@@ -1,12 +1,14 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/models/image_attribution.dart';
+import '../../core/widgets/image_preview.dart';
+import '../../l10n/app_localizations.dart';
 import '../utils/image_sheet_drawer.dart';
 import 'cached_network_image_with_fallback.dart';
 import 'image_credit.dart';
@@ -147,7 +149,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   void _openPicker() {
     if (!widget.enabled || _unavailable) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
@@ -157,7 +159,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         _handleStockPick();
         return;
       }
-      _toast('Masuk untuk lampirkan dari kamera atau galeri');
+      _toast(AppLocalizations.of(context).attachmentLoginRequired);
       return;
     }
 
@@ -183,14 +185,14 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     final pick = widget.onPickStockImage;
     if (pick == null || !mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
     final uploaded = await pick();
     if (!mounted || uploaded == null) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
@@ -215,14 +217,14 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   Future<void> _handlePicked(File file) async {
     if (!mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast('Maksimal ${widget.maxImages} gambar');
+      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
       return;
     }
 
     try {
       final size = await file.length();
       if (size > widget.maxSizeMb * 1024 * 1024) {
-        if (mounted) _toast('Gambar melebihi ${widget.maxSizeMb} MB');
+        if (mounted) _toast(AppLocalizations.of(context).attachmentImageTooLarge(widget.maxSizeMb));
         return;
       }
 
@@ -238,7 +240,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
       await _upload(id, file, isPrimary: isPrimary, afterAdd: afterAdd);
     } catch (e) {
       debugPrint('[AttachmentImages] handle $e');
-      if (mounted) _toast('Gagal memproses gambar');
+      if (mounted) _toast(AppLocalizations.of(context).attachmentProcessFailed);
     }
   }
 
@@ -343,7 +345,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         children: [
           Text(
             widget.disabledHint,
-            style: theme.typography.sm.copyWith(
+            style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -363,7 +365,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     if (_unavailable) {
       return Text(
         'Upload gambar sementara tidak tersedia. Formulir tetap bisa dikirim tanpa gambar.',
-        style: theme.typography.sm.copyWith(
+        style: theme.typography.body.sm.copyWith(
           color: theme.colors.mutedForeground,
         ),
       );
@@ -403,7 +405,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
         const Gap(4),
         Text(
           hintParts.join(' · '),
-          style: theme.typography.sm.copyWith(
+          style: theme.typography.body.sm.copyWith(
             color: theme.colors.mutedForeground,
             fontSize: 11,
           ),
@@ -424,6 +426,50 @@ class _Thumb extends StatelessWidget {
   final VoidCallback onRemove;
   final VoidCallback onViolenceToggle;
 
+  /// Preview fullscreen: lokal (baru pilih) atau URL (sudah terunggah).
+  void _preview(BuildContext context, AttachmentImageSlot s) {
+    if (s.localPath.isEmpty) {
+      final url = s.uploaded?.url;
+      if (url == null || url.isEmpty) return;
+      showImagePreview(context, urls: [url]);
+      return;
+    }
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder<void>(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: Colors.black.withValues(alpha: 0.92),
+        transitionDuration: const Duration(milliseconds: 180),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
+        pageBuilder: (context, _, _) => Material(
+          type: MaterialType.transparency,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: InteractiveViewer(
+                    minScale: 1,
+                    maxScale: 5,
+                    child: Image.file(File(s.localPath), fit: BoxFit.contain),
+                  ),
+                ),
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: IconButton(
+                    tooltip: 'Tutup',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -438,7 +484,11 @@ class _Thumb extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Positioned.fill(
-                child: ClipRRect(
+                child: GestureDetector(
+                  // Tap thumbnail = preview fullscreen (pinch-zoom). Tanpa ini
+                  // user cuma lihat potongan 88px dan tak bisa memeriksa foto.
+                  onTap: () => _preview(context, slot),
+                  child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: slot.localPath.isNotEmpty
                       ? Image.file(
@@ -464,6 +514,7 @@ class _Thumb extends StatelessWidget {
                             color: theme.colors.mutedForeground,
                           ),
                         ),
+                  ),
                 ),
               ),
               if (slot.uploading)
@@ -519,7 +570,7 @@ class _Thumb extends StatelessWidget {
                   value: slot.hasViolenceWarning,
                   label: Text(
                     'Foto berisi kekerasan',
-                    style: theme.typography.xs.copyWith(
+                    style: theme.typography.body.xs.copyWith(
                       color: theme.colors.mutedForeground,
                     ),
                   ),
@@ -528,7 +579,7 @@ class _Thumb extends StatelessWidget {
                 const Gap(2),
                 Text(
                   'Centang kalau fotonya menunjukkan kekerasan (misalnya luka, darah, atau senjata yang dipakai menyerang). Tim kami juga bisa menandai ini nanti.',
-                  style: theme.typography.xs.copyWith(
+                  style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     fontSize: 10,
                   ),

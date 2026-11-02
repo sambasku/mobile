@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'facebook_login_request_dto.dart';
@@ -9,13 +9,15 @@ part of 'facebook_login_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$FacebookLoginRequestDto {
 
-@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'client_type') String get clientType;
+@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'client_type') String get clientType;/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+@JsonKey(includeIfNull: false) List<LegalConsentDto>? get consents;
 /// Create a copy of FacebookLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,21 @@ $FacebookLoginRequestDtoCopyWith<FacebookLoginRequestDto> get copyWith => _$Face
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FacebookLoginRequestDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+  final _this = this as FacebookLoginRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FacebookLoginRequestDto&&(identical(other.accessToken, _this.accessToken) || other.accessToken == _this.accessToken)&&(identical(other.clientType, _this.clientType) || other.clientType == _this.clientType)&&const DeepCollectionEquality().equals(other.consents, _this.consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,clientType);
+int get hashCode {
+  final _this = this as FacebookLoginRequestDto;
+  return Object.hash(runtimeType,_this.accessToken,_this.clientType,const DeepCollectionEquality().hash(_this.consents));
+}
 
 @override
 String toString() {
-  return 'FacebookLoginRequestDto(accessToken: $accessToken, clientType: $clientType)';
+  final _this = this as FacebookLoginRequestDto;
+  return 'FacebookLoginRequestDto(accessToken: ${_this.accessToken}, clientType: ${_this.clientType}, consents: ${_this.consents})';
 }
 
 
@@ -48,7 +55,7 @@ abstract mixin class $FacebookLoginRequestDtoCopyWith<$Res>  {
   factory $FacebookLoginRequestDtoCopyWith(FacebookLoginRequestDto value, $Res Function(FacebookLoginRequestDto) _then) = _$FacebookLoginRequestDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'client_type') String clientType
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'client_type') String clientType,@JsonKey(includeIfNull: false) List<LegalConsentDto>? consents
 });
 
 
@@ -65,11 +72,12 @@ class _$FacebookLoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of FacebookLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? clientType = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? clientType = null,Object? consents = freezed,}) {
+  return _then(FacebookLoginRequestDto(
 accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
-as String,
+as String,consents: freezed == consents ? _self.consents : consents // ignore: cast_nullable_to_non_nullable
+as List<LegalConsentDto>?,
   ));
 }
 
@@ -154,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FacebookLoginRequestDto() when $default != null:
-return $default(_that.accessToken,_that.clientType);case _:
+return $default(_that.accessToken,_that.clientType,_that.consents);case _:
   return orElse();
 
 }
@@ -175,10 +183,10 @@ return $default(_that.accessToken,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)  $default,) {final _that = this;
 switch (_that) {
 case _FacebookLoginRequestDto():
-return $default(_that.accessToken,_that.clientType);case _:
+return $default(_that.accessToken,_that.clientType,_that.consents);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +203,10 @@ return $default(_that.accessToken,_that.clientType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'client_type')  String clientType, @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents)?  $default,) {final _that = this;
 switch (_that) {
 case _FacebookLoginRequestDto() when $default != null:
-return $default(_that.accessToken,_that.clientType);case _:
+return $default(_that.accessToken,_that.clientType,_that.consents);case _:
   return null;
 
 }
@@ -210,11 +218,22 @@ return $default(_that.accessToken,_that.clientType);case _:
 @JsonSerializable()
 
 class _FacebookLoginRequestDto implements FacebookLoginRequestDto {
-  const _FacebookLoginRequestDto({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'client_type') this.clientType = 'mobile'});
+  const _FacebookLoginRequestDto({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'client_type') this.clientType = 'mobile', @JsonKey(includeIfNull: false)  List<LegalConsentDto>? consents}): _consents = consents;
   factory _FacebookLoginRequestDto.fromJson(Map<String, dynamic> json) => _$FacebookLoginRequestDtoFromJson(json);
 
 @override@JsonKey(name: 'access_token') final  String accessToken;
 @override@JsonKey(name: 'client_type') final  String clientType;
+/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+ final  List<LegalConsentDto>? _consents;
+/// Persetujuan legal - wajib untuk akun baru (mode enforce).
+@override@JsonKey(includeIfNull: false) List<LegalConsentDto>? get consents {
+  final value = _consents;
+  if (value == null) return null;
+  if (_consents is EqualUnmodifiableListView) return _consents;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of FacebookLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +248,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FacebookLoginRequestDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.clientType, clientType) || other.clientType == clientType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FacebookLoginRequestDto&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.clientType, clientType) || other.clientType == clientType)&&const DeepCollectionEquality().equals(other.consents, _consents));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,accessToken,clientType);
+int get hashCode {
+    return Object.hash(runtimeType,accessToken,clientType,const DeepCollectionEquality().hash(_consents));
+}
 
 @override
 String toString() {
-  return 'FacebookLoginRequestDto(accessToken: $accessToken, clientType: $clientType)';
+    return 'FacebookLoginRequestDto(accessToken: $accessToken, clientType: $clientType, consents: $consents)';
 }
 
 
@@ -249,7 +270,7 @@ abstract mixin class _$FacebookLoginRequestDtoCopyWith<$Res> implements $Faceboo
   factory _$FacebookLoginRequestDtoCopyWith(_FacebookLoginRequestDto value, $Res Function(_FacebookLoginRequestDto) _then) = __$FacebookLoginRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'client_type') String clientType
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'client_type') String clientType,@JsonKey(includeIfNull: false) List<LegalConsentDto>? consents
 });
 
 
@@ -266,11 +287,12 @@ class __$FacebookLoginRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of FacebookLoginRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? clientType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? clientType = null,Object? consents = freezed,}) {
   return _then(_FacebookLoginRequestDto(
 accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,clientType: null == clientType ? _self.clientType : clientType // ignore: cast_nullable_to_non_nullable
-as String,
+as String,consents: freezed == consents ? _self._consents : consents // ignore: cast_nullable_to_non_nullable
+as List<LegalConsentDto>?,
   ));
 }
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -9,6 +9,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/back_to_top_button.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -17,6 +19,7 @@ import '../../domain/discussion_models.dart';
 import '../../discussion_router.dart';
 import '../providers/discussion_list_providers.dart';
 import '../widgets/discussion_image_thumb.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Feed publik ruang diskusi yang sudah tayang.
 class DiscussionFeedPage extends HookConsumerWidget {
@@ -25,8 +28,16 @@ class DiscussionFeedPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(discussionFeedProvider);
-    final sort = ref.watch(discussionFeedSortProvider);
+    final sortState = ref.watch(discussionFeedSortProvider);
     final scroll = useScrollController();
+
+    Future<void> applySortChange(VoidCallback mutate) async {
+      // Hapus cache dulu supaya rebuild (watch sort) tidak dapat halaman lama.
+      await ref
+          .read(responseCacheStoreProvider)
+          .deleteByPrefix('GET|/api/v1/discussions');
+      mutate();
+    }
 
     useEffect(() {
       void listener() {
@@ -43,7 +54,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: const Text('Ruang Diskusi'),
+        title: Text(AppLocalizations.of(context).discussionFeedTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
         suffixes: [
           FHeaderAction(
@@ -52,15 +63,17 @@ class DiscussionFeedPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          await ref
-              .read(responseCacheStoreProvider)
-              .deleteByPrefix('GET|/api/v1/discussions');
-          ref.invalidate(discussionFeedProvider);
-          await ref.read(discussionFeedProvider.future);
-        },
-        child: async.when(
+      child: ScrollWithBackToTop(
+        controller: scroll,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(responseCacheStoreProvider)
+                .deleteByPrefix('GET|/api/v1/discussions');
+            ref.invalidate(discussionFeedProvider);
+            await ref.read(discussionFeedProvider.future);
+          },
+          child: async.when(
           loading: () => const _FeedSkeleton(),
           error: (error, _) => ListView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -77,9 +90,9 @@ class DiscussionFeedPage extends HookConsumerWidget {
               Text(
                 error is DiscussionFailure
                     ? error.message
-                    : 'Gagal memuat diskusi',
+                    : AppLocalizations.of(context).discussionFeedLoadFailed,
                 textAlign: TextAlign.center,
-                style: context.theme.typography.sm.copyWith(
+                style: context.theme.typography.body.sm.copyWith(
                   color: context.theme.colors.mutedForeground,
                 ),
               ),
@@ -87,7 +100,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
               FButton(
                 variant: FButtonVariant.outline,
                 onPress: () => ref.invalidate(discussionFeedProvider),
-                child: const Text('Coba lagi'),
+                child: Text(AppLocalizations.of(context).discussionFeedRetry),
               ),
             ],
           ),
@@ -100,29 +113,38 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   const _NewThreadComposer(),
                   const Gap(16),
                   _SortChips(
-                    sort: sort,
-                    onSelect: (s) =>
-                        ref.read(discussionFeedSortProvider.notifier).select(s),
+                    sort: sortState.sort,
+                    order: sortState.order,
+                    onSelectSort: (s) => applySortChange(
+                      () => ref
+                          .read(discussionFeedSortProvider.notifier)
+                          .selectSort(s),
+                    ),
+                    onToggleOrder: () => applySortChange(
+                      () => ref
+                          .read(discussionFeedSortProvider.notifier)
+                          .toggleOrder(),
+                    ),
                   ),
                   const Gap(24),
                   Icon(
-                    FLucideIcons.languages,
+                    FLucideIcons.messagesSquare,
                     size: 40,
                     color: context.theme.colors.mutedForeground,
                   ),
                   const Gap(10),
                   Text(
-                    'Belum ada diskusi yang tayang',
+                    AppLocalizations.of(context).discussionFeedEmpty,
                     textAlign: TextAlign.center,
-                    style: context.theme.typography.md.copyWith(
+                    style: context.theme.typography.body.md.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Gap(6),
                   Text(
-                    'Kirim foto atau teks yang sulit diterjemahkan supaya warga bisa membantu.',
+                    AppLocalizations.of(context).discussionFeedEmptyBody,
                     textAlign: TextAlign.center,
-                    style: context.theme.typography.sm.copyWith(
+                    style: context.theme.typography.body.sm.copyWith(
                       color: context.theme.colors.mutedForeground,
                     ),
                   ),
@@ -153,10 +175,18 @@ class DiscussionFeedPage extends HookConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 4),
                     child: _SortChips(
-                      sort: sort,
-                      onSelect: (s) => ref
-                          .read(discussionFeedSortProvider.notifier)
-                          .select(s),
+                      sort: sortState.sort,
+                      order: sortState.order,
+                      onSelectSort: (s) => applySortChange(
+                        () => ref
+                            .read(discussionFeedSortProvider.notifier)
+                            .selectSort(s),
+                      ),
+                      onToggleOrder: () => applySortChange(
+                        () => ref
+                            .read(discussionFeedSortProvider.notifier)
+                            .toggleOrder(),
+                      ),
                     ),
                   );
                 }
@@ -171,6 +201,7 @@ class DiscussionFeedPage extends HookConsumerWidget {
               },
             );
           },
+        ),
         ),
       ),
     );
@@ -208,8 +239,8 @@ class _NewThreadComposer extends StatelessWidget {
                 const Gap(10),
                 Expanded(
                   child: Text(
-                    'Mulai thread baru…',
-                    style: theme.typography.sm.copyWith(
+                    AppLocalizations.of(context).discussionFeedNewThread,
+                    style: theme.typography.body.sm.copyWith(
                       color: theme.colors.mutedForeground,
                       height: 1.25,
                     ),
@@ -234,7 +265,7 @@ class _FeedTile extends ConsumerWidget {
     if (!(auth?.isAuth ?? false)) {
       showFToast(
         context: context,
-        title: const Text('Masuk dulu untuk memberi vote'),
+        title: Text(AppLocalizations.of(context).discussionLoginToVote),
         variant: FToastVariant.primary,
       );
       context.push('/login');
@@ -266,9 +297,10 @@ class _FeedTile extends ConsumerWidget {
     final body = item.body?.trim() ?? '';
     final images = item.images;
     final contextMeta = [
-      'Diskusi',
-      if (images.length > 1) '${images.length} foto',
-      if (item.hasAudio) 'Suara',
+      AppLocalizations.of(context).discussionFeedTitle,
+      if (images.length > 1)
+        AppLocalizations.of(context).discussionFeedPhotos(images.length),
+      if (item.hasAudio) AppLocalizations.of(context).discussionFeedAudio,
     ].join(' · ');
 
     // Satu foto 1:1 di kanan (seperti thumb ringkas; multi-foto hanya di detail).
@@ -295,26 +327,22 @@ class _FeedTile extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Flexible(
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
+                            Expanded(
+                              child: PublicAccountName(
+                                label: actorLabel,
+                                isVerifier: item.isVerifier,
                                 onTap: canOpenProfile
                                     ? () => UserProfileRouter.open(
                                           context,
                                           item.username!,
                                         )
                                     : null,
-                                child: Text(
-                                  actorLabel,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.typography.sm.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.25,
-                                    color: canOpenProfile
-                                        ? theme.colors.primary
-                                        : theme.colors.foreground,
-                                  ),
+                                style: theme.typography.body.sm.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.25,
+                                  color: canOpenProfile
+                                      ? theme.colors.primary
+                                      : theme.colors.foreground,
                                 ),
                               ),
                             ),
@@ -322,7 +350,7 @@ class _FeedTile extends ConsumerWidget {
                               const Gap(8),
                               Text(
                                 dateLabel,
-                                style: theme.typography.xs.copyWith(
+                                style: theme.typography.body.xs.copyWith(
                                   color: theme.colors.mutedForeground,
                                   height: 1.25,
                                 ),
@@ -330,13 +358,35 @@ class _FeedTile extends ConsumerWidget {
                             ],
                           ],
                         ),
+                        // Handle di baris sendiri - seragam activity feed /
+                        // ThreadMessageRow (nama lalu @username).
+                        if (canOpenProfile && item.username != actorLabel) ...[
+                          const Gap(2),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => UserProfileRouter.open(
+                              context,
+                              item.username!,
+                            ),
+                            child: Text(
+                              '@${item.username}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.typography.body.xs.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontWeight: FontWeight.w500,
+                                height: 1.25,
+                              ),
+                            ),
+                          ),
+                        ],
                         if (body.isNotEmpty) ...[
                           const Gap(4),
                           Text(
                             body,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: theme.typography.sm.copyWith(
+                            style: theme.typography.body.sm.copyWith(
                               height: 1.35,
                               color: theme.colors.foreground,
                             ),
@@ -347,7 +397,7 @@ class _FeedTile extends ConsumerWidget {
                           contextMeta,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.typography.xs.copyWith(
+                          style: theme.typography.body.xs.copyWith(
                             color: theme.colors.mutedForeground,
                             height: 1.25,
                           ),
@@ -385,11 +435,33 @@ class _FeedTile extends ConsumerWidget {
                       compact: true,
                       upvoteOnly: true,
                     ),
+                    const Gap(12),
+                    Semantics(
+                      label: AppLocalizations.of(context)
+                          .discussionRepliesCount(item.replyCount),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            FLucideIcons.messageSquare,
+                            size: 16,
+                            color: theme.colors.mutedForeground,
+                          ),
+                          const Gap(4),
+                          Text(
+                            '${item.replyCount}',
+                            style: theme.typography.body.sm.copyWith(
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const Gap(10),
                     Expanded(
                       child: Text(
-                        'Saya juga ingin tahu',
-                        style: theme.typography.xs.copyWith(
+                        AppLocalizations.of(context).discussionAlsoCurious,
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                           height: 1.25,
                         ),
@@ -407,20 +479,43 @@ class _FeedTile extends ConsumerWidget {
 }
 
 class _SortChips extends StatelessWidget {
-  const _SortChips({required this.sort, required this.onSelect});
+  const _SortChips({
+    required this.sort,
+    required this.order,
+    required this.onSelectSort,
+    required this.onToggleOrder,
+  });
 
   final String sort;
-  final ValueChanged<String> onSelect;
+  final String order;
+  final ValueChanged<String> onSelectSort;
+  final VoidCallback onToggleOrder;
 
-  static const _options = <({String value, String label})>[
-    (value: 'latest', label: 'Terbaru'),
-    (value: 'popular', label: 'Populer'),
-  ];
+  static const _options = <String>['created', 'activity', 'votes', 'replies'];
+
+  String _labelOf(BuildContext context, String value) {
+    final l10n = AppLocalizations.of(context);
+    return switch (value) {
+      'activity' => l10n.discussionFeedSortActivity,
+      'votes' => l10n.discussionFeedSortVotes,
+      'replies' => l10n.discussionFeedSortReplies,
+      _ => l10n.discussionFeedSortCreated,
+    };
+  }
+
+  String _orderHint(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return order == 'asc'
+        ? l10n.discussionFeedSortAsc
+        : l10n.discussionFeedSortDesc;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Wrap(
@@ -429,22 +524,53 @@ class _SortChips extends StatelessWidget {
             children: [
               for (final opt in _options)
                 GestureDetector(
-                  onTap: sort == opt.value ? null : () => onSelect(opt.value),
+                  onTap: sort == opt ? null : () => onSelectSort(opt),
                   child: FBadge(
-                    variant: sort == opt.value
+                    variant: sort == opt
                         ? FBadgeVariant.primary
                         : FBadgeVariant.secondary,
-                    child: Text(opt.label),
+                    child: Text(_labelOf(context, opt)),
                   ),
                 ),
             ],
           ),
         ),
-        Text(
-          sort == 'popular' ? 'Menurut upvote' : 'Menurut waktu',
-          style: theme.typography.sm.copyWith(
-            color: theme.colors.mutedForeground,
-            fontSize: 11,
+        const Gap(8),
+        Semantics(
+          button: true,
+          label: _orderHint(context),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: onToggleOrder,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      order == 'asc'
+                          ? FLucideIcons.arrowUpNarrowWide
+                          : FLucideIcons.arrowDownWideNarrow,
+                      size: 16,
+                      color: theme.colors.primary,
+                    ),
+                    const Gap(4),
+                    Text(
+                      order == 'asc'
+                          ? l10n.discussionFeedSortAscShort
+                          : l10n.discussionFeedSortDescShort,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.primary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ],

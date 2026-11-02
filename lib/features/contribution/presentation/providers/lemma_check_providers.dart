@@ -6,12 +6,13 @@ import '../../../dictionary/domain/providers/dictionary_domain_providers.dart';
 
 part 'lemma_check_providers.g.dart';
 
-/// Debounce cek lemma (issue #170). Lebih santai dari search (400ms)
-/// karena hanya indikator non-blocking.
-const _kLemmaCheckDebounceMs = 600;
+/// Debounce cek lemma (issue #170, #182). Lebih santai dari search (400ms)
+/// karena hanya indikator non-blocking. Label "memeriksa" ikut jendela ini:
+/// tidak nyala di setiap ketukan. Dipakai juga oleh cek massal (issue #181).
+const kLemmaCheckDebounce = Duration(milliseconds: 600);
 
 /// Min panjang lemma sebelum dicek - sama ambang search.miss di API.
-const _kLemmaCheckMinLength = 2;
+const kLemmaCheckMinLength = 2;
 
 /// State hasil cek ketersediaan lemma. `exists == null` = belum ada
 /// jawaban yang valid untuk lemma saat ini (idle / checking / error jaringan
@@ -40,6 +41,10 @@ class LemmaCheckNotifier extends _$LemmaCheckNotifier {
   Timer? _debounce;
   int _reqId = 0;
 
+  /// Lemma terakhir yang sudah dijadwalkan. Listener controller juga
+  /// jalan saat kursor pindah, jadi teks yang sama tidak mengulang cek.
+  String _scheduledLemma = '';
+
   @override
   LemmaCheckState build() {
     ref.onDispose(() {
@@ -52,17 +57,22 @@ class LemmaCheckNotifier extends _$LemmaCheckNotifier {
   /// Dipanggil dari listener TextEditingController lemma.
   void onLemmaChanged(String raw) {
     final lemma = raw.trim();
+    if (lemma == _scheduledLemma) return;
+    _scheduledLemma = lemma;
     _debounce?.cancel();
     _reqId++;
-    if (lemma.length < _kLemmaCheckMinLength) {
+    if (lemma.length < kLemmaCheckMinLength) {
       state = const LemmaCheckState();
       return;
     }
-    state = const LemmaCheckState(checking: true);
-    _debounce = Timer(
-      const Duration(milliseconds: _kLemmaCheckDebounceMs),
-      () => _check(lemma),
-    );
+    // Sembunyikan hasil lemma sebelumnya. Indikator baru nyala di dalam
+    // timer, saat request benar-benar dikirim.
+    state = const LemmaCheckState();
+    _debounce = Timer(kLemmaCheckDebounce, () {
+      if (!ref.mounted) return;
+      state = const LemmaCheckState(checking: true);
+      _check(lemma);
+    });
   }
 
   Future<void> _check(String lemma) async {

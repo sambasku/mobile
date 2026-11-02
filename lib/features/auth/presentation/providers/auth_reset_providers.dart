@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/i18n/l10n.dart';
+
 import '../../domain/failures/auth_failure.dart';
 import '../../domain/providers/auth_domain_providers.dart';
 import '../../domain/usecases/reset_password_use_case.dart';
@@ -22,7 +24,7 @@ class AuthResetNotifier extends _$AuthResetNotifier {
     if (newPassword != confirmPassword) {
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: 'Konfirmasi password tidak sama',
+        errorMessage: l10n.authPasswordMismatch,
         clearSuccessMessage: true,
       );
       return;

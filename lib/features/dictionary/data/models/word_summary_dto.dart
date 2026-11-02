@@ -16,6 +16,11 @@ abstract class WordSummaryDto with _$WordSummaryDto {
     @JsonKey(name: 'is_verified') required bool isVerified,
     /// Hanya terisi saat search_in=translation (Indonesia→Sambas).
     @JsonKey(name: 'matched_translation') String? matchedTranslation,
+    /// Form variasi yang cocok (doc 11, search_in=lemma via variasi).
+    @JsonKey(name: 'matched_variant') String? matchedVariant,
+    /// PRD relasi-lemma: 'related_group' = hasil perluasan kelompok makna
+    /// (bukan cocok langsung). Null = hasil langsung.
+    @JsonKey(name: 'match_type') String? matchType,
     /// Satu baris arti.
     /// - GET /words/latest: definisi atau terjemahan pertama.
     /// - GET /words (A-Z): gloss `[n] makan,[v] santap`.

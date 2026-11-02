@@ -1,18 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/models/external_link.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../data/culinary_contribution_api.dart';
 import '../../domain/entities/cuisine.dart';
 import '../providers/cuisine_providers.dart';
+import '../widgets/culinary_action_sheets.dart';
 
 void _back(BuildContext context) =>
     context.canPop() ? context.pop() : context.go('/explore');
@@ -26,14 +30,12 @@ class CuisineDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cuisineAsync = ref.watch(cuisineProvider);
-    final item = cuisineAsync.value?.where((k) => k.slug == slug).firstOrNull;
+    final cuisineAsync = ref.watch(cuisineBySlugProvider(slug));
+    final item = cuisineAsync.value?.toEntity();
     if (item != null) {
       // Log cuisine_open sekali saat detail tampil (bukan di build stateless
       // kartu list - bisa multi-fire).
-      unawaited(
-        AnalyticsService.instance.logCuisineOpen(slug: item.slug),
-      );
+      unawaited(AnalyticsService.instance.logCuisineOpen(slug: item.slug));
       return _Body(item: item);
     }
 
@@ -87,14 +89,15 @@ class _ErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: FAlert(
-          title: const Text('Konten tidak ditemukan'),
+          title: Text(l10n.exploreNotFoundTitle),
           subtitle: Text(
-            'Datanya mungkin belum terpasang atau jaringanmu sedang bermasalah.',
-            style: context.theme.typography.sm,
+            l10n.exploreNotFoundBody,
+            style: context.theme.typography.body.sm,
           ),
         ),
       ),
@@ -102,15 +105,49 @@ class _ErrorBody extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends ConsumerStatefulWidget {
   const _Body({required this.item});
 
   final Cuisine item;
 
   @override
+  ConsumerState<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends ConsumerState<_Body> {
+  Future<void> _report() async {
+    if (await culinaryNeedsAuth(context, ref)) return;
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    if (!mounted) return;
+    final reason = await showCulinaryReasonSheet(context, isPlace: false);
+    if (reason == null || !mounted) return;
+    try {
+      await ref
+          .read(culinaryContributionApiProvider)
+          .reportCuisine(widget.item.slug, reasonCode: reason);
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        title: l10n.usahaReportSent,
+        message: l10n.cuisineDetailReportSentBody,
+      );
+    } on CulinaryException catch (e) {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        title: l10n.culinaryReportFailed,
+        message: e.message,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final topInset = MediaQuery.paddingOf(context).top;
+    final item = widget.item;
 
     return FScaffold(
       childPad: false,
@@ -127,26 +164,23 @@ class _Body extends StatelessWidget {
                   children: [
                     Text(
                       item.name,
-                      style: theme.typography.xl.copyWith(
+                      style: theme.typography.body.xl.copyWith(
                         fontWeight: FontWeight.w800,
                         height: 1.25,
                       ),
                     ),
                     const Gap(8),
-                    FBadge(
-                      variant: FBadgeVariant.secondary,
-                      child: Text(item.region),
-                    ),
-                    const Gap(12),
+                    // Region disembunyikan: promosi kuliner di level
+                    // kabupaten, tidak perlu badge "Sambas" per item.
                     Text(
                       item.description,
-                      style: theme.typography.sm.copyWith(height: 1.5),
+                      style: theme.typography.body.sm.copyWith(height: 1.5),
                     ),
                     if (item.ingredients.isNotEmpty) ...[
                       const Gap(20),
                       Text(
-                        'Bahan',
-                        style: theme.typography.md.copyWith(
+                        l10n.cuisineDetailIngredients,
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -166,15 +200,15 @@ class _Body extends StatelessWidget {
                     if (item.servingSuggestion != null) ...[
                       const Gap(20),
                       Text(
-                        'Cara menyajikan',
-                        style: theme.typography.md.copyWith(
+                        l10n.cuisineDetailServing,
+                        style: theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const Gap(8),
                       Text(
                         item.servingSuggestion!,
-                        style: theme.typography.sm.copyWith(height: 1.5),
+                        style: theme.typography.body.sm.copyWith(height: 1.5),
                       ),
                     ],
                     if (item.sources.isNotEmpty) ...[
@@ -183,7 +217,7 @@ class _Body extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: _CreditLine(
-                            label: 'Sumber',
+                            label: l10n.cuisineDetailSource,
                             name: s.name,
                             nameUrl: s.address,
                             license: s.license,
@@ -191,6 +225,47 @@ class _Body extends StatelessWidget {
                           ),
                         ),
                     ],
+                    const Gap(20),
+                    FTileGroup(
+                      label: Text(l10n.cuisineDetailHelpTitle),
+                      children: [
+                        FTile(
+                          prefix: const Icon(FLucideIcons.pencil, size: 18),
+                          title: Text(l10n.culinarySuggestEdit),
+                          subtitle: Text(
+                            l10n.cuisineDetailSuggestEditBody,
+                          ),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: () async {
+                            if (await culinaryNeedsAuth(context, ref)) return;
+                            if (!context.mounted) return;
+                            await showCulinaryEditSheet(
+                              context,
+                              ref,
+                              target: CulinaryEditTarget.cuisine(
+                                id: item.id,
+                                name: item.name,
+                                description: item.description,
+                                ingredients: item.ingredients,
+                              ),
+                            );
+                          },
+                        ),
+                        FTile(
+                          prefix: const Icon(FLucideIcons.flag, size: 18),
+                          title: Text(l10n.usahaReportTitle),
+                          subtitle: Text(l10n.cuisineDetailReportBody),
+                          suffix: const Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                          ),
+                          onPress: _report,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -201,7 +276,7 @@ class _Body extends StatelessWidget {
             left: 12,
             child: _HeroButton(
               icon: const Icon(FLucideIcons.arrowLeft, size: 20),
-              tooltip: 'Kembali',
+              tooltip: AppLocalizations.of(context).commonBack,
               onTap: () => _back(context),
             ),
           ),
@@ -278,7 +353,7 @@ class _Hero extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
           child: _CreditLine(
-            label: 'Foto',
+            label: AppLocalizations.of(context).sharePhoto,
             name: attribution.name,
             nameUrl: attribution.url,
             license: attribution.license,
@@ -294,9 +369,8 @@ void _open(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   if (uri == null || !uri.isScheme('https')) return;
   // Timeout: handler external di sebagian ROM bisa menggantung.
-  launchUrl(
+  launchExternalUrl(
     uri,
-    mode: LaunchMode.externalApplication,
   ).timeout(const Duration(seconds: 8), onTimeout: () => false);
 }
 
@@ -319,7 +393,7 @@ class _CreditLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final muted = theme.typography.xs.copyWith(
+    final muted = theme.typography.body.xs.copyWith(
       color: theme.colors.mutedForeground,
     );
     final license = this.license;

@@ -6,6 +6,7 @@ import '../../domain/repositories/linked_accounts_repository.dart';
 import '../datasources/linked_accounts_remote_datasource.dart';
 import '../models/auth_providers_dto.dart';
 import '../models/github_link_request_dto.dart';
+import '../../../../core/i18n/l10n.dart';
 
 class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
   LinkedAccountsRepositoryImpl(this._remote);
@@ -20,16 +21,21 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false || response.data == null) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal memuat status akun',
+            response.message ?? l10n.linkedAccountsLoadFailed,
             errorCode: response.errorCode,
           ),
         );
       }
       final providers = response.data!.providers;
+      String? linkedAtFor(String name) =>
+          providers.where((p) => p.provider == name).firstOrNull?.linkedAt;
       return Either.right(
         LinkedAccountsStatus(
           googleLinked: providers.any((p) => p.provider == 'google'),
           githubLinked: providers.any((p) => p.provider == 'github'),
+          googleLinkedAt: linkedAtFor('google'),
+          githubLinkedAt: linkedAtFor('github'),
+          hasPassword: response.data!.hasPassword,
         ),
       );
     } on DioException catch (error) {
@@ -48,7 +54,7 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal menambahkan ke akun terhubung',
+            response.message ?? l10n.linkedAccountsLinkFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -68,13 +74,13 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal melepas dari akun terhubung',
+            response.message ?? l10n.linkedAccountsUnlinkFailed,
             errorCode: response.errorCode,
           ),
         );
       }
       return Either.right(
-        response.data?.message ?? 'Berhasil dilepas dari akun terhubung.',
+        response.data?.message ?? l10n.linkedAccountsUnlinkSuccess,
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
@@ -100,7 +106,7 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal menambahkan ke akun terhubung',
+            response.message ?? l10n.linkedAccountsLinkFailed,
             errorCode: response.errorCode,
           ),
         );
@@ -120,13 +126,13 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       if (response.success == false) {
         return Either.left(
           LinkedAccountsFailure(
-            response.message ?? 'Gagal melepas dari akun terhubung',
+            response.message ?? l10n.linkedAccountsUnlinkFailed,
             errorCode: response.errorCode,
           ),
         );
       }
       return Either.right(
-        response.data?.message ?? 'Berhasil dilepas dari akun terhubung.',
+        response.data?.message ?? l10n.linkedAccountsUnlinkSuccess,
       );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
@@ -151,8 +157,9 @@ class LinkedAccountsRepositoryImpl implements LinkedAccountsRepository {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        'Koneksi lambat, coba lagi',
-      DioExceptionType.connectionError => 'Tidak ada koneksi internet',
+        'Server lama merespons. Coba lagi dalam beberapa saat.',
+      DioExceptionType.connectionError =>
+        'Gagal terhubung ke server. Coba lagi dalam beberapa saat.',
       _ => 'Terjadi kesalahan, coba lagi',
     });
   }

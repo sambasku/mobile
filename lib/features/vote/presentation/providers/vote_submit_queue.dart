@@ -27,7 +27,8 @@ class VoteSubmitJob {
   final VoteSubmitKind kind;
   VoteSubmitJobStatus status;
 
-  String get wordId => item.id;
+  /// ID makna - target vote/skip (0101: deck per makna).
+  String get meaningId => item.id;
 }
 
 /// Snapshot queue untuk UI (error toast + reinsert kartu).
@@ -74,36 +75,36 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
   static const maxConcurrent = 3;
 
   final Queue<VoteSubmitJob> _pending = Queue<VoteSubmitJob>();
-  final Map<String, VoteSubmitJob> _byWordId = {};
+  final Map<String, VoteSubmitJob> _byMeaningId = {};
   final Set<String> _inFlight = {};
   final Map<String, Future<void>> _inFlightFutures = {};
 
   @override
   VoteSubmitQueueState build() => const VoteSubmitQueueState();
 
-  bool isQueued(String wordId) {
-    final job = _byWordId[wordId];
+  bool isQueued(String meaningId) {
+    final job = _byMeaningId[meaningId];
     return job != null && job.status == VoteSubmitJobStatus.queued;
   }
 
-  bool isInFlight(String wordId) => _inFlight.contains(wordId);
+  bool isInFlight(String meaningId) => _inFlight.contains(meaningId);
 
   /// Batalkan job yang belum dikirim. `true` jika berhasil dibatalkan.
-  bool cancelQueued(String wordId) {
-    final job = _byWordId[wordId];
+  bool cancelQueued(String meaningId) {
+    final job = _byMeaningId[meaningId];
     if (job == null || job.status != VoteSubmitJobStatus.queued) {
       return false;
     }
     job.status = VoteSubmitJobStatus.cancelled;
-    _pending.removeWhere((j) => j.wordId == wordId);
-    _byWordId.remove(wordId);
+    _pending.removeWhere((j) => j.meaningId == meaningId);
+    _byMeaningId.remove(meaningId);
     _publishCounts();
     return true;
   }
 
-  /// Tunggu sampai job wordId tidak lagi in-flight (atau tidak ada).
-  Future<void> waitUntilNotInFlight(String wordId) async {
-    final future = _inFlightFutures[wordId];
+  /// Tunggu sampai job meaningId tidak lagi in-flight (atau tidak ada).
+  Future<void> waitUntilNotInFlight(String meaningId) async {
+    final future = _inFlightFutures[meaningId];
     if (future != null) await future;
   }
 
@@ -116,7 +117,7 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
     cancelQueued(item.id);
     final job = VoteSubmitJob(item: item, value: value);
     _pending.addLast(job);
-    _byWordId[item.id] = job;
+    _byMeaningId[item.id] = job;
     _publishCounts();
     // Microtask: beri jendela cancel (rewind segera) sebelum POST.
     Future.microtask(_pump);
@@ -126,17 +127,17 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
     cancelQueued(item.id);
     final job = VoteSubmitJob(item: item, value: 0, kind: VoteSubmitKind.skip);
     _pending.addLast(job);
-    _byWordId[item.id] = job;
+    _byMeaningId[item.id] = job;
     _publishCounts();
     Future.microtask(_pump);
   }
 
   /// Batalkan skip yang masih antre, atau DELETE jika POST sudah jalan.
   /// Null = berhasil (antre dibatalkan atau baris skip terhapus).
-  Future<VoteFailure?> undoSkip(String wordId) async {
-    if (cancelQueued(wordId)) return null;
-    await waitUntilNotInFlight(wordId);
-    final result = await ref.read(voteRepositoryProvider).unskipWord(wordId);
+  Future<VoteFailure?> undoSkip(String meaningId) async {
+    if (cancelQueued(meaningId)) return null;
+    await waitUntilNotInFlight(meaningId);
+    final result = await ref.read(voteRepositoryProvider).unskipMeaning(meaningId);
     return result.match((failure) => failure, (_) => null);
   }
 
@@ -170,17 +171,17 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
 
   void _run(VoteSubmitJob job) {
     job.status = VoteSubmitJobStatus.inFlight;
-    _inFlight.add(job.wordId);
+    _inFlight.add(job.meaningId);
     _publishCounts();
 
     final future = _execute(job);
-    _inFlightFutures[job.wordId] = future;
+    _inFlightFutures[job.meaningId] = future;
     future.whenComplete(() {
-      _inFlight.remove(job.wordId);
-      _inFlightFutures.remove(job.wordId);
-      if (_byWordId[job.wordId] == job &&
+      _inFlight.remove(job.meaningId);
+      _inFlightFutures.remove(job.meaningId);
+      if (_byMeaningId[job.meaningId] == job &&
           job.status != VoteSubmitJobStatus.queued) {
-        _byWordId.remove(job.wordId);
+        _byMeaningId.remove(job.meaningId);
       }
       _pump();
     });
@@ -188,7 +189,8 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
 
   Future<void> _execute(VoteSubmitJob job) async {
     if (job.kind == VoteSubmitKind.skip) {
-      final result = await ref.read(voteRepositoryProvider).skipWord(job.wordId);
+      final result =
+          await ref.read(voteRepositoryProvider).skipMeaning(job.meaningId);
       result.match(
         (failure) {
           job.status = VoteSubmitJobStatus.failed;
@@ -206,7 +208,7 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
       return;
     }
 
-    final target = VoteTarget(type: 'word', id: job.wordId);
+    final target = VoteTarget(type: 'meaning', id: job.meaningId);
     final result = await ref.read(toggleVoteUseCaseProvider)(
       target: target,
       value: job.value,

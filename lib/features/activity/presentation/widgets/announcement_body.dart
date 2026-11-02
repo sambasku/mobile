@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../../core/models/external_link.dart';
 import '../../../../core/widgets/image_preview.dart';
-import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/sambasku_markdown.dart';
 import '../../domain/entities/feed_activity_item.dart';
 
 /// Normalisasi body webview: console boleh input host tanpa skema
@@ -59,7 +59,10 @@ const _imageScheme = 'sambasku-image:';
 @visibleForTesting
 String wrapImagesInHtml(String html) {
   final imgPattern = RegExp(r'<img\b[^>]*>', caseSensitive: false);
-  final srcPattern = RegExp('src\\s*=\\s*["\']([^"\']+)["\']', caseSensitive: false);
+  final srcPattern = RegExp(
+    'src\\s*=\\s*["\']([^"\']+)["\']',
+    caseSensitive: false,
+  );
   return html.replaceAllMapped(imgPattern, (m) {
     final tag = m[0]!;
     final src = srcPattern.firstMatch(tag)?.group(1);
@@ -70,7 +73,7 @@ String wrapImagesInHtml(String html) {
 
 /// Body pengumuman / notifikasi inbox per tipe eksplisit dari API (#124):
 /// - plain -> Text biasa
-/// - md -> flutter_markdown (native, ikut tema terang/gelap)
+/// - md -> flutter_markdown_plus (native, ikut tema terang/gelap)
 /// - html -> dirender via WebView inline JS off dengan bounded box
 /// - webview -> isi (URL/HTML) dimuat via WebView dengan bounded box
 class AnnouncementBody extends StatelessWidget {
@@ -83,7 +86,8 @@ class AnnouncementBody extends StatelessWidget {
 
   final String body;
   final AnnouncementBodyType bodyType;
-  final double? maxHeight; // Null = unbounded; set untuk carousel/preview bounded box
+  final double?
+  maxHeight; // Null = unbounded; set untuk carousel/preview bounded box
 
   @override
   Widget build(BuildContext context) {
@@ -92,28 +96,25 @@ class AnnouncementBody extends StatelessWidget {
     return switch (bodyType) {
       AnnouncementBodyType.plain => Text(
         body,
-        style: theme.typography.md.copyWith(height: 1.5),
+        style: theme.typography.body.md.copyWith(height: 1.5),
       ),
-      AnnouncementBodyType.md => unbounded
-          ? _markdown(context, theme)
-          : ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: maxHeight!),
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: _markdown(context, theme),
+      AnnouncementBodyType.md =>
+        unbounded
+            ? _markdown(context, theme)
+            : ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: maxHeight!),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: _markdown(context, theme),
+                ),
               ),
-            ),
-      AnnouncementBodyType.html || AnnouncementBodyType.webview =>
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: maxHeight ?? 320),
-            child: _AnnouncementWebView(
-              body: body,
-              bodyType: bodyType,
-            ),
-          ),
+      AnnouncementBodyType.html || AnnouncementBodyType.webview => ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight ?? 320),
+          child: _AnnouncementWebView(body: body, bodyType: bodyType),
         ),
+      ),
     };
   }
 
@@ -122,55 +123,19 @@ class AnnouncementBody extends StatelessWidget {
     return MarkdownBody(
       data: body,
       selectable: true,
-      sizedImageBuilder: _buildMarkdownImage,
+      imageBuilder: buildSambaskuMarkdownImage,
       onTapLink: (text, href, title) => _openHref(href),
-      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-        p: theme.typography.md.copyWith(height: 1.5),
-        h1: theme.typography.xl2.copyWith(fontWeight: FontWeight.w700),
-        h2: theme.typography.xl.copyWith(fontWeight: FontWeight.w700),
-        h3: theme.typography.lg.copyWith(fontWeight: FontWeight.w700),
-        listBullet: theme.typography.md,
+      // Ponytail: dari stylesheet shared (token forui); pengumuman butuh
+      // body lebih besar (md bukan sm), override di sini.
+      styleSheet: sambaskuMarkdownStyleSheet(context).copyWith(
+        p: theme.typography.body.md.copyWith(height: 1.5),
+        h1: theme.typography.body.xl2.copyWith(fontWeight: FontWeight.w700),
+        h2: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
+        h3: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+        listBullet: theme.typography.body.md,
       ),
     );
   }
-}
-
-/// Gambar di body markdown: lebar penuh, tinggi ikut rasio asli (expand:
-/// false) kecuali md menyebut ukuran eksplisit; tap -> preview fullscreen
-/// dengan pinch-zoom.
-Widget _buildMarkdownImage(MarkdownImageConfig config) {
-  final src = config.uri.toString();
-  if (src.isEmpty) return const SizedBox.shrink();
-  final alt = config.alt;
-  final sized = config.width != null || config.height != null;
-  return Builder(
-    builder: (context) => GestureDetector(
-      onTap: () => showImagePreview(context, urls: [src]),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Semantics(
-          button: true,
-          label: alt != null && alt.isNotEmpty ? alt : 'Lihat gambar',
-          child: sized
-              ? SizedBox(
-                  width: config.width,
-                  height: config.height,
-                  child: CachedNetworkImageWithFallback(
-                    imageUrl: src,
-                    fallbackUrl: src,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              : CachedNetworkImageWithFallback(
-                  imageUrl: src,
-                  fallbackUrl: src,
-                  fit: BoxFit.contain,
-                  expand: false,
-                ),
-        ),
-      ),
-    ),
-  );
 }
 
 /// Buka link markdown html lewat browser. Hanya https (aturan keamanan
@@ -180,7 +145,7 @@ void _openHref(String? href) {
   final uri = Uri.tryParse(href);
   if (uri == null || !uri.isScheme('https')) return;
   unawaited(
-    launchUrl(uri, mode: LaunchMode.externalApplication).catchError((_) => false),
+    launchExternalUrl(uri),
   );
 }
 
@@ -207,58 +172,51 @@ class _AnnouncementWebViewState extends State<_AnnouncementWebView> {
     _initialUri = widget.bodyType == AnnouncementBodyType.webview
         ? _normalizeWebviewUrl(widget.body)
         : null;
-    _controller =
-        WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.disabled)
-          ..setNavigationDelegate(
-            NavigationDelegate(
-              // Navigasi dalam WebView diblok; link -> browser. URL awal
-              // (loadRequest/loadHtmlString) diizinkan lewat, TERMASUK
-              // redirect server (301 /id dsb.) selama host masih sama -
-              // cek equality URL saja membuat webview blank + browser
-              // eksternal terbuka sendiri (sambasku.com -> /id).
-              // Scheme internal gambar: sambasku-image: -> tampilkan preview,
-              // tidak boleh membuka URL biasa (disajikan sebagai halaman HTML).
-              onNavigationRequest: (req) {
-                if (req.url == 'about:blank') {
-                  return NavigationDecision.navigate;
-                }
-                // Tap gambar (dibungkus <a href="sambasku-image:...">):
-                // tampilkan preview fullscreen, jangan muat sebagai halaman.
-                if (req.url.startsWith(_imageScheme)) {
-                  final src = Uri.decodeComponent(
-                    req.url.substring(_imageScheme.length),
-                  );
-                  if (src.isNotEmpty) {
-                    unawaited(showImagePreview(context, urls: [src]));
-                  }
-                  return NavigationDecision.prevent;
-                }
-                final uri = Uri.tryParse(req.url);
-                final initial = _initialUri;
-                if (initial != null && uri?.host == initial.host) {
-                  return NavigationDecision.navigate;
-                }
-                if (initial != null && req.url == initial.toString()) {
-                  return NavigationDecision.navigate;
-                }
-                if (uri == null) return NavigationDecision.prevent;
-                unawaited(
-                  launchUrl(
-                    uri,
-                    mode: LaunchMode.externalApplication,
-                  ).catchError((_) => false),
-                );
-                return NavigationDecision.prevent;
-              },
-            ),
-          )
-          .._loadBody(widget.body, widget.bodyType);
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.disabled)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          // Navigasi dalam WebView diblok; link -> browser. URL awal
+          // (loadRequest/loadHtmlString) diizinkan lewat, TERMASUK
+          // redirect server (301 /id dsb.) selama host masih sama -
+          // cek equality URL saja membuat webview blank + browser
+          // eksternal terbuka sendiri (sambasku.com -> /id).
+          // Scheme internal gambar: sambasku-image: -> tampilkan preview,
+          // tidak boleh membuka URL biasa (disajikan sebagai halaman HTML).
+          onNavigationRequest: (req) {
+            if (req.url == 'about:blank') {
+              return NavigationDecision.navigate;
+            }
+            // Tap gambar (dibungkus <a href="sambasku-image:...">):
+            // tampilkan preview fullscreen, jangan muat sebagai halaman.
+            if (req.url.startsWith(_imageScheme)) {
+              final src = Uri.decodeComponent(
+                req.url.substring(_imageScheme.length),
+              );
+              if (src.isNotEmpty) {
+                unawaited(showImagePreview(context, urls: [src]));
+              }
+              return NavigationDecision.prevent;
+            }
+            final uri = Uri.tryParse(req.url);
+            final initial = _initialUri;
+            if (initial != null && uri?.host == initial.host) {
+              return NavigationDecision.navigate;
+            }
+            if (initial != null && req.url == initial.toString()) {
+              return NavigationDecision.navigate;
+            }
+            if (uri == null) return NavigationDecision.prevent;
+unawaited(launchExternalUrl(uri));
+return NavigationDecision.prevent;
+          },
+        ),
+      )
+      .._loadBody(widget.body, widget.bodyType);
   }
 
   @override
-  Widget build(BuildContext context) =>
-      WebViewWidget(controller: _controller);
+  Widget build(BuildContext context) => WebViewWidget(controller: _controller);
 }
 
 /// Teks preview ringan untuk kartu carousel/list (#134): webview URL valid
@@ -298,7 +256,7 @@ class AnnouncementBodyPreview extends StatelessWidget {
       announcementPreviewText(body, bodyType),
       maxLines: maxLines,
       overflow: TextOverflow.ellipsis,
-      style: theme.typography.md.copyWith(
+      style: theme.typography.body.md.copyWith(
         height: 1.5,
         color: theme.colors.mutedForeground,
       ),
@@ -308,10 +266,7 @@ class AnnouncementBodyPreview extends StatelessWidget {
 
 /// Buang markup md/html ringan untuk preview (tanpa parser penuh).
 String stripMarkdownHtml(String input) => input
-    .replaceAllMapped(
-      RegExp(r'```[\s\S]*?```'),
-      (_) => '',
-    )
+    .replaceAllMapped(RegExp(r'```[\s\S]*?```'), (_) => '')
     .replaceAll(RegExp(r'`[^`]+`'), '')
     .replaceAllMapped(RegExp(r'\*\*([^*]+)\*\*'), (m) => m[1]!)
     .replaceAllMapped(RegExp(r'__([^_]+)__'), (m) => m[1]!)
@@ -319,10 +274,7 @@ String stripMarkdownHtml(String input) => input
     .replaceAllMapped(RegExp(r'_([^_]+)_'), (m) => m[1]!)
     .replaceAllMapped(RegExp(r'~~([^~]+)~~'), (m) => m[1]!)
     .replaceAll(RegExp(r'#{1,6}\s'), '')
-    .replaceAllMapped(
-      RegExp(r'\[([^\]]+)\]\([^)]+\)'),
-      (m) => m[1]!,
-    )
+    .replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]+\)'), (m) => m[1]!)
     .replaceAll(RegExp(r'<[^>]+>'), '')
     .replaceAll(RegExp(r'^>+\s?', multiLine: true), '')
     .replaceAll(RegExp(r'\n\s*[-=_*]{3,}\s*\n'), '\n')

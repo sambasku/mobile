@@ -20,8 +20,5 @@ Future<WordDetail> wordDetail(Ref ref, String wordIdOrLemma) async {
   final result = looksLikeUlid(key)
       ? await ref.watch(getWordByIdUseCaseProvider)(key)
       : await ref.watch(getWordByLemmaUseCaseProvider)(key);
-  return result.match(
-    (failure) => throw failure,
-    (detail) => detail,
-  );
+  return result.match((failure) => throw failure, (detail) => detail);
 }

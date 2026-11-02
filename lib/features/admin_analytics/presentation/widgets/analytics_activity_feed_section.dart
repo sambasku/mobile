@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Theme;
+import 'package:material_ui/material_ui.dart' show Theme;
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -7,7 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../domain/entities/analytics_activity_item.dart';
@@ -24,14 +26,15 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     final async = ref.watch(analyticsActivityFeedProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Aktivitas terbaru',
-          style: theme.typography.sm.copyWith(fontWeight: FontWeight.w700),
+          l10n.analyticsFeedTitle,
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
         DecoratedBox(
@@ -48,17 +51,16 @@ class AnalyticsActivityFeedSection extends ConsumerWidget {
                 skipLoadingOnReload: true,
                 loading: () => const _ActivityFeedSkeleton(),
                 error: (_, _) => AnalyticsActivityErrorRetry(
-                  message: 'Gagal memuat aktivitas.',
-                  onRetry: () =>
-                      ref.invalidate(analyticsActivityFeedProvider),
+                  message: l10n.analyticsFeedError,
+                  onRetry: () => ref.invalidate(analyticsActivityFeedProvider),
                 ),
                 data: (items) {
                   if (items.isEmpty) {
                     return Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Belum ada aktivitas.',
-                        style: theme.typography.xs.copyWith(
+                        l10n.analyticsFeedEmpty,
+                        style: theme.typography.body.xs.copyWith(
                           color: theme.colors.mutedForeground,
                         ),
                       ),
@@ -95,9 +97,7 @@ class _ActivityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final dateLabel = formatRelativeCompact(
-      DateTime.tryParse(item.createdAt),
-    );
+    final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
     final canOpenProfile = isLinkablePublicUsername(item.actorUsername);
     final subtitle = item.subtitle?.trim();
     final trailingMeta = [
@@ -108,11 +108,7 @@ class _ActivityRow extends StatelessWidget {
     final content = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        UserAvatar(
-          name: item.actorLabel,
-          imageUrl: item.avatarUrl,
-          size: 28,
-        ),
+        UserAvatar(name: item.actorLabel, imageUrl: item.avatarUrl, size: 28),
         const Gap(8),
         Expanded(
           child: Column(
@@ -122,25 +118,21 @@ class _ActivityRow extends StatelessWidget {
               Row(
                 children: [
                   Flexible(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
+                    child: PublicAccountName(
+                      label: item.actorLabel,
+                      isVerifier: item.isVerifier,
                       onTap: canOpenProfile
                           ? () => UserProfileRouter.open(
-                                context,
-                                item.actorUsername!,
-                              )
+                              context,
+                              item.actorUsername!,
+                            )
                           : null,
-                      child: Text(
-                        item.actorLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.sm.copyWith(
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                          color: canOpenProfile
-                              ? theme.colors.primary
-                              : theme.colors.foreground,
-                        ),
+                      style: theme.typography.body.sm.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                        color: canOpenProfile
+                            ? theme.colors.primary
+                            : theme.colors.foreground,
                       ),
                     ),
                   ),
@@ -148,7 +140,7 @@ class _ActivityRow extends StatelessWidget {
                     const Gap(6),
                     Text(
                       trailingMeta,
-                      style: theme.typography.xs.copyWith(
+                      style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                         height: 1.2,
                       ),
@@ -160,7 +152,7 @@ class _ActivityRow extends StatelessWidget {
                 item.body,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.typography.sm.copyWith(height: 1.2),
+                style: theme.typography.body.sm.copyWith(height: 1.2),
               ),
             ],
           ),
@@ -178,14 +170,15 @@ class _ActivityRow extends StatelessWidget {
   }
 }
 
-const _placeholderActivity = AnalyticsActivityItem(
-  kind: AnalyticsActivityKind.comment,
-  id: 'skeleton',
-  createdAt: '2026-09-21T00:00:00.000Z',
-  actorLabel: 'Warga Sambas',
-  body: 'aktivitas singkat satu baris',
-  subtitle: 'kata',
-);
+AnalyticsActivityItem _placeholderActivity(AppLocalizations l10n) =>
+    AnalyticsActivityItem(
+      kind: AnalyticsActivityKind.comment,
+      id: 'skeleton',
+      createdAt: '2026-09-21T00:00:00.000Z',
+      actorLabel: 'Warga Sambas',
+      body: 'aktivitas singkat satu baris',
+      subtitle: l10n.adminAnalyticsSkeletonKata,
+    );
 
 class _ActivityFeedSkeleton extends StatelessWidget {
   const _ActivityFeedSkeleton();
@@ -194,7 +187,8 @@ class _ActivityFeedSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = context.theme.colors.muted;
-    final shimmer = ShimmerEffect(
+    final placeholder = _placeholderActivity(AppLocalizations.of(context));
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
       baseColor: isDark
           ? muted.withValues(alpha: 0.35)
           : const Color(0xFFE7E7EA),
@@ -205,7 +199,7 @@ class _ActivityFeedSkeleton extends StatelessWidget {
     );
 
     return SkeletonizerConfig(
-      data: SkeletonizerConfigData(effect: shimmer),
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
       child: IgnorePointer(
         child: Skeletonizer(
           enabled: true,
@@ -213,10 +207,10 @@ class _ActivityFeedSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < _activityFeedLimit; i++)
-                const SizedBox(
+                SizedBox(
                   height: _activityRowHeight,
                   width: double.infinity,
-                  child: _ActivityRow(item: _placeholderActivity),
+                  child: _ActivityRow(item: placeholder),
                 ),
             ],
           ),
@@ -239,12 +233,13 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: Text(
             message,
-            style: theme.typography.xs.copyWith(
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.mutedForeground,
             ),
           ),
@@ -252,8 +247,8 @@ class AnalyticsActivityErrorRetry extends StatelessWidget {
         GestureDetector(
           onTap: onRetry,
           child: Text(
-            'Coba lagi',
-            style: theme.typography.xs.copyWith(
+            l10n.commonRetry,
+            style: theme.typography.body.xs.copyWith(
               color: theme.colors.primary,
               fontWeight: FontWeight.w600,
             ),
