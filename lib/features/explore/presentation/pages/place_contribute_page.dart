@@ -19,6 +19,7 @@ import '../../data/place_contribution_api.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
+import '../providers/places_browse_providers.dart';
 import '../providers/places_providers.dart';
 import '../widgets/sambas_map_view.dart';
 import 'place_pin_picker_page.dart';
@@ -285,12 +286,13 @@ Future<void> _submit() async {
       unawaited(
         AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
       );
-      // Hard miss L1 katalog + invalidate detail supaya cover/hero baru
-      // tampil tanpa tunggu TTL 24 jam (cdn-jsdelivr-refresh pola sama).
+      // Hard miss L1 katalog + invalidate detail + browse list supaya
+      // cover baru tampil tanpa tunggu TTL / state browse lama di stack.
       try {
         await ref.read(placesRefreshProvider.future);
       } catch (_) {}
       ref.invalidate(placesProvider);
+      ref.invalidate(placesBrowseProvider);
       ref.invalidate(placeBySlugProvider(slug));
       if (!mounted) return;
       showFToast(

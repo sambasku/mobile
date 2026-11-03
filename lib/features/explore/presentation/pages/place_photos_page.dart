@@ -14,6 +14,7 @@ import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../explore_router.dart';
 import '../../domain/entities/place.dart';
+import '../providers/places_browse_providers.dart';
 import '../providers/places_providers.dart';
 
 void _back(BuildContext context) =>
@@ -105,7 +106,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
   }
 
   /// Sepulang dari halaman unggah: hard miss L1 katalog + invalidate detail
-  /// slug, lalu ulang galeri.
+  /// slug + browse list, lalu ulang galeri.
   Future<void> _refresh() async {
     try {
       await ref.read(placesRefreshProvider.future);
@@ -113,6 +114,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
       // gagal jaringan: biarkan galeri lama, user bisa muat ulang manual
     }
     ref.invalidate(placesProvider);
+    ref.invalidate(placesBrowseProvider);
     ref.invalidate(placeBySlugProvider(widget.slug));
     if (!mounted) return;
     setState(() {
