@@ -3,6 +3,7 @@
 enum SuggestCategory {
   changeMeaning('change_meaning'),
   changeWordClass('change_word_class'),
+  changeWordType('change_word_type'),
   addMeaning('add_meaning'),
   addExample('add_example'),
   addPhoto('add_photo'),
@@ -90,6 +91,16 @@ Map<String, dynamic>? buildChangeWordClass({
       },
     ],
   };
+}
+
+/// Jenis entri (kata / idiom / peribahasa / ungkapan). Bukan kelas kata.
+Map<String, dynamic>? buildChangeWordType({
+  required String originalWordType,
+  required String wordType,
+}) {
+  final next = wordType.trim();
+  if (next.isEmpty || next == originalWordType.trim()) return null;
+  return {'word_type': next};
 }
 
 Map<String, dynamic>? buildAddMeaning({
@@ -223,6 +234,7 @@ String? suggestFieldKey(String apiField) {
   return switch (apiField) {
     'lemma' => 'lemma',
     'notes' => 'notes',
+    'word_type' => 'word_type',
     'reason_text' => 'reason',
     'source_sentence' => 'sentence',
     'target_sentence' => 'sentence_translation',

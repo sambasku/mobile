@@ -7,6 +7,7 @@ String suggestCategoryLabel(SuggestCategory c, AppLocalizations l10n) =>
     switch (c) {
       SuggestCategory.changeMeaning => l10n.suggestCategoryChangeMeaning,
       SuggestCategory.changeWordClass => l10n.suggestCategoryChangeWordClass,
+      SuggestCategory.changeWordType => l10n.suggestCategoryChangeWordType,
       SuggestCategory.addMeaning => l10n.suggestCategoryAddMeaning,
       SuggestCategory.addExample => l10n.suggestCategoryAddExample,
       SuggestCategory.addPhoto => l10n.suggestCategoryAddPhoto,
@@ -27,6 +28,7 @@ String suggestCategoryDescription(
 ) => switch (c) {
   SuggestCategory.changeMeaning => l10n.suggestCategoryChangeMeaningDesc,
   SuggestCategory.changeWordClass => l10n.suggestCategoryChangeWordClassDesc,
+  SuggestCategory.changeWordType => l10n.suggestCategoryChangeWordTypeDesc,
   SuggestCategory.addMeaning => l10n.suggestCategoryAddMeaningDesc,
   SuggestCategory.addExample => l10n.suggestCategoryAddExampleDesc,
   SuggestCategory.addPhoto => l10n.suggestCategoryAddPhotoDesc,

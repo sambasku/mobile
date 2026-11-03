@@ -7,9 +7,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/domain/word_type_options.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/kbbi_source_notice.dart';
+import '../../../../shared/widgets/word_type_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
@@ -58,6 +60,10 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   final _definitionCtrl = TextEditingController();
   final _padananCtrl = TextEditingController();
   String? _wordClassId;
+
+  // Ubah jenis entri (kata / idiom / peribahasa / ungkapan).
+  String _wordType = 'word';
+  String _originalWordType = 'word';
 
   // Tambah makna.
   final _addDefinitionCtrl = TextEditingController();
@@ -138,6 +144,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     _prefilled = true;
     _lemmaCtrl.text = detail.lemma;
     _notesCtrl.text = detail.notes ?? '';
+    _originalWordType = detail.wordType;
+    _wordType = detail.wordType;
     final first = detail.meanings.firstOrNull;
     if (first != null) _selectMeaning(first);
     _applyInitialCategory(detail);
@@ -191,6 +199,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     setState(
       () => forAdd ? _addWordClassId = picked.id : _wordClassId = picked.id,
     );
+  }
+
+  Future<void> _pickWordType() async {
+    final picked = await showWordTypePickerSheet(
+      context,
+      selected: _wordType,
+    );
+    if (!mounted || picked == null) return;
+    setState(() => _wordType = picked);
   }
 
   Future<void> _pickMeaning(WordDetail detail) async {
@@ -291,6 +308,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           meaningId: meaning!.id,
           originalWordClassId: meaning.wordClassId,
           wordClassId: _wordClassId,
+        );
+      case SuggestCategory.changeWordType:
+        return buildChangeWordType(
+          originalWordType: _originalWordType,
+          wordType: _wordType,
         );
       case SuggestCategory.addMeaning:
         return buildAddMeaning(
@@ -712,6 +734,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
         ];
       case SuggestCategory.changeWordClass:
         return [_wordClassField(forAdd: false)];
+      case SuggestCategory.changeWordType:
+        return [_wordTypeField()];
       case SuggestCategory.addMeaning:
         return [
           _wordClassField(forAdd: true),
@@ -957,6 +981,30 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           maxLines: 3,
           minLines: 2,
         ),
+      ],
+    );
+  }
+
+  Widget _wordTypeField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FieldCaption(_l10n.suggestWordTypeLabel),
+        _SelectField(
+          selectedLabel: wordTypeOptionLabel(_wordType),
+          hint: _l10n.suggestWordTypePicker,
+          onTap: _pickWordType,
+        ),
+        if (_fieldErrors['word_type'] != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              _fieldErrors['word_type']!,
+              style: context.theme.typography.body.sm.copyWith(
+                color: context.theme.colors.error,
+              ),
+            ),
+          ),
       ],
     );
   }

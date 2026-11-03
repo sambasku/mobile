@@ -9,10 +9,22 @@ void main() {
     expect(none, isNot(contains(SuggestCategory.addExample)));
     expect(none, isNot(contains(SuggestCategory.changePhoto)));
     expect(none, contains(SuggestCategory.addMeaning));
+    expect(none, contains(SuggestCategory.changeWordType));
     expect(
       availableSuggestCategories(hasMeaning: true, hasImage: true),
       SuggestCategory.values,
     );
+  });
+
+  test('ubah jenis entri: sama = null, berbeda kirim word_type', () {
+    expect(
+      buildChangeWordType(originalWordType: 'word', wordType: 'word'),
+      isNull,
+    );
+    expect(buildChangeWordType(originalWordType: 'word', wordType: 'idiom'), {
+      'word_type': 'idiom',
+    });
+    expect(SuggestCategory.changeWordType.code, 'change_word_type');
   });
 
   test(
@@ -67,6 +79,7 @@ void main() {
       suggestFieldKey('meanings.0.translations.0.translation_text'),
       'padanan',
     );
+    expect(suggestFieldKey('word_type'), 'word_type');
     expect(suggestFieldKey('proposed_changes'), isNull);
   });
 
