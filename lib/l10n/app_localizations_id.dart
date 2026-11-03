@@ -7506,6 +7506,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunSend => 'Kirim';
 
   @override
+  String get pantunSending => 'Mengirim...';
+
+  @override
   String get pantunWrite => 'Tulis pantun';
 
   @override
@@ -15999,6 +16002,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get pantunSend => 'Kirim';
+
+  @override
+  String get pantunSending => 'Mengirim...';
 
   @override
   String get pantunWrite => 'Tulis pantun';

@@ -2869,6 +2869,10 @@
   "@pantunTitle": {},
   "pantunSend": "Kirim",
   "@pantunSend": {},
+  "pantunSending": "Mengirim...",
+  "@pantunSending": {
+    "description": "Label busy tombol Kirim di compose pantun"
+  },
   "pantunWrite": "Tulis pantun",
   "@pantunWrite": {},
   "pantunReply": "Balas pantun",

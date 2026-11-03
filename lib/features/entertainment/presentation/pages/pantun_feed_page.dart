@@ -90,9 +90,15 @@ class PantunFeedPage extends HookConsumerWidget {
           ),
         ],
       ),
-      footer: FButton(
-        onPress: () => context.push('/entertainment/pantun/create'),
-        child: Text(l10n.pantunWrite),
+      footer: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: FButton(
+            onPress: () => context.push('/entertainment/pantun/create'),
+            child: Text(l10n.pantunWrite),
+          ),
+        ),
       ),
       child: Column(
         children: [

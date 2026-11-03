@@ -13685,6 +13685,12 @@ abstract class AppLocalizations {
   /// **'Kirim'**
   String get pantunSend;
 
+  /// Label busy tombol Kirim di compose pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get pantunSending;
+
   /// No description provided for @pantunWrite.
   ///
   /// In id, this message translates to:

@@ -72,15 +72,19 @@ class PantunComposePage extends HookConsumerWidget {
         title: Text(parentId == null ? l10n.pantunWrite : l10n.pantunReply),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      footer: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: FButton(
-          onPress: canSubmit
-              ? () => submit(context, ref, lines, scheme, submitting)
-              : null,
-          child: submitting.value
-              ? const FCircularProgress(size: .sm)
-              : Text(l10n.pantunSend),
+      footer: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: FButton(
+            onPress: canSubmit
+                ? () => submit(context, ref, lines, scheme, submitting)
+                : null,
+            prefix: submitting.value ? const FCircularProgress() : null,
+            child: Text(
+              submitting.value ? l10n.pantunSending : l10n.pantunSend,
+            ),
+          ),
         ),
       ),
       child: ListView(
