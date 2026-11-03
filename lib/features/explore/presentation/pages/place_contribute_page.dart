@@ -285,11 +285,18 @@ Future<void> _submit() async {
       unawaited(
         AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
       );
+      // Hard miss L1 katalog + invalidate detail supaya cover/hero baru
+      // tampil tanpa tunggu TTL 24 jam (cdn-jsdelivr-refresh pola sama).
+      try {
+        await ref.read(placesRefreshProvider.future);
+      } catch (_) {}
+      ref.invalidate(placesProvider);
+      ref.invalidate(placeBySlugProvider(slug));
       if (!mounted) return;
       showFToast(
-      context: context,
-      title: Text(AppLocalizations.of(context).placeFormPhotoToast),
-    );
+        context: context,
+        title: Text(AppLocalizations.of(context).placeFormPhotoToast),
+      );
       context.pop();
       return;
     }

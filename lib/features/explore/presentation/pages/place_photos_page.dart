@@ -104,14 +104,16 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
     }
   }
 
-  /// Sepulang dari halaman unggah: hard miss L1 katalog lalu ulang galeri.
-  /// Detail (halaman pertama) diambil dari katalog yang baru difetch.
+  /// Sepulang dari halaman unggah: hard miss L1 katalog + invalidate detail
+  /// slug, lalu ulang galeri.
   Future<void> _refresh() async {
     try {
       await ref.read(placesRefreshProvider.future);
     } catch (_) {
       // gagal jaringan: biarkan galeri lama, user bisa muat ulang manual
     }
+    ref.invalidate(placesProvider);
+    ref.invalidate(placeBySlugProvider(widget.slug));
     if (!mounted) return;
     setState(() {
       _extra.clear();
@@ -120,20 +122,18 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
     });
   }
 
-  /// Foto halaman pertama (dari detail) - dipakai untuk dedupe.
+  /// Foto halaman pertama (dari GET /places/:slug) - dipakai untuk dedupe.
   List<PlaceImage> _firstPageImages() {
-    final places = ref.read(placesProvider).value;
-    final place = places?.where((p) => p.slug == widget.slug).firstOrNull;
+    final place = ref.read(placeBySlugProvider(widget.slug)).asData?.value;
     return place?.images ?? const [];
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final placesAsync = ref.watch(placesProvider);
-    final place = placesAsync.value
-        ?.where((p) => p.slug == widget.slug)
-        .firstOrNull;
+    // Detail slug, bukan katalog list (list = coverOnly, images sering 0–1).
+    final placeAsync = ref.watch(placeBySlugProvider(widget.slug));
+    final place = placeAsync.asData?.value;
     if (place != null) {
       // Jadwalkan setelah frame: _reset memanggil setState lewat _loadMore.
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -150,7 +150,7 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
       childPad: false,
       child: Column(
         children: [
-          Expanded(child: _body(context, placesAsync, place)),
+          Expanded(child: _body(context, placeAsync, place)),
           _UploadBar(slug: widget.slug, guest: guest, onReturned: _refresh),
         ],
       ),
@@ -159,12 +159,12 @@ class _PlacePhotosPageState extends ConsumerState<PlacePhotosPage> {
 
   Widget _body(
     BuildContext context,
-    AsyncValue<List<Place>?> placesAsync,
+    AsyncValue<Place?> placeAsync,
     Place? place,
   ) {
     final l10n = AppLocalizations.of(context);
     if (place == null) {
-      if (placesAsync.isLoading) return const _PhotosSkeleton();
+      if (placeAsync.isLoading) return const _PhotosSkeleton();
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
