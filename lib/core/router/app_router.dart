@@ -22,6 +22,7 @@ import '../../features/delete_account/delete_account_router.dart';
 import '../../features/edit_profile/edit_profile_router.dart';
 import '../../features/linked_accounts/linked_accounts_router.dart';
 import '../../features/contribution/contribution_router.dart';
+import '../../features/encyclopedia/encyclopedia_router.dart';
 import '../../features/dictionary/dictionary_router.dart';
 import '../../features/share/domain/word_public_url.dart';
 import '../../features/my_contributions/my_contributions_router.dart';
@@ -80,6 +81,7 @@ class AppRouter {
       ...LinkedAccountsRouter.routes,
       ...AboutRouter.routes,
       ...DictionaryRouter.routes,
+        ...EncyclopediaRouter.routes,
       ...ContributionRouter.routes,
       ...MyContributionsRouter.routes,
       ...NotificationRouter.routes,

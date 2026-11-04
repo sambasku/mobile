@@ -3433,6 +3433,78 @@ abstract class AppLocalizations {
   /// **'Keputusan yang sudah kamu berikan'**
   String get reviewHomeHistorySubtitle;
 
+  /// Tile hub verifikator: antrean usulan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan usaha'**
+  String get reviewHomeUsahaTitle;
+
+  /// No description provided for @reviewHomeUsahaSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean usaha menunggu tinjauan'**
+  String get reviewHomeUsahaSubtitle;
+
+  /// No description provided for @reviewHomeUsahaWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan usaha yang menunggu'**
+  String get reviewHomeUsahaWaiting;
+
+  /// Tile hub verifikator: antrean usulan wisata
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan wisata'**
+  String get reviewHomePlaceTitle;
+
+  /// No description provided for @reviewHomePlaceSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean wisata menunggu tinjauan'**
+  String get reviewHomePlaceSubtitle;
+
+  /// No description provided for @reviewHomePlaceWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan wisata yang menunggu'**
+  String get reviewHomePlaceWaiting;
+
+  /// Tile hub verifikator: antrean usulan kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kuliner'**
+  String get reviewHomeCulinaryTitle;
+
+  /// No description provided for @reviewHomeCulinarySubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean kuliner menunggu tinjauan'**
+  String get reviewHomeCulinarySubtitle;
+
+  /// No description provided for @reviewHomeCulinaryWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan kuliner yang menunggu'**
+  String get reviewHomeCulinaryWaiting;
+
+  /// Tile hub verifikator: antrean usulan acara
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara'**
+  String get reviewHomeEventTitle;
+
+  /// No description provided for @reviewHomeEventSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean acara menunggu tinjauan'**
+  String get reviewHomeEventSubtitle;
+
+  /// No description provided for @reviewHomeEventWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan acara yang menunggu'**
+  String get reviewHomeEventWaiting;
+
   /// No description provided for @reviewQueueLoadFailed.
   ///
   /// In id, this message translates to:
@@ -5136,6 +5208,432 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal menolak usulan'**
   String get reviewRepoSuggestionRejectFailed;
+
+  /// Fallback error list usulan eksplorasi admin
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan eksplorasi'**
+  String get reviewExploreLoadFailed;
+
+  /// No description provided for @reviewExploreApproveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyetujui usulan eksplorasi'**
+  String get reviewExploreApproveFailed;
+
+  /// No description provided for @reviewExploreRejectFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menolak usulan eksplorasi'**
+  String get reviewExploreRejectFailed;
+
+  /// No description provided for @reviewExploreRevisionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal meminta revisi usulan'**
+  String get reviewExploreRevisionFailed;
+
+  /// No description provided for @reviewExploreRevisionUnsupported.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ini tidak mendukung minta revisi'**
+  String get reviewExploreRevisionUnsupported;
+
+  /// No description provided for @reviewExploreUsahaListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan usaha'**
+  String get reviewExploreUsahaListTitle;
+
+  /// No description provided for @reviewExplorePlaceListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan wisata'**
+  String get reviewExplorePlaceListTitle;
+
+  /// No description provided for @reviewExploreCulinaryListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kuliner'**
+  String get reviewExploreCulinaryListTitle;
+
+  /// No description provided for @reviewExploreEventListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara'**
+  String get reviewExploreEventListTitle;
+
+  /// Empty state antrean usulan eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada usulan menunggu'**
+  String get reviewExploreEmpty;
+
+  /// No description provided for @reviewExploreDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail usulan'**
+  String get reviewExploreDetailTitle;
+
+  /// No description provided for @reviewExploreApprovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan disetujui'**
+  String get reviewExploreApprovedToast;
+
+  /// No description provided for @reviewExploreRejectedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan ditolak'**
+  String get reviewExploreRejectedToast;
+
+  /// No description provided for @reviewExploreRevisionToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Revisi diminta'**
+  String get reviewExploreRevisionToast;
+
+  /// Tombol minta revisi di detail usulan eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Minta revisi'**
+  String get reviewExploreRequestRevision;
+
+  /// No description provided for @reviewExploreRevisionSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta revisi'**
+  String get reviewExploreRevisionSheetTitle;
+
+  /// No description provided for @reviewExploreRevisionSheetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis catatan untuk pengusul supaya bisa diperbaiki.'**
+  String get reviewExploreRevisionSheetBody;
+
+  /// No description provided for @reviewExploreRevisionNoteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan revisi'**
+  String get reviewExploreRevisionNoteLabel;
+
+  /// No description provided for @reviewExploreRevisionNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal 3 karakter'**
+  String get reviewExploreRevisionNoteHint;
+
+  /// No description provided for @reviewExploreRevisionSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim permintaan'**
+  String get reviewExploreRevisionSubmit;
+
+  /// No description provided for @reviewExploreRejectSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak usulan'**
+  String get reviewExploreRejectSheetTitle;
+
+  /// No description provided for @reviewExploreRejectSheetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih alasan penolakan untuk pengusul.'**
+  String get reviewExploreRejectSheetBody;
+
+  /// No description provided for @reviewExploreRejectOtherNoteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan lain'**
+  String get reviewExploreRejectOtherNoteLabel;
+
+  /// No description provided for @reviewExploreRejectOtherNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan singkat'**
+  String get reviewExploreRejectOtherNoteHint;
+
+  /// No description provided for @reviewExploreRejectOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan lain'**
+  String get reviewExploreRejectOther;
+
+  /// No description provided for @reviewExploreRejectUsahaDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha serupa sudah terdaftar'**
+  String get reviewExploreRejectUsahaDuplicate;
+
+  /// No description provided for @reviewExploreRejectUsahaIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi belum lengkap'**
+  String get reviewExploreRejectUsahaIncomplete;
+
+  /// No description provided for @reviewExploreRejectUsahaInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak valid'**
+  String get reviewExploreRejectUsahaInvalid;
+
+  /// No description provided for @reviewExploreRejectUsahaNotOwner.
+  ///
+  /// In id, this message translates to:
+  /// **'Bukan pengelola sah'**
+  String get reviewExploreRejectUsahaNotOwner;
+
+  /// No description provided for @reviewExploreRejectUsahaStale.
+  ///
+  /// In id, this message translates to:
+  /// **'Data sudah berubah, perlu ajukan ulang'**
+  String get reviewExploreRejectUsahaStale;
+
+  /// No description provided for @reviewExploreRejectUsahaViolation.
+  ///
+  /// In id, this message translates to:
+  /// **'Melanggar ketentuan'**
+  String get reviewExploreRejectUsahaViolation;
+
+  /// No description provided for @reviewExploreRejectPlaceNotSuitable.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak layak sebagai tempat wisata'**
+  String get reviewExploreRejectPlaceNotSuitable;
+
+  /// No description provided for @reviewExploreRejectPlaceDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Sama dengan tempat yang sudah terdaftar'**
+  String get reviewExploreRejectPlaceDuplicate;
+
+  /// No description provided for @reviewExploreRejectPlaceInaccurate.
+  ///
+  /// In id, this message translates to:
+  /// **'Data atau lokasi tidak akurat'**
+  String get reviewExploreRejectPlaceInaccurate;
+
+  /// No description provided for @reviewExploreRejectEventNotSuitable.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak layak sebagai acara'**
+  String get reviewExploreRejectEventNotSuitable;
+
+  /// No description provided for @reviewExploreRejectEventDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Sama dengan acara yang sudah terdaftar'**
+  String get reviewExploreRejectEventDuplicate;
+
+  /// No description provided for @reviewExploreRejectEventInaccurate.
+  ///
+  /// In id, this message translates to:
+  /// **'Data atau jadwal tidak akurat'**
+  String get reviewExploreRejectEventInaccurate;
+
+  /// No description provided for @reviewExploreRejectEventPast.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara sudah lewat'**
+  String get reviewExploreRejectEventPast;
+
+  /// No description provided for @reviewExploreRejectCulinaryDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner atau tempat serupa sudah terdaftar'**
+  String get reviewExploreRejectCulinaryDuplicate;
+
+  /// No description provided for @reviewExploreRejectCulinaryIncomplete.
+  ///
+  /// In id, this message translates to:
+  /// **'Informasi belum lengkap'**
+  String get reviewExploreRejectCulinaryIncomplete;
+
+  /// No description provided for @reviewExploreRejectCulinaryInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Data tidak valid'**
+  String get reviewExploreRejectCulinaryInvalid;
+
+  /// No description provided for @reviewExploreRejectCulinaryUnverifiable.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum bisa diverifikasi'**
+  String get reviewExploreRejectCulinaryUnverifiable;
+
+  /// No description provided for @reviewExploreRejectCulinaryAttribution.
+  ///
+  /// In id, this message translates to:
+  /// **'Atribusi gambar belum lengkap'**
+  String get reviewExploreRejectCulinaryAttribution;
+
+  /// No description provided for @reviewExploreRejectCulinaryStale.
+  ///
+  /// In id, this message translates to:
+  /// **'Data sudah berubah, perlu ajukan ulang'**
+  String get reviewExploreRejectCulinaryStale;
+
+  /// No description provided for @reviewExploreRejectCulinaryViolation.
+  ///
+  /// In id, this message translates to:
+  /// **'Melanggar ketentuan'**
+  String get reviewExploreRejectCulinaryViolation;
+
+  /// No description provided for @reviewExploreKindGeneric.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan'**
+  String get reviewExploreKindGeneric;
+
+  /// No description provided for @reviewExploreUsahaKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan usaha baru'**
+  String get reviewExploreUsahaKindNew;
+
+  /// No description provided for @reviewExploreUsahaKindProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan profil'**
+  String get reviewExploreUsahaKindProfile;
+
+  /// No description provided for @reviewExploreUsahaKindItemAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah item katalog'**
+  String get reviewExploreUsahaKindItemAdd;
+
+  /// No description provided for @reviewExploreUsahaKindItemEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah item katalog'**
+  String get reviewExploreUsahaKindItemEdit;
+
+  /// No description provided for @reviewExploreUsahaKindItemDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus item katalog'**
+  String get reviewExploreUsahaKindItemDelete;
+
+  /// No description provided for @reviewExploreUsahaKindOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Status operasional'**
+  String get reviewExploreUsahaKindOperational;
+
+  /// No description provided for @reviewExploreUsahaKindArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta arsip'**
+  String get reviewExploreUsahaKindArchive;
+
+  /// No description provided for @reviewExploreUsahaKindRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta tayang lagi'**
+  String get reviewExploreUsahaKindRestore;
+
+  /// No description provided for @reviewExploreCulinaryKindNewCuisine.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan kuliner baru'**
+  String get reviewExploreCulinaryKindNewCuisine;
+
+  /// No description provided for @reviewExploreCulinaryKindNewPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan tempat baru'**
+  String get reviewExploreCulinaryKindNewPlace;
+
+  /// No description provided for @reviewExploreCulinaryKindLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungan kuliner-tempat'**
+  String get reviewExploreCulinaryKindLink;
+
+  /// No description provided for @reviewExploreCulinaryKindCuisineEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data kuliner'**
+  String get reviewExploreCulinaryKindCuisineEdit;
+
+  /// No description provided for @reviewExploreCulinaryKindPlaceEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data tempat'**
+  String get reviewExploreCulinaryKindPlaceEdit;
+
+  /// No description provided for @reviewExploreCulinaryKindLinkEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah ketersediaan relasi'**
+  String get reviewExploreCulinaryKindLinkEdit;
+
+  /// No description provided for @reviewExploreCulinaryKindPlaceOperational.
+  ///
+  /// In id, this message translates to:
+  /// **'Status operasional tempat'**
+  String get reviewExploreCulinaryKindPlaceOperational;
+
+  /// No description provided for @reviewExploreCulinaryKindArchive.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta arsip'**
+  String get reviewExploreCulinaryKindArchive;
+
+  /// No description provided for @reviewExploreCulinaryKindRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta tayang lagi'**
+  String get reviewExploreCulinaryKindRestore;
+
+  /// No description provided for @reviewExplorePlaceKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan wisata baru'**
+  String get reviewExplorePlaceKindNew;
+
+  /// No description provided for @reviewExploreEventKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan acara baru'**
+  String get reviewExploreEventKindNew;
+
+  /// Subtitle tile list usulan eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'{kind} · {date}'**
+  String reviewExploreMetaKindDate(String kind, String date);
+
+  /// No description provided for @reviewExploreWantsClaim.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengusul ingin klaim kepemilikan'**
+  String get reviewExploreWantsClaim;
+
+  /// No description provided for @reviewExploreFieldsLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Field diubah'**
+  String get reviewExploreFieldsLabel;
+
+  /// No description provided for @reviewExplorePayloadSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi usulan'**
+  String get reviewExplorePayloadSection;
+
+  /// No description provided for @reviewExploreImagesSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get reviewExploreImagesSection;
+
+  /// No description provided for @reviewExploreProcessing.
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses…'**
+  String get reviewExploreProcessing;
 
   /// No description provided for @reviewCorrectKindLabel.
   ///
@@ -7037,6 +7535,12 @@ abstract class AppLocalizations {
   /// **'Pantun'**
   String get feedKindPantun;
 
+  /// Label jenis aktivitas: artikel ensiklopedia atau komentarnya
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel'**
+  String get feedKindArticle;
+
   /// Ajakan membuka sesi tinjau usulan
   ///
   /// In id, this message translates to:
@@ -7156,6 +7660,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat kuliner'**
   String get feedCtaSeeCulinary;
+
+  /// Ajakan membuka detail artikel ensiklopedia dari feed
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat artikel'**
+  String get feedCtaSeeArticle;
 
   /// Sebutan aktor saat data aktor tidak ada
   ///
@@ -9742,6 +10252,330 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sejarah, kisah, karya, dan tradisi'**
   String get exploreCategoryEnsiklopediaSubtitle;
+
+  /// No description provided for @encyclopediaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ensiklopedia Sambas'**
+  String get encyclopediaTitle;
+
+  /// No description provided for @encyclopediaSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel sejarah, budaya, tokoh, dan tradisi Sambas'**
+  String get encyclopediaSubtitle;
+
+  /// No description provided for @encyclopediaSearchPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari artikel ensiklopedia...'**
+  String get encyclopediaSearchPlaceholder;
+
+  /// No description provided for @encyclopediaFilterAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get encyclopediaFilterAll;
+
+  /// No description provided for @encyclopediaEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada artikel'**
+  String get encyclopediaEmptyTitle;
+
+  /// No description provided for @encyclopediaEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel untuk kategori ini belum tersedia.'**
+  String get encyclopediaEmptyBody;
+
+  /// No description provided for @encyclopediaLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat ensiklopedia'**
+  String get encyclopediaLoadFailed;
+
+  /// No description provided for @encyclopediaRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get encyclopediaRetry;
+
+  /// No description provided for @encyclopediaDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail Artikel'**
+  String get encyclopediaDetailTitle;
+
+  /// No description provided for @encyclopediaAuthorBy.
+  ///
+  /// In id, this message translates to:
+  /// **'Oleh'**
+  String get encyclopediaAuthorBy;
+
+  /// No description provided for @encyclopediaPublishedAt.
+  ///
+  /// In id, this message translates to:
+  /// **'Diterbitkan'**
+  String get encyclopediaPublishedAt;
+
+  /// No description provided for @encyclopediaReferencesTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Referensi & Sumber'**
+  String get encyclopediaReferencesTitle;
+
+  /// No description provided for @encyclopediaCommentsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar'**
+  String get encyclopediaCommentsTitle;
+
+  /// No description provided for @encyclopediaCommentPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar kamu...'**
+  String get encyclopediaCommentPlaceholder;
+
+  /// No description provided for @encyclopediaCommentSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Komentar'**
+  String get encyclopediaCommentSubmit;
+
+  /// No description provided for @encyclopediaCommentEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada komentar. Jadilah yang pertama berkomentar!'**
+  String get encyclopediaCommentEmpty;
+
+  /// No description provided for @encyclopediaBookmarkAdded.
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel disimpan ke bookmark'**
+  String get encyclopediaBookmarkAdded;
+
+  /// No description provided for @encyclopediaBookmarkRemoved.
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel dihapus dari bookmark'**
+  String get encyclopediaBookmarkRemoved;
+
+  /// No description provided for @encyclopediaContributeTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan Artikel'**
+  String get encyclopediaContributeTitle;
+
+  /// No description provided for @encyclopediaContributeEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul Perbaikan Artikel'**
+  String get encyclopediaContributeEditTitle;
+
+  /// No description provided for @encyclopediaContributeIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.'**
+  String get encyclopediaContributeIntro;
+
+  /// No description provided for @encyclopediaFieldTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul Artikel'**
+  String get encyclopediaFieldTitle;
+
+  /// No description provided for @encyclopediaFieldTitlePlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: Sejarah Istana Alwatzikoebillah'**
+  String get encyclopediaFieldTitlePlaceholder;
+
+  /// No description provided for @encyclopediaFieldCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get encyclopediaFieldCategory;
+
+  /// No description provided for @encyclopediaFieldCategoryPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get encyclopediaFieldCategoryPlaceholder;
+
+  /// No description provided for @encyclopediaFieldExcerpt.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan Singkat'**
+  String get encyclopediaFieldExcerpt;
+
+  /// No description provided for @encyclopediaFieldExcerptPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis 1-2 kalimat ringkasan artikel...'**
+  String get encyclopediaFieldExcerptPlaceholder;
+
+  /// No description provided for @encyclopediaFieldTags.
+  ///
+  /// In id, this message translates to:
+  /// **'Tag (pisahkan koma)'**
+  String get encyclopediaFieldTags;
+
+  /// No description provided for @encyclopediaFieldTagsPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'sejarah, istana, budaya'**
+  String get encyclopediaFieldTagsPlaceholder;
+
+  /// No description provided for @encyclopediaFieldBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi Artikel (Markdown)'**
+  String get encyclopediaFieldBody;
+
+  /// No description provided for @encyclopediaFieldBodyPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis isi artikel kamu di sini...'**
+  String get encyclopediaFieldBodyPlaceholder;
+
+  /// No description provided for @encyclopediaFieldChangeNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan Perubahan'**
+  String get encyclopediaFieldChangeNote;
+
+  /// No description provided for @encyclopediaFieldChangeNotePlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan apa yang kamu ubah...'**
+  String get encyclopediaFieldChangeNotePlaceholder;
+
+  /// No description provided for @encyclopediaFieldRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kolom wajib diisi'**
+  String get encyclopediaFieldRequired;
+
+  /// No description provided for @encyclopediaSubmitButton.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim Usulan'**
+  String get encyclopediaSubmitButton;
+
+  /// No description provided for @encyclopediaSubmitSuccessTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan Terkirim!'**
+  String get encyclopediaSubmitSuccessTitle;
+
+  /// No description provided for @encyclopediaSubmitSuccessBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.'**
+  String get encyclopediaSubmitSuccessBody;
+
+  /// No description provided for @encyclopediaMyContributionsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat Usulan Ensiklopedia'**
+  String get encyclopediaMyContributionsTitle;
+
+  /// No description provided for @encyclopediaMyContributionsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu belum pernah mengirim usulan artikel ensiklopedia.'**
+  String get encyclopediaMyContributionsEmpty;
+
+  /// No description provided for @encyclopediaStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu Review'**
+  String get encyclopediaStatusPending;
+
+  /// No description provided for @encyclopediaStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Disetujui'**
+  String get encyclopediaStatusApproved;
+
+  /// No description provided for @encyclopediaStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get encyclopediaStatusRejected;
+
+  /// No description provided for @encyclopediaBookmarkFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memperbarui bookmark'**
+  String get encyclopediaBookmarkFailed;
+
+  /// No description provided for @encyclopediaCommentFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim komentar'**
+  String get encyclopediaCommentFailed;
+
+  /// No description provided for @encyclopediaSubmitFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim usulan'**
+  String get encyclopediaSubmitFailed;
+
+  /// No description provided for @encyclopediaProposalKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan artikel baru'**
+  String get encyclopediaProposalKindNew;
+
+  /// No description provided for @encyclopediaProposalKindEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan perbaikan'**
+  String get encyclopediaProposalKindEdit;
+
+  /// No description provided for @encyclopediaBodyEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada isi.'**
+  String get encyclopediaBodyEmpty;
+
+  /// Judul sheet wajib login sebelum aksi ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya'**
+  String get encyclopediaLoginFirstTitle;
+
+  /// Isi sheet login sebelum bookmark artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menyimpan artikel ke bookmark.'**
+  String get encyclopediaLoginBookmarkBody;
+
+  /// Isi sheet login sebelum komentar artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menulis komentar di artikel.'**
+  String get encyclopediaLoginCommentBody;
+
+  /// Isi sheet login sebelum form usulan artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan artikel ensiklopedia.'**
+  String get encyclopediaLoginContributeBody;
+
+  /// Isi sheet login sebelum riwayat usulan ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat riwayat usulan artikel kamu.'**
+  String get encyclopediaLoginMyContributionsBody;
+
+  /// Validasi kategori belum dipilih di form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori artikel'**
+  String get encyclopediaCategoryEmpty;
 
   /// No description provided for @exploreCategoryKomunitas.
   ///
@@ -13798,6 +14632,114 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lengkapi keempat baris dulu ya.'**
   String get pantunComposeIncomplete;
+
+  /// Hint field baris 1 di form tulis/balas pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 1 (pembayang)'**
+  String get pantunComposeLine1Hint;
+
+  /// Hint field baris 2 di form tulis/balas pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 2 (pembayang)'**
+  String get pantunComposeLine2Hint;
+
+  /// Hint field baris 3 di form tulis/balas pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 3 (isi)'**
+  String get pantunComposeLine3Hint;
+
+  /// Hint field baris 4 di form tulis/balas pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Baris 4 (isi)'**
+  String get pantunComposeLine4Hint;
+
+  /// Label cuplikan pantun/balasan yang sedang dibalas di form
+  ///
+  /// In id, this message translates to:
+  /// **'Membalas'**
+  String get pantunComposeReplying;
+
+  /// Judul cuplikan balas; {author} = nama penulis target
+  ///
+  /// In id, this message translates to:
+  /// **'Membalas {author}'**
+  String pantunComposeReplyingAuthor(String author);
+
+  /// Aksi hapus draf lokal di form tulis pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Buang draf'**
+  String get pantunComposeDiscardDraft;
+
+  /// Judul sheet konfirmasi buang draf
+  ///
+  /// In id, this message translates to:
+  /// **'Buang draf pantun?'**
+  String get pantunComposeDiscardDraftTitle;
+
+  /// Isi sheet konfirmasi buang draf
+  ///
+  /// In id, this message translates to:
+  /// **'Baris yang sudah kamu tulis di perangkat ini akan dihapus.'**
+  String get pantunComposeDiscardDraftBody;
+
+  /// Tombol konfirmasi buang draf
+  ///
+  /// In id, this message translates to:
+  /// **'Buang'**
+  String get pantunComposeDiscardDraftConfirm;
+
+  /// Badge rima cocok tanpa nama skema
+  ///
+  /// In id, this message translates to:
+  /// **'Pola rima cocok'**
+  String get pantunComposeRhymeOk;
+
+  /// Badge rima cocok dengan skema ABAB/AAAA
+  ///
+  /// In id, this message translates to:
+  /// **'Pola rima {scheme} cocok'**
+  String pantunComposeRhymeOkScheme(String scheme);
+
+  /// Satu pasangan baris yang belum berima
+  ///
+  /// In id, this message translates to:
+  /// **'Baris {a} & {b} belum berima'**
+  String pantunComposeRhymeMismatchPair(int a, int b);
+
+  /// Kata akhir baris tidak terdeteksi; {line} 1-based
+  ///
+  /// In id, this message translates to:
+  /// **'Kata akhir baris {line} tidak terdeteksi. Perbaiki ya.'**
+  String pantunComposeRhymeLastWordUndetected(int line);
+
+  /// Tooltip/semantics aksi Balas di kartu balasan pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Balas'**
+  String get pantunReplyAction;
+
+  /// Indikator singkat bahwa draf lokal sudah ditulis ke perangkat
+  ///
+  /// In id, this message translates to:
+  /// **'Draf tersimpan'**
+  String get pantunComposeDraftSaved;
+
+  /// Toast saat quote replyId stale/dihapus di form balas
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.'**
+  String get pantunComposeQuoteMissing;
+
+  /// Error sheet jika tap Tulis pantun di feed tanpa login
+  ///
+  /// In id, this message translates to:
+  /// **'Login dulu ya sebelum menulis pantun.'**
+  String get pantunWriteLoginRequired;
 
   /// No description provided for @pantunVoteLoginRequired.
   ///

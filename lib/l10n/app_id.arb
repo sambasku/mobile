@@ -860,6 +860,30 @@
   "reviewHomeSearchMissSubtitle": "Tayangkan ke publik atau usulkan sendiri",
   "reviewHomeHistoryTitle": "Riwayat tinjauan",
   "reviewHomeHistorySubtitle": "Keputusan yang sudah kamu berikan",
+  "reviewHomeUsahaTitle": "Usulan usaha",
+  "@reviewHomeUsahaTitle": {
+    "description": "Tile hub verifikator: antrean usulan usaha"
+  },
+  "reviewHomeUsahaSubtitle": "Antrean usaha menunggu tinjauan",
+  "reviewHomeUsahaWaiting": "Ada usulan usaha yang menunggu",
+  "reviewHomePlaceTitle": "Usulan wisata",
+  "@reviewHomePlaceTitle": {
+    "description": "Tile hub verifikator: antrean usulan wisata"
+  },
+  "reviewHomePlaceSubtitle": "Antrean wisata menunggu tinjauan",
+  "reviewHomePlaceWaiting": "Ada usulan wisata yang menunggu",
+  "reviewHomeCulinaryTitle": "Usulan kuliner",
+  "@reviewHomeCulinaryTitle": {
+    "description": "Tile hub verifikator: antrean usulan kuliner"
+  },
+  "reviewHomeCulinarySubtitle": "Antrean kuliner menunggu tinjauan",
+  "reviewHomeCulinaryWaiting": "Ada usulan kuliner yang menunggu",
+  "reviewHomeEventTitle": "Usulan acara",
+  "@reviewHomeEventTitle": {
+    "description": "Tile hub verifikator: antrean usulan acara"
+  },
+  "reviewHomeEventSubtitle": "Antrean acara menunggu tinjauan",
+  "reviewHomeEventWaiting": "Ada usulan acara yang menunggu",
   "reviewQueueLoadFailed": "Gagal memuat antrean",
   "reviewQueueEmpty": "Tidak ada usulan yang menunggu",
   "reviewQueueEmptyHint": "Usulan baru dari kontributor akan muncul di sini.",
@@ -1472,6 +1496,93 @@
   "reviewRepoSuggestionLoadFailed": "Gagal memuat detail usulan edit",
   "reviewRepoSuggestionApproveFailed": "Gagal menyetujui usulan",
   "reviewRepoSuggestionRejectFailed": "Gagal menolak usulan",
+  "reviewExploreLoadFailed": "Gagal memuat usulan eksplorasi",
+  "@reviewExploreLoadFailed": {
+    "description": "Fallback error list usulan eksplorasi admin"
+  },
+  "reviewExploreApproveFailed": "Gagal menyetujui usulan eksplorasi",
+  "reviewExploreRejectFailed": "Gagal menolak usulan eksplorasi",
+  "reviewExploreRevisionFailed": "Gagal meminta revisi usulan",
+  "reviewExploreRevisionUnsupported": "Usulan ini tidak mendukung minta revisi",
+  "reviewExploreUsahaListTitle": "Usulan usaha",
+  "reviewExplorePlaceListTitle": "Usulan wisata",
+  "reviewExploreCulinaryListTitle": "Usulan kuliner",
+  "reviewExploreEventListTitle": "Usulan acara",
+  "reviewExploreEmpty": "Tidak ada usulan menunggu",
+  "@reviewExploreEmpty": {
+    "description": "Empty state antrean usulan eksplorasi"
+  },
+  "reviewExploreDetailTitle": "Detail usulan",
+  "reviewExploreApprovedToast": "Usulan disetujui",
+  "reviewExploreRejectedToast": "Usulan ditolak",
+  "reviewExploreRevisionToast": "Revisi diminta",
+  "reviewExploreRequestRevision": "Minta revisi",
+  "@reviewExploreRequestRevision": {
+    "description": "Tombol minta revisi di detail usulan eksplorasi"
+  },
+  "reviewExploreRevisionSheetTitle": "Minta revisi",
+  "reviewExploreRevisionSheetBody": "Tulis catatan untuk pengusul supaya bisa diperbaiki.",
+  "reviewExploreRevisionNoteLabel": "Catatan revisi",
+  "reviewExploreRevisionNoteHint": "Minimal 3 karakter",
+  "reviewExploreRevisionSubmit": "Kirim permintaan",
+  "reviewExploreRejectSheetTitle": "Tolak usulan",
+  "reviewExploreRejectSheetBody": "Pilih alasan penolakan untuk pengusul.",
+  "reviewExploreRejectOtherNoteLabel": "Alasan lain",
+  "reviewExploreRejectOtherNoteHint": "Jelaskan singkat",
+  "reviewExploreRejectOther": "Alasan lain",
+  "reviewExploreRejectUsahaDuplicate": "Usaha serupa sudah terdaftar",
+  "reviewExploreRejectUsahaIncomplete": "Informasi belum lengkap",
+  "reviewExploreRejectUsahaInvalid": "Data tidak valid",
+  "reviewExploreRejectUsahaNotOwner": "Bukan pengelola sah",
+  "reviewExploreRejectUsahaStale": "Data sudah berubah, perlu ajukan ulang",
+  "reviewExploreRejectUsahaViolation": "Melanggar ketentuan",
+  "reviewExploreRejectPlaceNotSuitable": "Tidak layak sebagai tempat wisata",
+  "reviewExploreRejectPlaceDuplicate": "Sama dengan tempat yang sudah terdaftar",
+  "reviewExploreRejectPlaceInaccurate": "Data atau lokasi tidak akurat",
+  "reviewExploreRejectEventNotSuitable": "Tidak layak sebagai acara",
+  "reviewExploreRejectEventDuplicate": "Sama dengan acara yang sudah terdaftar",
+  "reviewExploreRejectEventInaccurate": "Data atau jadwal tidak akurat",
+  "reviewExploreRejectEventPast": "Acara sudah lewat",
+  "reviewExploreRejectCulinaryDuplicate": "Kuliner atau tempat serupa sudah terdaftar",
+  "reviewExploreRejectCulinaryIncomplete": "Informasi belum lengkap",
+  "reviewExploreRejectCulinaryInvalid": "Data tidak valid",
+  "reviewExploreRejectCulinaryUnverifiable": "Belum bisa diverifikasi",
+  "reviewExploreRejectCulinaryAttribution": "Atribusi gambar belum lengkap",
+  "reviewExploreRejectCulinaryStale": "Data sudah berubah, perlu ajukan ulang",
+  "reviewExploreRejectCulinaryViolation": "Melanggar ketentuan",
+  "reviewExploreKindGeneric": "Usulan",
+  "reviewExploreUsahaKindNew": "Usulan usaha baru",
+  "reviewExploreUsahaKindProfile": "Perubahan profil",
+  "reviewExploreUsahaKindItemAdd": "Tambah item katalog",
+  "reviewExploreUsahaKindItemEdit": "Ubah item katalog",
+  "reviewExploreUsahaKindItemDelete": "Hapus item katalog",
+  "reviewExploreUsahaKindOperational": "Status operasional",
+  "reviewExploreUsahaKindArchive": "Minta arsip",
+  "reviewExploreUsahaKindRestore": "Minta tayang lagi",
+  "reviewExploreCulinaryKindNewCuisine": "Usulan kuliner baru",
+  "reviewExploreCulinaryKindNewPlace": "Usulan tempat baru",
+  "reviewExploreCulinaryKindLink": "Hubungan kuliner-tempat",
+  "reviewExploreCulinaryKindCuisineEdit": "Perbaikan data kuliner",
+  "reviewExploreCulinaryKindPlaceEdit": "Perbaikan data tempat",
+  "reviewExploreCulinaryKindLinkEdit": "Ubah ketersediaan relasi",
+  "reviewExploreCulinaryKindPlaceOperational": "Status operasional tempat",
+  "reviewExploreCulinaryKindArchive": "Minta arsip",
+  "reviewExploreCulinaryKindRestore": "Minta tayang lagi",
+  "reviewExplorePlaceKindNew": "Usulan wisata baru",
+  "reviewExploreEventKindNew": "Usulan acara baru",
+  "reviewExploreMetaKindDate": "{kind} · {date}",
+  "@reviewExploreMetaKindDate": {
+    "description": "Subtitle tile list usulan eksplorasi",
+    "placeholders": {
+      "kind": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "reviewExploreWantsClaim": "Pengusul ingin klaim kepemilikan",
+  "reviewExploreFieldsLabel": "Field diubah",
+  "reviewExplorePayloadSection": "Isi usulan",
+  "reviewExploreImagesSection": "Gambar",
+  "reviewExploreProcessing": "Memproses…",
   "reviewCorrectKindLabel": "Ubah jenis atau kelas kata",
   "reviewSearchMissHitsText": "{value} dicari",
   "@reviewSearchMissHitsText": {
@@ -2398,6 +2509,10 @@
   "@feedKindPantun": {
     "description": "Label jenis aktivitas: pantun atau balasan pantun"
   },
+  "feedKindArticle": "Artikel",
+  "@feedKindArticle": {
+    "description": "Label jenis aktivitas: artikel ensiklopedia atau komentarnya"
+  },
   "feedCtaReview": "Tinjau usulan",
   "@feedCtaReview": {
     "description": "Ajakan membuka sesi tinjau usulan"
@@ -2477,6 +2592,10 @@
   "feedCtaSeeCulinary": "Lihat kuliner",
   "@feedCtaSeeCulinary": {
     "description": "Ajakan membuka kuliner"
+  },
+  "feedCtaSeeArticle": "Lihat artikel",
+  "@feedCtaSeeArticle": {
+    "description": "Ajakan membuka detail artikel ensiklopedia dari feed"
   },
   "feedActorFallback": "Warga",
   "@feedActorFallback": {
@@ -3675,6 +3794,78 @@
   "exploreCategoryPermainanSubtitle": "Pantun dan permainan Sambas",
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
+  "encyclopediaTitle": "Ensiklopedia Sambas",
+  "encyclopediaSubtitle": "Artikel sejarah, budaya, tokoh, dan tradisi Sambas",
+  "encyclopediaSearchPlaceholder": "Cari artikel ensiklopedia...",
+  "encyclopediaFilterAll": "Semua",
+  "encyclopediaEmptyTitle": "Belum ada artikel",
+  "encyclopediaEmptyBody": "Artikel untuk kategori ini belum tersedia.",
+  "encyclopediaLoadFailed": "Gagal memuat ensiklopedia",
+  "encyclopediaRetry": "Coba lagi",
+  "encyclopediaDetailTitle": "Detail Artikel",
+  "encyclopediaAuthorBy": "Oleh",
+  "encyclopediaPublishedAt": "Diterbitkan",
+  "encyclopediaReferencesTitle": "Referensi & Sumber",
+  "encyclopediaCommentsTitle": "Komentar",
+  "encyclopediaCommentPlaceholder": "Tulis komentar kamu...",
+  "encyclopediaCommentSubmit": "Kirim Komentar",
+  "encyclopediaCommentEmpty": "Belum ada komentar. Jadilah yang pertama berkomentar!",
+  "encyclopediaBookmarkAdded": "Artikel disimpan ke bookmark",
+  "encyclopediaBookmarkRemoved": "Artikel dihapus dari bookmark",
+  "encyclopediaContributeTitle": "Usulkan Artikel",
+  "encyclopediaContributeEditTitle": "Usul Perbaikan Artikel",
+  "encyclopediaContributeIntro": "Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.",
+  "encyclopediaFieldTitle": "Judul Artikel",
+  "encyclopediaFieldTitlePlaceholder": "Contoh: Sejarah Istana Alwatzikoebillah",
+  "encyclopediaFieldCategory": "Kategori",
+  "encyclopediaFieldCategoryPlaceholder": "Pilih kategori",
+  "encyclopediaFieldExcerpt": "Ringkasan Singkat",
+  "encyclopediaFieldExcerptPlaceholder": "Tulis 1-2 kalimat ringkasan artikel...",
+  "encyclopediaFieldTags": "Tag (pisahkan koma)",
+  "encyclopediaFieldTagsPlaceholder": "sejarah, istana, budaya",
+  "encyclopediaFieldBody": "Isi Artikel (Markdown)",
+  "encyclopediaFieldBodyPlaceholder": "Tulis isi artikel kamu di sini...",
+  "encyclopediaFieldChangeNote": "Catatan Perubahan",
+  "encyclopediaFieldChangeNotePlaceholder": "Jelaskan apa yang kamu ubah...",
+  "encyclopediaFieldRequired": "Semua kolom wajib diisi",
+  "encyclopediaSubmitButton": "Kirim Usulan",
+  "encyclopediaSubmitSuccessTitle": "Usulan Terkirim!",
+  "encyclopediaSubmitSuccessBody": "Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.",
+  "encyclopediaMyContributionsTitle": "Riwayat Usulan Ensiklopedia",
+  "encyclopediaMyContributionsEmpty": "Kamu belum pernah mengirim usulan artikel ensiklopedia.",
+  "encyclopediaStatusPending": "Menunggu Review",
+  "encyclopediaStatusApproved": "Disetujui",
+  "encyclopediaStatusRejected": "Ditolak",
+  "encyclopediaBookmarkFailed": "Gagal memperbarui bookmark",
+  "encyclopediaCommentFailed": "Gagal mengirim komentar",
+  "encyclopediaSubmitFailed": "Gagal mengirim usulan",
+  "encyclopediaProposalKindNew": "Usulan artikel baru",
+  "encyclopediaProposalKindEdit": "Usulan perbaikan",
+  "encyclopediaBodyEmpty": "Belum ada isi.",
+  "encyclopediaLoginFirstTitle": "Masuk dulu ya",
+  "@encyclopediaLoginFirstTitle": {
+    "description": "Judul sheet wajib login sebelum aksi ensiklopedia"
+  },
+  "encyclopediaLoginBookmarkBody": "Masuk dulu untuk menyimpan artikel ke bookmark.",
+  "@encyclopediaLoginBookmarkBody": {
+    "description": "Isi sheet login sebelum bookmark artikel"
+  },
+  "encyclopediaLoginCommentBody": "Masuk dulu untuk menulis komentar di artikel.",
+  "@encyclopediaLoginCommentBody": {
+    "description": "Isi sheet login sebelum komentar artikel"
+  },
+  "encyclopediaLoginContributeBody": "Masuk dulu untuk mengusulkan artikel ensiklopedia.",
+  "@encyclopediaLoginContributeBody": {
+    "description": "Isi sheet login sebelum form usulan artikel"
+  },
+  "encyclopediaLoginMyContributionsBody": "Masuk dulu untuk melihat riwayat usulan artikel kamu.",
+  "@encyclopediaLoginMyContributionsBody": {
+    "description": "Isi sheet login sebelum riwayat usulan ensiklopedia"
+  },
+  "encyclopediaCategoryEmpty": "Pilih kategori artikel",
+  "@encyclopediaCategoryEmpty": {
+    "description": "Validasi kategori belum dipilih di form usulan"
+  },
   "exploreCategoryKomunitas": "Komunitas",
   "exploreCategoryKomunitasSubtitle": "Grup warga dan kegiatan bersama",
   "exploreMapHeroTitle": "Jelajahi Sambas",
@@ -5066,6 +5257,101 @@
   "@pantunRequestFailed": {},
   "pantunComposeIncomplete": "Lengkapi keempat baris dulu ya.",
   "@pantunComposeIncomplete": {},
+  "pantunComposeLine1Hint": "Baris 1 (pembayang)",
+  "@pantunComposeLine1Hint": {
+    "description": "Hint field baris 1 di form tulis/balas pantun"
+  },
+  "pantunComposeLine2Hint": "Baris 2 (pembayang)",
+  "@pantunComposeLine2Hint": {
+    "description": "Hint field baris 2 di form tulis/balas pantun"
+  },
+  "pantunComposeLine3Hint": "Baris 3 (isi)",
+  "@pantunComposeLine3Hint": {
+    "description": "Hint field baris 3 di form tulis/balas pantun"
+  },
+  "pantunComposeLine4Hint": "Baris 4 (isi)",
+  "@pantunComposeLine4Hint": {
+    "description": "Hint field baris 4 di form tulis/balas pantun"
+  },
+  "pantunComposeReplying": "Membalas",
+  "@pantunComposeReplying": {
+    "description": "Label cuplikan pantun/balasan yang sedang dibalas di form"
+  },
+  "pantunComposeReplyingAuthor": "Membalas {author}",
+  "@pantunComposeReplyingAuthor": {
+    "description": "Judul cuplikan balas; {author} = nama penulis target",
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "pantunComposeDiscardDraft": "Buang draf",
+  "@pantunComposeDiscardDraft": {
+    "description": "Aksi hapus draf lokal di form tulis pantun"
+  },
+  "pantunComposeDiscardDraftTitle": "Buang draf pantun?",
+  "@pantunComposeDiscardDraftTitle": {
+    "description": "Judul sheet konfirmasi buang draf"
+  },
+  "pantunComposeDiscardDraftBody": "Baris yang sudah kamu tulis di perangkat ini akan dihapus.",
+  "@pantunComposeDiscardDraftBody": {
+    "description": "Isi sheet konfirmasi buang draf"
+  },
+  "pantunComposeDiscardDraftConfirm": "Buang",
+  "@pantunComposeDiscardDraftConfirm": {
+    "description": "Tombol konfirmasi buang draf"
+  },
+  "pantunComposeRhymeOk": "Pola rima cocok",
+  "@pantunComposeRhymeOk": {
+    "description": "Badge rima cocok tanpa nama skema"
+  },
+  "pantunComposeRhymeOkScheme": "Pola rima {scheme} cocok",
+  "@pantunComposeRhymeOkScheme": {
+    "description": "Badge rima cocok dengan skema ABAB/AAAA",
+    "placeholders": {
+      "scheme": {
+        "type": "String"
+      }
+    }
+  },
+  "pantunComposeRhymeMismatchPair": "Baris {a} & {b} belum berima",
+  "@pantunComposeRhymeMismatchPair": {
+    "description": "Satu pasangan baris yang belum berima",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "pantunComposeRhymeLastWordUndetected": "Kata akhir baris {line} tidak terdeteksi. Perbaiki ya.",
+  "@pantunComposeRhymeLastWordUndetected": {
+    "description": "Kata akhir baris tidak terdeteksi; {line} 1-based",
+    "placeholders": {
+      "line": {
+        "type": "int"
+      }
+    }
+  },
+  "pantunReplyAction": "Balas",
+  "@pantunReplyAction": {
+    "description": "Tooltip/semantics aksi Balas di kartu balasan pantun"
+  },
+  "pantunComposeDraftSaved": "Draf tersimpan",
+  "@pantunComposeDraftSaved": {
+    "description": "Indikator singkat bahwa draf lokal sudah ditulis ke perangkat"
+  },
+  "pantunComposeQuoteMissing": "Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.",
+  "@pantunComposeQuoteMissing": {
+    "description": "Toast saat quote replyId stale/dihapus di form balas"
+  },
+  "pantunWriteLoginRequired": "Login dulu ya sebelum menulis pantun.",
+  "@pantunWriteLoginRequired": {
+    "description": "Error sheet jika tap Tulis pantun di feed tanpa login"
+  },
   "pantunVoteLoginRequired": "Masuk dulu untuk memberi vote",
   "@pantunVoteLoginRequired": {},
   "permainanTitle": "Permainan",
