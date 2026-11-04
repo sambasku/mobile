@@ -5,6 +5,7 @@ import '../../helpers/l10n_delegates.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart' show Override;
 import 'package:sambasku_mobile/features/explore/domain/entities/place.dart';
 import 'package:sambasku_mobile/features/explore/explore_router.dart';
 import 'package:sambasku_mobile/features/explore/presentation/pages/place_detail_page.dart';
@@ -42,6 +43,17 @@ Place _place(
   ],
 );
 
+/// Detail selalu `placeBySlug` (GET slug); related section tetap baca katalog.
+List<Override> _placeDetailOverrides(List<Place> places) => [
+  placesProvider.overrideWith((ref) async => places),
+  placeBySlugProvider.overrideWith((ref, String slug) async {
+    for (final place in places) {
+      if (place.slug == slug) return place;
+    }
+    return null;
+  }),
+];
+
 void main() {
   testWidgets('detail shows hero actions, info, related; bookmark toasts', (
     tester,
@@ -64,7 +76,7 @@ void main() {
     ];
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [placesProvider.overrideWith((ref) async => places)],
+        overrides: _placeDetailOverrides(places),
         child: MaterialApp(
       localizationsDelegates: appLocalizationDelegates,
       locale: appTestLocale,
@@ -139,7 +151,7 @@ void main() {
     ];
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [placesProvider.overrideWith((ref) async => places)],
+        overrides: _placeDetailOverrides(places),
         child: MaterialApp(
       localizationsDelegates: appLocalizationDelegates,
       locale: appTestLocale,
@@ -207,7 +219,7 @@ void main() {
     addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [placesProvider.overrideWith((ref) async => places)],
+        overrides: _placeDetailOverrides(places),
         child: MaterialApp.router(
           localizationsDelegates: appLocalizationDelegates,
           locale: appTestLocale,

@@ -2167,6 +2167,30 @@ abstract class AppLocalizations {
   /// **'Nomina, verba, adjektiva, dsb.'**
   String get suggestCategoryChangeWordClassDesc;
 
+  /// Kategori usulan: ubah jenis entri (kata/idiom/peribahasa/ungkapan)
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah jenis entri'**
+  String get suggestCategoryChangeWordType;
+
+  /// Deskripsi kategori ubah jenis entri di daftar Perbaiki/lengkapi
+  ///
+  /// In id, this message translates to:
+  /// **'Kata, idiom, peribahasa, atau ungkapan'**
+  String get suggestCategoryChangeWordTypeDesc;
+
+  /// Label field pilih jenis entri di form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis entri'**
+  String get suggestWordTypeLabel;
+
+  /// Hint field jenis entri sebelum dipilih
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jenis entri'**
+  String get suggestWordTypePicker;
+
   /// No description provided for @suggestCategoryAddMeaning.
   ///
   /// In id, this message translates to:
@@ -13684,6 +13708,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kirim'**
   String get pantunSend;
+
+  /// Label busy tombol Kirim di compose pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get pantunSending;
 
   /// No description provided for @pantunWrite.
   ///

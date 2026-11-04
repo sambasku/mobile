@@ -220,9 +220,15 @@ class PantunDetailPage extends HookConsumerWidget {
         title: Text(l10n.pantunTitle),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
       ),
-      footer: FButton(
-        onPress: () => _openReply(context, ref),
-        child: Text(l10n.pantunReply),
+      footer: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: FButton(
+            onPress: () => _openReply(context, ref),
+            child: Text(l10n.pantunReply),
+          ),
+        ),
       ),
       child: RefreshIndicator(
         onRefresh: () async => ref.invalidate(pantunDetailProvider(id)),

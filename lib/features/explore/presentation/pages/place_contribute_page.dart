@@ -19,6 +19,7 @@ import '../../data/place_contribution_api.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
+import '../providers/places_browse_providers.dart';
 import '../providers/places_providers.dart';
 import '../widgets/sambas_map_view.dart';
 import 'place_pin_picker_page.dart';
@@ -285,11 +286,19 @@ Future<void> _submit() async {
       unawaited(
         AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
       );
+      // Hard miss L1 katalog + invalidate detail + browse list supaya
+      // cover baru tampil tanpa tunggu TTL / state browse lama di stack.
+      try {
+        await ref.read(placesRefreshProvider.future);
+      } catch (_) {}
+      ref.invalidate(placesProvider);
+      ref.invalidate(placesBrowseProvider);
+      ref.invalidate(placeBySlugProvider(slug));
       if (!mounted) return;
       showFToast(
-      context: context,
-      title: Text(AppLocalizations.of(context).placeFormPhotoToast),
-    );
+        context: context,
+        title: Text(AppLocalizations.of(context).placeFormPhotoToast),
+      );
       context.pop();
       return;
     }
@@ -365,6 +374,8 @@ Future<void> _submit() async {
       }
     }
 
+    final showForm = !auth.isLoading && loggedIn;
+
     return FScaffold(
       childPad: true,
       resizeToAvoidBottomInset: true,
@@ -377,6 +388,12 @@ Future<void> _submit() async {
           ),
         ],
       ),
+      // CTA sticky: pola lemma (SafeArea + padding 12,8,12,8 + spinner di prefix).
+      footer: !showForm
+          ? null
+          : widget.mode == PlaceContributeMode.photo
+          ? _photoFooter(l10n)
+          : _stepperFooter(l10n),
       child: auth.isLoading
           ? const Center(child: FCircularProgress())
           : !loggedIn
@@ -384,6 +401,70 @@ Future<void> _submit() async {
           : widget.mode == PlaceContributeMode.photo
           ? _photoBody(l10n)
           : _stepperBody(l10n),
+    );
+  }
+
+  Widget _photoFooter(AppLocalizations l10n) {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: FButton(
+          onPress: _busy || _images.isEmpty ? null : _submit,
+          prefix: _busy ? const FCircularProgress() : null,
+          child: Text(
+            _busy ? l10n.placeFormSending : l10n.placeFormSubmitPhoto,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _stepperFooter(AppLocalizations l10n) {
+    final onLast = _step >= 3;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: Row(
+          children: [
+            if (_step > 0)
+              Expanded(
+                child: FButton(
+                  variant: .outline,
+                  onPress: _busy
+                      ? null
+                      : () => setState(() {
+                          _step -= 1;
+                        }),
+                  child: Text(l10n.commonBack),
+                ),
+              ),
+            if (_step > 0) const Gap(8),
+            Expanded(
+              child: FButton(
+                onPress: _busy
+                    ? null
+                    : () {
+                        if (!onLast) {
+                          if (_stepOk()) setState(() => _step += 1);
+                        } else {
+                          _submit();
+                        }
+                      },
+                prefix: onLast && _busy ? const FCircularProgress() : null,
+                child: Text(
+                  !onLast
+                      ? l10n.placeFormNext
+                      : (_busy
+                            ? l10n.placeFormSending
+                            : l10n.exploreEditSubmit),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -398,16 +479,6 @@ Future<void> _submit() async {
         ),
         const Gap(16),
         _imagesField(),
-        const Gap(24),
-        SafeArea(
-          top: false,
-          child: FButton(
-            onPress: _busy || _images.isEmpty ? null : _submit,
-            child: Text(
-              _busy ? l10n.placeFormSending : l10n.placeFormSubmitPhoto,
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -443,44 +514,6 @@ Future<void> _submit() async {
               if (_step == 1) ..._location(l10n),
               if (_step == 2) ..._contactFields(l10n),
               if (_step == 3) _imagesField(),
-            ],
-          ),
-        ),
-        SafeArea(
-          top: false,
-          child: Row(
-            children: [
-              if (_step > 0)
-                Expanded(
-                  child: FButton(
-                    variant: .outline,
-                    onPress: _busy
-                        ? null
-                        : () => setState(() {
-                            _step -= 1;
-                          }),
-                    child: Text(l10n.commonBack),
-                  ),
-                ),
-              if (_step > 0) const Gap(8),
-              Expanded(
-                child: FButton(
-                  onPress: _busy
-                      ? null
-                      : () {
-                          if (_step < 3) {
-                            if (_stepOk()) setState(() => _step += 1);
-                          } else {
-                            _submit();
-                          }
-                        },
-                  child: Text(
-                    _step < 3
-                        ? l10n.placeFormNext
-                        : (_busy ? l10n.placeFormSending : l10n.exploreEditSubmit),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

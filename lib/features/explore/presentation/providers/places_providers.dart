@@ -29,14 +29,14 @@ Future<List<Place>?> places(Ref ref) =>
 Future<List<Place>?> placesRefresh(Ref ref) =>
     ref.watch(placesRepositoryProvider).getPlaces(forceRefresh: true);
 
-/// Detail satu place by slug. Pakai katalog yang sudah ada di memori;
-/// kalau miss → `GET /places/:slug` (tidak tunggu walk katalog penuh).
+/// Detail satu place by slug.
+///
+/// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+/// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+/// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
 @riverpod
 Future<Place?> placeBySlug(Ref ref, String slug) async {
   final normalized = slug.trim();
   if (normalized.isEmpty) return null;
-  final catalog = ref.watch(placesProvider).asData?.value;
-  final hit = catalog?.where((p) => p.slug == normalized).firstOrNull;
-  if (hit != null) return hit;
   return ref.watch(placesRepositoryProvider).fetchBySlug(normalized);
 }

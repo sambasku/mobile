@@ -305,16 +305,17 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           ),
         ],
       ),
-      // Tombol kirim di footer (seragam dengan form usulan lain).
+      // CTA sticky: pola lemma (spinner di prefix, label tetap di child).
       footer: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
             onPress: _submitting ? null : _submit,
-            child: _submitting
-                ? const FCircularProgress(size: .sm)
-                : Text(l10n.usahaSubmitProposal),
+            prefix: _submitting ? const FCircularProgress() : null,
+            child: Text(
+              _submitting ? l10n.placeFormSending : l10n.usahaSubmitProposal,
+            ),
           ),
         ),
       ),

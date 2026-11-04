@@ -1122,6 +1122,19 @@ class AppLocalizationsId extends AppLocalizations {
       'Nomina, verba, adjektiva, dsb.';
 
   @override
+  String get suggestCategoryChangeWordType => 'Ubah jenis entri';
+
+  @override
+  String get suggestCategoryChangeWordTypeDesc =>
+      'Kata, idiom, peribahasa, atau ungkapan';
+
+  @override
+  String get suggestWordTypeLabel => 'Jenis entri';
+
+  @override
+  String get suggestWordTypePicker => 'Pilih jenis entri';
+
+  @override
   String get suggestCategoryAddMeaning => 'Tambah makna';
 
   @override
@@ -7504,6 +7517,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pantunSend => 'Kirim';
+
+  @override
+  String get pantunSending => 'Mengirim...';
 
   @override
   String get pantunWrite => 'Tulis pantun';
@@ -9617,6 +9633,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Nomina, verba, adjektiva, dsb.';
 
   @override
+  String get suggestCategoryChangeWordType => 'Ubah jenis entri';
+
+  @override
+  String get suggestCategoryChangeWordTypeDesc =>
+      'Kata, idiom, peribahasa, atau ungkapan';
+
+  @override
+  String get suggestWordTypeLabel => 'Jenis entri';
+
+  @override
+  String get suggestWordTypePicker => 'Pilih jenis entri';
+
+  @override
   String get suggestCategoryAddMeaning => 'Tambah makna';
 
   @override
@@ -15999,6 +16028,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get pantunSend => 'Kirim';
+
+  @override
+  String get pantunSending => 'Mengirim...';
 
   @override
   String get pantunWrite => 'Tulis pantun';

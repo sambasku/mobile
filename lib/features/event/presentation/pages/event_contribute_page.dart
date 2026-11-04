@@ -350,6 +350,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
             onPress: _busy ? null : _submit,
+            prefix: _busy ? const FCircularProgress() : null,
             child: Text(
               _busy
                   ? AppLocalizations.of(context).eventSubmitting
