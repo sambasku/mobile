@@ -39,6 +39,43 @@ class UsahaVillageRef {
   final String? slug;
 }
 
+/// Kecamatan (region) - bentuk sama desa.
+typedef UsahaRegionRef = UsahaVillageRef;
+
+/// Pengusul usaha (profil live dari API).
+@immutable
+class UsahaAuthorRef {
+  const UsahaAuthorRef({
+    required this.id,
+    required this.username,
+    required this.displayName,
+  });
+
+  final String id;
+  final String username;
+  final String displayName;
+}
+
+/// Foto singgah usaha (UGC setelah terbit).
+@immutable
+class UsahaImage {
+  const UsahaImage({
+    required this.id,
+    required this.url,
+    this.isMain = false,
+    this.sortOrder = 0,
+    this.attributionName,
+    this.attributionUsername,
+  });
+
+  final String id;
+  final String url;
+  final bool isMain;
+  final int sortOrder;
+  final String? attributionName;
+  final String? attributionUsername;
+}
+
 /// Satu item katalog (produk/jasa yang dijual).
 @immutable
 class UsahaItem {
@@ -75,6 +112,7 @@ class Usaha {
     this.categoryId,
     this.category,
     this.regionId,
+    this.region,
     this.villageId,
     this.village,
     this.addressText,
@@ -88,8 +126,10 @@ class Usaha {
     this.coverUrl,
     this.restrictedReason,
     this.managerId,
+    this.author,
     this.pendingChanges = 0,
     this.items = const [],
+    this.images = const [],
   });
 
   final String id;
@@ -100,6 +140,7 @@ class Usaha {
   final UsahaCategoryRef? category;
   final UsahaKind kind;
   final String? regionId;
+  final UsahaRegionRef? region;
   final String? villageId;
   final UsahaVillageRef? village;
   final String? addressText;
@@ -115,11 +156,15 @@ class Usaha {
   final UsahaOperationalStatus operationalStatus;
   final String? restrictedReason;
   final String? managerId;
+  final UsahaAuthorRef? author;
 
   /// Hanya terisi di `GET /usaha/mine` - pengajuan perubahan pending.
   final int pendingChanges;
 
   final List<UsahaItem> items;
+
+  /// Foto singgah (halaman pertama dari detail).
+  final List<UsahaImage> images;
 
   bool get hasCoordinates => lat != null && lng != null;
 

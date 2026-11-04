@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -9,11 +11,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/models/external_link.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../contribution/data/providers/contribution_data_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
@@ -95,19 +101,19 @@ class UsahaDetailPage extends ConsumerWidget {
       if (goLogin == true && context.mounted) context.push('/login');
       return;
     }
-    final result = await showModalBottomSheet<String>(
+    final result = await showModalBottomSheet<List<Map<String, String>>>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       builder: (_) => const _ClaimSheet(),
     );
-    if (result == null || !context.mounted) return;
+    if (result == null || result.isEmpty || !context.mounted) return;
     // Sheet sudah menutup; submit di luar sheet supaya error tampil di
     // halaman, bukan di dalam sheet yang sedang animasi tutup.
     try {
       await ref
           .read(usahaContributionApiProvider)
-          .claim(slug, contactEvidence: result);
+          .claim(slug, evidenceImages: result);
       unawaited(AnalyticsService.instance.logUsahaClaimSubmit(slug: slug));
       if (!context.mounted) return;
       await showModalBottomSheet<void>(
@@ -221,18 +227,43 @@ class _BodyState extends State<_Body> {
     final cover = usaha.coverUrl;
     final badge = usahaOperationalBadge(l10n, usaha.operationalStatus);
 
+    final locationTiles = <FTile>[
+      if (usaha.region case final region?)
+        FTile(
+          prefix: const Icon(FLucideIcons.mapPinned, size: 18),
+          title: Text(l10n.usahaLocationDistrict),
+          subtitle: Text(region.name),
+        ),
+      if (usaha.village case final village?)
+        FTile(
+          prefix: const Icon(FLucideIcons.mapPin, size: 18),
+          title: Text(l10n.usahaLocationVillage),
+          subtitle: Text(village.name),
+        ),
+      if (usaha.addressText case final address?
+          when address.trim().isNotEmpty)
+        FTile(
+          prefix: const Icon(FLucideIcons.house, size: 18),
+          title: Text(l10n.usahaLocationAddress),
+          subtitle: Text(address),
+        ),
+    ];
+
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),
       children: [
         if (cover != null && cover.isNotEmpty) ...[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              aspectRatio: 16 / 10,
-              child: CachedNetworkImageWithFallback(
-                imageUrl: displayImageUrl(cover, width: 900) ?? cover,
-                fallbackUrl: cover,
-                fit: BoxFit.cover,
+          GestureDetector(
+            onTap: () => showImagePreview(context, urls: [cover]),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: 16 / 10,
+                child: CachedNetworkImageWithFallback(
+                  imageUrl: displayImageUrl(cover, width: 900) ?? cover,
+                  fallbackUrl: cover,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -274,6 +305,16 @@ class _BodyState extends State<_Body> {
             style: theme.typography.body.sm.copyWith(height: 1.5),
           ),
         ],
+        if (usaha.author case final author?)
+          ContributorAppreciationSection(
+            label: l10n.usahaContributorProposedBy,
+            contributors: [
+              ContributorCredit(
+                username: author.username,
+                displayName: author.displayName,
+              ),
+            ],
+          ),
         if (usaha.operationalStatus ==
             UsahaOperationalStatus.permanentlyClosed) ...[
           const Gap(14),
@@ -282,8 +323,53 @@ class _BodyState extends State<_Body> {
             subtitle: Text(l10n.usahaClosedPermanentlyBody),
           ),
         ],
+        if (locationTiles.isNotEmpty) ...[
+          const Gap(18),
+          FTileGroup(children: locationTiles),
+        ],
         const Gap(18),
         _ContactSection(usaha: usaha),
+        const Gap(18),
+        if (usaha.images.isNotEmpty) ...[
+          const Gap(12),
+          _UsahaPhotoGrid(slug: usaha.slug, images: usaha.images),
+        ],
+        FTileGroup(
+          label: Text(l10n.usahaActionSection),
+          children: [
+            FTile(
+              prefix: const Icon(FLucideIcons.map, size: 18),
+              title: Text(l10n.usahaActionViewOnMap),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () {
+                if (!usaha.hasCoordinates) {
+                  showUsahaNoCoordinates(context);
+                  return;
+                }
+                context.push(UsahaRouter.mapPath(usaha.slug));
+              },
+            ),
+            FTile(
+              prefix: const Icon(FLucideIcons.imagePlus, size: 18),
+              title: Text(l10n.usahaActionAddPhoto),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () => context.push(UsahaRouter.photosPath(usaha.slug)),
+            ),
+            FTile(
+              prefix: const Icon(FLucideIcons.pencil, size: 18),
+              title: Text(l10n.usahaActionSuggestEdit),
+              suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+              onPress: () =>
+                  context.push(UsahaRouter.editPath(usaha.slug)),
+            ),
+            FTile(
+              prefix: const Icon(FLucideIcons.keyRound, size: 18),
+              title: Text(l10n.usahaFormClaim),
+              subtitle: Text(l10n.usahaManageClaimBody),
+              onPress: onClaim,
+            ),
+          ],
+        ),
         if (usaha.items.isNotEmpty) ...[
           const Gap(20),
           Text(
@@ -298,17 +384,6 @@ class _BodyState extends State<_Body> {
             const Gap(8),
           ],
         ],
-        const Gap(20),
-        FTileGroup(
-          children: [
-            FTile(
-              prefix: const Icon(FLucideIcons.keyRound, size: 18),
-              title: Text(l10n.usahaFormClaim),
-              subtitle: Text(l10n.usahaManageClaimBody),
-              onPress: onClaim,
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -319,19 +394,25 @@ class _ContactSection extends StatelessWidget {
 
   final Usaha usaha;
 
+  static const _whatsappAsset = 'assets/svg/whatsapp.svg';
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final rows = <FTile>[];
 
-    void add(IconData icon, String label, String? value, Uri? uri) {
-      if (value == null || value.trim().isEmpty) return;
+    void add({
+      required Widget prefix,
+      required String title,
+      required bool present,
+      Uri? uri,
+    }) {
+      if (!present) return;
       rows.add(
         FTile(
-          prefix: Icon(icon, size: 18, color: theme.colors.primary),
-          title: Text(label),
-          subtitle: Text(value, maxLines: 2, overflow: TextOverflow.ellipsis),
+          prefix: prefix,
+          title: Text(title),
           suffix: uri == null
               ? null
               : const Icon(FLucideIcons.externalLink, size: 16),
@@ -340,39 +421,48 @@ class _ContactSection extends StatelessWidget {
       );
     }
 
+    final phone = usaha.phone?.trim();
     add(
-      FLucideIcons.phone,
-      l10n.usahaContactPhone,
-      usaha.phone,
-      usaha.phone == null
+      prefix: Icon(FLucideIcons.phone, size: 18, color: theme.colors.primary),
+      title: phone ?? '',
+      present: phone != null && phone.isNotEmpty,
+      uri: phone == null || phone.isEmpty
           ? null
-          : Uri(scheme: 'tel', path: _digits(usaha.phone!)),
+          : Uri(scheme: 'tel', path: _digits(phone)),
     );
+
+    final wa = usaha.whatsapp?.trim();
     add(
-      FLucideIcons.messageCircle,
-      l10n.usahaContactWhatsapp,
-      usaha.whatsapp,
-      usaha.whatsapp == null
+      prefix: SvgPicture.asset(_whatsappAsset, width: 18, height: 18),
+      title: l10n.usahaContactWhatsapp,
+      present: wa != null && wa.isNotEmpty,
+      uri: wa == null || wa.isEmpty
           ? null
-          : Uri.parse('https://wa.me/${_waNumber(usaha.whatsapp!)}'),
+          : Uri.parse('https://wa.me/${_waNumber(wa)}'),
     );
+
+    final website = usaha.website?.trim();
     add(
-      FLucideIcons.globe,
-      l10n.usahaContactWebsite,
-      usaha.website,
-      _https(usaha.website),
+      prefix: Icon(FLucideIcons.globe, size: 18, color: theme.colors.primary),
+      title: l10n.usahaContactWebsite,
+      present: website != null && website.isNotEmpty,
+      uri: _https(website),
     );
+
+    final social = usaha.socialUrl?.trim();
     add(
-      FLucideIcons.link,
-      l10n.usahaContactSocial,
-      usaha.socialUrl,
-      _https(usaha.socialUrl),
+      prefix: Icon(FLucideIcons.link, size: 18, color: theme.colors.primary),
+      title: l10n.usahaContactSocial,
+      present: social != null && social.isNotEmpty,
+      uri: _https(social),
     );
+
+    final mapsUri = usahaGoogleMapsUri(usaha);
     add(
-      FLucideIcons.mapPin,
-      l10n.usahaContactMap,
-      usaha.mapsUrl ?? usaha.addressText,
-      _https(usaha.mapsUrl),
+      prefix: Icon(FLucideIcons.mapPin, size: 18, color: theme.colors.primary),
+      title: l10n.usahaContactMap,
+      present: mapsUri != null,
+      uri: mapsUri,
     );
 
     if (rows.isEmpty) {
@@ -446,28 +536,87 @@ class _ItemTile extends StatelessWidget {
               color: theme.colors.mutedForeground,
             ),
           ),
+          onPress: image == null
+              ? null
+              : () => showImagePreview(context, urls: [image]),
         ),
       ],
     );
   }
 }
 
-/// Sheet bukti klaim. Return teks bukti kontak (null = batal).
-class _ClaimSheet extends StatefulWidget {
+class _UsahaPhotoGrid extends StatelessWidget {
+  const _UsahaPhotoGrid({required this.slug, required this.images});
+
+  static const _previewCount = 3;
+
+  final String slug;
+  final List<UsahaImage> images;
+
+  @override
+  Widget build(BuildContext context) {
+    final shown = images.length <= _previewCount
+        ? images
+        : images.sublist(0, _previewCount);
+    final hidden = images.length - shown.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            for (var i = 0; i < shown.length; i++) ...[
+              if (i > 0) const Gap(4),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => showImagePreview(
+                    context,
+                    urls: [for (final im in images) im.url],
+                    initialIndex: i,
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImageWithFallback(
+                        imageUrl:
+                            displayImageUrl(shown[i].url, width: 400) ??
+                            shown[i].url,
+                        fallbackUrl: shown[i].url,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        if (hidden > 0) ...[
+          const Gap(8),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => context.push(UsahaRouter.photosPath(slug)),
+            child: Text(AppLocalizations.of(context).usahaPhotosTitle),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+const _claimEvidenceFolder = '/usaha-claims';
+
+/// Sheet bukti klaim (multi-gambar ImageKit). Return daftar wire images.
+class _ClaimSheet extends ConsumerStatefulWidget {
   const _ClaimSheet();
 
   @override
-  State<_ClaimSheet> createState() => _ClaimSheetState();
+  ConsumerState<_ClaimSheet> createState() => _ClaimSheetState();
 }
 
-class _ClaimSheetState extends State<_ClaimSheet> {
-  final _evidence = TextEditingController();
-
-  @override
-  void dispose() {
-    _evidence.dispose();
-    super.dispose();
-  }
+class _ClaimSheetState extends ConsumerState<_ClaimSheet> {
+  List<AttachmentImageSlot> _images = const [];
 
   @override
   Widget build(BuildContext context) {
@@ -497,17 +646,49 @@ class _ClaimSheetState extends State<_ClaimSheet> {
                 ),
               ),
               const Gap(12),
-              FTextField.multiline(
-                control: FTextFieldControl.managed(controller: _evidence),
-                label: Text(l10n.usahaClaimEvidence),
-                hint: l10n.usahaClaimEvidenceHint,
-                maxLines: 4,
+              AttachmentImagesField(
+                enabled: true,
+                maxImages: 5,
+                maxSizeMb: 5,
+                images: _images,
+                onChanged: (next) => setState(() => _images = next),
+                upload: (file, {required bool isPrimary}) async {
+                  final result = await ref
+                      .read(privateImageUploadServiceProvider)
+                      .uploadFile(file, folder: _claimEvidenceFolder);
+                  return result.fold(
+                    (f) => Either.left(
+                      AttachmentUploadFailure(
+                        f.message,
+                        errorCode: f.errorCode,
+                      ),
+                    ),
+                    (dto) => Either.right(
+                      AttachmentUploadedImage(
+                        url: dto.url,
+                        providerFileId: dto.providerFileId,
+                        isPrimary: isPrimary,
+                      ),
+                    ),
+                  );
+                },
               ),
               const Gap(16),
               FButton(
                 onPress: () {
-                  final text = _evidence.text.trim();
-                  if (text.length < 5) {
+                  if (_images.any((s) => s.uploading)) {
+                    showAppErrorSheet(
+                      context,
+                      title: l10n.usahaClaimEvidenceShortTitle,
+                      message: l10n.usahaFormWaitUpload,
+                    );
+                    return;
+                  }
+                  final ready = _images
+                      .where((s) => s.isReady)
+                      .map((s) => s.uploaded!)
+                      .toList();
+                  if (ready.isEmpty) {
                     showAppErrorSheet(
                       context,
                       title: l10n.usahaClaimEvidenceShortTitle,
@@ -515,7 +696,13 @@ class _ClaimSheetState extends State<_ClaimSheet> {
                     );
                     return;
                   }
-                  Navigator.pop(context, text);
+                  Navigator.pop(context, [
+                    for (final img in ready)
+                      {
+                        'url': img.url,
+                        'provider_file_id': img.providerFileId,
+                      },
+                  ]);
                 },
                 child: Text(l10n.usahaClaimSubmit),
               ),

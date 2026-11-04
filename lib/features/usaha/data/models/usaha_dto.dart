@@ -20,6 +20,7 @@ class UsahaDto {
       category: _categoryRef(json['category']),
       kind: _kind(json['kind']),
       regionId: _str(json['region_id']),
+      region: _regionRef(json['region']),
       villageId: _str(json['village_id']),
       village: _villageRef(json['village']),
       addressText: _str(json['address_text']),
@@ -35,8 +36,10 @@ class UsahaDto {
       operationalStatus: _operational(json['operational_status']),
       restrictedReason: _str(json['restricted_reason']),
       managerId: _str(json['manager_id']),
+      author: _authorRef(json['author']),
       pendingChanges: _int(json['pending_changes']) ?? 0,
       items: _items(json['items']),
+      images: _images(json['images']),
     );
   }
 
@@ -81,6 +84,41 @@ class UsahaDto {
     final name = _str(raw['name']);
     if (id == null || name == null) return null;
     return UsahaVillageRef(id: id, name: name, slug: _str(raw['slug']));
+  }
+
+  static UsahaRegionRef? _regionRef(Object? raw) => _villageRef(raw);
+
+  static UsahaAuthorRef? _authorRef(Object? raw) {
+    if (raw is! Map) return null;
+    final id = _str(raw['id']);
+    final username = _str(raw['username']);
+    if (id == null || username == null) return null;
+    final display =
+        _str(raw['display_name']) ?? _str(raw['displayName']) ?? username;
+    return UsahaAuthorRef(id: id, username: username, displayName: display);
+  }
+
+  static List<UsahaImage> _images(Object? raw) {
+    if (raw is! List) return const [];
+    final out = <UsahaImage>[];
+    for (final item in raw.whereType<Map>()) {
+      final json = Map<String, dynamic>.from(item);
+      final id = _str(json['id']);
+      final url = _str(json['url']);
+      if (id == null || url == null) continue;
+      final attr = json['attribution'];
+      out.add(
+        UsahaImage(
+          id: id,
+          url: url,
+          isMain: json['is_main'] == true,
+          sortOrder: _int(json['sort_order']) ?? 0,
+          attributionName: attr is Map ? _str(attr['name']) : null,
+          attributionUsername: attr is Map ? _str(attr['username']) : null,
+        ),
+      );
+    }
+    return out;
   }
 
   static UsahaKind _kind(Object? raw) => switch (raw) {

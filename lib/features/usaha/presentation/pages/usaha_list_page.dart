@@ -153,7 +153,9 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                   if (_scroll.hasClients) _scroll.jumpTo(0);
                 },
               ),
-              const Gap(4),
+              // Jarak chips -> grid: 4 terlalu mepet (chip punya tinggi
+              // sendiri, grid langsung menempel di bawahnya).
+              const Gap(12),
             ],
             Expanded(
               child: browseAsync.when(

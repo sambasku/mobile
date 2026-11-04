@@ -733,6 +733,18 @@ abstract class AppLocalizations {
   /// **'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.'**
   String get aboutSponsorsTooltip;
 
+  /// Judul daftar users.is_team di tab Tim Kami
+  ///
+  /// In id, this message translates to:
+  /// **'Inti Tim'**
+  String get aboutTeamCoreTitle;
+
+  /// Tombol load more daftar nama kontributor
+  ///
+  /// In id, this message translates to:
+  /// **'Muat lebih banyak'**
+  String get aboutContributorsLoadMore;
+
   /// No description provided for @aboutOpenWebsiteFailed.
   ///
   /// In id, this message translates to:
@@ -9548,7 +9560,7 @@ abstract class AppLocalizations {
   /// No description provided for @usahaFormClaimBody.
   ///
   /// In id, this message translates to:
-  /// **'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.'**
+  /// **'Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.'**
   String get usahaFormClaimBody;
 
   /// No description provided for @usahaLoginFirstTitle.
@@ -9689,28 +9701,94 @@ abstract class AppLocalizations {
   /// **'Kontak belum dicantumkan.'**
   String get usahaContactEmpty;
 
+  /// Label baris kecamatan di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get usahaLocationDistrict;
+
+  /// Label baris desa di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Desa'**
+  String get usahaLocationVillage;
+
+  /// Label baris alamat di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get usahaLocationAddress;
+
+  /// Aksi buka peta internal SambasKu dari detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat di peta'**
+  String get usahaActionViewOnMap;
+
+  /// Aksi unggah foto singgah di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah foto'**
+  String get usahaActionAddPhoto;
+
+  /// Judul grup aksi di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi'**
+  String get usahaActionSection;
+
+  /// Judul toast bila usaha tanpa koordinat
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi usaha ini belum tersedia'**
+  String get usahaNoCoordinatesTitle;
+
+  /// Isi toast bila usaha tanpa koordinat
+  ///
+  /// In id, this message translates to:
+  /// **'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.'**
+  String get usahaNoCoordinatesBody;
+
+  /// Label container apresiasi pengusul di detail usaha/wisata/kuliner/acara
+  ///
+  /// In id, this message translates to:
+  /// **'Diusulkan oleh'**
+  String get usahaContributorProposedBy;
+
+  /// Judul halaman galeri foto usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Foto usaha'**
+  String get usahaPhotosTitle;
+
+  /// Empty state galeri foto usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada foto dari pengunjung. Jadi yang pertama yuk.'**
+  String get usahaPhotosEmpty;
+
   /// No description provided for @usahaClaimSheetTitle.
   ///
   /// In id, this message translates to:
   /// **'Klaim usaha ini'**
   String get usahaClaimSheetTitle;
 
-  /// No description provided for @usahaClaimSheetBody.
+  /// Body sheet klaim usaha - bukti multi-gambar ImageKit
   ///
   /// In id, this message translates to:
-  /// **'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.'**
+  /// **'Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).'**
   String get usahaClaimSheetBody;
 
   /// No description provided for @usahaClaimEvidence.
   ///
   /// In id, this message translates to:
-  /// **'Bukti kontak'**
+  /// **'Bukti gambar'**
   String get usahaClaimEvidence;
 
   /// No description provided for @usahaClaimEvidenceHint.
   ///
   /// In id, this message translates to:
-  /// **'Nomor WhatsApp atau akun media sosial pengelola'**
+  /// **'Foto toko, SS WA, atau SS sosmed'**
   String get usahaClaimEvidenceHint;
 
   /// No description provided for @usahaClaimEvidenceShortTitle.
@@ -9722,7 +9800,7 @@ abstract class AppLocalizations {
   /// No description provided for @usahaClaimEvidenceShort.
   ///
   /// In id, this message translates to:
-  /// **'Tulis bukti minimal 5 karakter ya.'**
+  /// **'Unggah minimal 1 bukti gambar ya.'**
   String get usahaClaimEvidenceShort;
 
   /// No description provided for @usahaClaimSubmit.
@@ -9730,6 +9808,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kirim klaim'**
   String get usahaClaimSubmit;
+
+  /// Tile aksi di detail usaha untuk koreksi data
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perubahan'**
+  String get usahaActionSuggestEdit;
+
+  /// Judul form usulan perubahan usaha (mode edit)
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perubahan'**
+  String get usahaSuggestEditTitle;
+
+  /// Intro form usulan perubahan usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.'**
+  String get usahaSuggestEditIntro;
+
+  /// No description provided for @usahaSuggestEditSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get usahaSuggestEditSubmit;
+
+  /// No description provided for @usahaSuggestEditSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get usahaSuggestEditSubmitting;
+
+  /// No description provided for @usahaSuggestEditSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan perubahan terkirim'**
+  String get usahaSuggestEditSent;
+
+  /// No description provided for @usahaSuggestEditSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.'**
+  String get usahaSuggestEditSentBody;
+
+  /// No description provided for @usahaSuggestEditFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan gagal'**
+  String get usahaSuggestEditFailed;
+
+  /// No description provided for @usahaSuggestEditLoginBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.'**
+  String get usahaSuggestEditLoginBody;
 
   /// No description provided for @usahaNotFound.
   ///

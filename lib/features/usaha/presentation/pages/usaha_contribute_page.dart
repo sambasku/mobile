@@ -21,9 +21,19 @@ import '../../usaha_router.dart';
 import '../providers/usaha_providers.dart';
 import '../usaha_labels.dart';
 
-/// Form usulan usaha baru. Boleh anonim - minimum nama + kecamatan.
+enum UsahaContributeMode { create, edit }
+
+/// Form usulan usaha baru ATAU usulan perubahan (prefill).
+/// Create: boleh anonim. Edit: wajib login, data dari detail.
 class UsahaContributePage extends ConsumerStatefulWidget {
-  const UsahaContributePage({super.key});
+  const UsahaContributePage({
+    super.key,
+    this.mode = UsahaContributeMode.create,
+    this.slug,
+  });
+
+  final UsahaContributeMode mode;
+  final String? slug;
 
   @override
   ConsumerState<UsahaContributePage> createState() =>
@@ -47,11 +57,91 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   List<AttachmentImageSlot> _cover = const [];
   bool _wantsClaim = false;
   bool _submitting = false;
+  bool _prefilled = false;
+  /// Snapshot field awal (mode edit) untuk deteksi `fields` yang berubah.
+  Map<String, String?> _baseline = const {};
+
+  bool get _isEdit => widget.mode == UsahaContributeMode.edit;
 
   @override
   void initState() {
     super.initState();
     unawaited(AnalyticsService.instance.logUsahaContributeOpen());
+  }
+
+  void _applyUsaha(Usaha usaha) {
+    if (_prefilled) return;
+    _prefilled = true;
+    _name.text = usaha.name;
+    _description.text = usaha.description ?? '';
+    _address.text = usaha.addressText ?? '';
+    _phone.text = usaha.phone ?? usaha.whatsapp ?? '';
+    _website.text = usaha.website ?? '';
+    _social.text = usaha.socialUrl ?? '';
+    _categoryId = usaha.categoryId ?? usaha.category?.id;
+    _categoryName = usaha.category?.name;
+    _kind = usaha.kind;
+    if (usaha.hasCoordinates) {
+      _point = LatLng(usaha.lat!, usaha.lng!);
+    }
+    if (usaha.coverUrl != null && usaha.coverUrl!.trim().isNotEmpty) {
+      _cover = [
+        AttachmentImageSlot(
+          id: 'cover-existing',
+          localPath: '',
+          uploaded: AttachmentUploadedImage(
+            url: usaha.coverUrl!,
+            providerFileId: usaha.coverUrl!,
+            isPrimary: true,
+          ),
+        ),
+      ];
+    }
+    _baseline = {
+      'name': _name.text.trim(),
+      'description': _description.text.trim().isEmpty
+          ? null
+          : _description.text.trim(),
+      'categoryId': _categoryId,
+      'kind': _kind.name,
+      'addressText': _address.text.trim().isEmpty ? null : _address.text.trim(),
+      'phone': _phone.text.trim().isEmpty ? null : _phone.text.trim(),
+      'website': _website.text.trim().isEmpty ? null : _website.text.trim(),
+      'socialUrl': _social.text.trim().isEmpty ? null : _social.text.trim(),
+      'coverUrl': usaha.coverUrl,
+      'regionId': usaha.regionId,
+      'villageId': usaha.villageId,
+      'lat': usaha.lat?.toString(),
+      'lng': usaha.lng?.toString(),
+    };
+  }
+
+  Future<void> _resolveRegionsForEdit(Usaha usaha) async {
+    final regionsAsync = await ref.read(regionsProvider.future);
+    final regions = regionsAsync ?? const <Region>[];
+    if (!mounted) return;
+    Region? kec;
+    for (final r in regions.where((r) => r.type == RegionType.kecamatan)) {
+      if (r.id == usaha.regionId) {
+        kec = r;
+        break;
+      }
+    }
+    Region? desa;
+    if (kec != null && usaha.villageId != null) {
+      for (final v in regions.where(
+        (r) => r.type == RegionType.desa && r.parentId == kec!.id,
+      )) {
+        if (v.id == usaha.villageId) {
+          desa = v;
+          break;
+        }
+      }
+    }
+    setState(() {
+      _kecamatan = kec;
+      _desa = desa;
+    });
   }
 
   @override
@@ -194,6 +284,55 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
     setState(() => _point = result.point);
   }
 
+  List<String> _changedFields({
+    required String name,
+    required String? description,
+    required String? categoryId,
+    required UsahaKind kind,
+    required String? regionId,
+    required String? villageId,
+    required String? addressText,
+    required double? lat,
+    required double? lng,
+    required String? phone,
+    required String? website,
+    required String? socialUrl,
+    required String? coverUrl,
+  }) {
+    String? norm(String? v) {
+      final t = v?.trim();
+      return (t == null || t.isEmpty) ? null : t;
+    }
+
+    final current = <String, String?>{
+      'name': name,
+      'description': norm(description),
+      'categoryId': categoryId,
+      'kind': kind.name,
+      'regionId': regionId,
+      'villageId': villageId,
+      'addressText': norm(addressText),
+      'lat': lat?.toString(),
+      'lng': lng?.toString(),
+      'phone': norm(phone),
+      'whatsapp': norm(phone),
+      'website': norm(website),
+      'socialUrl': norm(socialUrl),
+      'coverUrl': coverUrl,
+    };
+    final changed = <String>[];
+    for (final entry in current.entries) {
+      if (_baseline[entry.key] != entry.value) {
+        changed.add(entry.key);
+      }
+    }
+    // phone berubah -> whatsapp ikut (satu nomor di form).
+    if (changed.contains('phone') && !changed.contains('whatsapp')) {
+      changed.add('whatsapp');
+    }
+    return changed;
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final name = _name.text.trim();
@@ -226,25 +365,82 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
     final coverUrl = _cover.isNotEmpty && _cover.first.isReady
         ? _cover.first.uploaded?.url
         : null;
+    final description = _description.text.trim();
+    final phone = _phone.text.trim();
+    final website = _website.text.trim();
+    final social = _social.text.trim();
+    final address = _address.text.trim();
     try {
-      await api.submit(
-        UsahaContributionDraft(
+      if (_isEdit) {
+        final slug = widget.slug;
+        if (slug == null || slug.isEmpty) {
+          throw UsahaException(l10n.usahaSuggestEditFailed);
+        }
+        final fields = _changedFields(
           name: name,
-          regionId: kecamatan.id,
-          description: _description.text.trim(),
+          description: description,
           categoryId: _categoryId,
           kind: _kind,
+          regionId: kecamatan.id,
           villageId: _desa?.id,
-          addressText: _address.text.trim(),
+          addressText: address,
           lat: _point?.latitude,
           lng: _point?.longitude,
-          phone: _phone.text.trim(),
-          website: _website.text.trim(),
-          socialUrl: _social.text.trim(),
+          phone: phone,
+          website: website,
+          socialUrl: social,
           coverUrl: coverUrl,
-          wantsClaim: _wantsClaim,
-        ),
-      );
+        );
+        if (fields.isEmpty) {
+          _warn(l10n.usahaFormIncompleteTitle);
+          return;
+        }
+        await api.suggestEdit(
+          slug: slug,
+          body: {
+            if (fields.contains('name')) 'name': name,
+            if (fields.contains('description'))
+              'description': description.isEmpty ? null : description,
+            if (fields.contains('categoryId')) 'category_id': _categoryId,
+            if (fields.contains('kind')) 'kind': _kind.name,
+            if (fields.contains('regionId')) 'region_id': kecamatan.id,
+            if (fields.contains('villageId')) 'village_id': _desa?.id,
+            if (fields.contains('addressText'))
+              'address_text': address.isEmpty ? null : address,
+            if (fields.contains('lat')) 'lat': _point?.latitude,
+            if (fields.contains('lng')) 'lng': _point?.longitude,
+            if (fields.contains('phone'))
+              'phone': phone.isEmpty ? null : phone,
+            if (fields.contains('whatsapp'))
+              'whatsapp': phone.isEmpty ? null : phone,
+            if (fields.contains('website'))
+              'website': website.isEmpty ? null : website,
+            if (fields.contains('socialUrl'))
+              'social_url': social.isEmpty ? null : social,
+            if (fields.contains('coverUrl')) 'cover_url': coverUrl,
+            'fields': fields,
+          },
+        );
+      } else {
+        await api.submit(
+          UsahaContributionDraft(
+            name: name,
+            regionId: kecamatan.id,
+            description: description,
+            categoryId: _categoryId,
+            kind: _kind,
+            villageId: _desa?.id,
+            addressText: address,
+            lat: _point?.latitude,
+            lng: _point?.longitude,
+            phone: phone,
+            website: website,
+            socialUrl: social,
+            coverUrl: coverUrl,
+            wantsClaim: _wantsClaim,
+          ),
+        );
+      }
       unawaited(AnalyticsService.instance.logUsahaContributeSubmit());
       if (!mounted) return;
       final goProposals = await showModalBottomSheet<bool>(
@@ -256,8 +452,14 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           child: FTileGroup(
             children: [
               FTile(
-                title: Text(l10n.usahaProposalSent),
-                subtitle: Text(l10n.usahaProposalSentBody),
+                title: Text(
+                  _isEdit ? l10n.usahaSuggestEditSent : l10n.usahaProposalSent,
+                ),
+                subtitle: Text(
+                  _isEdit
+                      ? l10n.usahaSuggestEditSentBody
+                      : l10n.usahaProposalSentBody,
+                ),
               ),
               FTile(
                 title: Text(l10n.usahaSeeProposals),
@@ -274,6 +476,8 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
       if (!mounted) return;
       if (goProposals == true) {
         context.pushReplacement(UsahaRouter.proposals.path);
+      } else if (_isEdit && widget.slug != null) {
+        context.go(UsahaRouter.detailPath(widget.slug!));
       } else {
         context.go(UsahaRouter.list.path);
       }
@@ -282,7 +486,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
       await showAppErrorSheet(
         context,
         message: e.message,
-        title: l10n.usahaProposalFailed,
+        title: _isEdit ? l10n.usahaSuggestEditFailed : l10n.usahaProposalFailed,
       );
     } finally {
       if (mounted) setState(() => _submitting = false);
@@ -293,10 +497,36 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
+
+    if (_isEdit) {
+      final slug = widget.slug ?? '';
+      final usahaAsync = ref.watch(usahaBySlugProvider(slug));
+      usahaAsync.whenData((usaha) {
+        if (usaha == null || _prefilled) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || _prefilled) return;
+          _applyUsaha(usaha);
+          unawaited(_resolveRegionsForEdit(usaha));
+          setState(() {});
+        });
+      });
+    }
+
+    final title = _isEdit
+        ? l10n.usahaSuggestEditTitle
+        : l10n.usahaContributeAction;
+    final intro = _isEdit ? l10n.usahaSuggestEditIntro : l10n.usahaFormIntro;
+    final ctaBusy = _isEdit
+        ? l10n.usahaSuggestEditSubmitting
+        : l10n.placeFormSending;
+    final ctaIdle = _isEdit
+        ? l10n.usahaSuggestEditSubmit
+        : l10n.usahaSubmitProposal;
+
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(l10n.usahaContributeAction),
+        title: Text(title),
         prefixes: [
           FHeaderAction.back(
             onPress: () => context.canPop()
@@ -313,9 +543,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           child: FButton(
             onPress: _submitting ? null : _submit,
             prefix: _submitting ? const FCircularProgress() : null,
-            child: Text(
-              _submitting ? l10n.placeFormSending : l10n.usahaSubmitProposal,
-            ),
+            child: Text(_submitting ? ctaBusy : ctaIdle),
           ),
         ),
       ),
@@ -323,7 +551,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
         padding: const EdgeInsets.only(bottom: 40),
         children: [
           Text(
-            l10n.usahaFormIntro,
+            intro,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
@@ -423,21 +651,23 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
             hint: 'https://instagram.com/...',
             keyboardType: TextInputType.url,
           ),
-          const Gap(16),
-          FTileGroup(
-            children: [
-              FTile(
-                prefix: const Icon(FLucideIcons.keyRound, size: 18),
-                title: Text(l10n.usahaFormClaim),
-                subtitle: Text(l10n.usahaFormClaimBody),
-                suffix: FSwitch(
-                  semanticsLabel: l10n.usahaFormClaim,
-                  value: _wantsClaim,
-                  onChange: (value) => setState(() => _wantsClaim = value),
+          if (!_isEdit) ...[
+            const Gap(16),
+            FTileGroup(
+              children: [
+                FTile(
+                  prefix: const Icon(FLucideIcons.keyRound, size: 18),
+                  title: Text(l10n.usahaFormClaim),
+                  subtitle: Text(l10n.usahaFormClaimBody),
+                  suffix: FSwitch(
+                    semanticsLabel: l10n.usahaFormClaim,
+                    value: _wantsClaim,
+                    onChange: (value) => setState(() => _wantsClaim = value),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
           const Gap(12),
           // Panel foto seragam dengan form usul kata / diskusi
           // (AttachmentImagesField kanonik: sheet kamera/galeri, upload

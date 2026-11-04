@@ -140,6 +140,14 @@
   "aboutVerifiersBody": "Memeriksa usulan sebelum masuk kamus.",
   "aboutSponsorsSectionTitle": "Sponsor & Mitra",
   "aboutSponsorsTooltip": "Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.",
+  "aboutTeamCoreTitle": "Inti Tim",
+  "@aboutTeamCoreTitle": {
+    "description": "Judul daftar users.is_team di tab Tim Kami"
+  },
+  "aboutContributorsLoadMore": "Muat lebih banyak",
+  "@aboutContributorsLoadMore": {
+    "description": "Tombol load more daftar nama kontributor"
+  },
   "aboutOpenWebsiteFailed": "Tidak bisa membuka website",
   "aboutOpenWebsiteTooltip": "Buka website",
   "updateAvailableTitle": "Versi {version} sudah tersedia",
@@ -3638,7 +3646,7 @@
   "usahaFormWebsite": "Website (https)",
   "usahaFormSocial": "Media sosial (https)",
   "usahaFormClaim": "Ini usaha saya",
-  "usahaFormClaimBody": "Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.",
+  "usahaFormClaimBody": "Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.",
   "usahaLoginFirstTitle": "Masuk dulu ya",
   "usahaClaimLoginBody": "Klaim pengelolaan butuh akun, supaya admin bisa hubungi kamu.",
   "usahaClaimSent": "Klaim terkirim",
@@ -3662,13 +3670,78 @@
   "usahaContactSocial": "Media sosial",
   "usahaContactMap": "Peta",
   "usahaContactEmpty": "Kontak belum dicantumkan.",
+  "usahaLocationDistrict": "Kecamatan",
+  "@usahaLocationDistrict": {
+    "description": "Label baris kecamatan di detail usaha"
+  },
+  "usahaLocationVillage": "Desa",
+  "@usahaLocationVillage": {
+    "description": "Label baris desa di detail usaha"
+  },
+  "usahaLocationAddress": "Alamat",
+  "@usahaLocationAddress": {
+    "description": "Label baris alamat di detail usaha"
+  },
+  "usahaActionViewOnMap": "Lihat di peta",
+  "@usahaActionViewOnMap": {
+    "description": "Aksi buka peta internal SambasKu dari detail usaha"
+  },
+  "usahaActionAddPhoto": "Tambah foto",
+  "@usahaActionAddPhoto": {
+    "description": "Aksi unggah foto singgah di detail usaha"
+  },
+  "usahaActionSection": "Aksi",
+  "@usahaActionSection": {
+    "description": "Judul grup aksi di detail usaha"
+  },
+  "usahaNoCoordinatesTitle": "Lokasi usaha ini belum tersedia",
+  "@usahaNoCoordinatesTitle": {
+    "description": "Judul toast bila usaha tanpa koordinat"
+  },
+  "usahaNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
+  "@usahaNoCoordinatesBody": {
+    "description": "Isi toast bila usaha tanpa koordinat"
+  },
+  "usahaContributorProposedBy": "Diusulkan oleh",
+  "@usahaContributorProposedBy": {
+    "description": "Label container apresiasi pengusul di detail usaha/wisata/kuliner/acara"
+  },
+  "usahaPhotosTitle": "Foto usaha",
+  "@usahaPhotosTitle": {
+    "description": "Judul halaman galeri foto usaha"
+  },
+  "usahaPhotosEmpty": "Belum ada foto dari pengunjung. Jadi yang pertama yuk.",
+  "@usahaPhotosEmpty": {
+    "description": "Empty state galeri foto usaha"
+  },
   "usahaClaimSheetTitle": "Klaim usaha ini",
-  "usahaClaimSheetBody": "Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.",
-  "usahaClaimEvidence": "Bukti kontak",
-  "usahaClaimEvidenceHint": "Nomor WhatsApp atau akun media sosial pengelola",
+  "usahaClaimSheetBody": "Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).",
+  "@usahaClaimSheetBody": {
+    "description": "Body sheet klaim usaha - bukti multi-gambar ImageKit"
+  },
+  "usahaClaimEvidence": "Bukti gambar",
+  "usahaClaimEvidenceHint": "Foto toko, SS WA, atau SS sosmed",
   "usahaClaimEvidenceShortTitle": "Bukti kurang",
-  "usahaClaimEvidenceShort": "Tulis bukti minimal 5 karakter ya.",
+  "usahaClaimEvidenceShort": "Unggah minimal 1 bukti gambar ya.",
   "usahaClaimSubmit": "Kirim klaim",
+  "usahaActionSuggestEdit": "Usulkan perubahan",
+  "@usahaActionSuggestEdit": {
+    "description": "Tile aksi di detail usaha untuk koreksi data"
+  },
+  "usahaSuggestEditTitle": "Usulkan perubahan",
+  "@usahaSuggestEditTitle": {
+    "description": "Judul form usulan perubahan usaha (mode edit)"
+  },
+  "usahaSuggestEditIntro": "Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.",
+  "@usahaSuggestEditIntro": {
+    "description": "Intro form usulan perubahan usaha"
+  },
+  "usahaSuggestEditSubmit": "Kirim usulan",
+  "usahaSuggestEditSubmitting": "Mengirim...",
+  "usahaSuggestEditSent": "Usulan perubahan terkirim",
+  "usahaSuggestEditSentBody": "Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.",
+  "usahaSuggestEditFailed": "Usulan gagal",
+  "usahaSuggestEditLoginBody": "Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.",
   "usahaNotFound": "Usaha ini tidak ditemukan",
   "usahaSeeList": "Lihat daftar usaha",
   "usahaProposalsTitle": "Usulan usaha",

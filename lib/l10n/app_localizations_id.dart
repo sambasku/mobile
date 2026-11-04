@@ -346,6 +346,12 @@ class AppLocalizationsId extends AppLocalizations {
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
 
   @override
+  String get aboutTeamCoreTitle => 'Inti Tim';
+
+  @override
+  String get aboutContributorsLoadMore => 'Muat lebih banyak';
+
+  @override
   String get aboutOpenWebsiteFailed => 'Tidak bisa membuka website';
 
   @override
@@ -5196,7 +5202,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get usahaFormClaimBody =>
-      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+      'Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.';
 
   @override
   String get usahaLoginFirstTitle => 'Masuk dulu ya';
@@ -5273,27 +5279,91 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaContactEmpty => 'Kontak belum dicantumkan.';
 
   @override
+  String get usahaLocationDistrict => 'Kecamatan';
+
+  @override
+  String get usahaLocationVillage => 'Desa';
+
+  @override
+  String get usahaLocationAddress => 'Alamat';
+
+  @override
+  String get usahaActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get usahaActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get usahaActionSection => 'Aksi';
+
+  @override
+  String get usahaNoCoordinatesTitle => 'Lokasi usaha ini belum tersedia';
+
+  @override
+  String get usahaNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get usahaContributorProposedBy => 'Diusulkan oleh';
+
+  @override
+  String get usahaPhotosTitle => 'Foto usaha';
+
+  @override
+  String get usahaPhotosEmpty =>
+      'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
   String get usahaClaimSheetBody =>
-      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+      'Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).';
 
   @override
-  String get usahaClaimEvidence => 'Bukti kontak';
+  String get usahaClaimEvidence => 'Bukti gambar';
 
   @override
-  String get usahaClaimEvidenceHint =>
-      'Nomor WhatsApp atau akun media sosial pengelola';
+  String get usahaClaimEvidenceHint => 'Foto toko, SS WA, atau SS sosmed';
 
   @override
   String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
 
   @override
-  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+  String get usahaClaimEvidenceShort => 'Unggah minimal 1 bukti gambar ya.';
 
   @override
   String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditTitle => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditIntro =>
+      'Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.';
+
+  @override
+  String get usahaSuggestEditSubmit => 'Kirim usulan';
+
+  @override
+  String get usahaSuggestEditSubmitting => 'Mengirim...';
+
+  @override
+  String get usahaSuggestEditSent => 'Usulan perubahan terkirim';
+
+  @override
+  String get usahaSuggestEditSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSuggestEditFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSuggestEditLoginBody =>
+      'Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.';
 
   @override
   String get usahaNotFound => 'Usaha ini tidak ditemukan';
@@ -9368,6 +9438,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get aboutSponsorsTooltip =>
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
+
+  @override
+  String get aboutTeamCoreTitle => 'Inti Tim';
+
+  @override
+  String get aboutContributorsLoadMore => 'Muat lebih banyak';
 
   @override
   String get aboutOpenWebsiteFailed => 'Tidak bisa membuka website';
@@ -14220,7 +14296,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get usahaFormClaimBody =>
-      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+      'Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.';
 
   @override
   String get usahaLoginFirstTitle => 'Masuk dulu ya';
@@ -14297,27 +14373,91 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaContactEmpty => 'Kontak belum dicantumkan.';
 
   @override
+  String get usahaLocationDistrict => 'Kecamatan';
+
+  @override
+  String get usahaLocationVillage => 'Desa';
+
+  @override
+  String get usahaLocationAddress => 'Alamat';
+
+  @override
+  String get usahaActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get usahaActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get usahaActionSection => 'Aksi';
+
+  @override
+  String get usahaNoCoordinatesTitle => 'Lokasi usaha ini belum tersedia';
+
+  @override
+  String get usahaNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get usahaContributorProposedBy => 'Diusulkan oleh';
+
+  @override
+  String get usahaPhotosTitle => 'Foto usaha';
+
+  @override
+  String get usahaPhotosEmpty =>
+      'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
   String get usahaClaimSheetBody =>
-      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+      'Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).';
 
   @override
-  String get usahaClaimEvidence => 'Bukti kontak';
+  String get usahaClaimEvidence => 'Bukti gambar';
 
   @override
-  String get usahaClaimEvidenceHint =>
-      'Nomor WhatsApp atau akun media sosial pengelola';
+  String get usahaClaimEvidenceHint => 'Foto toko, SS WA, atau SS sosmed';
 
   @override
   String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
 
   @override
-  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+  String get usahaClaimEvidenceShort => 'Unggah minimal 1 bukti gambar ya.';
 
   @override
   String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditTitle => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditIntro =>
+      'Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.';
+
+  @override
+  String get usahaSuggestEditSubmit => 'Kirim usulan';
+
+  @override
+  String get usahaSuggestEditSubmitting => 'Mengirim...';
+
+  @override
+  String get usahaSuggestEditSent => 'Usulan perubahan terkirim';
+
+  @override
+  String get usahaSuggestEditSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSuggestEditFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSuggestEditLoginBody =>
+      'Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.';
 
   @override
   String get usahaNotFound => 'Usaha ini tidak ditemukan';

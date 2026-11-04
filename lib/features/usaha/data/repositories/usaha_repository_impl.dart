@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../domain/entities/usaha.dart';
 import '../datasources/usaha_remote_datasource.dart';
 
@@ -35,4 +37,15 @@ class UsahaRepositoryImpl {
   Future<List<UsahaCategoryRef>> categories() => _datasource.fetchCategories();
 
   Future<UsahaMine> mine() => _datasource.fetchMine();
+
+  Future<({List<UsahaImage> items, int total, int? nextOffset})> imagePage(
+    String slug, {
+    int offset = 0,
+  }) =>
+      _datasource.fetchImagePage(slug, offset: offset);
+
+  Future<void> appendImages(String slug, List<String> urls) =>
+      _datasource.appendImages(slug, urls);
+
+  Future<String> uploadImage(File file) => _datasource.uploadImage(file);
 }

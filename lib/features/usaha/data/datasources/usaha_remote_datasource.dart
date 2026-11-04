@@ -98,6 +98,108 @@ class UsahaRemoteDatasource {
     if (cursor is! String || cursor.trim().isEmpty) return null;
     return cursor;
   }
+
+  /// Halaman galeri foto singgah (`GET /usaha/:slug/images`).
+  Future<({List<UsahaImage> items, int total, int? nextOffset})> fetchImagePage(
+    String slug, {
+    int offset = 0,
+  }) async {
+    final res = await _dio.get<dynamic>(
+      '/api/v1/usaha/${Uri.encodeComponent(slug)}/images',
+      queryParameters: {'offset': offset},
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final data = _dataMap(res.data);
+    final items = <UsahaImage>[];
+    final raw = data['items'];
+    if (raw is List) {
+      for (final item in raw.whereType<Map>()) {
+        final json = Map<String, dynamic>.from(item);
+        final id = json['id']?.toString();
+        final url = json['url']?.toString();
+        if (id == null || url == null || url.isEmpty) continue;
+        final attr = json['attribution'];
+        items.add(
+          UsahaImage(
+            id: id,
+            url: url,
+            isMain: json['is_main'] == true,
+            sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
+            attributionName: attr is Map ? attr['name']?.toString() : null,
+            attributionUsername: attr is Map
+                ? attr['username']?.toString()
+                : null,
+          ),
+        );
+      }
+    }
+    final next = data['next_offset'];
+    return (
+      items: items,
+      total: (data['total'] as num?)?.toInt() ?? items.length,
+      nextOffset: next is num ? next.toInt() : null,
+    );
+  }
+
+  /// Tambah foto singgah setelah unggah blob (`POST /usaha/:slug/images`).
+  Future<void> appendImages(String slug, List<String> urls) async {
+    try {
+      await _dio.post<dynamic>(
+        '/api/v1/usaha/${Uri.encodeComponent(slug)}/images',
+        data: {'urls': urls},
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map) {
+        final message = data['message'];
+        throw UsahaException(
+          message is String && message.isNotEmpty
+              ? message
+              : l10n.usahaSaveFailed,
+          code: data['error_code'] as String?,
+        );
+      }
+      throw UsahaException(l10n.usahaSaveFailed);
+    }
+  }
+
+  /// Unggah foto usaha (multipart, maks 5 MB) - hasilnya URL publik.
+  Future<String> uploadImage(File file) async {
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.uri.pathSegments.last,
+      ),
+    });
+    try {
+      final res = await _dio.post<dynamic>(
+        '/api/v1/images',
+        queryParameters: {'purpose': 'usaha'},
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
+      );
+      final url = _dataMap(res.data)['url'];
+      if (url is! String || url.isEmpty) {
+        throw UsahaException(l10n.usahaUploadImageFailed);
+      }
+      return url;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map) {
+        final message = data['message'];
+        throw UsahaException(
+          message is String && message.isNotEmpty
+              ? message
+              : l10n.usahaUploadImageFailed,
+          code: data['error_code'] as String?,
+        );
+      }
+      throw UsahaException(l10n.usahaUploadImageFailed);
+    }
+  }
 }
 
 /// Panggilan pengajuan/klaim/laporan usaha.
@@ -139,18 +241,34 @@ class UsahaContributionApi {
     );
   }
 
-  /// Ajukan klaim pengelolaan.
+  /// Ajukan klaim pengelolaan (bukti gambar ImageKit privat).
   Future<void> claim(
     String slug, {
-    required String contactEvidence,
+    required List<Map<String, String>> evidenceImages,
     String? note,
   }) async {
     await _send(
       () => _dio.post<dynamic>(
         '/api/v1/usaha/${Uri.encodeComponent(slug)}/claims',
         data: {
-          'contact_evidence': contactEvidence,
+          'evidence_images': evidenceImages,
           if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+        },
+      ),
+    );
+  }
+
+  /// Usulan perubahan publik (prefill dari detail).
+  Future<void> suggestEdit({
+    required String slug,
+    required Map<String, dynamic> body,
+  }) async {
+    await _send(
+      () => _dio.post<dynamic>(
+        '/api/v1/usaha-contributions/suggest-edit',
+        data: {
+          'usaha_slug': slug,
+          ...body,
         },
       ),
     );
@@ -218,7 +336,7 @@ class UsahaContributionApi {
     );
   }
 
-  /// Unggah foto usaha (multipart, maks 5 MB) - hasilnya URL publik.
+  /// Unggah foto sampul/katalog (multipart) - dipakai form kontribusi.
   Future<String> uploadImage(File file) async {
     final form = FormData.fromMap({
       'file': await MultipartFile.fromFile(

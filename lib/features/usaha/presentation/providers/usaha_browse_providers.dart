@@ -107,9 +107,22 @@ class UsahaBrowse extends AsyncNotifier<UsahaBrowseState> {
           );
       if (!ref.mounted) return;
       final latest = state.value ?? current;
+      final seen = latest.items.map((u) => u.id).toSet();
+      final fresh = page.items.where((u) => seen.add(u.id)).toList();
+      if (fresh.isEmpty) {
+        state = AsyncData(
+          latest.copyWith(
+            isLoadingMore: false,
+            hasMore: false,
+            clearCursor: true,
+            loadMoreFailed: false,
+          ),
+        );
+        return;
+      }
       state = AsyncData(
         latest.copyWith(
-          items: [...latest.items, ...page.items],
+          items: [...latest.items, ...fresh],
           nextCursor: page.nextCursor,
           hasMore: page.nextCursor != null,
           isLoadingMore: false,
