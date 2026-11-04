@@ -5014,6 +5014,29 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaFilterAll => 'Semua';
 
   @override
+  String get usahaFilterOpen => 'Filter';
+
+  @override
+  String get usahaFilterTitle => 'Filter usaha';
+
+  @override
+  String get usahaFilterKecamatan => 'Kecamatan';
+
+  @override
+  String get usahaFilterAllKecamatan => 'Semua kecamatan';
+
+  @override
+  String get usahaFilterClear => 'Hapus filter';
+
+  @override
+  String usahaFilterRegionChip(String name) {
+    return 'Kecamatan: $name';
+  }
+
+  @override
+  String get usahaFilterLoadFailed => 'Gagal memuat wilayah';
+
+  @override
   String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';
 
   @override
@@ -14106,6 +14129,29 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get usahaFilterAll => 'Semua';
+
+  @override
+  String get usahaFilterOpen => 'Filter';
+
+  @override
+  String get usahaFilterTitle => 'Filter usaha';
+
+  @override
+  String get usahaFilterKecamatan => 'Kecamatan';
+
+  @override
+  String get usahaFilterAllKecamatan => 'Semua kecamatan';
+
+  @override
+  String get usahaFilterClear => 'Hapus filter';
+
+  @override
+  String usahaFilterRegionChip(String name) {
+    return 'Kecamatan: $name';
+  }
+
+  @override
+  String get usahaFilterLoadFailed => 'Gagal memuat wilayah';
 
   @override
   String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';

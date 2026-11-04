@@ -9203,6 +9203,48 @@ abstract class AppLocalizations {
   /// **'Semua'**
   String get usahaFilterAll;
 
+  /// Semantics / judul aksi buka drawer filter daftar usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Filter'**
+  String get usahaFilterOpen;
+
+  /// Judul drawer filter listing usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Filter usaha'**
+  String get usahaFilterTitle;
+
+  /// Label grup filter kecamatan di drawer
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get usahaFilterKecamatan;
+
+  /// Opsi hapus filter kecamatan di drawer
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kecamatan'**
+  String get usahaFilterAllKecamatan;
+
+  /// Tombol hapus filter aktif di listing usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus filter'**
+  String get usahaFilterClear;
+
+  /// Chip filter kecamatan aktif di listing usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan: {name}'**
+  String usahaFilterRegionChip(String name);
+
+  /// Error singkat saat katalog kecamatan gagal di drawer filter
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat wilayah'**
+  String get usahaFilterLoadFailed;
+
   /// No description provided for @usahaListEmptyQuery.
   ///
   /// In id, this message translates to:

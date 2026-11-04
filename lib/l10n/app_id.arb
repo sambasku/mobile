@@ -3579,6 +3579,39 @@
   "@usahaFilterAll": {
     "description": "Chip filter kategori usaha"
   },
+  "usahaFilterOpen": "Filter",
+  "@usahaFilterOpen": {
+    "description": "Semantics / judul aksi buka drawer filter daftar usaha"
+  },
+  "usahaFilterTitle": "Filter usaha",
+  "@usahaFilterTitle": {
+    "description": "Judul drawer filter listing usaha"
+  },
+  "usahaFilterKecamatan": "Kecamatan",
+  "@usahaFilterKecamatan": {
+    "description": "Label grup filter kecamatan di drawer"
+  },
+  "usahaFilterAllKecamatan": "Semua kecamatan",
+  "@usahaFilterAllKecamatan": {
+    "description": "Opsi hapus filter kecamatan di drawer"
+  },
+  "usahaFilterClear": "Hapus filter",
+  "@usahaFilterClear": {
+    "description": "Tombol hapus filter aktif di listing usaha"
+  },
+  "usahaFilterRegionChip": "Kecamatan: {name}",
+  "@usahaFilterRegionChip": {
+    "description": "Chip filter kecamatan aktif di listing usaha",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usahaFilterLoadFailed": "Gagal memuat wilayah",
+  "@usahaFilterLoadFailed": {
+    "description": "Error singkat saat katalog kecamatan gagal di drawer filter"
+  },
   "usahaListEmptyQuery": "Belum ada usaha yang cocok",
   "usahaListEmptyRegistered": "Belum ada usaha terdaftar",
   "usahaListEmptyQueryHint": "Coba kata lain ya.",
