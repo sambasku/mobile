@@ -23,6 +23,7 @@ enum FeedActivityKind {
   usaha,
   culinary,
   pantun,
+  article,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -73,6 +74,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.culinary;
     case 'pantun':
       return FeedActivityKind.pantun;
+    case 'article':
+      return FeedActivityKind.article;
     default:
       return null;
   }

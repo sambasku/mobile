@@ -1820,6 +1820,42 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
 
   @override
+  String get reviewHomeUsahaTitle => 'Usulan usaha';
+
+  @override
+  String get reviewHomeUsahaSubtitle => 'Antrean usaha menunggu tinjauan';
+
+  @override
+  String get reviewHomeUsahaWaiting => 'Ada usulan usaha yang menunggu';
+
+  @override
+  String get reviewHomePlaceTitle => 'Usulan wisata';
+
+  @override
+  String get reviewHomePlaceSubtitle => 'Antrean wisata menunggu tinjauan';
+
+  @override
+  String get reviewHomePlaceWaiting => 'Ada usulan wisata yang menunggu';
+
+  @override
+  String get reviewHomeCulinaryTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewHomeCulinarySubtitle => 'Antrean kuliner menunggu tinjauan';
+
+  @override
+  String get reviewHomeCulinaryWaiting => 'Ada usulan kuliner yang menunggu';
+
+  @override
+  String get reviewHomeEventTitle => 'Usulan acara';
+
+  @override
+  String get reviewHomeEventSubtitle => 'Antrean acara menunggu tinjauan';
+
+  @override
+  String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
+
+  @override
   String get reviewQueueLoadFailed => 'Gagal memuat antrean';
 
   @override
@@ -2804,6 +2840,236 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
+
+  @override
+  String get reviewExploreApproveFailed => 'Gagal menyetujui usulan eksplorasi';
+
+  @override
+  String get reviewExploreRejectFailed => 'Gagal menolak usulan eksplorasi';
+
+  @override
+  String get reviewExploreRevisionFailed => 'Gagal meminta revisi usulan';
+
+  @override
+  String get reviewExploreRevisionUnsupported =>
+      'Usulan ini tidak mendukung minta revisi';
+
+  @override
+  String get reviewExploreUsahaListTitle => 'Usulan usaha';
+
+  @override
+  String get reviewExplorePlaceListTitle => 'Usulan wisata';
+
+  @override
+  String get reviewExploreCulinaryListTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewExploreEventListTitle => 'Usulan acara';
+
+  @override
+  String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
+
+  @override
+  String get reviewExploreDetailTitle => 'Detail usulan';
+
+  @override
+  String get reviewExploreApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewExploreRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewExploreRevisionToast => 'Revisi diminta';
+
+  @override
+  String get reviewExploreRequestRevision => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetTitle => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetBody =>
+      'Tulis catatan untuk pengusul supaya bisa diperbaiki.';
+
+  @override
+  String get reviewExploreRevisionNoteLabel => 'Catatan revisi';
+
+  @override
+  String get reviewExploreRevisionNoteHint => 'Minimal 3 karakter';
+
+  @override
+  String get reviewExploreRevisionSubmit => 'Kirim permintaan';
+
+  @override
+  String get reviewExploreRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewExploreRejectSheetBody =>
+      'Pilih alasan penolakan untuk pengusul.';
+
+  @override
+  String get reviewExploreRejectOtherNoteLabel => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectOtherNoteHint => 'Jelaskan singkat';
+
+  @override
+  String get reviewExploreRejectOther => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectUsahaDuplicate =>
+      'Usaha serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectUsahaIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectUsahaInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectUsahaNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get reviewExploreRejectUsahaStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectUsahaViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreRejectPlaceNotSuitable =>
+      'Tidak layak sebagai tempat wisata';
+
+  @override
+  String get reviewExploreRejectPlaceDuplicate =>
+      'Sama dengan tempat yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectPlaceInaccurate =>
+      'Data atau lokasi tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventNotSuitable => 'Tidak layak sebagai acara';
+
+  @override
+  String get reviewExploreRejectEventDuplicate =>
+      'Sama dengan acara yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectEventInaccurate =>
+      'Data atau jadwal tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventPast => 'Acara sudah lewat';
+
+  @override
+  String get reviewExploreRejectCulinaryDuplicate =>
+      'Kuliner atau tempat serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectCulinaryIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectCulinaryUnverifiable =>
+      'Belum bisa diverifikasi';
+
+  @override
+  String get reviewExploreRejectCulinaryAttribution =>
+      'Atribusi gambar belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreKindGeneric => 'Usulan';
+
+  @override
+  String get reviewExploreUsahaKindNew => 'Usulan usaha baru';
+
+  @override
+  String get reviewExploreUsahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get reviewExploreUsahaKindItemAdd => 'Tambah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemEdit => 'Ubah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemDelete => 'Hapus item katalog';
+
+  @override
+  String get reviewExploreUsahaKindOperational => 'Status operasional';
+
+  @override
+  String get reviewExploreUsahaKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreUsahaKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
+
+  @override
+  String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceOperational =>
+      'Status operasional tempat';
+
+  @override
+  String get reviewExploreCulinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreCulinaryKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExplorePlaceKindNew => 'Usulan wisata baru';
+
+  @override
+  String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String reviewExploreMetaKindDate(String kind, String date) {
+    return '$kind · $date';
+  }
+
+  @override
+  String get reviewExploreWantsClaim => 'Pengusul ingin klaim kepemilikan';
+
+  @override
+  String get reviewExploreFieldsLabel => 'Field diubah';
+
+  @override
+  String get reviewExplorePayloadSection => 'Isi usulan';
+
+  @override
+  String get reviewExploreImagesSection => 'Gambar';
+
+  @override
+  String get reviewExploreProcessing => 'Memproses…';
 
   @override
   String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
@@ -3876,6 +4142,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindArticle => 'Artikel';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -3934,6 +4203,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedCtaSeeArticle => 'Lihat artikel';
 
   @override
   String get feedActorFallback => 'Warga';
@@ -5298,6 +5570,182 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get encyclopediaTitle => 'Ensiklopedia Sambas';
+
+  @override
+  String get encyclopediaSubtitle =>
+      'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
+
+  @override
+  String get encyclopediaSearchPlaceholder => 'Cari artikel ensiklopedia...';
+
+  @override
+  String get encyclopediaFilterAll => 'Semua';
+
+  @override
+  String get encyclopediaEmptyTitle => 'Belum ada artikel';
+
+  @override
+  String get encyclopediaEmptyBody =>
+      'Artikel untuk kategori ini belum tersedia.';
+
+  @override
+  String get encyclopediaLoadFailed => 'Gagal memuat ensiklopedia';
+
+  @override
+  String get encyclopediaRetry => 'Coba lagi';
+
+  @override
+  String get encyclopediaDetailTitle => 'Detail Artikel';
+
+  @override
+  String get encyclopediaAuthorBy => 'Oleh';
+
+  @override
+  String get encyclopediaPublishedAt => 'Diterbitkan';
+
+  @override
+  String get encyclopediaReferencesTitle => 'Referensi & Sumber';
+
+  @override
+  String get encyclopediaCommentsTitle => 'Komentar';
+
+  @override
+  String get encyclopediaCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get encyclopediaCommentSubmit => 'Kirim Komentar';
+
+  @override
+  String get encyclopediaCommentEmpty =>
+      'Belum ada komentar. Jadilah yang pertama berkomentar!';
+
+  @override
+  String get encyclopediaBookmarkAdded => 'Artikel disimpan ke bookmark';
+
+  @override
+  String get encyclopediaBookmarkRemoved => 'Artikel dihapus dari bookmark';
+
+  @override
+  String get encyclopediaContributeTitle => 'Usulkan Artikel';
+
+  @override
+  String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaContributeIntro =>
+      'Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.';
+
+  @override
+  String get encyclopediaFieldTitle => 'Judul Artikel';
+
+  @override
+  String get encyclopediaFieldTitlePlaceholder =>
+      'Contoh: Sejarah Istana Alwatzikoebillah';
+
+  @override
+  String get encyclopediaFieldCategory => 'Kategori';
+
+  @override
+  String get encyclopediaFieldCategoryPlaceholder => 'Pilih kategori';
+
+  @override
+  String get encyclopediaFieldExcerpt => 'Ringkasan Singkat';
+
+  @override
+  String get encyclopediaFieldExcerptPlaceholder =>
+      'Tulis 1-2 kalimat ringkasan artikel...';
+
+  @override
+  String get encyclopediaFieldTags => 'Tag (pisahkan koma)';
+
+  @override
+  String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
+
+  @override
+  String get encyclopediaFieldBodyPlaceholder =>
+      'Tulis isi artikel kamu di sini...';
+
+  @override
+  String get encyclopediaFieldChangeNote => 'Catatan Perubahan';
+
+  @override
+  String get encyclopediaFieldChangeNotePlaceholder =>
+      'Jelaskan apa yang kamu ubah...';
+
+  @override
+  String get encyclopediaFieldRequired => 'Semua kolom wajib diisi';
+
+  @override
+  String get encyclopediaSubmitButton => 'Kirim Usulan';
+
+  @override
+  String get encyclopediaSubmitSuccessTitle => 'Usulan Terkirim!';
+
+  @override
+  String get encyclopediaSubmitSuccessBody =>
+      'Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.';
+
+  @override
+  String get encyclopediaMyContributionsTitle => 'Riwayat Usulan Ensiklopedia';
+
+  @override
+  String get encyclopediaMyContributionsEmpty =>
+      'Kamu belum pernah mengirim usulan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaStatusPending => 'Menunggu Review';
+
+  @override
+  String get encyclopediaStatusApproved => 'Disetujui';
+
+  @override
+  String get encyclopediaStatusRejected => 'Ditolak';
+
+  @override
+  String get encyclopediaBookmarkFailed => 'Gagal memperbarui bookmark';
+
+  @override
+  String get encyclopediaCommentFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
+
+  @override
+  String get encyclopediaProposalKindNew => 'Usulan artikel baru';
+
+  @override
+  String get encyclopediaProposalKindEdit => 'Usulan perbaikan';
+
+  @override
+  String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get encyclopediaLoginBookmarkBody =>
+      'Masuk dulu untuk menyimpan artikel ke bookmark.';
+
+  @override
+  String get encyclopediaLoginCommentBody =>
+      'Masuk dulu untuk menulis komentar di artikel.';
+
+  @override
+  String get encyclopediaLoginContributeBody =>
+      'Masuk dulu untuk mengusulkan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaLoginMyContributionsBody =>
+      'Masuk dulu untuk melihat riwayat usulan artikel kamu.';
+
+  @override
+  String get encyclopediaCategoryEmpty => 'Pilih kategori artikel';
 
   @override
   String get exploreCategoryKomunitas => 'Komunitas';
@@ -7563,6 +8011,71 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
+
+  @override
+  String get pantunComposeLine1Hint => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunComposeLine2Hint => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunComposeLine3Hint => 'Baris 3 (isi)';
+
+  @override
+  String get pantunComposeLine4Hint => 'Baris 4 (isi)';
+
+  @override
+  String get pantunComposeReplying => 'Membalas';
+
+  @override
+  String pantunComposeReplyingAuthor(String author) {
+    return 'Membalas $author';
+  }
+
+  @override
+  String get pantunComposeDiscardDraft => 'Buang draf';
+
+  @override
+  String get pantunComposeDiscardDraftTitle => 'Buang draf pantun?';
+
+  @override
+  String get pantunComposeDiscardDraftBody =>
+      'Baris yang sudah kamu tulis di perangkat ini akan dihapus.';
+
+  @override
+  String get pantunComposeDiscardDraftConfirm => 'Buang';
+
+  @override
+  String get pantunComposeRhymeOk => 'Pola rima cocok';
+
+  @override
+  String pantunComposeRhymeOkScheme(String scheme) {
+    return 'Pola rima $scheme cocok';
+  }
+
+  @override
+  String pantunComposeRhymeMismatchPair(int a, int b) {
+    return 'Baris $a & $b belum berima';
+  }
+
+  @override
+  String pantunComposeRhymeLastWordUndetected(int line) {
+    return 'Kata akhir baris $line tidak terdeteksi. Perbaiki ya.';
+  }
+
+  @override
+  String get pantunReplyAction => 'Balas';
+
+  @override
+  String get pantunComposeDraftSaved => 'Draf tersimpan';
+
+  @override
+  String get pantunComposeQuoteMissing =>
+      'Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.';
+
+  @override
+  String get pantunWriteLoginRequired =>
+      'Login dulu ya sebelum menulis pantun.';
 
   @override
   String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';
@@ -10331,6 +10844,42 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
 
   @override
+  String get reviewHomeUsahaTitle => 'Usulan usaha';
+
+  @override
+  String get reviewHomeUsahaSubtitle => 'Antrean usaha menunggu tinjauan';
+
+  @override
+  String get reviewHomeUsahaWaiting => 'Ada usulan usaha yang menunggu';
+
+  @override
+  String get reviewHomePlaceTitle => 'Usulan wisata';
+
+  @override
+  String get reviewHomePlaceSubtitle => 'Antrean wisata menunggu tinjauan';
+
+  @override
+  String get reviewHomePlaceWaiting => 'Ada usulan wisata yang menunggu';
+
+  @override
+  String get reviewHomeCulinaryTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewHomeCulinarySubtitle => 'Antrean kuliner menunggu tinjauan';
+
+  @override
+  String get reviewHomeCulinaryWaiting => 'Ada usulan kuliner yang menunggu';
+
+  @override
+  String get reviewHomeEventTitle => 'Usulan acara';
+
+  @override
+  String get reviewHomeEventSubtitle => 'Antrean acara menunggu tinjauan';
+
+  @override
+  String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
+
+  @override
   String get reviewQueueLoadFailed => 'Gagal memuat antrean';
 
   @override
@@ -11315,6 +11864,236 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
+
+  @override
+  String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
+
+  @override
+  String get reviewExploreApproveFailed => 'Gagal menyetujui usulan eksplorasi';
+
+  @override
+  String get reviewExploreRejectFailed => 'Gagal menolak usulan eksplorasi';
+
+  @override
+  String get reviewExploreRevisionFailed => 'Gagal meminta revisi usulan';
+
+  @override
+  String get reviewExploreRevisionUnsupported =>
+      'Usulan ini tidak mendukung minta revisi';
+
+  @override
+  String get reviewExploreUsahaListTitle => 'Usulan usaha';
+
+  @override
+  String get reviewExplorePlaceListTitle => 'Usulan wisata';
+
+  @override
+  String get reviewExploreCulinaryListTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewExploreEventListTitle => 'Usulan acara';
+
+  @override
+  String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
+
+  @override
+  String get reviewExploreDetailTitle => 'Detail usulan';
+
+  @override
+  String get reviewExploreApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewExploreRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewExploreRevisionToast => 'Revisi diminta';
+
+  @override
+  String get reviewExploreRequestRevision => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetTitle => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetBody =>
+      'Tulis catatan untuk pengusul supaya bisa diperbaiki.';
+
+  @override
+  String get reviewExploreRevisionNoteLabel => 'Catatan revisi';
+
+  @override
+  String get reviewExploreRevisionNoteHint => 'Minimal 3 karakter';
+
+  @override
+  String get reviewExploreRevisionSubmit => 'Kirim permintaan';
+
+  @override
+  String get reviewExploreRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewExploreRejectSheetBody =>
+      'Pilih alasan penolakan untuk pengusul.';
+
+  @override
+  String get reviewExploreRejectOtherNoteLabel => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectOtherNoteHint => 'Jelaskan singkat';
+
+  @override
+  String get reviewExploreRejectOther => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectUsahaDuplicate =>
+      'Usaha serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectUsahaIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectUsahaInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectUsahaNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get reviewExploreRejectUsahaStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectUsahaViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreRejectPlaceNotSuitable =>
+      'Tidak layak sebagai tempat wisata';
+
+  @override
+  String get reviewExploreRejectPlaceDuplicate =>
+      'Sama dengan tempat yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectPlaceInaccurate =>
+      'Data atau lokasi tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventNotSuitable => 'Tidak layak sebagai acara';
+
+  @override
+  String get reviewExploreRejectEventDuplicate =>
+      'Sama dengan acara yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectEventInaccurate =>
+      'Data atau jadwal tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventPast => 'Acara sudah lewat';
+
+  @override
+  String get reviewExploreRejectCulinaryDuplicate =>
+      'Kuliner atau tempat serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectCulinaryIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectCulinaryUnverifiable =>
+      'Belum bisa diverifikasi';
+
+  @override
+  String get reviewExploreRejectCulinaryAttribution =>
+      'Atribusi gambar belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreKindGeneric => 'Usulan';
+
+  @override
+  String get reviewExploreUsahaKindNew => 'Usulan usaha baru';
+
+  @override
+  String get reviewExploreUsahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get reviewExploreUsahaKindItemAdd => 'Tambah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemEdit => 'Ubah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemDelete => 'Hapus item katalog';
+
+  @override
+  String get reviewExploreUsahaKindOperational => 'Status operasional';
+
+  @override
+  String get reviewExploreUsahaKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreUsahaKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
+
+  @override
+  String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceOperational =>
+      'Status operasional tempat';
+
+  @override
+  String get reviewExploreCulinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreCulinaryKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExplorePlaceKindNew => 'Usulan wisata baru';
+
+  @override
+  String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String reviewExploreMetaKindDate(String kind, String date) {
+    return '$kind · $date';
+  }
+
+  @override
+  String get reviewExploreWantsClaim => 'Pengusul ingin klaim kepemilikan';
+
+  @override
+  String get reviewExploreFieldsLabel => 'Field diubah';
+
+  @override
+  String get reviewExplorePayloadSection => 'Isi usulan';
+
+  @override
+  String get reviewExploreImagesSection => 'Gambar';
+
+  @override
+  String get reviewExploreProcessing => 'Memproses…';
 
   @override
   String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
@@ -12387,6 +13166,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindArticle => 'Artikel';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -12445,6 +13227,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedCtaSeeArticle => 'Lihat artikel';
 
   @override
   String get feedActorFallback => 'Warga';
@@ -13809,6 +14594,182 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get encyclopediaTitle => 'Ensiklopedia Sambas';
+
+  @override
+  String get encyclopediaSubtitle =>
+      'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
+
+  @override
+  String get encyclopediaSearchPlaceholder => 'Cari artikel ensiklopedia...';
+
+  @override
+  String get encyclopediaFilterAll => 'Semua';
+
+  @override
+  String get encyclopediaEmptyTitle => 'Belum ada artikel';
+
+  @override
+  String get encyclopediaEmptyBody =>
+      'Artikel untuk kategori ini belum tersedia.';
+
+  @override
+  String get encyclopediaLoadFailed => 'Gagal memuat ensiklopedia';
+
+  @override
+  String get encyclopediaRetry => 'Coba lagi';
+
+  @override
+  String get encyclopediaDetailTitle => 'Detail Artikel';
+
+  @override
+  String get encyclopediaAuthorBy => 'Oleh';
+
+  @override
+  String get encyclopediaPublishedAt => 'Diterbitkan';
+
+  @override
+  String get encyclopediaReferencesTitle => 'Referensi & Sumber';
+
+  @override
+  String get encyclopediaCommentsTitle => 'Komentar';
+
+  @override
+  String get encyclopediaCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get encyclopediaCommentSubmit => 'Kirim Komentar';
+
+  @override
+  String get encyclopediaCommentEmpty =>
+      'Belum ada komentar. Jadilah yang pertama berkomentar!';
+
+  @override
+  String get encyclopediaBookmarkAdded => 'Artikel disimpan ke bookmark';
+
+  @override
+  String get encyclopediaBookmarkRemoved => 'Artikel dihapus dari bookmark';
+
+  @override
+  String get encyclopediaContributeTitle => 'Usulkan Artikel';
+
+  @override
+  String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaContributeIntro =>
+      'Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.';
+
+  @override
+  String get encyclopediaFieldTitle => 'Judul Artikel';
+
+  @override
+  String get encyclopediaFieldTitlePlaceholder =>
+      'Contoh: Sejarah Istana Alwatzikoebillah';
+
+  @override
+  String get encyclopediaFieldCategory => 'Kategori';
+
+  @override
+  String get encyclopediaFieldCategoryPlaceholder => 'Pilih kategori';
+
+  @override
+  String get encyclopediaFieldExcerpt => 'Ringkasan Singkat';
+
+  @override
+  String get encyclopediaFieldExcerptPlaceholder =>
+      'Tulis 1-2 kalimat ringkasan artikel...';
+
+  @override
+  String get encyclopediaFieldTags => 'Tag (pisahkan koma)';
+
+  @override
+  String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
+
+  @override
+  String get encyclopediaFieldBodyPlaceholder =>
+      'Tulis isi artikel kamu di sini...';
+
+  @override
+  String get encyclopediaFieldChangeNote => 'Catatan Perubahan';
+
+  @override
+  String get encyclopediaFieldChangeNotePlaceholder =>
+      'Jelaskan apa yang kamu ubah...';
+
+  @override
+  String get encyclopediaFieldRequired => 'Semua kolom wajib diisi';
+
+  @override
+  String get encyclopediaSubmitButton => 'Kirim Usulan';
+
+  @override
+  String get encyclopediaSubmitSuccessTitle => 'Usulan Terkirim!';
+
+  @override
+  String get encyclopediaSubmitSuccessBody =>
+      'Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.';
+
+  @override
+  String get encyclopediaMyContributionsTitle => 'Riwayat Usulan Ensiklopedia';
+
+  @override
+  String get encyclopediaMyContributionsEmpty =>
+      'Kamu belum pernah mengirim usulan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaStatusPending => 'Menunggu Review';
+
+  @override
+  String get encyclopediaStatusApproved => 'Disetujui';
+
+  @override
+  String get encyclopediaStatusRejected => 'Ditolak';
+
+  @override
+  String get encyclopediaBookmarkFailed => 'Gagal memperbarui bookmark';
+
+  @override
+  String get encyclopediaCommentFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
+
+  @override
+  String get encyclopediaProposalKindNew => 'Usulan artikel baru';
+
+  @override
+  String get encyclopediaProposalKindEdit => 'Usulan perbaikan';
+
+  @override
+  String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get encyclopediaLoginBookmarkBody =>
+      'Masuk dulu untuk menyimpan artikel ke bookmark.';
+
+  @override
+  String get encyclopediaLoginCommentBody =>
+      'Masuk dulu untuk menulis komentar di artikel.';
+
+  @override
+  String get encyclopediaLoginContributeBody =>
+      'Masuk dulu untuk mengusulkan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaLoginMyContributionsBody =>
+      'Masuk dulu untuk melihat riwayat usulan artikel kamu.';
+
+  @override
+  String get encyclopediaCategoryEmpty => 'Pilih kategori artikel';
 
   @override
   String get exploreCategoryKomunitas => 'Komunitas';
@@ -16074,6 +17035,71 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
+
+  @override
+  String get pantunComposeLine1Hint => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunComposeLine2Hint => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunComposeLine3Hint => 'Baris 3 (isi)';
+
+  @override
+  String get pantunComposeLine4Hint => 'Baris 4 (isi)';
+
+  @override
+  String get pantunComposeReplying => 'Membalas';
+
+  @override
+  String pantunComposeReplyingAuthor(String author) {
+    return 'Membalas $author';
+  }
+
+  @override
+  String get pantunComposeDiscardDraft => 'Buang draf';
+
+  @override
+  String get pantunComposeDiscardDraftTitle => 'Buang draf pantun?';
+
+  @override
+  String get pantunComposeDiscardDraftBody =>
+      'Baris yang sudah kamu tulis di perangkat ini akan dihapus.';
+
+  @override
+  String get pantunComposeDiscardDraftConfirm => 'Buang';
+
+  @override
+  String get pantunComposeRhymeOk => 'Pola rima cocok';
+
+  @override
+  String pantunComposeRhymeOkScheme(String scheme) {
+    return 'Pola rima $scheme cocok';
+  }
+
+  @override
+  String pantunComposeRhymeMismatchPair(int a, int b) {
+    return 'Baris $a & $b belum berima';
+  }
+
+  @override
+  String pantunComposeRhymeLastWordUndetected(int line) {
+    return 'Kata akhir baris $line tidak terdeteksi. Perbaiki ya.';
+  }
+
+  @override
+  String get pantunReplyAction => 'Balas';
+
+  @override
+  String get pantunComposeDraftSaved => 'Draf tersimpan';
+
+  @override
+  String get pantunComposeQuoteMissing =>
+      'Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.';
+
+  @override
+  String get pantunWriteLoginRequired =>
+      'Login dulu ya sebelum menulis pantun.';
 
   @override
   String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';

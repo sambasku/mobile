@@ -12,7 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
-import '../../../dictionary/dictionary_router.dart';
+import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../domain/explore_category.dart';
 import '../../explore_router.dart';
 import '../widgets/explore_cover_card.dart';
@@ -30,9 +30,9 @@ class ExplorePage extends HookConsumerWidget {
       ),
     );
 
-    // Jembatan ke kamus: kosakata di tab kamus (bukan coming-soon).
+    // Jembatan ke ensiklopedia: buka rute ensiklopedia penuh.
     if (cat.id == 'ensiklopedia') {
-      context.push(DictionaryRouter.list.path);
+      context.push(EncyclopediaRouter.list.path);
       return;
     }
 

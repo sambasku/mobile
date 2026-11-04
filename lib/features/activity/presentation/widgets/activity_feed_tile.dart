@@ -13,6 +13,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../../entertainment/entertainment_router.dart';
 import '../../../explore/explore_router.dart';
 import '../../../event/event_router.dart';
@@ -277,6 +278,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.event => l10n.feedKindEvent,
       FeedActivityKind.usaha => l10n.feedKindUsaha,
       FeedActivityKind.culinary => l10n.feedKindCulinary,
+      FeedActivityKind.article => l10n.feedKindArticle,
     };
   }
 
@@ -313,6 +315,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.event => l10n.feedCtaSeeEvent,
       FeedActivityKind.usaha => l10n.feedCtaSeeUsaha,
       FeedActivityKind.culinary => l10n.feedCtaSeeCulinary,
+      FeedActivityKind.article => l10n.feedCtaSeeArticle,
     };
   }
 
@@ -361,6 +364,8 @@ class ActivityFeedTile extends ConsumerWidget {
       case 'culinary_place':
         // Belum ada halaman detail tempat kuliner - arahkan ke daftar.
         return ExploreRouter.cuisinePlaces.path;
+      case 'article':
+        return EncyclopediaRouter.detailPath(target.id);
       case 'user':
         final username = item.actor?.username?.trim();
         if (username == null ||
