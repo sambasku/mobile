@@ -229,16 +229,17 @@ class _CulinaryContributePageState
           ),
         ],
       ),
-      // Tombol kiri di footer (pola event_contribute_page) supaya seragam.
+      // CTA sticky: pola lemma (spinner di prefix, label tetap di child).
       footer: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
             onPress: _submitting ? null : _submit,
-            child: _submitting
-                ? const FCircularProgress(size: .sm)
-                : Text(l10n.exploreEditSubmit),
+            prefix: _submitting ? const FCircularProgress() : null,
+            child: Text(
+              _submitting ? l10n.placeFormSending : l10n.exploreEditSubmit,
+            ),
           ),
         ),
       ),
