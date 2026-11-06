@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../../../core/models/public_author_ref.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Status penyimpanan acara (cuma untuk admin, publik cuma published).
@@ -82,6 +83,7 @@ class Event {
     this.publishedAt,
     this.createdAt,
     this.updatedAt,
+    this.author,
   });
 
   final String id;
@@ -125,6 +127,9 @@ class Event {
   final DateTime? publishedAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+
+  /// Pengusul live dari API.
+  final PublicAuthorRef? author;
 
   bool get hasCoordinates => lat != null && lng != null;
 

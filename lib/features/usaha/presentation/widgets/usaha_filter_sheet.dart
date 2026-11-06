@@ -4,19 +4,20 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../explore/domain/entities/region.dart';
 import '../../../explore/presentation/providers/regions_providers.dart';
 
 /// Hasil pilihan filter. Null dari [showUsahaFilterSheet] = user tutup tanpa
-/// ubah (barrier / tombol X). Instance non-null = terapkan (regionId boleh null
-/// = semua kecamatan).
+/// ubah. Instance non-null = terapkan (regionId boleh null = semua kecamatan).
 class UsahaFilterSelection {
   const UsahaFilterSelection({this.regionId});
 
   final String? regionId;
 }
 
-/// Drawer kanan: filter listing usaha. Tahap awal = kecamatan saja.
+/// Drawer kanan: filter listing usaha. Field (kecamatan, nanti lainnya) di
+/// dalam drawer; pilihan kecamatan lewat bottom sheet.
 Future<UsahaFilterSelection?> showUsahaFilterSheet(
   BuildContext context, {
   required String? selectedRegionId,
@@ -32,19 +33,67 @@ Future<UsahaFilterSelection?> showUsahaFilterSheet(
   );
 }
 
-class _UsahaFilterSheetBody extends ConsumerWidget {
+class _UsahaFilterSheetBody extends ConsumerStatefulWidget {
   const _UsahaFilterSheetBody({required this.selectedRegionId});
 
   final String? selectedRegionId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_UsahaFilterSheetBody> createState() =>
+      _UsahaFilterSheetBodyState();
+}
+
+class _UsahaFilterSheetBodyState extends ConsumerState<_UsahaFilterSheetBody> {
+  late String? _draftRegionId = widget.selectedRegionId;
+
+  Future<void> _pickKecamatan() async {
+    final l10n = AppLocalizations.of(context);
+    final regionsAsync = await ref.read(regionsProvider.future);
+    final regions = regionsAsync ?? const <Region>[];
+    if (!mounted) return;
+
+    // '' = semua kecamatan. Null return dari sheet = batal (tutup tanpa pilih).
+    final picked = await showOptionPickerSheet<String>(
+      context,
+      title: l10n.usahaFormPickDistrict,
+      icon: FLucideIcons.mapPin,
+      searchable: true,
+      searchHint: l10n.usahaFormSearchDistrict,
+      items: [
+        OptionPickerItem(
+          value: '',
+          label: l10n.usahaFilterAllKecamatan,
+          selected: _draftRegionId == null,
+        ),
+        for (final r in regions.where((r) => r.type == RegionType.kecamatan))
+          OptionPickerItem(
+            value: r.id,
+            label: r.name,
+            selected: r.id == _draftRegionId,
+          ),
+      ],
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _draftRegionId = picked.isEmpty ? null : picked);
+  }
+
+  String _kecamatanSubtitle(AppLocalizations l10n, List<Region> kecamatan) {
+    final id = _draftRegionId;
+    if (id == null) return l10n.usahaFilterAllKecamatan;
+    for (final r in kecamatan) {
+      if (r.id == id) return r.name;
+    }
+    return l10n.usahaFilterAllKecamatan;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final kecamatanAsync = ref.watch(regionsKecamatanProvider);
+    final kecamatan = ref.watch(regionsKecamatanProvider).value ?? const [];
 
-    return Material(
-      type: MaterialType.transparency,
+    return ColoredBox(
+      color: theme.colors.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -76,84 +125,35 @@ class _UsahaFilterSheetBody extends ConsumerWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Text(
-              l10n.usahaFilterKecamatan,
-              style: theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colors.mutedForeground,
-              ),
-            ),
-          ),
+          const Gap(8),
           const Divider(height: 1),
           Expanded(
-            child: kecamatanAsync.when(
-              loading: () => const Center(child: FCircularProgress()),
-              error: (_, _) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    l10n.usahaFilterLoadFailed,
-                    textAlign: TextAlign.center,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+              children: [
+                FTileGroup(
+                  children: [
+                    FTile(
+                      prefix: const Icon(FLucideIcons.mapPin, size: 18),
+                      title: Text(l10n.usahaFilterKecamatan),
+                      subtitle: Text(_kecamatanSubtitle(l10n, kecamatan)),
+                      onPress: _pickKecamatan,
                     ),
-                  ),
+                  ],
                 ),
+              ],
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              child: FButton(
+                onPress: () => Navigator.of(context).pop(
+                  UsahaFilterSelection(regionId: _draftRegionId),
+                ),
+                child: Text(l10n.usahaFilterApply),
               ),
-              data: (kecamatan) {
-                final items = <Region?>[null, ...kecamatan];
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 24),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final region = items[index];
-                    final selected = region == null
-                        ? selectedRegionId == null
-                        : selectedRegionId == region.id;
-                    final label = region == null
-                        ? l10n.usahaFilterAllKecamatan
-                        : region.name;
-                    return Semantics(
-                      button: true,
-                      selected: selected,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(
-                          UsahaFilterSelection(regionId: region?.id),
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  label,
-                                  style: theme.typography.body.md.copyWith(
-                                    fontWeight: selected
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                              if (selected)
-                                Icon(
-                                  FLucideIcons.check,
-                                  size: 18,
-                                  color: theme.colors.primary,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
             ),
           ),
         ],

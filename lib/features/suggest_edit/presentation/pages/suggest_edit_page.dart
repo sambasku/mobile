@@ -17,9 +17,11 @@ import '../../../my_contributions/presentation/providers/my_contributions_provid
 import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
 import '../../../contribution/presentation/widgets/contribute_images_field.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
+import '../../../contribution/presentation/widgets/kbbi_translation_field.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
+import '../../domain/meaning_edit_order.dart';
 import '../../domain/suggest_category.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/suggest_edit_feedback.dart';
@@ -34,6 +36,7 @@ class SuggestEditPage extends ConsumerStatefulWidget {
     super.key,
     required this.wordId,
     this.initialCategory,
+    this.initialMeaningId,
   });
 
   final String wordId;
@@ -42,6 +45,11 @@ class SuggestEditPage extends ConsumerStatefulWidget {
   /// dengan `?category=add_meaning`. Kalau kategori ini tidak tersedia untuk
   /// kata tersebut, daftar kategori tetap ditampilkan.
   final SuggestCategory? initialCategory;
+
+  /// Makna kartu voting deck (`?meaning=`). Dipakai untuk prefill kategori
+  /// yang butuh satu makna, dan ditaruh di atas section "Ubah makna".
+  /// ID yang tidak ada di detail diabaikan.
+  final String? initialMeaningId;
 
   @override
   ConsumerState<SuggestEditPage> createState() => _SuggestEditPageState();
@@ -56,9 +64,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   bool _submitting = false;
   Map<String, String> _fieldErrors = const {};
 
-  // Ubah makna / kelas kata (makna terpilih).
-  final _definitionCtrl = TextEditingController();
-  final _padananCtrl = TextEditingController();
+  // #230: Ubah makna - draft per makna, semua makna bisa diubah sekaligus.
+  final Map<String, ({TextEditingController def, TextEditingController pad})>
+  _meaningDrafts = {};
+
+  // Ubah kelas kata (makna terpilih).
   String? _wordClassId;
 
   // Ubah jenis entri (kata / idiom / peribahasa / ungkapan).
@@ -103,9 +113,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
 
   @override
   void dispose() {
+    for (final d in _meaningDrafts.values) {
+      d.def.dispose();
+      d.pad.dispose();
+    }
     for (final c in [
-      _definitionCtrl,
-      _padananCtrl,
       _addDefinitionCtrl,
       _addPadananCtrl,
       _sentenceCtrl,
@@ -134,10 +146,19 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
 
   void _selectMeaning(WordMeaning m) {
     _meaningId = m.id;
-    _definitionCtrl.text = m.definition ?? '';
-    _padananCtrl.text = _padananOf(m);
     _wordClassId = m.wordClassId;
   }
+
+  /// Lazy: makna baru setelah detail di-refetch tetap dapat draft.
+  ({TextEditingController def, TextEditingController pad}) _draftFor(
+    WordMeaning m,
+  ) => _meaningDrafts.putIfAbsent(
+    m.id,
+    () => (
+      def: TextEditingController(text: m.definition ?? ''),
+      pad: TextEditingController(text: _padananOf(m)),
+    ),
+  );
 
   void _prefillOnce(WordDetail detail) {
     if (_prefilled) return;
@@ -146,8 +167,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     _notesCtrl.text = detail.notes ?? '';
     _originalWordType = detail.wordType;
     _wordType = detail.wordType;
-    final first = detail.meanings.firstOrNull;
-    if (first != null) _selectMeaning(first);
+    final preferred = meaningsPreferredFirst(
+      detail.meanings,
+      widget.initialMeaningId,
+      idOf: (m) => m.id,
+    ).firstOrNull;
+    if (preferred != null) _selectMeaning(preferred);
     _applyInitialCategory(detail);
   }
 
@@ -202,10 +227,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   }
 
   Future<void> _pickWordType() async {
-    final picked = await showWordTypePickerSheet(
-      context,
-      selected: _wordType,
-    );
+    final picked = await showWordTypePickerSheet(context, selected: _wordType);
     if (!mounted || picked == null) return;
     setState(() => _wordType = picked);
   }
@@ -249,9 +271,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     return (code == null || code.isEmpty) ? text : '$code. $text';
   }
 
-  Future<void> _openKbbiSheet({required bool forAdd}) async {
+  Future<void> _openKbbiSheet({
+    required bool forAdd,
+    ({TextEditingController def, TextEditingController pad})? draft,
+  }) async {
     final dio = ref.read(dioProvider);
-    final padCtrl = forAdd ? _addPadananCtrl : _padananCtrl;
+    final padCtrl = forAdd ? _addPadananCtrl : draft!.pad;
     final picked = await showKbbiDefinitionSheet(
       context,
       dio: dio,
@@ -271,7 +296,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           )
         : null;
     setState(() {
-      (forAdd ? _addDefinitionCtrl : _definitionCtrl).text = picked.definition;
+      (forAdd ? _addDefinitionCtrl : draft!.def).text = picked.definition;
       if (picked.lemma.trim().isNotEmpty) padCtrl.text = picked.lemma.trim();
       if (matched != null) _addWordClassId = matched;
     });
@@ -292,15 +317,23 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final meaning = _meaningOf(detail);
     switch (_category!) {
       case SuggestCategory.changeMeaning:
-        final padChanged = _padananCtrl.text.trim() != _padananOf(meaning!);
+        // #230: kirim semua makna yang berubah, bukan cuma yang terpilih.
+        final anyPadChanged = detail.meanings.any(
+          (m) => _draftFor(m).pad.text.trim() != _padananOf(m),
+        );
         return buildChangeMeaning(
-          meaningId: meaning.id,
-          originalDefinition: meaning.definition ?? '',
-          definition: _definitionCtrl.text,
-          originalPadanan: _padananOf(meaning),
-          padanan: _padananCtrl.text,
-          padananLanguageId: padChanged
-              ? await _resolveIdnLanguageId(dio, meaning)
+          meanings: [
+            for (final m in detail.meanings)
+              (
+                meaningId: m.id,
+                originalDefinition: m.definition ?? '',
+                definition: _draftFor(m).def.text,
+                originalPadanan: _padananOf(m),
+                padanan: _draftFor(m).pad.text,
+              ),
+          ],
+          padananLanguageId: anyPadChanged
+              ? await _resolveIdnLanguageId(dio, detail.meanings.firstOrNull)
               : null,
         );
       case SuggestCategory.changeWordClass:
@@ -694,7 +727,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           onPress: () => setState(() => _category = null),
         ),
         const Gap(12),
-        if (category.needsMeaning && detail.meanings.length > 1) ...[
+        // #230: Ubah makna menampilkan semua makna sekaligus - picker
+        // makna hanya untuk kategori lain yang butuh satu makna.
+        if (category.needsMeaning &&
+            category != SuggestCategory.changeMeaning &&
+            detail.meanings.length > 1) ...[
           _FieldCaption(_l10n.suggestMeaningSection),
           _SelectField(
             selectedLabel: _meaningLabel(_meaningOf(detail)!),
@@ -727,10 +764,21 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   List<Widget> _sectionFor(SuggestCategory category, WordDetail detail) {
     switch (category) {
       case SuggestCategory.changeMeaning:
+        // #230: semua makna tampil sebagai section, masing-masing bisa
+        // diubah. Tanpa picker makna tunggal. #232: makna ?meaning=
+        // (kartu deck) di section pertama; urutan tidak ikut picker lain.
         return [
-          _padananField(_padananCtrl, forAdd: false),
-          const Gap(8),
-          _definitionField(_definitionCtrl),
+          for (final m in meaningsPreferredFirst(
+            detail.meanings,
+            widget.initialMeaningId,
+            idOf: (m) => m.id,
+          )) ...[
+            _FieldCaption(_meaningLabel(m)),
+            _padananField(_draftFor(m).pad, forAdd: false, draft: _draftFor(m)),
+            const Gap(8),
+            _definitionField(_draftFor(m).def),
+            const Gap(16),
+          ],
         ];
       case SuggestCategory.changeWordClass:
         return [_wordClassField(forAdd: false)];
@@ -821,16 +869,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           const Gap(12),
           _FieldCaption(
             switch (category) {
-              SuggestCategory.derivedFrom =>
-                _l10n.suggestDerivedHint(targetLabel),
-              SuggestCategory.nonstandardOf =>
-                _l10n.suggestNonstandardOfHint,
+              SuggestCategory.derivedFrom => _l10n.suggestDerivedHint(
+                targetLabel,
+              ),
+              SuggestCategory.nonstandardOf => _l10n.suggestNonstandardOfHint,
               _ => _l10n.suggestVariantOfHint,
             },
             info: switch (category) {
               SuggestCategory.derivedFrom => _l10n.suggestDerivedExample,
-              SuggestCategory.nonstandardOf =>
-                _l10n.suggestNonstandardExample,
+              SuggestCategory.nonstandardOf => _l10n.suggestNonstandardExample,
               _ => _l10n.suggestVariantExample,
             },
           ),
@@ -932,7 +979,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     }
   }
 
-  Widget _padananField(TextEditingController ctrl, {required bool forAdd}) {
+  Widget _padananField(
+    TextEditingController ctrl, {
+    required bool forAdd,
+    ({TextEditingController def, TextEditingController pad})? draft,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -940,25 +991,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           _l10n.suggestTranslationField,
           info: _l10n.suggestTranslationHint,
         ),
-        FTextField(
-          control: FTextFieldControl.managed(controller: ctrl),
+        KbbiTranslationField(
+          controller: ctrl,
+          onOpenKbbi: () => _openKbbiSheet(forAdd: forAdd, draft: draft),
           hint: _l10n.suggestTranslationSemanticsHint,
           description: Text(_l10n.suggestKbbiSemantics),
           error: _errorText('padanan'),
-          suffixBuilder: (context, style, _) => Padding(
-            padding: style.clearButtonPadding,
-            // ponytail: ExcludeSemantics - SemanticsNode suffix bawaan
-            // MergeSemantics forui 0.22 bisa ber-rect terbalik saat subtree
-            // diswap (assert "Invisible SemanticsNodes",
-            // duobaseio/forui#1160). Makna tombol ada di description field.
-            child: ExcludeSemantics(
-              child: FButton.icon(
-                style: style.clearButtonStyle,
-                onPress: () => _openKbbiSheet(forAdd: forAdd),
-                child: const Icon(FLucideIcons.bookOpen),
-              ),
-            ),
-          ),
         ),
         const Gap(8),
         const KbbiSourceNotice(),

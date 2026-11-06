@@ -1,4 +1,5 @@
 import '../../../../core/models/image_attribution.dart';
+import '../../../../core/models/public_author_ref.dart';
 
 /// Kategori Place. Satu koleksi, dibedakan category (WISATA_START.md).
 enum PlaceCategory { wisata, kuliner, budaya }
@@ -71,6 +72,7 @@ class Place {
     required this.shortDescription,
     this.regionId,
     this.authorId,
+    this.author,
     required this.images,
     required this.hours,
     required this.contact,
@@ -105,9 +107,11 @@ class Place {
   /// Id kecamatan (Region.id) tempat place ini berada; null = belum dipetakan.
   final String? regionId;
 
-  /// Id kontributor SambasKu (contributors.json) - penulis artikel place;
-  /// tap kredit membuka profil publik in-app. Null = tanpa kredit penulis.
+  /// Id kontributor SambasKu; prefer [author] live dari API.
   final String? authorId;
+
+  /// Pengusul live (`author` wire). Null = tanpa apresiasi.
+  final PublicAuthorRef? author;
 
   /// Sudah dinormalisasi DTO: entry `isMain` pertama yang menang,
   /// tanpa true = pertama dianggap main.

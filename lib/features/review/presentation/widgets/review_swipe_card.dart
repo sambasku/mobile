@@ -22,12 +22,20 @@ class ReviewSwipeCard extends StatelessWidget {
     required this.enabled,
     required this.onSwiped,
     required this.child,
+    this.positiveLabel,
+    this.allowReject = true,
   });
 
   final Object itemKey;
   final bool enabled;
   final Future<bool> Function(ReviewSwipeDirection direction) onSwiped;
   final Widget child;
+
+  /// Label geser kanan. Null memakai "Setujui".
+  final String? positiveLabel;
+
+  /// Geser kiri = tolak. Mati saat kartu hanya menutup antrean.
+  final bool allowReject;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +46,14 @@ class ReviewSwipeCard extends StatelessWidget {
       allowNestedVerticalScroll: false,
       fallbackHeight: MediaQuery.sizeOf(context).height * 0.6,
       hintId: 'review-session',
-      positiveLabel: AppLocalizations.of(context).reviewSwipeApprove,
+      positiveLabel:
+          positiveLabel ?? AppLocalizations.of(context).reviewSwipeApprove,
       negativeLabel: AppLocalizations.of(context).reviewSwipeReject,
       skipLabel: AppLocalizations.of(context).reviewSwipeSkip,
-      overlayStyle: SwipeDecisionOverlayStyle.icon,
+      allowNegative: allowReject,
+      overlayStyle: allowReject
+          ? SwipeDecisionOverlayStyle.icon
+          : SwipeDecisionOverlayStyle.label,
       // Beda dari deck vote (↑↓): tinjau = setuju/tolak, bukan vote.
       positiveIcon: FLucideIcons.check,
       negativeIcon: FLucideIcons.x,

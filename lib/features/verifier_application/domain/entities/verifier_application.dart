@@ -23,7 +23,12 @@ class VerifierApplication {
     required this.status,
     required this.phone,
     required this.address,
+    this.fullName,
     required this.socialLinks,
+    this.dialect,
+    this.dialectNote,
+    this.reason,
+    this.photo,
     this.adminComment,
     this.reviewedAt,
     required this.createdAt,
@@ -34,7 +39,12 @@ class VerifierApplication {
   final String status;
   final String phone;
   final String address;
+  final String? fullName;
   final List<SocialLink> socialLinks;
+  final String? dialect;
+  final String? dialectNote;
+  final String? reason;
+  final SocialScreenshot? photo;
   final String? adminComment;
   final String? reviewedAt;
   final String createdAt;

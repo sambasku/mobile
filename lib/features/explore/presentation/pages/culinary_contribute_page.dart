@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
@@ -35,13 +36,14 @@ class CulinaryContributePage extends ConsumerStatefulWidget {
       _CulinaryContributePageState();
 }
 
-class _CulinaryContributePageState
-    extends ConsumerState<CulinaryContributePage> {
+class _CulinaryContributePageState extends ConsumerState<CulinaryContributePage>
+    with LocalDraftKeeper<_CulinaryDraft> {
   final _name = TextEditingController();
   final _description = TextEditingController();
   final _ingredients = TextEditingController();
   final _address = TextEditingController();
   final _locationHint = TextEditingController();
+
   /// Slug tidak ditampilkan ke user - dipilih lewat nama, slug dikirim diam-diam.
   String? _cuisineSlug;
   String? _placeSlug;
@@ -49,15 +51,62 @@ class _CulinaryContributePageState
   bool _submitting = false;
 
   @override
+  String get draftKey => 'kuliner:${widget.mode.name}';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _name.text,
+    _description.text,
+    _ingredients.text,
+    _address.text,
+    _locationHint.text,
+    _cuisineSlug,
+    _placeSlug,
+    for (final image in _images)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
+  ].join('\u0001');
+
+  @override
+  _CulinaryDraft captureDraft() => _CulinaryDraft(
+    name: _name.text,
+    description: _description.text,
+    ingredients: _ingredients.text,
+    address: _address.text,
+    locationHint: _locationHint.text,
+    cuisineSlug: _cuisineSlug,
+    placeSlug: _placeSlug,
+    images: draftAttachmentSlots(_images),
+  );
+
+  @override
+  void restoreDraft(_CulinaryDraft draft) {
+    _name.text = draft.name;
+    _description.text = draft.description;
+    _ingredients.text = draft.ingredients;
+    _address.text = draft.address;
+    _locationHint.text = draft.locationHint;
+    _cuisineSlug = draft.cuisineSlug;
+    _placeSlug = draft.placeSlug;
+    _images = draft.images;
+  }
+
+  @override
   void initState() {
     super.initState();
+    loadLocalDraft();
     unawaited(
-      AnalyticsService.instance.logKulinerContributeOpen(mode: widget.mode.name),
+      AnalyticsService.instance.logKulinerContributeOpen(
+        mode: widget.mode.name,
+      ),
     );
   }
 
   @override
   void dispose() {
+    flushLocalDraft();
     for (final c in [
       _name,
       _description,
@@ -96,6 +145,7 @@ class _CulinaryContributePageState
       setState(() => _submitting = true);
       try {
         await api.submitLink(cuisineSlug: cuisine, placeSlug: place);
+        commitLocalDraft();
         unawaited(
           AnalyticsService.instance.logKulinerContributeSubmit(mode: 'link'),
         );
@@ -124,9 +174,9 @@ class _CulinaryContributePageState
     // submit hanya memakai URL slot siap.
     if (_images.any((s) => s.uploading)) {
       showFToast(
-      context: context,
-      title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
-    );
+        context: context,
+        title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
+      );
       return;
     }
     if (_images.any((s) => s.error)) {
@@ -182,6 +232,7 @@ class _CulinaryContributePageState
           locationHint: _locationHint.text,
         );
       }
+      commitLocalDraft();
       unawaited(
         AnalyticsService.instance.logKulinerContributeSubmit(
           mode: widget.mode.name,
@@ -267,7 +318,9 @@ class _CulinaryContributePageState
               hint: l10n.culinaryFormSearchCuisine,
               control: FSelectControl.managed(
                 initial: _cuisineSlug,
-                onChange: (value) => setState(() => _cuisineSlug = value),
+                onChange: (value) => setState(() {
+                  _cuisineSlug = value;
+                }),
               ),
             ),
             const Gap(10),
@@ -281,20 +334,22 @@ class _CulinaryContributePageState
               hint: l10n.culinaryFormSearchPlace,
               control: FSelectControl.managed(
                 initial: _placeSlug,
-                onChange: (value) => setState(() => _placeSlug = value),
+                onChange: (value) => setState(() {
+                  _placeSlug = value;
+                }),
               ),
             ),
           ] else ...[
             FTextField(
               control: FTextFieldControl.managed(controller: _name),
               label: Text(
-              isCuisine
-                  ? l10n.culinaryFormNameCuisineLabel
-                  : l10n.culinaryFormNamePlaceLabel,
-            ),
+                isCuisine
+                    ? l10n.culinaryFormNameCuisineLabel
+                    : l10n.culinaryFormNamePlaceLabel,
+              ),
               hint: isCuisine
-                ? l10n.culinaryFormNameCuisineLabel
-                : l10n.culinaryFormNamePlaceHint,
+                  ? l10n.culinaryFormNameCuisineLabel
+                  : l10n.culinaryFormNamePlaceHint,
               textCapitalization: TextCapitalization.words,
             ),
             const Gap(10),
@@ -325,50 +380,84 @@ class _CulinaryContributePageState
                 hint: l10n.culinaryFormLocationHintHint,
               ),
             ],
-          if (isCuisine) ...[
-            const Gap(16),
-            // Foto opsional - field kanonik (pola form usul kata): sheet
-            // kamera/galeri, upload segera, thumbnail + status + hapus.
-            AttachmentImagesField(
-              enabled: !_submitting,
-              maxImages: 1,
-              maxSizeMb: 5,
-              images: _images,
-              onChanged: (next) => setState(() => _images = next),
-              upload: (file, {required bool isPrimary}) async {
-                try {
-                  final url = await ref
-                      .read(culinaryContributionApiProvider)
-                      .uploadImage(file);
-                  return Either.right(
-                    AttachmentUploadedImage(
-                      url: url,
-                      providerFileId: url,
-                      isPrimary: isPrimary,
-                    ),
-                  );
-                } on CulinaryException catch (e) {
-                  return Either.left(
-                    AttachmentUploadFailure(e.message, errorCode: e.code),
-                  );
-                }
-              },
-            ),
-            // Foto dari app otomatis CC BY-SA atas nama pengunggah -
-            // tidak perlu form atribusi manual (PRD kuliner).
-            if (_images.isNotEmpty) ...[
-              const Gap(8),
-              Text(
-                l10n.culinaryFormPhotoAttribution(_ccBySa),
-                style: theme.typography.body.xs.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
+            if (isCuisine) ...[
+              const Gap(16),
+              // Foto opsional - field kanonik (pola form usul kata): sheet
+              // kamera/galeri, upload segera, thumbnail + status + hapus.
+              AttachmentImagesField(
+                enabled: !_submitting,
+                maxImages: 1,
+                maxSizeMb: 5,
+                images: _images,
+                onChanged: (next) => setState(() {
+                  _images = next;
+                }),
+                upload: (file, {required bool isPrimary}) async {
+                  try {
+                    final url = await ref
+                        .read(culinaryContributionApiProvider)
+                        .uploadImage(file);
+                    return Either.right(
+                      AttachmentUploadedImage(
+                        url: url,
+                        providerFileId: url,
+                        isPrimary: isPrimary,
+                      ),
+                    );
+                  } on CulinaryException catch (e) {
+                    return Either.left(
+                      AttachmentUploadFailure(e.message, errorCode: e.code),
+                    );
+                  }
+                },
               ),
+              // Foto dari app otomatis CC BY-SA atas nama pengunggah -
+              // tidak perlu form atribusi manual (PRD kuliner).
+              if (_images.isNotEmpty) ...[
+                const Gap(8),
+                Text(
+                  l10n.culinaryFormPhotoAttribution(_ccBySa),
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
             ],
-          ],
           ],
         ],
       ),
     );
   }
+}
+
+class _CulinaryDraft {
+  const _CulinaryDraft({
+    required this.name,
+    required this.description,
+    required this.ingredients,
+    required this.address,
+    required this.locationHint,
+    required this.cuisineSlug,
+    required this.placeSlug,
+    required this.images,
+  });
+
+  final String name;
+  final String description;
+  final String ingredients;
+  final String address;
+  final String locationHint;
+  final String? cuisineSlug;
+  final String? placeSlug;
+  final List<AttachmentImageSlot> images;
+
+  bool get hasContent =>
+      name.trim().isNotEmpty ||
+      description.trim().isNotEmpty ||
+      ingredients.trim().isNotEmpty ||
+      address.trim().isNotEmpty ||
+      locationHint.trim().isNotEmpty ||
+      (cuisineSlug != null && cuisineSlug!.isNotEmpty) ||
+      (placeSlug != null && placeSlug!.isNotEmpty) ||
+      images.isNotEmpty;
 }

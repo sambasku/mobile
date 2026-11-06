@@ -42,9 +42,16 @@ _VerifierApplicationDto _$VerifierApplicationDtoFromJson(
   status: json['status'] as String,
   phone: json['phone'] as String,
   address: json['address'] as String,
+  fullName: json['full_name'] as String?,
   socialLinks: (json['social_links'] as List<dynamic>)
       .map((e) => SocialLinkDto.fromJson(e as Map<String, dynamic>))
       .toList(),
+  dialect: json['dialect'] as String?,
+  dialectNote: json['dialect_note'] as String?,
+  reason: json['reason'] as String?,
+  photo: json['photo'] == null
+      ? null
+      : SocialScreenshotDto.fromJson(json['photo'] as Map<String, dynamic>),
   adminComment: json['admin_comment'] as String?,
   reviewedAt: json['reviewed_at'] as String?,
   createdAt: json['created_at'] as String,
@@ -58,7 +65,12 @@ Map<String, dynamic> _$VerifierApplicationDtoToJson(
   'status': instance.status,
   'phone': instance.phone,
   'address': instance.address,
+  'full_name': instance.fullName,
   'social_links': instance.socialLinks.map((e) => e.toJson()).toList(),
+  'dialect': instance.dialect,
+  'dialect_note': instance.dialectNote,
+  'reason': instance.reason,
+  'photo': instance.photo?.toJson(),
   'admin_comment': instance.adminComment,
   'reviewed_at': instance.reviewedAt,
   'created_at': instance.createdAt,
@@ -70,9 +82,16 @@ _$SubmitVerifierApplicationRequestDtoFromJson(Map<String, dynamic> json) =>
     _SubmitVerifierApplicationRequestDto(
       phone: json['phone'] as String,
       address: json['address'] as String,
+      fullName: json['full_name'] as String,
       socialLinks: (json['social_links'] as List<dynamic>)
           .map((e) => SocialLinkDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      dialect: json['dialect'] as String,
+      dialectNote: json['dialect_note'] as String?,
+      reason: json['reason'] as String,
+      photo: json['photo'] == null
+          ? null
+          : SocialScreenshotDto.fromJson(json['photo'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SubmitVerifierApplicationRequestDtoToJson(
@@ -80,5 +99,10 @@ Map<String, dynamic> _$SubmitVerifierApplicationRequestDtoToJson(
 ) => <String, dynamic>{
   'phone': instance.phone,
   'address': instance.address,
+  'full_name': instance.fullName,
   'social_links': instance.socialLinks.map((e) => e.toJson()).toList(),
+  'dialect': instance.dialect,
+  'dialect_note': instance.dialectNote,
+  'reason': instance.reason,
+  'photo': instance.photo?.toJson(),
 };

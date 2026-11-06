@@ -587,6 +587,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
                         (m.createdBy!.displayName?.trim().isNotEmpty == true)
                         ? m.createdBy!.displayName!.trim()
                         : m.createdBy!.username,
+                    avatarUrl: m.createdBy!.avatarUrl,
                     role: m.createdBy!.role,
                   ),
             translations: m.translations

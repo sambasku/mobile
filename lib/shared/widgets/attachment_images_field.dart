@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/models/image_attribution.dart';
+import '../../core/utils/format_number.dart';
 import '../../core/widgets/image_preview.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/image_sheet_drawer.dart';
@@ -28,13 +29,16 @@ class AttachmentUploadedImage {
 
   final String url;
   final String providerFileId;
+
   /// Stock: pexels|pixabay|… ; upload GitHub: null (diisi API).
   final String? provider;
   final String? sha;
   final String? altText;
   final bool isPrimary;
+
   /// Peringatan konten yang dipilih oleh kontributor. V1: 'kekerasan'.
   final List<String> contentWarnings;
+
   /// Kredit foto stock Media Explorer; upload kamera/galeri: null.
   final ImageAttribution? attribution;
 }
@@ -64,6 +68,7 @@ class AttachmentImageSlot {
   final AttachmentUploadedImage? uploaded;
   final bool uploading;
   final bool error;
+
   /// Peringatan konten dipilih oleh kontributor (mis. ['kekerasan']).
   final List<String> contentWarnings;
 
@@ -89,6 +94,20 @@ class AttachmentImageSlot {
   }
 }
 
+/// Slot yang sedang upload tidak boleh dihidupkan lagi dari draft:
+/// proses uploadnya sudah mati bersama halaman.
+List<AttachmentImageSlot> draftAttachmentSlots(
+  List<AttachmentImageSlot> slots,
+) {
+  return [
+    for (final slot in slots)
+      if (slot.uploading)
+        slot.copyWith(uploading: false, error: slot.uploaded == null)
+      else
+        slot,
+  ];
+}
+
 typedef AttachmentUploadFn =
     Future<Either<AttachmentUploadFailure, AttachmentUploadedImage>> Function(
       File file, {
@@ -109,16 +128,17 @@ class AttachmentImagesField extends StatefulWidget {
     this.allowLocalPick = true,
     this.maxImages = 3,
     this.maxSizeMb = 5,
-    this.disabledHint =
-        'Masuk untuk lampirkan gambar (opsional).',
+    this.disabledHint = 'Masuk untuk lampirkan gambar (opsional).',
     this.disabledActionLabel,
     this.onDisabledAction,
     this.onUnavailable,
+
     /// Buka Media Explorer (foto stock). Null = opsi Explorer disembunyikan.
     this.onPickStockImage,
   });
 
   final bool enabled;
+
   /// Kamera/galeri (butuh upload CDN). False = hanya Media Explorer bila ada.
   final bool allowLocalPick;
   final int maxImages;
@@ -149,7 +169,9 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   void _openPicker() {
     if (!widget.enabled || _unavailable) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
+      _toast(
+        AppLocalizations.of(context).attachmentMaxImages(widget.maxImages),
+      );
       return;
     }
 
@@ -185,14 +207,18 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     final pick = widget.onPickStockImage;
     if (pick == null || !mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
+      _toast(
+        AppLocalizations.of(context).attachmentMaxImages(widget.maxImages),
+      );
       return;
     }
 
     final uploaded = await pick();
     if (!mounted || uploaded == null) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
+      _toast(
+        AppLocalizations.of(context).attachmentMaxImages(widget.maxImages),
+      );
       return;
     }
 
@@ -217,14 +243,21 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   Future<void> _handlePicked(File file) async {
     if (!mounted) return;
     if (widget.images.length >= widget.maxImages) {
-      _toast(AppLocalizations.of(context).attachmentMaxImages(widget.maxImages));
+      _toast(
+        AppLocalizations.of(context).attachmentMaxImages(widget.maxImages),
+      );
       return;
     }
 
     try {
       final size = await file.length();
       if (size > widget.maxSizeMb * 1024 * 1024) {
-        if (mounted) _toast(AppLocalizations.of(context).attachmentImageTooLarge(widget.maxSizeMb));
+        if (mounted)
+          _toast(
+            AppLocalizations.of(
+              context,
+            ).attachmentImageTooLarge(widget.maxSizeMb),
+          );
         return;
       }
 
@@ -374,8 +407,8 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     final hintParts = <String>[
       if (widget.allowLocalPick) 'Kamera/galeri',
       if (widget.onPickStockImage != null) 'Media Explorer',
-      if (widget.allowLocalPick) 'maks ${widget.maxSizeMb} MB',
-      'hingga ${widget.maxImages}',
+      if (widget.allowLocalPick) 'maks ${formatRibuan(widget.maxSizeMb)} MB',
+      'hingga ${formatRibuan(widget.maxImages)}',
     ];
 
     return Column(
@@ -390,8 +423,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
           if (i != widget.images.length - 1)
             Divider(height: 16, color: theme.colors.border),
         ],
-        if (widget.images.isNotEmpty &&
-            widget.images.length < widget.maxImages)
+        if (widget.images.isNotEmpty && widget.images.length < widget.maxImages)
           const Gap(8),
         if (widget.images.length < widget.maxImages)
           FButton(
@@ -489,31 +521,31 @@ class _Thumb extends StatelessWidget {
                   // user cuma lihat potongan 88px dan tak bisa memeriksa foto.
                   onTap: () => _preview(context, slot),
                   child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: slot.localPath.isNotEmpty
-                      ? Image.file(
-                          File(slot.localPath),
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => ColoredBox(
+                    borderRadius: BorderRadius.circular(8),
+                    child: slot.localPath.isNotEmpty
+                        ? Image.file(
+                            File(slot.localPath),
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => ColoredBox(
+                              color: theme.colors.muted,
+                              child: Icon(
+                                FLucideIcons.image,
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                          )
+                        : (networkUrl != null && networkUrl.isNotEmpty)
+                        ? CachedNetworkImageWithFallback(
+                            imageUrl: networkUrl,
+                            fit: BoxFit.cover,
+                          )
+                        : ColoredBox(
                             color: theme.colors.muted,
                             child: Icon(
                               FLucideIcons.image,
                               color: theme.colors.mutedForeground,
                             ),
                           ),
-                        )
-                      : (networkUrl != null && networkUrl.isNotEmpty)
-                      ? CachedNetworkImageWithFallback(
-                          imageUrl: networkUrl,
-                          fit: BoxFit.cover,
-                        )
-                      : ColoredBox(
-                          color: theme.colors.muted,
-                          child: Icon(
-                            FLucideIcons.image,
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
                   ),
                 ),
               ),

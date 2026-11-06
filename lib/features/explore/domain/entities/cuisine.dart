@@ -1,3 +1,4 @@
+import '../../../../core/models/public_author_ref.dart';
 import 'place.dart';
 
 /// Satu hidangan cuisine dari API `/api/v1/culinary/cuisines`.
@@ -37,6 +38,7 @@ class Cuisine {
     required this.sources,
     this.servingSuggestion,
     this.places = const [],
+    this.author,
   });
 
   final String id;
@@ -58,6 +60,9 @@ class Cuisine {
 
   /// Tempat/penjual penyedia. Kosong di list, terisi di detail.
   final List<CuisinePlaceRef> places;
+
+  /// Pengusul live dari API.
+  final PublicAuthorRef? author;
 
   /// Cover list. List kosong → null (placeholder).
   PlaceImage? get cover {

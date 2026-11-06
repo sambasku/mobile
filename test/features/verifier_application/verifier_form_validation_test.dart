@@ -20,14 +20,22 @@ SocialDraft _row({
 }
 
 List<String> _errors({
+  String fullName = 'Budi Santoso',
   String phoneDigits = '6281234567890',
   String address = 'Jl. Contoh No. 1, Sambas',
   List<SocialDraft>? social,
+  String reason = 'Saya ingin meninjau kata.',
+  bool photoUploading = false,
+  bool photoFailed = false,
 }) {
   return verifierFormErrors(
+    fullName: fullName,
     phoneDigits: phoneDigits,
     address: address,
     social: social ?? [_row()],
+    reason: reason,
+    photoUploading: photoUploading,
+    photoFailed: photoFailed,
   );
 }
 
@@ -56,11 +64,32 @@ void main() {
       );
     });
 
+    test('nama lengkap kurang dari 2 karakter', () {
+      expect(
+        _errors(fullName: 'A'),
+        contains('Nama lengkap minimal 2 karakter.'),
+      );
+    });
+
     test('nomor HP kosong dan invalid', () {
       expect(_errors(phoneDigits: ''), contains('Nomor HP wajib diisi.'));
       expect(
         _errors(phoneDigits: '628'),
         contains('Nomor HP tidak valid. Contoh: 81234567890.'),
+      );
+    });
+
+    test('alasan kurang dari 10 karakter', () {
+      expect(
+        _errors(reason: 'pendek'),
+        contains('Alasan minimal 10 karakter.'),
+      );
+    });
+
+    test('foto diri yang sedang diunggah menahan kirim', () {
+      expect(
+        _errors(photoUploading: true),
+        contains('Tunggu foto diri selesai diunggah.'),
       );
     });
 

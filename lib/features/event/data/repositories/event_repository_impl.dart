@@ -21,6 +21,8 @@ class EventRepositoryImpl {
     String? q,
     bool notEnded = false,
     String? order,
+    DateTime? overlapsFrom,
+    DateTime? overlapsTo,
   }) {
     return _datasource.fetchPage(
       limit: limit,
@@ -32,6 +34,8 @@ class EventRepositoryImpl {
       q: q,
       notEnded: notEnded,
       order: order,
+      overlapsFrom: overlapsFrom,
+      overlapsTo: overlapsTo,
     );
   }
 

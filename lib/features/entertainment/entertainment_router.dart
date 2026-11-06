@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
+import 'domain/pantun_compose_args.dart';
 import 'presentation/pages/pantun_compose_page.dart';
 import 'presentation/pages/pantun_detail_page.dart';
 import 'presentation/pages/pantun_feed_page.dart';
@@ -49,8 +50,22 @@ class EntertainmentRouter {
       path: pantunCreate.path,
       name: pantunCreate.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
-      builder: (context, state) =>
-          PantunComposePage(parentId: state.uri.queryParameters['parent']),
+      builder: (context, state) {
+        final parent = state.uri.queryParameters['parent'];
+        final quote = state.uri.queryParameters['quote'];
+        final extra = state.extra;
+        final args = extra is PantunComposeArgs
+            ? extra
+            : PantunComposeArgs(
+                parentId: parent,
+                quoteId: quote ?? PantunComposeArgs.quoteRoot,
+              );
+        return PantunComposePage(
+          parentId: parent ?? args.parentId,
+          quoteId: quote ?? args.normalizedQuoteId,
+          args: args,
+        );
+      },
     ),
     GoRoute(
       path: pantunDetail.path,

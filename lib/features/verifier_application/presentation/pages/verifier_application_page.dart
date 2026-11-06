@@ -103,12 +103,58 @@ class SocialDraft {
 /// Validasi form sebelum kirim. Kosong = siap kirim.
 ///
 /// Diambil keluar dari `build` supaya bisa diuji tanpa widget test.
+class PhotoDraft {
+  const PhotoDraft({
+    this.url,
+    this.fileId,
+    this.localPath,
+    this.uploading = false,
+    this.error = false,
+  });
+
+  final String? url;
+  final String? fileId;
+  final String? localPath;
+  final bool uploading;
+  final bool error;
+
+  bool get ready =>
+      (url ?? '').isNotEmpty &&
+      (fileId ?? '').isNotEmpty &&
+      !uploading &&
+      !error;
+
+  PhotoDraft copyWith({
+    String? url,
+    String? fileId,
+    String? localPath,
+    bool? uploading,
+    bool? error,
+    bool clear = false,
+  }) {
+    return PhotoDraft(
+      url: clear ? null : (url ?? this.url),
+      fileId: clear ? null : (fileId ?? this.fileId),
+      localPath: localPath ?? (clear ? null : this.localPath),
+      uploading: uploading ?? this.uploading,
+      error: error ?? this.error,
+    );
+  }
+}
+
 List<String> verifierFormErrors({
+  required String fullName,
   required String phoneDigits,
   required String address,
   required List<SocialDraft> social,
+  required String reason,
+  required bool photoUploading,
+  required bool photoFailed,
 }) {
   final errors = <String>[];
+  if (fullName.trim().length < 2) {
+    errors.add(l10n.verifierApplicationFullNameMin);
+  }
   if (phoneDigits.isEmpty) {
     errors.add(l10n.verifierApplicationPhoneRequired);
   } else if (!RegExp(r'^\d{8,15}$').hasMatch(phoneDigits)) {
@@ -139,6 +185,14 @@ List<String> verifierFormErrors({
       errors.add(l10n.verifierApplicationUploadRequiredFor(label));
     }
   }
+  if (reason.trim().length < 10) {
+    errors.add(l10n.verifierApplicationReasonMin);
+  }
+  if (photoUploading) {
+    errors.add(l10n.verifierApplicationPhotoUploading);
+  } else if (photoFailed) {
+    errors.add(l10n.verifierApplicationPhotoFailed);
+  }
   return errors;
 }
 
@@ -148,13 +202,18 @@ class VerifierApplicationPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(verifierApplicationProvider);
+    final fullName = useTextEditingController();
     final phone = useTextEditingController();
     final address = useTextEditingController();
+    final reason = useTextEditingController();
     final phoneCountry = useState(kPhoneCountryId);
     final social = useState<List<SocialDraft>>([const SocialDraft()]);
+    final photo = useState(const PhotoDraft());
     final isReLogging = useState(false);
+    useListenable(fullName);
     useListenable(phone);
     useListenable(address);
+    useListenable(reason);
 
     ref.listen(verifierApplicationProvider.select((s) => s.application), (
       _,
@@ -163,8 +222,14 @@ class VerifierApplicationPage extends HookConsumerWidget {
       if (next == null) return;
       final parsed = parseStoredPhone(next.phone);
       phoneCountry.value = parsed.country;
+      fullName.text = next.fullName ?? '';
       phone.text = parsed.national;
       address.text = next.address;
+      reason.text = next.reason ?? '';
+      final shot = next.photo;
+      photo.value = shot == null
+          ? const PhotoDraft()
+          : PhotoDraft(url: shot.url, fileId: shot.providerFileId);
       social.value = next.socialLinks.isEmpty
           ? [const SocialDraft()]
           : next.socialLinks
@@ -237,9 +302,13 @@ class VerifierApplicationPage extends HookConsumerWidget {
         phone.text.trim(),
       );
       final errors = verifierFormErrors(
+        fullName: fullName.text,
         phoneDigits: phoneDigits,
         address: address.text.trim(),
         social: social.value,
+        reason: reason.text,
+        photoUploading: photo.value.uploading,
+        photoFailed: photo.value.error,
       );
       if (errors.isNotEmpty) {
         showAppErrorSheet(
@@ -252,9 +321,19 @@ class VerifierApplicationPage extends HookConsumerWidget {
       ref
           .read(verifierApplicationProvider.notifier)
           .submit(
+            fullName: fullName.text.trim(),
             phone: phoneDigits,
             address: address.text.trim(),
             socialLinks: links,
+            dialect: 'umum',
+            dialectNote: null,
+            reason: reason.text.trim(),
+            photo: photo.value.ready
+                ? SocialScreenshot(
+                    url: photo.value.url!,
+                    providerFileId: photo.value.fileId!,
+                  )
+                : null,
           );
     }
 
@@ -276,8 +355,42 @@ class VerifierApplicationPage extends HookConsumerWidget {
 
     final theme = context.theme;
 
+    final showForm = !state.isLoading && !pending && !approved;
+    final footerButton = approved
+        ? FButton(
+            onPress: isReLogging.value ? null : reLogin,
+            prefix: isReLogging.value
+                ? const FCircularProgress()
+                : const Icon(FLucideIcons.logIn),
+            child: Text(
+              AppLocalizations.of(context).verifierApplicationReLoginCta,
+            ),
+          )
+        : showForm
+        ? FButton(
+            onPress: blocked ? null : submit,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(
+              state.isSubmitting
+                  ? AppLocalizations.of(context).verifierApplicationSubmitting
+                  : rejected
+                  ? AppLocalizations.of(context).verifierApplicationResubmit
+                  : AppLocalizations.of(context).verifierApplicationSubmit,
+            ),
+          )
+        : null;
+
     return FScaffold(
       childPad: true,
+      footer: footerButton == null
+          ? null
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                child: footerButton,
+              ),
+            ),
       header: FHeader.nested(
         title: Text(AppLocalizations.of(context).verifierApplicationTitle),
         prefixes: [
@@ -340,11 +453,6 @@ class VerifierApplicationPage extends HookConsumerWidget {
                       ),
                     ),
                     const Gap(24),
-                    FButton(
-                      onPress: reLogin,
-                      prefix: const Icon(FLucideIcons.logIn),
-                      child: Text(AppLocalizations.of(context).verifierApplicationReLoginCta),
-                    ),
                   ],
                 ] else if (pending) ...[
                   FAlert(
@@ -386,6 +494,16 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     ),
                     const Gap(12),
                   ],
+                  FTextField(
+                    control: .managed(controller: fullName),
+                    enabled: !readOnly,
+                    label: Text(AppLocalizations.of(context).verifierApplicationFullNameLabel),
+                    hint: AppLocalizations.of(context).verifierApplicationFullNameHint,
+                    keyboardType: TextInputType.name,
+                    textInputAction: .next,
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  const Gap(12),
                   FTextField(
                     control: .managed(controller: phone),
                     enabled: !readOnly,
@@ -489,17 +607,29 @@ class VerifierApplicationPage extends HookConsumerWidget {
                     ),
                   ],
                   const Gap(16),
-                  FButton(
-                    onPress: blocked ? null : submit,
-                    prefix: state.isSubmitting
-                        ? const FCircularProgress()
-                        : null,
-                    child: Text(
-                      state.isSubmitting
-                          ? AppLocalizations.of(context).verifierApplicationSubmitting
-                          : rejected
-                          ? AppLocalizations.of(context).verifierApplicationResubmit
-                          : AppLocalizations.of(context).verifierApplicationSubmit,
+                  FTextField(
+                    control: .managed(controller: reason),
+                    enabled: !readOnly,
+                    label: Text(
+                      AppLocalizations.of(context).verifierApplicationReasonLabel,
+                    ),
+                    hint: AppLocalizations.of(context).verifierApplicationReasonHint,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    minLines: 3,
+                    maxLines: 6,
+                  ),
+                  const Gap(16),
+                  _OptionalPhoto(
+                    draft: photo.value,
+                    enabled: !readOnly,
+                    onChanged: (next) => photo.value = next,
+                  ),
+                  const Gap(12),
+                  Text(
+                    AppLocalizations.of(context).verifierApplicationContributionHint,
+                    style: context.theme.typography.body.sm.copyWith(
+                      color: context.theme.colors.mutedForeground,
                     ),
                   ),
                   const Gap(8),
@@ -851,6 +981,169 @@ class _ScreenshotSlot extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _OptionalPhoto extends ConsumerStatefulWidget {
+  const _OptionalPhoto({
+    required this.draft,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final PhotoDraft draft;
+  final bool enabled;
+  final ValueChanged<PhotoDraft> onChanged;
+
+  @override
+  ConsumerState<_OptionalPhoto> createState() => _OptionalPhotoState();
+}
+
+class _OptionalPhotoState extends ConsumerState<_OptionalPhoto> {
+  final _picker = ImagePicker();
+
+  void _openPicker() {
+    if (!widget.enabled || widget.draft.uploading) return;
+    showImageSheetDrawer(
+      context,
+      picker: _picker,
+      filePicker: false,
+      onPicked: _handlePicked,
+    );
+  }
+
+  Future<void> _handlePicked(File file) async {
+    if (!mounted) return;
+    try {
+      final size = await file.length();
+      if (size > _maxScreenshotMb * 1024 * 1024) {
+        if (mounted) {
+          _toast(
+            AppLocalizations.of(context).verifierApplicationImageTooLarge(
+              _maxScreenshotMb,
+            ),
+          );
+        }
+        return;
+      }
+      widget.onChanged(
+        widget.draft.copyWith(
+          localPath: file.path,
+          uploading: true,
+          error: false,
+          clear: true,
+        ),
+      );
+      final result = await ref
+          .read(privateImageUploadServiceProvider)
+          .uploadFile(file, folder: _uploadFolder);
+      if (!mounted) return;
+      result.match(
+        (failure) {
+          widget.onChanged(
+            PhotoDraft(localPath: file.path, uploading: false, error: true),
+          );
+          _toast(failure.message);
+        },
+        (dto) {
+          widget.onChanged(
+            PhotoDraft(
+              url: dto.url,
+              fileId: dto.providerFileId,
+              localPath: file.path,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      debugPrint('[ImageSheet] verifier photo $e');
+      if (mounted) {
+        _toast(AppLocalizations.of(context).verifierApplicationImageProcessFailed);
+      }
+    }
+  }
+
+  void _toast(String message) {
+    showFToast(
+      context: context,
+      title: Text(message),
+      variant: FToastVariant.destructive,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final local = widget.draft.localPath;
+    final remote = widget.draft.url;
+    Widget preview;
+    if (local != null && local.isNotEmpty) {
+      preview = Image.file(File(local), fit: BoxFit.cover);
+    } else if (remote != null && remote.isNotEmpty) {
+      preview = CachedNetworkImageWithFallback(imageUrl: remote, fit: BoxFit.cover);
+    } else {
+      preview = ColoredBox(
+        color: theme.colors.muted,
+        child: Icon(FLucideIcons.camera, color: theme.colors.mutedForeground),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        Text(
+          l10n.verifierApplicationPhotoLabel,
+          style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const Gap(4),
+        Text(
+          l10n.verifierApplicationPhotoHint,
+          style: theme.typography.body.sm.copyWith(
+            color: theme.colors.mutedForeground,
+          ),
+        ),
+        const Gap(8),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: widget.enabled ? _openPicker : null,
+              child: SizedBox(
+                width: 96,
+                height: 96,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: preview,
+                      ),
+                    ),
+                    if (widget.draft.uploading)
+                      const Positioned.fill(
+                        child: ColoredBox(
+                          color: Color(0x88000000),
+                          child: Center(child: FCircularProgress()),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            if (widget.draft.ready || widget.draft.localPath != null) ...[
+              const Gap(8),
+              FButton(
+                variant: .ghost,
+                onPress: widget.enabled
+                    ? () => widget.onChanged(const PhotoDraft())
+                    : null,
+                child: Text(l10n.verifierApplicationPhotoRemove),
+              ),
+            ],
+          ],
+        ),
+      ],
     );
   }
 }

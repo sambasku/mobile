@@ -41,10 +41,14 @@ class CuisineRepositoryImpl {
   /// list yang masih filter client-side.
   Future<List<Cuisine>> getAll({String? q}) async {
     final items = <Cuisine>[];
+    final seen = <String>{};
     String? cursor;
     for (var page = 0; page < cuisinesMaxPages; page++) {
       final result = await listPage(before: cursor, q: q);
-      items.addAll(result.items.map((e) => e.toEntity()));
+      for (final dto in result.items) {
+        final entity = dto.toEntity();
+        if (seen.add(entity.id)) items.add(entity);
+      }
       cursor = result.nextCursor;
       if (cursor == null) break;
     }

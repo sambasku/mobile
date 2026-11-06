@@ -13,9 +13,12 @@ import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/event.dart';
+import '../../domain/event_calendar.dart';
 import '../../event_router.dart';
 import '../providers/event_browse_providers.dart';
+import '../providers/event_calendar_providers.dart';
 import '../providers/event_providers.dart';
+import '../widgets/event_day_sheet.dart';
 
 /// Grid 3 kolom, selaras grid wisata/kuliner (`place_list_page.dart`,
 /// `cuisine_list_page.dart`): poster kotak 1:1 + nama maks 2 baris. Tanggal
@@ -44,6 +47,11 @@ class _EventListPageState extends ConsumerState<EventListPage> {
   bool _autoloadBusy = false;
   int? _fillToken;
 
+  /// Kalender sembunyi by default - baru diinisialisasi saat dibuka.
+  bool _calendarExpanded = false;
+  FGridCalendarController? _calendarController;
+  EventCalendarMonth? _visibleMonth;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +63,36 @@ class _EventListPageState extends ConsumerState<EventListPage> {
     _debounce?.cancel();
     _scroll.removeListener(_maybeLoadMore);
     _scroll.dispose();
+    final cal = _calendarController;
+    if (cal != null) {
+      cal.removeListener(_onCalendarMonthChanged);
+      cal.dispose();
+    }
     super.dispose();
+  }
+
+  void _onCalendarMonthChanged() {
+    final cal = _calendarController;
+    if (cal == null) return;
+    final month = cal.currentMonth;
+    final next = EventCalendarMonth(month.year, month.month);
+    if (next == _visibleMonth) return;
+    setState(() => _visibleMonth = next);
+  }
+
+  void _toggleCalendar() {
+    setState(() {
+      _calendarExpanded = !_calendarExpanded;
+      if (_calendarExpanded && _calendarController == null) {
+        final now = DateTime.now();
+        _visibleMonth = EventCalendarMonth(now.year, now.month);
+        final cal = FGridCalendarController(
+          initial: DateTime.utc(now.year, now.month),
+        );
+        cal.addListener(_onCalendarMonthChanged);
+        _calendarController = cal;
+      }
+    });
   }
 
   EventBrowseQuery get _browseQuery => EventBrowseQuery(
@@ -120,18 +157,34 @@ class _EventListPageState extends ConsumerState<EventListPage> {
       .read(eventBrowseProvider(_browseQuery).notifier)
       .reload(keepItems: true);
 
+  Future<void> _openDaySheet(DateTime day) async {
+    final month = _visibleMonth;
+    if (month == null) return;
+    final monthState = ref.read(eventCalendarMonthProvider(month)).value;
+    final events = monthState?.eventsOnDay(day) ?? const <Event>[];
+    if (!mounted) return;
+    await showEventDaySheet(context, day: day, events: events);
+  }
+
   @override
   Widget build(BuildContext context) {
     final browseQuery = _browseQuery;
     final browseAsync = ref.watch(eventBrowseProvider(browseQuery));
     final categories = ref.watch(eventCategoriesProvider).value ?? const [];
+    final visibleMonth = _visibleMonth;
+    final calendarAsync = _calendarExpanded && visibleMonth != null
+        ? ref.watch(eventCalendarMonthProvider(visibleMonth))
+        : null;
+    final dateKeys = calendarAsync?.value?.dateKeys ?? const <String>{};
+    final l10n = AppLocalizations.of(context);
+    final calendarController = _calendarController;
 
     return ExcludeSemanticsOnExit(
       child: FScaffold(
         // Forui sudah memberi gutter dari tema - jangan tambah padding lagi.
         childPad: true,
         header: FHeader.nested(
-          title: Text(AppLocalizations.of(context).eventListTitle),
+          title: Text(l10n.eventListTitle),
           prefixes: [
             FHeaderAction.back(
               onPress: () =>
@@ -152,6 +205,38 @@ class _EventListPageState extends ConsumerState<EventListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: _toggleCalendar,
+              prefix: Icon(
+                _calendarExpanded
+                    ? FLucideIcons.chevronUp
+                    : FLucideIcons.calendarDays,
+              ),
+              child: Text(
+                _calendarExpanded
+                    ? l10n.eventCalendarHide
+                    : l10n.eventCalendarShow,
+              ),
+            ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _calendarExpanded && calendarController != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: _EventMonthCalendar(
+                        controller: calendarController,
+                        dateKeys: dateKeys,
+                        hasEventsLabel:
+                            l10n.eventCalendarDayHasEventsSemantics,
+                        onDayPress: _openDaySheet,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            const Gap(12),
             FTextField(
               control: FTextFieldControl.managed(
                 onChange: (value) => _onSearchChanged(value.text),
@@ -253,6 +338,66 @@ class _EventListPageState extends ConsumerState<EventListPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Kalender bulan (Forui PageView) + titik indikator tanggal beracara.
+class _EventMonthCalendar extends StatelessWidget {
+  const _EventMonthCalendar({
+    required this.controller,
+    required this.dateKeys,
+    required this.hasEventsLabel,
+    required this.onDayPress,
+  });
+
+  final FGridCalendarController controller;
+  final Set<String> dateKeys;
+  final String hasEventsLabel;
+  final FutureOr<void> Function(DateTime) onDayPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: FCalendar.grid(
+        selectionControl: FDateSelectionControl.managedSingle(
+          toggleable: false,
+        ),
+        control: FGridCalendarControl(controller: controller),
+        onDayPress: onDayPress,
+        dayBuilder: (context, styles, localizations, date, variants) {
+          final base = FCalendar.defaultDayBuilder(
+            context,
+            styles,
+            localizations,
+            date,
+            variants,
+          );
+          final hasEvents = dateKeys.contains(eventCalendarCellDateKey(date));
+          if (!hasEvents) return base;
+          final primary = context.theme.colors.primary;
+          return Semantics(
+            label: hasEventsLabel,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                base,
+                Positioned(
+                  bottom: 3,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox(width: 5, height: 5),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

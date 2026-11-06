@@ -30,14 +30,19 @@ void main() {
   test(
     'ubah makna: tanpa perubahan = null, padanan saja tidak bawa definisi',
     () {
-      Map<String, dynamic>? build(String def, String pad) => buildChangeMeaning(
-        meaningId: 'm1',
-        originalDefinition: 'lama',
-        definition: def,
-        originalPadanan: 'makan',
-        padanan: pad,
-        padananLanguageId: 'idn',
-      );
+      Map<String, dynamic>? build(String def, String pad) =>
+          buildChangeMeaning(
+            meanings: [
+              (
+                meaningId: 'm1',
+                originalDefinition: 'lama',
+                definition: def,
+                originalPadanan: 'makan',
+                padanan: pad,
+              ),
+            ],
+            padananLanguageId: 'idn',
+          );
       expect(build(' lama ', 'makan'), isNull);
       expect(build('lama', ''), isNull);
       final m = (build('lama', 'santap')!['meanings'] as List).single as Map;
@@ -46,6 +51,44 @@ void main() {
       expect((m['translations'] as List).single['translation_text'], 'santap');
     },
   );
+
+  test('#230 ubah makna multi: hanya makna yang berubah terkirim', () {
+    Map<String, dynamic>? build() => buildChangeMeaning(
+      meanings: [
+        (
+          meaningId: 'm1',
+          originalDefinition: 'lama',
+          definition: 'baru',
+          originalPadanan: 'makan',
+          padanan: 'makan',
+        ),
+        (
+          meaningId: 'm2',
+          originalDefinition: 'diam',
+          definition: 'diam',
+          originalPadanan: 'tidak bergerak',
+          padanan: 'tidak bergerak',
+        ),
+        (
+          meaningId: 'm3',
+          originalDefinition: 'sama',
+          definition: 'sama',
+          originalPadanan: 'rusak',
+          padanan: 'pecah',
+        ),
+      ],
+      padananLanguageId: 'idn',
+    );
+    final rows = build()!['meanings'] as List;
+    expect(rows, hasLength(2));
+    expect((rows[0] as Map)['meaning_id'], 'm1');
+    expect((rows[0] as Map).containsKey('translations'), isFalse);
+    expect((rows[1] as Map)['meaning_id'], 'm3');
+    expect(
+      ((rows[1] as Map)['translations'] as List).single['translation_text'],
+      'pecah',
+    );
+  });
 
   test('ubah kelas kata: sama = null', () {
     expect(

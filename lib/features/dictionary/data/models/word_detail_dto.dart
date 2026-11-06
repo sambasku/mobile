@@ -48,11 +48,13 @@ abstract class WordDetailDto with _$WordDetailDto {
 
 @freezed
 abstract class WordVerifierDto with _$WordVerifierDto {
-  const factory WordVerifierDto({
-    required String username,
-    @JsonKey(name: 'display_name') String? displayName,
-    required String role,
-  }) = _WordVerifierDto;
+const factory WordVerifierDto({
+required String username,
+@JsonKey(name: 'display_name') String? displayName,
+// #231: avatar kecil per makna; null = akun terhapus / tanpa foto.
+@JsonKey(name: 'avatar_url') String? avatarUrl,
+required String role,
+}) = _WordVerifierDto;
 
   factory WordVerifierDto.fromJson(Map<String, dynamic> json) =>
       _$WordVerifierDtoFromJson(json);

@@ -98,9 +98,9 @@ class ActivityKindAvatar extends StatelessWidget {
           foreground: theme.colors.success,
         );
       case FeedActivityKind.voteDown:
-        // #99: vote turun = panah turun merah.
+        // Copy feed: "perlu dicek ulang" - circleHelp, bukan panah turun.
         return _KindAvatarStyle(
-          icon: FLucideIcons.arrowDown,
+          icon: FLucideIcons.circleHelp,
           foreground: theme.colors.destructive,
         );
       case FeedActivityKind.discussion:

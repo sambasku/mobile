@@ -1,3 +1,4 @@
+import '../../../../core/models/public_author_ref.dart';
 import '../../domain/entities/event.dart';
 
 /// Parser event dari wire API (snake_case) ke domain (camelCase).
@@ -51,6 +52,7 @@ class EventDto {
       publishedAt: DateTime.tryParse('${json['published_at'] ?? ''}'),
       createdAt: DateTime.tryParse('${json['created_at'] ?? ''}'),
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),
+      author: PublicAuthorRef.fromJson(json['author']),
     );
   }
 

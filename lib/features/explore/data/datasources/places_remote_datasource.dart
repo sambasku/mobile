@@ -264,6 +264,7 @@ Map<String, dynamic> _wirePlaceToCamel(Map<String, dynamic> w) {
     'hours': w['hours'],
     'contact': w['contact'],
     'authorId': w['author_id'],
+    'author': w['author'],
     'images': images,
     'sources': sources,
     'related': related,

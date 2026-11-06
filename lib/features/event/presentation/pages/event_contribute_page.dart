@@ -10,6 +10,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -32,7 +33,8 @@ class EventContributePage extends ConsumerStatefulWidget {
       _EventContributePageState();
 }
 
-class _EventContributePageState extends ConsumerState<EventContributePage> {
+class _EventContributePageState extends ConsumerState<EventContributePage>
+    with LocalDraftKeeper<_EventDraft> {
   final _name = TextEditingController();
   final _description = TextEditingController();
   final _location = TextEditingController();
@@ -60,13 +62,82 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
   var _done = false;
 
   @override
+  String get draftKey => 'acara:create';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _name.text,
+    _description.text,
+    _location.text,
+    _organizer.text,
+    _sourceUrl.text,
+    _sourceAttribution.text,
+    _categoryId,
+    _sourceType?.name,
+    _point?.latitude,
+    _point?.longitude,
+    _startDate?.millisecondsSinceEpoch,
+    _startTime?.hour,
+    _startTime?.minute,
+    _endDate?.millisecondsSinceEpoch,
+    _endTime?.hour,
+    _endTime?.minute,
+    for (final image in _posters)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
+  ].join('\u0001');
+
+  @override
+  _EventDraft captureDraft() => _EventDraft(
+    name: _name.text,
+    description: _description.text,
+    location: _location.text,
+    organizer: _organizer.text,
+    sourceUrl: _sourceUrl.text,
+    sourceAttribution: _sourceAttribution.text,
+    categoryId: _categoryId,
+    sourceType: _sourceType,
+    lat: _point?.latitude,
+    lng: _point?.longitude,
+    startDate: _startDate,
+    startTime: _startTime,
+    endDate: _endDate,
+    endTime: _endTime,
+    posters: draftAttachmentSlots(_posters),
+  );
+
+  @override
+  void restoreDraft(_EventDraft draft) {
+    _name.text = draft.name;
+    _description.text = draft.description;
+    _location.text = draft.location;
+    _organizer.text = draft.organizer;
+    _sourceUrl.text = draft.sourceUrl;
+    _sourceAttribution.text = draft.sourceAttribution;
+    _categoryId = draft.categoryId;
+    _sourceType = draft.sourceType;
+    _startDate = draft.startDate;
+    _startTime = draft.startTime;
+    _endDate = draft.endDate;
+    _endTime = draft.endTime;
+    _posters = draft.posters;
+    if (draft.lat != null && draft.lng != null) {
+      _point = LatLng(draft.lat!, draft.lng!);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    loadLocalDraft();
     unawaited(AnalyticsService.instance.logAcaraContributeOpen());
   }
 
   @override
   void dispose() {
+    flushLocalDraft();
     _name.dispose();
     _description.dispose();
     _location.dispose();
@@ -279,7 +350,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
       return;
     }
     if (_posters.any((s) => s.error)) {
-      _validationError(AppLocalizations.of(context).eventFormRemoveFailedPoster);
+      _validationError(
+        AppLocalizations.of(context).eventFormRemoveFailedPoster,
+      );
       return;
     }
     final posterUrls = [
@@ -310,6 +383,7 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
             ),
           );
       unawaited(AnalyticsService.instance.logAcaraContributeSubmit());
+      commitLocalDraft();
       if (!mounted) return;
       setState(() {
         _busy = false;
@@ -387,7 +461,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           _CategoryField(
             categories: categories,
             selectedId: _categoryId,
-            onPick: (id) => setState(() => _categoryId = id),
+            onPick: (id) => setState(() {
+              _categoryId = id;
+            }),
           ),
           const Gap(12),
           FTileGroup(
@@ -497,7 +573,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
             const Gap(8),
             FButton(
               variant: .outline,
-              onPress: () => setState(() => _point = null),
+              onPress: () => setState(() {
+                _point = null;
+              }),
               child: Text(AppLocalizations.of(context).eventFormClearCoords),
             ),
           ],
@@ -509,12 +587,12 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
             ),
           ),
           const Gap(4),
-        Text(
-          AppLocalizations.of(context).eventFormPosterHint,
-          style: theme.typography.body.xs.copyWith(
-            color: theme.colors.mutedForeground,
+          Text(
+            AppLocalizations.of(context).eventFormPosterHint,
+            style: theme.typography.body.xs.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
           ),
-        ),
           const Gap(8),
           // Poster - field kanonik (pola form usul kata): sheet kamera/galeri,
           // upload segera, thumbnail + status + hapus. Gambar pertama sampul.
@@ -523,7 +601,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
             maxImages: _maxPosters,
             maxSizeMb: 5,
             images: _posters,
-            onChanged: (next) => setState(() => _posters = next),
+            onChanged: (next) => setState(() {
+              _posters = next;
+            }),
             upload: (file, {required bool isPrimary}) async {
               try {
                 final url = await ref
@@ -572,7 +652,9 @@ class _EventContributePageState extends ConsumerState<EventContributePage> {
           const Gap(12),
           _SourceTypeField(
             selected: _sourceType,
-            onPick: (type) => setState(() => _sourceType = type),
+            onPick: (type) => setState(() {
+              _sourceType = type;
+            }),
           ),
           const Gap(12),
           FTextField(
@@ -759,8 +841,7 @@ class _SourceTypeField extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final label =
-        eventSourceTypeLabel(l10n, selected) ??
-        l10n.eventSourcePlatformPicker;
+        eventSourceTypeLabel(l10n, selected) ?? l10n.eventSourcePlatformPicker;
     return FTile(
       title: Text(AppLocalizations.of(context).eventSourcePlatformLabel),
       subtitle: Text(label),
@@ -793,4 +874,57 @@ class _SourceTypeField extends StatelessWidget {
     );
     onPick(picked);
   }
+}
+
+class _EventDraft {
+  const _EventDraft({
+    required this.name,
+    required this.description,
+    required this.location,
+    required this.organizer,
+    required this.sourceUrl,
+    required this.sourceAttribution,
+    required this.categoryId,
+    required this.sourceType,
+    required this.lat,
+    required this.lng,
+    required this.startDate,
+    required this.startTime,
+    required this.endDate,
+    required this.endTime,
+    required this.posters,
+  });
+
+  final String name;
+  final String description;
+  final String location;
+  final String organizer;
+  final String sourceUrl;
+  final String sourceAttribution;
+  final String? categoryId;
+  final EventSourceType? sourceType;
+  final double? lat;
+  final double? lng;
+  final DateTime? startDate;
+  final FTime? startTime;
+  final DateTime? endDate;
+  final FTime? endTime;
+  final List<AttachmentImageSlot> posters;
+
+  bool get hasContent =>
+      name.trim().isNotEmpty ||
+      description.trim().isNotEmpty ||
+      location.trim().isNotEmpty ||
+      organizer.trim().isNotEmpty ||
+      sourceUrl.trim().isNotEmpty ||
+      sourceAttribution.trim().isNotEmpty ||
+      categoryId != null ||
+      sourceType != null ||
+      lat != null ||
+      lng != null ||
+      startDate != null ||
+      startTime != null ||
+      endDate != null ||
+      endTime != null ||
+      posters.isNotEmpty;
 }

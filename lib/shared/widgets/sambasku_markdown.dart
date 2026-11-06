@@ -74,6 +74,11 @@ MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
     h2Padding: const EdgeInsets.only(top: 8, bottom: 2),
     h3Padding: const EdgeInsets.only(top: 4),
     h4Padding: const EdgeInsets.only(top: 4),
+    a: typo.sm.copyWith(
+      color: colors.primary,
+      decoration: TextDecoration.underline,
+      decorationColor: colors.primary,
+    ),
     em: typo.sm.copyWith(fontStyle: FontStyle.italic),
     strong: typo.sm.copyWith(fontWeight: bold),
     listBullet: typo.sm,

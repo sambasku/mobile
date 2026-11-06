@@ -3,6 +3,7 @@ import 'package:sambasku_mobile/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 
+import '../../../core/utils/format_number.dart';
 import '../domain/entities/word_detail.dart';
 
 /// Teks polos untuk clipboard dari satu makna (+ lemma).
@@ -35,7 +36,7 @@ String buildWordClipboardText(WordDetail detail) {
   final meanings = [...detail.meanings]
     ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
   for (var i = 0; i < meanings.length; i++) {
-    final prefix = meanings.length > 1 ? '${i + 1} ' : '';
+    final prefix = meanings.length > 1 ? '${formatRibuan(i + 1)} ' : '';
     _appendMeaning(buf, meanings[i], prefix: prefix);
   }
 
@@ -43,21 +44,14 @@ String buildWordClipboardText(WordDetail detail) {
   return buf.toString();
 }
 
-void _appendMeaning(
-  StringBuffer buf,
-  WordMeaning m, {
-  required String prefix,
-}) {
+void _appendMeaning(StringBuffer buf, WordMeaning m, {required String prefix}) {
   final bracket = m.wordClassBracket;
   final padanan = _pickPadanan(m);
   final definition = m.definition?.trim();
   final defOk =
       definition != null && definition.isNotEmpty && definition != '-';
 
-  final head = [
-    ?bracket,
-    if (padanan != null) '→ $padanan',
-  ].join(' ');
+  final head = [?bracket, if (padanan != null) '→ $padanan'].join(' ');
   if (head.isNotEmpty) {
     buf.write('\n$prefix$head');
   }

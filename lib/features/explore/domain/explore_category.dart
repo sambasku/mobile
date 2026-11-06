@@ -28,6 +28,7 @@ class ExploreCategory {
     'usaha' => 'assets/images/explore_covers/usaha.webp',
     'acara' => 'assets/images/explore_covers/acara.webp',
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
+    'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     _ => null,
   };
 

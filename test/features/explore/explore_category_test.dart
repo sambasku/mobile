@@ -26,11 +26,19 @@ void main() {
       withSoon.take(active.length).map((c) => c.id),
       active.map((c) => c.id),
     );
-    // Anchor urutan = kartu aktif TERAKHIR (permainan, setelah acara).
-    expect(withSoon.indexOf(ExploreCategory.byId('hiburan')!), active.length - 1);
+    // Anchor urutan = kartu aktif TERAKHIR (ensiklopedia, setelah hiburan).
+    expect(
+      withSoon.indexOf(ExploreCategory.byId('ensiklopedia')!),
+      active.length - 1,
+    );
     expect(
       ExploreCategory.all.indexWhere((c) => c.id == 'acara') <
           ExploreCategory.all.indexWhere((c) => c.id == 'hiburan'),
+      isTrue,
+    );
+    expect(
+      ExploreCategory.all.indexWhere((c) => c.id == 'hiburan') <
+          ExploreCategory.all.indexWhere((c) => c.id == 'ensiklopedia'),
       isTrue,
     );
   });
@@ -39,7 +47,14 @@ void main() {
     final ids = ExploreCategory.all.map((c) => c.id).toSet();
     // Dihapus: sejarah, kisah, karya, tradisi, permainan, pendidikan.
     expect(
-      ids.containsAll(['sejarah', 'kisah', 'karya', 'tradisi', 'permainan', 'pendidikan']),
+      ids.containsAll([
+        'sejarah',
+        'kisah',
+        'karya',
+        'tradisi',
+        'permainan',
+        'pendidikan',
+      ]),
       isFalse,
     );
     // Pengganti: ensiklopedia (gabungan 5 kategori budaya) + hiburan.

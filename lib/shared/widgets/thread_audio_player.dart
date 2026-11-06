@@ -5,13 +5,11 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../core/utils/format_number.dart';
+
 /// Player ringkas untuk audio di thread (balasan diskusi / komentar kata).
 class ThreadAudioPlayer extends StatefulWidget {
-  const ThreadAudioPlayer({
-    super.key,
-    required this.url,
-    this.durationMs,
-  });
+  const ThreadAudioPlayer({super.key, required this.url, this.durationMs});
 
   final String url;
   final int? durationMs;
@@ -31,7 +29,7 @@ class _ThreadAudioPlayerState extends State<ThreadAudioPlayer> {
     final ms = widget.durationMs;
     if (ms == null || ms <= 0) return 'Suara';
     final sec = (ms / 1000).round().clamp(1, 9999);
-    if (sec < 60) return '${sec}s';
+    if (sec < 60) return '${formatRibuan(sec)}s';
     final m = sec ~/ 60;
     final s = sec % 60;
     return '$m:${s.toString().padLeft(2, '0')}';
@@ -100,10 +98,10 @@ class _ThreadAudioPlayerState extends State<ThreadAudioPlayer> {
     final icon = _error
         ? FLucideIcons.circleAlert
         : _loading
-            ? FLucideIcons.loader
-            : _playing
-                ? FLucideIcons.pause
-                : FLucideIcons.play;
+        ? FLucideIcons.loader
+        : _playing
+        ? FLucideIcons.pause
+        : FLucideIcons.play;
     final color = _error ? theme.colors.error : theme.colors.primary;
 
     return Semantics(
@@ -111,8 +109,8 @@ class _ThreadAudioPlayerState extends State<ThreadAudioPlayer> {
       label: _error
           ? 'Gagal memutar rekaman, ketuk untuk coba lagi'
           : _playing
-              ? 'Jeda rekaman'
-              : 'Putar rekaman',
+          ? 'Jeda rekaman'
+          : 'Putar rekaman',
       child: Material(
         color: theme.colors.secondary.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(8),

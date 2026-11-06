@@ -3517,6 +3517,24 @@ abstract class AppLocalizations {
   /// **'Ada usulan acara yang menunggu'**
   String get reviewHomeEventWaiting;
 
+  /// Tile hub verifikator yang membuka submenu usulan eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Eksplorasi'**
+  String get reviewHomeExploreTitle;
+
+  /// No description provided for @reviewHomeExploreSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata, usaha, kuliner, dan acara'**
+  String get reviewHomeExploreSubtitle;
+
+  /// No description provided for @reviewHomeExploreWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan eksplorasi yang menunggu'**
+  String get reviewHomeExploreWaiting;
+
   /// No description provided for @reviewQueueLoadFailed.
   ///
   /// In id, this message translates to:
@@ -3898,14 +3916,32 @@ abstract class AppLocalizations {
   /// No description provided for @reviewSessionVerifiedSelf.
   ///
   /// In id, this message translates to:
-  /// **'Sudah terverifikasi. Menyetujui hanya menutup antrean.'**
+  /// **'Kata ini sudah terverifikasi. Tombol Tutup hanya menutup antrean.'**
   String get reviewSessionVerifiedSelf;
 
   /// No description provided for @reviewSessionVerifiedBy.
   ///
   /// In id, this message translates to:
-  /// **'Sudah terverifikasi oleh @{verifier}. Menyetujui hanya menutup antrean.'**
+  /// **'Kata ini sudah terverifikasi oleh @{verifier}. Tombol Tutup hanya menutup antrean.'**
   String reviewSessionVerifiedBy(String verifier);
+
+  /// Label geser kanan dan semantics tombol saat kata sudah terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup antrean'**
+  String get reviewSessionCloseQueue;
+
+  /// Label pendek tombol yang menutup antrean kata sudah terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get reviewSessionCloseQueueButton;
+
+  /// Toast setelah menutup antrean kata yang sudah terverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean ditutup'**
+  String get reviewSessionQueueClosedToast;
 
   /// No description provided for @reviewSessionVerifierNote.
   ///
@@ -3913,11 +3949,29 @@ abstract class AppLocalizations {
   /// **'Catatan verifikator'**
   String get reviewSessionVerifierNote;
 
-  /// No description provided for @reviewSessionSwipeHint.
+  /// Judul sheet info usulan di kartu tinjau
   ///
   /// In id, this message translates to:
-  /// **'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.'**
-  String get reviewSessionSwipeHint;
+  /// **'Detail usulan'**
+  String get reviewSessionProposalInfo;
+
+  /// Label jenis entity di sheet info kartu tinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis usulan'**
+  String get reviewSessionInfoKind;
+
+  /// Label pengusul di sheet info kartu tinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Pengusul'**
+  String get reviewSessionInfoContributor;
+
+  /// Label waktu usulan masuk di sheet info kartu tinjau
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim'**
+  String get reviewSessionInfoSubmitted;
 
   /// No description provided for @reviewSessionSkeletonTitle.
   ///
@@ -9233,6 +9287,12 @@ abstract class AppLocalizations {
   /// **'Hapus filter'**
   String get usahaFilterClear;
 
+  /// CTA bawah drawer filter listing usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan'**
+  String get usahaFilterApply;
+
   /// Chip filter kecamatan aktif di listing usaha
   ///
   /// In id, this message translates to:
@@ -10430,7 +10490,7 @@ abstract class AppLocalizations {
   /// No description provided for @encyclopediaTitle.
   ///
   /// In id, this message translates to:
-  /// **'Ensiklopedia Sambas'**
+  /// **'Ensiklopedia'**
   String get encyclopediaTitle;
 
   /// No description provided for @encyclopediaSubtitle.
@@ -10750,6 +10810,162 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pilih kategori artikel'**
   String get encyclopediaCategoryEmpty;
+
+  /// Label kartu field Isi yang membuka editor Markdown full-screen
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis isi artikel'**
+  String get encyclopediaBodyTapToEdit;
+
+  /// Hint kartu Isi saat masih kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk menulis dengan format Markdown dan sisip gambar'**
+  String get encyclopediaBodyTapHint;
+
+  /// Hint kartu Isi bila sudah ada draft markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk lanjut menulis atau ubah isi'**
+  String get encyclopediaBodyHasContentHint;
+
+  /// Judul halaman editor Markdown full-screen
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis isi'**
+  String get mdEditorTitle;
+
+  /// CTA footer editor Markdown - kembali ke form dengan isi tersimpan
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get mdEditorDone;
+
+  /// Tombol/mode pratinjau Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau'**
+  String get mdEditorPreview;
+
+  /// Tombol/mode kembali ke penulisan Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis'**
+  String get mdEditorWrite;
+
+  /// Semantics tombol bold di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tebal'**
+  String get mdEditorBold;
+
+  /// Semantics tombol italic di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Miring'**
+  String get mdEditorItalic;
+
+  /// Semantics tombol heading di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Judul bagian'**
+  String get mdEditorHeading;
+
+  /// Semantics tombol sisip tautan di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan'**
+  String get mdEditorLink;
+
+  /// Judul bottom sheet sisip hyperlink Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Sisip tautan'**
+  String get mdEditorLinkSheetTitle;
+
+  /// No description provided for @mdEditorLinkLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks tautan'**
+  String get mdEditorLinkLabel;
+
+  /// No description provided for @mdEditorLinkLabelHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata yang diketuk pembaca'**
+  String get mdEditorLinkLabelHint;
+
+  /// No description provided for @mdEditorLinkUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get mdEditorLinkUrl;
+
+  /// No description provided for @mdEditorLinkUrlHint.
+  ///
+  /// In id, this message translates to:
+  /// **'https://'**
+  String get mdEditorLinkUrlHint;
+
+  /// No description provided for @mdEditorLinkInsert.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisipkan'**
+  String get mdEditorLinkInsert;
+
+  /// No description provided for @mdEditorLinkInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat harus diawali https://'**
+  String get mdEditorLinkInvalid;
+
+  /// Semantics tombol bullet list di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar'**
+  String get mdEditorList;
+
+  /// Semantics tombol unggah/sisip gambar di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Sisip gambar'**
+  String get mdEditorImage;
+
+  /// Toast bila upload gambar Markdown gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah gambar. Coba lagi ya'**
+  String get mdEditorUploadFailed;
+
+  /// Alt text default saat menyisipkan ![alt](url) di Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'gambar'**
+  String get mdEditorImageAlt;
+
+  /// Empty state mode preview Markdown bila body kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada isi untuk dipratinjau'**
+  String get mdEditorEmptyPreview;
+
+  /// Hint TextField di editor Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis Markdown di sini. Pakai toolbar untuk format, tautan, dan gambar.'**
+  String get mdEditorHint;
+
+  /// Semantics tombol undo di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Urungkan'**
+  String get mdEditorUndo;
+
+  /// Semantics tombol redo di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi'**
+  String get mdEditorRedo;
 
   /// No description provided for @exploreCategoryKomunitas.
   ///
@@ -13250,7 +13466,7 @@ abstract class AppLocalizations {
   /// No description provided for @discussionCreateCharCount.
   ///
   /// In id, this message translates to:
-  /// **'{count}/1000'**
+  /// **'{count}/1.000'**
   String discussionCreateCharCount(int count);
 
   /// No description provided for @discussionCreateShareLink.
@@ -14188,6 +14404,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal memuat usulan'**
   String get eventProposalsLoadFailedShort;
+
+  /// Judul bottomsheet daftar acara di tanggal terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Acara {date}'**
+  String eventDaySheetTitle(String date);
+
+  /// Empty state bottomsheet saat tanggal tanpa acara
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada acara di tanggal ini'**
+  String get eventDaySheetEmpty;
+
+  /// Semantics tambahan pada tanggal kalender yang punya indikator acara
+  ///
+  /// In id, this message translates to:
+  /// **'Ada acara'**
+  String get eventCalendarDayHasEventsSemantics;
+
+  /// Tombol membuka kalender bulan di daftar acara (default tertutup)
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan kalender acara'**
+  String get eventCalendarShow;
+
+  /// Tombol menutup kalender bulan di daftar acara
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan kalender'**
+  String get eventCalendarHide;
 
   /// No description provided for @eventListTitle.
   ///
@@ -15473,10 +15719,28 @@ abstract class AppLocalizations {
   /// **'Unggah screenshot profil {label}.'**
   String verifierApplicationUploadRequiredFor(String label);
 
+  /// No description provided for @verifierApplicationFullNameLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama lengkap'**
+  String get verifierApplicationFullNameLabel;
+
+  /// No description provided for @verifierApplicationFullNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama sesuai identitas'**
+  String get verifierApplicationFullNameHint;
+
+  /// No description provided for @verifierApplicationFullNameMin.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama lengkap minimal 2 karakter.'**
+  String get verifierApplicationFullNameMin;
+
   /// No description provided for @verifierApplicationPhoneLabel.
   ///
   /// In id, this message translates to:
-  /// **'No. HP'**
+  /// **'Nomor HP'**
   String get verifierApplicationPhoneLabel;
 
   /// No description provided for @verifierApplicationPhoneHint.
@@ -15527,10 +15791,124 @@ abstract class AppLocalizations {
   /// **'Mengirim...'**
   String get verifierApplicationSubmitting;
 
+  /// No description provided for @verifierApplicationDialectLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Dialek yang dikuasai'**
+  String get verifierApplicationDialectLabel;
+
+  /// No description provided for @verifierApplicationDialectPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dialek'**
+  String get verifierApplicationDialectPick;
+
+  /// No description provided for @verifierApplicationDialectUmum.
+  ///
+  /// In id, this message translates to:
+  /// **'Umum'**
+  String get verifierApplicationDialectUmum;
+
+  /// No description provided for @verifierApplicationDialectKota.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas Kota'**
+  String get verifierApplicationDialectKota;
+
+  /// No description provided for @verifierApplicationDialectPesisir.
+  ///
+  /// In id, this message translates to:
+  /// **'Sambas Pesisir'**
+  String get verifierApplicationDialectPesisir;
+
+  /// No description provided for @verifierApplicationDialectLainnya.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get verifierApplicationDialectLainnya;
+
+  /// No description provided for @verifierApplicationDialectRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dialek yang kamu kuasai.'**
+  String get verifierApplicationDialectRequired;
+
+  /// No description provided for @verifierApplicationDialectNoteLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan dialek'**
+  String get verifierApplicationDialectNoteLabel;
+
+  /// No description provided for @verifierApplicationDialectNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Sebutkan dialek atau wilayahnya'**
+  String get verifierApplicationDialectNoteHint;
+
+  /// No description provided for @verifierApplicationDialectNoteMin.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan dialek minimal 10 karakter.'**
+  String get verifierApplicationDialectNoteMin;
+
+  /// No description provided for @verifierApplicationReasonLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan'**
+  String get verifierApplicationReasonLabel;
+
+  /// No description provided for @verifierApplicationReasonHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa atau dialek mana yang kamu kuasai, dan kenapa kamu mau meninjau kata orang lain?'**
+  String get verifierApplicationReasonHint;
+
+  /// No description provided for @verifierApplicationReasonMin.
+  ///
+  /// In id, this message translates to:
+  /// **'Alasan minimal 10 karakter.'**
+  String get verifierApplicationReasonMin;
+
+  /// No description provided for @verifierApplicationPhotoLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto diri (opsional)'**
+  String get verifierApplicationPhotoLabel;
+
+  /// No description provided for @verifierApplicationPhotoHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Wajah jelas. Boleh dikosongkan.'**
+  String get verifierApplicationPhotoHint;
+
+  /// No description provided for @verifierApplicationPhotoUploading.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu foto diri selesai diunggah.'**
+  String get verifierApplicationPhotoUploading;
+
+  /// No description provided for @verifierApplicationPhotoFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto diri gagal diunggah. Coba lagi.'**
+  String get verifierApplicationPhotoFailed;
+
+  /// No description provided for @verifierApplicationPhotoRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus foto'**
+  String get verifierApplicationPhotoRemove;
+
+  /// No description provided for @verifierApplicationContributionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengajuan butuh minimal 3 kontribusi yang sudah disetujui.'**
+  String get verifierApplicationContributionHint;
+
   /// No description provided for @verifierApplicationPrivacyNote.
   ///
   /// In id, this message translates to:
-  /// **'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.'**
+  /// **'Nomor HP, alamat, dan foto diri hanya untuk admin, tidak tampil di profil publik.'**
   String get verifierApplicationPrivacyNote;
 
   /// No description provided for @verifierApplicationPickPlatform.
@@ -15640,6 +16018,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat semua pencapaian'**
   String get achievementSeeAll;
+
+  /// Overlay sel ujung saat lencana profil lebih dari satu baris
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat lainnya'**
+  String get achievementSeeMore;
 
   /// No description provided for @achievementBorderUpdated.
   ///

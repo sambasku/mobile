@@ -33,6 +33,7 @@ import '../widgets/contribute_relations_sheet.dart';
 import '../widgets/dialect_picker_sheet.dart';
 import '../widgets/duplicate_meaning_vote_sheet.dart';
 import '../widgets/kbbi_definition_sheet.dart';
+import '../widgets/kbbi_translation_field.dart';
 import '../widgets/knowledge_toggles.dart';
 import '../widgets/word_class_picker_sheet.dart';
 import '../../data/providers/contribution_data_providers.dart';
@@ -531,7 +532,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 l10n.contributeMultiClassHint,
-                style: theme.typography.body.sm.copyWith(color: theme.colors.mutedForeground),
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
               ),
             ),
           const Gap(16),
@@ -549,30 +552,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
 
           if (!_advanced) ...[
             const Gap(16),
-            FTextField(
-              control: FTextFieldControl.managed(
-                controller: _standardTranslationCtrl,
-              ),
+            KbbiTranslationField(
+              controller: _standardTranslationCtrl,
+              onOpenKbbi: _openStandardKbbiSheet,
               label: Text(l10n.contributeTranslationLabel),
               hint: l10n.contributeTranslationHint,
               description: Text(l10n.contributeKbbiHint),
               textInputAction: TextInputAction.done,
-              // ponytail: FButton.icon di suffixBuilder menghasilkan
-              // SemanticsNode ber-transform basi di bawah MergeSemantics
-              // forui 0.22 -> assert "Invisible SemanticsNodes" saat swap
-              // subtree (duobaseio/forui#1160, fix di forui 0.26+ yang
-              // butuh Flutter >= 3.47). ExcludeSemantics mencegah node itu
-              // masuk tree; label tombol sudah tersirat di description.
-              suffixBuilder: (context, style, _) => Padding(
-                padding: style.clearButtonPadding,
-                child: ExcludeSemantics(
-                  child: FButton.icon(
-                    style: style.clearButtonStyle,
-                    onPress: _openStandardKbbiSheet,
-                    child: const Icon(FLucideIcons.bookOpen),
-                  ),
-                ),
-              ),
             ),
             _inlineError(notifier.errorForMeaning(0, 'translation_texts')),
             _inlineError(notifier.errorForMeaning(0, 'definition')),
@@ -683,10 +669,10 @@ class _ContributePageState extends ConsumerState<ContributePage> {
             _inlineError(notifier.errorFor('dialect_id')),
             _inlineError(notifier.errorFor('language_id')),
             const Gap(16),
-                    _FieldCaption(
-                      l10n.contributeMeaningLabel,
-                      info: l10n.contributeMeaningGuide,
-                    ),
+            _FieldCaption(
+              l10n.contributeMeaningLabel,
+              info: l10n.contributeMeaningGuide,
+            ),
             for (var i = 0; i < _meanings.length; i++) ...[
               _MeaningBlock(
                 index: i,
@@ -952,7 +938,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       if (_standardTranslationCtrl.text.trim().isEmpty) {
         showFToast(
           context: context,
-          title: Text(AppLocalizations.of(context).contributeTranslationMissingTitle),
+          title: Text(
+            AppLocalizations.of(context).contributeTranslationMissingTitle,
+          ),
         );
         return;
       }
@@ -969,9 +957,9 @@ class _ContributePageState extends ConsumerState<ContributePage> {
         showFToast(
           context: context,
           title: Text(
-            AppLocalizations.of(context).contributeMeaningIncomplete(
-              incomplete + 1,
-            ),
+            AppLocalizations.of(
+              context,
+            ).contributeMeaningIncomplete(incomplete + 1),
           ),
         );
         return;
@@ -1128,9 +1116,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           actions: (dialogContext) => [
             FButton(
               onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(
-                AppLocalizations.of(context).contributeSeeHistory,
-              ),
+              child: Text(AppLocalizations.of(context).contributeSeeHistory),
             ),
             FButton(
               variant: FButtonVariant.outline,
@@ -1268,15 +1254,15 @@ class _LemmaCheckIndicator extends ConsumerWidget {
                   ),
                 ),
               ),
-            const Gap(6),
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Icon(
-                FLucideIcons.chevronRight,
-                size: 16,
-                color: theme.colors.mutedForeground,
+              const Gap(6),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
               ),
-            ),
             ],
           ),
         ),
@@ -1421,8 +1407,9 @@ class _MeaningBlock extends StatelessWidget {
                       ? l10n.contributeTranslationSbsHint
                       : l10n.contributeTranslationIdnGuide,
                 ),
-                FTextField(
-                  control: FTextFieldControl.managed(controller: draft.trCtrl),
+                KbbiTranslationField(
+                  controller: draft.trCtrl,
+                  onOpenKbbi: onOpenKbbi,
                   hint: isTranslationMiss
                       ? l10n.contributeTranslationSbsHintField
                       : l10n.contributeTranslationHint,
@@ -1430,19 +1417,6 @@ class _MeaningBlock extends StatelessWidget {
                       ? null
                       : Text(l10n.contributeKbbiHint),
                   textInputAction: TextInputAction.next,
-                  // ponytail: sama seperti suffix KBBI di atas - sembunyikan
-                  // SemanticsNode suffix dari tree (bug MergeSemantics
-                  // forui 0.22).
-                  suffixBuilder: (context, style, _) => Padding(
-                    padding: style.clearButtonPadding,
-                    child: ExcludeSemantics(
-                      child: FButton.icon(
-                        style: style.clearButtonStyle,
-                        onPress: onOpenKbbi,
-                        child: const Icon(FLucideIcons.bookOpen),
-                      ),
-                    ),
-                  ),
                 ),
                 _MeaningInlineError(padananError),
                 const Gap(8),
@@ -1617,7 +1591,10 @@ class _InfoTip extends StatelessWidget {
       constraints: const FPortalConstraints(maxWidth: 280),
       popoverBuilder: (context, _) => Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Text(message, style: theme.typography.body.sm.copyWith(height: 1.35)),
+        child: Text(
+          message,
+          style: theme.typography.body.sm.copyWith(height: 1.35),
+        ),
       ),
       builder: (context, controller, child) => GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -1660,7 +1637,9 @@ class _SelectFieldSkeleton extends StatelessWidget {
         enabled: true,
         child: IgnorePointer(
           child: _SelectField(
-            selectedLabel: AppLocalizations.of(context).contributeDialectLoading,
+            selectedLabel: AppLocalizations.of(
+              context,
+            ).contributeDialectLoading,
             hint: AppLocalizations.of(context).contributeDialectPick,
             onTap: null,
           ),
@@ -1952,9 +1931,7 @@ class _WordTypeChips extends StatelessWidget {
               variant: value == opt
                   ? FBadgeVariant.primary
                   : FBadgeVariant.secondary,
-              child: Text(
-                wordTypeLabel(opt, AppLocalizations.of(context)),
-              ),
+              child: Text(wordTypeLabel(opt, AppLocalizations.of(context))),
             ),
           ),
       ],

@@ -583,7 +583,7 @@ $SocialScreenshotDtoCopyWith<$Res> get screenshot {
 /// @nodoc
 mixin _$VerifierApplicationDto {
 
- String get id; String get status; String get phone; String get address;@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks;@JsonKey(name: 'admin_comment') String? get adminComment;@JsonKey(name: 'reviewed_at') String? get reviewedAt;@JsonKey(name: 'created_at') String get createdAt;@JsonKey(name: 'updated_at') String? get updatedAt;
+ String get id; String get status; String get phone; String get address;@JsonKey(name: 'full_name') String? get fullName;@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks; String? get dialect;@JsonKey(name: 'dialect_note') String? get dialectNote; String? get reason; SocialScreenshotDto? get photo;@JsonKey(name: 'admin_comment') String? get adminComment;@JsonKey(name: 'reviewed_at') String? get reviewedAt;@JsonKey(name: 'created_at') String get createdAt;@JsonKey(name: 'updated_at') String? get updatedAt;
 /// Create a copy of VerifierApplicationDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -597,20 +597,20 @@ $VerifierApplicationDtoCopyWith<VerifierApplicationDto> get copyWith => _$Verifi
 @override
 bool operator ==(Object other) {
   final _this = this as VerifierApplicationDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifierApplicationDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.address, _this.address) || other.address == _this.address)&&const DeepCollectionEquality().equals(other.socialLinks, _this.socialLinks)&&(identical(other.adminComment, _this.adminComment) || other.adminComment == _this.adminComment)&&(identical(other.reviewedAt, _this.reviewedAt) || other.reviewedAt == _this.reviewedAt)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifierApplicationDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.address, _this.address) || other.address == _this.address)&&(identical(other.fullName, _this.fullName) || other.fullName == _this.fullName)&&const DeepCollectionEquality().equals(other.socialLinks, _this.socialLinks)&&(identical(other.dialect, _this.dialect) || other.dialect == _this.dialect)&&(identical(other.dialectNote, _this.dialectNote) || other.dialectNote == _this.dialectNote)&&(identical(other.reason, _this.reason) || other.reason == _this.reason)&&(identical(other.photo, _this.photo) || other.photo == _this.photo)&&(identical(other.adminComment, _this.adminComment) || other.adminComment == _this.adminComment)&&(identical(other.reviewedAt, _this.reviewedAt) || other.reviewedAt == _this.reviewedAt)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as VerifierApplicationDto;
-  return Object.hash(runtimeType,_this.id,_this.status,_this.phone,_this.address,const DeepCollectionEquality().hash(_this.socialLinks),_this.adminComment,_this.reviewedAt,_this.createdAt,_this.updatedAt);
+  return Object.hash(runtimeType,_this.id,_this.status,_this.phone,_this.address,_this.fullName,const DeepCollectionEquality().hash(_this.socialLinks),_this.dialect,_this.dialectNote,_this.reason,_this.photo,_this.adminComment,_this.reviewedAt,_this.createdAt,_this.updatedAt);
 }
 
 @override
 String toString() {
   final _this = this as VerifierApplicationDto;
-  return 'VerifierApplicationDto(id: ${_this.id}, status: ${_this.status}, phone: ${_this.phone}, address: ${_this.address}, socialLinks: ${_this.socialLinks}, adminComment: ${_this.adminComment}, reviewedAt: ${_this.reviewedAt}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt})';
+  return 'VerifierApplicationDto(id: ${_this.id}, status: ${_this.status}, phone: ${_this.phone}, address: ${_this.address}, fullName: ${_this.fullName}, socialLinks: ${_this.socialLinks}, dialect: ${_this.dialect}, dialectNote: ${_this.dialectNote}, reason: ${_this.reason}, photo: ${_this.photo}, adminComment: ${_this.adminComment}, reviewedAt: ${_this.reviewedAt}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -621,11 +621,11 @@ abstract mixin class $VerifierApplicationDtoCopyWith<$Res>  {
   factory $VerifierApplicationDtoCopyWith(VerifierApplicationDto value, $Res Function(VerifierApplicationDto) _then) = _$VerifierApplicationDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String status, String phone, String address,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks,@JsonKey(name: 'admin_comment') String? adminComment,@JsonKey(name: 'reviewed_at') String? reviewedAt,@JsonKey(name: 'created_at') String createdAt,@JsonKey(name: 'updated_at') String? updatedAt
+ String id, String status, String phone, String address,@JsonKey(name: 'full_name') String? fullName,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks, String? dialect,@JsonKey(name: 'dialect_note') String? dialectNote, String? reason, SocialScreenshotDto? photo,@JsonKey(name: 'admin_comment') String? adminComment,@JsonKey(name: 'reviewed_at') String? reviewedAt,@JsonKey(name: 'created_at') String createdAt,@JsonKey(name: 'updated_at') String? updatedAt
 });
 
 
-
+$SocialScreenshotDtoCopyWith<$Res>? get photo;
 
 }
 /// @nodoc
@@ -638,21 +638,38 @@ class _$VerifierApplicationDtoCopyWithImpl<$Res>
 
 /// Create a copy of VerifierApplicationDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? phone = null,Object? address = null,Object? socialLinks = null,Object? adminComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? phone = null,Object? address = null,Object? fullName = freezed,Object? socialLinks = null,Object? dialect = freezed,Object? dialectNote = freezed,Object? reason = freezed,Object? photo = freezed,Object? adminComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,Object? updatedAt = freezed,}) {
   return _then(VerifierApplicationDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,socialLinks: null == socialLinks ? _self.socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
-as List<SocialLinkDto>,adminComment: freezed == adminComment ? _self.adminComment : adminComment // ignore: cast_nullable_to_non_nullable
+as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String?,socialLinks: null == socialLinks ? _self.socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
+as List<SocialLinkDto>,dialect: freezed == dialect ? _self.dialect : dialect // ignore: cast_nullable_to_non_nullable
+as String?,dialectNote: freezed == dialectNote ? _self.dialectNote : dialectNote // ignore: cast_nullable_to_non_nullable
+as String?,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String?,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as SocialScreenshotDto?,adminComment: freezed == adminComment ? _self.adminComment : adminComment // ignore: cast_nullable_to_non_nullable
 as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
+/// Create a copy of VerifierApplicationDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SocialScreenshotDtoCopyWith<$Res>? get photo {
+    if (_self.photo == null) {
+    return null;
+  }
 
+  return $SocialScreenshotDtoCopyWith<$Res>(_self.photo!, (value) {
+    return _then(_self.copyWith(photo: value));
+  });
+}
 }
 
 
@@ -734,10 +751,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'full_name')  String? fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String? dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String? reason,  SocialScreenshotDto? photo, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VerifierApplicationDto() when $default != null:
-return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLinks,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.status,_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -755,10 +772,10 @@ return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLink
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'full_name')  String? fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String? dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String? reason,  SocialScreenshotDto? photo, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _VerifierApplicationDto():
-return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLinks,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.status,_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -775,10 +792,10 @@ return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLink
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String status,  String phone,  String address, @JsonKey(name: 'full_name')  String? fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String? dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String? reason,  SocialScreenshotDto? photo, @JsonKey(name: 'admin_comment')  String? adminComment, @JsonKey(name: 'reviewed_at')  String? reviewedAt, @JsonKey(name: 'created_at')  String createdAt, @JsonKey(name: 'updated_at')  String? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _VerifierApplicationDto() when $default != null:
-return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLinks,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.status,_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo,_that.adminComment,_that.reviewedAt,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -790,13 +807,14 @@ return $default(_that.id,_that.status,_that.phone,_that.address,_that.socialLink
 
 @JsonSerializable(explicitToJson: true)
 class _VerifierApplicationDto implements VerifierApplicationDto {
-  const _VerifierApplicationDto({required this.id, required this.status, required this.phone, required this.address, @JsonKey(name: 'social_links') required  List<SocialLinkDto> socialLinks, @JsonKey(name: 'admin_comment') this.adminComment, @JsonKey(name: 'reviewed_at') this.reviewedAt, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt}): _socialLinks = socialLinks;
+  const _VerifierApplicationDto({required this.id, required this.status, required this.phone, required this.address, @JsonKey(name: 'full_name') this.fullName, @JsonKey(name: 'social_links') required  List<SocialLinkDto> socialLinks, this.dialect, @JsonKey(name: 'dialect_note') this.dialectNote, this.reason, this.photo, @JsonKey(name: 'admin_comment') this.adminComment, @JsonKey(name: 'reviewed_at') this.reviewedAt, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt}): _socialLinks = socialLinks;
   factory _VerifierApplicationDto.fromJson(Map<String, dynamic> json) => _$VerifierApplicationDtoFromJson(json);
 
 @override final  String id;
 @override final  String status;
 @override final  String phone;
 @override final  String address;
+@override@JsonKey(name: 'full_name') final  String? fullName;
  final  List<SocialLinkDto> _socialLinks;
 @override@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks {
   if (_socialLinks is EqualUnmodifiableListView) return _socialLinks;
@@ -804,6 +822,10 @@ class _VerifierApplicationDto implements VerifierApplicationDto {
   return EqualUnmodifiableListView(_socialLinks);
 }
 
+@override final  String? dialect;
+@override@JsonKey(name: 'dialect_note') final  String? dialectNote;
+@override final  String? reason;
+@override final  SocialScreenshotDto? photo;
 @override@JsonKey(name: 'admin_comment') final  String? adminComment;
 @override@JsonKey(name: 'reviewed_at') final  String? reviewedAt;
 @override@JsonKey(name: 'created_at') final  String createdAt;
@@ -822,18 +844,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifierApplicationDto&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other.socialLinks, _socialLinks)&&(identical(other.adminComment, adminComment) || other.adminComment == adminComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifierApplicationDto&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&const DeepCollectionEquality().equals(other.socialLinks, _socialLinks)&&(identical(other.dialect, dialect) || other.dialect == dialect)&&(identical(other.dialectNote, dialectNote) || other.dialectNote == dialectNote)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.photo, photo) || other.photo == photo)&&(identical(other.adminComment, adminComment) || other.adminComment == adminComment)&&(identical(other.reviewedAt, reviewedAt) || other.reviewedAt == reviewedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,status,phone,address,const DeepCollectionEquality().hash(_socialLinks),adminComment,reviewedAt,createdAt,updatedAt);
+    return Object.hash(runtimeType,id,status,phone,address,fullName,const DeepCollectionEquality().hash(_socialLinks),dialect,dialectNote,reason,photo,adminComment,reviewedAt,createdAt,updatedAt);
 }
 
 @override
 String toString() {
-    return 'VerifierApplicationDto(id: $id, status: $status, phone: $phone, address: $address, socialLinks: $socialLinks, adminComment: $adminComment, reviewedAt: $reviewedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'VerifierApplicationDto(id: $id, status: $status, phone: $phone, address: $address, fullName: $fullName, socialLinks: $socialLinks, dialect: $dialect, dialectNote: $dialectNote, reason: $reason, photo: $photo, adminComment: $adminComment, reviewedAt: $reviewedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -844,11 +866,11 @@ abstract mixin class _$VerifierApplicationDtoCopyWith<$Res> implements $Verifier
   factory _$VerifierApplicationDtoCopyWith(_VerifierApplicationDto value, $Res Function(_VerifierApplicationDto) _then) = __$VerifierApplicationDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String status, String phone, String address,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks,@JsonKey(name: 'admin_comment') String? adminComment,@JsonKey(name: 'reviewed_at') String? reviewedAt,@JsonKey(name: 'created_at') String createdAt,@JsonKey(name: 'updated_at') String? updatedAt
+ String id, String status, String phone, String address,@JsonKey(name: 'full_name') String? fullName,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks, String? dialect,@JsonKey(name: 'dialect_note') String? dialectNote, String? reason, SocialScreenshotDto? photo,@JsonKey(name: 'admin_comment') String? adminComment,@JsonKey(name: 'reviewed_at') String? reviewedAt,@JsonKey(name: 'created_at') String createdAt,@JsonKey(name: 'updated_at') String? updatedAt
 });
 
 
-
+@override $SocialScreenshotDtoCopyWith<$Res>? get photo;
 
 }
 /// @nodoc
@@ -861,14 +883,19 @@ class __$VerifierApplicationDtoCopyWithImpl<$Res>
 
 /// Create a copy of VerifierApplicationDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? phone = null,Object? address = null,Object? socialLinks = null,Object? adminComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? phone = null,Object? address = null,Object? fullName = freezed,Object? socialLinks = null,Object? dialect = freezed,Object? dialectNote = freezed,Object? reason = freezed,Object? photo = freezed,Object? adminComment = freezed,Object? reviewedAt = freezed,Object? createdAt = null,Object? updatedAt = freezed,}) {
   return _then(_VerifierApplicationDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
-as String,socialLinks: null == socialLinks ? _self._socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
-as List<SocialLinkDto>,adminComment: freezed == adminComment ? _self.adminComment : adminComment // ignore: cast_nullable_to_non_nullable
+as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String?,socialLinks: null == socialLinks ? _self._socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
+as List<SocialLinkDto>,dialect: freezed == dialect ? _self.dialect : dialect // ignore: cast_nullable_to_non_nullable
+as String?,dialectNote: freezed == dialectNote ? _self.dialectNote : dialectNote // ignore: cast_nullable_to_non_nullable
+as String?,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String?,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as SocialScreenshotDto?,adminComment: freezed == adminComment ? _self.adminComment : adminComment // ignore: cast_nullable_to_non_nullable
 as String?,reviewedAt: freezed == reviewedAt ? _self.reviewedAt : reviewedAt // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -876,14 +903,26 @@ as String?,
   ));
 }
 
+/// Create a copy of VerifierApplicationDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SocialScreenshotDtoCopyWith<$Res>? get photo {
+    if (_self.photo == null) {
+    return null;
+  }
 
+  return $SocialScreenshotDtoCopyWith<$Res>(_self.photo!, (value) {
+    return _then(_self.copyWith(photo: value));
+  });
+}
 }
 
 
 /// @nodoc
 mixin _$SubmitVerifierApplicationRequestDto {
 
- String get phone; String get address;@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks;
+ String get phone; String get address;@JsonKey(name: 'full_name') String get fullName;@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks; String get dialect;@JsonKey(name: 'dialect_note') String? get dialectNote; String get reason; SocialScreenshotDto? get photo;
 /// Create a copy of SubmitVerifierApplicationRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -897,20 +936,20 @@ $SubmitVerifierApplicationRequestDtoCopyWith<SubmitVerifierApplicationRequestDto
 @override
 bool operator ==(Object other) {
   final _this = this as SubmitVerifierApplicationRequestDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitVerifierApplicationRequestDto&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.address, _this.address) || other.address == _this.address)&&const DeepCollectionEquality().equals(other.socialLinks, _this.socialLinks));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitVerifierApplicationRequestDto&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.address, _this.address) || other.address == _this.address)&&(identical(other.fullName, _this.fullName) || other.fullName == _this.fullName)&&const DeepCollectionEquality().equals(other.socialLinks, _this.socialLinks)&&(identical(other.dialect, _this.dialect) || other.dialect == _this.dialect)&&(identical(other.dialectNote, _this.dialectNote) || other.dialectNote == _this.dialectNote)&&(identical(other.reason, _this.reason) || other.reason == _this.reason)&&(identical(other.photo, _this.photo) || other.photo == _this.photo));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as SubmitVerifierApplicationRequestDto;
-  return Object.hash(runtimeType,_this.phone,_this.address,const DeepCollectionEquality().hash(_this.socialLinks));
+  return Object.hash(runtimeType,_this.phone,_this.address,_this.fullName,const DeepCollectionEquality().hash(_this.socialLinks),_this.dialect,_this.dialectNote,_this.reason,_this.photo);
 }
 
 @override
 String toString() {
   final _this = this as SubmitVerifierApplicationRequestDto;
-  return 'SubmitVerifierApplicationRequestDto(phone: ${_this.phone}, address: ${_this.address}, socialLinks: ${_this.socialLinks})';
+  return 'SubmitVerifierApplicationRequestDto(phone: ${_this.phone}, address: ${_this.address}, fullName: ${_this.fullName}, socialLinks: ${_this.socialLinks}, dialect: ${_this.dialect}, dialectNote: ${_this.dialectNote}, reason: ${_this.reason}, photo: ${_this.photo})';
 }
 
 
@@ -921,11 +960,11 @@ abstract mixin class $SubmitVerifierApplicationRequestDtoCopyWith<$Res>  {
   factory $SubmitVerifierApplicationRequestDtoCopyWith(SubmitVerifierApplicationRequestDto value, $Res Function(SubmitVerifierApplicationRequestDto) _then) = _$SubmitVerifierApplicationRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String phone, String address,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks
+ String phone, String address,@JsonKey(name: 'full_name') String fullName,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks, String dialect,@JsonKey(name: 'dialect_note') String? dialectNote, String reason, SocialScreenshotDto? photo
 });
 
 
-
+$SocialScreenshotDtoCopyWith<$Res>? get photo;
 
 }
 /// @nodoc
@@ -938,15 +977,32 @@ class _$SubmitVerifierApplicationRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubmitVerifierApplicationRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? phone = null,Object? address = null,Object? socialLinks = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? phone = null,Object? address = null,Object? fullName = null,Object? socialLinks = null,Object? dialect = null,Object? dialectNote = freezed,Object? reason = null,Object? photo = freezed,}) {
   return _then(SubmitVerifierApplicationRequestDto(
 phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,socialLinks: null == socialLinks ? _self.socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
-as List<SocialLinkDto>,
+as List<SocialLinkDto>,dialect: null == dialect ? _self.dialect : dialect // ignore: cast_nullable_to_non_nullable
+as String,dialectNote: freezed == dialectNote ? _self.dialectNote : dialectNote // ignore: cast_nullable_to_non_nullable
+as String?,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as SocialScreenshotDto?,
   ));
 }
+/// Create a copy of SubmitVerifierApplicationRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SocialScreenshotDtoCopyWith<$Res>? get photo {
+    if (_self.photo == null) {
+    return null;
+  }
 
+  return $SocialScreenshotDtoCopyWith<$Res>(_self.photo!, (value) {
+    return _then(_self.copyWith(photo: value));
+  });
+}
 }
 
 
@@ -1028,10 +1084,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String phone,  String address, @JsonKey(name: 'full_name')  String fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String reason,  SocialScreenshotDto? photo)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitVerifierApplicationRequestDto() when $default != null:
-return $default(_that.phone,_that.address,_that.socialLinks);case _:
+return $default(_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo);case _:
   return orElse();
 
 }
@@ -1049,10 +1105,10 @@ return $default(_that.phone,_that.address,_that.socialLinks);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String phone,  String address, @JsonKey(name: 'full_name')  String fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String reason,  SocialScreenshotDto? photo)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitVerifierApplicationRequestDto():
-return $default(_that.phone,_that.address,_that.socialLinks);case _:
+return $default(_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1069,10 +1125,10 @@ return $default(_that.phone,_that.address,_that.socialLinks);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String phone,  String address, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String phone,  String address, @JsonKey(name: 'full_name')  String fullName, @JsonKey(name: 'social_links')  List<SocialLinkDto> socialLinks,  String dialect, @JsonKey(name: 'dialect_note')  String? dialectNote,  String reason,  SocialScreenshotDto? photo)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitVerifierApplicationRequestDto() when $default != null:
-return $default(_that.phone,_that.address,_that.socialLinks);case _:
+return $default(_that.phone,_that.address,_that.fullName,_that.socialLinks,_that.dialect,_that.dialectNote,_that.reason,_that.photo);case _:
   return null;
 
 }
@@ -1084,11 +1140,12 @@ return $default(_that.phone,_that.address,_that.socialLinks);case _:
 
 @JsonSerializable(explicitToJson: true)
 class _SubmitVerifierApplicationRequestDto implements SubmitVerifierApplicationRequestDto {
-  const _SubmitVerifierApplicationRequestDto({required this.phone, required this.address, @JsonKey(name: 'social_links') required  List<SocialLinkDto> socialLinks}): _socialLinks = socialLinks;
+  const _SubmitVerifierApplicationRequestDto({required this.phone, required this.address, @JsonKey(name: 'full_name') required this.fullName, @JsonKey(name: 'social_links') required  List<SocialLinkDto> socialLinks, required this.dialect, @JsonKey(name: 'dialect_note') this.dialectNote, required this.reason, this.photo}): _socialLinks = socialLinks;
   factory _SubmitVerifierApplicationRequestDto.fromJson(Map<String, dynamic> json) => _$SubmitVerifierApplicationRequestDtoFromJson(json);
 
 @override final  String phone;
 @override final  String address;
+@override@JsonKey(name: 'full_name') final  String fullName;
  final  List<SocialLinkDto> _socialLinks;
 @override@JsonKey(name: 'social_links') List<SocialLinkDto> get socialLinks {
   if (_socialLinks is EqualUnmodifiableListView) return _socialLinks;
@@ -1096,6 +1153,10 @@ class _SubmitVerifierApplicationRequestDto implements SubmitVerifierApplicationR
   return EqualUnmodifiableListView(_socialLinks);
 }
 
+@override final  String dialect;
+@override@JsonKey(name: 'dialect_note') final  String? dialectNote;
+@override final  String reason;
+@override final  SocialScreenshotDto? photo;
 
 /// Create a copy of SubmitVerifierApplicationRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -1110,18 +1171,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitVerifierApplicationRequestDto&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other.socialLinks, _socialLinks));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitVerifierApplicationRequestDto&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.address, address) || other.address == address)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&const DeepCollectionEquality().equals(other.socialLinks, _socialLinks)&&(identical(other.dialect, dialect) || other.dialect == dialect)&&(identical(other.dialectNote, dialectNote) || other.dialectNote == dialectNote)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.photo, photo) || other.photo == photo));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,phone,address,const DeepCollectionEquality().hash(_socialLinks));
+    return Object.hash(runtimeType,phone,address,fullName,const DeepCollectionEquality().hash(_socialLinks),dialect,dialectNote,reason,photo);
 }
 
 @override
 String toString() {
-    return 'SubmitVerifierApplicationRequestDto(phone: $phone, address: $address, socialLinks: $socialLinks)';
+    return 'SubmitVerifierApplicationRequestDto(phone: $phone, address: $address, fullName: $fullName, socialLinks: $socialLinks, dialect: $dialect, dialectNote: $dialectNote, reason: $reason, photo: $photo)';
 }
 
 
@@ -1132,11 +1193,11 @@ abstract mixin class _$SubmitVerifierApplicationRequestDtoCopyWith<$Res> impleme
   factory _$SubmitVerifierApplicationRequestDtoCopyWith(_SubmitVerifierApplicationRequestDto value, $Res Function(_SubmitVerifierApplicationRequestDto) _then) = __$SubmitVerifierApplicationRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String phone, String address,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks
+ String phone, String address,@JsonKey(name: 'full_name') String fullName,@JsonKey(name: 'social_links') List<SocialLinkDto> socialLinks, String dialect,@JsonKey(name: 'dialect_note') String? dialectNote, String reason, SocialScreenshotDto? photo
 });
 
 
-
+@override $SocialScreenshotDtoCopyWith<$Res>? get photo;
 
 }
 /// @nodoc
@@ -1149,16 +1210,33 @@ class __$SubmitVerifierApplicationRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubmitVerifierApplicationRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? phone = null,Object? address = null,Object? socialLinks = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? phone = null,Object? address = null,Object? fullName = null,Object? socialLinks = null,Object? dialect = null,Object? dialectNote = freezed,Object? reason = null,Object? photo = freezed,}) {
   return _then(_SubmitVerifierApplicationRequestDto(
 phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,socialLinks: null == socialLinks ? _self._socialLinks : socialLinks // ignore: cast_nullable_to_non_nullable
-as List<SocialLinkDto>,
+as List<SocialLinkDto>,dialect: null == dialect ? _self.dialect : dialect // ignore: cast_nullable_to_non_nullable
+as String,dialectNote: freezed == dialectNote ? _self.dialectNote : dialectNote // ignore: cast_nullable_to_non_nullable
+as String?,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String,photo: freezed == photo ? _self.photo : photo // ignore: cast_nullable_to_non_nullable
+as SocialScreenshotDto?,
   ));
 }
 
+/// Create a copy of SubmitVerifierApplicationRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SocialScreenshotDtoCopyWith<$Res>? get photo {
+    if (_self.photo == null) {
+    return null;
+  }
 
+  return $SocialScreenshotDtoCopyWith<$Res>(_self.photo!, (value) {
+    return _then(_self.copyWith(photo: value));
+  });
+}
 }
 
 // dart format on

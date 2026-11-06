@@ -12,10 +12,12 @@ import '../../../../core/models/external_link.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../core/models/image_attribution.dart';
+import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -179,7 +181,9 @@ class _BodyState extends ConsumerState<_Body> {
         placePublicUrl(place.slug) ?? placeGoogleMapsUri(place)?.toString();
     final box = buttonContext.findRenderObject() as RenderBox?;
     final desc = place.shortDescription.trim();
-    final text = desc.isEmpty ? '${place.name}\n\n$link' : '${place.name}\n$desc\n\n$link';
+    final text = desc.isEmpty
+        ? '${place.name}\n\n$link'
+        : '${place.name}\n$desc\n\n$link';
     await SharePlus.instance.share(
       ShareParams(
         text: text,
@@ -240,7 +244,9 @@ class _BodyState extends ConsumerState<_Body> {
                         children: [
                           FBadge(
                             variant: FBadgeVariant.secondary,
-                            child: Text(placeCategoryLabel(l10n, place.category)),
+                            child: Text(
+                              placeCategoryLabel(l10n, place.category),
+                            ),
                           ),
                           if (placeTypeLabel(l10n, place.type) case final type?)
                             FBadge(
@@ -263,30 +269,17 @@ class _BodyState extends ConsumerState<_Body> {
                       ],
                       if (place.images.length > 1)
                         _PhotoGrid(slug: place.slug, images: place.images),
-                      // Kredit penulis artikel (v2): authorId -> kontributor SambasKu;
-                      // tap buka profil in-app. Absen/offline = tanpa baris.
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final authorId = place.authorId;
-                          if (authorId == null) {
-                            return const SizedBox.shrink();
-                          }
-                          final username = ref
-                              .watch(contributorsIdToUsernameProvider)
-                              .value?[authorId];
-                          if (username == null) {
-                            return const SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: _CreditLine(
-                              label: l10n.placeCreditAuthor,
-                              name: username,
-                              authorId: authorId,
+                      // Apresiasi pengusul: author live dari API.
+                      if (place.author case final author?)
+                        ContributorAppreciationSection(
+                          label: l10n.usahaContributorProposedBy,
+                          contributors: [
+                            ContributorCredit(
+                              username: author.username,
+                              displayName: author.displayName,
                             ),
-                          );
-                        },
-                      ),
+                          ],
+                        ),
                       const Gap(16),
                       FTileGroup(
                         label: Text(l10n.placeSectionActions),
@@ -483,7 +476,7 @@ class _CarouselState extends State<_Carousel> {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  '${_index + 1}/${widget.images.length}',
+                  '${formatRibuan(_index + 1)}/${formatRibuan(widget.images.length)}',
                   style: theme.typography.body.xs.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -522,9 +515,10 @@ class _CarouselState extends State<_Carousel> {
 void _open(String? url) {
   final uri = url == null ? null : Uri.tryParse(url);
   if (uri == null || !uri.isScheme('https')) return;
-    // Timeout: handler external di sebagian ROM bisa menggantung.
-    launchExternalUrl(withUnsplashUtm(uri))
-        .timeout(const Duration(seconds: 8), onTimeout: () => false);
+  // Timeout: handler external di sebagian ROM bisa menggantung.
+  launchExternalUrl(
+    withUnsplashUtm(uri),
+  ).timeout(const Duration(seconds: 8), onTimeout: () => false);
 }
 
 /// Kredit satu baris: "Label: nama[suffix] · lisensi". Nama boleh terpotong,
@@ -634,7 +628,12 @@ class _InfoStrip extends StatelessWidget {
           uri: Uri(scheme: 'mailto', path: email),
         ),
       if (contact?.note case final note?)
-        (icon: FLucideIcons.phone, value: note, caption: l10n.placeInfoContactNote, uri: null),
+        (
+          icon: FLucideIcons.phone,
+          value: note,
+          caption: l10n.placeInfoContactNote,
+          uri: null,
+        ),
     ];
     if (rows.isEmpty) return const SizedBox.shrink();
 
@@ -764,7 +763,7 @@ class _PhotoGrid extends StatelessWidget {
           GestureDetector(
             onTap: () => context.push(ExploreRouter.placePhotosPath(slug)),
             child: Text(
-              l10n.placeMorePhotos('$hidden'),
+              l10n.placeMorePhotos(formatRibuan(hidden)),
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.primary,
                 fontWeight: FontWeight.w600,
@@ -985,7 +984,8 @@ class _PlaceAgenda extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final events = ref.watch(eventsForPlaceProvider(place.id)).value ?? const [];
+    final events =
+        ref.watch(eventsForPlaceProvider(place.id)).value ?? const [];
     final section = buildEventMiniList(
       context,
       events,

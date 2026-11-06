@@ -4,70 +4,54 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sambasku_mobile/features/about/data/datasources/contributors_remote_datasource.dart';
-import 'package:sambasku_mobile/features/about/data/datasources/sponsors_remote_datasource.dart';
+import 'package:sambasku_mobile/features/about/data/datasources/about_api_datasource.dart';
 import 'package:sambasku_mobile/features/about/presentation/pages/about_page.dart';
-import 'package:sambasku_mobile/features/about/presentation/providers/contributors_providers.dart';
-import 'package:sambasku_mobile/features/about/presentation/providers/sponsors_providers.dart';
+import 'package:sambasku_mobile/features/about/presentation/providers/about_api_providers.dart';
 import 'package:sambasku_mobile/core/theme/forui_palettes.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
-const _linked = ContributorEntry(
-  id: 'iamutaki',
+const _team = AboutTeamMember(
   username: 'ibnulmutaki',
-  name: 'Ibnul Mutaki',
-  roles: ['developer', 'maintainer'],
-  note: 'Penggagas dan pengelola repositori',
-  avatarUrl: null,
-  since: '2019-03-01',
+  displayName: 'Ibnul Mutaki',
+  teamAs: 'maintainer',
+  teamNote: 'Penggagas',
 );
 
-const _withUrl = ContributorEntry(
-  id: 'iamutaki',
-  username: 'ibnulmutaki',
-  name: 'Ibnul Mutaki',
-  roles: ['developer'],
-  note: 'Penggagas',
-  avatarUrl: null,
-  url: 'https://iamutaki.com',
-  since: '2019-03-01',
+const _contributor = AboutContributorName(
+  username: 'ali',
+  displayName: 'Ali',
 );
 
-const _urlOnly = ContributorEntry(
-  id: 'hanapi',
-  name: 'Hana Pertiwi',
-  roles: ['peneliti'],
-  note: 'Riset kosakata',
-  avatarUrl: null,
+const _verifier = AboutVerifier(
+  username: 'fatimah',
+  displayName: 'Fatimah',
+);
+
+const _sponsorWithUrl = AboutSponsorship(
+  id: '1',
+  name: 'JNN',
+  since: '2026-10-12',
+  note: 'Domain',
   url: 'https://example.org',
-  since: '2020-01-01',
 );
 
-const _plain = ContributorEntry(
-  id: 'hanapi',
-  name: 'Hana Pertiwi',
-  roles: ['peneliti'],
-  note: 'Riset kosakata',
-  avatarUrl: null,
-  since: '2020-01-01',
-);
-
-/// #100: tile dengan username tap -> profil publik SambasKu;
-/// tanpa username -> tile polos (tidak interaktif).
 void main() {
-  Future<void> pumpPage(
+  Future<void> pumpSponsorshipPage(
     WidgetTester tester, {
-    required List<ContributorEntry> contributors,
     required GoRouter router,
+    List<AboutTeamMember> team = const [],
+    List<AboutContributorName> contributors = const [],
+    List<AboutVerifier> verifiers = const [],
+    List<AboutSponsorship> sponsorships = const [],
   }) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          contributorsProvider.overrideWith(
-            (ref) => Future.value(contributors),
-          ),
-          sponsorsProvider.overrideWith(
-            (ref) => Future.value(<SponsorEntry>[]),
+          aboutTeamProvider.overrideWith((ref) async => team),
+          aboutVerifiersProvider.overrideWith((ref) async => verifiers),
+          aboutSponsorshipsProvider.overrideWith((ref) async => sponsorships),
+          aboutContributorsProvider.overrideWith(
+            () => _FakeContributors(contributors),
           ),
         ],
         child: FTheme(
@@ -84,12 +68,6 @@ void main() {
         ),
       ),
     );
-    // Buka tab Tim Kami (FTabs lazy-build). Pump beberapa frame: provider
-    // Future.value + build konten tab.
-    await tester.tap(find.text('Tim Kami').last);
-    for (var i = 0; i < 10; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-    }
   }
 
   GoRouter router() => GoRouter(
@@ -99,7 +77,6 @@ void main() {
         path: '/about/sponsorship',
         builder: (_, _) => const SponsorshipTeamPage(),
       ),
-      // Halaman profil palsu: cukup tandai bahwa route tercapai.
       GoRoute(
         path: '/users/:username',
         name: 'UserProfileRouter.profile',
@@ -109,19 +86,17 @@ void main() {
     ],
   );
 
-  testWidgets('tap contributor dengan username -> /users/ibnulmutaki', (
-    tester,
-  ) async {
+  testWidgets('tap inti tim -> profil', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await pumpPage(
-      tester,
-      contributors: const [_linked, _plain],
-      router: router(),
-    );
+    await pumpSponsorshipPage(tester, router: router(), team: const [_team]);
+    await tester.tap(find.text('Tim Kami').last);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
 
     expect(find.text('Ibnul Mutaki'), findsOneWidget);
     await tester.tap(find.text('Ibnul Mutaki'));
@@ -129,22 +104,51 @@ void main() {
     expect(find.text('PROFILE:ibnulmutaki'), findsOneWidget);
   });
 
-  testWidgets('tanpa username -> tidak ada InkWell', (tester) async {
+  testWidgets('tap nama kontributor flat -> profil', (tester) async {
     tester.view.physicalSize = const Size(800, 2000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await pumpPage(tester, contributors: const [_plain], router: router());
+    await pumpSponsorshipPage(
+      tester,
+      router: router(),
+      contributors: const [_contributor],
+    );
+    await tester.tap(find.text('Tim Kami').last);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
 
-    expect(find.text('Hana Pertiwi'), findsOneWidget);
-    // InkWell internal halaman (tab dsb.) boleh ada; tile polos berarti
-    // TIDAK ada chevron affordance profil.
-    expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
+    expect(find.text('Ali'), findsOneWidget);
+    await tester.tap(find.text('Ali'));
+    await tester.pumpAndSettle();
+    expect(find.text('PROFILE:ali'), findsOneWidget);
   });
 
-  // #147: ikon globe buka website via url_launcher (channel dimock).
-  group('#147 action website', () {
+  testWidgets('tap verifikator -> profil', (tester) async {
+    tester.view.physicalSize = const Size(800, 2000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpSponsorshipPage(
+      tester,
+      router: router(),
+      verifiers: const [_verifier],
+    );
+    await tester.tap(find.text('Tim Kami').last);
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
+
+    expect(find.text('Fatimah'), findsOneWidget);
+    await tester.tap(find.text('Fatimah'));
+    await tester.pumpAndSettle();
+    expect(find.text('PROFILE:fatimah'), findsOneWidget);
+  });
+
+  group('sponsor website', () {
     final launched = <String>[];
 
     setUp(() {
@@ -170,55 +174,38 @@ void main() {
           );
     });
 
-    testWidgets('url terisi -> globe; tap buka browser, bukan profil', (
-      tester,
-    ) async {
+    testWidgets('tap globe sponsor buka browser', (tester) async {
       tester.view.physicalSize = const Size(800, 2000);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      await pumpPage(
+      await pumpSponsorshipPage(
         tester,
-        contributors: const [_withUrl, _plain],
         router: router(),
+        sponsorships: const [_sponsorWithUrl],
       );
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
 
-      // Hanya tile ber-url yang punya globe.
       expect(find.byIcon(FLucideIcons.globe), findsOneWidget);
       await tester.tap(find.byIcon(FLucideIcons.globe));
       await tester.pumpAndSettle();
-
-      // Link eksternal otomatis ber-UTM (rule external-link-utm).
       expect(launched, [
-        'https://iamutaki.com?utm_source=sambasku.com&utm_medium=referral',
+        'https://example.org?utm_source=sambasku.com&utm_medium=referral',
       ]);
-      expect(find.text('PROFILE:ibnulmutaki'), findsNothing);
-    });
-
-    testWidgets('url tanpa username -> globe ada, chevron tidak', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(800, 2000);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await pumpPage(tester, contributors: const [_urlOnly], router: router());
-
-      expect(find.byIcon(FLucideIcons.globe), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
-    });
-
-    testWidgets('tanpa url -> tidak ada globe', (tester) async {
-      tester.view.physicalSize = const Size(800, 2000);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await pumpPage(tester, contributors: const [_plain], router: router());
-
-      expect(find.byIcon(FLucideIcons.globe), findsNothing);
     });
   });
+}
+
+class _FakeContributors extends AboutContributors {
+  _FakeContributors(this.items);
+
+  final List<AboutContributorName> items;
+
+  @override
+  Future<AboutContributorsState?> build() async {
+    return AboutContributorsState(items: items, hasMore: false);
+  }
 }

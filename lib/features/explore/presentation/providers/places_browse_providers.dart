@@ -129,9 +129,24 @@ class PlacesBrowse extends AsyncNotifier<PlacesBrowseState> {
         );
         return;
       }
+      // Jaring pengaman: API keyset yang salah dulu bisa overlap halaman.
+      // Semua item sudah ada → hentikan autoload (hindari loop kosong).
+      final seen = current.items.map((p) => p.id).toSet();
+      final fresh = page.items.where((p) => seen.add(p.id)).toList();
+      if (fresh.isEmpty) {
+        state = AsyncData(
+          current.copyWith(
+            isLoadingMore: false,
+            hasMore: false,
+            clearCursor: true,
+            loadMoreFailed: false,
+          ),
+        );
+        return;
+      }
       state = AsyncData(
         current.copyWith(
-          items: [...current.items, ...page.items],
+          items: [...current.items, ...fresh],
           nextCursor: page.nextCursor,
           clearCursor: page.nextCursor == null,
           hasMore: page.nextCursor != null,

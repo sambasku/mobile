@@ -10,6 +10,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -40,7 +41,8 @@ class UsahaContributePage extends ConsumerStatefulWidget {
       _UsahaContributePageState();
 }
 
-class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
+class _UsahaContributePageState extends ConsumerState<UsahaContributePage>
+    with LocalDraftKeeper<_UsahaDraft> {
   final _name = TextEditingController();
   final _description = TextEditingController();
   final _address = TextEditingController();
@@ -58,14 +60,81 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
   bool _wantsClaim = false;
   bool _submitting = false;
   bool _prefilled = false;
+
   /// Snapshot field awal (mode edit) untuk deteksi `fields` yang berubah.
   Map<String, String?> _baseline = const {};
 
   bool get _isEdit => widget.mode == UsahaContributeMode.edit;
 
   @override
+  String get draftKey => 'usaha:${widget.mode.name}:${widget.slug ?? 'new'}';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _name.text,
+    _description.text,
+    _address.text,
+    _phone.text,
+    _website.text,
+    _social.text,
+    _categoryId,
+    _kind.name,
+    _kecamatan?.id,
+    _desa?.id,
+    _point?.latitude,
+    _point?.longitude,
+    _wantsClaim,
+    for (final image in _cover)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
+  ].join('\u0001');
+
+  @override
+  _UsahaDraft captureDraft() => _UsahaDraft(
+    name: _name.text,
+    description: _description.text,
+    address: _address.text,
+    phone: _phone.text,
+    website: _website.text,
+    social: _social.text,
+    categoryId: _categoryId,
+    categoryName: _categoryName,
+    kind: _kind,
+    kecamatan: _kecamatan,
+    desa: _desa,
+    lat: _point?.latitude,
+    lng: _point?.longitude,
+    cover: draftAttachmentSlots(_cover),
+    wantsClaim: _wantsClaim,
+  );
+
+  @override
+  void restoreDraft(_UsahaDraft draft) {
+    _prefilled = true;
+    _name.text = draft.name;
+    _description.text = draft.description;
+    _address.text = draft.address;
+    _phone.text = draft.phone;
+    _website.text = draft.website;
+    _social.text = draft.social;
+    _categoryId = draft.categoryId;
+    _categoryName = draft.categoryName;
+    _kind = draft.kind;
+    _kecamatan = draft.kecamatan;
+    _desa = draft.desa;
+    _cover = draft.cover;
+    _wantsClaim = draft.wantsClaim;
+    if (draft.lat != null && draft.lng != null) {
+      _point = LatLng(draft.lat!, draft.lng!);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    loadLocalDraft();
     unawaited(AnalyticsService.instance.logUsahaContributeOpen());
   }
 
@@ -146,6 +215,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
 
   @override
   void dispose() {
+    flushLocalDraft();
     _name.dispose();
     _description.dispose();
     _address.dispose();
@@ -409,8 +479,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
               'address_text': address.isEmpty ? null : address,
             if (fields.contains('lat')) 'lat': _point?.latitude,
             if (fields.contains('lng')) 'lng': _point?.longitude,
-            if (fields.contains('phone'))
-              'phone': phone.isEmpty ? null : phone,
+            if (fields.contains('phone')) 'phone': phone.isEmpty ? null : phone,
             if (fields.contains('whatsapp'))
               'whatsapp': phone.isEmpty ? null : phone,
             if (fields.contains('website'))
@@ -441,6 +510,7 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
           ),
         );
       }
+      commitLocalDraft();
       unawaited(AnalyticsService.instance.logUsahaContributeSubmit());
       if (!mounted) return;
       final goProposals = await showModalBottomSheet<bool>(
@@ -503,11 +573,12 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
       final usahaAsync = ref.watch(usahaBySlugProvider(slug));
       usahaAsync.whenData((usaha) {
         if (usaha == null || _prefilled) return;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!mounted || _prefilled) return;
           _applyUsaha(usaha);
-          unawaited(_resolveRegionsForEdit(usaha));
-          setState(() {});
+          await _resolveRegionsForEdit(usaha);
+          sealDraftBaseline();
+          if (mounted) setState(() {});
         });
       });
     }
@@ -662,7 +733,9 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
                   suffix: FSwitch(
                     semanticsLabel: l10n.usahaFormClaim,
                     value: _wantsClaim,
-                    onChange: (value) => setState(() => _wantsClaim = value),
+                    onChange: (value) => setState(() {
+                      _wantsClaim = value;
+                    }),
                   ),
                 ),
               ],
@@ -677,7 +750,9 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
             maxImages: 1,
             maxSizeMb: 5,
             images: _cover,
-            onChanged: (next) => setState(() => _cover = next),
+            onChanged: (next) => setState(() {
+              _cover = next;
+            }),
             upload: (file, {required bool isPrimary}) async {
               try {
                 final url = await ref
@@ -699,4 +774,56 @@ class _UsahaContributePageState extends ConsumerState<UsahaContributePage> {
       ),
     );
   }
+}
+
+class _UsahaDraft {
+  const _UsahaDraft({
+    required this.name,
+    required this.description,
+    required this.address,
+    required this.phone,
+    required this.website,
+    required this.social,
+    required this.categoryId,
+    required this.categoryName,
+    required this.kind,
+    required this.kecamatan,
+    required this.desa,
+    required this.lat,
+    required this.lng,
+    required this.cover,
+    required this.wantsClaim,
+  });
+
+  final String name;
+  final String description;
+  final String address;
+  final String phone;
+  final String website;
+  final String social;
+  final String? categoryId;
+  final String? categoryName;
+  final UsahaKind kind;
+  final Region? kecamatan;
+  final Region? desa;
+  final double? lat;
+  final double? lng;
+  final List<AttachmentImageSlot> cover;
+  final bool wantsClaim;
+
+  bool get hasContent =>
+      name.trim().isNotEmpty ||
+      description.trim().isNotEmpty ||
+      address.trim().isNotEmpty ||
+      phone.trim().isNotEmpty ||
+      website.trim().isNotEmpty ||
+      social.trim().isNotEmpty ||
+      categoryId != null ||
+      kind != UsahaKind.product ||
+      kecamatan != null ||
+      desa != null ||
+      lat != null ||
+      lng != null ||
+      cover.isNotEmpty ||
+      wantsClaim;
 }

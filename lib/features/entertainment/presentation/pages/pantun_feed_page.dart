@@ -95,7 +95,21 @@ class PantunFeedPage extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
-            onPress: () => context.push('/entertainment/pantun/create'),
+            onPress: () async {
+              final auth = await ref.read(authStatusProvider.future);
+              if (!auth.isAuth) {
+                if (context.mounted) {
+                  await showAppErrorSheet(
+                    context,
+                    message: l10n.pantunWriteLoginRequired,
+                  );
+                }
+                return;
+              }
+              if (context.mounted) {
+                await context.push('/entertainment/pantun/create');
+              }
+            },
             child: Text(l10n.pantunWrite),
           ),
         ),

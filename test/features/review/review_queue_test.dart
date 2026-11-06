@@ -572,10 +572,7 @@ void main() {
     expect(find.text('Seksual'), findsOneWidget);
     expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     expect(find.byIcon(FLucideIcons.x), findsOneWidget);
-    expect(
-      find.textContaining('Kanan setujui · kiri tolak · atas lewati'),
-      findsOneWidget,
-    );
+    expect(find.byIcon(FLucideIcons.skipForward), findsOneWidget);
 
     await tester.tap(find.text('Koreksi'));
     await tester.pump();

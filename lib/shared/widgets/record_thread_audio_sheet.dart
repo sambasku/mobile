@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 
+import '../../core/utils/format_number.dart';
 import '../utils/error_bottom_sheet.dart';
 import '../utils/permission_helper.dart';
 import '../../features/dictionary/presentation/utils/ensure_microphone_ready.dart';
@@ -36,10 +37,8 @@ Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
   String subtitle =
       'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
   String submitLabel = 'Kirim rekaman',
-  Future<String?> Function({
-    required File audioFile,
-    required int durationMs,
-  })? onSubmit,
+  Future<String?> Function({required File audioFile, required int durationMs})?
+  onSubmit,
 }) async {
   final ready = await ensureMicrophoneReady(context);
   if (!ready || !context.mounted) return null;
@@ -61,10 +60,7 @@ Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
 
 /// Hasil rekaman lokal (belum diunggah).
 class RecordedThreadAudio {
-  const RecordedThreadAudio({
-    required this.file,
-    required this.durationMs,
-  });
+  const RecordedThreadAudio({required this.file, required this.durationMs});
 
   final File file;
   final int durationMs;
@@ -84,10 +80,12 @@ class _RecordThreadAudioSheet extends StatefulWidget {
   final Future<String?> Function({
     required File audioFile,
     required int durationMs,
-  })? onSubmit;
+  })?
+  onSubmit;
 
   @override
-  State<_RecordThreadAudioSheet> createState() => _RecordThreadAudioSheetState();
+  State<_RecordThreadAudioSheet> createState() =>
+      _RecordThreadAudioSheetState();
 }
 
 class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
@@ -310,9 +308,9 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
 
     final upload = widget.onSubmit;
     if (upload == null) {
-      Navigator.of(context).pop(
-        RecordedThreadAudio(file: file, durationMs: durationMs),
-      );
+      Navigator.of(
+        context,
+      ).pop(RecordedThreadAudio(file: file, durationMs: durationMs));
       return;
     }
 
@@ -322,10 +320,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
     });
     await _stopPreview();
 
-    final failure = await upload(
-      audioFile: file,
-      durationMs: durationMs,
-    );
+    final failure = await upload(audioFile: file, durationMs: durationMs);
     if (!mounted) return;
     if (failure == null) {
       Navigator.of(context).pop();
@@ -378,17 +373,16 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
             ),
             const Gap(16),
             if (_error != null) ...[
-              FAlert(
-                variant: FAlertVariant.destructive,
-                title: Text(_error!),
-              ),
+              FAlert(variant: FAlertVariant.destructive, title: Text(_error!)),
               const Gap(12),
             ],
             if (_phase == _ThreadRecordPhase.recording) ...[
               Text(
-                'Merekam… ${_elapsedSec}s / ${_maxSeconds}s',
+                'Merekam… ${formatRibuan(_elapsedSec)}s / ${formatRibuan(_maxSeconds)}s',
                 textAlign: TextAlign.center,
-                style: theme.typography.body.sm.copyWith(fontWeight: FontWeight.w600),
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Gap(12),
               FButton(
@@ -398,7 +392,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
             ] else if (_phase == _ThreadRecordPhase.preview ||
                 _phase == _ThreadRecordPhase.submitting) ...[
               Text(
-                'Durasi ${_elapsedSec}s',
+                'Durasi ${formatRibuan(_elapsedSec)}s',
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm,
               ),
@@ -428,14 +422,15 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
               ),
               const Gap(8),
               FButton(
-                onPress:
-                    _phase == _ThreadRecordPhase.submitting ? null : _submit,
+                onPress: _phase == _ThreadRecordPhase.submitting
+                    ? null
+                    : _submit,
                 child: Text(
                   _phase == _ThreadRecordPhase.submitting
                       ? 'Mengirim…'
                       : localAttach
-                          ? 'Pakai rekaman'
-                          : widget.submitLabel,
+                      ? 'Pakai rekaman'
+                      : widget.submitLabel,
                 ),
               ),
             ] else ...[

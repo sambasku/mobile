@@ -41,39 +41,42 @@ List<SuggestCategory> availableSuggestCategories({
 
 /// Ubah makna: definisi dan/atau padanan. `null` = tidak ada yang berubah.
 /// Padanan dikosongkan tidak dikirim (usulan tidak menghapus padanan).
+/// #230: support multiple meanings.
 Map<String, dynamic>? buildChangeMeaning({
-  required String meaningId,
-  required String originalDefinition,
-  required String definition,
-  required String originalPadanan,
-  required String padanan,
+  required List<({
+    String meaningId,
+    String originalDefinition,
+    String definition,
+    String originalPadanan,
+    String padanan,
+  })> meanings,
   required String? padananLanguageId,
 }) {
-  final def = definition.trim();
-  final pad = padanan.trim();
-  final defChanged = def != originalDefinition.trim();
-  final padChanged = pad.isNotEmpty && pad != originalPadanan.trim();
-  if (!defChanged && !padChanged) return null;
-  if (padChanged && padananLanguageId == null) {
-    throw StateError('Bahasa terjemahan belum diketahui');
+  final rows = <Map<String, dynamic>>[];
+  for (final m in meanings) {
+    final def = m.definition.trim();
+    final pad = m.padanan.trim();
+    final defChanged = def != m.originalDefinition.trim();
+    final padChanged = pad.isNotEmpty && pad != m.originalPadanan.trim();
+    if (!defChanged && !padChanged) continue;
+    if (padChanged && padananLanguageId == null) {
+      throw StateError('Bahasa terjemahan belum diketahui');
+    }
+    rows.add({
+      'meaning_id': m.meaningId,
+      'action': 'update',
+      if (defChanged) 'definition': def,
+      if (padChanged)
+        'translations': [
+          {
+            'language_id': padananLanguageId,
+            'translation_text': pad,
+            'translation_type': 'direct',
+          },
+        ],
+    });
   }
-  return {
-    'meanings': [
-      {
-        'meaning_id': meaningId,
-        'action': 'update',
-        if (defChanged) 'definition': def,
-        if (padChanged)
-          'translations': [
-            {
-              'language_id': padananLanguageId,
-              'translation_text': pad,
-              'translation_type': 'direct',
-            },
-          ],
-      },
-    ],
-  };
+  return rows.isEmpty ? null : {'meanings': rows};
 }
 
 Map<String, dynamic>? buildChangeWordClass({

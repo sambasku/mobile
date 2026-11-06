@@ -228,6 +228,18 @@ class PantunActionRow extends StatelessWidget {
     onTap: onEdit,
   );
 
+  /// Footer balas (cuplikan target = kartu ini; API tetap ke induk).
+  factory PantunActionRow.reply({
+    Key? key,
+    required VoidCallback onReply,
+    required String label,
+  }) => PantunActionRow(
+    key: key,
+    icon: FLucideIcons.messageCircle,
+    label: label,
+    onTap: onReply,
+  );
+
   /// Footer hapus untuk penulis sendiri.
   factory PantunActionRow.delete({
     Key? key,

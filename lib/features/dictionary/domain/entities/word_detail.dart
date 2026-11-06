@@ -128,12 +128,15 @@ class WordVerifier {
   const WordVerifier({
     required this.username,
     required this.displayName,
+    this.avatarUrl,
     required this.role,
   });
 
   final String username;
   /// Nama tampilan untuk label atribusi; fallback ke [username] di mapper.
   final String displayName;
+  /// URL avatar publik (#231); null = akun terhapus / tanpa foto.
+  final String? avatarUrl;
   final String role;
 }
 

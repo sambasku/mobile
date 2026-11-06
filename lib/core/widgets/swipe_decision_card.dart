@@ -41,6 +41,7 @@ class SwipeDecisionCard extends StatefulWidget {
     this.negativeColor,
     this.skipColor,
     this.allowNestedVerticalScroll = false,
+    this.allowNegative = true,
     this.fallbackHeight = 240,
     this.hintId,
   });
@@ -65,6 +66,9 @@ class SwipeDecisionCard extends StatefulWidget {
   final Color? skipColor;
 
   final bool allowNestedVerticalScroll;
+
+  /// Geser kiri. Mati = drag kiri diabaikan dan overlay tolak tidak tampil.
+  final bool allowNegative;
   final double fallbackHeight;
 
   /// Isi = kartu goyang kanan-kiri (+ haptic) sekali per sesi app per id,
@@ -147,9 +151,11 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
       step(0, a, 20),
       step(a, a, 12),
       step(a, 0, 16),
-      step(0, -a, 20),
-      step(-a, -a, 12),
-      step(-a, 0, 20),
+      if (widget.allowNegative) ...[
+        step(0, -a, 20),
+        step(-a, -a, 12),
+        step(-a, 0, 20),
+      ],
     ]).animate(_anim);
 
     // Haptic di awal tiap jeda puncak (bobot 20/100 dan 68/100).
@@ -243,6 +249,9 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
   Future<void> _commit(SwipeDecisionDirection direction) async {
     if (_busyGesture) return;
     if (!widget.enabled) return;
+    if (direction == SwipeDecisionDirection.negative && !widget.allowNegative) {
+      return _springBack();
+    }
     setState(() => _busyGesture = true);
     // Fling cepat bisa commit tanpa pernah lewat ambang: getar di sini juga.
     // Medium di semua jalur commit - konsisten dengan haptic ambang drag.
@@ -294,6 +303,7 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
       } else {
         _dy = (_dy + d.dy).clamp(-_height * 1.5, 0);
       }
+      if (!widget.allowNegative && _dx < 0) _dx = 0;
 
       final crossed = _lock == _AxisLock.horizontal
           ? _hProgress.abs() >= 1.0
@@ -317,7 +327,9 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
 
     if (_lock == _AxisLock.horizontal) {
       final positive = _dx > hThresh || (_dx > 0 && vx > _flingVelocity);
-      final negative = _dx < -hThresh || (_dx < 0 && vx < -_flingVelocity);
+      final negative =
+          widget.allowNegative &&
+          (_dx < -hThresh || (_dx < 0 && vx < -_flingVelocity));
       if (positive) {
         _commit(SwipeDecisionDirection.positive);
       } else if (negative) {
@@ -439,11 +451,12 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                           label: widget.positiveLabel,
                           color: theme.colors.success,
                         ),
-                        _SwipeLabelOverlay(
-                          t: negativeT,
-                          label: widget.negativeLabel,
-                          color: theme.colors.destructive,
-                        ),
+                        if (widget.allowNegative)
+                          _SwipeLabelOverlay(
+                            t: negativeT,
+                            label: widget.negativeLabel,
+                            color: theme.colors.destructive,
+                          ),
                         _SwipeLabelOverlay(
                           t: skipT,
                           label: widget.skipLabel,
@@ -456,13 +469,15 @@ class SwipeDecisionCardState extends State<SwipeDecisionCard>
                           color: widget.positiveColor ?? theme.colors.success,
                           label: widget.positiveLabel,
                         ),
-                        _SwipeIconOverlay(
-                          t: negativeT,
-                          icon: widget.negativeIcon ?? FLucideIcons.x,
-                          color:
-                              widget.negativeColor ?? theme.colors.destructive,
-                          label: widget.negativeLabel,
-                        ),
+                        if (widget.allowNegative)
+                          _SwipeIconOverlay(
+                            t: negativeT,
+                            icon: widget.negativeIcon ?? FLucideIcons.x,
+                            color:
+                                widget.negativeColor ??
+                                theme.colors.destructive,
+                            label: widget.negativeLabel,
+                          ),
                         _SwipeIconOverlay(
                           t: skipT,
                           icon: widget.skipIcon ?? FLucideIcons.arrowUp,

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../shared/widgets/image_credit.dart';
 import '../models/image_attribution.dart';
+import '../utils/format_number.dart';
 import '../utils/display_image_url.dart';
 
 /// Buka preview fullscreen dengan pinch-zoom.
@@ -98,7 +99,8 @@ class _ImagePreviewState extends State<ImagePreview> {
               controller: _pageController,
               itemCount: widget.urls.length,
               onPageChanged: (i) => setState(() => _index = i),
-              itemBuilder: (context, i) => _ZoomableNetworkImage(url: widget.urls[i]),
+              itemBuilder: (context, i) =>
+                  _ZoomableNetworkImage(url: widget.urls[i]),
             ),
             Positioned(
               top: 4,
@@ -139,7 +141,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                 right: 0,
                 bottom: 12,
                 child: Text(
-                  '${_index + 1} / ${widget.urls.length}',
+                  '${formatRibuan(_index + 1)} / ${formatRibuan(widget.urls.length)}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white70,

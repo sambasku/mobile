@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/utils/format_number.dart';
 import '../../../../core/utils/ulid.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../review/domain/review_access.dart';
@@ -29,6 +30,7 @@ import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../core/widgets/word_approved_badge_icon.dart';
 import '../../../../shared/widgets/image_credit.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
 import '../../../vote/presentation/widgets/meaning_vote_row.dart';
@@ -48,6 +50,7 @@ import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
+
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
   const WordDetailPage({super.key, required this.wordId});
@@ -850,23 +853,14 @@ class _DetailBody extends HookConsumerWidget {
   static List<Widget> _relatedSections(
     List<RelatedWord> related,
     AppLocalizations l10n,
-  ) =>
-      _groupedRelationSections(
-        related,
-        l10n,
-        labelFor: relationLabel,
-      );
+  ) => _groupedRelationSections(related, l10n, labelFor: relationLabel);
 
   /// Relasi masuk (`appears_in`) - label arah kebalikan dari related_words.
   static List<Widget> _appearsInSections(
     List<RelatedWord> related,
     AppLocalizations l10n,
   ) =>
-      _groupedRelationSections(
-        related,
-        l10n,
-        labelFor: appearsInRelationLabel,
-      );
+      _groupedRelationSections(related, l10n, labelFor: appearsInRelationLabel);
 
   static List<Widget> _groupedRelationSections(
     List<RelatedWord> related,
@@ -1000,7 +994,7 @@ class _WordImageCarouselState extends State<_WordImageCarousel> {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        '${_index + 1}/${images.length}',
+                        '${formatRibuan(_index + 1)}/${formatRibuan(images.length)}',
                         style: theme.typography.body.xs.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -1241,7 +1235,8 @@ Future<void> _reportPrimaryPhoto(
     return;
   }
   final imageId =
-      (detail.images.where((i) => i.isPrimary).firstOrNull ?? detail.images.first)
+      (detail.images.where((i) => i.isPrimary).firstOrNull ??
+              detail.images.first)
           .id;
   final sent = await showReportWordSheet(context, wordId, imageId: imageId);
   if (!context.mounted || !sent) return;
@@ -1294,7 +1289,11 @@ Future<void> _showMoreWordActions(
                   prefix: const Icon(FLucideIcons.imageOff),
                   title: Text(l10n.dictReportPhoto),
                   subtitle: Text(l10n.dictReportPhotoSubtitle),
-                  suffix: Icon(FLucideIcons.chevronRight, size: 16, color: muted),
+                  suffix: Icon(
+                    FLucideIcons.chevronRight,
+                    size: 16,
+                    color: muted,
+                  ),
                   onPress: () {
                     Navigator.pop(sheetContext);
                     _reportPrimaryPhoto(context, ref, detail, wordId);
@@ -1358,13 +1357,13 @@ class _MeaningBlock extends ConsumerWidget {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
     final definition = meaning.definition?.trim();
-    final classLabel = meaning.wordClassBracket ??
+    final classLabel =
+        meaning.wordClassBracket ??
         (meaning.wordClassName != null && meaning.wordClassName!.isNotEmpty
             ? meaning.wordClassName
             : null);
     final username = contributor?.username;
     final showContributorChip = isLinkablePublicUsername(username);
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -1405,8 +1404,13 @@ class _MeaningBlock extends ConsumerWidget {
                         ),
                       if (showContributorChip)
                         _MeaningContributorChip(
-                          label: '@${displayPublicUsername(username)}',
+                          // #231: nama tampilan, bukan @username.
+                          label: displayPublicAccountLabel(
+                            displayName: contributor?.displayName,
+                            username: username,
+                          ),
                           username: username!,
+                          avatarUrl: contributor?.avatarUrl,
                           showCheck: isVerifierRole(contributor!.role),
                         ),
                     ],
@@ -1498,16 +1502,19 @@ class _MeaningBlock extends ConsumerWidget {
   }
 }
 
-/// Chip flat secondary: `@username` (+ centang verifikator). Tap → profil.
+/// Chip flat secondary: avatar kecil + nama tampilan (+ centang
+/// verifikator). Tap → profil. #231: nama, bukan @username.
 class _MeaningContributorChip extends StatelessWidget {
   const _MeaningContributorChip({
     required this.label,
     required this.username,
+    this.avatarUrl,
     this.showCheck = false,
   });
 
   final String label;
   final String username;
+  final String? avatarUrl;
   final bool showCheck;
 
   @override
@@ -1522,6 +1529,8 @@ class _MeaningContributorChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              UserAvatar(name: label, imageUrl: avatarUrl, size: 16),
+              const Gap(4),
               Text(label),
               if (showCheck) ...[
                 const Gap(4),

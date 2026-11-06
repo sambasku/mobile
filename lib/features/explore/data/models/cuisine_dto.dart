@@ -1,3 +1,4 @@
+import '../../../../core/models/public_author_ref.dart';
 import '../../domain/entities/cuisine.dart';
 import '../../domain/entities/place.dart';
 import 'place_dto.dart';
@@ -49,6 +50,7 @@ class CuisineDtoItem {
     required this.sources,
     this.servingSuggestion,
     this.places = const [],
+    this.author,
   });
 
   final String id;
@@ -62,6 +64,7 @@ class CuisineDtoItem {
   final String? servingSuggestion;
   final List<PlaceSource> sources;
   final List<CuisinePlaceRef> places;
+  final PublicAuthorRef? author;
 
   /// Null = field wajib absen → item di-skip.
   static CuisineDtoItem? fromJson(Map<String, dynamic> json) {
@@ -137,6 +140,7 @@ class CuisineDtoItem {
       servingSuggestion: optStr('serving_suggestion', 'servingSuggestion'),
       sources: parseSources(json['sources']),
       places: places,
+      author: PublicAuthorRef.fromJson(json['author']),
     );
   }
 
@@ -152,6 +156,7 @@ class CuisineDtoItem {
     servingSuggestion: servingSuggestion,
     sources: sources,
     places: places,
+    author: author,
   );
 }
 

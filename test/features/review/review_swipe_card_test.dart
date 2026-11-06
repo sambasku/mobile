@@ -18,22 +18,13 @@ void main() {
       home: FTheme(
         data: foruiPalettes['zinc']!.light.touch,
         child: Scaffold(
-          body: Center(
-            child: SizedBox(
-              width: 400,
-              height: 600,
-              child: child,
-            ),
-          ),
+          body: Center(child: SizedBox(width: 400, height: 600, child: child)),
         ),
       ),
     );
   }
 
-  Future<void> dragCard(
-    WidgetTester tester, {
-    required double dx,
-  }) async {
+  Future<void> dragCard(WidgetTester tester, {required double dx}) async {
     final card = find.byType(ReviewSwipeCard);
     await tester.timedDrag(
       card,
@@ -57,9 +48,7 @@ void main() {
             got = direction;
             return true;
           },
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -85,9 +74,7 @@ void main() {
             got = direction;
             return true;
           },
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -96,6 +83,32 @@ void main() {
     await dragCard(tester, dx: -200);
 
     expect(got, ReviewSwipeDirection.reject);
+  });
+
+  testWidgets('swipe kiri diabaikan saat tolak dimatikan', (tester) async {
+    ReviewSwipeDirection? got;
+
+    await tester.pumpWidget(
+      wrap(
+        ReviewSwipeCard(
+          itemKey: 'no-reject',
+          enabled: true,
+          allowReject: false,
+          positiveLabel: 'Tutup antrean',
+          onSwiped: (direction) async {
+            got = direction;
+            return true;
+          },
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await dragCard(tester, dx: -200);
+
+    expect(got, isNull);
+    expect(find.text('kartu'), findsOneWidget);
   });
 
   testWidgets('swipe atas melewati ambang memanggil onSwiped skip', (
@@ -112,9 +125,7 @@ void main() {
             got = direction;
             return true;
           },
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -141,9 +152,7 @@ void main() {
           itemKey: 'c',
           enabled: true,
           onSwiped: (_) async => false,
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -167,9 +176,7 @@ void main() {
             called = true;
             return true;
           },
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -187,9 +194,7 @@ void main() {
           itemKey: 'e',
           enabled: true,
           onSwiped: (_) async => true,
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );
@@ -219,9 +224,7 @@ void main() {
           itemKey: 'f',
           enabled: true,
           onSwiped: (_) async => true,
-          child: const SizedBox.expand(
-            child: Center(child: Text('kartu')),
-          ),
+          child: const SizedBox.expand(child: Center(child: Text('kartu'))),
         ),
       ),
     );

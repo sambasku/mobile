@@ -6,18 +6,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
 import '../providers/achievement_providers.dart';
 import '../../../achievement/achievement_router.dart';
 import 'achievement_badge_grid.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Ringkasan lencana profil: grid 3 kolom + tombol ke halaman Pencapaian.
+/// Ringkasan lencana profil: 1 baris, 4 lencana kecil.
 ///
 /// Dipakai tab Profil (profil sendiri, data `/me/achievements`) dan profil
 /// publik (lencana milik user lain). Pengganti sub-tab FTabs
 /// "Badge | Border | Pencapaian" yang pecah (label multiline merusak area).
 /// Border tetap diatur via `showBorderPickerSheet`.
+///
+/// Lebih dari 4 lencana: sel ujung overlay "Lihat lainnya". Profil sendiri
+/// membuka halaman Pencapaian. Profil orang lain membuka sheet grid penuh.
 class ProfileAchievementTabs extends ConsumerWidget {
   const ProfileAchievementTabs({
     super.key,
@@ -36,6 +40,42 @@ class ProfileAchievementTabs extends ConsumerWidget {
   void _openAll(BuildContext context) {
     AnalyticsService.instance.logAchievementsView(tab: 'all');
     context.push(AchievementRouter.list.path);
+  }
+
+  void _showAllBadges(BuildContext context, List<Achievement> badges) {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        final theme = sheetContext.theme;
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                title,
+                style: theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Gap(8),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: AchievementBadgeGrid(items: badges),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -77,6 +117,9 @@ class ProfileAchievementTabs extends ConsumerWidget {
         final badges = AchievementBadgeGrid.topTierPerFamily(
           items.where((e) => e.isOwned && e.isBadge).toList(growable: false),
         );
+        const previewColumns = 4;
+        const previewRows = 1;
+        final overflow = badges.length > previewColumns * previewRows;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -89,8 +132,22 @@ class ProfileAchievementTabs extends ConsumerWidget {
               ),
               const Gap(8),
             ],
-            AchievementBadgeGrid(items: badges),
-            if (showAllButton && badges.isNotEmpty) ...[
+            AchievementBadgeGrid(
+              items: badges,
+              maxRows: previewRows,
+              columns: previewColumns,
+              compact: true,
+              onOverflow: overflow
+                  ? () {
+                      if (username == null) {
+                        _openAll(context);
+                      } else {
+                        _showAllBadges(context, badges);
+                      }
+                    }
+                  : null,
+            ),
+            if (showAllButton && badges.isNotEmpty && !overflow) ...[
               const Gap(8),
               // Shrink-wrap supaya sejajar tombol kecil lain (pola FButton
               // default .max = full width).
@@ -112,7 +169,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
   }
 }
 
-/// Placeholder shimmer grid 3 kolom - ganti FCircularProgress saat fetch.
+/// Placeholder shimmer: 4 lencana kecil, satu baris.
 class _AchievementTabsSkeleton extends StatelessWidget {
   const _AchievementTabsSkeleton({
     required this.showTitle,
@@ -154,29 +211,35 @@ class _AchievementTabsSkeleton extends StatelessWidget {
             ],
             LayoutBuilder(
               builder: (context, constraints) {
-                final cellWidth = (constraints.maxWidth - 24) / 3;
+                const spacing = AchievementBadgeGrid.compactSpacing;
+                final cellWidth = (constraints.maxWidth - spacing * 3) / 4;
                 return Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
+                  spacing: spacing,
+                  runSpacing: spacing,
                   children: [
-                    for (var i = 0; i < 3; i++)
+                    for (var i = 0; i < 4; i++)
                       SizedBox(
                         width: cellWidth,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(
+                              AchievementBadgeGrid.compactRadius,
+                            ),
                             border: Border.all(color: theme.colors.border),
                           ),
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(
+                            AchievementBadgeGrid.compactPadding,
+                          ),
                           child: const Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AspectRatio(
-                                aspectRatio: 1,
+                              SizedBox(
+                                width: AchievementBadgeGrid.compactImageSize,
+                                height: AchievementBadgeGrid.compactImageSize,
                                 child: Bone.square(),
                               ),
-                              Gap(4),
-                              Bone.text(words: 2),
+                              Gap(AchievementBadgeGrid.compactImageGap),
+                              Bone.text(words: 1),
                             ],
                           ),
                         ),

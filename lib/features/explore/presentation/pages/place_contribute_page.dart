@@ -11,6 +11,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/state/local_form_draft_store.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
@@ -40,7 +41,8 @@ class PlaceContributePage extends ConsumerStatefulWidget {
       _PlaceContributePageState();
 }
 
-class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
+class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
+    with LocalDraftKeeper<_PlaceDraft> {
   final _name = TextEditingController();
   final _slugCtrl = TextEditingController();
   final _desc = TextEditingController();
@@ -50,6 +52,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   var _step = 0;
   var _busy = false;
   var _filled = false;
+
   /// Slug sudah terisi dari data lama (mode edit) - jangan ikut nama lagi.
   var _slugTouched = false;
   String _category = 'wisata';
@@ -67,8 +70,74 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
   int get _maxImages => widget.mode == PlaceContributeMode.photo ? 5 : 20;
 
   @override
+  String get draftKey => 'wisata:${widget.mode.name}:${widget.slug ?? 'new'}';
+
+  @override
+  bool get draftHasContent => captureDraft().hasContent;
+
+  @override
+  String get draftToken => [
+    _step,
+    _name.text,
+    _desc.text,
+    _hours.text,
+    _contact.text,
+    _category,
+    _type,
+    _regionId,
+    _villageId,
+    _point?.latitude,
+    _point?.longitude,
+    for (final image in _images)
+      '${image.id}|${image.localPath}|${image.uploaded?.url}',
+  ].join('\u0001');
+
+  @override
+  _PlaceDraft captureDraft() => _PlaceDraft(
+    step: _step,
+    name: _name.text,
+    slug: _slugCtrl.text,
+    slugTouched: _slugTouched,
+    desc: _desc.text,
+    hours: _hours.text,
+    contact: _contact.text,
+    category: _category,
+    type: _type,
+    regionId: _regionId,
+    regionName: _regionName,
+    villageId: _villageId,
+    villageName: _villageName,
+    lat: _point?.latitude,
+    lng: _point?.longitude,
+    images: draftAttachmentSlots(_images),
+  );
+
+  @override
+  void restoreDraft(_PlaceDraft draft) {
+    _filled = true;
+    _step = draft.step;
+    _name.text = draft.name;
+    _slugCtrl.text = draft.slug;
+    _slugTouched = draft.slugTouched;
+    _desc.text = draft.desc;
+    _hours.text = draft.hours;
+    _contact.text = draft.contact;
+    _category = draft.category;
+    _type = draft.type;
+    _regionId = draft.regionId;
+    _regionName = draft.regionName;
+    _villageId = draft.villageId;
+    _villageName = draft.villageName;
+    _images = draft.images;
+    if (draft.lat != null && draft.lng != null) {
+      _point = LatLng(draft.lat!, draft.lng!);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    loadLocalDraft();
     unawaited(
       AnalyticsService.instance.logWisataContributeOpen(mode: widget.mode.name),
     );
@@ -78,6 +147,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
 
   @override
   void dispose() {
+    flushLocalDraft();
     _name.dispose();
     _slugCtrl.dispose();
     _desc.dispose();
@@ -111,6 +181,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     if (place.hasCoordinates) {
       _point = LatLng(place.lat!, place.lng!);
     }
+    sealDraftBaseline();
   }
 
   Future<void> _loadLookups() async {
@@ -227,10 +298,12 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage> {
     setState(() => _point = result.point);
   }
 
-bool _stepOk() {
+  bool _stepOk() {
     if (_step == 0) {
       if (_name.text.trim().isEmpty || _desc.text.trim().isEmpty) {
-        _validationError(AppLocalizations.of(context).placeFormNameDescRequired);
+        _validationError(
+          AppLocalizations.of(context).placeFormNameDescRequired,
+        );
         return false;
       }
       if (slugifyPlace(_name.text).isEmpty) {
@@ -249,100 +322,102 @@ bool _stepOk() {
     return true;
   }
 
-Future<void> _submit() async {
-  if (_busy) return;
-  // Upload sudah berjalan di AttachmentImagesField; submit hanya memakai
-  // slot siap (pola form usul kata - upload-then-submit).
-  if (_images.any((s) => s.uploading)) {
-    showFToast(
-      context: context,
-      title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
-    );
-    return;
-  }
-  if (_images.any((s) => s.error)) {
-    showFToast(
-      context: context,
-      title: Text(AppLocalizations.of(context).usahaFormRemoveFailedPhoto),
-      variant: FToastVariant.destructive,
-    );
-    return;
-  }
-  final urls = [
-    for (final s in _images)
-      if (s.isReady && s.uploaded != null) s.uploaded!.url,
-  ];
-  if (widget.mode != PlaceContributeMode.photo && !_stepOk()) return;
-  setState(() => _busy = true);
-  try {
-    if (widget.mode == PlaceContributeMode.photo) {
-      final slug = widget.slug;
-      if (slug == null || urls.isEmpty) {
-        throw PlaceContributionException(
-            AppLocalizations.of(context).placeFormPhotoRequired,
-          );
-      }
-      await _api.appendImages(slug, urls);
-      unawaited(
-        AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
-      );
-      // Hard miss L1 katalog + invalidate detail + browse list supaya
-      // cover baru tampil tanpa tunggu TTL / state browse lama di stack.
-      try {
-        await ref.read(placesRefreshProvider.future);
-      } catch (_) {}
-      ref.invalidate(placesProvider);
-      ref.invalidate(placesBrowseProvider);
-      ref.invalidate(placeBySlugProvider(slug));
-      if (!mounted) return;
+  Future<void> _submit() async {
+    if (_busy) return;
+    // Upload sudah berjalan di AttachmentImagesField; submit hanya memakai
+    // slot siap (pola form usul kata - upload-then-submit).
+    if (_images.any((s) => s.uploading)) {
       showFToast(
         context: context,
-        title: Text(AppLocalizations.of(context).placeFormPhotoToast),
+        title: Text(AppLocalizations.of(context).usahaFormWaitUpload),
       );
-      context.pop();
       return;
     }
-    final place = _currentPlace();
-    await _api.submit({
-      if (widget.mode == PlaceContributeMode.edit) 'place_id': place?.id,
-      // Slug tidak lagi diisi user: mode edit mempertahankan slug lama
-      // (URL tetap stabil), mode create diturunkan dari nama.
-      'slug': _slugCtrl.text.trim().isEmpty
-          ? slugifyPlace(_name.text)
-          : _slugCtrl.text.trim(),
-      'name': _name.text.trim(),
-      'category': _category,
-      if (_type != null) 'type': _type,
-      if (_point != null) 'lat': _point!.latitude,
-      if (_point != null) 'lng': _point!.longitude,
-      'short_description': _desc.text.trim(),
-      if (_regionId != null) 'region_id': _regionId,
-      if (_villageId != null) 'village_id': _villageId,
-      if (_hours.text.trim().isNotEmpty) 'hours': _hours.text.trim(),
-      if (_contact.text.trim().isNotEmpty) 'contact': _contact.text.trim(),
-      if (urls.isNotEmpty)
-        'images': [
-          for (final url in urls) {'url': url},
-        ],
-    });
-    unawaited(
-      AnalyticsService.instance.logWisataContributeSubmit(
-        mode: widget.mode.name,
-      ),
-    );
-    if (!mounted) return;
-    context.pushReplacement(ExploreRouter.placeProposals.path);
-  } on PlaceContributionException catch (e) {
-    if (!mounted) return;
-    if (e.code == 'RATE_LIMITED') {
-      showFToast(context: context, title: Text(e.message));
-    } else {
-      await showAppErrorSheet(context, message: e.message);
+    if (_images.any((s) => s.error)) {
+      showFToast(
+        context: context,
+        title: Text(AppLocalizations.of(context).usahaFormRemoveFailedPhoto),
+        variant: FToastVariant.destructive,
+      );
+      return;
     }
-  } finally {
-    if (mounted) setState(() => _busy = false);
+    final urls = [
+      for (final s in _images)
+        if (s.isReady && s.uploaded != null) s.uploaded!.url,
+    ];
+    if (widget.mode != PlaceContributeMode.photo && !_stepOk()) return;
+    setState(() => _busy = true);
+    try {
+      if (widget.mode == PlaceContributeMode.photo) {
+        final slug = widget.slug;
+        if (slug == null || urls.isEmpty) {
+          throw PlaceContributionException(
+            AppLocalizations.of(context).placeFormPhotoRequired,
+          );
+        }
+        await _api.appendImages(slug, urls);
+        commitLocalDraft();
+        unawaited(
+          AnalyticsService.instance.logWisataContributeSubmit(mode: 'photo'),
+        );
+        // Hard miss L1 katalog + invalidate detail + browse list supaya
+        // cover baru tampil tanpa tunggu TTL / state browse lama di stack.
+        try {
+          await ref.read(placesRefreshProvider.future);
+        } catch (_) {}
+        ref.invalidate(placesProvider);
+        ref.invalidate(placesBrowseProvider);
+        ref.invalidate(placeBySlugProvider(slug));
+        if (!mounted) return;
+        showFToast(
+          context: context,
+          title: Text(AppLocalizations.of(context).placeFormPhotoToast),
+        );
+        context.pop();
+        return;
+      }
+      final place = _currentPlace();
+      await _api.submit({
+        if (widget.mode == PlaceContributeMode.edit) 'place_id': place?.id,
+        // Slug tidak lagi diisi user: mode edit mempertahankan slug lama
+        // (URL tetap stabil), mode create diturunkan dari nama.
+        'slug': _slugCtrl.text.trim().isEmpty
+            ? slugifyPlace(_name.text)
+            : _slugCtrl.text.trim(),
+        'name': _name.text.trim(),
+        'category': _category,
+        if (_type != null) 'type': _type,
+        if (_point != null) 'lat': _point!.latitude,
+        if (_point != null) 'lng': _point!.longitude,
+        'short_description': _desc.text.trim(),
+        if (_regionId != null) 'region_id': _regionId,
+        if (_villageId != null) 'village_id': _villageId,
+        if (_hours.text.trim().isNotEmpty) 'hours': _hours.text.trim(),
+        if (_contact.text.trim().isNotEmpty) 'contact': _contact.text.trim(),
+        if (urls.isNotEmpty)
+          'images': [
+            for (final url in urls) {'url': url},
+          ],
+      });
+      commitLocalDraft();
+      unawaited(
+        AnalyticsService.instance.logWisataContributeSubmit(
+          mode: widget.mode.name,
+        ),
+      );
+      if (!mounted) return;
+      context.pushReplacement(ExploreRouter.placeProposals.path);
+    } on PlaceContributionException catch (e) {
+      if (!mounted) return;
+      if (e.code == 'RATE_LIMITED') {
+        showFToast(context: context, title: Text(e.message));
+      } else {
+        await showAppErrorSheet(context, message: e.message);
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
-}
 
   Place? _currentPlace() {
     final slug = widget.slug;
@@ -447,7 +522,11 @@ Future<void> _submit() async {
                     ? null
                     : () {
                         if (!onLast) {
-                          if (_stepOk()) setState(() => _step += 1);
+                          if (_stepOk()) {
+                            setState(() {
+                              _step += 1;
+                            });
+                          }
                         } else {
                           _submit();
                         }
@@ -582,7 +661,9 @@ Future<void> _submit() async {
       const Gap(8),
       FButton(
         variant: .outline,
-        onPress: () => setState(() => _point = null),
+        onPress: () => setState(() {
+          _point = null;
+        }),
         child: Text(l10n.placePinPickerRemove),
       ),
     ],
@@ -611,7 +692,9 @@ Future<void> _submit() async {
       maxImages: _maxImages,
       maxSizeMb: 5,
       images: _images,
-      onChanged: (next) => setState(() => _images = next),
+      onChanged: (next) => setState(() {
+        _images = next;
+      }),
       upload: (file, {required bool isPrimary}) async {
         try {
           final url = await _api.uploadImage(file);
@@ -652,9 +735,9 @@ class _LoginGate extends StatelessWidget {
         ),
         const Gap(16),
         FButton(
-      onPress: onLogin,
-      child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
-    ),
+          onPress: onLogin,
+          child: Text(AppLocalizations.of(context).commonLoginRequiredShort),
+        ),
       ],
     );
   }
@@ -725,6 +808,57 @@ class _PinMapState extends State<_PinMap> {
       ),
     );
   }
+}
+
+class _PlaceDraft {
+  const _PlaceDraft({
+    required this.step,
+    required this.name,
+    required this.slug,
+    required this.slugTouched,
+    required this.desc,
+    required this.hours,
+    required this.contact,
+    required this.category,
+    required this.type,
+    required this.regionId,
+    required this.regionName,
+    required this.villageId,
+    required this.villageName,
+    required this.lat,
+    required this.lng,
+    required this.images,
+  });
+
+  final int step;
+  final String name;
+  final String slug;
+  final bool slugTouched;
+  final String desc;
+  final String hours;
+  final String contact;
+  final String category;
+  final String? type;
+  final String? regionId;
+  final String? regionName;
+  final String? villageId;
+  final String? villageName;
+  final double? lat;
+  final double? lng;
+  final List<AttachmentImageSlot> images;
+
+  bool get hasContent =>
+      step != 0 ||
+      name.trim().isNotEmpty ||
+      desc.trim().isNotEmpty ||
+      hours.trim().isNotEmpty ||
+      contact.trim().isNotEmpty ||
+      type != null ||
+      regionId != null ||
+      villageId != null ||
+      lat != null ||
+      lng != null ||
+      images.isNotEmpty;
 }
 
 String slugifyPlace(String name) {

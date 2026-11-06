@@ -263,6 +263,16 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
     );
   }
 
+  /// Sisip balasan baru di akhir thread (urutan kronologis) tanpa refetch.
+  void appendReply(Pantun reply) {
+    final current = state.value;
+    if (current == null) return;
+    if (current.replies.any((r) => r.id == reply.id)) return;
+    state = AsyncData(
+      PantunDetail(current.pantun, [...current.replies, reply]),
+    );
+  }
+
   /// Hapus pantun pembuka milik sendiri. Return pesan error (null = sukses).
   Future<String?> deletePantun() async {
     final current = state.value;

@@ -14,6 +14,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../data/pantun_api.dart';
+import '../../data/pantun_draft_store.dart';
+import '../../domain/pantun_compose_args.dart';
 import '../../domain/pantun_models.dart';
 import '../providers/pantun_providers.dart';
 import '../widgets/pantun_card.dart';
@@ -33,7 +35,15 @@ class PantunDetailPage extends HookConsumerWidget {
   final String id;
   final String? highlightReplyId;
 
-  Future<void> _openReply(BuildContext context, WidgetRef ref) async {
+  /// [quoteTarget] null = cuplikan pantun induk; non-null = balasan yang di-tap.
+  /// API tetap POST ke [id] (induk); [quoteTarget] hanya cuplikan + key draf.
+  /// [onCreated] dipanggil dengan id balasan baru supaya UI bisa scroll.
+  Future<void> _openReply(
+    BuildContext context,
+    WidgetRef ref, {
+    Pantun? quoteTarget,
+    void Function(String replyId)? onCreated,
+  }) async {
     final auth = await ref.read(authStatusProvider.future);
     if (!auth.isAuth) {
       if (context.mounted) {
@@ -45,10 +55,34 @@ class PantunDetailPage extends HookConsumerWidget {
       return;
     }
     if (!context.mounted) return;
-    final created = await context.push<Object?>(
-      '/entertainment/pantun/create?parent=$id',
+
+    final detail = ref.read(pantunDetailProvider(id)).asData?.value;
+    final target = quoteTarget ?? detail?.pantun;
+    final quoteId = quoteTarget == null || quoteTarget.id == id
+        ? PantunComposeArgs.quoteRoot
+        : quoteTarget.id;
+    final args = PantunComposeArgs(
+      parentId: id,
+      quoteId: quoteId,
+      quoteLines: target?.lines,
+      quoteAuthorLabel: target == null
+          ? null
+          : displayPublicAccountLabel(
+              displayName: target.displayName,
+              username: target.username,
+            ),
     );
-    if (created != null) ref.invalidate(pantunDetailProvider(id));
+
+    final created = await context.push<Object?>(
+      '/entertainment/pantun/create?parent=$id&quote=$quoteId',
+      extra: args,
+    );
+    if (created is Pantun) {
+      ref.read(pantunDetailProvider(id).notifier).appendReply(created);
+      onCreated?.call(created.id);
+    } else if (created != null) {
+      ref.invalidate(pantunDetailProvider(id));
+    }
   }
 
   Future<void> _editReply(
@@ -132,6 +166,9 @@ class PantunDetailPage extends HookConsumerWidget {
     try {
       await ref.read(pantunApiProvider).deleteReply(reply.id);
       unawaited(AnalyticsService.instance.logPantunDelete(isReply: true));
+      unawaited(
+        PantunDraftStore().clear(parentId: id, quoteId: reply.id),
+      );
       ref.invalidate(pantunDetailProvider(id));
       if (context.mounted) {
         showFToast(
@@ -182,10 +219,12 @@ class PantunDetailPage extends HookConsumerWidget {
     final auth = ref.watch(authStatusProvider).value;
     final myUserId = auth?.userId;
 
-    // Key per balasan: dipakai Scrollable.ensureVisible untuk deep-link.
+    // Key per balasan: dipakai Scrollable.ensureVisible untuk deep-link /
+    // balasan baru setelah submit.
     final replyKeys = useRef<Map<String, GlobalObjectKey>>({});
     final scrolledTo = useRef<String?>(null);
     final pantunOpenLogged = useRef(false);
+    final pendingScrollReplyId = useState<String?>(null);
 
     useEffect(() {
       if (!async.hasValue || pantunOpenLogged.value) return null;
@@ -194,8 +233,21 @@ class PantunDetailPage extends HookConsumerWidget {
       return null;
     }, [async.hasValue]);
 
+    // Buang draf lokal untuk balasan yang sudah tidak ada di thread.
     useEffect(() {
-      final target = highlightReplyId;
+      final detail = async.asData?.value;
+      if (detail == null) return null;
+      unawaited(
+        PantunDraftStore().clearMissingReplyQuotes(
+          parentId: id,
+          liveReplyIds: detail.replies.map((r) => r.id).toSet(),
+        ),
+      );
+      return null;
+    }, [async.asData?.value.replies.map((r) => r.id).join(',')]);
+
+    useEffect(() {
+      final target = pendingScrollReplyId.value ?? highlightReplyId;
       if (target == null || !async.hasValue) return null;
       // Sekali saja per target; rebuild vote tidak boleh menarik scroll user.
       if (scrolledTo.value == target) return null;
@@ -212,7 +264,7 @@ class PantunDetailPage extends HookConsumerWidget {
         );
       });
       return null;
-    }, [async.hasValue, highlightReplyId]);
+    }, [async.hasValue, highlightReplyId, pendingScrollReplyId.value]);
 
     return FScaffold(
       childPad: true,
@@ -225,7 +277,11 @@ class PantunDetailPage extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: FButton(
-            onPress: () => _openReply(context, ref),
+            onPress: () => _openReply(
+              context,
+              ref,
+              onCreated: (replyId) => pendingScrollReplyId.value = replyId,
+            ),
             child: Text(l10n.pantunReply),
           ),
         ),
@@ -324,31 +380,44 @@ class PantunDetailPage extends HookConsumerWidget {
                                   .read(pantunDetailProvider(id).notifier)
                                   .toggleVote(pantun, value)
                             : null,
-                        footer: reply.userId == myUserId &&
-                                reply.status == 'published'
+                        footer: reply.status == 'published'
                             ? Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  PantunActionRow.edit(
-                                    label: l10n.pantunReplyEdit,
-                                    onEdit: () =>
-                                        _editReply(context, ref, reply),
+                                  PantunActionRow.reply(
+                                    label: l10n.pantunReplyAction,
+                                    onReply: () => _openReply(
+                                      context,
+                                      ref,
+                                      quoteTarget: reply,
+                                      onCreated: (replyId) =>
+                                          pendingScrollReplyId.value =
+                                              replyId,
+                                    ),
                                   ),
-                                  PantunActionRow.delete(
-                                    label: l10n.pantunDelete,
-                                    onDelete: () =>
-                                        _deleteReply(context, ref, reply),
-                                  ),
+                                  if (reply.userId == myUserId) ...[
+                                    PantunActionRow.edit(
+                                      label: l10n.pantunReplyEdit,
+                                      onEdit: () =>
+                                          _editReply(context, ref, reply),
+                                    ),
+                                    PantunActionRow.delete(
+                                      label: l10n.pantunDelete,
+                                      onDelete: () =>
+                                          _deleteReply(context, ref, reply),
+                                    ),
+                                  ] else
+                                    PantunActionRow.report(
+                                      onReport: () => reportPantunFromUi(
+                                        context,
+                                        ref,
+                                        targetType: 'pantun_reply',
+                                        targetId: reply.id,
+                                      ),
+                                    ),
                                 ],
                               )
-                            : PantunActionRow.report(
-                                onReport: () => reportPantunFromUi(
-                                  context,
-                                  ref,
-                                  targetType: 'pantun_reply',
-                                  targetId: reply.id,
-                                ),
-                              ),
+                            : null,
                       ),
                     ),
                   ),

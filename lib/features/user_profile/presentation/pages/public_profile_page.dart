@@ -300,6 +300,7 @@ class _ProfileBody extends HookConsumerWidget {
                       footer: ProfileAchievementTabs(
                         username: isOwnProfile ? null : profile.username,
                         showTitle: true,
+                        showAllButton: isOwnProfile,
                       ),
                     ),
                     const Gap(12),

@@ -129,6 +129,12 @@ class AnnouncementBody extends StatelessWidget {
       // body lebih besar (md bukan sm), override di sini.
       styleSheet: sambaskuMarkdownStyleSheet(context).copyWith(
         p: theme.typography.body.md.copyWith(height: 1.5),
+        a: theme.typography.body.md.copyWith(
+          height: 1.5,
+          color: theme.colors.primary,
+          decoration: TextDecoration.underline,
+          decorationColor: theme.colors.primary,
+        ),
         h1: theme.typography.body.xl2.copyWith(fontWeight: FontWeight.w700),
         h2: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
         h3: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),

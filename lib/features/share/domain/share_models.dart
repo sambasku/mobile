@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../../core/models/image_attribution.dart';
+import '../../../core/utils/format_number.dart';
 import 'word_public_url.dart';
 
 export '../../../core/models/image_attribution.dart';
@@ -99,11 +100,7 @@ enum ShareMediaKind { photo, video }
 
 /// Satu baris makna pada kartu share (`[n] → kumis` + definisi).
 class ShareSenseLine {
-  const ShareSenseLine({
-    this.wordClassCode,
-    this.padanan,
-    this.definition,
-  });
+  const ShareSenseLine({this.wordClassCode, this.padanan, this.definition});
 
   final String? wordClassCode;
   final String? padanan;
@@ -220,12 +217,11 @@ class ShareCardData {
     for (var i = 0; i < lines.length; i++) {
       final sense = lines[i];
       if (!sense.hasBody && sense.wordClassBracket == null) continue;
-      final prefix = lines.length > 1 ? '${i + 1} ' : '';
+      final prefix = lines.length > 1 ? '${formatRibuan(i + 1)} ' : '';
       final bracket = sense.wordClassBracket;
       final head = [
         ?bracket,
-        if (sense.padanan?.trim() case final pad? when pad.isNotEmpty)
-          '→ $pad',
+        if (sense.padanan?.trim() case final pad? when pad.isNotEmpty) '→ $pad',
       ].join(' ');
       if (head.isNotEmpty) buf.write('\n$prefix$head');
       final def = sense.definition?.trim();
@@ -341,10 +337,7 @@ extension ShareTextElementIdX on ShareTextElementId {
 
 /// Offset + rotasi relatif terhadap posisi default (koordinat canvas).
 class ShareTextLayout {
-  const ShareTextLayout({
-    this.offset = Offset.zero,
-    this.rotationDeg = 0,
-  });
+  const ShareTextLayout({this.offset = Offset.zero, this.rotationDeg = 0});
 
   final Offset offset;
   final double rotationDeg;
@@ -422,7 +415,10 @@ class ShareEditorSettings {
     ShareTextElementId.wordClass => wordClassLayout,
   };
 
-  ShareEditorSettings withLayout(ShareTextElementId id, ShareTextLayout layout) {
+  ShareEditorSettings withLayout(
+    ShareTextElementId id,
+    ShareTextLayout layout,
+  ) {
     return switch (id) {
       ShareTextElementId.lemma => copyWith(lemmaLayout: layout),
       ShareTextElementId.padanan => copyWith(padananLayout: layout),

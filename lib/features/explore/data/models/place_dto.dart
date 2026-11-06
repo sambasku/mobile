@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../../../../core/models/image_attribution.dart';
+import '../../../../core/models/public_author_ref.dart';
 import '../../domain/entities/place.dart';
 
 /// DTO satu Place di `places.json` (CDN repo `data`).
@@ -23,6 +24,7 @@ class PlaceDto {
     required this.shortDescription,
     this.regionId,
     this.authorId,
+    this.author,
     required this.images,
     required this.hours,
     required this.contact,
@@ -41,6 +43,7 @@ class PlaceDto {
   final String shortDescription;
   final String? regionId;
   final String? authorId;
+  final PublicAuthorRef? author;
   final List<PlaceImage> images;
   final String? hours;
   final PlaceContact? contact;
@@ -148,6 +151,7 @@ class PlaceDto {
       shortDescription: short,
       regionId: str('regionId'),
       authorId: str('authorId'),
+      author: PublicAuthorRef.fromJson(json['author']),
       images: images,
       hours: str('hours'),
       contact: parsePlaceContact(json['contact']),
@@ -199,6 +203,7 @@ class PlaceDto {
     shortDescription: shortDescription,
     regionId: regionId,
     authorId: authorId,
+    author: author,
     images: images,
     hours: hours,
     contact: contact,

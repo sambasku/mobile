@@ -118,21 +118,20 @@ void main() {
           referenceWordClassesProvider.overrideWith((ref) async => classes),
         ],
         child: MaterialApp(
-          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          theme: foruiPalettes['zinc']!.light.touch
+              .toApproximateMaterialTheme(),
           localizationsDelegates: [
-        ...AppLocalizations.localizationsDelegates,
-        ...FLocalizations.localizationsDelegates,
-      ],
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
           supportedLocales: const [Locale('id')],
-      locale: const Locale('id'),
+          locale: const Locale('id'),
           builder: (context, child) => FTheme(
             data: foruiPalettes['zinc']!.light.touch,
             // FToaster 0.27 butuh FTheme ancestor (akses accessibility scope).
             child: FToaster(child: child ?? const SizedBox.shrink()),
           ),
-          home: Scaffold(
-            body: ReviewInlineTypeEditor(detail: _detail(entity)),
-          ),
+          home: Scaffold(body: ReviewInlineTypeEditor(detail: _detail(entity))),
         ),
       ),
     );
@@ -159,7 +158,7 @@ void main() {
     );
 
     expect(find.text('Simpan jenis'), findsNothing);
-    await tester.tap(find.text('Jenis entri'));
+    await tester.tap(find.text('Kata'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Peribahasa'));
     await tester.pumpAndSettle();
@@ -168,7 +167,10 @@ void main() {
     expect(repo.lastBody?['word_type'], 'peribahasa');
     expect(find.text('Simpan jenis'), findsNothing);
 
-    await tester.tap(find.text('Kelas kata'));
+    // Toast 5 detik menutupi chip. Maju jam, lalu selesaikan animasi tutup.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Umum'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Kata Kerja').first);
     await tester.pumpAndSettle();
@@ -208,7 +210,7 @@ void main() {
       },
     );
 
-    await tester.tap(find.text('Jenis entri'));
+    await tester.tap(find.text('Ungkapan'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Kata'));
     await tester.pumpAndSettle();

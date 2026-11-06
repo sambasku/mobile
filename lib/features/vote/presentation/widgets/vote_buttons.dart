@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Pasangan tombol upvote/downvote + count (state-icon murni, tanpa fetch).
@@ -190,7 +191,7 @@ class _SideButtonState extends State<_SideButton>
     return Semantics(
       button: true,
       label: w.label,
-      value: '${w.count}',
+      value: formatRibuan(w.count),
       // FScaffold/FCard forui tidak menyediakan ancestor Material - bungkus
       // sendiri supaya InkWell (dan ripple-nya) jalan di host mana pun.
       child: Material(
@@ -215,11 +216,12 @@ class _SideButtonState extends State<_SideButton>
                     Icon(w.icon, size: w.compact ? 14 : 16, color: color),
                     const Gap(6),
                     Text(
-                      '${w.count}',
+                      formatRibuan(w.count),
                       style: theme.typography.body.sm.copyWith(
                         color: color,
-                        fontWeight:
-                            w.active ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: w.active
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                       ),
                     ),
                   ],

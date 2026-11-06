@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/sambasku_markdown.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
 import '../providers/encyclopedia_detail_providers.dart';
@@ -239,21 +239,10 @@ class _EncyclopediaArticleDetailPageState
                 ),
               ),
             const Gap(16),
-            MarkdownBody(
+            SambaskuMarkdown(
               data: article.bodyMd.isEmpty
                   ? '_${l10n.encyclopediaBodyEmpty}_'
                   : article.bodyMd,
-              styleSheet: MarkdownStyleSheet(
-                p: theme.typography.body.sm,
-                h1: theme.typography.display.lg,
-                h2: theme.typography.display.md,
-                h3: theme.typography.display.sm,
-                blockquote: theme.typography.body.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-              fitContent: true,
-              selectable: true,
             ),
             if (article.referencesMd != null &&
                 article.referencesMd!.isNotEmpty) ...[
@@ -265,19 +254,7 @@ class _EncyclopediaArticleDetailPageState
                 ),
               ),
               const Gap(8),
-              MarkdownBody(
-                data: article.referencesMd!,
-                styleSheet: MarkdownStyleSheet(
-                  p: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                  listBullet: theme.typography.body.xs.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-                fitContent: true,
-                selectable: true,
-              ),
+              SambaskuMarkdown(data: article.referencesMd!),
             ],
             const Gap(24),
             Text(
@@ -319,30 +296,17 @@ class _CommentForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: TextField(
-            controller: controller,
+          child: FTextField(
+            control: FTextFieldControl.managed(controller: controller),
+            hint: l10n.encyclopediaCommentPlaceholder,
             minLines: 2,
             maxLines: 4,
-            decoration: InputDecoration(
-              hintText: l10n.encyclopediaCommentPlaceholder,
-              hintStyle: theme.typography.body.xs.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-              filled: true,
-              fillColor: theme.colors.secondary,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.all(12),
-              isDense: true,
-            ),
           ),
         ),
         const Gap(12),
-        IconButton(
-          onPressed: sending ? null : onSend,
-          icon: sending
+        FButton.icon(
+          onPress: sending ? null : onSend,
+          child: sending
               ? const FCircularProgress(size: .sm)
               : Icon(FLucideIcons.send, size: 20, color: theme.colors.primary),
         ),

@@ -43,6 +43,13 @@ class _RejectReasonSheetState extends State<_RejectReasonSheet> {
       _selected == l10n.reviewRejectReasonOther;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // mobile#237: alasan paling sering sudah terpilih, Tolak langsung aktif.
+    _selected ??= AppLocalizations.of(context).reviewRejectReasonInaccurate;
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

@@ -3,10 +3,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/repositories/word_suggestion_review_repository_impl.dart';
+import '../../domain/entities/exploration_proposal.dart';
 import '../../domain/entities/word_suggestion_review.dart';
 import '../../domain/repositories/word_suggestion_review_repository.dart';
 import '../../domain/review_access.dart';
 import 'discussion_review_providers.dart';
+import 'exploration_review_providers.dart';
 import 'review_providers.dart';
 
 final wordSuggestionReviewRepositoryProvider =
@@ -25,13 +27,20 @@ final reviewSuggestionsHasPendingProvider = FutureProvider<bool>((ref) async {
   return page.match((_) => false, (value) => value.items.isNotEmpty);
 });
 
-/// Titik oranye hub/profil: kontribusi, usulan edit, atau diskusi pending.
+/// Titik oranye hub/profil: kontribusi, usulan edit, diskusi, atau eksplorasi.
 final reviewHubHasPendingProvider = FutureProvider<bool>((ref) async {
   final contrib = await ref.watch(reviewQueueHasPendingProvider.future);
   if (contrib) return true;
   final suggestions = await ref.watch(reviewSuggestionsHasPendingProvider.future);
   if (suggestions) return true;
-  return ref.watch(discussionReviewHasPendingProvider.future);
+  final discussion = await ref.watch(discussionReviewHasPendingProvider.future);
+  if (discussion) return true;
+  for (final domain in ExplorationReviewDomain.values) {
+    final pending =
+        await ref.watch(explorationHasPendingProvider(domain).future);
+    if (pending) return true;
+  }
+  return false;
 });
 
 class ReviewSuggestionsListState {

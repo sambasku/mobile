@@ -283,10 +283,12 @@
   "@voteMeaningOrder": {
     "placeholders": {
       "order": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -380,7 +382,8 @@
   "@commentSectionTitle": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -439,7 +442,8 @@
   "@shareMeaningNth": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -892,6 +896,12 @@
   },
   "reviewHomeEventSubtitle": "Antrean acara menunggu tinjauan",
   "reviewHomeEventWaiting": "Ada usulan acara yang menunggu",
+  "reviewHomeExploreTitle": "Eksplorasi",
+  "@reviewHomeExploreTitle": {
+    "description": "Tile hub verifikator yang membuka submenu usulan eksplorasi"
+  },
+  "reviewHomeExploreSubtitle": "Wisata, usaha, kuliner, dan acara",
+  "reviewHomeExploreWaiting": "Ada usulan eksplorasi yang menunggu",
   "reviewQueueLoadFailed": "Gagal memuat antrean",
   "reviewQueueEmpty": "Tidak ada usulan yang menunggu",
   "reviewQueueEmptyHint": "Usulan baru dari kontributor akan muncul di sini.",
@@ -1000,7 +1010,8 @@
   "@reviewChangeHintMeanings": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1008,7 +1019,8 @@
   "@reviewChangeHintImages": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1043,10 +1055,12 @@
   "@reviewSessionCounter": {
     "placeholders": {
       "position": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1054,15 +1068,29 @@
   "@reviewSessionCounterCorrect": {
     "placeholders": {
       "position": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
-  "reviewSessionVerifiedSelf": "Sudah terverifikasi. Menyetujui hanya menutup antrean.",
-  "reviewSessionVerifiedBy": "Sudah terverifikasi oleh @{verifier}. Menyetujui hanya menutup antrean.",
+  "reviewSessionVerifiedSelf": "Kata ini sudah terverifikasi. Tombol Tutup hanya menutup antrean.",
+  "reviewSessionVerifiedBy": "Kata ini sudah terverifikasi oleh @{verifier}. Tombol Tutup hanya menutup antrean.",
+  "reviewSessionCloseQueue": "Tutup antrean",
+  "reviewSessionCloseQueueButton": "Tutup",
+  "@reviewSessionCloseQueueButton": {
+    "description": "Label pendek tombol yang menutup antrean kata sudah terverifikasi"
+  },
+  "@reviewSessionCloseQueue": {
+    "description": "Label geser kanan dan semantics tombol saat kata sudah terverifikasi"
+  },
+  "reviewSessionQueueClosedToast": "Antrean ditutup",
+  "@reviewSessionQueueClosedToast": {
+    "description": "Toast setelah menutup antrean kata yang sudah terverifikasi"
+  },
   "@reviewSessionVerifiedBy": {
     "placeholders": {
       "verifier": {
@@ -1071,7 +1099,22 @@
     }
   },
   "reviewSessionVerifierNote": "Catatan verifikator",
-  "reviewSessionSwipeHint": "Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.",
+  "reviewSessionProposalInfo": "Detail usulan",
+  "@reviewSessionProposalInfo": {
+    "description": "Judul sheet info usulan di kartu tinjau"
+  },
+  "reviewSessionInfoKind": "Jenis usulan",
+  "@reviewSessionInfoKind": {
+    "description": "Label jenis entity di sheet info kartu tinjau"
+  },
+  "reviewSessionInfoContributor": "Pengusul",
+  "@reviewSessionInfoContributor": {
+    "description": "Label pengusul di sheet info kartu tinjau"
+  },
+  "reviewSessionInfoSubmitted": "Dikirim",
+  "@reviewSessionInfoSubmitted": {
+    "description": "Label waktu usulan masuk di sheet info kartu tinjau"
+  },
   "reviewSessionSkeletonTitle": "Judul usulan contoh",
   "reviewSessionEntryType": "Jenis entri",
   "reviewSessionSkeletonDate": "21 Sep 2026 00:00",
@@ -1110,13 +1153,16 @@
   "@reviewDiscussionApprovePhotos": {
     "placeholders": {
       "approved": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "censored": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "flagged": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1131,7 +1177,8 @@
   "@reviewDiscussionAttachmentCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1142,7 +1189,8 @@
   "@reviewDiscussionForceViolence": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1151,7 +1199,8 @@
   "@reviewDiscussionForceViolenceLabel": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1218,7 +1267,8 @@
   "@reviewSearchMissHits": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1290,7 +1340,8 @@
   "@reviewPreviewDurationSec": {
     "placeholders": {
       "sec": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1298,7 +1349,8 @@
   "@reviewPreviewDurationMin": {
     "placeholders": {
       "min": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1306,10 +1358,12 @@
   "@reviewPreviewDurationMinSec": {
     "placeholders": {
       "min": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "rem": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1317,7 +1371,8 @@
   "@reviewPreviewBytesB": {
     "placeholders": {
       "bytes": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1341,7 +1396,8 @@
   "@reviewMeaningNumber": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1350,7 +1406,8 @@
   "@reviewMeaningDelete": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1371,7 +1428,8 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1413,7 +1471,8 @@
   "@reviewVariantMax": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1446,7 +1505,8 @@
   "@reviewCorrectPronunciationRecorded": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1454,7 +1514,8 @@
   "@reviewCorrectSynonymCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1462,7 +1523,8 @@
   "@reviewCorrectAntonymCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1474,7 +1536,8 @@
   "@reviewCorrectCarriedTranslations": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1608,7 +1671,8 @@
         "type": "String"
       },
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "status": {
         "type": "String"
@@ -1775,10 +1839,12 @@
   "@dictImageCounter": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1925,7 +1991,8 @@
   "@dictAudioProgressPercent": {
     "placeholders": {
       "percent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1962,7 +2029,8 @@
   "@dictRecMaxSecondsHint": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1970,7 +2038,8 @@
   "@dictRecMaxSecondsHintSpeak": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -1986,10 +2055,12 @@
   "@dictRecRecording": {
     "placeholders": {
       "elapsed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -3599,6 +3670,10 @@
   "@usahaFilterClear": {
     "description": "Tombol hapus filter aktif di listing usaha"
   },
+  "usahaFilterApply": "Terapkan",
+  "@usahaFilterApply": {
+    "description": "CTA bawah drawer filter listing usaha"
+  },
   "usahaFilterRegionChip": "Kecamatan: {name}",
   "@usahaFilterRegionChip": {
     "description": "Chip filter kecamatan aktif di listing usaha",
@@ -3900,7 +3975,7 @@
   "exploreCategoryPermainanSubtitle": "Pantun dan permainan Sambas",
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
-  "encyclopediaTitle": "Ensiklopedia Sambas",
+  "encyclopediaTitle": "Ensiklopedia",
   "encyclopediaSubtitle": "Artikel sejarah, budaya, tokoh, dan tradisi Sambas",
   "encyclopediaSearchPlaceholder": "Cari artikel ensiklopedia...",
   "encyclopediaFilterAll": "Semua",
@@ -3971,6 +4046,92 @@
   "encyclopediaCategoryEmpty": "Pilih kategori artikel",
   "@encyclopediaCategoryEmpty": {
     "description": "Validasi kategori belum dipilih di form usulan"
+  },
+  "encyclopediaBodyTapToEdit": "Tulis isi artikel",
+  "@encyclopediaBodyTapToEdit": {
+    "description": "Label kartu field Isi yang membuka editor Markdown full-screen"
+  },
+  "encyclopediaBodyTapHint": "Ketuk untuk menulis dengan format Markdown dan sisip gambar",
+  "@encyclopediaBodyTapHint": {
+    "description": "Hint kartu Isi saat masih kosong"
+  },
+  "encyclopediaBodyHasContentHint": "Ketuk untuk lanjut menulis atau ubah isi",
+  "@encyclopediaBodyHasContentHint": {
+    "description": "Hint kartu Isi bila sudah ada draft markdown"
+  },
+  "mdEditorTitle": "Tulis isi",
+  "@mdEditorTitle": {
+    "description": "Judul halaman editor Markdown full-screen"
+  },
+  "mdEditorDone": "Selesai",
+  "@mdEditorDone": {
+    "description": "CTA footer editor Markdown - kembali ke form dengan isi tersimpan"
+  },
+  "mdEditorPreview": "Pratinjau",
+  "@mdEditorPreview": {
+    "description": "Tombol/mode pratinjau Markdown"
+  },
+  "mdEditorWrite": "Tulis",
+  "@mdEditorWrite": {
+    "description": "Tombol/mode kembali ke penulisan Markdown"
+  },
+  "mdEditorBold": "Tebal",
+  "@mdEditorBold": {
+    "description": "Semantics tombol bold di toolbar Markdown"
+  },
+  "mdEditorItalic": "Miring",
+  "@mdEditorItalic": {
+    "description": "Semantics tombol italic di toolbar Markdown"
+  },
+  "mdEditorHeading": "Judul bagian",
+  "@mdEditorHeading": {
+    "description": "Semantics tombol heading di toolbar Markdown"
+  },
+  "mdEditorLink": "Tautan",
+  "@mdEditorLink": {
+    "description": "Semantics tombol sisip tautan di toolbar Markdown"
+  },
+  "mdEditorLinkSheetTitle": "Sisip tautan",
+  "@mdEditorLinkSheetTitle": {
+    "description": "Judul bottom sheet sisip hyperlink Markdown"
+  },
+  "mdEditorLinkLabel": "Teks tautan",
+  "mdEditorLinkLabelHint": "Kata yang diketuk pembaca",
+  "mdEditorLinkUrl": "Alamat",
+  "mdEditorLinkUrlHint": "https://",
+  "mdEditorLinkInsert": "Sisipkan",
+  "mdEditorLinkInvalid": "Alamat harus diawali https://",
+  "mdEditorList": "Daftar",
+  "@mdEditorList": {
+    "description": "Semantics tombol bullet list di toolbar Markdown"
+  },
+  "mdEditorImage": "Sisip gambar",
+  "@mdEditorImage": {
+    "description": "Semantics tombol unggah/sisip gambar di toolbar Markdown"
+  },
+  "mdEditorUploadFailed": "Gagal mengunggah gambar. Coba lagi ya",
+  "@mdEditorUploadFailed": {
+    "description": "Toast bila upload gambar Markdown gagal"
+  },
+  "mdEditorImageAlt": "gambar",
+  "@mdEditorImageAlt": {
+    "description": "Alt text default saat menyisipkan ![alt](url) di Markdown"
+  },
+  "mdEditorEmptyPreview": "Belum ada isi untuk dipratinjau",
+  "@mdEditorEmptyPreview": {
+    "description": "Empty state mode preview Markdown bila body kosong"
+  },
+  "mdEditorHint": "Tulis Markdown di sini. Pakai toolbar untuk format, tautan, dan gambar.",
+  "@mdEditorHint": {
+    "description": "Hint TextField di editor Markdown"
+  },
+  "mdEditorUndo": "Urungkan",
+  "@mdEditorUndo": {
+    "description": "Semantics tombol undo di toolbar Markdown"
+  },
+  "mdEditorRedo": "Ulangi",
+  "@mdEditorRedo": {
+    "description": "Semantics tombol redo di toolbar Markdown"
   },
   "exploreCategoryKomunitas": "Komunitas",
   "exploreCategoryKomunitasSubtitle": "Grup warga dan kegiatan bersama",
@@ -4235,10 +4396,12 @@
   "@placeFormStepOf": {
     "placeholders": {
       "step": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "label": {
         "type": "String"
@@ -4269,7 +4432,8 @@
   "@wilayahDesaCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4277,7 +4441,8 @@
   "@wilayahWisataCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4334,7 +4499,8 @@
   "@contributeMaxMeanings": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4357,7 +4523,8 @@
   "@contributeMeaningIncomplete": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4385,7 +4552,8 @@
   "@contributeMeaningN": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4414,7 +4582,8 @@
   "@contributeBulkSentMany": {
     "placeholders": {
       "sent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4422,10 +4591,12 @@
   "@contributeBulkPartialBody": {
     "placeholders": {
       "sent": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "failed": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4434,10 +4605,12 @@
   "@contributeBulkProgress": {
     "placeholders": {
       "done": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4450,7 +4623,8 @@
   "@contributeBulkMaxRowsHint": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4459,7 +4633,8 @@
   "@contributeBulkMaxRows": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4469,7 +4644,8 @@
   "@contributeBulkLemmaField": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4477,7 +4653,8 @@
   "@contributeBulkLemmaExists": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4485,7 +4662,8 @@
   "@contributeBulkTranslationField": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4494,7 +4672,8 @@
   "@contributeBulkRemoveRow": {
     "placeholders": {
       "index": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4502,7 +4681,8 @@
   "@contributeRelationsSummaryVariants": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4510,7 +4690,8 @@
   "@contributeRelationsSummarySynonyms": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4518,7 +4699,8 @@
   "@contributeRelationsSummaryAntonyms": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4528,7 +4710,8 @@
   "@contributeRelationsMaxItems": {
     "placeholders": {
       "max": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "label": {
         "type": "String"
@@ -4609,7 +4792,8 @@
   "@contributeKbbiSheetCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4619,10 +4803,12 @@
   "@contributeKbbiSheetSense": {
     "placeholders": {
       "homonym": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "sense": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4639,7 +4825,8 @@
   "@contributeWordClassSheetCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4709,11 +4896,12 @@
   "@discussionCreateBodyHint": {},
   "discussionCreatePaste": "Tempel",
   "@discussionCreatePaste": {},
-  "discussionCreateCharCount": "{count}/1000",
+  "discussionCreateCharCount": "{count}/1.000",
   "@discussionCreateCharCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4729,7 +4917,8 @@
   "@discussionCreateAudioReady": {
     "placeholders": {
       "sec": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4818,7 +5007,8 @@
   "@discussionRepliesCount": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -4858,7 +5048,8 @@
   "@discussionFeedPhotos": {
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5077,6 +5268,32 @@
   "@eventProposalsEmptyHint": {},
   "eventProposalsLoadFailedShort": "Gagal memuat usulan",
   "@eventProposalsLoadFailedShort": {},
+  "eventDaySheetTitle": "Acara {date}",
+  "@eventDaySheetTitle": {
+    "description": "Judul bottomsheet daftar acara di tanggal terpilih",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "5 Nov"
+      }
+    }
+  },
+  "eventDaySheetEmpty": "Belum ada acara di tanggal ini",
+  "@eventDaySheetEmpty": {
+    "description": "Empty state bottomsheet saat tanggal tanpa acara"
+  },
+  "eventCalendarDayHasEventsSemantics": "Ada acara",
+  "@eventCalendarDayHasEventsSemantics": {
+    "description": "Semantics tambahan pada tanggal kalender yang punya indikator acara"
+  },
+  "eventCalendarShow": "Tampilkan kalender acara",
+  "@eventCalendarShow": {
+    "description": "Tombol membuka kalender bulan di daftar acara (default tertutup)"
+  },
+  "eventCalendarHide": "Sembunyikan kalender",
+  "@eventCalendarHide": {
+    "description": "Tombol menutup kalender bulan di daftar acara"
+  },
   "eventListTitle": "Acara",
   "@eventListTitle": {},
   "eventListSearch": "Cari acara",
@@ -5131,10 +5348,12 @@
   "@eventDetailPosterCounter": {
     "placeholders": {
       "current": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "total": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5291,7 +5510,8 @@
     "description": "Judul chart aktivitas; {days} = jendela hari yang ditampilkan",
     "placeholders": {
       "days": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5426,10 +5646,12 @@
     "description": "Satu pasangan baris yang belum berima",
     "placeholders": {
       "a": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       },
       "b": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5438,7 +5660,8 @@
     "description": "Kata akhir baris tidak terdeteksi; {line} 1-based",
     "placeholders": {
       "line": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5481,7 +5704,8 @@
     "description": "Judul daftar balasan; {count} = jumlah balasan",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5659,7 +5883,8 @@
     "description": "Label baris akun sosial; {n} = nomor baris",
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5703,7 +5928,13 @@
       }
     }
   },
-  "verifierApplicationPhoneLabel": "No. HP",
+  "verifierApplicationFullNameLabel": "Nama lengkap",
+  "@verifierApplicationFullNameLabel": {},
+  "verifierApplicationFullNameHint": "Nama sesuai identitas",
+  "@verifierApplicationFullNameHint": {},
+  "verifierApplicationFullNameMin": "Nama lengkap minimal 2 karakter.",
+  "@verifierApplicationFullNameMin": {},
+  "verifierApplicationPhoneLabel": "Nomor HP",
   "@verifierApplicationPhoneLabel": {},
   "verifierApplicationPhoneHint": "81234567890",
   "@verifierApplicationPhoneHint": {},
@@ -5721,7 +5952,45 @@
   "@verifierApplicationResubmit": {},
   "verifierApplicationSubmitting": "Mengirim...",
   "@verifierApplicationSubmitting": {},
-  "verifierApplicationPrivacyNote": "Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.",
+  "verifierApplicationDialectLabel": "Dialek yang dikuasai",
+  "@verifierApplicationDialectLabel": {},
+  "verifierApplicationDialectPick": "Pilih dialek",
+  "@verifierApplicationDialectPick": {},
+  "verifierApplicationDialectUmum": "Umum",
+  "@verifierApplicationDialectUmum": {},
+  "verifierApplicationDialectKota": "Sambas Kota",
+  "@verifierApplicationDialectKota": {},
+  "verifierApplicationDialectPesisir": "Sambas Pesisir",
+  "@verifierApplicationDialectPesisir": {},
+  "verifierApplicationDialectLainnya": "Lainnya",
+  "@verifierApplicationDialectLainnya": {},
+  "verifierApplicationDialectRequired": "Pilih dialek yang kamu kuasai.",
+  "@verifierApplicationDialectRequired": {},
+  "verifierApplicationDialectNoteLabel": "Catatan dialek",
+  "@verifierApplicationDialectNoteLabel": {},
+  "verifierApplicationDialectNoteHint": "Sebutkan dialek atau wilayahnya",
+  "@verifierApplicationDialectNoteHint": {},
+  "verifierApplicationDialectNoteMin": "Catatan dialek minimal 10 karakter.",
+  "@verifierApplicationDialectNoteMin": {},
+  "verifierApplicationReasonLabel": "Alasan",
+  "@verifierApplicationReasonLabel": {},
+  "verifierApplicationReasonHint": "Bahasa atau dialek mana yang kamu kuasai, dan kenapa kamu mau meninjau kata orang lain?",
+  "@verifierApplicationReasonHint": {},
+  "verifierApplicationReasonMin": "Alasan minimal 10 karakter.",
+  "@verifierApplicationReasonMin": {},
+  "verifierApplicationPhotoLabel": "Foto diri (opsional)",
+  "@verifierApplicationPhotoLabel": {},
+  "verifierApplicationPhotoHint": "Wajah jelas. Boleh dikosongkan.",
+  "@verifierApplicationPhotoHint": {},
+  "verifierApplicationPhotoUploading": "Tunggu foto diri selesai diunggah.",
+  "@verifierApplicationPhotoUploading": {},
+  "verifierApplicationPhotoFailed": "Foto diri gagal diunggah. Coba lagi.",
+  "@verifierApplicationPhotoFailed": {},
+  "verifierApplicationPhotoRemove": "Hapus foto",
+  "@verifierApplicationPhotoRemove": {},
+  "verifierApplicationContributionHint": "Pengajuan butuh minimal 3 kontribusi yang sudah disetujui.",
+  "@verifierApplicationContributionHint": {},
+  "verifierApplicationPrivacyNote": "Nomor HP, alamat, dan foto diri hanya untuk admin, tidak tampil di profil publik.",
   "@verifierApplicationPrivacyNote": {},
   "verifierApplicationPickPlatform": "Pilih platform",
   "@verifierApplicationPickPlatform": {},
@@ -5731,7 +6000,8 @@
   "@verifierApplicationPlatformNth": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5751,7 +6021,8 @@
   "@verifierApplicationImageTooLarge": {
     "placeholders": {
       "mb": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -5771,6 +6042,10 @@
   "@achievementTitle": {},
   "achievementSeeAll": "Lihat semua pencapaian",
   "@achievementSeeAll": {},
+  "achievementSeeMore": "Lihat lainnya",
+  "@achievementSeeMore": {
+    "description": "Overlay sel ujung saat lencana profil lebih dari satu baris"
+  },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
   "@achievementBorderUpdated": {},
   "achievementLoadFailed": "Gagal memuat pencapaian",
@@ -5787,8 +6062,8 @@
   "@achievementProgress": {
     "description": "Progres locked agregat di tile achievement",
     "placeholders": {
-      "current": { "type": "int" },
-      "target": { "type": "int" }
+      "current": { "type": "int", "format": "decimalPattern" },
+      "target": { "type": "int", "format": "decimalPattern" }
     }
   },
   "achievementOwned": "Sudah kamu miliki",
@@ -5814,8 +6089,8 @@
     "description": "Isi sheet detail locked dengan progres agregat",
     "placeholders": {
       "description": { "type": "String" },
-      "current": { "type": "int" },
-      "target": { "type": "int" }
+      "current": { "type": "int", "format": "decimalPattern" },
+      "target": { "type": "int", "format": "decimalPattern" }
     }
   },
   "achievementOpenBadges": "Lencana terbuka",
@@ -5878,7 +6153,8 @@
   "@searchMissSkeletonLemma": {
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -6064,7 +6340,8 @@
     "description": "Toast batas jumlah lampiran; {count} = maks",
     "placeholders": {
       "count": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -6075,7 +6352,8 @@
     "description": "Toast batas ukuran; {mb} = MB",
     "placeholders": {
       "mb": {
-        "type": "int"
+        "type": "int",
+        "format": "decimalPattern"
       }
     }
   },
@@ -6119,7 +6397,7 @@
   "@levelingChipLabel": {
     "description": "Chip level di header profil",
     "placeholders": {
-      "level": { "type": "int" },
+      "level": { "type": "int", "format": "decimalPattern" },
       "title": { "type": "String" }
     }
   },
@@ -6127,8 +6405,8 @@
   "@levelingProgress": {
     "description": "Progress poin ke level berikutnya",
     "placeholders": {
-      "points": { "type": "int" },
-      "next": { "type": "int" }
+      "points": { "type": "int", "format": "decimalPattern" },
+      "next": { "type": "int", "format": "decimalPattern" }
     }
   },
   "levelingMaxReached": "Level tertinggi sudah tercapai",
@@ -6137,7 +6415,7 @@
   "@levelingSheetTitle": {
     "description": "Judul bottom sheet leveling",
     "placeholders": {
-      "level": { "type": "int" },
+      "level": { "type": "int", "format": "decimalPattern" },
       "title": { "type": "String" }
     }
   },
@@ -6146,12 +6424,12 @@
   "levelingStreakDays": "Streak {days} hari",
   "@levelingStreakDays": {
     "description": "Streak di sheet leveling",
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": { "days": { "type": "int", "format": "decimalPattern" } }
   },
   "levelingStreakBadge": "streak {days}",
   "@levelingStreakBadge": {
     "description": "Badge streak kecil di chip",
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": { "days": { "type": "int", "format": "decimalPattern" } }
   },
   "levelingStreakWindowHint": "Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.",
   "@levelingStreakWindowHint": { "description": "Penjelasan window streak di sheet leveling" },

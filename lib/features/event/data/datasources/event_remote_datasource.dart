@@ -40,6 +40,8 @@ class EventRemoteDatasource {
     String? q,
     bool notEnded = false,
     String? order,
+    DateTime? overlapsFrom,
+    DateTime? overlapsTo,
   }) async {
     final res = await _dio.get<dynamic>(
       '/api/v1/events',
@@ -54,6 +56,10 @@ class EventRemoteDatasource {
         if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
         if (notEnded) 'not_ended': '1',
         if (order != null && order.isNotEmpty) 'order': order,
+        if (overlapsFrom != null)
+          'overlaps_from': overlapsFrom.toUtc().toIso8601String(),
+        if (overlapsTo != null)
+          'overlaps_to': overlapsTo.toUtc().toIso8601String(),
       },
       options: Options(receiveTimeout: const Duration(seconds: 8)),
     );
