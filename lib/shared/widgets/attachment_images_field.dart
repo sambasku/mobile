@@ -252,12 +252,13 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
     try {
       final size = await file.length();
       if (size > widget.maxSizeMb * 1024 * 1024) {
-        if (mounted)
+        if (mounted) {
           _toast(
             AppLocalizations.of(
               context,
             ).attachmentImageTooLarge(widget.maxSizeMb),
           );
+        }
         return;
       }
 

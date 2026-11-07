@@ -771,8 +771,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     final antonyms = _relations
         .where((r) => r.relationType == 'antonym')
         .length;
-    if (synonyms == 0 && antonyms == 0)
+    if (synonyms == 0 && antonyms == 0) {
       return AppLocalizations.of(context).reviewExtrasNoItems;
+    }
     return [
       if (synonyms > 0)
         AppLocalizations.of(context).reviewCorrectSynonymCount(synonyms),
