@@ -305,6 +305,16 @@ class _BodyState extends State<_Body> {
             style: theme.typography.body.sm.copyWith(height: 1.5),
           ),
         ],
+        if (usaha.manager case final manager?)
+          ContributorAppreciationSection(
+            label: l10n.usahaManagedByLabel,
+            contributors: [
+              ContributorCredit(
+                username: manager.username,
+                displayName: manager.displayName,
+              ),
+            ],
+          ),
         if (usaha.author case final author?)
           ContributorAppreciationSection(
             label: l10n.usahaContributorProposedBy,

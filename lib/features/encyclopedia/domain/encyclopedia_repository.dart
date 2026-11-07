@@ -21,6 +21,11 @@ abstract interface class EncyclopediaRepository {
     String id,
     Map<String, dynamic> body,
   );
+  Future<ApiResponse<ArticleComment>> updateComment(
+    String id,
+    Map<String, dynamic> body,
+  );
+  Future<ApiResponse<void>> deleteComment(String id);
   Future<ApiResponse<EncyclopediaBookmarkResult>> toggleBookmark(String id);
   Future<ApiResponse<MyContributionItem>> submitContribution(
     SubmitEncyclopediaContributionPayload body,
@@ -71,6 +76,16 @@ class EncyclopediaRepositoryImpl implements EncyclopediaRepository {
     String id,
     Map<String, dynamic> body,
   ) => _remote.postComment(id, body);
+
+  @override
+  Future<ApiResponse<ArticleComment>> updateComment(
+    String id,
+    Map<String, dynamic> body,
+  ) => _remote.updateComment(id, body);
+
+  @override
+  Future<ApiResponse<void>> deleteComment(String id) =>
+      _remote.deleteComment(id);
 
   @override
   Future<ApiResponse<EncyclopediaBookmarkResult>> toggleBookmark(String id) =>

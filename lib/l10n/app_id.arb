@@ -119,6 +119,23 @@
       }
     }
   },
+  "splashTagline": "Kamus, Bahasa & Budaya (v{version})",
+  "@splashTagline": {
+    "description": "Tagline kaki splash dengan versi app",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "splashTaglinePending": "Kamus, Bahasa & Budaya",
+  "@splashTaglinePending": {
+    "description": "Tagline kaki splash sebelum PackageInfo siap"
+  },
+  "splashSupportedBy": "Didukung oleh",
+  "@splashSupportedBy": {
+    "description": "Label Area sponsor di splash (isi strip = plan follow-up)"
+  },
   "aboutWhatTitle": "Apa itu SambasKu?",
   "aboutWhatBody": "Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.",
   "aboutSponsorTitle": "Sponsor & Tim Kami",
@@ -1744,7 +1761,19 @@
   "dictCopiedWord": "Teks kata disalin",
   "dictCopiedMeaning": "Makna disalin",
   "dictSearchHint": "Cari kata Sambas...",
+  "dictSearchChip": "Cari",
+  "@dictSearchChip": {
+    "description": "Label chip cari di beranda (bukan hint field list)"
+  },
   "dictAZ": "A-Z",
+  "dictProposeChip": "Usul",
+  "@dictProposeChip": {
+    "description": "Label chip usul kata di beranda (pendek)"
+  },
+  "dictDiscussionChip": "Diskusi",
+  "@dictDiscussionChip": {
+    "description": "Label chip ruang diskusi di beranda (pendek)"
+  },
   "dictProposeWord": "Usul kata baru",
   "dictDiscussion": "Ruang Diskusi",
   "dictDiscussionSubtitle": "Tanya arti atau bahas kata Sambas bareng warga",
@@ -1867,7 +1896,24 @@
   },
   "dictActionMore": "Lainnya",
   "@dictActionMore": {
-    "description": "Buka sheet aksi tambahan di detail kata"
+    "description": "Buka sheet aksi di header detail kata"
+  },
+  "dictWordActionsTitle": "Aksi",
+  "@dictWordActionsTitle": {
+    "description": "Judul bottom sheet aksi detail kata"
+  },
+  "dictSuggestEditSubtitle": "Usulkan perbaikan lemma, makna, atau contoh",
+  "@dictSuggestEditSubtitle": {
+    "description": "Subtitle tile Usulkan di sheet aksi detail kata"
+  },
+  "dictPhotoCountBadge": "{count}",
+  "@dictPhotoCountBadge": {
+    "description": "Badge jumlah foto di thumbnail lemma",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "dictLoginToSuggest": "Masuk dulu untuk mengusulkan perubahan",
   "dictReportEntry": "Laporkan entri",
@@ -2001,6 +2047,36 @@
   "dictRecordExampleAudio": "Rekam audio contoh",
   "dictRecordPronunciation": "Rekam pelafalan",
   "dictLoginToRecord": "Masuk dulu untuk rekam pelafalan",
+  "dictAddPronunciation": "Tambah pelafalan",
+  "@dictAddPronunciation": {
+    "description": "CTA di bawah lemma bila belum ada pelafalan tertulis"
+  },
+  "dictAddPronunciationTitle": "Tambah pelafalan",
+  "@dictAddPronunciationTitle": {
+    "description": "Judul sheet tambah pelafalan tertulis"
+  },
+  "dictAddPronunciationBody": "Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.",
+  "@dictAddPronunciationBody": {
+    "description": "Penjelasan singkat sheet pelafalan"
+  },
+  "dictAddPronunciationHint": "Contoh: sa.dap atau /sa.dap/",
+  "@dictAddPronunciationHint": {
+    "description": "Hint field value pelafalan"
+  },
+  "dictAddPronunciationPaste": "Tempel",
+  "@dictAddPronunciationPaste": {
+    "description": "Tombol tempel clipboard di sheet pelafalan"
+  },
+  "dictAddPronunciationSubmit": "Simpan",
+  "dictAddPronunciationSaving": "Menyimpan...",
+  "dictAddPronunciationEmpty": "Pelafalan tidak boleh kosong",
+  "dictAddPronunciationSuccess": "Pelafalan disimpan",
+  "dictAddPronunciationFailed": "Gagal menyimpan pelafalan",
+  "dictLoginToAddPronunciation": "Masuk dulu untuk menambah pelafalan",
+  "dictPronunciationClipboardEmpty": "Clipboard kosong",
+  "@dictPronunciationClipboardEmpty": {
+    "description": "Toast saat Tempel tapi clipboard kosong"
+  },
   "dictRecMicPermissionTitle": "Izin mikrofon diperlukan untuk rekam pelafalan",
   "dictRecMicUnavailable": "Mikrofon tidak tersedia",
   "dictRecSaveFailed": "Rekaman gagal disimpan",
@@ -3768,6 +3844,10 @@
   "usahaReportSentBody": "Terima kasih. Admin akan memeriksa info usaha ini.",
   "usahaReportFailed": "Gagal melapor",
   "usahaManagedByOwner": "Dikelola pemilik",
+  "usahaManagedByLabel": "Dikelola oleh",
+  "@usahaManagedByLabel": {
+    "description": "Label apresiasi pengelola terverifikasi di detail usaha"
+  },
   "usahaClosedPermanentlyTitle": "Usaha ini sudah tutup permanen",
   "usahaClosedPermanentlyBody": "Info tetap kami simpan sebagai catatan sejarah.",
   "usahaCatalog": "Katalog",
@@ -3976,6 +4056,10 @@
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
   "encyclopediaTitle": "Ensiklopedia",
+  "encyclopediaChip": "Ensik.",
+  "@encyclopediaChip": {
+    "description": "Label chip ensiklopedia di beranda (pendek)"
+  },
   "encyclopediaSubtitle": "Artikel sejarah, budaya, tokoh, dan tradisi Sambas",
   "encyclopediaSearchPlaceholder": "Cari artikel ensiklopedia...",
   "encyclopediaFilterAll": "Semua",
@@ -4087,6 +4171,22 @@
   "@mdEditorHeading": {
     "description": "Semantics tombol heading di toolbar Markdown"
   },
+  "mdEditorHeadingPick": "Pilih tingkat judul",
+  "@mdEditorHeadingPick": {
+    "description": "Judul bottom sheet pilih H1/H2/H3"
+  },
+  "mdEditorHeading1": "Judul besar (H1)",
+  "@mdEditorHeading1": {
+    "description": "Opsi heading level 1 di picker Markdown"
+  },
+  "mdEditorHeading2": "Judul bagian (H2)",
+  "@mdEditorHeading2": {
+    "description": "Opsi heading level 2 di picker Markdown"
+  },
+  "mdEditorHeading3": "Subjudul (H3)",
+  "@mdEditorHeading3": {
+    "description": "Opsi heading level 3 di picker Markdown"
+  },
   "mdEditorLink": "Tautan",
   "@mdEditorLink": {
     "description": "Semantics tombol sisip tautan di toolbar Markdown"
@@ -4103,7 +4203,47 @@
   "mdEditorLinkInvalid": "Alamat harus diawali https://",
   "mdEditorList": "Daftar",
   "@mdEditorList": {
-    "description": "Semantics tombol bullet list di toolbar Markdown"
+    "description": "Semantics tombol daftar di toolbar Markdown"
+  },
+  "mdEditorListPick": "Jenis daftar",
+  "@mdEditorListPick": {
+    "description": "Judul bottom sheet pilih bullet atau bernomor"
+  },
+  "mdEditorListBullet": "Daftar poin",
+  "@mdEditorListBullet": {
+    "description": "Opsi bullet list di picker Markdown"
+  },
+  "mdEditorListOrdered": "Daftar bernomor",
+  "@mdEditorListOrdered": {
+    "description": "Opsi ordered list di picker Markdown"
+  },
+  "mdEditorTable": "Tabel",
+  "@mdEditorTable": {
+    "description": "Semantics tombol sisip tabel di toolbar Markdown"
+  },
+  "mdEditorTableCol1": "Kolom 1",
+  "@mdEditorTableCol1": {
+    "description": "Header default kolom 1 skeleton tabel Markdown"
+  },
+  "mdEditorTableCol2": "Kolom 2",
+  "@mdEditorTableCol2": {
+    "description": "Header default kolom 2 skeleton tabel Markdown"
+  },
+  "mdEditorQuote": "Kutipan",
+  "@mdEditorQuote": {
+    "description": "Semantics tombol blockquote di toolbar Markdown"
+  },
+  "mdEditorCode": "Kode",
+  "@mdEditorCode": {
+    "description": "Semantics tombol kode inline/fenced di toolbar Markdown"
+  },
+  "mdEditorStrike": "Coret",
+  "@mdEditorStrike": {
+    "description": "Semantics tombol strikethrough di toolbar Markdown"
+  },
+  "mdEditorHr": "Garis pemisah",
+  "@mdEditorHr": {
+    "description": "Semantics tombol horizontal rule di toolbar Markdown"
   },
   "mdEditorImage": "Sisip gambar",
   "@mdEditorImage": {

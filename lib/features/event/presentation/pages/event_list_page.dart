@@ -225,7 +225,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
               alignment: Alignment.topCenter,
               child: _calendarExpanded && calendarController != null
                   ? Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 8),
                       child: _EventMonthCalendar(
                         controller: calendarController,
                         dateKeys: dateKeys,
@@ -236,7 +236,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
                     )
                   : const SizedBox.shrink(),
             ),
-            const Gap(12),
+            const Gap(8),
             FTextField(
               control: FTextFieldControl.managed(
                 onChange: (value) => _onSearchChanged(value.text),
@@ -252,7 +252,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
                     const Icon(FLucideIcons.search),
                   ),
             ),
-            const Gap(12),
+            const Gap(8),
             if (categories.isNotEmpty) ...[
               _CategoryBar(
                 categories: categories,
@@ -266,7 +266,7 @@ class _EventListPageState extends ConsumerState<EventListPage> {
                   _resetScroll();
                 },
               ),
-              const Gap(12),
+              const Gap(8),
             ],
             Expanded(
               child: browseAsync.when(

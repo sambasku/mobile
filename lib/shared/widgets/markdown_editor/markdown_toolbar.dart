@@ -3,7 +3,8 @@ import 'package:forui/forui.dart';
 
 import '../../../l10n/app_localizations.dart';
 
-/// Toolbar format Markdown (undo/redo, bold, italic, heading, list, gambar, preview).
+/// Toolbar format Markdown (undo/redo, bold/italic/strike, heading, list,
+/// table, quote, code, hr, tautan, gambar, preview).
 ///
 /// Dibungkus [ExcludeFocus] supaya tap tombol tidak merebut fokus dari TextField
 /// (seleksi/handles tetap hidup). [onPreserveSelection] dipanggil di pointer-down
@@ -20,8 +21,13 @@ class MarkdownToolbar extends StatelessWidget {
     required this.onRedo,
     required this.onBold,
     required this.onItalic,
+    required this.onStrike,
     required this.onHeading,
     required this.onList,
+    required this.onTable,
+    required this.onQuote,
+    required this.onCode,
+    required this.onHr,
     required this.onLink,
     required this.onImage,
     required this.onTogglePreview,
@@ -37,8 +43,13 @@ class MarkdownToolbar extends StatelessWidget {
   final VoidCallback onRedo;
   final VoidCallback onBold;
   final VoidCallback onItalic;
+  final VoidCallback onStrike;
   final VoidCallback onHeading;
   final VoidCallback onList;
+  final VoidCallback onTable;
+  final VoidCallback onQuote;
+  final VoidCallback onCode;
+  final VoidCallback onHr;
   final VoidCallback onLink;
   final VoidCallback onImage;
   final VoidCallback onTogglePreview;
@@ -86,7 +97,12 @@ class MarkdownToolbar extends StatelessWidget {
                   onPress: writeEnabled ? onItalic : null,
                 ),
                 _Tool(
-                  icon: FLucideIcons.heading2,
+                  icon: FLucideIcons.strikethrough,
+                  label: l10n.mdEditorStrike,
+                  onPress: writeEnabled ? onStrike : null,
+                ),
+                _Tool(
+                  icon: FLucideIcons.heading,
                   label: l10n.mdEditorHeading,
                   onPress: writeEnabled ? onHeading : null,
                 ),
@@ -94,6 +110,26 @@ class MarkdownToolbar extends StatelessWidget {
                   icon: FLucideIcons.list,
                   label: l10n.mdEditorList,
                   onPress: writeEnabled ? onList : null,
+                ),
+                _Tool(
+                  icon: FLucideIcons.table,
+                  label: l10n.mdEditorTable,
+                  onPress: writeEnabled ? onTable : null,
+                ),
+                _Tool(
+                  icon: FLucideIcons.textQuote,
+                  label: l10n.mdEditorQuote,
+                  onPress: writeEnabled ? onQuote : null,
+                ),
+                _Tool(
+                  icon: FLucideIcons.code,
+                  label: l10n.mdEditorCode,
+                  onPress: writeEnabled ? onCode : null,
+                ),
+                _Tool(
+                  icon: FLucideIcons.minus,
+                  label: l10n.mdEditorHr,
+                  onPress: writeEnabled ? onHr : null,
                 ),
                 _Tool(
                   icon: FLucideIcons.link,

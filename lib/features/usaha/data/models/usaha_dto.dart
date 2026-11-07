@@ -37,6 +37,7 @@ class UsahaDto {
       restrictedReason: _str(json['restricted_reason']),
       managerId: _str(json['manager_id']),
       author: _authorRef(json['author']),
+manager: _authorRef(json['manager']),
       pendingChanges: _int(json['pending_changes']) ?? 0,
       items: _items(json['items']),
       images: _images(json['images']),

@@ -137,22 +137,20 @@ class UsahaBrowse extends AsyncNotifier<UsahaBrowseState> {
     }
   }
 
-  /// Pull-to-refresh (item lama tetap tampil sampai data baru datang).
+  /// Muat ulang. `keepItems` = jangan kosongkan list lama saat refresh.
+  ///
+  /// Tanpa `keepItems` layar pindah ke skeleton; dengan `keepItems` grid tetap
+  /// terpasang sehingga `ScrollController` tidak lepas dan `RefreshIndicator`
+  /// tidak ter-unmount saat pull-to-refresh.
   Future<void> reload({bool keepItems = false}) async {
     if (!ref.mounted) return;
-    final previous = state.value?.items;
-    state = const AsyncLoading();
-    try {
-      final next = await _fetchState();
-      if (!ref.mounted) return;
-      if (keepItems && previous != null && previous.isNotEmpty) {
-        state = AsyncData(next.copyWith(items: previous));
-      } else {
-        state = AsyncData(next);
-      }
-    } catch (e, st) {
-      if (!ref.mounted) return;
-      state = AsyncError(e, st);
-    }
+    final previous = state.value;
+    if (!keepItems) state = const AsyncLoading();
+    final next = await AsyncValue.guard(_fetchState);
+    if (!ref.mounted) return;
+    // Refresh gagal: pertahankan data lama (jangan ganti layar jadi error).
+    state = keepItems && next.hasError && previous != null
+        ? AsyncData(previous)
+        : next;
   }
 }

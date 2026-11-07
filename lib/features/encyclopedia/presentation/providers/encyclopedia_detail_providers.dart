@@ -9,10 +9,3 @@ final encyclopediaArticleProvider = FutureProvider.autoDispose
       final resp = await repo.getArticle(slug);
       return resp.data;
     });
-
-final encyclopediaCommentsProvider = FutureProvider.autoDispose
-    .family<List<ArticleComment>, String>((ref, articleId) async {
-      final repo = ref.watch(encyclopediaRepositoryProvider);
-      final resp = await repo.getComments(articleId, {'limit': 50});
-      return resp.data?.items ?? [];
-    });

@@ -113,9 +113,9 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
     });
   }
 
-  Future<void> _reload() async {
-    await ref.read(usahaBrowseProvider(_browseQuery).notifier).reload();
-  }
+  Future<void> _reload() => ref
+      .read(usahaBrowseProvider(_browseQuery).notifier)
+      .reload(keepItems: true);
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +205,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                 ],
               ),
             ],
-            const Gap(12),
+            const Gap(8),
             if (categories.isNotEmpty) ...[
               _CategoryBar(
                 categories: categories,
@@ -217,7 +217,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
               ),
               // Jarak chips -> grid: 4 terlalu mepet (chip punya tinggi
               // sendiri, grid langsung menempel di bawahnya).
-              const Gap(12),
+              const Gap(8),
             ],
             Expanded(
               child: browseAsync.when(

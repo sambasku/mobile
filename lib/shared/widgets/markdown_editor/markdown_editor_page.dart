@@ -16,6 +16,7 @@ import 'package:material_ui/material_ui.dart' show showModalBottomSheet;
 
 import '../../../l10n/app_localizations.dart';
 import '../../utils/image_sheet_drawer.dart';
+import '../option_picker_sheet.dart';
 import '../sambasku_markdown.dart';
 import 'markdown_syntax.dart';
 import 'markdown_toolbar.dart';
@@ -136,12 +137,69 @@ class _MarkdownEditorPageState extends State<MarkdownEditorPage> {
     );
   }
 
-  void _onHeading() {
-    _runFormat(() => MarkdownSyntax.insertHeadingLine(_controller));
+  void _onStrike() {
+    _runFormat(
+      () => MarkdownSyntax.wrap(_controller, left: '~~', right: '~~'),
+    );
   }
 
-  void _onList() {
-    _runFormat(() => MarkdownSyntax.insertBulletLine(_controller));
+  Future<void> _onHeading() async {
+    _preserveSelection();
+    final l10n = AppLocalizations.of(context);
+    final level = await showOptionPickerSheet<int>(
+      context,
+      title: l10n.mdEditorHeadingPick,
+      icon: FLucideIcons.heading,
+      items: [
+        OptionPickerItem(value: 1, label: l10n.mdEditorHeading1),
+        OptionPickerItem(value: 2, label: l10n.mdEditorHeading2),
+        OptionPickerItem(value: 3, label: l10n.mdEditorHeading3),
+      ],
+    );
+    if (level == null || !mounted) return;
+    _runFormat(
+      () => MarkdownSyntax.setHeadingLine(_controller, level: level),
+    );
+  }
+
+  Future<void> _onList() async {
+    _preserveSelection();
+    final l10n = AppLocalizations.of(context);
+    final ordered = await showOptionPickerSheet<bool>(
+      context,
+      title: l10n.mdEditorListPick,
+      icon: FLucideIcons.list,
+      items: [
+        OptionPickerItem(value: false, label: l10n.mdEditorListBullet),
+        OptionPickerItem(value: true, label: l10n.mdEditorListOrdered),
+      ],
+    );
+    if (ordered == null || !mounted) return;
+    _runFormat(
+      () => MarkdownSyntax.setListLines(_controller, ordered: ordered),
+    );
+  }
+
+  void _onTable() {
+    final l10n = AppLocalizations.of(context);
+    _runFormat(
+      () => MarkdownSyntax.insertTable(
+        _controller,
+        headers: [l10n.mdEditorTableCol1, l10n.mdEditorTableCol2],
+      ),
+    );
+  }
+
+  void _onQuote() {
+    _runFormat(() => MarkdownSyntax.setBlockquoteLines(_controller));
+  }
+
+  void _onCode() {
+    _runFormat(() => MarkdownSyntax.wrapOrFenceCode(_controller));
+  }
+
+  void _onHr() {
+    _runFormat(() => MarkdownSyntax.insertHorizontalRule(_controller));
   }
 
   Future<void> _onLink() async {
@@ -301,8 +359,13 @@ class _MarkdownEditorPageState extends State<MarkdownEditorPage> {
             onRedo: _onRedo,
             onBold: _onBold,
             onItalic: _onItalic,
+            onStrike: _onStrike,
             onHeading: _onHeading,
             onList: _onList,
+            onTable: _onTable,
+            onQuote: _onQuote,
+            onCode: _onCode,
+            onHr: _onHr,
             onLink: _onLink,
             onImage: _onImage,
             onTogglePreview: () =>

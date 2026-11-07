@@ -607,6 +607,24 @@ abstract class AppLocalizations {
   /// **'Versi {version}'**
   String aboutVersion(String version);
 
+  /// Tagline kaki splash dengan versi app
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus, Bahasa & Budaya (v{version})'**
+  String splashTagline(String version);
+
+  /// Tagline kaki splash sebelum PackageInfo siap
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus, Bahasa & Budaya'**
+  String get splashTaglinePending;
+
+  /// Label Area sponsor di splash (isi strip = plan follow-up)
+  ///
+  /// In id, this message translates to:
+  /// **'Didukung oleh'**
+  String get splashSupportedBy;
+
   /// No description provided for @aboutWhatTitle.
   ///
   /// In id, this message translates to:
@@ -5921,11 +5939,29 @@ abstract class AppLocalizations {
   /// **'Cari kata Sambas...'**
   String get dictSearchHint;
 
+  /// Label chip cari di beranda (bukan hint field list)
+  ///
+  /// In id, this message translates to:
+  /// **'Cari'**
+  String get dictSearchChip;
+
   /// No description provided for @dictAZ.
   ///
   /// In id, this message translates to:
   /// **'A-Z'**
   String get dictAZ;
+
+  /// Label chip usul kata di beranda (pendek)
+  ///
+  /// In id, this message translates to:
+  /// **'Usul'**
+  String get dictProposeChip;
+
+  /// Label chip ruang diskusi di beranda (pendek)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi'**
+  String get dictDiscussionChip;
 
   /// No description provided for @dictProposeWord.
   ///
@@ -6293,11 +6329,29 @@ abstract class AppLocalizations {
   /// **'Lapor'**
   String get dictActionReport;
 
-  /// Buka sheet aksi tambahan di detail kata
+  /// Buka sheet aksi di header detail kata
   ///
   /// In id, this message translates to:
   /// **'Lainnya'**
   String get dictActionMore;
+
+  /// Judul bottom sheet aksi detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi'**
+  String get dictWordActionsTitle;
+
+  /// Subtitle tile Usulkan di sheet aksi detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perbaikan lemma, makna, atau contoh'**
+  String get dictSuggestEditSubtitle;
+
+  /// Badge jumlah foto di thumbnail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'{count}'**
+  String dictPhotoCountBadge(int count);
 
   /// No description provided for @dictLoginToSuggest.
   ///
@@ -6604,6 +6658,78 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Masuk dulu untuk rekam pelafalan'**
   String get dictLoginToRecord;
+
+  /// CTA di bawah lemma bila belum ada pelafalan tertulis
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah pelafalan'**
+  String get dictAddPronunciation;
+
+  /// Judul sheet tambah pelafalan tertulis
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah pelafalan'**
+  String get dictAddPronunciationTitle;
+
+  /// Penjelasan singkat sheet pelafalan
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.'**
+  String get dictAddPronunciationBody;
+
+  /// Hint field value pelafalan
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: sa.dap atau /sa.dap/'**
+  String get dictAddPronunciationHint;
+
+  /// Tombol tempel clipboard di sheet pelafalan
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get dictAddPronunciationPaste;
+
+  /// No description provided for @dictAddPronunciationSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get dictAddPronunciationSubmit;
+
+  /// No description provided for @dictAddPronunciationSaving.
+  ///
+  /// In id, this message translates to:
+  /// **'Menyimpan...'**
+  String get dictAddPronunciationSaving;
+
+  /// No description provided for @dictAddPronunciationEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan tidak boleh kosong'**
+  String get dictAddPronunciationEmpty;
+
+  /// No description provided for @dictAddPronunciationSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan disimpan'**
+  String get dictAddPronunciationSuccess;
+
+  /// No description provided for @dictAddPronunciationFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan pelafalan'**
+  String get dictAddPronunciationFailed;
+
+  /// No description provided for @dictLoginToAddPronunciation.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menambah pelafalan'**
+  String get dictLoginToAddPronunciation;
+
+  /// Toast saat Tempel tapi clipboard kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong'**
+  String get dictPronunciationClipboardEmpty;
 
   /// No description provided for @dictRecMicPermissionTitle.
   ///
@@ -9743,6 +9869,12 @@ abstract class AppLocalizations {
   /// **'Dikelola pemilik'**
   String get usahaManagedByOwner;
 
+  /// Label apresiasi pengelola terverifikasi di detail usaha
+  ///
+  /// In id, this message translates to:
+  /// **'Dikelola oleh'**
+  String get usahaManagedByLabel;
+
   /// No description provided for @usahaClosedPermanentlyTitle.
   ///
   /// In id, this message translates to:
@@ -10493,6 +10625,12 @@ abstract class AppLocalizations {
   /// **'Ensiklopedia'**
   String get encyclopediaTitle;
 
+  /// Label chip ensiklopedia di beranda (pendek)
+  ///
+  /// In id, this message translates to:
+  /// **'Ensik.'**
+  String get encyclopediaChip;
+
   /// No description provided for @encyclopediaSubtitle.
   ///
   /// In id, this message translates to:
@@ -10871,6 +11009,30 @@ abstract class AppLocalizations {
   /// **'Judul bagian'**
   String get mdEditorHeading;
 
+  /// Judul bottom sheet pilih H1/H2/H3
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tingkat judul'**
+  String get mdEditorHeadingPick;
+
+  /// Opsi heading level 1 di picker Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Judul besar (H1)'**
+  String get mdEditorHeading1;
+
+  /// Opsi heading level 2 di picker Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Judul bagian (H2)'**
+  String get mdEditorHeading2;
+
+  /// Opsi heading level 3 di picker Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Subjudul (H3)'**
+  String get mdEditorHeading3;
+
   /// Semantics tombol sisip tautan di toolbar Markdown
   ///
   /// In id, this message translates to:
@@ -10919,11 +11081,71 @@ abstract class AppLocalizations {
   /// **'Alamat harus diawali https://'**
   String get mdEditorLinkInvalid;
 
-  /// Semantics tombol bullet list di toolbar Markdown
+  /// Semantics tombol daftar di toolbar Markdown
   ///
   /// In id, this message translates to:
   /// **'Daftar'**
   String get mdEditorList;
+
+  /// Judul bottom sheet pilih bullet atau bernomor
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis daftar'**
+  String get mdEditorListPick;
+
+  /// Opsi bullet list di picker Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar poin'**
+  String get mdEditorListBullet;
+
+  /// Opsi ordered list di picker Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar bernomor'**
+  String get mdEditorListOrdered;
+
+  /// Semantics tombol sisip tabel di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tabel'**
+  String get mdEditorTable;
+
+  /// Header default kolom 1 skeleton tabel Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Kolom 1'**
+  String get mdEditorTableCol1;
+
+  /// Header default kolom 2 skeleton tabel Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Kolom 2'**
+  String get mdEditorTableCol2;
+
+  /// Semantics tombol blockquote di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Kutipan'**
+  String get mdEditorQuote;
+
+  /// Semantics tombol kode inline/fenced di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Kode'**
+  String get mdEditorCode;
+
+  /// Semantics tombol strikethrough di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Coret'**
+  String get mdEditorStrike;
+
+  /// Semantics tombol horizontal rule di toolbar Markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Garis pemisah'**
+  String get mdEditorHr;
 
   /// Semantics tombol unggah/sisip gambar di toolbar Markdown
   ///

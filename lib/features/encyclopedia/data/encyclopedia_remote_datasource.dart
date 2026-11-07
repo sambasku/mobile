@@ -56,6 +56,17 @@ abstract interface class EncyclopediaRemoteDatasource {
     @Body() Map<String, dynamic> body,
   );
 
+  /// Edit komentar milik sendiri - PATCH /api/v1/encyclopedia/comments/:id.
+  @PATCH('/api/v1/encyclopedia/comments/{id}')
+  Future<ApiResponse<ArticleComment>> updateComment(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  /// Hapus komentar milik sendiri - DELETE /api/v1/encyclopedia/comments/:id.
+  @DELETE('/api/v1/encyclopedia/comments/{id}')
+  Future<ApiResponse<void>> deleteComment(@Path('id') String id);
+
   /// Toggle bookmark (login) - POST /api/v1/encyclopedia/articles/:id/bookmark.
   @POST('/api/v1/encyclopedia/articles/{id}/bookmark')
   Future<ApiResponse<EncyclopediaBookmarkResult>> toggleBookmark(

@@ -250,6 +250,12 @@ class ArticleComment {
   final String? createdAt;
   @JsonKey(name: 'updated_at')
   final String? updatedAt;
+
+  bool get isPublished => status == 'published';
+  bool get isTakenDown => status == 'taken_down';
+  bool get isDeletedByAuthor => status == 'deleted_by_author';
+  bool isOwner(String? actorId) =>
+      actorId != null && actorId.isNotEmpty && actorId == user.userId;
 }
 
 /// Payload usulan kontribusi (new & edit bentuknya sama; `kind` penentu).

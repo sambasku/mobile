@@ -85,6 +85,9 @@
   "aboutTitle": "Tentang",
   "aboutTagline": "Kamus Digital Sambas-Indonesia",
   "aboutVersion": "Versi {version}",
+  "splashTagline": "Kamus, Bahasa & Budaya (v{version})",
+  "splashTaglinePending": "Kamus, Bahasa & Budaya",
+  "splashSupportedBy": "Didukung oleh",
   "aboutWhatTitle": "Apa itu SambasKu?",
   "aboutWhatBody": "Kamus digital Melayu Sambas-Indonesia yang dirawat bersama warga. Kamu bisa mencari arti kata, membaca contoh kalimat, menyimpan kata, mengusulkan kata baru, dan membagikan kartu kata. Usulan dari akun yang sudah masuk langsung tayang dengan label Menunggu pengecekan, lalu diperiksa verifikator.",
   "aboutSponsorTitle": "Sponsor & Tim Kami",
@@ -991,7 +994,19 @@
   "dictCopiedWord": "Teks kata disalin",
   "dictCopiedMeaning": "Makna disalin",
   "dictSearchHint": "Cari kata Sambas...",
+  "dictSearchChip": "Cari",
+  "@dictSearchChip": {
+    "description": "Label chip cari di beranda (bukan hint field list)"
+  },
   "dictAZ": "A-Z",
+  "dictProposeChip": "Usul",
+  "@dictProposeChip": {
+    "description": "Label chip usul kata di beranda (pendek)"
+  },
+  "dictDiscussionChip": "Diskusi",
+  "@dictDiscussionChip": {
+    "description": "Label chip ruang diskusi di beranda (pendek)"
+  },
   "dictProposeWord": "Usul kata baru",
   "dictDiscussion": "Ruang Diskusi",
   "dictDiscussionSubtitle": "Tanya arti atau bahas kata Sambas bareng warga",
@@ -1054,6 +1069,9 @@
   "dictActionSuggest": "Usulkan",
   "dictActionReport": "Lapor",
   "dictActionMore": "Lainnya",
+  "dictWordActionsTitle": "Aksi",
+  "dictSuggestEditSubtitle": "Usulkan perbaikan lemma, makna, atau contoh",
+  "dictPhotoCountBadge": "{count}",
   "dictLoginToSuggest": "Masuk dulu untuk mengusulkan perubahan",
   "dictReportEntry": "Laporkan entri",
   "dictReportEntrySubtitle": "Untuk entri yang tidak layak tayang, bukan perbaikan isi",
@@ -1105,6 +1123,36 @@
   "dictRecordExampleAudio": "Rekam audio contoh",
   "dictRecordPronunciation": "Rekam pelafalan",
   "dictLoginToRecord": "Masuk dulu untuk rekam pelafalan",
+  "dictAddPronunciation": "Tambah pelafalan",
+  "@dictAddPronunciation": {
+    "description": "CTA di bawah lemma bila belum ada pelafalan tertulis"
+  },
+  "dictAddPronunciationTitle": "Tambah pelafalan",
+  "@dictAddPronunciationTitle": {
+    "description": "Judul sheet tambah pelafalan tertulis"
+  },
+  "dictAddPronunciationBody": "Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.",
+  "@dictAddPronunciationBody": {
+    "description": "Penjelasan singkat sheet pelafalan"
+  },
+  "dictAddPronunciationHint": "Contoh: sa.dap atau /sa.dap/",
+  "@dictAddPronunciationHint": {
+    "description": "Hint field value pelafalan"
+  },
+  "dictAddPronunciationPaste": "Tempel",
+  "@dictAddPronunciationPaste": {
+    "description": "Tombol tempel clipboard di sheet pelafalan"
+  },
+  "dictAddPronunciationSubmit": "Simpan",
+  "dictAddPronunciationSaving": "Menyimpan...",
+  "dictAddPronunciationEmpty": "Pelafalan tidak boleh kosong",
+  "dictAddPronunciationSuccess": "Pelafalan disimpan",
+  "dictAddPronunciationFailed": "Gagal menyimpan pelafalan",
+  "dictLoginToAddPronunciation": "Masuk dulu untuk menambah pelafalan",
+  "dictPronunciationClipboardEmpty": "Clipboard kosong",
+  "@dictPronunciationClipboardEmpty": {
+    "description": "Toast saat Tempel tapi clipboard kosong"
+  },
   "dictRecMicPermissionTitle": "Izin mikrofon diperlukan untuk rekam pelafalan",
   "dictRecMicUnavailable": "Mikrofon tidak tersedia",
   "dictRecSaveFailed": "Rekaman gagal disimpan",
@@ -1628,6 +1676,7 @@
   "usahaReportSentBody": "Terima kasih. Admin akan memeriksa info usaha ini.",
   "usahaReportFailed": "Gagal melapor",
   "usahaManagedByOwner": "Dikelola pemilik",
+  "usahaManagedByLabel": "Dikelola oleh",
   "usahaClosedPermanentlyTitle": "Usaha ini sudah tutup permanen",
   "usahaClosedPermanentlyBody": "Info tetap kami simpan sebagai catatan sejarah.",
   "usahaCatalog": "Katalog",
@@ -1744,6 +1793,10 @@
   "exploreCategoryEnsiklopedia": "Ensiklopedia",
   "exploreCategoryEnsiklopediaSubtitle": "Sejarah, kisah, karya, dan tradisi",
   "encyclopediaTitle": "Ensiklopedia",
+  "encyclopediaChip": "Ensik.",
+  "@encyclopediaChip": {
+    "description": "Label chip ensiklopedia di beranda (pendek)"
+  },
   "encyclopediaSubtitle": "Artikel sejarah, budaya, tokoh, dan tradisi Sambas",
   "encyclopediaSearchPlaceholder": "Cari artikel ensiklopedia...",
   "encyclopediaFilterAll": "Semua",
@@ -1807,6 +1860,10 @@
   "mdEditorBold": "Tebal",
   "mdEditorItalic": "Miring",
   "mdEditorHeading": "Judul bagian",
+  "mdEditorHeadingPick": "Pilih tingkat judul",
+  "mdEditorHeading1": "Judul besar (H1)",
+  "mdEditorHeading2": "Judul bagian (H2)",
+  "mdEditorHeading3": "Subjudul (H3)",
   "mdEditorLink": "Tautan",
   "mdEditorLinkSheetTitle": "Sisip tautan",
   "mdEditorLinkLabel": "Teks tautan",
@@ -1816,6 +1873,16 @@
   "mdEditorLinkInsert": "Sisipkan",
   "mdEditorLinkInvalid": "Alamat harus diawali https://",
   "mdEditorList": "Daftar",
+  "mdEditorListPick": "Jenis daftar",
+  "mdEditorListBullet": "Daftar poin",
+  "mdEditorListOrdered": "Daftar bernomor",
+  "mdEditorTable": "Tabel",
+  "mdEditorTableCol1": "Kolom 1",
+  "mdEditorTableCol2": "Kolom 2",
+  "mdEditorQuote": "Kutipan",
+  "mdEditorCode": "Kode",
+  "mdEditorStrike": "Coret",
+  "mdEditorHr": "Garis pemisah",
   "mdEditorImage": "Sisip gambar",
   "mdEditorUploadFailed": "Gagal mengunggah gambar. Coba lagi ya",
   "mdEditorImageAlt": "gambar",

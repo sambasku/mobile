@@ -45,8 +45,10 @@ class ExplorePage extends HookConsumerWidget {
     final scroll = useScrollController();
     final landscape =
         MediaQuery.widthOf(context) > MediaQuery.heightOf(context);
-    final maxHero = landscape ? 140.0 : 200.0;
-    final minHero = landscape ? 50.0 : 70.0;
+    // Hero pendek: grid kategori harus masuk viewport tanpa scroll panjang.
+    // Subtitle overlay butuh height >= 130 (lihat ExploreMapHero).
+    final maxHero = landscape ? 112.0 : 140.0;
+    final minHero = landscape ? 48.0 : 56.0;
     final collapseDistance = maxHero - minHero;
 
     // Coming-soon disembunyikan default: tab Eksplorasi tampil 100% konten
@@ -68,13 +70,9 @@ class ExplorePage extends HookConsumerWidget {
       builder: (context, _) {
         final t = collapse.value;
         final heroHeight = maxHero - t * collapseDistance;
-        return SizedBox(
-          height: heroHeight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: ExploreMapHero(height: heroHeight),
-          ),
-        );
+        // Tanpa padding atas: header sudah pad bawah 6px (app.dart).
+        // Padding lama 8 + SizedBox sama tinggi = overflow 8px.
+        return ExploreMapHero(height: heroHeight);
       },
     );
 

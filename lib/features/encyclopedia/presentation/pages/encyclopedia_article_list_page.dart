@@ -17,13 +17,7 @@ import '../providers/encyclopedia_list_providers.dart';
 import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
 
-/// Grid 3 kolom - seragam dengan wisata / usaha: foto 1:1 + judul maks 2 baris.
-const _encyclopediaGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-  crossAxisCount: 3,
-  mainAxisSpacing: 12,
-  crossAxisSpacing: 8,
-  childAspectRatio: 0.7,
-);
+const _kCoverSize = 64.0;
 
 class EncyclopediaArticleListPage extends ConsumerStatefulWidget {
   const EncyclopediaArticleListPage({super.key, this.initialCategoryId});
@@ -98,9 +92,9 @@ class _EncyclopediaArticleListPageState
     });
   }
 
-  Future<void> _reload() async {
-    await ref.read(encyclopediaListProvider(_queryKey).notifier).reload();
-  }
+  Future<void> _reload() => ref
+      .read(encyclopediaListProvider(_queryKey).notifier)
+      .reload(keepItems: true);
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +158,7 @@ class _EncyclopediaArticleListPageState
                     const Icon(FLucideIcons.search),
                   ),
             ),
-            const Gap(12),
+            const Gap(8),
             if (categories.isNotEmpty) ...[
               _CategoryBar(
                 categories: categories,
@@ -175,11 +169,11 @@ class _EncyclopediaArticleListPageState
                   if (_scroll.hasClients) _scroll.jumpTo(0);
                 },
               ),
-              const Gap(12),
+              const Gap(8),
             ],
             Expanded(
               child: listAsync.when(
-                loading: () => const _SkeletonGrid(),
+                loading: () => const _SkeletonList(),
                 error: (_, _) => _ErrorBody(
                   msg: l10n.encyclopediaLoadFailed,
                   retryLabel: l10n.encyclopediaRetry,
@@ -204,30 +198,29 @@ class _EncyclopediaArticleListPageState
                   }
                   return RefreshIndicator(
                     onRefresh: _reload,
-                    child: CustomScrollView(
+                    child: ListView.builder(
                       controller: _scroll,
                       physics: const AlwaysScrollableScrollPhysics(),
+                      // Tanpa top: FHeader sudah SafeArea; default MediaQuery.top
+                      // bikin celah kosong tinggi di atas scroll.
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.paddingOf(context).bottom,
+                      ),
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
-                      slivers: [
-                        SliverGrid(
-                          gridDelegate: _encyclopediaGridDelegate,
-                          delegate: SliverChildBuilderDelegate(
-                            (context, i) =>
-                                _ArticleGridTile(item: state.items[i]),
-                            childCount: state.items.length,
-                          ),
-                        ),
-                        if (state.isLoadingMore)
-                          const SliverToBoxAdapter(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(
-                                child: FCircularProgress(size: .sm),
-                              ),
+                      itemCount:
+                          state.items.length + (state.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, i) {
+                        if (i >= state.items.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(
+                              child: FCircularProgress(size: .sm),
                             ),
-                          ),
-                      ],
+                          );
+                        }
+                        return _ArticleListTile(item: state.items[i]);
+                      },
                     ),
                   );
                 },
@@ -286,58 +279,87 @@ class _CategoryBar extends StatelessWidget {
   }
 }
 
-class _ArticleGridTile extends StatelessWidget {
-  const _ArticleGridTile({required this.item});
+class _ArticleListTile extends StatelessWidget {
+  const _ArticleListTile({required this.item});
 
   final EncyclopediaArticleListItem item;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final cover = item.coverUrl;
-    final titleStyle = theme.typography.body.xs.copyWith(
-      fontWeight: FontWeight.w600,
-      height: 1.25,
-    );
-    final titleHeight = (titleStyle.fontSize ?? 12) * 1.25 * 2;
+    final tags = item.tags
+        .map((t) => t.trim())
+        .where((t) => t.isNotEmpty)
+        .toList(growable: false);
+    final tagLine = tags.isNotEmpty
+        ? tags.join(', ')
+        : item.category.name;
+    final cover = item.coverUrl?.trim();
+    final hasCover = cover != null && cover.isNotEmpty;
 
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: () => context.push(EncyclopediaRouter.detailPath(item.slug)),
-        borderRadius: BorderRadius.circular(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return FTappable(
+      onPress: () => context.push(EncyclopediaRouter.detailPath(item.slug)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            AspectRatio(
-              aspectRatio: 1,
+            SizedBox(
+              width: _kCoverSize,
+              height: _kCoverSize,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: cover == null || cover.isEmpty
-                    ? ColoredBox(
-                        color: theme.colors.muted,
-                        child: Icon(
-                          FLucideIcons.bookOpen,
-                          size: 28,
-                          color: theme.colors.mutedForeground,
-                        ),
-                      )
-                    : CachedNetworkImageWithFallback(
-                        imageUrl: displayImageUrl(cover, width: 360) ?? cover,
+                child: hasCover
+                    ? CachedNetworkImageWithFallback(
+                        imageUrl:
+                            displayImageUrl(cover, width: 128) ?? cover,
                         fallbackUrl: cover,
                         fit: BoxFit.cover,
+                      )
+                    : ColoredBox(
+                        color: theme.colors.muted,
+                        child: Center(
+                          child: Icon(
+                            FLucideIcons.bookOpen,
+                            size: 28,
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
                       ),
               ),
             ),
-            const Gap(6),
-            SizedBox(
-              height: titleHeight,
-              child: Text(
-                item.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: titleStyle,
+            const Gap(12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (tagLine.isNotEmpty) ...[
+                    const Gap(4),
+                    Text(
+                      tagLine,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ],
               ),
+            ),
+            const Gap(8),
+            Icon(
+              FLucideIcons.chevronRight,
+              size: 16,
+              color: theme.colors.mutedForeground,
             ),
           ],
         ),
@@ -346,8 +368,8 @@ class _ArticleGridTile extends StatelessWidget {
   }
 }
 
-class _SkeletonGrid extends StatelessWidget {
-  const _SkeletonGrid();
+class _SkeletonList extends StatelessWidget {
+  const _SkeletonList();
 
   @override
   Widget build(BuildContext context) {
@@ -364,27 +386,35 @@ class _SkeletonGrid extends StatelessWidget {
             : const Color(0xFFF4F4F5),
         duration: const Duration(milliseconds: 1500),
       ),
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
+      child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: _encyclopediaGridDelegate,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(context).bottom,
+        ),
         itemCount: 8,
-        itemBuilder: (_, _) => const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: Bone(
-                width: double.infinity,
-                height: double.infinity,
+        itemBuilder: (_, _) => const Padding(
+          padding: EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Bone(
+                width: _kCoverSize,
+                height: _kCoverSize,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-            ),
-            Gap(6),
-            Bone(width: double.infinity, height: 12),
-            Gap(4),
-            Bone(width: 72, height: 12),
-          ],
+              Gap(12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Bone(width: 200, height: 14),
+                    Gap(6),
+                    Bone(width: 140, height: 12),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -409,6 +439,9 @@ class _EmptyBody extends StatelessWidget {
       onRefresh: onRefresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           const Gap(48),
           Center(

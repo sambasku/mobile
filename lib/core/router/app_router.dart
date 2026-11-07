@@ -68,7 +68,8 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: '/',
+    // Cold start: splash branded dulu; SplashPage lalu go('/') + redirect biasa.
+    initialLocation: SplashRouter.splash.path,
     observers: analyticsNavigatorObservers(),
     routes: [
       ...SplashRouter.routes,
@@ -194,6 +195,10 @@ class AppRouter {
   ) async {
     final loc = state.matchedLocation;
     final path = state.uri.path;
+    // Biarkan splash tampil penuh; navigasi keluar dari SplashPage sendiri.
+    if (loc == SplashRouter.splash.path || path == SplashRouter.splash.path) {
+      return null;
+    }
     // HTTPS / custom scheme: /hapus-akun → rute native hapus akun.
     // Query tak dipakai halaman delete-account - jangan diteruskan (#70).
     if (path == '/hapus-akun' || loc == '/hapus-akun') {

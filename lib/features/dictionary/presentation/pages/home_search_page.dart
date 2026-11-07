@@ -24,6 +24,8 @@ import '../../../activity/presentation/widgets/activity_feed_tile.dart';
 import '../../../activity/presentation/widgets/pinned_home_banner.dart';
 import '../../../contribution/contribution_router.dart';
 import '../../../discussion/discussion_router.dart';
+import '../../../encyclopedia/encyclopedia_router.dart';
+import '../../../entertainment/entertainment_router.dart';
 import '../../dictionary_router.dart';
 import '../providers/word_of_day_providers.dart';
 import '../widgets/word_of_day_card.dart';
@@ -31,9 +33,9 @@ import '../widgets/word_of_day_card.dart';
 /// Durasi semua layer animasi header (tinggi, slide, fade, gap).
 const _headerAnimDuration = Duration(milliseconds: 280);
 
-/// Jarak jari untuk menutup penuh blok header (kolom cari + 2 tile: Usul
-/// kata baru, Ruang Diskusi).
-const _headerCollapseDistance = 90.0;
+/// Jarak jari untuk menutup penuh blok header (tile ikon 1:1 kecil + label
+/// di bawah, scroll horizontal).
+const _headerCollapseDistance = 78.0;
 
 /// Key blok header collaps (dipakai test untuk menemukan blok ini).
 const _headerCollapseKey = ValueKey('header_collapse');
@@ -128,12 +130,10 @@ class HomeSearchPage extends HookConsumerWidget {
               ),
             );
           },
-          child: RepaintBoundary(
+          child: const RepaintBoundary(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
-              child: Column(
-                children: [_HomeSearchRow(), Gap(8), _HomeMenuTiles()],
-              ),
+              padding: EdgeInsets.only(bottom: 4),
+              child: _HomeActionChips(),
             ),
           ),
         ),
@@ -297,77 +297,152 @@ class HomeSearchPage extends HookConsumerWidget {
   }
 }
 
-class _HomeSearchRow extends StatelessWidget {
-  const _HomeSearchRow();
+/// Satu baris tile aksi beranda (Cari / A-Z / Usulkan / Diskusi / Pantun /
+/// Ensiklopedia). Scroll horizontal; kotak ikon 1:1; label di bawahnya.
+class _HomeActionChips extends StatelessWidget {
+  const _HomeActionChips();
+
+  /// Lebar kotak ikon (= tinggi, rasio 1:1). Sama dengan lebar kolom
+  /// supaya antar-kotak tidak ada "udara" dari padding label.
+  static const double _tileSize = 48;
+
+  /// Slot label di bawah kotak (gap ikon→teks + 2 baris kecil).
+  static const double _labelSlot = 28;
+
+  /// Tinggi total baris (kotak + gap + label).
+  static const double height = _tileSize + 6 + _labelSlot;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => context.push('${DictionaryRouter.list.path}?focus=1'),
-            child: AbsorbPointer(
-              child: FTextField(
-                size: .sm,
-                readOnly: true,
-                hint: AppLocalizations.of(context).dictSearchHint,
-                prefixBuilder: (context, style, variants) =>
-                    FTextField.prefixIconBuilder(
-                      context,
-                      style,
-                      variants,
-                      const Icon(FLucideIcons.search),
-                    ),
-              ),
-            ),
-          ),
+    final l10n = AppLocalizations.of(context);
+    final items = <_HomeActionChip>[
+      _HomeActionChip(
+        icon: FLucideIcons.search,
+        label: l10n.dictSearchChip,
+        semanticsLabel: l10n.dictSearchHint,
+        onPress: () => context.push('${DictionaryRouter.list.path}?focus=1'),
+      ),
+      _HomeActionChip(
+        icon: FLucideIcons.aLargeSmall,
+        label: l10n.dictAZ,
+        onPress: () => context.push(
+          DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
         ),
-        const Gap(8),
-        FButton(
-          size: .sm,
-          variant: FButtonVariant.outline,
-          onPress: () => context.push(
-            DictionaryRouter.letter.path.replaceFirst(':letter', 'a'),
-          ),
-          child: Text(AppLocalizations.of(context).dictAZ),
-        ),
-      ],
+      ),
+      _HomeActionChip(
+        icon: FLucideIcons.plus,
+        label: l10n.dictProposeChip,
+        semanticsLabel: l10n.dictProposeWord,
+        onPress: () {
+          AnalyticsService.instance.log(
+            AnalyticsEvents.contributeStart,
+            params: {'from': 'home'},
+          );
+          context.push(ContributionRouter.contribute.path);
+        },
+      ),
+      _HomeActionChip(
+        icon: FLucideIcons.messagesSquare,
+        label: l10n.dictDiscussionChip,
+        semanticsLabel: l10n.dictDiscussionSubtitle,
+        onPress: () => context.push(DiscussionRouter.feed.path),
+      ),
+      _HomeActionChip(
+        icon: FLucideIcons.feather,
+        label: l10n.pantunTitle,
+        onPress: () => context.push(EntertainmentRouter.pantunHub.path),
+      ),
+      _HomeActionChip(
+        icon: FLucideIcons.bookOpen,
+        label: l10n.encyclopediaChip,
+        semanticsLabel: l10n.encyclopediaTitle,
+        onPress: () => context.push(EncyclopediaRouter.list.path),
+      ),
+    ];
+
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        key: const ValueKey('home_action_chips'),
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const Gap(8),
+        itemBuilder: (context, i) => _HomeActionTile(item: items[i]),
+      ),
     );
   }
 }
 
-class _HomeMenuTiles extends StatelessWidget {
-  const _HomeMenuTiles();
+class _HomeActionChip {
+  const _HomeActionChip({
+    required this.icon,
+    required this.label,
+    required this.onPress,
+    this.semanticsLabel,
+  });
+
+  final IconData icon;
+  final String label;
+  final String? semanticsLabel;
+  final VoidCallback onPress;
+}
+
+class _HomeActionTile extends StatelessWidget {
+  const _HomeActionTile({required this.item});
+
+  final _HomeActionChip item;
 
   @override
   Widget build(BuildContext context) {
-    // #193: tile "Dicari warga" dipindah ke chips kategori feed (kini bisa
-    // diakses langsung dari beranda); area CTA hanya menyisakan "Usul kata
-    // baru" - blok lebih pendek, jarak collapse disesuaikan.
-    return FTileGroup(
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        FTile(
-          prefix: const Icon(FLucideIcons.plus, size: 18),
-          title: Text(AppLocalizations.of(context).dictProposeWord),
-          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-          onPress: () {
-            AnalyticsService.instance.log(
-              AnalyticsEvents.contributeStart,
-              params: {'from': 'home'},
-            );
-            context.push(ContributionRouter.contribute.path);
-          },
+    final theme = context.theme;
+    final size = _HomeActionChips._tileSize;
+    return Semantics(
+      button: true,
+      label: item.semanticsLabel ?? item.label,
+      child: FTappable(
+        onPress: item.onPress,
+        // Lebar = ukuran kotak: jarak antar kotak = separator saja (4px).
+        child: SizedBox(
+          width: size,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: size,
+                height: size,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: theme.colors.border),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      item.icon,
+                      size: 18,
+                      color: theme.colors.foreground,
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(6),
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.body.xs.copyWith(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  height: 1.1,
+                  color: theme.colors.foreground,
+                ),
+              ),
+            ],
+          ),
         ),
-        FTile(
-          prefix: const Icon(FLucideIcons.messagesSquare, size: 18),
-          title: Text(AppLocalizations.of(context).dictDiscussion),
-          subtitle: Text(AppLocalizations.of(context).dictDiscussionSubtitle),
-          suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-          onPress: () => context.push(DiscussionRouter.feed.path),
-        ),
-      ],
+      ),
     );
   }
 }

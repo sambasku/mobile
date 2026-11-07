@@ -66,6 +66,10 @@ class ProfileHeroShell extends StatefulWidget {
 }
 
 class _ProfileHeroShellState extends State<ProfileHeroShell> {
+  /// Peak alpha latar tombol di atas cover: tembus foto, ikon masih terbaca.
+  /// Saat bar solid (t→1) fill jadi 0 lewat `(1 - t) * peak`.
+  static const double _overlayFillPeak = 0.3;
+
   /// 0 = cover penuh (bar transparan), 1 = bar solid.
   final _t = ValueNotifier<double>(0);
 
@@ -189,10 +193,14 @@ class _ProfileHeroShellState extends State<ProfileHeroShell> {
     final theme = context.theme;
     // IconButton + style shared dengan peta: padding 8, elevation 2,
     // shadow Material - bukan BoxShadow manual / ukuran 40 tetap.
+    // Peak fill dibatasi supaya cover tembus (pins/wilayah tetap fill: 1).
     return IconButton(
       tooltip: tooltip,
       onPressed: onPress,
-      style: floatingOverlayIconButtonStyle(context, fill: 1 - t),
+      style: floatingOverlayIconButtonStyle(
+        context,
+        fill: (1 - t) * _overlayFillPeak,
+      ),
       icon: badgeCount > 0
           ? Stack(
               clipBehavior: Clip.none,

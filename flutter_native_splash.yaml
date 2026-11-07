@@ -1,0 +1,16 @@
+# Native launch screen - latar penuh mengikuti tema sistem.
+# Logo BrandMark digambar di SplashPage Flutter (zona atas), bukan di sini:
+# package memusatkan image dan tidak bisa offset ke zona kosong atas.
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#000000"
+  background_image: assets/images/splashscreen_white.png
+  background_image_dark: assets/images/splashscreen_dark.png
+  fullscreen: true
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#000000"
+    # Icon bundar OS; ilustrasi full-bleed muncul setelah Flutter hidup.
+    image: assets/icons/logo_alpha_light.png
+    image_dark: assets/icons/logo_alpha_dark.png
+  web: false

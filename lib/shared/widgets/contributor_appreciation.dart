@@ -88,14 +88,14 @@ class _ContributorChip extends StatelessWidget {
     return Semantics(
       button: true,
       label: label,
-      child: FTappable(
-        onPress: () =>
-            UserProfileRouter.open(context, username, displayName: label),
-        child: FBadge(
-          variant: FBadgeVariant.secondary,
-          child: Text('@$username'),
-        ),
+    child: FTappable(
+      onPress: () =>
+          UserProfileRouter.open(context, username, displayName: label),
+      child: FBadge(
+        variant: FBadgeVariant.secondary,
+        child: Text(label),
       ),
+    ),
     );
   }
 }

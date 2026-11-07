@@ -4,13 +4,16 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../../../shared/widgets/sambasku_markdown.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
 import '../providers/encyclopedia_detail_providers.dart';
 import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
+import '../widgets/encyclopedia_comments_section.dart';
 
 class EncyclopediaArticleDetailPage extends ConsumerStatefulWidget {
   const EncyclopediaArticleDetailPage({super.key, required this.slug});
@@ -26,14 +29,6 @@ class _EncyclopediaArticleDetailPageState
   bool? _bookmarked;
   String? _bookmarkedForId;
   bool _busyBookmark = false;
-  final _commentCtrl = TextEditingController();
-  bool _sendingComment = false;
-
-  @override
-  void dispose() {
-    _commentCtrl.dispose();
-    super.dispose();
-  }
 
   void _syncBookmarkFrom(EncyclopediaArticle article) {
     if (_bookmarkedForId == article.id) return;
@@ -78,39 +73,6 @@ class _EncyclopediaArticleDetailPageState
     }
   }
 
-  Future<void> _sendComment(String articleId) async {
-    final l10n = AppLocalizations.of(context);
-    final okAuth = await ensureEncyclopediaAuth(
-      context,
-      ref,
-      body: l10n.encyclopediaLoginCommentBody,
-    );
-    if (!okAuth || !mounted) return;
-    final body = _commentCtrl.text.trim();
-    if (body.isEmpty) return;
-    setState(() => _sendingComment = true);
-    _commentCtrl.clear();
-    try {
-      await ref
-          .read(encyclopediaRepositoryProvider)
-          .postComment(articleId, {'body': body});
-      if (!mounted) return;
-      showFToast(
-        context: context,
-        title: Text(l10n.encyclopediaCommentSubmit),
-      );
-      ref.invalidate(encyclopediaCommentsProvider(articleId));
-    } catch (_) {
-      if (!mounted) return;
-      showFToast(
-        context: context,
-        title: Text(l10n.encyclopediaCommentFailed),
-      );
-    } finally {
-      if (mounted) setState(() => _sendingComment = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -146,6 +108,8 @@ class _EncyclopediaArticleDetailPageState
     final bookmarked = _bookmarked ?? false;
 
     return FScaffold(
+      // Padding manual di scroll - jangan dobel dengan childPad default.
+      childPad: false,
       header: FHeader.nested(
         title: Text(
           article.title,
@@ -170,8 +134,10 @@ class _EncyclopediaArticleDetailPageState
           ),
         ],
       ),
+      // Pola lemma: bar entri komentar di bawah, thread di sheet.
+      footer: EncyclopediaCommentEntryBar(articleId: article.id),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 84),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -256,143 +222,20 @@ class _EncyclopediaArticleDetailPageState
               const Gap(8),
               SambaskuMarkdown(data: article.referencesMd!),
             ],
-            const Gap(24),
-            Text(
-              l10n.encyclopediaCommentsTitle,
-              style: theme.typography.display.sm.copyWith(
-                fontWeight: FontWeight.w700,
+            // Apresiasi pengusul di paling bawah halaman.
+            if (isLinkablePublicUsername(article.author.username))
+              ContributorAppreciationSection(
+                label: l10n.usahaContributorProposedBy,
+                contributors: [
+                  ContributorCredit(
+                    username: article.author.username!,
+                    displayName: article.author.displayName ?? '',
+                  ),
+                ],
               ),
-            ),
-            const Gap(12),
-            _CommentForm(
-              controller: _commentCtrl,
-              sending: _sendingComment,
-              onSend: () => _sendComment(article.id),
-            ),
-            const Gap(16),
-            _CommentList(articleId: article.id),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _CommentForm extends StatelessWidget {
-  const _CommentForm({
-    required this.controller,
-    required this.sending,
-    required this.onSend,
-  });
-  final TextEditingController controller;
-  final bool sending;
-  final VoidCallback onSend;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: FTextField(
-            control: FTextFieldControl.managed(controller: controller),
-            hint: l10n.encyclopediaCommentPlaceholder,
-            minLines: 2,
-            maxLines: 4,
-          ),
-        ),
-        const Gap(12),
-        FButton.icon(
-          onPress: sending ? null : onSend,
-          child: sending
-              ? const FCircularProgress(size: .sm)
-              : Icon(FLucideIcons.send, size: 20, color: theme.colors.primary),
-        ),
-      ],
-    );
-  }
-}
-
-class _CommentList extends ConsumerWidget {
-  const _CommentList({required this.articleId});
-  final String articleId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    final commentsAsync = ref.watch(encyclopediaCommentsProvider(articleId));
-    return commentsAsync.when(
-      loading: () => const Center(child: FCircularProgress()),
-      error: (_, _) => Text(
-        l10n.encyclopediaLoadFailed,
-        style: theme.typography.body.sm,
-      ),
-      data: (comments) {
-        if (comments.isEmpty) {
-          return Text(
-            l10n.encyclopediaCommentEmpty,
-            style: theme.typography.body.sm.copyWith(
-              color: theme.colors.mutedForeground,
-            ),
-            textAlign: TextAlign.center,
-          );
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final c in comments)
-              Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: theme.colors.secondary,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 14,
-                      backgroundColor: theme.colors.primary,
-                      child: Text(
-                        (c.user.displayName?.isNotEmpty ?? false)
-                            ? c.user.displayName![0].toUpperCase()
-                            : (c.user.username?.isNotEmpty ?? false)
-                            ? c.user.username![0].toUpperCase()
-                            : '?',
-                        style: theme.typography.body.xs.copyWith(
-                          color: theme.colors.primaryForeground,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const Gap(10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            c.user.displayName ??
-                                c.user.username ??
-                                l10n.dictSpeakerAnonymous,
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Gap(4),
-                          Text(c.body, style: theme.typography.body.sm),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        );
-      },
     );
   }
 }

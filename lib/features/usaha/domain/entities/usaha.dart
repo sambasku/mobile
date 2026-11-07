@@ -125,8 +125,9 @@ class Usaha {
     this.socialUrl,
     this.coverUrl,
     this.restrictedReason,
-    this.managerId,
-    this.author,
+this.managerId,
+this.author,
+this.manager,
     this.pendingChanges = 0,
     this.items = const [],
     this.images = const [],
@@ -155,8 +156,11 @@ class Usaha {
   final UsahaPublishStatus publishStatus;
   final UsahaOperationalStatus operationalStatus;
   final String? restrictedReason;
-  final String? managerId;
-  final UsahaAuthorRef? author;
+final String? managerId;
+final UsahaAuthorRef? author;
+
+/// Pengelola terverifikasi (klaim approved), live dari wire `manager`.
+final UsahaAuthorRef? manager;
 
   /// Hanya terisi di `GET /usaha/mine` - pengajuan perubahan pending.
   final int pendingChanges;

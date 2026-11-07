@@ -276,6 +276,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String splashTagline(String version) {
+    return 'Kamus, Bahasa & Budaya (v$version)';
+  }
+
+  @override
+  String get splashTaglinePending => 'Kamus, Bahasa & Budaya';
+
+  @override
+  String get splashSupportedBy => 'Didukung oleh';
+
+  @override
   String get aboutWhatTitle => 'Apa itu SambasKu?';
 
   @override
@@ -3350,7 +3361,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
+  String get dictSearchChip => 'Cari';
+
+  @override
   String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeChip => 'Usul';
+
+  @override
+  String get dictDiscussionChip => 'Diskusi';
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -3572,6 +3592,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictActionMore => 'Lainnya';
 
   @override
+  String get dictWordActionsTitle => 'Aksi';
+
+  @override
+  String get dictSuggestEditSubtitle =>
+      'Usulkan perbaikan lemma, makna, atau contoh';
+
+  @override
+  String dictPhotoCountBadge(int count) {
+    return '$count';
+  }
+
+  @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
 
   @override
@@ -3757,6 +3789,44 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictAddPronunciation => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationTitle => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationBody =>
+      'Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.';
+
+  @override
+  String get dictAddPronunciationHint => 'Contoh: sa.dap atau /sa.dap/';
+
+  @override
+  String get dictAddPronunciationPaste => 'Tempel';
+
+  @override
+  String get dictAddPronunciationSubmit => 'Simpan';
+
+  @override
+  String get dictAddPronunciationSaving => 'Menyimpan...';
+
+  @override
+  String get dictAddPronunciationEmpty => 'Pelafalan tidak boleh kosong';
+
+  @override
+  String get dictAddPronunciationSuccess => 'Pelafalan disimpan';
+
+  @override
+  String get dictAddPronunciationFailed => 'Gagal menyimpan pelafalan';
+
+  @override
+  String get dictLoginToAddPronunciation =>
+      'Masuk dulu untuk menambah pelafalan';
+
+  @override
+  String get dictPronunciationClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get dictRecMicPermissionTitle =>
@@ -5453,6 +5523,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaManagedByOwner => 'Dikelola pemilik';
 
   @override
+  String get usahaManagedByLabel => 'Dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -5850,6 +5923,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaTitle => 'Ensiklopedia';
 
   @override
+  String get encyclopediaChip => 'Ensik.';
+
+  @override
   String get encyclopediaSubtitle =>
       'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
 
@@ -6055,6 +6131,18 @@ class AppLocalizationsId extends AppLocalizations {
   String get mdEditorHeading => 'Judul bagian';
 
   @override
+  String get mdEditorHeadingPick => 'Pilih tingkat judul';
+
+  @override
+  String get mdEditorHeading1 => 'Judul besar (H1)';
+
+  @override
+  String get mdEditorHeading2 => 'Judul bagian (H2)';
+
+  @override
+  String get mdEditorHeading3 => 'Subjudul (H3)';
+
+  @override
   String get mdEditorLink => 'Tautan';
 
   @override
@@ -6080,6 +6168,36 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get mdEditorList => 'Daftar';
+
+  @override
+  String get mdEditorListPick => 'Jenis daftar';
+
+  @override
+  String get mdEditorListBullet => 'Daftar poin';
+
+  @override
+  String get mdEditorListOrdered => 'Daftar bernomor';
+
+  @override
+  String get mdEditorTable => 'Tabel';
+
+  @override
+  String get mdEditorTableCol1 => 'Kolom 1';
+
+  @override
+  String get mdEditorTableCol2 => 'Kolom 2';
+
+  @override
+  String get mdEditorQuote => 'Kutipan';
+
+  @override
+  String get mdEditorCode => 'Kode';
+
+  @override
+  String get mdEditorStrike => 'Coret';
+
+  @override
+  String get mdEditorHr => 'Garis pemisah';
 
   @override
   String get mdEditorImage => 'Sisip gambar';
@@ -9977,6 +10095,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String splashTagline(String version) {
+    return 'Kamus, Bahasa & Budaya (v$version)';
+  }
+
+  @override
+  String get splashTaglinePending => 'Kamus, Bahasa & Budaya';
+
+  @override
+  String get splashSupportedBy => 'Didukung oleh';
+
+  @override
   String get aboutWhatTitle => 'Apa itu SambasKu?';
 
   @override
@@ -13051,7 +13180,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
+  String get dictSearchChip => 'Cari';
+
+  @override
   String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeChip => 'Usul';
+
+  @override
+  String get dictDiscussionChip => 'Diskusi';
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -13273,6 +13411,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictActionMore => 'Lainnya';
 
   @override
+  String get dictWordActionsTitle => 'Aksi';
+
+  @override
+  String get dictSuggestEditSubtitle =>
+      'Usulkan perbaikan lemma, makna, atau contoh';
+
+  @override
+  String dictPhotoCountBadge(int count) {
+    return '$count';
+  }
+
+  @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
 
   @override
@@ -13458,6 +13608,44 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictAddPronunciation => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationTitle => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationBody =>
+      'Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.';
+
+  @override
+  String get dictAddPronunciationHint => 'Contoh: sa.dap atau /sa.dap/';
+
+  @override
+  String get dictAddPronunciationPaste => 'Tempel';
+
+  @override
+  String get dictAddPronunciationSubmit => 'Simpan';
+
+  @override
+  String get dictAddPronunciationSaving => 'Menyimpan...';
+
+  @override
+  String get dictAddPronunciationEmpty => 'Pelafalan tidak boleh kosong';
+
+  @override
+  String get dictAddPronunciationSuccess => 'Pelafalan disimpan';
+
+  @override
+  String get dictAddPronunciationFailed => 'Gagal menyimpan pelafalan';
+
+  @override
+  String get dictLoginToAddPronunciation =>
+      'Masuk dulu untuk menambah pelafalan';
+
+  @override
+  String get dictPronunciationClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get dictRecMicPermissionTitle =>
@@ -15154,6 +15342,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaManagedByOwner => 'Dikelola pemilik';
 
   @override
+  String get usahaManagedByLabel => 'Dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -15551,6 +15742,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaTitle => 'Ensiklopedia';
 
   @override
+  String get encyclopediaChip => 'Ensik.';
+
+  @override
   String get encyclopediaSubtitle =>
       'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
 
@@ -15756,6 +15950,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get mdEditorHeading => 'Judul bagian';
 
   @override
+  String get mdEditorHeadingPick => 'Pilih tingkat judul';
+
+  @override
+  String get mdEditorHeading1 => 'Judul besar (H1)';
+
+  @override
+  String get mdEditorHeading2 => 'Judul bagian (H2)';
+
+  @override
+  String get mdEditorHeading3 => 'Subjudul (H3)';
+
+  @override
   String get mdEditorLink => 'Tautan';
 
   @override
@@ -15781,6 +15987,36 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get mdEditorList => 'Daftar';
+
+  @override
+  String get mdEditorListPick => 'Jenis daftar';
+
+  @override
+  String get mdEditorListBullet => 'Daftar poin';
+
+  @override
+  String get mdEditorListOrdered => 'Daftar bernomor';
+
+  @override
+  String get mdEditorTable => 'Tabel';
+
+  @override
+  String get mdEditorTableCol1 => 'Kolom 1';
+
+  @override
+  String get mdEditorTableCol2 => 'Kolom 2';
+
+  @override
+  String get mdEditorQuote => 'Kutipan';
+
+  @override
+  String get mdEditorCode => 'Kode';
+
+  @override
+  String get mdEditorStrike => 'Coret';
+
+  @override
+  String get mdEditorHr => 'Garis pemisah';
 
   @override
   String get mdEditorImage => 'Sisip gambar';
