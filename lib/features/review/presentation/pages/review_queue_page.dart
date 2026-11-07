@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
 import '../../domain/entities/review_contribution.dart';
 import '../../domain/failures/review_failure.dart';
@@ -158,8 +159,12 @@ class _QueueList extends ConsumerWidget {
           prefix: const Icon(FLucideIcons.play),
           child: Text(
             state.hasMore
-          ? AppLocalizations.of(context).reviewQueueStartMore('${state.items.length}')
-          : AppLocalizations.of(context).reviewQueueStartCount('${state.items.length}'),
+                ? AppLocalizations.of(
+                    context,
+                  ).reviewQueueStartMore(formatRibuan(state.items.length))
+                : AppLocalizations.of(
+                    context,
+                  ).reviewQueueStartCount(formatRibuan(state.items.length)),
           ),
         ),
         const Gap(12),
@@ -198,7 +203,8 @@ class _ReviewTile extends StatelessWidget with FTileMixin {
       subtitle: Text(
         [
           reviewEntityLabel(item.entityType, AppLocalizations.of(context)),
-          item.contributorLabel ?? AppLocalizations.of(context).reviewContributorFallback,
+          item.contributorLabel ??
+              AppLocalizations.of(context).reviewContributorFallback,
           if (date.isNotEmpty) date,
         ].join(' · '),
       ),

@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/cache/cache_providers.dart';
 import '../../../../core/utils/format_datetime.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../../../shared/widgets/public_account_name.dart';
@@ -74,107 +75,45 @@ class DiscussionFeedPage extends HookConsumerWidget {
             await ref.read(discussionFeedProvider.future);
           },
           child: async.when(
-          loading: () => const _FeedSkeleton(),
-          error: (error, _) => ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            children: [
-              const _NewThreadComposer(),
-              const Gap(24),
-              Icon(
-                FLucideIcons.circleAlert,
-                size: 40,
-                color: context.theme.colors.mutedForeground,
-              ),
-              const Gap(10),
-              Text(
-                error is DiscussionFailure
-                    ? error.message
-                    : AppLocalizations.of(context).discussionFeedLoadFailed,
-                textAlign: TextAlign.center,
-                style: context.theme.typography.body.sm.copyWith(
+            loading: () => const _FeedSkeleton(),
+            error: (error, _) => ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              children: [
+                const _NewThreadComposer(),
+                const Gap(24),
+                Icon(
+                  FLucideIcons.circleAlert,
+                  size: 40,
                   color: context.theme.colors.mutedForeground,
                 ),
-              ),
-              const Gap(16),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: () => ref.invalidate(discussionFeedProvider),
-                child: Text(AppLocalizations.of(context).discussionFeedRetry),
-              ),
-            ],
-          ),
-          data: (state) {
-            if (state.items.isEmpty) {
-              return ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-                children: [
-                  const _NewThreadComposer(),
-                  const Gap(16),
-                  _SortChips(
-                    sort: sortState.sort,
-                    order: sortState.order,
-                    onSelectSort: (s) => applySortChange(
-                      () => ref
-                          .read(discussionFeedSortProvider.notifier)
-                          .selectSort(s),
-                    ),
-                    onToggleOrder: () => applySortChange(
-                      () => ref
-                          .read(discussionFeedSortProvider.notifier)
-                          .toggleOrder(),
-                    ),
-                  ),
-                  const Gap(24),
-                  Icon(
-                    FLucideIcons.messagesSquare,
-                    size: 40,
+                const Gap(10),
+                Text(
+                  error is DiscussionFailure
+                      ? error.message
+                      : AppLocalizations.of(context).discussionFeedLoadFailed,
+                  textAlign: TextAlign.center,
+                  style: context.theme.typography.body.sm.copyWith(
                     color: context.theme.colors.mutedForeground,
                   ),
-                  const Gap(10),
-                  Text(
-                    AppLocalizations.of(context).discussionFeedEmpty,
-                    textAlign: TextAlign.center,
-                    style: context.theme.typography.body.md.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Gap(6),
-                  Text(
-                    AppLocalizations.of(context).discussionFeedEmptyBody,
-                    textAlign: TextAlign.center,
-                    style: context.theme.typography.body.sm.copyWith(
-                      color: context.theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            // index 0 = composer, 1 = sort, lalu items (+ loading footer)
-            return ListView.separated(
-              controller: scroll,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
-              itemCount:
-                  state.items.length + 2 + (state.isLoadingMore ? 1 : 0),
-              separatorBuilder: (context, index) {
-                // Pemisah hanya antar tile feed (bukan di atas composer/sort).
-                if (index < 1) return const SizedBox.shrink();
-                return Divider(height: 1, color: context.theme.colors.border);
-              },
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return const Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: _NewThreadComposer(),
-                  );
-                }
-                if (index == 1) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: _SortChips(
+                ),
+                const Gap(16),
+                FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: () => ref.invalidate(discussionFeedProvider),
+                  child: Text(AppLocalizations.of(context).discussionFeedRetry),
+                ),
+              ],
+            ),
+            data: (state) {
+              if (state.items.isEmpty) {
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+                  children: [
+                    const _NewThreadComposer(),
+                    const Gap(16),
+                    _SortChips(
                       sort: sortState.sort,
                       order: sortState.order,
                       onSelectSort: (s) => applySortChange(
@@ -188,20 +127,82 @@ class DiscussionFeedPage extends HookConsumerWidget {
                             .toggleOrder(),
                       ),
                     ),
-                  );
-                }
-                final itemIndex = index - 2;
-                if (itemIndex >= state.items.length) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Center(child: FCircularProgress()),
-                  );
-                }
-                return _FeedTile(item: state.items[itemIndex]);
-              },
-            );
-          },
-        ),
+                    const Gap(24),
+                    Icon(
+                      FLucideIcons.messagesSquare,
+                      size: 40,
+                      color: context.theme.colors.mutedForeground,
+                    ),
+                    const Gap(10),
+                    Text(
+                      AppLocalizations.of(context).discussionFeedEmpty,
+                      textAlign: TextAlign.center,
+                      style: context.theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Gap(6),
+                    Text(
+                      AppLocalizations.of(context).discussionFeedEmptyBody,
+                      textAlign: TextAlign.center,
+                      style: context.theme.typography.body.sm.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // index 0 = composer, 1 = sort, lalu items (+ loading footer)
+              return ListView.separated(
+                controller: scroll,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+                itemCount:
+                    state.items.length + 2 + (state.isLoadingMore ? 1 : 0),
+                separatorBuilder: (context, index) {
+                  // Pemisah hanya antar tile feed (bukan di atas composer/sort).
+                  if (index < 1) return const SizedBox.shrink();
+                  return Divider(height: 1, color: context.theme.colors.border);
+                },
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 8),
+                      child: _NewThreadComposer(),
+                    );
+                  }
+                  if (index == 1) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: _SortChips(
+                        sort: sortState.sort,
+                        order: sortState.order,
+                        onSelectSort: (s) => applySortChange(
+                          () => ref
+                              .read(discussionFeedSortProvider.notifier)
+                              .selectSort(s),
+                        ),
+                        onToggleOrder: () => applySortChange(
+                          () => ref
+                              .read(discussionFeedSortProvider.notifier)
+                              .toggleOrder(),
+                        ),
+                      ),
+                    );
+                  }
+                  final itemIndex = index - 2;
+                  if (itemIndex >= state.items.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: FCircularProgress()),
+                    );
+                  }
+                  return _FeedTile(item: state.items[itemIndex]);
+                },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -219,8 +220,7 @@ class _NewThreadComposer extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () =>
-            context.push('${DiscussionRouter.create.path}?focus=1'),
+        onTap: () => context.push('${DiscussionRouter.create.path}?focus=1'),
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
@@ -260,7 +260,11 @@ class _FeedTile extends ConsumerWidget {
 
   final DiscussionItem item;
 
-  Future<void> _toggleVote(BuildContext context, WidgetRef ref, int value) async {
+  Future<void> _toggleVote(
+    BuildContext context,
+    WidgetRef ref,
+    int value,
+  ) async {
     final auth = ref.read(authStatusProvider).value;
     if (!(auth?.isAuth ?? false)) {
       showFToast(
@@ -286,9 +290,7 @@ class _FeedTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
-    final dateLabel = formatRelativeCompact(
-      DateTime.tryParse(item.createdAt),
-    );
+    final dateLabel = formatRelativeCompact(DateTime.tryParse(item.createdAt));
     final actorLabel = displayPublicAccountLabel(
       displayName: item.displayName,
       username: item.username,
@@ -319,7 +321,11 @@ class _FeedTile extends ConsumerWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UserAvatar(name: actorLabel, imageUrl: item.avatarUrl, size: 40),
+                  UserAvatar(
+                    name: actorLabel,
+                    imageUrl: item.avatarUrl,
+                    size: 40,
+                  ),
                   const Gap(12),
                   Expanded(
                     child: Column(
@@ -333,9 +339,9 @@ class _FeedTile extends ConsumerWidget {
                                 isVerifier: item.isVerifier,
                                 onTap: canOpenProfile
                                     ? () => UserProfileRouter.open(
-                                          context,
-                                          item.username!,
-                                        )
+                                        context,
+                                        item.username!,
+                                      )
                                     : null,
                                 style: theme.typography.body.sm.copyWith(
                                   fontWeight: FontWeight.w700,
@@ -364,10 +370,8 @@ class _FeedTile extends ConsumerWidget {
                           const Gap(2),
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: () => UserProfileRouter.open(
-                              context,
-                              item.username!,
-                            ),
+                            onTap: () =>
+                                UserProfileRouter.open(context, item.username!),
                             child: Text(
                               '@${item.username}',
                               maxLines: 1,
@@ -437,8 +441,9 @@ class _FeedTile extends ConsumerWidget {
                     ),
                     const Gap(12),
                     Semantics(
-                      label: AppLocalizations.of(context)
-                          .discussionRepliesCount(item.replyCount),
+                      label: AppLocalizations.of(
+                        context,
+                      ).discussionRepliesCount(item.replyCount),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -449,7 +454,7 @@ class _FeedTile extends ConsumerWidget {
                           ),
                           const Gap(4),
                           Text(
-                            '${item.replyCount}',
+                            formatRibuan(item.replyCount),
                             style: theme.typography.body.sm.copyWith(
                               color: theme.colors.mutedForeground,
                             ),

@@ -195,17 +195,29 @@ final class PlacesRefreshProvider
 
 String _$placesRefreshHash() => r'40869561f9485afa51d403e5b090bb6c5be558d7';
 
-/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+/// Detail satu place by slug.
+///
+/// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+/// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+/// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
 
 @ProviderFor(placeBySlug)
 final placeBySlugProvider = PlaceBySlugFamily._();
 
-/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+/// Detail satu place by slug.
+///
+/// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+/// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+/// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
 
 final class PlaceBySlugProvider
     extends $FunctionalProvider<AsyncValue<Place?>, Place?, FutureOr<Place?>>
     with $FutureModifier<Place?>, $FutureProvider<Place?> {
-  /// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+  /// Detail satu place by slug.
+  ///
+  /// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+  /// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+  /// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
   PlaceBySlugProvider._({
     required PlaceBySlugFamily super.from,
     required String super.argument,
@@ -249,9 +261,13 @@ final class PlaceBySlugProvider
   }
 }
 
-String _$placeBySlugHash() => r'7f3af851f127193fe1d6b51734f5396a4e453859';
+String _$placeBySlugHash() => r'aa5d9e6c78e0e1ffd624705b89660434047f9d13';
 
-/// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+/// Detail satu place by slug.
+///
+/// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+/// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+/// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
 
 final class PlaceBySlugFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Place?>, String> {
@@ -264,7 +280,11 @@ final class PlaceBySlugFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Detail satu place by slug (katalog cache → API). Null = tidak ada.
+  /// Detail satu place by slug.
+  ///
+  /// Selalu `GET /places/:slug` - katalog list hanya cover (`isMain`) dan
+  /// cache 24 jam, jadi hit katalog bisa menyajikan `images: []` setelah
+  /// foto baru diunggah. Soft-fail: null bila slug kosong / 404 / jaringan.
 
   PlaceBySlugProvider call(String slug) =>
       PlaceBySlugProvider._(argument: slug, from: this);

@@ -66,7 +66,7 @@ class PermainanListPage extends StatelessWidget {
             maxWidth: constraints.maxWidth,
           );
           return GridView.builder(
-            padding: const EdgeInsets.only(top: 8, bottom: 24),
+            padding: const EdgeInsets.only(top: 0, bottom: 24),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: 8,

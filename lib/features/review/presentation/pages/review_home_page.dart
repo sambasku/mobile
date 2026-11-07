@@ -6,14 +6,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../domain/entities/exploration_proposal.dart';
 import '../../domain/review_access.dart';
 import '../../review_router.dart';
 import '../providers/discussion_review_providers.dart';
+import '../providers/exploration_review_providers.dart';
 import '../providers/review_providers.dart';
 import '../providers/review_suggestions_providers.dart';
 import '../utils/leave_review.dart';
 
-/// Hub Area Verifikator: Mulai tinjau | Lengkapi kata | Usulan edit | Diskusi | Riwayat.
+/// Hub Area Verifikator: kamus + eksplorasi + diskusi + riwayat.
 class ReviewHomePage extends ConsumerWidget {
   const ReviewHomePage({super.key});
 
@@ -28,9 +30,16 @@ class ReviewHomePage extends ConsumerWidget {
     final suggestionsPending = showContribution
         ? (ref.watch(reviewSuggestionsHasPendingProvider).value ?? false)
         : false;
+    final explorePending =
+        showContribution &&
+        (_explorePending(ref, ExplorationReviewDomain.usaha) ||
+            _explorePending(ref, ExplorationReviewDomain.place) ||
+            _explorePending(ref, ExplorationReviewDomain.culinary) ||
+            _explorePending(ref, ExplorationReviewDomain.event));
     final discussionPending = showDiscussion
         ? (ref.watch(discussionReviewHasPendingProvider).value ?? false)
         : false;
+    final l10n = AppLocalizations.of(context);
 
     return PopScope(
       canPop: false,
@@ -54,8 +63,16 @@ class ReviewHomePage extends ConsumerWidget {
                   prefix: Icon(FLucideIcons.play),
                   title: Text(AppLocalizations.of(context).reviewHomeStart),
                   subtitle: contribPending
-                      ? Text(AppLocalizations.of(context).reviewHomeContributionTitle)
-                      : Text(AppLocalizations.of(context).reviewHomeContributionSubtitle),
+                      ? Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeContributionTitle,
+                        )
+                      : Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeContributionSubtitle,
+                        ),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -71,7 +88,9 @@ class ReviewHomePage extends ConsumerWidget {
               if (showContribution)
                 FTile(
                   prefix: Icon(FLucideIcons.sparkles),
-                  title: Text(AppLocalizations.of(context).reviewHomeCompleteWordTitle),
+                  title: Text(
+                    AppLocalizations.of(context).reviewHomeCompleteWordTitle,
+                  ),
                   subtitle: Text(
                     AppLocalizations.of(context).reviewHomeCompleteWordSubtitle,
                   ),
@@ -81,10 +100,20 @@ class ReviewHomePage extends ConsumerWidget {
               if (showContribution)
                 FTile(
                   prefix: Icon(FLucideIcons.pencilLine),
-                  title: Text(AppLocalizations.of(context).reviewHomeSuggestionTitle),
+                  title: Text(
+                    AppLocalizations.of(context).reviewHomeSuggestionTitle,
+                  ),
                   subtitle: suggestionsPending
-                      ? Text(AppLocalizations.of(context).reviewHomeSuggestionWaiting)
-                      : Text(AppLocalizations.of(context).reviewHomeSuggestionSubtitle),
+                      ? Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeSuggestionWaiting,
+                        )
+                      : Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeSuggestionSubtitle,
+                        ),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -94,13 +123,41 @@ class ReviewHomePage extends ConsumerWidget {
                   ),
                   onPress: () => context.push(ReviewRouter.suggestions.path),
                 ),
+              if (showContribution)
+                FTile(
+                  prefix: Icon(FLucideIcons.compass),
+                  title: Text(l10n.reviewHomeExploreTitle),
+                  subtitle: Text(
+                    explorePending
+                        ? l10n.reviewHomeExploreWaiting
+                        : l10n.reviewHomeExploreSubtitle,
+                  ),
+                  suffix: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (explorePending) const _PendingDot(),
+                      const Icon(FLucideIcons.chevronRight),
+                    ],
+                  ),
+                  onPress: () => context.push(ReviewRouter.exploration.path),
+                ),
               if (showDiscussion)
                 FTile(
                   prefix: Icon(FLucideIcons.messagesSquare),
-                  title: Text(AppLocalizations.of(context).reviewHomeDiscussionTitle),
+                  title: Text(
+                    AppLocalizations.of(context).reviewHomeDiscussionTitle,
+                  ),
                   subtitle: discussionPending
-                      ? Text(AppLocalizations.of(context).reviewHomeDiscussionWaiting)
-                      : Text(AppLocalizations.of(context).reviewHomeDiscussionSubtitle),
+                      ? Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeDiscussionWaiting,
+                        )
+                      : Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewHomeDiscussionSubtitle,
+                        ),
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -114,7 +171,9 @@ class ReviewHomePage extends ConsumerWidget {
               if (showContribution)
                 FTile(
                   prefix: Icon(FLucideIcons.search),
-                  title: Text(AppLocalizations.of(context).reviewHomeSearchMissTitle),
+                  title: Text(
+                    AppLocalizations.of(context).reviewHomeSearchMissTitle,
+                  ),
                   subtitle: Text(
                     AppLocalizations.of(context).reviewHomeSearchMissSubtitle,
                   ),
@@ -124,8 +183,12 @@ class ReviewHomePage extends ConsumerWidget {
               if (showContribution)
                 FTile(
                   prefix: Icon(FLucideIcons.history),
-                  title: Text(AppLocalizations.of(context).reviewHomeHistoryTitle),
-                  subtitle: Text(AppLocalizations.of(context).reviewHomeHistorySubtitle),
+                  title: Text(
+                    AppLocalizations.of(context).reviewHomeHistoryTitle,
+                  ),
+                  subtitle: Text(
+                    AppLocalizations.of(context).reviewHomeHistorySubtitle,
+                  ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => context.push(ReviewRouter.history.path),
                 ),
@@ -135,6 +198,10 @@ class ReviewHomePage extends ConsumerWidget {
       ),
     );
   }
+}
+
+bool _explorePending(WidgetRef ref, ExplorationReviewDomain domain) {
+  return ref.watch(explorationHasPendingProvider(domain)).value ?? false;
 }
 
 class _PendingDot extends StatelessWidget {

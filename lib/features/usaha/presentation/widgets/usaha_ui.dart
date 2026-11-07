@@ -4,11 +4,40 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/display_image_url.dart';
-import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../domain/entities/usaha.dart';
-import '../usaha_labels.dart';
 import '../../usaha_router.dart';
+import '../usaha_labels.dart';
+
+/// Titik usaha di Google Maps; rute diurus aplikasi Maps.
+/// Prefer mapsUrl HTTPS; fallback lat,lng.
+Uri? usahaGoogleMapsUri(Usaha usaha) {
+  if (usaha.mapsUrl != null) {
+    final uri = Uri.tryParse(usaha.mapsUrl!);
+    if (uri != null && uri.isScheme('https')) return uri;
+  }
+  if (usaha.hasCoordinates) {
+    return Uri.https(
+      'www.google.com',
+      '/maps/search/',
+      {'api': '1', 'query': '${usaha.lat},${usaha.lng}'},
+    );
+  }
+  return null;
+}
+
+bool usahaCanOpenMaps(Usaha usaha) => usahaGoogleMapsUri(usaha) != null;
+
+/// Toast bila usaha belum punya koordinat untuk peta internal.
+void showUsahaNoCoordinates(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
+  showFToast(
+    context: context,
+    title: Text(l10n.usahaNoCoordinatesTitle),
+    description: Text(l10n.usahaNoCoordinatesBody),
+  );
+}
 
 /// Badge status operasional. `unknown` tidak ditampilkan (tidak ada info).
 FBadge? usahaOperationalBadge(
@@ -28,13 +57,15 @@ FBadge? usahaOperationalBadge(
   );
 }
 
-/// Baris meta tile: kategori · desa · jenis.
+/// Baris meta tile: kategori · desa · kecamatan.
 String usahaMetaLine(Usaha usaha) {
   final parts = <String>[
     if (usaha.category != null) usaha.category!.name,
-    if (usaha.village != null)
-      usaha.village!.name
-    else if (usaha.addressText != null)
+    if (usaha.village != null) usaha.village!.name,
+    if (usaha.region != null) usaha.region!.name,
+    if (usaha.village == null &&
+        usaha.region == null &&
+        usaha.addressText != null)
       usaha.addressText!,
   ];
   return parts.join(' · ');

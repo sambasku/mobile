@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +50,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 /// - `--flavor staging|production` → inject FLUTTER_APP_FLAVOR
 /// - atau `--dart-define=FLAVOR=...` (fallback lokal)
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // Tahan native splash sampai SplashPage siap navigasi (lihat splash_page.dart).
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   debugPrint('MILESTONE main-start'); // ignore: avoid_print
 
   // Issue mobile#164: targetSdk 36 -> Android 15+ memaksa edge-to-edge.

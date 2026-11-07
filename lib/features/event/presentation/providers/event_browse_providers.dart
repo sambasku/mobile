@@ -125,9 +125,22 @@ class EventBrowse extends AsyncNotifier<EventBrowseState> {
           );
       if (!ref.mounted) return;
       final s = state.value ?? current;
+      final seen = s.items.map((e) => e.id).toSet();
+      final fresh = page.events.where((e) => seen.add(e.id)).toList();
+      if (fresh.isEmpty) {
+        state = AsyncData(
+          s.copyWith(
+            isLoadingMore: false,
+            hasMore: false,
+            clearCursor: true,
+            loadMoreFailed: false,
+          ),
+        );
+        return;
+      }
       state = AsyncData(
         s.copyWith(
-          items: [...s.items, ...page.events],
+          items: [...s.items, ...fresh],
           nextCursor: page.nextCursor,
           hasMore: page.nextCursor != null,
           clearCursor: page.nextCursor == null,

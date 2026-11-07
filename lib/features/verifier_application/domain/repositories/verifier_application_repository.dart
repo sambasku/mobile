@@ -9,12 +9,22 @@ abstract interface class VerifierApplicationRepository {
   Future<Either<VerifierApplicationFailure, VerifierApplication>> submit({
     required String phone,
     required String address,
+    required String fullName,
     required List<SocialLink> socialLinks,
+    required String dialect,
+    required String? dialectNote,
+    required String reason,
+    required SocialScreenshot? photo,
   });
 
   Future<Either<VerifierApplicationFailure, VerifierApplication>> resubmit({
     required String phone,
     required String address,
+    required String fullName,
     required List<SocialLink> socialLinks,
+    required String dialect,
+    required String? dialectNote,
+    required String reason,
+    required SocialScreenshot? photo,
   });
 }

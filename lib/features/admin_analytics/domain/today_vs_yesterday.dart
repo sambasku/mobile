@@ -2,7 +2,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'entities/dashboard_stats.dart';
 import 'format_analytics_count.dart';
 
-enum TodayMetricKey { contributions, votes, comments, newUsers }
+enum TodayMetricKey { contributions, votes, comments, newUsers, searches }
 
 class TodayVsYesterdayMetric {
   const TodayVsYesterdayMetric({
@@ -25,6 +25,7 @@ const _metrics = <TodayMetricKey>[
   TodayMetricKey.votes,
   TodayMetricKey.comments,
   TodayMetricKey.newUsers,
+  TodayMetricKey.searches,
 ];
 
 String _metricLabel(AppLocalizations l10n, TodayMetricKey key) => switch (key) {
@@ -32,6 +33,7 @@ String _metricLabel(AppLocalizations l10n, TodayMetricKey key) => switch (key) {
   TodayMetricKey.votes => l10n.analyticsSeriesVotes,
   TodayMetricKey.comments => l10n.analyticsSeriesComments,
   TodayMetricKey.newUsers => l10n.analyticsSeriesUsers,
+  TodayMetricKey.searches => l10n.analyticsSeriesSearches,
 };
 
 int _valueFor(ActivityDailyPoint point, TodayMetricKey key) => switch (key) {
@@ -39,6 +41,7 @@ int _valueFor(ActivityDailyPoint point, TodayMetricKey key) => switch (key) {
   TodayMetricKey.votes => point.votes,
   TodayMetricKey.comments => point.comments,
   TodayMetricKey.newUsers => point.newUsers,
+  TodayMetricKey.searches => point.searches,
 };
 
 /// Bandingkan titik terakhir (hari ini WIB) dengan hari sebelumnya.

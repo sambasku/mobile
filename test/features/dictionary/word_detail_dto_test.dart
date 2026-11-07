@@ -89,6 +89,37 @@ void main() {
     final dto = WordDetailDto.fromJson(sometDetail);
     expect(dto.meaningGroups, isEmpty);
   });
+
+  // #231: makna punya kontributor (username + display_name + avatar_url).
+  test('WordDetailDto mem-parse created_by makna dengan avatar_url', () {
+    final meaning0 = sometDetail['meanings'][0] as Map<String, dynamic>;
+    final dto = WordDetailDto.fromJson({
+      ...sometDetail,
+      'meanings': [
+        {
+          ...meaning0,
+          'created_by': {
+            'username': 'budi',
+            'display_name': 'Budi Santoso',
+            'avatar_url': 'https://cdn.jsdelivr.net/gh/sambasku/images@main/assets/avatars/budi.jpg',
+            'role': 'reviewer',
+          },
+        },
+      ],
+    });
+    final creator = dto.meanings.first.createdBy;
+    expect(creator, isNotNull);
+    expect(creator!.username, 'budi');
+    expect(creator.displayName, 'Budi Santoso');
+    expect(creator.avatarUrl, contains('avatars'));
+    expect(creator.role, 'reviewer');
+  });
+
+  test('payload lama tanpa avatar_url / created_by makna tetap ter-parse', () {
+    final dto = WordDetailDto.fromJson(sometDetail);
+    expect(dto.meanings.first.createdBy, isNull);
+    expect(dto.verifiedBy?.avatarUrl, isNull);
+  });
 }
 
 final sometDetail = <String, dynamic>{

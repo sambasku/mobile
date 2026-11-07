@@ -37,7 +37,12 @@ abstract class VerifierApplicationDto with _$VerifierApplicationDto {
     required String status,
     required String phone,
     required String address,
+    @JsonKey(name: 'full_name') String? fullName,
     @JsonKey(name: 'social_links') required List<SocialLinkDto> socialLinks,
+    String? dialect,
+    @JsonKey(name: 'dialect_note') String? dialectNote,
+    String? reason,
+    SocialScreenshotDto? photo,
     @JsonKey(name: 'admin_comment') String? adminComment,
     @JsonKey(name: 'reviewed_at') String? reviewedAt,
     @JsonKey(name: 'created_at') required String createdAt,
@@ -56,7 +61,12 @@ abstract class SubmitVerifierApplicationRequestDto
   const factory SubmitVerifierApplicationRequestDto({
     required String phone,
     required String address,
+    @JsonKey(name: 'full_name') required String fullName,
     @JsonKey(name: 'social_links') required List<SocialLinkDto> socialLinks,
+    required String dialect,
+    @JsonKey(name: 'dialect_note') String? dialectNote,
+    required String reason,
+    SocialScreenshotDto? photo,
   }) = _SubmitVerifierApplicationRequestDto;
 
   factory SubmitVerifierApplicationRequestDto.fromJson(

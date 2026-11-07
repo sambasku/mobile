@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../domain/entities/search_miss.dart';
 import '../providers/search_miss_list_providers.dart';
 import '../widgets/search_miss_skeleton_list.dart';
@@ -104,10 +105,7 @@ class SearchMissListPage extends ConsumerWidget {
                           );
                           AnalyticsService.instance.log(
                             AnalyticsEvents.contributeStart,
-                            params: {
-                              'guest': 1,
-                              'from': 'search_miss',
-                            },
+                            params: {'guest': 1, 'from': 'search_miss'},
                           );
                           final q = Uri(
                             queryParameters: <String, String>{
@@ -133,7 +131,6 @@ class SearchMissListPage extends ConsumerWidget {
     final direction = item.searchIn == 'translation'
         ? l10n.searchMissDirectionIdToSbs
         : l10n.searchMissDirectionSbsToId;
-    final hits = item.hitCount > 99 ? '99×' : '${item.hitCount}×';
-    return '$direction · ${l10n.searchMissHitCount(hits)}';
+    return '$direction · ${l10n.searchMissHitCount(formatRibuan(item.hitCount))}';
   }
 }

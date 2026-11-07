@@ -109,7 +109,7 @@ Future<void> _pump(WidgetTester tester) async {
 void main() {
   tearDown(() => _images = const []);
 
-  testWidgets('kredit foto tampil mengikuti foto aktif', (tester) async {
+  testWidgets('kredit foto utama tampil di bawah lemma', (tester) async {
     _images = [
       _img(
         'a',
@@ -126,12 +126,6 @@ void main() {
     expect(find.text('Foto oleh '), findsOneWidget);
     expect(find.text('Ada'), findsOneWidget);
     expect(find.text('Bob'), findsNothing);
-
-    // Swipe ke foto kedua: kredit ikut berganti.
-    await tester.fling(find.byType(PageView), const Offset(-400, 0), 800);
-    await tester.pumpAndSettle();
-    expect(find.text('Ada'), findsNothing);
-    expect(find.text('Bob'), findsOneWidget);
   });
 
   testWidgets('tanpa kredit: label Foto oleh tidak muncul', (tester) async {
@@ -140,12 +134,9 @@ void main() {
     expect(find.text('Foto oleh '), findsNothing);
   });
 
-  testWidgets('counter 1/2 berganti saat swipe', (tester) async {
+  testWidgets('badge jumlah foto tampil bila lebih dari satu', (tester) async {
     _images = [_img('a', primary: true), _img('b')];
     await _pump(tester);
-    expect(find.text('1/2'), findsOneWidget);
-    await tester.fling(find.byType(PageView), const Offset(-400, 0), 800);
-    await tester.pumpAndSettle();
-    expect(find.text('2/2'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
   });
 }

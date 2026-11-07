@@ -27,6 +27,8 @@ import 'package:sambasku_mobile/features/search_miss/domain/providers/search_mis
 import 'package:sambasku_mobile/features/search_miss/domain/usecases/list_search_misses_use_case.dart';
 import 'package:sambasku_mobile/flavors.dart';
 
+import 'helpers/past_splash.dart';
+
 class _FakeListSearchMissesUseCase implements ListSearchMissesUseCase {
   const _FakeListSearchMissesUseCase();
 
@@ -138,9 +140,7 @@ void main() {
         child: const App(),
       ),
     );
-    await tester.pump();
-    // redirect GoRouter (getIsAuth) selesai di frame berikutnya
-    await tester.pump();
+    await pumpPastSplash(tester);
 
     // cold start langsung HOME (FScaffold shell + header wordmark SVG)
     expect(find.byType(FScaffold), findsWidgets);
@@ -173,8 +173,7 @@ void main() {
         child: const App(),
       ),
     );
-    await tester.pump();
-    await tester.pump();
+    await pumpPastSplash(tester);
 
     final context = tester.element(find.byType(FScaffold).first);
     expect(Directionality.of(context), TextDirection.ltr);

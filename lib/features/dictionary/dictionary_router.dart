@@ -113,6 +113,7 @@ class DictionaryRouter {
         initialCategory: parseSuggestCategory(
           state.uri.queryParameters['category'],
         ),
+        initialMeaningId: state.uri.queryParameters['meaning'],
       ),
     ),
   ];

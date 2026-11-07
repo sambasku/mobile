@@ -41,7 +41,12 @@ class VerifierApplicationNotifier extends _$VerifierApplicationNotifier {
   Future<void> submit({
     required String phone,
     required String address,
+    required String fullName,
     required List<SocialLink> socialLinks,
+    required String dialect,
+    required String? dialectNote,
+    required String reason,
+    required SocialScreenshot? photo,
   }) async {
     state = state.copyWith(
       isSubmitting: true,
@@ -53,7 +58,12 @@ class VerifierApplicationNotifier extends _$VerifierApplicationNotifier {
       SubmitVerifierApplicationParams(
         phone: phone,
         address: address,
+        fullName: fullName,
         socialLinks: socialLinks,
+        dialect: dialect,
+        dialectNote: dialectNote,
+        reason: reason,
+        photo: photo,
         isResubmit: isResubmit,
       ),
     );

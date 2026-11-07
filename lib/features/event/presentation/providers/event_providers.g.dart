@@ -294,7 +294,7 @@ final class EventsForPlaceProvider
   }
 }
 
-String _$eventsForPlaceHash() => r'0cef581dfe25f81a7a5620b1cef45ef9e54025dc';
+String _$eventsForPlaceHash() => r'1e8000bbf15ab5f1c0fca33a0e4a0826a80e24af';
 
 /// Agenda acara untuk satu tempat wisata (`?place_id=`).
 ///
@@ -388,7 +388,7 @@ final class EventsForVillageProvider
   }
 }
 
-String _$eventsForVillageHash() => r'4743143eab023fca2f5805f6069f62abb2668b31';
+String _$eventsForVillageHash() => r'927c6c43e79df7d72142e297634ecbed0579ce3e';
 
 /// Agenda acara untuk satu desa (`?village_id=`).
 ///

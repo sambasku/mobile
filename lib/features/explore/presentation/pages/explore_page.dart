@@ -12,7 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/use_scroll_collapse.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
-import '../../../dictionary/dictionary_router.dart';
+import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../domain/explore_category.dart';
 import '../../explore_router.dart';
 import '../widgets/explore_cover_card.dart';
@@ -30,9 +30,9 @@ class ExplorePage extends HookConsumerWidget {
       ),
     );
 
-    // Jembatan ke kamus: kosakata di tab kamus (bukan coming-soon).
+    // Jembatan ke ensiklopedia: buka rute ensiklopedia penuh.
     if (cat.id == 'ensiklopedia') {
-      context.push(DictionaryRouter.list.path);
+      context.push(EncyclopediaRouter.list.path);
       return;
     }
 
@@ -45,8 +45,10 @@ class ExplorePage extends HookConsumerWidget {
     final scroll = useScrollController();
     final landscape =
         MediaQuery.widthOf(context) > MediaQuery.heightOf(context);
-    final maxHero = landscape ? 140.0 : 200.0;
-    final minHero = landscape ? 50.0 : 70.0;
+    // Hero pendek: grid kategori harus masuk viewport tanpa scroll panjang.
+    // Subtitle overlay butuh height >= 130 (lihat ExploreMapHero).
+    final maxHero = landscape ? 112.0 : 140.0;
+    final minHero = landscape ? 48.0 : 56.0;
     final collapseDistance = maxHero - minHero;
 
     // Coming-soon disembunyikan default: tab Eksplorasi tampil 100% konten
@@ -68,13 +70,9 @@ class ExplorePage extends HookConsumerWidget {
       builder: (context, _) {
         final t = collapse.value;
         final heroHeight = maxHero - t * collapseDistance;
-        return SizedBox(
-          height: heroHeight,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-            child: ExploreMapHero(height: heroHeight),
-          ),
-        );
+        // Tanpa padding atas: header sudah pad bawah 6px (app.dart).
+        // Padding lama 8 + SizedBox sama tinggi = overflow 8px.
+        return ExploreMapHero(height: heroHeight);
       },
     );
 

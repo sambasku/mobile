@@ -10,6 +10,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/display_image_url.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/reference/reference_data.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -41,7 +42,10 @@ class ReviewEntityPreview extends ConsumerWidget {
     final content = switch (type) {
       'word' => _WordPreview(detail: detail),
       'word_image' => _ImagePreview(entity: detail.entity),
-      'word_audio' => _AudioPreview(entity: detail.entity, label: AppLocalizations.of(context).reviewPreviewAudioProposal),
+      'word_audio' => _AudioPreview(
+        entity: detail.entity,
+        label: AppLocalizations.of(context).reviewPreviewAudioProposal,
+      ),
       'pronunciation' => _PronunciationPreview(entity: detail.entity),
       'example' => _ExamplePreview(entity: detail.entity),
       'meaning' => _MeaningPreview(entity: detail.entity),
@@ -52,65 +56,9 @@ class ReviewEntityPreview extends ConsumerWidget {
       return SingleChildScrollView(child: content);
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final theme = context.theme;
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _showPreviewSheet(context, content),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: constraints.maxHeight - 32,
-                  ),
-                  // Konten bisa lebih tinggi dari kartu (DB: banyak makna /
-                  // definisi panjang). SingleChildScrollView tanpa gesture
-                  // memotong kelebihan itu tanpa memicu assert RenderFlex
-                  // overflow - ClipRect saja tidak menahan assert di Column.
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: content,
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        theme.colors.background.withValues(alpha: 0),
-                        theme.colors.background.withValues(alpha: 0.8),
-                      ],
-                    ),
-                  ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        AppLocalizations.of(context).reviewPreviewTapToRead,
-                        style: theme.typography.body.xs.copyWith(
-                          color: theme.colors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+    return _OverflowPreview(
+      onOpen: () => _showPreviewSheet(context, content),
+      child: content,
     );
   }
 
@@ -141,11 +89,7 @@ class ReviewEntityPreview extends ConsumerWidget {
                     ),
                   ),
                   const Gap(16),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: content,
-                    ),
-                  ),
+                  Flexible(child: SingleChildScrollView(child: content)),
                 ],
               ),
             ),
@@ -156,13 +100,100 @@ class ReviewEntityPreview extends ConsumerWidget {
   }
 }
 
+class _OverflowPreview extends StatefulWidget {
+  const _OverflowPreview({required this.onOpen, required this.child});
+
+  final VoidCallback onOpen;
+  final Widget child;
+
+  @override
+  State<_OverflowPreview> createState() => _OverflowPreviewState();
+}
+
+class _OverflowPreviewState extends State<_OverflowPreview> {
+  final _scroll = ScrollController();
+  bool _overflows = false;
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _syncOverflow() {
+    if (!mounted || !_scroll.hasClients) return;
+    final overflows = _scroll.position.maxScrollExtent > 0.5;
+    if (overflows == _overflows) return;
+    setState(() => _overflows = overflows);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncOverflow());
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onOpen,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: constraints.maxHeight - 4,
+                  ),
+                  child: SingleChildScrollView(
+                    controller: _scroll,
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: widget.child,
+                  ),
+                ),
+              ),
+              if (_overflows)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          theme.colors.background.withValues(alpha: 0),
+                          theme.colors.background.withValues(alpha: 0.8),
+                        ],
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          AppLocalizations.of(context).reviewPreviewTapToRead,
+                          style: theme.typography.body.xs.copyWith(
+                            color: theme.colors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// Kunci yang isinya id referensi - tidak pernah ditampilkan mentah, dan tidak
 /// boleh ikutDibaca user jadi text field (bisa rusak kalau diketik).
-const _referenceIdSuffixes = {
-  '_id',
-  '_ids',
-  'provider_file_id',
-};
+const _referenceIdSuffixes = {'_id', '_ids', 'provider_file_id'};
 
 bool _isReferenceIdKey(String key) =>
     _referenceIdSuffixes.any(key.endsWith) || key == 'provider_file_id';
@@ -247,14 +278,18 @@ String _formatDurationMs(int? ms, AppLocalizations l10n) {
   if (sec < 60) return l10n.reviewPreviewDurationSec(sec);
   final min = sec ~/ 60;
   final rem = sec % 60;
-  return rem == 0 ? l10n.reviewPreviewDurationMin(min) : l10n.reviewPreviewDurationMinSec(min, rem);
+  return rem == 0
+      ? l10n.reviewPreviewDurationMin(min)
+      : l10n.reviewPreviewDurationMinSec(min, rem);
 }
 
 String _formatFileSize(int? bytes, AppLocalizations l10n) {
   if (bytes == null || bytes <= 0) return '';
   if (bytes < 1024) return l10n.reviewPreviewBytesB(bytes);
-  if (bytes < 1024 * 1024) return l10n.reviewPreviewBytesKb((bytes / 1024).toStringAsFixed(1));
-  return l10n.reviewPreviewBytesMb((bytes / (1024 * 1024)).toStringAsFixed(1));
+  if (bytes < 1024 * 1024) {
+    return l10n.reviewPreviewBytesKb(formatRibuan(bytes / 1024));
+  }
+  return l10n.reviewPreviewBytesMb(formatRibuan(bytes / (1024 * 1024)));
 }
 
 class _SectionCard extends StatelessWidget {
@@ -272,7 +307,7 @@ class _SectionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -283,7 +318,7 @@ class _SectionCard extends StatelessWidget {
                 color: theme.colors.mutedForeground,
               ),
             ),
-            const Gap(10),
+            const Gap(6),
             child,
           ],
         ),
@@ -358,61 +393,43 @@ class _WordPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final entity = detail.entity;
-    final lemma = entity['lemma']?.toString() ?? '-';
     final wordType = entity['wordType']?.toString();
     final canEditType = detail.contribution.isPending;
-    final notes = entity['notes']?.toString().trim();
     final usageLabels = knownUsageLabels(entity['usageLabels']);
     final meanings = entity['meanings'];
     final extras = _extras(AppLocalizations.of(context));
+    final showsType = canEditType || (wordType != null && wordType.isNotEmpty);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _SectionCard(
-          title: AppLocalizations.of(context).reviewPreviewProposedWord,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        if (canEditType)
+          ReviewInlineTypeEditor(detail: detail)
+        else if (wordType != null && wordType.isNotEmpty)
+          Text(
+            wordTypeOptionLabel(wordType),
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        if (usageLabels.isNotEmpty) ...[
+          if (showsType) const Gap(8),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
             children: [
-              Text(
-                lemma,
-                style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w700),
-              ),
-              if (canEditType) ...[
-                const Gap(8),
-                ReviewInlineTypeEditor(detail: detail),
-              ] else if (wordType != null && wordType.isNotEmpty) ...[
-                const Gap(4),
-                Text(
-                  wordTypeOptionLabel(wordType),
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
+              for (final code in usageLabels)
+                FBadge(
+                  variant: isProminentUsageLabel(code)
+                      ? FBadgeVariant.primary
+                      : FBadgeVariant.secondary,
+                  child: Text(
+                    usageLabelLabel(code, AppLocalizations.of(context)),
                   ),
                 ),
-              ],
-              if (usageLabels.isNotEmpty) ...[
-                const Gap(8),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    for (final code in usageLabels)
-                      FBadge(
-                        variant: isProminentUsageLabel(code)
-                            ? FBadgeVariant.primary
-                            : FBadgeVariant.secondary,
-                        child: Text(usageLabelLabel(code, AppLocalizations.of(context))),
-                      ),
-                  ],
-                ),
-              ],
-              if (notes != null && notes.isNotEmpty) ...[
-                const Gap(8),
-                Text(notes, style: theme.typography.body.sm),
-              ],
             ],
           ),
-        ),
+        ],
         const Gap(12),
         _SectionCard(
           title: AppLocalizations.of(context).shareSectionMeaning,
@@ -428,7 +445,8 @@ class _WordPreview extends StatelessWidget {
                   children: [
                     for (var i = 0; i < meanings.length; i++) ...[
                       if (i > 0) const Gap(12),
-                      if (meanings[i] is Map) _MeaningBlock(raw: meanings[i] as Map),
+                      if (meanings[i] is Map)
+                        _MeaningBlock(raw: meanings[i] as Map),
                     ],
                   ],
                 ),
@@ -484,7 +502,8 @@ class _WordPreview extends StatelessWidget {
   }
 }
 
-Iterable<Map> _mapsOf(Object? raw) => raw is List ? raw.whereType<Map>() : const [];
+Iterable<Map> _mapsOf(Object? raw) =>
+    raw is List ? raw.whereType<Map>() : const [];
 
 class _MeaningBlock extends StatelessWidget {
   const _MeaningBlock({required this.raw});
@@ -616,9 +635,18 @@ class _ImagePreview extends StatelessWidget {
             ),
           ],
           const Gap(10),
-          if (alt != null) _MetaRow(label: AppLocalizations.of(context).reviewPreviewAltText, value: alt),
+          if (alt != null)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewAltText,
+              value: alt,
+            ),
           if (primary != null)
-            _MetaRow(label: AppLocalizations.of(context).commonPrimary, value: primary ? AppLocalizations.of(context).commonYes : AppLocalizations.of(context).commonNo),
+            _MetaRow(
+              label: AppLocalizations.of(context).commonPrimary,
+              value: primary
+                  ? AppLocalizations.of(context).commonYes
+                  : AppLocalizations.of(context).commonNo,
+            ),
         ],
       ),
     );
@@ -637,8 +665,14 @@ class _AudioPreview extends StatelessWidget {
     final data = _childData(entity);
     final url = _str(data, 'url') ?? _str(data, 'audio_url');
     final speaker = _str(data, 'speaker_name');
-    final duration = _formatDurationMs(_int(data, 'duration_ms'), AppLocalizations.of(context));
-    final size = _formatFileSize(_int(data, 'file_size'), AppLocalizations.of(context));
+    final duration = _formatDurationMs(
+      _int(data, 'duration_ms'),
+      AppLocalizations.of(context),
+    );
+    final size = _formatFileSize(
+      _int(data, 'file_size'),
+      AppLocalizations.of(context),
+    );
     final mime = _str(data, 'mime_type');
     final primary = _bool(data, 'is_primary');
     final lemma = entity['wordLemma']?.toString();
@@ -668,12 +702,33 @@ class _AudioPreview extends StatelessWidget {
           else
             _InlineAudioPlayer(url: url, speaker: speaker),
           const Gap(10),
-          if (speaker != null) _MetaRow(label: AppLocalizations.of(context).reviewCorrectSpeaker, value: speaker),
-          if (duration.isNotEmpty) _MetaRow(label: AppLocalizations.of(context).reviewPreviewDurasi, value: duration),
-          if (size.isNotEmpty) _MetaRow(label: AppLocalizations.of(context).reviewPreviewUkuran, value: size),
-          if (mime != null) _MetaRow(label: AppLocalizations.of(context).reviewPreviewTipe, value: mime),
+          if (speaker != null)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewCorrectSpeaker,
+              value: speaker,
+            ),
+          if (duration.isNotEmpty)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewDurasi,
+              value: duration,
+            ),
+          if (size.isNotEmpty)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewUkuran,
+              value: size,
+            ),
+          if (mime != null)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewTipe,
+              value: mime,
+            ),
           if (primary != null)
-            _MetaRow(label: AppLocalizations.of(context).commonPrimary, value: primary ? AppLocalizations.of(context).commonYes : AppLocalizations.of(context).commonNo),
+            _MetaRow(
+              label: AppLocalizations.of(context).commonPrimary,
+              value: primary
+                  ? AppLocalizations.of(context).commonYes
+                  : AppLocalizations.of(context).commonNo,
+            ),
         ],
       ),
     );
@@ -730,9 +785,16 @@ class _PronunciationPreview extends StatelessWidget {
           ],
           if (speaker != null) ...[
             const Gap(8),
-            _MetaRow(label: AppLocalizations.of(context).reviewCorrectSpeaker, value: speaker),
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewCorrectSpeaker,
+              value: speaker,
+            ),
           ],
-          if (notes != null) _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
+          if (notes != null)
+            _MetaRow(
+              label: AppLocalizations.of(context).historyFieldNotes,
+              value: notes,
+            ),
           if (audioUrl != null) ...[
             const Gap(8),
             _InlineAudioPlayer(url: audioUrl, speaker: speaker),
@@ -783,7 +845,8 @@ class _MeaningPreview extends ConsumerWidget {
     final languages = languagesAsync.value ?? const [];
     // "Belum ketemu" (sudah selesai load) beda dari "sedang dimuat" - yang
     // kedua ini shimmering, bukan disembunyikan supaya tinggi tidak bergeser.
-    final classLoading = classesAsync.isLoading && _str(data, 'word_class_id') != null;
+    final classLoading =
+        classesAsync.isLoading && _str(data, 'word_class_id') != null;
     final languagesLoading = languagesAsync.isLoading;
 
     final rawDefinition = _str(data, 'definition');
@@ -831,15 +894,26 @@ class _MeaningPreview extends ConsumerWidget {
           _MetaRow(
             label: AppLocalizations.of(context).suggestDefinitionLabel,
             value: definitionMissing
-              ? _emptyValueLabel(AppLocalizations.of(context))
-              : rawDefinition,
+                ? _emptyValueLabel(AppLocalizations.of(context))
+                : rawDefinition,
             muted: definitionMissing,
           ),
           if (className != null)
-            _MetaRow(label: AppLocalizations.of(context).suggestWordClassLabelShort, value: className)
+            _MetaRow(
+              label: AppLocalizations.of(context).suggestWordClassLabelShort,
+              value: className,
+            )
           else if (classLoading)
-            _MetaRow(label: AppLocalizations.of(context).suggestWordClassLabelShort, value: '', loading: true),
-          _MetaRow(label: AppLocalizations.of(context).reviewPreviewSourceOfMeaning, value: sourceLabel, emphasize: true),
+            _MetaRow(
+              label: AppLocalizations.of(context).suggestWordClassLabelShort,
+              value: '',
+              loading: true,
+            ),
+          _MetaRow(
+            label: AppLocalizations.of(context).reviewPreviewSourceOfMeaning,
+            value: sourceLabel,
+            emphasize: true,
+          ),
           const Gap(4),
           Text(
             AppLocalizations.of(context).reviewPreviewTranslationSection,
@@ -856,7 +930,10 @@ class _MeaningPreview extends ConsumerWidget {
               _TranslationRowView(row: t, theme: theme),
           if (notes != null) ...[
             const Gap(4),
-            _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
+            _MetaRow(
+              label: AppLocalizations.of(context).historyFieldNotes,
+              value: notes,
+            ),
           ],
         ],
       ),
@@ -921,9 +998,18 @@ class _MeaningTranslationsEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final (text, isWarning) = switch (isHaveTranslation) {
-      false => (AppLocalizations.of(context).reviewPreviewTranslationEmptyDeliberate, false),
-      true => (AppLocalizations.of(context).reviewPreviewTranslationMarkedEmpty, true),
-      null => (AppLocalizations.of(context).reviewPreviewTranslationNone, false),
+      false => (
+        AppLocalizations.of(context).reviewPreviewTranslationEmptyDeliberate,
+        false,
+      ),
+      true => (
+        AppLocalizations.of(context).reviewPreviewTranslationMarkedEmpty,
+        true,
+      ),
+      null => (
+        AppLocalizations.of(context).reviewPreviewTranslationNone,
+        false,
+      ),
     };
     return Text(
       text,
@@ -969,7 +1055,11 @@ class _ExamplePreview extends ConsumerWidget {
         children: [
           _LemmaHeader(entity['wordLemma']?.toString()),
           if (source == null)
-            _MetaRow(label: AppLocalizations.of(context).reviewPreviewSambasSentence, value: _emptyValueLabel(AppLocalizations.of(context)), muted: true)
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewSambasSentence,
+              value: _emptyValueLabel(AppLocalizations.of(context)),
+              muted: true,
+            )
           else
             _SentenceBlock(
               label: AppLocalizations.of(context).reviewPreviewSambasSentence,
@@ -980,24 +1070,34 @@ class _ExamplePreview extends ConsumerWidget {
           const Gap(8),
           if (target == null)
             _MetaRow(
-              label: AppLocalizations.of(context).reviewPreviewTranslationSentence,
+              label: AppLocalizations.of(
+                context,
+              ).reviewPreviewTranslationSentence,
               value: _emptyValueLabel(AppLocalizations.of(context)),
               muted: true,
             )
           else
             _SentenceBlock(
-              label: AppLocalizations.of(context).reviewPreviewTranslationSentence,
+              label: AppLocalizations.of(
+                context,
+              ).reviewPreviewTranslationSentence,
               language: targetLang,
               languageLoading: targetLangId != null && languagesLoading,
               text: target,
             ),
           if (sourceType != null) ...[
             const Gap(8),
-            _MetaRow(label: AppLocalizations.of(context).reviewPreviewSourceType, value: sourceType),
+            _MetaRow(
+              label: AppLocalizations.of(context).reviewPreviewSourceType,
+              value: sourceType,
+            ),
           ],
           if (notes != null) ...[
             const Gap(4),
-            _MetaRow(label: AppLocalizations.of(context).historyFieldNotes, value: notes),
+            _MetaRow(
+              label: AppLocalizations.of(context).historyFieldNotes,
+              value: notes,
+            ),
           ],
         ],
       ),
@@ -1105,7 +1205,14 @@ class _FieldPreview extends StatelessWidget {
       if (e.value is List || e.value is Map) {
         // Nilaimajemuk: satu baris per elemen, tidak pernah via toString().
         for (final line in _flattenComplex(e.value)) {
-          rows.add(_MetaRow(label: labels[key] ?? AppLocalizations.of(context).reviewPreviewDetailLabel, value: line));
+          rows.add(
+            _MetaRow(
+              label:
+                  labels[key] ??
+                  AppLocalizations.of(context).reviewPreviewDetailLabel,
+              value: line,
+            ),
+          );
         }
         continue;
       }
@@ -1280,9 +1387,13 @@ class _InlineAudioPlayerState extends State<_InlineAudioPlayer> {
                         : Icon(
                             _error
                                 ? FLucideIcons.circleAlert
-                                : (_playing ? FLucideIcons.pause : FLucideIcons.play),
+                                : (_playing
+                                      ? FLucideIcons.pause
+                                      : FLucideIcons.play),
                             size: 18,
-                            color: _error ? theme.colors.error : theme.colors.primary,
+                            color: _error
+                                ? theme.colors.error
+                                : theme.colors.primary,
                           ),
                   ),
                 ),
@@ -1293,13 +1404,19 @@ class _InlineAudioPlayerState extends State<_InlineAudioPlayer> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _error ? AppLocalizations.of(context).reviewPreviewPlayFailed : label,
+                      _error
+                          ? AppLocalizations.of(context).reviewPreviewPlayFailed
+                          : label,
                       style: theme.typography.body.sm.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
-                      _playing ? AppLocalizations.of(context).reviewPreviewPlaying : AppLocalizations.of(context).reviewPreviewTapToListen,
+                      _playing
+                          ? AppLocalizations.of(context).reviewPreviewPlaying
+                          : AppLocalizations.of(
+                              context,
+                            ).reviewPreviewTapToListen,
                       style: theme.typography.body.xs.copyWith(
                         color: theme.colors.mutedForeground,
                       ),

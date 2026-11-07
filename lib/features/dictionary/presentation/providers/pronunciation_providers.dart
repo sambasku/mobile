@@ -1,7 +1,9 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/network/network_providers.dart';
 import '../../data/pronunciation_audio_upload_service.dart';
+import '../../data/written_pronunciation_service.dart';
 
 part 'pronunciation_providers.g.dart';
 
@@ -9,6 +11,11 @@ part 'pronunciation_providers.g.dart';
 PronunciationAudioUploadService pronunciationAudioUploadService(Ref ref) {
   return PronunciationAudioUploadService(ref.watch(dioProvider));
 }
+
+final writtenPronunciationServiceProvider =
+    Provider<WrittenPronunciationService>((ref) {
+      return WrittenPronunciationService(ref.watch(dioProvider));
+    });
 
 /// Set true setelah 503 - sembunyikan tombol rekam di halaman ini.
 @riverpod

@@ -276,6 +276,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String splashTagline(String version) {
+    return 'Kamus, Bahasa & Budaya (v$version)';
+  }
+
+  @override
+  String get splashTaglinePending => 'Kamus, Bahasa & Budaya';
+
+  @override
+  String get splashSupportedBy => 'Didukung oleh';
+
+  @override
   String get aboutWhatTitle => 'Apa itu SambasKu?';
 
   @override
@@ -344,6 +355,12 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get aboutSponsorsTooltip =>
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
+
+  @override
+  String get aboutTeamCoreTitle => 'Inti Tim';
+
+  @override
+  String get aboutContributorsLoadMore => 'Muat lebih banyak';
 
   @override
   String get aboutOpenWebsiteFailed => 'Tidak bisa membuka website';
@@ -623,7 +640,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String voteMeaningOrder(int order, int count) {
-    return 'Makna ke-$order dari $count';
+    final intl.NumberFormat orderNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String orderString = orderNumberFormat.format(order);
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Makna ke-$orderString dari $countString';
   }
 
   @override
@@ -799,7 +823,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String commentSectionTitle(int count) {
-    return 'Komentar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Komentar ($countString)';
   }
 
   @override
@@ -923,7 +951,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String shareMeaningNth(int n) {
-    return 'Makna $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Makna $nString';
   }
 
   @override
@@ -1820,6 +1853,51 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
 
   @override
+  String get reviewHomeUsahaTitle => 'Usulan usaha';
+
+  @override
+  String get reviewHomeUsahaSubtitle => 'Antrean usaha menunggu tinjauan';
+
+  @override
+  String get reviewHomeUsahaWaiting => 'Ada usulan usaha yang menunggu';
+
+  @override
+  String get reviewHomePlaceTitle => 'Usulan wisata';
+
+  @override
+  String get reviewHomePlaceSubtitle => 'Antrean wisata menunggu tinjauan';
+
+  @override
+  String get reviewHomePlaceWaiting => 'Ada usulan wisata yang menunggu';
+
+  @override
+  String get reviewHomeCulinaryTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewHomeCulinarySubtitle => 'Antrean kuliner menunggu tinjauan';
+
+  @override
+  String get reviewHomeCulinaryWaiting => 'Ada usulan kuliner yang menunggu';
+
+  @override
+  String get reviewHomeEventTitle => 'Usulan acara';
+
+  @override
+  String get reviewHomeEventSubtitle => 'Antrean acara menunggu tinjauan';
+
+  @override
+  String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
+
+  @override
+  String get reviewHomeExploreTitle => 'Eksplorasi';
+
+  @override
+  String get reviewHomeExploreSubtitle => 'Wisata, usaha, kuliner, dan acara';
+
+  @override
+  String get reviewHomeExploreWaiting => 'Ada usulan eksplorasi yang menunggu';
+
+  @override
   String get reviewQueueLoadFailed => 'Gagal memuat antrean';
 
   @override
@@ -1939,12 +2017,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewChangeHintMeanings(int count) {
-    return 'makna ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'makna ($countString)';
   }
 
   @override
   String reviewChangeHintImages(int count) {
-    return 'gambar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'gambar ($countString)';
   }
 
   @override
@@ -2035,29 +2121,60 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewSessionCounter(int position, int total) {
-    return 'Tinjau · $position/$total';
+    final intl.NumberFormat positionNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String positionString = positionNumberFormat.format(position);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Tinjau · $positionString/$totalString';
   }
 
   @override
   String reviewSessionCounterCorrect(int position, int total) {
-    return 'Koreksi · $position/$total';
+    final intl.NumberFormat positionNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String positionString = positionNumberFormat.format(position);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Koreksi · $positionString/$totalString';
   }
 
   @override
   String get reviewSessionVerifiedSelf =>
-      'Sudah terverifikasi. Menyetujui hanya menutup antrean.';
+      'Kata ini sudah terverifikasi. Tombol Tutup hanya menutup antrean.';
 
   @override
   String reviewSessionVerifiedBy(String verifier) {
-    return 'Sudah terverifikasi oleh @$verifier. Menyetujui hanya menutup antrean.';
+    return 'Kata ini sudah terverifikasi oleh @$verifier. Tombol Tutup hanya menutup antrean.';
   }
+
+  @override
+  String get reviewSessionCloseQueue => 'Tutup antrean';
+
+  @override
+  String get reviewSessionCloseQueueButton => 'Tutup';
+
+  @override
+  String get reviewSessionQueueClosedToast => 'Antrean ditutup';
 
   @override
   String get reviewSessionVerifierNote => 'Catatan verifikator';
 
   @override
-  String get reviewSessionSwipeHint =>
-      'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.';
+  String get reviewSessionProposalInfo => 'Detail usulan';
+
+  @override
+  String get reviewSessionInfoKind => 'Jenis usulan';
+
+  @override
+  String get reviewSessionInfoContributor => 'Pengusul';
+
+  @override
+  String get reviewSessionInfoSubmitted => 'Dikirim';
 
   @override
   String get reviewSessionSkeletonTitle => 'Judul usulan contoh';
@@ -2170,7 +2287,17 @@ class AppLocalizationsId extends AppLocalizations {
     int censored,
     int flagged,
   ) {
-    return 'Kamu menyetujui $approved foto ($censored tersensor · $flagged ber-flag kekerasan).';
+    final intl.NumberFormat approvedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String approvedString = approvedNumberFormat.format(approved);
+    final intl.NumberFormat censoredNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String censoredString = censoredNumberFormat.format(censored);
+    final intl.NumberFormat flaggedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String flaggedString = flaggedNumberFormat.format(flagged);
+
+    return 'Kamu menyetujui $approvedString foto ($censoredString tersensor · $flaggedString ber-flag kekerasan).';
   }
 
   @override
@@ -2199,7 +2326,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewDiscussionAttachmentCount(int count) {
-    return 'Lampiran gambar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lampiran gambar ($countString)';
   }
 
   @override
@@ -2214,7 +2345,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewDiscussionForceViolence(int index) {
-    return 'Gambar $index: berisi kekerasan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Gambar $indexString: berisi kekerasan';
   }
 
   @override
@@ -2223,7 +2358,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewDiscussionForceViolenceLabel(int index) {
-    return 'Gambar $index berisi kekerasan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Gambar $indexString berisi kekerasan';
   }
 
   @override
@@ -2337,7 +2476,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewSearchMissHits(int count) {
-    return '$count dicari';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString dicari';
   }
 
   @override
@@ -2480,22 +2623,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewPreviewDurationSec(int sec) {
-    return '$sec dtk';
+    final intl.NumberFormat secNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String secString = secNumberFormat.format(sec);
+
+    return '$secString dtk';
   }
 
   @override
   String reviewPreviewDurationMin(int min) {
-    return '$min m';
+    final intl.NumberFormat minNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String minString = minNumberFormat.format(min);
+
+    return '$minString m';
   }
 
   @override
   String reviewPreviewDurationMinSec(int min, int rem) {
-    return '$min m $rem dtk';
+    final intl.NumberFormat minNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String minString = minNumberFormat.format(min);
+    final intl.NumberFormat remNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String remString = remNumberFormat.format(rem);
+
+    return '$minString m $remString dtk';
   }
 
   @override
   String reviewPreviewBytesB(int bytes) {
-    return '$bytes B';
+    final intl.NumberFormat bytesNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String bytesString = bytesNumberFormat.format(bytes);
+
+    return '$bytesString B';
   }
 
   @override
@@ -2510,7 +2676,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewMeaningNumber(int index) {
-    return 'Makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString';
   }
 
   @override
@@ -2518,7 +2688,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewMeaningDelete(int index) {
-    return 'Hapus makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Hapus makna $indexString';
   }
 
   @override
@@ -2553,7 +2727,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewExtrasTypeCount(String label, int count) {
-    return '$label ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$label ($countString)';
   }
 
   @override
@@ -2607,7 +2785,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewVariantMax(int max) {
-    return 'Maksimal $max variasi';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString variasi';
   }
 
   @override
@@ -2690,17 +2873,29 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewCorrectPronunciationRecorded(int count) {
-    return '$count rekaman baru terkirim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString rekaman baru terkirim';
   }
 
   @override
   String reviewCorrectSynonymCount(int count) {
-    return '$count sinonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString sinonim';
   }
 
   @override
   String reviewCorrectAntonymCount(int count) {
-    return '$count antonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString antonim';
   }
 
   @override
@@ -2719,7 +2914,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String reviewCorrectCarriedTranslations(int count) {
-    return 'Terjemahan lain milik makna ini ($count) ikut tersimpan tanpa diubah.';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Terjemahan lain milik makna ini ($countString) ikut tersimpan tanpa diubah.';
   }
 
   @override
@@ -2806,6 +3005,236 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
 
   @override
+  String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
+
+  @override
+  String get reviewExploreApproveFailed => 'Gagal menyetujui usulan eksplorasi';
+
+  @override
+  String get reviewExploreRejectFailed => 'Gagal menolak usulan eksplorasi';
+
+  @override
+  String get reviewExploreRevisionFailed => 'Gagal meminta revisi usulan';
+
+  @override
+  String get reviewExploreRevisionUnsupported =>
+      'Usulan ini tidak mendukung minta revisi';
+
+  @override
+  String get reviewExploreUsahaListTitle => 'Usulan usaha';
+
+  @override
+  String get reviewExplorePlaceListTitle => 'Usulan wisata';
+
+  @override
+  String get reviewExploreCulinaryListTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewExploreEventListTitle => 'Usulan acara';
+
+  @override
+  String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
+
+  @override
+  String get reviewExploreDetailTitle => 'Detail usulan';
+
+  @override
+  String get reviewExploreApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewExploreRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewExploreRevisionToast => 'Revisi diminta';
+
+  @override
+  String get reviewExploreRequestRevision => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetTitle => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetBody =>
+      'Tulis catatan untuk pengusul supaya bisa diperbaiki.';
+
+  @override
+  String get reviewExploreRevisionNoteLabel => 'Catatan revisi';
+
+  @override
+  String get reviewExploreRevisionNoteHint => 'Minimal 3 karakter';
+
+  @override
+  String get reviewExploreRevisionSubmit => 'Kirim permintaan';
+
+  @override
+  String get reviewExploreRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewExploreRejectSheetBody =>
+      'Pilih alasan penolakan untuk pengusul.';
+
+  @override
+  String get reviewExploreRejectOtherNoteLabel => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectOtherNoteHint => 'Jelaskan singkat';
+
+  @override
+  String get reviewExploreRejectOther => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectUsahaDuplicate =>
+      'Usaha serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectUsahaIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectUsahaInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectUsahaNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get reviewExploreRejectUsahaStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectUsahaViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreRejectPlaceNotSuitable =>
+      'Tidak layak sebagai tempat wisata';
+
+  @override
+  String get reviewExploreRejectPlaceDuplicate =>
+      'Sama dengan tempat yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectPlaceInaccurate =>
+      'Data atau lokasi tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventNotSuitable => 'Tidak layak sebagai acara';
+
+  @override
+  String get reviewExploreRejectEventDuplicate =>
+      'Sama dengan acara yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectEventInaccurate =>
+      'Data atau jadwal tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventPast => 'Acara sudah lewat';
+
+  @override
+  String get reviewExploreRejectCulinaryDuplicate =>
+      'Kuliner atau tempat serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectCulinaryIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectCulinaryUnverifiable =>
+      'Belum bisa diverifikasi';
+
+  @override
+  String get reviewExploreRejectCulinaryAttribution =>
+      'Atribusi gambar belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreKindGeneric => 'Usulan';
+
+  @override
+  String get reviewExploreUsahaKindNew => 'Usulan usaha baru';
+
+  @override
+  String get reviewExploreUsahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get reviewExploreUsahaKindItemAdd => 'Tambah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemEdit => 'Ubah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemDelete => 'Hapus item katalog';
+
+  @override
+  String get reviewExploreUsahaKindOperational => 'Status operasional';
+
+  @override
+  String get reviewExploreUsahaKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreUsahaKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
+
+  @override
+  String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceOperational =>
+      'Status operasional tempat';
+
+  @override
+  String get reviewExploreCulinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreCulinaryKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExplorePlaceKindNew => 'Usulan wisata baru';
+
+  @override
+  String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String reviewExploreMetaKindDate(String kind, String date) {
+    return '$kind · $date';
+  }
+
+  @override
+  String get reviewExploreWantsClaim => 'Pengusul ingin klaim kepemilikan';
+
+  @override
+  String get reviewExploreFieldsLabel => 'Field diubah';
+
+  @override
+  String get reviewExplorePayloadSection => 'Isi usulan';
+
+  @override
+  String get reviewExploreImagesSection => 'Gambar';
+
+  @override
+  String get reviewExploreProcessing => 'Memproses…';
+
+  @override
   String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
 
   @override
@@ -2822,7 +3251,11 @@ class AppLocalizationsId extends AppLocalizations {
     int count,
     String status,
   ) {
-    return '$direction · $count× dicari · $status';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$direction · $countString× dicari · $status';
   }
 
   @override
@@ -2928,7 +3361,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
+  String get dictSearchChip => 'Cari';
+
+  @override
   String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeChip => 'Usul';
+
+  @override
+  String get dictDiscussionChip => 'Diskusi';
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -3110,7 +3552,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictImageCounter(int index, int total) {
-    return '$index/$total';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$indexString/$totalString';
   }
 
   @override
@@ -3141,6 +3590,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictActionMore => 'Lainnya';
+
+  @override
+  String get dictWordActionsTitle => 'Aksi';
+
+  @override
+  String get dictSuggestEditSubtitle =>
+      'Usulkan perbaikan lemma, makna, atau contoh';
+
+  @override
+  String dictPhotoCountBadge(int count) {
+    return '$count';
+  }
 
   @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
@@ -3307,7 +3768,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictAudioProgressPercent(int percent) {
-    return '$percent persen';
+    final intl.NumberFormat percentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String percentString = percentNumberFormat.format(percent);
+
+    return '$percentString persen';
   }
 
   @override
@@ -3324,6 +3789,44 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictAddPronunciation => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationTitle => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationBody =>
+      'Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.';
+
+  @override
+  String get dictAddPronunciationHint => 'Contoh: sa.dap atau /sa.dap/';
+
+  @override
+  String get dictAddPronunciationPaste => 'Tempel';
+
+  @override
+  String get dictAddPronunciationSubmit => 'Simpan';
+
+  @override
+  String get dictAddPronunciationSaving => 'Menyimpan...';
+
+  @override
+  String get dictAddPronunciationEmpty => 'Pelafalan tidak boleh kosong';
+
+  @override
+  String get dictAddPronunciationSuccess => 'Pelafalan disimpan';
+
+  @override
+  String get dictAddPronunciationFailed => 'Gagal menyimpan pelafalan';
+
+  @override
+  String get dictLoginToAddPronunciation =>
+      'Masuk dulu untuk menambah pelafalan';
+
+  @override
+  String get dictPronunciationClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get dictRecMicPermissionTitle =>
@@ -3389,12 +3892,22 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictRecMaxSecondsHint(int max) {
-    return 'Maksimal $max detik · cukup 1-2 kali baca kalimat';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString detik · cukup 1-2 kali baca kalimat';
   }
 
   @override
   String dictRecMaxSecondsHintSpeak(int max) {
-    return 'Maksimal $max detik · cukup 1-2 kali ucapan';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString detik · cukup 1-2 kali ucapan';
   }
 
   @override
@@ -3424,7 +3937,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String dictRecRecording(int elapsed, int max) {
-    return 'Merekam... ${elapsed}s / ${max}s';
+    final intl.NumberFormat elapsedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String elapsedString = elapsedNumberFormat.format(elapsed);
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Merekam... ${elapsedString}s / ${maxString}s';
   }
 
   @override
@@ -3876,6 +4397,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindArticle => 'Artikel';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -3934,6 +4458,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedCtaSeeArticle => 'Lihat artikel';
 
   @override
   String get feedActorFallback => 'Warga';
@@ -4736,6 +5263,32 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaFilterAll => 'Semua';
 
   @override
+  String get usahaFilterOpen => 'Filter';
+
+  @override
+  String get usahaFilterTitle => 'Filter usaha';
+
+  @override
+  String get usahaFilterKecamatan => 'Kecamatan';
+
+  @override
+  String get usahaFilterAllKecamatan => 'Semua kecamatan';
+
+  @override
+  String get usahaFilterClear => 'Hapus filter';
+
+  @override
+  String get usahaFilterApply => 'Terapkan';
+
+  @override
+  String usahaFilterRegionChip(String name) {
+    return 'Kecamatan: $name';
+  }
+
+  @override
+  String get usahaFilterLoadFailed => 'Gagal memuat wilayah';
+
+  @override
   String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';
 
   @override
@@ -4924,7 +5477,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get usahaFormClaimBody =>
-      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+      'Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.';
 
   @override
   String get usahaLoginFirstTitle => 'Masuk dulu ya';
@@ -4970,6 +5523,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaManagedByOwner => 'Dikelola pemilik';
 
   @override
+  String get usahaManagedByLabel => 'Dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -5001,27 +5557,91 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaContactEmpty => 'Kontak belum dicantumkan.';
 
   @override
+  String get usahaLocationDistrict => 'Kecamatan';
+
+  @override
+  String get usahaLocationVillage => 'Desa';
+
+  @override
+  String get usahaLocationAddress => 'Alamat';
+
+  @override
+  String get usahaActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get usahaActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get usahaActionSection => 'Aksi';
+
+  @override
+  String get usahaNoCoordinatesTitle => 'Lokasi usaha ini belum tersedia';
+
+  @override
+  String get usahaNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get usahaContributorProposedBy => 'Diusulkan oleh';
+
+  @override
+  String get usahaPhotosTitle => 'Foto usaha';
+
+  @override
+  String get usahaPhotosEmpty =>
+      'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
   String get usahaClaimSheetBody =>
-      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+      'Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).';
 
   @override
-  String get usahaClaimEvidence => 'Bukti kontak';
+  String get usahaClaimEvidence => 'Bukti gambar';
 
   @override
-  String get usahaClaimEvidenceHint =>
-      'Nomor WhatsApp atau akun media sosial pengelola';
+  String get usahaClaimEvidenceHint => 'Foto toko, SS WA, atau SS sosmed';
 
   @override
   String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
 
   @override
-  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+  String get usahaClaimEvidenceShort => 'Unggah minimal 1 bukti gambar ya.';
 
   @override
   String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditTitle => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditIntro =>
+      'Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.';
+
+  @override
+  String get usahaSuggestEditSubmit => 'Kirim usulan';
+
+  @override
+  String get usahaSuggestEditSubmitting => 'Mengirim...';
+
+  @override
+  String get usahaSuggestEditSent => 'Usulan perubahan terkirim';
+
+  @override
+  String get usahaSuggestEditSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSuggestEditFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSuggestEditLoginBody =>
+      'Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.';
 
   @override
   String get usahaNotFound => 'Usaha ini tidak ditemukan';
@@ -5298,6 +5918,308 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get encyclopediaTitle => 'Ensiklopedia';
+
+  @override
+  String get encyclopediaChip => 'Ensik.';
+
+  @override
+  String get encyclopediaSubtitle =>
+      'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
+
+  @override
+  String get encyclopediaSearchPlaceholder => 'Cari artikel ensiklopedia...';
+
+  @override
+  String get encyclopediaFilterAll => 'Semua';
+
+  @override
+  String get encyclopediaEmptyTitle => 'Belum ada artikel';
+
+  @override
+  String get encyclopediaEmptyBody =>
+      'Artikel untuk kategori ini belum tersedia.';
+
+  @override
+  String get encyclopediaLoadFailed => 'Gagal memuat ensiklopedia';
+
+  @override
+  String get encyclopediaRetry => 'Coba lagi';
+
+  @override
+  String get encyclopediaDetailTitle => 'Detail Artikel';
+
+  @override
+  String get encyclopediaAuthorBy => 'Oleh';
+
+  @override
+  String get encyclopediaPublishedAt => 'Diterbitkan';
+
+  @override
+  String get encyclopediaReferencesTitle => 'Referensi & Sumber';
+
+  @override
+  String get encyclopediaCommentsTitle => 'Komentar';
+
+  @override
+  String get encyclopediaCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get encyclopediaCommentSubmit => 'Kirim Komentar';
+
+  @override
+  String get encyclopediaCommentEmpty =>
+      'Belum ada komentar. Jadilah yang pertama berkomentar!';
+
+  @override
+  String get encyclopediaBookmarkAdded => 'Artikel disimpan ke bookmark';
+
+  @override
+  String get encyclopediaBookmarkRemoved => 'Artikel dihapus dari bookmark';
+
+  @override
+  String get encyclopediaContributeTitle => 'Usulkan Artikel';
+
+  @override
+  String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaContributeIntro =>
+      'Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.';
+
+  @override
+  String get encyclopediaFieldTitle => 'Judul Artikel';
+
+  @override
+  String get encyclopediaFieldTitlePlaceholder =>
+      'Contoh: Sejarah Istana Alwatzikoebillah';
+
+  @override
+  String get encyclopediaFieldCategory => 'Kategori';
+
+  @override
+  String get encyclopediaFieldCategoryPlaceholder => 'Pilih kategori';
+
+  @override
+  String get encyclopediaFieldExcerpt => 'Ringkasan Singkat';
+
+  @override
+  String get encyclopediaFieldExcerptPlaceholder =>
+      'Tulis 1-2 kalimat ringkasan artikel...';
+
+  @override
+  String get encyclopediaFieldTags => 'Tag (pisahkan koma)';
+
+  @override
+  String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
+
+  @override
+  String get encyclopediaFieldBodyPlaceholder =>
+      'Tulis isi artikel kamu di sini...';
+
+  @override
+  String get encyclopediaFieldChangeNote => 'Catatan Perubahan';
+
+  @override
+  String get encyclopediaFieldChangeNotePlaceholder =>
+      'Jelaskan apa yang kamu ubah...';
+
+  @override
+  String get encyclopediaFieldRequired => 'Semua kolom wajib diisi';
+
+  @override
+  String get encyclopediaSubmitButton => 'Kirim Usulan';
+
+  @override
+  String get encyclopediaSubmitSuccessTitle => 'Usulan Terkirim!';
+
+  @override
+  String get encyclopediaSubmitSuccessBody =>
+      'Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.';
+
+  @override
+  String get encyclopediaMyContributionsTitle => 'Riwayat Usulan Ensiklopedia';
+
+  @override
+  String get encyclopediaMyContributionsEmpty =>
+      'Kamu belum pernah mengirim usulan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaStatusPending => 'Menunggu Review';
+
+  @override
+  String get encyclopediaStatusApproved => 'Disetujui';
+
+  @override
+  String get encyclopediaStatusRejected => 'Ditolak';
+
+  @override
+  String get encyclopediaBookmarkFailed => 'Gagal memperbarui bookmark';
+
+  @override
+  String get encyclopediaCommentFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
+
+  @override
+  String get encyclopediaProposalKindNew => 'Usulan artikel baru';
+
+  @override
+  String get encyclopediaProposalKindEdit => 'Usulan perbaikan';
+
+  @override
+  String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get encyclopediaLoginBookmarkBody =>
+      'Masuk dulu untuk menyimpan artikel ke bookmark.';
+
+  @override
+  String get encyclopediaLoginCommentBody =>
+      'Masuk dulu untuk menulis komentar di artikel.';
+
+  @override
+  String get encyclopediaLoginContributeBody =>
+      'Masuk dulu untuk mengusulkan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaLoginMyContributionsBody =>
+      'Masuk dulu untuk melihat riwayat usulan artikel kamu.';
+
+  @override
+  String get encyclopediaCategoryEmpty => 'Pilih kategori artikel';
+
+  @override
+  String get encyclopediaBodyTapToEdit => 'Tulis isi artikel';
+
+  @override
+  String get encyclopediaBodyTapHint =>
+      'Ketuk untuk menulis dengan format Markdown dan sisip gambar';
+
+  @override
+  String get encyclopediaBodyHasContentHint =>
+      'Ketuk untuk lanjut menulis atau ubah isi';
+
+  @override
+  String get mdEditorTitle => 'Tulis isi';
+
+  @override
+  String get mdEditorDone => 'Selesai';
+
+  @override
+  String get mdEditorPreview => 'Pratinjau';
+
+  @override
+  String get mdEditorWrite => 'Tulis';
+
+  @override
+  String get mdEditorBold => 'Tebal';
+
+  @override
+  String get mdEditorItalic => 'Miring';
+
+  @override
+  String get mdEditorHeading => 'Judul bagian';
+
+  @override
+  String get mdEditorHeadingPick => 'Pilih tingkat judul';
+
+  @override
+  String get mdEditorHeading1 => 'Judul besar (H1)';
+
+  @override
+  String get mdEditorHeading2 => 'Judul bagian (H2)';
+
+  @override
+  String get mdEditorHeading3 => 'Subjudul (H3)';
+
+  @override
+  String get mdEditorLink => 'Tautan';
+
+  @override
+  String get mdEditorLinkSheetTitle => 'Sisip tautan';
+
+  @override
+  String get mdEditorLinkLabel => 'Teks tautan';
+
+  @override
+  String get mdEditorLinkLabelHint => 'Kata yang diketuk pembaca';
+
+  @override
+  String get mdEditorLinkUrl => 'Alamat';
+
+  @override
+  String get mdEditorLinkUrlHint => 'https://';
+
+  @override
+  String get mdEditorLinkInsert => 'Sisipkan';
+
+  @override
+  String get mdEditorLinkInvalid => 'Alamat harus diawali https://';
+
+  @override
+  String get mdEditorList => 'Daftar';
+
+  @override
+  String get mdEditorListPick => 'Jenis daftar';
+
+  @override
+  String get mdEditorListBullet => 'Daftar poin';
+
+  @override
+  String get mdEditorListOrdered => 'Daftar bernomor';
+
+  @override
+  String get mdEditorTable => 'Tabel';
+
+  @override
+  String get mdEditorTableCol1 => 'Kolom 1';
+
+  @override
+  String get mdEditorTableCol2 => 'Kolom 2';
+
+  @override
+  String get mdEditorQuote => 'Kutipan';
+
+  @override
+  String get mdEditorCode => 'Kode';
+
+  @override
+  String get mdEditorStrike => 'Coret';
+
+  @override
+  String get mdEditorHr => 'Garis pemisah';
+
+  @override
+  String get mdEditorImage => 'Sisip gambar';
+
+  @override
+  String get mdEditorUploadFailed => 'Gagal mengunggah gambar. Coba lagi ya';
+
+  @override
+  String get mdEditorImageAlt => 'gambar';
+
+  @override
+  String get mdEditorEmptyPreview => 'Belum ada isi untuk dipratinjau';
+
+  @override
+  String get mdEditorHint =>
+      'Tulis Markdown di sini. Pakai toolbar untuk format, tautan, dan gambar.';
+
+  @override
+  String get mdEditorUndo => 'Urungkan';
+
+  @override
+  String get mdEditorRedo => 'Ulangi';
 
   @override
   String get exploreCategoryKomunitas => 'Komunitas';
@@ -5906,7 +6828,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String placeFormStepOf(int step, int total, String label) {
-    return 'Langkah $step dari $total: $label';
+    final intl.NumberFormat stepNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String stepString = stepNumberFormat.format(step);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Langkah $stepString dari $totalString: $label';
   }
 
   @override
@@ -5974,12 +6904,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String wilayahDesaCount(int count) {
-    return '$count desa';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString desa';
   }
 
   @override
   String wilayahWisataCount(int count) {
-    return '$count wisata';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString wisata';
   }
 
   @override
@@ -6142,7 +7080,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeMaxMeanings(int max) {
-    return 'Maksimal $max makna per usulan.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString makna per usulan.';
   }
 
   @override
@@ -6178,7 +7121,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeMeaningIncomplete(int index) {
-    return 'Makna $index: centang dulu Penjelasan arti dan/atau Terjemahan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString: centang dulu Penjelasan arti dan/atau Terjemahan';
   }
 
   @override
@@ -6228,7 +7175,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeMeaningN(int index) {
-    return 'Makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString';
   }
 
   @override
@@ -6302,12 +7253,25 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkSentMany(int sent) {
-    return '$sent kata berhasil dikirim.';
+    final intl.NumberFormat sentNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String sentString = sentNumberFormat.format(sent);
+
+    return '$sentString kata berhasil dikirim.';
   }
 
   @override
   String contributeBulkPartialBody(int sent, int failed) {
-    return '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
+    final intl.NumberFormat sentNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String sentString = sentNumberFormat.format(sent);
+    final intl.NumberFormat failedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String failedString = failedNumberFormat.format(failed);
+
+    return '$sentString terkirim, $failedString gagal. Perbaiki baris yang gagal lalu kirim ulang.';
   }
 
   @override
@@ -6315,7 +7279,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkProgress(int done, int total) {
-    return 'Mengirim $done/$total...';
+    final intl.NumberFormat doneNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String doneString = doneNumberFormat.format(done);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Mengirim $doneString/$totalString...';
   }
 
   @override
@@ -6337,7 +7309,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkMaxRowsHint(int max) {
-    return 'Maksimal $max kata. Isi kata Sambas dan terjemahan Indonesia.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString kata. Isi kata Sambas dan terjemahan Indonesia.';
   }
 
   @override
@@ -6345,7 +7322,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkMaxRows(int max) {
-    return 'Maksimal $max baris per sesi.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString baris per sesi.';
   }
 
   @override
@@ -6356,17 +7338,32 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkLemmaField(int n) {
-    return 'Kata Sambas baris $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Kata Sambas baris $nString';
   }
 
   @override
   String contributeBulkLemmaExists(int n) {
-    return 'Kata Sambas baris $n, sudah ada di kamus';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Kata Sambas baris $nString, sudah ada di kamus';
   }
 
   @override
   String contributeBulkTranslationField(int n) {
-    return 'Terjemahan Indonesia baris $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Terjemahan Indonesia baris $nString';
   }
 
   @override
@@ -6374,22 +7371,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeBulkRemoveRow(int index) {
-    return 'Hapus baris $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Hapus baris $indexString';
   }
 
   @override
   String contributeRelationsSummaryVariants(int count) {
-    return '$count variasi';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString variasi';
   }
 
   @override
   String contributeRelationsSummarySynonyms(int count) {
-    return '$count sinonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString sinonim';
   }
 
   @override
   String contributeRelationsSummaryAntonyms(int count) {
-    return '$count antonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString antonim';
   }
 
   @override
@@ -6400,7 +7413,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeRelationsMaxItems(int max, String label) {
-    return 'Maksimal $max $label';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString $label';
   }
 
   @override
@@ -6519,7 +7537,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeKbbiSheetCount(int count) {
-    return '$count definisi - gulir untuk melihat semua';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString definisi - gulir untuk melihat semua';
   }
 
   @override
@@ -6530,7 +7552,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeKbbiSheetSense(int homonym, int sense) {
-    return 'makna $homonym.$sense';
+    final intl.NumberFormat homonymNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String homonymString = homonymNumberFormat.format(homonym);
+    final intl.NumberFormat senseNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String senseString = senseNumberFormat.format(sense);
+
+    return 'makna $homonymString.$senseString';
   }
 
   @override
@@ -6567,7 +7596,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String contributeWordClassSheetCount(int count) {
-    return '$count pilihan - ketuk untuk memilih';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString pilihan - ketuk untuk memilih';
   }
 
   @override
@@ -6723,7 +7756,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String discussionCreateCharCount(int count) {
-    return '$count/1000';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString/1.000';
   }
 
   @override
@@ -6741,7 +7778,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String discussionCreateAudioReady(int sec) {
-    return 'Rekaman siap · ${sec}s';
+    final intl.NumberFormat secNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String secString = secNumberFormat.format(sec);
+
+    return 'Rekaman siap · ${secString}s';
   }
 
   @override
@@ -6861,7 +7903,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String discussionRepliesCount(int count) {
-    return 'Balasan · $count';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Balasan · $countString';
   }
 
   @override
@@ -6920,7 +7966,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String discussionFeedPhotos(int count) {
-    return '$count foto';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString foto';
   }
 
   @override
@@ -7231,6 +8281,23 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventProposalsLoadFailedShort => 'Gagal memuat usulan';
 
   @override
+  String eventDaySheetTitle(String date) {
+    return 'Acara $date';
+  }
+
+  @override
+  String get eventDaySheetEmpty => 'Belum ada acara di tanggal ini';
+
+  @override
+  String get eventCalendarDayHasEventsSemantics => 'Ada acara';
+
+  @override
+  String get eventCalendarShow => 'Tampilkan kalender acara';
+
+  @override
+  String get eventCalendarHide => 'Sembunyikan kalender';
+
+  @override
   String get eventListTitle => 'Acara';
 
   @override
@@ -7309,7 +8376,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String eventDetailPosterCounter(int current, int total) {
-    return '$current/$total';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$currentString/$totalString';
   }
 
   @override
@@ -7461,7 +8535,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String analyticsChartTitle(int days) {
-    return 'Aktivitas $days hari';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Aktivitas $daysString hari';
   }
 
   @override
@@ -7565,6 +8644,85 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
 
   @override
+  String get pantunComposeLine1Hint => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunComposeLine2Hint => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunComposeLine3Hint => 'Baris 3 (isi)';
+
+  @override
+  String get pantunComposeLine4Hint => 'Baris 4 (isi)';
+
+  @override
+  String get pantunComposeReplying => 'Membalas';
+
+  @override
+  String pantunComposeReplyingAuthor(String author) {
+    return 'Membalas $author';
+  }
+
+  @override
+  String get pantunComposeDiscardDraft => 'Buang draf';
+
+  @override
+  String get pantunComposeDiscardDraftTitle => 'Buang draf pantun?';
+
+  @override
+  String get pantunComposeDiscardDraftBody =>
+      'Baris yang sudah kamu tulis di perangkat ini akan dihapus.';
+
+  @override
+  String get pantunComposeDiscardDraftConfirm => 'Buang';
+
+  @override
+  String get pantunComposeRhymeOk => 'Pola rima cocok';
+
+  @override
+  String pantunComposeRhymeOkScheme(String scheme) {
+    return 'Pola rima $scheme cocok';
+  }
+
+  @override
+  String pantunComposeRhymeMismatchPair(int a, int b) {
+    final intl.NumberFormat aNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String aString = aNumberFormat.format(a);
+    final intl.NumberFormat bNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String bString = bNumberFormat.format(b);
+
+    return 'Baris $aString & $bString belum berima';
+  }
+
+  @override
+  String pantunComposeRhymeLastWordUndetected(int line) {
+    final intl.NumberFormat lineNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String lineString = lineNumberFormat.format(line);
+
+    return 'Kata akhir baris $lineString tidak terdeteksi. Perbaiki ya.';
+  }
+
+  @override
+  String get pantunReplyAction => 'Balas';
+
+  @override
+  String get pantunComposeDraftSaved => 'Draf tersimpan';
+
+  @override
+  String get pantunComposeQuoteMissing =>
+      'Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.';
+
+  @override
+  String get pantunWriteLoginRequired =>
+      'Login dulu ya sebelum menulis pantun.';
+
+  @override
   String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';
 
   @override
@@ -7596,7 +8754,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String pantunRepliesCount(int count) {
-    return 'Balasan · $count';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Balasan · $countString';
   }
 
   @override
@@ -7858,7 +9020,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String verifierApplicationAccountNth(int n) {
-    return 'akun ke-$n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'akun ke-$nString';
   }
 
   @override
@@ -7887,7 +9054,17 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get verifierApplicationPhoneLabel => 'No. HP';
+  String get verifierApplicationFullNameLabel => 'Nama lengkap';
+
+  @override
+  String get verifierApplicationFullNameHint => 'Nama sesuai identitas';
+
+  @override
+  String get verifierApplicationFullNameMin =>
+      'Nama lengkap minimal 2 karakter.';
+
+  @override
+  String get verifierApplicationPhoneLabel => 'Nomor HP';
 
   @override
   String get verifierApplicationPhoneHint => '81234567890';
@@ -7915,8 +9092,72 @@ class AppLocalizationsId extends AppLocalizations {
   String get verifierApplicationSubmitting => 'Mengirim...';
 
   @override
+  String get verifierApplicationDialectLabel => 'Dialek yang dikuasai';
+
+  @override
+  String get verifierApplicationDialectPick => 'Pilih dialek';
+
+  @override
+  String get verifierApplicationDialectUmum => 'Umum';
+
+  @override
+  String get verifierApplicationDialectKota => 'Sambas Kota';
+
+  @override
+  String get verifierApplicationDialectPesisir => 'Sambas Pesisir';
+
+  @override
+  String get verifierApplicationDialectLainnya => 'Lainnya';
+
+  @override
+  String get verifierApplicationDialectRequired =>
+      'Pilih dialek yang kamu kuasai.';
+
+  @override
+  String get verifierApplicationDialectNoteLabel => 'Catatan dialek';
+
+  @override
+  String get verifierApplicationDialectNoteHint =>
+      'Sebutkan dialek atau wilayahnya';
+
+  @override
+  String get verifierApplicationDialectNoteMin =>
+      'Catatan dialek minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationReasonLabel => 'Alasan';
+
+  @override
+  String get verifierApplicationReasonHint =>
+      'Bahasa atau dialek mana yang kamu kuasai, dan kenapa kamu mau meninjau kata orang lain?';
+
+  @override
+  String get verifierApplicationReasonMin => 'Alasan minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationPhotoLabel => 'Foto diri (opsional)';
+
+  @override
+  String get verifierApplicationPhotoHint => 'Wajah jelas. Boleh dikosongkan.';
+
+  @override
+  String get verifierApplicationPhotoUploading =>
+      'Tunggu foto diri selesai diunggah.';
+
+  @override
+  String get verifierApplicationPhotoFailed =>
+      'Foto diri gagal diunggah. Coba lagi.';
+
+  @override
+  String get verifierApplicationPhotoRemove => 'Hapus foto';
+
+  @override
+  String get verifierApplicationContributionHint =>
+      'Pengajuan butuh minimal 3 kontribusi yang sudah disetujui.';
+
+  @override
   String get verifierApplicationPrivacyNote =>
-      'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.';
+      'Nomor HP, alamat, dan foto diri hanya untuk admin, tidak tampil di profil publik.';
 
   @override
   String get verifierApplicationPickPlatform => 'Pilih platform';
@@ -7926,7 +9167,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String verifierApplicationPlatformNth(int n) {
-    return 'Platform $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Platform $nString';
   }
 
   @override
@@ -7949,7 +9195,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String verifierApplicationImageTooLarge(int mb) {
-    return 'Gambar melebihi $mb MB';
+    final intl.NumberFormat mbNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String mbString = mbNumberFormat.format(mb);
+
+    return 'Gambar melebihi $mbString MB';
   }
 
   @override
@@ -7980,6 +9231,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get achievementSeeAll => 'Lihat semua pencapaian';
 
   @override
+  String get achievementSeeMore => 'Lihat lainnya';
+
+  @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
 
   @override
@@ -7996,7 +9250,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String achievementProgress(int current, int target) {
-    return '$current/$target';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat targetNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String targetString = targetNumberFormat.format(target);
+
+    return '$currentString/$targetString';
   }
 
   @override
@@ -8018,7 +9279,14 @@ class AppLocalizationsId extends AppLocalizations {
     int current,
     int target,
   ) {
-    return '$description\n\nProgres: $current/$target';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat targetNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String targetString = targetNumberFormat.format(target);
+
+    return '$description\n\nProgres: $currentString/$targetString';
   }
 
   @override
@@ -8098,7 +9366,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String searchMissSkeletonLemma(int n) {
-    return 'kata dicari contoh $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'kata dicari contoh $nString';
   }
 
   @override
@@ -8348,7 +9621,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String attachmentMaxImages(int count) {
-    return 'Maksimal $count gambar';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString gambar';
   }
 
   @override
@@ -8357,7 +9634,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String attachmentImageTooLarge(int mb) {
-    return 'Gambar melebihi $mb MB';
+    final intl.NumberFormat mbNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String mbString = mbNumberFormat.format(mb);
+
+    return 'Gambar melebihi $mbString MB';
   }
 
   @override
@@ -8413,12 +9695,24 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String levelingChipLabel(int level, String title) {
-    return 'Level $level - $title';
+    final intl.NumberFormat levelNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String levelString = levelNumberFormat.format(level);
+
+    return 'Level $levelString - $title';
   }
 
   @override
   String levelingProgress(int points, int next) {
-    return '$points / $next';
+    final intl.NumberFormat pointsNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String pointsString = pointsNumberFormat.format(points);
+    final intl.NumberFormat nextNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nextString = nextNumberFormat.format(next);
+
+    return '$pointsString / $nextString';
   }
 
   @override
@@ -8426,7 +9720,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String levelingSheetTitle(int level, String title) {
-    return 'Level $level - $title';
+    final intl.NumberFormat levelNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String levelString = levelNumberFormat.format(level);
+
+    return 'Level $levelString - $title';
   }
 
   @override
@@ -8435,12 +9733,22 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String levelingStreakDays(int days) {
-    return 'Streak $days hari';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Streak $daysString hari';
   }
 
   @override
   String levelingStreakBadge(int days) {
-    return 'streak $days';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'streak $daysString';
   }
 
   @override
@@ -8787,6 +10095,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
+  String splashTagline(String version) {
+    return 'Kamus, Bahasa & Budaya (v$version)';
+  }
+
+  @override
+  String get splashTaglinePending => 'Kamus, Bahasa & Budaya';
+
+  @override
+  String get splashSupportedBy => 'Didukung oleh';
+
+  @override
   String get aboutWhatTitle => 'Apa itu SambasKu?';
 
   @override
@@ -8855,6 +10174,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get aboutSponsorsTooltip =>
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
+
+  @override
+  String get aboutTeamCoreTitle => 'Inti Tim';
+
+  @override
+  String get aboutContributorsLoadMore => 'Muat lebih banyak';
 
   @override
   String get aboutOpenWebsiteFailed => 'Tidak bisa membuka website';
@@ -9134,7 +10459,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String voteMeaningOrder(int order, int count) {
-    return 'Makna ke-$order dari $count';
+    final intl.NumberFormat orderNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String orderString = orderNumberFormat.format(order);
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Makna ke-$orderString dari $countString';
   }
 
   @override
@@ -9310,7 +10642,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String commentSectionTitle(int count) {
-    return 'Komentar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Komentar ($countString)';
   }
 
   @override
@@ -9434,7 +10770,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String shareMeaningNth(int n) {
-    return 'Makna $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Makna $nString';
   }
 
   @override
@@ -10331,6 +11672,51 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewHomeHistorySubtitle => 'Keputusan yang sudah kamu berikan';
 
   @override
+  String get reviewHomeUsahaTitle => 'Usulan usaha';
+
+  @override
+  String get reviewHomeUsahaSubtitle => 'Antrean usaha menunggu tinjauan';
+
+  @override
+  String get reviewHomeUsahaWaiting => 'Ada usulan usaha yang menunggu';
+
+  @override
+  String get reviewHomePlaceTitle => 'Usulan wisata';
+
+  @override
+  String get reviewHomePlaceSubtitle => 'Antrean wisata menunggu tinjauan';
+
+  @override
+  String get reviewHomePlaceWaiting => 'Ada usulan wisata yang menunggu';
+
+  @override
+  String get reviewHomeCulinaryTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewHomeCulinarySubtitle => 'Antrean kuliner menunggu tinjauan';
+
+  @override
+  String get reviewHomeCulinaryWaiting => 'Ada usulan kuliner yang menunggu';
+
+  @override
+  String get reviewHomeEventTitle => 'Usulan acara';
+
+  @override
+  String get reviewHomeEventSubtitle => 'Antrean acara menunggu tinjauan';
+
+  @override
+  String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
+
+  @override
+  String get reviewHomeExploreTitle => 'Eksplorasi';
+
+  @override
+  String get reviewHomeExploreSubtitle => 'Wisata, usaha, kuliner, dan acara';
+
+  @override
+  String get reviewHomeExploreWaiting => 'Ada usulan eksplorasi yang menunggu';
+
+  @override
   String get reviewQueueLoadFailed => 'Gagal memuat antrean';
 
   @override
@@ -10450,12 +11836,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewChangeHintMeanings(int count) {
-    return 'makna ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'makna ($countString)';
   }
 
   @override
   String reviewChangeHintImages(int count) {
-    return 'gambar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'gambar ($countString)';
   }
 
   @override
@@ -10546,29 +11940,60 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewSessionCounter(int position, int total) {
-    return 'Tinjau · $position/$total';
+    final intl.NumberFormat positionNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String positionString = positionNumberFormat.format(position);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Tinjau · $positionString/$totalString';
   }
 
   @override
   String reviewSessionCounterCorrect(int position, int total) {
-    return 'Koreksi · $position/$total';
+    final intl.NumberFormat positionNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String positionString = positionNumberFormat.format(position);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Koreksi · $positionString/$totalString';
   }
 
   @override
   String get reviewSessionVerifiedSelf =>
-      'Sudah terverifikasi. Menyetujui hanya menutup antrean.';
+      'Kata ini sudah terverifikasi. Tombol Tutup hanya menutup antrean.';
 
   @override
   String reviewSessionVerifiedBy(String verifier) {
-    return 'Sudah terverifikasi oleh @$verifier. Menyetujui hanya menutup antrean.';
+    return 'Kata ini sudah terverifikasi oleh @$verifier. Tombol Tutup hanya menutup antrean.';
   }
+
+  @override
+  String get reviewSessionCloseQueue => 'Tutup antrean';
+
+  @override
+  String get reviewSessionCloseQueueButton => 'Tutup';
+
+  @override
+  String get reviewSessionQueueClosedToast => 'Antrean ditutup';
 
   @override
   String get reviewSessionVerifierNote => 'Catatan verifikator';
 
   @override
-  String get reviewSessionSwipeHint =>
-      'Kanan setujui · kiri tolak · atas lewati - atau pakai tombol di bawah.';
+  String get reviewSessionProposalInfo => 'Detail usulan';
+
+  @override
+  String get reviewSessionInfoKind => 'Jenis usulan';
+
+  @override
+  String get reviewSessionInfoContributor => 'Pengusul';
+
+  @override
+  String get reviewSessionInfoSubmitted => 'Dikirim';
 
   @override
   String get reviewSessionSkeletonTitle => 'Judul usulan contoh';
@@ -10681,7 +12106,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
     int censored,
     int flagged,
   ) {
-    return 'Kamu menyetujui $approved foto ($censored tersensor · $flagged ber-flag kekerasan).';
+    final intl.NumberFormat approvedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String approvedString = approvedNumberFormat.format(approved);
+    final intl.NumberFormat censoredNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String censoredString = censoredNumberFormat.format(censored);
+    final intl.NumberFormat flaggedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String flaggedString = flaggedNumberFormat.format(flagged);
+
+    return 'Kamu menyetujui $approvedString foto ($censoredString tersensor · $flaggedString ber-flag kekerasan).';
   }
 
   @override
@@ -10710,7 +12145,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewDiscussionAttachmentCount(int count) {
-    return 'Lampiran gambar ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lampiran gambar ($countString)';
   }
 
   @override
@@ -10725,7 +12164,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewDiscussionForceViolence(int index) {
-    return 'Gambar $index: berisi kekerasan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Gambar $indexString: berisi kekerasan';
   }
 
   @override
@@ -10734,7 +12177,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewDiscussionForceViolenceLabel(int index) {
-    return 'Gambar $index berisi kekerasan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Gambar $indexString berisi kekerasan';
   }
 
   @override
@@ -10848,7 +12295,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewSearchMissHits(int count) {
-    return '$count dicari';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString dicari';
   }
 
   @override
@@ -10991,22 +12442,45 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewPreviewDurationSec(int sec) {
-    return '$sec dtk';
+    final intl.NumberFormat secNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String secString = secNumberFormat.format(sec);
+
+    return '$secString dtk';
   }
 
   @override
   String reviewPreviewDurationMin(int min) {
-    return '$min m';
+    final intl.NumberFormat minNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String minString = minNumberFormat.format(min);
+
+    return '$minString m';
   }
 
   @override
   String reviewPreviewDurationMinSec(int min, int rem) {
-    return '$min m $rem dtk';
+    final intl.NumberFormat minNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String minString = minNumberFormat.format(min);
+    final intl.NumberFormat remNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String remString = remNumberFormat.format(rem);
+
+    return '$minString m $remString dtk';
   }
 
   @override
   String reviewPreviewBytesB(int bytes) {
-    return '$bytes B';
+    final intl.NumberFormat bytesNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String bytesString = bytesNumberFormat.format(bytes);
+
+    return '$bytesString B';
   }
 
   @override
@@ -11021,7 +12495,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewMeaningNumber(int index) {
-    return 'Makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString';
   }
 
   @override
@@ -11029,7 +12507,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewMeaningDelete(int index) {
-    return 'Hapus makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Hapus makna $indexString';
   }
 
   @override
@@ -11064,7 +12546,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewExtrasTypeCount(String label, int count) {
-    return '$label ($count)';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$label ($countString)';
   }
 
   @override
@@ -11118,7 +12604,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewVariantMax(int max) {
-    return 'Maksimal $max variasi';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString variasi';
   }
 
   @override
@@ -11201,17 +12692,29 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewCorrectPronunciationRecorded(int count) {
-    return '$count rekaman baru terkirim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString rekaman baru terkirim';
   }
 
   @override
   String reviewCorrectSynonymCount(int count) {
-    return '$count sinonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString sinonim';
   }
 
   @override
   String reviewCorrectAntonymCount(int count) {
-    return '$count antonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString antonim';
   }
 
   @override
@@ -11230,7 +12733,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String reviewCorrectCarriedTranslations(int count) {
-    return 'Terjemahan lain milik makna ini ($count) ikut tersimpan tanpa diubah.';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Terjemahan lain milik makna ini ($countString) ikut tersimpan tanpa diubah.';
   }
 
   @override
@@ -11317,6 +12824,236 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewRepoSuggestionRejectFailed => 'Gagal menolak usulan';
 
   @override
+  String get reviewExploreLoadFailed => 'Gagal memuat usulan eksplorasi';
+
+  @override
+  String get reviewExploreApproveFailed => 'Gagal menyetujui usulan eksplorasi';
+
+  @override
+  String get reviewExploreRejectFailed => 'Gagal menolak usulan eksplorasi';
+
+  @override
+  String get reviewExploreRevisionFailed => 'Gagal meminta revisi usulan';
+
+  @override
+  String get reviewExploreRevisionUnsupported =>
+      'Usulan ini tidak mendukung minta revisi';
+
+  @override
+  String get reviewExploreUsahaListTitle => 'Usulan usaha';
+
+  @override
+  String get reviewExplorePlaceListTitle => 'Usulan wisata';
+
+  @override
+  String get reviewExploreCulinaryListTitle => 'Usulan kuliner';
+
+  @override
+  String get reviewExploreEventListTitle => 'Usulan acara';
+
+  @override
+  String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
+
+  @override
+  String get reviewExploreDetailTitle => 'Detail usulan';
+
+  @override
+  String get reviewExploreApprovedToast => 'Usulan disetujui';
+
+  @override
+  String get reviewExploreRejectedToast => 'Usulan ditolak';
+
+  @override
+  String get reviewExploreRevisionToast => 'Revisi diminta';
+
+  @override
+  String get reviewExploreRequestRevision => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetTitle => 'Minta revisi';
+
+  @override
+  String get reviewExploreRevisionSheetBody =>
+      'Tulis catatan untuk pengusul supaya bisa diperbaiki.';
+
+  @override
+  String get reviewExploreRevisionNoteLabel => 'Catatan revisi';
+
+  @override
+  String get reviewExploreRevisionNoteHint => 'Minimal 3 karakter';
+
+  @override
+  String get reviewExploreRevisionSubmit => 'Kirim permintaan';
+
+  @override
+  String get reviewExploreRejectSheetTitle => 'Tolak usulan';
+
+  @override
+  String get reviewExploreRejectSheetBody =>
+      'Pilih alasan penolakan untuk pengusul.';
+
+  @override
+  String get reviewExploreRejectOtherNoteLabel => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectOtherNoteHint => 'Jelaskan singkat';
+
+  @override
+  String get reviewExploreRejectOther => 'Alasan lain';
+
+  @override
+  String get reviewExploreRejectUsahaDuplicate =>
+      'Usaha serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectUsahaIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectUsahaInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectUsahaNotOwner => 'Bukan pengelola sah';
+
+  @override
+  String get reviewExploreRejectUsahaStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectUsahaViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreRejectPlaceNotSuitable =>
+      'Tidak layak sebagai tempat wisata';
+
+  @override
+  String get reviewExploreRejectPlaceDuplicate =>
+      'Sama dengan tempat yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectPlaceInaccurate =>
+      'Data atau lokasi tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventNotSuitable => 'Tidak layak sebagai acara';
+
+  @override
+  String get reviewExploreRejectEventDuplicate =>
+      'Sama dengan acara yang sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectEventInaccurate =>
+      'Data atau jadwal tidak akurat';
+
+  @override
+  String get reviewExploreRejectEventPast => 'Acara sudah lewat';
+
+  @override
+  String get reviewExploreRejectCulinaryDuplicate =>
+      'Kuliner atau tempat serupa sudah terdaftar';
+
+  @override
+  String get reviewExploreRejectCulinaryIncomplete => 'Informasi belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryInvalid => 'Data tidak valid';
+
+  @override
+  String get reviewExploreRejectCulinaryUnverifiable =>
+      'Belum bisa diverifikasi';
+
+  @override
+  String get reviewExploreRejectCulinaryAttribution =>
+      'Atribusi gambar belum lengkap';
+
+  @override
+  String get reviewExploreRejectCulinaryStale =>
+      'Data sudah berubah, perlu ajukan ulang';
+
+  @override
+  String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
+
+  @override
+  String get reviewExploreKindGeneric => 'Usulan';
+
+  @override
+  String get reviewExploreUsahaKindNew => 'Usulan usaha baru';
+
+  @override
+  String get reviewExploreUsahaKindProfile => 'Perubahan profil';
+
+  @override
+  String get reviewExploreUsahaKindItemAdd => 'Tambah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemEdit => 'Ubah item katalog';
+
+  @override
+  String get reviewExploreUsahaKindItemDelete => 'Hapus item katalog';
+
+  @override
+  String get reviewExploreUsahaKindOperational => 'Status operasional';
+
+  @override
+  String get reviewExploreUsahaKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreUsahaKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExploreCulinaryKindNewCuisine => 'Usulan kuliner baru';
+
+  @override
+  String get reviewExploreCulinaryKindNewPlace => 'Usulan tempat baru';
+
+  @override
+  String get reviewExploreCulinaryKindLink => 'Hubungan kuliner-tempat';
+
+  @override
+  String get reviewExploreCulinaryKindCuisineEdit => 'Perbaikan data kuliner';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceEdit => 'Perbaikan data tempat';
+
+  @override
+  String get reviewExploreCulinaryKindLinkEdit => 'Ubah ketersediaan relasi';
+
+  @override
+  String get reviewExploreCulinaryKindPlaceOperational =>
+      'Status operasional tempat';
+
+  @override
+  String get reviewExploreCulinaryKindArchive => 'Minta arsip';
+
+  @override
+  String get reviewExploreCulinaryKindRestore => 'Minta tayang lagi';
+
+  @override
+  String get reviewExplorePlaceKindNew => 'Usulan wisata baru';
+
+  @override
+  String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String reviewExploreMetaKindDate(String kind, String date) {
+    return '$kind · $date';
+  }
+
+  @override
+  String get reviewExploreWantsClaim => 'Pengusul ingin klaim kepemilikan';
+
+  @override
+  String get reviewExploreFieldsLabel => 'Field diubah';
+
+  @override
+  String get reviewExplorePayloadSection => 'Isi usulan';
+
+  @override
+  String get reviewExploreImagesSection => 'Gambar';
+
+  @override
+  String get reviewExploreProcessing => 'Memproses…';
+
+  @override
   String get reviewCorrectKindLabel => 'Ubah jenis atau kelas kata';
 
   @override
@@ -11333,7 +13070,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
     int count,
     String status,
   ) {
-    return '$direction · $count× dicari · $status';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$direction · $countString× dicari · $status';
   }
 
   @override
@@ -11439,7 +13180,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get dictSearchHint => 'Cari kata Sambas...';
 
   @override
+  String get dictSearchChip => 'Cari';
+
+  @override
   String get dictAZ => 'A-Z';
+
+  @override
+  String get dictProposeChip => 'Usul';
+
+  @override
+  String get dictDiscussionChip => 'Diskusi';
 
   @override
   String get dictProposeWord => 'Usul kata baru';
@@ -11621,7 +13371,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictImageCounter(int index, int total) {
-    return '$index/$total';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$indexString/$totalString';
   }
 
   @override
@@ -11652,6 +13409,18 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictActionMore => 'Lainnya';
+
+  @override
+  String get dictWordActionsTitle => 'Aksi';
+
+  @override
+  String get dictSuggestEditSubtitle =>
+      'Usulkan perbaikan lemma, makna, atau contoh';
+
+  @override
+  String dictPhotoCountBadge(int count) {
+    return '$count';
+  }
 
   @override
   String get dictLoginToSuggest => 'Masuk dulu untuk mengusulkan perubahan';
@@ -11818,7 +13587,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictAudioProgressPercent(int percent) {
-    return '$percent persen';
+    final intl.NumberFormat percentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String percentString = percentNumberFormat.format(percent);
+
+    return '$percentString persen';
   }
 
   @override
@@ -11835,6 +13608,44 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictLoginToRecord => 'Masuk dulu untuk rekam pelafalan';
+
+  @override
+  String get dictAddPronunciation => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationTitle => 'Tambah pelafalan';
+
+  @override
+  String get dictAddPronunciationBody =>
+      'Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring; di layar tetap tampil /.../.';
+
+  @override
+  String get dictAddPronunciationHint => 'Contoh: sa.dap atau /sa.dap/';
+
+  @override
+  String get dictAddPronunciationPaste => 'Tempel';
+
+  @override
+  String get dictAddPronunciationSubmit => 'Simpan';
+
+  @override
+  String get dictAddPronunciationSaving => 'Menyimpan...';
+
+  @override
+  String get dictAddPronunciationEmpty => 'Pelafalan tidak boleh kosong';
+
+  @override
+  String get dictAddPronunciationSuccess => 'Pelafalan disimpan';
+
+  @override
+  String get dictAddPronunciationFailed => 'Gagal menyimpan pelafalan';
+
+  @override
+  String get dictLoginToAddPronunciation =>
+      'Masuk dulu untuk menambah pelafalan';
+
+  @override
+  String get dictPronunciationClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get dictRecMicPermissionTitle =>
@@ -11900,12 +13711,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictRecMaxSecondsHint(int max) {
-    return 'Maksimal $max detik · cukup 1-2 kali baca kalimat';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString detik · cukup 1-2 kali baca kalimat';
   }
 
   @override
   String dictRecMaxSecondsHintSpeak(int max) {
-    return 'Maksimal $max detik · cukup 1-2 kali ucapan';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString detik · cukup 1-2 kali ucapan';
   }
 
   @override
@@ -11935,7 +13756,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String dictRecRecording(int elapsed, int max) {
-    return 'Merekam... ${elapsed}s / ${max}s';
+    final intl.NumberFormat elapsedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String elapsedString = elapsedNumberFormat.format(elapsed);
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Merekam... ${elapsedString}s / ${maxString}s';
   }
 
   @override
@@ -12387,6 +14216,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindArticle => 'Artikel';
+
+  @override
   String get feedCtaReview => 'Tinjau usulan';
 
   @override
@@ -12445,6 +14277,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
+
+  @override
+  String get feedCtaSeeArticle => 'Lihat artikel';
 
   @override
   String get feedActorFallback => 'Warga';
@@ -13247,6 +15082,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaFilterAll => 'Semua';
 
   @override
+  String get usahaFilterOpen => 'Filter';
+
+  @override
+  String get usahaFilterTitle => 'Filter usaha';
+
+  @override
+  String get usahaFilterKecamatan => 'Kecamatan';
+
+  @override
+  String get usahaFilterAllKecamatan => 'Semua kecamatan';
+
+  @override
+  String get usahaFilterClear => 'Hapus filter';
+
+  @override
+  String get usahaFilterApply => 'Terapkan';
+
+  @override
+  String usahaFilterRegionChip(String name) {
+    return 'Kecamatan: $name';
+  }
+
+  @override
+  String get usahaFilterLoadFailed => 'Gagal memuat wilayah';
+
+  @override
   String get usahaListEmptyQuery => 'Belum ada usaha yang cocok';
 
   @override
@@ -13435,7 +15296,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get usahaFormClaimBody =>
-      'Kami buatkan klaim pengelolaan, supaya kamu bisa usul perubahan.';
+      'Setelah usaha terbit, kamu bisa klaim pengelolaan lewat detail usaha dengan bukti gambar.';
 
   @override
   String get usahaLoginFirstTitle => 'Masuk dulu ya';
@@ -13481,6 +15342,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaManagedByOwner => 'Dikelola pemilik';
 
   @override
+  String get usahaManagedByLabel => 'Dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -13512,27 +15376,91 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaContactEmpty => 'Kontak belum dicantumkan.';
 
   @override
+  String get usahaLocationDistrict => 'Kecamatan';
+
+  @override
+  String get usahaLocationVillage => 'Desa';
+
+  @override
+  String get usahaLocationAddress => 'Alamat';
+
+  @override
+  String get usahaActionViewOnMap => 'Lihat di peta';
+
+  @override
+  String get usahaActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get usahaActionSection => 'Aksi';
+
+  @override
+  String get usahaNoCoordinatesTitle => 'Lokasi usaha ini belum tersedia';
+
+  @override
+  String get usahaNoCoordinatesBody =>
+      'Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.';
+
+  @override
+  String get usahaContributorProposedBy => 'Diusulkan oleh';
+
+  @override
+  String get usahaPhotosTitle => 'Foto usaha';
+
+  @override
+  String get usahaPhotosEmpty =>
+      'Belum ada foto dari pengunjung. Jadi yang pertama yuk.';
+
+  @override
   String get usahaClaimSheetTitle => 'Klaim usaha ini';
 
   @override
   String get usahaClaimSheetBody =>
-      'Tulis bukti bahwa kamu pemilik atau pengelola sah. Contoh: nomor HP yang tercantum di usaha, nama akun media sosial, atau foto surat izin usaha.';
+      'Unggah bukti kepemilikan atau pengelolaan. Boleh foto toko, tangkapan layar WhatsApp, atau tangkapan layar media sosial (1 sampai 5 gambar).';
 
   @override
-  String get usahaClaimEvidence => 'Bukti kontak';
+  String get usahaClaimEvidence => 'Bukti gambar';
 
   @override
-  String get usahaClaimEvidenceHint =>
-      'Nomor WhatsApp atau akun media sosial pengelola';
+  String get usahaClaimEvidenceHint => 'Foto toko, SS WA, atau SS sosmed';
 
   @override
   String get usahaClaimEvidenceShortTitle => 'Bukti kurang';
 
   @override
-  String get usahaClaimEvidenceShort => 'Tulis bukti minimal 5 karakter ya.';
+  String get usahaClaimEvidenceShort => 'Unggah minimal 1 bukti gambar ya.';
 
   @override
   String get usahaClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get usahaActionSuggestEdit => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditTitle => 'Usulkan perubahan';
+
+  @override
+  String get usahaSuggestEditIntro =>
+      'Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.';
+
+  @override
+  String get usahaSuggestEditSubmit => 'Kirim usulan';
+
+  @override
+  String get usahaSuggestEditSubmitting => 'Mengirim...';
+
+  @override
+  String get usahaSuggestEditSent => 'Usulan perubahan terkirim';
+
+  @override
+  String get usahaSuggestEditSentBody =>
+      'Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.';
+
+  @override
+  String get usahaSuggestEditFailed => 'Usulan gagal';
+
+  @override
+  String get usahaSuggestEditLoginBody =>
+      'Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.';
 
   @override
   String get usahaNotFound => 'Usaha ini tidak ditemukan';
@@ -13809,6 +15737,308 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get exploreCategoryEnsiklopediaSubtitle =>
       'Sejarah, kisah, karya, dan tradisi';
+
+  @override
+  String get encyclopediaTitle => 'Ensiklopedia';
+
+  @override
+  String get encyclopediaChip => 'Ensik.';
+
+  @override
+  String get encyclopediaSubtitle =>
+      'Artikel sejarah, budaya, tokoh, dan tradisi Sambas';
+
+  @override
+  String get encyclopediaSearchPlaceholder => 'Cari artikel ensiklopedia...';
+
+  @override
+  String get encyclopediaFilterAll => 'Semua';
+
+  @override
+  String get encyclopediaEmptyTitle => 'Belum ada artikel';
+
+  @override
+  String get encyclopediaEmptyBody =>
+      'Artikel untuk kategori ini belum tersedia.';
+
+  @override
+  String get encyclopediaLoadFailed => 'Gagal memuat ensiklopedia';
+
+  @override
+  String get encyclopediaRetry => 'Coba lagi';
+
+  @override
+  String get encyclopediaDetailTitle => 'Detail Artikel';
+
+  @override
+  String get encyclopediaAuthorBy => 'Oleh';
+
+  @override
+  String get encyclopediaPublishedAt => 'Diterbitkan';
+
+  @override
+  String get encyclopediaReferencesTitle => 'Referensi & Sumber';
+
+  @override
+  String get encyclopediaCommentsTitle => 'Komentar';
+
+  @override
+  String get encyclopediaCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get encyclopediaCommentSubmit => 'Kirim Komentar';
+
+  @override
+  String get encyclopediaCommentEmpty =>
+      'Belum ada komentar. Jadilah yang pertama berkomentar!';
+
+  @override
+  String get encyclopediaBookmarkAdded => 'Artikel disimpan ke bookmark';
+
+  @override
+  String get encyclopediaBookmarkRemoved => 'Artikel dihapus dari bookmark';
+
+  @override
+  String get encyclopediaContributeTitle => 'Usulkan Artikel';
+
+  @override
+  String get encyclopediaContributeEditTitle => 'Usul Perbaikan Artikel';
+
+  @override
+  String get encyclopediaContributeIntro =>
+      'Bantu melengkapi khazanah Sambas dengan menulis artikel atau mengusulkan perbaikan.';
+
+  @override
+  String get encyclopediaFieldTitle => 'Judul Artikel';
+
+  @override
+  String get encyclopediaFieldTitlePlaceholder =>
+      'Contoh: Sejarah Istana Alwatzikoebillah';
+
+  @override
+  String get encyclopediaFieldCategory => 'Kategori';
+
+  @override
+  String get encyclopediaFieldCategoryPlaceholder => 'Pilih kategori';
+
+  @override
+  String get encyclopediaFieldExcerpt => 'Ringkasan Singkat';
+
+  @override
+  String get encyclopediaFieldExcerptPlaceholder =>
+      'Tulis 1-2 kalimat ringkasan artikel...';
+
+  @override
+  String get encyclopediaFieldTags => 'Tag (pisahkan koma)';
+
+  @override
+  String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
+
+  @override
+  String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
+
+  @override
+  String get encyclopediaFieldBodyPlaceholder =>
+      'Tulis isi artikel kamu di sini...';
+
+  @override
+  String get encyclopediaFieldChangeNote => 'Catatan Perubahan';
+
+  @override
+  String get encyclopediaFieldChangeNotePlaceholder =>
+      'Jelaskan apa yang kamu ubah...';
+
+  @override
+  String get encyclopediaFieldRequired => 'Semua kolom wajib diisi';
+
+  @override
+  String get encyclopediaSubmitButton => 'Kirim Usulan';
+
+  @override
+  String get encyclopediaSubmitSuccessTitle => 'Usulan Terkirim!';
+
+  @override
+  String get encyclopediaSubmitSuccessBody =>
+      'Terima kasih atas kontribusi kamu. Usulan akan ditinjau oleh tim kurator.';
+
+  @override
+  String get encyclopediaMyContributionsTitle => 'Riwayat Usulan Ensiklopedia';
+
+  @override
+  String get encyclopediaMyContributionsEmpty =>
+      'Kamu belum pernah mengirim usulan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaStatusPending => 'Menunggu Review';
+
+  @override
+  String get encyclopediaStatusApproved => 'Disetujui';
+
+  @override
+  String get encyclopediaStatusRejected => 'Ditolak';
+
+  @override
+  String get encyclopediaBookmarkFailed => 'Gagal memperbarui bookmark';
+
+  @override
+  String get encyclopediaCommentFailed => 'Gagal mengirim komentar';
+
+  @override
+  String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
+
+  @override
+  String get encyclopediaProposalKindNew => 'Usulan artikel baru';
+
+  @override
+  String get encyclopediaProposalKindEdit => 'Usulan perbaikan';
+
+  @override
+  String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
+
+  @override
+  String get encyclopediaLoginBookmarkBody =>
+      'Masuk dulu untuk menyimpan artikel ke bookmark.';
+
+  @override
+  String get encyclopediaLoginCommentBody =>
+      'Masuk dulu untuk menulis komentar di artikel.';
+
+  @override
+  String get encyclopediaLoginContributeBody =>
+      'Masuk dulu untuk mengusulkan artikel ensiklopedia.';
+
+  @override
+  String get encyclopediaLoginMyContributionsBody =>
+      'Masuk dulu untuk melihat riwayat usulan artikel kamu.';
+
+  @override
+  String get encyclopediaCategoryEmpty => 'Pilih kategori artikel';
+
+  @override
+  String get encyclopediaBodyTapToEdit => 'Tulis isi artikel';
+
+  @override
+  String get encyclopediaBodyTapHint =>
+      'Ketuk untuk menulis dengan format Markdown dan sisip gambar';
+
+  @override
+  String get encyclopediaBodyHasContentHint =>
+      'Ketuk untuk lanjut menulis atau ubah isi';
+
+  @override
+  String get mdEditorTitle => 'Tulis isi';
+
+  @override
+  String get mdEditorDone => 'Selesai';
+
+  @override
+  String get mdEditorPreview => 'Pratinjau';
+
+  @override
+  String get mdEditorWrite => 'Tulis';
+
+  @override
+  String get mdEditorBold => 'Tebal';
+
+  @override
+  String get mdEditorItalic => 'Miring';
+
+  @override
+  String get mdEditorHeading => 'Judul bagian';
+
+  @override
+  String get mdEditorHeadingPick => 'Pilih tingkat judul';
+
+  @override
+  String get mdEditorHeading1 => 'Judul besar (H1)';
+
+  @override
+  String get mdEditorHeading2 => 'Judul bagian (H2)';
+
+  @override
+  String get mdEditorHeading3 => 'Subjudul (H3)';
+
+  @override
+  String get mdEditorLink => 'Tautan';
+
+  @override
+  String get mdEditorLinkSheetTitle => 'Sisip tautan';
+
+  @override
+  String get mdEditorLinkLabel => 'Teks tautan';
+
+  @override
+  String get mdEditorLinkLabelHint => 'Kata yang diketuk pembaca';
+
+  @override
+  String get mdEditorLinkUrl => 'Alamat';
+
+  @override
+  String get mdEditorLinkUrlHint => 'https://';
+
+  @override
+  String get mdEditorLinkInsert => 'Sisipkan';
+
+  @override
+  String get mdEditorLinkInvalid => 'Alamat harus diawali https://';
+
+  @override
+  String get mdEditorList => 'Daftar';
+
+  @override
+  String get mdEditorListPick => 'Jenis daftar';
+
+  @override
+  String get mdEditorListBullet => 'Daftar poin';
+
+  @override
+  String get mdEditorListOrdered => 'Daftar bernomor';
+
+  @override
+  String get mdEditorTable => 'Tabel';
+
+  @override
+  String get mdEditorTableCol1 => 'Kolom 1';
+
+  @override
+  String get mdEditorTableCol2 => 'Kolom 2';
+
+  @override
+  String get mdEditorQuote => 'Kutipan';
+
+  @override
+  String get mdEditorCode => 'Kode';
+
+  @override
+  String get mdEditorStrike => 'Coret';
+
+  @override
+  String get mdEditorHr => 'Garis pemisah';
+
+  @override
+  String get mdEditorImage => 'Sisip gambar';
+
+  @override
+  String get mdEditorUploadFailed => 'Gagal mengunggah gambar. Coba lagi ya';
+
+  @override
+  String get mdEditorImageAlt => 'gambar';
+
+  @override
+  String get mdEditorEmptyPreview => 'Belum ada isi untuk dipratinjau';
+
+  @override
+  String get mdEditorHint =>
+      'Tulis Markdown di sini. Pakai toolbar untuk format, tautan, dan gambar.';
+
+  @override
+  String get mdEditorUndo => 'Urungkan';
+
+  @override
+  String get mdEditorRedo => 'Ulangi';
 
   @override
   String get exploreCategoryKomunitas => 'Komunitas';
@@ -14417,7 +16647,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String placeFormStepOf(int step, int total, String label) {
-    return 'Langkah $step dari $total: $label';
+    final intl.NumberFormat stepNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String stepString = stepNumberFormat.format(step);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Langkah $stepString dari $totalString: $label';
   }
 
   @override
@@ -14485,12 +16723,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String wilayahDesaCount(int count) {
-    return '$count desa';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString desa';
   }
 
   @override
   String wilayahWisataCount(int count) {
-    return '$count wisata';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString wisata';
   }
 
   @override
@@ -14653,7 +16899,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeMaxMeanings(int max) {
-    return 'Maksimal $max makna per usulan.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString makna per usulan.';
   }
 
   @override
@@ -14689,7 +16940,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeMeaningIncomplete(int index) {
-    return 'Makna $index: centang dulu Penjelasan arti dan/atau Terjemahan';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString: centang dulu Penjelasan arti dan/atau Terjemahan';
   }
 
   @override
@@ -14739,7 +16994,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeMeaningN(int index) {
-    return 'Makna $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Makna $indexString';
   }
 
   @override
@@ -14813,12 +17072,25 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkSentMany(int sent) {
-    return '$sent kata berhasil dikirim.';
+    final intl.NumberFormat sentNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String sentString = sentNumberFormat.format(sent);
+
+    return '$sentString kata berhasil dikirim.';
   }
 
   @override
   String contributeBulkPartialBody(int sent, int failed) {
-    return '$sent terkirim, $failed gagal. Perbaiki baris yang gagal lalu kirim ulang.';
+    final intl.NumberFormat sentNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String sentString = sentNumberFormat.format(sent);
+    final intl.NumberFormat failedNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String failedString = failedNumberFormat.format(failed);
+
+    return '$sentString terkirim, $failedString gagal. Perbaiki baris yang gagal lalu kirim ulang.';
   }
 
   @override
@@ -14826,7 +17098,15 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkProgress(int done, int total) {
-    return 'Mengirim $done/$total...';
+    final intl.NumberFormat doneNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String doneString = doneNumberFormat.format(done);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return 'Mengirim $doneString/$totalString...';
   }
 
   @override
@@ -14848,7 +17128,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkMaxRowsHint(int max) {
-    return 'Maksimal $max kata. Isi kata Sambas dan terjemahan Indonesia.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString kata. Isi kata Sambas dan terjemahan Indonesia.';
   }
 
   @override
@@ -14856,7 +17141,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkMaxRows(int max) {
-    return 'Maksimal $max baris per sesi.';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString baris per sesi.';
   }
 
   @override
@@ -14867,17 +17157,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkLemmaField(int n) {
-    return 'Kata Sambas baris $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Kata Sambas baris $nString';
   }
 
   @override
   String contributeBulkLemmaExists(int n) {
-    return 'Kata Sambas baris $n, sudah ada di kamus';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Kata Sambas baris $nString, sudah ada di kamus';
   }
 
   @override
   String contributeBulkTranslationField(int n) {
-    return 'Terjemahan Indonesia baris $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Terjemahan Indonesia baris $nString';
   }
 
   @override
@@ -14885,22 +17190,38 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeBulkRemoveRow(int index) {
-    return 'Hapus baris $index';
+    final intl.NumberFormat indexNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String indexString = indexNumberFormat.format(index);
+
+    return 'Hapus baris $indexString';
   }
 
   @override
   String contributeRelationsSummaryVariants(int count) {
-    return '$count variasi';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString variasi';
   }
 
   @override
   String contributeRelationsSummarySynonyms(int count) {
-    return '$count sinonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString sinonim';
   }
 
   @override
   String contributeRelationsSummaryAntonyms(int count) {
-    return '$count antonim';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString antonim';
   }
 
   @override
@@ -14911,7 +17232,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeRelationsMaxItems(int max, String label) {
-    return 'Maksimal $max $label';
+    final intl.NumberFormat maxNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String maxString = maxNumberFormat.format(max);
+
+    return 'Maksimal $maxString $label';
   }
 
   @override
@@ -15030,7 +17356,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeKbbiSheetCount(int count) {
-    return '$count definisi - gulir untuk melihat semua';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString definisi - gulir untuk melihat semua';
   }
 
   @override
@@ -15041,7 +17371,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeKbbiSheetSense(int homonym, int sense) {
-    return 'makna $homonym.$sense';
+    final intl.NumberFormat homonymNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String homonymString = homonymNumberFormat.format(homonym);
+    final intl.NumberFormat senseNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String senseString = senseNumberFormat.format(sense);
+
+    return 'makna $homonymString.$senseString';
   }
 
   @override
@@ -15078,7 +17415,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String contributeWordClassSheetCount(int count) {
-    return '$count pilihan - ketuk untuk memilih';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString pilihan - ketuk untuk memilih';
   }
 
   @override
@@ -15234,7 +17575,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String discussionCreateCharCount(int count) {
-    return '$count/1000';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString/1.000';
   }
 
   @override
@@ -15252,7 +17597,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String discussionCreateAudioReady(int sec) {
-    return 'Rekaman siap · ${sec}s';
+    final intl.NumberFormat secNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String secString = secNumberFormat.format(sec);
+
+    return 'Rekaman siap · ${secString}s';
   }
 
   @override
@@ -15372,7 +17722,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String discussionRepliesCount(int count) {
-    return 'Balasan · $count';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Balasan · $countString';
   }
 
   @override
@@ -15431,7 +17785,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String discussionFeedPhotos(int count) {
-    return '$count foto';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString foto';
   }
 
   @override
@@ -15742,6 +18100,23 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventProposalsLoadFailedShort => 'Gagal memuat usulan';
 
   @override
+  String eventDaySheetTitle(String date) {
+    return 'Acara $date';
+  }
+
+  @override
+  String get eventDaySheetEmpty => 'Belum ada acara di tanggal ini';
+
+  @override
+  String get eventCalendarDayHasEventsSemantics => 'Ada acara';
+
+  @override
+  String get eventCalendarShow => 'Tampilkan kalender acara';
+
+  @override
+  String get eventCalendarHide => 'Sembunyikan kalender';
+
+  @override
   String get eventListTitle => 'Acara';
 
   @override
@@ -15820,7 +18195,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String eventDetailPosterCounter(int current, int total) {
-    return '$current/$total';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat totalNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String totalString = totalNumberFormat.format(total);
+
+    return '$currentString/$totalString';
   }
 
   @override
@@ -15972,7 +18354,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String analyticsChartTitle(int days) {
-    return 'Aktivitas $days hari';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Aktivitas $daysString hari';
   }
 
   @override
@@ -16076,6 +18463,85 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get pantunComposeIncomplete => 'Lengkapi keempat baris dulu ya.';
 
   @override
+  String get pantunComposeLine1Hint => 'Baris 1 (pembayang)';
+
+  @override
+  String get pantunComposeLine2Hint => 'Baris 2 (pembayang)';
+
+  @override
+  String get pantunComposeLine3Hint => 'Baris 3 (isi)';
+
+  @override
+  String get pantunComposeLine4Hint => 'Baris 4 (isi)';
+
+  @override
+  String get pantunComposeReplying => 'Membalas';
+
+  @override
+  String pantunComposeReplyingAuthor(String author) {
+    return 'Membalas $author';
+  }
+
+  @override
+  String get pantunComposeDiscardDraft => 'Buang draf';
+
+  @override
+  String get pantunComposeDiscardDraftTitle => 'Buang draf pantun?';
+
+  @override
+  String get pantunComposeDiscardDraftBody =>
+      'Baris yang sudah kamu tulis di perangkat ini akan dihapus.';
+
+  @override
+  String get pantunComposeDiscardDraftConfirm => 'Buang';
+
+  @override
+  String get pantunComposeRhymeOk => 'Pola rima cocok';
+
+  @override
+  String pantunComposeRhymeOkScheme(String scheme) {
+    return 'Pola rima $scheme cocok';
+  }
+
+  @override
+  String pantunComposeRhymeMismatchPair(int a, int b) {
+    final intl.NumberFormat aNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String aString = aNumberFormat.format(a);
+    final intl.NumberFormat bNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String bString = bNumberFormat.format(b);
+
+    return 'Baris $aString & $bString belum berima';
+  }
+
+  @override
+  String pantunComposeRhymeLastWordUndetected(int line) {
+    final intl.NumberFormat lineNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String lineString = lineNumberFormat.format(line);
+
+    return 'Kata akhir baris $lineString tidak terdeteksi. Perbaiki ya.';
+  }
+
+  @override
+  String get pantunReplyAction => 'Balas';
+
+  @override
+  String get pantunComposeDraftSaved => 'Draf tersimpan';
+
+  @override
+  String get pantunComposeQuoteMissing =>
+      'Balasan sudah tidak ada. Cuplikan diganti ke pantun induk.';
+
+  @override
+  String get pantunWriteLoginRequired =>
+      'Login dulu ya sebelum menulis pantun.';
+
+  @override
   String get pantunVoteLoginRequired => 'Masuk dulu untuk memberi vote';
 
   @override
@@ -16107,7 +18573,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String pantunRepliesCount(int count) {
-    return 'Balasan · $count';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Balasan · $countString';
   }
 
   @override
@@ -16369,7 +18839,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String verifierApplicationAccountNth(int n) {
-    return 'akun ke-$n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'akun ke-$nString';
   }
 
   @override
@@ -16398,7 +18873,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String get verifierApplicationPhoneLabel => 'No. HP';
+  String get verifierApplicationFullNameLabel => 'Nama lengkap';
+
+  @override
+  String get verifierApplicationFullNameHint => 'Nama sesuai identitas';
+
+  @override
+  String get verifierApplicationFullNameMin =>
+      'Nama lengkap minimal 2 karakter.';
+
+  @override
+  String get verifierApplicationPhoneLabel => 'Nomor HP';
 
   @override
   String get verifierApplicationPhoneHint => '81234567890';
@@ -16426,8 +18911,72 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get verifierApplicationSubmitting => 'Mengirim...';
 
   @override
+  String get verifierApplicationDialectLabel => 'Dialek yang dikuasai';
+
+  @override
+  String get verifierApplicationDialectPick => 'Pilih dialek';
+
+  @override
+  String get verifierApplicationDialectUmum => 'Umum';
+
+  @override
+  String get verifierApplicationDialectKota => 'Sambas Kota';
+
+  @override
+  String get verifierApplicationDialectPesisir => 'Sambas Pesisir';
+
+  @override
+  String get verifierApplicationDialectLainnya => 'Lainnya';
+
+  @override
+  String get verifierApplicationDialectRequired =>
+      'Pilih dialek yang kamu kuasai.';
+
+  @override
+  String get verifierApplicationDialectNoteLabel => 'Catatan dialek';
+
+  @override
+  String get verifierApplicationDialectNoteHint =>
+      'Sebutkan dialek atau wilayahnya';
+
+  @override
+  String get verifierApplicationDialectNoteMin =>
+      'Catatan dialek minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationReasonLabel => 'Alasan';
+
+  @override
+  String get verifierApplicationReasonHint =>
+      'Bahasa atau dialek mana yang kamu kuasai, dan kenapa kamu mau meninjau kata orang lain?';
+
+  @override
+  String get verifierApplicationReasonMin => 'Alasan minimal 10 karakter.';
+
+  @override
+  String get verifierApplicationPhotoLabel => 'Foto diri (opsional)';
+
+  @override
+  String get verifierApplicationPhotoHint => 'Wajah jelas. Boleh dikosongkan.';
+
+  @override
+  String get verifierApplicationPhotoUploading =>
+      'Tunggu foto diri selesai diunggah.';
+
+  @override
+  String get verifierApplicationPhotoFailed =>
+      'Foto diri gagal diunggah. Coba lagi.';
+
+  @override
+  String get verifierApplicationPhotoRemove => 'Hapus foto';
+
+  @override
+  String get verifierApplicationContributionHint =>
+      'Pengajuan butuh minimal 3 kontribusi yang sudah disetujui.';
+
+  @override
   String get verifierApplicationPrivacyNote =>
-      'Nomor HP dan alamat hanya untuk admin, tidak tampil di profil publik.';
+      'Nomor HP, alamat, dan foto diri hanya untuk admin, tidak tampil di profil publik.';
 
   @override
   String get verifierApplicationPickPlatform => 'Pilih platform';
@@ -16437,7 +18986,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String verifierApplicationPlatformNth(int n) {
-    return 'Platform $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'Platform $nString';
   }
 
   @override
@@ -16460,7 +19014,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String verifierApplicationImageTooLarge(int mb) {
-    return 'Gambar melebihi $mb MB';
+    final intl.NumberFormat mbNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String mbString = mbNumberFormat.format(mb);
+
+    return 'Gambar melebihi $mbString MB';
   }
 
   @override
@@ -16491,6 +19050,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get achievementSeeAll => 'Lihat semua pencapaian';
 
   @override
+  String get achievementSeeMore => 'Lihat lainnya';
+
+  @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
 
   @override
@@ -16507,7 +19069,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String achievementProgress(int current, int target) {
-    return '$current/$target';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat targetNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String targetString = targetNumberFormat.format(target);
+
+    return '$currentString/$targetString';
   }
 
   @override
@@ -16529,7 +19098,14 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
     int current,
     int target,
   ) {
-    return '$description\n\nProgres: $current/$target';
+    final intl.NumberFormat currentNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String currentString = currentNumberFormat.format(current);
+    final intl.NumberFormat targetNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String targetString = targetNumberFormat.format(target);
+
+    return '$description\n\nProgres: $currentString/$targetString';
   }
 
   @override
@@ -16609,7 +19185,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String searchMissSkeletonLemma(int n) {
-    return 'kata dicari contoh $n';
+    final intl.NumberFormat nNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nString = nNumberFormat.format(n);
+
+    return 'kata dicari contoh $nString';
   }
 
   @override
@@ -16859,7 +19440,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String attachmentMaxImages(int count) {
-    return 'Maksimal $count gambar';
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString gambar';
   }
 
   @override
@@ -16868,7 +19453,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String attachmentImageTooLarge(int mb) {
-    return 'Gambar melebihi $mb MB';
+    final intl.NumberFormat mbNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String mbString = mbNumberFormat.format(mb);
+
+    return 'Gambar melebihi $mbString MB';
   }
 
   @override
@@ -16924,12 +19514,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String levelingChipLabel(int level, String title) {
-    return 'Level $level - $title';
+    final intl.NumberFormat levelNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String levelString = levelNumberFormat.format(level);
+
+    return 'Level $levelString - $title';
   }
 
   @override
   String levelingProgress(int points, int next) {
-    return '$points / $next';
+    final intl.NumberFormat pointsNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String pointsString = pointsNumberFormat.format(points);
+    final intl.NumberFormat nextNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String nextString = nextNumberFormat.format(next);
+
+    return '$pointsString / $nextString';
   }
 
   @override
@@ -16937,7 +19539,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String levelingSheetTitle(int level, String title) {
-    return 'Level $level - $title';
+    final intl.NumberFormat levelNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String levelString = levelNumberFormat.format(level);
+
+    return 'Level $levelString - $title';
   }
 
   @override
@@ -16946,12 +19552,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String levelingStreakDays(int days) {
-    return 'Streak $days hari';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'Streak $daysString hari';
   }
 
   @override
   String levelingStreakBadge(int days) {
-    return 'streak $days';
+    final intl.NumberFormat daysNumberFormat = intl.NumberFormat.decimalPattern(
+      localeName,
+    );
+    final String daysString = daysNumberFormat.format(days);
+
+    return 'streak $daysString';
   }
 
   @override

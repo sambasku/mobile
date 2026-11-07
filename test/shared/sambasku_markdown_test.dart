@@ -84,4 +84,48 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(Table), findsOneWidget);
   });
+
+  testWidgets('elemen dasar GFM tampil tanpa exception', (tester) async {
+    const data = '''
+# Judul satu
+
+## Judul dua
+
+### Judul tiga
+
+1. satu
+2. dua
+
+- poin
+
+> kutipan singkat
+
+`inline`
+
+```
+blok
+kode
+```
+
+~~coret~~
+
+---
+
+paragraf akhir
+''';
+    await tester.pumpWidget(
+      _host(
+        const SambaskuMarkdown(
+          selectable: false,
+          data: data,
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.textContaining('Judul satu'), findsWidgets);
+    expect(find.textContaining('kutipan singkat'), findsWidgets);
+    expect(find.textContaining('inline'), findsWidgets);
+    expect(find.textContaining('coret'), findsWidgets);
+    expect(find.textContaining('paragraf akhir'), findsWidgets);
+  });
 }

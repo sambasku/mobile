@@ -23,6 +23,7 @@ enum FeedActivityKind {
   usaha,
   culinary,
   pantun,
+  article,
 }
 
 FeedActivityKind? parseFeedActivityKind(String raw) {
@@ -63,6 +64,9 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.announcement;
     case 'place_photo':
       return FeedActivityKind.placePhoto;
+    case 'usaha_photo':
+      // Wire baru: foto singgah usaha - navigasi & CTA sama jenis usaha.
+      return FeedActivityKind.usaha;
     case 'place_listing':
       return FeedActivityKind.placeListing;
     case 'event':
@@ -73,6 +77,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.culinary;
     case 'pantun':
       return FeedActivityKind.pantun;
+    case 'article':
+      return FeedActivityKind.article;
     default:
       return null;
   }

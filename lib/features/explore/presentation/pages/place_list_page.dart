@@ -184,7 +184,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _SearchField(onChanged: _onSearchChanged),
-              const Gap(12),
+              const Gap(8),
               if (_mode == PlacePageMode.wisata) ...[
                 _PlaceFilterBar(
                   selected: _filter,
@@ -192,7 +192,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                 ),
                 // Jarak chips -> grid: 4 terlalu mepet (chip punya tinggi
                 // sendiri, grid langsung menempel di bawahnya).
-                const Gap(12),
+                const Gap(8),
               ],
               Expanded(
                 child: _SkeletonList(
@@ -231,7 +231,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _SearchField(onChanged: _onSearchChanged),
-                const Gap(12),
+                const Gap(8),
                 if (_mode == PlacePageMode.wisata) ...[
                   _PlaceFilterBar(
                     selected: _filter,
@@ -240,7 +240,7 @@ class _PlaceListPageState extends ConsumerState<PlaceListPage> {
                       if (_scroll.hasClients) _scroll.jumpTo(0);
                     },
                   ),
-                  const Gap(12),
+                  const Gap(8),
                 ],
                 if (page.items.isEmpty)
                   Expanded(
@@ -387,8 +387,8 @@ class _EmptyWithSearch extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         search,
-        const Gap(12),
-        if (filterBar != null) ...[filterBar!, const Gap(12)],
+        const Gap(8),
+        if (filterBar != null) ...[filterBar!, const Gap(8)],
         const Expanded(child: _EmptyBody()),
       ],
     );

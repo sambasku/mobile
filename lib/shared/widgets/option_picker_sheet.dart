@@ -1,4 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+
+import '../../core/utils/format_number.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 
@@ -109,7 +111,7 @@ class _OptionPickerSheetBodyState<T> extends State<_OptionPickerSheetBody<T>> {
         widget.subtitle ??
         (widget.items.isEmpty
             ? 'Belum ada pilihan'
-            : '${widget.items.length} pilihan - ketuk untuk memilih');
+            : '${formatRibuan(widget.items.length)} pilihan - ketuk untuk memilih');
 
     // Offset keyboard: tanpa ini sheet menempel bawah layar dan keyboard
     // menutupi daftar hasil pencarian (viewInsets diukur dari root, bukan

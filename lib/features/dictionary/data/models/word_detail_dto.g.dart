@@ -111,6 +111,7 @@ _WordVerifierDto _$WordVerifierDtoFromJson(Map<String, dynamic> json) =>
     _WordVerifierDto(
       username: json['username'] as String,
       displayName: json['display_name'] as String?,
+      avatarUrl: json['avatar_url'] as String?,
       role: json['role'] as String,
     );
 
@@ -118,6 +119,7 @@ Map<String, dynamic> _$WordVerifierDtoToJson(_WordVerifierDto instance) =>
     <String, dynamic>{
       'username': instance.username,
       'display_name': instance.displayName,
+      'avatar_url': instance.avatarUrl,
       'role': instance.role,
     };
 

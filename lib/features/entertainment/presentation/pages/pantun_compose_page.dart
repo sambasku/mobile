@@ -8,28 +8,43 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart'
+    show PopScope, Tooltip, showModalBottomSheet;
 
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/pantun_api.dart';
+import '../../data/pantun_draft_store.dart';
+import '../../domain/pantun_compose_args.dart';
 import '../../domain/pantun_models.dart';
 import '../../domain/rhyme_check.dart';
 import '../providers/pantun_providers.dart';
 
 /// Tulis pantun 4 baris dengan cek rima live (checker sama dengan API).
+///
+/// Balasan: [parentId] = induk API; [quoteId] = cuplikan + key draf lokal.
 class PantunComposePage extends HookConsumerWidget {
-  const PantunComposePage({super.key, this.parentId});
+  const PantunComposePage({
+    super.key,
+    this.parentId,
+    this.quoteId = PantunComposeArgs.quoteRoot,
+    this.args,
+    this.draftStore,
+  });
 
   /// Null = pantun pembuka; berisi = balasan ke pantun pembuka itu.
   final String? parentId;
 
-  static const _hints = [
-    'Baris 1 (pembayang)',
-    'Baris 2 (pembayang)',
-    'Baris 3 (isi)',
-    'Baris 4 (isi)',
-  ];
+  /// `'root'` atau id balasan yang di-tap sebagai cuplikan.
+  final String quoteId;
+
+  /// Extra navigasi (lines/author). Boleh null jika deep-link query saja.
+  final PantunComposeArgs? args;
+
+  /// Override untuk test; produksi pakai [PantunDraftStore] default.
+  final PantunDraftStore? draftStore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,18 +52,145 @@ class PantunComposePage extends HookConsumerWidget {
     final controllers = List.generate(4, (_) => useTextEditingController());
     final focusNodes = List.generate(4, (_) => useFocusNode());
     final submitting = useState(false);
+    final draftReady = useState(false);
+    final hasDraftContent = useState(false);
+    final draftSavedAt = useState<DateTime?>(null);
+    final store = useMemoized(() => draftStore ?? PantunDraftStore());
+    final debounce = useRef<Timer?>(null);
+    final skipPersist = useRef(false);
+    final staleToastShown = useRef(false);
+    final allowPop = useState(false);
+
+    final effectiveParent = parentId ?? args?.parentId;
+    final requestedQuote = () {
+      if (effectiveParent == null || effectiveParent.isEmpty) {
+        return PantunComposeArgs.quoteRoot;
+      }
+      final fromQuery = quoteId.trim();
+      if (fromQuery.isNotEmpty) return fromQuery;
+      return args?.normalizedQuoteId ?? PantunComposeArgs.quoteRoot;
+    }();
+    final resolvedQuote = useState(requestedQuote);
+
+    String? quoteForStore() =>
+        effectiveParent == null ? null : resolvedQuote.value;
+
+    Future<void> persistNow() async {
+      if (skipPersist.value || !draftReady.value) return;
+      debounce.value?.cancel();
+      debounce.value = null;
+      final lines = controllers.map((c) => c.text).toList(growable: false);
+      await store.save(
+        lines: lines,
+        parentId: effectiveParent,
+        quoteId: quoteForStore(),
+      );
+      if (!context.mounted) return;
+      final any = lines.any((l) => l.trim().isNotEmpty);
+      hasDraftContent.value = any;
+      draftSavedAt.value = any ? DateTime.now() : null;
+    }
+
+    Future<void> leave() async {
+      await persistNow();
+      if (context.mounted) context.pop();
+    }
 
     useEffect(() {
       unawaited(
         AnalyticsService.instance.logPantunComposeOpen(
-          isReply: parentId != null,
+          isReply: effectiveParent != null,
         ),
       );
       return null;
     }, const []);
 
-    // Cek live: nilai controller dibaca saat rebuild (hook memo berganti
-    // tiap frame karena kita rebuild via listenable di bawah).
+    // Restore draf sekali saat open (pakai requested quote dulu).
+    useEffect(() {
+      var cancelled = false;
+      unawaited(() async {
+        final draft = await store.load(
+          parentId: effectiveParent,
+          quoteId: effectiveParent == null ? null : requestedQuote,
+        );
+        if (cancelled || !context.mounted) return;
+        if (draft != null && draft.hasContent) {
+          for (var i = 0; i < 4; i++) {
+            controllers[i].text = draft.lines[i];
+          }
+          hasDraftContent.value = true;
+          draftSavedAt.value = draft.updatedAt.toLocal();
+        }
+        draftReady.value = true;
+      }());
+      return () {
+        cancelled = true;
+        // Flush terakhir saat dispose (back sistem / route pop) bila timer
+        // debounce belum sempat jalan. Controllers masih hidup di cleanup hooks.
+        debounce.value?.cancel();
+        debounce.value = null;
+        if (!skipPersist.value && draftReady.value) {
+          unawaited(
+            store.save(
+              lines: controllers.map((c) => c.text).toList(growable: false),
+              parentId: effectiveParent,
+              quoteId: effectiveParent == null ? null : resolvedQuote.value,
+            ),
+          );
+        }
+      };
+    }, [effectiveParent, requestedQuote]);
+
+    // Debounce persist + update indikator.
+    useEffect(() {
+      void onChanged() {
+        final any = controllers.any((c) => c.text.trim().isNotEmpty);
+        hasDraftContent.value = any;
+        if (!any) draftSavedAt.value = null;
+        if (!draftReady.value || skipPersist.value) return;
+        debounce.value?.cancel();
+        debounce.value = Timer(const Duration(milliseconds: 400), () {
+          unawaited(persistNow());
+        });
+      }
+
+      for (final c in controllers) {
+        c.addListener(onChanged);
+      }
+      return () {
+        for (final c in controllers) {
+          c.removeListener(onChanged);
+        }
+      };
+    }, [draftReady.value, effectiveParent, resolvedQuote.value]);
+
+    // Quote reply hilang → toast + fallback induk + pindah key draf.
+    final detailAsync = effectiveParent == null
+        ? null
+        : ref.watch(pantunDetailProvider(effectiveParent));
+    useEffect(() {
+      if (effectiveParent == null) return null;
+      if (requestedQuote == PantunComposeArgs.quoteRoot) return null;
+      if (staleToastShown.value) return null;
+      final detail = detailAsync?.asData?.value;
+      if (detail == null) return null;
+      final exists = detail.replies.any((r) => r.id == requestedQuote);
+      if (exists) return null;
+      staleToastShown.value = true;
+      resolvedQuote.value = PantunComposeArgs.quoteRoot;
+      unawaited(
+        store.clear(parentId: effectiveParent, quoteId: requestedQuote),
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        showFToast(
+          context: context,
+          title: Text(l10n.pantunComposeQuoteMissing),
+        );
+      });
+      return null;
+    }, [detailAsync?.asData?.value, requestedQuote, effectiveParent]);
+
     final tick = useState(0);
     for (final c in controllers) {
       useEffect(() {
@@ -59,56 +201,131 @@ class PantunComposePage extends HookConsumerWidget {
     }
     final lines = controllers.map((c) => c.text.trim()).toList();
     final allFilled = lines.every((l) => l.isNotEmpty);
-    // Skema rima tidak dipilih user: app yang cari (ABAB lalu AAAA).
     final scheme = allFilled ? pickRhymeScheme(lines) : null;
     final check = scheme == null
         ? (allFilled ? detectRhyme(lines, 'ABAB') : null)
         : detectRhyme(lines, scheme);
     final canSubmit = scheme != null && !submitting.value;
 
-    return FScaffold(
-      childPad: true,
-      header: FHeader.nested(
-        title: Text(parentId == null ? l10n.pantunWrite : l10n.pantunReply),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      footer: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: FButton(
-            onPress: canSubmit
-                ? () => submit(context, ref, lines, scheme, submitting)
-                : null,
-            prefix: submitting.value ? const FCircularProgress() : null,
-            child: Text(
-              submitting.value ? l10n.pantunSending : l10n.pantunSend,
+    final hints = [
+      l10n.pantunComposeLine1Hint,
+      l10n.pantunComposeLine2Hint,
+      l10n.pantunComposeLine3Hint,
+      l10n.pantunComposeLine4Hint,
+    ];
+
+    final quotePreview = _resolveQuotePreview(
+      ref,
+      parentId: effectiveParent,
+      quoteId: resolvedQuote.value,
+      args: args,
+      preferLiveDetail: staleToastShown.value,
+    );
+
+    Future<void> discardDraft() async {
+      final ok = await _confirmDiscardDraft(context, l10n);
+      if (!ok || !context.mounted) return;
+      skipPersist.value = true;
+      debounce.value?.cancel();
+      await store.clear(
+        parentId: effectiveParent,
+        quoteId: quoteForStore(),
+      );
+      for (final c in controllers) {
+        c.clear();
+      }
+      hasDraftContent.value = false;
+      draftSavedAt.value = null;
+      skipPersist.value = false;
+    }
+
+    return PopScope(
+      canPop: allowPop.value,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        await leave();
+      },
+      child: FScaffold(
+        childPad: true,
+        header: FHeader.nested(
+          title: Text(
+            effectiveParent == null ? l10n.pantunWrite : l10n.pantunReply,
+          ),
+          prefixes: [
+            FHeaderAction.back(onPress: leave),
+          ],
+          suffixes: [
+            if (hasDraftContent.value)
+              Tooltip(
+                message: l10n.pantunComposeDiscardDraft,
+                child: FHeaderAction(
+                  icon: const Icon(FLucideIcons.trash),
+                  onPress: discardDraft,
+                ),
+              ),
+          ],
+        ),
+        footer: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: FButton(
+              onPress: canSubmit
+                  ? () => submit(
+                      context,
+                      ref,
+                      lines,
+                      scheme,
+                      submitting,
+                      store: store,
+                      parentId: effectiveParent,
+                      quoteId: resolvedQuote.value,
+                      onBeforeClear: () {
+                        skipPersist.value = true;
+                        debounce.value?.cancel();
+                      },
+                      onAllowPop: () => allowPop.value = true,
+                    )
+                  : null,
+              prefix: submitting.value ? const FCircularProgress() : null,
+              child: Text(
+                submitting.value ? l10n.pantunSending : l10n.pantunSend,
+              ),
             ),
           ),
         ),
-      ),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        children: [
-          const Gap(16),
-          for (var i = 0; i < 4; i++) ...[
-            FTextField(
-              control: FTextFieldControl.managed(controller: controllers[i]),
-              focusNode: focusNodes[i],
-              hint: _hints[i],
-              // Auto-wrap: baris panjang naik ke baris baru (maks 3) supaya
-              // keempat baris pantun terbaca utuh saat menyusun.
-              maxLines: 3,
-              minLines: 1,
-              textInputAction: i < 3
-                  ? TextInputAction.next
-                  : TextInputAction.done,
-            ),
-            const Gap(12),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          children: [
+            if (effectiveParent != null && quotePreview != null) ...[
+              _QuotePreviewCard(preview: quotePreview),
+              const Gap(16),
+            ],
+            for (var i = 0; i < 4; i++) ...[
+              FTextField(
+                control: FTextFieldControl.managed(controller: controllers[i]),
+                focusNode: focusNodes[i],
+                hint: hints[i],
+                maxLines: 3,
+                minLines: 1,
+                textInputAction: i < 3
+                    ? TextInputAction.next
+                    : TextInputAction.done,
+              ),
+              const Gap(12),
+            ],
+            if (hasDraftContent.value && draftSavedAt.value != null) ...[
+              Text(
+                l10n.pantunComposeDraftSaved,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+              const Gap(8),
+            ],
+            _RhymeStatus(check: check, allFilled: allFilled, scheme: scheme),
           ],
-          const Gap(8),
-          _RhymeStatus(check: check, allFilled: allFilled, scheme: scheme),
-        ],
+        ),
       ),
     );
   }
@@ -118,15 +335,22 @@ class PantunComposePage extends HookConsumerWidget {
     WidgetRef ref,
     List<String> lines,
     String? scheme,
-    ValueNotifier<bool> submitting,
-  ) async {
+    ValueNotifier<bool> submitting, {
+    required PantunDraftStore store,
+    required String? parentId,
+    required String quoteId,
+    required VoidCallback onBeforeClear,
+    required VoidCallback onAllowPop,
+  }) async {
     final l10n = AppLocalizations.of(context);
     final auth = await ref.read(authStatusProvider.future);
     if (!auth.isAuth) {
       if (context.mounted) {
         await showAppErrorSheet(
           context,
-          message: l10n.pantunReplyLoginRequired,
+          message: parentId == null
+              ? l10n.pantunWriteLoginRequired
+              : l10n.pantunReplyLoginRequired,
         );
       }
       return;
@@ -134,21 +358,29 @@ class PantunComposePage extends HookConsumerWidget {
     submitting.value = true;
     try {
       final api = ref.read(pantunApiProvider);
-      // rhymeScheme null = biarkan server yang deteksi (ABAB/AAAA).
       final row = parentId == null
           ? await api.create(lines: lines, rhymeScheme: scheme)
           : await api.createReply(
-              parentId: parentId!,
+              parentId: parentId,
               lines: lines,
               rhymeScheme: scheme,
             );
       unawaited(
         AnalyticsService.instance.logPantunSubmit(isReply: parentId != null),
       );
+      onBeforeClear();
+      await store.clear(
+        parentId: parentId,
+        quoteId: parentId == null ? null : quoteId,
+      );
       if (context.mounted) {
         ref.invalidate(pantunFeedProvider);
-        if (parentId != null) ref.invalidate(pantunDetailProvider(parentId!));
-        context.pop(row);
+        // Detail: caller append+scroll; jangan invalidate di sini agar
+        // balasan baru tidak hilang sebelum scroll.
+        onAllowPop();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) context.pop(row);
+        });
       }
     } on PantunFailure catch (e) {
       if (context.mounted) await showAppErrorSheet(context, message: e.message);
@@ -162,6 +394,160 @@ class PantunComposePage extends HookConsumerWidget {
   }
 }
 
+class _QuotePreview {
+  const _QuotePreview({required this.authorLabel, required this.lines});
+
+  final String authorLabel;
+  final List<String> lines;
+}
+
+_QuotePreview? _resolveQuotePreview(
+  WidgetRef ref, {
+  required String? parentId,
+  required String quoteId,
+  required PantunComposeArgs? args,
+  bool preferLiveDetail = false,
+}) {
+  if (parentId == null || parentId.isEmpty) return null;
+
+  final detail = ref.watch(pantunDetailProvider(parentId)).asData?.value;
+
+  if (detail != null) {
+    final Pantun target;
+    if (quoteId == PantunComposeArgs.quoteRoot || quoteId == parentId) {
+      target = detail.pantun;
+    } else {
+      Pantun? match;
+      for (final reply in detail.replies) {
+        if (reply.id == quoteId) {
+          match = reply;
+          break;
+        }
+      }
+      target = match ?? detail.pantun;
+    }
+    return _QuotePreview(
+      authorLabel: displayPublicAccountLabel(
+        displayName: target.displayName,
+        username: target.username,
+      ),
+      lines: target.lines,
+    );
+  }
+
+  if (preferLiveDetail) return null;
+
+  final fromArgsLines = args?.quoteLines;
+  final fromArgsAuthor = args?.quoteAuthorLabel?.trim() ?? '';
+  if (fromArgsLines != null && fromArgsLines.isNotEmpty) {
+    return _QuotePreview(
+      authorLabel: fromArgsAuthor,
+      lines: fromArgsLines.take(4).toList(growable: false),
+    );
+  }
+  return null;
+}
+
+Future<bool> _confirmDiscardDraft(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  final result = await showModalBottomSheet<bool>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) => Padding(
+      padding: MediaQuery.of(sheetContext).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              FTile(
+                title: Text(l10n.pantunComposeDiscardDraftTitle),
+                subtitle: Text(l10n.pantunComposeDiscardDraftBody),
+              ),
+              FTile(
+                title: const SizedBox.shrink(),
+                suffix: FButton(
+                  variant: FButtonVariant.destructive,
+                  onPress: () => Navigator.of(sheetContext).pop(true),
+                  child: Text(l10n.pantunComposeDiscardDraftConfirm),
+                ),
+              ),
+              FTile(
+                title: const SizedBox.shrink(),
+                suffix: FButton(
+                  onPress: () => Navigator.of(sheetContext).pop(false),
+                  child: Text(l10n.pantunCancel),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+  return result == true;
+}
+
+class _QuotePreviewCard extends StatelessWidget {
+  const _QuotePreviewCard({required this.preview});
+
+  final _QuotePreview preview;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    final title = preview.authorLabel.trim().isEmpty
+        ? l10n.pantunComposeReplying
+        : l10n.pantunComposeReplyingAuthor(preview.authorLabel);
+    final shown = preview.lines
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList(growable: false);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.secondary,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.colors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+            if (shown.isNotEmpty) ...[
+              const Gap(8),
+              for (var i = 0; i < shown.length; i++) ...[
+                if (i > 0) const Gap(2),
+                Text(
+                  shown[i],
+                  style: theme.typography.body.sm.copyWith(
+                    fontStyle: i < 2 ? FontStyle.italic : FontStyle.normal,
+                    color: i < 2
+                        ? theme.colors.mutedForeground
+                        : theme.colors.foreground,
+                  ),
+                ),
+              ],
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _RhymeStatus extends StatelessWidget {
   const _RhymeStatus({
     required this.check,
@@ -171,8 +557,6 @@ class _RhymeStatus extends StatelessWidget {
 
   final RhymeCheckResult? check;
   final bool allFilled;
-
-  /// Skema yang terdeteksi otomatis; null = belum ada yang cocok.
   final String? scheme;
 
   @override
@@ -194,7 +578,9 @@ class _RhymeStatus extends StatelessWidget {
           FBadge(
             variant: FBadgeVariant.primary,
             child: Text(
-              scheme == null ? 'Pola rima cocok' : 'Pola rima $scheme cocok',
+              scheme == null
+                  ? l10n.pantunComposeRhymeOk
+                  : l10n.pantunComposeRhymeOkScheme(scheme!),
             ),
           ),
           if (warning != null) ...[
@@ -212,13 +598,15 @@ class _RhymeStatus extends StatelessWidget {
       RhymeMismatch(:final pairs) => FBadge(
         variant: FBadgeVariant.destructive,
         child: Text(
-          pairs.map((p) => 'Baris ${p.$1} & ${p.$2} belum berima').join('; '),
+          pairs
+              .map((p) => l10n.pantunComposeRhymeMismatchPair(p.$1, p.$2))
+              .join('; '),
         ),
       ),
       RhymeLastWordUndetected(:final lineIndex) => FBadge(
         variant: FBadgeVariant.destructive,
         child: Text(
-          'Kata akhir baris ${lineIndex + 1} tidak terdeteksi. Perbaiki ya.',
+          l10n.pantunComposeRhymeLastWordUndetected(lineIndex + 1),
         ),
       ),
       null => const SizedBox.shrink(),

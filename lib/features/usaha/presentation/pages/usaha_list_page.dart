@@ -9,10 +9,12 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/exclude_semantics_on_exit.dart';
+import '../../../explore/presentation/providers/regions_providers.dart';
 import '../../domain/entities/usaha.dart';
 import '../../usaha_router.dart';
 import '../providers/usaha_browse_providers.dart';
 import '../providers/usaha_providers.dart';
+import '../widgets/usaha_filter_sheet.dart';
 import '../widgets/usaha_ui.dart';
 
 /// Grid 3 kolom - seragam dengan wisata, kuliner, dan acara: foto kotak 1:1
@@ -34,6 +36,7 @@ class UsahaListPage extends ConsumerStatefulWidget {
 
 class _UsahaListPageState extends ConsumerState<UsahaListPage> {
   String? _categoryId;
+  String? _regionId;
   String _query = '';
   final _scroll = ScrollController();
   Timer? _debounce;
@@ -53,8 +56,26 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
     super.dispose();
   }
 
-  UsahaBrowseQuery get _browseQuery =>
-      UsahaBrowseQuery(categoryId: _categoryId, q: _query.trim());
+  UsahaBrowseQuery get _browseQuery => UsahaBrowseQuery(
+    categoryId: _categoryId,
+    regionId: _regionId,
+    q: _query.trim(),
+  );
+
+  Future<void> _openFilter() async {
+    final selection = await showUsahaFilterSheet(
+      context,
+      selectedRegionId: _regionId,
+    );
+    if (!mounted || selection == null) return;
+    setState(() => _regionId = selection.regionId);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
+  void _clearRegionFilter() {
+    setState(() => _regionId = null);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
 
   void _onSearchChanged(String value) {
     _debounce?.cancel();
@@ -92,9 +113,9 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
     });
   }
 
-  Future<void> _reload() async {
-    await ref.read(usahaBrowseProvider(_browseQuery).notifier).reload();
-  }
+  Future<void> _reload() => ref
+      .read(usahaBrowseProvider(_browseQuery).notifier)
+      .reload(keepItems: true);
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +123,14 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
     final browseQuery = _browseQuery;
     final browseAsync = ref.watch(usahaBrowseProvider(browseQuery));
     final categories = ref.watch(usahaCategoriesProvider).value ?? const [];
+    final regionName = _regionId == null
+        ? null
+        : (ref.watch(regionsKecamatanProvider).value ?? const [])
+              .where((r) => r.id == _regionId)
+              .map((r) => r.name)
+              .firstOrNull;
+    final hasActiveFilter =
+        _query.trim().isNotEmpty || _regionId != null || _categoryId != null;
 
     return ExcludeSemanticsOnExit(
       child: FScaffold(
@@ -115,6 +144,15 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
             ),
           ],
           suffixes: [
+            FHeaderAction(
+              icon: Icon(
+                FLucideIcons.listFilter,
+                color: _regionId != null
+                    ? context.theme.colors.primary
+                    : null,
+              ),
+              onPress: _openFilter,
+            ),
             FHeaderAction(
               icon: const Icon(FLucideIcons.history),
               onPress: () => context.push(UsahaRouter.proposals.path),
@@ -143,7 +181,31 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                     const Icon(FLucideIcons.search),
                   ),
             ),
-            const Gap(12),
+            if (_regionId != null && regionName != null) ...[
+              const Gap(8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  FBadge(
+                    variant: FBadgeVariant.secondary,
+                    child: Text(l10n.usahaFilterRegionChip(regionName)),
+                  ),
+                  GestureDetector(
+                    onTap: _clearRegionFilter,
+                    child: Text(
+                      l10n.usahaFilterClear,
+                      style: context.theme.typography.body.sm.copyWith(
+                        color: context.theme.colors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const Gap(8),
             if (categories.isNotEmpty) ...[
               _CategoryBar(
                 categories: categories,
@@ -153,7 +215,9 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                   if (_scroll.hasClients) _scroll.jumpTo(0);
                 },
               ),
-              const Gap(4),
+              // Jarak chips -> grid: 4 terlalu mepet (chip punya tinggi
+              // sendiri, grid langsung menempel di bawahnya).
+              const Gap(8),
             ],
             Expanded(
               child: browseAsync.when(
@@ -162,7 +226,7 @@ class _UsahaListPageState extends ConsumerState<UsahaListPage> {
                 data: (page) {
                   if (page.items.isEmpty) {
                     return _EmptyBody(
-                      hasQuery: _query.trim().isNotEmpty,
+                      hasQuery: hasActiveFilter,
                       onRefresh: _reload,
                     );
                   }

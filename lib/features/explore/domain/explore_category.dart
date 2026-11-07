@@ -28,6 +28,7 @@ class ExploreCategory {
     'usaha' => 'assets/images/explore_covers/usaha.webp',
     'acara' => 'assets/images/explore_covers/acara.webp',
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
+    'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     _ => null,
   };
 
@@ -89,9 +90,13 @@ class ExploreCategory {
       icon: FLucideIcons.tv,
       comingSoon: false,
     ),
+    ExploreCategory(
+      id: 'ensiklopedia',
+      icon: FLucideIcons.bookOpen,
+      comingSoon: false,
+    ),
     // Segera
     // Gabungan Sejarah + Kisah + Karya + Tradisi + Permainan.
-    ExploreCategory(id: 'ensiklopedia', icon: FLucideIcons.bookOpen),
     ExploreCategory(id: 'komunitas', icon: FLucideIcons.users),
   ];
 

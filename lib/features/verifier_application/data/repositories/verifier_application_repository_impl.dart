@@ -45,10 +45,26 @@ class VerifierApplicationRepositoryImpl
   Future<Either<VerifierApplicationFailure, VerifierApplication>> submit({
     required String phone,
     required String address,
+    required String fullName,
     required List<SocialLink> socialLinks,
+    required String dialect,
+    required String? dialectNote,
+    required String reason,
+    required SocialScreenshot? photo,
   }) {
     return _mutate(
-      () => _remote.submit(_toRequest(phone, address, socialLinks)),
+      () => _remote.submit(
+        _toRequest(
+          phone,
+          address,
+          fullName,
+          socialLinks,
+          dialect,
+          dialectNote,
+          reason,
+          photo,
+        ),
+      ),
     );
   }
 
@@ -56,10 +72,26 @@ class VerifierApplicationRepositoryImpl
   Future<Either<VerifierApplicationFailure, VerifierApplication>> resubmit({
     required String phone,
     required String address,
+    required String fullName,
     required List<SocialLink> socialLinks,
+    required String dialect,
+    required String? dialectNote,
+    required String reason,
+    required SocialScreenshot? photo,
   }) {
     return _mutate(
-      () => _remote.resubmit(_toRequest(phone, address, socialLinks)),
+      () => _remote.resubmit(
+        _toRequest(
+          phone,
+          address,
+          fullName,
+          socialLinks,
+          dialect,
+          dialectNote,
+          reason,
+          photo,
+        ),
+      ),
     );
   }
 
@@ -87,10 +119,25 @@ class VerifierApplicationRepositoryImpl
   SubmitVerifierApplicationRequestDto _toRequest(
     String phone,
     String address,
+    String fullName,
     List<SocialLink> socialLinks,
+    String dialect,
+    String? dialectNote,
+    String reason,
+    SocialScreenshot? photo,
   ) => SubmitVerifierApplicationRequestDto(
     phone: phone,
     address: address,
+    fullName: fullName,
+    dialect: dialect,
+    dialectNote: dialectNote,
+    reason: reason,
+    photo: photo == null
+        ? null
+        : SocialScreenshotDto(
+            url: photo.url,
+            providerFileId: photo.providerFileId,
+          ),
     socialLinks: socialLinks
         .map(
           (l) => SocialLinkDto(
@@ -110,6 +157,7 @@ class VerifierApplicationRepositoryImpl
     status: dto.status,
     phone: dto.phone,
     address: dto.address,
+    fullName: dto.fullName,
     socialLinks: dto.socialLinks
         .map(
           (l) => SocialLink(
@@ -122,6 +170,15 @@ class VerifierApplicationRepositoryImpl
           ),
         )
         .toList(),
+    dialect: dto.dialect,
+    dialectNote: dto.dialectNote,
+    reason: dto.reason,
+    photo: dto.photo == null
+        ? null
+        : SocialScreenshot(
+            url: dto.photo!.url,
+            providerFileId: dto.photo!.providerFileId,
+          ),
     adminComment: dto.adminComment,
     reviewedAt: dto.reviewedAt,
     createdAt: dto.createdAt,

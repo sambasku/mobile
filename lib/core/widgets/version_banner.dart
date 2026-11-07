@@ -3,6 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../features/onboarding/onboarding_router.dart';
 import '../../flavors.dart';
+import '../../shared/splash/splash_router.dart';
 import '../router/app_router.dart';
 
 /// Banner versi di pojok kanan atas (pola jnn_mobile). Hanya staging.
@@ -28,8 +29,9 @@ class _VersionBannerState extends State<VersionBanner> {
       builder: (context, _) {
         // state melempar "Bad state: No element" sebelum match pertama ada.
         final config = AppRouter.router.routerDelegate.currentConfiguration;
-        if (config.isNotEmpty &&
-            config.uri.path == OnboardingRouter.onboarding.path) {
+        final path = config.isNotEmpty ? config.uri.path : '';
+        if (path == OnboardingRouter.onboarding.path ||
+            path == SplashRouter.splash.path) {
           return widget.child;
         }
         return _ribbon(context);

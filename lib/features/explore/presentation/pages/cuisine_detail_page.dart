@@ -13,6 +13,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../data/culinary_contribution_api.dart';
 import '../../domain/entities/cuisine.dart';
 import '../providers/cuisine_providers.dart';
@@ -176,6 +177,16 @@ class _BodyState extends ConsumerState<_Body> {
                       item.description,
                       style: theme.typography.body.sm.copyWith(height: 1.5),
                     ),
+                    if (item.author case final author?)
+                      ContributorAppreciationSection(
+                        label: l10n.usahaContributorProposedBy,
+                        contributors: [
+                          ContributorCredit(
+                            username: author.username,
+                            displayName: author.displayName,
+                          ),
+                        ],
+                      ),
                     if (item.ingredients.isNotEmpty) ...[
                       const Gap(20),
                       Text(

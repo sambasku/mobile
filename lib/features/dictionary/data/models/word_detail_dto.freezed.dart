@@ -468,7 +468,7 @@ $WordVerifierDtoCopyWith<$Res>? get createdBy {
 /// @nodoc
 mixin _$WordVerifierDto {
 
- String get username;@JsonKey(name: 'display_name') String? get displayName; String get role;
+ String get username;@JsonKey(name: 'display_name') String? get displayName;@JsonKey(name: 'avatar_url') String? get avatarUrl; String get role;
 /// Create a copy of WordVerifierDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -482,20 +482,20 @@ $WordVerifierDtoCopyWith<WordVerifierDto> get copyWith => _$WordVerifierDtoCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as WordVerifierDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordVerifierDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.role, _this.role) || other.role == _this.role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordVerifierDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.role, _this.role) || other.role == _this.role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as WordVerifierDto;
-  return Object.hash(runtimeType,_this.username,_this.displayName,_this.role);
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.avatarUrl,_this.role);
 }
 
 @override
 String toString() {
   final _this = this as WordVerifierDto;
-  return 'WordVerifierDto(username: ${_this.username}, displayName: ${_this.displayName}, role: ${_this.role})';
+  return 'WordVerifierDto(username: ${_this.username}, displayName: ${_this.displayName}, avatarUrl: ${_this.avatarUrl}, role: ${_this.role})';
 }
 
 
@@ -506,7 +506,7 @@ abstract mixin class $WordVerifierDtoCopyWith<$Res>  {
   factory $WordVerifierDtoCopyWith(WordVerifierDto value, $Res Function(WordVerifierDto) _then) = _$WordVerifierDtoCopyWithImpl;
 @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String? displayName, String role
+ String username,@JsonKey(name: 'display_name') String? displayName,@JsonKey(name: 'avatar_url') String? avatarUrl, String role
 });
 
 
@@ -523,10 +523,11 @@ class _$WordVerifierDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordVerifierDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = freezed,Object? role = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = freezed,Object? avatarUrl = freezed,Object? role = null,}) {
   return _then(WordVerifierDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -613,10 +614,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String role)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String role)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WordVerifierDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.role);case _:
+return $default(_that.username,_that.displayName,_that.avatarUrl,_that.role);case _:
   return orElse();
 
 }
@@ -634,10 +635,10 @@ return $default(_that.username,_that.displayName,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String role)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String role)  $default,) {final _that = this;
 switch (_that) {
 case _WordVerifierDto():
-return $default(_that.username,_that.displayName,_that.role);case _:
+return $default(_that.username,_that.displayName,_that.avatarUrl,_that.role);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -654,10 +655,10 @@ return $default(_that.username,_that.displayName,_that.role);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String? displayName,  String role)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String? displayName, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String role)?  $default,) {final _that = this;
 switch (_that) {
 case _WordVerifierDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.role);case _:
+return $default(_that.username,_that.displayName,_that.avatarUrl,_that.role);case _:
   return null;
 
 }
@@ -669,11 +670,12 @@ return $default(_that.username,_that.displayName,_that.role);case _:
 @JsonSerializable()
 
 class _WordVerifierDto implements WordVerifierDto {
-  const _WordVerifierDto({required this.username, @JsonKey(name: 'display_name') this.displayName, required this.role});
+  const _WordVerifierDto({required this.username, @JsonKey(name: 'display_name') this.displayName, @JsonKey(name: 'avatar_url') this.avatarUrl, required this.role});
   factory _WordVerifierDto.fromJson(Map<String, dynamic> json) => _$WordVerifierDtoFromJson(json);
 
 @override final  String username;
 @override@JsonKey(name: 'display_name') final  String? displayName;
+@override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
 @override final  String role;
 
 /// Create a copy of WordVerifierDto
@@ -689,18 +691,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordVerifierDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.role, role) || other.role == role));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordVerifierDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.role, role) || other.role == role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,username,displayName,role);
+    return Object.hash(runtimeType,username,displayName,avatarUrl,role);
 }
 
 @override
 String toString() {
-    return 'WordVerifierDto(username: $username, displayName: $displayName, role: $role)';
+    return 'WordVerifierDto(username: $username, displayName: $displayName, avatarUrl: $avatarUrl, role: $role)';
 }
 
 
@@ -711,7 +713,7 @@ abstract mixin class _$WordVerifierDtoCopyWith<$Res> implements $WordVerifierDto
   factory _$WordVerifierDtoCopyWith(_WordVerifierDto value, $Res Function(_WordVerifierDto) _then) = __$WordVerifierDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String? displayName, String role
+ String username,@JsonKey(name: 'display_name') String? displayName,@JsonKey(name: 'avatar_url') String? avatarUrl, String role
 });
 
 
@@ -728,10 +730,11 @@ class __$WordVerifierDtoCopyWithImpl<$Res>
 
 /// Create a copy of WordVerifierDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = freezed,Object? role = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = freezed,Object? avatarUrl = freezed,Object? role = null,}) {
   return _then(_WordVerifierDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
+as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,
   ));

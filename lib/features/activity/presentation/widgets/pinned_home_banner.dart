@@ -66,9 +66,8 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
     final page = _page.clamp(0, items.length - 1);
 
     return Padding(
-      // Napas vertikal minimal antar kartu beranda (permintaan review):
-      // Kata Hari Ini di atas + heading teks di bawah.
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      // Napas vertikal tipis ke WOTD di atas; bawah ke heading feed.
+      padding: const EdgeInsets.only(top: 2, bottom: 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -155,9 +154,13 @@ class _PinnedHomeBannerState extends ConsumerState<PinnedHomeBanner> {
                                     ],
                                   ),
                                 ),
-                                // Penanda dipin (pengganti chevron): kartu
-                                // bukan navigasi bertingkat, cukup badge.
-                                Icon(FLucideIcons.pin, size: 18, color: accent),
+                                // Penanda dipin: destructive supaya kontras
+                                // dari aksen primary kartu.
+                                Icon(
+                                  FLucideIcons.pin,
+                                  size: 18,
+                                  color: theme.colors.destructive,
+                                ),
                               ],
                             ),
                           ),
@@ -223,9 +226,9 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
         child: Skeletonizer(
           enabled: true,
           child: Padding(
-            // Harus sama dengan banner asli (top 4 + bottom 4, gutter 12,
+            // Harus sama dengan banner asli (top 2 + bottom 4, gutter 12,
             // + baris dots) supaya feed tidak bergeser saat data datang.
-            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            padding: const EdgeInsets.only(top: 2, bottom: 4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -273,7 +276,7 @@ class _PinnedHomeBannerSkeleton extends StatelessWidget {
                         ),
                         Icon(
                           FLucideIcons.pin,
-                          color: context.theme.colors.primary,
+                          color: context.theme.colors.destructive,
                           size: 18,
                         ),
                       ],

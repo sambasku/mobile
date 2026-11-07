@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/swipe_decision_card.dart';
 import '../../../../shared/widgets/tile_group_list.dart';
@@ -78,7 +79,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
           children: [
             FAlert(
               variant: FAlertVariant.destructive,
-              title: Text(AppLocalizations.of(context).reviewSearchMissLoadFailed),
+              title: Text(
+                AppLocalizations.of(context).reviewSearchMissLoadFailed,
+              ),
               icon: Icon(FLucideIcons.circleAlert),
             ),
             const Gap(12),
@@ -97,9 +100,7 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
 
         if (items.isEmpty) {
           return _scaffold(
-            _emptyText(
-              AppLocalizations.of(context).reviewSearchMissEmpty,
-            ),
+            _emptyText(AppLocalizations.of(context).reviewSearchMissEmpty),
           );
         }
 
@@ -133,8 +134,12 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                       // Samakan pendahulu (verifikasi/vote): overlay ikon,
                       // bukan teks label - ikon sudah dipass di bawah.
                       overlayStyle: SwipeDecisionOverlayStyle.icon,
-                      positiveLabel: AppLocalizations.of(context).reviewSearchMissPublish,
-                      negativeLabel: AppLocalizations.of(context).reviewSearchMissDismiss,
+                      positiveLabel: AppLocalizations.of(
+                        context,
+                      ).reviewSearchMissPublish,
+                      negativeLabel: AppLocalizations.of(
+                        context,
+                      ).reviewSearchMissDismiss,
                       skipLabel: AppLocalizations.of(context).commonSkip,
                       positiveIcon: FLucideIcons.eye,
                       negativeIcon: FLucideIcons.x,
@@ -182,7 +187,11 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
                   }),
             // Tanpa prefix icon: icon+spacing+label melebihi lebar layar
             // 320px (overflow 6px).
-            child: Text(AppLocalizations.of(context).reviewQueueStartCount('${items.length}')),
+            child: Text(
+              AppLocalizations.of(
+                context,
+              ).reviewQueueStartCount(formatRibuan(items.length)),
+            ),
           ),
           const Gap(12),
           Expanded(
@@ -276,7 +285,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: AppLocalizations.of(context).reviewSearchMissDismiss,
+                semanticsLabel: AppLocalizations.of(
+                  context,
+                ).reviewSearchMissDismiss,
                 onPress: () => _decide(item, SwipeDecisionDirection.negative),
                 child: Icon(FLucideIcons.x, color: theme.colors.destructive),
               ),
@@ -286,7 +297,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: AppLocalizations.of(context).reviewSearchMissCorrect,
+                semanticsLabel: AppLocalizations.of(
+                  context,
+                ).reviewSearchMissCorrect,
                 onPress: () => _openEditTerm(item),
                 child: const Icon(FLucideIcons.pencil),
               ),
@@ -296,7 +309,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
               child: FButton.icon(
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
-                semanticsLabel: AppLocalizations.of(context).reviewSearchMissPublish,
+                semanticsLabel: AppLocalizations.of(
+                  context,
+                ).reviewSearchMissPublish,
                 // Sudah tayang → tombol nonaktif (swipe kanan = lewati, #137).
                 onPress: item.isVisible
                     ? null
@@ -319,7 +334,9 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
     // (#137: dulu spring back diam-diam → swipe terasa gagal).
     if (direction == SwipeDecisionDirection.positive && item.isVisible) {
       setState(() => _pos++);
-      _toast(AppLocalizations.of(context).reviewSearchMissSkippedToast(item.term));
+      _toast(
+        AppLocalizations.of(context).reviewSearchMissSkippedToast(item.term),
+      );
       return true;
     }
     _decide(item, direction);
@@ -340,7 +357,11 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
       result.match((failure) => _onFailure(item, failure), (_) {
         if (!mounted) return;
         if (direction == SwipeDecisionDirection.positive) {
-          _toast(AppLocalizations.of(context).reviewSearchMissPublishedToast(item.term));
+          _toast(
+            AppLocalizations.of(
+              context,
+            ).reviewSearchMissPublishedToast(item.term),
+          );
         }
       });
     });
@@ -383,7 +404,8 @@ class _ReviewSearchMissPageState extends ConsumerState<ReviewSearchMissPage> {
           child: Text(AppLocalizations.of(context).commonCancel),
         ),
         FButton(
-          onPress: () => Navigator.of(dialogContext).pop(controller.text.trim()),
+          onPress: () =>
+              Navigator.of(dialogContext).pop(controller.text.trim()),
           child: Text(AppLocalizations.of(context).commonSave),
         ),
       ],
@@ -490,8 +512,10 @@ class _MissCardBody extends StatelessWidget {
     final direction = item.searchIn == 'translation'
         ? AppLocalizations.of(context).reviewSearchMissDirectionIdSbs
         : AppLocalizations.of(context).reviewSearchMissDirectionSbsId;
-    final hits = item.hitCount > 99 ? '99×' : '${item.hitCount}×';
-    final status = item.isVisible ? 'tayang' : AppLocalizations.of(context).reviewSearchMissNotPublished;
+    final hits = '${formatRibuan(item.hitCount)}×';
+    final status = item.isVisible
+        ? 'tayang'
+        : AppLocalizations.of(context).reviewSearchMissNotPublished;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -504,7 +528,9 @@ class _MissCardBody extends StatelessWidget {
               item.term,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
+              style: theme.typography.body.xl.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const Gap(10),
             Wrap(
@@ -512,7 +538,12 @@ class _MissCardBody extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _MetaChip(icon: FLucideIcons.languages, label: direction),
-                _MetaChip(icon: FLucideIcons.search, label: AppLocalizations.of(context).reviewSearchMissHitsText(hits)),
+                _MetaChip(
+                  icon: FLucideIcons.search,
+                  label: AppLocalizations.of(
+                    context,
+                  ).reviewSearchMissHitsText(hits),
+                ),
                 _MetaChip(
                   icon: item.isVisible ? FLucideIcons.eye : FLucideIcons.eyeOff,
                   label: status,

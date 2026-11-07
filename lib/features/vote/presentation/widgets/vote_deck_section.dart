@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/router/app_router.dart';
+import '../../../../core/utils/format_number.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/widgets/busy_aware_icon.dart';
@@ -62,7 +63,9 @@ class _VoteDeckSectionState extends ConsumerState<VoteDeckSection> {
     final remaining = deck == null || deck.items.isEmpty
         ? null
         : l10n.voteDeckRemaining(
-            '${deck.items.length}', deck.hasMore ? '+' : '');
+            formatRibuan(deck.items.length),
+            deck.hasMore ? '+' : '',
+          );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -349,18 +352,21 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       item: item,
                       direction: VoteDeckSwipeDirection.agree,
                     ),
-                  onRewind: () => _rewind(context, ref),
-                  // Kartu tidak digeser: deck keepAlive, kembali ke kata yang
-                  // sama. Invalidate setelah form tertutup supaya chip kelas
-                  // kata tidak basi bila usulan di-self-apply (issue #159).
-                  onFix: () async {
-                    await context.push('/suggest-edit/${item.wordId}');
-                    if (context.mounted) {
-                      await ref
-                          .read(voteDeckControllerProvider.notifier)
-                          .refresh();
-                    }
-                  },
+              onRewind: () => _rewind(context, ref),
+              // Kartu tidak digeser: deck keepAlive, kembali ke kata yang
+              // sama. Invalidate setelah form tertutup supaya chip kelas
+              // kata tidak basi bila usulan di-self-apply (issue #159).
+              onFix: () async {
+                await context.push(
+                  Uri(
+                    path: '/suggest-edit/${item.wordId}',
+                    queryParameters: {'meaning': item.id},
+                  ).toString(),
+                );
+                if (context.mounted) {
+                  await ref.read(voteDeckControllerProvider.notifier).refresh();
+                }
+              },
             ),
           ],
         );
@@ -528,7 +534,9 @@ class _VoteDeckActionBar extends StatelessWidget {
                               semanticsLabel: 'Perbaiki kata ini',
                               onPress: _rewinding ? null : onFix,
                               prefix: const Icon(FLucideIcons.pencil),
-                              child: Text(AppLocalizations.of(context).voteFixAction),
+                              child: Text(
+                                AppLocalizations.of(context).voteFixAction,
+                              ),
                             ),
                     ),
             ),
@@ -655,7 +663,10 @@ class _VoteDeckCardPlaceholder extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Gap(10),
-                    Text(AppLocalizations.of(context).voteWordTypeLabel, textAlign: TextAlign.center),
+                    Text(
+                      AppLocalizations.of(context).voteWordTypeLabel,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),

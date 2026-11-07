@@ -15,6 +15,7 @@ import '../../../shared/widgets/attachment_images_field.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/utils/error_bottom_sheet.dart';
 import '../../../core/services/analytics_service.dart';
+import '../../../core/utils/format_number.dart';
 import '../../auth/presentation/providers/auth_status_providers.dart';
 import '../data/bug_report_providers.dart';
 import '../domain/bug_report_models.dart';
@@ -41,10 +42,7 @@ class ReportBugPage extends HookConsumerWidget {
       if (!skipImages &&
           attachmentsEnabled.value &&
           images.value.any((e) => e.uploading)) {
-        showFToast(
-          context: context,
-          title: Text(l10n.reportBugWaitUpload),
-        );
+        showFToast(context: context, title: Text(l10n.reportBugWaitUpload));
         return;
       }
 
@@ -76,9 +74,7 @@ class ReportBugPage extends HookConsumerWidget {
                     children: [
                       FTile(
                         title: Text(l10n.reportBugAllImagesFailedTitle),
-                        subtitle: Text(
-                          l10n.reportBugAllImagesFailedBody,
-                        ),
+                        subtitle: Text(l10n.reportBugAllImagesFailedBody),
                       ),
                       FTile(
                         title: const Text(''),
@@ -134,10 +130,7 @@ class ReportBugPage extends HookConsumerWidget {
         );
 
         if (!context.mounted) return;
-        showFToast(
-          context: context,
-          title: Text(l10n.reportBugThanks),
-        );
+        showFToast(context: context, title: Text(l10n.reportBugThanks));
         context.pop();
       } on DioException catch (e) {
         if (context.mounted) {
@@ -145,10 +138,7 @@ class ReportBugPage extends HookConsumerWidget {
         }
       } catch (_) {
         if (context.mounted) {
-          await showAppErrorSheet(
-            context,
-            message: l10n.reportBugGenericError,
-          );
+          await showAppErrorSheet(context, message: l10n.reportBugGenericError);
         }
       } finally {
         submitting.value = false;
@@ -184,8 +174,7 @@ class ReportBugPage extends HookConsumerWidget {
             control: FTextFieldControl.managed(controller: description),
             enabled: !submitting.value,
             label: Text(l10n.reportBugDescriptionLabel),
-            hint:
-                l10n.reportBugDescriptionHint,
+            hint: l10n.reportBugDescriptionHint,
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             minLines: 5,
@@ -194,7 +183,7 @@ class ReportBugPage extends HookConsumerWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Text(
-              '${trimmed.length}/2000',
+              '${formatRibuan(trimmed.length)}/${formatRibuan(2000)}',
               style: context.theme.typography.body.sm.copyWith(
                 color: context.theme.colors.mutedForeground,
               ),
@@ -235,7 +224,9 @@ class ReportBugPage extends HookConsumerWidget {
                             FTileGroup(
                               children: [
                                 FTile(
-                                  title: Text(l10n.reportBugImagesUnavailableTitle),
+                                  title: Text(
+                                    l10n.reportBugImagesUnavailableTitle,
+                                  ),
                                   subtitle: Text(
                                     l10n.reportBugImagesUnavailableBody,
                                   ),
@@ -246,7 +237,9 @@ class ReportBugPage extends HookConsumerWidget {
                                     variant: FButtonVariant.destructive,
                                     onPress: () =>
                                         Navigator.of(sheetContext).pop(true),
-                                    child: Text(l10n.reportBugSendWithoutImages),
+                                    child: Text(
+                                      l10n.reportBugSendWithoutImages,
+                                    ),
                                   ),
                                 ),
                                 FTile(
@@ -311,7 +304,11 @@ class ReportBugPage extends HookConsumerWidget {
           FButton(
             onPress: canSubmit ? () => submit() : null,
             prefix: submitting.value ? const FCircularProgress() : null,
-            child: Text(submitting.value ? l10n.reportBugSubmitting : l10n.reportBugSubmit),
+            child: Text(
+              submitting.value
+                  ? l10n.reportBugSubmitting
+                  : l10n.reportBugSubmit,
+            ),
           ),
         ],
       ),
@@ -336,10 +333,8 @@ String _mapDio(DioException error, AppLocalizations l10n) {
   return switch (error.type) {
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
-    DioExceptionType.receiveTimeout =>
-      l10n.reportBugTimeout,
-    DioExceptionType.connectionError =>
-      l10n.reportBugConnectionError,
+    DioExceptionType.receiveTimeout => l10n.reportBugTimeout,
+    DioExceptionType.connectionError => l10n.reportBugConnectionError,
     _ => l10n.reportBugGenericError,
   };
 }

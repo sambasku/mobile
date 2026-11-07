@@ -11,11 +11,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/widgets/brand_logo.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/image_placeholder_256.dart';
-import '../../data/datasources/contributors_remote_datasource.dart';
-import '../../data/datasources/sponsors_remote_datasource.dart';
+import '../../data/datasources/about_api_datasource.dart';
 import '../../../user_profile/user_profile_router.dart';
-import '../providers/contributors_providers.dart';
-import '../providers/sponsors_providers.dart';
+import '../providers/about_api_providers.dart';
 
 /// Halaman About: identitas app + blok info & fitur. Data Sponsor/Mitra
 /// dan Tim Kami pindah ke [SponsorshipTeamPage] supaya tidak duplikat.
@@ -165,54 +163,60 @@ class _TeamTab extends StatelessWidget {
           body: l10n.aboutTogetherBody,
         ),
         const Gap(16),
+        const _TeamCoreSection(),
+        const Gap(16),
         _AboutBlock(
           title: l10n.aboutContributorsTitle,
           body: l10n.aboutContributorsBody,
         ),
+        const Gap(8),
+        const _ContributorsFlatSection(),
         const Gap(16),
         _AboutBlock(
           title: l10n.aboutVerifiersTitle,
           body: l10n.aboutVerifiersBody,
         ),
-        const Gap(16),
-        const _ContributorsSection(),
+        const Gap(8),
+        const _VerifiersSection(),
       ],
     );
   }
 }
 
-/// Daftar kontributor dari CDN. Loading = skeleton (anti layout shift).
-/// Null/kosong/gagal fetch = section hilang (soft-fail, halaman tetap utuh).
-class _ContributorsSection extends ConsumerWidget {
-  const _ContributorsSection();
+/// Inti Tim: users.is_team (avatar + team_as + note).
+class _TeamCoreSection extends ConsumerWidget {
+  const _TeamCoreSection();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(contributorsProvider);
-    final contributors = async.value;
-    // Loading tanpa data: skeleton. Error tapi sempat punya data (keepAlive
-    // tidak aktif, jarang): tetap soft-fail.
-    if (async.isLoading && contributors == null) {
-      return const _SectionSkeleton(tileCount: 4);
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(aboutTeamProvider);
+    final members = async.value;
+    if (async.isLoading && members == null) {
+      return const _SectionSkeleton(tileCount: 3);
     }
-    if (contributors == null || contributors.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (members == null || members.isEmpty) return const SizedBox.shrink();
 
     final theme = context.theme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Tim Kami',
+          l10n.aboutTeamCoreTitle,
           style: theme.typography.body.sm.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colors.foreground,
           ),
         ),
         const Gap(4),
-        for (final contributor in contributors) ...[
-          _ContributorTile(contributor: contributor),
+        for (final member in members) ...[
+          _PersonAvatarTile(
+            username: member.username,
+            displayName: member.displayName,
+            avatarUrl: member.avatarUrl,
+            subtitle: member.teamAs,
+            note: member.teamNote,
+          ),
           const Gap(8),
         ],
       ],
@@ -220,94 +224,194 @@ class _ContributorsSection extends ConsumerWidget {
   }
 }
 
-class _ContributorTile extends StatelessWidget {
-  const _ContributorTile({required this.contributor});
-
-  final ContributorEntry contributor;
+/// Kontributor: nama flat + load more.
+class _ContributorsFlatSection extends ConsumerWidget {
+  const _ContributorsFlatSection();
 
   @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(aboutContributorsProvider);
+    final state = async.value;
+    if (async.isLoading && state == null) {
+      return const _SectionSkeleton(tileCount: 4);
+    }
+    if (state == null || state.items.isEmpty) return const SizedBox.shrink();
 
-    final tile = Row(
+    final theme = context.theme;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (contributor.avatarUrl case final avatar?)
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: ClipOval(
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: CachedNetworkImageWithFallback(
-                  imageUrl: avatar,
-                  fallback: const ImagePlaceholder256(),
-                  fit: BoxFit.cover,
+        for (final item in state.items) ...[
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => UserProfileRouter.open(
+                context,
+                item.username,
+                displayName: item.displayName,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.displayName,
+                        style: theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colors.foreground,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      FLucideIcons.chevronRight,
+                      size: 16,
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+        ],
+        if (state.hasMore) ...[
+          const Gap(8),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: state.loadingMore
+                ? null
+                : () => ref.read(aboutContributorsProvider.notifier).loadMore(),
+            prefix: state.loadingMore ? const FCircularProgress() : null,
+            child: Text(l10n.aboutContributorsLoadMore),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Verifikator: avatar + nama (apresiasi).
+class _VerifiersSection extends ConsumerWidget {
+  const _VerifiersSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final async = ref.watch(aboutVerifiersProvider);
+    final items = async.value;
+    if (async.isLoading && items == null) {
+      return const _SectionSkeleton(tileCount: 3);
+    }
+    if (items == null || items.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final v in items) ...[
+          _PersonAvatarTile(
+            username: v.username,
+            displayName: v.displayName,
+            avatarUrl: v.avatarUrl,
+          ),
+          const Gap(8),
+        ],
+      ],
+    );
+  }
+}
+
+class _PersonAvatarTile extends StatelessWidget {
+  const _PersonAvatarTile({
+    required this.username,
+    required this.displayName,
+    this.avatarUrl,
+    this.subtitle,
+    this.note,
+  });
+
+  final String username;
+  final String displayName;
+  final String? avatarUrl;
+  final String? subtitle;
+  final String? note;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final tile = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ClipOval(
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: avatarUrl == null
+                  ? const ImagePlaceholder256()
+                  : CachedNetworkImageWithFallback(
+                      imageUrl: avatarUrl!,
+                      fallback: const ImagePlaceholder256(),
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+        ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                contributor.name,
+                displayName,
                 style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colors.foreground,
                 ),
               ),
-              if (contributor.roles.isNotEmpty)
+              if (subtitle case final s? when s.isNotEmpty)
                 Text(
-                  contributor.roles.join(', '),
+                  s,
                   style: theme.typography.body.xs.copyWith(
                     color: theme.colors.mutedForeground,
                     height: 1.4,
                   ),
                 ),
-              const Gap(2),
-              Text(
-                contributor.note,
-                style: theme.typography.body.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                  height: 1.4,
+              if (note case final n? when n.isNotEmpty) ...[
+                const Gap(2),
+                Text(
+                  n,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                    height: 1.4,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
       ],
     );
 
-    // #100: punya akun SambasKu -> tap buka profil publik in-app.
-    // Tanpa username -> tile polos (tidak interaktif).
-    // #147: url website -> ikon globe buka browser eksternal.
-    final username = contributor.username;
-    if (username == null && contributor.url == null) return tile;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: username == null
-            ? null
-            : () => UserProfileRouter.open(
-                context,
-                username,
-                displayName: contributor.name,
-              ),
+        onTap: () => UserProfileRouter.open(
+          context,
+          username,
+          displayName: displayName,
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
             children: [
               Expanded(child: tile),
-              if (contributor.url case final url?) _WebsiteAction(url: url),
-              if (username != null)
-                Icon(
-                  FLucideIcons.chevronRight,
-                  size: 16,
-                  color: theme.colors.mutedForeground,
-                ),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
             ],
           ),
         ),
@@ -316,14 +420,14 @@ class _ContributorTile extends StatelessWidget {
   }
 }
 
-/// Daftar sponsor dari CDN. Loading = skeleton (anti layout shift).
-/// Null/kosong/gagal fetch = section hilang (soft-fail, halaman tetap utuh).
+/// Daftar sponsor dari API. Soft-fail bila kosong/gagal.
 class _SponsorsSection extends ConsumerWidget {
   const _SponsorsSection();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(sponsorsProvider);
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(aboutSponsorshipsProvider);
     final sponsors = async.value;
     if (async.isLoading && sponsors == null) {
       return const _SectionSkeleton(tileCount: 3);
@@ -337,7 +441,7 @@ class _SponsorsSection extends ConsumerWidget {
         Row(
           children: [
             Text(
-              'Sponsor & Mitra',
+              l10n.aboutSponsorsSectionTitle,
               style: theme.typography.body.sm.copyWith(
                 fontWeight: FontWeight.w700,
                 color: theme.colors.foreground,
@@ -345,12 +449,7 @@ class _SponsorsSection extends ConsumerWidget {
             ),
             const Gap(4),
             Tooltip(
-              message:
-                  'Sponsor: pemberi dana atau barang untuk biaya '
-                  'operasional (domain, server, honorarium). Mitra: rekan '
-                  'kerja sama yang berkontribusi dana, tenaga, materi, atau '
-                  'data. Nama semua pendukung kami cantumkan sebagai '
-                  'apresiasi atas dukungannya.',
+              message: l10n.aboutSponsorsTooltip,
               triggerMode: TooltipTriggerMode.tap,
               showDuration: const Duration(seconds: 6),
               child: Icon(
@@ -374,7 +473,7 @@ class _SponsorsSection extends ConsumerWidget {
 class _SponsorTile extends StatelessWidget {
   const _SponsorTile({required this.sponsor});
 
-  final SponsorEntry sponsor;
+  final AboutSponsorship sponsor;
 
   @override
   Widget build(BuildContext context) {

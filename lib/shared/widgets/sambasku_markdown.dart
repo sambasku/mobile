@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-import '../../core/models/external_link.dart';
+import 'package:markdown/markdown.dart' as md;
+import 'package:material_ui/material_ui.dart';
 
+import '../../core/models/external_link.dart';
 import '../../core/widgets/image_preview.dart';
 import 'cached_network_image_with_fallback.dart';
 
@@ -15,6 +16,7 @@ import 'cached_network_image_with_fallback.dart';
 /// - gambar: lebar penuh, rasio asli, tap -> preview fullscreen pinch-zoom
 /// - link: hanya https -> browser eksternal (skema lain diabaikan)
 /// - tabel: lebar kolom mengikuti isi, scroll horizontal bila melebihi layar
+/// - GFM: tabel, strikethrough, fenced code (ExtensionSet.gitHubFlavored)
 class SambaskuMarkdown extends StatelessWidget {
   const SambaskuMarkdown({
     super.key,
@@ -35,6 +37,7 @@ class SambaskuMarkdown extends StatelessWidget {
     return MarkdownBody(
       data: data,
       selectable: selectable,
+      extensionSet: md.ExtensionSet.gitHubFlavored,
       imageBuilder: buildSambaskuMarkdownImage,
       onTapLink: (text, href, title) => openSambaskuMarkdownHref(href),
       styleSheet: sambaskuMarkdownStyleSheet(context),
@@ -47,7 +50,7 @@ class SambaskuMarkdown extends StatelessWidget {
 /// Skala Forui `touch`: xs 14, sm 16, md 18, lg 20, xl 22, xl2 30. Body
 /// `sm` (16) sama dengan layar lain; heading turun dari xl2/xl/lg
 /// (30/22/20) ke xl/md/sm (22/18/16) supaya tidak mendominasi layar kecil.
-/// Korpus artikel memakai h1-h5, tabel, daftar, gambar, link, dan hr.
+/// Korpus: h1-h6, daftar, tabel, quote, code, strike, hr, gambar, link.
 MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
   final theme = context.theme;
   final typo = theme.typography.body;
@@ -57,29 +60,51 @@ MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
   // sedangkan app sudah pakai material_ui (forui 0.27). Semua field yang
   // dipakai diisi eksplisit dari token forui; sisanya default null.
   return MarkdownStyleSheet(
-    p: typo.sm.copyWith(height: 1.5),
-    h1: typo.xl.copyWith(fontWeight: bold, height: 1.3),
-    h2: typo.md.copyWith(fontWeight: bold, height: 1.3),
-    h3: typo.sm.copyWith(fontWeight: bold, height: 1.3),
+    p: typo.sm.copyWith(height: 1.45),
+    // Default pPadding null bisa terasa longgar di beberapa device; nolkan.
+    pPadding: EdgeInsets.zero,
+    h1: typo.xl.copyWith(fontWeight: bold, height: 1.25),
+    h2: typo.md.copyWith(fontWeight: bold, height: 1.25),
+    h3: typo.sm.copyWith(fontWeight: bold, height: 1.25),
     // fromTheme memberi h4-h6 style yang sama (bodyLarge); bedakan eksplisit.
-    h4: typo.sm.copyWith(fontWeight: bold, height: 1.3),
-    h5: typo.xs.copyWith(fontWeight: bold, height: 1.3),
+    h4: typo.sm.copyWith(fontWeight: bold, height: 1.25),
+    h5: typo.xs.copyWith(fontWeight: bold, height: 1.25),
     h6: typo.xs.copyWith(
       fontWeight: bold,
-      height: 1.3,
+      height: 1.25,
       color: colors.mutedForeground,
     ),
     // Jarak di atas heading memisahkan bagian; padding bawah dijaga kecil.
-    h1Padding: const EdgeInsets.only(top: 8, bottom: 2),
+    h1Padding: const EdgeInsets.only(top: 10, bottom: 2),
     h2Padding: const EdgeInsets.only(top: 8, bottom: 2),
-    h3Padding: const EdgeInsets.only(top: 4),
-    h4Padding: const EdgeInsets.only(top: 4),
+    h3Padding: const EdgeInsets.only(top: 6, bottom: 2),
+    h4Padding: const EdgeInsets.only(top: 4, bottom: 0),
+    a: typo.sm.copyWith(
+      color: colors.primary,
+      decoration: TextDecoration.underline,
+      decorationColor: colors.primary,
+    ),
     em: typo.sm.copyWith(fontStyle: FontStyle.italic),
     strong: typo.sm.copyWith(fontWeight: bold),
+    del: typo.sm.copyWith(
+      decoration: TextDecoration.lineThrough,
+      color: colors.mutedForeground,
+    ),
+    code: typo.sm.copyWith(
+      fontFamily: 'monospace',
+      backgroundColor: colors.muted,
+    ),
+    codeblockPadding: const EdgeInsets.all(8),
+    codeblockDecoration: BoxDecoration(
+      color: colors.muted,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: colors.border),
+    ),
     listBullet: typo.sm,
-    // ponytail: default flutter_markdown 8px; 4px lebih rapat, belum diuji
-    // visual di device. Naikkan kalau terasa terlalu padat.
-    blockSpacing: 4,
+    // Default flutter_markdown listIndent 24 + blockSpacing 8 terasa tebal
+    // di layar sempit; rapatkan.
+    listIndent: 16,
+    blockSpacing: 6,
     // Tabel: IntrinsicColumnWidth -> lebar kolom ikut isi dan flutter_markdown
     // membungkusnya dengan scroll horizontal. Default FlexColumnWidth memecah
     // tabel 6-7 kolom jadi kolom sempit dengan teks terpotong per huruf.
@@ -87,12 +112,12 @@ MarkdownStyleSheet sambaskuMarkdownStyleSheet(BuildContext context) {
     tableHead: typo.sm.copyWith(fontWeight: bold),
     tableBody: typo.sm,
     tableHeadAlign: TextAlign.left,
-    tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    tableCellsPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
     tableBorder: TableBorder.all(color: colors.border),
     // Default blockquote/hr memakai Colors.blue dan garis 5px yang tidak
     // adaptif dark mode; pakai warna tema.
     blockquote: typo.sm.copyWith(color: colors.mutedForeground),
-    blockquotePadding: const EdgeInsets.only(left: 12),
+    blockquotePadding: const EdgeInsets.only(left: 10, top: 2, bottom: 2),
     blockquoteDecoration: BoxDecoration(
       border: Border(left: BorderSide(color: colors.border, width: 3)),
     ),
@@ -114,7 +139,7 @@ Widget buildSambaskuMarkdownImage(Uri uri, String? title, String? alt) {
     builder: (context) => GestureDetector(
       onTap: () => showImagePreview(context, urls: [src]),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Semantics(
           button: true,
           label: alt != null && alt.isNotEmpty ? alt : 'Lihat gambar',

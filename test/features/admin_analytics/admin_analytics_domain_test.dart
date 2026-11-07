@@ -49,13 +49,20 @@ void main() {
 
     test('menghitung delta vs hari sebelumnya', () {
       final metrics = buildTodayVsYesterday(l10n, [
-        point(date: '2026-09-25', contributions: 2, votes: 10, comments: 1),
+        point(
+          date: '2026-09-25',
+          contributions: 2,
+          votes: 10,
+          comments: 1,
+          searches: 4,
+        ),
         point(
           date: '2026-09-26',
           contributions: 5,
           votes: 8,
           comments: 1,
           newUsers: 2,
+          searches: 9,
         ),
       ]);
       expect(
@@ -76,6 +83,14 @@ void main() {
       expect(
         metrics.firstWhere((m) => m.key == TodayMetricKey.newUsers).delta,
         2,
+      );
+      expect(
+        metrics.firstWhere((m) => m.key == TodayMetricKey.searches),
+        isA<TodayVsYesterdayMetric>()
+            .having((m) => m.label, 'label', l10n.analyticsSeriesSearches)
+            .having((m) => m.today, 'today', 9)
+            .having((m) => m.yesterday, 'yesterday', 4)
+            .having((m) => m.delta, 'delta', 5),
       );
     });
 
@@ -100,12 +115,13 @@ void main() {
   });
 
   group('formatAnalyticsCount', () {
-    test('compact ribuan', () {
+    test('pemisah ribuan Indonesia', () {
       expect(formatAnalyticsCount(999), '999');
-      expect(formatAnalyticsCount(1000), '1k');
-      expect(formatAnalyticsCount(1500), '1.5k');
-      expect(formatAnalyticsCount(15000), '15k');
-      expect(formatAnalyticsCount(-1500), '-1.5k');
+      expect(formatAnalyticsCount(1000), '1.000');
+      expect(formatAnalyticsCount(1500), '1.500');
+      expect(formatAnalyticsCount(15000), '15.000');
+      expect(formatAnalyticsCount(-1500), '-1.500');
+      expect(formatAnalyticsCount(1250000), '1.250.000');
     });
   });
 

@@ -52,8 +52,11 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
   }
 
   Future<void> _reload() async {
+    // Fetch dulu, baru invalidate - skipLoadingOnReload menjaga grid
+    // (dan RefreshIndicator) tetap terpasang selama reload.
     await ref.read(cuisineRefreshProvider.future);
     ref.invalidate(cuisineProvider);
+    await ref.read(cuisineProvider.future);
   }
 
   @override
@@ -89,11 +92,13 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
           ],
         ),
         child: cuisineAsync.when(
+          // Pull-to-refresh: jangan unmount grid (RefreshIndicator hilang).
+          skipLoadingOnReload: true,
           loading: () => const _SkeletonGrid(),
           error: (_, _) => _ErrorBody(onRetry: _reload),
           data: (items) {
             if (items == null) return _ErrorBody(onRetry: _reload);
-            if (items.isEmpty) return const _EmptyBody();
+            if (items.isEmpty) return _EmptyBody(onRefresh: _reload);
             final q = _query.trim().toLowerCase();
             final filtered = q.isEmpty
                 ? items
@@ -116,16 +121,25 @@ class _CuisineListPageState extends ConsumerState<CuisineListPage> {
                         const Icon(FLucideIcons.search),
                       ),
                 ),
-                const Gap(12),
+                const Gap(8),
                 if (filtered.isEmpty)
                   Expanded(
-                    child: Center(
-                      child: Text(
-                        l10n.cuisineListNoMatch,
-                        textAlign: TextAlign.center,
-                        style: theme.typography.body.sm.copyWith(
-                          color: theme.colors.mutedForeground,
-                        ),
+                    child: RefreshIndicator(
+                      onRefresh: _reload,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          const Gap(48),
+                          Center(
+                            child: Text(
+                              l10n.cuisineListNoMatch,
+                              textAlign: TextAlign.center,
+                              style: theme.typography.body.sm.copyWith(
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -291,40 +305,45 @@ class _SkeletonGrid extends StatelessWidget {
 }
 
 class _EmptyBody extends StatelessWidget {
-  const _EmptyBody();
+  const _EmptyBody({required this.onRefresh});
+
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    return Center(
-      child: Padding(
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
+        children: [
+          const Gap(48),
+          Center(
+            child: Icon(
               FLucideIcons.utensilsCrossed,
               size: 48,
               color: theme.colors.primary,
             ),
-            const Gap(16),
-            Text(
-              l10n.cuisineListEmptyTitle,
-              style: theme.typography.body.lg.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+          ),
+          const Gap(16),
+          Text(
+            l10n.cuisineListEmptyTitle,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.lg.copyWith(
+              fontWeight: FontWeight.w700,
             ),
-            const Gap(8),
-            Text(
-              l10n.cuisineListEmptyBody,
-              textAlign: TextAlign.center,
-              style: theme.typography.body.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
+          ),
+          const Gap(8),
+          Text(
+            l10n.cuisineListEmptyBody,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -119,7 +120,7 @@ class _WordOfDayBody extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                        padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -184,7 +185,7 @@ class _WordOfDayBody extends ConsumerWidget {
                                   ),
                               ],
                             ),
-                            const Gap(6),
+                            const Gap(4),
                             Text(
                               item.word.lemma,
                               maxLines: 1,
@@ -222,42 +223,6 @@ class _WordOfDayBody extends ConsumerWidget {
                                 ),
                               ),
                             ],
-                            const Gap(4),
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                child: Text(
-                                  item.isNewThisWeek
-                                      ? AppLocalizations.of(
-                                          context,
-                                        ).dictWordOfDayShownToday
-                                      : AppLocalizations.of(
-                                          context,
-                                        ).dictWordOfDayRotates,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.typography.body.xs.copyWith(
-                                    color: Colors.white.withValues(alpha: 0.85),
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.4,
-                                        ),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -266,9 +231,54 @@ class _WordOfDayBody extends ConsumerWidget {
                 ),
               ),
             ),
+            // Versi app - pojok kanan bawah kartu (tidak menelan tap).
+            const Positioned(
+              right: 8,
+              bottom: 6,
+              child: IgnorePointer(child: _WotdVersionLabel()),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Teks kecil versi app di sudut kartu WOTD.
+class _WotdVersionLabel extends StatefulWidget {
+  const _WotdVersionLabel();
+
+  @override
+  State<_WotdVersionLabel> createState() => _WotdVersionLabelState();
+}
+
+class _WotdVersionLabelState extends State<_WotdVersionLabel> {
+  late final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PackageInfo>(
+      future: _packageInfo,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final version = snapshot.data!.version;
+        return Text(
+          AppLocalizations.of(context).aboutVersion(version),
+          style: TextStyle(
+            fontSize: 9,
+            height: 1,
+            fontWeight: FontWeight.w500,
+            color: Colors.white.withValues(alpha: 0.75),
+            shadows: [
+              Shadow(
+                color: Colors.black.withValues(alpha: 0.45),
+                blurRadius: 3,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -338,21 +348,19 @@ class _WordOfDaySkeleton extends StatelessWidget {
                 ),
                 // Skeleton content
                 Padding(
-                  padding: EdgeInsets.fromLTRB(14, 8, 10, 8),
+                  padding: EdgeInsets.fromLTRB(10, 6, 10, 6),
                   child: Skeletonizer(
                     enabled: true,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(AppLocalizations.of(context).dictWordOfDay),
-                        Gap(6),
+                        Gap(4),
                         Text(
                           AppLocalizations.of(context).dictSkeletonLemmaShort,
                         ),
                         Gap(2),
                         Text(AppLocalizations.of(context).dictSkeletonGloss),
-                        Gap(4),
-                        Text(AppLocalizations.of(context).dictWordOfDayRotates),
                       ],
                     ),
                   ),

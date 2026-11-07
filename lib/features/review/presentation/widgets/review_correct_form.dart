@@ -12,6 +12,7 @@ import '../../../../shared/widgets/kbbi_source_notice.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../contribution/domain/meaning_source.dart';
 import '../../../contribution/presentation/widgets/kbbi_definition_sheet.dart';
+import '../../../contribution/presentation/widgets/kbbi_translation_field.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/utils/ensure_microphone_ready.dart';
@@ -520,7 +521,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
               FTextField(
                 control: FTextFieldControl.managed(controller: _comment),
                 enabled: !_busy,
-                label: Text(AppLocalizations.of(context).reviewCorrectNotesOptional),
+                label: Text(
+                  AppLocalizations.of(context).reviewCorrectNotesOptional,
+                ),
               ),
             ],
           ),
@@ -541,10 +544,16 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(AppLocalizations.of(context).reviewCorrectPublishVerify),
+                        child: Text(
+                          AppLocalizations.of(
+                            context,
+                          ).reviewCorrectPublishVerify,
+                        ),
                       ),
                       FSwitch(
-                        semanticsLabel: AppLocalizations.of(context).reviewCorrectPublishVerify,
+                        semanticsLabel: AppLocalizations.of(
+                          context,
+                        ).reviewCorrectPublishVerify,
                         value: _publish,
                         enabled: !_busy,
                         onChange: (value) => setState(() => _publish = value),
@@ -559,15 +568,21 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
                       _busy
                           ? AppLocalizations.of(context).reviewCorrectProcessing
                           : _publish
-                          ? AppLocalizations.of(context).reviewCorrectSavePublish
-                          : AppLocalizations.of(context).reviewCorrectSavePending,
+                          ? AppLocalizations.of(
+                              context,
+                            ).reviewCorrectSavePublish
+                          : AppLocalizations.of(
+                              context,
+                            ).reviewCorrectSavePending,
                     ),
                   ),
                   const Gap(8),
                   FButton(
                     variant: FButtonVariant.outline,
                     onPress: _busy ? null : widget.onCancel,
-                    child: Text(AppLocalizations.of(context).reviewCorrectCancel),
+                    child: Text(
+                      AppLocalizations.of(context).reviewCorrectCancel,
+                    ),
                   ),
                 ],
               ),
@@ -585,7 +600,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       if (hasConflictingUsageLabels({..._usageLabels, code})) {
         showFToast(
           context: context,
-          title: Text(AppLocalizations.of(context).reviewCorrectPolitenessConflict),
+          title: Text(
+            AppLocalizations.of(context).reviewCorrectPolitenessConflict,
+          ),
         );
         return;
       }
@@ -702,7 +719,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         children: [
           FTile(
             prefix: const Icon(FLucideIcons.arrowLeftRight),
-            title: Text(AppLocalizations.of(context).reviewExtrasSynonymsAntonyms),
+            title: Text(
+              AppLocalizations.of(context).reviewExtrasSynonymsAntonyms,
+            ),
             subtitle: Text(_relationSummary()),
             suffix: const Icon(FLucideIcons.chevronRight),
             onPress: _openRelations,
@@ -711,7 +730,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
             prefix: const Icon(FLucideIcons.spellCheck),
             title: Text(AppLocalizations.of(context).reviewVariantTitle),
             subtitle: Text(
-              _variants.isEmpty ? AppLocalizations.of(context).reviewExtrasNoItems : _variants.join(', '),
+              _variants.isEmpty
+                  ? AppLocalizations.of(context).reviewExtrasNoItems
+                  : _variants.join(', '),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -720,11 +741,17 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           ),
           FTile(
             prefix: const Icon(FLucideIcons.mic),
-            title: Text(AppLocalizations.of(context).reviewCorrectAddPronunciation),
+            title: Text(
+              AppLocalizations.of(context).reviewCorrectAddPronunciation,
+            ),
             subtitle: Text(
               _recordedCount == 0
-                  ? AppLocalizations.of(context).reviewCorrectPronunciationAutoSave
-                  : AppLocalizations.of(context).reviewCorrectPronunciationRecorded(_recordedCount),
+                  ? AppLocalizations.of(
+                      context,
+                    ).reviewCorrectPronunciationAutoSave
+                  : AppLocalizations.of(
+                      context,
+                    ).reviewCorrectPronunciationRecorded(_recordedCount),
             ),
             suffix: const Icon(FLucideIcons.chevronRight),
             onPress: _openRecord,
@@ -744,10 +771,14 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
     final antonyms = _relations
         .where((r) => r.relationType == 'antonym')
         .length;
-    if (synonyms == 0 && antonyms == 0) return AppLocalizations.of(context).reviewExtrasNoItems;
+    if (synonyms == 0 && antonyms == 0) {
+      return AppLocalizations.of(context).reviewExtrasNoItems;
+    }
     return [
-      if (synonyms > 0) AppLocalizations.of(context).reviewCorrectSynonymCount(synonyms),
-      if (antonyms > 0) AppLocalizations.of(context).reviewCorrectAntonymCount(antonyms),
+      if (synonyms > 0)
+        AppLocalizations.of(context).reviewCorrectSynonymCount(synonyms),
+      if (antonyms > 0)
+        AppLocalizations.of(context).reviewCorrectAntonymCount(antonyms),
     ].join(', ');
   }
 
@@ -813,7 +844,9 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       if (mounted) {
         showFToast(
           context: context,
-          title: Text(AppLocalizations.of(context).reviewCorrectWordClassLoadFailed),
+          title: Text(
+            AppLocalizations.of(context).reviewCorrectWordClassLoadFailed,
+          ),
         );
       }
       return;
@@ -847,29 +880,18 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         label: Text(AppLocalizations.of(context).suggestDefinitionLabel),
       ),
       const Gap(8),
-      FTextField(
-        control: FTextFieldControl.managed(controller: meaning.translationCtrl),
+      KbbiTranslationField(
+        controller: meaning.translationCtrl,
         enabled: !_busy,
+        onOpenKbbi: () => _openKbbi(meaning),
         label: Text(AppLocalizations.of(context).historyFieldTranslation),
         description: meaning.carriedTranslations.isEmpty
             ? Text(AppLocalizations.of(context).reviewCorrectKbbiHint)
             : Text(
-                AppLocalizations.of(context).reviewCorrectCarriedTranslations(meaning.carriedTranslations.length),
+                AppLocalizations.of(context).reviewCorrectCarriedTranslations(
+                  meaning.carriedTranslations.length,
+                ),
               ),
-        suffixBuilder: (context, style, _) => Padding(
-          padding: style.clearButtonPadding,
-          // ponytail: ExcludeSemantics - SemanticsNode suffix bawaan
-          // MergeSemantics forui 0.22 bisa ber-rect terbalik saat subtree
-          // diswap (assert "Invisible SemanticsNodes",
-          // duobaseio/forui#1160). Makna tombol ada di description field.
-          child: ExcludeSemantics(
-            child: FButton.icon(
-              style: style.clearButtonStyle,
-              onPress: _busy ? null : () => _openKbbi(meaning),
-              child: const Icon(FLucideIcons.bookOpen),
-            ),
-          ),
-        ),
       ),
       const Gap(8),
       const KbbiSourceNotice(),
@@ -913,7 +935,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
         wordClassId: matched,
       );
     });
-    showFToast(context: context, title: Text(AppLocalizations.of(context).reviewCorrectDefinitionFromKbbi));
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).reviewCorrectDefinitionFromKbbi),
+    );
   }
 
   List<Widget> _childForm() {
@@ -924,7 +949,10 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
           enabled: !_busy,
           // Kunci tak dikenal tidak akan muncul: _childFields dibangun dari
           // allowlist, dan label selalu ada untuk tiap kunci therein.
-          label: Text(_childFieldLabels(AppLocalizations.of(context))[entry.key] ?? entry.key),
+          label: Text(
+            _childFieldLabels(AppLocalizations.of(context))[entry.key] ??
+                entry.key,
+          ),
         ),
         const Gap(12),
       ],
@@ -1000,12 +1028,13 @@ class _UsageLabelChips extends StatelessWidget {
   }
 }
 
-List<({String value, String label})> _reviewWordTypes(AppLocalizations l10n) => [
-  (value: 'word', label: l10n.reviewWordTypeWord),
-  (value: 'idiom', label: l10n.reviewWordTypeIdiom),
-  (value: 'peribahasa', label: l10n.reviewWordTypeProverb),
-  (value: 'ungkapan', label: l10n.reviewWordTypeExpression),
-];
+List<({String value, String label})> _reviewWordTypes(AppLocalizations l10n) =>
+    [
+      (value: 'word', label: l10n.reviewWordTypeWord),
+      (value: 'idiom', label: l10n.reviewWordTypeIdiom),
+      (value: 'peribahasa', label: l10n.reviewWordTypeProverb),
+      (value: 'ungkapan', label: l10n.reviewWordTypeExpression),
+    ];
 
 /// KBBI menulis adjektiva sebagai "a", sedangkan kode internal memakai "adj".
 String? _matchReviewWordClass(List<ReferenceItem> classes, String? code) {

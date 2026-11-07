@@ -12,6 +12,7 @@ import '../../../../core/utils/display_image_url.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/contributor_appreciation.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_providers.dart';
@@ -135,6 +136,16 @@ class _BodyState extends State<_Body> {
                   style: theme.typography.body.sm.copyWith(height: 1.5),
                 ),
               ],
+              if (event.author case final author?)
+                ContributorAppreciationSection(
+                  label: l10n.usahaContributorProposedBy,
+                  contributors: [
+                    ContributorCredit(
+                      username: author.username,
+                      displayName: author.displayName,
+                    ),
+                  ],
+                ),
               if (event.places.isNotEmpty) ...[
                 const Gap(20),
                 Text(

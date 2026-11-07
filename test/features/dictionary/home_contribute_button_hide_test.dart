@@ -21,13 +21,14 @@ void main() {
       expect(collapsible, findsOneWidget);
       final fullHeight = tester.getSize(collapsible).height;
       expect(fullHeight, greaterThan(80));
-      final searchBefore = tester.getTopLeft(find.text('A-Z')).dy;
-      // Penanda menu yang ikut menyusut = tile terakhir blok header
-      // (Ruang Diskusi, di bawah "Usul kata baru").
-      final tileBefore = tester.getTopLeft(find.text('Ruang Diskusi')).dy;
-      expect(tileBefore, greaterThan(searchBefore));
+      // Penanda menu yang ikut menyusut = chip di baris chips header
+      // (Usul, sebaris horizontal di kanan A-Z).
+      final aZ = tester.getTopLeft(find.text('A-Z'));
+      final usul = tester.getTopLeft(find.text('Usul'));
+      expect(usul.dy, aZ.dy);
+      expect(usul.dx, greaterThan(aZ.dx));
 
-      // 50px / jarak collaps 90 = progress 0.56 (> 0.5) → snap ke tertutup
+      // 50px / jarak collaps 78 = progress 0.64 (> 0.5) → snap ke tertutup
       // saat jari lepas. Tepat 0.5 akan snap ke TERBUKA (batas tengah).
       // Feed = CustomScrollView dengan controller (yang lain shrink-wrap).
       final feedList = find
@@ -44,16 +45,16 @@ void main() {
         inExclusiveRange(20, fullHeight - 8),
         reason: 'blok harus menyusut parsial mengikuti jari',
       );
-      expect(
-        tester.getTopLeft(collapsible).dy,
-        lessThan(tileBefore),
-        reason: 'menu ada di dalam blok yang menyusut',
-      );
-      expect(
-        tester.getTopLeft(collapsible).dy + partialHeight,
-        lessThan(tileBefore + 8),
-        reason: 'menu ikut terpotong saat blok menyusut',
-      );
+    expect(
+      tester.getTopLeft(collapsible).dy,
+      lessThan(usul.dy),
+      reason: 'menu ada di dalam blok yang menyusut',
+    );
+    expect(
+      tester.getTopLeft(collapsible).dy + partialHeight,
+      lessThan(usul.dy + 8),
+      reason: 'menu ikut terpotong saat blok menyusut',
+    );
 
       await gesture.up();
       await tester.pumpAndSettle();
@@ -70,21 +71,28 @@ void main() {
         reason: 'feed harus naik mengisi ruang yang ditinggalkan header',
       );
 
-      final gestureUp = await tester.startGesture(tester.getCenter(feedList));
-      await gestureUp.moveBy(const Offset(0, 200));
-      await gestureUp.up();
-      await tester.pumpAndSettle();
-      expect(tester.getSize(collapsible).height, greaterThan(80));
+    // Drag up bertahap (bukan satu moveBy besar): feed setelah snap
+    // tertutup menempati viewport penuh; drag bertahap memicu event
+    // scroll per-frame sehingga collapse.value turun stabil ke 0.
+    final gestureUp = await tester.startGesture(tester.getCenter(feedList));
+    for (var i = 0; i < 10; i++) {
+      await gestureUp.moveBy(const Offset(0, 20));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await gestureUp.up();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.getSize(collapsible).height, greaterThan(80));
 
-      expect(find.text('Usul kata baru'), findsOneWidget);
-      // #193: tile "Dicari warga" pindah ke chips kategori feed; Ruang
-      // Diskusi jadi tile kedua di blok menu header.
+      expect(find.text('Usul'), findsOneWidget);
+      // #193: tile "Dicari warga" pindah ke chips kategori feed; menu
+      // header jadi baris chips horizontal (Cari/A-Z/Usul/Diskusi/dll).
       expect(find.text('Dicari warga'), findsNothing);
-      expect(find.text('Ruang Diskusi'), findsOneWidget);
-      await tester.tap(find.text('Usul kata baru'), warnIfMissed: false);
+      expect(find.text('Diskusi'), findsOneWidget);
+      await tester.tap(find.text('Usul'), warnIfMissed: false);
       await tester.pump();
       expect(tester.takeException()?.toString(), contains('No GoRouter found'));
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 300));
     },
   );
 }
