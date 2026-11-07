@@ -27,6 +27,8 @@ import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_
 import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/flavors.dart';
 
+import '../../helpers/past_splash.dart';
+
 /// Stress anti-freeze: hammering tab shell asli (App + AppRouter.router)
 /// - rotasi tab 30x termasuk gerbang Profil tamu -> /login -> system back
 /// - menu kontribusi 10x pilih tile + system back, selang-seling double-tap
@@ -146,8 +148,7 @@ void main() {
         child: const App(),
       ),
     );
-    await tester.pump();
-    await tester.pump();
+    await pumpPastSplash(tester);
 
     String path() =>
         AppRouter.router.routerDelegate.currentConfiguration.uri.path;

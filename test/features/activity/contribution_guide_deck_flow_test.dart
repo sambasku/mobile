@@ -28,6 +28,8 @@ import 'package:sambasku_mobile/core/i18n/locale_prefs.dart';
 import 'package:sambasku_mobile/flavors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../helpers/past_splash.dart';
+
 /// Integrasi guide Kontribusi + deck: setelah tap "Mengerti", konten deck
 /// HARUS kembali. Race tertutup: notifikasi routerDelegate nyasar saat
 /// dialog terbuka membuat _VoteDeckHost flip ke stub (canPop=true karena
@@ -132,7 +134,7 @@ Future<void> pumpApp(WidgetTester tester) async {
       child: const App(),
     ),
   );
-  await tester.pump();
+  await pumpPastSplash(tester);
 }
 
 /// Bukan pumpAndSettle: skeleton guest deck berdenyut terus.
