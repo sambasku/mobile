@@ -71,11 +71,15 @@ void main() {
         reason: 'feed harus naik mengisi ruang yang ditinggalkan header',
       );
 
+    // Drag up bertahap (bukan satu moveBy besar): feed setelah snap
+    // tertutup menempati viewport penuh; drag bertahap memicu event
+    // scroll per-frame sehingga collapse.value turun stabil ke 0.
     final gestureUp = await tester.startGesture(tester.getCenter(feedList));
-    await gestureUp.moveBy(const Offset(0, 200));
+    for (var i = 0; i < 10; i++) {
+      await gestureUp.moveBy(const Offset(0, 20));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
     await gestureUp.up();
-    // Bukan pumpAndSettle: overscroll memicu RefreshIndicator (spinner
-    // berdenyut) yang tak pernah settle di fake async.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.getSize(collapsible).height, greaterThan(80));
