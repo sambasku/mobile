@@ -6311,13 +6311,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get placeTypeAlam => 'Alam';
 
   @override
+  String get placeTypeReligi => 'Religi';
+
+  @override
+  String get placeTypeTirta => 'Tirta';
+
+  @override
+  String get placeTypeAgro => 'Agro';
+
+  @override
+  String get placeTypeBahari => 'Bahari';
+
+  @override
   String get placeTypeBudaya => 'Budaya';
-
-  @override
-  String get placeTypePantai => 'Pantai';
-
-  @override
-  String get placeTypeBelanja => 'Belanja';
 
   @override
   String get placeTypeWisata => 'Wisata';
@@ -16130,13 +16136,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get placeTypeAlam => 'Alam';
 
   @override
+  String get placeTypeReligi => 'Religi';
+
+  @override
+  String get placeTypeTirta => 'Tirta';
+
+  @override
+  String get placeTypeAgro => 'Agro';
+
+  @override
+  String get placeTypeBahari => 'Bahari';
+
+  @override
   String get placeTypeBudaya => 'Budaya';
-
-  @override
-  String get placeTypePantai => 'Pantai';
-
-  @override
-  String get placeTypeBelanja => 'Belanja';
 
   @override
   String get placeTypeWisata => 'Wisata';

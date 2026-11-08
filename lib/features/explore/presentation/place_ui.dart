@@ -86,9 +86,11 @@ String? placeTypeLabel(AppLocalizations l10n, PlaceType? type) =>
     switch (type) {
       PlaceType.sejarah => l10n.placeTypeSejarah,
       PlaceType.alam => l10n.placeTypeAlam,
+      PlaceType.religi => l10n.placeTypeReligi,
+      PlaceType.tirta => l10n.placeTypeTirta,
+      PlaceType.agro => l10n.placeTypeAgro,
+      PlaceType.bahari => l10n.placeTypeBahari,
       PlaceType.budaya => l10n.placeTypeBudaya,
-      PlaceType.pantai => l10n.placeTypePantai,
-      PlaceType.belanja => l10n.placeTypeBelanja,
       null => null,
     };
 

@@ -19,7 +19,7 @@ import '../providers/places_browse_providers.dart';
 
 /// Filter list satu baris. Publik karena dipakai juga dari
 /// ExploreCategoryPage (kartu Wisata / Kuliner di tab Eksplorasi).
-enum PlaceListFilter { semua, alam, budaya, pantai, sejarah, belanja, kuliner }
+enum PlaceListFilter { semua, sejarah, alam, religi, tirta, agro, bahari, budaya, kuliner }
 
 
 /// Mode halaman daftar Place. Wisata dan Kuliner punya halaman sendiri,
@@ -752,10 +752,12 @@ class _EmptyBody extends StatelessWidget {
 String _filterLabel(AppLocalizations l10n, PlaceListFilter filter) =>
     switch (filter) {
       PlaceListFilter.semua => l10n.exploreFilterAll,
-      PlaceListFilter.alam => l10n.placeTypeAlam,
-      PlaceListFilter.budaya => l10n.placeTypeBudaya,
-      PlaceListFilter.pantai => l10n.placeTypePantai,
       PlaceListFilter.sejarah => l10n.placeTypeSejarah,
-      PlaceListFilter.belanja => l10n.placeTypeBelanja,
+      PlaceListFilter.alam => l10n.placeTypeAlam,
+      PlaceListFilter.religi => l10n.placeTypeReligi,
+      PlaceListFilter.tirta => l10n.placeTypeTirta,
+      PlaceListFilter.agro => l10n.placeTypeAgro,
+      PlaceListFilter.bahari => l10n.placeTypeBahari,
+      PlaceListFilter.budaya => l10n.placeTypeBudaya,
       PlaceListFilter.kuliner => l10n.placeCategoryKuliner,
     };

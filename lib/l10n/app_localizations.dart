@@ -11339,23 +11339,35 @@ abstract class AppLocalizations {
   /// **'Alam'**
   String get placeTypeAlam;
 
+  /// No description provided for @placeTypeReligi.
+  ///
+  /// In id, this message translates to:
+  /// **'Religi'**
+  String get placeTypeReligi;
+
+  /// No description provided for @placeTypeTirta.
+  ///
+  /// In id, this message translates to:
+  /// **'Tirta'**
+  String get placeTypeTirta;
+
+  /// No description provided for @placeTypeAgro.
+  ///
+  /// In id, this message translates to:
+  /// **'Agro'**
+  String get placeTypeAgro;
+
+  /// No description provided for @placeTypeBahari.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahari'**
+  String get placeTypeBahari;
+
   /// No description provided for @placeTypeBudaya.
   ///
   /// In id, this message translates to:
   /// **'Budaya'**
   String get placeTypeBudaya;
-
-  /// No description provided for @placeTypePantai.
-  ///
-  /// In id, this message translates to:
-  /// **'Pantai'**
-  String get placeTypePantai;
-
-  /// No description provided for @placeTypeBelanja.
-  ///
-  /// In id, this message translates to:
-  /// **'Belanja'**
-  String get placeTypeBelanja;
 
   /// Label generik destinasi wisata
   ///

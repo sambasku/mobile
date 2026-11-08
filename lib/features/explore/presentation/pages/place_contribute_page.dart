@@ -27,7 +27,7 @@ import 'place_pin_picker_page.dart';
 
 enum PlaceContributeMode { create, edit, photo }
 
-const _types = ['sejarah', 'alam', 'budaya', 'pantai', 'belanja'];
+const _types = ['sejarah', 'alam', 'religi', 'tirta', 'agro', 'bahari', 'budaya'];
 
 /// Usulan tempat baru, suntingan, atau foto langsung ke tempat yang sudah terbit.
 class PlaceContributePage extends ConsumerStatefulWidget {
@@ -882,13 +882,15 @@ String slugifyPlace(String name) {
 }
 
 String _typeLabel(AppLocalizations l10n, String id) => switch (id) {
-  'sejarah' => l10n.placeTypeSejarah,
-  'alam' => l10n.placeTypeAlam,
-  'budaya' => l10n.placeTypeBudaya,
-  'pantai' => l10n.placeTypePantai,
-  'belanja' => l10n.placeTypeBelanja,
-  _ => id,
-};
+      'sejarah' => l10n.placeTypeSejarah,
+      'alam' => l10n.placeTypeAlam,
+      'religi' => l10n.placeTypeReligi,
+      'tirta' => l10n.placeTypeTirta,
+      'agro' => l10n.placeTypeAgro,
+      'bahari' => l10n.placeTypeBahari,
+      'budaya' => l10n.placeTypeBudaya,
+      _ => id,
+    };
 
 String _contactText(Place place) {
   final contact = place.contact;

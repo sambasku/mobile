@@ -28,7 +28,7 @@ Place _place(String name, PlaceCategory category, PlaceType? type) => Place(
 );
 
 final _places = [
-  _place('Pantai Temajuk', PlaceCategory.wisata, PlaceType.pantai),
+  _place('Pantai Temajuk', PlaceCategory.wisata, PlaceType.bahari),
   _place('Istana Alwatzikoebillah', PlaceCategory.wisata, PlaceType.sejarah),
   _place('Bubur Pedas', PlaceCategory.kuliner, null),
 ];
