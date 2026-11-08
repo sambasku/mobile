@@ -8,7 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/vote_deck_item.dart';
 
 /// Isi kartu deck (0101: per makna): lemma + definisi makna yang dinilai +
-/// konteks "makna ke-N". Tap kartu / footer membuka detail kata induk
+/// konteks "makna ke-N". Ketuk area kartu membuka detail kata induk
 /// (semua makna, komentar) - pemilik navigasi ada di section, bukan sini.
 class VoteDeckWordCard extends ConsumerWidget {
   const VoteDeckWordCard({
@@ -36,6 +36,7 @@ class VoteDeckWordCard extends ConsumerWidget {
       orderIndex: item.orderIndex,
       meaningCount: item.meaningCount,
       onWordClassTap: onWordClassTap,
+      onOpenDetail: onOpenDetail,
     );
   }
 }
@@ -53,6 +54,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
     this.meaningCount = 1,
     this.onLockedTap,
     this.onWordClassTap,
+    this.onOpenDetail,
   });
 
   final String lemma;
@@ -78,11 +80,14 @@ class VoteDeckMeaningFace extends StatelessWidget {
   /// Login: tap kelas → picker + submit usulan. Null = badge read-only.
   final VoidCallback? onWordClassTap;
 
+  /// Buka halaman detail lemma. Null = tombol disembunyikan (mis. rewind).
+  final VoidCallback? onOpenDetail;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
-    return Padding(
+    final face = Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,7 +106,9 @@ class VoteDeckMeaningFace extends StatelessWidget {
           ],
           Text(
             lemma,
-            style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
+            style: theme.typography.body.xl.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
             textAlign: TextAlign.center,
           ),
           if (sense != null && sense!.trim().isNotEmpty) ...[
@@ -202,6 +209,14 @@ class VoteDeckMeaningFace extends StatelessWidget {
           ],
         ],
       ),
+    );
+    final card = SizedBox.expand(child: face);
+    if (onOpenDetail == null) return card;
+    // Pan swipe tetap di induk. Tap tanpa geser membuka detail.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onOpenDetail,
+      child: card,
     );
   }
 }

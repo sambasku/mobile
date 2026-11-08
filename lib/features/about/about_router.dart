@@ -13,6 +13,11 @@ class AboutRouter {
     name: 'AboutRouter.sponsorshipTeam',
   );
 
+  static const contributors = RouteDefiner(
+    path: '/about/contributors',
+    name: 'AboutRouter.contributors',
+  );
+
   static final List<GoRoute> routes = [
     GoRoute(
       path: about.path,
@@ -23,6 +28,11 @@ class AboutRouter {
       path: sponsorshipTeam.path,
       name: sponsorshipTeam.name,
       builder: (context, state) => const SponsorshipTeamPage(),
+    ),
+    GoRoute(
+      path: contributors.path,
+      name: contributors.name,
+      builder: (context, state) => const ContributorsListPage(),
     ),
   ];
 }

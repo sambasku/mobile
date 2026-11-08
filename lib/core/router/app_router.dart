@@ -29,6 +29,7 @@ import '../../features/my_contributions/my_contributions_router.dart';
 import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
+import '../../features/event/domain/event_public_url.dart';
 import '../../features/event/event_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
@@ -82,7 +83,7 @@ class AppRouter {
       ...LinkedAccountsRouter.routes,
       ...AboutRouter.routes,
       ...DictionaryRouter.routes,
-        ...EncyclopediaRouter.routes,
+      ...EncyclopediaRouter.routes,
       ...ContributionRouter.routes,
       ...MyContributionsRouter.routes,
       ...NotificationRouter.routes,
@@ -102,7 +103,7 @@ class AppRouter {
       ...UsahaRouter.routes,
       ...ActivityRouter.routes,
       ...AchievementRouter.routes,
-  ...SettingsRouter.routes,
+      ...SettingsRouter.routes,
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _HomeShell(navigationShell: navigationShell),
@@ -161,7 +162,9 @@ class AppRouter {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Text(AppLocalizations.of(context).routerNotFound(state.error.toString())),
+          child: Text(
+            AppLocalizations.of(context).routerNotFound(state.error.toString()),
+          ),
         ),
       ),
     ),
@@ -215,6 +218,10 @@ class AppRouter {
     final wordLink = nativeWordPathFromPublicLink(state.uri);
     if (wordLink != null) return wordLink;
 
+    // Link share acara: /id/acara/<slug> → /acara/<slug> (route sudah native).
+    final eventLink = nativeEventPathFromPublicLink(state.uri);
+    if (eventLink != null) return eventLink;
+
     final onboardingDone = OnboardingPrefs.done;
     final localeChosen = LocalePrefs.chosen;
     final isOnboarding = loc == OnboardingRouter.onboarding.path;
@@ -225,9 +232,7 @@ class AppRouter {
 
     // Multi-bahasa off: jangan tampilkan picker; lanjutkan onboarding biasa.
     if (!multiLang && (isLanguage || isSettingsLanguage)) {
-      return onboardingDone
-          ? '/'
-          : OnboardingRouter.onboarding.path;
+      return onboardingDone ? '/' : OnboardingRouter.onboarding.path;
     }
 
     // Slide 0 bahasa (MOBILE-I18N §7): wajib sebelum pengalaman kamus.
@@ -237,7 +242,10 @@ class AppRouter {
     if (multiLang && !localeChosen && !isLanguage) {
       return OnboardingRouter.language.path;
     }
-    if (!onboardingDone && !isOnboarding && !isLanguage && !isDeepLinkFriendly) {
+    if (!onboardingDone &&
+        !isOnboarding &&
+        !isLanguage &&
+        !isDeepLinkFriendly) {
       return OnboardingRouter.onboarding.path;
     }
     if (onboardingDone && isOnboarding) {
@@ -292,6 +300,7 @@ class AppRouter {
     if (path.startsWith('/wisata/')) return true;
     if (path.startsWith('/explore/place/')) return true;
     if (path.startsWith('/acara')) return true;
+    if (path == '/id/acara' || path.startsWith('/id/acara/')) return true;
     if (path.startsWith('/discussions')) return true;
     if (path.startsWith('/entertainment')) return true;
     return false;

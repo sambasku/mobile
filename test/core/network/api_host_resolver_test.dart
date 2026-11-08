@@ -16,7 +16,10 @@ void main() {
     await resolver.setForcedTier(null);
     resolver.configure(
       primaryHost: 'https://t1.test',
-      fallbackHosts: const ['https://t2.test', 'https://t3.test'],
+      fallbackHosts: const [
+        'https://t2.test',
+        'https://render.sambasku.com',
+      ],
     );
   });
 
@@ -26,32 +29,38 @@ void main() {
     expect(resolver.pinRemaining, isNull);
   });
 
-  test('tier terakhir memakai timeout cold start, sisanya default', () {
+  test('hanya host render yang memakai timeout cold start', () {
     expect(resolver.tiers[0].timeout, kDefaultTierTimeout);
     expect(resolver.tiers[1].timeout, kDefaultTierTimeout);
     expect(resolver.tiers[2].timeout, kColdStartTierTimeout);
+
+    resolver.configure(
+      primaryHost: 'https://api.sambasku.com',
+      fallbackHosts: const ['https://cloudflare.sambasku.com'],
+    );
+    expect(resolver.tiers.every((t) => t.timeout == kDefaultTierTimeout), isTrue);
   });
 
   test('naik SATU tier per kegagalan, tidak langsung ke tier terakhir', () {
     expect(resolver.advanceTier()?.host, 'https://t2.test');
     expect(resolver.activeHost, 'https://t2.test');
 
-    expect(resolver.advanceTier()?.host, 'https://t3.test');
-    expect(resolver.activeHost, 'https://t3.test');
+    expect(resolver.advanceTier()?.host, 'https://render.sambasku.com');
+    expect(resolver.activeHost, 'https://render.sambasku.com');
   });
 
   test('tier terakhir terminal - advanceTier null, tidak ada host keempat', () {
     resolver.advanceTier();
     resolver.advanceTier();
     expect(resolver.advanceTier(), isNull);
-    expect(resolver.activeHost, 'https://t3.test');
+    expect(resolver.activeHost, 'https://render.sambasku.com');
   });
 
   test('pin habis → kembali ke tier 1, BUKAN ke tier antara', () async {
     resolver.pinDuration = const Duration(milliseconds: 60);
     resolver.advanceTier();
     resolver.advanceTier();
-    expect(resolver.activeHost, 'https://t3.test');
+    expect(resolver.activeHost, 'https://render.sambasku.com');
 
     await Future<void>.delayed(const Duration(milliseconds: 120));
 
@@ -73,7 +82,7 @@ void main() {
     resolver.onWarmUp = warmed.add;
 
     resolver.advanceTier(); // pin tier 2 → hangatkan tier 3
-    expect(warmed.map((t) => t.host), ['https://t3.test']);
+    expect(warmed.map((t) => t.host), ['https://render.sambasku.com']);
 
     resolver.advanceTier(); // pin tier 3 → tidak ada tier 4
     expect(warmed.length, 1);
@@ -97,7 +106,7 @@ void main() {
     expect(resolver.activeHost, 'https://t2.test');
 
     await resolver.setForcedTier(2);
-    expect(resolver.activeHost, 'https://t3.test');
+    expect(resolver.activeHost, 'https://render.sambasku.com');
 
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getInt('preferredApiTier'), 2);
@@ -108,7 +117,11 @@ void main() {
 
   group('label tier untuk UI user', () {
     test('host dikenali jadi label ramah', () {
-      expect(apiTierLabelForHost('https://api.sambasku.com'), 'Cloudflare');
+      expect(apiTierLabelForHost('https://api.sambasku.com'), 'Server Utama');
+      expect(
+        apiTierLabelForHost('https://cloudflare.sambasku.com'),
+        'Cloudflare',
+      );
       expect(apiTierLabelForHost('https://deno.sambasku.com'), 'Deno Deploy');
       expect(apiTierLabelForHost('https://render.sambasku.com'), 'Render');
     });

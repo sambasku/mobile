@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../domain/entities/event.dart';
+import '../../domain/event_public_url.dart';
 import '../../event_router.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -51,6 +52,18 @@ String formatEventSchedule(Event event) {
     return '$start - $timeOnly';
   }
   return '$start - $end';
+}
+
+/// Teks share: nama, jadwal, lokasi, lalu URL kanonik.
+String eventShareText(Event event) {
+  final lines = <String>[event.name.trim()];
+  final schedule = formatEventSchedule(event);
+  if (schedule.isNotEmpty) lines.add(schedule);
+  final where = event.locationText.trim();
+  if (where.isNotEmpty) lines.add(where);
+  final url = eventPublicUrl(event.slug);
+  if (url == null) return lines.join('\n');
+  return '${lines.join('\n')}\n\n$url';
 }
 
 /// Baris meta singkat: kategori, desa, jadwal.
@@ -124,7 +137,10 @@ class EventMiniTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      suffix: eventOccurrenceBadge(AppLocalizations.of(context), event.effectiveOccurrenceStatus),
+      suffix: eventOccurrenceBadge(
+        AppLocalizations.of(context),
+        event.effectiveOccurrenceStatus,
+      ),
       onPress: onTap ?? () => context.push(EventRouter.detailPath(event.slug)),
     );
   }

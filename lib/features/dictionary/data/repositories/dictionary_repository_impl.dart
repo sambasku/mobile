@@ -11,6 +11,11 @@ import '../../domain/entities/word_of_day.dart';
 import '../../domain/entities/word_summary.dart';
 import '../../domain/failures/dictionary_failure.dart';
 import '../../domain/repositories/dictionary_repository.dart';
+import '../dataset/lemma_data_source_kind.dart';
+import '../dataset/lemma_dataset_constants.dart';
+import '../dataset/lemma_hybrid.dart';
+import '../dataset/lemma_sticky_store.dart';
+import '../datasources/dictionary_local_datasource.dart';
 import '../datasources/dictionary_remote_datasource.dart';
 import '../models/word_audio_dto.dart';
 import '../models/word_detail_dto.dart';
@@ -22,15 +27,56 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     this._remoteDatasource, {
     Dio? dio,
     CachedJsonClient? cache,
+    DictionaryLocalDatasource? local,
+    LemmaStickyStore? sticky,
+    bool Function()? isOffline,
+    void Function(LemmaDataSourceKind kind)? onSource,
   }) : _dio = dio,
-       _cache = cache;
+       _cache = cache,
+       _local = local,
+       _gate = LemmaHybridGate(
+         sticky: sticky ?? LemmaStickyStore(),
+         isOffline: isOffline ?? () => false,
+         onSource: onSource,
+       );
 
   final DictionaryRemoteDatasource _remoteDatasource;
   final Dio? _dio;
   final CachedJsonClient? _cache;
+  final DictionaryLocalDatasource? _local;
+  final LemmaHybridGate _gate;
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> searchWords({
+    required String query,
+    required int limit,
+    String? cursor,
+    String searchIn = 'lemma',
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: () => _searchWordsRemote(
+        query: query,
+        limit: limit,
+        cursor: cursor,
+        searchIn: searchIn,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.searchWords(
+          query: query,
+          limit: limit,
+          cursor: cursor,
+          searchIn: searchIn,
+        );
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _searchWordsRemote({
     required String query,
     required int limit,
     String? cursor,
@@ -105,6 +151,41 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     String? letter,
     bool? isVerified,
     String? category,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: () => _listWordsRemote(
+        q: q,
+        limit: limit,
+        cursor: cursor,
+        letter: letter,
+        isVerified: isVerified,
+        category: category,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listWords(
+          q: q,
+          limit: limit,
+          cursor: cursor,
+          letter: letter,
+          isVerified: isVerified,
+          category: category,
+        );
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _listWordsRemote({
+    required String q,
+    required int limit,
+    String? cursor,
+    String? letter,
+    bool? isVerified,
+    String? category,
   }) async {
     try {
       final response = await _remoteDatasource.listWords({
@@ -170,6 +251,28 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordSearchPage>> listLatest({
+    required int limit,
+    String? cursor,
+    bool forceRefresh = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: () => _listLatestRemote(
+        limit: limit,
+        cursor: cursor,
+        forceRefresh: forceRefresh,
+      ),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listLatest(limit: limit, cursor: cursor);
+      },
+      localUnavailableMessage:
+          'Kamus lokal belum siap. Coba lagi setelah online.',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordSearchPage>> _listLatestRemote({
     required int limit,
     String? cursor,
     bool forceRefresh = false,
@@ -278,6 +381,23 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   Future<Either<DictionaryFailure, WordDetail>> getWordById(
     String id, {
     bool forceRefresh = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.detailTimeout,
+      remote: () => _getWordByIdRemote(id, forceRefresh: forceRefresh),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.getWordById(id);
+      },
+      localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
+      localUnavailableCode: 'WORD_NOT_FOUND',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordDetail>> _getWordByIdRemote(
+    String id, {
+    bool forceRefresh = false,
   }) async {
     try {
       final cache = _cache;
@@ -351,6 +471,23 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordDetail>> getWordByLemma(
+    String lemma, {
+    bool forceRefresh = false,
+  }) {
+    return _gate.read(
+      budget: LemmaDatasetConstants.detailTimeout,
+      remote: () => _getWordByLemmaRemote(lemma, forceRefresh: forceRefresh),
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.getWordByLemma(lemma);
+      },
+      localUnavailableMessage: 'Kata tidak tersedia di kamus lokal',
+      localUnavailableCode: 'WORD_NOT_FOUND',
+    );
+  }
+
+  Future<Either<DictionaryFailure, WordDetail>> _getWordByLemmaRemote(
     String lemma, {
     bool forceRefresh = false,
   }) async {
@@ -429,7 +566,21 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }
 
   @override
-  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() async {
+  Future<Either<DictionaryFailure, List<WordCategory>>> listCategories() {
+    return _gate.read(
+      budget: LemmaDatasetConstants.searchTimeout,
+      remote: _listCategoriesRemote,
+      local: () async {
+        final local = _local;
+        if (local == null) return null;
+        return local.listCategories();
+      },
+      localUnavailableMessage: l10n.dictCategoryLoadFailed,
+    );
+  }
+
+  Future<Either<DictionaryFailure, List<WordCategory>>>
+  _listCategoriesRemote() async {
     try {
       final response = await _remoteDatasource.listCategories();
 
@@ -467,6 +618,29 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
 
   @override
   Future<Either<DictionaryFailure, WordOfDay?>> getWordOfDay({
+    bool forceRefresh = false,
+  }) async {
+    // WOTD tidak di-fake dari SQLite (plan Fase 1).
+    if (_gate.preferLocal) {
+      return Either.right(null);
+    }
+    try {
+      final result = await _getWordOfDayRemote(
+        forceRefresh: forceRefresh,
+      ).timeout(LemmaDatasetConstants.detailTimeout);
+      return switch (result) {
+        Left(value: final failure) =>
+          failure.errorCode == 'WORD_NOT_FOUND'
+              ? Either.left(failure)
+              : Either.right(null),
+        Right(value: final value) => Either.right(value),
+      };
+    } catch (_) {
+      return Either.right(null);
+    }
+  }
+
+  Future<Either<DictionaryFailure, WordOfDay?>> _getWordOfDayRemote({
     bool forceRefresh = false,
   }) async {
     try {

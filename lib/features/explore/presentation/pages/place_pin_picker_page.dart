@@ -3,9 +3,14 @@ import 'dart:async';
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+import '../../../../core/models/external_link.dart';
+import '../../../../core/network/network_providers.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../data/maps_url_resolve.dart';
 import '../../data/sambas_nominatim.dart';
 import '../../domain/sambas_map_config.dart';
 import '../widgets/sambas_map_view.dart';
@@ -14,9 +19,11 @@ import '../widgets/sambas_map_view.dart';
 // teks berbahasa).
 const _hintTooShort = '\u0000hint:tooShort';
 const _hintSearching = '\u0000hint:searching';
+const _hintResolvingUrl = '\u0000hint:resolvingUrl';
 const _hintNotFound = '\u0000hint:notFound';
 const _hintOutOfBounds = '\u0000hint:outOfBounds';
 const _hintSearchFailed = '\u0000hint:searchFailed';
+const _hintFromMaps = '\u0000hint:fromMaps';
 
 /// Hasil layar penuh. `point` null berarti titik dihapus.
 class PlacePinPick {
@@ -25,28 +32,38 @@ class PlacePinPick {
   final LatLng? point;
 }
 
-/// Peta layar penuh untuk menaruh titik, plus pencarian Nominatim.
-class PlacePinPickerPage extends StatefulWidget {
+/// Peta layar penuh untuk menaruh titik, plus pencarian Nominatim
+/// dan paste tautan Google Maps (resolve di API).
+class PlacePinPickerPage extends ConsumerStatefulWidget {
   const PlacePinPickerPage({super.key, this.initial});
 
   final LatLng? initial;
 
   @override
-  State<PlacePinPickerPage> createState() => _PlacePinPickerPageState();
+  ConsumerState<PlacePinPickerPage> createState() => _PlacePinPickerPageState();
 }
 
-class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
+class _PlacePinPickerPageState extends ConsumerState<PlacePinPickerPage> {
   final _query = TextEditingController();
   final _nominatim = SambasNominatim();
+  MapsUrlResolveApi? _mapsApi;
   MapLibreMapController? _controller;
   Timer? _debounce;
   var _gen = 0;
   var _drawGen = 0;
   var _styleReady = false;
+  var _resolvingUrl = false;
   String? _hint;
   String? _lastQuery;
   LatLng? _point;
   List<NominatimHit> _results = const [];
+
+  static final _openMapsUri = Uri.parse(
+    'https://www.google.com/maps/search/?api=1&query=Kabupaten+Sambas',
+  );
+
+  MapsUrlResolveApi get _resolveApi =>
+      _mapsApi ??= MapsUrlResolveApi(ref.read(dioProvider));
 
   @override
   void initState() {
@@ -68,6 +85,7 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
   void dispose() {
     _debounce?.cancel();
     _nominatim.dispose();
+    _mapsApi?.dispose();
     _query.dispose();
     super.dispose();
   }
@@ -79,6 +97,23 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
   void _schedule(String raw) {
     _debounce?.cancel();
     final gen = ++_gen;
+
+    if (looksLikeMapsUrl(raw)) {
+      _nominatim.cancel();
+      setState(() {
+        _results = const [];
+        _hint = _hintResolvingUrl;
+        _resolvingUrl = true;
+      });
+      _debounce = Timer(const Duration(milliseconds: 350), () {
+        if (!mounted || gen != _gen) return;
+        _resolveMaps(raw, gen);
+      });
+      return;
+    }
+
+    _mapsApi?.cancel();
+    _resolvingUrl = false;
     final cleaned = cleanNominatimQuery(raw);
     if (cleaned == null) {
       _nominatim.cancel();
@@ -96,6 +131,53 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
       if (!mounted || gen != _gen) return;
       _search(cleaned, gen);
     });
+  }
+
+  Future<void> _resolveMaps(String raw, int gen) async {
+    setState(() {
+      _hint = _hintResolvingUrl;
+      _results = const [];
+      _resolvingUrl = true;
+    });
+    try {
+      final hit = await _resolveApi.resolve(raw);
+      if (!mounted || gen != _gen) return;
+      final point = LatLng(hit.lat, hit.lng);
+      setState(() {
+        _point = point;
+        _results = const [];
+        _hint = _hintFromMaps;
+        _resolvingUrl = false;
+        _lastQuery = extractMapsUrlCandidate(raw);
+      });
+      _draw();
+      await _controller?.animateCamera(
+        CameraUpdate.newLatLngZoom(point, SambasMapConfig.placeZoom),
+      );
+    } on MapsUrlResolveException catch (e) {
+      if (!mounted || gen != _gen) return;
+      if (e.code == 'CANCELLED') return;
+      setState(() {
+        _resolvingUrl = false;
+        _results = const [];
+        _hint = null;
+      });
+      if (e.code == 'RATE_LIMITED') {
+        showFToast(context: context, title: Text(e.message));
+        return;
+      }
+      await showAppErrorSheet(context, message: e.message);
+    } catch (_) {
+      if (!mounted || gen != _gen) return;
+      setState(() {
+        _resolvingUrl = false;
+        _hint = null;
+      });
+      await showAppErrorSheet(
+        context,
+        message: AppLocalizations.of(context).placePinPickerMapsUrlFailed,
+      );
+    }
   }
 
   Future<void> _search(String query, int gen) async {
@@ -178,6 +260,10 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
     );
   }
 
+  Future<void> _openGoogleMaps() async {
+    await launchExternalUrl(_openMapsUri);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -237,6 +323,19 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                           variants,
                           const Icon(FLucideIcons.search),
                         ),
+                    suffixBuilder: _resolvingUrl
+                        ? (context, style, _) => Padding(
+                            padding: style.clearButtonPadding,
+                            child: const FCircularProgress(size: .sm),
+                          )
+                        : null,
+                  ),
+                  const Gap(6),
+                  FButton(
+                    variant: .outline,
+                    onPress: _resolvingUrl ? null : _openGoogleMaps,
+                    prefix: const Icon(FLucideIcons.map),
+                    child: Text(l10n.placePinPickerOpenMaps),
                   ),
                   if (_hint != null)
                     Padding(
@@ -244,11 +343,14 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                       child: Text(
                         switch (_hint!) {
                           _hintSearching => l10n.placePinPickerSearching,
+                          _hintResolvingUrl =>
+                            l10n.placePinPickerResolvingUrl,
                           _hintNotFound => l10n.placePinPickerNotFound,
                           _hintOutOfBounds =>
                             l10n.placePinPickerOutOfBounds,
                           _hintTooShort => l10n.placePinPickerTooShort,
                           _hintSearchFailed => l10n.nominatimSearchFailed,
+                          _hintFromMaps => l10n.placePinPickerFromMaps,
                           final label => label,
                         },
                         maxLines: 2,
@@ -300,9 +402,12 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                                       ),
                                       Text(
                                         '${i + 1}',
-                                        style: theme.typography.body.xs.copyWith(
-                                          color: theme.colors.mutedForeground,
-                                        ),
+                                        style: theme.typography.body.xs
+                                            .copyWith(
+                                              color: theme
+                                                  .colors
+                                                  .mutedForeground,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -336,10 +441,12 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                         Expanded(
                           child: FButton(
                             variant: .outline,
-                            onPress: () {
-                              setState(() => _point = null);
-                              _draw();
-                            },
+                            onPress: _resolvingUrl
+                                ? null
+                                : () {
+                                    setState(() => _point = null);
+                                    _draw();
+                                  },
                             child: Text(l10n.placePinPickerRemove),
                           ),
                         ),
@@ -347,7 +454,9 @@ class _PlacePinPickerPageState extends State<PlacePinPickerPage> {
                       ],
                       Expanded(
                         child: FButton(
-                          onPress: point == null
+                          onPress: _resolvingUrl
+                              ? null
+                              : point == null
                               ? (widget.initial == null
                                     ? null
                                     : () => Navigator.of(

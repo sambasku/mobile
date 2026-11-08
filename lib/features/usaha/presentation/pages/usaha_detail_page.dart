@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
@@ -60,9 +59,22 @@ class UsahaDetailPage extends ConsumerWidget {
         error: (_, _) => const _ErrorBody(),
         data: (usaha) {
           if (usaha == null) return const _NotFoundBody();
+          final hasPendingClaim =
+              ref
+                  .watch(usahaClaimsControllerProvider)
+                  .asData
+                  ?.value
+                  .any(
+                    (c) =>
+                        c.usahaSlug == usaha.slug &&
+                        c.status == UsahaClaimStatus.pending,
+                  ) ??
+              false;
           return _Body(
             usaha: usaha,
+            hasPendingClaim: hasPendingClaim,
             onClaim: () => _openClaimSheet(context, ref),
+            onSeeClaims: () => context.push(UsahaRouter.claims.path),
           );
         },
       ),
@@ -114,6 +126,7 @@ class UsahaDetailPage extends ConsumerWidget {
       await ref
           .read(usahaContributionApiProvider)
           .claim(slug, evidenceImages: result);
+      ref.invalidate(usahaClaimsControllerProvider);
       unawaited(AnalyticsService.instance.logUsahaClaimSubmit(slug: slug));
       if (!context.mounted) return;
       await showModalBottomSheet<void>(
@@ -197,10 +210,17 @@ class UsahaDetailPage extends ConsumerWidget {
 }
 
 class _Body extends StatefulWidget {
-  const _Body({required this.usaha, required this.onClaim});
+  const _Body({
+    required this.usaha,
+    required this.hasPendingClaim,
+    required this.onClaim,
+    required this.onSeeClaims,
+  });
 
   final Usaha usaha;
+  final bool hasPendingClaim;
   final VoidCallback onClaim;
+  final VoidCallback onSeeClaims;
 
   @override
   State<_Body> createState() => _BodyState();
@@ -222,30 +242,36 @@ class _BodyState extends State<_Body> {
   Widget build(BuildContext context) {
     final usaha = widget.usaha;
     final onClaim = widget.onClaim;
+    final onSeeClaims = widget.onSeeClaims;
+    final hasPendingClaim = widget.hasPendingClaim;
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final cover = usaha.coverUrl;
     final badge = usahaOperationalBadge(l10n, usaha.operationalStatus);
 
+    // Icon di title (bukan prefix): Forui ItemContentLayout selalu
+    // center-vertikal prefix - alamat multi-baris jadi icon melayang di tengah.
     final locationTiles = <FTile>[
       if (usaha.region case final region?)
-        FTile(
-          prefix: const Icon(FLucideIcons.mapPinned, size: 18),
-          title: Text(l10n.usahaLocationDistrict),
-          subtitle: Text(region.name),
+        _locationTile(
+          icon: FLucideIcons.mapPinned,
+          title: l10n.usahaLocationDistrict,
+          subtitle: region.name,
         ),
       if (usaha.village case final village?)
-        FTile(
-          prefix: const Icon(FLucideIcons.mapPin, size: 18),
-          title: Text(l10n.usahaLocationVillage),
-          subtitle: Text(village.name),
+        _locationTile(
+          icon: FLucideIcons.mapPin,
+          title: l10n.usahaLocationVillage,
+          subtitle: village.name,
         ),
       if (usaha.addressText case final address?
           when address.trim().isNotEmpty)
-        FTile(
-          prefix: const Icon(FLucideIcons.house, size: 18),
-          title: Text(l10n.usahaLocationAddress),
-          subtitle: Text(address),
+        _locationTile(
+          icon: FLucideIcons.house,
+          title: l10n.usahaLocationAddress,
+          subtitle: address,
+          subtitleMaxLines: 3,
+          titleSpacing: 8,
         ),
     ];
 
@@ -298,6 +324,40 @@ class _BodyState extends State<_Body> {
               ),
           ],
         ),
+        // Meta atas: apresiasi sebelum deskripsi / lokasi.
+        if (usaha.manager case final manager?
+            when usaha.author?.id == manager.id)
+          ContributorAppreciationSection(
+            label: l10n.usahaProposedAndManagedBy,
+            contributors: [
+              ContributorCredit(
+                username: manager.username,
+                displayName: manager.displayName,
+              ),
+            ],
+          )
+        else ...[
+          if (usaha.manager case final manager?)
+            ContributorAppreciationSection(
+              label: l10n.usahaManagedByLabel,
+              contributors: [
+                ContributorCredit(
+                  username: manager.username,
+                  displayName: manager.displayName,
+                ),
+              ],
+            ),
+          if (usaha.author case final author?)
+            ContributorAppreciationSection(
+              label: l10n.usahaContributorProposedBy,
+              contributors: [
+                ContributorCredit(
+                  username: author.username,
+                  displayName: author.displayName,
+                ),
+              ],
+            ),
+        ],
         if (usaha.description != null) ...[
           const Gap(14),
           Text(
@@ -305,26 +365,6 @@ class _BodyState extends State<_Body> {
             style: theme.typography.body.sm.copyWith(height: 1.5),
           ),
         ],
-        if (usaha.manager case final manager?)
-          ContributorAppreciationSection(
-            label: l10n.usahaManagedByLabel,
-            contributors: [
-              ContributorCredit(
-                username: manager.username,
-                displayName: manager.displayName,
-              ),
-            ],
-          ),
-        if (usaha.author case final author?)
-          ContributorAppreciationSection(
-            label: l10n.usahaContributorProposedBy,
-            contributors: [
-              ContributorCredit(
-                username: author.username,
-                displayName: author.displayName,
-              ),
-            ],
-          ),
         if (usaha.operationalStatus ==
             UsahaOperationalStatus.permanentlyClosed) ...[
           const Gap(14),
@@ -372,12 +412,19 @@ class _BodyState extends State<_Body> {
               onPress: () =>
                   context.push(UsahaRouter.editPath(usaha.slug)),
             ),
-            FTile(
-              prefix: const Icon(FLucideIcons.keyRound, size: 18),
-              title: Text(l10n.usahaFormClaim),
-              subtitle: Text(l10n.usahaManageClaimBody),
-              onPress: onClaim,
-            ),
+            if (!usaha.isManaged)
+              FTile(
+                prefix: const Icon(FLucideIcons.keyRound, size: 18),
+                title: Text(
+                  hasPendingClaim
+                      ? l10n.usahaSeeClaims
+                      : l10n.usahaFormClaim,
+                ),
+                subtitle: hasPendingClaim
+                    ? null
+                    : Text(l10n.usahaManageClaimBody),
+                onPress: hasPendingClaim ? onSeeClaims : onClaim,
+              ),
           ],
         ),
         if (usaha.items.isNotEmpty) ...[
@@ -399,12 +446,42 @@ class _BodyState extends State<_Body> {
   }
 }
 
+/// Tile lokasi dengan icon top-aligned (Forui prefix selalu di-center).
+FTile _locationTile({
+  required IconData icon,
+  required String title,
+  required String subtitle,
+  int subtitleMaxLines = 1,
+  double titleSpacing = 3,
+}) {
+  const iconSize = 18.0;
+  const iconGap = 10.0;
+  return FTile(
+    style: .delta(contentStyle: .delta(titleSpacing: titleSpacing)),
+    title: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: iconSize),
+        const Gap(iconGap),
+        Expanded(child: Text(title)),
+      ],
+    ),
+    subtitle: Padding(
+      padding: const EdgeInsets.only(left: iconSize + iconGap),
+      child: Text(
+        subtitle,
+        maxLines: subtitleMaxLines,
+        overflow: TextOverflow.ellipsis,
+        style: subtitleMaxLines > 1 ? const TextStyle(height: 1.45) : null,
+      ),
+    ),
+  );
+}
+
 class _ContactSection extends StatelessWidget {
   const _ContactSection({required this.usaha});
 
   final Usaha usaha;
-
-  static const _whatsappAsset = 'assets/svg/whatsapp.svg';
 
   @override
   Widget build(BuildContext context) {
@@ -443,7 +520,11 @@ class _ContactSection extends StatelessWidget {
 
     final wa = usaha.whatsapp?.trim();
     add(
-      prefix: SvgPicture.asset(_whatsappAsset, width: 18, height: 18),
+      prefix: Icon(
+        FLucideIcons.phoneCall,
+        size: 18,
+        color: theme.colors.primary,
+      ),
       title: l10n.usahaContactWhatsapp,
       present: wa != null && wa.isNotEmpty,
       uri: wa == null || wa.isEmpty

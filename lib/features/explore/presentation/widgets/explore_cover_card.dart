@@ -32,9 +32,10 @@ class ExploreCoverCard extends StatelessWidget {
   /// Rasio lebar:tinggi area cover. Aset `explore_covers/*.webp` = 1:1.
   final double coverAspectRatio;
 
-  /// Estimasi tinggi blok judul di bawah cover (padding + ≤2 baris 12sp).
+  /// Estimasi tinggi blok judul di bawah cover (padding + 1 baris 12sp).
   /// Dipakai menghitung [childAspectRatio] grid supaya sel tidak clip.
-  static const double titleBlockExtent = 40;
+  /// 4+4 padding + 12×1.2 line ≈ 22; +buffer metrik font → 26.
+  static const double titleBlockExtent = 26;
 
   /// [childAspectRatio] untuk grid  yang selnya berisi [ExploreCoverCard].
   static double gridChildAspectRatio({
@@ -98,13 +99,15 @@ class ExploreCoverCard extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
+              // Ketat: space bawah kartu dulu kebesaran (titleBlock 40 + pad 8).
+              padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
               child: Text(
                 title,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.typography.body.sm.copyWith(
                   fontSize: 12,
+                  height: 1.2,
                   fontWeight: FontWeight.w700,
                   color: theme.colors.foreground,
                 ),

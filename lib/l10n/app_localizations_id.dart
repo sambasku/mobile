@@ -257,7 +257,58 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {
@@ -357,7 +408,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
 
   @override
-  String get aboutTeamCoreTitle => 'Inti Tim';
+  String get aboutTeamCoreTitle => 'Tim Inti';
 
   @override
   String get aboutContributorsLoadMore => 'Muat lebih banyak';
@@ -631,6 +682,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get voteDeckAgree => 'Sudah pas';
+
+  @override
+  String get voteDeckTapHint => 'Ketuk kartu untuk melihat lebih rinci';
 
   @override
   String get voteSemanticsUpvote => 'Upvote';
@@ -5526,6 +5580,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get usahaManagedByLabel => 'Dikelola oleh';
 
   @override
+  String get usahaProposedAndManagedBy => 'Diusulkan dan dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -6673,7 +6730,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get placePinPickerTitle => 'Pilih titik';
 
   @override
-  String get placePinPickerSearchHint => 'Cari nama tempat';
+  String get placePinPickerSearchHint => 'Cari nama atau tempel tautan Maps';
 
   @override
   String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
@@ -6696,6 +6753,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get placePinPickerFallbackLabel => 'Titik di Sambas';
+
+  @override
+  String get placePinPickerOpenMaps => 'Buka Google Maps';
+
+  @override
+  String get placePinPickerResolvingUrl => 'Membaca tautan Maps...';
+
+  @override
+  String get placePinPickerFromMaps => 'Titik dari Google Maps';
+
+  @override
+  String get placePinPickerMapsUrlInvalid =>
+      'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.';
+
+  @override
+  String get placePinPickerMapsUrlNoCoords =>
+      'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.';
+
+  @override
+  String get placePinPickerMapsUrlOutOfBounds =>
+      'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.';
+
+  @override
+  String get placePinPickerMapsUrlFailed =>
+      'Gagal membaca tautan Maps. Coba lagi sebentar ya.';
 
   @override
   String get placeProposalsTitle => 'Usulan wisata';
@@ -8381,6 +8463,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventDetailOfficialSource => 'Sumber resmi';
 
   @override
+  String get eventDetailAddress => 'Alamat';
+
+  @override
   String eventDetailPosterCounter(int current, int total) {
     final intl.NumberFormat currentNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
@@ -8855,6 +8940,51 @@ class AppLocalizationsId extends AppLocalizations {
   String get eventDetailNoPoster => 'Belum ada poster';
 
   @override
+  String get eventGoingCountZero => 'Belum ada yang berencana datang.';
+
+  @override
+  String get eventGoingCountOne => '1 orang berencana datang.';
+
+  @override
+  String eventGoingCountMany(int count) {
+    return '$count orang berencana datang.';
+  }
+
+  @override
+  String get eventGoingCountYou => 'Kamu berencana datang.';
+
+  @override
+  String eventGoingCountYouAndOthers(int others) {
+    return 'Kamu + $others orang berencana datang.';
+  }
+
+  @override
+  String get eventGoingCtaMark => 'Berencana datang';
+
+  @override
+  String get eventGoingCtaUnmark => 'Batal rencana';
+
+  @override
+  String get eventGoingToastMarked => 'Oke, kamu dicatat berencana datang.';
+
+  @override
+  String get eventGoingToastUnmarked => 'Baik, rencana datangmu dibatalkan.';
+
+  @override
+  String get eventGoingLoginGate =>
+      'Masuk dulu untuk menandai rencana datang ya';
+
+  @override
+  String get eventGoingToggleFailed =>
+      'Gagal mengubah rencana datang. Coba lagi ya.';
+
+  @override
+  String get eventCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get eventCommentFailed => 'Gagal mengirim komentar';
+
+  @override
   String get eventProposalEmptyHint =>
       'Usulan acara yang kamu kirim akan tampil di sini.';
 
@@ -9238,6 +9368,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get achievementSeeMore => 'Lihat lainnya';
+
+  @override
+  String get achievementBadgesTitle => 'Lencana';
+
+  @override
+  String get achievementBadgeEmpty => 'Belum ada lencana.';
 
   @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
@@ -10082,7 +10218,58 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {
@@ -10182,7 +10369,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.';
 
   @override
-  String get aboutTeamCoreTitle => 'Inti Tim';
+  String get aboutTeamCoreTitle => 'Tim Inti';
 
   @override
   String get aboutContributorsLoadMore => 'Muat lebih banyak';
@@ -10456,6 +10643,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voteDeckAgree => 'Sudah pas';
+
+  @override
+  String get voteDeckTapHint => 'Ketuk kartu untuk melihat lebih rinci';
 
   @override
   String get voteSemanticsUpvote => 'Upvote';
@@ -15351,6 +15541,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get usahaManagedByLabel => 'Dikelola oleh';
 
   @override
+  String get usahaProposedAndManagedBy => 'Diusulkan dan dikelola oleh';
+
+  @override
   String get usahaClosedPermanentlyTitle => 'Usaha ini sudah tutup permanen';
 
   @override
@@ -16498,7 +16691,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get placePinPickerTitle => 'Pilih titik';
 
   @override
-  String get placePinPickerSearchHint => 'Cari nama tempat';
+  String get placePinPickerSearchHint => 'Cari nama atau tempel tautan Maps';
 
   @override
   String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
@@ -16521,6 +16714,31 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get placePinPickerFallbackLabel => 'Titik di Sambas';
+
+  @override
+  String get placePinPickerOpenMaps => 'Buka Google Maps';
+
+  @override
+  String get placePinPickerResolvingUrl => 'Membaca tautan Maps...';
+
+  @override
+  String get placePinPickerFromMaps => 'Titik dari Google Maps';
+
+  @override
+  String get placePinPickerMapsUrlInvalid =>
+      'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.';
+
+  @override
+  String get placePinPickerMapsUrlNoCoords =>
+      'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.';
+
+  @override
+  String get placePinPickerMapsUrlOutOfBounds =>
+      'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.';
+
+  @override
+  String get placePinPickerMapsUrlFailed =>
+      'Gagal membaca tautan Maps. Coba lagi sebentar ya.';
 
   @override
   String get placeProposalsTitle => 'Usulan wisata';
@@ -18206,6 +18424,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventDetailOfficialSource => 'Sumber resmi';
 
   @override
+  String get eventDetailAddress => 'Alamat';
+
+  @override
   String eventDetailPosterCounter(int current, int total) {
     final intl.NumberFormat currentNumberFormat =
         intl.NumberFormat.decimalPattern(localeName);
@@ -18680,6 +18901,51 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get eventDetailNoPoster => 'Belum ada poster';
 
   @override
+  String get eventGoingCountZero => 'Belum ada yang berencana datang.';
+
+  @override
+  String get eventGoingCountOne => '1 orang berencana datang.';
+
+  @override
+  String eventGoingCountMany(int count) {
+    return '$count orang berencana datang.';
+  }
+
+  @override
+  String get eventGoingCountYou => 'Kamu berencana datang.';
+
+  @override
+  String eventGoingCountYouAndOthers(int others) {
+    return 'Kamu + $others orang berencana datang.';
+  }
+
+  @override
+  String get eventGoingCtaMark => 'Berencana datang';
+
+  @override
+  String get eventGoingCtaUnmark => 'Batal rencana';
+
+  @override
+  String get eventGoingToastMarked => 'Oke, kamu dicatat berencana datang.';
+
+  @override
+  String get eventGoingToastUnmarked => 'Baik, rencana datangmu dibatalkan.';
+
+  @override
+  String get eventGoingLoginGate =>
+      'Masuk dulu untuk menandai rencana datang ya';
+
+  @override
+  String get eventGoingToggleFailed =>
+      'Gagal mengubah rencana datang. Coba lagi ya.';
+
+  @override
+  String get eventCommentPlaceholder => 'Tulis komentar kamu...';
+
+  @override
+  String get eventCommentFailed => 'Gagal mengirim komentar';
+
+  @override
   String get eventProposalEmptyHint =>
       'Usulan acara yang kamu kirim akan tampil di sini.';
 
@@ -19063,6 +19329,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get achievementSeeMore => 'Lihat lainnya';
+
+  @override
+  String get achievementBadgesTitle => 'Lencana';
+
+  @override
+  String get achievementBadgeEmpty => 'Belum ada lencana.';
 
   @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';

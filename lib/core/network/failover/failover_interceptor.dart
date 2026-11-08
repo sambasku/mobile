@@ -151,7 +151,7 @@ class FailoverInterceptor extends Interceptor {
   }
 
   /// Bangunkan tier berikutnya di belakang layar. Sengaja tanpa await dan tanpa
-  /// melempar: ini hanya usaha membuat Render mulai boot lebih awal.
+  /// melempar - berguna bila ada host cold-start di belakang.
   void _warmUp(ApiTier tier) {
     _warmUpToken?.cancel();
     _warmUpToken = CancelToken();

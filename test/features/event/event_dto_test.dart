@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sambasku_mobile/features/event/data/models/event_dto.dart';
 import 'package:sambasku_mobile/features/event/domain/entities/event.dart';
+import 'package:sambasku_mobile/features/event/domain/event_public_url.dart';
 import 'package:sambasku_mobile/features/event/presentation/widgets/event_ui.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
@@ -138,15 +139,21 @@ void main() {
       expect(event.effectiveOccurrenceStatus, EventOccurrenceStatus.completed);
     });
 
-    test('dibatalkan -> cancelled (bukan upcoming walau masih di masa depan)', () {
-      final now = DateTime.now();
-      final event = makeEvent(
-        startsAt: now.add(const Duration(hours: 2)),
-        endsAt: now.add(const Duration(hours: 3)),
-        cancelledAt: now,
-      );
-      expect(event.effectiveOccurrenceStatus, EventOccurrenceStatus.cancelled);
-    });
+    test(
+      'dibatalkan -> cancelled (bukan upcoming walau masih di masa depan)',
+      () {
+        final now = DateTime.now();
+        final event = makeEvent(
+          startsAt: now.add(const Duration(hours: 2)),
+          endsAt: now.add(const Duration(hours: 3)),
+          cancelledAt: now,
+        );
+        expect(
+          event.effectiveOccurrenceStatus,
+          EventOccurrenceStatus.cancelled,
+        );
+      },
+    );
   });
 
   group('eventMetaLine', () {
@@ -241,6 +248,68 @@ void main() {
         'Instagram',
       );
       expect(eventSourceTypeLabel(l10n, EventSourceType.website), 'Website');
+    });
+  });
+
+  group('eventPublicUrl', () {
+    test('kanonik /id/acara/<slug>', () {
+      final url = eventPublicUrl('pawai-blocks');
+      expect(url, isNotNull);
+      expect(url, endsWith('/id/acara/pawai-blocks'));
+      expect(url, startsWith('https://'));
+    });
+
+    test('slug kosong -> null', () {
+      expect(eventPublicUrl('  '), isNull);
+    });
+
+    test('/id/acara/<slug> jadi route app, path lama tidak di-redirect', () {
+      expect(
+        nativeEventPathFromPublicLink(
+          Uri.parse('https://sambasku.com/id/acara/pawai'),
+        ),
+        '/acara/pawai',
+      );
+      expect(
+        nativeEventPathFromPublicLink(
+          Uri.parse('https://sambasku.com/id/acara'),
+        ),
+        '/acara',
+      );
+      expect(
+        nativeEventPathFromPublicLink(
+          Uri.parse('https://sambasku.com/acara/pawai'),
+        ),
+        isNull,
+      );
+      expect(
+        nativeEventPathFromPublicLink(
+          Uri.parse('https://sambasku.com/id/acara/kontribusi'),
+        ),
+        '/acara/kontribusi',
+      );
+    });
+  });
+
+  group('eventShareText', () {
+    test('memuat nama, jadwal, lokasi, dan url', () {
+      final event = Event(
+        id: '01EV0000000000000000000001',
+        slug: 'pawai-blocks',
+        name: 'Pawai Blocks',
+        description: 'd',
+        categoryId: 'c',
+        startsAt: DateTime(2026, 11, 17, 21),
+        endsAt: DateTime(2026, 11, 17, 23),
+        occurrenceStatus: EventOccurrenceStatus.upcoming,
+        locationText: 'Lapangan Pemangkat',
+        status: EventStatus.published,
+      );
+      final text = eventShareText(event);
+      expect(text, contains('Pawai Blocks'));
+      expect(text, contains(' - '));
+      expect(text, contains('Lapangan Pemangkat'));
+      expect(text, contains('/id/acara/pawai-blocks'));
     });
   });
 }

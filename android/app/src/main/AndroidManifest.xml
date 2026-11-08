@@ -62,6 +62,7 @@
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/words" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/users" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/wisata" />
+                <data android:scheme="sambasku" android:host="app" android:pathPrefix="/acara" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/hapus-akun" />
                 <data android:scheme="sambasku" android:host="app" android:pathPrefix="/delete-account" />
             </intent-filter>
@@ -87,6 +88,8 @@
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/hapus-akun" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/users" />
                 <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/wisata" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/acara" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPattern="/id/acara.*" />
             </intent-filter>
         </activity>
         <!-- GitHub OAuth tidak memakai RedirectUriReceiverActivity AppAuth.

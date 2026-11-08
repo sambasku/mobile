@@ -53,8 +53,12 @@ class EventDto {
       createdAt: DateTime.tryParse('${json['created_at'] ?? ''}'),
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),
       author: PublicAuthorRef.fromJson(json['author']),
+      goingCount: _int(json['going_count']) ?? 0,
+      viewerGoing: json['viewer_going'] == true,
     );
   }
+
+  static int? _int(Object? value) => value is num ? value.toInt() : null;
 
   static String? _str(Object? value) {
     if (value is! String) return null;

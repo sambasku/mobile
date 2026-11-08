@@ -71,7 +71,7 @@ abstract final class Env {
     return _nonEmpty(webAppUrlProduction) ?? 'https://sambasku.com';
   }
 
-  /// Host cadangan setelah [apiHost], urut tier 2 lalu tier 3.
+  /// Host cadangan setelah [apiHost], urut (produksi: Cloudflare).
   ///
   /// Kosong di staging: flavor itu tidak punya cadangan, jadi circuit breaker
   /// tidak punya tujuan pindah dan diam saja.

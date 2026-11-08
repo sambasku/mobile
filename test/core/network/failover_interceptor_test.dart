@@ -23,7 +23,10 @@ void main() {
     await resolver.setForcedTier(null);
     resolver.configure(
       primaryHost: 'https://t1.test',
-      fallbackHosts: const ['https://t2.test', 'https://t3.test'],
+      fallbackHosts: const [
+        'https://t2.test',
+        'https://render.sambasku.com',
+      ],
     );
 
     gate = ColdHostGate(maxInFlight: 2);
@@ -54,10 +57,11 @@ void main() {
     expect(adapter.total, 6);
   });
 
-  test('tier 3 (Render) membatasi 2 socket bersamaan, request lain mengantri',
+  test('host cold-start membatasi 2 socket bersamaan, request lain mengantri',
       () async {
     resolver.advanceTier();
     resolver.advanceTier();
+    expect(resolver.activeHost, 'https://render.sambasku.com');
     expect(resolver.activeTier.timeout, kColdStartTierTimeout);
 
     adapter.holdMs = 40;

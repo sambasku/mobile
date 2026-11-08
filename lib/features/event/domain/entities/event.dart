@@ -84,6 +84,8 @@ class Event {
     this.createdAt,
     this.updatedAt,
     this.author,
+    this.goingCount = 0,
+    this.viewerGoing = false,
   });
 
   final String id;
@@ -131,7 +133,54 @@ class Event {
   /// Pengusul live dari API.
   final PublicAuthorRef? author;
 
+  /// Jumlah orang yang berencana datang.
+  final int goingCount;
+
+  /// True bila user login sudah menandai berencana datang.
+  final bool viewerGoing;
+
   bool get hasCoordinates => lat != null && lng != null;
+
+  /// Boleh ubah rencana datang (bukan cancelled/completed).
+  bool get canToggleGoing {
+    final status = effectiveOccurrenceStatus;
+    return status == EventOccurrenceStatus.upcoming ||
+        status == EventOccurrenceStatus.ongoing;
+  }
+
+  Event copyWithGoing({required int goingCount, required bool viewerGoing}) =>
+      Event(
+        id: id,
+        slug: slug,
+        name: name,
+        description: description,
+        categoryId: categoryId,
+        category: category,
+        startsAt: startsAt,
+        endsAt: endsAt,
+        occurrenceStatus: occurrenceStatus,
+        locationText: locationText,
+        lat: lat,
+        lng: lng,
+        mapsUrl: mapsUrl,
+        posterUrls: posterUrls,
+        organizer: organizer,
+        sourceUrl: sourceUrl,
+        sourceType: sourceType,
+        sourceAttribution: sourceAttribution,
+        regionId: regionId,
+        villageId: villageId,
+        village: village,
+        places: places,
+        status: status,
+        cancelledAt: cancelledAt,
+        publishedAt: publishedAt,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        author: author,
+        goingCount: goingCount,
+        viewerGoing: viewerGoing,
+      );
 
   /// Ada link sumber yang bisa dibuka.
   bool get hasSource => sourceUrl != null && sourceUrl!.isNotEmpty;

@@ -9,8 +9,8 @@ import '../../../../core/network/failover/api_host_resolver.dart';
 import '../../../../core/theme/f_colors_x.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Tile "Server" di halaman Profil: user memilih host API (Cloudflare /
-/// Deno Deploy / Render) + uji ping sebelum pindah, lalu menguncinya.
+/// Tile "Server" di halaman Profil: user memilih host API (Server Utama /
+/// Cloudflare) + uji ping sebelum pindah, lalu menguncinya.
 ///
 /// Preseden pola: `api_host_inspector.dart` (dev tool) dan `appearance_tiles.dart`
 /// (fungsi FTileMixin yang dimakan FTileGroup halaman Profil).
@@ -229,10 +229,15 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
                     subtitle: _ProbeStatus(
                       host: tiers[i].host,
                       outcome: _probeResults[tiers[i].host],
-                      probing: _probing,
                     ),
                     selected: forced == i,
-                    suffix: forced == i ? const Icon(FLucideIcons.check) : null,
+                    // Ping jalan → spinner kanan; selesai/idle → check bila terpilih.
+                    suffix: _probing &&
+                            !_probeResults.containsKey(tiers[i].host)
+                        ? const FCircularProgress(size: .sm)
+                        : forced == i
+                            ? const Icon(FLucideIcons.check)
+                            : null,
                     onPress: () => _select(i),
                   ),
               ],
@@ -253,44 +258,17 @@ class _ApiHostSheetState extends State<_ApiHostSheet> {
   }
 }
 
-/// Widget subtitle yang menampilkan status ping dengan ikon + warna.
+/// Subtitle host + hasil ping (ikon + warna). Spinner loading ada di
+/// `FTile.suffix`, bukan di sini.
 class _ProbeStatus extends StatelessWidget {
-  const _ProbeStatus({
-    required this.host,
-    required this.outcome,
-    required this.probing,
-  });
+  const _ProbeStatus({required this.host, required this.outcome});
 
   final String host;
   final _ProbeOutcome? outcome;
-  final bool probing;
 
   @override
   Widget build(BuildContext context) {
-    if (probing && outcome == null) {
-      // Ping berjalan dan tier ini belum ada hasil: spinner di sebelah host.
-      // Tier yang sudah punya hasil langsung menampilkan hasilnya.
-      return Row(
-        children: [
-          Text(
-            host,
-            style: TextStyle(
-              fontSize: 13,
-              color: context.theme.colors.mutedForeground,
-            ),
-          ),
-          const Gap(4),
-          const SizedBox(
-            width: 12,
-            height: 12,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ],
-      );
-    }
-
     if (outcome == null) {
-      // Belum diuji — tampilkan host saja.
       return Text(
         host,
         style: TextStyle(
@@ -300,7 +278,6 @@ class _ProbeStatus extends StatelessWidget {
       );
     }
 
-    // Sudah ada hasil — pisahkan host (teks biasa) dari hasil ping (ikon+warna).
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

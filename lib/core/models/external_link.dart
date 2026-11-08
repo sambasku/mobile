@@ -20,6 +20,7 @@ const ownHosts = <String>{
   'sambasku.com',
   'www.sambasku.com',
   'api.sambasku.com',
+  'cloudflare.sambasku.com',
   'render.sambasku.com',
   'sambasku-staging.iamutaki.com',
   'sambasku-web-staging.ibnuul.workers.dev',

@@ -171,12 +171,7 @@ class _BodyState extends ConsumerState<_Body> {
                       ),
                     ),
                     const Gap(8),
-                    // Region disembunyikan: promosi kuliner di level
-                    // kabupaten, tidak perlu badge "Sambas" per item.
-                    Text(
-                      item.description,
-                      style: theme.typography.body.sm.copyWith(height: 1.5),
-                    ),
+                    // Meta atas: apresiasi sebelum deskripsi.
                     if (item.author case final author?)
                       ContributorAppreciationSection(
                         label: l10n.usahaContributorProposedBy,
@@ -187,6 +182,12 @@ class _BodyState extends ConsumerState<_Body> {
                           ),
                         ],
                       ),
+                    // Region disembunyikan: promosi kuliner di level
+                    // kabupaten, tidak perlu badge "Sambas" per item.
+                    Text(
+                      item.description,
+                      style: theme.typography.body.sm.copyWith(height: 1.5),
+                    ),
                     if (item.ingredients.isNotEmpty) ...[
                       const Gap(20),
                       Text(

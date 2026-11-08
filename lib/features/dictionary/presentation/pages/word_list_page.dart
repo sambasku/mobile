@@ -215,64 +215,72 @@ class WordListPage extends HookConsumerWidget {
     if (state.items.isEmpty) {
       final query = state.q.trim();
       final askIndonesia = state.searchIn == 'translation' && query.isEmpty;
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                askIndonesia ? FLucideIcons.search : FLucideIcons.list,
-                size: 40,
-                color: theme.colors.mutedForeground,
-              ),
-              const Gap(8),
-              Text(
-                askIndonesia
-                    ? AppLocalizations.of(context).dictSearchIndonesianEmpty
-                    : query.isEmpty
-                    ? AppLocalizations.of(context).dictNoPublishedWord
-                    : AppLocalizations.of(context).dictNoMatchFor(query),
-                textAlign: TextAlign.center,
-                style: theme.typography.body.md.copyWith(
-                  color: theme.colors.foreground,
-                ),
-              ),
-              if (query.isNotEmpty) ...[
-                const Gap(4),
-                Text(
-                  AppLocalizations.of(context).dictNotInDictionary,
-                  textAlign: TextAlign.center,
-                  style: theme.typography.body.sm.copyWith(
+      // Keyboard menyusutkan sisa viewport. Isi (ikon + 2 teks + 2 tombol)
+      // bisa lebih tinggi beberapa px; scroll, jangan Column kaku.
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    askIndonesia ? FLucideIcons.search : FLucideIcons.list,
+                    size: 40,
                     color: theme.colors.mutedForeground,
                   ),
-                ),
-                const Gap(12),
-                FButton(
-                  onPress: () {
-                    final params = Uri(
-                      queryParameters: {
-                        'lemma': query,
-                        'search_in': state.searchIn,
+                  const Gap(8),
+                  Text(
+                    askIndonesia
+                        ? AppLocalizations.of(context).dictSearchIndonesianEmpty
+                        : query.isEmpty
+                        ? AppLocalizations.of(context).dictNoPublishedWord
+                        : AppLocalizations.of(context).dictNoMatchFor(query),
+                    textAlign: TextAlign.center,
+                    style: theme.typography.body.md.copyWith(
+                      color: theme.colors.foreground,
+                    ),
+                  ),
+                  if (query.isNotEmpty) ...[
+                    const Gap(4),
+                    Text(
+                      AppLocalizations.of(context).dictNotInDictionary,
+                      textAlign: TextAlign.center,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                    const Gap(12),
+                    FButton(
+                      onPress: () {
+                        final params = Uri(
+                          queryParameters: {
+                            'lemma': query,
+                            'search_in': state.searchIn,
+                          },
+                        ).query;
+                        context.push('/contribute?$params');
                       },
-                    ).query;
-                    context.push('/contribute?$params');
-                  },
-                  child: Text(AppLocalizations.of(context).dictProposeThisWord),
-                ),
-              ],
-              if (!askIndonesia) ...[
-                const Gap(8),
-                FButton(
-                  onPress: () => ref.read(wordListProvider.notifier).load(),
-                  variant: FButtonVariant.outline,
-                  prefix: const Icon(FLucideIcons.rotateCcw),
-                  child: Text(AppLocalizations.of(context).commonRetry),
-                ),
-              ],
-            ],
-          ),
-        ),
+                      child: Text(
+                        AppLocalizations.of(context).dictProposeThisWord,
+                      ),
+                    ),
+                  ],
+                  if (!askIndonesia) ...[
+                    const Gap(8),
+                    FButton(
+                      onPress: () => ref.read(wordListProvider.notifier).load(),
+                      variant: FButtonVariant.outline,
+                      prefix: const Icon(FLucideIcons.rotateCcw),
+                      child: Text(AppLocalizations.of(context).commonRetry),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        },
       );
     }
 

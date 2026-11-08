@@ -17,15 +17,9 @@ const _team = AboutTeamMember(
   teamNote: 'Penggagas',
 );
 
-const _contributor = AboutContributorName(
-  username: 'ali',
-  displayName: 'Ali',
-);
+const _contributor = AboutContributorName(username: 'ali', displayName: 'Ali');
 
-const _verifier = AboutVerifier(
-  username: 'fatimah',
-  displayName: 'Fatimah',
-);
+const _verifier = AboutVerifier(username: 'fatimah', displayName: 'Fatimah');
 
 const _sponsorWithUrl = AboutSponsorship(
   id: '1',
@@ -78,6 +72,10 @@ void main() {
         builder: (_, _) => const SponsorshipTeamPage(),
       ),
       GoRoute(
+        path: '/about/contributors',
+        builder: (_, _) => const ContributorsListPage(),
+      ),
+      GoRoute(
         path: '/users/:username',
         name: 'UserProfileRouter.profile',
         builder: (context, state) =>
@@ -98,6 +96,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
     }
 
+    expect(find.text('Tim Inti'), findsOneWidget);
     expect(find.text('Ibnul Mutaki'), findsOneWidget);
     await tester.tap(find.text('Ibnul Mutaki'));
     await tester.pumpAndSettle();
@@ -119,6 +118,11 @@ void main() {
     for (var i = 0; i < 10; i++) {
       await tester.pump(const Duration(milliseconds: 50));
     }
+
+    expect(find.text('Ali'), findsNothing);
+    expect(find.text('Kontributor'), findsOneWidget);
+    await tester.tap(find.text('Kontributor'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Ali'), findsOneWidget);
     await tester.tap(find.text('Ali'));
@@ -206,6 +210,10 @@ class _FakeContributors extends AboutContributors {
 
   @override
   Future<AboutContributorsState?> build() async {
-    return AboutContributorsState(items: items, hasMore: false);
+    return AboutContributorsState(
+      items: items,
+      total: items.length,
+      hasMore: false,
+    );
   }
 }

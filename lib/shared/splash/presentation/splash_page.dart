@@ -19,7 +19,7 @@ class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   /// Minimal tampil sebelum navigasi.
-  static const minDwell = Duration(milliseconds: 1500);
+  static const minDwell = Duration(milliseconds: 1750);
 
   /// Fade + scale logo BrandMark saja.
   static const logoAnim = Duration(milliseconds: 900);

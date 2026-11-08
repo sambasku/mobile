@@ -70,10 +70,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               const Gap(16),
-              _AboutBlock(
-                title: l10n.aboutWhatTitle,
-                body: l10n.aboutWhatBody,
-              ),
+              _AboutBlock(title: l10n.aboutWhatTitle, body: l10n.aboutWhatBody),
               const Gap(16),
               _AboutLinkBlock(
                 title: l10n.aboutSponsorTitle,
@@ -122,7 +119,10 @@ class SponsorshipTeamPage extends StatelessWidget {
             label: Text(l10n.aboutTabSponsors),
             child: const _SponsorsTab(),
           ),
-          FTabEntry.entry(label: Text(l10n.aboutTabTeam), child: const _TeamTab()),
+          FTabEntry.entry(
+            label: Text(l10n.aboutTabTeam),
+            child: const _TeamTab(),
+          ),
         ],
       ),
     );
@@ -138,10 +138,7 @@ class _SponsorsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
       children: [
-        _AboutBlock(
-          title: l10n.aboutSupportTitle,
-          body: l10n.aboutSupportBody,
-        ),
+        _AboutBlock(title: l10n.aboutSupportTitle, body: l10n.aboutSupportBody),
         const Gap(16),
         const _SponsorsSection(),
       ],
@@ -166,24 +163,19 @@ class _TeamTab extends StatelessWidget {
         const _TeamCoreSection(),
         const Gap(16),
         _AboutBlock(
-          title: l10n.aboutContributorsTitle,
-          body: l10n.aboutContributorsBody,
-        ),
-        const Gap(8),
-        const _ContributorsFlatSection(),
-        const Gap(16),
-        _AboutBlock(
           title: l10n.aboutVerifiersTitle,
           body: l10n.aboutVerifiersBody,
         ),
         const Gap(8),
         const _VerifiersSection(),
+        const Gap(16),
+        const _ContributorsEntry(),
       ],
     );
   }
 }
 
-/// Inti Tim: users.is_team (avatar + team_as + note).
+/// Tim Inti: users.is_team (avatar + team_note sebagai subtitle).
 class _TeamCoreSection extends ConsumerWidget {
   const _TeamCoreSection();
 
@@ -214,12 +206,106 @@ class _TeamCoreSection extends ConsumerWidget {
             username: member.username,
             displayName: member.displayName,
             avatarUrl: member.avatarUrl,
-            subtitle: member.teamAs,
-            note: member.teamNote,
+            // Subtitle bebas (bukan role): team_note, fallback team_as data lama.
+            subtitle: switch (member.teamNote) {
+              final n? when n.isNotEmpty => n,
+              _ => member.teamAs,
+            },
           ),
           const Gap(8),
         ],
       ],
+    );
+  }
+}
+
+/// Satu baris total. Tap membuka daftar nama (role contributor).
+class _ContributorsEntry extends ConsumerWidget {
+  const _ContributorsEntry();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final async = ref.watch(aboutContributorsProvider);
+    final state = async.value;
+    if (async.isLoading && state == null) {
+      return const _SectionSkeleton(tileCount: 1);
+    }
+    if (state == null || state.total == 0) return const SizedBox.shrink();
+
+    final theme = context.theme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => context.push('/about/contributors'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.aboutContributorsTitle,
+                  style: theme.typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colors.foreground,
+                  ),
+                ),
+              ),
+              Text(
+                '${state.total}',
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+              const Gap(4),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Daftar nama kontributor. Dibuka dari baris total di tab Tim Kami.
+class ContributorsListPage extends StatelessWidget {
+  const ContributorsListPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return FScaffold(
+      childPad: true,
+      header: FHeader.nested(
+        title: Text(l10n.aboutContributorsTitle),
+        prefixes: [
+          FHeaderAction.back(
+            onPress: () => context.canPop()
+                ? context.pop()
+                : context.go('/about/sponsorship'),
+          ),
+        ],
+      ),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
+        children: [
+          Text(
+            l10n.aboutContributorsBody,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+              height: 1.4,
+            ),
+          ),
+          const Gap(8),
+          const _ContributorsFlatSection(),
+        ],
+      ),
     );
   }
 }
@@ -397,11 +483,8 @@ class _PersonAvatarTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
-        onTap: () => UserProfileRouter.open(
-          context,
-          username,
-          displayName: displayName,
-        ),
+        onTap: () =>
+            UserProfileRouter.open(context, username, displayName: displayName),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(

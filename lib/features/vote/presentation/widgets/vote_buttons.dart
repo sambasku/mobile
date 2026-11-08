@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../../core/theme/f_colors_x.dart';
 import '../../../../core/utils/format_number.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -66,8 +67,11 @@ class _VoteButtonsState extends State<VoteButtons> {
   Widget build(BuildContext context) {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
-    final enabled = theme.colors.primary;
+    // #245: primary Zinc hampir abu di dark - aktif harus arah-warna
+    // (naik hijau / turun merah), sama pola deck + avatar feed #99.
     final idle = theme.colors.mutedForeground;
+    final upActive = theme.colors.success;
+    final downActive = theme.colors.destructive;
 
     // ponytail: FittedBox scaleDown = kebal overflow apa pun penyebabnya
     // (data gila/constraint gila): muat → ukuran asli, kebesaran → menyusut.
@@ -83,7 +87,7 @@ class _VoteButtonsState extends State<VoteButtons> {
               icon: FLucideIcons.arrowBigDown,
               count: widget.downvotes,
               active: widget.myVote == -1,
-              activeColor: enabled,
+              activeColor: downActive,
               idleColor: idle,
               compact: widget.compact,
               disabled: _disabled,
@@ -96,7 +100,7 @@ class _VoteButtonsState extends State<VoteButtons> {
             icon: FLucideIcons.arrowBigUp,
             count: widget.upvotes,
             active: widget.myVote == 1,
-            activeColor: enabled,
+            activeColor: upActive,
             idleColor: idle,
             compact: widget.compact,
             disabled: _disabled,

@@ -522,10 +522,7 @@ void main() {
   ) async {
     ApiHostResolver.instance.configure(
       primaryHost: 'https://api.sambasku.com',
-      fallbackHosts: const [
-        'https://deno.sambasku.com',
-        'https://render.sambasku.com',
-      ],
+      fallbackHosts: const ['https://cloudflare.sambasku.com'],
     );
     addTearDown(
       () => ApiHostResolver.instance.configure(

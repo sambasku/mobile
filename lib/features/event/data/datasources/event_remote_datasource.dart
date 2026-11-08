@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../domain/entities/event.dart';
+import '../../domain/entities/event_comment.dart';
 import '../../domain/entities/event_contribution.dart';
 import '../models/event_contribution_dto.dart';
 import '../models/event_dto.dart';
@@ -88,6 +89,35 @@ class EventRemoteDatasource {
     return EventDto.fromJson(Map<String, dynamic>.from(data));
   }
 
+  /// Hasil mark/unmark berencana datang.
+  Future<({int goingCount, bool viewerGoing})> markGoing(String eventId) =>
+      _toggleGoing(eventId, mark: true);
+
+  Future<({int goingCount, bool viewerGoing})> unmarkGoing(String eventId) =>
+      _toggleGoing(eventId, mark: false);
+
+  Future<({int goingCount, bool viewerGoing})> _toggleGoing(
+    String eventId, {
+    required bool mark,
+  }) async {
+    final path = '/api/v1/events/${Uri.encodeComponent(eventId)}/going';
+    final res = mark
+        ? await _dio.post<dynamic>(
+            path,
+            options: Options(receiveTimeout: const Duration(seconds: 8)),
+          )
+        : await _dio.delete<dynamic>(
+            path,
+            options: Options(receiveTimeout: const Duration(seconds: 8)),
+          );
+    final data = _dataMap(res.data);
+    final count = data['going_count'];
+    return (
+      goingCount: count is num ? count.toInt() : 0,
+      viewerGoing: data['viewer_going'] == true,
+    );
+  }
+
   /// Katalog kategori acara (published).
   Future<List<EventCategoryRef>> fetchCategories() async {
     final res = await _dio.get<dynamic>(
@@ -99,6 +129,59 @@ class EventRemoteDatasource {
     final items = data is Map ? data['items'] : null;
     if (items is! List) return const [];
     return EventContributionDto.categoriesFromJson(items);
+  }
+
+  /// Komentar satu acara (publik) - GET /api/v1/events/:id/comments.
+  Future<EventCommentPage> fetchComments(
+    String eventId, {
+    int limit = 20,
+    String? cursor,
+  }) async {
+    final res = await _dio.get<dynamic>(
+      '/api/v1/events/${Uri.encodeComponent(eventId)}/comments',
+      queryParameters: {
+        'limit': limit,
+        if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+      },
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final data = _dataMap(res.data);
+    return EventCommentPage.fromJson(data);
+  }
+
+  /// Kirim komentar (login) - POST /api/v1/events/:id/comments.
+  Future<EventComment?> postComment(String eventId, String body) async {
+    final res = await _dio.post<dynamic>(
+      '/api/v1/events/${Uri.encodeComponent(eventId)}/comments',
+      data: {'body': body},
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final data = _dataMap(res.data);
+    if (data.isEmpty) return null;
+    return EventComment.fromJson(data);
+  }
+
+  /// Edit komentar milik sendiri - PATCH /api/v1/events/comments/:id.
+  Future<EventComment?> updateComment(
+    String commentId,
+    String body,
+  ) async {
+    final res = await _dio.patch<dynamic>(
+      '/api/v1/events/comments/${Uri.encodeComponent(commentId)}',
+      data: {'body': body},
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final data = _dataMap(res.data);
+    if (data.isEmpty) return null;
+    return EventComment.fromJson(data);
+  }
+
+  /// Hapus komentar milik sendiri - DELETE /api/v1/events/comments/:id.
+  Future<void> deleteComment(String commentId) async {
+    await _dio.delete<dynamic>(
+      '/api/v1/events/comments/${Uri.encodeComponent(commentId)}',
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
   }
 
   static String? _nextCursor(Object? data) {

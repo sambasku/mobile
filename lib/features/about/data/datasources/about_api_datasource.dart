@@ -27,7 +27,9 @@ class AboutTeamMember {
           ? json['avatar_url'] as String
           : null,
       teamAs: json['team_as'] is String ? json['team_as'] as String : null,
-      teamNote: json['team_note'] is String ? json['team_note'] as String : null,
+      teamNote: json['team_note'] is String
+          ? json['team_note'] as String
+          : null,
     );
   }
 }
@@ -55,11 +57,13 @@ class AboutContributorsPage {
     required this.items,
     required this.nextCursor,
     required this.hasMore,
+    required this.total,
   });
 
   final List<AboutContributorName> items;
   final String? nextCursor;
   final bool hasMore;
+  final int total;
 }
 
 /// Verifikator (role reviewer) - avatar + nama.
@@ -172,10 +176,7 @@ class AboutApiDatasource {
   }) async {
     final resp = await _dio.get<dynamic>(
       '/api/v1/users/contributors',
-      queryParameters: {
-        'limit': limit,
-        'cursor': ?cursor,
-      },
+      queryParameters: {'limit': limit, 'cursor': ?cursor},
     );
     final body = resp.data;
     if (body is! Map) {
@@ -197,10 +198,12 @@ class AboutApiDatasource {
       }
     }
     final next = data['next_cursor'];
+    final totalRaw = data['total'];
     return AboutContributorsPage(
       items: items,
       nextCursor: next is String ? next : null,
       hasMore: data['has_more'] == true,
+      total: totalRaw is num ? totalRaw.toInt() : items.length,
     );
   }
 

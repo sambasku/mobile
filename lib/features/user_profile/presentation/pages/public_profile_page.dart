@@ -509,7 +509,8 @@ class _PublicProfileLoadingBody extends StatelessWidget {
   }
 }
 
-/// Bone 3 kolom di dalam [ProfileIdentityHeaderSkeleton] (sudah Skeletonizer).
+/// Satu baris bone. Kotak grid 3 kolom menyisakan ruang kosong di bawah
+/// gambar; isi asli paling banyak 3 baris rapat, dan 0 lencana = ciut.
 class _BadgeGridSkeleton extends StatelessWidget {
   const _BadgeGridSkeleton();
 
@@ -517,43 +518,16 @@ class _BadgeGridSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const Gap(12),
         Bone.text(
           words: 1,
           style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
         ),
         const Gap(8),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final cellWidth = (constraints.maxWidth - 24) / 3;
-            return Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                for (var i = 0; i < 3; i++)
-                  SizedBox(
-                    width: cellWidth,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.colors.border),
-                      ),
-                      padding: const EdgeInsets.all(8),
-                      child: const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AspectRatio(aspectRatio: 1, child: Bone.square()),
-                          Gap(4),
-                          Bone.text(words: 2),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+        const Bone.text(words: 3),
       ],
     );
   }

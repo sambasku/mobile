@@ -8,6 +8,7 @@ import '../../../../core/feature_flags.dart';
 import '../../../../core/i18n/locale_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../about/about_router.dart';
+import '../../../dictionary/presentation/widgets/lemma_dataset_settings_section.dart';
 import '../../../profile/presentation/widgets/appearance_tiles.dart';
 import '../../../report_bug/report_bug_router.dart';
 import '../../settings_router.dart';
@@ -36,7 +37,8 @@ class SettingsPage extends ConsumerWidget {
         ],
       ),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 32),
+        // Horizontal lewat childPad FScaffold - jangan pad lagi di sini.
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
         children: [
           if (FeatureFlags.multiLanguageEnabled) ...[
             FTileGroup(
@@ -63,6 +65,7 @@ class SettingsPage extends ConsumerWidget {
           ),
           const Gap(8),
           const NotificationPrefsSection(),
+          const LemmaDatasetSettingsSection(),
           FTileGroup(
             label: Text(l10n.settingsGroupSupport),
             children: [

@@ -580,8 +580,92 @@ abstract class AppLocalizations {
   /// No description provided for @offlineBanner.
   ///
   /// In id, this message translates to:
-  /// **'Kamu lagi offline. Nampilin data tersimpan.'**
+  /// **'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.'**
   String get offlineBanner;
+
+  /// Chip saat korpus lemma dari SQLite / offline
+  ///
+  /// In id, this message translates to:
+  /// **'Mode offline'**
+  String get lemmaLocalModeChip;
+
+  /// Label grup Settings untuk dataset lemma offline
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal'**
+  String get lemmaDatasetGroup;
+
+  /// Subtitle tile OTA; {version} = release_version integer
+  ///
+  /// In id, this message translates to:
+  /// **'Versi kamus lokal v{version}'**
+  String lemmaDatasetVersion(int version);
+
+  /// No description provided for @lemmaDatasetVersionUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi kamus lokal belum terpasang'**
+  String get lemmaDatasetVersionUnknown;
+
+  /// Tombol manual OTA dataset lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui kamus'**
+  String get lemmaDatasetUpdate;
+
+  /// No description provided for @lemmaDatasetUpdating.
+  ///
+  /// In id, this message translates to:
+  /// **'Memperbarui…'**
+  String get lemmaDatasetUpdating;
+
+  /// No description provided for @lemmaDatasetUpdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal diperbarui'**
+  String get lemmaDatasetUpdated;
+
+  /// No description provided for @lemmaDatasetAlreadyLatest.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal sudah versi terbaru'**
+  String get lemmaDatasetAlreadyLatest;
+
+  /// No description provided for @lemmaDatasetNeedInternet.
+  ///
+  /// In id, this message translates to:
+  /// **'Butuh internet untuk memperbarui kamus'**
+  String get lemmaDatasetNeedInternet;
+
+  /// No description provided for @lemmaDatasetUpdateFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memperbarui kamus. Coba lagi nanti.'**
+  String get lemmaDatasetUpdateFailed;
+
+  /// No description provided for @lemmaDatasetHashFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.'**
+  String get lemmaDatasetHashFailed;
+
+  /// No description provided for @lemmaDatasetAppUpdateRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui aplikasi dulu supaya bisa pakai kamus ini'**
+  String get lemmaDatasetAppUpdateRequired;
+
+  /// No description provided for @lemmaDatasetIncompatible.
+  ///
+  /// In id, this message translates to:
+  /// **'Skema kamus tidak didukung aplikasi ini'**
+  String get lemmaDatasetIncompatible;
+
+  /// Hint di container komentar saat mode offline / sumber lokal
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar tidak tersedia di mode offline'**
+  String get lemmaSocialNeedsInternet;
 
   /// Halaman error router; {error} = path/uri yang gagal
   ///
@@ -754,7 +838,7 @@ abstract class AppLocalizations {
   /// Judul daftar users.is_team di tab Tim Kami
   ///
   /// In id, this message translates to:
-  /// **'Inti Tim'**
+  /// **'Tim Inti'**
   String get aboutTeamCoreTitle;
 
   /// Tombol load more daftar nama kontributor
@@ -1254,6 +1338,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sudah pas'**
   String get voteDeckAgree;
+
+  /// Catatan di bawah kartu voting deck: ketuk kartu membuka detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk kartu untuk melihat lebih rinci'**
+  String get voteDeckTapHint;
 
   /// No description provided for @voteSemanticsUpvote.
   ///
@@ -9875,6 +9965,12 @@ abstract class AppLocalizations {
   /// **'Dikelola oleh'**
   String get usahaManagedByLabel;
 
+  /// Label apresiasi gabungan bila pengusul dan pengelola orang yang sama
+  ///
+  /// In id, this message translates to:
+  /// **'Diusulkan dan dikelola oleh'**
+  String get usahaProposedAndManagedBy;
+
   /// No description provided for @usahaClosedPermanentlyTitle.
   ///
   /// In id, this message translates to:
@@ -12014,7 +12110,7 @@ abstract class AppLocalizations {
   /// No description provided for @placePinPickerSearchHint.
   ///
   /// In id, this message translates to:
-  /// **'Cari nama tempat'**
+  /// **'Cari nama atau tempel tautan Maps'**
   String get placePinPickerSearchHint;
 
   /// No description provided for @placePinPickerTooShort.
@@ -12058,6 +12154,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Titik di Sambas'**
   String get placePinPickerFallbackLabel;
+
+  /// Tombol shortcut membuka Google Maps di luar app
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Google Maps'**
+  String get placePinPickerOpenMaps;
+
+  /// Hint saat API resolve URL Google Maps
+  ///
+  /// In id, this message translates to:
+  /// **'Membaca tautan Maps...'**
+  String get placePinPickerResolvingUrl;
+
+  /// Hint sukses setelah paste tautan Maps
+  ///
+  /// In id, this message translates to:
+  /// **'Titik dari Google Maps'**
+  String get placePinPickerFromMaps;
+
+  /// Error MAPS_URL_INVALID di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.'**
+  String get placePinPickerMapsUrlInvalid;
+
+  /// Error MAPS_URL_NO_COORDS di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.'**
+  String get placePinPickerMapsUrlNoCoords;
+
+  /// Error MAPS_URL_OUT_OF_BOUNDS di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.'**
+  String get placePinPickerMapsUrlOutOfBounds;
+
+  /// Error resolve Maps URL generik / jaringan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membaca tautan Maps. Coba lagi sebentar ya.'**
+  String get placePinPickerMapsUrlFailed;
 
   /// No description provided for @placeProposalsTitle.
   ///
@@ -14819,6 +14957,12 @@ abstract class AppLocalizations {
   /// **'Sumber resmi'**
   String get eventDetailOfficialSource;
 
+  /// Label baris alamat/lokasi di detail acara
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get eventDetailAddress;
+
   /// No description provided for @eventDetailPosterCounter.
   ///
   /// In id, this message translates to:
@@ -15617,6 +15761,84 @@ abstract class AppLocalizations {
   /// **'Belum ada poster'**
   String get eventDetailNoPoster;
 
+  /// Empty state soft RSVP di detail acara
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada yang berencana datang.'**
+  String get eventGoingCountZero;
+
+  /// No description provided for @eventGoingCountOne.
+  ///
+  /// In id, this message translates to:
+  /// **'1 orang berencana datang.'**
+  String get eventGoingCountOne;
+
+  /// No description provided for @eventGoingCountMany.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang berencana datang.'**
+  String eventGoingCountMany(int count);
+
+  /// No description provided for @eventGoingCountYou.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu berencana datang.'**
+  String get eventGoingCountYou;
+
+  /// No description provided for @eventGoingCountYouAndOthers.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu + {others} orang berencana datang.'**
+  String eventGoingCountYouAndOthers(int others);
+
+  /// CTA sticky footer detail acara - belum menandai
+  ///
+  /// In id, this message translates to:
+  /// **'Berencana datang'**
+  String get eventGoingCtaMark;
+
+  /// CTA sticky footer detail acara - sudah menandai
+  ///
+  /// In id, this message translates to:
+  /// **'Batal rencana'**
+  String get eventGoingCtaUnmark;
+
+  /// No description provided for @eventGoingToastMarked.
+  ///
+  /// In id, this message translates to:
+  /// **'Oke, kamu dicatat berencana datang.'**
+  String get eventGoingToastMarked;
+
+  /// No description provided for @eventGoingToastUnmarked.
+  ///
+  /// In id, this message translates to:
+  /// **'Baik, rencana datangmu dibatalkan.'**
+  String get eventGoingToastUnmarked;
+
+  /// No description provided for @eventGoingLoginGate.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menandai rencana datang ya'**
+  String get eventGoingLoginGate;
+
+  /// No description provided for @eventGoingToggleFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah rencana datang. Coba lagi ya.'**
+  String get eventGoingToggleFailed;
+
+  /// Placeholder kolom komentar acara
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis komentar kamu...'**
+  String get eventCommentPlaceholder;
+
+  /// Error generik komentar acara (kirim/sunting/hapus)
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim komentar'**
+  String get eventCommentFailed;
+
   /// No description provided for @eventProposalEmptyHint.
   ///
   /// In id, this message translates to:
@@ -16253,11 +16475,23 @@ abstract class AppLocalizations {
   /// **'Lihat semua pencapaian'**
   String get achievementSeeAll;
 
-  /// Overlay sel ujung saat lencana profil lebih dari satu baris
+  /// Baris di bawah 3 lencana profil, membuka daftar lengkap
   ///
   /// In id, this message translates to:
   /// **'Lihat lainnya'**
   String get achievementSeeMore;
+
+  /// Judul seksi lencana di tab profil dan profil publik
+  ///
+  /// In id, this message translates to:
+  /// **'Lencana'**
+  String get achievementBadgesTitle;
+
+  /// Empty state seksi lencana profil
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada lencana.'**
+  String get achievementBadgeEmpty;
 
   /// No description provided for @achievementBorderUpdated.
   ///

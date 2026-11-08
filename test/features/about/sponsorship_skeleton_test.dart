@@ -107,7 +107,9 @@ void main() {
     await tapTimKami(tester);
     await tester.pumpAndSettle();
 
-    expect(find.text('Budi'), findsOneWidget);
+    expect(find.text('Kontributor'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Budi'), findsNothing);
   });
 
   testWidgets('gagal fetch: section hilang, halaman tetap utuh', (
@@ -133,7 +135,7 @@ class _HangContributors extends AboutContributors {
 class _ReadyContributors extends AboutContributors {
   @override
   Future<AboutContributorsState?> build() async =>
-      const AboutContributorsState(items: [_contributor]);
+      const AboutContributorsState(items: [_contributor], total: 1);
 }
 
 class _FailedContributors extends AboutContributors {

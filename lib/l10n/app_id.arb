@@ -98,7 +98,39 @@
   "errorSheetOk": "Mengerti",
   "errorSheetClose": "Tutup",
   "errorSheetRetry": "Coba lagi",
-  "offlineBanner": "Kamu lagi offline. Nampilin data tersimpan.",
+  "offlineBanner": "Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.",
+  "lemmaLocalModeChip": "Mode offline",
+  "@lemmaLocalModeChip": {
+    "description": "Chip saat korpus lemma dari SQLite / offline"
+  },
+  "lemmaDatasetGroup": "Kamus lokal",
+  "@lemmaDatasetGroup": {
+    "description": "Label grup Settings untuk dataset lemma offline"
+  },
+  "lemmaDatasetVersion": "Versi kamus lokal v{version}",
+  "@lemmaDatasetVersion": {
+    "description": "Subtitle tile OTA; {version} = release_version integer",
+    "placeholders": {
+      "version": {"type": "int"}
+    }
+  },
+  "lemmaDatasetVersionUnknown": "Versi kamus lokal belum terpasang",
+  "lemmaDatasetUpdate": "Perbarui kamus",
+  "@lemmaDatasetUpdate": {
+    "description": "Tombol manual OTA dataset lemma"
+  },
+  "lemmaDatasetUpdating": "Memperbarui…",
+  "lemmaDatasetUpdated": "Kamus lokal diperbarui",
+  "lemmaDatasetAlreadyLatest": "Kamus lokal sudah versi terbaru",
+  "lemmaDatasetNeedInternet": "Butuh internet untuk memperbarui kamus",
+  "lemmaDatasetUpdateFailed": "Gagal memperbarui kamus. Coba lagi nanti.",
+  "lemmaDatasetHashFailed": "File kamus rusak atau tidak cocok. Versi lama tetap dipakai.",
+  "lemmaDatasetAppUpdateRequired": "Perbarui aplikasi dulu supaya bisa pakai kamus ini",
+  "lemmaDatasetIncompatible": "Skema kamus tidak didukung aplikasi ini",
+  "lemmaSocialNeedsInternet": "Komentar tidak tersedia di mode offline",
+  "@lemmaSocialNeedsInternet": {
+    "description": "Hint di container komentar saat mode offline / sumber lokal"
+  },
   "routerNotFound": "Halaman tidak ditemukan: {error}",
   "@routerNotFound": {
     "description": "Halaman error router; {error} = path/uri yang gagal",
@@ -157,7 +189,7 @@
   "aboutVerifiersBody": "Memeriksa usulan sebelum masuk kamus.",
   "aboutSponsorsSectionTitle": "Sponsor & Mitra",
   "aboutSponsorsTooltip": "Sponsor: pemberi dana atau barang untuk biaya operasional (domain, server, honorarium). Mitra: rekan kerja sama yang berkontribusi dana, tenaga, materi, atau data. Nama semua pendukung kami cantumkan sebagai apresiasi atas dukungannya.",
-  "aboutTeamCoreTitle": "Inti Tim",
+  "aboutTeamCoreTitle": "Tim Inti",
   "@aboutTeamCoreTitle": {
     "description": "Judul daftar users.is_team di tab Tim Kami"
   },
@@ -294,6 +326,10 @@
   "voteDeckSkip": "Lewati",
   "voteDeckDisagree": "Perlu dicek ulang",
   "voteDeckAgree": "Sudah pas",
+  "voteDeckTapHint": "Ketuk kartu untuk melihat lebih rinci",
+  "@voteDeckTapHint": {
+    "description": "Catatan di bawah kartu voting deck: ketuk kartu membuka detail lemma"
+  },
   "voteSemanticsUpvote": "Upvote",
   "voteSemanticsDownvote": "Downvote",
   "voteMeaningOrder": "Makna ke-{order} dari {count}",
@@ -3848,6 +3884,10 @@
   "@usahaManagedByLabel": {
     "description": "Label apresiasi pengelola terverifikasi di detail usaha"
   },
+  "usahaProposedAndManagedBy": "Diusulkan dan dikelola oleh",
+  "@usahaProposedAndManagedBy": {
+    "description": "Label apresiasi gabungan bila pengusul dan pengelola orang yang sama"
+  },
   "usahaClosedPermanentlyTitle": "Usaha ini sudah tutup permanen",
   "usahaClosedPermanentlyBody": "Info tetap kami simpan sebagai catatan sejarah.",
   "usahaCatalog": "Katalog",
@@ -4468,7 +4508,7 @@
   "placePhotosEmpty": "Belum ada foto untuk tempat ini.",
   "placePhotosUpload": "Unggah foto",
   "placePinPickerTitle": "Pilih titik",
-  "placePinPickerSearchHint": "Cari nama tempat",
+  "placePinPickerSearchHint": "Cari nama atau tempel tautan Maps",
   "placePinPickerTooShort": "Ketik minimal 3 huruf.",
   "placePinPickerSearching": "Mencari...",
   "placePinPickerNotFound": "Tidak ketemu di Kabupaten Sambas.",
@@ -4478,6 +4518,34 @@
   "placePinPickerFallbackLabel": "Titik di Sambas",
   "@placePinPickerFallbackLabel": {
     "description": "Label fallback hasil Nominatim tanpa display_name"
+  },
+  "placePinPickerOpenMaps": "Buka Google Maps",
+  "@placePinPickerOpenMaps": {
+    "description": "Tombol shortcut membuka Google Maps di luar app"
+  },
+  "placePinPickerResolvingUrl": "Membaca tautan Maps...",
+  "@placePinPickerResolvingUrl": {
+    "description": "Hint saat API resolve URL Google Maps"
+  },
+  "placePinPickerFromMaps": "Titik dari Google Maps",
+  "@placePinPickerFromMaps": {
+    "description": "Hint sukses setelah paste tautan Maps"
+  },
+  "placePinPickerMapsUrlInvalid": "Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.",
+  "@placePinPickerMapsUrlInvalid": {
+    "description": "Error MAPS_URL_INVALID di pin picker"
+  },
+  "placePinPickerMapsUrlNoCoords": "Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.",
+  "@placePinPickerMapsUrlNoCoords": {
+    "description": "Error MAPS_URL_NO_COORDS di pin picker"
+  },
+  "placePinPickerMapsUrlOutOfBounds": "Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.",
+  "@placePinPickerMapsUrlOutOfBounds": {
+    "description": "Error MAPS_URL_OUT_OF_BOUNDS di pin picker"
+  },
+  "placePinPickerMapsUrlFailed": "Gagal membaca tautan Maps. Coba lagi sebentar ya.",
+  "@placePinPickerMapsUrlFailed": {
+    "description": "Error resolve Maps URL generik / jaringan"
   },
   "placeProposalsTitle": "Usulan wisata",
   "placeProposalsCancelTitle": "Batalkan usulan?",
@@ -5486,6 +5554,10 @@
   "@eventDetailRelatedPlaces": {},
   "eventDetailOfficialSource": "Sumber resmi",
   "@eventDetailOfficialSource": {},
+  "eventDetailAddress": "Alamat",
+  "@eventDetailAddress": {
+    "description": "Label baris alamat/lokasi di detail acara"
+  },
   "eventDetailPosterCounter": "{current}/{total}",
   "@eventDetailPosterCounter": {
     "placeholders": {
@@ -5920,6 +5992,53 @@
   "@eventDetailNoPoster": {
     "description": "Placeholder hero detail acara tanpa poster_urls"
   },
+
+  "eventGoingCountZero": "Belum ada yang berencana datang.",
+  "@eventGoingCountZero": {
+    "description": "Empty state soft RSVP di detail acara"
+  },
+  "eventGoingCountOne": "1 orang berencana datang.",
+  "@eventGoingCountOne": {},
+  "eventGoingCountMany": "{count} orang berencana datang.",
+  "@eventGoingCountMany": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "eventGoingCountYou": "Kamu berencana datang.",
+  "@eventGoingCountYou": {},
+  "eventGoingCountYouAndOthers": "Kamu + {others} orang berencana datang.",
+  "@eventGoingCountYouAndOthers": {
+    "placeholders": {
+      "others": { "type": "int" }
+    }
+  },
+  "eventGoingCtaMark": "Berencana datang",
+  "@eventGoingCtaMark": {
+    "description": "CTA sticky footer detail acara - belum menandai"
+  },
+  "eventGoingCtaUnmark": "Batal rencana",
+  "@eventGoingCtaUnmark": {
+    "description": "CTA sticky footer detail acara - sudah menandai"
+  },
+  "eventGoingToastMarked": "Oke, kamu dicatat berencana datang.",
+  "@eventGoingToastMarked": {},
+  "eventGoingToastUnmarked": "Baik, rencana datangmu dibatalkan.",
+  "@eventGoingToastUnmarked": {},
+  "eventGoingLoginGate": "Masuk dulu untuk menandai rencana datang ya",
+  "@eventGoingLoginGate": {},
+  "eventGoingToggleFailed": "Gagal mengubah rencana datang. Coba lagi ya.",
+  "@eventGoingToggleFailed": {},
+
+  "eventCommentPlaceholder": "Tulis komentar kamu...",
+  "@eventCommentPlaceholder": {
+    "description": "Placeholder kolom komentar acara"
+  },
+  "eventCommentFailed": "Gagal mengirim komentar",
+  "@eventCommentFailed": {
+    "description": "Error generik komentar acara (kirim/sunting/hapus)"
+  },
+
   "eventProposalEmptyHint": "Usulan acara yang kamu kirim akan tampil di sini.",
   "@eventProposalEmptyHint": {},
   "eventProposalLoadFailedHint": "Periksa koneksi internetmu lalu coba lagi ya.",
@@ -6186,7 +6305,15 @@
   "@achievementSeeAll": {},
   "achievementSeeMore": "Lihat lainnya",
   "@achievementSeeMore": {
-    "description": "Overlay sel ujung saat lencana profil lebih dari satu baris"
+    "description": "Baris di bawah 3 lencana profil, membuka daftar lengkap"
+  },
+  "achievementBadgesTitle": "Lencana",
+  "@achievementBadgesTitle": {
+    "description": "Judul seksi lencana di tab profil dan profil publik"
+  },
+  "achievementBadgeEmpty": "Belum ada lencana.",
+  "@achievementBadgeEmpty": {
+    "description": "Empty state seksi lencana profil"
   },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
   "@achievementBorderUpdated": {},

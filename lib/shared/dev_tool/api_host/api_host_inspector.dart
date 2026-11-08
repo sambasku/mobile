@@ -166,8 +166,7 @@ class _ApiHostPageState extends State<_ApiHostPage> {
         ),
         const Gap(8),
         const Text(
-          'Ping memakai timeout 8 detik. Render yang tidur mungkin gagal '
-          'di tap pertama - itu normal, instance sudah mulai bangun.',
+          'Ping memakai timeout 8 detik per host.',
           style: TextStyle(fontSize: 11, color: Colors.grey),
         ),
         const Gap(20),

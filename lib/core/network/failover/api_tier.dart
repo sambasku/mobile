@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 
 /// Satu tier API: host plus anggaran waktunya sendiri.
 ///
-/// Tier TIDAK saling menggantikan begitu saja. Tier 3 (Render paket gratis)
-/// tidur setelah ~15 menit menganggur dan butuh sampai ~60 detik untuk bangun,
-/// jadi memakai timeout 15 detik yang sama seperti tier 1 membuat tier 3 selalu
-/// dinyatakan mati justru saat ia dibutuhkan.
+/// Host cold-start (kalau ada) butuh timeout receive lebih panjang dari
+/// default 15 detik - lihat `isColdStartHost` di `api_host_resolver.dart`.
 @immutable
 class ApiTier {
   const ApiTier({
@@ -22,7 +20,7 @@ class ApiTier {
   /// Nomor tier yang dibaca manusia.
   int get number => index + 1;
 
-  /// Label ringkas untuk dev tool dan log: "Tier 2 - render.sambasku.com".
+  /// Label ringkas untuk dev tool dan log: "Tier 2 - cloudflare.sambasku.com".
   String get label => 'Tier $number - ${Uri.parse(host).host}';
 
   @override

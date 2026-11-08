@@ -147,11 +147,18 @@ class _GuestDeck extends ConsumerWidget {
                   sense: w.sense,
                   wordTypeLabel: w.wordTypeLabel,
                   onLockedTap: () => context.push('/login'),
+                  onOpenDetail: () => context.push(
+                    DictionaryRouter.detail.path.replaceFirst(':id', w.id),
+                  ),
                 ),
               );
             },
           ),
         ),
+        if (samples.asData?.value.isNotEmpty ?? false) ...[
+          const Gap(8),
+          const _VoteDeckTapHint(),
+        ],
         const Gap(12),
         FAlert(
           title: Text(l10n.voteDeckLoginPrompt),
@@ -324,6 +331,7 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                 ),
               ),
             ),
+            if (!_rewinding) ...[const Gap(8), const _VoteDeckTapHint()],
             const Gap(8),
             _VoteDeckActionBar(
               pendingAction: widget.pendingAction,
@@ -583,6 +591,22 @@ class _VoteDeckActionBar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _VoteDeckTapHint extends StatelessWidget {
+  const _VoteDeckTapHint();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Text(
+      AppLocalizations.of(context).voteDeckTapHint,
+      textAlign: TextAlign.center,
+      style: theme.typography.body.xs.copyWith(
+        color: theme.colors.mutedForeground,
       ),
     );
   }

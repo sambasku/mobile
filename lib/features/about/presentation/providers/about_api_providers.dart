@@ -39,18 +39,21 @@ Future<List<AboutVerifier>?> aboutVerifiers(Ref ref) async {
 class AboutContributorsState {
   const AboutContributorsState({
     required this.items,
+    required this.total,
     this.nextCursor,
     this.hasMore = false,
     this.loadingMore = false,
   });
 
   final List<AboutContributorName> items;
+  final int total;
   final String? nextCursor;
   final bool hasMore;
   final bool loadingMore;
 
   AboutContributorsState copyWith({
     List<AboutContributorName>? items,
+    int? total,
     String? nextCursor,
     bool? hasMore,
     bool? loadingMore,
@@ -58,6 +61,7 @@ class AboutContributorsState {
   }) {
     return AboutContributorsState(
       items: items ?? this.items,
+      total: total ?? this.total,
       nextCursor: clearCursor ? null : (nextCursor ?? this.nextCursor),
       hasMore: hasMore ?? this.hasMore,
       loadingMore: loadingMore ?? this.loadingMore,
@@ -76,6 +80,7 @@ class AboutContributors extends _$AboutContributors {
       if (!ref.mounted) return null;
       return AboutContributorsState(
         items: page.items,
+        total: page.total,
         nextCursor: page.nextCursor,
         hasMore: page.hasMore,
       );
@@ -99,6 +104,7 @@ class AboutContributors extends _$AboutContributors {
       state = AsyncData(
         AboutContributorsState(
           items: [...current.items, ...fresh],
+          total: page.total,
           nextCursor: page.nextCursor,
           hasMore: page.hasMore && fresh.isNotEmpty,
           loadingMore: false,

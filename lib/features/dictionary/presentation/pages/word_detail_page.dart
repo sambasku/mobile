@@ -42,13 +42,22 @@ import '../../../user_profile/user_profile_router.dart';
 import '../../../share/data/share_background_repository.dart';
 import '../../../share/domain/word_public_url.dart';
 import '../../../share/presentation/share_sheet.dart';
+import '../../../../core/network/connectivity_provider.dart';
 import '../../../../core/network/network_providers.dart';
 import '../../application/word_clipboard.dart';
+import '../../data/dataset/lemma_data_source_kind.dart';
+import '../../data/dataset/lemma_dataset_providers.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../widgets/written_pronunciation_line.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
+
+bool _lemmaUsesLocalCorpus(WidgetRef ref) {
+  final offline = ref.watch(isOfflineProvider).value ?? false;
+  final source = ref.watch(lemmaDataSourceKindControllerProvider);
+  return offline || source == LemmaDataSourceKind.local;
+}
 
 /// Halaman detail kata publik - GET /api/v1/words/:id.
 class WordDetailPage extends HookConsumerWidget {
@@ -103,7 +112,8 @@ class WordDetailPage extends HookConsumerWidget {
               semanticsLabel: AppLocalizations.of(context).dictChangeHistory,
               onPress: () => context.push('/words/$resolvedId/history'),
             ),
-            _WordBookmarkHeaderAction(wordId: resolvedId),
+            if (!_lemmaUsesLocalCorpus(ref))
+              _WordBookmarkHeaderAction(wordId: resolvedId),
             if (async.asData?.value case final detail?)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.ellipsis),
@@ -126,7 +136,13 @@ class WordDetailPage extends HookConsumerWidget {
             final isNotFound = failure.errorCode == 'WORD_NOT_FOUND';
             return Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
+                // childPad false: gutter horizontal manual, sama seperti
+                // empty state profil. Tanpa ini FButton (mainAxisSize max)
+                // menempel ke tepi layar.
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 20,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -577,6 +593,16 @@ class _DetailBody extends HookConsumerWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
               children: [
+                if (_lemmaUsesLocalCorpus(ref))
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: FBadge(
+                      variant: FBadgeVariant.destructive,
+                      child: Text(
+                        AppLocalizations.of(context).lemmaLocalModeChip,
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Column(
@@ -864,7 +890,18 @@ class _DetailBody extends HookConsumerWidget {
             ),
           ),
         ),
-        WordCommentEntryBar(wordId: wordId),
+        if (!_lemmaUsesLocalCorpus(ref))
+          WordCommentEntryBar(wordId: wordId)
+        else
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Text(
+              AppLocalizations.of(context).lemmaSocialNeedsInternet,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -1159,6 +1196,7 @@ Future<void> _showWordActionsSheet(
 }) {
   final l10n = AppLocalizations.of(context);
   final muted = context.theme.colors.mutedForeground;
+  final localCorpus = _lemmaUsesLocalCorpus(ref);
   return showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -1214,20 +1252,21 @@ Future<void> _showWordActionsSheet(
                       openWordShareSheet(context, ref, detail);
                     },
                   ),
-                  FTile(
-                    prefix: const Icon(FLucideIcons.penLine),
-                    title: Text(l10n.dictActionSuggest),
-                    subtitle: Text(l10n.dictSuggestEditSubtitle),
-                    suffix: Icon(
-                      FLucideIcons.chevronRight,
-                      size: 16,
-                      color: muted,
+                  if (!localCorpus)
+                    FTile(
+                      prefix: const Icon(FLucideIcons.penLine),
+                      title: Text(l10n.dictActionSuggest),
+                      subtitle: Text(l10n.dictSuggestEditSubtitle),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        size: 16,
+                        color: muted,
+                      ),
+                      onPress: () {
+                        Navigator.pop(sheetContext);
+                        _openSuggestEdit(context, ref, wordId);
+                      },
                     ),
-                    onPress: () {
-                      Navigator.pop(sheetContext);
-                      _openSuggestEdit(context, ref, wordId);
-                    },
-                  ),
                   FTile(
                     prefix: const Icon(FLucideIcons.flag),
                     title: Text(l10n.dictReportEntry),
@@ -1438,7 +1477,8 @@ class _MeaningBlock extends ConsumerWidget {
                   ),
                 ],
                 const Gap(8),
-                MeaningVoteRow(meaningId: meaning.id),
+                if (!_lemmaUsesLocalCorpus(ref))
+                  MeaningVoteRow(meaningId: meaning.id),
               ],
             ),
           ),

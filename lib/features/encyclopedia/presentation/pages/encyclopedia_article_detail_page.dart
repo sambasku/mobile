@@ -162,32 +162,24 @@ class _EncyclopediaArticleDetailPageState
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const Gap(12),
-            Row(
-              children: [
-                Icon(
-                  FLucideIcons.user,
-                  size: 16,
-                  color: theme.colors.mutedForeground,
-                ),
-                const Gap(8),
-                Expanded(
-                  child: Text(
-                    article.author.displayName ??
-                        article.author.username ??
-                        l10n.dictSpeakerAnonymous,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
+            if (article.author.isVerifier) ...[
+              const Gap(8),
+              FBadge(
+                variant: FBadgeVariant.outline,
+                child: Text(l10n.encyclopediaAuthorBy),
+              ),
+            ],
+            // Meta atas: apresiasi (ganti baris author plain + footer).
+            if (isLinkablePublicUsername(article.author.username))
+              ContributorAppreciationSection(
+                label: l10n.usahaContributorProposedBy,
+                contributors: [
+                  ContributorCredit(
+                    username: article.author.username!,
+                    displayName: article.author.displayName ?? '',
                   ),
-                ),
-                if (article.author.isVerifier)
-                  FBadge(
-                    variant: FBadgeVariant.outline,
-                    child: Text(l10n.encyclopediaAuthorBy),
-                  ),
-              ],
-            ),
+                ],
+              ),
             const Gap(16),
             if (article.excerpt.isNotEmpty)
               Container(
@@ -222,17 +214,6 @@ class _EncyclopediaArticleDetailPageState
               const Gap(8),
               SambaskuMarkdown(data: article.referencesMd!),
             ],
-            // Apresiasi pengusul di paling bawah halaman.
-            if (isLinkablePublicUsername(article.author.username))
-              ContributorAppreciationSection(
-                label: l10n.usahaContributorProposedBy,
-                contributors: [
-                  ContributorCredit(
-                    username: article.author.username!,
-                    displayName: article.author.displayName ?? '',
-                  ),
-                ],
-              ),
           ],
         ),
       ),

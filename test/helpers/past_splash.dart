@@ -5,7 +5,7 @@ import 'package:sambasku_mobile/shared/splash/presentation/splash_page.dart';
 
 /// Cold start app kini lewat /splash: _bootstrap() menunggu
 /// PackageInfo.fromPlatform() (method channel - wajib mock di test)
-/// lalu dwell min 1500ms sebelum go('/'). Pump lewat keduanya supaya
+/// lalu dwell min 1750ms sebelum go('/'). Pump lewat keduanya supaya
 /// shell/tab benar-benar terender, lalu settle redirect GoRouter.
 /// Tanpa ini find.byType(FScaffold) = no element.
 Future<void> pumpPastSplash(WidgetTester tester) async {

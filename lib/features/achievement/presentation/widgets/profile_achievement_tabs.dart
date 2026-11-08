@@ -6,43 +6,70 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/utils/display_image_url.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
+import '../../../achievement/achievement_router.dart';
 import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
 import '../providers/achievement_providers.dart';
-import '../../../achievement/achievement_router.dart';
 import 'achievement_badge_grid.dart';
-import '../../../../l10n/app_localizations.dart';
 
-/// Ringkasan lencana profil: 1 baris, 4 lencana kecil.
+/// Ringkasan lencana profil: maksimal 3 baris rapat di [FTileGroup].
+///
+/// Tanpa subtitle: deskripsi 2 baris membuat baris lebih tinggi dari gambar
+/// dan menyisakan ruang kosong di bawah lencana (prefix Forui di-center).
+/// Belum ada lencana = widget ini ciut, tanpa judul dan tanpa kotak kosong.
 ///
 /// Dipakai tab Profil (profil sendiri, data `/me/achievements`) dan profil
-/// publik (lencana milik user lain). Pengganti sub-tab FTabs
-/// "Badge | Border | Pencapaian" yang pecah (label multiline merusak area).
-/// Border tetap diatur via `showBorderPickerSheet`.
+/// publik (lencana milik user lain).
 ///
-/// Lebih dari 4 lencana: sel ujung overlay "Lihat lainnya". Profil sendiri
-/// membuka halaman Pencapaian. Profil orang lain membuka sheet grid penuh.
+/// Lebih dari 3: baris "Lihat lainnya". Profil sendiri membuka halaman
+/// Pencapaian. Profil orang lain membuka sheet daftar lengkap.
+/// Border tetap diatur via `showBorderPickerSheet`.
 class ProfileAchievementTabs extends ConsumerWidget {
   const ProfileAchievementTabs({
     super.key,
     this.username,
-    this.title = 'Lencana',
+    this.title,
     this.showAllButton = true,
     this.showTitle = true,
   });
 
   /// Null = lencana milik user yang sedang login.
   final String? username;
-  final String title;
+  final String? title;
   final bool showAllButton;
   final bool showTitle;
+
+  static const previewCount = 3;
+
+  /// Padding baris profil. Default FTile (14.5) + subtitle membuat baris
+  /// jauh lebih tinggi dari gambar 28.
+  static const rowPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
+  static const thumbSize = 28.0;
 
   void _openAll(BuildContext context) {
     AnalyticsService.instance.logAchievementsView(tab: 'all');
     context.push(AchievementRouter.list.path);
   }
 
-  void _showAllBadges(BuildContext context, List<Achievement> badges) {
+  void _openDetail(BuildContext context, Achievement item) {
+    AnalyticsService.instance.logAchievementBadgeView(code: item.code);
+    showAppInfoSheet(
+      context,
+      title: item.title,
+      message: AppLocalizations.of(
+        context,
+      ).achievementDetailOwned(item.description),
+    );
+  }
+
+  void _showAllBadges(
+    BuildContext context,
+    List<Achievement> badges,
+    String heading,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
@@ -57,7 +84,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                title,
+                heading,
                 style: theme.typography.body.md.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -68,7 +95,15 @@ class ProfileAchievementTabs extends ConsumerWidget {
                   maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.6,
                 ),
                 child: SingleChildScrollView(
-                  child: AchievementBadgeGrid(items: badges),
+                  child: FTileGroup(
+                    children: [
+                      for (final item in badges)
+                        _ProfileBadgeTile(
+                          item: item,
+                          onTap: () => _openDetail(sheetContext, item),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -80,23 +115,26 @@ class ProfileAchievementTabs extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final heading = title ?? l10n.achievementBadgesTitle;
     final async = username == null
         ? ref.watch(myAchievementsProvider())
         : ref.watch(userAchievementsProvider(username!));
 
     return async.when(
       loading: () =>
-          _AchievementTabsSkeleton(showTitle: showTitle, title: title),
+          _AchievementTabsSkeleton(showTitle: showTitle, title: heading),
       error: (err, _) => Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 12),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             FAlert(
               variant: FAlertVariant.destructive,
               title: Text(
                 err is AchievementFailure
                     ? err.message
-                    : 'Gagal memuat pencapaian',
+                    : l10n.achievementLoadFailed,
               ),
             ),
             const Gap(8),
@@ -108,7 +146,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
                     ? myAchievementsProvider()
                     : userAchievementsProvider(username!),
               ),
-              child: Text(AppLocalizations.of(context).commonRetry),
+              child: Text(l10n.commonRetry),
             ),
           ],
         ),
@@ -117,40 +155,51 @@ class ProfileAchievementTabs extends ConsumerWidget {
         final badges = AchievementBadgeGrid.topTierPerFamily(
           items.where((e) => e.isOwned && e.isBadge).toList(growable: false),
         );
-        const previewColumns = 4;
-        const previewRows = 1;
-        final overflow = badges.length > previewColumns * previewRows;
+        if (badges.isEmpty) return const SizedBox.shrink();
+        final overflow = badges.length > previewCount;
+        final preview = overflow ? badges.sublist(0, previewCount) : badges;
         return Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const Gap(12),
             if (showTitle) ...[
               Text(
-                title,
+                heading,
                 style: context.theme.typography.body.md.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const Gap(8),
             ],
-            AchievementBadgeGrid(
-              items: badges,
-              maxRows: previewRows,
-              columns: previewColumns,
-              compact: true,
-              onOverflow: overflow
-                  ? () {
+            FTileGroup(
+              children: [
+                for (final item in preview)
+                  _ProfileBadgeTile(
+                    item: item,
+                    onTap: () => _openDetail(context, item),
+                  ),
+                if (overflow)
+                  FTile(
+                    style: _profileBadgeRowStyle,
+                    title: Text(
+                      l10n.achievementSeeMore,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    suffix: const Icon(FLucideIcons.chevronRight, size: 14),
+                    onPress: () {
                       if (username == null) {
                         _openAll(context);
                       } else {
-                        _showAllBadges(context, badges);
+                        _showAllBadges(context, badges, heading);
                       }
-                    }
-                  : null,
+                    },
+                  ),
+              ],
             ),
             if (showAllButton && badges.isNotEmpty && !overflow) ...[
               const Gap(8),
-              // Shrink-wrap supaya sejajar tombol kecil lain (pola FButton
-              // default .max = full width).
               Align(
                 alignment: Alignment.center,
                 child: FButton(
@@ -158,7 +207,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
                   variant: FButtonVariant.outline,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => _openAll(context),
-                  child: Text(AppLocalizations.of(context).achievementSeeAll),
+                  child: Text(l10n.achievementSeeAll),
                 ),
               ),
             ],
@@ -169,7 +218,8 @@ class ProfileAchievementTabs extends ConsumerWidget {
   }
 }
 
-/// Placeholder shimmer: 4 lencana kecil, satu baris.
+/// Placeholder shimmer: satu baris. Tiga baris akan menyisakan kotak
+/// kosong kalau user ternyata belum punya lencana.
 class _AchievementTabsSkeleton extends StatelessWidget {
   const _AchievementTabsSkeleton({
     required this.showTitle,
@@ -198,8 +248,10 @@ class _AchievementTabsSkeleton extends StatelessWidget {
       ),
       child: IgnorePointer(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const Gap(12),
             if (showTitle) ...[
               Text(
                 title,
@@ -209,48 +261,78 @@ class _AchievementTabsSkeleton extends StatelessWidget {
               ),
               const Gap(8),
             ],
-            LayoutBuilder(
-              builder: (context, constraints) {
-                const spacing = AchievementBadgeGrid.compactSpacing;
-                final cellWidth = (constraints.maxWidth - spacing * 3) / 4;
-                return Wrap(
-                  spacing: spacing,
-                  runSpacing: spacing,
-                  children: [
-                    for (var i = 0; i < 4; i++)
-                      SizedBox(
-                        width: cellWidth,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              AchievementBadgeGrid.compactRadius,
-                            ),
-                            border: Border.all(color: theme.colors.border),
-                          ),
-                          padding: const EdgeInsets.all(
-                            AchievementBadgeGrid.compactPadding,
-                          ),
-                          child: const Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: AchievementBadgeGrid.compactImageSize,
-                                height: AchievementBadgeGrid.compactImageSize,
-                                child: Bone.square(),
-                              ),
-                              Gap(AchievementBadgeGrid.compactImageGap),
-                              Bone.text(words: 1),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
+            FTileGroup(
+              children: [
+                FTile(
+                  style: _profileBadgeRowStyle,
+                  prefix: const Bone.square(
+                    size: ProfileAchievementTabs.thumbSize,
+                  ),
+                  title: const Bone.text(words: 2),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+const _profileBadgeRowStyle = FItemStyleDelta.delta(
+  contentStyle: FItemContentStyleDelta.delta(
+    suffixedPadding: EdgeInsetsGeometryDelta.value(
+      ProfileAchievementTabs.rowPadding,
+    ),
+    unsuffixedPadding: EdgeInsetsGeometryDelta.value(
+      ProfileAchievementTabs.rowPadding,
+    ),
+  ),
+);
+
+/// Satu lencana di ringkasan profil: gambar + judul, tanpa deskripsi.
+class _ProfileBadgeTile extends StatelessWidget with FTileMixin {
+  const _ProfileBadgeTile({required this.item, required this.onTap});
+
+  final Achievement item;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final url = displayImageUrl(item.badgeUrl, width: 96) ?? item.badgeUrl;
+    final Widget thumb;
+    if (url == null) {
+      thumb = Icon(
+        FLucideIcons.award,
+        size: 18,
+        color: theme.colors.mutedForeground,
+      );
+    } else {
+      thumb = Image.network(
+        url,
+        width: ProfileAchievementTabs.thumbSize,
+        height: ProfileAchievementTabs.thumbSize,
+        fit: BoxFit.contain,
+        gaplessPlayback: true,
+        errorBuilder: (_, _, _) => Icon(
+          FLucideIcons.award,
+          size: 18,
+          color: theme.colors.mutedForeground,
+        ),
+      );
+    }
+
+    return FTile(
+      style: _profileBadgeRowStyle,
+      prefix: SizedBox(
+        width: ProfileAchievementTabs.thumbSize,
+        height: ProfileAchievementTabs.thumbSize,
+        child: thumb,
+      ),
+      title: Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      suffix: const Icon(FLucideIcons.chevronRight, size: 14),
+      onPress: onTap,
     );
   }
 }

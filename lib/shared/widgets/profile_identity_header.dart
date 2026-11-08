@@ -80,8 +80,8 @@ class ProfileIdentityHeader extends StatelessWidget {
   /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
   static String defaultCoverAsset(ProfileHeaderVariant variant) =>
       variant == ProfileHeaderVariant.hero
-          ? 'assets/images/profile_cover_tab.webp'
-          : 'assets/images/profile_cover_public.webp';
+      ? 'assets/images/profile_cover_tab.webp'
+      : 'assets/images/profile_cover_public.webp';
 
   /// Konten tambahan di bawah identitas (mis. ringkasan lencana).
   final Widget? footer;
@@ -172,7 +172,9 @@ class ProfileIdentityHeader extends StatelessWidget {
                     ),
                     child: Semantics(
                       button: onAvatarTap != null,
-                      label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
+                      label: AppLocalizations.of(
+                        context,
+                      ).profilePhotoSemantics(displayName),
                       child: GestureDetector(
                         onTap: onAvatarTap,
                         child: _AvatarWithStreak(
@@ -251,7 +253,7 @@ class ProfileIdentityHeader extends StatelessWidget {
                   children: actions,
                 ),
               ],
-              if (footer != null) ...[const Gap(12), footer!],
+              ?footer,
             ],
           ),
         ),

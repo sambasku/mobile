@@ -109,17 +109,20 @@ class PantunFeedController extends AsyncNotifier<PantunFeedState> {
       current.copyWith(
         items: [
           for (final p in current.items)
-            p.voteTarget.key == key
-                ? p.copyWith(
-                    upvotes: view.upvotes,
-                    downvotes: view.downvotes,
-                    myVote: view.myVote,
-                  )
-                : p,
+            p.voteTarget.key == key ? _voted(p, view) : p,
         ],
       ),
     );
   }
+
+  /// copyWith pantun: `myVote: null` diabaikan (??), jadi unvote wajib
+  /// [Pantun.clearMyVote].
+  Pantun _voted(Pantun p, VoteView view) => p.copyWith(
+    upvotes: view.upvotes,
+    downvotes: view.downvotes,
+    myVote: view.myVote,
+    clearMyVote: view.myVote == null,
+  );
 
   /// Hapus pantun milik sendiri dari feed. Return pesan error (null = sukses).
   Future<String?> deletePantun(Pantun pantun) async {
@@ -247,6 +250,7 @@ class PantunDetailController extends AsyncNotifier<PantunDetail> {
     upvotes: view.upvotes,
     downvotes: view.downvotes,
     myVote: view.myVote,
+    clearMyVote: view.myVote == null,
   );
 
   void replaceReply(Pantun updated) {

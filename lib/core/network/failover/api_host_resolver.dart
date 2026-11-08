@@ -5,18 +5,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/env.dart';
 import 'api_tier.dart';
 
-/// Timeout tier 1 dan 2 - sama dengan nilai Dio sebelum failover ada.
+/// Timeout default tiap tier - sama dengan nilai Dio sebelum failover ada.
 const kDefaultTierTimeout = Duration(seconds: 15);
 
-/// Timeout tier terakhir. Render paket gratis tidur setelah ~15 menit dan
-/// bangun sampai ~60 detik; 15 detik akan selalu habis sebelum ia siap.
+/// Timeout host cold-start (mis. Render paket gratis dulu). Host itu tidur
+/// setelah ~15 menit dan bangun sampai ~60 detik; 15 detik selalu habis
+/// sebelum siap. Produksi sekarang hanya Server Utama + Cloudflare, jadi
+/// konstanta ini hanya aktif kalau host cadangan mengandung `render`.
 const kColdStartTierTimeout = Duration(seconds: 75);
 
-/// Timeout ping `/health` dan warm-up. Cukup untuk memulai boot Render;
-/// tidak perlu menunggu instance siap - itu tugas request data (75s).
-/// Dipakai DevTool "Uji semua host" supaya tap beruntun tidak menumpuk
-/// koneksi native sampai ANR di OEM ColorOS.
+/// Timeout ping `/health` dan warm-up. Pendek supaya tap beruntun di DevTool
+/// tidak menumpuk koneksi native sampai ANR di OEM ColorOS.
 const kHealthProbeTimeout = Duration(seconds: 8);
+
+/// Host yang butuh anggaran receive panjang (cold start).
+bool isColdStartHost(String host) {
+  final h = Uri.tryParse(host)?.host ?? host;
+  return h.contains('render');
+}
 
 /// Lama satu tier "di-pin" sebelum tier 1 dicoba lagi.
 const kTierPinDuration = Duration(minutes: 5);
@@ -27,11 +33,16 @@ const _prefKeyPreferredTier = 'preferredApiTier';
 
 /// Label manusiawi tiap tier untuk UI user. Cocokkan lewat host supaya tahan
 /// kalau urutan env berubah; host tak dikenal dikembalikan apa adanya.
+///
+/// Urutan spesifik dulu: `api.sambasku.com` dan `cloudflare.sambasku.com`
+/// sama-sama mengandung `sambasku.com` - jangan sampai keduanya jadi
+/// "Cloudflare".
 String apiTierLabelForHost(String host) {
   final h = Uri.tryParse(host)?.host ?? host;
   if (h.contains('deno')) return 'Deno Deploy';
   if (h.contains('render')) return 'Render';
-  if (h.contains('sambasku.com')) return 'Cloudflare';
+  if (h.contains('cloudflare')) return 'Cloudflare';
+  if (h == 'api.sambasku.com' || h.startsWith('api.')) return 'Server Utama';
   if (h.contains('staging')) return 'Staging';
   return h;
 }
@@ -85,8 +96,7 @@ class ApiHostResolver extends ChangeNotifier {
         ApiTier(
           index: i,
           host: hosts[i],
-          // Tier terakhir menanggung risiko cold start.
-          timeout: i == hosts.length - 1 && hosts.length > 1
+          timeout: isColdStartHost(hosts[i])
               ? kColdStartTierTimeout
               : kDefaultTierTimeout,
         ),
@@ -169,11 +179,8 @@ class ApiHostResolver extends ChangeNotifier {
   }
 
   /// Bangunkan tier SETELAH yang baru di-pin, sekali per jendela pin.
-  ///
-  /// Kenapa bukan cron 24/7: menjaga Render melek sepanjang waktu memakan ~730
-  /// dari 750 jam gratis per bulan, jadi kuota justru bisa habis tepat saat
-  /// cadangan diperlukan. Membangunkan hanya setelah masalah dimulai membuat
-  /// tier 3 tetap tidur di hari normal dan tidak memakan jam sama sekali.
+  /// Berguna kalau ada host cold-start di belakang; dengan 2 host
+  /// (utama + Cloudflare) tidak ada yang dihangatkan.
   void _warmUpTierAfter(int pinnedIndex) {
     final warmIndex = pinnedIndex + 1;
     if (warmIndex >= _tiers.length) return;

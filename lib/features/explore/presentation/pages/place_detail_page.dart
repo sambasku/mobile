@@ -255,6 +255,17 @@ class _BodyState extends ConsumerState<_Body> {
                             ),
                         ],
                       ),
+                      // Meta atas: apresiasi sebelum jam/deskripsi/foto.
+                      if (place.author case final author?)
+                        ContributorAppreciationSection(
+                          label: l10n.usahaContributorProposedBy,
+                          contributors: [
+                            ContributorCredit(
+                              username: author.username,
+                              displayName: author.displayName,
+                            ),
+                          ],
+                        ),
                       if (place.hours != null ||
                           place.contact?.isEmpty == false) ...[
                         const Gap(12),
@@ -269,17 +280,6 @@ class _BodyState extends ConsumerState<_Body> {
                       ],
                       if (place.images.length > 1)
                         _PhotoGrid(slug: place.slug, images: place.images),
-                      // Apresiasi pengusul: author live dari API.
-                      if (place.author case final author?)
-                        ContributorAppreciationSection(
-                          label: l10n.usahaContributorProposedBy,
-                          contributors: [
-                            ContributorCredit(
-                              username: author.username,
-                              displayName: author.displayName,
-                            ),
-                          ],
-                        ),
                       const Gap(16),
                       FTileGroup(
                         label: Text(l10n.placeSectionActions),
