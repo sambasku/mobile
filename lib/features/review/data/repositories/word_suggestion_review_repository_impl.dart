@@ -26,6 +26,7 @@ WordSuggestionSummary _parseSummary(Map<String, dynamic> json) {
     summaryLemma: summary['lemma']?.toString(),
     summaryNotes: summary['notes']?.toString(),
     meaningsCount: (summary['meanings_count'] as num?)?.toInt() ?? 0,
+    examplesCount: (summary['examples_count'] as num?)?.toInt() ?? 0,
     imagesCount: (summary['images_count'] as num?)?.toInt() ?? 0,
   );
 }
@@ -49,6 +50,10 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
   final meanings = diff['meanings'];
   final meaningsChanged = meanings is List
       ? meanings.whereType<Map>().length
+      : 0;
+  final examples = diff['examples'];
+  final examplesChanged = examples is List
+      ? examples.whereType<Map>().length
       : 0;
   final classDiffs = <WordSuggestionFieldDiff>[];
   if (meanings is List) {
@@ -91,6 +96,7 @@ WordSuggestionDetail _parseDetail(Map<String, dynamic> data) {
       changed: wordType.changed,
     ),
     meaningsChanged: meaningsChanged,
+    examplesChanged: examplesChanged,
     classDiffs: classDiffs,
     categoriesAdded: countList(categories, 'added').length,
     categoriesRemoved: countList(categories, 'removed').length,

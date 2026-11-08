@@ -21,6 +21,7 @@ enum FeedActivityKind {
   placeListing,
   event,
   usaha,
+  layanan,
   culinary,
   pantun,
   article,
@@ -73,6 +74,8 @@ FeedActivityKind? parseFeedActivityKind(String raw) {
       return FeedActivityKind.event;
     case 'usaha':
       return FeedActivityKind.usaha;
+    case 'layanan':
+      return FeedActivityKind.layanan;
     case 'culinary':
       return FeedActivityKind.culinary;
     case 'pantun':

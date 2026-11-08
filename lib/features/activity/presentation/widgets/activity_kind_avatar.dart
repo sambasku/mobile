@@ -174,6 +174,11 @@ class ActivityKindAvatar extends StatelessWidget {
         icon: FLucideIcons.store,
         foreground: secondary,
       );
+    case FeedActivityKind.layanan:
+      return _KindAvatarStyle(
+        icon: FLucideIcons.phone,
+        foreground: secondary,
+      );
     case FeedActivityKind.culinary:
       return _KindAvatarStyle(
         icon: FLucideIcons.utensilsCrossed,

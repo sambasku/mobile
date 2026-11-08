@@ -2269,6 +2269,30 @@ abstract class AppLocalizations {
   /// **'Hapus, ganti, atau pilih foto utama'**
   String get suggestCategoryChangePhotoDesc;
 
+  /// Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah contoh'**
+  String get suggestCategoryChangeExample;
+
+  /// No description provided for @suggestCategoryChangeExampleDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki typo atau arti contoh yang sudah ada'**
+  String get suggestCategoryChangeExampleDesc;
+
+  /// Caption daftar contoh di form Ubah contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih contoh yang mau diperbaiki'**
+  String get suggestPickExample;
+
+  /// Hint singkat setelah user memilih satu contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh dipilih'**
+  String get suggestExampleSelected;
+
   /// No description provided for @suggestCategorySynonym.
   ///
   /// In id, this message translates to:
@@ -3750,6 +3774,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'makna ({count})'**
   String reviewChangeHintMeanings(int count);
+
+  /// Hint ringkas antrean review: jumlah contoh diubah
+  ///
+  /// In id, this message translates to:
+  /// **'contoh ({count})'**
+  String reviewChangeHintExamples(int count);
 
   /// No description provided for @reviewChangeHintImages.
   ///
@@ -7715,6 +7745,12 @@ abstract class AppLocalizations {
   /// **'Usaha'**
   String get feedKindUsaha;
 
+  /// No description provided for @feedKindLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan'**
+  String get feedKindLayanan;
+
   /// Label jenis aktivitas: kuliner terbit
   ///
   /// In id, this message translates to:
@@ -7846,6 +7882,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat usaha'**
   String get feedCtaSeeUsaha;
+
+  /// No description provided for @feedCtaSeeLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat layanan'**
+  String get feedCtaSeeLayanan;
 
   /// Ajakan membuka kuliner
   ///
@@ -10582,6 +10624,240 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'UMKM dan jasa lokal'**
   String get exploreCategoryUsahaSubtitle;
+
+  /// No description provided for @exploreCategoryLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan Publik'**
+  String get exploreCategoryLayanan;
+
+  /// No description provided for @exploreCategoryLayananSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor ambulans dan pemadam per kecamatan'**
+  String get exploreCategoryLayananSubtitle;
+
+  /// No description provided for @layananTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan Publik'**
+  String get layananTitle;
+
+  /// No description provided for @layananPickKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kecamatan'**
+  String get layananPickKecamatan;
+
+  /// No description provided for @layananEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nomor di kecamatan ini'**
+  String get layananEmpty;
+
+  /// No description provided for @layananCategoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nomor'**
+  String get layananCategoryEmpty;
+
+  /// No description provided for @layananPropose.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan'**
+  String get layananPropose;
+
+  /// No description provided for @layananProposeEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perbaikan'**
+  String get layananProposeEdit;
+
+  /// No description provided for @layananAmbulance.
+  ///
+  /// In id, this message translates to:
+  /// **'Ambulans'**
+  String get layananAmbulance;
+
+  /// No description provided for @layananFire.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemadam kebakaran'**
+  String get layananFire;
+
+  /// No description provided for @layananCall.
+  ///
+  /// In id, this message translates to:
+  /// **'Telepon'**
+  String get layananCall;
+
+  /// No description provided for @layananCheckedOn.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicek {date}'**
+  String layananCheckedOn(String date);
+
+  /// No description provided for @layananLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat layanan'**
+  String get layananLoadFailed;
+
+  /// No description provided for @layananNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan tidak ditemukan'**
+  String get layananNotFound;
+
+  /// No description provided for @layananPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon'**
+  String get layananPhone;
+
+  /// Label field note per nomor (shift, pos, konteks)
+  ///
+  /// In id, this message translates to:
+  /// **'Keterangan nomor'**
+  String get layananPhoneNote;
+
+  /// No description provided for @layananPhoneNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal shift malam atau pos A'**
+  String get layananPhoneNoteHint;
+
+  /// No description provided for @layananAddPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah nomor'**
+  String get layananAddPhone;
+
+  /// No description provided for @layananRemovePhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus nomor'**
+  String get layananRemovePhone;
+
+  /// No description provided for @layananPhones.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon'**
+  String get layananPhones;
+
+  /// No description provided for @layananPhoneCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} nomor'**
+  String layananPhoneCount(int count);
+
+  /// No description provided for @layananPickPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih nomor'**
+  String get layananPickPhone;
+
+  /// URL https logo organisasi layanan
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan logo'**
+  String get layananLogoUrl;
+
+  /// No description provided for @layananKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get layananKecamatan;
+
+  /// No description provided for @layananAddress.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get layananAddress;
+
+  /// No description provided for @layananNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan'**
+  String get layananNote;
+
+  /// No description provided for @layananWhatsapp.
+  ///
+  /// In id, this message translates to:
+  /// **'WhatsApp'**
+  String get layananWhatsapp;
+
+  /// No description provided for @layananMap.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka peta'**
+  String get layananMap;
+
+  /// No description provided for @layananName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama instansi'**
+  String get layananName;
+
+  /// No description provided for @layananCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get layananCategory;
+
+  /// No description provided for @layananFormInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama, minimal satu nomor, dan kecamatan wajib diisi'**
+  String get layananFormInvalid;
+
+  /// No description provided for @layananSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get layananSending;
+
+  /// No description provided for @layananSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get layananSubmit;
+
+  /// No description provided for @layananMyProposals.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan saya'**
+  String get layananMyProposals;
+
+  /// No description provided for @layananProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu belum punya usulan'**
+  String get layananProposalsEmpty;
+
+  /// No description provided for @layananStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get layananStatusPending;
+
+  /// No description provided for @layananStatusRevision.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu perbaikan'**
+  String get layananStatusRevision;
+
+  /// No description provided for @layananStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah tayang'**
+  String get layananStatusApproved;
+
+  /// No description provided for @layananStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get layananStatusRejected;
 
   /// No description provided for @exploreCategoryAcara.
   ///

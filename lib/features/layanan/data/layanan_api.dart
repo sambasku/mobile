@@ -1,0 +1,103 @@
+import 'package:dio/dio.dart';
+
+import '../domain/layanan.dart';
+
+class LayananApi {
+  LayananApi(this._dio);
+
+  final Dio _dio;
+
+  Future<List<LayananEntry>> list({required String regionId}) async {
+    final res = await _dio.get<dynamic>(
+      '/api/v1/layanan',
+      queryParameters: {'region_id': regionId},
+    );
+    final data = _map(res.data);
+    final items = data['items'];
+    if (items is! List) return const [];
+    return items.whereType<Map>().map((raw) => _entry(raw)).toList();
+  }
+
+  Future<LayananEntry?> bySlug(String slug) async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/layanan/${Uri.encodeComponent(slug)}',
+      );
+      return _entry(_map(res.data));
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
+      rethrow;
+    }
+  }
+
+  Future<void> submit(Map<String, dynamic> body) async {
+    await _dio.post<dynamic>('/api/v1/layanan-contributions', data: body);
+  }
+
+  Future<List<LayananProposal>> mine() async {
+    final res = await _dio.get<dynamic>('/api/v1/layanan-contributions/mine');
+    final items = _map(res.data)['items'];
+    if (items is! List) return const [];
+    return items.whereType<Map>().map((raw) {
+      final payload = raw['payload'];
+      final map = payload is Map ? payload : const {};
+      return LayananProposal(
+        id: '${raw['id']}',
+        kind: '${raw['kind']}',
+        status: '${raw['status']}',
+        name: '${map['name'] ?? ''}',
+        phones: _phones(map['phones']),
+        revisionNote: raw['revision_note'] as String?,
+      );
+    }).toList();
+  }
+
+  Map<String, dynamic> _map(Object? body) {
+    if (body is Map && body['data'] is Map) {
+      return Map<String, dynamic>.from(body['data'] as Map);
+    }
+    if (body is Map) return Map<String, dynamic>.from(body);
+    return const {};
+  }
+
+  LayananEntry _entry(Map raw) {
+    final updated = DateTime.tryParse('${raw['updated_at']}') ?? DateTime.now();
+    return LayananEntry(
+      id: '${raw['id']}',
+      slug: '${raw['slug']}',
+      category: '${raw['category']}',
+      name: '${raw['name']}',
+      phones: _phones(raw['phones']),
+      logoUrl: raw['logo_url'] as String?,
+      addressText: raw['address_text'] as String?,
+      lat: (raw['lat'] as num?)?.toDouble(),
+      lng: (raw['lng'] as num?)?.toDouble(),
+      mapsUrl: raw['maps_url'] as String?,
+      regionId: '${raw['region_id']}',
+      regionName: raw['region_name'] as String?,
+      regionSlug: raw['region_slug'] as String?,
+      villageName: raw['village_name'] as String?,
+      note: raw['note'] as String?,
+      updatedAt: updated.toLocal(),
+    );
+  }
+
+  List<LayananPhone> _phones(Object? raw) {
+    if (raw is! List) return const [];
+    return raw.whereType<Map>().map((row) {
+      return LayananPhone(
+        phone: '${row['phone'] ?? ''}',
+        note: row['note'] as String?,
+        whatsapp: row['whatsapp'] as String?,
+      );
+    }).where((p) => p.phone.isNotEmpty).toList();
+  }
+}
+
+String layananErrorMessage(Object error) {
+  if (error is DioException) {
+    final data = error.response?.data;
+    if (data is Map && data['message'] is String) return data['message'] as String;
+  }
+  return '';
+}

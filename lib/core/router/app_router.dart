@@ -30,6 +30,7 @@ import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/event/event_router.dart';
+import '../../features/layanan/layanan_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
@@ -100,6 +101,7 @@ class AppRouter {
       ...ExploreRouter.routes,
       ...EventRouter.routes,
       ...UsahaRouter.routes,
+      ...LayananRouter.routes,
       ...ActivityRouter.routes,
       ...AchievementRouter.routes,
   ...SettingsRouter.routes,

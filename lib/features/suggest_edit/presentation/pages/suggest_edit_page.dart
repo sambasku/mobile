@@ -80,9 +80,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   final _addPadananCtrl = TextEditingController();
   String? _addWordClassId;
 
-  // Tambah contoh.
+  // Tambah / ubah contoh (#244).
   final _sentenceCtrl = TextEditingController();
   final _sentenceTranslationCtrl = TextEditingController();
+  String? _exampleId;
+  String _originalExampleSentence = '';
+  String? _originalExampleTranslation;
 
   // Foto.
   List<ContributeImageSlot> _addImages = [];
@@ -185,9 +188,28 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final available = availableSuggestCategories(
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
+      hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
     );
     if (!available.contains(requested)) return;
     _category = requested;
+  }
+
+  List<({WordMeaning meaning, WordExample example})> _flatExamples(
+    WordDetail detail,
+  ) => [
+    for (final m in detail.meanings)
+      for (final ex in m.examples) (meaning: m, example: ex),
+  ];
+
+  void _selectExample(WordExample example) {
+    setState(() {
+      _exampleId = example.id;
+      _originalExampleSentence = example.sourceSentence;
+      _originalExampleTranslation = example.targetSentence;
+      _sentenceCtrl.text = example.sourceSentence;
+      _sentenceTranslationCtrl.text = example.targetSentence ?? '';
+      _fieldErrors = const {};
+    });
   }
 
   Future<String?> _resolveIdnLanguageId(Dio dio, WordMeaning? meaning) async {
@@ -410,6 +432,22 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           lemma: _lemmaCtrl.text,
           originalNotes: detail.notes ?? '',
           notes: _notesCtrl.text,
+        );
+      case SuggestCategory.changeExample:
+        final id = _exampleId;
+        if (id == null) {
+          throw StateError(_l10n.suggestPickExample);
+        }
+        final sentence = _sentenceCtrl.text.trim();
+        if (sentence.isEmpty) {
+          throw StateError(_l10n.suggestExampleFirst);
+        }
+        return buildChangeExample(
+          exampleId: id,
+          originalSourceSentence: _originalExampleSentence,
+          sourceSentence: sentence,
+          originalTargetSentence: _originalExampleTranslation,
+          targetSentence: _sentenceTranslationCtrl.text,
         );
       case SuggestCategory.addExample:
         throw StateError(_l10n.suggestExampleFirst);
@@ -664,6 +702,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final categories = availableSuggestCategories(
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
+      hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
     );
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
@@ -690,6 +729,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                 onPress: () => setState(() {
                   _category = c;
                   _fieldErrors = const {};
+                  _exampleId = null;
+                  _originalExampleSentence = '';
+                  _originalExampleTranslation = null;
+                  if (c == SuggestCategory.changeExample) {
+                    _sentenceCtrl.clear();
+                    _sentenceTranslationCtrl.clear();
+                  }
                 }),
               ),
           ],
@@ -813,6 +859,54 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             maxLines: 3,
             minLines: 2,
           ),
+        ];
+      case SuggestCategory.changeExample:
+        final items = _flatExamples(detail);
+        return [
+          _FieldCaption(_l10n.suggestPickExample),
+          FTileGroup(
+            children: [
+              for (final item in items)
+                FTile(
+                  title: Text(item.example.sourceSentence),
+                  subtitle: item.example.targetSentence == null ||
+                          item.example.targetSentence!.trim().isEmpty
+                      ? null
+                      : Text(item.example.targetSentence!),
+                  suffix: _exampleId == item.example.id
+                      ? Icon(
+                          FLucideIcons.check,
+                          size: 16,
+                          color: context.theme.colors.primary,
+                        )
+                      : null,
+                  onPress: () => _selectExample(item.example),
+                ),
+            ],
+          ),
+          if (_exampleId != null) ...[
+            const Gap(12),
+            _FieldCaption(_l10n.suggestExampleSelected),
+            FTextField(
+              control: FTextFieldControl.managed(controller: _sentenceCtrl),
+              label: Text(_l10n.suggestExampleSection(detail.lemma)),
+              hint: _l10n.suggestExampleLangHint,
+              error: _errorText('sentence'),
+              maxLines: 3,
+              minLines: 2,
+            ),
+            const Gap(8),
+            FTextField(
+              control: FTextFieldControl.managed(
+                controller: _sentenceTranslationCtrl,
+              ),
+              label: Text(_l10n.suggestExampleTranslationLabel),
+              hint: _l10n.suggestExampleTranslationHint,
+              error: _errorText('sentence_translation'),
+              maxLines: 3,
+              minLines: 2,
+            ),
+          ],
         ];
       case SuggestCategory.addPhoto:
         return [

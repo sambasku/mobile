@@ -1193,6 +1193,19 @@ class AppLocalizationsId extends AppLocalizations {
       'Hapus, ganti, atau pilih foto utama';
 
   @override
+  String get suggestCategoryChangeExample => 'Ubah contoh';
+
+  @override
+  String get suggestCategoryChangeExampleDesc =>
+      'Perbaiki typo atau arti contoh yang sudah ada';
+
+  @override
+  String get suggestPickExample => 'Pilih contoh yang mau diperbaiki';
+
+  @override
+  String get suggestExampleSelected => 'Contoh dipilih';
+
+  @override
   String get suggestCategorySynonym => 'Sinonim';
 
   @override
@@ -2022,6 +2035,11 @@ class AppLocalizationsId extends AppLocalizations {
     final String countString = countNumberFormat.format(count);
 
     return 'makna ($countString)';
+  }
+
+  @override
+  String reviewChangeHintExamples(int count) {
+    return 'contoh ($count)';
   }
 
   @override
@@ -4391,6 +4409,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindUsaha => 'Usaha';
 
   @override
+  String get feedKindLayanan => 'Layanan';
+
+  @override
   String get feedKindCulinary => 'Kuliner';
 
   @override
@@ -4455,6 +4476,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
+
+  @override
+  String get feedCtaSeeLayanan => 'Lihat layanan';
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
@@ -5899,6 +5923,129 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exploreCategoryUsahaSubtitle => 'UMKM dan jasa lokal';
+
+  @override
+  String get exploreCategoryLayanan => 'Layanan Publik';
+
+  @override
+  String get exploreCategoryLayananSubtitle =>
+      'Nomor ambulans dan pemadam per kecamatan';
+
+  @override
+  String get layananTitle => 'Layanan Publik';
+
+  @override
+  String get layananPickKecamatan => 'Pilih kecamatan';
+
+  @override
+  String get layananEmpty => 'Belum ada nomor di kecamatan ini';
+
+  @override
+  String get layananCategoryEmpty => 'Belum ada nomor';
+
+  @override
+  String get layananPropose => 'Usulkan';
+
+  @override
+  String get layananProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get layananAmbulance => 'Ambulans';
+
+  @override
+  String get layananFire => 'Pemadam kebakaran';
+
+  @override
+  String get layananCall => 'Telepon';
+
+  @override
+  String layananCheckedOn(String date) {
+    return 'Dicek $date';
+  }
+
+  @override
+  String get layananLoadFailed => 'Gagal memuat layanan';
+
+  @override
+  String get layananNotFound => 'Layanan tidak ditemukan';
+
+  @override
+  String get layananPhone => 'Nomor telepon';
+
+  @override
+  String get layananPhoneNote => 'Keterangan nomor';
+
+  @override
+  String get layananPhoneNoteHint => 'Misal shift malam atau pos A';
+
+  @override
+  String get layananAddPhone => 'Tambah nomor';
+
+  @override
+  String get layananRemovePhone => 'Hapus nomor';
+
+  @override
+  String get layananPhones => 'Nomor telepon';
+
+  @override
+  String layananPhoneCount(int count) {
+    return '$count nomor';
+  }
+
+  @override
+  String get layananPickPhone => 'Pilih nomor';
+
+  @override
+  String get layananLogoUrl => 'Tautan logo';
+
+  @override
+  String get layananKecamatan => 'Kecamatan';
+
+  @override
+  String get layananAddress => 'Alamat';
+
+  @override
+  String get layananNote => 'Catatan';
+
+  @override
+  String get layananWhatsapp => 'WhatsApp';
+
+  @override
+  String get layananMap => 'Buka peta';
+
+  @override
+  String get layananName => 'Nama instansi';
+
+  @override
+  String get layananCategory => 'Kategori';
+
+  @override
+  String get layananFormInvalid =>
+      'Nama, minimal satu nomor, dan kecamatan wajib diisi';
+
+  @override
+  String get layananSending => 'Mengirim...';
+
+  @override
+  String get layananSubmit => 'Kirim usulan';
+
+  @override
+  String get layananMyProposals => 'Usulan saya';
+
+  @override
+  String get layananProposalsEmpty => 'Kamu belum punya usulan';
+
+  @override
+  String get layananStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get layananStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get layananStatusApproved => 'Sudah tayang';
+
+  @override
+  String get layananStatusRejected => 'Ditolak';
 
   @override
   String get exploreCategoryAcara => 'Acara';
@@ -11012,6 +11159,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Hapus, ganti, atau pilih foto utama';
 
   @override
+  String get suggestCategoryChangeExample => 'Ubah contoh';
+
+  @override
+  String get suggestCategoryChangeExampleDesc =>
+      'Perbaiki typo atau arti contoh yang sudah ada';
+
+  @override
+  String get suggestPickExample => 'Pilih contoh yang mau diperbaiki';
+
+  @override
+  String get suggestExampleSelected => 'Contoh dipilih';
+
+  @override
   String get suggestCategorySynonym => 'Sinonim';
 
   @override
@@ -11841,6 +12001,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
     final String countString = countNumberFormat.format(count);
 
     return 'makna ($countString)';
+  }
+
+  @override
+  String reviewChangeHintExamples(int count) {
+    return 'contoh ($count)';
   }
 
   @override
@@ -14210,6 +14375,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindUsaha => 'Usaha';
 
   @override
+  String get feedKindLayanan => 'Layanan';
+
+  @override
   String get feedKindCulinary => 'Kuliner';
 
   @override
@@ -14274,6 +14442,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeeUsaha => 'Lihat usaha';
+
+  @override
+  String get feedCtaSeeLayanan => 'Lihat layanan';
 
   @override
   String get feedCtaSeeCulinary => 'Lihat kuliner';
@@ -15718,6 +15889,129 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get exploreCategoryUsahaSubtitle => 'UMKM dan jasa lokal';
+
+  @override
+  String get exploreCategoryLayanan => 'Layanan Publik';
+
+  @override
+  String get exploreCategoryLayananSubtitle =>
+      'Nomor ambulans dan pemadam per kecamatan';
+
+  @override
+  String get layananTitle => 'Layanan Publik';
+
+  @override
+  String get layananPickKecamatan => 'Pilih kecamatan';
+
+  @override
+  String get layananEmpty => 'Belum ada nomor di kecamatan ini';
+
+  @override
+  String get layananCategoryEmpty => 'Belum ada nomor';
+
+  @override
+  String get layananPropose => 'Usulkan';
+
+  @override
+  String get layananProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get layananAmbulance => 'Ambulans';
+
+  @override
+  String get layananFire => 'Pemadam kebakaran';
+
+  @override
+  String get layananCall => 'Telepon';
+
+  @override
+  String layananCheckedOn(String date) {
+    return 'Dicek $date';
+  }
+
+  @override
+  String get layananLoadFailed => 'Gagal memuat layanan';
+
+  @override
+  String get layananNotFound => 'Layanan tidak ditemukan';
+
+  @override
+  String get layananPhone => 'Nomor telepon';
+
+  @override
+  String get layananPhoneNote => 'Keterangan nomor';
+
+  @override
+  String get layananPhoneNoteHint => 'Misal shift malam atau pos A';
+
+  @override
+  String get layananAddPhone => 'Tambah nomor';
+
+  @override
+  String get layananRemovePhone => 'Hapus nomor';
+
+  @override
+  String get layananPhones => 'Nomor telepon';
+
+  @override
+  String layananPhoneCount(int count) {
+    return '$count nomor';
+  }
+
+  @override
+  String get layananPickPhone => 'Pilih nomor';
+
+  @override
+  String get layananLogoUrl => 'Tautan logo';
+
+  @override
+  String get layananKecamatan => 'Kecamatan';
+
+  @override
+  String get layananAddress => 'Alamat';
+
+  @override
+  String get layananNote => 'Catatan';
+
+  @override
+  String get layananWhatsapp => 'WhatsApp';
+
+  @override
+  String get layananMap => 'Buka peta';
+
+  @override
+  String get layananName => 'Nama instansi';
+
+  @override
+  String get layananCategory => 'Kategori';
+
+  @override
+  String get layananFormInvalid =>
+      'Nama, minimal satu nomor, dan kecamatan wajib diisi';
+
+  @override
+  String get layananSending => 'Mengirim...';
+
+  @override
+  String get layananSubmit => 'Kirim usulan';
+
+  @override
+  String get layananMyProposals => 'Usulan saya';
+
+  @override
+  String get layananProposalsEmpty => 'Kamu belum punya usulan';
+
+  @override
+  String get layananStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get layananStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get layananStatusApproved => 'Sudah tayang';
+
+  @override
+  String get layananStatusRejected => 'Ditolak';
 
   @override
   String get exploreCategoryAcara => 'Acara';

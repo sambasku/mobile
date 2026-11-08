@@ -8,6 +8,8 @@ enum SuggestCategory {
   addExample('add_example'),
   addPhoto('add_photo'),
   changePhoto('change_photo'),
+  /// #244: ubah contoh published (moderasi usulan, bukan POST examples).
+  changeExample('change_example'),
   synonym('synonym'),
   antonym('antonym'),
   // PRD relasi-lemma: relasi bentuk + akar/turunan + kelompok makna.
@@ -31,13 +33,43 @@ enum SuggestCategory {
 List<SuggestCategory> availableSuggestCategories({
   required bool hasMeaning,
   required bool hasImage,
+  bool hasExample = false,
 }) => SuggestCategory.values
-    .where(
-      (c) => c.needsMeaning
-          ? hasMeaning
-          : (c != SuggestCategory.changePhoto || hasImage),
-    )
+    .where((c) {
+      if (c.needsMeaning) return hasMeaning;
+      if (c == SuggestCategory.changePhoto) return hasImage;
+      if (c == SuggestCategory.changeExample) return hasExample;
+      return true;
+    })
     .toList(growable: false);
+
+/// #244: usulan ubah contoh published. `null` = tidak ada perubahan.
+Map<String, dynamic>? buildChangeExample({
+  required String exampleId,
+  required String originalSourceSentence,
+  required String sourceSentence,
+  required String? originalTargetSentence,
+  required String targetSentence,
+}) {
+  final src = sourceSentence.trim();
+  final tgt = targetSentence.trim();
+  final origSrc = originalSourceSentence.trim();
+  final origTgt = (originalTargetSentence ?? '').trim();
+  final srcChanged = src.isNotEmpty && src != origSrc;
+  final tgtChanged = tgt != origTgt;
+  if (!srcChanged && !tgtChanged) return null;
+  if (src.isEmpty) return null;
+  return {
+    'examples': [
+      {
+        'example_id': exampleId,
+        'action': 'update',
+        if (srcChanged) 'source_sentence': src,
+        if (tgtChanged) 'target_sentence': tgt.isEmpty ? null : tgt,
+      },
+    ],
+  };
+}
 
 /// Ubah makna: definisi dan/atau padanan. `null` = tidak ada yang berubah.
 /// Padanan dikosongkan tidak dikirim (usulan tidak menghapus padanan).
@@ -234,13 +266,14 @@ String? suggestFieldKey(String apiField) {
     if (apiField.endsWith('.lemmas')) return 'group_lemma';
     return null;
   }
+  if (apiField.contains('source_sentence')) return 'sentence';
+  if (apiField.contains('target_sentence')) return 'sentence_translation';
   return switch (apiField) {
     'lemma' => 'lemma',
     'notes' => 'notes',
     'word_type' => 'word_type',
     'reason_text' => 'reason',
-    'source_sentence' => 'sentence',
-    'target_sentence' => 'sentence_translation',
+    'examples' => 'sentence',
     _ => null,
   };
 }

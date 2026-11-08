@@ -8,12 +8,49 @@ void main() {
     expect(none, isNot(contains(SuggestCategory.changeWordClass)));
     expect(none, isNot(contains(SuggestCategory.addExample)));
     expect(none, isNot(contains(SuggestCategory.changePhoto)));
+    expect(none, isNot(contains(SuggestCategory.changeExample)));
     expect(none, contains(SuggestCategory.addMeaning));
     expect(none, contains(SuggestCategory.changeWordType));
     expect(
-      availableSuggestCategories(hasMeaning: true, hasImage: true),
+      availableSuggestCategories(
+        hasMeaning: true,
+        hasImage: true,
+        hasExample: true,
+      ),
       SuggestCategory.values,
     );
+    expect(
+      availableSuggestCategories(hasMeaning: true, hasImage: true),
+      isNot(contains(SuggestCategory.changeExample)),
+    );
+  });
+
+  test('#244 ubah contoh: tanpa perubahan = null', () {
+    expect(
+      buildChangeExample(
+        exampleId: 'e1',
+        originalSourceSentence: 'A makatn.',
+        sourceSentence: 'A makatn.',
+        originalTargetSentence: 'A makan.',
+        targetSentence: 'A makan.',
+      ),
+      isNull,
+    );
+    final out = buildChangeExample(
+      exampleId: 'e1',
+      originalSourceSentence: 'A makatn.',
+      sourceSentence: 'A makan.',
+      originalTargetSentence: 'A makan.',
+      targetSentence: 'Dia makan.',
+    )!;
+    expect(out['examples'], [
+      {
+        'example_id': 'e1',
+        'action': 'update',
+        'source_sentence': 'A makan.',
+        'target_sentence': 'Dia makan.',
+      },
+    ]);
   });
 
   test('ubah jenis entri: sama = null, berbeda kirim word_type', () {

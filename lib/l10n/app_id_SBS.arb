@@ -362,6 +362,19 @@
   "suggestCategoryAddPhotoDesc": "Foto yang menggambarkan kata ini",
   "suggestCategoryChangePhoto": "Ubah foto",
   "suggestCategoryChangePhotoDesc": "Hapus, ganti, atau pilih foto utama",
+  "suggestCategoryChangeExample": "Ubah contoh",
+  "@suggestCategoryChangeExample": {
+    "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
+  },
+  "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
+  "suggestPickExample": "Pilih contoh yang mau diperbaiki",
+  "@suggestPickExample": {
+    "description": "Caption daftar contoh di form Ubah contoh"
+  },
+  "suggestExampleSelected": "Contoh dipilih",
+  "@suggestExampleSelected": {
+    "description": "Hint singkat setelah user memilih satu contoh"
+  },
   "suggestCategorySynonym": "Sinonim",
   "suggestCategorySynonymDesc": "Kata lain yang artinya sama",
   "suggestCategoryAntonym": "Antonim",
@@ -618,6 +631,13 @@
   "reviewChangeHintLemma": "lemma",
   "reviewChangeHintNotes": "catatan",
   "reviewChangeHintMeanings": "makna ({count})",
+  "reviewChangeHintExamples": "contoh ({count})",
+  "@reviewChangeHintExamples": {
+    "description": "Hint ringkas antrean review: jumlah contoh diubah",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "reviewChangeHintImages": "gambar ({count})",
   "reviewChangeHintFallback": "Perubahan usulan",
   "reviewHistoryTitle": "Riwayat verifikasi",
@@ -1317,6 +1337,7 @@
   "feedKindPlace": "Wisata",
   "feedKindEvent": "Acara",
   "feedKindUsaha": "Usaha",
+  "feedKindLayanan": "Layanan",
   "feedKindCulinary": "Kuliner",
   "feedKindPantun": "Pantun",
   "feedKindArticle": "Artikel",
@@ -1339,6 +1360,7 @@
   "feedCtaSeePlace": "Lihat tempat",
   "feedCtaSeeEvent": "Lihat acara",
   "feedCtaSeeUsaha": "Lihat usaha",
+  "feedCtaSeeLayanan": "Lihat layanan",
   "feedCtaSeeCulinary": "Lihat kuliner",
   "feedCtaSeeArticle": "Lihat artikel",
   "feedActorFallback": "Warga",
@@ -1786,6 +1808,61 @@
   "exploreCategoryKuliner": "Kuliner",
   "exploreCategoryKulinerSubtitle": "Makanan khas Sambas",
   "exploreCategoryUsahaSubtitle": "UMKM dan jasa lokal",
+  "exploreCategoryLayanan": "Layanan Publik",
+  "exploreCategoryLayananSubtitle": "Nomor ambulans dan pemadam per kecamatan",
+  "layananTitle": "Layanan Publik",
+  "layananPickKecamatan": "Pilih kecamatan",
+  "layananEmpty": "Belum ada nomor di kecamatan ini",
+  "layananCategoryEmpty": "Belum ada nomor",
+  "layananPropose": "Usulkan",
+  "layananProposeEdit": "Usulkan perbaikan",
+  "layananAmbulance": "Ambulans",
+  "layananFire": "Pemadam kebakaran",
+  "layananCall": "Telepon",
+  "layananCheckedOn": "Dicek {date}",
+  "@layananCheckedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "layananLoadFailed": "Gagal memuat layanan",
+  "layananNotFound": "Layanan tidak ditemukan",
+  "layananPhone": "Nomor telepon",
+  "layananPhoneNote": "Keterangan nomor",
+  "@layananPhoneNote": {
+    "description": "Label field note per nomor (shift, pos, konteks)"
+  },
+  "layananPhoneNoteHint": "Misal shift malam atau pos A",
+  "layananAddPhone": "Tambah nomor",
+  "layananRemovePhone": "Hapus nomor",
+  "layananPhones": "Nomor telepon",
+  "layananPhoneCount": "{count} nomor",
+  "@layananPhoneCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "layananPickPhone": "Pilih nomor",
+  "layananLogoUrl": "Tautan logo",
+  "@layananLogoUrl": {
+    "description": "URL https logo organisasi layanan"
+  },
+  "layananKecamatan": "Kecamatan",
+  "layananAddress": "Alamat",
+  "layananNote": "Catatan",
+  "layananWhatsapp": "WhatsApp",
+  "layananMap": "Buka peta",
+  "layananName": "Nama instansi",
+  "layananCategory": "Kategori",
+  "layananFormInvalid": "Nama, minimal satu nomor, dan kecamatan wajib diisi",
+  "layananSending": "Mengirim...",
+  "layananSubmit": "Kirim usulan",
+  "layananMyProposals": "Usulan saya",
+  "layananProposalsEmpty": "Kamu belum punya usulan",
+  "layananStatusPending": "Menunggu tinjauan",
+  "layananStatusRevision": "Perlu perbaikan",
+  "layananStatusApproved": "Sudah tayang",
+  "layananStatusRejected": "Ditolak",
   "exploreCategoryAcara": "Acara",
   "exploreCategoryAcaraSubtitle": "Festival, pameran, dan kegiatan",
   "exploreCategoryPermainan": "Permainan",
