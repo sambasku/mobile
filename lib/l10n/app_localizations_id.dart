@@ -9968,6 +9968,212 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get discussionStatusWithdrawn => 'Dibatalkan';
+
+  @override
+  String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
+  String get threadAudioPlay => 'Putar rekaman';
+
+  @override
+  String get threadAudioPause => 'Jeda rekaman';
+
+  @override
+  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+
+  @override
+  String get threadAudioPlaying => 'Sedang diputar';
+
+  @override
+  String get threadAudioIdle => 'Ketuk untuk putar';
+
+  @override
+  String get jinyeAllImagesFailed => 'Semua foto gagal diunggah';
+
+  @override
+  String get jinyeAllImagesFailedBody =>
+      'Kirim tanpa foto, atau coba unggah ulang.';
+
+  @override
+  String get jinyeCommentFailed => 'Gagal mengirim balasan';
+
+  @override
+  String get jinyeCommentHint => 'Tulis balasan…';
+
+  @override
+  String get jinyeCommentSend => 'Kirim';
+
+  @override
+  String get jinyeCommentSending => 'Mengirim…';
+
+  @override
+  String get jinyeCommentSent => 'Balasan terkirim';
+
+  @override
+  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
+
+  @override
+  String get jinyeCommentsTitle => 'Diskusi';
+
+  @override
+  String get jinyeComposeEntryTooltip => 'Buat Jinye';
+
+  @override
+  String get jinyeComposeNeedContent =>
+      'Isi teks, rekam suara, atau tambah foto dulu ya';
+
+  @override
+  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
+
+  @override
+  String jinyeCreateAudioReady(int seconds) {
+    return 'Rekaman siap · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreateBodyHint =>
+      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
+
+  @override
+  String get jinyeCreateBodyLabel => 'Status kamu';
+
+  @override
+  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
+
+  @override
+  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
+
+  @override
+  String get jinyeCreateRateLimited =>
+      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String get jinyeCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get jinyeCreateRerecord => 'Rekam ulang';
+
+  @override
+  String get jinyeCreateSubmit => 'Kirim';
+
+  @override
+  String get jinyeCreateSubmitting => 'Mengirim…';
+
+  @override
+  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
+
+  @override
+  String get jinyeCreateTitle => 'Buat Jinye';
+
+  @override
+  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
+
+  @override
+  String get jinyeDetailTitle => 'Jinye';
+
+  @override
+  String get jinyeDiscussionEmpty =>
+      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
+
+  @override
+  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
+
+  @override
+  String get jinyePhotosPendingReview =>
+      'Foto masih dicek sebelum tayang publik';
+
+  @override
+  String get jinyePreviewEmpty => 'Jinye';
+
+  @override
+  String get jinyePreviewPhotoOnly => 'Foto';
+
+  @override
+  String get jinyePreviewVoiceOnly => 'Rekaman suara';
+
+  @override
+  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
+
+  @override
+  String get jinyeRecordSheetSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
+
+  @override
+  String get jinyeRecordSheetTitle => 'Rekam Jinye';
+
+  @override
+  String get jinyeRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String jinyeReplyingTo(String name) {
+    return 'Membalas $name';
+  }
+
+  @override
+  String get jinyeReportFailed => 'Gagal mengirim laporan';
+
+  @override
+  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
+
+  @override
+  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
+
+  @override
+  String get jinyeSentAudioFailed =>
+      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
+
+  @override
+  String get jinyeSheetReply => 'Balas';
+
+  @override
+  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeStorageUnavailable =>
+      'Penyimpanan foto sedang tidak tersedia';
+
+  @override
+  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
+
+  @override
+  String get reportJinyeAction => 'Laporkan';
+
+  @override
+  String get reportJinyeHarassment => 'Pelecehan atau perundungan';
+
+  @override
+  String get reportJinyeHateSpeech => 'Ujaran kebencian';
+
+  @override
+  String get reportJinyeInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
+
+  @override
+  String get reportJinyeOther => 'Lainnya';
+
+  @override
+  String get reportJinyeSent => 'Terima kasih, laporanmu sudah kami terima';
+
+  @override
+  String get reportJinyeSexual => 'Konten seksual';
+
+  @override
+  String get reportJinyeSpam => 'Spam';
+
+  @override
+  String get reportJinyeSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportJinyeTitle => 'Laporkan Jinye';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -19934,4 +20140,210 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get discussionStatusWithdrawn => 'Dibatalkan';
+
+  @override
+  String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
+  String get threadAudioPlay => 'Putar rekaman';
+
+  @override
+  String get threadAudioPause => 'Jeda rekaman';
+
+  @override
+  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+
+  @override
+  String get threadAudioPlaying => 'Sedang diputar';
+
+  @override
+  String get threadAudioIdle => 'Ketuk untuk putar';
+
+  @override
+  String get jinyeAllImagesFailed => 'Semua foto gagal diunggah';
+
+  @override
+  String get jinyeAllImagesFailedBody =>
+      'Kirim tanpa foto, atau coba unggah ulang.';
+
+  @override
+  String get jinyeCommentFailed => 'Gagal mengirim balasan';
+
+  @override
+  String get jinyeCommentHint => 'Tulis balasan…';
+
+  @override
+  String get jinyeCommentSend => 'Kirim';
+
+  @override
+  String get jinyeCommentSending => 'Mengirim…';
+
+  @override
+  String get jinyeCommentSent => 'Balasan terkirim';
+
+  @override
+  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
+
+  @override
+  String get jinyeCommentsTitle => 'Diskusi';
+
+  @override
+  String get jinyeComposeEntryTooltip => 'Buat Jinye';
+
+  @override
+  String get jinyeComposeNeedContent =>
+      'Isi teks, rekam suara, atau tambah foto dulu ya';
+
+  @override
+  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
+
+  @override
+  String jinyeCreateAudioReady(int seconds) {
+    return 'Rekaman siap · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreateBodyHint =>
+      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
+
+  @override
+  String get jinyeCreateBodyLabel => 'Status kamu';
+
+  @override
+  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
+
+  @override
+  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
+
+  @override
+  String get jinyeCreateRateLimited =>
+      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String get jinyeCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get jinyeCreateRerecord => 'Rekam ulang';
+
+  @override
+  String get jinyeCreateSubmit => 'Kirim';
+
+  @override
+  String get jinyeCreateSubmitting => 'Mengirim…';
+
+  @override
+  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
+
+  @override
+  String get jinyeCreateTitle => 'Buat Jinye';
+
+  @override
+  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
+
+  @override
+  String get jinyeDetailTitle => 'Jinye';
+
+  @override
+  String get jinyeDiscussionEmpty =>
+      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
+
+  @override
+  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
+
+  @override
+  String get jinyePhotosPendingReview =>
+      'Foto masih dicek sebelum tayang publik';
+
+  @override
+  String get jinyePreviewEmpty => 'Jinye';
+
+  @override
+  String get jinyePreviewPhotoOnly => 'Foto';
+
+  @override
+  String get jinyePreviewVoiceOnly => 'Rekaman suara';
+
+  @override
+  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
+
+  @override
+  String get jinyeRecordSheetSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
+
+  @override
+  String get jinyeRecordSheetTitle => 'Rekam Jinye';
+
+  @override
+  String get jinyeRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String jinyeReplyingTo(String name) {
+    return 'Membalas $name';
+  }
+
+  @override
+  String get jinyeReportFailed => 'Gagal mengirim laporan';
+
+  @override
+  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
+
+  @override
+  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
+
+  @override
+  String get jinyeSentAudioFailed =>
+      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
+
+  @override
+  String get jinyeSheetReply => 'Balas';
+
+  @override
+  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeStorageUnavailable =>
+      'Penyimpanan foto sedang tidak tersedia';
+
+  @override
+  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
+
+  @override
+  String get reportJinyeAction => 'Laporke';
+
+  @override
+  String get reportJinyeHarassment => 'Pelecehan atau perundungan';
+
+  @override
+  String get reportJinyeHateSpeech => 'Ujaran kebencian';
+
+  @override
+  String get reportJinyeInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
+
+  @override
+  String get reportJinyeOther => 'Lainnya';
+
+  @override
+  String get reportJinyeSent => 'Terima kasih, laporanmu sudah kami terima';
+
+  @override
+  String get reportJinyeSexual => 'Konten seksual';
+
+  @override
+  String get reportJinyeSpam => 'Spam';
+
+  @override
+  String get reportJinyeSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportJinyeTitle => 'Laporke Jinye';
 }

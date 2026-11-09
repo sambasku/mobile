@@ -6691,5 +6691,271 @@
   "discussionWithdrawn": "Penayangan dibatalkan",
   "@discussionWithdrawn": { "description": "Toast sukses cabut OP" },
   "discussionStatusWithdrawn": "Dibatalkan",
-  "@discussionStatusWithdrawn": { "description": "Label status deleted_by_author OP" }
+  "@discussionStatusWithdrawn": { "description": "Label status deleted_by_author OP" },
+  "notificationTypeJinyeComment": "Balasan Jinye",
+  "@notificationTypeJinyeComment": {
+    "description": "Label jenis notifikasi balasan Jinye"
+  },
+  "threadAudioPlay": "Putar rekaman",
+  "@threadAudioPlay": {
+    "description": "Semantics / label idle player audio thread"
+  },
+  "threadAudioPause": "Jeda rekaman",
+  "@threadAudioPause": {
+    "description": "Semantics tombol pause player audio thread"
+  },
+  "threadAudioRetry": "Gagal memutar, ketuk untuk coba lagi",
+  "@threadAudioRetry": {
+    "description": "Label error player audio thread"
+  },
+  "threadAudioPlaying": "Sedang diputar",
+  "@threadAudioPlaying": {
+    "description": "Status text saat audio thread playing"
+  },
+  "threadAudioIdle": "Ketuk untuk putar",
+  "@threadAudioIdle": {
+    "description": "Status text saat audio thread idle"
+  },
+  "jinyeAllImagesFailed": "Semua foto gagal diunggah",
+  "@jinyeAllImagesFailed": {
+    "description": "Judul sheet semua foto gagal"
+  },
+  "jinyeAllImagesFailedBody": "Kirim tanpa foto, atau coba unggah ulang.",
+  "@jinyeAllImagesFailedBody": {
+    "description": "Isi sheet semua foto gagal"
+  },
+  "jinyeCommentFailed": "Gagal mengirim balasan",
+  "@jinyeCommentFailed": {
+    "description": "Error kirim komen Jinye"
+  },
+  "jinyeCommentHint": "Tulis balasan…",
+  "@jinyeCommentHint": {
+    "description": "Hint composer komen Jinye"
+  },
+  "jinyeCommentSend": "Kirim",
+  "@jinyeCommentSend": {
+    "description": "CTA kirim komen Jinye"
+  },
+  "jinyeCommentSending": "Mengirim…",
+  "@jinyeCommentSending": {
+    "description": "CTA busy kirim komen Jinye"
+  },
+  "jinyeCommentSent": "Balasan terkirim",
+  "@jinyeCommentSent": {
+    "description": "Toast sukses komen Jinye"
+  },
+  "jinyeCommentsLoadFailed": "Gagal memuat balasan",
+  "@jinyeCommentsLoadFailed": {
+    "description": "Error load list komen Jinye"
+  },
+  "jinyeCommentsTitle": "Diskusi",
+  "@jinyeCommentsTitle": {
+    "description": "Judul section komen di detail Jinye"
+  },
+  "jinyeComposeEntryTooltip": "Buat Jinye",
+  "@jinyeComposeEntryTooltip": {
+    "description": "Tooltip ikon compose di profil"
+  },
+  "jinyeComposeNeedContent": "Isi teks, rekam suara, atau tambah foto dulu ya",
+  "@jinyeComposeNeedContent": {
+    "description": "Validasi compose Jinye tanpa konten"
+  },
+  "jinyeCreateAudioLabel": "Rekaman suara (opsional)",
+  "@jinyeCreateAudioLabel": {
+    "description": "Label blok rekam suara di compose Jinye"
+  },
+  "jinyeCreateAudioReady": "Rekaman siap · {seconds} dtk",
+  "@jinyeCreateAudioReady": {
+    "description": "Status rekaman suara siap di compose Jinye",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "jinyeCreateBodyHint": "Tulis sampai 500 karakter, atau rekam suara / tambah foto.",
+  "@jinyeCreateBodyHint": {
+    "description": "Hint field teks Jinye"
+  },
+  "jinyeCreateBodyLabel": "Status kamu",
+  "@jinyeCreateBodyLabel": {
+    "description": "Label field teks Jinye"
+  },
+  "jinyeCreateFailed": "Gagal mengirim Jinye",
+  "@jinyeCreateFailed": {
+    "description": "Error create Jinye generik"
+  },
+  "jinyeCreatePhotoLabel": "Foto (opsional, maks 4)",
+  "@jinyeCreatePhotoLabel": {
+    "description": "Label blok foto di compose Jinye"
+  },
+  "jinyeCreatePhotoLoginHint": "Masuk dulu untuk menambah foto",
+  "@jinyeCreatePhotoLoginHint": {
+    "description": "Hint foto disabled saat belum login"
+  },
+  "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.",
+  "@jinyeCreateRateLimited": {
+    "description": "Error kuota 1 Jinye / 24 jam"
+  },
+  "jinyeCreateRecordCta": "Rekam suara",
+  "@jinyeCreateRecordCta": {
+    "description": "Tombol mulai rekam suara Jinye"
+  },
+  "jinyeCreateRerecord": "Rekam ulang",
+  "@jinyeCreateRerecord": {
+    "description": "Tombol rekam ulang suara Jinye"
+  },
+  "jinyeCreateSubmit": "Kirim",
+  "@jinyeCreateSubmit": {
+    "description": "CTA kirim Jinye"
+  },
+  "jinyeCreateSubmitting": "Mengirim…",
+  "@jinyeCreateSubmitting": {
+    "description": "CTA busy kirim Jinye"
+  },
+  "jinyeCreateSuccess": "Jinye kamu sudah tayang",
+  "@jinyeCreateSuccess": {
+    "description": "Toast sukses create Jinye"
+  },
+  "jinyeCreateTitle": "Buat Jinye",
+  "@jinyeCreateTitle": {
+    "description": "Judul halaman compose Jinye"
+  },
+  "jinyeDetailLoadFailed": "Gagal memuat Jinye",
+  "@jinyeDetailLoadFailed": {
+    "description": "Error load detail Jinye"
+  },
+  "jinyeDetailTitle": "Jinye",
+  "@jinyeDetailTitle": {
+    "description": "Judul halaman detail Jinye"
+  },
+  "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
+  "@jinyeDiscussionEmpty": {
+    "description": "Empty state diskusi Jinye Phase 1"
+  },
+  "jinyeImageUploadFailed": "Gagal mengunggah foto",
+  "@jinyeImageUploadFailed": {
+    "description": "Error upload satu foto Jinye"
+  },
+  "jinyeLoginFirst": "Masuk dulu untuk membuat Jinye",
+  "@jinyeLoginFirst": {
+    "description": "Toast wajib login sebelum compose"
+  },
+  "jinyePhotosPendingReview": "Foto masih dicek sebelum tayang publik",
+  "@jinyePhotosPendingReview": {
+    "description": "Label foto Jinye pending review"
+  },
+  "jinyePreviewEmpty": "Jinye",
+  "@jinyePreviewEmpty": {
+    "description": "Fallback preview Jinye tanpa teks/media"
+  },
+  "jinyePreviewPhotoOnly": "Foto",
+  "@jinyePreviewPhotoOnly": {
+    "description": "Label preview Jinye foto tanpa caption"
+  },
+  "jinyePreviewVoiceOnly": "Rekaman suara",
+  "@jinyePreviewVoiceOnly": {
+    "description": "Label preview Jinye voice-only"
+  },
+  "jinyeProfilePreviewSemantics": "Jinye, ketuk untuk baca lengkap",
+  "@jinyeProfilePreviewSemantics": {
+    "description": "A11y bar preview profil"
+  },
+  "jinyeRecordSheetSubtitle": "Maksimal 60 detik. Caption teks bisa ditambahkan di form.",
+  "@jinyeRecordSheetSubtitle": {
+    "description": "Subjudul sheet rekam suara Jinye"
+  },
+  "jinyeRecordSheetTitle": "Rekam Jinye",
+  "@jinyeRecordSheetTitle": {
+    "description": "Judul sheet rekam suara Jinye"
+  },
+  "jinyeRecordSheetUse": "Pakai rekaman",
+  "@jinyeRecordSheetUse": {
+    "description": "CTA pakai rekaman di sheet Jinye"
+  },
+  "jinyeReplyingTo": "Membalas {name}",
+  "@jinyeReplyingTo": {
+    "description": "Chip reply-to di composer Jinye",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "jinyeReportFailed": "Gagal mengirim laporan",
+  "@jinyeReportFailed": {
+    "description": "Error generik submit laporan Jinye"
+  },
+  "jinyeResponseIncomplete": "Data Jinye tidak lengkap",
+  "@jinyeResponseIncomplete": {
+    "description": "Response API Jinye rusak"
+  },
+  "jinyeSendWithoutImages": "Kirim tanpa foto",
+  "@jinyeSendWithoutImages": {
+    "description": "CTA kirim Jinye tanpa foto"
+  },
+  "jinyeSentAudioFailed": "Jinye terkirim, tapi rekaman suara gagal dilampirkan",
+  "@jinyeSentAudioFailed": {
+    "description": "Toast create OK tapi attach audio gagal"
+  },
+  "jinyeSheetReply": "Balas",
+  "@jinyeSheetReply": {
+    "description": "CTA sheet profil - fokus reply"
+  },
+  "jinyeSheetViewDiscussion": "Lihat diskusi",
+  "@jinyeSheetViewDiscussion": {
+    "description": "CTA sheet profil - buka thread"
+  },
+  "jinyeStorageUnavailable": "Penyimpanan foto sedang tidak tersedia",
+  "@jinyeStorageUnavailable": {
+    "description": "Error ImageKit/storage Jinye"
+  },
+  "jinyeWaitUpload": "Tunggu foto selesai diunggah dulu ya",
+  "@jinyeWaitUpload": {
+    "description": "Toast tunggu upload foto Jinye"
+  },
+  "reportJinyeAction": "Laporkan",
+  "@reportJinyeAction": {
+    "description": "CTA laporkan Jinye/komen"
+  },
+  "reportJinyeHarassment": "Pelecehan atau perundungan",
+  "@reportJinyeHarassment": {
+    "description": "Alasan laporan Jinye: pelecehan"
+  },
+  "reportJinyeHateSpeech": "Ujaran kebencian",
+  "@reportJinyeHateSpeech": {
+    "description": "Alasan laporan Jinye: ujaran kebencian"
+  },
+  "reportJinyeInappropriate": "Tidak pantas",
+  "@reportJinyeInappropriate": {
+    "description": "Alasan laporan Jinye: tidak pantas"
+  },
+  "reportJinyeLoginFirst": "Masuk dulu ya untuk melaporkan Jinye",
+  "@reportJinyeLoginFirst": {
+    "description": "Toast wajib login sebelum lapor Jinye"
+  },
+  "reportJinyeOther": "Lainnya",
+  "@reportJinyeOther": {
+    "description": "Alasan laporan Jinye: lainnya"
+  },
+  "reportJinyeSent": "Terima kasih, laporanmu sudah kami terima",
+  "@reportJinyeSent": {
+    "description": "Toast sukses kirim laporan Jinye"
+  },
+  "reportJinyeSexual": "Konten seksual",
+  "@reportJinyeSexual": {
+    "description": "Alasan laporan Jinye: seksual"
+  },
+  "reportJinyeSpam": "Spam",
+  "@reportJinyeSpam": {
+    "description": "Alasan laporan Jinye: spam"
+  },
+  "reportJinyeSubtitle": "Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.",
+  "@reportJinyeSubtitle": {
+    "description": "Subjudul sheet laporan Jinye"
+  },
+  "reportJinyeTitle": "Laporkan Jinye",
+  "@reportJinyeTitle": {
+    "description": "Judul sheet laporan Jinye"
+  }
 }

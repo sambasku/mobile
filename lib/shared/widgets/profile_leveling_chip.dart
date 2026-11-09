@@ -154,13 +154,43 @@ class ProfileLevelingChip extends StatelessWidget {
       child: Column(
         crossAxisAlignment: cross,
         children: [
-          // Streak tidak di sini - badge api + angka di pojok avatar.
-          Text(
-            l10n.levelingChipLabel(leveling.level, title),
-            textAlign: alignCenter ? TextAlign.center : TextAlign.start,
-            style: theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+          // Streak di baris level (bukan pojok avatar) supaya tidak menutup
+          // bingkai achievement profile_border.
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.levelingChipLabel(leveling.level, title),
+                textAlign: alignCenter ? TextAlign.center : TextAlign.start,
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              if (leveling.streakDays > 0) ...[
+                const Gap(8),
+                Semantics(
+                  label: l10n.levelingStreakDays(leveling.streakDays),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        FLucideIcons.flame,
+                        size: 14,
+                        color: theme.colors.destructive,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${leveling.streakDays}',
+                        style: theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colors.destructive,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
           if (next != null) ...[
             const Gap(6),

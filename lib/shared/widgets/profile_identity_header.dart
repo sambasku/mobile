@@ -35,7 +35,6 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.borderUrl,
     this.bio,
     this.isVerifier = false,
-    this.streakDays,
     this.leveling,
     this.stats,
     this.joinedLabel,
@@ -58,10 +57,7 @@ class ProfileIdentityHeader extends StatelessWidget {
   final String? bio;
   final bool isVerifier;
 
-  /// Streak aktif (>0) → badge api + angka di pojok avatar. Null/0 = sembunyi.
-  final int? streakDays;
-
-  /// Chip level + progress (opsional).
+  /// Chip level + progress (+ streak di baris chip). Opsional.
   final Widget? leveling;
 
   /// Null = blok stat disembunyikan (tamu / profil belum termuat).
@@ -126,11 +122,8 @@ class ProfileIdentityHeader extends StatelessWidget {
     // Cover mengikuti rasio asset: lebar penuh × (lebar / aspect).
     final width = MediaQuery.sizeOf(context).width;
     final coverHeight = coverHeightOf(variant, width);
-    final hasStreak = (streakDays ?? 0) > 0;
-    // Badge streak menjorok ke bawah avatar (~14px) - sisakan ruang agar
-    // tidak overflow SizedBox art (dump RenderConstrainedBox / clip).
-    final streakPad = hasStreak ? 14.0 : 0.0;
-    final artHeight = coverHeight + _avatarExtent / 2 + streakPad;
+    // Streak ada di chip level - avatar/border tanpa badge pojok.
+    final artHeight = coverHeight + _avatarExtent / 2;
     final handle = username?.trim();
     final bioText = bio?.trim();
     final verticalAlign = _isHero
@@ -168,19 +161,20 @@ class ProfileIdentityHeader extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
-                      bottom: streakPad,
                     ),
                     child: Semantics(
                       button: onAvatarTap != null,
                       label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
                       child: GestureDetector(
                         onTap: onAvatarTap,
-                        child: _AvatarWithStreak(
-                          avatarSize: _avatarSize,
+                        child: AvatarBorderOverlay(
+                          size: _avatarSize,
                           borderUrl: borderUrl,
-                          displayName: displayName,
-                          avatarUrl: avatarUrl,
-                          streakDays: streakDays,
+                          child: UserAvatar(
+                            name: displayName,
+                            imageUrl: avatarUrl,
+                            size: _avatarSize,
+                          ),
                         ),
                       ),
                     ),
@@ -253,84 +247,6 @@ class ProfileIdentityHeader extends StatelessWidget {
               ],
               if (footer != null) ...[const Gap(12), footer!],
             ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Avatar + bingkai + badge streak (ikon api + angka) di pojok kanan bawah.
-class _AvatarWithStreak extends StatelessWidget {
-  const _AvatarWithStreak({
-    required this.avatarSize,
-    required this.displayName,
-    this.borderUrl,
-    this.avatarUrl,
-    this.streakDays,
-  });
-
-  final double avatarSize;
-  final String displayName;
-  final String? borderUrl;
-  final String? avatarUrl;
-  final int? streakDays;
-
-  @override
-  Widget build(BuildContext context) {
-    final days = streakDays ?? 0;
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context);
-    final avatar = AvatarBorderOverlay(
-      size: avatarSize,
-      borderUrl: borderUrl,
-      child: UserAvatar(
-        name: displayName,
-        imageUrl: avatarUrl,
-        size: avatarSize,
-      ),
-    );
-    if (days <= 0) return avatar;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        avatar,
-        Positioned(
-          right: -2,
-          bottom: -2,
-          child: Semantics(
-            label: l10n.levelingStreakDays(days),
-            child: DecoratedBox(
-              // Warna destructive = "api" tema (sama pola beta_badge).
-              decoration: BoxDecoration(
-                color: theme.colors.destructive,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 2, 7, 2),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      FLucideIcons.flame,
-                      size: 12,
-                      color: theme.colors.destructiveForeground,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      '$days',
-                      style: theme.typography.body.sm.copyWith(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        height: 1,
-                        color: theme.colors.destructiveForeground,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ),
         ),
       ],

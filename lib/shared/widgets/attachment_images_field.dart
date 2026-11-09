@@ -13,6 +13,7 @@ import '../../l10n/app_localizations.dart';
 import '../utils/image_sheet_drawer.dart';
 import 'cached_network_image_with_fallback.dart';
 import 'image_credit.dart';
+import 'image_crop_page.dart';
 
 /// Hasil upload CDN ATAU referensi stock Media Explorer.
 class AttachmentUploadedImage {
@@ -135,6 +136,9 @@ class AttachmentImagesField extends StatefulWidget {
 
     /// Buka Media Explorer (foto stock). Null = opsi Explorer disembunyikan.
     this.onPickStockImage,
+
+    /// Kunci rasio crop (logo 1:1). Null = user pilih Bebas/1:1/….
+    this.lockedAspectRatio,
   });
 
   final bool enabled;
@@ -157,6 +161,8 @@ class AttachmentImagesField extends StatefulWidget {
 
   /// Return null jika user batal; selain itu slot stock langsung `done`.
   final Future<AttachmentUploadedImage?> Function()? onPickStockImage;
+
+  final CropAspectRatio? lockedAspectRatio;
 
   @override
   State<AttachmentImagesField> createState() => _AttachmentImagesFieldState();
@@ -190,6 +196,7 @@ class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
       picker: _picker,
       filePicker: false,
       mediaExplorerPicker: widget.onPickStockImage != null,
+      lockedAspectRatio: widget.lockedAspectRatio,
       onMediaExplorer: widget.onPickStockImage == null
           ? null
           : () {

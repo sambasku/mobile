@@ -19,6 +19,7 @@ import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../settings/settings_router.dart';
+import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
@@ -93,6 +94,11 @@ class ProfilePage extends HookConsumerWidget {
             tooltip: l10n.profileNotifications,
             badgeCount: unread ?? 0,
             onPress: () => context.push(NotificationRouter.list.path),
+          ),
+          ProfileHeroAction(
+            icon: FLucideIcons.messageCircle,
+            tooltip: l10n.jinyeComposeEntryTooltip,
+            onPress: () => context.push('/jinye/create'),
           ),
           ProfileHeroAction(
             icon: FLucideIcons.pencil,
@@ -420,7 +426,6 @@ class _IdentitySection extends ConsumerWidget {
           bio: profile?.bio,
           isVerifier:
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
-          streakDays: profile?.leveling?.streakDays,
           leveling: profile?.leveling == null
               ? null
               : ProfileLevelingChip(leveling: profile!.leveling!),
@@ -447,6 +452,8 @@ class _IdentitySection extends ConsumerWidget {
           ],
           footer: isAuth ? const ProfileAchievementTabs() : null,
         ),
+        if (isAuth && username != null && username.isNotEmpty)
+          JinyeProfilePreview(username: username, isOwnProfile: true),
       ],
     );
   }

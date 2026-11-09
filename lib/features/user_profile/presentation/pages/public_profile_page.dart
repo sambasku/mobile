@@ -34,6 +34,7 @@ import '../../../profile/data/avatar_upload_service.dart';
 import '../../../profile/presentation/crop_profile_photo.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
+import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
 
@@ -265,7 +266,6 @@ class _ProfileBody extends HookConsumerWidget {
                       borderUrl: borderUrl,
                       bio: profile.bio,
                       isVerifier: profile.isVerifier,
-                      streakDays: profile.leveling?.streakDays,
                       leveling: profile.leveling == null
                           ? null
                           : ProfileLevelingChip(
@@ -302,6 +302,10 @@ class _ProfileBody extends HookConsumerWidget {
                         showTitle: true,
                         showAllButton: isOwnProfile,
                       ),
+                    ),
+                    JinyeProfilePreview(
+                      username: profile.username,
+                      isOwnProfile: isOwnProfile,
                     ),
                     const Gap(12),
                   ],
