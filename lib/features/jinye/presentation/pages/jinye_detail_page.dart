@@ -318,7 +318,9 @@ class JinyeDetailPage extends HookConsumerWidget {
                   _JinyeImageRow(images: item.images),
                 ] else if (item.images.isNotEmpty) ...[
                   const Gap(12),
-                  FAlert(title: Text(l10n.jinyePhotosPendingReview)),
+                  _JinyePendingPhotosBanner(
+                    label: l10n.jinyePhotosPendingReview,
+                  ),
                 ],
                 const Gap(12),
                 Row(
@@ -1268,6 +1270,47 @@ Widget? _jinyeCommentMedia(BuildContext context, JinyeComment comment) {
       },
     ),
   );
+}
+
+/// Keterangan foto pending: icon di kiri-atas (bukan center vertikal FAlert).
+class _JinyePendingPhotosBanner extends StatelessWidget {
+  const _JinyePendingPhotosBanner({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colors.secondary,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: theme.colors.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              FLucideIcons.image,
+              size: 16,
+              color: theme.colors.mutedForeground,
+            ),
+            const Gap(10),
+            Expanded(
+              child: Text(
+                label,
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.foreground,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _JinyeImageRow extends StatefulWidget {
