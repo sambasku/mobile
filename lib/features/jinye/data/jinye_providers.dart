@@ -30,3 +30,11 @@ final jinyeCommentsProvider =
     FutureProvider.autoDispose.family<List<JinyeComment>, String>((ref, id) async {
   return ref.watch(jinyeRepositoryProvider).listComments(id);
 });
+
+final jinyeTranslationsProvider =
+    FutureProvider.autoDispose.family<List<JinyeTranslation>, String>((
+  ref,
+  id,
+) async {
+  return ref.watch(jinyeRepositoryProvider).listTranslations(id);
+});

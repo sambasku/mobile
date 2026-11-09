@@ -18080,6 +18080,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal menghapus tautan'**
   String get jinyeLemmaDeleteFailed;
+
+  /// CTA owner promote Jinye ke contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan contoh lemma'**
+  String get jinyePromoteExampleAction;
+
+  /// Pilihan promote + audio
+  ///
+  /// In id, this message translates to:
+  /// **'Sertakan rekaman suara'**
+  String get jinyePromoteWithAudio;
+
+  /// Pilihan promote tanpa audio
+  ///
+  /// In id, this message translates to:
+  /// **'Teks saja'**
+  String get jinyePromoteTextOnly;
+
+  /// Toast sukses promote example
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan contoh terkirim'**
+  String get jinyePromoteSuccess;
+
+  /// Error promote example
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengajukan jadi contoh'**
+  String get jinyePromoteFailed;
+
+  /// CTA usul terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Usul terjemahan'**
+  String get jinyeTranslateAction;
+
+  /// Judul sheet terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Indonesia'**
+  String get jinyeTranslateTitle;
+
+  /// Hint field terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis arti dalam bahasa Indonesia…'**
+  String get jinyeTranslateHint;
+
+  /// CTA submit terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get jinyeTranslateSubmit;
+
+  /// Toast sukses terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terjemahan terkirim'**
+  String get jinyeTranslateSuccess;
+
+  /// Error terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengusulkan terjemahan'**
+  String get jinyeTranslateFailed;
 }
 
 class _AppLocalizationsDelegate

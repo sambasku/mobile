@@ -25,6 +25,7 @@ import '../../domain/jinye_models.dart';
 import '../widgets/jinye_lemma_body.dart';
 import '../widgets/jinye_link_lemma_sheet.dart';
 import '../widgets/jinye_report_sheet.dart';
+import '../widgets/jinye_translation_sheet.dart';
 import '../widgets/jinye_word_picker_sheet.dart';
 
 /// Detail Jinye Phase 2: media + vote OP + komen/reply 1 level.
@@ -286,6 +287,26 @@ class JinyeDetailPage extends HookConsumerWidget {
                       ),
                     ),
                   ],
+                  ref.watch(jinyeTranslationsProvider(id)).when(
+                        data: (rows) {
+                          final accepted = rows.where((t) => t.isAccepted);
+                          if (accepted.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              accepted.first.bodyId,
+                              style: theme.typography.body.md.copyWith(
+                                color: theme.colors.mutedForeground,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          );
+                        },
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, _) => const SizedBox.shrink(),
+                      ),
                 ] else if (!item.hasAudio && !item.hasDisplayableImages)
                   Text('-', style: theme.typography.body.lg),
                 if (item.hasAudio) ...[
@@ -434,6 +455,113 @@ Future<void> _linkLemmaFromUi(
   } catch (_) {
     if (!context.mounted) return;
     await showAppErrorSheet(context, message: l10n.jinyeLemmaLinkFailed);
+  }
+}
+
+Future<void> _promoteExampleFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final initial = item.lemmaLinks.isNotEmpty
+      ? (item.lemmaLinks.first.lemma ?? '')
+      : '';
+  final word = await showJinyeWordPickerSheet(
+    context,
+    initialQuery: initial,
+  );
+  if (word == null || !context.mounted) return;
+
+  var includeAudio = false;
+  if (item.hasAudio) {
+    final audioChoice = await showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      builder: (ctx) {
+        final sheetL10n = AppLocalizations.of(ctx);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(sheetL10n.jinyePromoteWithAudio),
+                  onPress: () => Navigator.pop(ctx, true),
+                ),
+                FTile(
+                  title: Text(sheetL10n.jinyePromoteTextOnly),
+                  onPress: () => Navigator.pop(ctx, false),
+                ),
+                FTile(
+                  title: Text(sheetL10n.commonCancel),
+                  onPress: () => Navigator.pop(ctx),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+    if (audioChoice == null || !context.mounted) return;
+    includeAudio = audioChoice;
+  }
+
+  try {
+    await ref.read(jinyeRepositoryProvider).promoteExample(
+          jinyeId: item.id,
+          wordId: word.id,
+          includeAudio: includeAudio,
+        );
+    if (!context.mounted) return;
+    showFToast(context: context, title: Text(l10n.jinyePromoteSuccess));
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyePromoteFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyePromoteFailed);
+  }
+}
+
+Future<void> _translateJinyeFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final bodyId = await showJinyeTranslationSheet(context);
+  if (bodyId == null || bodyId.isEmpty || !context.mounted) return;
+  try {
+    await ref.read(jinyeRepositoryProvider).createTranslation(
+          jinyeId: item.id,
+          bodyId: bodyId,
+        );
+    ref.invalidate(jinyeTranslationsProvider(item.id));
+    if (!context.mounted) return;
+    showFToast(context: context, title: Text(l10n.jinyeTranslateSuccess));
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeTranslateFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeTranslateFailed);
   }
 }
 
@@ -612,6 +740,16 @@ Future<void> _showOwnerActions(
                   title: Text(l10n.jinyeArchiveAction),
                   onPress: () => Navigator.pop(context, 'archive'),
                 ),
+                if (item.body.trim().isNotEmpty || item.hasAudio)
+                  FTile(
+                    title: Text(l10n.jinyePromoteExampleAction),
+                    onPress: () => Navigator.pop(context, 'promote'),
+                  ),
+                if (item.body.trim().isNotEmpty)
+                  FTile(
+                    title: Text(l10n.jinyeTranslateAction),
+                    onPress: () => Navigator.pop(context, 'translate'),
+                  ),
               ],
               if (item.status == 'archived')
                 FTile(
@@ -629,6 +767,15 @@ Future<void> _showOwnerActions(
     ),
   );
   if (action == null || !context.mounted) return;
+
+  if (action == 'promote') {
+    await _promoteExampleFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'translate') {
+    await _translateJinyeFromUi(context, ref, item: item);
+    return;
+  }
 
   final repo = ref.read(jinyeRepositoryProvider);
   try {

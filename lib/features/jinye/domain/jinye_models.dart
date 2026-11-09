@@ -160,6 +160,71 @@ class JinyeLemmaLink {
   }
 }
 
+class JinyeTranslation {
+  const JinyeTranslation({
+    required this.id,
+    required this.jinyeId,
+    required this.bodyId,
+    required this.status,
+    required this.translatorId,
+    this.reviewedBy,
+    this.reviewedAt,
+    this.createdAt,
+  });
+
+  final String id;
+  final String jinyeId;
+  final String bodyId;
+  final String status;
+  final String translatorId;
+  final String? reviewedBy;
+  final DateTime? reviewedAt;
+  final DateTime? createdAt;
+
+  bool get isAccepted => status == 'accepted';
+  bool get isPending => status == 'pending';
+
+  factory JinyeTranslation.fromJson(Map<String, dynamic> json) {
+    return JinyeTranslation(
+      id: json['id'] as String,
+      jinyeId: json['jinye_id'] as String,
+      bodyId: json['body_id'] as String? ?? '',
+      status: json['status'] as String? ?? 'pending',
+      translatorId: json['translator_id'] as String? ?? '',
+      reviewedBy: json['reviewed_by'] as String?,
+      reviewedAt: json['reviewed_at'] != null
+          ? DateTime.tryParse(json['reviewed_at'] as String)
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'] as String)
+          : null,
+    );
+  }
+}
+
+class JinyePromoteResult {
+  const JinyePromoteResult({
+    required this.exampleId,
+    required this.status,
+    required this.isVerified,
+    this.wordAudioId,
+  });
+
+  final String exampleId;
+  final String? wordAudioId;
+  final String status;
+  final bool isVerified;
+
+  factory JinyePromoteResult.fromJson(Map<String, dynamic> json) {
+    return JinyePromoteResult(
+      exampleId: json['example_id'] as String,
+      wordAudioId: json['word_audio_id'] as String?,
+      status: json['status'] as String? ?? 'pending_review',
+      isVerified: json['is_verified'] as bool? ?? false,
+    );
+  }
+}
+
 class JinyeItem {
   const JinyeItem({
     required this.id,

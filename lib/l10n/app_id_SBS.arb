@@ -4323,5 +4323,16 @@
   "jinyeLemmaResolveSuccess": "Koreksi diproses",
   "jinyeLemmaResolveFailed": "Gagal memproses koreksi",
   "jinyeLemmaDeleteSuccess": "Tautan lemma dihapus",
-  "jinyeLemmaDeleteFailed": "Gagal menghapus tautan"
+  "jinyeLemmaDeleteFailed": "Gagal menghapus tautan",
+"jinyePromoteExampleAction": "Jadikan contoh lemma",
+  "jinyePromoteWithAudio": "Sertakan rekaman suara",
+  "jinyePromoteTextOnly": "Teks saja",
+  "jinyePromoteSuccess": "Usulan contoh terkirim",
+  "jinyePromoteFailed": "Gagal mengajukan jadi contoh",
+  "jinyeTranslateAction": "Usul terjemahan",
+  "jinyeTranslateTitle": "Terjemahan Indonesia",
+  "jinyeTranslateHint": "Tulis arti dalam bahasa Indonesia…",
+  "jinyeTranslateSubmit": "Kirim usulan",
+  "jinyeTranslateSuccess": "Usulan terjemahan terkirim",
+  "jinyeTranslateFailed": "Gagal mengusulkan terjemahan"
 }

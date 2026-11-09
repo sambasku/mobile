@@ -304,6 +304,87 @@ class JinyeRepository {
     );
   }
 
+  Future<JinyePromoteResult> promoteExample({
+    required String jinyeId,
+    required String wordId,
+    String? meaningId,
+    bool includeAudio = false,
+    String? targetSentence,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/promote-example',
+      data: {
+        'word_id': wordId,
+        if (meaningId != null && meaningId.isNotEmpty) 'meaning_id': meaningId,
+        'include_audio': includeAudio,
+        if (targetSentence != null && targetSentence.trim().isNotEmpty)
+          'target_sentence': targetSentence.trim(),
+      },
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyePromoteResult.fromJson(data);
+  }
+
+  Future<List<JinyeTranslation>> listTranslations(String jinyeId) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '$_base/$jinyeId/translations',
+    );
+    final raw = res.data?['data'];
+    if (raw is! List) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return raw
+        .whereType<Map>()
+        .map((e) => JinyeTranslation.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  Future<JinyeTranslation> createTranslation({
+    required String jinyeId,
+    required String bodyId,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/translations',
+      data: {'body_id': bodyId.trim()},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeTranslation.fromJson(data);
+  }
+
+  Future<JinyeTranslation> resolveTranslation({
+    required String jinyeId,
+    required String translationId,
+    required String action,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/translations/$translationId/resolve',
+      data: {'action': action},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeTranslation.fromJson(data);
+  }
+
   Future<List<JinyeComment>> listComments(String jinyeId) async {
     final res = await _dio.get<Map<String, dynamic>>(
       '$_base/$jinyeId/comments',

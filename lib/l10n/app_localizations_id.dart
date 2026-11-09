@@ -10284,6 +10284,39 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
+
+  @override
+  String get jinyePromoteExampleAction => 'Jadikan contoh lemma';
+
+  @override
+  String get jinyePromoteWithAudio => 'Sertakan rekaman suara';
+
+  @override
+  String get jinyePromoteTextOnly => 'Teks saja';
+
+  @override
+  String get jinyePromoteSuccess => 'Usulan contoh terkirim';
+
+  @override
+  String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
+
+  @override
+  String get jinyeTranslateAction => 'Usul terjemahan';
+
+  @override
+  String get jinyeTranslateTitle => 'Terjemahan Indonesia';
+
+  @override
+  String get jinyeTranslateHint => 'Tulis arti dalam bahasa Indonesia…';
+
+  @override
+  String get jinyeTranslateSubmit => 'Kirim usulan';
+
+  @override
+  String get jinyeTranslateSuccess => 'Usulan terjemahan terkirim';
+
+  @override
+  String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20566,4 +20599,37 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
+
+  @override
+  String get jinyePromoteExampleAction => 'Jadikan contoh lemma';
+
+  @override
+  String get jinyePromoteWithAudio => 'Sertakan rekaman suara';
+
+  @override
+  String get jinyePromoteTextOnly => 'Teks saja';
+
+  @override
+  String get jinyePromoteSuccess => 'Usulan contoh terkirim';
+
+  @override
+  String get jinyePromoteFailed => 'Gagal mengajukan jadi contoh';
+
+  @override
+  String get jinyeTranslateAction => 'Usul terjemahan';
+
+  @override
+  String get jinyeTranslateTitle => 'Terjemahan Indonesia';
+
+  @override
+  String get jinyeTranslateHint => 'Tulis arti dalam bahasa Indonesia…';
+
+  @override
+  String get jinyeTranslateSubmit => 'Kirim usulan';
+
+  @override
+  String get jinyeTranslateSuccess => 'Usulan terjemahan terkirim';
+
+  @override
+  String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
 }
