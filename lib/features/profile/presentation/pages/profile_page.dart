@@ -101,6 +101,11 @@ class ProfilePage extends HookConsumerWidget {
             onPress: () => context.push('/jinye/create'),
           ),
           ProfileHeroAction(
+            icon: FLucideIcons.archive,
+            tooltip: l10n.jinyeArchivedTitle,
+            onPress: () => context.push('/jinye/archived'),
+          ),
+          ProfileHeroAction(
             icon: FLucideIcons.pencil,
             tooltip: l10n.profileEditSemantics,
             onPress: () => context.push('/edit-profile'),

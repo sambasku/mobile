@@ -91,6 +91,19 @@ class JinyeDetailPage extends HookConsumerWidget {
           prefixes: [
             FHeaderAction.back(onPress: () => context.pop()),
           ],
+          suffixes: [
+            if (async.hasValue &&
+                isAuth &&
+                auth?.userId == async.requireValue.userId)
+              FHeaderAction(
+                icon: const Icon(FLucideIcons.ellipsisVertical),
+                onPress: () => _showOwnerActions(
+                  context,
+                  ref,
+                  item: async.requireValue,
+                ),
+              ),
+          ],
         ),
         footer: SafeArea(
           top: false,
@@ -345,6 +358,109 @@ class JinyeDetailPage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _showOwnerActions(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final action = await showModalBottomSheet<String>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (_) => Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              if (item.status == 'published') ...[
+                FTile(
+                  title: Text(
+                    item.isPinned
+                        ? l10n.jinyeUnpinAction
+                        : l10n.jinyePinAction,
+                  ),
+                  onPress: () => Navigator.pop(
+                    context,
+                    item.isPinned ? 'unpin' : 'pin',
+                  ),
+                ),
+                FTile(
+                  title: Text(l10n.jinyeArchiveAction),
+                  onPress: () => Navigator.pop(context, 'archive'),
+                ),
+              ],
+              if (item.status == 'archived')
+                FTile(
+                  title: Text(l10n.jinyeUnarchiveAction),
+                  onPress: () => Navigator.pop(context, 'unarchive'),
+                ),
+              FTile(
+                title: Text(l10n.commonCancel),
+                onPress: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+  if (action == null || !context.mounted) return;
+
+  final repo = ref.read(jinyeRepositoryProvider);
+  try {
+    switch (action) {
+      case 'pin':
+        await repo.pin(item.id);
+        if (context.mounted) {
+          showFToast(context: context, title: Text(l10n.jinyePinSuccess));
+        }
+      case 'unpin':
+        await repo.unpin(item.id);
+        if (context.mounted) {
+          showFToast(context: context, title: Text(l10n.jinyeUnpinSuccess));
+        }
+      case 'archive':
+        await repo.archive(item.id);
+        if (context.mounted) {
+          showFToast(context: context, title: Text(l10n.jinyeArchiveSuccess));
+          context.pop();
+        }
+        return;
+      case 'unarchive':
+        await repo.unarchive(item.id);
+        if (context.mounted) {
+          showFToast(
+            context: context,
+            title: Text(l10n.jinyeUnarchiveSuccess),
+          );
+        }
+      default:
+        return;
+    }
+    ref.invalidate(jinyeDetailProvider(item.id));
+    if (item.username != null && item.username!.isNotEmpty) {
+      ref.invalidate(latestJinyeByUsernameProvider(item.username!));
+    }
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeOwnerActionFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeOwnerActionFailed);
   }
 }
 

@@ -4287,5 +4287,18 @@
   "reportJinyeSexual": "Konten seksual",
   "reportJinyeSpam": "Spam",
   "reportJinyeSubtitle": "Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.",
-  "reportJinyeTitle": "Laporke Jinye"
+  "reportJinyeTitle": "Laporke Jinye",
+  "jinyeArchiveAction": "Arsipkan",
+  "jinyeArchiveSuccess": "Jinye diarsipkan",
+  "jinyeArchivedEmpty": "Belum ada Jinye di arsip",
+  "jinyeArchivedLoadFailed": "Gagal memuat arsip Jinye",
+  "jinyeArchivedTitle": "Arsip Jinye",
+  "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
+  "jinyePinAction": "Sematkan di profil",
+  "jinyePinSuccess": "Jinye disematkan di profil",
+  "jinyeUnarchiveAction": "Pulihkan",
+  "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
+  "jinyeUnarchiveSuccess": "Jinye dipulihkan",
+  "jinyeUnpinAction": "Lepas dari profil",
+  "jinyeUnpinSuccess": "Pin Jinye dilepas"
 }

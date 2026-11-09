@@ -10174,6 +10174,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reportJinyeTitle => 'Laporkan Jinye';
+
+  @override
+  String get jinyeArchiveAction => 'Arsipkan';
+
+  @override
+  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+
+  @override
+  String get jinyeArchivedEmpty => 'Belum ada Jinye di arsip';
+
+  @override
+  String get jinyeArchivedLoadFailed => 'Gagal memuat arsip Jinye';
+
+  @override
+  String get jinyeArchivedTitle => 'Arsip Jinye';
+
+  @override
+  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
+
+  @override
+  String get jinyePinAction => 'Sematkan di profil';
+
+  @override
+  String get jinyePinSuccess => 'Jinye disematkan di profil';
+
+  @override
+  String get jinyeUnarchiveAction => 'Pulihkan';
+
+  @override
+  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
+
+  @override
+  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
+
+  @override
+  String get jinyeUnpinAction => 'Lepas dari profil';
+
+  @override
+  String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20346,4 +20385,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reportJinyeTitle => 'Laporke Jinye';
+
+  @override
+  String get jinyeArchiveAction => 'Arsipkan';
+
+  @override
+  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+
+  @override
+  String get jinyeArchivedEmpty => 'Belum ada Jinye di arsip';
+
+  @override
+  String get jinyeArchivedLoadFailed => 'Gagal memuat arsip Jinye';
+
+  @override
+  String get jinyeArchivedTitle => 'Arsip Jinye';
+
+  @override
+  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
+
+  @override
+  String get jinyePinAction => 'Sematkan di profil';
+
+  @override
+  String get jinyePinSuccess => 'Jinye disematkan di profil';
+
+  @override
+  String get jinyeUnarchiveAction => 'Pulihkan';
+
+  @override
+  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
+
+  @override
+  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
+
+  @override
+  String get jinyeUnpinAction => 'Lepas dari profil';
+
+  @override
+  String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
 }

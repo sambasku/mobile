@@ -152,6 +152,70 @@ class JinyeRepository {
     await _dio.delete<Map<String, dynamic>>('$_base/$id');
   }
 
+  Future<JinyePage> listArchived({int limit = 20, String? cursor}) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '$_base/archived',
+      queryParameters: {
+        'limit': limit,
+        if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
+      },
+    );
+    final raw = res.data?['data'];
+    if (raw is! List) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    final items = raw
+        .whereType<Map<String, dynamic>>()
+        .map(JinyeItem.fromJson)
+        .toList();
+    final meta = res.data?['meta'];
+    final next = meta is Map ? meta['next_cursor'] as String? : null;
+    return JinyePage(items: items, nextCursor: next);
+  }
+
+  Future<JinyeItem> archive(String id) async {
+    final res = await _dio.post<Map<String, dynamic>>('$_base/$id/archive');
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
+
+  Future<JinyeItem> unarchive(String id) async {
+    final res = await _dio.post<Map<String, dynamic>>('$_base/$id/unarchive');
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
+
+  Future<JinyeItem> pin(String id) async {
+    final res = await _dio.post<Map<String, dynamic>>('$_base/$id/pin');
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
+
+  Future<void> unpin(String id) async {
+    await _dio.delete<Map<String, dynamic>>('$_base/$id/pin');
+  }
+
   Future<List<JinyeComment>> listComments(String jinyeId) async {
     final res = await _dio.get<Map<String, dynamic>>(
       '$_base/$jinyeId/comments',

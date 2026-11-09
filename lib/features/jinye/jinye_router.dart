@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/app_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/create_jinye_page.dart';
+import 'presentation/pages/jinye_archived_page.dart';
 import 'presentation/pages/jinye_detail_page.dart';
 
 class JinyeRouter {
@@ -11,6 +12,11 @@ class JinyeRouter {
   static const create = RouteDefiner(
     path: '/jinye/create',
     name: 'JinyeRouter.create',
+  );
+
+  static const archived = RouteDefiner(
+    path: '/jinye/archived',
+    name: 'JinyeRouter.archived',
   );
 
   static const detail = RouteDefiner(
@@ -26,6 +32,12 @@ class JinyeRouter {
       name: create.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
       builder: (context, state) => const CreateJinyePage(),
+    ),
+    GoRoute(
+      path: archived.path,
+      name: archived.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const JinyeArchivedPage(),
     ),
     GoRoute(
       path: detail.path,

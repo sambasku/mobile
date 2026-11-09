@@ -17864,6 +17864,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Laporkan Jinye'**
   String get reportJinyeTitle;
+
+  /// CTA arsipkan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan'**
+  String get jinyeArchiveAction;
+
+  /// Toast sukses archive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye diarsipkan'**
+  String get jinyeArchiveSuccess;
+
+  /// Empty state arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada Jinye di arsip'**
+  String get jinyeArchivedEmpty;
+
+  /// Error load arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat arsip Jinye'**
+  String get jinyeArchivedLoadFailed;
+
+  /// Judul halaman arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arsip Jinye'**
+  String get jinyeArchivedTitle;
+
+  /// Error generik aksi owner Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah Jinye'**
+  String get jinyeOwnerActionFailed;
+
+  /// CTA pin Jinye ke profil
+  ///
+  /// In id, this message translates to:
+  /// **'Sematkan di profil'**
+  String get jinyePinAction;
+
+  /// Toast sukses pin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye disematkan di profil'**
+  String get jinyePinSuccess;
+
+  /// CTA unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get jinyeUnarchiveAction;
+
+  /// Error unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memulihkan Jinye'**
+  String get jinyeUnarchiveFailed;
+
+  /// Toast sukses unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye dipulihkan'**
+  String get jinyeUnarchiveSuccess;
+
+  /// CTA unpin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas dari profil'**
+  String get jinyeUnpinAction;
+
+  /// Toast sukses unpin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Pin Jinye dilepas'**
+  String get jinyeUnpinSuccess;
 }
 
 class _AppLocalizationsDelegate

@@ -6957,5 +6957,31 @@
   "reportJinyeTitle": "Laporkan Jinye",
   "@reportJinyeTitle": {
     "description": "Judul sheet laporan Jinye"
-  }
+  },
+  "jinyeArchiveAction": "Arsipkan",
+  "@jinyeArchiveAction": {"description": "CTA arsipkan Jinye"},
+  "jinyeArchiveSuccess": "Jinye diarsipkan",
+  "@jinyeArchiveSuccess": {"description": "Toast sukses archive Jinye"},
+  "jinyeArchivedEmpty": "Belum ada Jinye di arsip",
+  "@jinyeArchivedEmpty": {"description": "Empty state arsip Jinye"},
+  "jinyeArchivedLoadFailed": "Gagal memuat arsip Jinye",
+  "@jinyeArchivedLoadFailed": {"description": "Error load arsip Jinye"},
+  "jinyeArchivedTitle": "Arsip Jinye",
+  "@jinyeArchivedTitle": {"description": "Judul halaman arsip Jinye"},
+  "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
+  "@jinyeOwnerActionFailed": {"description": "Error generik aksi owner Jinye"},
+  "jinyePinAction": "Sematkan di profil",
+  "@jinyePinAction": {"description": "CTA pin Jinye ke profil"},
+  "jinyePinSuccess": "Jinye disematkan di profil",
+  "@jinyePinSuccess": {"description": "Toast sukses pin Jinye"},
+  "jinyeUnarchiveAction": "Pulihkan",
+  "@jinyeUnarchiveAction": {"description": "CTA unarchive Jinye"},
+  "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
+  "@jinyeUnarchiveFailed": {"description": "Error unarchive Jinye"},
+  "jinyeUnarchiveSuccess": "Jinye dipulihkan",
+  "@jinyeUnarchiveSuccess": {"description": "Toast sukses unarchive Jinye"},
+  "jinyeUnpinAction": "Lepas dari profil",
+  "@jinyeUnpinAction": {"description": "CTA unpin Jinye"},
+  "jinyeUnpinSuccess": "Pin Jinye dilepas",
+  "@jinyeUnpinSuccess": {"description": "Toast sukses unpin Jinye"}
 }

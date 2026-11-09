@@ -125,6 +125,7 @@ class JinyeItem {
     this.commentCount = 0,
     this.images = const [],
     this.audio,
+    this.isPinned = false,
   });
 
   final String id;
@@ -139,6 +140,7 @@ class JinyeItem {
   final int commentCount;
   final List<JinyeImage> images;
   final JinyeAudio? audio;
+  final bool isPinned;
 
   bool get hasAudio => audio != null && audio!.url.isNotEmpty;
 
@@ -177,6 +179,7 @@ class JinyeItem {
       commentCount: (json['comment_count'] as num?)?.toInt() ?? 0,
       images: images,
       audio: audio,
+      isPinned: json['is_pinned'] as bool? ?? false,
     );
   }
 }

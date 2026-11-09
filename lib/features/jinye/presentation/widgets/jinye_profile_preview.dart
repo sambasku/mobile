@@ -63,7 +63,14 @@ class JinyeProfilePreview extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    if (item.hasAudio) ...[
+                    if (item.isPinned) ...[
+                      Icon(
+                        FLucideIcons.pin,
+                        size: 16,
+                        color: theme.colors.primary,
+                      ),
+                      const Gap(8),
+                    ] else if (item.hasAudio) ...[
                       Icon(
                         FLucideIcons.mic,
                         size: 16,
