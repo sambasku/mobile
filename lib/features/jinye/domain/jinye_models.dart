@@ -111,6 +111,55 @@ class JinyeAudio {
   }
 }
 
+class JinyeLemmaLink {
+  const JinyeLemmaLink({
+    required this.id,
+    required this.start,
+    required this.end,
+    required this.wordId,
+    required this.status,
+    this.jinyeId,
+    this.commentId,
+    this.lemma,
+    this.source = 'author',
+    this.proposedWordId,
+    this.proposedLemma,
+    this.proposedBy,
+  });
+
+  final String id;
+  final String? jinyeId;
+  final String? commentId;
+  final int start;
+  final int end;
+  final String wordId;
+  final String? lemma;
+  final String status;
+  final String source;
+  final String? proposedWordId;
+  final String? proposedLemma;
+  final String? proposedBy;
+
+  bool get isPendingCorrection => status == 'pending_correction';
+
+  factory JinyeLemmaLink.fromJson(Map<String, dynamic> json) {
+    return JinyeLemmaLink(
+      id: json['id'] as String,
+      jinyeId: json['jinye_id'] as String?,
+      commentId: json['comment_id'] as String?,
+      start: (json['start'] as num).toInt(),
+      end: (json['end'] as num).toInt(),
+      wordId: json['word_id'] as String,
+      lemma: json['lemma'] as String?,
+      status: json['status'] as String? ?? 'active',
+      source: json['source'] as String? ?? 'author',
+      proposedWordId: json['proposed_word_id'] as String?,
+      proposedLemma: json['proposed_lemma'] as String?,
+      proposedBy: json['proposed_by'] as String?,
+    );
+  }
+}
+
 class JinyeItem {
   const JinyeItem({
     required this.id,
@@ -126,6 +175,7 @@ class JinyeItem {
     this.images = const [],
     this.audio,
     this.isPinned = false,
+    this.lemmaLinks = const [],
   });
 
   final String id;
@@ -141,6 +191,7 @@ class JinyeItem {
   final List<JinyeImage> images;
   final JinyeAudio? audio;
   final bool isPinned;
+  final List<JinyeLemmaLink> lemmaLinks;
 
   bool get hasAudio => audio != null && audio!.url.isNotEmpty;
 
@@ -180,6 +231,14 @@ class JinyeItem {
       images: images,
       audio: audio,
       isPinned: json['is_pinned'] as bool? ?? false,
+      lemmaLinks: () {
+        final raw = json['lemma_links'];
+        if (raw is! List) return const <JinyeLemmaLink>[];
+        return raw
+            .whereType<Map>()
+            .map((e) => JinyeLemmaLink.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      }(),
     );
   }
 }

@@ -17942,6 +17942,144 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pin Jinye dilepas'**
   String get jinyeUnpinSuccess;
+
+  /// CTA owner tautkan span ke lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Tautkan lemma'**
+  String get jinyeLemmaLinkAction;
+
+  /// Judul sheet pilih span lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih teks'**
+  String get jinyeLemmaSelectSpanTitle;
+
+  /// Petunjuk pilih token span
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk kata. Ketuk lagi di kata lain untuk rentang.'**
+  String get jinyeLemmaSelectSpanHint;
+
+  /// Body kosong untuk span
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada teks yang bisa ditautkan'**
+  String get jinyeLemmaSelectSpanEmpty;
+
+  /// Lanjut ke pencarian kata
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get jinyeLemmaSelectSpanContinue;
+
+  /// Judul sheet cari kata
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get jinyeLemmaPickWordTitle;
+
+  /// Hint pencarian lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Sambas…'**
+  String get jinyeLemmaPickWordHint;
+
+  /// Empty sebelum ketik query
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik lemma untuk mencari'**
+  String get jinyeLemmaPickWordEmptyHint;
+
+  /// Hasil search kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kata terverifikasi yang cocok'**
+  String get jinyeLemmaPickWordNoResult;
+
+  /// Toast sukses buat lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma ditautkan'**
+  String get jinyeLemmaLinkSuccess;
+
+  /// Error buat lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menautkan lemma'**
+  String get jinyeLemmaLinkFailed;
+
+  /// Aksi buka detail kata dari span
+  ///
+  /// In id, this message translates to:
+  /// **'Buka arti'**
+  String get jinyeLemmaOpenWord;
+
+  /// Aksi usul koreksi lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan koreksi'**
+  String get jinyeLemmaProposeCorrection;
+
+  /// Aksi hapus lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tautan'**
+  String get jinyeLemmaDeleteLink;
+
+  /// Verifikator approve koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui koreksi'**
+  String get jinyeLemmaApproveCorrection;
+
+  /// Verifikator reject koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak koreksi'**
+  String get jinyeLemmaRejectCorrection;
+
+  /// Status pending_correction
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi menunggu tinjauan'**
+  String get jinyeLemmaPendingCorrection;
+
+  /// Toast sukses propose
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan koreksi terkirim'**
+  String get jinyeLemmaCorrectionSuccess;
+
+  /// Error propose koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengusulkan koreksi'**
+  String get jinyeLemmaCorrectionFailed;
+
+  /// Toast sukses resolve
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi diproses'**
+  String get jinyeLemmaResolveSuccess;
+
+  /// Error resolve koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses koreksi'**
+  String get jinyeLemmaResolveFailed;
+
+  /// Toast sukses hapus link
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan lemma dihapus'**
+  String get jinyeLemmaDeleteSuccess;
+
+  /// Error hapus lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus tautan'**
+  String get jinyeLemmaDeleteFailed;
 }
 
 class _AppLocalizationsDelegate

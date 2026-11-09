@@ -22,7 +22,10 @@ import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
+import '../widgets/jinye_lemma_body.dart';
+import '../widgets/jinye_link_lemma_sheet.dart';
 import '../widgets/jinye_report_sheet.dart';
+import '../widgets/jinye_word_picker_sheet.dart';
 
 /// Detail Jinye Phase 2: media + vote OP + komen/reply 1 level.
 class JinyeDetailPage extends HookConsumerWidget {
@@ -251,9 +254,39 @@ class JinyeDetailPage extends HookConsumerWidget {
                   ],
                 ),
                 const Gap(16),
-                if (item.body.trim().isNotEmpty)
-                  Text(item.body, style: theme.typography.body.lg)
-                else if (!item.hasAudio && !item.hasDisplayableImages)
+                if (item.body.trim().isNotEmpty) ...[
+                  JinyeLemmaBody(
+                    body: item.body,
+                    links: item.lemmaLinks,
+                    style: theme.typography.body.lg,
+                    onLinkLongPress: (link) => _showLemmaLinkActions(
+                      context,
+                      ref,
+                      item: item,
+                      link: link,
+                      isAuth: isAuth,
+                      isOwner: isAuth && auth?.userId == item.userId,
+                      isVerifier: _isVerifierRole(auth?.role),
+                    ),
+                  ),
+                  if (isAuth &&
+                      auth?.userId == item.userId &&
+                      item.status == 'published') ...[
+                    const Gap(8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: FButton(
+                        variant: FButtonVariant.ghost,
+                        onPress: () => _linkLemmaFromUi(
+                          context,
+                          ref,
+                          item: item,
+                        ),
+                        child: Text(l10n.jinyeLemmaLinkAction),
+                      ),
+                    ),
+                  ],
+                ] else if (!item.hasAudio && !item.hasDisplayableImages)
                   Text('-', style: theme.typography.body.lg),
                 if (item.hasAudio) ...[
                   const Gap(12),
@@ -357,6 +390,191 @@ class JinyeDetailPage extends HookConsumerWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+bool _isVerifierRole(String? role) =>
+    role == 'admin' || role == 'root' || role == 'reviewer';
+
+Future<void> _linkLemmaFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final span = await showJinyeLinkLemmaSheet(context, body: item.body);
+  if (span == null || !context.mounted) return;
+  final word = await showJinyeWordPickerSheet(
+    context,
+    initialQuery: span.text,
+  );
+  if (word == null || !context.mounted) return;
+  try {
+    await ref.read(jinyeRepositoryProvider).createLemmaLink(
+          jinyeId: item.id,
+          start: span.start,
+          end: span.end,
+          wordId: word.id,
+        );
+    ref.invalidate(jinyeDetailProvider(item.id));
+    if (!context.mounted) return;
+    showFToast(context: context, title: Text(l10n.jinyeLemmaLinkSuccess));
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeLemmaLinkFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeLemmaLinkFailed);
+  }
+}
+
+Future<void> _showLemmaLinkActions(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+  required JinyeLemmaLink link,
+  required bool isAuth,
+  required bool isOwner,
+  required bool isVerifier,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final action = await showModalBottomSheet<String>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (_) => Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              FTile(
+                title: Text(l10n.jinyeLemmaOpenWord),
+                onPress: () => Navigator.pop(context, 'open'),
+              ),
+              if (isAuth && !link.isPendingCorrection)
+                FTile(
+                  title: Text(l10n.jinyeLemmaProposeCorrection),
+                  onPress: () => Navigator.pop(context, 'correct'),
+                ),
+              if (link.isPendingCorrection && isVerifier) ...[
+                FTile(
+                  title: Text(l10n.jinyeLemmaApproveCorrection),
+                  onPress: () => Navigator.pop(context, 'approve'),
+                ),
+                FTile(
+                  title: Text(l10n.jinyeLemmaRejectCorrection),
+                  onPress: () => Navigator.pop(context, 'reject'),
+                ),
+              ],
+              if (isOwner || isVerifier)
+                FTile(
+                  title: Text(l10n.jinyeLemmaDeleteLink),
+                  onPress: () => Navigator.pop(context, 'delete'),
+                ),
+              FTile(
+                title: Text(l10n.commonCancel),
+                onPress: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+  if (action == null || !context.mounted) return;
+
+  final repo = ref.read(jinyeRepositoryProvider);
+  try {
+    switch (action) {
+      case 'open':
+        context.push('/words/${link.wordId}');
+        return;
+      case 'correct':
+        if (!isAuth) {
+          showFToast(context: context, title: Text(l10n.jinyeLoginFirst));
+          context.push('/login');
+          return;
+        }
+        final word = await showJinyeWordPickerSheet(
+          context,
+          initialQuery: link.lemma ??
+              (link.start < item.body.length && link.end <= item.body.length
+                  ? item.body.substring(link.start, link.end)
+                  : ''),
+        );
+        if (word == null || !context.mounted) return;
+        await repo.proposeLemmaCorrection(
+          jinyeId: item.id,
+          linkId: link.id,
+          wordId: word.id,
+        );
+        if (context.mounted) {
+          showFToast(
+            context: context,
+            title: Text(l10n.jinyeLemmaCorrectionSuccess),
+          );
+        }
+      case 'approve':
+      case 'reject':
+        await repo.resolveLemmaCorrection(
+          jinyeId: item.id,
+          linkId: link.id,
+          action: action,
+        );
+        if (context.mounted) {
+          showFToast(
+            context: context,
+            title: Text(l10n.jinyeLemmaResolveSuccess),
+          );
+        }
+      case 'delete':
+        await repo.deleteLemmaLink(jinyeId: item.id, linkId: link.id);
+        if (context.mounted) {
+          showFToast(
+            context: context,
+            title: Text(l10n.jinyeLemmaDeleteSuccess),
+          );
+        }
+      default:
+        return;
+    }
+    ref.invalidate(jinyeDetailProvider(item.id));
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    final fallback = switch (action) {
+      'correct' => l10n.jinyeLemmaCorrectionFailed,
+      'approve' || 'reject' => l10n.jinyeLemmaResolveFailed,
+      'delete' => l10n.jinyeLemmaDeleteFailed,
+      _ => l10n.jinyeOwnerActionFailed,
+    };
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty ? msg : fallback,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(
+      context,
+      message: switch (action) {
+        'correct' => l10n.jinyeLemmaCorrectionFailed,
+        'approve' || 'reject' => l10n.jinyeLemmaResolveFailed,
+        'delete' => l10n.jinyeLemmaDeleteFailed,
+        _ => l10n.jinyeOwnerActionFailed,
+      },
     );
   }
 }

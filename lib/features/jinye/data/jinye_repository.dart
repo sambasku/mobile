@@ -216,6 +216,94 @@ class JinyeRepository {
     await _dio.delete<Map<String, dynamic>>('$_base/$id/pin');
   }
 
+  Future<List<JinyeLemmaLink>> listLemmaLinks(String jinyeId) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '$_base/$jinyeId/lemma-links',
+    );
+    final raw = res.data?['data'];
+    if (raw is! List) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return raw
+        .whereType<Map>()
+        .map((e) => JinyeLemmaLink.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  Future<JinyeLemmaLink> createLemmaLink({
+    required String jinyeId,
+    required int start,
+    required int end,
+    required String wordId,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/lemma-links',
+      data: {
+        'start': start,
+        'end': end,
+        'word_id': wordId,
+      },
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeLemmaLink.fromJson(data);
+  }
+
+  Future<JinyeLemmaLink> proposeLemmaCorrection({
+    required String jinyeId,
+    required String linkId,
+    required String wordId,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/lemma-links/$linkId/corrections',
+      data: {'word_id': wordId},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeLemmaLink.fromJson(data);
+  }
+
+  Future<JinyeLemmaLink> resolveLemmaCorrection({
+    required String jinyeId,
+    required String linkId,
+    required String action,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$jinyeId/lemma-links/$linkId/resolve',
+      data: {'action': action},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeLemmaLink.fromJson(data);
+  }
+
+  Future<void> deleteLemmaLink({
+    required String jinyeId,
+    required String linkId,
+  }) async {
+    await _dio.delete<Map<String, dynamic>>(
+      '$_base/$jinyeId/lemma-links/$linkId',
+    );
+  }
+
   Future<List<JinyeComment>> listComments(String jinyeId) async {
     final res = await _dio.get<Map<String, dynamic>>(
       '$_base/$jinyeId/comments',

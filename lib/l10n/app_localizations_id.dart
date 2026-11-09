@@ -10213,6 +10213,77 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
+
+  @override
+  String get jinyeLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get jinyeLemmaSelectSpanTitle => 'Pilih teks';
+
+  @override
+  String get jinyeLemmaSelectSpanHint =>
+      'Ketuk kata. Ketuk lagi di kata lain untuk rentang.';
+
+  @override
+  String get jinyeLemmaSelectSpanEmpty => 'Tidak ada teks yang bisa ditautkan';
+
+  @override
+  String get jinyeLemmaSelectSpanContinue => 'Pilih lemma';
+
+  @override
+  String get jinyeLemmaPickWordTitle => 'Pilih lemma';
+
+  @override
+  String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
+
+  @override
+  String get jinyeLemmaPickWordEmptyHint => 'Ketik lemma untuk mencari';
+
+  @override
+  String get jinyeLemmaPickWordNoResult =>
+      'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get jinyeLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get jinyeLemmaOpenWord => 'Buka arti';
+
+  @override
+  String get jinyeLemmaProposeCorrection => 'Usulkan koreksi';
+
+  @override
+  String get jinyeLemmaDeleteLink => 'Hapus tautan';
+
+  @override
+  String get jinyeLemmaApproveCorrection => 'Setujui koreksi';
+
+  @override
+  String get jinyeLemmaRejectCorrection => 'Tolak koreksi';
+
+  @override
+  String get jinyeLemmaPendingCorrection => 'Koreksi menunggu tinjauan';
+
+  @override
+  String get jinyeLemmaCorrectionSuccess => 'Usulan koreksi terkirim';
+
+  @override
+  String get jinyeLemmaCorrectionFailed => 'Gagal mengusulkan koreksi';
+
+  @override
+  String get jinyeLemmaResolveSuccess => 'Koreksi diproses';
+
+  @override
+  String get jinyeLemmaResolveFailed => 'Gagal memproses koreksi';
+
+  @override
+  String get jinyeLemmaDeleteSuccess => 'Tautan lemma dihapus';
+
+  @override
+  String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20424,4 +20495,75 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
+
+  @override
+  String get jinyeLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get jinyeLemmaSelectSpanTitle => 'Pilih teks';
+
+  @override
+  String get jinyeLemmaSelectSpanHint =>
+      'Ketuk kata. Ketuk lagi di kata lain untuk rentang.';
+
+  @override
+  String get jinyeLemmaSelectSpanEmpty => 'Tidak ada teks yang bisa ditautkan';
+
+  @override
+  String get jinyeLemmaSelectSpanContinue => 'Pilih lemma';
+
+  @override
+  String get jinyeLemmaPickWordTitle => 'Pilih lemma';
+
+  @override
+  String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
+
+  @override
+  String get jinyeLemmaPickWordEmptyHint => 'Ketik lemma untuk mencari';
+
+  @override
+  String get jinyeLemmaPickWordNoResult =>
+      'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get jinyeLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get jinyeLemmaOpenWord => 'Buka arti';
+
+  @override
+  String get jinyeLemmaProposeCorrection => 'Usulkan koreksi';
+
+  @override
+  String get jinyeLemmaDeleteLink => 'Hapus tautan';
+
+  @override
+  String get jinyeLemmaApproveCorrection => 'Setujui koreksi';
+
+  @override
+  String get jinyeLemmaRejectCorrection => 'Tolak koreksi';
+
+  @override
+  String get jinyeLemmaPendingCorrection => 'Koreksi menunggu tinjauan';
+
+  @override
+  String get jinyeLemmaCorrectionSuccess => 'Usulan koreksi terkirim';
+
+  @override
+  String get jinyeLemmaCorrectionFailed => 'Gagal mengusulkan koreksi';
+
+  @override
+  String get jinyeLemmaResolveSuccess => 'Koreksi diproses';
+
+  @override
+  String get jinyeLemmaResolveFailed => 'Gagal memproses koreksi';
+
+  @override
+  String get jinyeLemmaDeleteSuccess => 'Tautan lemma dihapus';
+
+  @override
+  String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
 }
