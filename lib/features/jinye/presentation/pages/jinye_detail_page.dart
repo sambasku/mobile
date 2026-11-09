@@ -13,11 +13,14 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
+import '../../../../shared/widgets/thread_message.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/domain/entities/vote_target.dart';
 import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
@@ -45,9 +48,14 @@ class JinyeDetailPage extends HookConsumerWidget {
     final isAuth = auth?.isAuth ?? false;
 
     final body = useTextEditingController();
-    useListenable(body);
+    final composerFocus = useFocusNode();
     final replyTo = useState<JinyeComment?>(null);
     final submitting = useState(false);
+
+    void startReply(JinyeComment comment) {
+      replyTo.value = comment;
+      composerFocus.requestFocus();
+    }
 
     Future<void> submitComment() async {
       if (!isAuth) {
@@ -94,7 +102,10 @@ class JinyeDetailPage extends HookConsumerWidget {
         header: FHeader.nested(
           title: Text(l10n.jinyeDetailTitle),
           prefixes: [
-            FHeaderAction.back(onPress: () => context.pop()),
+            FHeaderAction.back(
+              onPress: () =>
+                  context.canPop() ? context.pop() : context.go('/'),
+            ),
           ],
           suffixes: [
             if (async.hasValue && isAuth)
@@ -115,78 +126,30 @@ class JinyeDetailPage extends HookConsumerWidget {
           top: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (replyTo.value != null) ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l10n.jinyeReplyingTo(
-                            replyTo.value!.displayName?.trim().isNotEmpty ==
-                                    true
-                                ? replyTo.value!.displayName!
-                                : (replyTo.value!.username ?? '-'),
+            child: !isAuth
+                ? ThreadLoginPrompt(
+                    message: l10n.commentLoginComposerPrompt,
+                    onLogin: () => context.push('/login'),
+                  )
+                : ThreadComposer(
+                    controller: body,
+                    focusNode: composerFocus,
+                    isSubmitting: submitting.value,
+                    onSubmit: submitComment,
+                    hint: l10n.jinyeCommentHint,
+                    replyBanner: replyTo.value == null
+                        ? null
+                        : ThreadReplyBanner(
+                            title: _jinyeReplyBannerTitle(
+                              l10n,
+                              replyTo.value!,
+                            ),
+                            subtitle: replyTo.value!.body.trim().isEmpty
+                                ? null
+                                : replyTo.value!.body.trim(),
+                            onDismiss: () => replyTo.value = null,
                           ),
-                          style: theme.typography.body.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      FButton(
-                        variant: FButtonVariant.ghost,
-                        onPress: () => replyTo.value = null,
-                        child: Text(l10n.commonCancel),
-                      ),
-                    ],
                   ),
-                  const Gap(4),
-                ],
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: FTextField(
-                        control: FTextFieldControl.managed(controller: body),
-                        enabled: !submitting.value && isAuth,
-                        hint: l10n.jinyeCommentHint,
-                        maxLines: 3,
-                        minLines: 1,
-                        maxLength: 500,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.newline,
-                      ),
-                    ),
-                    const Gap(8),
-                    FButton(
-                      onPress: submitting.value ||
-                              body.text.trim().isEmpty ||
-                              !isAuth
-                          ? (isAuth ? null : () {
-                              showFToast(
-                                context: context,
-                                title: Text(l10n.jinyeLoginFirst),
-                              );
-                              context.push('/login');
-                            })
-                          : submitComment,
-                      prefix: submitting.value
-                          ? const FCircularProgress()
-                          : const Icon(FLucideIcons.send, size: 16),
-                      child: Text(
-                        submitting.value
-                            ? l10n.jinyeCommentSending
-                            : l10n.jinyeCommentSend,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ),
         ),
         child: async.when(
@@ -225,7 +188,8 @@ class JinyeDetailPage extends HookConsumerWidget {
             final voteAsync = ref.watch(voteControllerProvider(voteTarget));
 
             return ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              // Padding horizontal sama thread diskusi (bukan 16 penuh).
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
               children: [
                 Row(
                   children: [
@@ -294,6 +258,17 @@ class JinyeDetailPage extends HookConsumerWidget {
                       isOwner: isAuth && auth?.userId == item.userId,
                       isVerifier: _isVerifierRole(auth?.role),
                     ),
+                    onUnlinkedWordTap:
+                        isAuth &&
+                            auth?.userId == item.userId &&
+                            item.status == 'published'
+                        ? (span) => _linkLemmaAtSpanFromUi(
+                              context,
+                              ref,
+                              item: item,
+                              span: span,
+                            )
+                        : null,
                   ),
                   if (item.isEdited) ...[
                     const Gap(4),
@@ -305,23 +280,6 @@ class JinyeDetailPage extends HookConsumerWidget {
                           color: theme.colors.mutedForeground,
                           decoration: TextDecoration.underline,
                         ),
-                      ),
-                    ),
-                  ],
-                  if (isAuth &&
-                      auth?.userId == item.userId &&
-                      item.status == 'published') ...[
-                    const Gap(8),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: FButton(
-                        variant: FButtonVariant.ghost,
-                        onPress: () => _linkLemmaFromUi(
-                          context,
-                          ref,
-                          item: item,
-                        ),
-                        child: Text(l10n.jinyeLemmaLinkAction),
                       ),
                     ),
                   ],
@@ -429,17 +387,20 @@ class JinyeDetailPage extends HookConsumerWidget {
                   ),
                   data: (comments) {
                     if (comments.isEmpty) {
-                      return FAlert(title: Text(l10n.jinyeDiscussionEmpty));
+                      return Text(
+                        l10n.jinyeDiscussionEmpty,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                        ),
+                      );
                     }
                     return Column(
                       children: [
-                        for (final c in comments) ...[
+                        for (final c in comments)
                           _CommentTile(
                             comment: c,
-                            onReply: () => replyTo.value = c,
+                            onReply: () => startReply(c),
                           ),
-                          const Gap(8),
-                        ],
                       ],
                     );
                   },
@@ -456,14 +417,49 @@ class JinyeDetailPage extends HookConsumerWidget {
 bool _isVerifierRole(String? role) =>
     role == 'admin' || role == 'root' || role == 'reviewer';
 
-Future<void> _linkLemmaFromUi(
+String _jinyeReplyBannerTitle(AppLocalizations l10n, JinyeComment comment) {
+  final u = comment.username?.trim();
+  if (u != null && u.isNotEmpty) return l10n.threadReplyingTo(u);
+  final name = comment.displayName?.trim();
+  return l10n.jinyeReplyingTo(
+    name != null && name.isNotEmpty ? name : '-',
+  );
+}
+
+/// Tap kata di body → sheet "Tautkan lemma" → pilih kata kamus untuk span itu.
+Future<void> _linkLemmaAtSpanFromUi(
   BuildContext context,
   WidgetRef ref, {
   required JinyeItem item,
+  required JinyeSpanSelection span,
 }) async {
   final l10n = AppLocalizations.of(context);
-  final span = await showJinyeLinkLemmaSheet(context, body: item.body);
-  if (span == null || !context.mounted) return;
+  final confirm = await showModalBottomSheet<bool>(
+    context: context,
+    useRootNavigator: true,
+    builder: (ctx) {
+      return SafeArea(
+        child: FTileGroup(
+          children: [
+            FTile(
+              title: Text(span.text),
+              subtitle: Text(l10n.jinyeLemmaSelectSpanHint),
+            ),
+            FTile(
+              title: Text(l10n.jinyeLemmaLinkAction),
+              onPress: () => Navigator.pop(ctx, true),
+            ),
+            FTile(
+              title: Text(l10n.commonCancel),
+              onPress: () => Navigator.pop(ctx, false),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+  if (confirm != true || !context.mounted) return;
+
   final word = await showJinyeWordPickerSheet(
     context,
     initialQuery: span.text,
@@ -850,7 +846,11 @@ Future<void> _showOwnerActions(
         await repo.archive(item.id);
         if (context.mounted) {
           showFToast(context: context, title: Text(l10n.jinyeArchiveSuccess));
-          context.pop();
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/');
+          }
         }
         return;
       case 'unarchive':
@@ -1146,210 +1146,128 @@ class _CommentTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _JinyeThreadComment(
+          comment: comment,
+          onReply: onReply,
+        ),
+        if (comment.replies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: Column(
+              children: [
+                for (final r in comment.replies)
+                  _JinyeThreadComment(comment: r),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _JinyeThreadComment extends ConsumerWidget {
+  const _JinyeThreadComment({
+    required this.comment,
+    this.onReply,
+  });
+
+  final JinyeComment comment;
+  final VoidCallback? onReply;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    final name = comment.displayName?.trim().isNotEmpty == true
-        ? comment.displayName!
-        : (comment.username ?? '-');
     final voteTarget = VoteTarget(type: 'jinye_comment', id: comment.id);
     final voteAsync = ref.watch(voteControllerProvider(voteTarget));
     final auth = ref.watch(authStatusProvider).value;
     final isAuth = auth?.isAuth ?? false;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colors.secondary,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              UserAvatar(name: name, imageUrl: comment.avatarUrl, size: 28),
-              const Gap(8),
-              Expanded(
-                child: Text(
-                  name,
-                  style: theme.typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Text(
-                formatDateTimeIso(comment.createdAt.toIso8601String()),
-                style: theme.typography.body.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ],
-          ),
-          if (comment.body.trim().isNotEmpty) ...[
-            const Gap(8),
-            Text(comment.body, style: theme.typography.body.md),
-          ],
-          if (comment.images.any((i) => i.displaySource != null)) ...[
-            const Gap(8),
-            SizedBox(
-              height: 72,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: comment.images
-                    .where((i) => i.displaySource != null)
-                    .length,
-                separatorBuilder: (_, _) => const Gap(6),
-                itemBuilder: (context, index) {
-                  final imgs = comment.images
-                      .where((i) => i.displaySource != null)
-                      .toList();
-                  final src = imgs[index].displaySource!;
-                  final url = displayImageUrl(src, width: 200) ?? src;
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: CachedNetworkImageWithFallback(
-                        imageUrl: url,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ] else if (comment.images.isNotEmpty) ...[
-            const Gap(6),
-            Text(
-              l10n.jinyePhotosPendingReview,
-              style: theme.typography.body.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-            ),
-          ],
-          const Gap(8),
-          Row(
-            children: [
-              voteAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, _) => const SizedBox.shrink(),
-                data: (view) => VoteButtons(
-                  upvotes: view.upvotes,
-                  downvotes: view.downvotes,
-                  myVote: view.myVote,
-                  compact: true,
-                  onVote: (value) async {
-                    if (!isAuth) {
-                      showFToast(
-                        context: context,
-                        title: Text(l10n.jinyeLoginFirst),
-                      );
-                      context.push('/login');
-                      return;
-                    }
-                    final failure = await ref
-                        .read(voteControllerProvider(voteTarget).notifier)
-                        .toggle(value);
-                    if (failure != null && context.mounted) {
-                      showFToast(
-                        context: context,
-                        title: Text(failure.message),
-                        variant: FToastVariant.destructive,
-                      );
-                    }
-                  },
-                ),
-              ),
-              const Gap(8),
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: onReply,
-                child: Text(l10n.jinyeSheetReply),
-              ),
-              const Gap(4),
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => reportJinyeFromUi(
-                  context,
-                  ref,
-                  targetType: 'jinye_comment',
-                  targetId: comment.id,
-                ),
-                child: Text(l10n.reportJinyeAction),
-              ),
-            ],
-          ),
-          if (comment.replies.isNotEmpty) ...[
-            const Gap(8),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Column(
-                children: [
-                  for (final r in comment.replies) ...[
-                    _ReplyTile(comment: r),
-                    const Gap(6),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ],
+    return ThreadMessageRow(
+      username: comment.username,
+      displayName: comment.displayName,
+      avatarUrl: comment.avatarUrl,
+      body: comment.body.trim(),
+      dateLabel: formatRelativeCompact(comment.createdAt),
+      media: _jinyeCommentMedia(context, comment),
+      onUsernameTap: isLinkablePublicUsername(comment.username)
+          ? () => UserProfileRouter.open(context, comment.username!)
+          : null,
+      onMentionTap: (mentionedUsername) =>
+          UserProfileRouter.open(context, mentionedUsername),
+      onReply: onReply,
+      footer: voteAsync.when(
+        loading: () => const VoteButtonsSkeleton(compact: true),
+        error: (_, _) => const SizedBox.shrink(),
+        data: (view) => VoteButtons(
+          upvotes: view.upvotes,
+          downvotes: view.downvotes,
+          myVote: view.myVote,
+          compact: true,
+          onVote: (value) async {
+            if (!isAuth) {
+              showFToast(
+                context: context,
+                title: Text(l10n.jinyeLoginFirst),
+              );
+              context.push('/login');
+              return;
+            }
+            final failure = await ref
+                .read(voteControllerProvider(voteTarget).notifier)
+                .toggle(value);
+            if (failure != null && context.mounted) {
+              showFToast(
+                context: context,
+                title: Text(failure.message),
+                variant: FToastVariant.destructive,
+              );
+            }
+          },
+        ),
       ),
     );
   }
 }
 
-class _ReplyTile extends ConsumerWidget {
-  const _ReplyTile({required this.comment});
-
-  final JinyeComment comment;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    final name = comment.displayName?.trim().isNotEmpty == true
-        ? comment.displayName!
-        : (comment.username ?? '-');
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: theme.colors.background,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            name,
-            style: theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          if (comment.body.trim().isNotEmpty) ...[
-            const Gap(4),
-            Text(comment.body, style: theme.typography.body.sm),
-          ],
-          const Gap(4),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FButton(
-              variant: FButtonVariant.ghost,
-              onPress: () => reportJinyeFromUi(
-                context,
-                ref,
-                targetType: 'jinye_comment',
-                targetId: comment.id,
-              ),
-              child: Text(l10n.reportJinyeAction),
-            ),
-          ),
-        ],
+Widget? _jinyeCommentMedia(BuildContext context, JinyeComment comment) {
+  final l10n = AppLocalizations.of(context);
+  final theme = context.theme;
+  final displayable =
+      comment.images.where((i) => i.displaySource != null).toList();
+  if (displayable.isEmpty) {
+    if (comment.images.isEmpty) return null;
+    return Text(
+      l10n.jinyePhotosPendingReview,
+      style: theme.typography.body.sm.copyWith(
+        color: theme.colors.mutedForeground,
       ),
     );
   }
+  return SizedBox(
+    height: 72,
+    child: ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: displayable.length,
+      separatorBuilder: (_, _) => const Gap(6),
+      itemBuilder: (context, index) {
+        final src = displayable[index].displaySource!;
+        final url = displayImageUrl(src, width: 200) ?? src;
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: CachedNetworkImageWithFallback(
+              imageUrl: url,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }
 
 class _JinyeImageRow extends StatefulWidget {

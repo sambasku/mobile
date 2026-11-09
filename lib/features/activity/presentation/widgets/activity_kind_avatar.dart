@@ -189,6 +189,11 @@ class ActivityKindAvatar extends StatelessWidget {
           icon: FLucideIcons.feather,
           foreground: secondary,
         );
+      case FeedActivityKind.jinye:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.messageCircle,
+          foreground: secondary,
+        );
       case FeedActivityKind.article:
         return _KindAvatarStyle(
           icon: FLucideIcons.bookOpen,

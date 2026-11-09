@@ -13,7 +13,7 @@ import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
 
-/// Baris preview Jinye di profil (max 32 char / label media). Tap → bottom sheet.
+/// Bubble chat preview Jinye di kanan atas avatar+border (max 32 char / label media).
 class JinyeProfilePreview extends ConsumerWidget {
   const JinyeProfilePreview({
     super.key,
@@ -23,6 +23,8 @@ class JinyeProfilePreview extends ConsumerWidget {
 
   final String username;
   final bool isOwnProfile;
+
+  static const double _maxBubbleWidth = 176;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,72 +38,54 @@ class JinyeProfilePreview extends ConsumerWidget {
       data: (item) {
         if (item == null) {
           if (!isOwnProfile) return const SizedBox.shrink();
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: FButton(
-              variant: FButtonVariant.outline,
-              onPress: () => context.push(JinyeRouter.create.path),
-              child: Text(l10n.jinyeCreateTitle),
+          return _ChatBubble(
+            onTap: () => context.push(JinyeRouter.create.path),
+            semanticsLabel: l10n.jinyeCreateTitle,
+            child: Icon(
+              FLucideIcons.penLine,
+              size: 14,
+              color: theme.colors.primary,
             ),
           );
         }
 
         final preview = _previewLabel(item, l10n);
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: GestureDetector(
-            onTap: () => _openSheet(context, item),
-            child: Semantics(
-              button: true,
-              label: l10n.jinyeProfilePreviewSemantics,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: theme.colors.secondary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    if (item.isPinned) ...[
-                      Icon(
-                        FLucideIcons.pin,
-                        size: 16,
-                        color: theme.colors.primary,
-                      ),
-                      const Gap(8),
-                    ] else if (item.hasAudio) ...[
-                      Icon(
-                        FLucideIcons.mic,
-                        size: 16,
-                        color: theme.colors.mutedForeground,
-                      ),
-                      const Gap(8),
-                    ] else if (item.images.isNotEmpty) ...[
-                      Icon(
-                        FLucideIcons.image,
-                        size: 16,
-                        color: theme.colors.mutedForeground,
-                      ),
-                      const Gap(8),
-                    ],
-                    Expanded(
-                      child: Text(
-                        preview,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.typography.body.sm,
-                      ),
-                    ),
-                    Icon(
-                      FLucideIcons.chevronRight,
-                      size: 16,
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ],
+        return _ChatBubble(
+          onTap: () => _openSheet(context, item),
+          semanticsLabel: l10n.jinyeProfilePreviewSemantics,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 1),
+                child: Icon(
+                  item.isPinned
+                      ? FLucideIcons.pin
+                      : item.hasAudio
+                      ? FLucideIcons.mic
+                      : item.images.isNotEmpty
+                      ? FLucideIcons.image
+                      : FLucideIcons.messageCircle,
+                  size: 12,
+                  color: item.isPinned
+                      ? theme.colors.primary
+                      : theme.colors.mutedForeground,
                 ),
               ),
-            ),
+              const Gap(5),
+              Flexible(
+                child: Text(
+                  preview,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.body.sm.copyWith(
+                    fontSize: 12,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -227,4 +211,116 @@ class JinyeProfilePreview extends ConsumerWidget {
       context.push(path);
     }
   }
+}
+
+/// Bubble chat: badan rounded + ekor kiri-bawah mengarah ke avatar.
+class _ChatBubble extends StatelessWidget {
+  const _ChatBubble({
+    required this.onTap,
+    required this.semanticsLabel,
+    required this.child,
+  });
+
+  final VoidCallback onTap;
+  final String semanticsLabel;
+  final Widget child;
+
+  static const double _tailSize = 8;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final fill = theme.colors.background;
+    final border = theme.colors.border;
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: GestureDetector(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: JinyeProfilePreview._maxBubbleWidth,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: border),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colors.foreground.withValues(alpha: 0.12),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+                  child: child,
+                ),
+              ),
+              // Ekor mengarah ke avatar (bawah-kiri bubble).
+              Transform.translate(
+                offset: const Offset(14, -1),
+                child: CustomPaint(
+                  size: const Size(_tailSize + 4, _tailSize),
+                  painter: _BubbleTailPainter(
+                    fill: fill,
+                    border: border,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BubbleTailPainter extends CustomPainter {
+  const _BubbleTailPainter({required this.fill, required this.border});
+
+  final Color fill;
+  final Color border;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width * 0.45, size.height)
+      ..lineTo(size.width, 0)
+      ..close();
+
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = fill
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = border
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..strokeJoin = StrokeJoin.round,
+    );
+    // Tutup garis atas ekor supaya tidak dobel dengan border badan.
+    canvas.drawLine(
+      Offset.zero,
+      Offset(size.width, 0),
+      Paint()
+        ..color = fill
+        ..strokeWidth = 2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _BubbleTailPainter oldDelegate) =>
+      oldDelegate.fill != fill || oldDelegate.border != border;
 }

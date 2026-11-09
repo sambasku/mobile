@@ -35,6 +35,9 @@ class CreateJinyePage extends HookConsumerWidget {
     final attachmentsEnabled = useState(true);
     final pendingAudio = useState<RecordedThreadAudio?>(null);
     final submitting = useState(false);
+    // Opsi 2: panel media collapsible - chip buka on-demand.
+    final showAudioPanel = useState(false);
+    final showPhotoPanel = useState(false);
 
     final trimmed = body.text.trim();
     final hasImagesReady = readyAttachmentImages(images.value).isNotEmpty;
@@ -66,17 +69,47 @@ class CreateJinyePage extends HookConsumerWidget {
       );
       if (recorded != null) {
         pendingAudio.value = recorded;
+        showAudioPanel.value = true;
       }
     }
 
     Future<void> clearAudio() async {
       final prev = pendingAudio.value;
       pendingAudio.value = null;
+      showAudioPanel.value = false;
       if (prev != null) {
         try {
           if (await prev.file.exists()) await prev.file.delete();
         } catch (_) {}
       }
+    }
+
+    Future<void> toggleAudioChip() async {
+      if (!isAuth) {
+        promptLogin();
+        return;
+      }
+      if (submitting.value) return;
+      if (showAudioPanel.value) {
+        showAudioPanel.value = false;
+        return;
+      }
+      showAudioPanel.value = true;
+      if (pendingAudio.value == null) {
+        await pickAudio();
+        if (pendingAudio.value == null) {
+          showAudioPanel.value = false;
+        }
+      }
+    }
+
+    void togglePhotoChip() {
+      if (!isAuth) {
+        promptLogin();
+        return;
+      }
+      if (!attachmentsEnabled.value || submitting.value) return;
+      showPhotoPanel.value = !showPhotoPanel.value;
     }
 
     Future<void> submit({bool skipImages = false}) async {
@@ -217,7 +250,8 @@ class CreateJinyePage extends HookConsumerWidget {
             audioFailed ? l10n.jinyeSentAudioFailed : l10n.jinyeCreateSuccess,
           ),
         );
-        context.go(JinyeRouter.detailPath(result.id));
+        // pushReplacement: stack tetap punya layar sebelumnya (bukan go kosong).
+        context.pushReplacement(JinyeRouter.detailPath(result.id));
       } on DioException catch (e) {
         if (!context.mounted) return;
         await showAppErrorSheet(context, message: _mapDio(e, l10n));
@@ -240,11 +274,16 @@ class CreateJinyePage extends HookConsumerWidget {
         ? 0
         : (audio.durationMs / 1000).round().clamp(1, 60);
 
+    // childPad Forui sudah kasih gutter horizontal - jangan dobel di ListView.
     return FScaffold(
+      childPad: true,
       header: FHeader.nested(
         title: Text(l10n.jinyeCreateTitle),
         prefixes: [
-          FHeaderAction.back(onPress: () => context.pop()),
+          FHeaderAction.back(
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go('/'),
+          ),
         ],
       ),
       footer: SafeArea(
@@ -265,7 +304,7 @@ class CreateJinyePage extends HookConsumerWidget {
         ),
       ),
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        padding: EdgeInsets.zero,
         children: [
           if (!isAuth) ...[
             FAlert(title: Text(l10n.jinyeLoginFirst)),
@@ -279,24 +318,49 @@ class CreateJinyePage extends HookConsumerWidget {
           ],
           FTextField(
             control: FTextFieldControl.managed(controller: body),
-            maxLines: 8,
+            maxLines: 6,
             maxLength: _maxBody,
             label: Text(l10n.jinyeCreateBodyLabel),
             hint: l10n.jinyeCreateBodyHint,
             enabled: !submitting.value && isAuth,
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
-            minLines: 4,
+            minLines: 3,
           ),
           const Gap(12),
-          Text(
-            l10n.jinyeCreateAudioLabel,
-            style: context.theme.typography.body.sm.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FButton(
+                variant: (showAudioPanel.value || audio != null)
+                    ? FButtonVariant.primary
+                    : FButtonVariant.outline,
+                onPress: submitting.value ? null : toggleAudioChip,
+                prefix: const Icon(FLucideIcons.mic, size: 14),
+                child: Text(
+                  audio != null
+                      ? l10n.jinyeCreateChipAudioReady(audioSec)
+                      : l10n.jinyeCreateChipAudio,
+                ),
+              ),
+              if (attachmentsEnabled.value)
+                FButton(
+                  variant: (showPhotoPanel.value || images.value.isNotEmpty)
+                      ? FButtonVariant.primary
+                      : FButtonVariant.outline,
+                  onPress: submitting.value ? null : togglePhotoChip,
+                  prefix: const Icon(FLucideIcons.image, size: 14),
+                  child: Text(
+                    images.value.isEmpty
+                        ? l10n.jinyeCreateChipPhoto
+                        : l10n.jinyeCreateChipPhotoCount(images.value.length),
+                  ),
+                ),
+            ],
           ),
-          const Gap(8),
-          if (audio != null)
+          if (showAudioPanel.value && audio != null) ...[
+            const Gap(8),
             Row(
               children: [
                 Expanded(
@@ -318,35 +382,28 @@ class CreateJinyePage extends HookConsumerWidget {
                   child: Text(l10n.jinyeCreateRerecord),
                 ),
               ],
-            )
-          else
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: submitting.value || !isAuth ? null : pickAudio,
-              prefix: const Icon(FLucideIcons.mic, size: 14),
-              child: Text(l10n.jinyeCreateRecordCta),
             ),
-          if (attachmentsEnabled.value) ...[
-            const Gap(12),
-            Text(
-              l10n.jinyeCreatePhotoLabel,
-              style: context.theme.typography.body.sm.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+          ],
+          if (attachmentsEnabled.value && showPhotoPanel.value) ...[
             const Gap(8),
             AttachmentImagesField(
+              // Foto pertama: chip → langsung sheet Kamera/Galeri.
+              openPickerOnMount: images.value.isEmpty,
               enabled: !submitting.value && isAuth,
               maxImages: 4,
               maxSizeMb: 5,
               images: images.value,
-              onChanged: (next) => images.value = next,
+              onChanged: (next) {
+                images.value = next;
+                if (next.isNotEmpty) showPhotoPanel.value = true;
+              },
               disabledHint: l10n.jinyeCreatePhotoLoginHint,
               disabledActionLabel: l10n.commonLoginRequiredShort,
               onDisabledAction: promptLogin,
               onUnavailable: () {
                 attachmentsEnabled.value = false;
                 images.value = const [];
+                showPhotoPanel.value = false;
               },
               upload: (File file, {required bool isPrimary}) async {
                 final uploader = ref.read(jinyeImageUploadServiceProvider);

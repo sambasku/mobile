@@ -41,6 +41,7 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.actions = const [],
     this.coverUrl,
     this.onAvatarTap,
+    this.avatarOverlay,
     this.footer,
     this.horizontalPadding = 16,
   });
@@ -72,6 +73,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
   final VoidCallback? onAvatarTap;
+
+  /// Chip/badge di kanan atas frame avatar + border (mis. preview Jinye).
+  final Widget? avatarOverlay;
 
   /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
   static String defaultCoverAsset(ProfileHeaderVariant variant) =>
@@ -162,21 +166,34 @@ class ProfileIdentityHeader extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
                     ),
-                    child: Semantics(
-                      button: onAvatarTap != null,
-                      label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
-                      child: GestureDetector(
-                        onTap: onAvatarTap,
-                        child: AvatarBorderOverlay(
-                          size: _avatarSize,
-                          borderUrl: borderUrl,
-                          child: UserAvatar(
-                            name: displayName,
-                            imageUrl: avatarUrl,
-                            size: _avatarSize,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Semantics(
+                          button: onAvatarTap != null,
+                          label: AppLocalizations.of(context)
+                              .profilePhotoSemantics(displayName),
+                          child: GestureDetector(
+                            onTap: onAvatarTap,
+                            child: AvatarBorderOverlay(
+                              size: _avatarSize,
+                              borderUrl: borderUrl,
+                              child: UserAvatar(
+                                name: displayName,
+                                imageUrl: avatarUrl,
+                                size: _avatarSize,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        if (avatarOverlay != null)
+                          Positioned(
+                            // Bubble chat mengambang di atas-kanan frame avatar.
+                            top: -10,
+                            right: -6,
+                            child: avatarOverlay!,
+                          ),
+                      ],
                     ),
                   ),
                 ),

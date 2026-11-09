@@ -1343,6 +1343,7 @@
   "feedKindLayanan": "Layanan",
   "feedKindCulinary": "Kuliner",
   "feedKindPantun": "Pantun",
+  "feedKindJinye": "Jinye",
   "feedKindArticle": "Artikel",
   "feedCtaReview": "Tinjau usulan",
   "feedCtaVote": "Ikut menilai",
@@ -1350,6 +1351,7 @@
   "feedCtaReply": "Balas",
   "feedCtaDiscuss": "Ikut diskusi",
   "feedCtaSeePantun": "Lihat pantun",
+  "feedCtaSeeJinye": "Lihat Jinye",
   "feedCtaSeePhoto": "Lihat foto",
   "feedCtaListen": "Dengarkan",
   "feedCtaSeePronunciation": "Lihat cara baca",
@@ -4541,5 +4543,19 @@
   "jinyeQuoteFailed": "Gagal mengutip Jinye",
   "jinyeRepostLabel": "Membagikan ulang",
   "jinyeOpenOriginal": "Buka Jinye asli",
-  "jinyeUsedInWordTitle": "Dipakai di Jinye"
+  "jinyeUsedInWordTitle": "Dipakai di Jinye",
+  "jinyeCreateChipAudio": "Suara",
+  "jinyeCreateChipAudioReady": "Suara · {seconds} dtk",
+  "@jinyeCreateChipAudioReady": {
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "jinyeCreateChipPhoto": "Foto",
+  "jinyeCreateChipPhotoCount": "Foto · {count}",
+  "@jinyeCreateChipPhotoCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

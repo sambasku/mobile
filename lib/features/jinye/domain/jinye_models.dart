@@ -66,12 +66,12 @@ class JinyeImage {
   final String status;
   final List<String> contentWarnings;
 
-  /// URL yang bisa ditampilkan (publik atau staging owner).
+  /// URL publik yang boleh ditampilkan. Staging/pending tidak pernah masuk sini
+  /// (tampilkan chip "menunggu tinjauan", bukan foto).
   String? get displaySource {
+    if (status != 'published') return null;
     final pub = publicUrl?.trim();
     if (pub != null && pub.isNotEmpty) return pub;
-    final staging = url?.trim();
-    if (staging != null && staging.isNotEmpty) return staging;
     return null;
   }
 

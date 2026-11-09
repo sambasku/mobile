@@ -139,6 +139,9 @@ class AttachmentImagesField extends StatefulWidget {
 
     /// Kunci rasio crop (logo 1:1). Null = user pilih Bebas/1:1/….
     this.lockedAspectRatio,
+
+    /// Setelah mount, langsung buka sheet Kamera/Galeri (slot masih kosong).
+    this.openPickerOnMount = false,
   });
 
   final bool enabled;
@@ -164,6 +167,9 @@ class AttachmentImagesField extends StatefulWidget {
 
   final CropAspectRatio? lockedAspectRatio;
 
+  /// Setelah mount, langsung buka sheet Kamera/Galeri (slot masih kosong).
+  final bool openPickerOnMount;
+
   @override
   State<AttachmentImagesField> createState() => _AttachmentImagesFieldState();
 }
@@ -171,6 +177,18 @@ class AttachmentImagesField extends StatefulWidget {
 class _AttachmentImagesFieldState extends State<AttachmentImagesField> {
   final _picker = ImagePicker();
   bool _unavailable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.openPickerOnMount && widget.images.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (widget.images.isNotEmpty) return;
+        _openPicker();
+      });
+    }
+  }
 
   void _openPicker() {
     if (!widget.enabled || _unavailable) return;

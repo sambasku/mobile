@@ -4421,6 +4421,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindJinye => 'Jinye';
+
+  @override
   String get feedKindArticle => 'Artikel';
 
   @override
@@ -4440,6 +4443,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCtaSeePantun => 'Lihat pantun';
+
+  @override
+  String get feedCtaSeeJinye => 'Lihat Jinye';
 
   @override
   String get feedCtaSeePhoto => 'Lihat foto';
@@ -10474,6 +10480,22 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeUsedInWordTitle => 'Dipakai di Jinye';
+
+  @override
+  String get jinyeCreateChipAudio => 'Suara';
+
+  @override
+  String jinyeCreateChipAudioReady(int seconds) {
+    return 'Suara · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreateChipPhoto => 'Foto';
+
+  @override
+  String jinyeCreateChipPhotoCount(int count) {
+    return 'Foto · $count';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -14893,6 +14915,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get feedKindPantun => 'Pantun';
 
   @override
+  String get feedKindJinye => 'Jinye';
+
+  @override
   String get feedKindArticle => 'Artikel';
 
   @override
@@ -14912,6 +14937,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCtaSeePantun => 'Lihat pantun';
+
+  @override
+  String get feedCtaSeeJinye => 'Lihat Jinye';
 
   @override
   String get feedCtaSeePhoto => 'Lihat foto';
@@ -20946,4 +20974,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeUsedInWordTitle => 'Dipakai di Jinye';
+
+  @override
+  String get jinyeCreateChipAudio => 'Suara';
+
+  @override
+  String jinyeCreateChipAudioReady(int seconds) {
+    return 'Suara · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreateChipPhoto => 'Foto';
+
+  @override
+  String jinyeCreateChipPhotoCount(int count) {
+    return 'Foto · $count';
+  }
 }

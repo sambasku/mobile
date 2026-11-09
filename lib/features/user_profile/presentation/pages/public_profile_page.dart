@@ -288,6 +288,10 @@ class _ProfileBody extends HookConsumerWidget {
                           : canPreviewAvatar
                           ? () => showImagePreview(context, urls: [avatarSrc])
                           : null,
+                      avatarOverlay: JinyeProfilePreview(
+                        username: profile.username,
+                        isOwnProfile: isOwnProfile,
+                      ),
                       actions: [
                         if (isOwnProfile)
                           SmallButton(
@@ -302,10 +306,6 @@ class _ProfileBody extends HookConsumerWidget {
                         showTitle: true,
                         showAllButton: isOwnProfile,
                       ),
-                    ),
-                    JinyeProfilePreview(
-                      username: profile.username,
-                      isOwnProfile: isOwnProfile,
                     ),
                     const Gap(12),
                   ],

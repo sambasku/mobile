@@ -101,7 +101,10 @@ class _JinyeArchivedPageState extends ConsumerState<JinyeArchivedPage> {
       header: FHeader.nested(
         title: Text(l10n.jinyeArchivedTitle),
         prefixes: [
-          FHeaderAction.back(onPress: () => context.pop()),
+          FHeaderAction.back(
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go('/'),
+          ),
         ],
       ),
       child: _loading

@@ -2694,6 +2694,10 @@
   "@feedKindPantun": {
     "description": "Label jenis aktivitas: pantun atau balasan pantun"
   },
+  "feedKindJinye": "Jinye",
+  "@feedKindJinye": {
+    "description": "Label jenis aktivitas: Jinye atau balasan Jinye"
+  },
   "feedKindArticle": "Artikel",
   "@feedKindArticle": {
     "description": "Label jenis aktivitas: artikel ensiklopedia atau komentarnya"
@@ -2721,6 +2725,10 @@
   "feedCtaSeePantun": "Lihat pantun",
   "@feedCtaSeePantun": {
     "description": "Ajakan membuka detail pantun dari feed"
+  },
+  "feedCtaSeeJinye": "Lihat Jinye",
+  "@feedCtaSeeJinye": {
+    "description": "Ajakan membuka detail Jinye dari feed"
   },
   "feedCtaSeePhoto": "Lihat foto",
   "@feedCtaSeePhoto": {
@@ -7344,5 +7352,23 @@
   "jinyeOpenOriginal": "Buka Jinye asli",
   "@jinyeOpenOriginal": {"description": "CTA buka original dari repost/quote"},
   "jinyeUsedInWordTitle": "Dipakai di Jinye",
-  "@jinyeUsedInWordTitle": {"description": "Section title di detail lemma"}
+  "@jinyeUsedInWordTitle": {"description": "Section title di detail lemma"},
+  "jinyeCreateChipAudio": "Suara",
+  "@jinyeCreateChipAudio": {"description": "Chip compact attach voice Jinye"},
+  "jinyeCreateChipAudioReady": "Suara · {seconds} dtk",
+  "@jinyeCreateChipAudioReady": {
+    "description": "Chip voice sudah terrekam",
+    "placeholders": {
+      "seconds": {"type": "int"}
+    }
+  },
+  "jinyeCreateChipPhoto": "Foto",
+  "@jinyeCreateChipPhoto": {"description": "Chip compact attach foto Jinye"},
+  "jinyeCreateChipPhotoCount": "Foto · {count}",
+  "@jinyeCreateChipPhotoCount": {
+    "description": "Chip foto dengan jumlah slot",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

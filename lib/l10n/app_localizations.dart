@@ -7769,6 +7769,12 @@ abstract class AppLocalizations {
   /// **'Pantun'**
   String get feedKindPantun;
 
+  /// Label jenis aktivitas: Jinye atau balasan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get feedKindJinye;
+
   /// Label jenis aktivitas: artikel ensiklopedia atau komentarnya
   ///
   /// In id, this message translates to:
@@ -7810,6 +7816,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat pantun'**
   String get feedCtaSeePantun;
+
+  /// Ajakan membuka detail Jinye dari feed
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat Jinye'**
+  String get feedCtaSeeJinye;
 
   /// Ajakan membuka foto
   ///
@@ -18440,6 +18452,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dipakai di Jinye'**
   String get jinyeUsedInWordTitle;
+
+  /// Chip compact attach voice Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Suara'**
+  String get jinyeCreateChipAudio;
+
+  /// Chip voice sudah terrekam
+  ///
+  /// In id, this message translates to:
+  /// **'Suara · {seconds} dtk'**
+  String jinyeCreateChipAudioReady(int seconds);
+
+  /// Chip compact attach foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get jinyeCreateChipPhoto;
+
+  /// Chip foto dengan jumlah slot
+  ///
+  /// In id, this message translates to:
+  /// **'Foto · {count}'**
+  String jinyeCreateChipPhotoCount(int count);
 }
 
 class _AppLocalizationsDelegate

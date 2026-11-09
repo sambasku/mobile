@@ -5,9 +5,13 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/jinye_models.dart';
+import 'jinye_link_lemma_sheet.dart';
 
-/// Body Jinye dengan highlight span lemma. Tap span → detail kata.
-/// Long-press → [onLinkLongPress] (koreksi / hapus / resolve).
+/// Body Jinye dengan highlight span lemma.
+///
+/// - Tap span ter-link → detail kata
+/// - Long-press span → [onLinkLongPress]
+/// - Tap kata belum ter-link (bila [onUnlinkedWordTap] ada) → callback span kata itu
 class JinyeLemmaBody extends StatefulWidget {
   const JinyeLemmaBody({
     super.key,
@@ -15,6 +19,7 @@ class JinyeLemmaBody extends StatefulWidget {
     required this.links,
     this.style,
     this.onLinkLongPress,
+    this.onUnlinkedWordTap,
   });
 
   final String body;
@@ -22,12 +27,34 @@ class JinyeLemmaBody extends StatefulWidget {
   final TextStyle? style;
   final void Function(JinyeLemmaLink link)? onLinkLongPress;
 
+  /// Owner: tap kata belum tertaut → aksi tautkan untuk span itu.
+  final void Function(JinyeSpanSelection span)? onUnlinkedWordTap;
+
   @override
   State<JinyeLemmaBody> createState() => _JinyeLemmaBodyState();
 }
 
+enum _PieceKind { link, token, plain }
+
+class _Piece {
+  const _Piece({
+    required this.kind,
+    required this.start,
+    required this.end,
+    this.link,
+    this.token,
+  });
+
+  final _PieceKind kind;
+  final int start;
+  final int end;
+  final JinyeLemmaLink? link;
+  final JinyeSpanSelection? token;
+}
+
 class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
   final List<TapGestureRecognizer> _recognizers = [];
+  List<_Piece> _pieces = const [];
 
   List<JinyeLemmaLink> get _active {
     final list = widget.links
@@ -37,35 +64,102 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
     return list;
   }
 
-  void _rebuildRecognizers() {
+  void _clearRecognizers() {
     for (final r in _recognizers) {
       r.dispose();
     }
     _recognizers.clear();
-    for (final link in _active) {
-      _recognizers.add(
-        TapGestureRecognizer()
-          ..onTap = () {
-            if (!mounted) return;
-            context.push('/words/${link.wordId}');
-          },
+  }
+
+  bool _overlapsLink(int start, int end, List<JinyeLemmaLink> active) {
+    for (final link in active) {
+      final ls = link.start.clamp(0, widget.body.length);
+      final le = link.end.clamp(0, widget.body.length);
+      if (le <= ls) continue;
+      if (start < le && end > ls) return true;
+    }
+    return false;
+  }
+
+  void _rebuildPieces() {
+    _clearRecognizers();
+    final body = widget.body;
+    final active = _active;
+    if (body.isEmpty) {
+      _pieces = const [];
+      return;
+    }
+
+    final raw = <_Piece>[];
+    for (final link in active) {
+      final start = link.start.clamp(0, body.length);
+      final end = link.end.clamp(0, body.length);
+      if (end <= start) continue;
+      raw.add(
+        _Piece(kind: _PieceKind.link, start: start, end: end, link: link),
       );
     }
+
+    if (widget.onUnlinkedWordTap != null) {
+      for (final m in RegExp(r'\S+').allMatches(body)) {
+        if (_overlapsLink(m.start, m.end, active)) continue;
+        raw.add(
+          _Piece(
+            kind: _PieceKind.token,
+            start: m.start,
+            end: m.end,
+            token: JinyeSpanSelection(
+              start: m.start,
+              end: m.end,
+              text: m.group(0)!,
+            ),
+          ),
+        );
+      }
+    }
+
+    raw.sort((a, b) => a.start.compareTo(b.start));
+
+    final filled = <_Piece>[];
+    var cursor = 0;
+    for (final p in raw) {
+      if (p.start < cursor) continue;
+      if (p.start > cursor) {
+        filled.add(
+          _Piece(kind: _PieceKind.plain, start: cursor, end: p.start),
+        );
+      }
+      filled.add(p);
+      cursor = p.end;
+    }
+    if (cursor < body.length) {
+      filled.add(
+        _Piece(kind: _PieceKind.plain, start: cursor, end: body.length),
+      );
+    }
+    _pieces = filled;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _rebuildPieces();
   }
 
   @override
   void dispose() {
-    for (final r in _recognizers) {
-      r.dispose();
-    }
+    _clearRecognizers();
     super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant JinyeLemmaBody oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.body != widget.body || oldWidget.links != widget.links) {
-      _rebuildRecognizers();
+    if (oldWidget.body != widget.body ||
+        oldWidget.links != widget.links ||
+        (oldWidget.onUnlinkedWordTap == null) !=
+            (widget.onUnlinkedWordTap == null)) {
+      _rebuildPieces();
     }
   }
 
@@ -81,56 +175,68 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
     }
 
     final active = _active;
-    if (active.isEmpty) {
+    if (_pieces.isEmpty ||
+        (active.isEmpty && widget.onUnlinkedWordTap == null)) {
       return Text(widget.body, style: base);
     }
 
-    if (_recognizers.length != active.length) {
-      _rebuildRecognizers();
-    }
-
+    // Recognizer dibuat ulang tiap build supaya closure pakai callback terbaru.
+    _clearRecognizers();
     final spans = <InlineSpan>[];
-    var cursor = 0;
-    var ri = 0;
-    for (final link in active) {
-      final start = link.start.clamp(0, widget.body.length);
-      final end = link.end.clamp(0, widget.body.length);
-      if (end <= start || start < cursor) {
-        ri++;
-        continue;
+    for (final piece in _pieces) {
+      final text = widget.body.substring(piece.start, piece.end);
+      switch (piece.kind) {
+        case _PieceKind.link:
+          final link = piece.link!;
+          final pending = link.isPendingCorrection;
+          final recognizer = TapGestureRecognizer()
+            ..onTap = () {
+              if (!mounted) return;
+              context.push('/words/${link.wordId}');
+            };
+          _recognizers.add(recognizer);
+          spans.add(
+            TextSpan(
+              text: text,
+              style: base.copyWith(
+                color: theme.colors.primary,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
+                decorationStyle: pending
+                    ? TextDecorationStyle.dashed
+                    : TextDecorationStyle.solid,
+              ),
+              recognizer: recognizer,
+            ),
+          );
+        case _PieceKind.token:
+          final span = piece.token!;
+          final recognizer = TapGestureRecognizer()
+            ..onTap = () {
+              if (!mounted) return;
+              widget.onUnlinkedWordTap?.call(span);
+            };
+          _recognizers.add(recognizer);
+          spans.add(
+            TextSpan(
+              text: text,
+              style: base.copyWith(
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.dotted,
+                decorationColor: theme.colors.mutedForeground,
+              ),
+              recognizer: recognizer,
+            ),
+          );
+        case _PieceKind.plain:
+          spans.add(TextSpan(text: text));
       }
-      if (start > cursor) {
-        spans.add(TextSpan(text: widget.body.substring(cursor, start)));
-      }
-      final pending = link.isPendingCorrection;
-      final recognizer = ri < _recognizers.length ? _recognizers[ri] : null;
-      ri++;
-      spans.add(
-        TextSpan(
-          text: widget.body.substring(start, end),
-          style: base.copyWith(
-            color: theme.colors.primary,
-            fontWeight: FontWeight.w600,
-            decoration: TextDecoration.underline,
-            decorationStyle: pending
-                ? TextDecorationStyle.dashed
-                : TextDecorationStyle.solid,
-          ),
-          recognizer: recognizer,
-        ),
-      );
-      cursor = end;
-    }
-    if (cursor < widget.body.length) {
-      spans.add(TextSpan(text: widget.body.substring(cursor)));
     }
 
     return GestureDetector(
-      onLongPress: widget.onLinkLongPress == null
+      onLongPress: widget.onLinkLongPress == null || active.isEmpty
           ? null
           : () {
-              // ponytail: long-press tanpa hit-test char → sheet pilih span
-              // jika >1 link; kalau 1 langsung aksi.
               if (active.length == 1) {
                 widget.onLinkLongPress!(active.first);
                 return;
