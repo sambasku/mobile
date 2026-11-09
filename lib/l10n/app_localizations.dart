@@ -18434,6 +18434,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Buka Jinye asli'**
   String get jinyeOpenOriginal;
+
+  /// Section title di detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai di Jinye'**
+  String get jinyeUsedInWordTitle;
 }
 
 class _AppLocalizationsDelegate

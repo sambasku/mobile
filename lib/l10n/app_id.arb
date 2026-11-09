@@ -7342,5 +7342,7 @@
   "jinyeRepostLabel": "Membagikan ulang",
   "@jinyeRepostLabel": {"description": "Label kartu repost polos"},
   "jinyeOpenOriginal": "Buka Jinye asli",
-  "@jinyeOpenOriginal": {"description": "CTA buka original dari repost/quote"}
+  "@jinyeOpenOriginal": {"description": "CTA buka original dari repost/quote"},
+  "jinyeUsedInWordTitle": "Dipakai di Jinye",
+  "@jinyeUsedInWordTitle": {"description": "Section title di detail lemma"}
 }

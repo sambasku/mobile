@@ -10471,6 +10471,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeOpenOriginal => 'Buka Jinye asli';
+
+  @override
+  String get jinyeUsedInWordTitle => 'Dipakai di Jinye';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20940,4 +20943,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeOpenOriginal => 'Buka Jinye asli';
+
+  @override
+  String get jinyeUsedInWordTitle => 'Dipakai di Jinye';
 }

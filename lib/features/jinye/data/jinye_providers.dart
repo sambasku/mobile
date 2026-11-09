@@ -38,3 +38,16 @@ final jinyeTranslationsProvider =
 ) async {
   return ref.watch(jinyeRepositoryProvider).listTranslations(id);
 });
+
+/// Jinye published yang menaut [wordId] (section detail lemma).
+final jinyeByWordProvider =
+    FutureProvider.autoDispose.family<List<JinyeItem>, String>((
+  ref,
+  wordId,
+) async {
+  final page = await ref.watch(jinyeRepositoryProvider).listPublished(
+        limit: 5,
+        wordId: wordId,
+      );
+  return page.items;
+});

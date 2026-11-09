@@ -22,6 +22,7 @@ import '../../../bookmark/presentation/providers/bookmark_providers.dart';
 import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
+import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/utils/format_datetime.dart';
@@ -857,6 +858,8 @@ class _DetailBody extends HookConsumerWidget {
                         detail.appearsIn,
                         AppLocalizations.of(context),
                       ),
+
+                      JinyeUsedInWordSection(wordId: wordId),
                     ],
                   ),
                 ),

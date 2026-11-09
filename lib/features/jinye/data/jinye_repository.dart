@@ -111,6 +111,7 @@ class JinyeRepository {
     int limit = 20,
     String? cursor,
     String? username,
+    String? wordId,
   }) async {
     final res = await _dio.get<Map<String, dynamic>>(
       _base,
@@ -118,6 +119,7 @@ class JinyeRepository {
         'limit': limit,
         if (cursor != null && cursor.isNotEmpty) 'cursor': cursor,
         if (username != null && username.isNotEmpty) 'username': username,
+        if (wordId != null && wordId.isNotEmpty) 'word_id': wordId,
       },
     );
     final raw = res.data?['data'];
