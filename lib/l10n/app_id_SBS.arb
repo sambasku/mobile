@@ -165,6 +165,7 @@
   "reportPantunHarassment": "Pelecehan atau perundungan",
   "reportPantunHateSpeech": "Ujaran kebencian",
   "reportPantunSpam": "Spam",
+  "reportPantunNotAPantun": "Bukan pantun / rekaman acak",
   "reportPantunOther": "Lainnya",
   "reportPantunSent": "Terima kasih, laporanmu sudah kami terima",
   "reportPantunLoginFirst": "Masuk dulu ya untuk melaporkan pantun",
@@ -635,7 +636,9 @@
   "@reviewChangeHintExamples": {
     "description": "Hint ringkas antrean review: jumlah contoh diubah",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "reviewChangeHintImages": "gambar ({count})",
@@ -1527,6 +1530,7 @@
   "notificationTypeDiscussionTakenDown": "Diskusi diturunkan",
   "notificationTypeDiscussionReply": "Balasan diskusi",
   "notificationTypeDiscussionMention": "Sebutan diskusi",
+  "notificationTypeJinyeComment": "Balasan Jinye",
   "notificationTypePantunReply": "Balasan pantun",
   "notificationTypePantunMention": "Sebutan pantun",
   "notificationTypeCampaign": "Pengumuman",
@@ -1811,8 +1815,15 @@
   "exploreCategoryLayanan": "Layanan Publik",
   "exploreCategoryLayananSubtitle": "Nomor ambulans dan pemadam per kecamatan",
   "layananTitle": "Layanan Publik",
+  "layananFilterTitle": "Filter layanan",
+  "@layananFilterTitle": {
+    "description": "Judul drawer filter daftar layanan publik"
+  },
   "layananPickKecamatan": "Pilih kecamatan",
-  "layananEmpty": "Belum ada nomor di kecamatan ini",
+  "layananEmpty": "Belum ada nomor layanan",
+  "layananEmptyHint": "Tahu nomor ambulans atau pemadam di sekitarmu? Boleh kamu usulkan.",
+  "layananEmptyFilter": "Belum ada nomor yang cocok",
+  "layananEmptyFilterHint": "Coba ubah filter atau usulkan nomor baru ya.",
   "layananCategoryEmpty": "Belum ada nomor",
   "layananPropose": "Usulkan",
   "layananProposeEdit": "Usulkan perbaikan",
@@ -1822,39 +1833,62 @@
   "layananCheckedOn": "Dicek {date}",
   "@layananCheckedOn": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "layananLoadFailed": "Gagal memuat layanan",
   "layananNotFound": "Layanan tidak ditemukan",
   "layananPhone": "Nomor telepon",
-  "layananPhoneNote": "Keterangan nomor",
+  "layananPhoneNote": "Keterangan nomor (opsional)",
   "@layananPhoneNote": {
     "description": "Label field note per nomor (shift, pos, konteks)"
   },
   "layananPhoneNoteHint": "Misal shift malam atau pos A",
-  "layananAddPhone": "Tambah nomor",
+  "layananAddPhone": "Tambah nomor lainnya",
+  "@layananAddPhone": {
+    "description": "CTA menambah baris nomor telepon kedua dst."
+  },
   "layananRemovePhone": "Hapus nomor",
   "layananPhones": "Nomor telepon",
   "layananPhoneCount": "{count} nomor",
   "@layananPhoneCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "layananPickPhone": "Pilih nomor",
-  "layananLogoUrl": "Tautan logo",
-  "@layananLogoUrl": {
-    "description": "URL https logo organisasi layanan"
+  "layananLogo": "Logo (opsional)",
+  "@layananLogo": {
+    "description": "Label field logo organisasi (kamera/galeri)"
+  },
+  "layananPickCategory": "Pilih kategori",
+  "@layananPickCategory": {
+    "description": "Placeholder tile kategori sebelum user memilih"
+  },
+  "layananWaitUpload": "Tunggu upload logo selesai",
+  "@layananWaitUpload": {
+    "description": "Toast saat submit sementara logo masih diunggah"
+  },
+  "layananRemoveFailedLogo": "Hapus logo yang gagal diunggah dulu",
+  "@layananRemoveFailedLogo": {
+    "description": "Toast saat ada slot logo gagal upload"
+  },
+  "layananUploadImageFailed": "Gagal mengunggah logo",
+  "@layananUploadImageFailed": {
+    "description": "Error upload logo layanan ke CDN"
   },
   "layananKecamatan": "Kecamatan",
-  "layananAddress": "Alamat",
-  "layananNote": "Catatan",
+  "layananAddress": "Alamat (opsional)",
+  "layananNote": "Catatan (opsional)",
   "layananWhatsapp": "WhatsApp",
   "layananMap": "Buka peta",
   "layananName": "Nama instansi",
   "layananCategory": "Kategori",
-  "layananFormInvalid": "Nama, minimal satu nomor, dan kecamatan wajib diisi",
+  "layananFormInvalid": "Kategori, nama, minimal satu nomor, dan kecamatan wajib diisi",
   "layananSending": "Mengirim...",
   "layananSubmit": "Kirim usulan",
   "layananMyProposals": "Usulan saya",
@@ -2102,7 +2136,7 @@
   "placePhotosEmpty": "Belum ada foto untuk tempat ini.",
   "placePhotosUpload": "Unggah foto",
   "placePinPickerTitle": "Pilih titik",
-  "placePinPickerSearchHint": "Cari nama tempat",
+  "placePinPickerSearchHint": "Cari nama atau tempel tautan Maps",
   "placePinPickerTooShort": "Ketik minimal 3 huruf.",
   "placePinPickerSearching": "Mencari...",
   "placePinPickerNotFound": "Tidak ketemu di Kabupaten Sambas.",
@@ -2110,6 +2144,16 @@
   "placePinPickerRemove": "Hapus koordinat",
   "placePinPickerUsePoint": "Pakai titik ini",
   "placePinPickerFallbackLabel": "Titik di Sambas",
+  "placePinPickerOpenMaps": "Buka Google Maps",
+  "placePinPickerResolvingUrl": "Membaca tautan Maps...",
+  "placePinPickerFromMaps": "Titik dari Google Maps",
+  "placePinPickerMapsUrlInvalid": "Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.",
+  "placePinPickerMapsUrlNoCoords": "Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.",
+  "placePinPickerMapsUrlOutOfBounds": "Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.",
+  "placePinPickerMapsUrlFailed": "Gagal membaca tautan Maps. Coba lagi sebentar ya.",
+  "placePinPickerClearField": "Hapus teks",
+  "placePinPickerPaste": "Tempel",
+  "placePinPickerClipboardEmpty": "Clipboard kosong",
   "placeProposalsTitle": "Usulan wisata",
   "placeProposalsCancelTitle": "Batalkan usulan?",
   "placeProposalsCancelBody": "Usulan yang dibatalkan tidak dikirim ke peninjau.",
@@ -3278,12 +3322,53 @@
   "pantunTitle": "Pantun",
   "@pantunTitle": {},
   "pantunSend": "Kirim",
+  "pantunComposeModeText": "Tulis pantun",
+  "@pantunComposeModeText": {
+    "description": "Opsi mode compose pantun: 4 baris teks"
+  },
+  "pantunComposeModeVoice": "Rekam suara",
+  "@pantunComposeModeVoice": {
+    "description": "Opsi mode compose pantun: bacaan suara saja"
+  },
+  "pantunComposeTextHint": "Empat baris dengan pola rima.",
+  "@pantunComposeTextHint": {
+    "description": "Subtitle opsi mode teks di compose pantun"
+  },
+  "pantunComposeVoiceHint": "Bacaan 7,5 sampai 60 detik, tanpa menulis baris.",
+  "@pantunComposeVoiceHint": {
+    "description": "Petunjuk singkat di mode suara compose pantun"
+  },
+  "pantunRecordAudio": "Rekam",
+  "pantunRecordAudioTitle": "Rekam bacaan pantun",
+  "pantunRecordAudioSubtitle": "Minimal 7,5 detik, maksimal 60 detik.",
+  "pantunRecordAudioAttached": "Bacaan {seconds} detik siap dikirim",
+  "pantunRecordAudioRemove": "Batalkan",
+  "threadAudioPlay": "Putar rekaman",
+  "@threadAudioPlay": {
+    "description": "Semantics / label idle player audio thread"
+  },
+  "threadAudioPause": "Jeda rekaman",
+  "@threadAudioPause": {
+    "description": "Semantics tombol pause player audio thread"
+  },
+  "threadAudioRetry": "Gagal memutar, ketuk untuk coba lagi",
+  "@threadAudioRetry": {
+    "description": "Label error player audio thread"
+  },
+  "threadAudioPlaying": "Sedang diputar",
+  "@threadAudioPlaying": {
+    "description": "Status text saat audio thread playing"
+  },
+  "threadAudioIdle": "Ketuk untuk putar",
+  "@threadAudioIdle": {
+    "description": "Status text saat audio thread idle"
+  },
   "@pantunSend": {},
   "pantunSending": "Mengirim...",
   "@pantunSending": {
     "description": "Label busy tombol Kirim di compose pantun"
   },
-  "pantunWrite": "Tulis pantun",
+  "pantunWrite": "Buat pantun",
   "@pantunWrite": {},
   "pantunReply": "Balas pantun",
   "@pantunReply": {},
@@ -3790,8 +3875,14 @@
   "@achievementProgress": {
     "description": "Progres locked agregat di tile achievement",
     "placeholders": {
-      "current": { "type": "int", "format": "decimalPattern" },
-      "target": { "type": "int", "format": "decimalPattern" }
+      "current": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "target": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
     }
   },
   "achievementOwned": "Sudah kamu miliki",
@@ -3802,23 +3893,35 @@
   "@achievementDetailOwned": {
     "description": "Isi sheet detail achievement yang sudah dimiliki",
     "placeholders": {
-      "description": { "type": "String" }
+      "description": {
+        "type": "String"
+      }
     }
   },
   "achievementDetailLocked": "{description}\n\nBelum dibuka",
   "@achievementDetailLocked": {
     "description": "Isi sheet detail achievement yang belum dimiliki",
     "placeholders": {
-      "description": { "type": "String" }
+      "description": {
+        "type": "String"
+      }
     }
   },
   "achievementDetailLockedProgress": "{description}\n\nProgres: {current}/{target}",
   "@achievementDetailLockedProgress": {
     "description": "Isi sheet detail locked dengan progres agregat",
     "placeholders": {
-      "description": { "type": "String" },
-      "current": { "type": "int", "format": "decimalPattern" },
-      "target": { "type": "int", "format": "decimalPattern" }
+      "description": {
+        "type": "String"
+      },
+      "current": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "target": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
     }
   },
   "achievementOpenBadges": "Lencana terbuka",
@@ -3900,7 +4003,7 @@
   "@editProfileSaveFailed": {},
   "editProfileSaveSuccess": "Profil berhasil disimpan.",
   "@editProfileSaveSuccess": {},
-  "pantunListSubtitle": "Balas pantun 4 baris",
+  "pantunListSubtitle": "Berbalas pantun bersama warga sambas",
   "@pantunListSubtitle": {},
   "pantunComingSoon": "Segera",
   "@pantunComingSoon": {},
@@ -4088,118 +4191,222 @@
   "@devToolOtherUi": {
     "description": "Deskripsi grup inspector UI di overlay staging"
   },
-"levelingTitlePeninjau": "Peninjau",
-  "@levelingTitlePeninjau": { "description": "Gelar leveling L1" },
+  "levelingTitlePeninjau": "Peninjau",
+  "@levelingTitlePeninjau": {
+    "description": "Gelar leveling L1"
+  },
   "levelingTitlePencatat": "Pencatat",
-  "@levelingTitlePencatat": { "description": "Gelar leveling L2" },
+  "@levelingTitlePencatat": {
+    "description": "Gelar leveling L2"
+  },
   "levelingTitlePenyumbang": "Penyumbang",
-  "@levelingTitlePenyumbang": { "description": "Gelar leveling L3" },
+  "@levelingTitlePenyumbang": {
+    "description": "Gelar leveling L3"
+  },
   "levelingTitlePengumpul": "Pengumpul",
-  "@levelingTitlePengumpul": { "description": "Gelar leveling L4" },
+  "@levelingTitlePengumpul": {
+    "description": "Gelar leveling L4"
+  },
   "levelingTitlePenggiat": "Penggiat",
-  "@levelingTitlePenggiat": { "description": "Gelar leveling L5" },
+  "@levelingTitlePenggiat": {
+    "description": "Gelar leveling L5"
+  },
   "levelingTitlePenjagaJejak": "Penjaga Jejak",
-  "@levelingTitlePenjagaJejak": { "description": "Gelar leveling L6" },
+  "@levelingTitlePenjagaJejak": {
+    "description": "Gelar leveling L6"
+  },
   "levelingTitlePenghubung": "Penghubung",
-  "@levelingTitlePenghubung": { "description": "Gelar leveling L7" },
+  "@levelingTitlePenghubung": {
+    "description": "Gelar leveling L7"
+  },
   "levelingTitlePewaris": "Pewaris",
-  "@levelingTitlePewaris": { "description": "Gelar leveling L8" },
+  "@levelingTitlePewaris": {
+    "description": "Gelar leveling L8"
+  },
   "levelingTitlePenjagaWarisan": "Penjaga Warisan",
-  "@levelingTitlePenjagaWarisan": { "description": "Gelar leveling L9" },
+  "@levelingTitlePenjagaWarisan": {
+    "description": "Gelar leveling L9"
+  },
   "levelingTitleSesepuh": "Sesepuh",
-  "@levelingTitleSesepuh": { "description": "Gelar leveling L10" },
+  "@levelingTitleSesepuh": {
+    "description": "Gelar leveling L10"
+  },
   "levelingTitleTetua": "Tetua",
-  "@levelingTitleTetua": { "description": "Gelar leveling L11" },
+  "@levelingTitleTetua": {
+    "description": "Gelar leveling L11"
+  },
   "levelingTitlePengayom": "Pengayom",
-  "@levelingTitlePengayom": { "description": "Gelar leveling L12" },
+  "@levelingTitlePengayom": {
+    "description": "Gelar leveling L12"
+  },
   "levelingTitlePelestari": "Pelestari",
-  "@levelingTitlePelestari": { "description": "Gelar leveling L13" },
+  "@levelingTitlePelestari": {
+    "description": "Gelar leveling L13"
+  },
   "levelingTitleEmpu": "Empu",
-  "@levelingTitleEmpu": { "description": "Gelar leveling L14" },
+  "@levelingTitleEmpu": {
+    "description": "Gelar leveling L14"
+  },
   "levelingTitleLegenda": "Legenda",
-  "@levelingTitleLegenda": { "description": "Gelar leveling L15" },
+  "@levelingTitleLegenda": {
+    "description": "Gelar leveling L15"
+  },
   "levelingChipLabel": "Level {level} - {title}",
   "@levelingChipLabel": {
     "description": "Chip level di header profil",
     "placeholders": {
-      "level": { "type": "int", "format": "decimalPattern" },
-      "title": { "type": "String" }
+      "level": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "title": {
+        "type": "String"
+      }
     }
   },
   "levelingProgress": "{points} / {next}",
   "@levelingProgress": {
     "description": "Progress poin ke level berikutnya",
     "placeholders": {
-      "points": { "type": "int", "format": "decimalPattern" },
-      "next": { "type": "int", "format": "decimalPattern" }
+      "points": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "next": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
     }
   },
   "levelingMaxReached": "Level tertinggi sudah tercapai",
-  "@levelingMaxReached": { "description": "Progress saat Level 15" },
+  "@levelingMaxReached": {
+    "description": "Progress saat Level 15"
+  },
   "levelingSheetTitle": "Level {level} - {title}",
   "@levelingSheetTitle": {
     "description": "Judul bottom sheet leveling",
     "placeholders": {
-      "level": { "type": "int", "format": "decimalPattern" },
-      "title": { "type": "String" }
+      "level": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "title": {
+        "type": "String"
+      }
     }
   },
   "levelingSheetHint": "Poin dihitung dari karya yang sudah disetujui. Kalau karya dicabut, poin bisa turun.",
-  "@levelingSheetHint": { "description": "Penjelasan singkat leveling di sheet" },
+  "@levelingSheetHint": {
+    "description": "Penjelasan singkat leveling di sheet"
+  },
   "levelingStreakDays": "Streak {days} hari",
   "@levelingStreakDays": {
     "description": "Streak di sheet leveling",
-    "placeholders": { "days": { "type": "int", "format": "decimalPattern" } }
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
   },
   "levelingStreakBadge": "streak {days}",
   "@levelingStreakBadge": {
     "description": "Badge streak kecil di chip",
-    "placeholders": { "days": { "type": "int", "format": "decimalPattern" } }
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
   },
   "levelingStreakWindowHint": "Streak dihitung dari aktivitas 90 hari terakhir (WIB), dengan 1 hari grace.",
-  "@levelingStreakWindowHint": { "description": "Penjelasan window streak di sheet leveling" },
+  "@levelingStreakWindowHint": {
+    "description": "Penjelasan window streak di sheet leveling"
+  },
   "settingsGroupNotifications": "Notifikasi",
-  "@settingsGroupNotifications": { "description": "Grup preferensi notifikasi di settings" },
+  "@settingsGroupNotifications": {
+    "description": "Grup preferensi notifikasi di settings"
+  },
   "settingsNotifyStreak": "Pengingat streak",
-  "@settingsNotifyStreak": { "description": "Toggle notif pengingat streak" },
+  "@settingsNotifyStreak": {
+    "description": "Toggle notif pengingat streak"
+  },
   "settingsNotifyStreakHint": "Ingatkan kalau kamu lama tidak aktif.",
-  "@settingsNotifyStreakHint": { "description": "Subtitle toggle streak" },
+  "@settingsNotifyStreakHint": {
+    "description": "Subtitle toggle streak"
+  },
   "settingsNotifyLevelUp": "Naik level",
-  "@settingsNotifyLevelUp": { "description": "Toggle notif naik level" },
+  "@settingsNotifyLevelUp": {
+    "description": "Toggle notif naik level"
+  },
   "settingsNotifyLevelUpHint": "Kabari saat level kamu naik.",
-  "@settingsNotifyLevelUpHint": { "description": "Subtitle toggle naik level" },
+  "@settingsNotifyLevelUpHint": {
+    "description": "Subtitle toggle naik level"
+  },
   "settingsNotifySaved": "Preferensi notifikasi disimpan",
-  "@settingsNotifySaved": { "description": "Toast sukses simpan preferensi notif" },
+  "@settingsNotifySaved": {
+    "description": "Toast sukses simpan preferensi notif"
+  },
   "discussionEditTitle": "Sunting diskusi",
-  "@discussionEditTitle": { "description": "Judul sheet edit OP diskusi (#202)" },
+  "@discussionEditTitle": {
+    "description": "Judul sheet edit OP diskusi (#202)"
+  },
   "discussionEditSave": "Kirim tinjauan",
-  "@discussionEditSave": { "description": "Tombol simpan edit OP - masuk antrean ulang" },
+  "@discussionEditSave": {
+    "description": "Tombol simpan edit OP - masuk antrean ulang"
+  },
   "discussionEditEmpty": "Deskripsi tidak boleh kosong",
-  "@discussionEditEmpty": { "description": "Validasi body edit OP kosong" },
+  "@discussionEditEmpty": {
+    "description": "Validasi body edit OP kosong"
+  },
   "discussionEditFailed": "Gagal menyunting diskusi",
-  "@discussionEditFailed": { "description": "Error PATCH diskusi OP" },
+  "@discussionEditFailed": {
+    "description": "Error PATCH diskusi OP"
+  },
   "discussionEditIncomplete": "Data diskusi tidak lengkap",
-  "@discussionEditIncomplete": { "description": "Response edit OP tanpa data" },
+  "@discussionEditIncomplete": {
+    "description": "Response edit OP tanpa data"
+  },
   "discussionEditQueued": "Suntingan dikirim - menunggu tinjauan lagi",
-  "@discussionEditQueued": { "description": "Toast sukses edit OP re-queue pending" },
+  "@discussionEditQueued": {
+    "description": "Toast sukses edit OP re-queue pending"
+  },
   "discussionEditHistoryTitle": "Riwayat sunting diskusi",
-  "@discussionEditHistoryTitle": { "description": "Judul sheet riwayat edit OP" },
+  "@discussionEditHistoryTitle": {
+    "description": "Judul sheet riwayat edit OP"
+  },
   "discussionEditHistoryFailed": "Gagal memuat riwayat sunting diskusi",
-  "@discussionEditHistoryFailed": { "description": "Error GET edit-history OP" },
+  "@discussionEditHistoryFailed": {
+    "description": "Error GET edit-history OP"
+  },
   "discussionEditHistoryIncomplete": "Riwayat sunting tidak lengkap",
-  "@discussionEditHistoryIncomplete": { "description": "Response history OP rusak" },
+  "@discussionEditHistoryIncomplete": {
+    "description": "Response history OP rusak"
+  },
   "discussionWithdrawTitle": "Batalkan penayangan?",
-  "@discussionWithdrawTitle": { "description": "Judul konfirmasi cabut OP (#202)" },
+  "@discussionWithdrawTitle": {
+    "description": "Judul konfirmasi cabut OP (#202)"
+  },
   "discussionWithdrawBody": "Diskusi hilang dari feed publik. Balasan tetap tersimpan di riwayatmu.",
-  "@discussionWithdrawBody": { "description": "Isi konfirmasi cabut penayangan OP" },
+  "@discussionWithdrawBody": {
+    "description": "Isi konfirmasi cabut penayangan OP"
+  },
   "discussionWithdrawConfirm": "Batalkan penayangan",
-  "@discussionWithdrawConfirm": { "description": "Tombol destruktif cabut OP" },
+  "@discussionWithdrawConfirm": {
+    "description": "Tombol destruktif cabut OP"
+  },
   "discussionWithdrawFailed": "Gagal membatalkan penayangan",
-  "@discussionWithdrawFailed": { "description": "Error DELETE diskusi OP" },
+  "@discussionWithdrawFailed": {
+    "description": "Error DELETE diskusi OP"
+  },
   "discussionWithdrawn": "Penayangan dibatalkan",
-  "@discussionWithdrawn": { "description": "Toast sukses cabut OP" },
+  "@discussionWithdrawn": {
+    "description": "Toast sukses cabut OP"
+  },
   "discussionStatusWithdrawn": "Dibatalkan",
-  "@discussionStatusWithdrawn": { "description": "Label status deleted_by_author OP" },
+  "@discussionStatusWithdrawn": {
+    "description": "Label status deleted_by_author OP"
+  },
   "usahaActionSuggestEdit": "Usulkan perubahan",
   "usahaSuggestEditTitle": "Usulkan perubahan",
   "usahaSuggestEditIntro": "Ubah yang perlu saja. Data di bawah sudah terisi dari usaha yang tayang. Admin meninjau sebelum diterapkan.",
@@ -4209,99 +4416,78 @@
   "usahaSuggestEditSentBody": "Admin akan meninjau dulu. Statusnya bisa kamu pantau di Usulan saya.",
   "usahaSuggestEditFailed": "Usulan gagal",
   "usahaSuggestEditLoginBody": "Usulan perubahan butuh akun, supaya admin bisa hubungi kamu.",
-  "notificationTypeJinyeComment": "Balasan Jinye",
-  "threadAudioPlay": "Putar rekaman",
-  "@threadAudioPlay": {
-    "description": "Semantics / label idle player audio thread"
-  },
-  "threadAudioPause": "Jeda rekaman",
-  "@threadAudioPause": {
-    "description": "Semantics tombol pause player audio thread"
-  },
-  "threadAudioRetry": "Gagal memutar, ketuk untuk coba lagi",
-  "@threadAudioRetry": {
-    "description": "Label error player audio thread"
-  },
-  "threadAudioPlaying": "Sedang diputar",
-  "@threadAudioPlaying": {
-    "description": "Status text saat audio thread playing"
-  },
-  "threadAudioIdle": "Ketuk untuk putar",
-  "@threadAudioIdle": {
-    "description": "Status text saat audio thread idle"
-  },
+  "jinyeCreateTitle": "Buat Jinye",
+  "jinyeCreateBodyLabel": "Status kamu",
+  "jinyeCreateBodyHint": "Tulis sampai 500 karakter, atau rekam suara / tambah foto.",
+  "jinyeCreateSubmit": "Kirim",
+  "jinyeCreateSubmitting": "Mengirim…",
+  "jinyeCreateSuccess": "Jinye kamu sudah tayang",
+  "jinyeCreateFailed": "Gagal mengirim Jinye",
+  "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.",
+  "jinyeLoginFirst": "Masuk dulu untuk membuat Jinye",
+  "jinyeResponseIncomplete": "Data Jinye tidak lengkap",
+  "jinyeDetailTitle": "Jinye",
+  "jinyeDetailLoadFailed": "Gagal memuat Jinye",
+  "jinyeProfilePreviewSemantics": "Jinye, ketuk untuk baca lengkap",
+  "jinyePreviewVoiceOnly": "Rekaman suara",
+  "jinyePreviewPhotoOnly": "Foto",
+  "jinyePreviewEmpty": "Jinye",
+  "jinyeSheetReply": "Balas",
+  "jinyeSheetViewDiscussion": "Lihat diskusi",
+  "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
+  "jinyeComposeEntryTooltip": "Buat Jinye",
+  "jinyeCreateAudioLabel": "Rekaman suara (opsional)",
+  "jinyeCreateRecordCta": "Rekam suara",
+  "jinyeCreateRerecord": "Rekam ulang",
+  "jinyeCreateAudioReady": "Rekaman siap · {seconds} dtk",
+  "jinyeCreatePhotoLabel": "Foto (opsional, maks 4)",
+  "jinyeCreatePhotoLoginHint": "Masuk dulu untuk menambah foto",
+  "jinyeRecordSheetTitle": "Rekam Jinye",
+  "jinyeRecordSheetSubtitle": "Maksimal 60 detik. Caption teks bisa ditambahkan di form.",
+  "jinyeRecordSheetUse": "Pakai rekaman",
+  "jinyeWaitUpload": "Tunggu foto selesai diunggah dulu ya",
+  "jinyeComposeNeedContent": "Isi teks, rekam suara, atau tambah foto dulu ya",
   "jinyeAllImagesFailed": "Semua foto gagal diunggah",
   "jinyeAllImagesFailedBody": "Kirim tanpa foto, atau coba unggah ulang.",
-  "jinyeCommentFailed": "Gagal mengirim balasan",
+  "jinyeSendWithoutImages": "Kirim tanpa foto",
+  "jinyeStorageUnavailable": "Penyimpanan foto sedang tidak tersedia",
+  "jinyeImageUploadFailed": "Gagal mengunggah foto",
+  "jinyeSentAudioFailed": "Jinye terkirim, tapi rekaman suara gagal dilampirkan",
+  "jinyePhotosPendingReview": "Foto masih dicek sebelum tayang publik",
+  "jinyeCommentsTitle": "Diskusi",
+  "jinyeCommentsLoadFailed": "Gagal memuat balasan",
   "jinyeCommentHint": "Tulis balasan…",
   "jinyeCommentSend": "Kirim",
   "jinyeCommentSending": "Mengirim…",
   "jinyeCommentSent": "Balasan terkirim",
-  "jinyeCommentsLoadFailed": "Gagal memuat balasan",
-  "jinyeCommentsTitle": "Diskusi",
-  "jinyeComposeEntryTooltip": "Buat Jinye",
-  "jinyeComposeNeedContent": "Isi teks, rekam suara, atau tambah foto dulu ya",
-  "jinyeCreateAudioLabel": "Rekaman suara (opsional)",
-  "jinyeCreateAudioReady": "Rekaman siap · {seconds} dtk",
-  "jinyeCreateBodyHint": "Tulis sampai 500 karakter, atau rekam suara / tambah foto.",
-  "jinyeCreateBodyLabel": "Status kamu",
-  "jinyeCreateFailed": "Gagal mengirim Jinye",
-  "jinyeCreatePhotoLabel": "Foto (opsional, maks 4)",
-  "jinyeCreatePhotoLoginHint": "Masuk dulu untuk menambah foto",
-  "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.",
-  "jinyeCreateRecordCta": "Rekam suara",
-  "jinyeCreateRerecord": "Rekam ulang",
-  "jinyeCreateSubmit": "Kirim",
-  "jinyeCreateSubmitting": "Mengirim…",
-  "jinyeCreateSuccess": "Jinye kamu sudah tayang",
-  "jinyeCreateTitle": "Buat Jinye",
-  "jinyeDetailLoadFailed": "Gagal memuat Jinye",
-  "jinyeDetailTitle": "Jinye",
-  "jinyeDiscussionEmpty": "Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.",
-  "jinyeImageUploadFailed": "Gagal mengunggah foto",
-  "jinyeLoginFirst": "Masuk dulu untuk membuat Jinye",
-  "jinyePhotosPendingReview": "Foto masih dicek sebelum tayang publik",
-  "jinyePreviewEmpty": "Jinye",
-  "jinyePreviewPhotoOnly": "Foto",
-  "jinyePreviewVoiceOnly": "Rekaman suara",
-  "jinyeProfilePreviewSemantics": "Jinye, ketuk untuk baca lengkap",
-  "jinyeRecordSheetSubtitle": "Maksimal 60 detik. Caption teks bisa ditambahkan di form.",
-  "jinyeRecordSheetTitle": "Rekam Jinye",
-  "jinyeRecordSheetUse": "Pakai rekaman",
+  "jinyeCommentFailed": "Gagal mengirim balasan",
   "jinyeReplyingTo": "Membalas {name}",
-  "jinyeReportFailed": "Gagal mengirim laporan",
-  "jinyeResponseIncomplete": "Data Jinye tidak lengkap",
-  "jinyeSendWithoutImages": "Kirim tanpa foto",
-  "jinyeSentAudioFailed": "Jinye terkirim, tapi rekaman suara gagal dilampirkan",
-  "jinyeSheetReply": "Balas",
-  "jinyeSheetViewDiscussion": "Lihat diskusi",
-  "jinyeStorageUnavailable": "Penyimpanan foto sedang tidak tersedia",
-  "jinyeWaitUpload": "Tunggu foto selesai diunggah dulu ya",
   "reportJinyeAction": "Laporke",
+  "reportJinyeTitle": "Laporke Jinye",
+  "reportJinyeSubtitle": "Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.",
+  "reportJinyeInappropriate": "Tidak pantas",
+  "reportJinyeSexual": "Konten seksual",
   "reportJinyeHarassment": "Pelecehan atau perundungan",
   "reportJinyeHateSpeech": "Ujaran kebencian",
-  "reportJinyeInappropriate": "Tidak pantas",
-  "reportJinyeLoginFirst": "Masuk dulu ya untuk melaporkan Jinye",
+  "reportJinyeSpam": "Spam",
   "reportJinyeOther": "Lainnya",
   "reportJinyeSent": "Terima kasih, laporanmu sudah kami terima",
-  "reportJinyeSexual": "Konten seksual",
-  "reportJinyeSpam": "Spam",
-  "reportJinyeSubtitle": "Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.",
-  "reportJinyeTitle": "Laporke Jinye",
-  "jinyeArchiveAction": "Arsipkan",
-  "jinyeArchiveSuccess": "Jinye diarsipkan",
+  "reportJinyeLoginFirst": "Masuk dulu ya untuk melaporkan Jinye",
+  "jinyeReportFailed": "Gagal mengirim laporan",
+  "jinyeArchivedTitle": "Arsip Jinye",
   "jinyeArchivedEmpty": "Belum ada Jinye di arsip",
   "jinyeArchivedLoadFailed": "Gagal memuat arsip Jinye",
-  "jinyeArchivedTitle": "Arsip Jinye",
-  "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
   "jinyePinAction": "Sematkan di profil",
-  "jinyePinSuccess": "Jinye disematkan di profil",
-  "jinyeUnarchiveAction": "Pulihkan",
-  "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
-  "jinyeUnarchiveSuccess": "Jinye dipulihkan",
   "jinyeUnpinAction": "Lepas dari profil",
+  "jinyeArchiveAction": "Arsipkan",
+  "jinyeUnarchiveAction": "Pulihkan",
+  "jinyePinSuccess": "Jinye disematkan di profil",
   "jinyeUnpinSuccess": "Pin Jinye dilepas",
-"jinyeLemmaLinkAction": "Tautkan lemma",
+  "jinyeArchiveSuccess": "Jinye diarsipkan",
+  "jinyeUnarchiveSuccess": "Jinye dipulihkan",
+  "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
+  "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
+  "jinyeLemmaLinkAction": "Tautkan lemma",
   "jinyeLemmaSelectSpanTitle": "Pilih teks",
   "jinyeLemmaSelectSpanHint": "Ketuk kata. Ketuk lagi di kata lain untuk rentang.",
   "jinyeLemmaSelectSpanEmpty": "Tidak ada teks yang bisa ditautkan",
@@ -4334,5 +4520,25 @@
   "jinyeTranslateHint": "Tulis arti dalam bahasa Indonesia…",
   "jinyeTranslateSubmit": "Kirim usulan",
   "jinyeTranslateSuccess": "Usulan terjemahan terkirim",
-  "jinyeTranslateFailed": "Gagal mengusulkan terjemahan"
+  "jinyeTranslateFailed": "Gagal mengusulkan terjemahan",
+  "jinyeEditAction": "Sunting",
+  "jinyeEditTitle": "Sunting Jinye",
+  "jinyeEditSave": "Simpan",
+  "jinyeEditSuccess": "Jinye diperbarui",
+  "jinyeEditFailed": "Gagal menyunting Jinye",
+  "jinyeEditHistoryTitle": "Riwayat sunting",
+  "jinyeEditHistoryFailed": "Gagal memuat riwayat sunting",
+  "jinyeRepostAction": "Bagikan ulang",
+  "jinyeUnrepostAction": "Batalkan bagikan ulang",
+  "jinyeRepostSuccess": "Jinye dibagikan ulang",
+  "jinyeUnrepostSuccess": "Bagikan ulang dibatalkan",
+  "jinyeRepostFailed": "Gagal membagikan ulang",
+  "jinyeQuoteAction": "Kutip",
+  "jinyeQuoteTitle": "Kutip Jinye",
+  "jinyeQuoteHint": "Tulis kutipanmu…",
+  "jinyeQuoteSubmit": "Kirim kutipan",
+  "jinyeQuoteSuccess": "Kutipan terkirim",
+  "jinyeQuoteFailed": "Gagal mengutip Jinye",
+  "jinyeRepostLabel": "Membagikan ulang",
+  "jinyeOpenOriginal": "Buka Jinye asli"
 }

@@ -15,6 +15,7 @@ import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
+import '../../../../shared/widgets/thread_edit_sheets.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../vote/domain/entities/vote_target.dart';
@@ -96,16 +97,17 @@ class JinyeDetailPage extends HookConsumerWidget {
             FHeaderAction.back(onPress: () => context.pop()),
           ],
           suffixes: [
-            if (async.hasValue &&
-                isAuth &&
-                auth?.userId == async.requireValue.userId)
+            if (async.hasValue && isAuth)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.ellipsisVertical),
-                onPress: () => _showOwnerActions(
-                  context,
-                  ref,
-                  item: async.requireValue,
-                ),
+                onPress: () {
+                  final item = async.requireValue;
+                  if (auth?.userId == item.userId) {
+                    _showOwnerActions(context, ref, item: item);
+                  } else {
+                    _showVisitorActions(context, ref, item: item);
+                  }
+                },
               ),
           ],
         ),
@@ -255,7 +257,30 @@ class JinyeDetailPage extends HookConsumerWidget {
                   ],
                 ),
                 const Gap(16),
-                if (item.body.trim().isNotEmpty) ...[
+                if (item.isPlainRepost) ...[
+                  Text(
+                    l10n.jinyeRepostLabel,
+                    style: theme.typography.body.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
+                  ),
+                  const Gap(8),
+                  if (item.repostOfId != null)
+                    FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () => context.push('/jinye/${item.repostOfId}'),
+                      child: Text(l10n.jinyeOpenOriginal),
+                    ),
+                ] else if (item.isQuote) ...[
+                  Text(item.quoteBody!, style: theme.typography.body.lg),
+                  const Gap(8),
+                  if (item.repostOfId != null)
+                    FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () => context.push('/jinye/${item.repostOfId}'),
+                      child: Text(l10n.jinyeOpenOriginal),
+                    ),
+                ] else if (item.body.trim().isNotEmpty) ...[
                   JinyeLemmaBody(
                     body: item.body,
                     links: item.lemmaLinks,
@@ -270,6 +295,19 @@ class JinyeDetailPage extends HookConsumerWidget {
                       isVerifier: _isVerifierRole(auth?.role),
                     ),
                   ),
+                  if (item.isEdited) ...[
+                    const Gap(4),
+                    GestureDetector(
+                      onTap: () => _showJinyeEditHistory(context, ref, item),
+                      child: Text(
+                        l10n.commentEdited,
+                        style: theme.typography.body.sm.copyWith(
+                          color: theme.colors.mutedForeground,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                   if (isAuth &&
                       auth?.userId == item.userId &&
                       item.status == 'published') ...[
@@ -725,6 +763,16 @@ Future<void> _showOwnerActions(
           FTileGroup(
             children: [
               if (item.status == 'published') ...[
+                if (!item.isPlainRepost)
+                  FTile(
+                    title: Text(l10n.jinyeEditAction),
+                    onPress: () => Navigator.pop(context, 'edit'),
+                  ),
+                if (item.isEdited)
+                  FTile(
+                    title: Text(l10n.jinyeEditHistoryTitle),
+                    onPress: () => Navigator.pop(context, 'history'),
+                  ),
                 FTile(
                   title: Text(
                     item.isPinned
@@ -774,6 +822,14 @@ Future<void> _showOwnerActions(
   }
   if (action == 'translate') {
     await _translateJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'edit') {
+    await _editJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'history') {
+    await _showJinyeEditHistory(context, ref, item);
     return;
   }
 
@@ -826,6 +882,259 @@ Future<void> _showOwnerActions(
   } catch (_) {
     if (!context.mounted) return;
     await showAppErrorSheet(context, message: l10n.jinyeOwnerActionFailed);
+  }
+}
+
+Future<void> _showVisitorActions(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final canShare = item.status == 'published' && item.repostOfId == null;
+  final action = await showModalBottomSheet<String>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (_) => Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FTileGroup(
+            children: [
+              if (canShare) ...[
+                FTile(
+                  title: Text(l10n.jinyeRepostAction),
+                  onPress: () => Navigator.pop(context, 'repost'),
+                ),
+                FTile(
+                  title: Text(l10n.jinyeQuoteAction),
+                  onPress: () => Navigator.pop(context, 'quote'),
+                ),
+              ],
+              FTile(
+                title: Text(l10n.commonCancel),
+                onPress: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+  if (action == null || !context.mounted) return;
+  if (action == 'repost') {
+    await _repostJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'quote') {
+    await _quoteJinyeFromUi(context, ref, item: item);
+  }
+}
+
+Future<void> _editJinyeFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final repo = ref.read(jinyeRepositoryProvider);
+  final saved = await showThreadTextEditSheet(
+    context,
+    title: l10n.jinyeEditTitle,
+    initialBody: item.body,
+    saveLabel: l10n.jinyeEditSave,
+    onSave: (body) async {
+      try {
+        await repo.updateBody(id: item.id, body: body);
+        return null;
+      } on DioException catch (e) {
+        final msg = e.response?.data is Map
+            ? (e.response!.data as Map)['message']
+            : null;
+        return msg is String && msg.isNotEmpty ? msg : l10n.jinyeEditFailed;
+      } catch (_) {
+        return l10n.jinyeEditFailed;
+      }
+    },
+  );
+  if (saved == null || !context.mounted) return;
+  ref.invalidate(jinyeDetailProvider(item.id));
+  showFToast(context: context, title: Text(l10n.jinyeEditSuccess));
+}
+
+Future<void> _showJinyeEditHistory(
+  BuildContext context,
+  WidgetRef ref,
+  JinyeItem item,
+) async {
+  final l10n = AppLocalizations.of(context);
+  try {
+    final history =
+        await ref.read(jinyeRepositoryProvider).editHistory(item.id);
+    if (!context.mounted) return;
+    await showThreadTextEditHistorySheet(
+      context,
+      title: l10n.jinyeEditHistoryTitle,
+      history: ThreadTextEditHistory(
+        currentBody: history.currentBody,
+        currentUpdatedAt: history.currentUpdatedAt,
+        revisions: [
+          for (final r in history.revisions)
+            ThreadTextEditRevision(body: r.body, createdAt: r.createdAt),
+        ],
+      ),
+    );
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeEditHistoryFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeEditHistoryFailed);
+  }
+}
+
+Future<void> _repostJinyeFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  try {
+    await ref.read(jinyeRepositoryProvider).repost(item.id);
+    if (!context.mounted) return;
+    ref.invalidate(jinyeDetailProvider(item.id));
+    showFToast(context: context, title: Text(l10n.jinyeRepostSuccess));
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeRepostFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeRepostFailed);
+  }
+}
+
+Future<void> _quoteJinyeFromUi(
+  BuildContext context,
+  WidgetRef ref, {
+  required JinyeItem item,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final caption = await showModalBottomSheet<String>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (_) => const _JinyeQuoteSheet(),
+  );
+  if (caption == null || !context.mounted) return;
+  try {
+    final created = await ref.read(jinyeRepositoryProvider).quote(
+          id: item.id,
+          quoteBody: caption,
+        );
+    if (!context.mounted) return;
+    showFToast(context: context, title: Text(l10n.jinyeQuoteSuccess));
+    context.push('/jinye/${created.id}');
+  } on DioException catch (e) {
+    if (!context.mounted) return;
+    final msg = e.response?.data is Map
+        ? (e.response!.data as Map)['message']
+        : null;
+    await showAppErrorSheet(
+      context,
+      message: msg is String && msg.isNotEmpty
+          ? msg
+          : l10n.jinyeQuoteFailed,
+    );
+  } catch (_) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: l10n.jinyeQuoteFailed);
+  }
+}
+
+class _JinyeQuoteSheet extends StatefulWidget {
+  const _JinyeQuoteSheet();
+
+  @override
+  State<_JinyeQuoteSheet> createState() => _JinyeQuoteSheetState();
+}
+
+class _JinyeQuoteSheetState extends State<_JinyeQuoteSheet> {
+  final _ctrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final canSubmit = _ctrl.text.trim().isNotEmpty;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              l10n.jinyeQuoteTitle,
+              style: theme.typography.body.lg.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: FTextField(
+              control: FTextFieldControl.managed(
+                controller: _ctrl,
+                onChange: (_) => setState(() {}),
+              ),
+              hint: l10n.jinyeQuoteHint,
+              maxLines: 4,
+              maxLength: 500,
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              child: FButton(
+                onPress: canSubmit
+                    ? () => Navigator.pop(context, _ctrl.text.trim())
+                    : null,
+                child: Text(l10n.jinyeQuoteSubmit),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

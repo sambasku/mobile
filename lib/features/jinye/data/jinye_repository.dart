@@ -463,4 +463,70 @@ class JinyeRepository {
       );
     }
   }
+
+  Future<JinyeItem> updateBody({
+    required String id,
+    required String body,
+  }) async {
+    final res = await _dio.patch<Map<String, dynamic>>(
+      '$_base/$id',
+      data: {'body': body},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
+
+  Future<JinyeEditHistory> editHistory(String id) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      '$_base/$id/edit-history',
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeEditHistory.fromJson(data);
+  }
+
+  Future<JinyeItem> repost(String id) async {
+    final res = await _dio.post<Map<String, dynamic>>('$_base/$id/repost');
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
+
+  Future<void> unrepost(String id) async {
+    await _dio.delete<Map<String, dynamic>>('$_base/$id/repost');
+  }
+
+  Future<JinyeItem> quote({
+    required String id,
+    required String quoteBody,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$id/quote',
+      data: {'quote_body': quoteBody.trim()},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return JinyeItem.fromJson(data);
+  }
 }

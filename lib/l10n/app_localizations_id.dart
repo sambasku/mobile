@@ -541,6 +541,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get reportPantunSpam => 'Spam';
 
   @override
+  String get reportPantunNotAPantun => 'Bukan pantun / rekaman acak';
+
+  @override
   String get reportPantunOther => 'Lainnya';
 
   @override
@@ -5014,6 +5017,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get notificationTypeDiscussionMention => 'Sebutan diskusi';
 
   @override
+  String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
   String get notificationTypePantunReply => 'Balasan pantun';
 
   @override
@@ -5935,10 +5941,24 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananTitle => 'Layanan Publik';
 
   @override
+  String get layananFilterTitle => 'Filter layanan';
+
+  @override
   String get layananPickKecamatan => 'Pilih kecamatan';
 
   @override
-  String get layananEmpty => 'Belum ada nomor di kecamatan ini';
+  String get layananEmpty => 'Belum ada nomor layanan';
+
+  @override
+  String get layananEmptyHint =>
+      'Tahu nomor ambulans atau pemadam di sekitarmu? Boleh kamu usulkan.';
+
+  @override
+  String get layananEmptyFilter => 'Belum ada nomor yang cocok';
+
+  @override
+  String get layananEmptyFilterHint =>
+      'Coba ubah filter atau usulkan nomor baru ya.';
 
   @override
   String get layananCategoryEmpty => 'Belum ada nomor';
@@ -5973,13 +5993,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananPhone => 'Nomor telepon';
 
   @override
-  String get layananPhoneNote => 'Keterangan nomor';
+  String get layananPhoneNote => 'Keterangan nomor (opsional)';
 
   @override
   String get layananPhoneNoteHint => 'Misal shift malam atau pos A';
 
   @override
-  String get layananAddPhone => 'Tambah nomor';
+  String get layananAddPhone => 'Tambah nomor lainnya';
 
   @override
   String get layananRemovePhone => 'Hapus nomor';
@@ -5996,16 +6016,28 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananPickPhone => 'Pilih nomor';
 
   @override
-  String get layananLogoUrl => 'Tautan logo';
+  String get layananLogo => 'Logo (opsional)';
+
+  @override
+  String get layananPickCategory => 'Pilih kategori';
+
+  @override
+  String get layananWaitUpload => 'Tunggu upload logo selesai';
+
+  @override
+  String get layananRemoveFailedLogo => 'Hapus logo yang gagal diunggah dulu';
+
+  @override
+  String get layananUploadImageFailed => 'Gagal mengunggah logo';
 
   @override
   String get layananKecamatan => 'Kecamatan';
 
   @override
-  String get layananAddress => 'Alamat';
+  String get layananAddress => 'Alamat (opsional)';
 
   @override
-  String get layananNote => 'Catatan';
+  String get layananNote => 'Catatan (opsional)';
 
   @override
   String get layananWhatsapp => 'WhatsApp';
@@ -6021,7 +6053,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get layananFormInvalid =>
-      'Nama, minimal satu nomor, dan kecamatan wajib diisi';
+      'Kategori, nama, minimal satu nomor, dan kecamatan wajib diisi';
 
   @override
   String get layananSending => 'Mengirim...';
@@ -6814,7 +6846,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get placePinPickerTitle => 'Pilih titik';
 
   @override
-  String get placePinPickerSearchHint => 'Cari nama tempat';
+  String get placePinPickerSearchHint => 'Cari nama atau tempel tautan Maps';
 
   @override
   String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
@@ -6837,6 +6869,40 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get placePinPickerFallbackLabel => 'Titik di Sambas';
+
+  @override
+  String get placePinPickerOpenMaps => 'Buka Google Maps';
+
+  @override
+  String get placePinPickerResolvingUrl => 'Membaca tautan Maps...';
+
+  @override
+  String get placePinPickerFromMaps => 'Titik dari Google Maps';
+
+  @override
+  String get placePinPickerMapsUrlInvalid =>
+      'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.';
+
+  @override
+  String get placePinPickerMapsUrlNoCoords =>
+      'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.';
+
+  @override
+  String get placePinPickerMapsUrlOutOfBounds =>
+      'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.';
+
+  @override
+  String get placePinPickerMapsUrlFailed =>
+      'Gagal membaca tautan Maps. Coba lagi sebentar ya.';
+
+  @override
+  String get placePinPickerClearField => 'Hapus teks';
+
+  @override
+  String get placePinPickerPaste => 'Tempel';
+
+  @override
+  String get placePinPickerClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get placeProposalsTitle => 'Usulan wisata';
@@ -8748,7 +8814,53 @@ class AppLocalizationsId extends AppLocalizations {
   String get pantunSending => 'Mengirim...';
 
   @override
-  String get pantunWrite => 'Tulis pantun';
+  String get pantunComposeModeText => 'Tulis pantun';
+
+  @override
+  String get pantunComposeModeVoice => 'Rekam suara';
+
+  @override
+  String get pantunComposeTextHint => 'Empat baris dengan pola rima.';
+
+  @override
+  String get pantunComposeVoiceHint =>
+      'Bacaan 7,5 sampai 60 detik, tanpa menulis baris.';
+
+  @override
+  String get pantunRecordAudio => 'Rekam';
+
+  @override
+  String get pantunRecordAudioTitle => 'Rekam bacaan pantun';
+
+  @override
+  String get pantunRecordAudioSubtitle =>
+      'Minimal 7,5 detik, maksimal 60 detik.';
+
+  @override
+  String pantunRecordAudioAttached(int seconds) {
+    return 'Bacaan $seconds detik siap dikirim';
+  }
+
+  @override
+  String get pantunRecordAudioRemove => 'Batalkan';
+
+  @override
+  String get threadAudioPlay => 'Putar rekaman';
+
+  @override
+  String get threadAudioPause => 'Jeda rekaman';
+
+  @override
+  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+
+  @override
+  String get threadAudioPlaying => 'Sedang diputar';
+
+  @override
+  String get threadAudioIdle => 'Ketuk untuk putar';
+
+  @override
+  String get pantunWrite => 'Buat pantun';
 
   @override
   String get pantunReply => 'Balas pantun';
@@ -9544,7 +9656,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get editProfileSaveSuccess => 'Profil berhasil disimpan.';
 
   @override
-  String get pantunListSubtitle => 'Balas pantun 4 baris';
+  String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
   String get pantunComingSoon => 'Segera';
@@ -9970,22 +10082,104 @@ class AppLocalizationsId extends AppLocalizations {
   String get discussionStatusWithdrawn => 'Dibatalkan';
 
   @override
-  String get notificationTypeJinyeComment => 'Balasan Jinye';
+  String get jinyeCreateTitle => 'Buat Jinye';
 
   @override
-  String get threadAudioPlay => 'Putar rekaman';
+  String get jinyeCreateBodyLabel => 'Status kamu';
 
   @override
-  String get threadAudioPause => 'Jeda rekaman';
+  String get jinyeCreateBodyHint =>
+      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
 
   @override
-  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+  String get jinyeCreateSubmit => 'Kirim';
 
   @override
-  String get threadAudioPlaying => 'Sedang diputar';
+  String get jinyeCreateSubmitting => 'Mengirim…';
 
   @override
-  String get threadAudioIdle => 'Ketuk untuk putar';
+  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
+
+  @override
+  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
+
+  @override
+  String get jinyeCreateRateLimited =>
+      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
+
+  @override
+  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
+
+  @override
+  String get jinyeDetailTitle => 'Jinye';
+
+  @override
+  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
+
+  @override
+  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
+
+  @override
+  String get jinyePreviewVoiceOnly => 'Rekaman suara';
+
+  @override
+  String get jinyePreviewPhotoOnly => 'Foto';
+
+  @override
+  String get jinyePreviewEmpty => 'Jinye';
+
+  @override
+  String get jinyeSheetReply => 'Balas';
+
+  @override
+  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeDiscussionEmpty =>
+      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
+
+  @override
+  String get jinyeComposeEntryTooltip => 'Buat Jinye';
+
+  @override
+  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
+
+  @override
+  String get jinyeCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get jinyeCreateRerecord => 'Rekam ulang';
+
+  @override
+  String jinyeCreateAudioReady(int seconds) {
+    return 'Rekaman siap · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
+
+  @override
+  String get jinyeRecordSheetTitle => 'Rekam Jinye';
+
+  @override
+  String get jinyeRecordSheetSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
+
+  @override
+  String get jinyeRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
+
+  @override
+  String get jinyeComposeNeedContent =>
+      'Isi teks, rekam suara, atau tambah foto dulu ya';
 
   @override
   String get jinyeAllImagesFailed => 'Semua foto gagal diunggah';
@@ -9995,7 +10189,28 @@ class AppLocalizationsId extends AppLocalizations {
       'Kirim tanpa foto, atau coba unggah ulang.';
 
   @override
-  String get jinyeCommentFailed => 'Gagal mengirim balasan';
+  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
+
+  @override
+  String get jinyeStorageUnavailable =>
+      'Penyimpanan foto sedang tidak tersedia';
+
+  @override
+  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get jinyeSentAudioFailed =>
+      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
+
+  @override
+  String get jinyePhotosPendingReview =>
+      'Foto masih dicek sebelum tayang publik';
+
+  @override
+  String get jinyeCommentsTitle => 'Diskusi';
+
+  @override
+  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
 
   @override
   String get jinyeCommentHint => 'Tulis balasan…';
@@ -10010,105 +10225,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeCommentSent => 'Balasan terkirim';
 
   @override
-  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
-
-  @override
-  String get jinyeCommentsTitle => 'Diskusi';
-
-  @override
-  String get jinyeComposeEntryTooltip => 'Buat Jinye';
-
-  @override
-  String get jinyeComposeNeedContent =>
-      'Isi teks, rekam suara, atau tambah foto dulu ya';
-
-  @override
-  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
-
-  @override
-  String jinyeCreateAudioReady(int seconds) {
-    return 'Rekaman siap · $seconds dtk';
-  }
-
-  @override
-  String get jinyeCreateBodyHint =>
-      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
-
-  @override
-  String get jinyeCreateBodyLabel => 'Status kamu';
-
-  @override
-  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
-
-  @override
-  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
-
-  @override
-  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
-
-  @override
-  String get jinyeCreateRateLimited =>
-      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
-
-  @override
-  String get jinyeCreateRecordCta => 'Rekam suara';
-
-  @override
-  String get jinyeCreateRerecord => 'Rekam ulang';
-
-  @override
-  String get jinyeCreateSubmit => 'Kirim';
-
-  @override
-  String get jinyeCreateSubmitting => 'Mengirim…';
-
-  @override
-  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
-
-  @override
-  String get jinyeCreateTitle => 'Buat Jinye';
-
-  @override
-  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
-
-  @override
-  String get jinyeDetailTitle => 'Jinye';
-
-  @override
-  String get jinyeDiscussionEmpty =>
-      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
-
-  @override
-  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
-
-  @override
-  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
-
-  @override
-  String get jinyePhotosPendingReview =>
-      'Foto masih dicek sebelum tayang publik';
-
-  @override
-  String get jinyePreviewEmpty => 'Jinye';
-
-  @override
-  String get jinyePreviewPhotoOnly => 'Foto';
-
-  @override
-  String get jinyePreviewVoiceOnly => 'Rekaman suara';
-
-  @override
-  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
-
-  @override
-  String get jinyeRecordSheetSubtitle =>
-      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
-
-  @override
-  String get jinyeRecordSheetTitle => 'Rekam Jinye';
-
-  @override
-  String get jinyeRecordSheetUse => 'Pakai rekaman';
+  String get jinyeCommentFailed => 'Gagal mengirim balasan';
 
   @override
   String jinyeReplyingTo(String name) {
@@ -10116,33 +10233,20 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get jinyeReportFailed => 'Gagal mengirim laporan';
-
-  @override
-  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
-
-  @override
-  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
-
-  @override
-  String get jinyeSentAudioFailed =>
-      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
-
-  @override
-  String get jinyeSheetReply => 'Balas';
-
-  @override
-  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
-
-  @override
-  String get jinyeStorageUnavailable =>
-      'Penyimpanan foto sedang tidak tersedia';
-
-  @override
-  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
-
-  @override
   String get reportJinyeAction => 'Laporkan';
+
+  @override
+  String get reportJinyeTitle => 'Laporkan Jinye';
+
+  @override
+  String get reportJinyeSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportJinyeInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportJinyeSexual => 'Konten seksual';
 
   @override
   String get reportJinyeHarassment => 'Pelecehan atau perundungan';
@@ -10151,10 +10255,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get reportJinyeHateSpeech => 'Ujaran kebencian';
 
   @override
-  String get reportJinyeInappropriate => 'Tidak pantas';
-
-  @override
-  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
+  String get reportJinyeSpam => 'Spam';
 
   @override
   String get reportJinyeOther => 'Lainnya';
@@ -10163,23 +10264,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get reportJinyeSent => 'Terima kasih, laporanmu sudah kami terima';
 
   @override
-  String get reportJinyeSexual => 'Konten seksual';
+  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
 
   @override
-  String get reportJinyeSpam => 'Spam';
+  String get jinyeReportFailed => 'Gagal mengirim laporan';
 
   @override
-  String get reportJinyeSubtitle =>
-      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
-
-  @override
-  String get reportJinyeTitle => 'Laporkan Jinye';
-
-  @override
-  String get jinyeArchiveAction => 'Arsipkan';
-
-  @override
-  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+  String get jinyeArchivedTitle => 'Arsip Jinye';
 
   @override
   String get jinyeArchivedEmpty => 'Belum ada Jinye di arsip';
@@ -10188,31 +10279,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeArchivedLoadFailed => 'Gagal memuat arsip Jinye';
 
   @override
-  String get jinyeArchivedTitle => 'Arsip Jinye';
-
-  @override
-  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
-
-  @override
   String get jinyePinAction => 'Sematkan di profil';
-
-  @override
-  String get jinyePinSuccess => 'Jinye disematkan di profil';
-
-  @override
-  String get jinyeUnarchiveAction => 'Pulihkan';
-
-  @override
-  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
-
-  @override
-  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
 
   @override
   String get jinyeUnpinAction => 'Lepas dari profil';
 
   @override
+  String get jinyeArchiveAction => 'Arsipkan';
+
+  @override
+  String get jinyeUnarchiveAction => 'Pulihkan';
+
+  @override
+  String get jinyePinSuccess => 'Jinye disematkan di profil';
+
+  @override
   String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
+
+  @override
+  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+
+  @override
+  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
+
+  @override
+  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
+
+  @override
+  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
 
   @override
   String get jinyeLemmaLinkAction => 'Tautkan lemma';
@@ -10317,6 +10411,66 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
+
+  @override
+  String get jinyeEditAction => 'Sunting';
+
+  @override
+  String get jinyeEditTitle => 'Sunting Jinye';
+
+  @override
+  String get jinyeEditSave => 'Simpan';
+
+  @override
+  String get jinyeEditSuccess => 'Jinye diperbarui';
+
+  @override
+  String get jinyeEditFailed => 'Gagal menyunting Jinye';
+
+  @override
+  String get jinyeEditHistoryTitle => 'Riwayat sunting';
+
+  @override
+  String get jinyeEditHistoryFailed => 'Gagal memuat riwayat sunting';
+
+  @override
+  String get jinyeRepostAction => 'Bagikan ulang';
+
+  @override
+  String get jinyeUnrepostAction => 'Batalkan bagikan ulang';
+
+  @override
+  String get jinyeRepostSuccess => 'Jinye dibagikan ulang';
+
+  @override
+  String get jinyeUnrepostSuccess => 'Bagikan ulang dibatalkan';
+
+  @override
+  String get jinyeRepostFailed => 'Gagal membagikan ulang';
+
+  @override
+  String get jinyeQuoteAction => 'Kutip';
+
+  @override
+  String get jinyeQuoteTitle => 'Kutip Jinye';
+
+  @override
+  String get jinyeQuoteHint => 'Tulis kutipanmu…';
+
+  @override
+  String get jinyeQuoteSubmit => 'Kirim kutipan';
+
+  @override
+  String get jinyeQuoteSuccess => 'Kutipan terkirim';
+
+  @override
+  String get jinyeQuoteFailed => 'Gagal mengutip Jinye';
+
+  @override
+  String get jinyeRepostLabel => 'Membagikan ulang';
+
+  @override
+  String get jinyeOpenOriginal => 'Buka Jinye asli';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -10856,6 +11010,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reportPantunSpam => 'Spam';
 
   @override
+  String get reportPantunNotAPantun => 'Bukan pantun / rekaman acak';
+
+  @override
   String get reportPantunOther => 'Lainnya';
 
   @override
@@ -15329,6 +15486,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get notificationTypeDiscussionMention => 'Sebutan diskusi';
 
   @override
+  String get notificationTypeJinyeComment => 'Balasan Jinye';
+
+  @override
   String get notificationTypePantunReply => 'Balasan pantun';
 
   @override
@@ -16250,10 +16410,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get layananTitle => 'Layanan Publik';
 
   @override
+  String get layananFilterTitle => 'Filter layanan';
+
+  @override
   String get layananPickKecamatan => 'Pilih kecamatan';
 
   @override
-  String get layananEmpty => 'Belum ada nomor di kecamatan ini';
+  String get layananEmpty => 'Belum ada nomor layanan';
+
+  @override
+  String get layananEmptyHint =>
+      'Tahu nomor ambulans atau pemadam di sekitarmu? Boleh kamu usulkan.';
+
+  @override
+  String get layananEmptyFilter => 'Belum ada nomor yang cocok';
+
+  @override
+  String get layananEmptyFilterHint =>
+      'Coba ubah filter atau usulkan nomor baru ya.';
 
   @override
   String get layananCategoryEmpty => 'Belum ada nomor';
@@ -16288,13 +16462,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get layananPhone => 'Nomor telepon';
 
   @override
-  String get layananPhoneNote => 'Keterangan nomor';
+  String get layananPhoneNote => 'Keterangan nomor (opsional)';
 
   @override
   String get layananPhoneNoteHint => 'Misal shift malam atau pos A';
 
   @override
-  String get layananAddPhone => 'Tambah nomor';
+  String get layananAddPhone => 'Tambah nomor lainnya';
 
   @override
   String get layananRemovePhone => 'Hapus nomor';
@@ -16311,16 +16485,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get layananPickPhone => 'Pilih nomor';
 
   @override
-  String get layananLogoUrl => 'Tautan logo';
+  String get layananLogo => 'Logo (opsional)';
+
+  @override
+  String get layananPickCategory => 'Pilih kategori';
+
+  @override
+  String get layananWaitUpload => 'Tunggu upload logo selesai';
+
+  @override
+  String get layananRemoveFailedLogo => 'Hapus logo yang gagal diunggah dulu';
+
+  @override
+  String get layananUploadImageFailed => 'Gagal mengunggah logo';
 
   @override
   String get layananKecamatan => 'Kecamatan';
 
   @override
-  String get layananAddress => 'Alamat';
+  String get layananAddress => 'Alamat (opsional)';
 
   @override
-  String get layananNote => 'Catatan';
+  String get layananNote => 'Catatan (opsional)';
 
   @override
   String get layananWhatsapp => 'WhatsApp';
@@ -16336,7 +16522,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get layananFormInvalid =>
-      'Nama, minimal satu nomor, dan kecamatan wajib diisi';
+      'Kategori, nama, minimal satu nomor, dan kecamatan wajib diisi';
 
   @override
   String get layananSending => 'Mengirim...';
@@ -17129,7 +17315,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get placePinPickerTitle => 'Pilih titik';
 
   @override
-  String get placePinPickerSearchHint => 'Cari nama tempat';
+  String get placePinPickerSearchHint => 'Cari nama atau tempel tautan Maps';
 
   @override
   String get placePinPickerTooShort => 'Ketik minimal 3 huruf.';
@@ -17152,6 +17338,40 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get placePinPickerFallbackLabel => 'Titik di Sambas';
+
+  @override
+  String get placePinPickerOpenMaps => 'Buka Google Maps';
+
+  @override
+  String get placePinPickerResolvingUrl => 'Membaca tautan Maps...';
+
+  @override
+  String get placePinPickerFromMaps => 'Titik dari Google Maps';
+
+  @override
+  String get placePinPickerMapsUrlInvalid =>
+      'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.';
+
+  @override
+  String get placePinPickerMapsUrlNoCoords =>
+      'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.';
+
+  @override
+  String get placePinPickerMapsUrlOutOfBounds =>
+      'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.';
+
+  @override
+  String get placePinPickerMapsUrlFailed =>
+      'Gagal membaca tautan Maps. Coba lagi sebentar ya.';
+
+  @override
+  String get placePinPickerClearField => 'Hapus teks';
+
+  @override
+  String get placePinPickerPaste => 'Tempel';
+
+  @override
+  String get placePinPickerClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get placeProposalsTitle => 'Usulan wisata';
@@ -19063,7 +19283,53 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get pantunSending => 'Mengirim...';
 
   @override
-  String get pantunWrite => 'Tulis pantun';
+  String get pantunComposeModeText => 'Tulis pantun';
+
+  @override
+  String get pantunComposeModeVoice => 'Rekam suara';
+
+  @override
+  String get pantunComposeTextHint => 'Empat baris dengan pola rima.';
+
+  @override
+  String get pantunComposeVoiceHint =>
+      'Bacaan 7,5 sampai 60 detik, tanpa menulis baris.';
+
+  @override
+  String get pantunRecordAudio => 'Rekam';
+
+  @override
+  String get pantunRecordAudioTitle => 'Rekam bacaan pantun';
+
+  @override
+  String get pantunRecordAudioSubtitle =>
+      'Minimal 7,5 detik, maksimal 60 detik.';
+
+  @override
+  String pantunRecordAudioAttached(int seconds) {
+    return 'Bacaan $seconds detik siap dikirim';
+  }
+
+  @override
+  String get pantunRecordAudioRemove => 'Batalkan';
+
+  @override
+  String get threadAudioPlay => 'Putar rekaman';
+
+  @override
+  String get threadAudioPause => 'Jeda rekaman';
+
+  @override
+  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+
+  @override
+  String get threadAudioPlaying => 'Sedang diputar';
+
+  @override
+  String get threadAudioIdle => 'Ketuk untuk putar';
+
+  @override
+  String get pantunWrite => 'Buat pantun';
 
   @override
   String get pantunReply => 'Balas pantun';
@@ -19859,7 +20125,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get editProfileSaveSuccess => 'Profil berhasil disimpan.';
 
   @override
-  String get pantunListSubtitle => 'Balas pantun 4 baris';
+  String get pantunListSubtitle => 'Berbalas pantun bersama warga sambas';
 
   @override
   String get pantunComingSoon => 'Segera';
@@ -20285,22 +20551,104 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get discussionStatusWithdrawn => 'Dibatalkan';
 
   @override
-  String get notificationTypeJinyeComment => 'Balasan Jinye';
+  String get jinyeCreateTitle => 'Buat Jinye';
 
   @override
-  String get threadAudioPlay => 'Putar rekaman';
+  String get jinyeCreateBodyLabel => 'Status kamu';
 
   @override
-  String get threadAudioPause => 'Jeda rekaman';
+  String get jinyeCreateBodyHint =>
+      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
 
   @override
-  String get threadAudioRetry => 'Gagal memutar, ketuk untuk coba lagi';
+  String get jinyeCreateSubmit => 'Kirim';
 
   @override
-  String get threadAudioPlaying => 'Sedang diputar';
+  String get jinyeCreateSubmitting => 'Mengirim…';
 
   @override
-  String get threadAudioIdle => 'Ketuk untuk putar';
+  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
+
+  @override
+  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
+
+  @override
+  String get jinyeCreateRateLimited =>
+      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
+
+  @override
+  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
+
+  @override
+  String get jinyeDetailTitle => 'Jinye';
+
+  @override
+  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
+
+  @override
+  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
+
+  @override
+  String get jinyePreviewVoiceOnly => 'Rekaman suara';
+
+  @override
+  String get jinyePreviewPhotoOnly => 'Foto';
+
+  @override
+  String get jinyePreviewEmpty => 'Jinye';
+
+  @override
+  String get jinyeSheetReply => 'Balas';
+
+  @override
+  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
+
+  @override
+  String get jinyeDiscussionEmpty =>
+      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
+
+  @override
+  String get jinyeComposeEntryTooltip => 'Buat Jinye';
+
+  @override
+  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
+
+  @override
+  String get jinyeCreateRecordCta => 'Rekam suara';
+
+  @override
+  String get jinyeCreateRerecord => 'Rekam ulang';
+
+  @override
+  String jinyeCreateAudioReady(int seconds) {
+    return 'Rekaman siap · $seconds dtk';
+  }
+
+  @override
+  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
+
+  @override
+  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
+
+  @override
+  String get jinyeRecordSheetTitle => 'Rekam Jinye';
+
+  @override
+  String get jinyeRecordSheetSubtitle =>
+      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
+
+  @override
+  String get jinyeRecordSheetUse => 'Pakai rekaman';
+
+  @override
+  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
+
+  @override
+  String get jinyeComposeNeedContent =>
+      'Isi teks, rekam suara, atau tambah foto dulu ya';
 
   @override
   String get jinyeAllImagesFailed => 'Semua foto gagal diunggah';
@@ -20310,7 +20658,28 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Kirim tanpa foto, atau coba unggah ulang.';
 
   @override
-  String get jinyeCommentFailed => 'Gagal mengirim balasan';
+  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
+
+  @override
+  String get jinyeStorageUnavailable =>
+      'Penyimpanan foto sedang tidak tersedia';
+
+  @override
+  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
+
+  @override
+  String get jinyeSentAudioFailed =>
+      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
+
+  @override
+  String get jinyePhotosPendingReview =>
+      'Foto masih dicek sebelum tayang publik';
+
+  @override
+  String get jinyeCommentsTitle => 'Diskusi';
+
+  @override
+  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
 
   @override
   String get jinyeCommentHint => 'Tulis balasan…';
@@ -20325,105 +20694,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeCommentSent => 'Balasan terkirim';
 
   @override
-  String get jinyeCommentsLoadFailed => 'Gagal memuat balasan';
-
-  @override
-  String get jinyeCommentsTitle => 'Diskusi';
-
-  @override
-  String get jinyeComposeEntryTooltip => 'Buat Jinye';
-
-  @override
-  String get jinyeComposeNeedContent =>
-      'Isi teks, rekam suara, atau tambah foto dulu ya';
-
-  @override
-  String get jinyeCreateAudioLabel => 'Rekaman suara (opsional)';
-
-  @override
-  String jinyeCreateAudioReady(int seconds) {
-    return 'Rekaman siap · $seconds dtk';
-  }
-
-  @override
-  String get jinyeCreateBodyHint =>
-      'Tulis sampai 500 karakter, atau rekam suara / tambah foto.';
-
-  @override
-  String get jinyeCreateBodyLabel => 'Status kamu';
-
-  @override
-  String get jinyeCreateFailed => 'Gagal mengirim Jinye';
-
-  @override
-  String get jinyeCreatePhotoLabel => 'Foto (opsional, maks 4)';
-
-  @override
-  String get jinyeCreatePhotoLoginHint => 'Masuk dulu untuk menambah foto';
-
-  @override
-  String get jinyeCreateRateLimited =>
-      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
-
-  @override
-  String get jinyeCreateRecordCta => 'Rekam suara';
-
-  @override
-  String get jinyeCreateRerecord => 'Rekam ulang';
-
-  @override
-  String get jinyeCreateSubmit => 'Kirim';
-
-  @override
-  String get jinyeCreateSubmitting => 'Mengirim…';
-
-  @override
-  String get jinyeCreateSuccess => 'Jinye kamu sudah tayang';
-
-  @override
-  String get jinyeCreateTitle => 'Buat Jinye';
-
-  @override
-  String get jinyeDetailLoadFailed => 'Gagal memuat Jinye';
-
-  @override
-  String get jinyeDetailTitle => 'Jinye';
-
-  @override
-  String get jinyeDiscussionEmpty =>
-      'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.';
-
-  @override
-  String get jinyeImageUploadFailed => 'Gagal mengunggah foto';
-
-  @override
-  String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
-
-  @override
-  String get jinyePhotosPendingReview =>
-      'Foto masih dicek sebelum tayang publik';
-
-  @override
-  String get jinyePreviewEmpty => 'Jinye';
-
-  @override
-  String get jinyePreviewPhotoOnly => 'Foto';
-
-  @override
-  String get jinyePreviewVoiceOnly => 'Rekaman suara';
-
-  @override
-  String get jinyeProfilePreviewSemantics => 'Jinye, ketuk untuk baca lengkap';
-
-  @override
-  String get jinyeRecordSheetSubtitle =>
-      'Maksimal 60 detik. Caption teks bisa ditambahkan di form.';
-
-  @override
-  String get jinyeRecordSheetTitle => 'Rekam Jinye';
-
-  @override
-  String get jinyeRecordSheetUse => 'Pakai rekaman';
+  String get jinyeCommentFailed => 'Gagal mengirim balasan';
 
   @override
   String jinyeReplyingTo(String name) {
@@ -20431,33 +20702,20 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   }
 
   @override
-  String get jinyeReportFailed => 'Gagal mengirim laporan';
-
-  @override
-  String get jinyeResponseIncomplete => 'Data Jinye tidak lengkap';
-
-  @override
-  String get jinyeSendWithoutImages => 'Kirim tanpa foto';
-
-  @override
-  String get jinyeSentAudioFailed =>
-      'Jinye terkirim, tapi rekaman suara gagal dilampirkan';
-
-  @override
-  String get jinyeSheetReply => 'Balas';
-
-  @override
-  String get jinyeSheetViewDiscussion => 'Lihat diskusi';
-
-  @override
-  String get jinyeStorageUnavailable =>
-      'Penyimpanan foto sedang tidak tersedia';
-
-  @override
-  String get jinyeWaitUpload => 'Tunggu foto selesai diunggah dulu ya';
-
-  @override
   String get reportJinyeAction => 'Laporke';
+
+  @override
+  String get reportJinyeTitle => 'Laporke Jinye';
+
+  @override
+  String get reportJinyeSubtitle =>
+      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
+
+  @override
+  String get reportJinyeInappropriate => 'Tidak pantas';
+
+  @override
+  String get reportJinyeSexual => 'Konten seksual';
 
   @override
   String get reportJinyeHarassment => 'Pelecehan atau perundungan';
@@ -20466,10 +20724,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reportJinyeHateSpeech => 'Ujaran kebencian';
 
   @override
-  String get reportJinyeInappropriate => 'Tidak pantas';
-
-  @override
-  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
+  String get reportJinyeSpam => 'Spam';
 
   @override
   String get reportJinyeOther => 'Lainnya';
@@ -20478,23 +20733,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reportJinyeSent => 'Terima kasih, laporanmu sudah kami terima';
 
   @override
-  String get reportJinyeSexual => 'Konten seksual';
+  String get reportJinyeLoginFirst => 'Masuk dulu ya untuk melaporkan Jinye';
 
   @override
-  String get reportJinyeSpam => 'Spam';
+  String get jinyeReportFailed => 'Gagal mengirim laporan';
 
   @override
-  String get reportJinyeSubtitle =>
-      'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.';
-
-  @override
-  String get reportJinyeTitle => 'Laporke Jinye';
-
-  @override
-  String get jinyeArchiveAction => 'Arsipkan';
-
-  @override
-  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+  String get jinyeArchivedTitle => 'Arsip Jinye';
 
   @override
   String get jinyeArchivedEmpty => 'Belum ada Jinye di arsip';
@@ -20503,31 +20748,34 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeArchivedLoadFailed => 'Gagal memuat arsip Jinye';
 
   @override
-  String get jinyeArchivedTitle => 'Arsip Jinye';
-
-  @override
-  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
-
-  @override
   String get jinyePinAction => 'Sematkan di profil';
-
-  @override
-  String get jinyePinSuccess => 'Jinye disematkan di profil';
-
-  @override
-  String get jinyeUnarchiveAction => 'Pulihkan';
-
-  @override
-  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
-
-  @override
-  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
 
   @override
   String get jinyeUnpinAction => 'Lepas dari profil';
 
   @override
+  String get jinyeArchiveAction => 'Arsipkan';
+
+  @override
+  String get jinyeUnarchiveAction => 'Pulihkan';
+
+  @override
+  String get jinyePinSuccess => 'Jinye disematkan di profil';
+
+  @override
   String get jinyeUnpinSuccess => 'Pin Jinye dilepas';
+
+  @override
+  String get jinyeArchiveSuccess => 'Jinye diarsipkan';
+
+  @override
+  String get jinyeUnarchiveSuccess => 'Jinye dipulihkan';
+
+  @override
+  String get jinyeUnarchiveFailed => 'Gagal memulihkan Jinye';
+
+  @override
+  String get jinyeOwnerActionFailed => 'Gagal mengubah Jinye';
 
   @override
   String get jinyeLemmaLinkAction => 'Tautkan lemma';
@@ -20632,4 +20880,64 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
+
+  @override
+  String get jinyeEditAction => 'Sunting';
+
+  @override
+  String get jinyeEditTitle => 'Sunting Jinye';
+
+  @override
+  String get jinyeEditSave => 'Simpan';
+
+  @override
+  String get jinyeEditSuccess => 'Jinye diperbarui';
+
+  @override
+  String get jinyeEditFailed => 'Gagal menyunting Jinye';
+
+  @override
+  String get jinyeEditHistoryTitle => 'Riwayat sunting';
+
+  @override
+  String get jinyeEditHistoryFailed => 'Gagal memuat riwayat sunting';
+
+  @override
+  String get jinyeRepostAction => 'Bagikan ulang';
+
+  @override
+  String get jinyeUnrepostAction => 'Batalkan bagikan ulang';
+
+  @override
+  String get jinyeRepostSuccess => 'Jinye dibagikan ulang';
+
+  @override
+  String get jinyeUnrepostSuccess => 'Bagikan ulang dibatalkan';
+
+  @override
+  String get jinyeRepostFailed => 'Gagal membagikan ulang';
+
+  @override
+  String get jinyeQuoteAction => 'Kutip';
+
+  @override
+  String get jinyeQuoteTitle => 'Kutip Jinye';
+
+  @override
+  String get jinyeQuoteHint => 'Tulis kutipanmu…';
+
+  @override
+  String get jinyeQuoteSubmit => 'Kirim kutipan';
+
+  @override
+  String get jinyeQuoteSuccess => 'Kutipan terkirim';
+
+  @override
+  String get jinyeQuoteFailed => 'Gagal mengutip Jinye';
+
+  @override
+  String get jinyeRepostLabel => 'Membagikan ulang';
+
+  @override
+  String get jinyeOpenOriginal => 'Buka Jinye asli';
 }

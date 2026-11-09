@@ -237,8 +237,12 @@ class JinyeItem {
     this.avatarUrl,
     this.isVerifier = false,
     this.commentCount = 0,
+    this.repostCount = 0,
     this.images = const [],
     this.audio,
+    this.repostOfId,
+    this.quoteBody,
+    this.isEdited = false,
     this.isPinned = false,
     this.lemmaLinks = const [],
   });
@@ -253,8 +257,12 @@ class JinyeItem {
   final String? avatarUrl;
   final bool isVerifier;
   final int commentCount;
+  final int repostCount;
   final List<JinyeImage> images;
   final JinyeAudio? audio;
+  final String? repostOfId;
+  final String? quoteBody;
+  final bool isEdited;
   final bool isPinned;
   final List<JinyeLemmaLink> lemmaLinks;
 
@@ -264,6 +272,13 @@ class JinyeItem {
 
   bool get hasDisplayableImages =>
       images.any((i) => i.displaySource != null);
+
+  /// Repost polos: pointer saja, tanpa caption.
+  bool get isPlainRepost =>
+      repostOfId != null && (quoteBody == null || quoteBody!.trim().isEmpty);
+
+  bool get isQuote =>
+      repostOfId != null && quoteBody != null && quoteBody!.trim().isNotEmpty;
 
   factory JinyeItem.fromJson(Map<String, dynamic> json) {
     final imagesRaw = json['images'];
@@ -293,8 +308,12 @@ class JinyeItem {
       avatarUrl: json['avatar_url'] as String?,
       isVerifier: json['is_verifier'] as bool? ?? false,
       commentCount: (json['comment_count'] as num?)?.toInt() ?? 0,
+      repostCount: (json['repost_count'] as num?)?.toInt() ?? 0,
       images: images,
       audio: audio,
+      repostOfId: json['repost_of_id'] as String?,
+      quoteBody: json['quote_body'] as String?,
+      isEdited: json['is_edited'] == true,
       isPinned: json['is_pinned'] as bool? ?? false,
       lemmaLinks: () {
         final raw = json['lemma_links'];
@@ -304,6 +323,63 @@ class JinyeItem {
             .map((e) => JinyeLemmaLink.fromJson(Map<String, dynamic>.from(e)))
             .toList();
       }(),
+    );
+  }
+}
+
+class JinyeEditHistory {
+  const JinyeEditHistory({
+    required this.currentBody,
+    required this.isEdited,
+    required this.revisions,
+    this.currentUpdatedAt,
+  });
+
+  final String currentBody;
+  final String? currentUpdatedAt;
+  final bool isEdited;
+  final List<JinyeEditRevision> revisions;
+
+  factory JinyeEditHistory.fromJson(Map<String, dynamic> json) {
+    final current = json['current'];
+    final currentMap = current is Map
+        ? Map<String, dynamic>.from(current)
+        : const <String, dynamic>{};
+    final revisionsRaw = json['revisions'];
+    final revisions = <JinyeEditRevision>[];
+    if (revisionsRaw is List) {
+      for (final raw in revisionsRaw) {
+        if (raw is! Map) continue;
+        revisions.add(
+          JinyeEditRevision.fromJson(Map<String, dynamic>.from(raw)),
+        );
+      }
+    }
+    return JinyeEditHistory(
+      currentBody: (currentMap['body'] as String?) ?? '',
+      currentUpdatedAt: currentMap['updated_at'] as String?,
+      isEdited: currentMap['is_edited'] == true,
+      revisions: revisions,
+    );
+  }
+}
+
+class JinyeEditRevision {
+  const JinyeEditRevision({
+    required this.body,
+    required this.editorId,
+    required this.createdAt,
+  });
+
+  final String body;
+  final String editorId;
+  final String createdAt;
+
+  factory JinyeEditRevision.fromJson(Map<String, dynamic> json) {
+    return JinyeEditRevision(
+      body: (json['body'] as String?) ?? '',
+      editorId: (json['editor_id'] as String?) ?? '',
+      createdAt: (json['created_at'] as String?) ?? '',
     );
   }
 }
