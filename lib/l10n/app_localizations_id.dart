@@ -10168,11 +10168,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeCreateRateLimited =>
-      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+      'Kamu sudah membuat Jinye dalam 1 jam terakhir. Coba lagi nanti ya.';
 
   @override
   String jinyeCreateRateLimitedUntil(String time) {
-    return 'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul $time.';
+    return 'Kamu sudah membuat Jinye dalam 1 jam terakhir. Bisa lagi pukul $time.';
   }
 
   @override
@@ -20724,11 +20724,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeCreateRateLimited =>
-      'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+      'Kamu sudah membuat Jinye dalam 1 jam terakhir. Coba lagi nanti ya.';
 
   @override
   String jinyeCreateRateLimitedUntil(String time) {
-    return 'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul $time.';
+    return 'Kamu sudah membuat Jinye dalam 1 jam terakhir. Bisa lagi pukul $time.';
   }
 
   @override

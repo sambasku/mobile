@@ -7047,11 +7047,11 @@
   "@jinyeCreateFailed": {
     "description": "Error create Jinye generik"
   },
-  "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.",
+  "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 1 jam terakhir. Coba lagi nanti ya.",
   "@jinyeCreateRateLimited": {
-    "description": "Error kuota 1 Jinye / 24 jam (tanpa jam reset)"
+    "description": "Error kuota 1 Jinye / 1 jam (tanpa jam reset)"
   },
-  "jinyeCreateRateLimitedUntil": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul {time}.",
+  "jinyeCreateRateLimitedUntil": "Kamu sudah membuat Jinye dalam 1 jam terakhir. Bisa lagi pukul {time}.",
   "@jinyeCreateRateLimitedUntil": {
     "description": "Error kuota Jinye + jam reset lokal (HH:mm)",
     "placeholders": {

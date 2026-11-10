@@ -17841,16 +17841,16 @@ abstract class AppLocalizations {
   /// **'Gagal mengirim Jinye'**
   String get jinyeCreateFailed;
 
-  /// Error kuota 1 Jinye / 24 jam (tanpa jam reset)
+  /// Error kuota 1 Jinye / 1 jam (tanpa jam reset)
   ///
   /// In id, this message translates to:
-  /// **'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.'**
+  /// **'Kamu sudah membuat Jinye dalam 1 jam terakhir. Coba lagi nanti ya.'**
   String get jinyeCreateRateLimited;
 
   /// Error kuota Jinye + jam reset lokal (HH:mm)
   ///
   /// In id, this message translates to:
-  /// **'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul {time}.'**
+  /// **'Kamu sudah membuat Jinye dalam 1 jam terakhir. Bisa lagi pukul {time}.'**
   String jinyeCreateRateLimitedUntil(String time);
 
   /// Toast wajib login sebelum compose

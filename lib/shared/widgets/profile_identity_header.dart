@@ -188,9 +188,10 @@ class ProfileIdentityHeader extends StatelessWidget {
                         ),
                         if (avatarOverlay != null)
                           Positioned(
-                            // Bubble chat mengambang di atas-kanan frame avatar.
+                            // Kiri fixed di bahu kanan avatar; bubble tumbuh ke kanan
+                            // (bukan ke kiri menutup wajah).
                             top: -10,
-                            right: -6,
+                            left: _avatarExtent * 0.55,
                             child: avatarOverlay!,
                           ),
                       ],

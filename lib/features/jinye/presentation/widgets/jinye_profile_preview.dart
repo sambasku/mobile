@@ -24,7 +24,8 @@ class JinyeProfilePreview extends ConsumerWidget {
   final String username;
   final bool isOwnProfile;
 
-  static const double _maxBubbleWidth = 176;
+  /// Lebar cukup untuk cuplikan 32 char 1 baris; bubble tumbuh ke kanan.
+  static const double _maxBubbleWidth = 260;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
