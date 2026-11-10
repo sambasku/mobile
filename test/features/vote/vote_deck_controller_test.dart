@@ -244,4 +244,39 @@ void main() {
     expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
     expect(state.canRewind, isFalse);
   });
+
+  test('patchWordClass update chip tanpa menggeser antrean (#263)', () async {
+    final initial = await ready();
+    expect(initial.items.map((i) => i.id), ['a', 'b', 'c']);
+    expect(initial.items.first.wordClass, isNull);
+
+    const next = VoteDeckWordClass(
+      id: 'wc-verb',
+      code: 'kata_kerja',
+      name: 'Kata Kerja',
+      alias: 'v',
+    );
+    container
+        .read(voteDeckControllerProvider.notifier)
+        .patchWordClass('a', next);
+
+    final state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items.map((i) => i.id), ['a', 'b', 'c']);
+    expect(state.items.first.wordClass?.id, 'wc-verb');
+    expect(state.items.first.wordClass?.code, 'kata_kerja');
+    expect(state.canRewind, isFalse);
+  });
+
+  test('refreshKeepingFront pin meaning aktif ke depan (#263)', () async {
+    await ready();
+    // Simulasikan urutan API baru yang beda dari posisi lokal.
+    repo.deckItems = [_item('c'), _item('a'), _item('b')];
+
+    await container
+        .read(voteDeckControllerProvider.notifier)
+        .refreshKeepingFront('b');
+
+    final state = container.read(voteDeckControllerProvider).value!;
+    expect(state.items.map((i) => i.id), ['b', 'c', 'a']);
+  });
 }

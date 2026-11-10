@@ -354,8 +354,9 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                     ),
               onRewind: () => _rewind(context, ref),
               // Kartu tidak digeser: deck keepAlive, kembali ke kata yang
-              // sama. Invalidate setelah form tertutup supaya chip kelas
-              // kata tidak basi bila usulan di-self-apply (issue #159).
+              // sama. Refresh setelah form tertutup supaya chip/field tidak
+              // basi bila usulan di-self-apply (#159), pin meaning aktif
+              // ke depan supaya tidak loncat (#263).
               onFix: () async {
                 await context.push(
                   Uri(
@@ -364,7 +365,9 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                   ).toString(),
                 );
                 if (context.mounted) {
-                  await ref.read(voteDeckControllerProvider.notifier).refresh();
+                  await ref
+                      .read(voteDeckControllerProvider.notifier)
+                      .refreshKeepingFront(item.id);
                 }
               },
             ),

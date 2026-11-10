@@ -98,7 +98,19 @@ Future<void> pickAndSubmitVoteDeckWordClass({
       },
     );
     await invalidateWordDetailCaches(ref, item.wordId, item.lemma);
-    await ref.read(voteDeckControllerProvider.notifier).refresh();
+    // #263: jangan refresh() - itu reset antrean ke page 1 API dan kartu loncat.
+    // Self-apply: patch chip lokal; pending usulan: chip tetap (server belum berubah).
+    if (selfApplied) {
+      ref.read(voteDeckControllerProvider.notifier).patchWordClass(
+            item.id,
+            VoteDeckWordClass(
+              id: picked.id,
+              code: picked.code ?? '',
+              name: picked.name,
+              alias: picked.alias,
+            ),
+          );
+    }
   } on DioException catch (error) {
     if (!context.mounted) return;
     final data = error.response?.data;

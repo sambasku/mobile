@@ -64,6 +64,43 @@ class VoteDeckItem {
   final int upvotes;
   final int downvotes;
 
+  VoteDeckItem copyWith({
+    String? id,
+    String? wordId,
+    String? lemma,
+    String? languageId,
+    String? languageCode,
+    String? wordType,
+    String? status,
+    bool? isVerified,
+    String? approvedAt,
+    int? orderIndex,
+    int? meaningCount,
+    VoteDeckWordClass? wordClass,
+    String? sense,
+    int? upvotes,
+    int? downvotes,
+    bool clearWordClass = false,
+  }) {
+    return VoteDeckItem(
+      id: id ?? this.id,
+      wordId: wordId ?? this.wordId,
+      lemma: lemma ?? this.lemma,
+      languageId: languageId ?? this.languageId,
+      languageCode: languageCode ?? this.languageCode,
+      wordType: wordType ?? this.wordType,
+      status: status ?? this.status,
+      isVerified: isVerified ?? this.isVerified,
+      approvedAt: approvedAt ?? this.approvedAt,
+      orderIndex: orderIndex ?? this.orderIndex,
+      meaningCount: meaningCount ?? this.meaningCount,
+      wordClass: clearWordClass ? null : (wordClass ?? this.wordClass),
+      sense: sense ?? this.sense,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+    );
+  }
+
   /// Label jenis entri untuk UI (seragam dengan wordSummary/wordDetail).
   String get wordTypeLabel => switch (wordType) {
         'idiom' => 'Idiom',
