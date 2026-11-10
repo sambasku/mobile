@@ -7,11 +7,11 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/jinye_models.dart';
 import 'jinye_link_lemma_sheet.dart';
 
-/// Body Jinye dengan highlight span lemma.
+/// Body Jinye dengan highlight span lemma + tap per kata.
 ///
-/// - Tap span ter-link → detail kata
+/// - Tap kata (ter-link / belum) → [onWordTap] bila ada
+/// - Tanpa [onWordTap]: tap span ter-link → detail kata (fallback)
 /// - Long-press span → [onLinkLongPress]
-/// - Tap kata belum ter-link (bila [onUnlinkedWordTap] ada) → callback span kata itu
 class JinyeLemmaBody extends StatefulWidget {
   const JinyeLemmaBody({
     super.key,
@@ -19,7 +19,7 @@ class JinyeLemmaBody extends StatefulWidget {
     required this.links,
     this.style,
     this.onLinkLongPress,
-    this.onUnlinkedWordTap,
+    this.onWordTap,
   });
 
   final String body;
@@ -27,8 +27,9 @@ class JinyeLemmaBody extends StatefulWidget {
   final TextStyle? style;
   final void Function(JinyeLemmaLink link)? onLinkLongPress;
 
-  /// Owner: tap kata belum tertaut → aksi tautkan untuk span itu.
-  final void Function(JinyeSpanSelection span)? onUnlinkedWordTap;
+  /// Tap satu kata (token whitespace). [link] non-null bila span sudah tertaut.
+  final void Function(JinyeSpanSelection span, JinyeLemmaLink? link)?
+  onWordTap;
 
   @override
   State<JinyeLemmaBody> createState() => _JinyeLemmaBodyState();
@@ -100,22 +101,21 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
       );
     }
 
-    if (widget.onUnlinkedWordTap != null) {
-      for (final m in RegExp(r'\S+').allMatches(body)) {
-        if (_overlapsLink(m.start, m.end, active)) continue;
-        raw.add(
-          _Piece(
-            kind: _PieceKind.token,
+    // Selalu tokenisasi kata belum tertaut supaya semua pembaca bisa tap.
+    for (final m in RegExp(r'\S+').allMatches(body)) {
+      if (_overlapsLink(m.start, m.end, active)) continue;
+      raw.add(
+        _Piece(
+          kind: _PieceKind.token,
+          start: m.start,
+          end: m.end,
+          token: JinyeSpanSelection(
             start: m.start,
             end: m.end,
-            token: JinyeSpanSelection(
-              start: m.start,
-              end: m.end,
-              text: m.group(0)!,
-            ),
+            text: m.group(0)!,
           ),
-        );
-      }
+        ),
+      );
     }
 
     raw.sort((a, b) => a.start.compareTo(b.start));
@@ -155,10 +155,7 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
   @override
   void didUpdateWidget(covariant JinyeLemmaBody oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.body != widget.body ||
-        oldWidget.links != widget.links ||
-        (oldWidget.onUnlinkedWordTap == null) !=
-            (widget.onUnlinkedWordTap == null)) {
+    if (oldWidget.body != widget.body || oldWidget.links != widget.links) {
       _rebuildPieces();
     }
   }
@@ -168,15 +165,14 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
     final theme = context.theme;
     final base =
         widget.style ??
-        theme.typography.body.lg.copyWith(color: theme.colors.foreground);
+        theme.typography.body.md.copyWith(color: theme.colors.foreground);
 
     if (widget.body.isEmpty) {
       return Text('-', style: base);
     }
 
     final active = _active;
-    if (_pieces.isEmpty ||
-        (active.isEmpty && widget.onUnlinkedWordTap == null)) {
+    if (_pieces.isEmpty) {
       return Text(widget.body, style: base);
     }
 
@@ -189,9 +185,19 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
         case _PieceKind.link:
           final link = piece.link!;
           final pending = link.isPendingCorrection;
+          final span = JinyeSpanSelection(
+            start: piece.start,
+            end: piece.end,
+            text: text,
+          );
           final recognizer = TapGestureRecognizer()
             ..onTap = () {
               if (!mounted) return;
+              final tap = widget.onWordTap;
+              if (tap != null) {
+                tap(span, link);
+                return;
+              }
               context.push('/words/${link.wordId}');
             };
           _recognizers.add(recognizer);
@@ -211,10 +217,15 @@ class _JinyeLemmaBodyState extends State<JinyeLemmaBody> {
           );
         case _PieceKind.token:
           final span = piece.token!;
+          final tap = widget.onWordTap;
+          if (tap == null) {
+            spans.add(TextSpan(text: text));
+            break;
+          }
           final recognizer = TapGestureRecognizer()
             ..onTap = () {
               if (!mounted) return;
-              widget.onUnlinkedWordTap?.call(span);
+              tap(span, null);
             };
           _recognizers.add(recognizer);
           spans.add(

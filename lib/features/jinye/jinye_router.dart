@@ -5,6 +5,7 @@ import '../../core/router/route_definer.dart';
 import 'presentation/pages/create_jinye_page.dart';
 import 'presentation/pages/jinye_archived_page.dart';
 import 'presentation/pages/jinye_detail_page.dart';
+import 'presentation/pages/jinye_translation_review_page.dart';
 
 class JinyeRouter {
   JinyeRouter._();
@@ -17,6 +18,11 @@ class JinyeRouter {
   static const archived = RouteDefiner(
     path: '/jinye/archived',
     name: 'JinyeRouter.archived',
+  );
+
+  static const translationReview = RouteDefiner(
+    path: '/jinye/translations',
+    name: 'JinyeRouter.translationReview',
   );
 
   static const detail = RouteDefiner(
@@ -38,6 +44,13 @@ class JinyeRouter {
       name: archived.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
       builder: (context, state) => const JinyeArchivedPage(),
+    ),
+    // Harus sebelum /jinye/:id supaya tidak tertelan param id.
+    GoRoute(
+      path: translationReview.path,
+      name: translationReview.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const JinyeTranslationReviewPage(),
     ),
     GoRoute(
       path: detail.path,

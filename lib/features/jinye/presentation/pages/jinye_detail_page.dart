@@ -12,22 +12,28 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
+import '../../../../shared/widgets/public_account_name.dart';
 import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_edit_sheets.dart';
-import '../../../../shared/widgets/user_avatar.dart';
+import '../../../activity/domain/entities/feed_activity_item.dart';
+import '../../../activity/presentation/widgets/activity_kind_avatar.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../user_profile/user_profile_router.dart';
 import '../../../vote/domain/entities/vote_target.dart';
 import '../../../vote/presentation/providers/vote_providers.dart';
 import '../../../vote/presentation/widgets/vote_buttons.dart';
 import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
+import '../../jinye_router.dart';
 import '../utils/jinye_quota_message.dart';
 import '../widgets/jinye_comments_section.dart';
 import '../widgets/jinye_lemma_body.dart';
 import '../widgets/jinye_link_lemma_sheet.dart';
 import '../widgets/jinye_report_sheet.dart';
 import '../widgets/jinye_translation_sheet.dart';
+import '../widgets/jinye_word_meaning_sheet.dart';
 import '../widgets/jinye_word_picker_sheet.dart';
 
 /// Detail Jinye: media + vote OP; komentar lewat bottom sheet (pola lemma).
@@ -55,15 +61,26 @@ class JinyeDetailPage extends ConsumerWidget {
             ),
           ],
           suffixes: [
-            if (async.hasValue && isAuth)
+              if (async.hasValue && isAuth)
               FHeaderAction(
                 icon: const Icon(FLucideIcons.ellipsisVertical),
                 onPress: () {
                   final item = async.requireValue;
+                  final isVerifier = _isVerifierRole(auth?.role);
                   if (auth?.userId == item.userId) {
-                    _showOwnerActions(context, ref, item: item);
+                    _showOwnerActions(
+                      context,
+                      ref,
+                      item: item,
+                      isVerifier: isVerifier,
+                    );
                   } else {
-                    _showVisitorActions(context, ref, item: item);
+                    _showVisitorActions(
+                      context,
+                      ref,
+                      item: item,
+                      isVerifier: isVerifier,
+                    );
                   }
                 },
               ),
@@ -76,9 +93,9 @@ class JinyeDetailPage extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text('xxxxxxxx', style: theme.typography.body.lg),
+                Text('xxxxxxxx', style: theme.typography.body.md),
                 const Gap(8),
-                Text('yyyyyyyyyyyyyyyy', style: theme.typography.body.md),
+                Text('yyyyyyyyyyyyyyyy', style: theme.typography.body.sm),
               ],
             ),
           ),
@@ -99,9 +116,13 @@ class JinyeDetailPage extends ConsumerWidget {
             ),
           ),
           data: (item) {
-            final name = item.displayName?.trim().isNotEmpty == true
-                ? item.displayName!
-                : (item.username ?? '-');
+            // Header sama gaya ActivityFeedTile: nama + waktu relatif + @handle.
+            final actorLabel = displayPublicAccountLabel(
+              displayName: item.displayName,
+              username: item.username,
+            );
+            final canOpenProfile = isLinkablePublicUsername(item.username);
+            final dateLabel = formatRelativeCompact(item.createdAt);
             final voteTarget = VoteTarget(type: 'jinye', id: item.id);
             final voteAsync = ref.watch(voteControllerProvider(voteTarget));
 
@@ -110,35 +131,85 @@ class JinyeDetailPage extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(12, 14, 12, 24),
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    UserAvatar(
-                      name: name,
-                      imageUrl: item.avatarUrl,
-                      size: 40,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: canOpenProfile
+                          ? () => UserProfileRouter.open(
+                                context,
+                                item.username!,
+                              )
+                          : null,
+                      child: ActivityKindAvatar(
+                        kind: FeedActivityKind.jinye,
+                        imageUrl: item.avatarUrl,
+                        name: actorLabel,
+                        size: 40,
+                      ),
                     ),
                     const Gap(12),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            name,
-                            style: theme.typography.body.md.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: PublicAccountName(
+                                  label: actorLabel,
+                                  isVerifier: item.isVerifier,
+                                  onTap: canOpenProfile
+                                      ? () => UserProfileRouter.open(
+                                            context,
+                                            item.username!,
+                                          )
+                                      : null,
+                                  style: theme.typography.body.sm.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.25,
+                                    color: canOpenProfile
+                                        ? theme.colors.primary
+                                        : theme.colors.foreground,
+                                  ),
+                                ),
+                              ),
+                              if (dateLabel.isNotEmpty) ...[
+                                const Gap(8),
+                                Text(
+                                  dateLabel,
+                                  style: theme.typography.body.xs.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                          Text(
-                            formatDateTimeIso(item.createdAt.toIso8601String()),
-                            style: theme.typography.body.sm.copyWith(
-                              color: theme.colors.mutedForeground,
+                          if (canOpenProfile)
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => UserProfileRouter.open(
+                                context,
+                                item.username!,
+                              ),
+                              child: Text(
+                                '@${item.username}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.typography.body.xs.copyWith(
+                                  color: theme.colors.mutedForeground,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.25,
+                                ),
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                const Gap(16),
+                const Gap(12),
                 if (item.isPlainRepost) ...[
                   Text(
                     l10n.jinyeRepostLabel,
@@ -148,25 +219,17 @@ class JinyeDetailPage extends ConsumerWidget {
                   ),
                   const Gap(8),
                   if (item.repostOfId != null)
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: () => context.push('/jinye/${item.repostOfId}'),
-                      child: Text(l10n.jinyeOpenOriginal),
-                    ),
+                    _JinyeQuotedOriginalCard(originalId: item.repostOfId!),
                 ] else if (item.isQuote) ...[
-                  Text(item.quoteBody!, style: theme.typography.body.lg),
+                  Text(item.quoteBody!, style: theme.typography.body.md),
                   const Gap(8),
                   if (item.repostOfId != null)
-                    FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: () => context.push('/jinye/${item.repostOfId}'),
-                      child: Text(l10n.jinyeOpenOriginal),
-                    ),
+                    _JinyeQuotedOriginalCard(originalId: item.repostOfId!),
                 ] else if (item.body.trim().isNotEmpty) ...[
                   JinyeLemmaBody(
                     body: item.body,
                     links: item.lemmaLinks,
-                    style: theme.typography.body.lg,
+                    style: theme.typography.body.md,
                     onLinkLongPress: (link) => _showLemmaLinkActions(
                       context,
                       ref,
@@ -176,15 +239,14 @@ class JinyeDetailPage extends ConsumerWidget {
                       isOwner: isAuth && auth?.userId == item.userId,
                       isVerifier: _isVerifierRole(auth?.role),
                     ),
-                    onUnlinkedWordTap:
-                        isAuth &&
-                            auth?.userId == item.userId &&
-                            item.status == 'published'
-                        ? (span) => _linkLemmaAtSpanFromUi(
+                    onWordTap: item.status == 'published'
+                        ? (span, link) => _showWordMeaningFromUi(
                               context,
                               ref,
                               item: item,
                               span: span,
+                              link: link,
+                              isAuth: isAuth,
                             )
                         : null,
                   ),
@@ -202,27 +264,16 @@ class JinyeDetailPage extends ConsumerWidget {
                     ),
                   ],
                   ref.watch(jinyeTranslationsProvider(id)).when(
-                        data: (rows) {
-                          final accepted = rows.where((t) => t.isAccepted);
-                          if (accepted.isEmpty) {
-                            return const SizedBox.shrink();
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              accepted.first.bodyId,
-                              style: theme.typography.body.md.copyWith(
-                                color: theme.colors.mutedForeground,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          );
-                        },
+                        data: (rows) => _JinyeTranslationsBlock(
+                          jinyeId: id,
+                          rows: rows,
+                          isVerifier: _isVerifierRole(auth?.role),
+                        ),
                         loading: () => const SizedBox.shrink(),
                         error: (_, _) => const SizedBox.shrink(),
                       ),
                 ] else if (!item.hasAudio && !item.hasDisplayableImages)
-                  Text('-', style: theme.typography.body.lg),
+                  Text('-', style: theme.typography.body.md),
                 if (item.hasAudio) ...[
                   const Gap(12),
                   ThreadAudioPlayer(
@@ -276,9 +327,12 @@ class JinyeDetailPage extends ConsumerWidget {
                         },
                       ),
                     ),
-                    const Gap(8),
+                    const Spacer(),
                     FButton(
+                      size: .xs,
                       variant: FButtonVariant.ghost,
+                      // Sama pantun/lemma: flag = aksi laporkan.
+                      prefix: const Icon(FLucideIcons.flag, size: 14),
                       onPress: () => reportJinyeFromUi(
                         context,
                         ref,
@@ -302,70 +356,37 @@ bool _isVerifierRole(String? role) =>
     role == 'admin' || role == 'root' || role == 'reviewer';
 
 
-/// Tap kata di body → sheet "Tautkan lemma" → pilih kata kamus untuk span itu.
-Future<void> _linkLemmaAtSpanFromUi(
+/// Tap kata di body → sheet makna (+ Hubungkan / Buka lemma).
+Future<void> _showWordMeaningFromUi(
   BuildContext context,
   WidgetRef ref, {
   required JinyeItem item,
   required JinyeSpanSelection span,
+  JinyeLemmaLink? link,
+  required bool isAuth,
 }) async {
-  final l10n = AppLocalizations.of(context);
-  final confirm = await showModalBottomSheet<bool>(
-    context: context,
-    useRootNavigator: true,
-    builder: (ctx) {
-      return SafeArea(
-        child: FTileGroup(
-          children: [
-            FTile(
-              title: Text(span.text),
-              subtitle: Text(l10n.jinyeLemmaSelectSpanHint),
-            ),
-            FTile(
-              title: Text(l10n.jinyeLemmaLinkAction),
-              onPress: () => Navigator.pop(ctx, true),
-            ),
-            FTile(
-              title: Text(l10n.commonCancel),
-              onPress: () => Navigator.pop(ctx, false),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-  if (confirm != true || !context.mounted) return;
-
-  final word = await showJinyeWordPickerSheet(
+  final result = await showJinyeWordMeaningSheet(
     context,
-    initialQuery: span.text,
+    jinyeId: item.id,
+    span: span,
+    link: link,
+    isAuth: isAuth,
+    onLinked: () => ref.invalidate(jinyeDetailProvider(item.id)),
   );
-  if (word == null || !context.mounted) return;
-  try {
-    await ref.read(jinyeRepositoryProvider).createLemmaLink(
-          jinyeId: item.id,
-          start: span.start,
-          end: span.end,
-          wordId: word.id,
-        );
-    ref.invalidate(jinyeDetailProvider(item.id));
-    if (!context.mounted) return;
-    showFToast(context: context, title: Text(l10n.jinyeLemmaLinkSuccess));
-  } on DioException catch (e) {
-    if (!context.mounted) return;
-    final msg = e.response?.data is Map
-        ? (e.response!.data as Map)['message']
-        : null;
-    await showAppErrorSheet(
-      context,
-      message: msg is String && msg.isNotEmpty
-          ? msg
-          : l10n.jinyeLemmaLinkFailed,
-    );
-  } catch (_) {
-    if (!context.mounted) return;
-    await showAppErrorSheet(context, message: l10n.jinyeLemmaLinkFailed);
+  if (!context.mounted || result == null) return;
+  if (result == 'login') {
+    context.push('/login');
+    return;
   }
+  const contributePrefix = 'contribute:';
+  if (result.startsWith(contributePrefix)) {
+    final lemma = Uri.decodeComponent(result.substring(contributePrefix.length));
+    context.push(
+      '/contribute?lemma=${Uri.encodeQueryComponent(lemma)}',
+    );
+    return;
+  }
+  context.push('/words/$result');
 }
 
 Future<void> _promoteExampleFromUi(
@@ -448,12 +469,12 @@ Future<void> _translateJinyeFromUi(
   required JinyeItem item,
 }) async {
   final l10n = AppLocalizations.of(context);
-  final bodyId = await showJinyeTranslationSheet(context);
-  if (bodyId == null || bodyId.isEmpty || !context.mounted) return;
+  final body = await showJinyeTranslationSheet(context);
+  if (body == null || body.isEmpty || !context.mounted) return;
   try {
     await ref.read(jinyeRepositoryProvider).createTranslation(
           jinyeId: item.id,
-          bodyId: bodyId,
+          body: body,
         );
     ref.invalidate(jinyeTranslationsProvider(item.id));
     if (!context.mounted) return;
@@ -621,6 +642,7 @@ Future<void> _showOwnerActions(
   BuildContext context,
   WidgetRef ref, {
   required JinyeItem item,
+  required bool isVerifier,
 }) async {
   final l10n = AppLocalizations.of(context);
   final action = await showModalBottomSheet<String>(
@@ -673,13 +695,20 @@ Future<void> _showOwnerActions(
                     title: Text(l10n.jinyePromoteExampleAction),
                     onPress: () => Navigator.pop(context, 'promote'),
                   ),
-                if (item.body.trim().isNotEmpty)
+                // Terjemahan juga di menu pemilik (boleh usul sendiri).
+                if (item.status == 'published' && item.body.trim().isNotEmpty)
                   FTile(
                     prefix: const Icon(FLucideIcons.languages, size: 18),
                     title: Text(l10n.jinyeTranslateAction),
                     onPress: () => Navigator.pop(context, 'translate'),
                   ),
               ],
+              if (isVerifier)
+                FTile(
+                  prefix: const Icon(FLucideIcons.clipboardCheck, size: 18),
+                  title: Text(l10n.jinyeTranslateReviewAction),
+                  onPress: () => Navigator.pop(context, 'review_translations'),
+                ),
               if (item.status == 'archived')
                 FTile(
                   prefix: const Icon(FLucideIcons.archiveRestore, size: 18),
@@ -705,6 +734,10 @@ Future<void> _showOwnerActions(
   }
   if (action == 'translate') {
     await _translateJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'review_translations') {
+    context.push(JinyeRouter.translationReview.path);
     return;
   }
   if (action == 'edit') {
@@ -752,9 +785,7 @@ Future<void> _showOwnerActions(
         return;
     }
     ref.invalidate(jinyeDetailProvider(item.id));
-    if (item.username != null && item.username!.isNotEmpty) {
-      ref.invalidate(latestJinyeByUsernameProvider(item.username!));
-    }
+    invalidateJinyeProfileSurfaces(ref, item.username);
   } on DioException catch (e) {
     if (!context.mounted) return;
     final msg = e.response?.data is Map
@@ -776,6 +807,7 @@ Future<void> _showVisitorActions(
   BuildContext context,
   WidgetRef ref, {
   required JinyeItem item,
+  required bool isVerifier,
 }) async {
   final l10n = AppLocalizations.of(context);
   final canShare = item.status == 'published' && item.repostOfId == null;
@@ -802,6 +834,20 @@ Future<void> _showVisitorActions(
                   onPress: () => Navigator.pop(context, 'quote'),
                 ),
               ],
+              // API: POST translations = login siapa saja (bukan owner-only).
+              if (item.status == 'published' && item.body.trim().isNotEmpty)
+                FTile(
+                  prefix: const Icon(FLucideIcons.languages, size: 18),
+                  title: Text(l10n.jinyeTranslateAction),
+                  onPress: () => Navigator.pop(context, 'translate'),
+                ),
+              if (isVerifier)
+                FTile(
+                  prefix: const Icon(FLucideIcons.clipboardCheck, size: 18),
+                  title: Text(l10n.jinyeTranslateReviewAction),
+                  onPress: () =>
+                      Navigator.pop(context, 'review_translations'),
+                ),
               FTile(
                 prefix: const Icon(FLucideIcons.x, size: 18),
                 title: Text(l10n.commonCancel),
@@ -820,6 +866,14 @@ Future<void> _showVisitorActions(
   }
   if (action == 'quote') {
     await _quoteJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'translate') {
+    await _translateJinyeFromUi(context, ref, item: item);
+    return;
+  }
+  if (action == 'review_translations') {
+    context.push(JinyeRouter.translationReview.path);
   }
 }
 
@@ -903,6 +957,8 @@ Future<void> _repostJinyeFromUi(
     await ref.read(jinyeRepositoryProvider).repost(item.id);
     if (!context.mounted) return;
     ref.invalidate(jinyeDetailProvider(item.id));
+    final me = ref.read(authStatusProvider).value?.username;
+    invalidateJinyeProfileSurfaces(ref, me);
     showFToast(context: context, title: Text(l10n.jinyeRepostSuccess));
   } on DioException catch (e) {
     if (!context.mounted) return;
@@ -931,7 +987,7 @@ Future<void> _quoteJinyeFromUi(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
-    builder: (_) => const _JinyeQuoteSheet(),
+    builder: (_) => _JinyeQuoteSheet(original: item),
   );
   if (caption == null || !context.mounted) return;
   try {
@@ -940,6 +996,8 @@ Future<void> _quoteJinyeFromUi(
           quoteBody: caption,
         );
     if (!context.mounted) return;
+    final me = ref.read(authStatusProvider).value?.username;
+    invalidateJinyeProfileSurfaces(ref, me);
     showFToast(context: context, title: Text(l10n.jinyeQuoteSuccess));
     context.push('/jinye/${created.id}');
   } on DioException catch (e) {
@@ -965,7 +1023,9 @@ Future<void> _quoteJinyeFromUi(
 }
 
 class _JinyeQuoteSheet extends StatefulWidget {
-  const _JinyeQuoteSheet();
+  const _JinyeQuoteSheet({required this.original});
+
+  final JinyeItem original;
 
   @override
   State<_JinyeQuoteSheet> createState() => _JinyeQuoteSheetState();
@@ -998,7 +1058,7 @@ class _JinyeQuoteSheetState extends State<_JinyeQuoteSheet> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
               l10n.jinyeQuoteTitle,
-              style: theme.typography.body.lg.copyWith(
+              style: theme.typography.body.md.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1015,6 +1075,12 @@ class _JinyeQuoteSheetState extends State<_JinyeQuoteSheet> {
               maxLength: 500,
             ),
           ),
+          const Gap(8),
+          // Cuplikan Jinye yang dikutip - biar penulis tahu konteksnya.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _JinyeOriginalSnippet(item: widget.original),
+          ),
           SafeArea(
             top: false,
             child: Padding(
@@ -1028,6 +1094,112 @@ class _JinyeQuoteSheetState extends State<_JinyeQuoteSheet> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Kartu ringkas Jinye asli (sheet quote + detail quote/repost).
+class _JinyeOriginalSnippet extends StatelessWidget {
+  const _JinyeOriginalSnippet({required this.item, this.onTap});
+
+  final JinyeItem item;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final actor = displayPublicAccountLabel(
+      displayName: item.displayName,
+      username: item.username,
+    );
+    final body = item.body.trim();
+    final preview = body.isNotEmpty
+        ? body
+        : item.hasAudio
+        ? l10n.jinyePreviewVoiceOnly
+        : item.images.isNotEmpty
+        ? l10n.jinyePreviewPhotoOnly
+        : l10n.jinyePreviewEmpty;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colors.border),
+          borderRadius: BorderRadius.circular(10),
+          color: theme.colors.secondary.withValues(alpha: 0.35),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                actor,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.body.sm.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (item.username != null && item.username!.trim().isNotEmpty)
+                Text(
+                  '@${item.username}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              const Gap(6),
+              Text(
+                preview,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: theme.typography.body.sm,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Muat Jinye asli lewat id (detail quote/repost).
+class _JinyeQuotedOriginalCard extends ConsumerWidget {
+  const _JinyeQuotedOriginalCard({required this.originalId});
+
+  final String originalId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final async = ref.watch(jinyeDetailProvider(originalId));
+
+    return async.when(
+      loading: () => DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colors.border),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: FCircularProgress(size: .sm),
+        ),
+      ),
+      error: (_, _) => FButton(
+        variant: FButtonVariant.outline,
+        onPress: () => context.push('/jinye/$originalId'),
+        child: Text(l10n.jinyeOpenOriginal),
+      ),
+      data: (original) => _JinyeOriginalSnippet(
+        item: original,
+        onTap: () => context.push('/jinye/$originalId'),
       ),
     );
   }
@@ -1073,6 +1245,149 @@ class _JinyePendingPhotosBanner extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _JinyeTranslationsBlock extends ConsumerStatefulWidget {
+  const _JinyeTranslationsBlock({
+    required this.jinyeId,
+    required this.rows,
+    required this.isVerifier,
+  });
+
+  final String jinyeId;
+  final List<JinyeTranslation> rows;
+  final bool isVerifier;
+
+  @override
+  ConsumerState<_JinyeTranslationsBlock> createState() =>
+      _JinyeTranslationsBlockState();
+}
+
+class _JinyeTranslationsBlockState
+    extends ConsumerState<_JinyeTranslationsBlock> {
+  String? _busyId;
+
+  Future<void> _resolve(JinyeTranslation row, String action) async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _busyId = row.id);
+    try {
+      await ref.read(jinyeRepositoryProvider).resolveTranslation(
+            translationId: row.id,
+            action: action,
+          );
+      if (!mounted) return;
+      ref.invalidate(jinyeTranslationsProvider(widget.jinyeId));
+      ref.invalidate(jinyeTranslationQueueProvider('pending'));
+      showFToast(
+        context: context,
+        title: Text(
+          action == 'approve'
+              ? l10n.jinyeTranslateResolveApproved
+              : l10n.jinyeTranslateResolveRejected,
+        ),
+      );
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final msg = e.response?.data is Map
+          ? (e.response!.data as Map)['message']
+          : null;
+      await showAppErrorSheet(
+        context,
+        message: msg is String && msg.isNotEmpty
+            ? msg
+            : l10n.jinyeTranslateResolveFailed,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      await showAppErrorSheet(
+        context,
+        message: l10n.jinyeTranslateResolveFailed,
+      );
+    } finally {
+      if (mounted) setState(() => _busyId = null);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final accepted = widget.rows.where((t) => t.isAccepted).toList();
+    final pending = widget.rows.where((t) => t.isPending).toList();
+
+    if (accepted.isEmpty && !(widget.isVerifier && pending.isNotEmpty)) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (accepted.isNotEmpty)
+            Text(
+              accepted.first.body,
+              style: theme.typography.body.md.copyWith(
+                color: theme.colors.mutedForeground,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          if (widget.isVerifier && pending.isNotEmpty) ...[
+            const Gap(8),
+            Text(
+              l10n.jinyeTranslatePendingSection,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(4),
+            for (final row in pending) ...[
+              if (row.sourceBody.trim().isNotEmpty) ...[
+                Text(
+                  l10n.jinyeTranslateReviewSourceLabel,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                Text(row.sourceBody, style: theme.typography.body.md),
+                const Gap(4),
+              ],
+              Text(
+                l10n.jinyeTranslateReviewBodyLabel,
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+              Text(row.body, style: theme.typography.body.md),
+              const Gap(6),
+              Row(
+                children: [
+                  FButton(
+                    onPress: _busyId != null
+                        ? null
+                        : () => _resolve(row, 'approve'),
+                    prefix: _busyId == row.id
+                        ? const FCircularProgress()
+                        : null,
+                    child: Text(l10n.jinyeTranslateApproveAction),
+                  ),
+                  const Gap(8),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: _busyId != null
+                        ? null
+                        : () => _resolve(row, 'reject'),
+                    child: Text(l10n.jinyeTranslateRejectAction),
+                  ),
+                ],
+              ),
+              const Gap(8),
+            ],
+          ],
+        ],
       ),
     );
   }

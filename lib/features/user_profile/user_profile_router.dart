@@ -19,7 +19,8 @@ class UserProfileRouter {
     String username, {
     String? displayName,
   }) {
-    final handle = username.trim();
+    // API username case-sensitive; selalu lowercase supaya activity/jinye ketemu.
+    final handle = username.trim().toLowerCase();
     if (handle.isEmpty) return;
     final name = displayName?.trim();
     context.pushNamed(
@@ -37,7 +38,7 @@ class UserProfileRouter {
       builder: (context, state) {
         final raw = state.pathParameters['username'] ?? '';
         // go_router biasanya sudah decode; defensive untuk %20 tersisa.
-        final username = Uri.decodeComponent(raw);
+        final username = Uri.decodeComponent(raw).trim().toLowerCase();
         final extra = state.extra;
         final initialDisplayName = extra is String && extra.trim().isNotEmpty
             ? extra.trim()

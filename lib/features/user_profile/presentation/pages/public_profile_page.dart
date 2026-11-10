@@ -34,6 +34,7 @@ import '../../../profile/data/avatar_upload_service.dart';
 import '../../../profile/presentation/crop_profile_photo.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
+import '../../../jinye/data/jinye_providers.dart';
 import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
@@ -54,13 +55,15 @@ class PublicProfilePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final async = ref.watch(publicProfileProvider(username));
-    final activityAsync = ref.watch(publicActivityProvider(username));
+    // API case-sensitive; samakan key provider dengan router + invalidate.
+    final handle = username.trim().toLowerCase();
+    final async = ref.watch(publicProfileProvider(handle));
+    final activityAsync = ref.watch(publicActivityProvider(handle));
     final me = ref.watch(authStatusProvider).value;
     final isOwnProfile =
         me?.isAuth == true &&
         me?.username != null &&
-        me!.username!.toLowerCase() == username.toLowerCase();
+        me!.username!.toLowerCase() == handle;
 
     // Handle lama (mis. hyphen) di route → sync sesi lalu ganti ke handle baru.
     useEffect(() {
@@ -71,11 +74,11 @@ class PublicProfilePage extends HookConsumerWidget {
             .ensureUsernameForProfile();
         if (!context.mounted) return;
         if (fresh == null || fresh.isEmpty) return;
-        if (fresh.toLowerCase() == username.toLowerCase()) return;
+        if (fresh.toLowerCase() == handle) return;
         context.replace('/users/${Uri.encodeComponent(fresh)}');
       }());
       return null;
-    }, [async.hasError, username, me?.isAuth]);
+    }, [async.hasError, handle, me?.isAuth]);
 
     // Profil sendiri: sync sesi hanya jika beda dari yang sudah di state
     // (hindari rebuild IndexedStack saat animasi back).
@@ -111,12 +114,12 @@ class PublicProfilePage extends HookConsumerWidget {
     );
 
     Future<void> refresh() async {
-      ref.invalidate(publicProfileProvider(username));
-      ref.invalidate(publicActivityProvider(username));
+      ref.invalidate(publicProfileProvider(handle));
+      invalidateJinyeProfileSurfaces(ref, handle);
       if (me?.isAuth == true) {
         await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
       }
-      await ref.read(publicProfileProvider(username).future);
+      await ref.read(publicProfileProvider(handle).future);
     }
 
     return FScaffold(
@@ -148,8 +151,8 @@ class PublicProfilePage extends HookConsumerWidget {
                     ? async.error! as UserProfileFailure
                     : UserProfileFailure(async.error.toString()),
                 onRetry: () {
-                  ref.invalidate(publicProfileProvider(username));
-                  ref.invalidate(publicActivityProvider(username));
+                  ref.invalidate(publicProfileProvider(handle));
+                  invalidateJinyeProfileSurfaces(ref, handle);
                 },
               )
             : async.when(
@@ -161,7 +164,7 @@ class PublicProfilePage extends HookConsumerWidget {
                   activityAsync: activityAsync,
                   onRefresh: refresh,
                   onRetryActivity: () =>
-                      ref.invalidate(publicActivityProvider(username)),
+                      invalidateJinyeProfileSurfaces(ref, handle),
                 ),
               ),
       ),

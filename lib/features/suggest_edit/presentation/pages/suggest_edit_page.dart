@@ -524,11 +524,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
       if (!mounted) return;
       ref.invalidate(changeHistoryProvider(widget.wordId));
-      final router = GoRouter.of(context);
-      router.pop();
+      // #264: ganti form di stack (bukan pop+push) supaya back tidak
+      // membuka lagi form usulan yang sudah terkirim.
       if (!selfApplied) {
         ref.invalidate(myContributionsListControllerProvider);
-        router.push('/contributions');
+        context.pushReplacement('/contributions');
+      } else {
+        context.pop();
       }
     } on DioException catch (e) {
       await _handleDioError(e);
@@ -629,6 +631,16 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
   }
 
+  /// #264: dari form kategori → listing opsi dulu; dari listing → keluar.
+  /// Jangan pushReplacement antar opsi - state lokal `_category` saja.
+  void _onBack() {
+    if (_category != null) {
+      setState(() => _category = null);
+      return;
+    }
+    context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authStatusProvider).value;
@@ -654,45 +666,55 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     // kata" di tile tidak membuka halaman bertajuk "Ubah Kata".
     final headerTitle = suggestEditEntryTileCopy(auth?.role, _l10n).title;
     final isExample = _category == SuggestCategory.addExample;
+    final onCategoryForm = _category != null;
 
-    return FScaffold(
-      header: FHeader.nested(
-        title: Text(headerTitle),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      footer: _category == null
-          ? null
-          : SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                child: FButton(
-                  onPress: _submitting
-                      ? null
-                      : () {
-                          final d = detailAsync.asData?.value;
-                          if (d != null) _submit(d);
-                        },
-                  prefix: _submitting ? const FCircularProgress() : null,
-                  child: Text(
-                    _submitting
-                        ? preSubmit.ctaBusy
-                        : (isExample
-                              ? _l10n.suggestSendExample
-                              : preSubmit.cta),
+    // #264: system back sama dengan header - form → listing, bukan keluar.
+    return PopScope(
+      canPop: !onCategoryForm,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _category != null) {
+          setState(() => _category = null);
+        }
+      },
+      child: FScaffold(
+        header: FHeader.nested(
+          title: Text(headerTitle),
+          prefixes: [FHeaderAction.back(onPress: _onBack)],
+        ),
+        footer: !onCategoryForm
+            ? null
+            : SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: FButton(
+                    onPress: _submitting
+                        ? null
+                        : () {
+                            final d = detailAsync.asData?.value;
+                            if (d != null) _submit(d);
+                          },
+                    prefix: _submitting ? const FCircularProgress() : null,
+                    child: Text(
+                      _submitting
+                          ? preSubmit.ctaBusy
+                          : (isExample
+                                ? _l10n.suggestSendExample
+                                : preSubmit.cta),
+                    ),
                   ),
                 ),
               ),
-            ),
-      child: detailAsync.when(
-        loading: () => const Center(child: FCircularProgress()),
-        error: (e, _) => Center(child: Text('$e')),
-        data: (detail) {
-          _prefillOnce(detail);
-          return _category == null
-              ? _buildCategoryList(detail, preSubmit.banner)
-              : _buildCategoryForm(detail);
-        },
+        child: detailAsync.when(
+          loading: () => const Center(child: FCircularProgress()),
+          error: (e, _) => Center(child: Text('$e')),
+          data: (detail) {
+            _prefillOnce(detail);
+            return _category == null
+                ? _buildCategoryList(detail, preSubmit.banner)
+                : _buildCategoryForm(detail);
+          },
+        ),
       ),
     );
   }

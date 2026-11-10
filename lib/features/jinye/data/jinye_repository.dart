@@ -333,9 +333,41 @@ class JinyeRepository {
     return JinyePromoteResult.fromJson(data);
   }
 
+  static const _translationsBase = '/api/v1/translations';
+
   Future<List<JinyeTranslation>> listTranslations(String jinyeId) async {
     final res = await _dio.get<Map<String, dynamic>>(
-      '$_base/$jinyeId/translations',
+      _translationsBase,
+      queryParameters: {
+        'reff': 'jinye',
+        'reff_id': jinyeId,
+      },
+    );
+    final raw = res.data?['data'];
+    if (raw is! List) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.jinyeResponseIncomplete,
+      );
+    }
+    return raw
+        .whereType<Map>()
+        .map((e) => JinyeTranslation.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  /// Antrian global per status (tanpa reff_id).
+  Future<List<JinyeTranslation>> listTranslationQueue({
+    String status = 'pending',
+    int limit = 50,
+  }) async {
+    final res = await _dio.get<Map<String, dynamic>>(
+      _translationsBase,
+      queryParameters: {
+        'reff': 'jinye',
+        'status': status,
+        'limit': limit,
+      },
     );
     final raw = res.data?['data'];
     if (raw is! List) {
@@ -352,11 +384,15 @@ class JinyeRepository {
 
   Future<JinyeTranslation> createTranslation({
     required String jinyeId,
-    required String bodyId,
+    required String body,
   }) async {
     final res = await _dio.post<Map<String, dynamic>>(
-      '$_base/$jinyeId/translations',
-      data: {'body_id': bodyId.trim()},
+      _translationsBase,
+      data: {
+        'reff': 'jinye',
+        'reff_id': jinyeId,
+        'body': body.trim(),
+      },
     );
     final data = res.data?['data'];
     if (data is! Map<String, dynamic>) {
@@ -369,12 +405,11 @@ class JinyeRepository {
   }
 
   Future<JinyeTranslation> resolveTranslation({
-    required String jinyeId,
     required String translationId,
     required String action,
   }) async {
     final res = await _dio.post<Map<String, dynamic>>(
-      '$_base/$jinyeId/translations/$translationId/resolve',
+      '$_translationsBase/$translationId/resolve',
       data: {'action': action},
     );
     final data = res.data?['data'];

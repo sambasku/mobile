@@ -25,7 +25,8 @@ class JinyeProfilePreview extends ConsumerWidget {
   final bool isOwnProfile;
 
   /// Lebar cukup untuk cuplikan 32 char 1 baris; bubble tumbuh ke kanan.
-  static const double _maxBubbleWidth = 260;
+  /// Harus = [ProfileIdentityHeader.avatarOverlayMaxWidth].
+  static const double maxBubbleWidth = 260;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -226,7 +227,10 @@ class _ChatBubble extends StatelessWidget {
   final String semanticsLabel;
   final Widget child;
 
-  static const double _tailSize = 8;
+  static const double _tailW = 8;
+  static const double _tailH = 7;
+  // Ekor overlap ke badan supaya tidak ada celah di pojok kiri-bawah.
+  static const double _tailOverlap = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -237,38 +241,49 @@ class _ChatBubble extends StatelessWidget {
       button: true,
       label: semanticsLabel,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: JinyeProfilePreview._maxBubbleWidth,
+            maxWidth: JinyeProfilePreview.maxBubbleWidth,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          // Stack: ekor menempel di bawah badan (bukan Column + gap).
+          child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: fill,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: border),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colors.foreground.withValues(alpha: 0.12),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+              Padding(
+                // Sisakan ruang di bawah untuk ujung ekor.
+                padding: const EdgeInsets.only(bottom: _tailH - _tailOverlap),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: fill,
+                    // bottomLeft kecil: pojok rapat ke pangkal ekor.
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(14),
+                      topRight: Radius.circular(14),
+                      bottomRight: Radius.circular(14),
+                      bottomLeft: Radius.circular(4),
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                  child: child,
+                    border: Border.all(color: border),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colors.foreground.withValues(alpha: 0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
+                    child: child,
+                  ),
                 ),
               ),
-              // Ekor mengarah ke avatar (bawah-kiri bubble).
-              Transform.translate(
-                offset: const Offset(14, -1),
+              Positioned(
+                left: 2,
+                bottom: 0,
                 child: CustomPaint(
-                  size: const Size(_tailSize + 4, _tailSize),
+                  size: const Size(_tailW, _tailH),
                   painter: _BubbleTailPainter(
                     fill: fill,
                     border: border,
@@ -291,9 +306,10 @@ class _BubbleTailPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Segitiga: pangkal lebar di atas (masuk ke badan), ujung ke bawah-kiri.
     final path = Path()
       ..moveTo(0, 0)
-      ..lineTo(size.width * 0.45, size.height)
+      ..lineTo(size.width * 0.35, size.height)
       ..lineTo(size.width, 0)
       ..close();
 
@@ -303,21 +319,27 @@ class _BubbleTailPainter extends CustomPainter {
         ..color = fill
         ..style = PaintingStyle.fill,
     );
+    // Stroke hanya sisi kiri + kanan (bukan pangkal atas).
+    final stroke = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width * 0.35, size.height)
+      ..lineTo(size.width, 0);
     canvas.drawPath(
-      path,
+      stroke,
       Paint()
         ..color = border
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
-        ..strokeJoin = StrokeJoin.round,
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round,
     );
-    // Tutup garis atas ekor supaya tidak dobel dengan border badan.
+    // Tutup sambungan pangkal dengan fill badan (timpa border bawah).
     canvas.drawLine(
-      Offset.zero,
-      Offset(size.width, 0),
+      const Offset(-0.5, 0),
+      Offset(size.width + 0.5, 0),
       Paint()
         ..color = fill
-        ..strokeWidth = 2,
+        ..strokeWidth = 3,
     );
   }
 

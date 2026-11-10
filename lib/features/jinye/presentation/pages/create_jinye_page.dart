@@ -240,10 +240,9 @@ class CreateJinyePage extends HookConsumerWidget {
           }
         }
 
-        final username = auth?.username;
-        if (username != null) {
-          ref.invalidate(latestJinyeByUsernameProvider(username));
-        }
+        // Bubble + timeline profil + feed: tanpa ini Jinye baru tidak muncul
+        // sampai pull-to-refresh / cold start.
+        invalidateJinyeProfileSurfaces(ref, auth?.username);
         if (!context.mounted) return;
         showFToast(
           context: context,

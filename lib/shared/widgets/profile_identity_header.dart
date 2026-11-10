@@ -120,6 +120,14 @@ class ProfileIdentityHeader extends StatelessWidget {
   // terpotong tepi atas cover.
   double get _avatarExtent => AvatarBorderOverlay.extent(_avatarSize);
 
+  /// Lebar max overlay di kanan bahu avatar (selaras Jinye bubble 260).
+  /// Parent Stack harus selebar ini - kalau tidak, tap di bagian yang
+  /// overflow visual ditolak hit-test meski `clipBehavior: Clip.none`.
+  static const double avatarOverlayMaxWidth = 260;
+
+  /// Slack atas supaya overlay `top: -10` tetap masuk kotak hit-test.
+  static const double _avatarOverlayTopSlack = 10;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
@@ -166,35 +174,50 @@ class ProfileIdentityHeader extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
                     ),
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Semantics(
-                          button: onAvatarTap != null,
-                          label: AppLocalizations.of(context)
-                              .profilePhotoSemantics(displayName),
-                          child: GestureDetector(
-                            onTap: onAvatarTap,
-                            child: AvatarBorderOverlay(
-                              size: _avatarSize,
-                              borderUrl: borderUrl,
-                              child: UserAvatar(
-                                name: displayName,
-                                imageUrl: avatarUrl,
-                                size: _avatarSize,
+                    // Kotak hit-test harus mencakup bubble yang overflow ke
+                    // kanan/atas. Clip.none hanya untuk paint - hit-test
+                    // ancestor SizedBox/Padding tetap butuh size cukup.
+                    child: SizedBox(
+                      width: avatarOverlay == null
+                          ? _avatarExtent
+                          : _avatarExtent * 0.55 + avatarOverlayMaxWidth,
+                      height: avatarOverlay == null
+                          ? _avatarExtent
+                          : _avatarExtent + _avatarOverlayTopSlack,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: Semantics(
+                              button: onAvatarTap != null,
+                              label: AppLocalizations.of(context)
+                                  .profilePhotoSemantics(displayName),
+                              child: GestureDetector(
+                                onTap: onAvatarTap,
+                                child: AvatarBorderOverlay(
+                                  size: _avatarSize,
+                                  borderUrl: borderUrl,
+                                  child: UserAvatar(
+                                    name: displayName,
+                                    imageUrl: avatarUrl,
+                                    size: _avatarSize,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        if (avatarOverlay != null)
-                          Positioned(
-                            // Kiri fixed di bahu kanan avatar; bubble tumbuh ke kanan
-                            // (bukan ke kiri menutup wajah).
-                            top: -10,
-                            left: _avatarExtent * 0.55,
-                            child: avatarOverlay!,
-                          ),
-                      ],
+                          if (avatarOverlay != null)
+                            Positioned(
+                              // Kiri fixed di bahu kanan avatar; bubble tumbuh
+                              // ke kanan (bukan ke kiri menutup wajah).
+                              top: 0,
+                              left: _avatarExtent * 0.55,
+                              child: avatarOverlay!,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

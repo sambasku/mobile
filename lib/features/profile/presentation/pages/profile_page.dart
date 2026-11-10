@@ -19,6 +19,8 @@ import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/providers/review_suggestions_providers.dart';
 import '../../../notification/presentation/providers/notification_providers.dart';
 import '../../../settings/settings_router.dart';
+import '../../../jinye/data/jinye_providers.dart';
+import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../../../user_profile/presentation/providers/user_profile_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../achievement/presentation/providers/achievement_providers.dart';
@@ -70,7 +72,9 @@ class ProfilePage extends HookConsumerWidget {
       ref.invalidate(myAchievementsProvider());
       ref.invalidate(myActiveBorderProvider);
       if (username != null && username.isNotEmpty) {
-        ref.invalidate(publicProfileProvider(username.toLowerCase()));
+        final handle = username.toLowerCase();
+        ref.invalidate(publicProfileProvider(handle));
+        invalidateJinyeProfileSurfaces(ref, handle);
       }
       await ref.read(authStatusProvider.notifier).ensureUsernameForProfile();
     }
@@ -443,6 +447,12 @@ class _IdentitySection extends ConsumerWidget {
               ? null
               : formatDateTimeIso(profile.joinedAt),
           onAvatarTap: isAuth ? openPublicProfile : null,
+          avatarOverlay: usernameLower == null
+              ? null
+              : JinyeProfilePreview(
+                  username: usernameLower,
+                  isOwnProfile: true,
+                ),
           actions: [
             if (isAuth)
               FButton(

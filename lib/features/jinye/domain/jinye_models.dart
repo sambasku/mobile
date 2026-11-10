@@ -163,23 +163,31 @@ class JinyeLemmaLink {
 class JinyeTranslation {
   const JinyeTranslation({
     required this.id,
-    required this.jinyeId,
-    required this.bodyId,
+    required this.reff,
+    required this.reffId,
+    required this.body,
     required this.status,
     required this.translatorId,
+    this.sourceBody = '',
     this.reviewedBy,
     this.reviewedAt,
     this.createdAt,
   });
 
   final String id;
-  final String jinyeId;
-  final String bodyId;
+  final String reff;
+  final String reffId;
+  /// Snapshot teks sumber (Jinye body) saat usulan.
+  final String sourceBody;
+  final String body;
   final String status;
   final String translatorId;
   final String? reviewedBy;
   final DateTime? reviewedAt;
   final DateTime? createdAt;
+
+  /// Alias untuk key provider / UI yang masih keyed by Jinye id.
+  String get jinyeId => reffId;
 
   bool get isAccepted => status == 'accepted';
   bool get isPending => status == 'pending';
@@ -187,8 +195,11 @@ class JinyeTranslation {
   factory JinyeTranslation.fromJson(Map<String, dynamic> json) {
     return JinyeTranslation(
       id: json['id'] as String,
-      jinyeId: json['jinye_id'] as String,
-      bodyId: json['body_id'] as String? ?? '',
+      reff: json['reff'] as String? ?? 'jinye',
+      reffId: (json['reff_id'] as String?) ??
+          (json['jinye_id'] as String? ?? ''),
+      sourceBody: (json['source_body'] as String?) ?? '',
+      body: (json['body'] as String?) ?? (json['body_id'] as String? ?? ''),
       status: json['status'] as String? ?? 'pending',
       translatorId: json['translator_id'] as String? ?? '',
       reviewedBy: json['reviewed_by'] as String?,

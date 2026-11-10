@@ -18423,6 +18423,42 @@ abstract class AppLocalizations {
   /// **'Gagal menghapus tautan'**
   String get jinyeLemmaDeleteFailed;
 
+  /// Label arah makna di sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arti (Sambas → Indonesia)'**
+  String get jinyeWordMeaningLookupLabel;
+
+  /// Empty state sheet makna kata di Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di kamus'**
+  String get jinyeWordMeaningEmpty;
+
+  /// Error load makna di sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat makna'**
+  String get jinyeWordMeaningLoadFailed;
+
+  /// CTA tautkan span kata Jinye ke lemma kamus
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungkan ke lemma'**
+  String get jinyeWordMeaningLinkAction;
+
+  /// CTA buka detail lemma dari span yang sudah tertaut
+  ///
+  /// In id, this message translates to:
+  /// **'Buka lemma'**
+  String get jinyeWordMeaningOpenLemma;
+
+  /// Toast guest saat usul/hubungkan lemma dari sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan atau menghubungkan lemma'**
+  String get jinyeWordMeaningLoginFirst;
+
   /// CTA owner promote Jinye ke contoh
   ///
   /// In id, this message translates to:
@@ -18488,6 +18524,102 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal mengusulkan terjemahan'**
   String get jinyeTranslateFailed;
+
+  /// Menu verifikator buka antrian terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau usulan terjemahan'**
+  String get jinyeTranslateReviewAction;
+
+  /// Judul halaman antrian terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terjemahan'**
+  String get jinyeTranslateReviewTitle;
+
+  /// Empty state antrian terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan di filter ini'**
+  String get jinyeTranslateReviewEmpty;
+
+  /// Error load antrian terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan terjemahan'**
+  String get jinyeTranslateReviewLoadFailed;
+
+  /// Fallback label bila snapshot sumber kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye {id}'**
+  String jinyeTranslateReviewSourceId(String id);
+
+  /// Label snapshot teks asli di review terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Teks sumber'**
+  String get jinyeTranslateReviewSourceLabel;
+
+  /// Label teks terjemahan di review
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get jinyeTranslateReviewBodyLabel;
+
+  /// Judul section pending di detail Jinye (verifikator)
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get jinyeTranslatePendingSection;
+
+  /// CTA approve usulan terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terima'**
+  String get jinyeTranslateApproveAction;
+
+  /// CTA reject usulan terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak'**
+  String get jinyeTranslateRejectAction;
+
+  /// Toast sukses approve terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan diterima'**
+  String get jinyeTranslateResolveApproved;
+
+  /// Toast sukses reject terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan ditolak'**
+  String get jinyeTranslateResolveRejected;
+
+  /// Error resolve terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses terjemahan'**
+  String get jinyeTranslateResolveFailed;
+
+  /// No description provided for @jinyeTranslateStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get jinyeTranslateStatusPending;
+
+  /// No description provided for @jinyeTranslateStatusAccepted.
+  ///
+  /// In id, this message translates to:
+  /// **'Diterima'**
+  String get jinyeTranslateStatusAccepted;
+
+  /// No description provided for @jinyeTranslateStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get jinyeTranslateStatusRejected;
 
   /// CTA owner edit body Jinye
   ///

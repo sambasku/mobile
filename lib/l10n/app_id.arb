@@ -7379,7 +7379,31 @@
   "@jinyeLemmaDeleteSuccess": {"description": "Toast sukses hapus link"},
   "jinyeLemmaDeleteFailed": "Gagal menghapus tautan",
   "@jinyeLemmaDeleteFailed": {"description": "Error hapus lemma link"},
-"jinyePromoteExampleAction": "Jadikan contoh lemma",
+  "jinyeWordMeaningLookupLabel": "Arti (Sambas → Indonesia)",
+  "@jinyeWordMeaningLookupLabel": {
+    "description": "Label arah makna di sheet tap kata Jinye"
+  },
+  "jinyeWordMeaningEmpty": "Belum ada di kamus",
+  "@jinyeWordMeaningEmpty": {
+    "description": "Empty state sheet makna kata di Jinye"
+  },
+  "jinyeWordMeaningLoadFailed": "Gagal memuat makna",
+  "@jinyeWordMeaningLoadFailed": {
+    "description": "Error load makna di sheet tap kata Jinye"
+  },
+  "jinyeWordMeaningLinkAction": "Hubungkan ke lemma",
+  "@jinyeWordMeaningLinkAction": {
+    "description": "CTA tautkan span kata Jinye ke lemma kamus"
+  },
+  "jinyeWordMeaningOpenLemma": "Buka lemma",
+  "@jinyeWordMeaningOpenLemma": {
+    "description": "CTA buka detail lemma dari span yang sudah tertaut"
+  },
+  "jinyeWordMeaningLoginFirst": "Masuk dulu untuk mengusulkan atau menghubungkan lemma",
+  "@jinyeWordMeaningLoginFirst": {
+    "description": "Toast guest saat usul/hubungkan lemma dari sheet tap kata Jinye"
+  },
+  "jinyePromoteExampleAction": "Jadikan contoh lemma",
   "@jinyePromoteExampleAction": {"description": "CTA owner promote Jinye ke contoh"},
   "jinyePromoteWithAudio": "Sertakan rekaman suara",
   "@jinyePromoteWithAudio": {"description": "Pilihan promote + audio"},
@@ -7401,6 +7425,64 @@
   "@jinyeTranslateSuccess": {"description": "Toast sukses terjemahan"},
   "jinyeTranslateFailed": "Gagal mengusulkan terjemahan",
   "@jinyeTranslateFailed": {"description": "Error terjemahan Jinye"},
+  "jinyeTranslateReviewAction": "Tinjau usulan terjemahan",
+  "@jinyeTranslateReviewAction": {
+    "description": "Menu verifikator buka antrian terjemahan Jinye"
+  },
+  "jinyeTranslateReviewTitle": "Usulan terjemahan",
+  "@jinyeTranslateReviewTitle": {
+    "description": "Judul halaman antrian terjemahan Jinye"
+  },
+  "jinyeTranslateReviewEmpty": "Belum ada usulan di filter ini",
+  "@jinyeTranslateReviewEmpty": {
+    "description": "Empty state antrian terjemahan"
+  },
+  "jinyeTranslateReviewLoadFailed": "Gagal memuat usulan terjemahan",
+  "@jinyeTranslateReviewLoadFailed": {
+    "description": "Error load antrian terjemahan"
+  },
+  "jinyeTranslateReviewSourceId": "Jinye {id}",
+  "@jinyeTranslateReviewSourceId": {
+    "description": "Fallback label bila snapshot sumber kosong",
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "jinyeTranslateReviewSourceLabel": "Teks sumber",
+  "@jinyeTranslateReviewSourceLabel": {
+    "description": "Label snapshot teks asli di review terjemahan"
+  },
+  "jinyeTranslateReviewBodyLabel": "Terjemahan",
+  "@jinyeTranslateReviewBodyLabel": {
+    "description": "Label teks terjemahan di review"
+  },
+  "jinyeTranslatePendingSection": "Menunggu tinjauan",
+  "@jinyeTranslatePendingSection": {
+    "description": "Judul section pending di detail Jinye (verifikator)"
+  },
+  "jinyeTranslateApproveAction": "Terima",
+  "@jinyeTranslateApproveAction": {
+    "description": "CTA approve usulan terjemahan"
+  },
+  "jinyeTranslateRejectAction": "Tolak",
+  "@jinyeTranslateRejectAction": {
+    "description": "CTA reject usulan terjemahan"
+  },
+  "jinyeTranslateResolveApproved": "Terjemahan diterima",
+  "@jinyeTranslateResolveApproved": {
+    "description": "Toast sukses approve terjemahan"
+  },
+  "jinyeTranslateResolveRejected": "Terjemahan ditolak",
+  "@jinyeTranslateResolveRejected": {
+    "description": "Toast sukses reject terjemahan"
+  },
+  "jinyeTranslateResolveFailed": "Gagal memproses terjemahan",
+  "@jinyeTranslateResolveFailed": {
+    "description": "Error resolve terjemahan"
+  },
+  "jinyeTranslateStatusPending": "Menunggu",
+  "jinyeTranslateStatusAccepted": "Diterima",
+  "jinyeTranslateStatusRejected": "Ditolak",
   "jinyeEditAction": "Sunting",
   "@jinyeEditAction": {"description": "CTA owner edit body Jinye"},
   "jinyeEditTitle": "Sunting Jinye",

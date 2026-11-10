@@ -10482,6 +10482,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
 
   @override
+  String get jinyeWordMeaningLookupLabel => 'Arti (Sambas → Indonesia)';
+
+  @override
+  String get jinyeWordMeaningEmpty => 'Belum ada di kamus';
+
+  @override
+  String get jinyeWordMeaningLoadFailed => 'Gagal memuat makna';
+
+  @override
+  String get jinyeWordMeaningLinkAction => 'Hubungkan ke lemma';
+
+  @override
+  String get jinyeWordMeaningOpenLemma => 'Buka lemma';
+
+  @override
+  String get jinyeWordMeaningLoginFirst =>
+      'Masuk dulu untuk mengusulkan atau menghubungkan lemma';
+
+  @override
   String get jinyePromoteExampleAction => 'Jadikan contoh lemma';
 
   @override
@@ -10513,6 +10532,56 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewAction => 'Tinjau usulan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewTitle => 'Usulan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewEmpty => 'Belum ada usulan di filter ini';
+
+  @override
+  String get jinyeTranslateReviewLoadFailed => 'Gagal memuat usulan terjemahan';
+
+  @override
+  String jinyeTranslateReviewSourceId(String id) {
+    return 'Jinye $id';
+  }
+
+  @override
+  String get jinyeTranslateReviewSourceLabel => 'Teks sumber';
+
+  @override
+  String get jinyeTranslateReviewBodyLabel => 'Terjemahan';
+
+  @override
+  String get jinyeTranslatePendingSection => 'Menunggu tinjauan';
+
+  @override
+  String get jinyeTranslateApproveAction => 'Terima';
+
+  @override
+  String get jinyeTranslateRejectAction => 'Tolak';
+
+  @override
+  String get jinyeTranslateResolveApproved => 'Terjemahan diterima';
+
+  @override
+  String get jinyeTranslateResolveRejected => 'Terjemahan ditolak';
+
+  @override
+  String get jinyeTranslateResolveFailed => 'Gagal memproses terjemahan';
+
+  @override
+  String get jinyeTranslateStatusPending => 'Menunggu';
+
+  @override
+  String get jinyeTranslateStatusAccepted => 'Diterima';
+
+  @override
+  String get jinyeTranslateStatusRejected => 'Ditolak';
 
   @override
   String get jinyeEditAction => 'Sunting';
@@ -21072,6 +21141,25 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeLemmaDeleteFailed => 'Gagal menghapus tautan';
 
   @override
+  String get jinyeWordMeaningLookupLabel => 'Arti (Sambas → Indonesia)';
+
+  @override
+  String get jinyeWordMeaningEmpty => 'Belum ada di kamus';
+
+  @override
+  String get jinyeWordMeaningLoadFailed => 'Gagal memuat makna';
+
+  @override
+  String get jinyeWordMeaningLinkAction => 'Hubungkan ke lemma';
+
+  @override
+  String get jinyeWordMeaningOpenLemma => 'Buka lemma';
+
+  @override
+  String get jinyeWordMeaningLoginFirst =>
+      'Masuk dulu untuk mengusulkan atau menghubungkan lemma';
+
+  @override
   String get jinyePromoteExampleAction => 'Jadikan contoh lemma';
 
   @override
@@ -21103,6 +21191,56 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get jinyeTranslateFailed => 'Gagal mengusulkan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewAction => 'Tinjau usulan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewTitle => 'Usulan terjemahan';
+
+  @override
+  String get jinyeTranslateReviewEmpty => 'Belum ada usulan di filter ini';
+
+  @override
+  String get jinyeTranslateReviewLoadFailed => 'Gagal memuat usulan terjemahan';
+
+  @override
+  String jinyeTranslateReviewSourceId(String id) {
+    return 'Jinye $id';
+  }
+
+  @override
+  String get jinyeTranslateReviewSourceLabel => 'Teks sumber';
+
+  @override
+  String get jinyeTranslateReviewBodyLabel => 'Terjemahan';
+
+  @override
+  String get jinyeTranslatePendingSection => 'Menunggu tinjauan';
+
+  @override
+  String get jinyeTranslateApproveAction => 'Terima';
+
+  @override
+  String get jinyeTranslateRejectAction => 'Tolak';
+
+  @override
+  String get jinyeTranslateResolveApproved => 'Terjemahan diterima';
+
+  @override
+  String get jinyeTranslateResolveRejected => 'Terjemahan ditolak';
+
+  @override
+  String get jinyeTranslateResolveFailed => 'Gagal memproses terjemahan';
+
+  @override
+  String get jinyeTranslateStatusPending => 'Menunggu';
+
+  @override
+  String get jinyeTranslateStatusAccepted => 'Diterima';
+
+  @override
+  String get jinyeTranslateStatusRejected => 'Ditolak';
 
   @override
   String get jinyeEditAction => 'Sunting';
