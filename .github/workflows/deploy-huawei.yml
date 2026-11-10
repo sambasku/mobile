@@ -1,29 +1,18 @@
 name: Deploy (Huawei AppGallery)
 
-# Pipeline khusus Huawei AppGallery, terpisah dari Deploy (Production)
-# supaya gagal upload AGC tidak menggagalkan Play, dan versionCode
-# tetap deterministik dari tag (bukan resolver Play).
+# Catch-up / deploy ulang ke AppGallery Connect.
+# Rilis normal: AAB yang sama di-upload dari Deploy (Production) setelah
+# draft Play (lihat deploy-production.yml).
 #
-# Trigger:
-#   1. push tag `vMAJOR.MINOR.PATCH` - sama seperti Deploy (Production),
-#      jalan paralel saat rilis (contoh `v0.5.0`).
-#   2. workflow_dispatch - deploy ulang / catch-up. Input tag kosong =
-#      tag vMAJOR.MINOR.PATCH terbaru; isi tag lama (mis. v1.2.3) untuk
-#      versi tertentu.
+# Trigger: workflow_dispatch saja (bukan push tag) supaya tidak build ulang
+# paralel saat rilis. Input tag kosong = tag vMAJOR.MINOR.PATCH terbaru.
+# Workflow mengunduh artefact `production-aab` dari run Deploy (Production)
+# yang sukses untuk tag itu, lalu upload draft ke AGC.
 #
-# versionCode = MAJOR*10000 + MINOR*100 + PATCH (deterministik dari tag,
-# selalu naik antar release, tidak perlu query API). Contoh v1.2.3 -> 10203.
-# versionName = tag tanpa awalan v.
-#
-# Secrets GitHub (sama dengan deploy-production.yml):
-#   KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
-#   HUAWEI_CLIENT_ID / HUAWEI_CLIENT_SECRET / HUAWEI_APP_ID
-# Kosong = script upload skip dengan exit 0 (workflow tetap hijau).
+# Secrets: HUAWEI_CLIENT_ID / HUAWEI_CLIENT_SECRET / HUAWEI_APP_ID
+# (KEYSTORE tidak perlu - tidak rebuild). Kosong = script skip exit 0.
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
     inputs:
       tag:
@@ -33,119 +22,75 @@ on:
 
 permissions:
   contents: read
-
-env:
-  FLAVOR: production
-  FLUTTER_VERSION: "3.47.7"
+  actions: read
 
 jobs:
   huawei:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     concurrency:
       group: huawei-appgallery
       cancel-in-progress: false
     steps:
-      - name: Checkout (default branch + semua tag)
+      - name: Checkout (scripts + semua tag)
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Resolve tag (push = ref; dispatch kosong = terbaru)
+      - name: Resolve tag (dispatch kosong = terbaru)
         id: tag
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          REF_NAME: ${{ github.ref_name }}
           INPUT_TAG: ${{ inputs.tag }}
         run: |
-          if [ "$EVENT_NAME" = "push" ]; then
-            TAG="$REF_NAME"
-          else
-            TAG="$INPUT_TAG"
-            if [ -z "$TAG" ]; then
-              TAG=$(git tag --sort=-v:refname --list 'v[0-9]*.[0-9]*.[0-9]*' | head -1)
-            fi
+          TAG="$INPUT_TAG"
+          if [ -z "$TAG" ]; then
+            TAG=$(git tag --sort=-v:refname --list 'v[0-9]*.[0-9]*.[0-9]*' | head -1)
           fi
           if ! printf '%s' "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "tag tidak ditemukan / tidak valid: '$TAG' (pola vMAJOR.MINOR.PATCH)" >&2
             exit 1
           fi
-          git checkout "$TAG"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "Deploy Huawei dari tag: ${TAG}"
+          echo "Catch-up Huawei dari tag: ${TAG}"
 
       - name: Test Huawei AppGallery uploader
         run: node --test scripts/upload-huawei-appgallery.test.mjs
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "21"
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
-          cache: true
-
-      - name: Decode keystore & write key.properties
+      - name: Unduh production-aab dari Deploy (Production)
+        id: artifact
         env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > android/app/upload-keystore.jks
-          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=upload-keystore.jks\n' \
-            "$KEYSTORE_PASSWORD" "$KEY_PASSWORD" "$KEY_ALIAS" > android/key.properties
-
-      - name: Resolve version (dari tag, deterministik)
-        id: version
-        env:
+          GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          NAME="${TAG#v}"
-          MAJOR=$(printf '%s' "$NAME" | cut -d. -f1)
-          MINOR=$(printf '%s' "$NAME" | cut -d. -f2)
-          PATCH=$(printf '%s' "$NAME" | cut -d. -f3)
-          CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
-          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
-          echo "code=${CODE}"    >> "$GITHUB_OUTPUT"
-          echo "Versi Huawei: ${NAME}+${CODE}"
+          set -euo pipefail
+          RUN_ID=$(gh run list \
+            --workflow deploy-production.yml \
+            --branch "$TAG" \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId // empty')
+          if [ -z "$RUN_ID" ]; then
+            echo "Tidak ada run Deploy (Production) sukses untuk tag $TAG." >&2
+            echo "Jalankan Deploy (Production) dulu, atau pastikan artefact production-aab masih ada." >&2
+            exit 1
+          fi
+          echo "run_id=${RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "Mengunduh production-aab dari run ${RUN_ID}"
+          mkdir -p aab
+          gh run download "$RUN_ID" -n production-aab -D aab
+          AAB=$(find aab -type f -name '*.aab' | head -1)
+          if [ -z "$AAB" ]; then
+            echo "Artefact production-aab kosong / tanpa file .aab" >&2
+            find aab -type f -print >&2 || true
+            exit 1
+          fi
+          echo "aab_path=${AAB}" >> "$GITHUB_OUTPUT"
+          ls -la "$AAB"
 
-      - name: Write resolved version into pubspec.yaml
-        env:
-          VERSION_NAME: ${{ steps.version.outputs.name }}
-          VERSION_CODE: ${{ steps.version.outputs.code }}
-        run: |
-          sed -i "s|^version:.*|version: ${VERSION_NAME}+${VERSION_CODE}|" pubspec.yaml
-          grep '^version:' pubspec.yaml
-
-      - name: Resolve Flutter dependencies
-        run: flutter pub get
-
-      - name: Build App Bundle
-        run: >
-          flutter build appbundle --release --obfuscate
-          --split-debug-info=./debug-info
-          --flavor "$FLAVOR" -t lib/main.dart
-
-      - name: Upload AAB as workflow artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: huawei-aab-${{ steps.version.outputs.name }}
-          path: build/app/outputs/bundle/productionRelease/*.aab
-          if-no-files-found: error
-
-      - name: Assert AAB has no advertising ID permission
-        run: node scripts/assert-no-ad-id.mjs
-
-      # Draft di AppGallery Connect; submit review manual di AGC
-      # (kebijakan sama dengan Play: draft + rollout manual).
-      # continue-on-error: kegagalan upload Huawei tidak menggagalkan job,
+      # Draft di AppGallery Connect; submit review manual di AGC.
+      # continue-on-error: kegagalan upload tidak menggagalkan job;
       # notif dikirim step berikutnya.
       - name: Upload draft ke Huawei AppGallery
         id: huawei-upload
@@ -154,8 +99,8 @@ jobs:
           HUAWEI_CLIENT_ID: ${{ secrets.HUAWEI_CLIENT_ID }}
           HUAWEI_CLIENT_SECRET: ${{ secrets.HUAWEI_CLIENT_SECRET }}
           HUAWEI_APP_ID: ${{ secrets.HUAWEI_APP_ID }}
-        run: node scripts/upload-huawei-appgallery.mjs
-          build/app/outputs/bundle/productionRelease/app-production-release.aab
+          AAB_PATH: ${{ steps.artifact.outputs.aab_path }}
+        run: node scripts/upload-huawei-appgallery.mjs "$AAB_PATH"
 
       - name: Kirim notif gagal upload Huawei ke Telegram
         if: steps.huawei-upload.outcome == 'failure'
@@ -164,8 +109,9 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           to: ${{ secrets.TELEGRAM_TO }}
           message: |
-            GAGAL Upload AAB ke Huawei AppGallery — sambasku/mobile Deploy (Huawei)
+            GAGAL Upload AAB ke Huawei AppGallery - sambasku/mobile Deploy (Huawei)
             Tag: ${{ steps.tag.outputs.tag }} · Commit: ${{ github.sha }}
+            Sumber AAB: Deploy (Production) run ${{ steps.artifact.outputs.run_id }}
             Cek log step / versi terkunci di AppGallery Connect.
             https://github.com/sambasku/mobile/actions/runs/${{ github.run_id }}
 
@@ -175,14 +121,16 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           TAG: ${{ steps.tag.outputs.tag }}
           SHA: ${{ github.sha }}
+          PROD_RUN: ${{ steps.artifact.outputs.run_id }}
           RUN_URL: "https://github.com/sambasku/mobile/actions/runs/${{ github.run_id }}"
         run: |
           if [ -z "$DISCORD_WEBHOOK_URL" ]; then
             echo "Skip: DISCORD_WEBHOOK_URL tidak diset."
             exit 0
           fi
-          MSG="GAGAL Upload AAB ke Huawei AppGallery — sambasku/mobile Deploy (Huawei)
+          MSG="GAGAL Upload AAB ke Huawei AppGallery - sambasku/mobile Deploy (Huawei)
           Tag: $TAG · Commit: $SHA
+          Sumber AAB: Deploy (Production) run $PROD_RUN
           Cek log step / versi terkunci di AppGallery Connect.
           $RUN_URL"
           jq -n --arg content "$MSG" '{content: $content}' \
@@ -201,7 +149,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           to: ${{ secrets.TELEGRAM_TO }}
           message: |
-            ${{ contains(needs.*.result, 'failure') && 'GAGAL' || (contains(needs.*.result, 'cancelled') && 'Dibatalkan' || 'Sukses') }} CI sambasku/mobile — Deploy (Huawei AppGallery)
+            ${{ contains(needs.*.result, 'failure') && 'GAGAL' || (contains(needs.*.result, 'cancelled') && 'Dibatalkan' || 'Sukses') }} CI sambasku/mobile - Deploy (Huawei AppGallery)
             Tag: ${{ inputs.tag || github.ref_name }} · Run oleh: ${{ github.actor }}
             https://github.com/sambasku/mobile/actions/runs/${{ github.run_id }}
       - name: Kirim hasil CI ke Discord
@@ -217,7 +165,7 @@ jobs:
             echo "Skip: DISCORD_WEBHOOK_URL tidak diset."
             exit 0
           fi
-          MSG="$STATUS CI sambasku/mobile — Deploy (Huawei AppGallery)
+          MSG="$STATUS CI sambasku/mobile - Deploy (Huawei AppGallery)
           Tag: $TAG · Run oleh: $ACTOR
           $RUN_URL"
           jq -n --arg content "$MSG" '{content: $content}' \
