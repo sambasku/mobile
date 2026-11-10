@@ -2659,11 +2659,65 @@ abstract class AppLocalizations {
   /// **'Tambah {category}'**
   String suggestAddRelation(String category);
 
-  /// No description provided for @suggestRelationPickHint.
+  /// Hint di bawah label field relasi lemma (#265)
   ///
   /// In id, this message translates to:
-  /// **'Pilih saran ketik, atau tulis lemma baru sendiri'**
+  /// **'Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari'**
   String get suggestRelationPickHint;
+
+  /// Judul bottomsheet cari lemma existing (#265)
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get lemmaSearchSheetTitle;
+
+  /// No description provided for @lemmaSearchSheetIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf, lalu pilih dari daftar.'**
+  String get lemmaSearchSheetIntro;
+
+  /// No description provided for @lemmaSearchSheetHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lemma…'**
+  String get lemmaSearchSheetHint;
+
+  /// No description provided for @lemmaSearchSheetPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai ketik untuk mencari lemma di kamus'**
+  String get lemmaSearchSheetPrompt;
+
+  /// No description provided for @lemmaSearchSheetEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.'**
+  String get lemmaSearchSheetEmpty;
+
+  /// No description provided for @lemmaSearchSheetCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hasil'**
+  String lemmaSearchSheetCount(int count);
+
+  /// CTA bila query belum ada di hasil search
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai \"{lemma}\" sebagai lemma baru'**
+  String lemmaSearchSheetUseNew(String lemma);
+
+  /// Tombol buka bottomsheet saat belum ada lemma terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get lemmaPickerPickButton;
+
+  /// Tombol buka bottomsheet saat sudah ada chip lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah lemma lain'**
+  String get lemmaPickerAddAnother;
 
   /// No description provided for @suggestDerivedHint.
   ///

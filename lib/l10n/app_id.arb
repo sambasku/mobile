@@ -698,7 +698,43 @@
       }
     }
   },
-  "suggestRelationPickHint": "Pilih saran ketik, atau tulis lemma baru sendiri",
+  "suggestRelationPickHint": "Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari",
+  "@suggestRelationPickHint": {
+    "description": "Hint di bawah label field relasi lemma (#265)"
+  },
+  "lemmaSearchSheetTitle": "Pilih lemma",
+  "@lemmaSearchSheetTitle": {
+    "description": "Judul bottomsheet cari lemma existing (#265)"
+  },
+  "lemmaSearchSheetIntro": "Ketik minimal 2 huruf, lalu pilih dari daftar.",
+  "lemmaSearchSheetHint": "Cari lemma…",
+  "lemmaSearchSheetPrompt": "Mulai ketik untuk mencari lemma di kamus",
+  "lemmaSearchSheetEmpty": "Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.",
+  "lemmaSearchSheetCount": "{count} hasil",
+  "@lemmaSearchSheetCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lemmaSearchSheetUseNew": "Pakai \"{lemma}\" sebagai lemma baru",
+  "@lemmaSearchSheetUseNew": {
+    "description": "CTA bila query belum ada di hasil search",
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaPickerPickButton": "Pilih lemma",
+  "@lemmaPickerPickButton": {
+    "description": "Tombol buka bottomsheet saat belum ada lemma terpilih"
+  },
+  "lemmaPickerAddAnother": "Tambah lemma lain",
+  "@lemmaPickerAddAnother": {
+    "description": "Tombol buka bottomsheet saat sudah ada chip lemma"
+  },
   "suggestDerivedHint": "Kata ini diturunkan dari {target} di atas",
   "@suggestDerivedHint": {
     "placeholders": {

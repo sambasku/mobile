@@ -959,6 +959,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             ),
             hint: _l10n.suggestRelationPickHint,
             error: _errorText('relation_lemma'),
+            excludeLemmas: {detail.lemma},
           ),
           const Gap(12),
           _FieldCaption(
@@ -1009,6 +1010,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             label: _l10n.suggestOtherMembers,
             hint: _l10n.suggestRelationPickHint,
             error: _errorText('group_lemma'),
+            excludeLemmas: {detail.lemma},
           ),
           const Gap(12),
           _FieldCaption(

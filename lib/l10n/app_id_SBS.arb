@@ -439,7 +439,30 @@
   "suggestDerivedFromLabel": "akar kata",
   "suggestReferenceLabel": "kata rujukan",
   "suggestAddRelation": "Tambah {category}",
-  "suggestRelationPickHint": "Pilih saran ketik, atau tulis lemma baru sendiri",
+  "suggestRelationPickHint": "Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari",
+  "lemmaSearchSheetTitle": "Pilih lemma",
+  "lemmaSearchSheetIntro": "Ketik minimal 2 huruf, lalu pilih dari daftar.",
+  "lemmaSearchSheetHint": "Cari lemma…",
+  "lemmaSearchSheetPrompt": "Mulai ketik untuk mencari lemma di kamus",
+  "lemmaSearchSheetEmpty": "Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.",
+  "lemmaSearchSheetCount": "{count} hasil",
+  "@lemmaSearchSheetCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lemmaSearchSheetUseNew": "Pakai \"{lemma}\" sebagai lemma baru",
+  "@lemmaSearchSheetUseNew": {
+    "placeholders": {
+      "lemma": {
+        "type": "String"
+      }
+    }
+  },
+  "lemmaPickerPickButton": "Pilih lemma",
+  "lemmaPickerAddAnother": "Tambah lemma lain",
   "suggestDerivedHint": "Kata ini diturunkan dari {target} di atas",
   "suggestVariantOfHint": "Kata ini variasi/bentuk lain dari kata di atas",
   "suggestNonstandardOfHint": "Kata ini bentuk tidak baku dari kata baku di atas",

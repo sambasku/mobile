@@ -1,8 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../suggest_edit/presentation/widgets/lemma_picker_field.dart';
 
 /// Hasil bottomsheet kelengkapan opsional (variasi / sinonim / antonim / catatan).
 class ContributeRelationsDraft {
@@ -61,7 +63,7 @@ Future<ContributeRelationsDraft?> showContributeRelationsSheet(
   );
 }
 
-class _ContributeRelationsSheetBody extends StatefulWidget {
+class _ContributeRelationsSheetBody extends ConsumerStatefulWidget {
   const _ContributeRelationsSheetBody({
     required this.initial,
     required this.lemma,
@@ -71,12 +73,12 @@ class _ContributeRelationsSheetBody extends StatefulWidget {
   final String lemma;
 
   @override
-  State<_ContributeRelationsSheetBody> createState() =>
+  ConsumerState<_ContributeRelationsSheetBody> createState() =>
       _ContributeRelationsSheetBodyState();
 }
 
 class _ContributeRelationsSheetBodyState
-    extends State<_ContributeRelationsSheetBody> {
+    extends ConsumerState<_ContributeRelationsSheetBody> {
   late final TextEditingController _variantsCtrl;
   late final TextEditingController _synonymsCtrl;
   late final TextEditingController _antonymsCtrl;
@@ -261,22 +263,25 @@ class _ContributeRelationsSheetBodyState
                     textInputAction: TextInputAction.next,
                   ),
                   const Gap(12),
-                  FTextField(
-                    control: FTextFieldControl.managed(
-                      controller: _synonymsCtrl,
-                    ),
-                    label: Text(l10n.contributeRelationsSynonymsLabel),
-                    hint: l10n.contributeRelationsListHint,
-                    textInputAction: TextInputAction.next,
+                  // #265: sinonim/antonim = pilih lemma existing via bottomsheet.
+                  LemmaPickerField(
+                    controller: _synonymsCtrl,
+                    label: l10n.contributeRelationsSynonymsLabel,
+                    hint: l10n.suggestRelationPickHint,
+                    excludeLemmas: {
+                      if (widget.lemma.trim().isNotEmpty) widget.lemma.trim(),
+                      ..._parseCsv(_antonymsCtrl.text),
+                    },
                   ),
                   const Gap(12),
-                  FTextField(
-                    control: FTextFieldControl.managed(
-                      controller: _antonymsCtrl,
-                    ),
-                    label: Text(l10n.contributeRelationsAntonymsLabel),
-                    hint: l10n.contributeRelationsListHint,
-                    textInputAction: TextInputAction.next,
+                  LemmaPickerField(
+                    controller: _antonymsCtrl,
+                    label: l10n.contributeRelationsAntonymsLabel,
+                    hint: l10n.suggestRelationPickHint,
+                    excludeLemmas: {
+                      if (widget.lemma.trim().isNotEmpty) widget.lemma.trim(),
+                      ..._parseCsv(_synonymsCtrl.text),
+                    },
                   ),
                   const Gap(12),
                   FTextField(

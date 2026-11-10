@@ -1416,7 +1416,41 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get suggestRelationPickHint =>
-      'Pilih saran ketik, atau tulis lemma baru sendiri';
+      'Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari';
+
+  @override
+  String get lemmaSearchSheetTitle => 'Pilih lemma';
+
+  @override
+  String get lemmaSearchSheetIntro =>
+      'Ketik minimal 2 huruf, lalu pilih dari daftar.';
+
+  @override
+  String get lemmaSearchSheetHint => 'Cari lemma…';
+
+  @override
+  String get lemmaSearchSheetPrompt =>
+      'Mulai ketik untuk mencari lemma di kamus';
+
+  @override
+  String get lemmaSearchSheetEmpty =>
+      'Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.';
+
+  @override
+  String lemmaSearchSheetCount(int count) {
+    return '$count hasil';
+  }
+
+  @override
+  String lemmaSearchSheetUseNew(String lemma) {
+    return 'Pakai \"$lemma\" sebagai lemma baru';
+  }
+
+  @override
+  String get lemmaPickerPickButton => 'Pilih lemma';
+
+  @override
+  String get lemmaPickerAddAnother => 'Tambah lemma lain';
 
   @override
   String suggestDerivedHint(String target) {
@@ -11972,7 +12006,41 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get suggestRelationPickHint =>
-      'Pilih saran ketik, atau tulis lemma baru sendiri';
+      'Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari';
+
+  @override
+  String get lemmaSearchSheetTitle => 'Pilih lemma';
+
+  @override
+  String get lemmaSearchSheetIntro =>
+      'Ketik minimal 2 huruf, lalu pilih dari daftar.';
+
+  @override
+  String get lemmaSearchSheetHint => 'Cari lemma…';
+
+  @override
+  String get lemmaSearchSheetPrompt =>
+      'Mulai ketik untuk mencari lemma di kamus';
+
+  @override
+  String get lemmaSearchSheetEmpty =>
+      'Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.';
+
+  @override
+  String lemmaSearchSheetCount(int count) {
+    return '$count hasil';
+  }
+
+  @override
+  String lemmaSearchSheetUseNew(String lemma) {
+    return 'Pakai \"$lemma\" sebagai lemma baru';
+  }
+
+  @override
+  String get lemmaPickerPickButton => 'Pilih lemma';
+
+  @override
+  String get lemmaPickerAddAnother => 'Tambah lemma lain';
 
   @override
   String suggestDerivedHint(String target) {
