@@ -612,6 +612,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
 
   @override
+  String get voteDeckOpenDetail => 'Buka detail lemma';
+
+  @override
   String get voteDeckRewound => 'Kartu sebelumnya dikembalikan.';
 
   @override
@@ -11163,6 +11166,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get voteDeckSavedFromDetail => 'Penilaian dari detail tersimpan';
+
+  @override
+  String get voteDeckOpenDetail => 'Buka detail lemma';
 
   @override
   String get voteDeckRewound => 'Kartu sebelumnya dikembalikan.';

@@ -10,6 +10,8 @@ Future<void> showAppInfoSheet(
   BuildContext context, {
   required String message,
   String title = 'Informasi',
+  /// Opsional: ikon/gambar di atas judul (mis. lencana achievement).
+  Widget? leading,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -26,8 +28,13 @@ Future<void> showAppInfoSheet(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (leading != null) ...[
+                  Center(child: leading),
+                  const Gap(12),
+                ],
                 Text(
                   title,
+                  textAlign: leading != null ? TextAlign.center : TextAlign.start,
                   style: theme.typography.body.lg.copyWith(
                     fontWeight: .w600,
                     color: theme.colors.primary,
@@ -41,6 +48,8 @@ Future<void> showAppInfoSheet(
                   child: SingleChildScrollView(
                     child: Text(
                       message,
+                      textAlign:
+                          leading != null ? TextAlign.center : TextAlign.start,
                       style: theme.typography.body.sm.copyWith(
                         color: theme.colors.mutedForeground,
                       ),

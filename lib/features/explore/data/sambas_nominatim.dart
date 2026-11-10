@@ -2,8 +2,19 @@ import 'package:dio/dio.dart';
 import '../../../core/i18n/l10n.dart';
 
 /// Batas produk Kabupaten Sambas. Hasil di luar ini tidak dipakai.
+///
+/// Selaras `api/src/shared/constants/sambas-bounds.ts` (utara sampai
+/// Temajuk/Paloh ~2.0°N). Ubah keduanya bersamaan.
+const kSambasLatMin = 0.9;
+const kSambasLatMax = 2.15;
+const kSambasLngMin = 108.5;
+const kSambasLngMax = 110.1;
+
 bool inSambasBounds(double lat, double lng) {
-  return lat >= 1.0 && lat <= 1.8 && lng >= 108.5 && lng <= 110.0;
+  return lat >= kSambasLatMin &&
+      lat <= kSambasLatMax &&
+      lng >= kSambasLngMin &&
+      lng <= kSambasLngMax;
 }
 
 class NominatimHit {
@@ -71,7 +82,9 @@ class SambasNominatim {
           'limit': limit,
           'q': query,
           'countrycodes': 'id',
-          'viewbox': '108.5,2.0,110.1,0.8',
+          // left,top,right,bottom - sama SAMBAS_NOMINATIM_VIEWBOX API
+          'viewbox':
+              '$kSambasLngMin,$kSambasLatMax,$kSambasLngMax,$kSambasLatMin',
           'bounded': 1,
         },
       );

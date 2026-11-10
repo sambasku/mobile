@@ -26,9 +26,9 @@ void main() {
       withSoon.take(active.length).map((c) => c.id),
       active.map((c) => c.id),
     );
-    // Anchor urutan = kartu aktif TERAKHIR (ensiklopedia, setelah hiburan).
+    // Anchor urutan = kartu aktif TERAKHIR (layanan, setelah ensiklopedia).
     expect(
-      withSoon.indexOf(ExploreCategory.byId('ensiklopedia')!),
+      withSoon.indexOf(ExploreCategory.byId('layanan')!),
       active.length - 1,
     );
     expect(
@@ -39,6 +39,11 @@ void main() {
     expect(
       ExploreCategory.all.indexWhere((c) => c.id == 'hiburan') <
           ExploreCategory.all.indexWhere((c) => c.id == 'ensiklopedia'),
+      isTrue,
+    );
+    expect(
+      ExploreCategory.all.indexWhere((c) => c.id == 'ensiklopedia') <
+          ExploreCategory.all.indexWhere((c) => c.id == 'layanan'),
       isTrue,
     );
   });

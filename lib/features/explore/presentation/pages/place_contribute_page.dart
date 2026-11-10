@@ -17,6 +17,7 @@ import '../../../../shared/widgets/attachment_images_field.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/place_contribution_api.dart';
+import '../../data/sambas_nominatim.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/sambas_map_config.dart';
 import '../../explore_router.dart';
@@ -314,7 +315,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
     if (_step == 1 && _point != null) {
       final lat = _point!.latitude;
       final lng = _point!.longitude;
-      if (lat < 1.0 || lat > 1.8 || lng < 108.5 || lng > 110.0) {
+      if (!inSambasBounds(lat, lng)) {
         _validationError(AppLocalizations.of(context).placeFormPointOutside);
         return false;
       }

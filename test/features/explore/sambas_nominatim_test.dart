@@ -21,10 +21,15 @@ void main() {
       expect(inSambasBounds(1.36, 109.3), isTrue);
     });
 
+    test('Temajuk (Paloh utara) diterima', () {
+      expect(inSambasBounds(1.997, 109.595), isTrue);
+      expect(inSambasBounds(2.0, 109.3), isTrue);
+    });
+
     test('titik di luar kotak ditolak', () {
       expect(inSambasBounds(0.5, 109.3), isFalse);
       expect(inSambasBounds(1.36, 108.0), isFalse);
-      expect(inSambasBounds(2.0, 109.3), isFalse);
+      expect(inSambasBounds(2.5, 109.3), isFalse);
       expect(inSambasBounds(1.36, 110.5), isFalse);
     });
   });

@@ -135,12 +135,9 @@ class _MicPermissionOnboardingPageState
                     ).dictMicFactDurationTitle,
                     body: AppLocalizations.of(context).dictMicFactDurationBody,
                   ),
-                  const Gap(12),
-                  _RequirementRow(
-                    icon: FLucideIcons.shieldCheck,
-                    title: AppLocalizations.of(context).dictMicFactReviewTitle,
-                    body: AppLocalizations.of(context).dictMicFactReviewBody,
-                  ),
+                  // "Ditinjau sebelum tayang" sengaja tidak ditampilkan - copy
+                  // pelafalan/review tidak cocok untuk area pantun yang juga
+                  // memakai halaman izin yang sama.
                   const Gap(12),
                   _RequirementRow(
                     icon: FLucideIcons.volume2,

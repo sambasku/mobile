@@ -114,6 +114,7 @@ class ExplorationReviewListPage extends ConsumerWidget {
     .place => l10n.reviewExplorePlaceListTitle,
     .culinary => l10n.reviewExploreCulinaryListTitle,
     .event => l10n.reviewExploreEventListTitle,
+    .layanan => l10n.reviewExploreLayananListTitle,
   };
 }
 
@@ -148,6 +149,7 @@ class _ProposalTile extends StatelessWidget with FTileMixin {
     .place => FLucideIcons.mapPin,
     .culinary => FLucideIcons.utensilsCrossed,
     .event => FLucideIcons.calendar,
+    .layanan => FLucideIcons.phone,
   };
 }
 

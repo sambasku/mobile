@@ -20,6 +20,7 @@ Future<void> callOrPickLayananPhones(
     return;
   }
   final l10n = AppLocalizations.of(context);
+  final theme = context.theme;
   await showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -43,12 +44,10 @@ Future<void> callOrPickLayananPhones(
                             ? l10n.layananCall
                             : phone.note!,
                       ),
-                      suffix: FButton(
-                        onPress: () async {
-                          Navigator.of(sheetContext).pop();
-                          await callLayananPhone(phone.phone);
-                        },
-                        child: Text(l10n.layananCall),
+                      suffix: Icon(
+                        FLucideIcons.chevronRight,
+                        size: 16,
+                        color: theme.colors.mutedForeground,
                       ),
                       onPress: () async {
                         Navigator.of(sheetContext).pop();
@@ -63,17 +62,4 @@ Future<void> callOrPickLayananPhones(
       );
     },
   );
-}
-
-String layananPhonesSubtitle(AppLocalizations l10n, List<LayananPhone> phones) {
-  if (phones.isEmpty) return l10n.layananCategoryEmpty;
-  if (phones.length == 1) {
-    final p = phones.first;
-    final note = (p.note ?? '').trim();
-    return note.isEmpty ? p.phone : '${p.phone} · $note';
-  }
-  final first = phones.first;
-  final note = (first.note ?? '').trim();
-  final head = note.isEmpty ? first.phone : '${first.phone} · $note';
-  return '$head · ${l10n.layananPhoneCount(phones.length)}';
 }

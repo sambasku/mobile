@@ -290,6 +290,10 @@
   "voteDeckLoadFailed": "Gagal memuat antrean penilaian. Ketuk refresh di atas untuk coba lagi.",
   "voteDeckEmpty": "Antrean kosakata voting saat ini sedang kosong. Terima kasih sudah membantu meningkatkan kualitas lemma di SambasKu.",
   "voteDeckSavedFromDetail": "Penilaian dari detail tersimpan",
+  "voteDeckOpenDetail": "Buka detail lemma",
+  "@voteDeckOpenDetail": {
+    "description": "Semantics tap lemma di kartu vote deck ke halaman detail kata"
+  },
   "voteDeckRewound": "Kartu sebelumnya dikembalikan.",
   "voteDeckFix": "Perbaiki",
   "voteDeckFixSemantics": "Perbaiki kata ini",

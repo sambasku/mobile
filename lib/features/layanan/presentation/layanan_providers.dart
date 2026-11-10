@@ -8,9 +8,31 @@ final layananApiProvider = Provider<LayananApi>(
   (ref) => LayananApi(ref.watch(dioProvider)),
 );
 
-final layananByRegionProvider = FutureProvider.autoDispose
-    .family<List<LayananEntry>, String>((ref, regionId) {
-  return ref.watch(layananApiProvider).list(regionId: regionId);
+/// Kunci daftar: ganti chip/filter = fetch baru.
+class LayananBrowseQuery {
+  const LayananBrowseQuery({this.regionId, this.category});
+
+  final String? regionId;
+
+  /// `ambulance` | `fire` | null = semua.
+  final String? category;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LayananBrowseQuery &&
+      other.regionId == regionId &&
+      other.category == category;
+
+  @override
+  int get hashCode => Object.hash(regionId, category);
+}
+
+final layananBrowseProvider = FutureProvider.autoDispose
+    .family<List<LayananEntry>, LayananBrowseQuery>((ref, query) {
+  return ref.watch(layananApiProvider).list(
+        regionId: query.regionId,
+        category: query.category,
+      );
 });
 
 final layananBySlugProvider = FutureProvider.autoDispose
@@ -18,8 +40,7 @@ final layananBySlugProvider = FutureProvider.autoDispose
   return ref.watch(layananApiProvider).bySlug(slug);
 });
 
-final layananMineProvider = FutureProvider.autoDispose<List<LayananProposal>>((ref) {
+final layananMineProvider =
+    FutureProvider.autoDispose<List<LayananProposal>>((ref) {
   return ref.watch(layananApiProvider).mine();
 });
-
-const layananKecamatanPrefKey = 'layanan_last_kecamatan_id';

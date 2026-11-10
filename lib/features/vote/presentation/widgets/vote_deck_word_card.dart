@@ -35,6 +35,7 @@ class VoteDeckWordCard extends ConsumerWidget {
       wordClassLabel: item.wordClassLabel,
       orderIndex: item.orderIndex,
       meaningCount: item.meaningCount,
+      onOpenDetail: onOpenDetail,
       onWordClassTap: onWordClassTap,
     );
   }
@@ -51,6 +52,7 @@ class VoteDeckMeaningFace extends StatelessWidget {
     this.wordClassLabel = '',
     this.orderIndex = 1,
     this.meaningCount = 1,
+    this.onOpenDetail,
     this.onLockedTap,
     this.onWordClassTap,
   });
@@ -71,6 +73,9 @@ class VoteDeckMeaningFace extends StatelessWidget {
 
   /// Jumlah makna published kata ini.
   final int meaningCount;
+
+  /// Login: tap lemma → detail kata induk. Null = lemma diam.
+  final VoidCallback? onOpenDetail;
 
   /// Tamu: tap jenis membuka login. Null = label diam.
   final VoidCallback? onLockedTap;
@@ -99,11 +104,45 @@ class VoteDeckMeaningFace extends StatelessWidget {
             ),
             const Gap(6),
           ],
-          Text(
-            lemma,
-            style: theme.typography.body.xl.copyWith(fontWeight: FontWeight.w700),
-            textAlign: TextAlign.center,
-          ),
+          if (onOpenDetail != null)
+            SwipeExemptRegion(
+              child: FTappable(
+                onPress: onOpenDetail,
+                child: Semantics(
+                  button: true,
+                  label: l10n.voteDeckOpenDetail,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          lemma,
+                          style: theme.typography.body.xl.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const Gap(4),
+                      Icon(
+                        FLucideIcons.chevronRight,
+                        size: 18,
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          else
+            Text(
+              lemma,
+              style: theme.typography.body.xl.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
+            ),
           if (sense != null && sense!.trim().isNotEmpty) ...[
             const Gap(10),
             Text(

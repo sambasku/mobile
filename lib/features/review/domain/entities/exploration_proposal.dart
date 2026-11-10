@@ -4,6 +4,7 @@ enum ExplorationReviewDomain {
   place,
   event,
   culinary,
+  layanan,
 }
 
 extension ExplorationReviewDomainX on ExplorationReviewDomain {
@@ -12,15 +13,17 @@ extension ExplorationReviewDomainX on ExplorationReviewDomain {
     .place => 'place-contributions',
     .event => 'event-contributions',
     .culinary => 'culinary-contributions',
+    .layanan => 'layanan-contributions',
   };
 
   /// Place tidak punya endpoint request-revision.
   bool get supportsRevision => this != ExplorationReviewDomain.place;
 
-  /// Usaha & kuliner list pakai `?status=pending`; place/event hanya pending.
+  /// Usaha, kuliner, layanan list pakai `?status=pending`; place/event hanya pending.
   bool get listUsesStatusQuery =>
       this == ExplorationReviewDomain.usaha ||
-      this == ExplorationReviewDomain.culinary;
+      this == ExplorationReviewDomain.culinary ||
+      this == ExplorationReviewDomain.layanan;
 }
 
 /// Satu baris usulan eksplorasi dari list admin (payload embedded, tanpa GET-by-id).

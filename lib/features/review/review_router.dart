@@ -91,6 +91,14 @@ class ReviewRouter {
     path: '/review/culinary/:id',
     name: 'ReviewRouter.culinaryDetail',
   );
+  static const layanan = RouteDefiner(
+    path: '/review/layanan',
+    name: 'ReviewRouter.layanan',
+  );
+  static const layananDetail = RouteDefiner(
+    path: '/review/layanan/:id',
+    name: 'ReviewRouter.layananDetail',
+  );
   static const session = RouteDefiner(
     path: '/review/session',
     name: 'ReviewRouter.session',
@@ -118,6 +126,7 @@ class ReviewRouter {
         .place => places.path,
         .event => events.path,
         .culinary => culinary.path,
+        .layanan => layanan.path,
       };
 
   static String explorationDetailPath(
@@ -362,6 +371,32 @@ class ReviewRouter {
       },
     ),
     GoRoute(
+      path: layanan.path,
+      name: layanan.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const ReviewGate(
+        mode: ReviewGateMode.contribution,
+        child: ExplorationReviewListPage(
+          domain: ExplorationReviewDomain.layanan,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: layananDetail.path,
+      name: layananDetail.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return ReviewGate(
+          mode: ReviewGateMode.contribution,
+          child: ExplorationReviewDetailPage(
+            domain: ExplorationReviewDomain.layanan,
+            id: id,
+          ),
+        );
+      },
+    ),
+    GoRoute(
       path: session.path,
       name: session.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
@@ -394,7 +429,8 @@ class ReviewRouter {
             id == 'usaha' ||
             id == 'places' ||
             id == 'events' ||
-            id == 'culinary') {
+            id == 'culinary' ||
+            id == 'layanan') {
           return list.path;
         }
         return sessionPath(

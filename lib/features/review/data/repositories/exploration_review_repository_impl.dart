@@ -152,6 +152,7 @@ String _titleFor(
       return name.isNotEmpty ? name : '-';
     case ExplorationReviewDomain.place:
     case ExplorationReviewDomain.event:
+    case ExplorationReviewDomain.layanan:
       final name = _nonEmpty(payload['name']);
       return name.isNotEmpty ? name : '-';
     case ExplorationReviewDomain.culinary:
@@ -173,6 +174,8 @@ String? _subtitleFor(
     case ExplorationReviewDomain.usaha:
       return kind;
     case ExplorationReviewDomain.culinary:
+      return kind;
+    case ExplorationReviewDomain.layanan:
       return kind;
     case ExplorationReviewDomain.place:
       final category = asStringKeyMap(json['payload'])['category']?.toString();

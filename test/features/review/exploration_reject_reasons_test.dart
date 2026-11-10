@@ -27,6 +27,7 @@ void main() {
     expect(ExplorationReviewDomain.usaha.supportsRevision, isTrue);
     expect(ExplorationReviewDomain.event.supportsRevision, isTrue);
     expect(ExplorationReviewDomain.culinary.supportsRevision, isTrue);
+    expect(ExplorationReviewDomain.layanan.supportsRevision, isTrue);
   });
 
   test('api path segments match admin mounts', () {
@@ -46,9 +47,26 @@ void main() {
       ExplorationReviewDomain.culinary.apiPathSegment,
       'culinary-contributions',
     );
+    expect(
+      ExplorationReviewDomain.layanan.apiPathSegment,
+      'layanan-contributions',
+    );
   });
 
-  test('kind labels cover usaha new + culinary new_cuisine', () {
+  test('layanan reject reasons match API codes', () {
+    final reasons = explorationRejectReasons(
+      ExplorationReviewDomain.layanan,
+      l10n,
+    );
+    expect(reasons.map((r) => r.code), [
+      'invalid_phone',
+      'wrong_region',
+      'duplicate',
+      'other',
+    ]);
+  });
+
+  test('kind labels cover usaha new + culinary new_cuisine + layanan', () {
     expect(
       explorationKindLabel(ExplorationReviewDomain.usaha, 'new', l10n),
       l10n.reviewExploreUsahaKindNew,
@@ -60,6 +78,14 @@ void main() {
         l10n,
       ),
       l10n.reviewExploreCulinaryKindNewCuisine,
+    );
+    expect(
+      explorationKindLabel(ExplorationReviewDomain.layanan, 'new', l10n),
+      l10n.reviewExploreLayananKindNew,
+    );
+    expect(
+      explorationKindLabel(ExplorationReviewDomain.layanan, 'edit', l10n),
+      l10n.reviewExploreLayananKindEdit,
     );
   });
 }

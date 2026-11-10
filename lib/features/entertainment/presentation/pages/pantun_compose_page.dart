@@ -14,6 +14,7 @@ import 'package:material_ui/material_ui.dart'
 import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
+import '../../../../shared/widgets/record_thread_audio_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/pantun_api.dart';
 import '../../data/pantun_draft_store.dart';
@@ -22,7 +23,13 @@ import '../../domain/pantun_models.dart';
 import '../../domain/rhyme_check.dart';
 import '../providers/pantun_providers.dart';
 
-/// Tulis pantun 4 baris dengan cek rima live (checker sama dengan API).
+/// Durasi bacaan pantun (parity API `PANTUN_AUDIO_MIN/MAX_MS` = 7500-60000).
+const _pantunAudioMinMs = 7500;
+const _pantunAudioMaxSec = 60;
+
+enum _ComposeMode { text, voice }
+
+/// Buat pantun: mode teks (4 baris + rima) atau mode suara (rekaman saja).
 ///
 /// Balasan: [parentId] = induk API; [quoteId] = cuplikan + key draf lokal.
 class PantunComposePage extends HookConsumerWidget {
@@ -55,6 +62,8 @@ class PantunComposePage extends HookConsumerWidget {
     final draftReady = useState(false);
     final hasDraftContent = useState(false);
     final draftSavedAt = useState<DateTime?>(null);
+    final attachedAudio = useState<RecordedThreadAudio?>(null);
+    final composeMode = useState(_ComposeMode.text);
     final store = useMemoized(() => draftStore ?? PantunDraftStore());
     final debounce = useRef<Timer?>(null);
     final skipPersist = useRef(false);
@@ -205,7 +214,21 @@ class PantunComposePage extends HookConsumerWidget {
     final check = scheme == null
         ? (allFilled ? detectRhyme(lines, 'ABAB') : null)
         : detectRhyme(lines, scheme);
-    final canSubmit = scheme != null && !submitting.value;
+    final isVoice = composeMode.value == _ComposeMode.voice;
+    final canSubmit = !submitting.value &&
+        (isVoice ? attachedAudio.value != null : scheme != null);
+
+    void selectMode(_ComposeMode next) {
+      if (composeMode.value == next) return;
+      if (next == _ComposeMode.text) {
+        final prev = attachedAudio.value;
+        attachedAudio.value = null;
+        if (prev != null) {
+          unawaited(prev.file.delete().catchError((_) => prev.file));
+        }
+      }
+      composeMode.value = next;
+    }
 
     final hints = [
       l10n.pantunComposeLine1Hint,
@@ -269,14 +292,16 @@ class PantunComposePage extends HookConsumerWidget {
           top: false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: FButton(
+            child:             FButton(
               onPress: canSubmit
-                  ? () => submit(
+                  ? () => _submit(
                       context,
                       ref,
                       lines,
                       scheme,
                       submitting,
+                      mode: composeMode.value,
+                      audio: attachedAudio.value,
                       store: store,
                       parentId: effectiveParent,
                       quoteId: resolvedQuote.value,
@@ -301,41 +326,76 @@ class PantunComposePage extends HookConsumerWidget {
               _QuotePreviewCard(preview: quotePreview),
               const Gap(16),
             ],
-            for (var i = 0; i < 4; i++) ...[
-              FTextField(
-                control: FTextFieldControl.managed(controller: controllers[i]),
-                focusNode: focusNodes[i],
-                hint: hints[i],
-                maxLines: 3,
-                minLines: 1,
-                textInputAction: i < 3
-                    ? TextInputAction.next
-                    : TextInputAction.done,
-              ),
-              const Gap(12),
-            ],
-            if (hasDraftContent.value && draftSavedAt.value != null) ...[
-              Text(
-                l10n.pantunComposeDraftSaved,
-                style: context.theme.typography.body.sm.copyWith(
-                  color: context.theme.colors.mutedForeground,
+            _ComposeModePicker(
+              mode: composeMode.value,
+              enabled: !submitting.value,
+              onSelect: selectMode,
+            ),
+            const Gap(16),
+            if (!isVoice) ...[
+              for (var i = 0; i < 4; i++) ...[
+                FTextField(
+                  control: FTextFieldControl.managed(controller: controllers[i]),
+                  focusNode: focusNodes[i],
+                  hint: hints[i],
+                  maxLines: 3,
+                  minLines: 1,
+                  textInputAction: i < 3
+                      ? TextInputAction.next
+                      : TextInputAction.done,
                 ),
+                const Gap(12),
+              ],
+              if (hasDraftContent.value && draftSavedAt.value != null) ...[
+                Text(
+                  l10n.pantunComposeDraftSaved,
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
+                ),
+                const Gap(8),
+              ],
+              _RhymeStatus(check: check, allFilled: allFilled, scheme: scheme),
+            ] else ...[
+              _PantunAudioAttachRow(
+                attached: attachedAudio.value,
+                busy: submitting.value,
+                onRecord: () async {
+                  final recorded = await showRecordThreadAudioSheet(
+                    context,
+                    title: l10n.pantunRecordAudioTitle,
+                    subtitle: l10n.pantunRecordAudioSubtitle,
+                    submitLabel: l10n.pantunRecordAudio,
+                    minMilliseconds: _pantunAudioMinMs,
+                    maxSeconds: _pantunAudioMaxSec,
+                  );
+                  if (recorded != null && context.mounted) {
+                    attachedAudio.value = recorded;
+                  }
+                },
+                onRemove: () {
+                  final prev = attachedAudio.value;
+                  attachedAudio.value = null;
+                  if (prev != null) {
+                    unawaited(prev.file.delete().catchError((_) => prev.file));
+                  }
+                },
               ),
-              const Gap(8),
             ],
-            _RhymeStatus(check: check, allFilled: allFilled, scheme: scheme),
           ],
         ),
       ),
     );
   }
 
-  Future<void> submit(
+  Future<void> _submit(
     BuildContext context,
     WidgetRef ref,
     List<String> lines,
     String? scheme,
     ValueNotifier<bool> submitting, {
+    required _ComposeMode mode,
+    required RecordedThreadAudio? audio,
     required PantunDraftStore store,
     required String? parentId,
     required String quoteId,
@@ -358,13 +418,33 @@ class PantunComposePage extends HookConsumerWidget {
     submitting.value = true;
     try {
       final api = ref.read(pantunApiProvider);
-      final row = parentId == null
-          ? await api.create(lines: lines, rhymeScheme: scheme)
-          : await api.createReply(
-              parentId: parentId,
-              lines: lines,
-              rhymeScheme: scheme,
-            );
+      final Pantun row;
+      if (mode == _ComposeMode.voice) {
+        // canSubmit sudah jamin audio ada; guard lokal untuk type safety.
+        final clip = audio!;
+        row = parentId == null
+            ? await api.createWithAudio(
+                lines: const <String>[],
+                rhymeScheme: null,
+                audioFile: clip.file,
+                durationMs: clip.durationMs,
+              )
+            : await api.createReplyWithAudio(
+                parentId: parentId,
+                lines: const <String>[],
+                rhymeScheme: null,
+                audioFile: clip.file,
+                durationMs: clip.durationMs,
+              );
+      } else if (parentId == null) {
+        row = await api.create(lines: lines, rhymeScheme: scheme);
+      } else {
+        row = await api.createReply(
+          parentId: parentId,
+          lines: lines,
+          rhymeScheme: scheme,
+        );
+      }
       unawaited(
         AnalyticsService.instance.logPantunSubmit(isReply: parentId != null),
       );
@@ -611,5 +691,97 @@ class _RhymeStatus extends StatelessWidget {
       ),
       null => const SizedBox.shrink(),
     };
+  }
+}
+
+class _ComposeModePicker extends StatelessWidget {
+  const _ComposeModePicker({
+    required this.mode,
+    required this.enabled,
+    required this.onSelect,
+  });
+
+  final _ComposeMode mode;
+  final bool enabled;
+  final ValueChanged<_ComposeMode> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    return FTileGroup(
+      children: [
+        FTile(
+          title: Text(l10n.pantunComposeModeText),
+          subtitle: Text(l10n.pantunComposeTextHint),
+          prefix: Icon(
+            FLucideIcons.penLine,
+            color: mode == _ComposeMode.text
+                ? theme.colors.primary
+                : theme.colors.mutedForeground,
+          ),
+          suffix: mode == _ComposeMode.text
+              ? Icon(FLucideIcons.check, color: theme.colors.primary)
+              : null,
+          onPress: enabled ? () => onSelect(_ComposeMode.text) : null,
+        ),
+        FTile(
+          title: Text(l10n.pantunComposeModeVoice),
+          subtitle: Text(l10n.pantunComposeVoiceHint),
+          prefix: Icon(
+            FLucideIcons.mic,
+            color: mode == _ComposeMode.voice
+                ? theme.colors.primary
+                : theme.colors.mutedForeground,
+          ),
+          suffix: mode == _ComposeMode.voice
+              ? Icon(FLucideIcons.check, color: theme.colors.primary)
+              : null,
+          onPress: enabled ? () => onSelect(_ComposeMode.voice) : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _PantunAudioAttachRow extends StatelessWidget {
+  const _PantunAudioAttachRow({
+    required this.attached,
+    required this.busy,
+    required this.onRecord,
+    required this.onRemove,
+  });
+
+  final RecordedThreadAudio? attached;
+  final bool busy;
+  final VoidCallback onRecord;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    if (attached == null) {
+      return FButton(
+        variant: FButtonVariant.outline,
+        onPress: busy ? null : onRecord,
+        prefix: const Icon(FLucideIcons.mic, size: 16),
+        child: Text(l10n.pantunRecordAudio),
+      );
+    }
+    final seconds = (attached!.durationMs / 1000).round();
+    return FTileGroup(
+      children: [
+        FTile(
+          title: Text(l10n.pantunRecordAudioAttached(seconds)),
+          prefix: Icon(FLucideIcons.audioLines, color: theme.colors.primary),
+          suffix: FButton(
+            variant: FButtonVariant.ghost,
+            onPress: busy ? null : onRemove,
+            child: Text(l10n.pantunRecordAudioRemove),
+          ),
+        ),
+      ],
+    );
   }
 }

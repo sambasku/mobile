@@ -35,7 +35,8 @@ class ReviewHomePage extends ConsumerWidget {
         (_explorePending(ref, ExplorationReviewDomain.usaha) ||
             _explorePending(ref, ExplorationReviewDomain.place) ||
             _explorePending(ref, ExplorationReviewDomain.culinary) ||
-            _explorePending(ref, ExplorationReviewDomain.event));
+            _explorePending(ref, ExplorationReviewDomain.event) ||
+            _explorePending(ref, ExplorationReviewDomain.layanan));
     final discussionPending = showDiscussion
         ? (ref.watch(discussionReviewHasPendingProvider).value ?? false)
         : false;

@@ -25,8 +25,9 @@ class LayananProposalsPage extends ConsumerWidget {
           if (items.isEmpty) {
             return Center(child: Text(l10n.layananProposalsEmpty));
           }
+          // Horizontal dari childPad FScaffold - jangan dobel padding ListView.
           return ListView(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
             children: [
               FTileGroup(
                 children: [

@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../explore/domain/entities/region.dart';
 import '../../../explore/presentation/providers/regions_providers.dart';
+import '../../domain/entities/username_availability.dart';
 import '../providers/edit_profile_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -46,6 +47,15 @@ class EditProfilePage extends HookConsumerWidget {
       return null;
     }, const []);
 
+    useEffect(() {
+      void listener() {
+        ref.read(editProfileProvider.notifier).onUsernameChanged(username.text);
+      }
+
+      username.addListener(listener);
+      return () => username.removeListener(listener);
+    }, [username]);
+
     ref.listen(editProfileProvider.select((s) => s.successMessage), (_, next) {
       if (next == null || !context.mounted) return;
       showFToast(
@@ -69,7 +79,7 @@ class EditProfilePage extends HookConsumerWidget {
       });
     });
 
-    final canSubmit = _isValidUsername(username.text) &&
+    final canSubmit = state.canSubmitUsername &&
         displayName.text.trim().isNotEmpty &&
         displayName.text.trim().length <= 100 &&
         bio.text.trim().length <= 500 &&
@@ -110,6 +120,17 @@ class EditProfilePage extends HookConsumerWidget {
           ),
         ],
       ),
+      footer: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: FButton(
+            onPress: canSubmit ? submit : null,
+            prefix: state.isSubmitting ? const FCircularProgress() : null,
+            child: Text(l10n.commonSave),
+          ),
+        ),
+      ),
       child: state.isLoading
           ? const Center(child: FCircularProgress())
           : ListView(
@@ -122,6 +143,11 @@ class EditProfilePage extends HookConsumerWidget {
                   hint: l10n.profileUsernameHint,
                   maxLength: 30,
                   textInputAction: .next,
+                ),
+                const Gap(6),
+                _UsernameStatusLabel(
+                  status: state.usernameStatus,
+                  l10n: l10n,
                 ),
                 const Gap(12),
                 FTextField(
@@ -181,15 +207,67 @@ class EditProfilePage extends HookConsumerWidget {
                     ),
                   ],
                 ),
-                const Gap(20),
-                FButton(
-                  onPress: canSubmit ? submit : null,
-                  child: state.isSubmitting
-                      ? const FCircularProgress()
-                      : Text(l10n.commonSave),
-                ),
               ],
             ),
+    );
+  }
+}
+
+class _UsernameStatusLabel extends StatelessWidget {
+  const _UsernameStatusLabel({
+    required this.status,
+    required this.l10n,
+  });
+
+  final UsernameAvailabilityStatus status;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    if (status == UsernameAvailabilityStatus.idle ||
+        status == UsernameAvailabilityStatus.current) {
+      return const SizedBox.shrink();
+    }
+
+    if (status == UsernameAvailabilityStatus.checking) {
+      return Row(
+        children: [
+          const FCircularProgress(size: .sm),
+          const Gap(8),
+          Text(
+            l10n.profileUsernameChecking,
+            style: context.theme.typography.body.sm.copyWith(
+              color: colors.mutedForeground,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final (text, color) = switch (status) {
+      UsernameAvailabilityStatus.available => (
+          l10n.profileUsernameAvailable,
+          colors.primary,
+        ),
+      UsernameAvailabilityStatus.taken => (
+          l10n.profileUsernameTaken,
+          colors.destructive,
+        ),
+      UsernameAvailabilityStatus.reserved => (
+          l10n.profileUsernameReserved,
+          colors.destructive,
+        ),
+      UsernameAvailabilityStatus.invalid => (
+          l10n.profileUsernameInvalid,
+          colors.destructive,
+        ),
+      _ => (l10n.profileUsernameInvalid, colors.destructive),
+    };
+
+    return Text(
+      text,
+      style: context.theme.typography.body.sm.copyWith(color: color),
     );
   }
 }
@@ -239,8 +317,4 @@ FTileMixin _regionSelect({
         FSelectTile(value: region.id, title: Text(region.name)),
     ],
   );
-}
-
-bool _isValidUsername(String value) {
-  return RegExp(r'^[a-z0-9._]{3,30}$').hasMatch(value);
 }

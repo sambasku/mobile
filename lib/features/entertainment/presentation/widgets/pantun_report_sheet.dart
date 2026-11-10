@@ -19,6 +19,7 @@ List<(String, String)> _reasons(AppLocalizations l10n) => [
   ('harassment', l10n.reportPantunHarassment),
   ('hate_speech', l10n.reportPantunHateSpeech),
   ('spam', l10n.reportPantunSpam),
+  ('not_a_pantun', l10n.reportPantunNotAPantun),
   ('other', l10n.reportPantunOther),
 ];
 

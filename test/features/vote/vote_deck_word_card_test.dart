@@ -44,7 +44,11 @@ const _tanpaKelas = VoteDeckItem(
   meaningCount: 1,
 );
 
-Future<void> _pump(WidgetTester tester, VoteDeckItem item) async {
+Future<void> _pump(
+  WidgetTester tester,
+  VoteDeckItem item, {
+  VoidCallback? onOpenDetail,
+}) async {
   await tester.pumpWidget(
     MaterialApp(
       localizationsDelegates: [
@@ -59,7 +63,10 @@ Future<void> _pump(WidgetTester tester, VoteDeckItem item) async {
           body: SizedBox(
             width: 800,
             height: 900,
-            child: VoteDeckWordCard(item: item),
+            child: VoteDeckWordCard(
+              item: item,
+              onOpenDetail: onOpenDetail,
+            ),
           ),
         ),
       ),
@@ -150,5 +157,24 @@ void main() {
 
     expect(find.text('kalintiak'), findsOneWidget);
     expect(find.textContaining('Makna ke-'), findsNothing);
+  });
+
+  testWidgets('tap lemma memanggil onOpenDetail (#221)', (tester) async {
+    var opened = 0;
+    await _pump(tester, _item, onOpenDetail: () => opened++);
+
+    await tester.tap(find.text('kalintiak'));
+    // FTappable animasi press (~100ms); drain timer sebelum dispose.
+    await tester.pump(const Duration(milliseconds: 150));
+
+    expect(opened, 1);
+    expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
+  });
+
+  testWidgets('tanpa onOpenDetail lemma tidak punya chevron detail',
+      (tester) async {
+    await _pump(tester, _item);
+
+    expect(find.byIcon(FLucideIcons.chevronRight), findsNothing);
   });
 }

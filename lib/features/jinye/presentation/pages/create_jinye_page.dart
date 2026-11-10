@@ -17,6 +17,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/jinye_providers.dart';
 import '../../domain/jinye_models.dart';
 import '../../jinye_router.dart';
+import '../utils/jinye_quota_message.dart';
 
 /// Form kirim Jinye (teks / suara / foto). CTA di [FScaffold.footer].
 class CreateJinyePage extends HookConsumerWidget {
@@ -453,7 +454,9 @@ String _mapDio(DioException error, AppLocalizations l10n) {
   final code = error.response?.data is Map
       ? (error.response!.data as Map)['error_code']
       : null;
-  if (code == 'RATE_LIMITED') return l10n.jinyeCreateRateLimited;
+  if (code == 'RATE_LIMITED') {
+    return jinyeQuotaRateLimitedMessage(error, l10n);
+  }
   final msg = error.response?.data is Map
       ? (error.response!.data as Map)['message']
       : null;

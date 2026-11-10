@@ -49,6 +49,19 @@ String formatDateTime(DateTime? value) {
       '${_pad2(local.hour)}:${_pad2(local.minute)}';
 }
 
+/// Jam lokal `21:00`. Beda hari kalender: `21:00 · 11 Nov`.
+String formatClockLocal(DateTime value, {DateTime? now}) {
+  final local = value.toLocal();
+  final clock = (now ?? DateTime.now()).toLocal();
+  final hm = '${_pad2(local.hour)}:${_pad2(local.minute)}';
+  if (local.year == clock.year &&
+      local.month == clock.month &&
+      local.day == clock.day) {
+    return hm;
+  }
+  return '$hm · ${local.day} ${_months[local.month - 1]}';
+}
+
 /// Parse ISO (UTC/offset) lalu format lokal. String kosong/invalid → `''`.
 String formatDateTimeIso(String? iso) {
   if (iso == null || iso.isEmpty) return '';

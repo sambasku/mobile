@@ -1213,6 +1213,12 @@ abstract class AppLocalizations {
   /// **'Penilaian dari detail tersimpan'**
   String get voteDeckSavedFromDetail;
 
+  /// Semantics tap lemma di kartu vote deck ke halaman detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Buka detail lemma'**
+  String get voteDeckOpenDetail;
+
   /// No description provided for @voteDeckRewound.
   ///
   /// In id, this message translates to:

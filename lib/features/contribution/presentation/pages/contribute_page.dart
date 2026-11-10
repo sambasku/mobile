@@ -17,9 +17,12 @@ import '../../../../core/network/network_providers.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/theme/f_colors_x.dart';
+import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
+import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
+import '../../../search_miss/presentation/providers/search_miss_list_providers.dart';
 import '../../domain/failures/contribution_failure.dart';
 import '../../domain/repositories/contribution_repository.dart';
 import '../../domain/usecases/submit_anon_word_use_case.dart';
@@ -390,6 +393,13 @@ class _ContributePageState extends ConsumerState<ContributePage> {
               _lemmaCtrl.text.trim(),
             ),
           );
+        }
+        // #262: usulan yang menaut/cocok miss menutup "Dicari warga" di
+        // server (filter pending). Invalidate list miss + feed supaya
+        // kartu/chip hilang tanpa pull-to-refresh.
+        ref.invalidate(searchMissListProvider);
+        for (final category in FeedCategory.values) {
+          ref.invalidate(activityFeedProvider(category));
         }
         // ponytail: show lemma user typed, not server ULID (useless to contributors)
         _showSuccessDialog(context, _lemmaCtrl.text.trim());

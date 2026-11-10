@@ -1,3 +1,4 @@
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -5,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/utils/error_bottom_sheet.dart';
+import '../../../shared/widgets/attachment_images_field.dart';
+import '../../../shared/widgets/image_crop_page.dart';
 import '../../../shared/widgets/option_picker_sheet.dart';
 import '../../explore/domain/entities/region.dart';
 import '../../explore/presentation/providers/regions_providers.dart';
@@ -15,17 +18,14 @@ import 'layanan_providers.dart';
 class _PhoneDraft {
   _PhoneDraft()
       : phone = TextEditingController(),
-        note = TextEditingController(),
-        whatsapp = TextEditingController();
+        note = TextEditingController();
 
   final TextEditingController phone;
   final TextEditingController note;
-  final TextEditingController whatsapp;
 
   void dispose() {
     phone.dispose();
     note.dispose();
-    whatsapp.dispose();
   }
 }
 
@@ -50,25 +50,26 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
   static const _maxPhones = 5;
 
   final _name = TextEditingController();
-  final _logoUrl = TextEditingController();
   final _address = TextEditingController();
   final _note = TextEditingController();
   final _phones = <_PhoneDraft>[_PhoneDraft()];
-  late String _category;
+  List<AttachmentImageSlot> _logo = const [];
+  /// Null sampai user memilih (kecuali edit lewat query `category`).
+  String? _category;
   String? _regionId;
   var _busy = false;
 
   @override
   void initState() {
     super.initState();
-    _category = widget.category == 'fire' ? 'fire' : 'ambulance';
+    final incoming = widget.category;
+    _category = incoming == 'fire' || incoming == 'ambulance' ? incoming : null;
     _regionId = widget.regionId;
   }
 
   @override
   void dispose() {
     _name.dispose();
-    _logoUrl.dispose();
     _address.dispose();
     _note.dispose();
     for (final row in _phones) {
@@ -91,31 +92,49 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
+    if (_logo.any((s) => s.uploading)) {
+      showFToast(context: context, title: Text(l10n.layananWaitUpload));
+      return;
+    }
+    if (_logo.any((s) => s.error)) {
+      showFToast(
+        context: context,
+        title: Text(l10n.layananRemoveFailedLogo),
+        variant: FToastVariant.destructive,
+      );
+      return;
+    }
     final phones = <Map<String, String?>>[];
     for (final row in _phones) {
       final phone = row.phone.text.trim();
       if (phone.length < 8) continue;
+      // WhatsApp di detail diisi otomatis dari nomor telepon.
       phones.add({
         'phone': phone,
         if (row.note.text.trim().isNotEmpty) 'note': row.note.text.trim(),
-        if (row.whatsapp.text.trim().isNotEmpty)
-          'whatsapp': row.whatsapp.text.trim(),
       });
     }
-    if (_name.text.trim().length < 3 || phones.isEmpty || _regionId == null) {
+    final category = _category;
+    if (category == null ||
+        _name.text.trim().length < 3 ||
+        phones.isEmpty ||
+        _regionId == null) {
       await showAppErrorSheet(context, message: l10n.layananFormInvalid);
       return;
     }
+    final logoUrl = _logo.isNotEmpty && _logo.first.isReady
+        ? _logo.first.uploaded?.url
+        : null;
     setState(() => _busy = true);
     try {
       await ref.read(layananApiProvider).submit({
         'kind': widget.layananId == null ? 'new' : 'edit',
         if (widget.layananId != null) 'layanan_id': widget.layananId,
-        'category': _category,
+        'category': category,
         'name': _name.text.trim(),
         'phones': phones,
         'region_id': _regionId,
-        if (_logoUrl.text.trim().isNotEmpty) 'logo_url': _logoUrl.text.trim(),
+        if (logoUrl != null && logoUrl.isNotEmpty) 'logo_url': logoUrl,
         if (_address.text.trim().isNotEmpty) 'address_text': _address.text.trim(),
         if (_note.text.trim().isNotEmpty) 'note': _note.text.trim(),
       });
@@ -143,6 +162,7 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
       orElse: () => null,
     )?.name;
     return FScaffold(
+      childPad: true,
       header: FHeader.nested(
         title: Text(l10n.layananPropose),
         prefixes: [FHeaderAction.back(onPress: () => context.pop())],
@@ -158,15 +178,18 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
           ),
         ),
       ),
+      // Horizontal dari childPad FScaffold - jangan dobel padding ListView.
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        padding: const EdgeInsets.only(bottom: 40),
         children: [
           FTileGroup(
             children: [
               FTile(
-                title: Text(
-                  _category == 'fire' ? l10n.layananFire : l10n.layananAmbulance,
-                ),
+                title: Text(switch (_category) {
+                  'fire' => l10n.layananFire,
+                  'ambulance' => l10n.layananAmbulance,
+                  _ => l10n.layananPickCategory,
+                }),
                 subtitle: Text(l10n.layananCategory),
                 onPress: () async {
                   final picked = await showOptionPickerSheet<String>(
@@ -217,19 +240,55 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
             label: Text(l10n.layananName),
           ),
           const SizedBox(height: 12),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _logoUrl),
-            label: Text(l10n.layananLogoUrl),
+          Text(
+            l10n.layananLogo,
+            style: context.theme.typography.body.sm,
+          ),
+          const SizedBox(height: 8),
+          AttachmentImagesField(
+            enabled: !_busy,
+            maxImages: 1,
+            maxSizeMb: 5,
+            lockedAspectRatio: kCropAspectRatioSquare,
+            images: _logo,
+            onChanged: (next) => setState(() => _logo = next),
+            upload: (file, {required bool isPrimary}) async {
+              try {
+                final url =
+                    await ref.read(layananApiProvider).uploadImage(file);
+                return Either.right(
+                  AttachmentUploadedImage(
+                    url: url,
+                    providerFileId: url,
+                    isPrimary: true,
+                  ),
+                );
+              } on LayananException catch (e) {
+                return Either.left(AttachmentUploadFailure(e.message));
+              }
+            },
           ),
           const SizedBox(height: 12),
           for (var i = 0; i < _phones.length; i++) ...[
-            FTileGroup(
-              label: Text('${l10n.layananPhone} ${i + 1}'),
+            Row(
               children: [
+                Expanded(
+                  child: Text(
+                    '${l10n.layananPhone} ${i + 1}',
+                    style: context.theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
                 if (_phones.length > 1)
-                  FTile(
-                    title: Text(l10n.layananRemovePhone),
-                    onPress: () => _removePhone(i),
+                  GestureDetector(
+                    onTap: () => _removePhone(i),
+                    child: Icon(
+                      FLucideIcons.trash,
+                      size: 18,
+                      color: context.theme.colors.destructive,
+                      semanticLabel: l10n.layananRemovePhone,
+                    ),
                   ),
               ],
             ),
@@ -244,19 +303,13 @@ class _LayananContributePageState extends ConsumerState<LayananContributePage> {
               label: Text(l10n.layananPhoneNote),
               description: Text(l10n.layananPhoneNoteHint),
             ),
-            const SizedBox(height: 8),
-            FTextField(
-              control: FTextFieldControl.managed(
-                controller: _phones[i].whatsapp,
-              ),
-              label: Text(l10n.layananWhatsapp),
-            ),
             const SizedBox(height: 12),
           ],
           if (_phones.length < _maxPhones)
             FButton(
               variant: FButtonVariant.outline,
               onPress: _addPhone,
+              prefix: const Icon(FLucideIcons.plus, size: 16),
               child: Text(l10n.layananAddPhone),
             ),
           const SizedBox(height: 12),

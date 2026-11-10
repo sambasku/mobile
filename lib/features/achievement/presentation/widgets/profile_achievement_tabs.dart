@@ -6,22 +6,23 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/services/analytics_service.dart';
+import '../../../../shared/utils/info_bottom_sheet.dart';
 import '../../domain/entities/achievement.dart';
 import '../../domain/failures/achievement_failure.dart';
 import '../providers/achievement_providers.dart';
 import '../../../achievement/achievement_router.dart';
 import 'achievement_badge_grid.dart';
+import 'achievement_tile.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Ringkasan lencana profil: 1 baris, 4 lencana kecil.
+/// Ringkasan lencana profil: max 3 baris [AchievementTile] (pola inbox notif).
 ///
 /// Dipakai tab Profil (profil sendiri, data `/me/achievements`) dan profil
-/// publik (lencana milik user lain). Pengganti sub-tab FTabs
-/// "Badge | Border | Pencapaian" yang pecah (label multiline merusak area).
-/// Border tetap diatur via `showBorderPickerSheet`.
+/// publik. Pengganti grid kartu compact. Border tetap diatur via
+/// `showBorderPickerSheet`.
 ///
-/// Lebih dari 4 lencana: sel ujung overlay "Lihat lainnya". Profil sendiri
-/// membuka halaman Pencapaian. Profil orang lain membuka sheet grid penuh.
+/// Lebih dari 3 lencana: tombol "Lihat lainnya". Profil sendiri membuka
+/// halaman Pencapaian. Profil orang lain membuka sheet daftar penuh.
 class ProfileAchievementTabs extends ConsumerWidget {
   const ProfileAchievementTabs({
     super.key,
@@ -37,9 +38,34 @@ class ProfileAchievementTabs extends ConsumerWidget {
   final bool showAllButton;
   final bool showTitle;
 
+  static const int previewLimit = 3;
+
   void _openAll(BuildContext context) {
     AnalyticsService.instance.logAchievementsView(tab: 'all');
     context.push(AchievementRouter.list.path);
+  }
+
+  void _openDetail(BuildContext context, Achievement item) {
+    final l10n = AppLocalizations.of(context);
+    AnalyticsService.instance.logAchievementBadgeView(code: item.code);
+    final String message;
+    if (item.isOwned) {
+      message = l10n.achievementDetailOwned(item.description);
+    } else if (item.progress != null) {
+      message = l10n.achievementDetailLockedProgress(
+        item.description,
+        item.progress!.current,
+        item.progress!.target,
+      );
+    } else {
+      message = l10n.achievementDetailLocked(item.description);
+    }
+    showAppInfoSheet(
+      context,
+      title: item.title,
+      message: message,
+      leading: AchievementBadgeArt(item: item),
+    );
   }
 
   void _showAllBadges(BuildContext context, List<Achievement> badges) {
@@ -68,7 +94,15 @@ class ProfileAchievementTabs extends ConsumerWidget {
                   maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.6,
                 ),
                 child: SingleChildScrollView(
-                  child: AchievementBadgeGrid(items: badges),
+                  child: FTileGroup(
+                    children: [
+                      for (final item in badges)
+                        AchievementTile(
+                          item: item,
+                          onTap: () => _openDetail(sheetContext, item),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -114,12 +148,15 @@ class ProfileAchievementTabs extends ConsumerWidget {
         ),
       ),
       data: (items) {
+        final l10n = AppLocalizations.of(context);
         final badges = AchievementBadgeGrid.topTierPerFamily(
           items.where((e) => e.isOwned && e.isBadge).toList(growable: false),
         );
-        const previewColumns = 4;
-        const previewRows = 1;
-        final overflow = badges.length > previewColumns * previewRows;
+        final overflow = badges.length > previewLimit;
+        final visible = overflow
+            ? badges.sublist(0, previewLimit)
+            : badges;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -132,33 +169,48 @@ class ProfileAchievementTabs extends ConsumerWidget {
               ),
               const Gap(8),
             ],
-            AchievementBadgeGrid(
-              items: badges,
-              maxRows: previewRows,
-              columns: previewColumns,
-              compact: true,
-              onOverflow: overflow
-                  ? () {
-                      if (username == null) {
-                        _openAll(context);
-                      } else {
-                        _showAllBadges(context, badges);
-                      }
-                    }
-                  : null,
-            ),
-            if (showAllButton && badges.isNotEmpty && !overflow) ...[
+            if (badges.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  l10n.achievementEmpty,
+                  textAlign: TextAlign.center,
+                  style: context.theme.typography.body.sm.copyWith(
+                    color: context.theme.colors.mutedForeground,
+                  ),
+                ),
+              )
+            else
+              FTileGroup(
+                children: [
+                  for (final item in visible)
+                    AchievementTile(
+                      item: item,
+                      dense: true,
+                      onTap: () => _openDetail(context, item),
+                    ),
+                ],
+              ),
+            if (overflow || (showAllButton && badges.isNotEmpty)) ...[
               const Gap(8),
-              // Shrink-wrap supaya sejajar tombol kecil lain (pola FButton
-              // default .max = full width).
               Align(
                 alignment: Alignment.center,
                 child: FButton(
                   size: FButtonSizeVariant.xs,
                   variant: FButtonVariant.outline,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => _openAll(context),
-                  child: Text(AppLocalizations.of(context).achievementSeeAll),
+                  onPress: () {
+                    if (username == null) {
+                      _openAll(context);
+                    } else {
+                      _showAllBadges(context, badges);
+                    }
+                  },
+                  child: Text(
+                    overflow
+                        ? l10n.achievementSeeMore
+                        : l10n.achievementSeeAll,
+                  ),
                 ),
               ),
             ],
@@ -169,7 +221,7 @@ class ProfileAchievementTabs extends ConsumerWidget {
   }
 }
 
-/// Placeholder shimmer: 4 lencana kecil, satu baris.
+/// Placeholder shimmer: 3 baris tile padat (ikon kecil + judul).
 class _AchievementTabsSkeleton extends StatelessWidget {
   const _AchievementTabsSkeleton({
     required this.showTitle,
@@ -209,44 +261,14 @@ class _AchievementTabsSkeleton extends StatelessWidget {
               ),
               const Gap(8),
             ],
-            LayoutBuilder(
-              builder: (context, constraints) {
-                const spacing = AchievementBadgeGrid.compactSpacing;
-                final cellWidth = (constraints.maxWidth - spacing * 3) / 4;
-                return Wrap(
-                  spacing: spacing,
-                  runSpacing: spacing,
-                  children: [
-                    for (var i = 0; i < 4; i++)
-                      SizedBox(
-                        width: cellWidth,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              AchievementBadgeGrid.compactRadius,
-                            ),
-                            border: Border.all(color: theme.colors.border),
-                          ),
-                          padding: const EdgeInsets.all(
-                            AchievementBadgeGrid.compactPadding,
-                          ),
-                          child: const Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: AchievementBadgeGrid.compactImageSize,
-                                height: AchievementBadgeGrid.compactImageSize,
-                                child: Bone.square(),
-                              ),
-                              Gap(AchievementBadgeGrid.compactImageGap),
-                              Bone.text(words: 1),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
+            FTileGroup(
+              children: [
+                for (var i = 0; i < ProfileAchievementTabs.previewLimit; i++)
+                  FTile(
+                    prefix: const Bone.circle(size: 28),
+                    title: const Bone.text(words: 2),
+                  ),
+              ],
             ),
           ],
         ),

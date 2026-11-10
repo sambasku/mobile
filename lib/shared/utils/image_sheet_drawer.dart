@@ -40,6 +40,9 @@ void showImageSheetDrawer(
   /// Tampilkan ImageCropPage setelah pick (default true).
   /// Setel false untuk share_sheet atau konteks tanpa crop.
   bool cropEnabled = true,
+
+  /// Kunci rasio crop (mis. logo 1:1). Null = user pilih Bebas/1:1/….
+  CropAspectRatio? lockedAspectRatio,
 }) {
   final imagePicker = picker ?? ImagePicker();
 
@@ -50,7 +53,11 @@ void showImageSheetDrawer(
     if (!cropEnabled) return emit(file);
     Future<void>.delayed(Duration.zero, () async {
       if (!context.mounted) return;
-      final cropped = await cropImage(context, file.path);
+      final cropped = await cropImage(
+        context,
+        file.path,
+        lockedAspectRatio: lockedAspectRatio,
+      );
       if (cropped != null) emit(cropped);
     });
   }

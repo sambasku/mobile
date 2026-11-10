@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/i18n/l10n.dart';
@@ -77,6 +80,39 @@ class PantunApi {
     return Pantun.fromJson(data);
   }
 
+  /// Kirim pantun teks + bacaan suara (multipart; durasi 10-60s).
+  Future<Pantun> createWithAudio({
+    required List<String> lines,
+    required File audioFile,
+    required int durationMs,
+    String? rhymeScheme,
+    String? categoryId,
+    String? language,
+  }) async {
+    try {
+      final form = await _audioForm(
+        lines: lines,
+        audioFile: audioFile,
+        durationMs: durationMs,
+        rhymeScheme: rhymeScheme,
+        categoryId: categoryId,
+        language: language,
+      );
+      final res = await _dio.post<Map<String, dynamic>>(
+        '$_base/audio',
+        data: form,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      final data = res.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw const PantunFailure('Data pantun tidak lengkap');
+      }
+      return Pantun.fromJson(data);
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
   Future<Pantun> createReply({
     required String parentId,
     required List<String> lines,
@@ -100,6 +136,75 @@ class PantunApi {
       throw const PantunFailure('Data balasan tidak lengkap');
     }
     return Pantun.fromJson(data);
+  }
+
+  /// Balas pantun teks + bacaan suara (multipart; durasi 10-60s).
+  Future<Pantun> createReplyWithAudio({
+    required String parentId,
+    required List<String> lines,
+    required File audioFile,
+    required int durationMs,
+    String? rhymeScheme,
+    String? categoryId,
+    String? language,
+  }) async {
+    try {
+      final form = await _audioForm(
+        lines: lines,
+        audioFile: audioFile,
+        durationMs: durationMs,
+        rhymeScheme: rhymeScheme,
+        categoryId: categoryId,
+        language: language,
+      );
+      final res = await _dio.post<Map<String, dynamic>>(
+        '$_base/$parentId/replies/audio',
+        data: form,
+        options: Options(contentType: 'multipart/form-data'),
+      );
+      final data = res.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw const PantunFailure('Data balasan tidak lengkap');
+      }
+      return Pantun.fromJson(data);
+    } on DioException catch (e) {
+      throw PantunFailure(_messageFrom(e));
+    }
+  }
+
+  Future<FormData> _audioForm({
+    required List<String> lines,
+    required File audioFile,
+    required int durationMs,
+    String? rhymeScheme,
+    String? categoryId,
+    String? language,
+  }) async {
+    final name = audioFile.path.split(Platform.pathSeparator).last;
+    final lower = name.toLowerCase();
+    final (contentType, filename) = lower.endsWith('.wav')
+        ? (DioMediaType('audio', 'wav'), 'recording.wav')
+        : lower.endsWith('.webm')
+        ? (DioMediaType('audio', 'webm'), 'recording.webm')
+        : lower.endsWith('.ogg')
+        ? (DioMediaType('audio', 'ogg'), 'recording.ogg')
+        : lower.endsWith('.mp3')
+        ? (DioMediaType('audio', 'mpeg'), 'recording.mp3')
+        : (DioMediaType('audio', 'mp4'), 'recording.m4a');
+
+    // Voice-only: kirim [] supaya server tidak memaksa rima.
+    return FormData.fromMap({
+      'lines': jsonEncode(lines),
+      'duration_ms': durationMs.toString(),
+      'rhyme_scheme': ?rhymeScheme,
+      'category_id': ?categoryId,
+      'language': ?language,
+      'audio': await MultipartFile.fromFile(
+        audioFile.path,
+        filename: filename,
+        contentType: contentType,
+      ),
+    });
   }
 
   Future<Pantun> updateReply({
