@@ -3565,6 +3565,24 @@ abstract class AppLocalizations {
   /// **'Ada usulan acara yang menunggu'**
   String get reviewHomeEventWaiting;
 
+  /// Tile hub verifikator: antrean usulan layanan publik
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan publik'**
+  String get reviewHomeLayananTitle;
+
+  /// No description provided for @reviewHomeLayananSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean layanan publik menunggu tinjauan'**
+  String get reviewHomeLayananSubtitle;
+
+  /// No description provided for @reviewHomeLayananWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan layanan publik yang menunggu'**
+  String get reviewHomeLayananWaiting;
+
   /// Tile hub verifikator yang membuka submenu usulan eksplorasi
   ///
   /// In id, this message translates to:
@@ -3574,7 +3592,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewHomeExploreSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Wisata, usaha, kuliner, dan acara'**
+  /// **'Wisata, usaha, kuliner, acara, dan layanan publik'**
   String get reviewHomeExploreSubtitle;
 
   /// No description provided for @reviewHomeExploreWaiting.
@@ -5383,6 +5401,12 @@ abstract class AppLocalizations {
   /// **'Usulan acara'**
   String get reviewExploreEventListTitle;
 
+  /// No description provided for @reviewExploreLayananListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan publik'**
+  String get reviewExploreLayananListTitle;
+
   /// Empty state antrean usulan eksplorasi
   ///
   /// In id, this message translates to:
@@ -5599,6 +5623,24 @@ abstract class AppLocalizations {
   /// **'Melanggar ketentuan'**
   String get reviewExploreRejectCulinaryViolation;
 
+  /// No description provided for @reviewExploreRejectLayananInvalidPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon tidak valid'**
+  String get reviewExploreRejectLayananInvalidPhone;
+
+  /// No description provided for @reviewExploreRejectLayananWrongRegion.
+  ///
+  /// In id, this message translates to:
+  /// **'Wilayah tidak sesuai'**
+  String get reviewExploreRejectLayananWrongRegion;
+
+  /// No description provided for @reviewExploreRejectLayananDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan serupa sudah terdaftar'**
+  String get reviewExploreRejectLayananDuplicate;
+
   /// No description provided for @reviewExploreKindGeneric.
   ///
   /// In id, this message translates to:
@@ -5718,6 +5760,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Usulan acara baru'**
   String get reviewExploreEventKindNew;
+
+  /// No description provided for @reviewExploreLayananKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan baru'**
+  String get reviewExploreLayananKindNew;
+
+  /// No description provided for @reviewExploreLayananKindEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data layanan'**
+  String get reviewExploreLayananKindEdit;
 
   /// Subtitle tile list usulan eksplorasi
   ///
@@ -8117,6 +8171,12 @@ abstract class AppLocalizations {
   /// **'Komentar'**
   String get profileActivityFilterComment;
 
+  /// Chip filter aktivitas profil publik: Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get profileActivityFilterJinye;
+
   /// Kondisi kosong aktivitas profil publik
   ///
   /// In id, this message translates to:
@@ -8234,8 +8294,44 @@ abstract class AppLocalizations {
   /// Aturan penulisan username
   ///
   /// In id, this message translates to:
-  /// **'a-z, 0-9, titik, underscore (3-30 karakter)'**
+  /// **'a-z, 0-9, titik, underscore (6-30 karakter)'**
   String get profileUsernameHint;
+
+  /// Label saat cek username sedang jalan
+  ///
+  /// In id, this message translates to:
+  /// **'Memeriksa ketersediaan…'**
+  String get profileUsernameChecking;
+
+  /// Label username belum dipakai
+  ///
+  /// In id, this message translates to:
+  /// **'Username tersedia'**
+  String get profileUsernameAvailable;
+
+  /// Label username bentrok
+  ///
+  /// In id, this message translates to:
+  /// **'Username sudah dipakai'**
+  String get profileUsernameTaken;
+
+  /// Label username reserved
+  ///
+  /// In id, this message translates to:
+  /// **'Username tidak bisa dipakai'**
+  String get profileUsernameReserved;
+
+  /// Label username format salah
+  ///
+  /// In id, this message translates to:
+  /// **'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)'**
+  String get profileUsernameInvalid;
+
+  /// Error saat GET username-availability gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memeriksa username'**
+  String get profileUsernameCheckFailed;
 
   /// Label kolom nama tampilan
   ///
@@ -17739,11 +17835,17 @@ abstract class AppLocalizations {
   /// **'Gagal mengirim Jinye'**
   String get jinyeCreateFailed;
 
-  /// Error kuota 1 Jinye / 24 jam
+  /// Error kuota 1 Jinye / 24 jam (tanpa jam reset)
   ///
   /// In id, this message translates to:
   /// **'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.'**
   String get jinyeCreateRateLimited;
+
+  /// Error kuota Jinye + jam reset lokal (HH:mm)
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul {time}.'**
+  String jinyeCreateRateLimitedUntil(String time);
 
   /// Toast wajib login sebelum compose
   ///

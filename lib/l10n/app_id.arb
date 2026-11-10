@@ -929,11 +929,17 @@
   },
   "reviewHomeEventSubtitle": "Antrean acara menunggu tinjauan",
   "reviewHomeEventWaiting": "Ada usulan acara yang menunggu",
+  "reviewHomeLayananTitle": "Usulan layanan publik",
+  "@reviewHomeLayananTitle": {
+    "description": "Tile hub verifikator: antrean usulan layanan publik"
+  },
+  "reviewHomeLayananSubtitle": "Antrean layanan publik menunggu tinjauan",
+  "reviewHomeLayananWaiting": "Ada usulan layanan publik yang menunggu",
   "reviewHomeExploreTitle": "Eksplorasi",
   "@reviewHomeExploreTitle": {
     "description": "Tile hub verifikator yang membuka submenu usulan eksplorasi"
   },
-  "reviewHomeExploreSubtitle": "Wisata, usaha, kuliner, dan acara",
+  "reviewHomeExploreSubtitle": "Wisata, usaha, kuliner, acara, dan layanan publik",
   "reviewHomeExploreWaiting": "Ada usulan eksplorasi yang menunggu",
   "reviewQueueLoadFailed": "Gagal memuat antrean",
   "reviewQueueEmpty": "Tidak ada usulan yang menunggu",
@@ -1621,6 +1627,7 @@
   "reviewExplorePlaceListTitle": "Usulan wisata",
   "reviewExploreCulinaryListTitle": "Usulan kuliner",
   "reviewExploreEventListTitle": "Usulan acara",
+  "reviewExploreLayananListTitle": "Usulan layanan publik",
   "reviewExploreEmpty": "Tidak ada usulan menunggu",
   "@reviewExploreEmpty": {
     "description": "Empty state antrean usulan eksplorasi"
@@ -1663,6 +1670,9 @@
   "reviewExploreRejectCulinaryAttribution": "Atribusi gambar belum lengkap",
   "reviewExploreRejectCulinaryStale": "Data sudah berubah, perlu ajukan ulang",
   "reviewExploreRejectCulinaryViolation": "Melanggar ketentuan",
+  "reviewExploreRejectLayananInvalidPhone": "Nomor telepon tidak valid",
+  "reviewExploreRejectLayananWrongRegion": "Wilayah tidak sesuai",
+  "reviewExploreRejectLayananDuplicate": "Layanan serupa sudah terdaftar",
   "reviewExploreKindGeneric": "Usulan",
   "reviewExploreUsahaKindNew": "Usulan usaha baru",
   "reviewExploreUsahaKindProfile": "Perubahan profil",
@@ -1683,6 +1693,8 @@
   "reviewExploreCulinaryKindRestore": "Minta tayang lagi",
   "reviewExplorePlaceKindNew": "Usulan wisata baru",
   "reviewExploreEventKindNew": "Usulan acara baru",
+  "reviewExploreLayananKindNew": "Usulan layanan baru",
+  "reviewExploreLayananKindEdit": "Perbaikan data layanan",
   "reviewExploreMetaKindDate": "{kind} · {date}",
   "@reviewExploreMetaKindDate": {
     "description": "Subtitle tile list usulan eksplorasi",
@@ -2938,6 +2950,10 @@
   "@profileActivityFilterComment": {
     "description": "Chip filter aktivitas profil publik: komentar"
   },
+  "profileActivityFilterJinye": "Jinye",
+  "@profileActivityFilterJinye": {
+    "description": "Chip filter aktivitas profil publik: Jinye"
+  },
   "profileActivityEmpty": "Belum ada aktivitas publik.",
   "@profileActivityEmpty": {
     "description": "Kondisi kosong aktivitas profil publik"
@@ -3019,9 +3035,33 @@
   "@profileUsernameLabel": {
     "description": "Label kolom username"
   },
-  "profileUsernameHint": "a-z, 0-9, titik, underscore (3-30 karakter)",
+  "profileUsernameHint": "a-z, 0-9, titik, underscore (6-30 karakter)",
   "@profileUsernameHint": {
     "description": "Aturan penulisan username"
+  },
+  "profileUsernameChecking": "Memeriksa ketersediaan…",
+  "@profileUsernameChecking": {
+    "description": "Label saat cek username sedang jalan"
+  },
+  "profileUsernameAvailable": "Username tersedia",
+  "@profileUsernameAvailable": {
+    "description": "Label username belum dipakai"
+  },
+  "profileUsernameTaken": "Username sudah dipakai",
+  "@profileUsernameTaken": {
+    "description": "Label username bentrok"
+  },
+  "profileUsernameReserved": "Username tidak bisa dipakai",
+  "@profileUsernameReserved": {
+    "description": "Label username reserved"
+  },
+  "profileUsernameInvalid": "Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)",
+  "@profileUsernameInvalid": {
+    "description": "Label username format salah"
+  },
+  "profileUsernameCheckFailed": "Gagal memeriksa username",
+  "@profileUsernameCheckFailed": {
+    "description": "Error saat GET username-availability gagal"
   },
   "profileDisplayNameLabel": "Nama tampilan",
   "@profileDisplayNameLabel": {
@@ -7005,7 +7045,17 @@
   },
   "jinyeCreateRateLimited": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.",
   "@jinyeCreateRateLimited": {
-    "description": "Error kuota 1 Jinye / 24 jam"
+    "description": "Error kuota 1 Jinye / 24 jam (tanpa jam reset)"
+  },
+  "jinyeCreateRateLimitedUntil": "Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul {time}.",
+  "@jinyeCreateRateLimitedUntil": {
+    "description": "Error kuota Jinye + jam reset lokal (HH:mm)",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "15:30"
+      }
+    }
   },
   "jinyeLoginFirst": "Masuk dulu untuk membuat Jinye",
   "@jinyeLoginFirst": {

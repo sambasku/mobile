@@ -1905,10 +1905,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
 
   @override
+  String get reviewHomeLayananTitle => 'Usulan layanan publik';
+
+  @override
+  String get reviewHomeLayananSubtitle =>
+      'Antrean layanan publik menunggu tinjauan';
+
+  @override
+  String get reviewHomeLayananWaiting =>
+      'Ada usulan layanan publik yang menunggu';
+
+  @override
   String get reviewHomeExploreTitle => 'Eksplorasi';
 
   @override
-  String get reviewHomeExploreSubtitle => 'Wisata, usaha, kuliner, dan acara';
+  String get reviewHomeExploreSubtitle =>
+      'Wisata, usaha, kuliner, acara, dan layanan publik';
 
   @override
   String get reviewHomeExploreWaiting => 'Ada usulan eksplorasi yang menunggu';
@@ -3054,6 +3066,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreLayananListTitle => 'Usulan layanan publik';
+
+  @override
   String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
 
   @override
@@ -3175,6 +3190,17 @@ class AppLocalizationsId extends AppLocalizations {
   String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
 
   @override
+  String get reviewExploreRejectLayananInvalidPhone =>
+      'Nomor telepon tidak valid';
+
+  @override
+  String get reviewExploreRejectLayananWrongRegion => 'Wilayah tidak sesuai';
+
+  @override
+  String get reviewExploreRejectLayananDuplicate =>
+      'Layanan serupa sudah terdaftar';
+
+  @override
   String get reviewExploreKindGeneric => 'Usulan';
 
   @override
@@ -3234,6 +3260,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String get reviewExploreLayananKindNew => 'Usulan layanan baru';
+
+  @override
+  String get reviewExploreLayananKindEdit => 'Perbaikan data layanan';
 
   @override
   String reviewExploreMetaKindDate(String kind, String date) {
@@ -4607,6 +4639,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get profileActivityFilterComment => 'Komentar';
 
   @override
+  String get profileActivityFilterJinye => 'Jinye';
+
+  @override
   String get profileActivityEmpty => 'Belum ada aktivitas publik.';
 
   @override
@@ -4668,7 +4703,26 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (3-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30 karakter)';
+
+  @override
+  String get profileUsernameChecking => 'Memeriksa ketersediaan…';
+
+  @override
+  String get profileUsernameAvailable => 'Username tersedia';
+
+  @override
+  String get profileUsernameTaken => 'Username sudah dipakai';
+
+  @override
+  String get profileUsernameReserved => 'Username tidak bisa dipakai';
+
+  @override
+  String get profileUsernameInvalid =>
+      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+
+  @override
+  String get profileUsernameCheckFailed => 'Gagal memeriksa username';
 
   @override
   String get profileDisplayNameLabel => 'Nama tampilan';
@@ -10112,6 +10166,11 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get jinyeCreateRateLimited =>
       'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String jinyeCreateRateLimitedUntil(String time) {
+    return 'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul $time.';
+  }
 
   @override
   String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
@@ -12399,10 +12458,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewHomeEventWaiting => 'Ada usulan acara yang menunggu';
 
   @override
+  String get reviewHomeLayananTitle => 'Usulan layanan publik';
+
+  @override
+  String get reviewHomeLayananSubtitle =>
+      'Antrean layanan publik menunggu tinjauan';
+
+  @override
+  String get reviewHomeLayananWaiting =>
+      'Ada usulan layanan publik yang menunggu';
+
+  @override
   String get reviewHomeExploreTitle => 'Eksplorasi';
 
   @override
-  String get reviewHomeExploreSubtitle => 'Wisata, usaha, kuliner, dan acara';
+  String get reviewHomeExploreSubtitle =>
+      'Wisata, usaha, kuliner, acara, dan layanan publik';
 
   @override
   String get reviewHomeExploreWaiting => 'Ada usulan eksplorasi yang menunggu';
@@ -13548,6 +13619,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreEventListTitle => 'Usulan acara';
 
   @override
+  String get reviewExploreLayananListTitle => 'Usulan layanan publik';
+
+  @override
   String get reviewExploreEmpty => 'Tidak ada usulan menunggu';
 
   @override
@@ -13669,6 +13743,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reviewExploreRejectCulinaryViolation => 'Melanggar ketentuan';
 
   @override
+  String get reviewExploreRejectLayananInvalidPhone =>
+      'Nomor telepon tidak valid';
+
+  @override
+  String get reviewExploreRejectLayananWrongRegion => 'Wilayah tidak sesuai';
+
+  @override
+  String get reviewExploreRejectLayananDuplicate =>
+      'Layanan serupa sudah terdaftar';
+
+  @override
   String get reviewExploreKindGeneric => 'Usulan';
 
   @override
@@ -13728,6 +13813,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get reviewExploreEventKindNew => 'Usulan acara baru';
+
+  @override
+  String get reviewExploreLayananKindNew => 'Usulan layanan baru';
+
+  @override
+  String get reviewExploreLayananKindEdit => 'Perbaikan data layanan';
 
   @override
   String reviewExploreMetaKindDate(String kind, String date) {
@@ -15101,6 +15192,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get profileActivityFilterComment => 'Komentar';
 
   @override
+  String get profileActivityFilterJinye => 'Jinye';
+
+  @override
   String get profileActivityEmpty => 'Belum ada aktivitas publik.';
 
   @override
@@ -15162,7 +15256,26 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameHint =>
-      'a-z, 0-9, titik, underscore (3-30 karakter)';
+      'a-z, 0-9, titik, underscore (6-30 karakter)';
+
+  @override
+  String get profileUsernameChecking => 'Memeriksa ketersediaan…';
+
+  @override
+  String get profileUsernameAvailable => 'Username tersedia';
+
+  @override
+  String get profileUsernameTaken => 'Username sudah dipakai';
+
+  @override
+  String get profileUsernameReserved => 'Username tidak bisa dipakai';
+
+  @override
+  String get profileUsernameInvalid =>
+      'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)';
+
+  @override
+  String get profileUsernameCheckFailed => 'Gagal memeriksa username';
 
   @override
   String get profileDisplayNameLabel => 'Nama tampilan';
@@ -20606,6 +20719,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get jinyeCreateRateLimited =>
       'Kamu sudah membuat Jinye dalam 24 jam terakhir. Coba lagi nanti ya.';
+
+  @override
+  String jinyeCreateRateLimitedUntil(String time) {
+    return 'Kamu sudah membuat Jinye dalam 24 jam terakhir. Bisa lagi pukul $time.';
+  }
 
   @override
   String get jinyeLoginFirst => 'Masuk dulu untuk membuat Jinye';
