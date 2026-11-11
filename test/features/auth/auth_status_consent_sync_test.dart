@@ -6,6 +6,7 @@ import 'package:sambasku_mobile/core/network/auth_token_storage.dart';
 import 'package:sambasku_mobile/core/network/network_providers.dart';
 import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status_providers.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/entities/my_profile.dart';
+import 'package:sambasku_mobile/features/edit_profile/domain/entities/username_availability.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/failures/edit_profile_failure.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/providers/edit_profile_domain_providers.dart';
 import 'package:sambasku_mobile/features/edit_profile/domain/repositories/edit_profile_repository.dart';
@@ -92,6 +93,15 @@ class _FakeEditProfileRepository implements EditProfileRepository {
   @override
   Future<Either<EditProfileFailure, MyProfile>> getMyProfile() async =>
       Either.right(profile);
+
+  @override
+  Future<Either<EditProfileFailure, UsernameAvailability>>
+      checkUsernameAvailability(String username) async => Either.right(
+            UsernameAvailability(
+              username: username,
+              status: UsernameAvailabilityStatus.available,
+            ),
+          );
 
   @override
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({

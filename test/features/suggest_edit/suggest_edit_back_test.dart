@@ -9,7 +9,6 @@ import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status
 import 'package:sambasku_mobile/features/dictionary/domain/entities/word_detail.dart';
 import 'package:sambasku_mobile/features/dictionary/presentation/providers/word_detail_providers.dart';
 import 'package:sambasku_mobile/features/suggest_edit/presentation/pages/suggest_edit_page.dart';
-import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
 import '../../helpers/l10n_delegates.dart';
 
