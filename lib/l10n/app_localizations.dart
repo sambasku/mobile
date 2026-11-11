@@ -11399,6 +11399,12 @@ abstract class AppLocalizations {
   /// **'Gagal mengirim usulan'**
   String get encyclopediaSubmitFailed;
 
+  /// Error submit suntingan ensiklopedia tanpa article_id ULID
+  ///
+  /// In id, this message translates to:
+  /// **'Data artikel belum termuat. Tutup lalu buka usulan perbaikan lagi.'**
+  String get encyclopediaEditArticleMissing;
+
   /// No description provided for @encyclopediaProposalKindNew.
   ///
   /// In id, this message translates to:

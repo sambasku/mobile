@@ -6344,6 +6344,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
 
   @override
+  String get encyclopediaEditArticleMissing =>
+      'Data artikel belum termuat. Tutup lalu buka usulan perbaikan lagi.';
+
+  @override
   String get encyclopediaProposalKindNew => 'Usulan artikel baru';
 
   @override
@@ -17005,6 +17009,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaSubmitFailed => 'Gagal mengirim usulan';
+
+  @override
+  String get encyclopediaEditArticleMissing =>
+      'Data artikel belum termuat. Tutup lalu buka usulan perbaikan lagi.';
 
   @override
   String get encyclopediaProposalKindNew => 'Usulan artikel baru';

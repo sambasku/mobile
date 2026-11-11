@@ -1997,6 +1997,10 @@
   "encyclopediaBookmarkFailed": "Gagal memperbarui bookmark",
   "encyclopediaCommentFailed": "Gagal mengirim komentar",
   "encyclopediaSubmitFailed": "Gagal mengirim usulan",
+  "encyclopediaEditArticleMissing": "Data artikel belum termuat. Tutup lalu buka usulan perbaikan lagi.",
+  "@encyclopediaEditArticleMissing": {
+    "description": "Error submit suntingan ensiklopedia tanpa article_id ULID"
+  },
   "encyclopediaProposalKindNew": "Usulan artikel baru",
   "encyclopediaProposalKindEdit": "Usulan perbaikan",
   "encyclopediaBodyEmpty": "Belum ada isi.",
