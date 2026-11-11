@@ -54,6 +54,10 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
   var _busy = false;
   var _filled = false;
 
+  /// Id tempat saat mode edit/photo. Disimpan terpisah supaya draft restore
+  /// dan katalog miss tidak menghilangkan place_id di payload submit.
+  String? _placeId;
+
   /// Slug sudah terisi dari data lama (mode edit) - jangan ikut nama lagi.
   var _slugTouched = false;
   String _category = 'wisata';
@@ -79,6 +83,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
   @override
   String get draftToken => [
     _step,
+    _placeId,
     _name.text,
     _desc.text,
     _hours.text,
@@ -96,6 +101,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
   @override
   _PlaceDraft captureDraft() => _PlaceDraft(
     step: _step,
+    placeId: _placeId,
     name: _name.text,
     slug: _slugCtrl.text,
     slugTouched: _slugTouched,
@@ -116,6 +122,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
   @override
   void restoreDraft(_PlaceDraft draft) {
     _filled = true;
+    _placeId = draft.placeId;
     _step = draft.step;
     _name.text = draft.name;
     _slugCtrl.text = draft.slug;
@@ -170,6 +177,7 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
 
   void _apply(Place place) {
     _filled = true;
+    _placeId = place.id;
     _slugTouched = true;
     _name.text = place.name;
     _slugCtrl.text = place.slug;
@@ -378,8 +386,16 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
         return;
       }
       final place = _currentPlace();
+      final placeId = _placeId ?? place?.id;
+      if (widget.mode == PlaceContributeMode.edit && placeId == null) {
+        await showAppErrorSheet(
+          context,
+          message: AppLocalizations.of(context).placeFormEditPlaceMissing,
+        );
+        return;
+      }
       await _api.submit({
-        if (widget.mode == PlaceContributeMode.edit) 'place_id': place?.id,
+        if (widget.mode == PlaceContributeMode.edit) 'place_id': placeId,
         // Slug tidak lagi diisi user: mode edit mempertahankan slug lama
         // (URL tetap stabil), mode create diturunkan dari nama.
         'slug': _slugCtrl.text.trim().isEmpty
@@ -423,6 +439,8 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
   Place? _currentPlace() {
     final slug = widget.slug;
     if (slug == null) return null;
+    final fromDetail = ref.read(placeBySlugProvider(slug)).asData?.value;
+    if (fromDetail != null) return fromDetail;
     return ref
         .read(placesProvider)
         .value
@@ -440,6 +458,10 @@ class _PlaceContributePageState extends ConsumerState<PlaceContributePage>
       PlaceContributeMode.create => l10n.placeFormTitleCreate,
     };
     final loggedIn = auth.value?.isAuth == true;
+    // Watch detail by slug supaya rebuild saat katalog miss tapi GET detail ok.
+    if (widget.slug != null && widget.mode != PlaceContributeMode.create) {
+      ref.watch(placeBySlugProvider(widget.slug!));
+    }
     if (widget.mode != PlaceContributeMode.create && !_filled) {
       final place = _currentPlace();
       if (place != null) {
@@ -814,6 +836,7 @@ class _PinMapState extends State<_PinMap> {
 class _PlaceDraft {
   const _PlaceDraft({
     required this.step,
+    required this.placeId,
     required this.name,
     required this.slug,
     required this.slugTouched,
@@ -832,6 +855,7 @@ class _PlaceDraft {
   });
 
   final int step;
+  final String? placeId;
   final String name;
   final String slug;
   final bool slugTouched;

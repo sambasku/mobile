@@ -2235,6 +2235,10 @@
   "placeFormTitleCreate": "Usulkan wisata",
   "placeFormPickType": "Pilih kategori wisata",
   "placeFormNameDescRequired": "Nama dan deskripsi wajib diisi.",
+  "placeFormEditPlaceMissing": "Data tempat belum termuat. Tutup lalu buka usulan perubahan lagi.",
+  "@placeFormEditPlaceMissing": {
+    "description": "Error saat submit suntingan wisata tanpa place_id (katalog/detail belum siap)"
+  },
   "placeFormNameInvalid": "Nama perlu mengandung huruf atau angka.",
   "placeFormPointOutside": "Titik harus di dalam Kabupaten Sambas.",
   "placeFormPhotoToast": "Foto langsung tampil",

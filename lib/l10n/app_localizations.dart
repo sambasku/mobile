@@ -12827,6 +12827,12 @@ abstract class AppLocalizations {
   /// **'Nama dan deskripsi wajib diisi.'**
   String get placeFormNameDescRequired;
 
+  /// Error saat submit suntingan wisata tanpa place_id (katalog/detail belum siap)
+  ///
+  /// In id, this message translates to:
+  /// **'Data tempat belum termuat. Tutup lalu buka usulan perubahan lagi.'**
+  String get placeFormEditPlaceMissing;
+
   /// No description provided for @placeFormNameInvalid.
   ///
   /// In id, this message translates to:

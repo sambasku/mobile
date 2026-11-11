@@ -7120,6 +7120,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get placeFormNameDescRequired => 'Nama dan deskripsi wajib diisi.';
 
   @override
+  String get placeFormEditPlaceMissing =>
+      'Data tempat belum termuat. Tutup lalu buka usulan perubahan lagi.';
+
+  @override
   String get placeFormNameInvalid => 'Nama perlu mengandung huruf atau angka.';
 
   @override
@@ -17777,6 +17781,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get placeFormNameDescRequired => 'Nama dan deskripsi wajib diisi.';
+
+  @override
+  String get placeFormEditPlaceMissing =>
+      'Data tempat belum termuat. Tutup lalu buka usulan perubahan lagi.';
 
   @override
   String get placeFormNameInvalid => 'Nama perlu mengandung huruf atau angka.';
