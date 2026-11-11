@@ -143,6 +143,19 @@ class ProfileIdentityHeader extends StatelessWidget {
         : CrossAxisAlignment.start;
     final textAlign = _isHero ? TextAlign.center : TextAlign.start;
 
+    // Hit-test box untuk avatar ± bubble overlay.
+    // Hero: lebar simetris supaya avatar tetap di tengah; compact: cukup ke kanan.
+    final hasOverlay = avatarOverlay != null;
+    final rightOverhang = hasOverlay
+        ? avatarOverlayMaxWidth - _avatarExtent * 0.45
+        : 0.0;
+    final avatarLeft = _isHero && hasOverlay ? rightOverhang : 0.0;
+    final avatarStackWidth = !hasOverlay
+        ? _avatarExtent
+        : _isHero
+        ? _avatarExtent + 2 * rightOverhang
+        : _avatarExtent * 0.55 + avatarOverlayMaxWidth;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -174,46 +187,51 @@ class ProfileIdentityHeader extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
                     ),
-                    // Kotak hit-test harus mencakup bubble yang overflow ke
-                    // kanan/atas. Clip.none hanya untuk paint - hit-test
-                    // ancestor SizedBox/Padding tetap butuh size cukup.
+                    // Kotak hit-test mencakup bubble overflow kanan/atas.
+                    // Clip.none hanya paint - SizedBox tetap butuh size cukup.
                     child: SizedBox(
-                      width: avatarOverlay == null
-                          ? _avatarExtent
-                          : _avatarExtent * 0.55 + avatarOverlayMaxWidth,
-                      height: avatarOverlay == null
-                          ? _avatarExtent
-                          : _avatarExtent + _avatarOverlayTopSlack,
+                      width: avatarStackWidth,
+                      height: hasOverlay
+                          ? _avatarExtent + _avatarOverlayTopSlack
+                          : _avatarExtent,
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Positioned(
-                            left: 0,
+                            left: avatarLeft,
                             bottom: 0,
-                            child: Semantics(
-                              button: onAvatarTap != null,
-                              label: AppLocalizations.of(context)
-                                  .profilePhotoSemantics(displayName),
-                              child: GestureDetector(
-                                onTap: onAvatarTap,
-                                child: AvatarBorderOverlay(
-                                  size: _avatarSize,
-                                  borderUrl: borderUrl,
-                                  child: UserAvatar(
-                                    name: displayName,
-                                    imageUrl: avatarUrl,
-                                    size: _avatarSize,
+                            // Slot frame selalu extent: foto tanpa border
+                            // tetap di tengah frame (bukan nempel kiri).
+                            child: SizedBox(
+                              width: _avatarExtent,
+                              height: _avatarExtent,
+                              child: Center(
+                                child: Semantics(
+                                  button: onAvatarTap != null,
+                                  label: AppLocalizations.of(context)
+                                      .profilePhotoSemantics(displayName),
+                                  child: GestureDetector(
+                                    onTap: onAvatarTap,
+                                    child: AvatarBorderOverlay(
+                                      size: _avatarSize,
+                                      borderUrl: borderUrl,
+                                      child: UserAvatar(
+                                        name: displayName,
+                                        imageUrl: avatarUrl,
+                                        size: _avatarSize,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          if (avatarOverlay != null)
+                          if (hasOverlay)
                             Positioned(
-                              // Kiri fixed di bahu kanan avatar; bubble tumbuh
-                              // ke kanan (bukan ke kiri menutup wajah).
+                              // Kiri fixed di bahu kanan avatar; bubble
+                              // tumbuh ke kanan (bukan menutup wajah).
                               top: 0,
-                              left: _avatarExtent * 0.55,
+                              left: avatarLeft + _avatarExtent * 0.55,
                               child: avatarOverlay!,
                             ),
                         ],

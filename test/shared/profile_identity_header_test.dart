@@ -56,6 +56,7 @@ void main() {
     expect(tester.getSize(avatar).width, 104);
 
     // Tinggi art = cover (rasio asset) + separuh frame avatar.
+    // Foto di tengah frame (bukan nempel bawah) supaya selaras saat ada border.
     final headerTop = tester
         .getTopLeft(find.byType(ProfileIdentityHeader))
         .dy;
@@ -63,9 +64,11 @@ void main() {
       ProfileHeaderVariant.hero,
       surfaceWidth,
     );
+    const avatarSize = 104.0;
+    final extent = avatarSize * 1.32;
     expect(
       tester.getBottomLeft(avatar).dy - headerTop,
-      closeTo(coverH + 104 * 1.32 / 2, 0.5),
+      closeTo(coverH + extent / 2 - (extent - avatarSize) / 2, 0.5),
     );
 
     // Dua angka yang dicari orang; sisanya sengaja tidak ditampilkan.
