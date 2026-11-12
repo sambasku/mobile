@@ -1,10 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/gestures/swipe_exempt.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../domain/entities/vote_deck_item.dart';
 
 /// Isi kartu deck (0101: per makna): lemma + definisi makna yang dinilai +
@@ -16,6 +18,8 @@ class VoteDeckWordCard extends ConsumerWidget {
     required this.item,
     this.onOpenDetail,
     this.onWordClassTap,
+    this.onAddWrittenPronunciation,
+    this.onRecordPronunciation,
   });
 
   final VoteDeckItem item;
@@ -26,6 +30,12 @@ class VoteDeckWordCard extends ConsumerWidget {
   /// Shortcut: bottom sheet kelas → suggest-edit langsung. Null = chip diam.
   final VoidCallback? onWordClassTap;
 
+  /// #260: tulis IPA bila kosong. Null = tanpa CTA.
+  final VoidCallback? onAddWrittenPronunciation;
+
+  /// #260: rekam audio bila belum ada. Null = tanpa CTA.
+  final VoidCallback? onRecordPronunciation;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return VoteDeckMeaningFace(
@@ -35,8 +45,12 @@ class VoteDeckWordCard extends ConsumerWidget {
       wordClassLabel: item.wordClassLabel,
       orderIndex: item.orderIndex,
       meaningCount: item.meaningCount,
+      pronunciationValue: item.pronunciationValue,
+      hasAudio: item.hasAudio,
       onOpenDetail: onOpenDetail,
       onWordClassTap: onWordClassTap,
+      onAddWrittenPronunciation: onAddWrittenPronunciation,
+      onRecordPronunciation: onRecordPronunciation,
     );
   }
 }
@@ -52,9 +66,13 @@ class VoteDeckMeaningFace extends StatelessWidget {
     this.wordClassLabel = '',
     this.orderIndex = 1,
     this.meaningCount = 1,
+    this.pronunciationValue,
+    this.hasAudio = false,
     this.onOpenDetail,
     this.onLockedTap,
     this.onWordClassTap,
+    this.onAddWrittenPronunciation,
+    this.onRecordPronunciation,
   });
 
   final String lemma;
@@ -74,6 +92,12 @@ class VoteDeckMeaningFace extends StatelessWidget {
   /// Jumlah makna published kata ini.
   final int meaningCount;
 
+  /// IPA tertulis kata; null = belum ada (#260).
+  final String? pronunciationValue;
+
+  /// Ada audio lemma (#260).
+  final bool hasAudio;
+
   /// Login: tap lemma → detail kata induk. Null = lemma diam.
   final VoidCallback? onOpenDetail;
 
@@ -83,10 +107,19 @@ class VoteDeckMeaningFace extends StatelessWidget {
   /// Login: tap kelas → picker + submit usulan. Null = badge read-only.
   final VoidCallback? onWordClassTap;
 
+  /// #260: tulis IPA. Null = tanpa CTA.
+  final VoidCallback? onAddWrittenPronunciation;
+
+  /// #260: rekam audio. Null = tanpa CTA.
+  final VoidCallback? onRecordPronunciation;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
+    final ipa = pronunciationDisplay(pronunciationValue);
+    final showPronCtas =
+        onAddWrittenPronunciation != null || onRecordPronunciation != null;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Column(
@@ -143,6 +176,20 @@ class VoteDeckMeaningFace extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+          if (ipa.isNotEmpty) ...[
+            const Gap(4),
+            Text(
+              ipa,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.charisSil(
+                fontSize: theme.typography.body.sm.fontSize,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
+                height: 1.3,
+                color: theme.colors.mutedForeground,
+              ),
+            ),
+          ],
           if (sense != null && sense!.trim().isNotEmpty) ...[
             const Gap(10),
             Text(
@@ -151,6 +198,34 @@ class VoteDeckMeaningFace extends StatelessWidget {
                 color: theme.colors.mutedForeground,
               ),
               textAlign: TextAlign.center,
+            ),
+          ],
+          if (showPronCtas) ...[
+            const Gap(10),
+            SwipeExemptRegion(
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  if (onAddWrittenPronunciation != null)
+                    FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.sm,
+                      onPress: onAddWrittenPronunciation,
+                      prefix: const Icon(FLucideIcons.type, size: 14),
+                      child: Text(l10n.dictAddPronunciation),
+                    ),
+                  if (onRecordPronunciation != null)
+                    FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.sm,
+                      onPress: onRecordPronunciation,
+                      prefix: const Icon(FLucideIcons.mic, size: 14),
+                      child: Text(l10n.dictRecordPronunciation),
+                    ),
+                ],
+              ),
             ),
           ],
           // Tamu: tile terkunci (tap = login).

@@ -113,6 +113,24 @@ class VoteDeckController extends _$VoteDeckController {
     state = AsyncData(current.copyWith(items: items));
   }
 
+  /// Patch pelafalan kartu aktif setelah tulis/rekam dari deck (#260).
+  void patchPronunciation(
+    String meaningId, {
+    String? pronunciationValue,
+    bool? hasAudio,
+  }) {
+    final current = state.value;
+    if (current == null) return;
+    final index = current.items.indexWhere((item) => item.id == meaningId);
+    if (index < 0) return;
+    final items = [...current.items];
+    items[index] = items[index].copyWith(
+      pronunciationValue: pronunciationValue,
+      hasAudio: hasAudio,
+    );
+    state = AsyncData(current.copyWith(items: items));
+  }
+
   /// Refresh deck lalu pin [meaningId] ke depan bila masih ada (#263 / #159).
   Future<void> refreshKeepingFront(String meaningId) async {
     ref.invalidateSelf();

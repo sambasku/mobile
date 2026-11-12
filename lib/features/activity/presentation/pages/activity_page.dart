@@ -13,6 +13,7 @@ import '../../../../core/utils/tabfreeze_log.dart';
 import '../../../search_miss/search_miss_router.dart';
 import '../../../discussion/discussion_router.dart';
 import '../../../vote/presentation/providers/vote_deck_providers.dart';
+import '../../../vote/presentation/widgets/vote_deck_pronunciation.dart';
 import '../../../vote/presentation/widgets/vote_deck_section.dart';
 import '../providers/contribution_guide_providers.dart';
 import '../widgets/contribution_guide_sheet.dart';
@@ -176,12 +177,16 @@ class _VoteDeckStub extends StatelessWidget {
 
 /// Satu tombol setinggi pill; isi menu (label lengkap) ada di bottom sheet
 /// supaya tinggi deck tidak berkurang.
-class _ContributeMenu extends StatelessWidget {
+class _ContributeMenu extends ConsumerWidget {
   const _ContributeMenu({required this.theme});
 
   final FThemeData theme;
 
-  Future<void> _open(BuildContext context) {
+  /// Result khusus #260: bukan path route - buka sheet pelafalan setelah menu tutup.
+  static const _pronWrite = 'pron:write';
+  static const _pronRecord = 'pron:record';
+
+  Future<void> _open(BuildContext context, WidgetRef ref) {
     tfLog('sheet open');
     // Single-flight: tile masih bisa di-tap saat animasi pop (~250ms);
     // tanpa ini tap kedua mempop route yang baru saja di-push.
@@ -223,52 +228,75 @@ class _ContributeMenu extends StatelessWidget {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: FTileGroup(
-              label: Text(l10n.feedContributeMenu),
-              children: [
-                tile(
-                  FLucideIcons.plusCircle,
-                  l10n.feedContributeNewWord,
-                  l10n.feedContributeNewWordSubtitle,
-                  () {
-                    AnalyticsService.instance.log(
-                      AnalyticsEvents.contributeStart,
-                      params: {'from': 'blank'},
-                    );
-                    go('/contribute');
-                  },
-                ),
-                tile(
-                  FLucideIcons.search,
-                  l10n.feedContributeSearchMiss,
-                  l10n.feedContributeSearchMissSubtitle,
-                  () => go(SearchMissRouter.list.path),
-                ),
-                tile(
-                  FLucideIcons.messagesSquare,
-                  l10n.feedContributeDiscussion,
-                  l10n.feedContributeDiscussionSubtitle,
-                  () => go(DiscussionRouter.feed.path),
-                ),
-              ],
+            // 5 tile + label bisa overflow tinggi sheet di layar pendek /
+            // test viewport - scroll agar tidak RenderFlex overflow.
+            child: SingleChildScrollView(
+              child: FTileGroup(
+                label: Text(l10n.feedContributeMenu),
+                children: [
+                  tile(
+                    FLucideIcons.plusCircle,
+                    l10n.feedContributeNewWord,
+                    l10n.feedContributeNewWordSubtitle,
+                    () {
+                      AnalyticsService.instance.log(
+                        AnalyticsEvents.contributeStart,
+                        params: {'from': 'blank'},
+                      );
+                      go('/contribute');
+                    },
+                  ),
+                  tile(
+                    FLucideIcons.type,
+                    l10n.feedContributeWritePronunciation,
+                    l10n.feedContributeWritePronunciationSubtitle,
+                    () => go(_pronWrite),
+                  ),
+                  tile(
+                    FLucideIcons.mic,
+                    l10n.feedContributeRecordPronunciation,
+                    l10n.feedContributeRecordPronunciationSubtitle,
+                    () => go(_pronRecord),
+                  ),
+                  tile(
+                    FLucideIcons.search,
+                    l10n.feedContributeSearchMiss,
+                    l10n.feedContributeSearchMissSubtitle,
+                    () => go(SearchMissRouter.list.path),
+                  ),
+                  tile(
+                    FLucideIcons.messagesSquare,
+                    l10n.feedContributeDiscussion,
+                    l10n.feedContributeDiscussionSubtitle,
+                    () => go(DiscussionRouter.feed.path),
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
-    ).then((path) {
+    ).then((path) async {
       tfLog('sheet dismissed path=$path');
-      if (path case final p?) {
-        if (context.mounted) context.push(p);
+      if (path == null || !context.mounted) return;
+      if (path == _pronWrite || path == _pronRecord) {
+        await openVoteDeckPronunciationOrComplete(
+          context: context,
+          ref: ref,
+          record: path == _pronRecord,
+        );
+        return;
       }
+      if (context.mounted) context.push(path);
     });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FButton(
       variant: FButtonVariant.outline,
       size: FButtonSizeVariant.sm,
-      onPress: () => _open(context),
+      onPress: () => _open(context, ref),
       prefix: Icon(FLucideIcons.layoutGrid, color: theme.colors.primary),
       suffix: const Icon(FLucideIcons.chevronUp),
       child: Text(AppLocalizations.of(context).feedContributeMenu),

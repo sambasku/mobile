@@ -17,11 +17,13 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/failures/vote_failure.dart';
 import '../../../dictionary/dictionary_router.dart';
 import '../../../dictionary/presentation/providers/audio_player_controller.dart';
+import '../../../dictionary/presentation/providers/pronunciation_providers.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
 import '../../domain/entities/vote_deck_item.dart';
 import '../providers/vote_deck_providers.dart';
 import '../providers/vote_submit_queue.dart';
 import 'vote_deck_class_shortcut.dart';
+import 'vote_deck_pronunciation.dart';
 import 'vote_deck_swipe_card.dart';
 import 'vote_deck_word_card.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -290,6 +292,13 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
 
         final item = state.items.first;
         if (state.items.length > 1) _prefetchDetail(state.items[1].wordId);
+        final uploadUnavailable = ref.watch(
+          pronunciationUploadUnavailableProvider(item.wordId),
+        );
+        final needWritten =
+            (item.pronunciationValue == null ||
+                item.pronunciationValue!.trim().isEmpty);
+        final needAudio = !item.hasAudio && !uploadUnavailable;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -315,6 +324,20 @@ class _AuthDeckState extends ConsumerState<_AuthDeck> {
                       onWordClassTap: _rewinding
                           ? null
                           : () => pickAndSubmitVoteDeckWordClass(
+                              context: context,
+                              ref: ref,
+                              item: item,
+                            ),
+                      onAddWrittenPronunciation: _rewinding || !needWritten
+                          ? null
+                          : () => openVoteDeckWrittenPronunciation(
+                              context: context,
+                              ref: ref,
+                              item: item,
+                            ),
+                      onRecordPronunciation: _rewinding || !needAudio
+                          ? null
+                          : () => openVoteDeckRecordPronunciation(
                               context: context,
                               ref: ref,
                               item: item,

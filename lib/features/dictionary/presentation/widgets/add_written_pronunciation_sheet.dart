@@ -12,12 +12,13 @@ import '../providers/pronunciation_providers.dart';
 import '../utils/pronunciation_format.dart';
 
 /// Sheet paste-first untuk menambah pelafalan tertulis (notation=ipa).
-Future<bool?> showAddWrittenPronunciationSheet(
+/// Selesai dengan value raw (tanpa slash) bila tersimpan; null bila batal.
+Future<String?> showAddWrittenPronunciationSheet(
   BuildContext context, {
   required String wordId,
   required String lemma,
 }) {
-  return showModalBottomSheet<bool>(
+  return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -104,7 +105,7 @@ class _AddWrittenPronunciationSheetState
           context: context,
           title: Text(l10n.dictAddPronunciationSuccess),
         );
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(raw);
       },
     );
   }

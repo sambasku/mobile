@@ -32,6 +32,8 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
         ? map['meaning_count'] as int
         : int.tryParse('${map['meaning_count']}') ?? 1,
     wordClass: _parseWordClass(map['word_class']),
+    pronunciationValue: _parsePronunciationValue(map['pronunciation_value']),
+    hasAudio: map['has_audio'] == true,
     upvotes: map['upvotes'] is int
         ? map['upvotes'] as int
         : int.tryParse('${map['upvotes']}') ?? 0,
@@ -39,6 +41,12 @@ VoteDeckItem parseVoteDeckItem(Map<String, dynamic> map) {
         ? map['downvotes'] as int
         : int.tryParse('${map['downvotes']}') ?? 0,
   );
+}
+
+String? _parsePronunciationValue(Object? raw) {
+  final text = raw?.toString().trim();
+  if (text == null || text.isEmpty) return null;
+  return text;
 }
 
 /// Kelas kata per makna dari wire (`{id, code, name, alias}`); null bila
