@@ -6296,7 +6296,7 @@ abstract class AppLocalizations {
   /// No description provided for @dictCompleteSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.'**
+  /// **'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, tulis pelafalannya, atau rekam pelafalannya.'**
   String get dictCompleteSubtitle;
 
   /// No description provided for @dictCompleteHint.
@@ -8164,6 +8164,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Kata Sambas belum ada di kamus? Tambahkan sendiri'**
   String get feedContributeNewWordSubtitle;
+
+  /// Menu kontribusi: tulis IPA untuk kata di kartu vote deck
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pelafalan'**
+  String get feedContributeWritePronunciation;
+
+  /// Subtitle tile tulis pelafalan di Menu kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah notasi IPA untuk kata di kartu nilai saat ini'**
+  String get feedContributeWritePronunciationSubtitle;
+
+  /// Menu kontribusi: rekam audio untuk kata di kartu vote deck
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam pelafalan'**
+  String get feedContributeRecordPronunciation;
+
+  /// Subtitle tile rekam pelafalan di Menu kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara lemma untuk kata di kartu nilai saat ini'**
+  String get feedContributeRecordPronunciationSubtitle;
+
+  /// Toast bila Menu kontribusi tulis/rekam tanpa kartu deck aktif
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kartu nilai. Cari kata lewat Lengkapi kata dulu.'**
+  String get voteDeckPronunciationNoCard;
 
   /// Item menu daftar pencarian tanpa hasil
   ///

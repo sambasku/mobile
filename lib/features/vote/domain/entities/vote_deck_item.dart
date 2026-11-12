@@ -31,6 +31,8 @@ class VoteDeckItem {
     required this.orderIndex,
     this.meaningCount = 1,
     this.wordClass,
+    this.pronunciationValue,
+    this.hasAudio = false,
     this.sense,
     this.upvotes = 0,
     this.downvotes = 0,
@@ -61,6 +63,12 @@ class VoteDeckItem {
   /// Kelas kata makna ini; null = belum diisi (atau API lama).
   final VoteDeckWordClass? wordClass;
 
+  /// IPA tertulis pertama kata induk; null = belum ada (#260).
+  final String? pronunciationValue;
+
+  /// Ada audio lemma published (#260).
+  final bool hasAudio;
+
   final int upvotes;
   final int downvotes;
 
@@ -77,10 +85,13 @@ class VoteDeckItem {
     int? orderIndex,
     int? meaningCount,
     VoteDeckWordClass? wordClass,
+    String? pronunciationValue,
+    bool? hasAudio,
     String? sense,
     int? upvotes,
     int? downvotes,
     bool clearWordClass = false,
+    bool clearPronunciation = false,
   }) {
     return VoteDeckItem(
       id: id ?? this.id,
@@ -95,6 +106,10 @@ class VoteDeckItem {
       orderIndex: orderIndex ?? this.orderIndex,
       meaningCount: meaningCount ?? this.meaningCount,
       wordClass: clearWordClass ? null : (wordClass ?? this.wordClass),
+      pronunciationValue: clearPronunciation
+          ? null
+          : (pronunciationValue ?? this.pronunciationValue),
+      hasAudio: hasAudio ?? this.hasAudio,
       sense: sense ?? this.sense,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,

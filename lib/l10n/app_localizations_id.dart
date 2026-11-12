@@ -3567,7 +3567,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictCompleteSubtitle =>
-      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.';
+      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, tulis pelafalannya, atau rekam pelafalannya.';
 
   @override
   String get dictCompleteHint => 'Cari kata Sambas...';
@@ -4638,6 +4638,24 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get feedContributeNewWordSubtitle =>
       'Kata Sambas belum ada di kamus? Tambahkan sendiri';
+
+  @override
+  String get feedContributeWritePronunciation => 'Tulis pelafalan';
+
+  @override
+  String get feedContributeWritePronunciationSubtitle =>
+      'Tambah notasi IPA untuk kata di kartu nilai saat ini';
+
+  @override
+  String get feedContributeRecordPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get feedContributeRecordPronunciationSubtitle =>
+      'Rekam suara lemma untuk kata di kartu nilai saat ini';
+
+  @override
+  String get voteDeckPronunciationNoCard =>
+      'Belum ada kartu nilai. Cari kata lewat Lengkapi kata dulu.';
 
   @override
   String get feedContributeSearchMiss => 'Dicari warga';
@@ -14244,7 +14262,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictCompleteSubtitle =>
-      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.';
+      'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, tulis pelafalannya, atau rekam pelafalannya.';
 
   @override
   String get dictCompleteHint => 'Cari kata Sambas...';
@@ -15315,6 +15333,24 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get feedContributeNewWordSubtitle =>
       'Kata Sambas belum ada di kamus? Tambahkan sendiri';
+
+  @override
+  String get feedContributeWritePronunciation => 'Tulis pelafalan';
+
+  @override
+  String get feedContributeWritePronunciationSubtitle =>
+      'Tambah notasi IPA untuk kata di kartu nilai saat ini';
+
+  @override
+  String get feedContributeRecordPronunciation => 'Rekam pelafalan';
+
+  @override
+  String get feedContributeRecordPronunciationSubtitle =>
+      'Rekam suara lemma untuk kata di kartu nilai saat ini';
+
+  @override
+  String get voteDeckPronunciationNoCard =>
+      'Belum ada kartu nilai. Cari kata lewat Lengkapi kata dulu.';
 
   @override
   String get feedContributeSearchMiss => 'Dicari warga';
