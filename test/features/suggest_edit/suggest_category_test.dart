@@ -9,6 +9,7 @@ void main() {
     expect(none, isNot(contains(SuggestCategory.addExample)));
     expect(none, isNot(contains(SuggestCategory.changePhoto)));
     expect(none, isNot(contains(SuggestCategory.changeExample)));
+    expect(none, isNot(contains(SuggestCategory.changePronunciation)));
     expect(none, contains(SuggestCategory.addMeaning));
     expect(none, contains(SuggestCategory.changeWordType));
     expect(
@@ -16,6 +17,7 @@ void main() {
         hasMeaning: true,
         hasImage: true,
         hasExample: true,
+        hasPronunciation: true,
       ),
       SuggestCategory.values,
     );
@@ -23,6 +25,46 @@ void main() {
       availableSuggestCategories(hasMeaning: true, hasImage: true),
       isNot(contains(SuggestCategory.changeExample)),
     );
+    expect(
+      availableSuggestCategories(hasMeaning: true, hasImage: true),
+      isNot(contains(SuggestCategory.changePronunciation)),
+    );
+  });
+
+  test('ubah pelafalan: tanpa perubahan = null', () {
+    expect(
+      buildChangePronunciation(
+        pronunciationId: 'p1',
+        originalValue: 'sa.dap',
+        value: 'sa.dap',
+      ),
+      isNull,
+    );
+    expect(
+      buildChangePronunciation(
+        pronunciationId: 'p1',
+        originalValue: 'sa.dap',
+        value: 'sa.dap ',
+      ),
+      isNull,
+    );
+    expect(
+      buildChangePronunciation(
+        pronunciationId: 'p1',
+        originalValue: 'sa.dap',
+        value: 'sa.dapʰ',
+      ),
+      {
+        'pronunciations': [
+          {
+            'pronunciation_id': 'p1',
+            'action': 'update',
+            'value': 'sa.dapʰ',
+          },
+        ],
+      },
+    );
+    expect(SuggestCategory.changePronunciation.code, 'change_pronunciation');
   });
 
   test('#244 ubah contoh: tanpa perubahan = null', () {

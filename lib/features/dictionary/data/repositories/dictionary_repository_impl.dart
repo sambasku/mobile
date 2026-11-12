@@ -617,7 +617,13 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         .toList(),
     usageLabels: List<String>.from(dto.usageLabels),
     pronunciations: dto.pronunciations
-        .map((p) => WordPronunciation(notation: p.notation, value: p.value))
+        .map(
+          (p) => WordPronunciation(
+            id: p.id,
+            notation: p.notation,
+            value: p.value,
+          ),
+        )
         .toList(),
     audios: sortWordAudios(dto.audios.map(_mapAudio).toList()),
     images: dto.images

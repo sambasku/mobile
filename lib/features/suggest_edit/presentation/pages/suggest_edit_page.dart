@@ -21,6 +21,7 @@ import '../../../contribution/presentation/widgets/kbbi_translation_field.dart';
 import '../../../contribution/presentation/widgets/word_class_picker_sheet.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
 import '../../../dictionary/presentation/providers/word_detail_providers.dart';
+import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../domain/meaning_edit_order.dart';
 import '../../domain/suggest_category.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -37,6 +38,7 @@ class SuggestEditPage extends ConsumerStatefulWidget {
     required this.wordId,
     this.initialCategory,
     this.initialMeaningId,
+    this.initialPronunciationId,
   });
 
   final String wordId;
@@ -50,6 +52,10 @@ class SuggestEditPage extends ConsumerStatefulWidget {
   /// yang butuh satu makna, dan ditaruh di atas section "Ubah makna".
   /// ID yang tidak ada di detail diabaikan.
   final String? initialMeaningId;
+
+  /// Pelafalan dari tap baris IPA (`?pronunciation=`). Prefill kategori
+  /// `change_pronunciation`. ID yang tidak ada di detail diabaikan.
+  final String? initialPronunciationId;
 
   @override
   ConsumerState<SuggestEditPage> createState() => _SuggestEditPageState();
@@ -86,6 +92,11 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   String? _exampleId;
   String _originalExampleSentence = '';
   String? _originalExampleTranslation;
+
+  // Ubah pelafalan tertulis.
+  final _pronunciationCtrl = TextEditingController();
+  String? _pronunciationId;
+  String _originalPronunciationValue = '';
 
   // Foto.
   List<ContributeImageSlot> _addImages = [];
@@ -125,6 +136,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       _addPadananCtrl,
       _sentenceCtrl,
       _sentenceTranslationCtrl,
+      _pronunciationCtrl,
       _synonymCtrl,
       _antonymCtrl,
       _relationCtrl,
@@ -189,9 +201,31 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
       hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
+      hasPronunciation: detail.pronunciations.isNotEmpty,
     );
     if (!available.contains(requested)) return;
     _category = requested;
+    if (requested == SuggestCategory.changePronunciation) {
+      _prefillPronunciation(detail);
+    }
+  }
+
+  void _prefillPronunciation(WordDetail detail) {
+    final preferred =
+        detail.pronunciations
+            .where((p) => p.id == widget.initialPronunciationId)
+            .firstOrNull ??
+        (detail.pronunciations.length == 1
+            ? detail.pronunciations.first
+            : null);
+    if (preferred != null) _selectPronunciation(preferred);
+  }
+
+  void _selectPronunciation(WordPronunciation pronunciation) {
+    _pronunciationId = pronunciation.id;
+    _originalPronunciationValue = pronunciationRaw(pronunciation.value);
+    _pronunciationCtrl.text = _originalPronunciationValue;
+    _fieldErrors = const {};
   }
 
   List<({WordMeaning meaning, WordExample example})> _flatExamples(
@@ -448,6 +482,20 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           sourceSentence: sentence,
           originalTargetSentence: _originalExampleTranslation,
           targetSentence: _sentenceTranslationCtrl.text,
+        );
+      case SuggestCategory.changePronunciation:
+        final id = _pronunciationId;
+        if (id == null) {
+          throw StateError(_l10n.suggestPickPronunciation);
+        }
+        final raw = pronunciationRaw(_pronunciationCtrl.text);
+        if (raw.isEmpty) {
+          throw StateError(_l10n.dictAddPronunciationEmpty);
+        }
+        return buildChangePronunciation(
+          pronunciationId: id,
+          originalValue: _originalPronunciationValue,
+          value: raw,
         );
       case SuggestCategory.addExample:
         throw StateError(_l10n.suggestExampleFirst);
@@ -725,6 +773,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
       hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
+      hasPronunciation: detail.pronunciations.isNotEmpty,
     );
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
@@ -754,9 +803,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                   _exampleId = null;
                   _originalExampleSentence = '';
                   _originalExampleTranslation = null;
+                  _pronunciationId = null;
+                  _originalPronunciationValue = '';
                   if (c == SuggestCategory.changeExample) {
                     _sentenceCtrl.clear();
                     _sentenceTranslationCtrl.clear();
+                  }
+                  if (c == SuggestCategory.changePronunciation) {
+                    _pronunciationCtrl.clear();
+                    _prefillPronunciation(detail);
                   }
                 }),
               ),
@@ -928,6 +983,39 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               error: _errorText('sentence_translation'),
               maxLines: 3,
               minLines: 2,
+            ),
+          ],
+        ];
+      case SuggestCategory.changePronunciation:
+        return [
+          _FieldCaption(_l10n.suggestPickPronunciation),
+          FTileGroup(
+            children: [
+              for (final p in detail.pronunciations)
+                FTile(
+                  title: Text(pronunciationDisplay(p.value)),
+                  subtitle: Text(p.notation),
+                  suffix: _pronunciationId == p.id
+                      ? Icon(
+                          FLucideIcons.check,
+                          size: 16,
+                          color: context.theme.colors.primary,
+                        )
+                      : null,
+                  onPress: () => setState(() => _selectPronunciation(p)),
+                ),
+            ],
+          ),
+          if (_pronunciationId != null) ...[
+            const Gap(12),
+            _FieldCaption(_l10n.suggestPronunciationSelected),
+            FTextField(
+              control: FTextFieldControl.managed(
+                controller: _pronunciationCtrl,
+              ),
+              label: Text(_l10n.suggestPronunciationFieldLabel),
+              hint: _l10n.dictAddPronunciationHint,
+              error: _errorText('pronunciation'),
             ),
           ],
         ];

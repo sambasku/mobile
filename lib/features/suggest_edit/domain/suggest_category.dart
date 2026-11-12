@@ -10,6 +10,8 @@ enum SuggestCategory {
   changePhoto('change_photo'),
   /// #244: ubah contoh published (moderasi usulan, bukan POST examples).
   changeExample('change_example'),
+  /// Ubah notasi pelafalan published (moderasi usulan, bukan POST pronunciations).
+  changePronunciation('change_pronunciation'),
   synonym('synonym'),
   antonym('antonym'),
   // PRD relasi-lemma: relasi bentuk + akar/turunan + kelompok makna.
@@ -34,14 +36,36 @@ List<SuggestCategory> availableSuggestCategories({
   required bool hasMeaning,
   required bool hasImage,
   bool hasExample = false,
+  bool hasPronunciation = false,
 }) => SuggestCategory.values
     .where((c) {
       if (c.needsMeaning) return hasMeaning;
       if (c == SuggestCategory.changePhoto) return hasImage;
       if (c == SuggestCategory.changeExample) return hasExample;
+      if (c == SuggestCategory.changePronunciation) return hasPronunciation;
       return true;
     })
     .toList(growable: false);
+
+/// Ubah pelafalan: value baru (raw tanpa slash). `null` = tidak ada perubahan.
+Map<String, dynamic>? buildChangePronunciation({
+  required String pronunciationId,
+  required String originalValue,
+  required String value,
+}) {
+  final next = value.trim();
+  final orig = originalValue.trim();
+  if (next.isEmpty || next == orig) return null;
+  return {
+    'pronunciations': [
+      {
+        'pronunciation_id': pronunciationId,
+        'action': 'update',
+        'value': next,
+      },
+    ],
+  };
+}
 
 /// #244: usulan ubah contoh published. `null` = tidak ada perubahan.
 Map<String, dynamic>? buildChangeExample({
@@ -268,12 +292,14 @@ String? suggestFieldKey(String apiField) {
   }
   if (apiField.contains('source_sentence')) return 'sentence';
   if (apiField.contains('target_sentence')) return 'sentence_translation';
+  if (apiField.startsWith('pronunciations')) return 'pronunciation';
   return switch (apiField) {
     'lemma' => 'lemma',
     'notes' => 'notes',
     'word_type' => 'word_type',
     'reason_text' => 'reason',
     'examples' => 'sentence',
+    'pronunciations' => 'pronunciation',
     _ => null,
   };
 }

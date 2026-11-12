@@ -13,6 +13,8 @@ String suggestCategoryLabel(SuggestCategory c, AppLocalizations l10n) =>
       SuggestCategory.addPhoto => l10n.suggestCategoryAddPhoto,
       SuggestCategory.changePhoto => l10n.suggestCategoryChangePhoto,
       SuggestCategory.changeExample => l10n.suggestCategoryChangeExample,
+      SuggestCategory.changePronunciation =>
+        l10n.suggestCategoryChangePronunciation,
       SuggestCategory.synonym => l10n.suggestCategorySynonym,
       SuggestCategory.antonym => l10n.suggestCategoryAntonym,
       SuggestCategory.variantOf => l10n.suggestCategoryVariantOf,
@@ -35,6 +37,8 @@ String suggestCategoryDescription(
   SuggestCategory.addPhoto => l10n.suggestCategoryAddPhotoDesc,
   SuggestCategory.changePhoto => l10n.suggestCategoryChangePhotoDesc,
   SuggestCategory.changeExample => l10n.suggestCategoryChangeExampleDesc,
+  SuggestCategory.changePronunciation =>
+    l10n.suggestCategoryChangePronunciationDesc,
   SuggestCategory.synonym => l10n.suggestCategorySynonymDesc,
   SuggestCategory.antonym => l10n.suggestCategoryAntonymDesc,
   SuggestCategory.variantOf => l10n.suggestCategoryVariantOfDesc,

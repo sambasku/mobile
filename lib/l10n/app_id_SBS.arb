@@ -374,6 +374,35 @@
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
   "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
+
+  "suggestCategoryChangePronunciation": "Ubah pelafalan",
+  "@suggestCategoryChangePronunciation": {
+    "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
+  },
+  "suggestCategoryChangePronunciationDesc": "Perbaiki notasi IPA yang sudah ada",
+  "suggestPickPronunciation": "Pilih pelafalan yang mau diperbaiki",
+  "@suggestPickPronunciation": {
+    "description": "Caption daftar pelafalan di form Ubah pelafalan"
+  },
+  "suggestPronunciationSelected": "Pelafalan dipilih",
+  "@suggestPronunciationSelected": {
+    "description": "Hint singkat setelah user memilih satu pelafalan"
+  },
+  "suggestPronunciationFieldLabel": "Pelafalan baru",
+  "@suggestPronunciationFieldLabel": {
+    "description": "Label field value IPA di form usulan"
+  },
+  "dictLoginToChangePronunciation": "Masuk dulu untuk mengusulkan perubahan pelafalan",
+  "@dictLoginToChangePronunciation": {
+    "description": "Toast saat tap pelafalan tanpa login"
+  },
+  "dictChangePronunciationSemantics": "Pelafalan {value}. Ketuk untuk usulkan perubahan",
+  "@dictChangePronunciationSemantics": {
+    "description": "Semantics label baris IPA yang bisa di-tap",
+    "placeholders": {
+      "value": {"type": "String"}
+    }
+  },
   "suggestPickExample": "Pilih contoh yang mau diperbaiki",
   "@suggestPickExample": {
     "description": "Caption daftar contoh di form Ubah contoh"

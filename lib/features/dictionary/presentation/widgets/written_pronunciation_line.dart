@@ -11,7 +11,7 @@ import '../utils/pronunciation_format.dart';
 import 'add_written_pronunciation_sheet.dart';
 
 /// Baris pelafalan tertulis di bawah lemma (Charis SIL, wrapped `/.../`),
-/// atau CTA tambah bila kosong.
+/// atau CTA tambah bila kosong. Tap baris yang ada → usul perubahan.
 class WrittenPronunciationLine extends ConsumerWidget {
   const WrittenPronunciationLine({
     super.key,
@@ -50,6 +50,25 @@ class WrittenPronunciationLine extends ConsumerWidget {
     );
   }
 
+  Future<void> _openChange(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final auth = ref.read(authStatusProvider).value;
+    if (!(auth?.isAuth ?? false)) {
+      showFToast(
+        context: context,
+        title: Text(l10n.dictLoginToChangePronunciation),
+      );
+      context.push('/login');
+      return;
+    }
+    final firstId = detail.pronunciations.firstOrNull?.id;
+    final q = StringBuffer('category=change_pronunciation');
+    if (firstId != null && detail.pronunciations.length == 1) {
+      q.write('&pronunciation=$firstId');
+    }
+    await context.push('/suggest-edit/$wordId?$q');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.theme;
@@ -59,7 +78,21 @@ class WrittenPronunciationLine extends ConsumerWidget {
     );
 
     if (line.isNotEmpty) {
-      return Text(line, style: _ipaStyle(theme));
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: GestureDetector(
+          onTap: () => _openChange(context, ref),
+          behavior: HitTestBehavior.opaque,
+          child: Semantics(
+            button: true,
+            label: l10n.dictChangePronunciationSemantics(line),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(line, style: _ipaStyle(theme)),
+            ),
+          ),
+        ),
+      );
     }
 
     return Align(
