@@ -79,7 +79,7 @@ class MeaningReportReviewRepository {
           'status': status,
           'target': target,
           'limit': limit,
-          if (cursor != null) 'cursor': cursor,
+          'cursor': ?cursor,
         },
       );
       final data = response.data?['data'];

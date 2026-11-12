@@ -131,7 +131,7 @@ void main() {
 
   tearDown(AnalyticsService.debugReset);
 
-  void _tallSurface(WidgetTester tester) {
+  void tallSurface(WidgetTester tester) {
     // Form usul + field IPA opsional: viewport default test terlalu pendek
     // sehingga ListView lazy melepas EditableText terjemahan.
     tester.view.physicalSize = const Size(800, 1600);
@@ -145,7 +145,7 @@ void main() {
     required ContributionFailure failure,
   }) async {
     SharedPreferences.setMockInitialValues({});
-    _tallSurface(tester);
+    tallSurface(tester);
 
     final throwingDio = Dio()..httpClientAdapter = _ThrowingAdapter();
     await tester.pumpWidget(
@@ -247,7 +247,7 @@ void main() {
 
   testWidgets('mode standar mengirim lemma dan terjemahan', (tester) async {
     SharedPreferences.setMockInitialValues({});
-    _tallSurface(tester);
+    tallSurface(tester);
     final usecase = _CapturingSubmit();
     final dio = Dio()..httpClientAdapter = _ReferenceAdapter();
     await tester.pumpWidget(
@@ -321,7 +321,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     FlutterSecureStorage.setMockInitialValues({});
-    _tallSurface(tester);
+    tallSurface(tester);
 
     const wordId = '01JWORD0000000000000000000';
     const lemma = 'makatn';
