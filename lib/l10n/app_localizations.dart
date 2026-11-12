@@ -13199,6 +13199,24 @@ abstract class AppLocalizations {
   /// **'Isi kata, peribahasa, atau ungkapan'**
   String get contributeLemmaHint;
 
+  /// Label field IPA di form usul kata baru
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan (opsional)'**
+  String get contributePronunciationLabel;
+
+  /// Info tip field pelafalan di usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring.'**
+  String get contributePronunciationHint;
+
+  /// Hint input IPA di form usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: sa.dap atau /sa.dap/'**
+  String get contributePronunciationFieldHint;
+
   /// No description provided for @contributeTranslationLabel.
   ///
   /// In id, this message translates to:

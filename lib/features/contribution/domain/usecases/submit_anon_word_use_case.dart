@@ -133,6 +133,7 @@ class SubmitAnonWordUseCase {
       relatedWords: relatedWords,
       translationLanguageId: params.translationLanguageId.trim(),
       images: images,
+      pronunciationValue: params.pronunciationValue,
       searchMissId: params.searchMissId,
     );
   }
@@ -173,6 +174,7 @@ class SubmitAnonWordParams {
     this.spellingVariants = const [],
     this.relatedWords = const [],
     this.images = const [],
+    this.pronunciationValue,
     this.searchMissId,
   });
 
@@ -190,5 +192,6 @@ class SubmitAnonWordParams {
   final List<String> spellingVariants;
   final List<SubmitWordRelation> relatedWords;
   final List<SubmitWordImage> images;
+  final String? pronunciationValue;
   final String? searchMissId;
 }

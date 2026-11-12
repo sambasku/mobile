@@ -70,6 +70,11 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
+    // Form + IPA opsional: viewport pendek melepas field terjemahan.
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     final dio = Dio()..httpClientAdapter = _ReferenceAdapter();
     await tester.pumpWidget(
       ProviderScope(
@@ -93,8 +98,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     // Isi terjemahan dulu supaya isi form menyerupai laporan user.
+    // 0=lemma, 1=IPA opsional, 2=terjemahan.
     final fields = find.byType(EditableText);
-    await tester.enterText(fields.at(1), 'makan');
+    expect(fields, findsAtLeastNWidgets(3));
+    await tester.enterText(fields.at(2), 'makan');
     await tester.pump();
     // Fokuskan field terjemahan seperti user asli (keyboard terbuka saat tap
     // chip).

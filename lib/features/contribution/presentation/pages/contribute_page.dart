@@ -2,11 +2,13 @@ import 'dart:async';
 import '../../../dictionary/presentation/dictionary_labels.dart';
 import 'package:sambasku_mobile/l10n/app_localizations.dart';
 
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -21,6 +23,7 @@ import '../../../activity/data/activity_feed_repository.dart' show FeedCategory;
 import '../../../activity/presentation/providers/activity_feed_providers.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/domain/entities/word_detail.dart';
+import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../../my_contributions/presentation/providers/my_contributions_providers.dart';
 import '../../../search_miss/presentation/providers/search_miss_list_providers.dart';
 import '../../domain/failures/contribution_failure.dart';
@@ -89,6 +92,7 @@ class _MeaningDraft {
 class _ContributePageState extends ConsumerState<ContributePage> {
   late final TextEditingController _lemmaCtrl;
   late final FocusNode _lemmaFocus;
+  late final TextEditingController _pronunciationCtrl;
   late final TextEditingController _standardTranslationCtrl;
   late final List<_MeaningDraft> _meanings;
 
@@ -123,6 +127,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       text: isTranslationMiss ? '' : (widget.initialLemma ?? ''),
     );
     _lemmaFocus = FocusNode();
+    _pronunciationCtrl = TextEditingController();
     _standardTranslationCtrl = TextEditingController(
       text: isTranslationMiss ? (widget.initialLemma ?? '') : '',
     );
@@ -152,6 +157,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       // Issue #170: cek ketersediaan lemma (indikator, non-blocking).
       _lemmaCtrl.addListener(() => _onLemmaChanged(_lemmaCtrl.text));
       _onLemmaChanged(_lemmaCtrl.text);
+      _pronunciationCtrl.addListener(_onFieldEdited);
       _standardTranslationCtrl.addListener(_onStandardTranslationEdited);
       for (final m in _meanings) {
         m.defCtrl.addListener(_onFieldEdited);
@@ -232,10 +238,30 @@ class _ContributePageState extends ConsumerState<ContributePage> {
     return source;
   }
 
+  Future<void> _pastePronunciation() async {
+    final l10n = AppLocalizations.of(context);
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text?.trim() ?? '';
+    if (text.isEmpty) {
+      if (!mounted) return;
+      showFToast(
+        context: context,
+        title: Text(l10n.dictPronunciationClipboardEmpty),
+      );
+      return;
+    }
+    final raw = pronunciationRaw(text);
+    _onFieldEdited();
+    _pronunciationCtrl
+      ..text = raw
+      ..selection = TextSelection.collapsed(offset: raw.length);
+  }
+
   @override
   void dispose() {
     _lemmaCtrl.dispose();
     _lemmaFocus.dispose();
+    _pronunciationCtrl.dispose();
     _standardTranslationCtrl.dispose();
     for (final m in _meanings) {
       m.dispose();
@@ -294,6 +320,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
     _meanings.add(draft);
 
     _lemmaCtrl.clear();
+    _pronunciationCtrl.clear();
     _standardTranslationCtrl.clear();
     setState(() {
       _advanced = false;
@@ -559,6 +586,39 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           _inlineError(notifier.errorFor('lemma')),
           // Issue #170: indikator ketersediaan lemma - non-blocking.
           const _LemmaCheckIndicator(),
+          const Gap(16),
+          _FieldCaption(
+            l10n.contributePronunciationLabel,
+            info: l10n.contributePronunciationHint,
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FButton(
+              variant: FButtonVariant.outline,
+              onPress: _pastePronunciation,
+              prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
+              child: Text(l10n.dictAddPronunciationPaste),
+            ),
+          ),
+          const Gap(8),
+          FTextField(
+            control: FTextFieldControl.managed(controller: _pronunciationCtrl),
+            hint: l10n.contributePronunciationFieldHint,
+            textInputAction: TextInputAction.next,
+            style: .delta(
+              contentTextStyle: .delta([
+                .all(
+                  .delta(
+                    fontFamily: GoogleFonts.charisSil().fontFamily,
+                    fontSize: theme.typography.body.md.fontSize,
+                    height: 1.3,
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          _inlineError(notifier.errorFor('pronunciation')),
+          _inlineError(notifier.errorFor('pronunciation.value')),
 
           if (!_advanced) ...[
             const Gap(16),
@@ -1053,6 +1113,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       relatedWords: _advanced ? _buildRelatedWords() : const [],
       translationLanguageId: translationLanguageId,
       images: _advanced ? readySubmitImages(_images) : const [],
+      pronunciationValue: _pronunciationCtrl.text,
       searchMissId: widget.initialSearchMissId,
     );
   }

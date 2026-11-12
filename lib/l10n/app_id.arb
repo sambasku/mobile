@@ -4883,6 +4883,18 @@
   "contributeMultiClassHint": "Kata bisa punya lebih dari satu kelas (mis. kata benda sekaligus kata kerja)? Aktifkan mode Lengkap, lalu Tambah makna.",
   "contributeLemmaLabel": "Kata / ungkapan Sambas *",
   "contributeLemmaHint": "Isi kata, peribahasa, atau ungkapan",
+  "contributePronunciationLabel": "Pelafalan (opsional)",
+  "@contributePronunciationLabel": {
+    "description": "Label field IPA di form usul kata baru"
+  },
+  "contributePronunciationHint": "Opsional. Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring.",
+  "@contributePronunciationHint": {
+    "description": "Info tip field pelafalan di usul kata"
+  },
+  "contributePronunciationFieldHint": "Contoh: sa.dap atau /sa.dap/",
+  "@contributePronunciationFieldHint": {
+    "description": "Hint input IPA di form usul kata"
+  },
   "contributeTranslationLabel": "Terjemahan Indonesia *",
   "contributeTranslationHint": "Satu kata/frasa setara di Indonesia",
   "contributeKbbiHint": "Tekan icon buku untuk mencari definisi di KBBI",

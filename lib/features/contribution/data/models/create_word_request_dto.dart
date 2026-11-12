@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'create_word_image_dto.dart';
 import 'create_word_meaning_dto.dart';
+import 'create_word_pronunciation_dto.dart';
 import 'create_word_related_word_dto.dart';
 import 'create_word_variant_dto.dart';
 
@@ -14,9 +15,10 @@ part 'create_word_request_dto.g.dart';
 /// minus `status` (backend memaksa `published` → approval gate
 /// pending_review). Anonim boleh mengirim `category_ids` kosong.
 ///
-/// `dialect_id`, `notes`, `variants`, `related_words`, `images` TIDAK ikut
-/// dikirim saat null (`includeIfNull: false`) - backend menolak nilai null
-/// pada field `z.*.optional()` (Zod optional ≠ nullable).
+/// `dialect_id`, `notes`, `variants`, `related_words`, `images`,
+/// `pronunciation` TIDAK ikut dikirim saat null (`includeIfNull: false`) -
+/// backend menolak nilai null pada field `z.*.optional()` (Zod optional ≠
+/// nullable).
 ///
 /// Antarmuka datar form (word_class_id/definition/translation_texts)
 /// di-transform menjadi `meanings[...]` di ContributionRepositoryImpl.
@@ -37,6 +39,8 @@ abstract class CreateWordRequestDto with _$CreateWordRequestDto {
     List<CreateWordRelatedWordDto>? relatedWords,
     @JsonKey(name: 'images', includeIfNull: false)
     List<CreateWordImageDto>? images,
+    @JsonKey(name: 'pronunciation', includeIfNull: false)
+    CreateWordPronunciationDto? pronunciation,
     @JsonKey(name: 'search_miss_id', includeIfNull: false) String? searchMissId,
   }) = _CreateWordRequestDto;
 

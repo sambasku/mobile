@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/models/api_response.dart';
+import '../../../dictionary/presentation/utils/pronunciation_format.dart';
 import '../../domain/entities/submit_word_result.dart';
 import '../../domain/failures/contribution_failure.dart';
 import '../../domain/repositories/contribution_repository.dart';
@@ -9,6 +10,7 @@ import '../datasources/contribution_remote_datasource.dart';
 import '../models/create_word_example_dto.dart';
 import '../models/create_word_image_dto.dart';
 import '../models/create_word_meaning_dto.dart';
+import '../models/create_word_pronunciation_dto.dart';
 import '../models/create_word_related_word_dto.dart';
 import '../models/create_word_request_dto.dart';
 import '../models/create_word_translation_dto.dart';
@@ -34,6 +36,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
     List<SubmitWordRelation> relatedWords = const [],
     required String translationLanguageId,
     List<SubmitWordImage> images = const [],
+    String? pronunciationValue,
     String? searchMissId,
   }) async {
     try {
@@ -97,6 +100,7 @@ class ContributionRepositoryImpl implements ContributionRepository {
         );
       }
 
+      final ipa = pronunciationRaw(pronunciationValue);
       final body = CreateWordRequestDto(
         lemma: lemma,
         languageId: languageId,
@@ -109,6 +113,9 @@ class ContributionRepositoryImpl implements ContributionRepository {
         variants: variantDtos.isEmpty ? null : variantDtos,
         relatedWords: relatedDtos.isEmpty ? null : relatedDtos,
         images: imageDtos.isEmpty ? null : imageDtos,
+        pronunciation: ipa.isEmpty
+            ? null
+            : CreateWordPronunciationDto(value: ipa),
         searchMissId: searchMissId,
       );
 
