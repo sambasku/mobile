@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateWordRequestDto {
 
- String get lemma;@JsonKey(name: 'language_id') String get languageId;@JsonKey(name: 'dialect_id', includeIfNull: false) String? get dialectId;@JsonKey(name: 'word_type') String get wordType;@JsonKey(name: 'meanings') List<CreateWordMeaningDto> get meanings;@JsonKey(name: 'category_ids') List<String> get categoryIds;@JsonKey(name: 'usage_labels') List<String> get usageLabels;@JsonKey(name: 'notes', includeIfNull: false) String? get notes;@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? get variants;@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? get relatedWords;@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? get images;@JsonKey(name: 'search_miss_id', includeIfNull: false) String? get searchMissId;
+ String get lemma;@JsonKey(name: 'language_id') String get languageId;@JsonKey(name: 'dialect_id', includeIfNull: false) String? get dialectId;@JsonKey(name: 'word_type') String get wordType;@JsonKey(name: 'meanings') List<CreateWordMeaningDto> get meanings;@JsonKey(name: 'category_ids') List<String> get categoryIds;@JsonKey(name: 'usage_labels') List<String> get usageLabels;@JsonKey(name: 'notes', includeIfNull: false) String? get notes;@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? get variants;@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? get relatedWords;@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? get images;@JsonKey(name: 'pronunciation', includeIfNull: false) CreateWordPronunciationDto? get pronunciation;@JsonKey(name: 'search_miss_id', includeIfNull: false) String? get searchMissId;
 /// Create a copy of CreateWordRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $CreateWordRequestDtoCopyWith<CreateWordRequestDto> get copyWith => _$CreateWord
 @override
 bool operator ==(Object other) {
   final _this = this as CreateWordRequestDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordRequestDto&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.languageId, _this.languageId) || other.languageId == _this.languageId)&&(identical(other.dialectId, _this.dialectId) || other.dialectId == _this.dialectId)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&const DeepCollectionEquality().equals(other.meanings, _this.meanings)&&const DeepCollectionEquality().equals(other.categoryIds, _this.categoryIds)&&const DeepCollectionEquality().equals(other.usageLabels, _this.usageLabels)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&const DeepCollectionEquality().equals(other.variants, _this.variants)&&const DeepCollectionEquality().equals(other.relatedWords, _this.relatedWords)&&const DeepCollectionEquality().equals(other.images, _this.images)&&(identical(other.searchMissId, _this.searchMissId) || other.searchMissId == _this.searchMissId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateWordRequestDto&&(identical(other.lemma, _this.lemma) || other.lemma == _this.lemma)&&(identical(other.languageId, _this.languageId) || other.languageId == _this.languageId)&&(identical(other.dialectId, _this.dialectId) || other.dialectId == _this.dialectId)&&(identical(other.wordType, _this.wordType) || other.wordType == _this.wordType)&&const DeepCollectionEquality().equals(other.meanings, _this.meanings)&&const DeepCollectionEquality().equals(other.categoryIds, _this.categoryIds)&&const DeepCollectionEquality().equals(other.usageLabels, _this.usageLabels)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&const DeepCollectionEquality().equals(other.variants, _this.variants)&&const DeepCollectionEquality().equals(other.relatedWords, _this.relatedWords)&&const DeepCollectionEquality().equals(other.images, _this.images)&&(identical(other.pronunciation, _this.pronunciation) || other.pronunciation == _this.pronunciation)&&(identical(other.searchMissId, _this.searchMissId) || other.searchMissId == _this.searchMissId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as CreateWordRequestDto;
-  return Object.hash(runtimeType,_this.lemma,_this.languageId,_this.dialectId,_this.wordType,const DeepCollectionEquality().hash(_this.meanings),const DeepCollectionEquality().hash(_this.categoryIds),const DeepCollectionEquality().hash(_this.usageLabels),_this.notes,const DeepCollectionEquality().hash(_this.variants),const DeepCollectionEquality().hash(_this.relatedWords),const DeepCollectionEquality().hash(_this.images),_this.searchMissId);
+  return Object.hash(runtimeType,_this.lemma,_this.languageId,_this.dialectId,_this.wordType,const DeepCollectionEquality().hash(_this.meanings),const DeepCollectionEquality().hash(_this.categoryIds),const DeepCollectionEquality().hash(_this.usageLabels),_this.notes,const DeepCollectionEquality().hash(_this.variants),const DeepCollectionEquality().hash(_this.relatedWords),const DeepCollectionEquality().hash(_this.images),_this.pronunciation,_this.searchMissId);
 }
 
 @override
 String toString() {
   final _this = this as CreateWordRequestDto;
-  return 'CreateWordRequestDto(lemma: ${_this.lemma}, languageId: ${_this.languageId}, dialectId: ${_this.dialectId}, wordType: ${_this.wordType}, meanings: ${_this.meanings}, categoryIds: ${_this.categoryIds}, usageLabels: ${_this.usageLabels}, notes: ${_this.notes}, variants: ${_this.variants}, relatedWords: ${_this.relatedWords}, images: ${_this.images}, searchMissId: ${_this.searchMissId})';
+  return 'CreateWordRequestDto(lemma: ${_this.lemma}, languageId: ${_this.languageId}, dialectId: ${_this.dialectId}, wordType: ${_this.wordType}, meanings: ${_this.meanings}, categoryIds: ${_this.categoryIds}, usageLabels: ${_this.usageLabels}, notes: ${_this.notes}, variants: ${_this.variants}, relatedWords: ${_this.relatedWords}, images: ${_this.images}, pronunciation: ${_this.pronunciation}, searchMissId: ${_this.searchMissId})';
 }
 
 
@@ -54,11 +54,11 @@ abstract mixin class $CreateWordRequestDtoCopyWith<$Res>  {
   factory $CreateWordRequestDtoCopyWith(CreateWordRequestDto value, $Res Function(CreateWordRequestDto) _then) = _$CreateWordRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String lemma,@JsonKey(name: 'language_id') String languageId,@JsonKey(name: 'dialect_id', includeIfNull: false) String? dialectId,@JsonKey(name: 'word_type') String wordType,@JsonKey(name: 'meanings') List<CreateWordMeaningDto> meanings,@JsonKey(name: 'category_ids') List<String> categoryIds,@JsonKey(name: 'usage_labels') List<String> usageLabels,@JsonKey(name: 'notes', includeIfNull: false) String? notes,@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? variants,@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? relatedWords,@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? images,@JsonKey(name: 'search_miss_id', includeIfNull: false) String? searchMissId
+ String lemma,@JsonKey(name: 'language_id') String languageId,@JsonKey(name: 'dialect_id', includeIfNull: false) String? dialectId,@JsonKey(name: 'word_type') String wordType,@JsonKey(name: 'meanings') List<CreateWordMeaningDto> meanings,@JsonKey(name: 'category_ids') List<String> categoryIds,@JsonKey(name: 'usage_labels') List<String> usageLabels,@JsonKey(name: 'notes', includeIfNull: false) String? notes,@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? variants,@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? relatedWords,@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? images,@JsonKey(name: 'pronunciation', includeIfNull: false) CreateWordPronunciationDto? pronunciation,@JsonKey(name: 'search_miss_id', includeIfNull: false) String? searchMissId
 });
 
 
-
+$CreateWordPronunciationDtoCopyWith<$Res>? get pronunciation;
 
 }
 /// @nodoc
@@ -71,7 +71,7 @@ class _$CreateWordRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateWordRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lemma = null,Object? languageId = null,Object? dialectId = freezed,Object? wordType = null,Object? meanings = null,Object? categoryIds = null,Object? usageLabels = null,Object? notes = freezed,Object? variants = freezed,Object? relatedWords = freezed,Object? images = freezed,Object? searchMissId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lemma = null,Object? languageId = null,Object? dialectId = freezed,Object? wordType = null,Object? meanings = null,Object? categoryIds = null,Object? usageLabels = null,Object? notes = freezed,Object? variants = freezed,Object? relatedWords = freezed,Object? images = freezed,Object? pronunciation = freezed,Object? searchMissId = freezed,}) {
   return _then(CreateWordRequestDto(
 lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
 as String,languageId: null == languageId ? _self.languageId : languageId // ignore: cast_nullable_to_non_nullable
@@ -84,11 +84,24 @@ as List<String>,notes: freezed == notes ? _self.notes : notes // ignore: cast_nu
 as String?,variants: freezed == variants ? _self.variants : variants // ignore: cast_nullable_to_non_nullable
 as List<CreateWordVariantDto>?,relatedWords: freezed == relatedWords ? _self.relatedWords : relatedWords // ignore: cast_nullable_to_non_nullable
 as List<CreateWordRelatedWordDto>?,images: freezed == images ? _self.images : images // ignore: cast_nullable_to_non_nullable
-as List<CreateWordImageDto>?,searchMissId: freezed == searchMissId ? _self.searchMissId : searchMissId // ignore: cast_nullable_to_non_nullable
+as List<CreateWordImageDto>?,pronunciation: freezed == pronunciation ? _self.pronunciation : pronunciation // ignore: cast_nullable_to_non_nullable
+as CreateWordPronunciationDto?,searchMissId: freezed == searchMissId ? _self.searchMissId : searchMissId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
+/// Create a copy of CreateWordRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CreateWordPronunciationDtoCopyWith<$Res>? get pronunciation {
+    if (_self.pronunciation == null) {
+    return null;
+  }
 
+  return $CreateWordPronunciationDtoCopyWith<$Res>(_self.pronunciation!, (value) {
+    return _then(_self.copyWith(pronunciation: value));
+  });
+}
 }
 
 
@@ -170,10 +183,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'pronunciation', includeIfNull: false)  CreateWordPronunciationDto? pronunciation, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateWordRequestDto() when $default != null:
-return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.searchMissId);case _:
+return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.pronunciation,_that.searchMissId);case _:
   return orElse();
 
 }
@@ -191,10 +204,10 @@ return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'pronunciation', includeIfNull: false)  CreateWordPronunciationDto? pronunciation, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)  $default,) {final _that = this;
 switch (_that) {
 case _CreateWordRequestDto():
-return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.searchMissId);case _:
+return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.pronunciation,_that.searchMissId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +224,10 @@ return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String lemma, @JsonKey(name: 'language_id')  String languageId, @JsonKey(name: 'dialect_id', includeIfNull: false)  String? dialectId, @JsonKey(name: 'word_type')  String wordType, @JsonKey(name: 'meanings')  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds, @JsonKey(name: 'usage_labels')  List<String> usageLabels, @JsonKey(name: 'notes', includeIfNull: false)  String? notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'pronunciation', includeIfNull: false)  CreateWordPronunciationDto? pronunciation, @JsonKey(name: 'search_miss_id', includeIfNull: false)  String? searchMissId)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateWordRequestDto() when $default != null:
-return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.searchMissId);case _:
+return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_that.meanings,_that.categoryIds,_that.usageLabels,_that.notes,_that.variants,_that.relatedWords,_that.images,_that.pronunciation,_that.searchMissId);case _:
   return null;
 
 }
@@ -226,7 +239,7 @@ return $default(_that.lemma,_that.languageId,_that.dialectId,_that.wordType,_tha
 @JsonSerializable()
 
 class _CreateWordRequestDto implements CreateWordRequestDto {
-  const _CreateWordRequestDto({required this.lemma, @JsonKey(name: 'language_id') required this.languageId, @JsonKey(name: 'dialect_id', includeIfNull: false) this.dialectId, @JsonKey(name: 'word_type') this.wordType = 'word', @JsonKey(name: 'meanings') required  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds = const [], @JsonKey(name: 'usage_labels')  List<String> usageLabels = const [], @JsonKey(name: 'notes', includeIfNull: false) this.notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'search_miss_id', includeIfNull: false) this.searchMissId}): _meanings = meanings,_categoryIds = categoryIds,_usageLabels = usageLabels,_variants = variants,_relatedWords = relatedWords,_images = images;
+  const _CreateWordRequestDto({required this.lemma, @JsonKey(name: 'language_id') required this.languageId, @JsonKey(name: 'dialect_id', includeIfNull: false) this.dialectId, @JsonKey(name: 'word_type') this.wordType = 'word', @JsonKey(name: 'meanings') required  List<CreateWordMeaningDto> meanings, @JsonKey(name: 'category_ids')  List<String> categoryIds = const [], @JsonKey(name: 'usage_labels')  List<String> usageLabels = const [], @JsonKey(name: 'notes', includeIfNull: false) this.notes, @JsonKey(name: 'variants', includeIfNull: false)  List<CreateWordVariantDto>? variants, @JsonKey(name: 'related_words', includeIfNull: false)  List<CreateWordRelatedWordDto>? relatedWords, @JsonKey(name: 'images', includeIfNull: false)  List<CreateWordImageDto>? images, @JsonKey(name: 'pronunciation', includeIfNull: false) this.pronunciation, @JsonKey(name: 'search_miss_id', includeIfNull: false) this.searchMissId}): _meanings = meanings,_categoryIds = categoryIds,_usageLabels = usageLabels,_variants = variants,_relatedWords = relatedWords,_images = images;
   factory _CreateWordRequestDto.fromJson(Map<String, dynamic> json) => _$CreateWordRequestDtoFromJson(json);
 
 @override final  String lemma;
@@ -282,6 +295,7 @@ class _CreateWordRequestDto implements CreateWordRequestDto {
   return EqualUnmodifiableListView(value);
 }
 
+@override@JsonKey(name: 'pronunciation', includeIfNull: false) final  CreateWordPronunciationDto? pronunciation;
 @override@JsonKey(name: 'search_miss_id', includeIfNull: false) final  String? searchMissId;
 
 /// Create a copy of CreateWordRequestDto
@@ -297,18 +311,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordRequestDto&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.dialectId, dialectId) || other.dialectId == dialectId)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&const DeepCollectionEquality().equals(other.meanings, _meanings)&&const DeepCollectionEquality().equals(other.categoryIds, _categoryIds)&&const DeepCollectionEquality().equals(other.usageLabels, _usageLabels)&&(identical(other.notes, notes) || other.notes == notes)&&const DeepCollectionEquality().equals(other.variants, _variants)&&const DeepCollectionEquality().equals(other.relatedWords, _relatedWords)&&const DeepCollectionEquality().equals(other.images, _images)&&(identical(other.searchMissId, searchMissId) || other.searchMissId == searchMissId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateWordRequestDto&&(identical(other.lemma, lemma) || other.lemma == lemma)&&(identical(other.languageId, languageId) || other.languageId == languageId)&&(identical(other.dialectId, dialectId) || other.dialectId == dialectId)&&(identical(other.wordType, wordType) || other.wordType == wordType)&&const DeepCollectionEquality().equals(other.meanings, _meanings)&&const DeepCollectionEquality().equals(other.categoryIds, _categoryIds)&&const DeepCollectionEquality().equals(other.usageLabels, _usageLabels)&&(identical(other.notes, notes) || other.notes == notes)&&const DeepCollectionEquality().equals(other.variants, _variants)&&const DeepCollectionEquality().equals(other.relatedWords, _relatedWords)&&const DeepCollectionEquality().equals(other.images, _images)&&(identical(other.pronunciation, pronunciation) || other.pronunciation == pronunciation)&&(identical(other.searchMissId, searchMissId) || other.searchMissId == searchMissId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,lemma,languageId,dialectId,wordType,const DeepCollectionEquality().hash(_meanings),const DeepCollectionEquality().hash(_categoryIds),const DeepCollectionEquality().hash(_usageLabels),notes,const DeepCollectionEquality().hash(_variants),const DeepCollectionEquality().hash(_relatedWords),const DeepCollectionEquality().hash(_images),searchMissId);
+    return Object.hash(runtimeType,lemma,languageId,dialectId,wordType,const DeepCollectionEquality().hash(_meanings),const DeepCollectionEquality().hash(_categoryIds),const DeepCollectionEquality().hash(_usageLabels),notes,const DeepCollectionEquality().hash(_variants),const DeepCollectionEquality().hash(_relatedWords),const DeepCollectionEquality().hash(_images),pronunciation,searchMissId);
 }
 
 @override
 String toString() {
-    return 'CreateWordRequestDto(lemma: $lemma, languageId: $languageId, dialectId: $dialectId, wordType: $wordType, meanings: $meanings, categoryIds: $categoryIds, usageLabels: $usageLabels, notes: $notes, variants: $variants, relatedWords: $relatedWords, images: $images, searchMissId: $searchMissId)';
+    return 'CreateWordRequestDto(lemma: $lemma, languageId: $languageId, dialectId: $dialectId, wordType: $wordType, meanings: $meanings, categoryIds: $categoryIds, usageLabels: $usageLabels, notes: $notes, variants: $variants, relatedWords: $relatedWords, images: $images, pronunciation: $pronunciation, searchMissId: $searchMissId)';
 }
 
 
@@ -319,11 +333,11 @@ abstract mixin class _$CreateWordRequestDtoCopyWith<$Res> implements $CreateWord
   factory _$CreateWordRequestDtoCopyWith(_CreateWordRequestDto value, $Res Function(_CreateWordRequestDto) _then) = __$CreateWordRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String lemma,@JsonKey(name: 'language_id') String languageId,@JsonKey(name: 'dialect_id', includeIfNull: false) String? dialectId,@JsonKey(name: 'word_type') String wordType,@JsonKey(name: 'meanings') List<CreateWordMeaningDto> meanings,@JsonKey(name: 'category_ids') List<String> categoryIds,@JsonKey(name: 'usage_labels') List<String> usageLabels,@JsonKey(name: 'notes', includeIfNull: false) String? notes,@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? variants,@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? relatedWords,@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? images,@JsonKey(name: 'search_miss_id', includeIfNull: false) String? searchMissId
+ String lemma,@JsonKey(name: 'language_id') String languageId,@JsonKey(name: 'dialect_id', includeIfNull: false) String? dialectId,@JsonKey(name: 'word_type') String wordType,@JsonKey(name: 'meanings') List<CreateWordMeaningDto> meanings,@JsonKey(name: 'category_ids') List<String> categoryIds,@JsonKey(name: 'usage_labels') List<String> usageLabels,@JsonKey(name: 'notes', includeIfNull: false) String? notes,@JsonKey(name: 'variants', includeIfNull: false) List<CreateWordVariantDto>? variants,@JsonKey(name: 'related_words', includeIfNull: false) List<CreateWordRelatedWordDto>? relatedWords,@JsonKey(name: 'images', includeIfNull: false) List<CreateWordImageDto>? images,@JsonKey(name: 'pronunciation', includeIfNull: false) CreateWordPronunciationDto? pronunciation,@JsonKey(name: 'search_miss_id', includeIfNull: false) String? searchMissId
 });
 
 
-
+@override $CreateWordPronunciationDtoCopyWith<$Res>? get pronunciation;
 
 }
 /// @nodoc
@@ -336,7 +350,7 @@ class __$CreateWordRequestDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateWordRequestDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lemma = null,Object? languageId = null,Object? dialectId = freezed,Object? wordType = null,Object? meanings = null,Object? categoryIds = null,Object? usageLabels = null,Object? notes = freezed,Object? variants = freezed,Object? relatedWords = freezed,Object? images = freezed,Object? searchMissId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lemma = null,Object? languageId = null,Object? dialectId = freezed,Object? wordType = null,Object? meanings = null,Object? categoryIds = null,Object? usageLabels = null,Object? notes = freezed,Object? variants = freezed,Object? relatedWords = freezed,Object? images = freezed,Object? pronunciation = freezed,Object? searchMissId = freezed,}) {
   return _then(_CreateWordRequestDto(
 lemma: null == lemma ? _self.lemma : lemma // ignore: cast_nullable_to_non_nullable
 as String,languageId: null == languageId ? _self.languageId : languageId // ignore: cast_nullable_to_non_nullable
@@ -349,12 +363,25 @@ as List<String>,notes: freezed == notes ? _self.notes : notes // ignore: cast_nu
 as String?,variants: freezed == variants ? _self._variants : variants // ignore: cast_nullable_to_non_nullable
 as List<CreateWordVariantDto>?,relatedWords: freezed == relatedWords ? _self._relatedWords : relatedWords // ignore: cast_nullable_to_non_nullable
 as List<CreateWordRelatedWordDto>?,images: freezed == images ? _self._images : images // ignore: cast_nullable_to_non_nullable
-as List<CreateWordImageDto>?,searchMissId: freezed == searchMissId ? _self.searchMissId : searchMissId // ignore: cast_nullable_to_non_nullable
+as List<CreateWordImageDto>?,pronunciation: freezed == pronunciation ? _self.pronunciation : pronunciation // ignore: cast_nullable_to_non_nullable
+as CreateWordPronunciationDto?,searchMissId: freezed == searchMissId ? _self.searchMissId : searchMissId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
 
+/// Create a copy of CreateWordRequestDto
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CreateWordPronunciationDtoCopyWith<$Res>? get pronunciation {
+    if (_self.pronunciation == null) {
+    return null;
+  }
 
+  return $CreateWordPronunciationDtoCopyWith<$Res>(_self.pronunciation!, (value) {
+    return _then(_self.copyWith(pronunciation: value));
+  });
+}
 }
 
 // dart format on

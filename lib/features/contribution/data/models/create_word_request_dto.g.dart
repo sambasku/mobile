@@ -36,6 +36,11 @@ _CreateWordRequestDto _$CreateWordRequestDtoFromJson(
   images: (json['images'] as List<dynamic>?)
       ?.map((e) => CreateWordImageDto.fromJson(e as Map<String, dynamic>))
       .toList(),
+  pronunciation: json['pronunciation'] == null
+      ? null
+      : CreateWordPronunciationDto.fromJson(
+          json['pronunciation'] as Map<String, dynamic>,
+        ),
   searchMissId: json['search_miss_id'] as String?,
 );
 
@@ -53,5 +58,6 @@ Map<String, dynamic> _$CreateWordRequestDtoToJson(
   'variants': ?instance.variants,
   'related_words': ?instance.relatedWords,
   'images': ?instance.images,
+  'pronunciation': ?instance.pronunciation,
   'search_miss_id': ?instance.searchMissId,
 };

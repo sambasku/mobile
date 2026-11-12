@@ -23,6 +23,7 @@ class _FakeRepo implements ContributionRepository {
   List<SubmitWordRelation>? relatedWords;
   String? translationLanguageId;
   List<SubmitWordImage>? images;
+  String? pronunciationValue;
   String? searchMissId;
 
   @override
@@ -39,6 +40,7 @@ class _FakeRepo implements ContributionRepository {
     List<SubmitWordRelation> relatedWords = const [],
     required String translationLanguageId,
     List<SubmitWordImage> images = const [],
+    String? pronunciationValue,
     String? searchMissId,
   }) async {
     this.lemma = lemma;
@@ -51,6 +53,7 @@ class _FakeRepo implements ContributionRepository {
     this.spellingVariants = spellingVariants;
     this.relatedWords = relatedWords;
     this.translationLanguageId = translationLanguageId;
+    this.pronunciationValue = pronunciationValue;
     this.images = images;
     this.searchMissId = searchMissId;
     return result;

@@ -55,6 +55,7 @@ class SubmitWordNotifier extends _$SubmitWordNotifier {
     List<SubmitWordRelation> relatedWords = const [],
     required String translationLanguageId,
     List<SubmitWordImage> images = const [],
+    String? pronunciationValue,
     String? searchMissId,
   }) async {
     if (state.isSubmitting) return;
@@ -83,6 +84,7 @@ class SubmitWordNotifier extends _$SubmitWordNotifier {
       relatedWords: relatedWords,
       translationLanguageId: translationLanguageId,
       images: images,
+      pronunciationValue: pronunciationValue,
       searchMissId: searchMissId ?? state.initialSearchMissId,
     ));
 

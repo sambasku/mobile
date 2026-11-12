@@ -90,6 +90,8 @@ abstract interface class ContributionRepository {
     // Bahasa target terjemahan = Indonesia (IDN), di-resolve dari page.
     required String translationLanguageId,
     List<SubmitWordImage> images = const [],
+    /// IPA tertulis opsional (`notation` default ipa di wire).
+    String? pronunciationValue,
     String? searchMissId,
   });
 

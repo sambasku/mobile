@@ -7341,6 +7341,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get contributeLemmaHint => 'Isi kata, peribahasa, atau ungkapan';
 
   @override
+  String get contributePronunciationLabel => 'Pelafalan (opsional)';
+
+  @override
+  String get contributePronunciationHint =>
+      'Opsional. Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring.';
+
+  @override
+  String get contributePronunciationFieldHint => 'Contoh: sa.dap atau /sa.dap/';
+
+  @override
   String get contributeTranslationLabel => 'Terjemahan Indonesia *';
 
   @override
@@ -18006,6 +18016,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get contributeLemmaHint => 'Isi kata, peribahasa, atau ungkapan';
+
+  @override
+  String get contributePronunciationLabel => 'Pelafalan (opsional)';
+
+  @override
+  String get contributePronunciationHint =>
+      'Opsional. Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring.';
+
+  @override
+  String get contributePronunciationFieldHint => 'Contoh: sa.dap atau /sa.dap/';
 
   @override
   String get contributeTranslationLabel => 'Terjemahan Indonesia *';
