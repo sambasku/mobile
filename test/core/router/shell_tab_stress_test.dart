@@ -232,12 +232,14 @@ void main() {
     //    diuji anti-freeze: push tidak hilang, back pulih, tab hidup lagi.
     await tester.tap(find.text('Menu kontribusi'));
     await settle();
-    await tester.tap(find.text('Ruang diskusi'));
+    // Tile bawah ("Ruang diskusi") di luar viewport test setelah #260
+    // menambah 2 tile IPA - pakai tile atas yang selalu terlihat.
+    await tester.tap(find.text('Usul kata baru'));
     await tester.pump();
     await tester.tap(tabItem('Home'), warnIfMissed: false);
     await settle();
     await settle();
-    expect(pushedPath(), '/discussions', reason: 'push tile tetap jalan');
+    expect(pushedPath(), '/contribute', reason: 'push tile tetap jalan');
 
     expect(await tester.binding.handlePopRoute(), isTrue);
     await settle();
