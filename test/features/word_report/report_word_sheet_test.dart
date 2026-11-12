@@ -15,6 +15,7 @@ class _CapturingRepo extends WordReportRepository {
   String? reasonCode;
   String? note;
   String? imageId;
+  String? meaningId;
 
   @override
   Future<void> submit({
@@ -22,14 +23,21 @@ class _CapturingRepo extends WordReportRepository {
     required String reasonCode,
     String? note,
     String? imageId,
+    String? meaningId,
   }) async {
     this.reasonCode = reasonCode;
     this.note = note;
     this.imageId = imageId;
+    this.meaningId = meaningId;
   }
 }
 
-Future<void> _pump(WidgetTester tester, _CapturingRepo repo, String? imageId) async {
+Future<void> _pump(
+  WidgetTester tester,
+  _CapturingRepo repo, {
+  String? imageId,
+  String? meaningId,
+}) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [wordReportRepositoryProvider.overrideWithValue(repo)],
@@ -49,7 +57,12 @@ Future<void> _pump(WidgetTester tester, _CapturingRepo repo, String? imageId) as
           body: Builder(
             builder: (context) => Center(
               child: FButton(
-                onPress: () => showReportWordSheet(context, 'word-1', imageId: imageId),
+                onPress: () => showReportWordSheet(
+                  context,
+                  'word-1',
+                  imageId: imageId,
+                  meaningId: meaningId,
+                ),
                 child: const Text('BUKA'),
               ),
             ),
@@ -65,7 +78,7 @@ Future<void> _pump(WidgetTester tester, _CapturingRepo repo, String? imageId) as
 void main() {
   testWidgets('laporan foto: chip kekerasan terkirim sebagai violent_image', (tester) async {
     final repo = _CapturingRepo();
-    await _pump(tester, repo, 'img-1');
+    await _pump(tester, repo, imageId: 'img-1');
 
     expect(find.text('Foto berisi kekerasan'), findsOneWidget);
     expect(find.text('Foto berisi konten seksual'), findsOneWidget);
@@ -80,7 +93,7 @@ void main() {
 
   testWidgets('laporan foto: chip lain + catatan digabung', (tester) async {
     final repo = _CapturingRepo();
-    await _pump(tester, repo, 'img-1');
+    await _pump(tester, repo, imageId: 'img-1');
 
     await tester.tap(find.text('Foto tidak pantas'));
     await tester.pumpAndSettle();
@@ -94,7 +107,7 @@ void main() {
 
   testWidgets('laporan entri tanpa imageId: alasan tetap', (tester) async {
     final repo = _CapturingRepo();
-    await _pump(tester, repo, null);
+    await _pump(tester, repo);
 
     expect(find.text('Foto berisi kekerasan'), findsNothing);
     expect(find.text('Bukan kosakata Sambas'), findsOneWidget);
@@ -102,6 +115,19 @@ void main() {
     await tester.tap(find.text('Kirim laporan'));
     await tester.pumpAndSettle();
     expect(repo.reasonCode, 'inappropriate');
+    expect(repo.imageId, isNull);
+    expect(repo.meaningId, isNull);
+  });
+
+  testWidgets('laporan makna: meaningId ikut terkirim', (tester) async {
+    final repo = _CapturingRepo();
+    await _pump(tester, repo, meaningId: 'meaning-1');
+
+    expect(find.text('Laporkan makna'), findsOneWidget);
+    await tester.tap(find.text('Kirim laporan'));
+    await tester.pumpAndSettle();
+    expect(repo.reasonCode, 'inappropriate');
+    expect(repo.meaningId, 'meaning-1');
     expect(repo.imageId, isNull);
   });
 }
