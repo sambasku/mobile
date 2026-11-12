@@ -2305,6 +2305,48 @@ abstract class AppLocalizations {
   /// **'Perbaiki typo atau arti contoh yang sudah ada'**
   String get suggestCategoryChangeExampleDesc;
 
+  /// Kategori usulan: perbaiki notasi pelafalan yang sudah tayang
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah pelafalan'**
+  String get suggestCategoryChangePronunciation;
+
+  /// No description provided for @suggestCategoryChangePronunciationDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki notasi IPA yang sudah ada'**
+  String get suggestCategoryChangePronunciationDesc;
+
+  /// Caption daftar pelafalan di form Ubah pelafalan
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih pelafalan yang mau diperbaiki'**
+  String get suggestPickPronunciation;
+
+  /// Hint singkat setelah user memilih satu pelafalan
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan dipilih'**
+  String get suggestPronunciationSelected;
+
+  /// Label field value IPA di form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan baru'**
+  String get suggestPronunciationFieldLabel;
+
+  /// Toast saat tap pelafalan tanpa login
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan perubahan pelafalan'**
+  String get dictLoginToChangePronunciation;
+
+  /// Semantics label baris IPA yang bisa di-tap
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan {value}. Ketuk untuk usulkan perubahan'**
+  String dictChangePronunciationSemantics(String value);
+
   /// Caption daftar contoh di form Ubah contoh
   ///
   /// In id, this message translates to:

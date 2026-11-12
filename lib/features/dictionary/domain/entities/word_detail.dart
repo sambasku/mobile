@@ -263,8 +263,13 @@ class WordCategory {
 }
 
 class WordPronunciation {
-  const WordPronunciation({required this.notation, required this.value});
+  const WordPronunciation({
+    required this.id,
+    required this.notation,
+    required this.value,
+  });
 
+  final String id;
   final String notation;
   final String value;
 }

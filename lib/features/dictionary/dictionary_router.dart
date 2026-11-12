@@ -114,6 +114,7 @@ class DictionaryRouter {
           state.uri.queryParameters['category'],
         ),
         initialMeaningId: state.uri.queryParameters['meaning'],
+        initialPronunciationId: state.uri.queryParameters['pronunciation'],
       ),
     ),
   ];

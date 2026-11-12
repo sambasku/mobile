@@ -1213,6 +1213,31 @@ class AppLocalizationsId extends AppLocalizations {
       'Perbaiki typo atau arti contoh yang sudah ada';
 
   @override
+  String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
+
+  @override
+  String get suggestCategoryChangePronunciationDesc =>
+      'Perbaiki notasi IPA yang sudah ada';
+
+  @override
+  String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
+
+  @override
+  String get suggestPronunciationSelected => 'Pelafalan dipilih';
+
+  @override
+  String get suggestPronunciationFieldLabel => 'Pelafalan baru';
+
+  @override
+  String get dictLoginToChangePronunciation =>
+      'Masuk dulu untuk mengusulkan perubahan pelafalan';
+
+  @override
+  String dictChangePronunciationSemantics(String value) {
+    return 'Pelafalan $value. Ketuk untuk usulkan perubahan';
+  }
+
+  @override
   String get suggestPickExample => 'Pilih contoh yang mau diperbaiki';
 
   @override
@@ -11991,6 +12016,31 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get suggestCategoryChangeExampleDesc =>
       'Perbaiki typo atau arti contoh yang sudah ada';
+
+  @override
+  String get suggestCategoryChangePronunciation => 'Ubah pelafalan';
+
+  @override
+  String get suggestCategoryChangePronunciationDesc =>
+      'Perbaiki notasi IPA yang sudah ada';
+
+  @override
+  String get suggestPickPronunciation => 'Pilih pelafalan yang mau diperbaiki';
+
+  @override
+  String get suggestPronunciationSelected => 'Pelafalan dipilih';
+
+  @override
+  String get suggestPronunciationFieldLabel => 'Pelafalan baru';
+
+  @override
+  String get dictLoginToChangePronunciation =>
+      'Masuk dulu untuk mengusulkan perubahan pelafalan';
+
+  @override
+  String dictChangePronunciationSemantics(String value) {
+    return 'Pelafalan $value. Ketuk untuk usulkan perubahan';
+  }
 
   @override
   String get suggestPickExample => 'Pilih contoh yang mau diperbaiki';
