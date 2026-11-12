@@ -1468,13 +1468,11 @@ class _MeaningBlock extends StatelessWidget {
                   l10n.contributeDefinitionFieldLabel,
                   info: l10n.contributeDefinitionGuide,
                 ),
-                FTextField(
+                FTextField.multiline(
                   control: FTextFieldControl.managed(controller: draft.defCtrl),
                   hint: l10n.contributeDefinitionHintField,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  maxLines: 3,
-                  minLines: 2,
+                  minLines: 4,
+                  maxLines: 8,
                 ),
                 _MeaningInlineError(definitionError),
               ],

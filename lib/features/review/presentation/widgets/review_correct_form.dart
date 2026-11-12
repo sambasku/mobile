@@ -874,10 +874,12 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       ];
     }
     return [
-      FTextField(
+      FTextField.multiline(
         control: FTextFieldControl.managed(controller: meaning.definitionCtrl),
         enabled: !_busy,
         label: Text(AppLocalizations.of(context).suggestDefinitionLabel),
+        minLines: 4,
+        maxLines: 8,
       ),
       const Gap(8),
       KbbiTranslationField(

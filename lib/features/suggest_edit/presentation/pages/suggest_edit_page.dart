@@ -891,7 +891,8 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
               for (final item in items)
                 FTile(
                   title: Text(item.example.sourceSentence),
-                  subtitle: item.example.targetSentence == null ||
+                  subtitle:
+                      item.example.targetSentence == null ||
                           item.example.targetSentence!.trim().isEmpty
                       ? null
                       : Text(item.example.targetSentence!),
@@ -1130,12 +1131,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           _l10n.suggestDefinitionLabel,
           info: _l10n.suggestDefinitionHint,
         ),
-        FTextField(
+        FTextField.multiline(
           control: FTextFieldControl.managed(controller: ctrl),
           hint: _l10n.suggestDefinitionPlaceholder,
           error: _errorText('definition'),
-          maxLines: 3,
-          minLines: 2,
+          minLines: 4,
+          maxLines: 8,
         ),
       ],
     );
