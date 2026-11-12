@@ -11,6 +11,7 @@ import '../../domain/review_access.dart';
 import '../../review_router.dart';
 import '../providers/discussion_review_providers.dart';
 import '../providers/exploration_review_providers.dart';
+import '../providers/meaning_report_review_providers.dart';
 import '../providers/review_providers.dart';
 import '../providers/review_suggestions_providers.dart';
 import '../utils/leave_review.dart';
@@ -39,6 +40,9 @@ class ReviewHomePage extends ConsumerWidget {
             _explorePending(ref, ExplorationReviewDomain.layanan));
     final discussionPending = showDiscussion
         ? (ref.watch(discussionReviewHasPendingProvider).value ?? false)
+        : false;
+    final meaningReportPending = showContribution
+        ? (ref.watch(meaningReportReviewHasPendingProvider).value ?? false)
         : false;
     final l10n = AppLocalizations.of(context);
 
@@ -167,6 +171,24 @@ class ReviewHomePage extends ConsumerWidget {
                     ],
                   ),
                   onPress: () => context.push(ReviewRouter.discussions.path),
+                ),
+              if (showContribution)
+                FTile(
+                  prefix: Icon(FLucideIcons.flag),
+                  title: Text(l10n.reviewHomeMeaningReportTitle),
+                  subtitle: Text(
+                    meaningReportPending
+                        ? l10n.reviewHomeMeaningReportWaiting
+                        : l10n.reviewHomeMeaningReportSubtitle,
+                  ),
+                  suffix: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (meaningReportPending) const _PendingDot(),
+                      const Icon(FLucideIcons.chevronRight),
+                    ],
+                  ),
+                  onPress: () => context.push(ReviewRouter.meaningReports.path),
                 ),
               // #88: gerbang tayang pencarian kosong + peluang usul langsung.
               if (showContribution)

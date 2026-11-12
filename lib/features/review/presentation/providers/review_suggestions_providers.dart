@@ -9,6 +9,7 @@ import '../../domain/repositories/word_suggestion_review_repository.dart';
 import '../../domain/review_access.dart';
 import 'discussion_review_providers.dart';
 import 'exploration_review_providers.dart';
+import 'meaning_report_review_providers.dart';
 import 'review_providers.dart';
 
 final wordSuggestionReviewRepositoryProvider =
@@ -27,7 +28,7 @@ final reviewSuggestionsHasPendingProvider = FutureProvider<bool>((ref) async {
   return page.match((_) => false, (value) => value.items.isNotEmpty);
 });
 
-/// Titik oranye hub/profil: kontribusi, usulan edit, diskusi, atau eksplorasi.
+/// Titik oranye hub/profil: kontribusi, usulan edit, diskusi, eksplorasi, laporan makna.
 final reviewHubHasPendingProvider = FutureProvider<bool>((ref) async {
   final contrib = await ref.watch(reviewQueueHasPendingProvider.future);
   if (contrib) return true;
@@ -40,6 +41,9 @@ final reviewHubHasPendingProvider = FutureProvider<bool>((ref) async {
         await ref.watch(explorationHasPendingProvider(domain).future);
     if (pending) return true;
   }
+  final meaningReports =
+      await ref.watch(meaningReportReviewHasPendingProvider.future);
+  if (meaningReports) return true;
   return false;
 });
 

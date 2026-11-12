@@ -458,12 +458,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get reportPhotoTitle => 'Laporkan foto';
 
   @override
+  String get reportMeaningTitle => 'Laporkan makna';
+
+  @override
   String get reportEntryBody =>
       'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.';
 
   @override
   String get reportPhotoBody =>
       'Laporkan foto ini ke tim Sambasku untuk ditinjau.';
+
+  @override
+  String get reportMeaningBody =>
+      'Laporkan makna yang kurang sesuai. Tim verifikator akan meninjau.';
 
   @override
   String get reportReasonNotSambas => 'Bukan kosakata Sambas';
@@ -3739,6 +3746,84 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictMeaningActionsTitle => 'Aksi makna';
+
+  @override
+  String get dictReportMeaning => 'Laporkan makna';
+
+  @override
+  String get dictReportMeaningSubtitle => 'Kirim ke antrean verifikator';
+
+  @override
+  String get dictDeleteMeaning => 'Hapus makna';
+
+  @override
+  String get dictDeleteMeaningSubtitle =>
+      'Langsung hilangkan makna ini dari entri';
+
+  @override
+  String get dictDeleteMeaningConfirmTitle => 'Hapus makna ini?';
+
+  @override
+  String get dictDeleteMeaningConfirmBody =>
+      'Makna akan dihapus dari entri. Tindakan ini untuk makna yang kurang sesuai.';
+
+  @override
+  String get dictDeleteMeaningConfirm => 'Hapus';
+
+  @override
+  String get dictDeleteMeaningCancel => 'Batal';
+
+  @override
+  String get dictDeleteMeaningSuccess => 'Makna dihapus';
+
+  @override
+  String get dictDeleteMeaningLastBlocked =>
+      'Tidak bisa menghapus makna terakhir. Tarik entri atau usulkan perbaikan.';
+
+  @override
+  String get dictLoginToReportMeaning => 'Masuk dulu untuk melaporkan makna';
+
+  @override
+  String get dictMeaningReportSent =>
+      'Laporan makna terkirim. Makna tetap tayang sampai ditinjau.';
+
+  @override
+  String get reviewHomeMeaningReportTitle => 'Laporan makna';
+
+  @override
+  String get reviewHomeMeaningReportSubtitle =>
+      'Tinjau makna yang dilaporkan user';
+
+  @override
+  String get reviewHomeMeaningReportWaiting => 'Ada laporan menunggu';
+
+  @override
+  String get reviewMeaningReportQueueTitle => 'Laporan makna';
+
+  @override
+  String get reviewMeaningReportQueueEmpty => 'Belum ada laporan makna terbuka';
+
+  @override
+  String get reviewMeaningReportQueueLoadFailed => 'Gagal memuat laporan makna';
+
+  @override
+  String get reviewMeaningReportDetailTitle => 'Detail laporan makna';
+
+  @override
+  String get reviewMeaningReportRemove => 'Hapus makna';
+
+  @override
+  String get reviewMeaningReportDismiss => 'Tolak laporan';
+
+  @override
+  String get reviewMeaningReportRemovedToast =>
+      'Makna dihapus, laporan ditutup';
+
+  @override
+  String get reviewMeaningReportDismissedToast => 'Laporan ditolak';
 
   @override
   String get dictSkeletonLemma => 'lemma contoh kata';
@@ -11153,12 +11238,19 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get reportPhotoTitle => 'Laporkan foto';
 
   @override
+  String get reportMeaningTitle => 'Laporkan makna';
+
+  @override
   String get reportEntryBody =>
       'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.';
 
   @override
   String get reportPhotoBody =>
       'Laporkan foto ini ke tim Sambasku untuk ditinjau.';
+
+  @override
+  String get reportMeaningBody =>
+      'Laporkan makna yang kurang sesuai. Tim verifikator akan meninjau.';
 
   @override
   String get reportReasonNotSambas => 'Bukan kosakata Sambas';
@@ -14434,6 +14526,84 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get dictCopyMeaning => 'Salin makna';
+
+  @override
+  String get dictMeaningActionsTitle => 'Aksi makna';
+
+  @override
+  String get dictReportMeaning => 'Laporkan makna';
+
+  @override
+  String get dictReportMeaningSubtitle => 'Kirim ke antrean verifikator';
+
+  @override
+  String get dictDeleteMeaning => 'Hapus makna';
+
+  @override
+  String get dictDeleteMeaningSubtitle =>
+      'Langsung hilangkan makna ini dari entri';
+
+  @override
+  String get dictDeleteMeaningConfirmTitle => 'Hapus makna ini?';
+
+  @override
+  String get dictDeleteMeaningConfirmBody =>
+      'Makna akan dihapus dari entri. Tindakan ini untuk makna yang kurang sesuai.';
+
+  @override
+  String get dictDeleteMeaningConfirm => 'Hapus';
+
+  @override
+  String get dictDeleteMeaningCancel => 'Batal';
+
+  @override
+  String get dictDeleteMeaningSuccess => 'Makna dihapus';
+
+  @override
+  String get dictDeleteMeaningLastBlocked =>
+      'Tidak bisa menghapus makna terakhir. Tarik entri atau usulkan perbaikan.';
+
+  @override
+  String get dictLoginToReportMeaning => 'Masuk dulu untuk melaporkan makna';
+
+  @override
+  String get dictMeaningReportSent =>
+      'Laporan makna terkirim. Makna tetap tayang sampai ditinjau.';
+
+  @override
+  String get reviewHomeMeaningReportTitle => 'Laporan makna';
+
+  @override
+  String get reviewHomeMeaningReportSubtitle =>
+      'Tinjau makna yang dilaporkan user';
+
+  @override
+  String get reviewHomeMeaningReportWaiting => 'Ada laporan menunggu';
+
+  @override
+  String get reviewMeaningReportQueueTitle => 'Laporan makna';
+
+  @override
+  String get reviewMeaningReportQueueEmpty => 'Belum ada laporan makna terbuka';
+
+  @override
+  String get reviewMeaningReportQueueLoadFailed => 'Gagal memuat laporan makna';
+
+  @override
+  String get reviewMeaningReportDetailTitle => 'Detail laporan makna';
+
+  @override
+  String get reviewMeaningReportRemove => 'Hapus makna';
+
+  @override
+  String get reviewMeaningReportDismiss => 'Tolak laporan';
+
+  @override
+  String get reviewMeaningReportRemovedToast =>
+      'Makna dihapus, laporan ditutup';
+
+  @override
+  String get reviewMeaningReportDismissedToast => 'Laporan ditolak';
 
   @override
   String get dictSkeletonLemma => 'lemma contoh kata';

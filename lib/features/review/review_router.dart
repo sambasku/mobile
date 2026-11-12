@@ -8,6 +8,8 @@ import 'presentation/pages/discussion_review_queue_page.dart';
 import 'presentation/pages/exploration_review_detail_page.dart';
 import 'presentation/pages/exploration_review_hub_page.dart';
 import 'presentation/pages/exploration_review_list_page.dart';
+import 'presentation/pages/meaning_report_review_detail_page.dart';
+import 'presentation/pages/meaning_report_review_queue_page.dart';
 import 'presentation/pages/review_history_detail_page.dart';
 import 'presentation/pages/review_history_page.dart';
 import 'presentation/pages/review_home_page.dart';
@@ -34,6 +36,14 @@ class ReviewRouter {
   static const discussionDetail = RouteDefiner(
     path: '/review/discussions/:id',
     name: 'ReviewRouter.discussionDetail',
+  );
+  static const meaningReports = RouteDefiner(
+    path: '/review/meaning-reports',
+    name: 'ReviewRouter.meaningReports',
+  );
+  static const meaningReportDetail = RouteDefiner(
+    path: '/review/meaning-reports/:id',
+    name: 'ReviewRouter.meaningReportDetail',
   );
   static const suggestions = RouteDefiner(
     path: '/review/suggestions',
@@ -119,6 +129,9 @@ class ReviewRouter {
   static String suggestionDetailPath(String id) => '/review/suggestions/$id';
 
   static String discussionDetailPath(String id) => '/review/discussions/$id';
+
+  static String meaningReportDetailPath(String id) =>
+      '/review/meaning-reports/$id';
 
   static String explorationListPath(ExplorationReviewDomain domain) =>
       switch (domain) {
@@ -208,6 +221,27 @@ class ReviewRouter {
         return ReviewGate(
           mode: ReviewGateMode.discussion,
           child: DiscussionReviewDetailPage(id: id),
+        );
+      },
+    ),
+    GoRoute(
+      path: meaningReports.path,
+      name: meaningReports.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const ReviewGate(
+        mode: ReviewGateMode.contribution,
+        child: MeaningReportReviewQueuePage(),
+      ),
+    ),
+    GoRoute(
+      path: meaningReportDetail.path,
+      name: meaningReportDetail.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return ReviewGate(
+          mode: ReviewGateMode.contribution,
+          child: MeaningReportReviewDetailPage(id: id),
         );
       },
     ),
@@ -424,6 +458,7 @@ class ReviewRouter {
             id == 'queue' ||
             id == 'suggestions' ||
             id == 'discussions' ||
+            id == 'meaning-reports' ||
             id == 'search-misses' ||
             id == 'exploration' ||
             id == 'usaha' ||

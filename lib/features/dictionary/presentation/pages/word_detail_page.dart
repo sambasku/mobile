@@ -48,7 +48,11 @@ import '../../application/word_clipboard.dart';
 import '../widgets/audio_player_tile.dart';
 import '../widgets/pronunciation_section.dart';
 import '../widgets/written_pronunciation_line.dart';
+import '../../../word_report/data/word_report_providers.dart';
 import '../../../word_report/presentation/report_word_sheet.dart';
+import '../../data/meaning_moderation_repository.dart';
+import '../../../contribution/presentation/utils/invalidate_word_detail.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Halaman detail kata publik - GET /api/v1/words/:id.
@@ -743,6 +747,7 @@ class _DetailBody extends HookConsumerWidget {
                             meaning: e.value,
                             wordId: wordId,
                             languageId: detail.languageId,
+                            meaningCount: detail.meanings.length,
                             showPerMeaningBy: showPerMeaningBy,
                             contributor: showPerMeaningBy
                                 ? (e.value.createdBy ?? detail.createdBy)
@@ -1125,6 +1130,183 @@ Future<void> _reportEntry(
   );
 }
 
+Future<void> _reportMeaning(
+  BuildContext context,
+  WidgetRef ref,
+  String wordId,
+  String meaningId,
+) async {
+  final auth = await ref.read(authStatusProvider.future);
+  if (!context.mounted) return;
+  if (!auth.isAuth) {
+    showFToast(
+      context: context,
+      title: Text(AppLocalizations.of(context).dictLoginToReportMeaning),
+    );
+    context.push('/login');
+    return;
+  }
+  final sent = await showReportWordSheet(
+    context,
+    wordId,
+    meaningId: meaningId,
+  );
+  if (!context.mounted || !sent) return;
+  showFToast(
+    context: context,
+    title: Text(AppLocalizations.of(context).dictMeaningReportSent),
+  );
+}
+
+Future<void> _confirmDeleteMeaning(
+  BuildContext context,
+  WidgetRef ref, {
+  required String wordId,
+  required String meaningId,
+  required String lemma,
+  required int meaningCount,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  if (meaningCount <= 1) {
+    showFToast(
+      context: context,
+      title: Text(l10n.dictDeleteMeaningLastBlocked),
+    );
+    return;
+  }
+  final ok = await showModalBottomSheet<bool>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) => Padding(
+      padding: MediaQuery.of(sheetContext).viewInsets,
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FTileGroup(
+              children: [
+                FTile(
+                  title: Text(l10n.dictDeleteMeaningConfirmTitle),
+                  subtitle: Text(l10n.dictDeleteMeaningConfirmBody),
+                ),
+                FTile(
+                  title: Text(l10n.dictDeleteMeaningConfirm),
+                  onPress: () => Navigator.pop(sheetContext, true),
+                ),
+                FTile(
+                  title: Text(l10n.dictDeleteMeaningCancel),
+                  onPress: () => Navigator.pop(sheetContext, false),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+  if (ok != true || !context.mounted) return;
+  try {
+    await ref
+        .read(meaningModerationRepositoryProvider)
+        .softDelete(wordId: wordId, meaningId: meaningId);
+    if (!context.mounted) return;
+    await invalidateWordDetailCaches(ref, wordId, lemma);
+    if (!context.mounted) return;
+    showFToast(
+      context: context,
+      title: Text(l10n.dictDeleteMeaningSuccess),
+    );
+  } on MeaningModerationFailure catch (error) {
+    if (!context.mounted) return;
+    await showAppErrorSheet(context, message: error.message);
+  }
+}
+
+Future<void> _showMeaningActionsSheet(
+  BuildContext context,
+  WidgetRef ref, {
+  required String wordId,
+  required String lemma,
+  required WordMeaning meaning,
+  required int meaningCount,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final role = ref.read(authStatusProvider).value?.role;
+  final canDelete = canReviewQueue(role);
+  final action = await showModalBottomSheet<String>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) {
+      var handled = false;
+      void go(String value) {
+        if (handled) return;
+        handled = true;
+        Navigator.of(sheetContext).pop(value);
+      }
+
+      return Padding(
+        padding: MediaQuery.of(sheetContext).viewInsets,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FTileGroup(
+                label: Text(l10n.dictMeaningActionsTitle),
+                children: [
+                  FTile(
+                    prefix: const Icon(FLucideIcons.copy),
+                    title: Text(l10n.dictCopyMeaning),
+                    onPress: () => go('copy'),
+                  ),
+                  if (canDelete)
+                    FTile(
+                      prefix: Icon(
+                        FLucideIcons.trash2,
+                        color: context.theme.colors.destructive,
+                      ),
+                      title: Text(l10n.dictDeleteMeaning),
+                      subtitle: Text(l10n.dictDeleteMeaningSubtitle),
+                      onPress: () => go('delete'),
+                    )
+                  else
+                    FTile(
+                      prefix: const Icon(FLucideIcons.flag),
+                      title: Text(l10n.dictReportMeaning),
+                      subtitle: Text(l10n.dictReportMeaningSubtitle),
+                      onPress: () => go('report'),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+  if (!context.mounted || action == null) return;
+  switch (action) {
+    case 'copy':
+      await copyWordMeaningToClipboard(
+        context,
+        lemma: lemma,
+        meaning: meaning,
+      );
+    case 'report':
+      await _reportMeaning(context, ref, wordId, meaning.id);
+    case 'delete':
+      await _confirmDeleteMeaning(
+        context,
+        ref,
+        wordId: wordId,
+        meaningId: meaning.id,
+        lemma: lemma,
+        meaningCount: meaningCount,
+      );
+  }
+}
+
 Future<void> _reportPrimaryPhoto(
   BuildContext context,
   WidgetRef ref,
@@ -1298,6 +1480,7 @@ class _MeaningBlock extends ConsumerWidget {
     required this.meaning,
     required this.wordId,
     required this.languageId,
+    required this.meaningCount,
     required this.showPerMeaningBy,
     this.contributor,
   });
@@ -1308,6 +1491,7 @@ class _MeaningBlock extends ConsumerWidget {
   final WordMeaning meaning;
   final String wordId;
   final String languageId;
+  final int meaningCount;
 
   /// Multi-makna + kontributor beda: tampilkan "oleh …" di bawah contoh.
   final bool showPerMeaningBy;
@@ -1449,14 +1633,17 @@ class _MeaningBlock extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            tooltip: l10n.dictCopyMeaning,
-            onPressed: () => copyWordMeaningToClipboard(
+            tooltip: l10n.dictMeaningActionsTitle,
+            onPressed: () => _showMeaningActionsSheet(
               context,
+              ref,
+              wordId: wordId,
               lemma: lemma,
               meaning: meaning,
+              meaningCount: meaningCount,
             ),
             icon: Icon(
-              FLucideIcons.copy,
+              FLucideIcons.ellipsisVertical,
               size: 16,
               color: theme.colors.mutedForeground,
             ),

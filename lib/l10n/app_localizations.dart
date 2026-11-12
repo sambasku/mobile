@@ -931,6 +931,12 @@ abstract class AppLocalizations {
   /// **'Laporkan foto'**
   String get reportPhotoTitle;
 
+  /// Judul sheet laporkan satu baris makna (#253)
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna'**
+  String get reportMeaningTitle;
+
   /// No description provided for @reportEntryBody.
   ///
   /// In id, this message translates to:
@@ -942,6 +948,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Laporkan foto ini ke tim Sambasku untuk ditinjau.'**
   String get reportPhotoBody;
+
+  /// Body sheet laporkan makna (#253)
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna yang kurang sesuai. Tim verifikator akan meninjau.'**
+  String get reportMeaningBody;
 
   /// No description provided for @reportReasonNotSambas.
   ///
@@ -6586,6 +6598,150 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Salin makna'**
   String get dictCopyMeaning;
+
+  /// Judul sheet aksi per makna di detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi makna'**
+  String get dictMeaningActionsTitle;
+
+  /// Tile laporkan makna untuk user biasa
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna'**
+  String get dictReportMeaning;
+
+  /// No description provided for @dictReportMeaningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ke antrean verifikator'**
+  String get dictReportMeaningSubtitle;
+
+  /// Tile hapus makna untuk verifikator
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna'**
+  String get dictDeleteMeaning;
+
+  /// No description provided for @dictDeleteMeaningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Langsung hilangkan makna ini dari entri'**
+  String get dictDeleteMeaningSubtitle;
+
+  /// No description provided for @dictDeleteMeaningConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna ini?'**
+  String get dictDeleteMeaningConfirmTitle;
+
+  /// No description provided for @dictDeleteMeaningConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna akan dihapus dari entri. Tindakan ini untuk makna yang kurang sesuai.'**
+  String get dictDeleteMeaningConfirmBody;
+
+  /// No description provided for @dictDeleteMeaningConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get dictDeleteMeaningConfirm;
+
+  /// No description provided for @dictDeleteMeaningCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get dictDeleteMeaningCancel;
+
+  /// No description provided for @dictDeleteMeaningSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna dihapus'**
+  String get dictDeleteMeaningSuccess;
+
+  /// No description provided for @dictDeleteMeaningLastBlocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa menghapus makna terakhir. Tarik entri atau usulkan perbaikan.'**
+  String get dictDeleteMeaningLastBlocked;
+
+  /// No description provided for @dictLoginToReportMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melaporkan makna'**
+  String get dictLoginToReportMeaning;
+
+  /// No description provided for @dictMeaningReportSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna terkirim. Makna tetap tayang sampai ditinjau.'**
+  String get dictMeaningReportSent;
+
+  /// Tile Area Verifikator untuk antrean laporan makna
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna'**
+  String get reviewHomeMeaningReportTitle;
+
+  /// No description provided for @reviewHomeMeaningReportSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau makna yang dilaporkan user'**
+  String get reviewHomeMeaningReportSubtitle;
+
+  /// No description provided for @reviewHomeMeaningReportWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada laporan menunggu'**
+  String get reviewHomeMeaningReportWaiting;
+
+  /// No description provided for @reviewMeaningReportQueueTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna'**
+  String get reviewMeaningReportQueueTitle;
+
+  /// No description provided for @reviewMeaningReportQueueEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada laporan makna terbuka'**
+  String get reviewMeaningReportQueueEmpty;
+
+  /// No description provided for @reviewMeaningReportQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat laporan makna'**
+  String get reviewMeaningReportQueueLoadFailed;
+
+  /// No description provided for @reviewMeaningReportDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail laporan makna'**
+  String get reviewMeaningReportDetailTitle;
+
+  /// No description provided for @reviewMeaningReportRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna'**
+  String get reviewMeaningReportRemove;
+
+  /// No description provided for @reviewMeaningReportDismiss.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak laporan'**
+  String get reviewMeaningReportDismiss;
+
+  /// No description provided for @reviewMeaningReportRemovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna dihapus, laporan ditutup'**
+  String get reviewMeaningReportRemovedToast;
+
+  /// No description provided for @reviewMeaningReportDismissedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan ditolak'**
+  String get reviewMeaningReportDismissedToast;
 
   /// No description provided for @dictSkeletonLemma.
   ///

@@ -43,24 +43,37 @@ Future<bool> showReportWordSheet(
 
   /// Saat diisi, sheet menampilkan alasan khusus gambar (mis. kekerasan).
   String? imageId,
+
+  /// Saat diisi, laporan merujuk ke satu makna (#253).
+  String? meaningId,
 }) async {
   final sent = await showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    builder: (sheetContext) =>
-        _ReportWordSheet(wordId: wordId, imageId: imageId),
+    builder: (sheetContext) => _ReportWordSheet(
+      wordId: wordId,
+      imageId: imageId,
+      meaningId: meaningId,
+    ),
   );
   return sent ?? false;
 }
 
 class _ReportWordSheet extends ConsumerStatefulWidget {
-  const _ReportWordSheet({required this.wordId, this.imageId});
+  const _ReportWordSheet({
+    required this.wordId,
+    this.imageId,
+    this.meaningId,
+  });
 
   final String wordId;
 
   /// Saat diisi, laporan merujuk ke gambar tertentu.
   final String? imageId;
+
+  /// Saat diisi, laporan merujuk ke satu makna.
+  final String? meaningId;
 
   @override
   ConsumerState<_ReportWordSheet> createState() => _ReportWordSheetState();
@@ -112,11 +125,15 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
                 ? chipNote
                 : AppLocalizations.of(context).reportNoteWithChip(chipNote, note),
             imageId: widget.imageId,
+            meaningId: widget.meaningId,
           );
       if (!mounted) return;
       AnalyticsService.instance.log(
         AnalyticsEvents.reportWordSubmit,
-        params: {'word_id': widget.wordId},
+        params: {
+          'word_id': widget.wordId,
+          if (widget.meaningId != null) 'meaning_id': widget.meaningId!,
+        },
       );
       Navigator.of(context).pop(true);
     } on WordReportFailure catch (error) {
@@ -144,15 +161,19 @@ class _ReportWordSheetState extends ConsumerState<_ReportWordSheet> {
         children: [
           Text(
             widget.imageId != null
-                ? AppLocalizations.of(context).reportPhotoTitle
-                : AppLocalizations.of(context).reportEntryTitle,
+                ? l10n.reportPhotoTitle
+                : widget.meaningId != null
+                ? l10n.reportMeaningTitle
+                : l10n.reportEntryTitle,
             style: theme.typography.body.lg.copyWith(fontWeight: FontWeight.w600),
           ),
           const Gap(4),
           Text(
             widget.imageId != null
-                ? 'Laporkan foto ini ke tim Sambasku untuk ditinjau.'
-                : 'Untuk entri yang tidak layak tayang. Perbaikan isi tetap lewat Usulkan perubahan.',
+                ? l10n.reportPhotoBody
+                : widget.meaningId != null
+                ? l10n.reportMeaningBody
+                : l10n.reportEntryBody,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.mutedForeground,
             ),
