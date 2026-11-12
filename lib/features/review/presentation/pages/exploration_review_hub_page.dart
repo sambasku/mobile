@@ -19,6 +19,7 @@ class ExplorationReviewHubPage extends ConsumerWidget {
     final placePending = _pending(ref, ExplorationReviewDomain.place);
     final culinaryPending = _pending(ref, ExplorationReviewDomain.culinary);
     final eventPending = _pending(ref, ExplorationReviewDomain.event);
+    final layananPending = _pending(ref, ExplorationReviewDomain.layanan);
 
     return FScaffold(
       childPad: true,
@@ -65,6 +66,15 @@ class ExplorationReviewHubPage extends ConsumerWidget {
                   : l10n.reviewHomeEventSubtitle,
               pending: eventPending,
               onPress: () => context.push(ReviewRouter.events.path),
+            ),
+            _domainTile(
+              icon: FLucideIcons.phone,
+              title: l10n.reviewHomeLayananTitle,
+              subtitle: layananPending
+                  ? l10n.reviewHomeLayananWaiting
+                  : l10n.reviewHomeLayananSubtitle,
+              pending: layananPending,
+              onPress: () => context.push(ReviewRouter.layanan.path),
             ),
           ],
         ),

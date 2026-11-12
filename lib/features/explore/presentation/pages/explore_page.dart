@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:forui/forui.dart'
     if (dart.library.io) 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/analytics_service.dart';
@@ -15,12 +16,15 @@ import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../domain/explore_category.dart';
 import '../../explore_router.dart';
-import '../widgets/explore_cover_card.dart';
 import '../widgets/explore_map_hero.dart';
 
 /// Tab Eksplorasi: hub kategori discovery Sambas.
 class ExplorePage extends HookConsumerWidget {
   const ExplorePage({super.key});
+
+  static const _menuColumns = 4;
+  static const _menuIconSize = 48.0;
+  static const _menuSpacing = 8.0;
 
   void _openCategory(BuildContext context, ExploreCategory cat) {
     unawaited(
@@ -99,28 +103,34 @@ class ExplorePage extends HookConsumerWidget {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // Sel grid = cover 1:1 + blok judul; rasio dihitung dari lebar
-              // agar AspectRatio di kartu tidak ter-clip.
-              final childAspectRatio = ExploreCoverCard.gridChildAspectRatio(
-                maxWidth: constraints.maxWidth,
-              );
+              // Ikon 48 + gap 6 + 2 baris label (~28).
+              // Horizontal sudah dari Padding shell (app_router) - jangan dobel.
+              const cellHeight = _menuIconSize + 6 + 28;
+              final cellW =
+                  (constraints.maxWidth - _menuSpacing * (_menuColumns - 1)) /
+                  _menuColumns;
+              final childAspectRatio = cellW / cellHeight;
               return CustomScrollView(
                 controller: scroll,
                 slivers: [
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      childAspectRatio: childAspectRatio,
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 8),
+                    sliver: SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _menuColumns,
+                        mainAxisSpacing: _menuSpacing,
+                        crossAxisSpacing: _menuSpacing,
+                        childAspectRatio: childAspectRatio,
+                      ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final cat = categories[index];
+                        return _ExploreMenuTile(
+                          category: cat,
+                          iconSize: _menuIconSize,
+                          onTap: () => _openCategory(context, cat),
+                        );
+                      }, childCount: categories.length),
                     ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final cat = categories[index];
-                      return _CategoryCard(
-                        category: cat,
-                        onTap: () => _openCategory(context, cat),
-                      );
-                    }, childCount: categories.length),
                   ),
                   SliverToBoxAdapter(
                     child: Center(
@@ -130,7 +140,9 @@ class ExplorePage extends HookConsumerWidget {
                           onTap: () {
                             AnalyticsService.instance.log(
                               'explore_coming_soon_toggle',
-                              params: {'show': showComingSoon.value ? 0 : 1},
+                              params: {
+                                'show': showComingSoon.value ? 0 : 1,
+                              },
                             );
                             showComingSoon.value = !showComingSoon.value;
                           },
@@ -159,42 +171,108 @@ class ExplorePage extends HookConsumerWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({required this.category, required this.onTap});
+/// Menu kecil 4-kolom: ikon/cover mini + label (bukan kartu cover besar).
+class _ExploreMenuTile extends StatelessWidget {
+  const _ExploreMenuTile({
+    required this.category,
+    required this.onTap,
+    required this.iconSize,
+  });
 
   final ExploreCategory category;
   final VoidCallback onTap;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
+    final cover = category.coverAsset;
 
-    return ExploreCoverCard(
-      title: category.titleOf(l10n),
-      onTap: onTap,
-      coverAsset: category.coverAsset,
-      // Ensiklopedia / Komunitas (segera): ikon kategori biar area foto
-      // tidak kosong polos.
-      placeholderIcon: category.coverAsset == null ? category.icon : null,
-      badge: category.comingSoon
-          ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: theme.colors.primary,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                l10n.exploreComingSoon,
-                maxLines: 1,
-                style: theme.typography.body.sm.copyWith(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                  color: theme.colors.primaryForeground,
+    return FTappable(
+      onPress: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: cover != null
+                      ? Image.asset(
+                          cover,
+                          width: iconSize,
+                          height: iconSize,
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
+                          errorBuilder: (_, _, _) => _IconBox(
+                            icon: category.icon,
+                            size: iconSize,
+                          ),
+                        )
+                      : _IconBox(icon: category.icon, size: iconSize),
                 ),
-              ),
-            )
-          : null,
+                if (category.comingSoon)
+                  Positioned(
+                    top: -4,
+                    right: -4,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: theme.colors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.colors.background,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const Gap(6),
+          Text(
+            category.titleOf(l10n),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.sm.copyWith(
+              fontSize: 11,
+              height: 1.2,
+              fontWeight: FontWeight.w600,
+              color: theme.colors.foreground,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IconBox extends StatelessWidget {
+  const _IconBox({required this.icon, required this.size});
+
+  final IconData icon;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return ColoredBox(
+      color: theme.colors.secondary,
+      child: Center(
+        child: Icon(
+          icon,
+          size: size * 0.42,
+          color: theme.colors.mutedForeground,
+        ),
+      ),
     );
   }
 }

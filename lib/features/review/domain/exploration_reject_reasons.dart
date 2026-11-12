@@ -119,6 +119,24 @@ List<ExplorationRejectReason> explorationRejectReasons(
         label: l10n.reviewExploreRejectOther,
       ),
     ],
+    .layanan => [
+      ExplorationRejectReason(
+        code: 'invalid_phone',
+        label: l10n.reviewExploreRejectLayananInvalidPhone,
+      ),
+      ExplorationRejectReason(
+        code: 'wrong_region',
+        label: l10n.reviewExploreRejectLayananWrongRegion,
+      ),
+      ExplorationRejectReason(
+        code: 'duplicate',
+        label: l10n.reviewExploreRejectLayananDuplicate,
+      ),
+      ExplorationRejectReason(
+        code: 'other',
+        label: l10n.reviewExploreRejectOther,
+      ),
+    ],
   };
 }
 
@@ -154,5 +172,10 @@ String explorationKindLabel(
     },
     .place => l10n.reviewExplorePlaceKindNew,
     .event => l10n.reviewExploreEventKindNew,
+    .layanan => switch (kind) {
+      'new' => l10n.reviewExploreLayananKindNew,
+      'edit' => l10n.reviewExploreLayananKindEdit,
+      _ => kind,
+    },
   };
 }

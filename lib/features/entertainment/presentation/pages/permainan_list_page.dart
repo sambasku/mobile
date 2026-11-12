@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../explore/presentation/widgets/explore_cover_card.dart';
 
 /// Satu permainan di hub. Tambah entri baru cukup di [_items].
 /// Judul/subtitle diambil dari ARB lewat [id] saat render.
@@ -18,7 +18,7 @@ class _Permainan {
   final String id;
   final IconData icon;
 
-  /// Null = belum tersedia (kartu tampil, tap diabaikan).
+  /// Null = belum tersedia (baris tampil, tap diabaikan).
   final String? path;
 
   /// Cover WebP opsional (`assets/images/explore_covers/…`).
@@ -34,6 +34,9 @@ const _items = <_Permainan>[
   ),
 ];
 
+/// Ukuran cover sama daftar artikel ensiklopedia.
+const _kCoverSize = 64.0;
+
 ({String title, String subtitle}) _labelsFor(
   AppLocalizations l10n,
   String id,
@@ -42,17 +45,18 @@ const _items = <_Permainan>[
   _ => (title: id, subtitle: ''),
 };
 
-/// Hub Permainan: grid 3 kolom berisi semua permainan Sambas.
+/// Hub Permainan: daftar vertikal (pola item ensiklopedia).
 /// Permainan baru tinggal ditambah ke [_items] - halaman ini tidak berubah.
 class PermainanListPage extends StatelessWidget {
   const PermainanListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FScaffold(
       childPad: true,
       header: FHeader.nested(
-        title: Text(AppLocalizations.of(context).permainanTitle),
+        title: Text(l10n.permainanTitle),
         prefixes: [
           FHeaderAction.back(
             onPress: () =>
@@ -60,29 +64,17 @@ class PermainanListPage extends StatelessWidget {
           ),
         ],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final childAspectRatio = ExploreCoverCard.gridChildAspectRatio(
-            maxWidth: constraints.maxWidth,
-          );
-          return GridView.builder(
-            padding: const EdgeInsets.only(top: 0, bottom: 24),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: childAspectRatio,
-            ),
-            itemCount: _items.length,
-            itemBuilder: (context, i) {
-              final item = _items[i];
-              return _PermainanCard(
-                item: item,
-                onTap: item.path == null
-                    ? null
-                    : () => context.push(item.path!),
-              );
-            },
+      child: ListView.builder(
+        // Tanpa top: FHeader sudah SafeArea (sama ensiklopedia).
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(context).bottom,
+        ),
+        itemCount: _items.length,
+        itemBuilder: (context, i) {
+          final item = _items[i];
+          return _PermainanListTile(
+            item: item,
+            onTap: item.path == null ? null : () => context.push(item.path!),
           );
         },
       ),
@@ -90,21 +82,108 @@ class PermainanListPage extends StatelessWidget {
   }
 }
 
-class _PermainanCard extends StatelessWidget {
-  const _PermainanCard({required this.item, this.onTap});
+/// Baris permainan: cover 64 + judul/subtitle + chevron (mirror ensiklopedia).
+class _PermainanListTile extends StatelessWidget {
+  const _PermainanListTile({required this.item, this.onTap});
 
   final _Permainan item;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
     final l10n = AppLocalizations.of(context);
     final labels = _labelsFor(l10n, item.id);
-    return ExploreCoverCard(
-      title: labels.title,
-      onTap: onTap,
-      coverAsset: item.coverAsset,
-      badge: item.path == null ? Text(l10n.pantunComingSoon) : null,
+    final comingSoon = item.path == null;
+    final cover = item.coverAsset;
+
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: _kCoverSize,
+              height: _kCoverSize,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: cover != null
+                    ? Image.asset(
+                        cover,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => ColoredBox(
+                          color: theme.colors.muted,
+                          child: Center(
+                            child: Icon(
+                              item.icon,
+                              size: 28,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        ),
+                      )
+                    : ColoredBox(
+                        color: theme.colors.muted,
+                        child: Center(
+                          child: Icon(
+                            item.icon,
+                            size: 28,
+                            color: theme.colors.mutedForeground,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+            const Gap(12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    labels.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.typography.body.md.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (comingSoon) ...[
+                    const Gap(4),
+                    Text(
+                      l10n.pantunComingSoon,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ] else if (labels.subtitle.isNotEmpty) ...[
+                    const Gap(4),
+                    Text(
+                      labels.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.sm.copyWith(
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (!comingSoon) ...[
+              const Gap(8),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

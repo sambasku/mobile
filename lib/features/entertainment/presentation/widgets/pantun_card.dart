@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/public_account_name.dart';
+import '../../../../shared/widgets/thread_audio_player.dart';
 import '../../../../shared/widgets/thread_message.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/utils/public_account_name.dart';
@@ -155,6 +156,14 @@ class PantunCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (pantun.hasAudio) ...[
+                const Gap(8),
+                ThreadAudioPlayer(
+                  audioId: pantun.id,
+                  url: pantun.audioUrl!,
+                  durationMs: pantun.audioDurationMs,
+                ),
+              ],
               // Vote/Tindakan satu baris, gaya ThreadMessageRow:
               // vote rata kiri, aksi (hapus/lapor) rata kanan.
               if (onVoteToggle != null || footer != null) const Gap(6),

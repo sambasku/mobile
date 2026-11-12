@@ -11,6 +11,7 @@ import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
 import '../../encyclopedia_router.dart';
 import '../providers/encyclopedia_contribution_providers.dart';
+import '../providers/encyclopedia_detail_providers.dart';
 import '../providers/encyclopedia_list_providers.dart';
 import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
@@ -31,6 +32,10 @@ class _EncyclopediaContributionPageState
   final _tagsController = TextEditingController();
   String _bodyMd = '';
   String? _categoryId;
+
+  /// ULID artikel target (mode edit). Jangan kirim slug di article_id.
+  String? _articleId;
+  bool _prefilled = false;
   bool _submitting = false;
   bool _authChecked = false;
 
@@ -42,6 +47,7 @@ class _EncyclopediaContributionPageState
 
   @override
   String get draftToken => [
+    _articleId,
     _titleController.text,
     _tagsController.text,
     _bodyMd,
@@ -50,6 +56,7 @@ class _EncyclopediaContributionPageState
 
   @override
   _EncyclopediaDraft captureDraft() => _EncyclopediaDraft(
+    articleId: _articleId,
     title: _titleController.text,
     tags: _tagsController.text,
     bodyMd: _bodyMd,
@@ -58,10 +65,14 @@ class _EncyclopediaContributionPageState
 
   @override
   void restoreDraft(_EncyclopediaDraft draft) {
+    _articleId = draft.articleId;
     _titleController.text = draft.title;
     _tagsController.text = draft.tags;
     _bodyMd = draft.bodyMd;
     _categoryId = draft.categoryId;
+    if (draft.articleId != null || draft.hasContent) {
+      _prefilled = true;
+    }
   }
 
   @override
@@ -131,6 +142,16 @@ class _EncyclopediaContributionPageState
     setState(() => _bodyMd = result);
   }
 
+  void _applyArticle(EncyclopediaArticle article) {
+    _prefilled = true;
+    _articleId = article.id;
+    _titleController.text = article.title;
+    _bodyMd = article.bodyMd;
+    _categoryId = article.category.id;
+    _tagsController.text = article.tags.join(', ');
+    sealDraftBaseline();
+  }
+
   Future<void> _submit() async {
     if (_submitting) return;
     final l10n = AppLocalizations.of(context);
@@ -142,8 +163,16 @@ class _EncyclopediaContributionPageState
       showFToast(context: context, title: Text(l10n.encyclopediaFieldRequired));
       return;
     }
+    final isEdit = widget.articleSlug != null;
+    if (isEdit && (_articleId == null || _articleId!.isEmpty)) {
+      showFToast(
+        context: context,
+        title: Text(l10n.encyclopediaEditArticleMissing),
+      );
+      return;
+    }
     final payload = SubmitEncyclopediaContributionPayload(
-      kind: widget.articleSlug == null ? 'new' : 'edit',
+      kind: isEdit ? 'edit' : 'new',
       title: _titleController.text.trim(),
       // API boleh kosong; ringkasan tidak ditampilkan di form usulan.
       excerpt: '',
@@ -154,7 +183,7 @@ class _EncyclopediaContributionPageState
           .map((e) => e.trim())
           .where((e) => e.isNotEmpty)
           .toList(),
-      articleId: widget.articleSlug,
+      articleId: isEdit ? _articleId : null,
     );
     setState(() => _submitting = true);
     try {
@@ -183,6 +212,16 @@ class _EncyclopediaContributionPageState
     final bodyPreview = bodyEmpty
         ? null
         : _bodyMd.trim().replaceAll(RegExp(r'\s+'), ' ');
+    final slug = widget.articleSlug;
+    if (slug != null && !_prefilled) {
+      final article = ref.watch(encyclopediaArticleProvider(slug)).asData?.value;
+      if (article != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || _prefilled) return;
+          setState(() => _applyArticle(article));
+        });
+      }
+    }
 
     return FScaffold(
       header: FHeader.nested(
@@ -312,18 +351,21 @@ class _EncyclopediaContributionPageState
 
 class _EncyclopediaDraft {
   const _EncyclopediaDraft({
+    required this.articleId,
     required this.title,
     required this.tags,
     required this.bodyMd,
     required this.categoryId,
   });
 
+  final String? articleId;
   final String title;
   final String tags;
   final String bodyMd;
   final String? categoryId;
 
   bool get hasContent =>
+      (articleId != null && articleId!.isNotEmpty) ||
       title.trim().isNotEmpty ||
       tags.trim().isNotEmpty ||
       bodyMd.trim().isNotEmpty ||

@@ -56,6 +56,7 @@ void main() {
     expect(tester.getSize(avatar).width, 104);
 
     // Tinggi art = cover (rasio asset) + separuh frame avatar.
+    // Foto di tengah frame (bukan nempel bawah) supaya selaras saat ada border.
     final headerTop = tester
         .getTopLeft(find.byType(ProfileIdentityHeader))
         .dy;
@@ -63,9 +64,11 @@ void main() {
       ProfileHeaderVariant.hero,
       surfaceWidth,
     );
+    const avatarSize = 104.0;
+    final extent = avatarSize * 1.32;
     expect(
       tester.getBottomLeft(avatar).dy - headerTop,
-      closeTo(coverH + 104 * 1.32 / 2, 0.5),
+      closeTo(coverH + extent / 2 - (extent - avatarSize) / 2, 0.5),
     );
 
     // Dua angka yang dicari orang; sisanya sengaja tidak ditampilkan.
@@ -167,4 +170,36 @@ void main() {
     expect(find.text('Lihat profil publik'), findsOneWidget);
     expect(find.text('Lencana'), findsOneWidget);
   });
+
+  testWidgets(
+    'avatarOverlay di kanan avatar tetap bisa di-tap (hit-test overflow)',
+    (tester) async {
+      var taps = 0;
+      await _pump(
+        tester,
+        ProfileIdentityHeader(
+          variant: ProfileHeaderVariant.compact,
+          displayName: 'Budi',
+          avatarOverlay: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => taps++,
+            child: const SizedBox(
+              width: 180,
+              height: 36,
+              child: Text('bubble-preview'),
+            ),
+          ),
+        ),
+      );
+
+      final bubble = find.text('bubble-preview');
+      expect(bubble, findsOneWidget);
+
+      // Tap di ujung kanan bubble (di luar kotak avatar) - dulu miss.
+      final box = tester.getRect(bubble);
+      await tester.tapAt(Offset(box.right - 8, box.center.dy));
+      await tester.pump();
+      expect(taps, 1);
+    },
+  );
 }

@@ -102,6 +102,48 @@ class VoteDeckController extends _$VoteDeckController {
     await future;
   }
 
+  /// Patch kelas kata kartu aktif tanpa fetch ulang (shortcut chip, #263).
+  void patchWordClass(String meaningId, VoteDeckWordClass wordClass) {
+    final current = state.value;
+    if (current == null) return;
+    final index = current.items.indexWhere((item) => item.id == meaningId);
+    if (index < 0) return;
+    final items = [...current.items];
+    items[index] = items[index].copyWith(wordClass: wordClass);
+    state = AsyncData(current.copyWith(items: items));
+  }
+
+  /// Patch pelafalan kartu aktif setelah tulis/rekam dari deck (#260).
+  void patchPronunciation(
+    String meaningId, {
+    String? pronunciationValue,
+    bool? hasAudio,
+  }) {
+    final current = state.value;
+    if (current == null) return;
+    final index = current.items.indexWhere((item) => item.id == meaningId);
+    if (index < 0) return;
+    final items = [...current.items];
+    items[index] = items[index].copyWith(
+      pronunciationValue: pronunciationValue,
+      hasAudio: hasAudio,
+    );
+    state = AsyncData(current.copyWith(items: items));
+  }
+
+  /// Refresh deck lalu pin [meaningId] ke depan bila masih ada (#263 / #159).
+  Future<void> refreshKeepingFront(String meaningId) async {
+    ref.invalidateSelf();
+    final next = await future;
+    if (!ref.mounted) return;
+    final match = next.items.where((item) => item.id == meaningId).firstOrNull;
+    if (match == null) return;
+    final rest = next.items.where((item) => item.id != meaningId);
+    state = AsyncData(
+      next.copyWith(items: [match, ...rest]),
+    );
+  }
+
   Future<VoteFailure?> loadMore() async {
     final current = state.value;
     if (current == null ||

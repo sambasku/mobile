@@ -80,9 +80,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
   final _addPadananCtrl = TextEditingController();
   String? _addWordClassId;
 
-  // Tambah contoh.
+  // Tambah / ubah contoh (#244).
   final _sentenceCtrl = TextEditingController();
   final _sentenceTranslationCtrl = TextEditingController();
+  String? _exampleId;
+  String _originalExampleSentence = '';
+  String? _originalExampleTranslation;
 
   // Foto.
   List<ContributeImageSlot> _addImages = [];
@@ -185,9 +188,28 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final available = availableSuggestCategories(
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
+      hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
     );
     if (!available.contains(requested)) return;
     _category = requested;
+  }
+
+  List<({WordMeaning meaning, WordExample example})> _flatExamples(
+    WordDetail detail,
+  ) => [
+    for (final m in detail.meanings)
+      for (final ex in m.examples) (meaning: m, example: ex),
+  ];
+
+  void _selectExample(WordExample example) {
+    setState(() {
+      _exampleId = example.id;
+      _originalExampleSentence = example.sourceSentence;
+      _originalExampleTranslation = example.targetSentence;
+      _sentenceCtrl.text = example.sourceSentence;
+      _sentenceTranslationCtrl.text = example.targetSentence ?? '';
+      _fieldErrors = const {};
+    });
   }
 
   Future<String?> _resolveIdnLanguageId(Dio dio, WordMeaning? meaning) async {
@@ -411,6 +433,22 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           originalNotes: detail.notes ?? '',
           notes: _notesCtrl.text,
         );
+      case SuggestCategory.changeExample:
+        final id = _exampleId;
+        if (id == null) {
+          throw StateError(_l10n.suggestPickExample);
+        }
+        final sentence = _sentenceCtrl.text.trim();
+        if (sentence.isEmpty) {
+          throw StateError(_l10n.suggestExampleFirst);
+        }
+        return buildChangeExample(
+          exampleId: id,
+          originalSourceSentence: _originalExampleSentence,
+          sourceSentence: sentence,
+          originalTargetSentence: _originalExampleTranslation,
+          targetSentence: _sentenceTranslationCtrl.text,
+        );
       case SuggestCategory.addExample:
         throw StateError(_l10n.suggestExampleFirst);
     }
@@ -486,11 +524,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
       await invalidateWordDetailCaches(ref, widget.wordId, detail.lemma);
       if (!mounted) return;
       ref.invalidate(changeHistoryProvider(widget.wordId));
-      final router = GoRouter.of(context);
-      router.pop();
+      // #264: ganti form di stack (bukan pop+push) supaya back tidak
+      // membuka lagi form usulan yang sudah terkirim.
       if (!selfApplied) {
         ref.invalidate(myContributionsListControllerProvider);
-        router.push('/contributions');
+        context.pushReplacement('/contributions');
+      } else {
+        context.pop();
       }
     } on DioException catch (e) {
       await _handleDioError(e);
@@ -591,6 +631,16 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     );
   }
 
+  /// #264: dari form kategori → listing opsi dulu; dari listing → keluar.
+  /// Jangan pushReplacement antar opsi - state lokal `_category` saja.
+  void _onBack() {
+    if (_category != null) {
+      setState(() => _category = null);
+      return;
+    }
+    context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authStatusProvider).value;
@@ -616,45 +666,55 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     // kata" di tile tidak membuka halaman bertajuk "Ubah Kata".
     final headerTitle = suggestEditEntryTileCopy(auth?.role, _l10n).title;
     final isExample = _category == SuggestCategory.addExample;
+    final onCategoryForm = _category != null;
 
-    return FScaffold(
-      header: FHeader.nested(
-        title: Text(headerTitle),
-        prefixes: [FHeaderAction.back(onPress: () => context.pop())],
-      ),
-      footer: _category == null
-          ? null
-          : SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                child: FButton(
-                  onPress: _submitting
-                      ? null
-                      : () {
-                          final d = detailAsync.asData?.value;
-                          if (d != null) _submit(d);
-                        },
-                  prefix: _submitting ? const FCircularProgress() : null,
-                  child: Text(
-                    _submitting
-                        ? preSubmit.ctaBusy
-                        : (isExample
-                              ? _l10n.suggestSendExample
-                              : preSubmit.cta),
+    // #264: system back sama dengan header - form → listing, bukan keluar.
+    return PopScope(
+      canPop: !onCategoryForm,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _category != null) {
+          setState(() => _category = null);
+        }
+      },
+      child: FScaffold(
+        header: FHeader.nested(
+          title: Text(headerTitle),
+          prefixes: [FHeaderAction.back(onPress: _onBack)],
+        ),
+        footer: !onCategoryForm
+            ? null
+            : SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: FButton(
+                    onPress: _submitting
+                        ? null
+                        : () {
+                            final d = detailAsync.asData?.value;
+                            if (d != null) _submit(d);
+                          },
+                    prefix: _submitting ? const FCircularProgress() : null,
+                    child: Text(
+                      _submitting
+                          ? preSubmit.ctaBusy
+                          : (isExample
+                                ? _l10n.suggestSendExample
+                                : preSubmit.cta),
+                    ),
                   ),
                 ),
               ),
-            ),
-      child: detailAsync.when(
-        loading: () => const Center(child: FCircularProgress()),
-        error: (e, _) => Center(child: Text('$e')),
-        data: (detail) {
-          _prefillOnce(detail);
-          return _category == null
-              ? _buildCategoryList(detail, preSubmit.banner)
-              : _buildCategoryForm(detail);
-        },
+        child: detailAsync.when(
+          loading: () => const Center(child: FCircularProgress()),
+          error: (e, _) => Center(child: Text('$e')),
+          data: (detail) {
+            _prefillOnce(detail);
+            return _category == null
+                ? _buildCategoryList(detail, preSubmit.banner)
+                : _buildCategoryForm(detail);
+          },
+        ),
       ),
     );
   }
@@ -664,6 +724,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
     final categories = availableSuggestCategories(
       hasMeaning: detail.meanings.isNotEmpty,
       hasImage: detail.images.isNotEmpty,
+      hasExample: detail.meanings.any((m) => m.examples.isNotEmpty),
     );
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
@@ -690,6 +751,13 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
                 onPress: () => setState(() {
                   _category = c;
                   _fieldErrors = const {};
+                  _exampleId = null;
+                  _originalExampleSentence = '';
+                  _originalExampleTranslation = null;
+                  if (c == SuggestCategory.changeExample) {
+                    _sentenceCtrl.clear();
+                    _sentenceTranslationCtrl.clear();
+                  }
                 }),
               ),
           ],
@@ -814,6 +882,55 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             minLines: 2,
           ),
         ];
+      case SuggestCategory.changeExample:
+        final items = _flatExamples(detail);
+        return [
+          _FieldCaption(_l10n.suggestPickExample),
+          FTileGroup(
+            children: [
+              for (final item in items)
+                FTile(
+                  title: Text(item.example.sourceSentence),
+                  subtitle:
+                      item.example.targetSentence == null ||
+                          item.example.targetSentence!.trim().isEmpty
+                      ? null
+                      : Text(item.example.targetSentence!),
+                  suffix: _exampleId == item.example.id
+                      ? Icon(
+                          FLucideIcons.check,
+                          size: 16,
+                          color: context.theme.colors.primary,
+                        )
+                      : null,
+                  onPress: () => _selectExample(item.example),
+                ),
+            ],
+          ),
+          if (_exampleId != null) ...[
+            const Gap(12),
+            _FieldCaption(_l10n.suggestExampleSelected),
+            FTextField(
+              control: FTextFieldControl.managed(controller: _sentenceCtrl),
+              label: Text(_l10n.suggestExampleSection(detail.lemma)),
+              hint: _l10n.suggestExampleLangHint,
+              error: _errorText('sentence'),
+              maxLines: 3,
+              minLines: 2,
+            ),
+            const Gap(8),
+            FTextField(
+              control: FTextFieldControl.managed(
+                controller: _sentenceTranslationCtrl,
+              ),
+              label: Text(_l10n.suggestExampleTranslationLabel),
+              hint: _l10n.suggestExampleTranslationHint,
+              error: _errorText('sentence_translation'),
+              maxLines: 3,
+              minLines: 2,
+            ),
+          ],
+        ];
       case SuggestCategory.addPhoto:
         return [
           ContributeImagesField(
@@ -865,6 +982,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             ),
             hint: _l10n.suggestRelationPickHint,
             error: _errorText('relation_lemma'),
+            excludeLemmas: {detail.lemma},
           ),
           const Gap(12),
           _FieldCaption(
@@ -915,6 +1033,7 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
             label: _l10n.suggestOtherMembers,
             hint: _l10n.suggestRelationPickHint,
             error: _errorText('group_lemma'),
+            excludeLemmas: {detail.lemma},
           ),
           const Gap(12),
           _FieldCaption(
@@ -1012,12 +1131,12 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           _l10n.suggestDefinitionLabel,
           info: _l10n.suggestDefinitionHint,
         ),
-        FTextField(
+        FTextField.multiline(
           control: FTextFieldControl.managed(controller: ctrl),
           hint: _l10n.suggestDefinitionPlaceholder,
           error: _errorText('definition'),
-          maxLines: 3,
-          minLines: 2,
+          minLines: 4,
+          maxLines: 8,
         ),
       ],
     );

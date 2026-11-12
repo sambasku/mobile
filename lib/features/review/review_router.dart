@@ -8,6 +8,8 @@ import 'presentation/pages/discussion_review_queue_page.dart';
 import 'presentation/pages/exploration_review_detail_page.dart';
 import 'presentation/pages/exploration_review_hub_page.dart';
 import 'presentation/pages/exploration_review_list_page.dart';
+import 'presentation/pages/meaning_report_review_detail_page.dart';
+import 'presentation/pages/meaning_report_review_queue_page.dart';
 import 'presentation/pages/review_history_detail_page.dart';
 import 'presentation/pages/review_history_page.dart';
 import 'presentation/pages/review_home_page.dart';
@@ -34,6 +36,14 @@ class ReviewRouter {
   static const discussionDetail = RouteDefiner(
     path: '/review/discussions/:id',
     name: 'ReviewRouter.discussionDetail',
+  );
+  static const meaningReports = RouteDefiner(
+    path: '/review/meaning-reports',
+    name: 'ReviewRouter.meaningReports',
+  );
+  static const meaningReportDetail = RouteDefiner(
+    path: '/review/meaning-reports/:id',
+    name: 'ReviewRouter.meaningReportDetail',
   );
   static const suggestions = RouteDefiner(
     path: '/review/suggestions',
@@ -91,6 +101,14 @@ class ReviewRouter {
     path: '/review/culinary/:id',
     name: 'ReviewRouter.culinaryDetail',
   );
+  static const layanan = RouteDefiner(
+    path: '/review/layanan',
+    name: 'ReviewRouter.layanan',
+  );
+  static const layananDetail = RouteDefiner(
+    path: '/review/layanan/:id',
+    name: 'ReviewRouter.layananDetail',
+  );
   static const session = RouteDefiner(
     path: '/review/session',
     name: 'ReviewRouter.session',
@@ -112,12 +130,16 @@ class ReviewRouter {
 
   static String discussionDetailPath(String id) => '/review/discussions/$id';
 
+  static String meaningReportDetailPath(String id) =>
+      '/review/meaning-reports/$id';
+
   static String explorationListPath(ExplorationReviewDomain domain) =>
       switch (domain) {
         .usaha => usaha.path,
         .place => places.path,
         .event => events.path,
         .culinary => culinary.path,
+        .layanan => layanan.path,
       };
 
   static String explorationDetailPath(
@@ -199,6 +221,27 @@ class ReviewRouter {
         return ReviewGate(
           mode: ReviewGateMode.discussion,
           child: DiscussionReviewDetailPage(id: id),
+        );
+      },
+    ),
+    GoRoute(
+      path: meaningReports.path,
+      name: meaningReports.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const ReviewGate(
+        mode: ReviewGateMode.contribution,
+        child: MeaningReportReviewQueuePage(),
+      ),
+    ),
+    GoRoute(
+      path: meaningReportDetail.path,
+      name: meaningReportDetail.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return ReviewGate(
+          mode: ReviewGateMode.contribution,
+          child: MeaningReportReviewDetailPage(id: id),
         );
       },
     ),
@@ -362,6 +405,32 @@ class ReviewRouter {
       },
     ),
     GoRoute(
+      path: layanan.path,
+      name: layanan.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) => const ReviewGate(
+        mode: ReviewGateMode.contribution,
+        child: ExplorationReviewListPage(
+          domain: ExplorationReviewDomain.layanan,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: layananDetail.path,
+      name: layananDetail.name,
+      parentNavigatorKey: AppRouter.rootNavigatorKey,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return ReviewGate(
+          mode: ReviewGateMode.contribution,
+          child: ExplorationReviewDetailPage(
+            domain: ExplorationReviewDomain.layanan,
+            id: id,
+          ),
+        );
+      },
+    ),
+    GoRoute(
       path: session.path,
       name: session.name,
       parentNavigatorKey: AppRouter.rootNavigatorKey,
@@ -389,12 +458,14 @@ class ReviewRouter {
             id == 'queue' ||
             id == 'suggestions' ||
             id == 'discussions' ||
+            id == 'meaning-reports' ||
             id == 'search-misses' ||
             id == 'exploration' ||
             id == 'usaha' ||
             id == 'places' ||
             id == 'events' ||
-            id == 'culinary') {
+            id == 'culinary' ||
+            id == 'layanan') {
           return list.path;
         }
         return sessionPath(

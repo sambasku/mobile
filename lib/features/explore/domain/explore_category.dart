@@ -29,6 +29,7 @@ class ExploreCategory {
     'acara' => 'assets/images/explore_covers/acara.webp',
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
     'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
+    'layanan' => 'assets/images/explore_covers/layanan.webp',
     _ => null,
   };
 
@@ -38,6 +39,7 @@ class ExploreCategory {
     'wisata' => l10n.exploreCategoryWisata,
     'kuliner' => l10n.exploreCategoryKuliner,
     'usaha' => l10n.usahaTitle,
+    'layanan' => l10n.exploreCategoryLayanan,
     'acara' => l10n.exploreCategoryAcara,
     'hiburan' => l10n.exploreCategoryPermainan,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopedia,
@@ -51,6 +53,7 @@ class ExploreCategory {
     'wisata' => l10n.exploreCategoryWisataSubtitle,
     'kuliner' => l10n.exploreCategoryKulinerSubtitle,
     'usaha' => l10n.exploreCategoryUsahaSubtitle,
+    'layanan' => l10n.exploreCategoryLayananSubtitle,
     'acara' => l10n.exploreCategoryAcaraSubtitle,
     'hiburan' => l10n.exploreCategoryPermainanSubtitle,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopediaSubtitle,
@@ -93,6 +96,11 @@ class ExploreCategory {
     ExploreCategory(
       id: 'ensiklopedia',
       icon: FLucideIcons.bookOpen,
+      comingSoon: false,
+    ),
+    ExploreCategory(
+      id: 'layanan',
+      icon: FLucideIcons.phone,
       comingSoon: false,
     ),
     // Segera

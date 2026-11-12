@@ -57,6 +57,57 @@ final class GetMyProfileUseCaseProvider
 String _$getMyProfileUseCaseHash() =>
     r'5d786fd96c16abca0cf34b775376e4b7aa587e63';
 
+@ProviderFor(checkUsernameAvailabilityUseCase)
+final checkUsernameAvailabilityUseCaseProvider =
+    CheckUsernameAvailabilityUseCaseProvider._();
+
+final class CheckUsernameAvailabilityUseCaseProvider
+    extends
+        $FunctionalProvider<
+          CheckUsernameAvailabilityUseCase,
+          CheckUsernameAvailabilityUseCase,
+          CheckUsernameAvailabilityUseCase
+        >
+    with $Provider<CheckUsernameAvailabilityUseCase> {
+  CheckUsernameAvailabilityUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'checkUsernameAvailabilityUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$checkUsernameAvailabilityUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<CheckUsernameAvailabilityUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CheckUsernameAvailabilityUseCase create(Ref ref) {
+    return checkUsernameAvailabilityUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CheckUsernameAvailabilityUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<CheckUsernameAvailabilityUseCase>(value),
+    );
+  }
+}
+
+String _$checkUsernameAvailabilityUseCaseHash() =>
+    r'checkUsernameAvailabilityUseCaseManual';
+
 @ProviderFor(updateMyProfileUseCase)
 final updateMyProfileUseCaseProvider = UpdateMyProfileUseCaseProvider._();
 

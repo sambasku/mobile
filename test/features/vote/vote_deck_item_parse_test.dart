@@ -89,6 +89,27 @@ void main() {
     );
     expect(umum.wordClassLabel, 'Umum');
   });
+
+  test('#260 pronunciation_value + has_audio', () {
+    final withBoth = parseVoteDeckItem({
+      ...card(),
+      'pronunciation_value': 'pi.gar',
+      'has_audio': true,
+    });
+    expect(withBoth.pronunciationValue, 'pi.gar');
+    expect(withBoth.hasAudio, isTrue);
+
+    final empty = parseVoteDeckItem(card());
+    expect(empty.pronunciationValue, isNull);
+    expect(empty.hasAudio, isFalse);
+
+    final blankIpa = parseVoteDeckItem({
+      ...card(),
+      'pronunciation_value': '  ',
+      'has_audio': false,
+    });
+    expect(blankIpa.pronunciationValue, isNull);
+  });
 }
 
 /// Sentinel: bedakan "field tidak dikirim" dari "field bernilai null".

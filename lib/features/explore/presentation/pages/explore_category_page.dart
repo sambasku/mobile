@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/explore_category.dart';
 import '../../../event/presentation/pages/event_list_page.dart';
+import '../../../layanan/presentation/layanan_page.dart';
 import '../../../usaha/presentation/pages/usaha_list_page.dart';
 import '../pages/cuisine_list_page.dart';
 import '../pages/place_list_page.dart';
@@ -35,6 +36,8 @@ class ExploreCategoryPage extends StatelessWidget {
         ? const EventListPage()
  : categoryId == 'usaha'
  ? const UsahaListPage()
+        : categoryId == 'layanan'
+        ? const LayananPage()
         : categoryId == 'hiburan'
         ? const PermainanListPage()
         : categoryId == 'ensiklopedia'

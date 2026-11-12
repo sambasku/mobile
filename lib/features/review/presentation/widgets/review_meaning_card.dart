@@ -211,7 +211,7 @@ class ReviewMeaningCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Gap(8),
-                  FTextField(
+                  FTextField.multiline(
                     control: FTextFieldControl.managed(
                       controller: draft.definitionCtrl,
                     ),
@@ -219,6 +219,8 @@ class ReviewMeaningCard extends ConsumerWidget {
                     label: Text(
                       AppLocalizations.of(context).suggestDefinitionLabel,
                     ),
+                    minLines: 4,
+                    maxLines: 8,
                   ),
                   const Gap(8),
                   KbbiTranslationField(

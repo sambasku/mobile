@@ -131,11 +131,21 @@ void main() {
 
   tearDown(AnalyticsService.debugReset);
 
+  void tallSurface(WidgetTester tester) {
+    // Form usul + field IPA opsional: viewport default test terlalu pendek
+    // sehingga ListView lazy melepas EditableText terjemahan.
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+  }
+
   Future<void> pumpContribute(
     WidgetTester tester, {
     required ContributionFailure failure,
   }) async {
     SharedPreferences.setMockInitialValues({});
+    tallSurface(tester);
 
     final throwingDio = Dio()..httpClientAdapter = _ThrowingAdapter();
     await tester.pumpWidget(
@@ -167,9 +177,10 @@ void main() {
   }
 
   Future<void> submitForm(WidgetTester tester) async {
+    // 0=lemma, 1=IPA opsional, 2=terjemahan (mode standar).
     final fields = find.byType(EditableText);
-    expect(fields, findsAtLeastNWidgets(2));
-    await tester.enterText(fields.at(1), 'aktivitas makan');
+    expect(fields, findsAtLeastNWidgets(3));
+    await tester.enterText(fields.at(2), 'aktivitas makan');
     await tester.pump();
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump(const Duration(milliseconds: 400));
@@ -236,6 +247,7 @@ void main() {
 
   testWidgets('mode standar mengirim lemma dan terjemahan', (tester) async {
     SharedPreferences.setMockInitialValues({});
+    tallSurface(tester);
     final usecase = _CapturingSubmit();
     final dio = Dio()..httpClientAdapter = _ReferenceAdapter();
     await tester.pumpWidget(
@@ -278,8 +290,9 @@ void main() {
     await tester.pump();
 
     final fields = find.byType(EditableText);
+    expect(fields, findsAtLeastNWidgets(3));
     await tester.enterText(fields.at(0), 'makatn');
-    await tester.enterText(fields.at(1), 'makan');
+    await tester.enterText(fields.at(2), 'makan');
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -289,6 +302,8 @@ void main() {
     expect(params.wordType, 'word');
     // Mode Dasar tetap kirim dialek umum (API menolak dialect_id: null).
     expect(params.dialectId, 'd-umum');
+    // Field kosong → string kosong di params; repo strip ke null di wire.
+    expect(params.pronunciationValue ?? '', isEmpty);
     expect(params.meanings, hasLength(1));
     expect(params.meanings.first.definition, '-');
     expect(params.meanings.first.isHaveDefinition, isFalse);
@@ -306,6 +321,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     FlutterSecureStorage.setMockInitialValues({});
+    tallSurface(tester);
 
     const wordId = '01JWORD0000000000000000000';
     const lemma = 'makatn';
@@ -383,8 +399,9 @@ void main() {
     expect(store.peek(byLemmaKey), isNotNull);
 
     final fields = find.byType(EditableText);
+    expect(fields, findsAtLeastNWidgets(3));
     await tester.enterText(fields.at(0), lemma);
-    await tester.enterText(fields.at(1), 'makan');
+    await tester.enterText(fields.at(2), 'makan');
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));

@@ -17,6 +17,8 @@ import '../../../encyclopedia/encyclopedia_router.dart';
 import '../../../entertainment/entertainment_router.dart';
 import '../../../explore/explore_router.dart';
 import '../../../event/event_router.dart';
+import '../../../jinye/jinye_router.dart';
+import '../../../layanan/layanan_router.dart';
 import '../../../review/domain/review_access.dart';
 import '../../../review/presentation/utils/open_pending_word_review.dart';
 import '../../../user_profile/user_profile_router.dart';
@@ -153,7 +155,8 @@ class ActivityFeedTile extends ConsumerWidget {
                     for (final (text, lemma) in switch (item.kind) {
                       FeedActivityKind.comment ||
                       FeedActivityKind.discussion ||
-                      FeedActivityKind.pantun => [(item.body, false)],
+                      FeedActivityKind.pantun ||
+                      FeedActivityKind.jinye => [(item.body, false)],
                       _ => splitQuotedLemma(item.body),
                     })
                       TextSpan(
@@ -262,6 +265,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.voteDown => l10n.feedKindVote,
       FeedActivityKind.discussion => l10n.feedKindDiscussion,
       FeedActivityKind.pantun => l10n.feedKindPantun,
+      FeedActivityKind.jinye => l10n.feedKindJinye,
       FeedActivityKind.wordImage => l10n.feedKindImage,
       FeedActivityKind.wordAudio => l10n.feedKindAudio,
       FeedActivityKind.pronunciation => l10n.feedKindPronunciation,
@@ -277,6 +281,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.placeListing => l10n.feedKindPlace,
       FeedActivityKind.event => l10n.feedKindEvent,
       FeedActivityKind.usaha => l10n.feedKindUsaha,
+      FeedActivityKind.layanan => l10n.feedKindLayanan,
       FeedActivityKind.culinary => l10n.feedKindCulinary,
       FeedActivityKind.article => l10n.feedKindArticle,
     };
@@ -299,6 +304,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.comment => l10n.feedCtaReply,
       FeedActivityKind.discussion => l10n.feedCtaDiscuss,
       FeedActivityKind.pantun => l10n.feedCtaSeePantun,
+      FeedActivityKind.jinye => l10n.feedCtaSeeJinye,
       FeedActivityKind.wordImage => l10n.feedCtaSeePhoto,
       FeedActivityKind.wordAudio => l10n.feedCtaListen,
       FeedActivityKind.pronunciation => l10n.feedCtaSeePronunciation,
@@ -314,6 +320,7 @@ class ActivityFeedTile extends ConsumerWidget {
       FeedActivityKind.placeListing => l10n.feedCtaSeePlace,
       FeedActivityKind.event => l10n.feedCtaSeeEvent,
       FeedActivityKind.usaha => l10n.feedCtaSeeUsaha,
+      FeedActivityKind.layanan => l10n.feedCtaSeeLayanan,
       FeedActivityKind.culinary => l10n.feedCtaSeeCulinary,
       FeedActivityKind.article => l10n.feedCtaSeeArticle,
     };
@@ -346,6 +353,8 @@ class ActivityFeedTile extends ConsumerWidget {
         return DiscussionRouter.detailPath(target.id);
       case 'pantun':
         return EntertainmentRouter.pantunDetailPath(target.id);
+      case 'jinye':
+        return JinyeRouter.detailPath(target.id);
       case 'place':
         // #187: target = slug tempat (bukan ULID) - detail publik mobile.
         return ExploreRouter.place.path.replaceFirst(':slug', target.id);
@@ -355,6 +364,8 @@ class ActivityFeedTile extends ConsumerWidget {
       case 'usaha':
         // target = slug usaha (bukan ULID) - detail publik mobile.
         return UsahaRouter.detailPath(target.id);
+      case 'layanan':
+        return LayananRouter.detailPath(target.id);
       case 'culinary':
         // target = slug kuliner (bukan ULID) - detail publik mobile.
         return ExploreRouter.cuisineDetail.path.replaceFirst(

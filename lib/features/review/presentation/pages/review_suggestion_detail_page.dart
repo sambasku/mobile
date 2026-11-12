@@ -197,6 +197,11 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
           ),
         if (detail.meaningsChanged > 0)
           _CountRow(label: AppLocalizations.of(context).shareSectionMeaning, count: detail.meaningsChanged),
+        if (detail.examplesChanged > 0)
+          _CountRow(
+            label: AppLocalizations.of(context).suggestCategoryChangeExample,
+            count: detail.examplesChanged,
+          ),
         if (detail.categoriesAdded > 0 || detail.categoriesRemoved > 0)
           _CountRow(
             label: AppLocalizations.of(context).historyFieldCategory,
@@ -227,6 +232,7 @@ class _SuggestionDetailBodyState extends ConsumerState<_SuggestionDetailBody> {
             !detail.wordTypeDiff.changed &&
             detail.classDiffs.isEmpty &&
             detail.meaningsChanged == 0 &&
+            detail.examplesChanged == 0 &&
             detail.categoriesAdded == 0 &&
             detail.categoriesRemoved == 0 &&
             detail.relationsAdded == 0 &&

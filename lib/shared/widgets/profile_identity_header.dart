@@ -35,13 +35,13 @@ class ProfileIdentityHeader extends StatelessWidget {
     this.borderUrl,
     this.bio,
     this.isVerifier = false,
-    this.streakDays,
     this.leveling,
     this.stats,
     this.joinedLabel,
     this.actions = const [],
     this.coverUrl,
     this.onAvatarTap,
+    this.avatarOverlay,
     this.footer,
     this.horizontalPadding = 16,
   });
@@ -58,10 +58,7 @@ class ProfileIdentityHeader extends StatelessWidget {
   final String? bio;
   final bool isVerifier;
 
-  /// Streak aktif (>0) → badge api + angka di pojok avatar. Null/0 = sembunyi.
-  final int? streakDays;
-
-  /// Chip level + progress (opsional).
+  /// Chip level + progress (+ streak di baris chip). Opsional.
   final Widget? leveling;
 
   /// Null = blok stat disembunyikan (tamu / profil belum termuat).
@@ -76,6 +73,9 @@ class ProfileIdentityHeader extends StatelessWidget {
   // ponytail: sambungkan ke kolom cover_url saat fitur custom cover tersedia.
   final String? coverUrl;
   final VoidCallback? onAvatarTap;
+
+  /// Chip/badge di kanan atas frame avatar + border (mis. preview Jinye).
+  final Widget? avatarOverlay;
 
   /// Cover lokal default: tab Profil (hero) vs profil publik (compact).
   static String defaultCoverAsset(ProfileHeaderVariant variant) =>
@@ -120,23 +120,41 @@ class ProfileIdentityHeader extends StatelessWidget {
   // terpotong tepi atas cover.
   double get _avatarExtent => AvatarBorderOverlay.extent(_avatarSize);
 
+  /// Lebar max overlay di kanan bahu avatar (selaras Jinye bubble 260).
+  /// Parent Stack harus selebar ini - kalau tidak, tap di bagian yang
+  /// overflow visual ditolak hit-test meski `clipBehavior: Clip.none`.
+  static const double avatarOverlayMaxWidth = 260;
+
+  /// Slack atas supaya overlay `top: -10` tetap masuk kotak hit-test.
+  static const double _avatarOverlayTopSlack = 10;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     // Cover mengikuti rasio asset: lebar penuh × (lebar / aspect).
     final width = MediaQuery.sizeOf(context).width;
     final coverHeight = coverHeightOf(variant, width);
-    final hasStreak = (streakDays ?? 0) > 0;
-    // Badge streak menjorok ke bawah avatar (~14px) - sisakan ruang agar
-    // tidak overflow SizedBox art (dump RenderConstrainedBox / clip).
-    final streakPad = hasStreak ? 14.0 : 0.0;
-    final artHeight = coverHeight + _avatarExtent / 2 + streakPad;
+    // Streak ada di chip level - avatar/border tanpa badge pojok.
+    final artHeight = coverHeight + _avatarExtent / 2;
     final handle = username?.trim();
     final bioText = bio?.trim();
     final verticalAlign = _isHero
         ? CrossAxisAlignment.center
         : CrossAxisAlignment.start;
     final textAlign = _isHero ? TextAlign.center : TextAlign.start;
+
+    // Hit-test box untuk avatar ± bubble overlay.
+    // Hero: lebar simetris supaya avatar tetap di tengah; compact: cukup ke kanan.
+    final hasOverlay = avatarOverlay != null;
+    final rightOverhang = hasOverlay
+        ? avatarOverlayMaxWidth - _avatarExtent * 0.45
+        : 0.0;
+    final avatarLeft = _isHero && hasOverlay ? rightOverhang : 0.0;
+    final avatarStackWidth = !hasOverlay
+        ? _avatarExtent
+        : _isHero
+        ? _avatarExtent + 2 * rightOverhang
+        : _avatarExtent * 0.55 + avatarOverlayMaxWidth;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -168,20 +186,55 @@ class ProfileIdentityHeader extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: _isHero ? 0 : horizontalPadding,
-                      bottom: streakPad,
                     ),
-                    child: Semantics(
-                      button: onAvatarTap != null,
-                      label: AppLocalizations.of(context).profilePhotoSemantics(displayName),
-                      child: GestureDetector(
-                        onTap: onAvatarTap,
-                        child: _AvatarWithStreak(
-                          avatarSize: _avatarSize,
-                          borderUrl: borderUrl,
-                          displayName: displayName,
-                          avatarUrl: avatarUrl,
-                          streakDays: streakDays,
-                        ),
+                    // Kotak hit-test mencakup bubble overflow kanan/atas.
+                    // Clip.none hanya paint - SizedBox tetap butuh size cukup.
+                    child: SizedBox(
+                      width: avatarStackWidth,
+                      height: hasOverlay
+                          ? _avatarExtent + _avatarOverlayTopSlack
+                          : _avatarExtent,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            left: avatarLeft,
+                            bottom: 0,
+                            // Slot frame selalu extent: foto tanpa border
+                            // tetap di tengah frame (bukan nempel kiri).
+                            child: SizedBox(
+                              width: _avatarExtent,
+                              height: _avatarExtent,
+                              child: Center(
+                                child: Semantics(
+                                  button: onAvatarTap != null,
+                                  label: AppLocalizations.of(context)
+                                      .profilePhotoSemantics(displayName),
+                                  child: GestureDetector(
+                                    onTap: onAvatarTap,
+                                    child: AvatarBorderOverlay(
+                                      size: _avatarSize,
+                                      borderUrl: borderUrl,
+                                      child: UserAvatar(
+                                        name: displayName,
+                                        imageUrl: avatarUrl,
+                                        size: _avatarSize,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (hasOverlay)
+                            Positioned(
+                              // Kiri fixed di bahu kanan avatar; bubble
+                              // tumbuh ke kanan (bukan menutup wajah).
+                              top: 0,
+                              left: avatarLeft + _avatarExtent * 0.55,
+                              child: avatarOverlay!,
+                            ),
+                        ],
                       ),
                     ),
                   ),
@@ -253,84 +306,6 @@ class ProfileIdentityHeader extends StatelessWidget {
               ],
               if (footer != null) ...[const Gap(12), footer!],
             ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Avatar + bingkai + badge streak (ikon api + angka) di pojok kanan bawah.
-class _AvatarWithStreak extends StatelessWidget {
-  const _AvatarWithStreak({
-    required this.avatarSize,
-    required this.displayName,
-    this.borderUrl,
-    this.avatarUrl,
-    this.streakDays,
-  });
-
-  final double avatarSize;
-  final String displayName;
-  final String? borderUrl;
-  final String? avatarUrl;
-  final int? streakDays;
-
-  @override
-  Widget build(BuildContext context) {
-    final days = streakDays ?? 0;
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context);
-    final avatar = AvatarBorderOverlay(
-      size: avatarSize,
-      borderUrl: borderUrl,
-      child: UserAvatar(
-        name: displayName,
-        imageUrl: avatarUrl,
-        size: avatarSize,
-      ),
-    );
-    if (days <= 0) return avatar;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        avatar,
-        Positioned(
-          right: -2,
-          bottom: -2,
-          child: Semantics(
-            label: l10n.levelingStreakDays(days),
-            child: DecoratedBox(
-              // Warna destructive = "api" tema (sama pola beta_badge).
-              decoration: BoxDecoration(
-                color: theme.colors.destructive,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 2, 7, 2),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      FLucideIcons.flame,
-                      size: 12,
-                      color: theme.colors.destructiveForeground,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      '$days',
-                      style: theme.typography.body.sm.copyWith(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        height: 1,
-                        color: theme.colors.destructiveForeground,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ),
         ),
       ],

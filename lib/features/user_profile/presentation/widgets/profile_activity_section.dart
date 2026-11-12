@@ -13,13 +13,14 @@ import '../providers/user_profile_providers.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Kategori chips aktivitas profil publik, selaras feed beranda (#193):
-/// Semua | Perbaikan | Komentar. "Penilaian" tidak ada di feed utama.
+/// Semua | Perbaikan | Komentar | Jinye. "Penilaian" tidak ada di feed utama.
 ///
 /// `wire` = query `kind` API; null = mode merge (tanpa filter).
 enum ProfileActivityFilter {
   all(null),
   correction('contribution'),
-  comment('comment');
+  comment('comment'),
+  jinye('jinye');
 
   const ProfileActivityFilter(this.kind);
 
@@ -34,6 +35,7 @@ String profileActivityFilterLabel(
   ProfileActivityFilter.all => l10n.profileActivityFilterAll,
   ProfileActivityFilter.correction => l10n.profileActivityFilterCorrection,
   ProfileActivityFilter.comment => l10n.profileActivityFilterComment,
+  ProfileActivityFilter.jinye => l10n.profileActivityFilterJinye,
 };
 
 /// Baris chip kategori. Dipakai di delegate pinned dan di test.

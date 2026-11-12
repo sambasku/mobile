@@ -10,6 +10,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../entertainment_router.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/back_to_top_button.dart';
 import '../../domain/pantun_models.dart';
@@ -78,7 +79,9 @@ class PantunFeedPage extends HookConsumerWidget {
       await showAppErrorSheet(context, message: error);
     }
 
-    return FScaffold(
+    return StopThreadAudioOnLeave(
+      action: ThreadAudioLeaveAction.stop,
+      child: FScaffold(
       childPad: true,
       header: FHeader.nested(
         title: Text(l10n.pantunTitle),
@@ -206,6 +209,7 @@ class PantunFeedPage extends HookConsumerWidget {
                   ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -63,7 +63,12 @@ class _Body extends StatelessWidget {
     } else {
       message = l10n.achievementDetailLocked(item.description);
     }
-    showAppInfoSheet(context, title: item.title, message: message);
+    showAppInfoSheet(
+      context,
+      title: item.title,
+      message: message,
+      leading: AchievementBadgeArt(item: item),
+    );
   }
 
   @override

@@ -30,6 +30,7 @@ import '../../features/notification/notification_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/explore/presentation/pages/explore_page.dart';
 import '../../features/event/event_router.dart';
+import '../../features/layanan/layanan_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/dictionary/presentation/pages/home_search_page.dart';
 import '../../features/dictionary/presentation/providers/latest_words_providers.dart';
@@ -46,6 +47,7 @@ import '../../features/review/review_router.dart';
 import '../../features/search_miss/search_miss_router.dart';
 import '../../features/activity/activity_router.dart';
 import '../../features/discussion/discussion_router.dart';
+import '../../features/jinye/jinye_router.dart';
 import '../../features/entertainment/entertainment_router.dart';
 import '../../features/user_profile/user_profile_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
@@ -93,6 +95,7 @@ class AppRouter {
       ...VerifierApplicationRouter.routes,
       ...ReportBugRouter.routes,
       ...DiscussionRouter.routes,
+      ...JinyeRouter.routes,
       ...EntertainmentRouter.routes,
       ...ReviewRouter.routes,
       ...AdminAnalyticsRouter.routes,
@@ -100,6 +103,7 @@ class AppRouter {
       ...ExploreRouter.routes,
       ...EventRouter.routes,
       ...UsahaRouter.routes,
+      ...LayananRouter.routes,
       ...ActivityRouter.routes,
       ...AchievementRouter.routes,
   ...SettingsRouter.routes,
@@ -293,6 +297,7 @@ class AppRouter {
     if (path.startsWith('/explore/place/')) return true;
     if (path.startsWith('/acara')) return true;
     if (path.startsWith('/discussions')) return true;
+    if (path.startsWith('/jinye')) return true;
     if (path.startsWith('/entertainment')) return true;
     return false;
   }

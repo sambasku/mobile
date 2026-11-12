@@ -11,6 +11,7 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../user_profile/user_profile_router.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/providers/thread_audio_player_provider.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../data/pantun_api.dart';
@@ -233,6 +234,12 @@ class PantunDetailPage extends HookConsumerWidget {
       return null;
     }, [async.hasValue]);
 
+    // Masuk detail: matikan audio feed yang masih jalan.
+    useEffect(() {
+      unawaited(ref.read(threadAudioPlayerProvider.notifier).stop());
+      return null;
+    }, const []);
+
     // Buang draf lokal untuk balasan yang sudah tidak ada di thread.
     useEffect(() {
       final detail = async.asData?.value;
@@ -266,7 +273,9 @@ class PantunDetailPage extends HookConsumerWidget {
       return null;
     }, [async.hasValue, highlightReplyId, pendingScrollReplyId.value]);
 
-    return FScaffold(
+    return StopThreadAudioOnLeave(
+      action: ThreadAudioLeaveAction.pause,
+      child: FScaffold(
       childPad: true,
       header: FHeader.nested(
         title: Text(l10n.pantunTitle),
@@ -424,6 +433,7 @@ class PantunDetailPage extends HookConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

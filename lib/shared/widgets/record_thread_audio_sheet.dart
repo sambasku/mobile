@@ -11,10 +11,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 
 import '../../core/utils/format_number.dart';
-import '../utils/error_bottom_sheet.dart';
-import '../utils/permission_helper.dart';
+import '../../features/dictionary/application/wav_trim.dart';
 import '../../features/dictionary/presentation/utils/ensure_microphone_ready.dart';
 import '../../../l10n/app_localizations.dart';
+import '../utils/error_bottom_sheet.dart';
+import '../utils/permission_helper.dart';
+import 'audio_waveform.dart';
 
 enum _ThreadRecordPhase {
   idle,
@@ -24,19 +26,25 @@ enum _ThreadRecordPhase {
   submitting,
 }
 
-const _maxSeconds = 60;
-const _minSeconds = 1;
+const _defaultMaxSeconds = 60;
+const _defaultMinSeconds = 1;
 
 /// Sheet rekam audio thread (balasan diskusi / komentar / lampiran create).
 ///
 /// Jika [onSubmit] null, tombol akhir menjadi "Pakai rekaman" dan menutup
 /// sheet dengan [RecordedThreadAudio] (untuk lampiran lokal sebelum upload).
+///
+/// [minSeconds]/[maxSeconds] untuk diskusi (1-60).
+/// Pantun: pass [minMilliseconds] (mis. 7500) agar floor tidak dibulatkan detik.
 Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
   BuildContext context, {
   String title = 'Rekam suara',
   String subtitle =
       'Maksimal 60 detik. Caption teks bisa ditambahkan di kolom sebelum merekam.',
   String submitLabel = 'Kirim rekaman',
+  int minSeconds = _defaultMinSeconds,
+  int maxSeconds = _defaultMaxSeconds,
+  int? minMilliseconds,
   Future<String?> Function({required File audioFile, required int durationMs})?
   onSubmit,
 }) async {
@@ -53,6 +61,9 @@ Future<RecordedThreadAudio?> showRecordThreadAudioSheet(
       title: title,
       subtitle: subtitle,
       submitLabel: submitLabel,
+      minSeconds: minSeconds,
+      maxSeconds: maxSeconds,
+      minMilliseconds: minMilliseconds ?? minSeconds * 1000,
       onSubmit: onSubmit,
     ),
   );
@@ -71,12 +82,18 @@ class _RecordThreadAudioSheet extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.submitLabel,
+    required this.minSeconds,
+    required this.maxSeconds,
+    required this.minMilliseconds,
     this.onSubmit,
   });
 
   final String title;
   final String subtitle;
   final String submitLabel;
+  final int minSeconds;
+  final int maxSeconds;
+  final int minMilliseconds;
   final Future<String?> Function({
     required File audioFile,
     required int durationMs,
@@ -93,13 +110,41 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
   final _recorder = AudioRecorder();
   final _previewPlayer = AudioPlayer();
   StreamSubscription<PlayerState>? _previewSub;
+  StreamSubscription<Amplitude>? _ampSub;
   Timer? _tick;
   _ThreadRecordPhase _phase = _ThreadRecordPhase.idle;
   String? _filePath;
   int _elapsedSec = 0;
+  DateTime? _startedAt;
+  int _recordedDurationMs = 0;
   bool _previewPlaying = false;
+  double _previewProgress = 0;
+  StreamSubscription<Duration>? _previewPosSub;
   bool _stoppingForLifecycle = false;
   String? _error;
+  double _ampLevel = 0;
+  List<double> _peaks = const [];
+  var _peaksBusy = false;
+
+  String get _minLabel {
+    final ms = widget.minMilliseconds;
+    if (ms % 1000 == 0) return '${ms ~/ 1000}';
+    return (ms / 1000).toStringAsFixed(1).replaceAll('.', ',');
+  }
+
+  double _normAmp(double db) {
+    const floor = -45.0;
+    if (db.isNaN || db.isInfinite) return 0;
+    return ((db - floor) / -floor).clamp(0.0, 1.0);
+  }
+
+  Future<void> _cancelAmplitude() async {
+    try {
+      await _ampSub?.cancel();
+    } catch (_) {}
+    _ampSub = null;
+    _ampLevel = 0;
+  }
 
   bool get _blockDismiss =>
       _phase == _ThreadRecordPhase.requestingPermission ||
@@ -119,9 +164,20 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
         setState(() => _previewPlaying = playing);
       }
       if (state.processingState == ProcessingState.completed) {
+        setState(() => _previewProgress = 0);
         unawaited(_previewPlayer.seek(Duration.zero));
         unawaited(_previewPlayer.pause());
       }
+    });
+    _previewPosSub = _previewPlayer.positionStream.listen((pos) {
+      if (!mounted || !_previewPlaying) return;
+      final total = _previewPlayer.duration ??
+          Duration(milliseconds: _recordedDurationMs);
+      if (total <= Duration.zero) return;
+      setState(() {
+        _previewProgress =
+            (pos.inMilliseconds / total.inMilliseconds).clamp(0.0, 1.0);
+      });
     });
   }
 
@@ -142,6 +198,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _tick?.cancel();
+    unawaited(_cancelAmplitude());
     unawaited(_recorder.dispose());
     unawaited(_disposePreview());
     super.dispose();
@@ -159,6 +216,9 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
   Future<void> _disposePreview() async {
     try {
       await _previewSub?.cancel();
+    } catch (_) {}
+    try {
+      await _previewPosSub?.cancel();
     } catch (_) {}
     try {
       await _previewPlayer.dispose();
@@ -217,11 +277,25 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
     );
     if (!mounted) return;
 
+    await _cancelAmplitude();
+    _ampSub = _recorder
+        .onAmplitudeChanged(const Duration(milliseconds: 80))
+        .listen((amp) {
+          if (!mounted || _phase != _ThreadRecordPhase.recording) return;
+          final next = _normAmp(amp.current);
+          final smoothed = _ampLevel * 0.35 + next * 0.65;
+          if ((smoothed - _ampLevel).abs() < 0.02) return;
+          setState(() => _ampLevel = smoothed);
+        });
+
     unawaited(HapticFeedback.lightImpact());
     setState(() {
       _phase = _ThreadRecordPhase.recording;
       _filePath = path;
       _elapsedSec = 0;
+      _startedAt = DateTime.now();
+      _peaks = const [];
+      _ampLevel = 0;
       _stoppingForLifecycle = false;
     });
 
@@ -233,7 +307,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
       }
       final next = _elapsedSec + 1;
       setState(() => _elapsedSec = next);
-      if (next >= _maxSeconds) {
+      if (next >= widget.maxSeconds) {
         t.cancel();
         await _stopRecording();
       }
@@ -243,6 +317,7 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
   Future<void> _stopRecording() async {
     _tick?.cancel();
     _tick = null;
+    await _cancelAmplitude();
     String? path;
     try {
       path = await _recorder.stop();
@@ -250,14 +325,20 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
     if (!mounted) return;
 
     final resolved = path ?? _filePath;
-    if (resolved == null || _elapsedSec < _minSeconds) {
+    final elapsedMs = _startedAt == null
+        ? _elapsedSec * 1000
+        : DateTime.now().difference(_startedAt!).inMilliseconds;
+    final tooShort = elapsedMs < widget.minMilliseconds;
+    if (resolved == null || tooShort) {
       await _deleteQuietly(resolved);
       setState(() {
         _phase = _ThreadRecordPhase.idle;
         _filePath = null;
         _elapsedSec = 0;
-        _error = _elapsedSec < _minSeconds
-            ? 'Rekaman terlalu singkat'
+        _startedAt = null;
+        _peaks = const [];
+        _error = tooShort
+            ? 'Rekaman terlalu singkat (minimal $_minLabel detik)'
             : 'Gagal menyimpan rekaman';
       });
       return;
@@ -266,7 +347,31 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
     setState(() {
       _phase = _ThreadRecordPhase.preview;
       _filePath = resolved;
+      _recordedDurationMs = elapsedMs.clamp(
+        widget.minMilliseconds,
+        widget.maxSeconds * 1000,
+      );
+      _peaksBusy = true;
+      _peaks = const [];
     });
+    unawaited(_loadPeaks(resolved));
+  }
+
+  Future<void> _loadPeaks(String path) async {
+    try {
+      final peaks = await computeWavPeaks(File(path));
+      if (!mounted) return;
+      setState(() {
+        _peaks = peaks;
+        _peaksBusy = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _peaks = const [];
+        _peaksBusy = false;
+      });
+    }
   }
 
   Future<void> _togglePreview() async {
@@ -296,6 +401,10 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
       _phase = _ThreadRecordPhase.idle;
       _filePath = null;
       _elapsedSec = 0;
+      _startedAt = null;
+      _recordedDurationMs = 0;
+      _peaks = const [];
+      _peaksBusy = false;
       _error = null;
     });
   }
@@ -303,7 +412,12 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
   Future<void> _submit() async {
     final path = _filePath;
     if (path == null || _phase == _ThreadRecordPhase.submitting) return;
-    final durationMs = (_elapsedSec * 1000).clamp(1000, _maxSeconds * 1000);
+    final durationMs = _recordedDurationMs > 0
+        ? _recordedDurationMs
+        : (_elapsedSec * 1000).clamp(
+            widget.minMilliseconds,
+            widget.maxSeconds * 1000,
+          );
     final file = File(path);
 
     final upload = widget.onSubmit;
@@ -378,10 +492,20 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
             ],
             if (_phase == _ThreadRecordPhase.recording) ...[
               Text(
-                'Merekam… ${formatRibuan(_elapsedSec)}s / ${formatRibuan(_maxSeconds)}s',
+                'Merekam… ${formatRibuan(_elapsedSec)}s / ${formatRibuan(widget.maxSeconds)}s',
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm.copyWith(
                   fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Gap(10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: LinearProgressIndicator(
+                  value: _ampLevel.clamp(0.05, 1.0),
+                  minHeight: 10,
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.error,
                 ),
               ),
               const Gap(12),
@@ -396,6 +520,22 @@ class _RecordThreadAudioSheetState extends State<_RecordThreadAudioSheet>
                 textAlign: TextAlign.center,
                 style: theme.typography.body.sm,
               ),
+              const Gap(12),
+              if (_peaksBusy)
+                const Center(child: FCircularProgress(size: .sm))
+              else if (_peaks.isNotEmpty)
+                AudioWaveform(
+                  peaks: _peaks,
+                  progress: _previewPlaying ? _previewProgress : 1,
+                )
+              else
+                Text(
+                  AppLocalizations.of(context).dictRecWaveformUnavailable,
+                  textAlign: TextAlign.center,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
               const Gap(12),
               Row(
                 children: [

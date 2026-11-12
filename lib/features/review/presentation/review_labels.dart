@@ -50,6 +50,7 @@ String reviewSuggestionChangeHint(
     if (item.summaryLemma?.isNotEmpty == true) l10n.reviewChangeHintLemma,
     if (item.summaryNotes?.isNotEmpty == true) l10n.reviewChangeHintNotes,
     if (item.meaningsCount > 0) l10n.reviewChangeHintMeanings(item.meaningsCount),
+    if (item.examplesCount > 0) l10n.reviewChangeHintExamples(item.examplesCount),
     if (item.imagesCount > 0) l10n.reviewChangeHintImages(item.imagesCount),
   ];
   return parts.isEmpty ? l10n.reviewChangeHintFallback : parts.join(', ');

@@ -12,6 +12,7 @@ import '../../features/discussion/discussion_router.dart';
 import '../../features/entertainment/entertainment_router.dart';
 import '../../features/explore/explore_router.dart';
 import '../../features/event/event_router.dart';
+import '../../features/jinye/jinye_router.dart';
 import '../../features/usaha/usaha_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
@@ -81,6 +82,11 @@ return;
 
   if (actionKind == 'pantun' && actionValue != null && actionValue.isNotEmpty) {
     _go(router, EntertainmentRouter.pantunDetailPath(actionValue));
+    return;
+  }
+
+  if (actionKind == 'jinye' && actionValue != null && actionValue.isNotEmpty) {
+    _go(router, JinyeRouter.detailPath(actionValue));
     return;
   }
 

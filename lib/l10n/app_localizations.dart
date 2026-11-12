@@ -931,6 +931,12 @@ abstract class AppLocalizations {
   /// **'Laporkan foto'**
   String get reportPhotoTitle;
 
+  /// Judul sheet laporkan satu baris makna (#253)
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna'**
+  String get reportMeaningTitle;
+
   /// No description provided for @reportEntryBody.
   ///
   /// In id, this message translates to:
@@ -942,6 +948,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Laporkan foto ini ke tim Sambasku untuk ditinjau.'**
   String get reportPhotoBody;
+
+  /// Body sheet laporkan makna (#253)
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna yang kurang sesuai. Tim verifikator akan meninjau.'**
+  String get reportMeaningBody;
 
   /// No description provided for @reportReasonNotSambas.
   ///
@@ -1087,6 +1099,12 @@ abstract class AppLocalizations {
   /// **'Spam'**
   String get reportPantunSpam;
 
+  /// Alasan laporan: audio atau teks bukan pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Bukan pantun / rekaman acak'**
+  String get reportPantunNotAPantun;
+
   /// No description provided for @reportPantunOther.
   ///
   /// In id, this message translates to:
@@ -1206,6 +1224,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Penilaian dari detail tersimpan'**
   String get voteDeckSavedFromDetail;
+
+  /// Semantics tap lemma di kartu vote deck ke halaman detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Buka detail lemma'**
+  String get voteDeckOpenDetail;
 
   /// No description provided for @voteDeckRewound.
   ///
@@ -2269,6 +2293,30 @@ abstract class AppLocalizations {
   /// **'Hapus, ganti, atau pilih foto utama'**
   String get suggestCategoryChangePhotoDesc;
 
+  /// Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah contoh'**
+  String get suggestCategoryChangeExample;
+
+  /// No description provided for @suggestCategoryChangeExampleDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki typo atau arti contoh yang sudah ada'**
+  String get suggestCategoryChangeExampleDesc;
+
+  /// Caption daftar contoh di form Ubah contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih contoh yang mau diperbaiki'**
+  String get suggestPickExample;
+
+  /// Hint singkat setelah user memilih satu contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh dipilih'**
+  String get suggestExampleSelected;
+
   /// No description provided for @suggestCategorySynonym.
   ///
   /// In id, this message translates to:
@@ -2623,11 +2671,65 @@ abstract class AppLocalizations {
   /// **'Tambah {category}'**
   String suggestAddRelation(String category);
 
-  /// No description provided for @suggestRelationPickHint.
+  /// Hint di bawah label field relasi lemma (#265)
   ///
   /// In id, this message translates to:
-  /// **'Pilih saran ketik, atau tulis lemma baru sendiri'**
+  /// **'Cari lemma yang sudah ada lewat bottomsheet, atau pakai lemma baru dari hasil cari'**
   String get suggestRelationPickHint;
+
+  /// Judul bottomsheet cari lemma existing (#265)
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get lemmaSearchSheetTitle;
+
+  /// No description provided for @lemmaSearchSheetIntro.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf, lalu pilih dari daftar.'**
+  String get lemmaSearchSheetIntro;
+
+  /// No description provided for @lemmaSearchSheetHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lemma…'**
+  String get lemmaSearchSheetHint;
+
+  /// No description provided for @lemmaSearchSheetPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai ketik untuk mencari lemma di kamus'**
+  String get lemmaSearchSheetPrompt;
+
+  /// No description provided for @lemmaSearchSheetEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada lemma yang cocok. Coba ejaan lain, atau pakai lemma baru di bawah.'**
+  String get lemmaSearchSheetEmpty;
+
+  /// No description provided for @lemmaSearchSheetCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hasil'**
+  String lemmaSearchSheetCount(int count);
+
+  /// CTA bila query belum ada di hasil search
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai \"{lemma}\" sebagai lemma baru'**
+  String lemmaSearchSheetUseNew(String lemma);
+
+  /// Tombol buka bottomsheet saat belum ada lemma terpilih
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get lemmaPickerPickButton;
+
+  /// Tombol buka bottomsheet saat sudah ada chip lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah lemma lain'**
+  String get lemmaPickerAddAnother;
 
   /// No description provided for @suggestDerivedHint.
   ///
@@ -3535,6 +3637,24 @@ abstract class AppLocalizations {
   /// **'Ada usulan acara yang menunggu'**
   String get reviewHomeEventWaiting;
 
+  /// Tile hub verifikator: antrean usulan layanan publik
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan publik'**
+  String get reviewHomeLayananTitle;
+
+  /// No description provided for @reviewHomeLayananSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Antrean layanan publik menunggu tinjauan'**
+  String get reviewHomeLayananSubtitle;
+
+  /// No description provided for @reviewHomeLayananWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada usulan layanan publik yang menunggu'**
+  String get reviewHomeLayananWaiting;
+
   /// Tile hub verifikator yang membuka submenu usulan eksplorasi
   ///
   /// In id, this message translates to:
@@ -3544,7 +3664,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewHomeExploreSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Wisata, usaha, kuliner, dan acara'**
+  /// **'Wisata, usaha, kuliner, acara, dan layanan publik'**
   String get reviewHomeExploreSubtitle;
 
   /// No description provided for @reviewHomeExploreWaiting.
@@ -3750,6 +3870,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'makna ({count})'**
   String reviewChangeHintMeanings(int count);
+
+  /// Hint ringkas antrean review: jumlah contoh diubah
+  ///
+  /// In id, this message translates to:
+  /// **'contoh ({count})'**
+  String reviewChangeHintExamples(int count);
 
   /// No description provided for @reviewChangeHintImages.
   ///
@@ -5347,6 +5473,12 @@ abstract class AppLocalizations {
   /// **'Usulan acara'**
   String get reviewExploreEventListTitle;
 
+  /// No description provided for @reviewExploreLayananListTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan publik'**
+  String get reviewExploreLayananListTitle;
+
   /// Empty state antrean usulan eksplorasi
   ///
   /// In id, this message translates to:
@@ -5563,6 +5695,24 @@ abstract class AppLocalizations {
   /// **'Melanggar ketentuan'**
   String get reviewExploreRejectCulinaryViolation;
 
+  /// No description provided for @reviewExploreRejectLayananInvalidPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon tidak valid'**
+  String get reviewExploreRejectLayananInvalidPhone;
+
+  /// No description provided for @reviewExploreRejectLayananWrongRegion.
+  ///
+  /// In id, this message translates to:
+  /// **'Wilayah tidak sesuai'**
+  String get reviewExploreRejectLayananWrongRegion;
+
+  /// No description provided for @reviewExploreRejectLayananDuplicate.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan serupa sudah terdaftar'**
+  String get reviewExploreRejectLayananDuplicate;
+
   /// No description provided for @reviewExploreKindGeneric.
   ///
   /// In id, this message translates to:
@@ -5682,6 +5832,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Usulan acara baru'**
   String get reviewExploreEventKindNew;
+
+  /// No description provided for @reviewExploreLayananKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan layanan baru'**
+  String get reviewExploreLayananKindNew;
+
+  /// No description provided for @reviewExploreLayananKindEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data layanan'**
+  String get reviewExploreLayananKindEdit;
 
   /// Subtitle tile list usulan eksplorasi
   ///
@@ -6146,7 +6308,7 @@ abstract class AppLocalizations {
   /// No description provided for @dictCompleteSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, atau rekam pelafasannya.'**
+  /// **'Pilih kata untuk ditambah maknanya, sinonim atau antonimnya, variasi penulisannya, contoh kalimatnya, tulis pelafalannya, atau rekam pelafalannya.'**
   String get dictCompleteSubtitle;
 
   /// No description provided for @dictCompleteHint.
@@ -6436,6 +6598,150 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Salin makna'**
   String get dictCopyMeaning;
+
+  /// Judul sheet aksi per makna di detail kata
+  ///
+  /// In id, this message translates to:
+  /// **'Aksi makna'**
+  String get dictMeaningActionsTitle;
+
+  /// Tile laporkan makna untuk user biasa
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan makna'**
+  String get dictReportMeaning;
+
+  /// No description provided for @dictReportMeaningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim ke antrean verifikator'**
+  String get dictReportMeaningSubtitle;
+
+  /// Tile hapus makna untuk verifikator
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna'**
+  String get dictDeleteMeaning;
+
+  /// No description provided for @dictDeleteMeaningSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Langsung hilangkan makna ini dari entri'**
+  String get dictDeleteMeaningSubtitle;
+
+  /// No description provided for @dictDeleteMeaningConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna ini?'**
+  String get dictDeleteMeaningConfirmTitle;
+
+  /// No description provided for @dictDeleteMeaningConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna akan dihapus dari entri. Tindakan ini untuk makna yang kurang sesuai.'**
+  String get dictDeleteMeaningConfirmBody;
+
+  /// No description provided for @dictDeleteMeaningConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get dictDeleteMeaningConfirm;
+
+  /// No description provided for @dictDeleteMeaningCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get dictDeleteMeaningCancel;
+
+  /// No description provided for @dictDeleteMeaningSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna dihapus'**
+  String get dictDeleteMeaningSuccess;
+
+  /// No description provided for @dictDeleteMeaningLastBlocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak bisa menghapus makna terakhir. Tarik entri atau usulkan perbaikan.'**
+  String get dictDeleteMeaningLastBlocked;
+
+  /// No description provided for @dictLoginToReportMeaning.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melaporkan makna'**
+  String get dictLoginToReportMeaning;
+
+  /// No description provided for @dictMeaningReportSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna terkirim. Makna tetap tayang sampai ditinjau.'**
+  String get dictMeaningReportSent;
+
+  /// Tile Area Verifikator untuk antrean laporan makna
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna'**
+  String get reviewHomeMeaningReportTitle;
+
+  /// No description provided for @reviewHomeMeaningReportSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau makna yang dilaporkan user'**
+  String get reviewHomeMeaningReportSubtitle;
+
+  /// No description provided for @reviewHomeMeaningReportWaiting.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada laporan menunggu'**
+  String get reviewHomeMeaningReportWaiting;
+
+  /// No description provided for @reviewMeaningReportQueueTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan makna'**
+  String get reviewMeaningReportQueueTitle;
+
+  /// No description provided for @reviewMeaningReportQueueEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada laporan makna terbuka'**
+  String get reviewMeaningReportQueueEmpty;
+
+  /// No description provided for @reviewMeaningReportQueueLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat laporan makna'**
+  String get reviewMeaningReportQueueLoadFailed;
+
+  /// No description provided for @reviewMeaningReportDetailTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Detail laporan makna'**
+  String get reviewMeaningReportDetailTitle;
+
+  /// No description provided for @reviewMeaningReportRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus makna'**
+  String get reviewMeaningReportRemove;
+
+  /// No description provided for @reviewMeaningReportDismiss.
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak laporan'**
+  String get reviewMeaningReportDismiss;
+
+  /// No description provided for @reviewMeaningReportRemovedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Makna dihapus, laporan ditutup'**
+  String get reviewMeaningReportRemovedToast;
+
+  /// No description provided for @reviewMeaningReportDismissedToast.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan ditolak'**
+  String get reviewMeaningReportDismissedToast;
 
   /// No description provided for @dictSkeletonLemma.
   ///
@@ -7715,6 +8021,12 @@ abstract class AppLocalizations {
   /// **'Usaha'**
   String get feedKindUsaha;
 
+  /// No description provided for @feedKindLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan'**
+  String get feedKindLayanan;
+
   /// Label jenis aktivitas: kuliner terbit
   ///
   /// In id, this message translates to:
@@ -7726,6 +8038,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pantun'**
   String get feedKindPantun;
+
+  /// Label jenis aktivitas: Jinye atau balasan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get feedKindJinye;
 
   /// Label jenis aktivitas: artikel ensiklopedia atau komentarnya
   ///
@@ -7768,6 +8086,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat pantun'**
   String get feedCtaSeePantun;
+
+  /// Ajakan membuka detail Jinye dari feed
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat Jinye'**
+  String get feedCtaSeeJinye;
 
   /// Ajakan membuka foto
   ///
@@ -7846,6 +8170,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat usaha'**
   String get feedCtaSeeUsaha;
+
+  /// No description provided for @feedCtaSeeLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat layanan'**
+  String get feedCtaSeeLayanan;
 
   /// Ajakan membuka kuliner
   ///
@@ -7991,6 +8321,36 @@ abstract class AppLocalizations {
   /// **'Kata Sambas belum ada di kamus? Tambahkan sendiri'**
   String get feedContributeNewWordSubtitle;
 
+  /// Menu kontribusi: tulis IPA untuk kata di kartu vote deck
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pelafalan'**
+  String get feedContributeWritePronunciation;
+
+  /// Subtitle tile tulis pelafalan di Menu kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah notasi IPA untuk kata di kartu nilai saat ini'**
+  String get feedContributeWritePronunciationSubtitle;
+
+  /// Menu kontribusi: rekam audio untuk kata di kartu vote deck
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam pelafalan'**
+  String get feedContributeRecordPronunciation;
+
+  /// Subtitle tile rekam pelafalan di Menu kontribusi
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara lemma untuk kata di kartu nilai saat ini'**
+  String get feedContributeRecordPronunciationSubtitle;
+
+  /// Toast bila Menu kontribusi tulis/rekam tanpa kartu deck aktif
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada kartu nilai. Cari kata lewat Lengkapi kata dulu.'**
+  String get voteDeckPronunciationNoCard;
+
   /// Item menu daftar pencarian tanpa hasil
   ///
   /// In id, this message translates to:
@@ -8056,6 +8416,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Komentar'**
   String get profileActivityFilterComment;
+
+  /// Chip filter aktivitas profil publik: Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get profileActivityFilterJinye;
 
   /// Kondisi kosong aktivitas profil publik
   ///
@@ -8174,8 +8540,44 @@ abstract class AppLocalizations {
   /// Aturan penulisan username
   ///
   /// In id, this message translates to:
-  /// **'a-z, 0-9, titik, underscore (3-30 karakter)'**
+  /// **'a-z, 0-9, titik, underscore (6-30 karakter)'**
   String get profileUsernameHint;
+
+  /// Label saat cek username sedang jalan
+  ///
+  /// In id, this message translates to:
+  /// **'Memeriksa ketersediaan…'**
+  String get profileUsernameChecking;
+
+  /// Label username belum dipakai
+  ///
+  /// In id, this message translates to:
+  /// **'Username tersedia'**
+  String get profileUsernameAvailable;
+
+  /// Label username bentrok
+  ///
+  /// In id, this message translates to:
+  /// **'Username sudah dipakai'**
+  String get profileUsernameTaken;
+
+  /// Label username reserved
+  ///
+  /// In id, this message translates to:
+  /// **'Username tidak bisa dipakai'**
+  String get profileUsernameReserved;
+
+  /// Label username format salah
+  ///
+  /// In id, this message translates to:
+  /// **'Username belum memenuhi aturan (6-30, a-z, 0-9, titik, underscore)'**
+  String get profileUsernameInvalid;
+
+  /// Error saat GET username-availability gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memeriksa username'**
+  String get profileUsernameCheckFailed;
 
   /// Label kolom nama tampilan
   ///
@@ -8842,6 +9244,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sebutan diskusi'**
   String get notificationTypeDiscussionMention;
+
+  /// Label jenis notifikasi balasan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan Jinye'**
+  String get notificationTypeJinyeComment;
 
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///
@@ -10583,6 +10991,288 @@ abstract class AppLocalizations {
   /// **'UMKM dan jasa lokal'**
   String get exploreCategoryUsahaSubtitle;
 
+  /// No description provided for @exploreCategoryLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan Publik'**
+  String get exploreCategoryLayanan;
+
+  /// No description provided for @exploreCategoryLayananSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor ambulans dan pemadam per kecamatan'**
+  String get exploreCategoryLayananSubtitle;
+
+  /// No description provided for @layananTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan Publik'**
+  String get layananTitle;
+
+  /// Judul drawer filter daftar layanan publik
+  ///
+  /// In id, this message translates to:
+  /// **'Filter layanan'**
+  String get layananFilterTitle;
+
+  /// No description provided for @layananPickKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kecamatan'**
+  String get layananPickKecamatan;
+
+  /// No description provided for @layananEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nomor layanan'**
+  String get layananEmpty;
+
+  /// Hint empty state daftar layanan tanpa filter
+  ///
+  /// In id, this message translates to:
+  /// **'Tahu nomor ambulans atau pemadam di sekitarmu? Boleh kamu usulkan.'**
+  String get layananEmptyHint;
+
+  /// Empty state saat filter kecamatan/kategori tidak ada hasil
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nomor yang cocok'**
+  String get layananEmptyFilter;
+
+  /// Hint empty state layanan saat ada filter aktif
+  ///
+  /// In id, this message translates to:
+  /// **'Coba ubah filter atau usulkan nomor baru ya.'**
+  String get layananEmptyFilterHint;
+
+  /// No description provided for @layananCategoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada nomor'**
+  String get layananCategoryEmpty;
+
+  /// No description provided for @layananPropose.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan'**
+  String get layananPropose;
+
+  /// No description provided for @layananProposeEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perbaikan'**
+  String get layananProposeEdit;
+
+  /// No description provided for @layananAmbulance.
+  ///
+  /// In id, this message translates to:
+  /// **'Ambulans'**
+  String get layananAmbulance;
+
+  /// No description provided for @layananFire.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemadam kebakaran'**
+  String get layananFire;
+
+  /// No description provided for @layananCall.
+  ///
+  /// In id, this message translates to:
+  /// **'Telepon'**
+  String get layananCall;
+
+  /// No description provided for @layananCheckedOn.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicek {date}'**
+  String layananCheckedOn(String date);
+
+  /// No description provided for @layananLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat layanan'**
+  String get layananLoadFailed;
+
+  /// No description provided for @layananNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan tidak ditemukan'**
+  String get layananNotFound;
+
+  /// No description provided for @layananPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon'**
+  String get layananPhone;
+
+  /// Label field note per nomor (shift, pos, konteks)
+  ///
+  /// In id, this message translates to:
+  /// **'Keterangan nomor (opsional)'**
+  String get layananPhoneNote;
+
+  /// No description provided for @layananPhoneNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal shift malam atau pos A'**
+  String get layananPhoneNoteHint;
+
+  /// CTA menambah baris nomor telepon kedua dst.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah nomor lainnya'**
+  String get layananAddPhone;
+
+  /// No description provided for @layananRemovePhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus nomor'**
+  String get layananRemovePhone;
+
+  /// No description provided for @layananPhones.
+  ///
+  /// In id, this message translates to:
+  /// **'Nomor telepon'**
+  String get layananPhones;
+
+  /// No description provided for @layananPhoneCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} nomor'**
+  String layananPhoneCount(int count);
+
+  /// No description provided for @layananPickPhone.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih nomor'**
+  String get layananPickPhone;
+
+  /// Label field logo organisasi (kamera/galeri)
+  ///
+  /// In id, this message translates to:
+  /// **'Logo (opsional)'**
+  String get layananLogo;
+
+  /// Placeholder tile kategori sebelum user memilih
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih kategori'**
+  String get layananPickCategory;
+
+  /// Toast saat submit sementara logo masih diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload logo selesai'**
+  String get layananWaitUpload;
+
+  /// Toast saat ada slot logo gagal upload
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus logo yang gagal diunggah dulu'**
+  String get layananRemoveFailedLogo;
+
+  /// Error upload logo layanan ke CDN
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah logo'**
+  String get layananUploadImageFailed;
+
+  /// No description provided for @layananKecamatan.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecamatan'**
+  String get layananKecamatan;
+
+  /// No description provided for @layananAddress.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat (opsional)'**
+  String get layananAddress;
+
+  /// No description provided for @layananNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan (opsional)'**
+  String get layananNote;
+
+  /// No description provided for @layananWhatsapp.
+  ///
+  /// In id, this message translates to:
+  /// **'WhatsApp'**
+  String get layananWhatsapp;
+
+  /// No description provided for @layananMap.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka peta'**
+  String get layananMap;
+
+  /// No description provided for @layananName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama instansi'**
+  String get layananName;
+
+  /// No description provided for @layananCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get layananCategory;
+
+  /// No description provided for @layananFormInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori, nama, minimal satu nomor, dan kecamatan wajib diisi'**
+  String get layananFormInvalid;
+
+  /// No description provided for @layananSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get layananSending;
+
+  /// No description provided for @layananSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get layananSubmit;
+
+  /// No description provided for @layananMyProposals.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan saya'**
+  String get layananMyProposals;
+
+  /// No description provided for @layananProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu belum punya usulan'**
+  String get layananProposalsEmpty;
+
+  /// No description provided for @layananStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get layananStatusPending;
+
+  /// No description provided for @layananStatusRevision.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu perbaikan'**
+  String get layananStatusRevision;
+
+  /// No description provided for @layananStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah tayang'**
+  String get layananStatusApproved;
+
+  /// No description provided for @layananStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get layananStatusRejected;
+
   /// No description provided for @exploreCategoryAcara.
   ///
   /// In id, this message translates to:
@@ -10894,6 +11584,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal mengirim usulan'**
   String get encyclopediaSubmitFailed;
+
+  /// Error submit suntingan ensiklopedia tanpa article_id ULID
+  ///
+  /// In id, this message translates to:
+  /// **'Data artikel belum termuat. Tutup lalu buka usulan perbaikan lagi.'**
+  String get encyclopediaEditArticleMissing;
 
   /// No description provided for @encyclopediaProposalKindNew.
   ///
@@ -12014,7 +12710,7 @@ abstract class AppLocalizations {
   /// No description provided for @placePinPickerSearchHint.
   ///
   /// In id, this message translates to:
-  /// **'Cari nama tempat'**
+  /// **'Cari nama atau tempel tautan Maps'**
   String get placePinPickerSearchHint;
 
   /// No description provided for @placePinPickerTooShort.
@@ -12058,6 +12754,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Titik di Sambas'**
   String get placePinPickerFallbackLabel;
+
+  /// Tombol shortcut membuka Google Maps di luar app
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Google Maps'**
+  String get placePinPickerOpenMaps;
+
+  /// Hint saat API resolve URL Google Maps
+  ///
+  /// In id, this message translates to:
+  /// **'Membaca tautan Maps...'**
+  String get placePinPickerResolvingUrl;
+
+  /// Hint sukses setelah paste tautan Maps
+  ///
+  /// In id, this message translates to:
+  /// **'Titik dari Google Maps'**
+  String get placePinPickerFromMaps;
+
+  /// Error MAPS_URL_INVALID di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan itu bukan Google Maps yang kami kenali. Tempel tautan share dari Maps ya.'**
+  String get placePinPickerMapsUrlInvalid;
+
+  /// Error MAPS_URL_NO_COORDS di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan Maps tidak punya titik. Di Maps, share pin lokasinya lalu tempel lagi.'**
+  String get placePinPickerMapsUrlNoCoords;
+
+  /// Error MAPS_URL_OUT_OF_BOUNDS di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Titik di tautan di luar Kabupaten Sambas. Pilih lokasi di dalam Sambas ya.'**
+  String get placePinPickerMapsUrlOutOfBounds;
+
+  /// Error resolve Maps URL generik / jaringan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membaca tautan Maps. Coba lagi sebentar ya.'**
+  String get placePinPickerMapsUrlFailed;
+
+  /// Semantics / tooltip tombol X clear field pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus teks'**
+  String get placePinPickerClearField;
+
+  /// Tombol kecil tempel clipboard di pin picker
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get placePinPickerPaste;
+
+  /// Toast bila paste ditekan tapi clipboard kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong'**
+  String get placePinPickerClipboardEmpty;
 
   /// No description provided for @placeProposalsTitle.
   ///
@@ -12274,6 +13030,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Nama dan deskripsi wajib diisi.'**
   String get placeFormNameDescRequired;
+
+  /// Error saat submit suntingan wisata tanpa place_id (katalog/detail belum siap)
+  ///
+  /// In id, this message translates to:
+  /// **'Data tempat belum termuat. Tutup lalu buka usulan perubahan lagi.'**
+  String get placeFormEditPlaceMissing;
 
   /// No description provided for @placeFormNameInvalid.
   ///
@@ -12634,6 +13396,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Isi kata, peribahasa, atau ungkapan'**
   String get contributeLemmaHint;
+
+  /// Label field IPA di form usul kata baru
+  ///
+  /// In id, this message translates to:
+  /// **'Pelafalan (opsional)'**
+  String get contributePronunciationLabel;
+
+  /// Info tip field pelafalan di usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional. Tempel teks IPA dari kamus atau generator. Disimpan tanpa garis miring.'**
+  String get contributePronunciationHint;
+
+  /// Hint input IPA di form usul kata
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: sa.dap atau /sa.dap/'**
+  String get contributePronunciationFieldHint;
 
   /// No description provided for @contributeTranslationLabel.
   ///
@@ -15203,10 +15983,94 @@ abstract class AppLocalizations {
   /// **'Mengirim...'**
   String get pantunSending;
 
-  /// No description provided for @pantunWrite.
+  /// Opsi mode compose pantun: 4 baris teks
   ///
   /// In id, this message translates to:
   /// **'Tulis pantun'**
+  String get pantunComposeModeText;
+
+  /// Opsi mode compose pantun: bacaan suara saja
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get pantunComposeModeVoice;
+
+  /// Subtitle opsi mode teks di compose pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Empat baris dengan pola rima.'**
+  String get pantunComposeTextHint;
+
+  /// Petunjuk singkat di mode suara compose pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Bacaan 7,5 sampai 60 detik, tanpa menulis baris.'**
+  String get pantunComposeVoiceHint;
+
+  /// Tombol lampirkan rekaman suara di compose pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam'**
+  String get pantunRecordAudio;
+
+  /// Judul sheet rekam audio pantun
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam bacaan pantun'**
+  String get pantunRecordAudioTitle;
+
+  /// Petunjuk durasi rekaman pantun di mode suara
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal 7,5 detik, maksimal 60 detik.'**
+  String get pantunRecordAudioSubtitle;
+
+  /// Status rekaman terlampir di compose
+  ///
+  /// In id, this message translates to:
+  /// **'Bacaan {seconds} detik siap dikirim'**
+  String pantunRecordAudioAttached(int seconds);
+
+  /// Hapus lampiran audio sebelum kirim
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get pantunRecordAudioRemove;
+
+  /// Semantics / label idle player audio thread
+  ///
+  /// In id, this message translates to:
+  /// **'Putar rekaman'**
+  String get threadAudioPlay;
+
+  /// Semantics tombol pause player audio thread
+  ///
+  /// In id, this message translates to:
+  /// **'Jeda rekaman'**
+  String get threadAudioPause;
+
+  /// Label error player audio thread
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memutar, ketuk untuk coba lagi'**
+  String get threadAudioRetry;
+
+  /// Status text saat audio thread playing
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang diputar'**
+  String get threadAudioPlaying;
+
+  /// Status text saat audio thread idle
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk untuk putar'**
+  String get threadAudioIdle;
+
+  /// No description provided for @pantunWrite.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat pantun'**
   String get pantunWrite;
 
   /// No description provided for @pantunReply.
@@ -16512,7 +17376,7 @@ abstract class AppLocalizations {
   /// No description provided for @pantunListSubtitle.
   ///
   /// In id, this message translates to:
-  /// **'Balas pantun 4 baris'**
+  /// **'Berbalas pantun bersama warga sambas'**
   String get pantunListSubtitle;
 
   /// No description provided for @pantunComingSoon.
@@ -17216,6 +18080,924 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dibatalkan'**
   String get discussionStatusWithdrawn;
+
+  /// Judul halaman compose Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Buat Jinye'**
+  String get jinyeCreateTitle;
+
+  /// Label field teks Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Status kamu'**
+  String get jinyeCreateBodyLabel;
+
+  /// Hint field teks Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis sampai 500 karakter, atau rekam suara / tambah foto.'**
+  String get jinyeCreateBodyHint;
+
+  /// CTA kirim Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get jinyeCreateSubmit;
+
+  /// CTA busy kirim Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim…'**
+  String get jinyeCreateSubmitting;
+
+  /// Toast sukses create Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye kamu sudah tayang'**
+  String get jinyeCreateSuccess;
+
+  /// Error create Jinye generik
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim Jinye'**
+  String get jinyeCreateFailed;
+
+  /// Error kuota 1 Jinye / 1 jam (tanpa jam reset)
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu sudah membuat Jinye dalam 1 jam terakhir. Coba lagi nanti ya.'**
+  String get jinyeCreateRateLimited;
+
+  /// Error kuota Jinye + jam reset lokal (HH:mm)
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu sudah membuat Jinye dalam 1 jam terakhir. Bisa lagi pukul {time}.'**
+  String jinyeCreateRateLimitedUntil(String time);
+
+  /// Toast wajib login sebelum compose
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk membuat Jinye'**
+  String get jinyeLoginFirst;
+
+  /// Response API Jinye rusak
+  ///
+  /// In id, this message translates to:
+  /// **'Data Jinye tidak lengkap'**
+  String get jinyeResponseIncomplete;
+
+  /// Judul halaman detail Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get jinyeDetailTitle;
+
+  /// Error load detail Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat Jinye'**
+  String get jinyeDetailLoadFailed;
+
+  /// A11y bar preview profil
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye, ketuk untuk baca lengkap'**
+  String get jinyeProfilePreviewSemantics;
+
+  /// Label preview Jinye voice-only
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman suara'**
+  String get jinyePreviewVoiceOnly;
+
+  /// Label preview Jinye foto tanpa caption
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get jinyePreviewPhotoOnly;
+
+  /// Fallback preview Jinye tanpa teks/media
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get jinyePreviewEmpty;
+
+  /// CTA sheet profil - fokus reply
+  ///
+  /// In id, this message translates to:
+  /// **'Balas'**
+  String get jinyeSheetReply;
+
+  /// CTA sheet profil - buka thread
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat diskusi'**
+  String get jinyeSheetViewDiscussion;
+
+  /// Empty state diskusi Jinye Phase 1
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada balasan. Komen dan reply menyusul di pembaruan berikutnya.'**
+  String get jinyeDiscussionEmpty;
+
+  /// Tooltip ikon compose di profil
+  ///
+  /// In id, this message translates to:
+  /// **'Buat Jinye'**
+  String get jinyeComposeEntryTooltip;
+
+  /// Label blok rekam suara di compose Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman suara (opsional)'**
+  String get jinyeCreateAudioLabel;
+
+  /// Tombol mulai rekam suara Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get jinyeCreateRecordCta;
+
+  /// Tombol rekam ulang suara Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam ulang'**
+  String get jinyeCreateRerecord;
+
+  /// Status rekaman suara siap di compose Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Rekaman siap · {seconds} dtk'**
+  String jinyeCreateAudioReady(int seconds);
+
+  /// Label blok foto di compose Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Foto (opsional, maks 4)'**
+  String get jinyeCreatePhotoLabel;
+
+  /// Hint foto disabled saat belum login
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menambah foto'**
+  String get jinyeCreatePhotoLoginHint;
+
+  /// Judul sheet rekam suara Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam Jinye'**
+  String get jinyeRecordSheetTitle;
+
+  /// Subjudul sheet rekam suara Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik. Caption teks bisa ditambahkan di form.'**
+  String get jinyeRecordSheetSubtitle;
+
+  /// CTA pakai rekaman di sheet Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai rekaman'**
+  String get jinyeRecordSheetUse;
+
+  /// Toast tunggu upload foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu foto selesai diunggah dulu ya'**
+  String get jinyeWaitUpload;
+
+  /// Validasi compose Jinye tanpa konten
+  ///
+  /// In id, this message translates to:
+  /// **'Isi teks, rekam suara, atau tambah foto dulu ya'**
+  String get jinyeComposeNeedContent;
+
+  /// Judul sheet semua foto gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Semua foto gagal diunggah'**
+  String get jinyeAllImagesFailed;
+
+  /// Isi sheet semua foto gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim tanpa foto, atau coba unggah ulang.'**
+  String get jinyeAllImagesFailedBody;
+
+  /// CTA kirim Jinye tanpa foto
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim tanpa foto'**
+  String get jinyeSendWithoutImages;
+
+  /// Error ImageKit/storage Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Penyimpanan foto sedang tidak tersedia'**
+  String get jinyeStorageUnavailable;
+
+  /// Error upload satu foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah foto'**
+  String get jinyeImageUploadFailed;
+
+  /// Toast create OK tapi attach audio gagal
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye terkirim, tapi rekaman suara gagal dilampirkan'**
+  String get jinyeSentAudioFailed;
+
+  /// Label foto Jinye pending review
+  ///
+  /// In id, this message translates to:
+  /// **'Foto masih dicek sebelum tayang publik'**
+  String get jinyePhotosPendingReview;
+
+  /// Judul section komen di detail Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi'**
+  String get jinyeCommentsTitle;
+
+  /// Error load list komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat balasan'**
+  String get jinyeCommentsLoadFailed;
+
+  /// Hint composer komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis balasan…'**
+  String get jinyeCommentHint;
+
+  /// CTA kirim komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get jinyeCommentSend;
+
+  /// CTA busy kirim komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim…'**
+  String get jinyeCommentSending;
+
+  /// Toast sukses komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Balasan terkirim'**
+  String get jinyeCommentSent;
+
+  /// Error kirim komen Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim balasan'**
+  String get jinyeCommentFailed;
+
+  /// Chip reply-to di composer Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Membalas {name}'**
+  String jinyeReplyingTo(String name);
+
+  /// CTA laporkan Jinye/komen
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan'**
+  String get reportJinyeAction;
+
+  /// Judul sheet laporan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Laporkan Jinye'**
+  String get reportJinyeTitle;
+
+  /// Subjudul sheet laporan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Laporanmu ditinjau tim Sambasku. Jinye tetap tayang sampai diputuskan.'**
+  String get reportJinyeSubtitle;
+
+  /// Alasan laporan Jinye: tidak pantas
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak pantas'**
+  String get reportJinyeInappropriate;
+
+  /// Alasan laporan Jinye: seksual
+  ///
+  /// In id, this message translates to:
+  /// **'Konten seksual'**
+  String get reportJinyeSexual;
+
+  /// Alasan laporan Jinye: pelecehan
+  ///
+  /// In id, this message translates to:
+  /// **'Pelecehan atau perundungan'**
+  String get reportJinyeHarassment;
+
+  /// Alasan laporan Jinye: ujaran kebencian
+  ///
+  /// In id, this message translates to:
+  /// **'Ujaran kebencian'**
+  String get reportJinyeHateSpeech;
+
+  /// Alasan laporan Jinye: spam
+  ///
+  /// In id, this message translates to:
+  /// **'Spam'**
+  String get reportJinyeSpam;
+
+  /// Alasan laporan Jinye: lainnya
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get reportJinyeOther;
+
+  /// Toast sukses kirim laporan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih, laporanmu sudah kami terima'**
+  String get reportJinyeSent;
+
+  /// Toast wajib login sebelum lapor Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu ya untuk melaporkan Jinye'**
+  String get reportJinyeLoginFirst;
+
+  /// Error generik submit laporan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim laporan'**
+  String get jinyeReportFailed;
+
+  /// Judul halaman arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arsip Jinye'**
+  String get jinyeArchivedTitle;
+
+  /// Empty state arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada Jinye di arsip'**
+  String get jinyeArchivedEmpty;
+
+  /// Error load arsip Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat arsip Jinye'**
+  String get jinyeArchivedLoadFailed;
+
+  /// CTA pin Jinye ke profil
+  ///
+  /// In id, this message translates to:
+  /// **'Sematkan di profil'**
+  String get jinyePinAction;
+
+  /// CTA unpin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Lepas dari profil'**
+  String get jinyeUnpinAction;
+
+  /// CTA arsipkan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan'**
+  String get jinyeArchiveAction;
+
+  /// CTA unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan'**
+  String get jinyeUnarchiveAction;
+
+  /// Toast sukses pin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye disematkan di profil'**
+  String get jinyePinSuccess;
+
+  /// Toast sukses unpin Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Pin Jinye dilepas'**
+  String get jinyeUnpinSuccess;
+
+  /// Toast sukses archive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye diarsipkan'**
+  String get jinyeArchiveSuccess;
+
+  /// Toast sukses unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye dipulihkan'**
+  String get jinyeUnarchiveSuccess;
+
+  /// Error unarchive Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memulihkan Jinye'**
+  String get jinyeUnarchiveFailed;
+
+  /// Error generik aksi owner Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengubah Jinye'**
+  String get jinyeOwnerActionFailed;
+
+  /// CTA owner tautkan span ke lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Tautkan lemma'**
+  String get jinyeLemmaLinkAction;
+
+  /// Judul sheet pilih span lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih teks'**
+  String get jinyeLemmaSelectSpanTitle;
+
+  /// Petunjuk pilih token span
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk kata. Ketuk lagi di kata lain untuk rentang.'**
+  String get jinyeLemmaSelectSpanHint;
+
+  /// Body kosong untuk span
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada teks yang bisa ditautkan'**
+  String get jinyeLemmaSelectSpanEmpty;
+
+  /// Lanjut ke pencarian kata
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get jinyeLemmaSelectSpanContinue;
+
+  /// Judul sheet cari kata
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih lemma'**
+  String get jinyeLemmaPickWordTitle;
+
+  /// Hint pencarian lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Sambas…'**
+  String get jinyeLemmaPickWordHint;
+
+  /// Empty sebelum ketik query
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik lemma untuk mencari'**
+  String get jinyeLemmaPickWordEmptyHint;
+
+  /// Hasil search kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada kata terverifikasi yang cocok'**
+  String get jinyeLemmaPickWordNoResult;
+
+  /// Toast sukses buat lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma ditautkan'**
+  String get jinyeLemmaLinkSuccess;
+
+  /// Error buat lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menautkan lemma'**
+  String get jinyeLemmaLinkFailed;
+
+  /// Aksi buka detail kata dari span
+  ///
+  /// In id, this message translates to:
+  /// **'Buka arti'**
+  String get jinyeLemmaOpenWord;
+
+  /// Aksi usul koreksi lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan koreksi'**
+  String get jinyeLemmaProposeCorrection;
+
+  /// Aksi hapus lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tautan'**
+  String get jinyeLemmaDeleteLink;
+
+  /// Verifikator approve koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Setujui koreksi'**
+  String get jinyeLemmaApproveCorrection;
+
+  /// Verifikator reject koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak koreksi'**
+  String get jinyeLemmaRejectCorrection;
+
+  /// Status pending_correction
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi menunggu tinjauan'**
+  String get jinyeLemmaPendingCorrection;
+
+  /// Toast sukses propose
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan koreksi terkirim'**
+  String get jinyeLemmaCorrectionSuccess;
+
+  /// Error propose koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengusulkan koreksi'**
+  String get jinyeLemmaCorrectionFailed;
+
+  /// Toast sukses resolve
+  ///
+  /// In id, this message translates to:
+  /// **'Koreksi diproses'**
+  String get jinyeLemmaResolveSuccess;
+
+  /// Error resolve koreksi
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses koreksi'**
+  String get jinyeLemmaResolveFailed;
+
+  /// Toast sukses hapus link
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan lemma dihapus'**
+  String get jinyeLemmaDeleteSuccess;
+
+  /// Error hapus lemma link
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus tautan'**
+  String get jinyeLemmaDeleteFailed;
+
+  /// Label arah makna di sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Arti (Sambas → Indonesia)'**
+  String get jinyeWordMeaningLookupLabel;
+
+  /// Empty state sheet makna kata di Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada di kamus'**
+  String get jinyeWordMeaningEmpty;
+
+  /// Error load makna di sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat makna'**
+  String get jinyeWordMeaningLoadFailed;
+
+  /// CTA tautkan span kata Jinye ke lemma kamus
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungkan ke lemma'**
+  String get jinyeWordMeaningLinkAction;
+
+  /// CTA buka detail lemma dari span yang sudah tertaut
+  ///
+  /// In id, this message translates to:
+  /// **'Buka lemma'**
+  String get jinyeWordMeaningOpenLemma;
+
+  /// Toast guest saat usul/hubungkan lemma dari sheet tap kata Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk mengusulkan atau menghubungkan lemma'**
+  String get jinyeWordMeaningLoginFirst;
+
+  /// CTA owner promote Jinye ke contoh
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan contoh lemma'**
+  String get jinyePromoteExampleAction;
+
+  /// Pilihan promote + audio
+  ///
+  /// In id, this message translates to:
+  /// **'Sertakan rekaman suara'**
+  String get jinyePromoteWithAudio;
+
+  /// Pilihan promote tanpa audio
+  ///
+  /// In id, this message translates to:
+  /// **'Teks saja'**
+  String get jinyePromoteTextOnly;
+
+  /// Toast sukses promote example
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan contoh terkirim'**
+  String get jinyePromoteSuccess;
+
+  /// Error promote example
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengajukan jadi contoh'**
+  String get jinyePromoteFailed;
+
+  /// CTA usul terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Usul terjemahan'**
+  String get jinyeTranslateAction;
+
+  /// Judul sheet terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan Indonesia'**
+  String get jinyeTranslateTitle;
+
+  /// Hint field terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis arti dalam bahasa Indonesia…'**
+  String get jinyeTranslateHint;
+
+  /// CTA submit terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get jinyeTranslateSubmit;
+
+  /// Toast sukses terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terjemahan terkirim'**
+  String get jinyeTranslateSuccess;
+
+  /// Error terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengusulkan terjemahan'**
+  String get jinyeTranslateFailed;
+
+  /// Menu verifikator buka antrian terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tinjau usulan terjemahan'**
+  String get jinyeTranslateReviewAction;
+
+  /// Judul halaman antrian terjemahan Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan terjemahan'**
+  String get jinyeTranslateReviewTitle;
+
+  /// Empty state antrian terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada usulan di filter ini'**
+  String get jinyeTranslateReviewEmpty;
+
+  /// Error load antrian terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat usulan terjemahan'**
+  String get jinyeTranslateReviewLoadFailed;
+
+  /// Fallback label bila snapshot sumber kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye {id}'**
+  String jinyeTranslateReviewSourceId(String id);
+
+  /// Label snapshot teks asli di review terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Teks sumber'**
+  String get jinyeTranslateReviewSourceLabel;
+
+  /// Label teks terjemahan di review
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan'**
+  String get jinyeTranslateReviewBodyLabel;
+
+  /// Judul section pending di detail Jinye (verifikator)
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get jinyeTranslatePendingSection;
+
+  /// CTA approve usulan terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terima'**
+  String get jinyeTranslateApproveAction;
+
+  /// CTA reject usulan terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Tolak'**
+  String get jinyeTranslateRejectAction;
+
+  /// Toast sukses approve terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan diterima'**
+  String get jinyeTranslateResolveApproved;
+
+  /// Toast sukses reject terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Terjemahan ditolak'**
+  String get jinyeTranslateResolveRejected;
+
+  /// Error resolve terjemahan
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memproses terjemahan'**
+  String get jinyeTranslateResolveFailed;
+
+  /// No description provided for @jinyeTranslateStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get jinyeTranslateStatusPending;
+
+  /// No description provided for @jinyeTranslateStatusAccepted.
+  ///
+  /// In id, this message translates to:
+  /// **'Diterima'**
+  String get jinyeTranslateStatusAccepted;
+
+  /// No description provided for @jinyeTranslateStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get jinyeTranslateStatusRejected;
+
+  /// CTA owner edit body Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting'**
+  String get jinyeEditAction;
+
+  /// Judul sheet edit Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Sunting Jinye'**
+  String get jinyeEditTitle;
+
+  /// CTA simpan edit Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan'**
+  String get jinyeEditSave;
+
+  /// Toast sukses edit Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye diperbarui'**
+  String get jinyeEditSuccess;
+
+  /// Error edit Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyunting Jinye'**
+  String get jinyeEditFailed;
+
+  /// Judul sheet riwayat edit Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat sunting'**
+  String get jinyeEditHistoryTitle;
+
+  /// Error load edit history Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat sunting'**
+  String get jinyeEditHistoryFailed;
+
+  /// CTA repost polos Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan ulang'**
+  String get jinyeRepostAction;
+
+  /// CTA unrepost Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan bagikan ulang'**
+  String get jinyeUnrepostAction;
+
+  /// Toast sukses repost
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye dibagikan ulang'**
+  String get jinyeRepostSuccess;
+
+  /// Toast sukses unrepost
+  ///
+  /// In id, this message translates to:
+  /// **'Bagikan ulang dibatalkan'**
+  String get jinyeUnrepostSuccess;
+
+  /// Error repost/unrepost Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal membagikan ulang'**
+  String get jinyeRepostFailed;
+
+  /// CTA quote-repost Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kutip'**
+  String get jinyeQuoteAction;
+
+  /// Judul sheet quote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kutip Jinye'**
+  String get jinyeQuoteTitle;
+
+  /// Hint field quote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis kutipanmu…'**
+  String get jinyeQuoteHint;
+
+  /// CTA submit quote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim kutipan'**
+  String get jinyeQuoteSubmit;
+
+  /// Toast sukses quote
+  ///
+  /// In id, this message translates to:
+  /// **'Kutipan terkirim'**
+  String get jinyeQuoteSuccess;
+
+  /// Error quote Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengutip Jinye'**
+  String get jinyeQuoteFailed;
+
+  /// Label kartu repost polos
+  ///
+  /// In id, this message translates to:
+  /// **'Membagikan ulang'**
+  String get jinyeRepostLabel;
+
+  /// CTA buka original dari repost/quote
+  ///
+  /// In id, this message translates to:
+  /// **'Buka Jinye asli'**
+  String get jinyeOpenOriginal;
+
+  /// Section title di detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai di Jinye'**
+  String get jinyeUsedInWordTitle;
+
+  /// Chip compact attach voice Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Suara'**
+  String get jinyeCreateChipAudio;
+
+  /// Chip voice sudah terrekam
+  ///
+  /// In id, this message translates to:
+  /// **'Suara · {seconds} dtk'**
+  String jinyeCreateChipAudioReady(int seconds);
+
+  /// Chip compact attach foto Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get jinyeCreateChipPhoto;
+
+  /// Chip foto dengan jumlah slot
+  ///
+  /// In id, this message translates to:
+  /// **'Foto · {count}'**
+  String jinyeCreateChipPhotoCount(int count);
 }
 
 class _AppLocalizationsDelegate

@@ -47,6 +47,10 @@ void main() {
       mapPublicActivityToFeed(item('vote'), profile).kind,
       FeedActivityKind.vote,
     );
+    expect(
+      mapPublicActivityToFeed(item('jinye'), profile).kind,
+      FeedActivityKind.jinye,
+    );
   });
 
   test('vote downvote: arah dibaca dari akhiran body feed tile', () {
@@ -92,5 +96,15 @@ void main() {
 
     final noTarget = mapPublicActivityToFeed(item('comment'), profile);
     expect(noTarget.target, isNull);
+  });
+
+  test('kind jinye: wordId = id Jinye, target.type jinye', () {
+    final mapped = mapPublicActivityToFeed(
+      item('jinye', wordId: '01JINYE00000000000000001'),
+      profile,
+    );
+    expect(mapped.kind, FeedActivityKind.jinye);
+    expect(mapped.target?.type, 'jinye');
+    expect(mapped.target?.id, '01JINYE00000000000000001');
   });
 }

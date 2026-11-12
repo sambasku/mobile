@@ -16,6 +16,9 @@ class Pantun {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    this.audioUrl,
+    this.audioMimeType,
+    this.audioDurationMs,
     this.isVerifier = false,
     this.isEdited = false,
     this.upvotes = 0,
@@ -39,6 +42,9 @@ class Pantun {
   final String? themeId;
   final RhymeScheme rhymeScheme;
   final List<String> lines;
+  final String? audioUrl;
+  final String? audioMimeType;
+  final int? audioDurationMs;
   final String status;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -49,6 +55,8 @@ class Pantun {
 
   /// 1 | -1 | null - di-seed dari GET /votes/my, bukan wire list.
   final int? myVote;
+
+  bool get hasAudio => audioUrl != null && audioUrl!.isNotEmpty;
 
   factory Pantun.fromJson(Map<String, dynamic> json) => Pantun(
     id: json['id'] as String,
@@ -65,6 +73,9 @@ class Pantun {
     lines: (json['lines'] as List)
         .map((e) => e as String)
         .toList(growable: false),
+    audioUrl: json['audio_url'] as String?,
+    audioMimeType: json['audio_mime_type'] as String?,
+    audioDurationMs: json['audio_duration_ms'] as int?,
     status: json['status'] as String? ?? 'published',
     upvotes: json['upvotes'] as int? ?? 0,
     downvotes: json['downvotes'] as int? ?? 0,
@@ -83,12 +94,16 @@ class Pantun {
   Pantun copyWith({
     List<String>? lines,
     RhymeScheme? rhymeScheme,
+    String? audioUrl,
+    String? audioMimeType,
+    int? audioDurationMs,
     int? upvotes,
     int? downvotes,
     int? myVote,
     bool? isEdited,
     DateTime? updatedAt,
     bool clearMyVote = false,
+    bool clearAudio = false,
   }) {
     return Pantun(
       id: id,
@@ -101,6 +116,11 @@ class Pantun {
       themeId: themeId,
       rhymeScheme: rhymeScheme ?? this.rhymeScheme,
       lines: lines ?? this.lines,
+      audioUrl: clearAudio ? null : (audioUrl ?? this.audioUrl),
+      audioMimeType: clearAudio ? null : (audioMimeType ?? this.audioMimeType),
+      audioDurationMs: clearAudio
+          ? null
+          : (audioDurationMs ?? this.audioDurationMs),
       status: status,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

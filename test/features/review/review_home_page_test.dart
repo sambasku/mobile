@@ -8,6 +8,7 @@ import 'package:sambasku_mobile/features/auth/presentation/providers/auth_status
 import 'package:sambasku_mobile/features/dictionary/dictionary_router.dart';
 import 'package:sambasku_mobile/features/review/presentation/pages/review_home_page.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/discussion_review_providers.dart';
+import 'package:sambasku_mobile/features/review/presentation/providers/meaning_report_review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_providers.dart';
 import 'package:sambasku_mobile/features/review/presentation/providers/review_suggestions_providers.dart';
 import 'package:sambasku_mobile/features/review/review_router.dart';
@@ -41,8 +42,13 @@ void main() {
     tester,
   ) async {
     await pumpHome(tester, 'reviewer');
-    expect(find.textContaining('makna'), findsOneWidget);
+    // Subtitle "Perbaiki/lengkapi kata" (bukan tile Laporan makna #253).
+    expect(
+      find.textContaining('Tambah makna, relasi, variasi penulisan'),
+      findsOneWidget,
+    );
     expect(find.textContaining('pelafalan'), findsOneWidget);
+    expect(find.widgetWithText(FTile, 'Laporan makna'), findsOneWidget);
   });
 
   // #88: panel pencarian kosong = kerjaan verifikator (tayangkan / usul).
@@ -117,6 +123,7 @@ Future<GoRouter> pumpHome(WidgetTester tester, String? role) async {
         reviewQueueHasPendingProvider.overrideWith((ref) async => false),
         reviewSuggestionsHasPendingProvider.overrideWith((ref) async => false),
         discussionReviewHasPendingProvider.overrideWith((ref) async => false),
+        meaningReportReviewHasPendingProvider.overrideWith((ref) async => false),
       ],
       child: MaterialApp.router(
         theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),

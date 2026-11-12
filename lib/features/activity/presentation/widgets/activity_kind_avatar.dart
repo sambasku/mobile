@@ -174,6 +174,11 @@ class ActivityKindAvatar extends StatelessWidget {
         icon: FLucideIcons.store,
         foreground: secondary,
       );
+    case FeedActivityKind.layanan:
+      return _KindAvatarStyle(
+        icon: FLucideIcons.phone,
+        foreground: secondary,
+      );
     case FeedActivityKind.culinary:
       return _KindAvatarStyle(
         icon: FLucideIcons.utensilsCrossed,
@@ -182,6 +187,11 @@ class ActivityKindAvatar extends StatelessWidget {
       case FeedActivityKind.pantun:
         return _KindAvatarStyle(
           icon: FLucideIcons.feather,
+          foreground: secondary,
+        );
+      case FeedActivityKind.jinye:
+        return _KindAvatarStyle(
+          icon: FLucideIcons.messageCircle,
           foreground: secondary,
         );
       case FeedActivityKind.article:

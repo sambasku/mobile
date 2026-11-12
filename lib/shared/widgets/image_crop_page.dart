@@ -29,6 +29,12 @@ const List<CropAspectRatio> kCropAspectRatios = [
   CropAspectRatio(label: '16:9', ratio: 16 / 9),
 ];
 
+/// Rasio 1:1 untuk logo / avatar (tanpa pilihan Bebas di UI).
+const CropAspectRatio kCropAspectRatioSquare = CropAspectRatio(
+  label: '1:1',
+  ratio: 1,
+);
+
 String cropAspectDisplayLabel(AppLocalizations l10n, CropAspectRatio opt) =>
     opt.ratio == null ? l10n.cropAspectFree : opt.label;
 
@@ -36,12 +42,20 @@ String cropAspectDisplayLabel(AppLocalizations l10n, CropAspectRatio opt) =>
 ///
 /// Default **Bebas**: kotak crop bisa digeser + diubah ukuran (rasio bebas).
 /// Rasio tetap (1:1, …): jendela fixed + pan/zoom foto. Batal → null.
+/// [lockedAspectRatio] mengunci rasio + menyembunyikan chip pilihan.
 /// **Lewati** → berkas asli. Hasil ≤ [kPhotoPickMaxWidth] sisi terpanjang.
-Future<File?> cropImage(BuildContext context, String sourcePath) {
+Future<File?> cropImage(
+  BuildContext context,
+  String sourcePath, {
+  CropAspectRatio? lockedAspectRatio,
+}) {
   return Navigator.of(context).push<File?>(
     MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (_) => ImageCropPage(sourcePath: sourcePath),
+      builder: (_) => ImageCropPage(
+        sourcePath: sourcePath,
+        lockedAspectRatio: lockedAspectRatio,
+      ),
     ),
   );
 }
@@ -203,9 +217,16 @@ Rect _applyFreeHit({
 }
 
 class ImageCropPage extends StatefulWidget {
-  const ImageCropPage({super.key, required this.sourcePath});
+  const ImageCropPage({
+    super.key,
+    required this.sourcePath,
+    this.lockedAspectRatio,
+  });
 
   final String sourcePath;
+
+  /// Null = user boleh ganti rasio. Non-null = kunci + sembunyikan chip.
+  final CropAspectRatio? lockedAspectRatio;
 
   @override
   State<ImageCropPage> createState() => _ImageCropPageState();
@@ -226,11 +247,12 @@ class _ImageCropPageState extends State<ImageCropPage> {
   var _saving = false;
 
   bool get _isFree => _aspect.ratio == null;
+  bool get _aspectLocked => widget.lockedAspectRatio != null;
 
   @override
   void initState() {
     super.initState();
-    _aspect = kCropAspectRatios.first;
+    _aspect = widget.lockedAspectRatio ?? kCropAspectRatios.first;
     _load();
   }
 
@@ -475,25 +497,26 @@ class _ImageCropPageState extends State<ImageCropPage> {
                         : _buildFixedCrop(context, image),
                   ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final opt in kCropAspectRatios)
-                  GestureDetector(
-                    onTap: () => _pickAspect(opt),
-                    child: FBadge(
-                      variant: _aspect == opt
-                          ? FBadgeVariant.primary
-                          : FBadgeVariant.secondary,
-                      child: Text(cropAspectDisplayLabel(l10n, opt)),
+          if (!_aspectLocked)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final opt in kCropAspectRatios)
+                    GestureDetector(
+                      onTap: () => _pickAspect(opt),
+                      child: FBadge(
+                        variant: _aspect == opt
+                            ? FBadgeVariant.primary
+                            : FBadgeVariant.secondary,
+                        child: Text(cropAspectDisplayLabel(l10n, opt)),
+                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
           SafeArea(
             top: false,
             child: Padding(

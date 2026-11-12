@@ -14,12 +14,13 @@ class ListWordsUseCase {
   Future<Either<DictionaryFailure, WordSearchPage>> call(
     ListWordsParams params,
   ) {
+    // Gate publik: server memaksa verified; klien selalu kirim true.
     return _repository.listWords(
       q: params.q.trim(),
       limit: params.limit,
       cursor: params.cursor,
       letter: params.letter,
-      isVerified: params.isVerified,
+      isVerified: true,
       category: params.category,
     );
   }

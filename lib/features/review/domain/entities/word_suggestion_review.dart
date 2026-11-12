@@ -14,6 +14,7 @@ class WordSuggestionSummary {
     this.summaryLemma,
     this.summaryNotes,
     this.meaningsCount = 0,
+    this.examplesCount = 0,
     this.imagesCount = 0,
   });
 
@@ -30,6 +31,7 @@ class WordSuggestionSummary {
   final String? summaryLemma;
   final String? summaryNotes;
   final int meaningsCount;
+  final int examplesCount;
   final int imagesCount;
 
   String? get contributorLabel =>
@@ -81,6 +83,7 @@ class WordSuggestionDetail {
     required this.notesDiff,
     required this.wordTypeDiff,
     this.meaningsChanged = 0,
+    this.examplesChanged = 0,
     this.classDiffs = const [],
     this.categoriesAdded = 0,
     this.categoriesRemoved = 0,
@@ -106,6 +109,7 @@ class WordSuggestionDetail {
   final WordSuggestionFieldDiff notesDiff;
   final WordSuggestionFieldDiff wordTypeDiff;
   final int meaningsChanged;
+  final int examplesChanged;
   final List<WordSuggestionFieldDiff> classDiffs;
   final int categoriesAdded;
   final int categoriesRemoved;

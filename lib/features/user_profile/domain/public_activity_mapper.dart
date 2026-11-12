@@ -14,10 +14,13 @@ FeedActivityItem mapPublicActivityToFeed(
     'vote' => FeedActivityKind.vote,
     // #99: kategori verification profil = event word_verified - check, bukan panah vote
     'verification' => FeedActivityKind.verification,
+    'jinye' => FeedActivityKind.jinye,
     // 'correction' (filter Perbaikan profil, #193) & 'contribution':
     // tile feed menilai kind granular dari summary - cukup fallback word.
     _ => FeedActivityKind.word,
   };
+  // kind=jinye: word_id di wire = id Jinye (navigasi detail).
+  final targetType = item.kind == 'jinye' ? 'jinye' : 'word';
   return FeedActivityItem(
     id: item.id,
     kind: kind,
@@ -31,6 +34,6 @@ FeedActivityItem mapPublicActivityToFeed(
     ),
     target: item.wordId == null
         ? null
-        : FeedActivityTarget(type: 'word', id: item.wordId!),
+        : FeedActivityTarget(type: targetType, id: item.wordId!),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/my_profile.dart';
+import '../entities/username_availability.dart';
 import '../failures/edit_profile_failure.dart';
 import '../repositories/edit_profile_repository.dart';
 
@@ -11,6 +12,17 @@ class GetMyProfileUseCase {
 
   Future<Either<EditProfileFailure, MyProfile>> call() =>
       _repository.getMyProfile();
+}
+
+class CheckUsernameAvailabilityUseCase {
+  CheckUsernameAvailabilityUseCase(this._repository);
+
+  final EditProfileRepository _repository;
+
+  Future<Either<EditProfileFailure, UsernameAvailability>> call(
+    String username,
+  ) =>
+      _repository.checkUsernameAvailability(username);
 }
 
 class UpdateMyProfileUseCase {

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/my_profile.dart';
+import '../../domain/entities/username_availability.dart';
 import '../../domain/failures/edit_profile_failure.dart';
 import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
@@ -26,6 +27,33 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
         );
       }
       return Either.right(_map(response.data!));
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(EditProfileFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<EditProfileFailure, UsernameAvailability>>
+      checkUsernameAvailability(String username) async {
+    try {
+      final response = await _remote.checkUsernameAvailability(username);
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          EditProfileFailure(
+            response.message ?? l10n.profileUsernameCheckFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      final data = response.data!;
+      return Either.right(
+        UsernameAvailability(
+          username: data.username,
+          status: usernameAvailabilityFromWire(data.status),
+        ),
+      );
     } on DioException catch (error) {
       return Either.left(_mapDio(error));
     } catch (error) {
