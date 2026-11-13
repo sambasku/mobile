@@ -185,7 +185,7 @@ void main() {
         slug: 'pantai',
         name: 'Pantai Camar Bulan',
         category: PlaceCategory.wisata,
-        type: PlaceType.pantai,
+        type: PlaceType.bahari,
         shortDescription: 'Pantai',
         images: const [
           PlaceImage(url: 'https://img.example/a.jpg', isMain: true),

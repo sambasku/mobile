@@ -14,7 +14,7 @@ import '../../../l10n/app_localizations.dart';
 ///
 /// - [hero]: avatar besar + konten center (tab Profil). Bingkai achievement
 ///   butuh avatar besar supaya cincinnya terbaca.
-/// - [compact]: avatar sedang + konten rata kiri (profil publik).
+/// - [compact]: avatar sedang rata kiri + konten rata kiri (profil publik).
 enum ProfileHeaderVariant { hero, compact }
 
 /// Header identitas bersama untuk tab Profil dan Profil Publik.
@@ -143,18 +143,11 @@ class ProfileIdentityHeader extends StatelessWidget {
         : CrossAxisAlignment.start;
     final textAlign = _isHero ? TextAlign.center : TextAlign.start;
 
-    // Hit-test box untuk avatar ± bubble overlay.
-    // Hero: lebar simetris supaya avatar tetap di tengah; compact: cukup ke kanan.
+    // Stack full-width: avatar di-center lewat alignment Stack, bubble Jinye
+    // diposisikan absolut dari tengah layar. Jangan lebarkan SizedBox simetris
+    // (> lebar layar) - parent men-clamp width tapi left tetap penuh → avatar
+    // geser kanan di HP.
     final hasOverlay = avatarOverlay != null;
-    final rightOverhang = hasOverlay
-        ? avatarOverlayMaxWidth - _avatarExtent * 0.45
-        : 0.0;
-    final avatarLeft = _isHero && hasOverlay ? rightOverhang : 0.0;
-    final avatarStackWidth = !hasOverlay
-        ? _avatarExtent
-        : _isHero
-        ? _avatarExtent + 2 * rightOverhang
-        : _avatarExtent * 0.55 + avatarOverlayMaxWidth;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -179,29 +172,24 @@ class ProfileIdentityHeader extends StatelessWidget {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Align(
-                  alignment: _isHero
-                      ? Alignment.bottomCenter
-                      : Alignment.bottomLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: _isHero ? 0 : horizontalPadding,
-                    ),
-                    // Kotak hit-test mencakup bubble overflow kanan/atas.
-                    // Clip.none hanya paint - SizedBox tetap butuh size cukup.
-                    child: SizedBox(
-                      width: avatarStackWidth,
-                      height: hasOverlay
-                          ? _avatarExtent + _avatarOverlayTopSlack
-                          : _avatarExtent,
-                      child: Stack(
+                child: SizedBox(
+                  height: hasOverlay
+                      ? _avatarExtent + _avatarOverlayTopSlack
+                      : _avatarExtent,
+                  // LayoutBuilder: posisi dari lebar layout nyata (bukan
+                  // MediaQuery). Hero center; compact rata kiri + gutter.
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final layoutW = constraints.maxWidth;
+                      final avatarLeft = _isHero
+                          ? (layoutW - _avatarExtent) / 2
+                          : horizontalPadding;
+                      return Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Positioned(
                             left: avatarLeft,
                             bottom: 0,
-                            // Slot frame selalu extent: foto tanpa border
-                            // tetap di tengah frame (bukan nempel kiri).
                             child: SizedBox(
                               width: _avatarExtent,
                               height: _avatarExtent,
@@ -228,15 +216,20 @@ class ProfileIdentityHeader extends StatelessWidget {
                           ),
                           if (hasOverlay)
                             Positioned(
-                              // Kiri fixed di bahu kanan avatar; bubble
-                              // tumbuh ke kanan (bukan menutup wajah).
+                              // Bahu kanan avatar; Stack selebar parent →
+                              // hit-test bubble overflow tetap kena.
                               top: 0,
                               left: avatarLeft + _avatarExtent * 0.55,
-                              child: avatarOverlay!,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: avatarOverlayMaxWidth,
+                                ),
+                                child: avatarOverlay!,
+                              ),
                             ),
                         ],
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
               ),

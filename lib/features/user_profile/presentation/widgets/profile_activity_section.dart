@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
@@ -81,7 +82,109 @@ class ProfileActivityChips extends StatelessWidget {
   }
 }
 
-/// Delegate pinned: chip kategori menempel di bawah bar melayang.
+/// Spacer pinned setinggi bar melayang (status bar + aksi).
+///
+/// Chip aktivitas PIN di bawah spacer ini - jangan cadangkan `topOffset`
+/// di dalam [ProfileActivityChipsHeader] (itu bikin gap besar antara chip
+/// dan item pertama, atau antara lencana dan judul).
+///
+/// Anak transparan: cover / bar melayang ProfileHeroShell tetap terlihat.
+/// Konten di bawahnya wajib dibungkus [OverlapAboveBox] supaya cover
+/// full-bleed ke status bar tanpa gap di bawah lencana.
+class ProfileBarClearanceHeader extends SliverPersistentHeaderDelegate {
+  ProfileBarClearanceHeader({required this.height});
+
+  final double height;
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => SizedBox(height: height);
+
+  @override
+  bool shouldRebuild(ProfileBarClearanceHeader oldDelegate) =>
+      oldDelegate.height != height;
+}
+
+/// Gambar anak [overlap] px ke atas (masuk spacer clearance) sambil
+/// memperpendek tinggi layout sebesar itu - hilangkan gap Lencana → judul.
+class OverlapAboveBox extends SingleChildRenderObjectWidget {
+  const OverlapAboveBox({super.key, required this.overlap, required Widget child})
+    : super(child: child);
+
+  final double overlap;
+
+  @override
+  RenderOverlapAboveBox createRenderObject(BuildContext context) =>
+      RenderOverlapAboveBox(overlap: overlap);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    RenderOverlapAboveBox renderObject,
+  ) {
+    renderObject.overlap = overlap;
+  }
+}
+
+/// Layout = tinggi anak − [overlap]; paint/hit-test anak digeser ke atas.
+class RenderOverlapAboveBox extends RenderProxyBox {
+  RenderOverlapAboveBox({required double overlap}) : _overlap = overlap;
+
+  double _overlap;
+  double get overlap => _overlap;
+  set overlap(double value) {
+    if (_overlap == value) return;
+    _overlap = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(constraints, parentUsesSize: true);
+    final childSize = child.size;
+    final lift = _overlap.clamp(0.0, childSize.height);
+    size = constraints.constrain(
+      Size(childSize.width, childSize.height - lift),
+    );
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    if (child == null) return;
+    final lift = _overlap.clamp(0.0, child!.size.height);
+    context.paintChild(child!, offset + Offset(0, -lift));
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    if (child == null) return false;
+    final lift = _overlap.clamp(0.0, child!.size.height);
+    return result.addWithPaintOffset(
+      offset: Offset(0, -lift),
+      position: position,
+      hitTest: (result, transformed) =>
+          child!.hitTest(result, position: transformed),
+    );
+  }
+}
+
+/// Delegate pinned: chip kategori (+ judul yang collapse).
+///
+/// Pin di bawah [ProfileBarClearanceHeader], bukan cadangan topOffset sendiri.
 /// Latar opaque wajib - tanpa itu item feed tembus di belakang chip.
 class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
   ProfileActivityChipsHeader({
@@ -89,7 +192,6 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
     this.title,
     // body.sm touch: fontSize 14 × height 1.25 ≈ 18 (selaras feed beranda).
     this.titleHeight = 18,
-    this.topOffset = 0,
   });
 
   final Widget child;
@@ -100,10 +202,6 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
   /// Tinggi area title untuk perhitungan collapse.
   final double titleHeight;
 
-  /// Tinggi bar melayang di atas chip (status bar + bar aksi). Chip berhenti
-  /// di bawahnya, tidak menabrak status bar.
-  final double topOffset;
-
   static const double _bottomGap = 8;
   static const double _titleGap = 8;
 
@@ -111,12 +209,11 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
       title == null ? 0.0 : titleHeight + _titleGap;
 
   @override
-  double get minExtent =>
-      topOffset + ProfileActivityChips.height + _bottomGap;
+  double get minExtent => ProfileActivityChips.height + _bottomGap;
 
   @override
   double get maxExtent =>
-      topOffset + _titleBlock + ProfileActivityChips.height + _bottomGap;
+      _titleBlock + ProfileActivityChips.height + _bottomGap;
 
   @override
   Widget build(
@@ -155,8 +252,6 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
           ),
           child: Column(
             children: [
-              // Ruang untuk bar melayang: chip berhenti di bawahnya.
-              SizedBox(height: topOffset),
               if (title != null && titleVisibleHeight > 0)
                 SizedBox(
                   height: titleVisibleHeight,
@@ -217,8 +312,7 @@ class ProfileActivityChipsHeader extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(ProfileActivityChipsHeader oldDelegate) =>
       oldDelegate.child != child ||
       oldDelegate.title != title ||
-      oldDelegate.titleHeight != titleHeight ||
-      oldDelegate.topOffset != topOffset;
+      oldDelegate.titleHeight != titleHeight;
 }
 
 /// Isi feed aktivitas sesuai filter terpilih.

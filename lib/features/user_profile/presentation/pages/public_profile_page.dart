@@ -251,77 +251,81 @@ class _ProfileBody extends HookConsumerWidget {
           controller: scroll,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverPadding(
-              // Header identitas full-bleed (cover selebar layar); gutter
-              // horizontal dipasang di dalam widget header.
-              padding: EdgeInsets.zero,
-              sliver: SliverToBoxAdapter(
+            // Clearance pinned: chip aktivitas berhenti di bawah bar melayang.
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: ProfileBarClearanceHeader(height: barOffset),
+            ),
+            SliverToBoxAdapter(
+              // Overlap ke clearance: cover full-bleed, tanpa gap di bawah lencana.
+              child: OverlapAboveBox(
+                overlap: barOffset,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header identitas bersama dengan tab Profil: beda varian
-                    // (compact), struktur dan ritme sama.
-                    ProfileIdentityHeader(
-                      variant: ProfileHeaderVariant.compact,
-                      displayName: profile.displayName,
-                      username: profile.username,
-                      avatarUrl: avatarSrc,
-                      borderUrl: borderUrl,
-                      bio: profile.bio,
-                      isVerifier: profile.isVerifier,
-                      leveling: profile.leveling == null
-                          ? null
-                          : ProfileLevelingChip(
-                              leveling: profile.leveling!,
-                              // Compact header rata kiri - jangan center chip.
-                              alignCenter: false,
-                            ),
-                      stats: ProfileStatRow(
-                        words: profile.wordsApproved,
-                        corrections: profile.correctionsApproved,
-                        alignCenter: false,
-                      ),
-                      joinedLabel: joined,
-                      onAvatarTap: isOwnProfile && !uploadingAvatar.value
-                          ? () => _showAvatarActions(
-                              context,
-                              ref,
-                              uploadingAvatar,
-                            )
-                          : canPreviewAvatar
-                          ? () => showImagePreview(context, urls: [avatarSrc])
-                          : null,
-                      avatarOverlay: JinyeProfilePreview(
+                      // Header identitas bersama dengan tab Profil: beda
+                      // varian (compact), struktur dan ritme sama.
+                      ProfileIdentityHeader(
+                        variant: ProfileHeaderVariant.compact,
+                        displayName: profile.displayName,
                         username: profile.username,
-                        isOwnProfile: isOwnProfile,
+                        avatarUrl: avatarSrc,
+                        borderUrl: borderUrl,
+                        bio: profile.bio,
+                        isVerifier: profile.isVerifier,
+                        leveling: profile.leveling == null
+                            ? null
+                            : ProfileLevelingChip(
+                                leveling: profile.leveling!,
+                                // Compact header rata kiri - jangan center.
+                                alignCenter: false,
+                              ),
+                        stats: ProfileStatRow(
+                          words: profile.wordsApproved,
+                          corrections: profile.correctionsApproved,
+                          alignCenter: false,
+                        ),
+                        joinedLabel: joined,
+                        onAvatarTap: isOwnProfile && !uploadingAvatar.value
+                            ? () => _showAvatarActions(
+                                context,
+                                ref,
+                                uploadingAvatar,
+                              )
+                            : canPreviewAvatar
+                            ? () =>
+                                  showImagePreview(context, urls: [avatarSrc])
+                            : null,
+                        avatarOverlay: JinyeProfilePreview(
+                          username: profile.username,
+                          isOwnProfile: isOwnProfile,
+                        ),
+                        actions: [
+                          if (isOwnProfile)
+                            SmallButton(
+                              label: AppLocalizations.of(
+                                context,
+                              ).profileEditAction,
+                              onPress: () => context.push('/edit-profile'),
+                            ),
+                        ],
+                        footer: ProfileAchievementTabs(
+                          username: isOwnProfile ? null : profile.username,
+                          showTitle: true,
+                          showAllButton: isOwnProfile,
+                        ),
                       ),
-                      actions: [
-                        if (isOwnProfile)
-                          SmallButton(
-                            label: AppLocalizations.of(
-                              context,
-                            ).profileEditAction,
-                            onPress: () => context.push('/edit-profile'),
-                          ),
-                      ],
-                      footer: ProfileAchievementTabs(
-                        username: isOwnProfile ? null : profile.username,
-                        showTitle: true,
-                        showAllButton: isOwnProfile,
-                      ),
-                    ),
-                    const Gap(12),
+                      const Gap(8),
                   ],
                 ),
               ),
             ),
-            // Chip kategori menempel di bawah bar melayang saat scroll.
+            // Chip pin di bawah clearance (tanpa cadangan topOffset → gap).
             SliverPersistentHeader(
               pinned: true,
               delegate: ProfileActivityChipsHeader(
-                topOffset: barOffset,
                 // body.sm + w700: sama dengan heading feed beranda; jangan
-                // body.md (line height 24) - titleHeight default 18 memotong teks.
+                // body.md (line height 24) - titleHeight default 18 memotong.
                 title: Text(
                   AppLocalizations.of(context).profileActivityRecent,
                   style: theme.typography.body.sm.copyWith(
@@ -398,6 +402,9 @@ class _ProfileBody extends HookConsumerWidget {
     if (action == 'photo') {
       await _pickAndUploadAvatar(context, ref, uploadingAvatar);
     } else if (action == 'border') {
+      // Tunggu sheet aksi avatar selesai close sebelum buka picker bingkai.
+      await Future<void>.delayed(Duration.zero);
+      if (!context.mounted) return;
       await showBorderPickerSheet(context);
     }
   }
@@ -479,21 +486,27 @@ class _PublicProfileLoadingBody extends StatelessWidget {
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: ProfileBarClearanceHeader(height: barOffset),
+          ),
           SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const ProfileIdentityHeaderSkeleton(
-                  footer: _BadgeGridSkeleton(),
-                ),
-                const Gap(12),
-              ],
+            child: OverlapAboveBox(
+              overlap: barOffset,
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ProfileIdentityHeaderSkeleton(
+                    footer: _BadgeGridSkeleton(),
+                  ),
+                  Gap(8),
+                ],
+              ),
             ),
           ),
           SliverPersistentHeader(
             pinned: true,
             delegate: ProfileActivityChipsHeader(
-              topOffset: barOffset,
               title: Text(
                 l10n.profileActivityRecent,
                 style: theme.typography.body.sm.copyWith(

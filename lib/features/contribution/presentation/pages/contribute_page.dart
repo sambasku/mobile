@@ -586,39 +586,43 @@ class _ContributePageState extends ConsumerState<ContributePage> {
           _inlineError(notifier.errorFor('lemma')),
           // Issue #170: indikator ketersediaan lemma - non-blocking.
           const _LemmaCheckIndicator(),
-          const Gap(16),
-          _FieldCaption(
-            l10n.contributePronunciationLabel,
-            info: l10n.contributePronunciationHint,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FButton(
-              variant: FButtonVariant.outline,
-              onPress: _pastePronunciation,
-              prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
-              child: Text(l10n.dictAddPronunciationPaste),
+
+          // Mode sederhana: tanpa pelafalan. Mode lengkap: tetap ada (opsional).
+          if (_advanced) ...[
+            const Gap(16),
+            _FieldCaption(
+              l10n.contributePronunciationLabel,
+              info: l10n.contributePronunciationHint,
             ),
-          ),
-          const Gap(8),
-          FTextField(
-            control: FTextFieldControl.managed(controller: _pronunciationCtrl),
-            hint: l10n.contributePronunciationFieldHint,
-            textInputAction: TextInputAction.next,
-            style: .delta(
-              contentTextStyle: .delta([
-                .all(
-                  .delta(
-                    fontFamily: GoogleFonts.charisSil().fontFamily,
-                    fontSize: theme.typography.body.md.fontSize,
-                    height: 1.3,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FButton(
+                variant: FButtonVariant.outline,
+                onPress: _pastePronunciation,
+                prefix: const Icon(FLucideIcons.clipboardPaste, size: 14),
+                child: Text(l10n.dictAddPronunciationPaste),
+              ),
+            ),
+            const Gap(8),
+            FTextField(
+              control: FTextFieldControl.managed(controller: _pronunciationCtrl),
+              hint: l10n.contributePronunciationFieldHint,
+              textInputAction: TextInputAction.next,
+              style: .delta(
+                contentTextStyle: .delta([
+                  .all(
+                    .delta(
+                      fontFamily: GoogleFonts.charisSil().fontFamily,
+                      fontSize: theme.typography.body.md.fontSize,
+                      height: 1.3,
+                    ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             ),
-          ),
-          _inlineError(notifier.errorFor('pronunciation')),
-          _inlineError(notifier.errorFor('pronunciation.value')),
+            _inlineError(notifier.errorFor('pronunciation')),
+            _inlineError(notifier.errorFor('pronunciation.value')),
+          ],
 
           if (!_advanced) ...[
             const Gap(16),
@@ -1113,7 +1117,7 @@ class _ContributePageState extends ConsumerState<ContributePage> {
       relatedWords: _advanced ? _buildRelatedWords() : const [],
       translationLanguageId: translationLanguageId,
       images: _advanced ? readySubmitImages(_images) : const [],
-      pronunciationValue: _pronunciationCtrl.text,
+      pronunciationValue: _advanced ? _pronunciationCtrl.text : null,
       searchMissId: widget.initialSearchMissId,
     );
   }

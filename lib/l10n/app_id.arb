@@ -4290,7 +4290,7 @@
   "layananCategoryEmpty": "Belum ada nomor",
   "layananPropose": "Usulkan",
   "layananProposeEdit": "Usulkan perbaikan",
-  "layananAmbulance": "Ambulans",
+  "layananAmbulance": "Ambulan",
   "layananFire": "Pemadam kebakaran",
   "layananCall": "Telepon",
   "layananCheckedOn": "Dicek {date}",
@@ -4645,12 +4645,14 @@
   "placeNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
   "placeBookmarkSoonTitle": "Bookmark tempat belum bisa dipakai",
   "placeBookmarkSoonBody": "Kami sedang berusaha membuatnya jadi lebih baik.",
-  "placeTypeSejarah": "Sejarah",
-  "placeTypeAlam": "Alam",
-  "placeTypeBudaya": "Budaya",
-  "placeTypePantai": "Pantai",
-  "placeTypeBelanja": "Belanja",
-  "placeTypeWisata": "Wisata",
+"placeTypeSejarah": "Sejarah",
+"placeTypeAlam": "Alam",
+"placeTypeReligi": "Religi",
+"placeTypeTirta": "Tirta",
+"placeTypeAgro": "Agro",
+"placeTypeBahari": "Bahari",
+"placeTypeBudaya": "Budaya",
+"placeTypeWisata": "Wisata",
   "@placeTypeWisata": {
     "description": "Label generik destinasi wisata"
   },
@@ -6620,6 +6622,16 @@
   },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
   "@achievementBorderUpdated": {},
+  "achievementBorderPickerSubtitle": "Pilih bingkai yang sudah kamu miliki",
+  "@achievementBorderPickerSubtitle": {
+    "description": "Subtitle sheet ubah bingkai profil"
+  },
+  "achievementBorderEmpty": "Kamu belum punya bingkai. Ikuti program berikutnya untuk mendapatkannya.",
+  "@achievementBorderEmpty": {
+    "description": "Empty state grid bingkai di sheet picker"
+  },
+  "achievementBorderLoadFailed": "Gagal memuat bingkai",
+  "@achievementBorderLoadFailed": {},
   "achievementLoadFailed": "Gagal memuat pencapaian",
   "@achievementLoadFailed": {},
   "achievementBorderSaveFailed": "Gagal menyimpan bingkai profil",

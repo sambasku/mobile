@@ -8,7 +8,9 @@ part 'achievement_providers.g.dart';
 /// Milik user login: owned + locked (GET /me/achievements).
 @riverpod
 Future<List<Achievement>> myAchievements(Ref ref, {String? rewardType}) async {
-  final result = await ref.watch(getMyAchievementsUseCaseProvider)(
+  // read (bukan watch): use case sync; watch memicu refetch saat repo/dio
+  // rebuild dan sheet bisa terjebak di AsyncLoading.
+  final result = await ref.read(getMyAchievementsUseCaseProvider)(
     rewardType: rewardType,
   );
   return result.match((failure) => throw failure, (items) => items);

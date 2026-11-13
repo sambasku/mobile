@@ -5,7 +5,7 @@ import '../../../../core/models/public_author_ref.dart';
 enum PlaceCategory { wisata, kuliner, budaya }
 
 /// Type hanya untuk wisata; kuliner null.
-enum PlaceType { sejarah, alam, budaya, pantai, belanja }
+enum PlaceType { sejarah, alam, religi, tirta, agro, bahari, budaya }
 
 /// Kind relasi generik. Kind di luar daftar ini di-skip parser
 /// (hidup otomatis saat article/event/umkm ship, tanpa refactor).

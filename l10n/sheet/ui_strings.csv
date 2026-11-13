@@ -1486,11 +1486,13 @@ placeSaveFailed,Gagal menyimpan. Coba lagi ya.,,
 placeSearchHint,Cari destinasi...,,
 placeSectionActions,Aksi,,
 placeSourceSection,Sumber,,
+placeTypeAgro,Agro,,
 placeTypeAlam,Alam,,
-placeTypeBelanja,Belanja,,
+placeTypeBahari,Bahari,,
 placeTypeBudaya,Budaya,,
-placeTypePantai,Pantai,,
+placeTypeReligi,Religi,,
 placeTypeSejarah,Sejarah,,
+placeTypeTirta,Tirta,,
 placeTypeWisata,Wisata,,Label generik destinasi wisata
 profileActivityEmpty,Belum ada aktivitas publik.,,Kondisi kosong aktivitas profil publik
 profileActivityEmptyFiltered,Belum ada aktivitas {filter}.,,Kondisi kosong aktivitas profil publik per filter | Pertahankan placeholder: {filter}

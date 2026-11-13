@@ -228,14 +228,16 @@ String _kindLabel(AppLocalizations l10n, PlaceProposal item) =>
     : l10n.placeProposalsKindEdit;
 
 String _typeLabel(AppLocalizations l10n, String? type) => switch (type) {
-  'sejarah' => l10n.placeTypeSejarah,
-  'alam' => l10n.placeTypeAlam,
-  'budaya' => l10n.placeTypeBudaya,
-  'pantai' => l10n.placeTypePantai,
-  'belanja' => l10n.placeTypeBelanja,
-  null || '' => '',
-  _ => type,
-};
+      'sejarah' => l10n.placeTypeSejarah,
+      'alam' => l10n.placeTypeAlam,
+      'religi' => l10n.placeTypeReligi,
+      'tirta' => l10n.placeTypeTirta,
+      'agro' => l10n.placeTypeAgro,
+      'bahari' => l10n.placeTypeBahari,
+      'budaya' => l10n.placeTypeBudaya,
+      null || '' => '',
+      _ => type,
+    };
 
 String _date(int seconds) {
   if (seconds <= 0) return '';
