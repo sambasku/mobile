@@ -6195,7 +6195,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananProposeEdit => 'Usulkan perbaikan';
 
   @override
-  String get layananAmbulance => 'Ambulans';
+  String get layananAmbulance => 'Ambulan';
 
   @override
   String get layananFire => 'Pemadam kebakaran';
@@ -9743,6 +9743,17 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
+
+  @override
+  String get achievementBorderPickerSubtitle =>
+      'Pilih bingkai yang sudah kamu miliki';
+
+  @override
+  String get achievementBorderEmpty =>
+      'Kamu belum punya bingkai. Ikuti program berikutnya untuk mendapatkannya.';
+
+  @override
+  String get achievementBorderLoadFailed => 'Gagal memuat bingkai';
 
   @override
   String get achievementLoadFailed => 'Gagal memuat pencapaian';
@@ -17006,7 +17017,7 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get layananProposeEdit => 'Usulkan perbaikan';
 
   @override
-  String get layananAmbulance => 'Ambulans';
+  String get layananAmbulance => 'Ambulan';
 
   @override
   String get layananFire => 'Pemadam kebakaran';
@@ -20554,6 +20565,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
+
+  @override
+  String get achievementBorderPickerSubtitle =>
+      'Pilih bingkai yang sudah kamu miliki';
+
+  @override
+  String get achievementBorderEmpty =>
+      'Kamu belum punya bingkai. Ikuti program berikutnya untuk mendapatkannya.';
+
+  @override
+  String get achievementBorderLoadFailed => 'Gagal memuat bingkai';
 
   @override
   String get achievementLoadFailed => 'Gagal memuat pencapaian';

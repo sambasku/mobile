@@ -177,10 +177,10 @@ void main() {
   }
 
   Future<void> submitForm(WidgetTester tester) async {
-    // 0=lemma, 1=IPA opsional, 2=terjemahan (mode standar).
+    // Mode sederhana: 0=lemma, 1=terjemahan (pelafalan disembunyikan).
     final fields = find.byType(EditableText);
-    expect(fields, findsAtLeastNWidgets(3));
-    await tester.enterText(fields.at(2), 'aktivitas makan');
+    expect(fields, findsAtLeastNWidgets(2));
+    await tester.enterText(fields.at(1), 'aktivitas makan');
     await tester.pump();
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump(const Duration(milliseconds: 400));
@@ -283,6 +283,7 @@ void main() {
     expect(find.text('Jenis'), findsOneWidget);
     expect(find.text('Dialek'), findsNothing);
     expect(find.text('Contoh'), findsNothing);
+    expect(find.text('Pelafalan (opsional)'), findsNothing);
 
     // Kembali ke atas: notice KBBI menambah tinggi, field terjemahan bisa
     // ter-unmount oleh ListView lazy kalau tetap di posisi scroll bawah.
@@ -290,9 +291,9 @@ void main() {
     await tester.pump();
 
     final fields = find.byType(EditableText);
-    expect(fields, findsAtLeastNWidgets(3));
+    expect(fields, findsAtLeastNWidgets(2));
     await tester.enterText(fields.at(0), 'makatn');
-    await tester.enterText(fields.at(2), 'makan');
+    await tester.enterText(fields.at(1), 'makan');
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -302,8 +303,8 @@ void main() {
     expect(params.wordType, 'word');
     // Mode Dasar tetap kirim dialek umum (API menolak dialect_id: null).
     expect(params.dialectId, 'd-umum');
-    // Field kosong → string kosong di params; repo strip ke null di wire.
-    expect(params.pronunciationValue ?? '', isEmpty);
+    // Mode sederhana: pelafalan tidak dikirim.
+    expect(params.pronunciationValue, isNull);
     expect(params.meanings, hasLength(1));
     expect(params.meanings.first.definition, '-');
     expect(params.meanings.first.isHaveDefinition, isFalse);
@@ -314,6 +315,48 @@ void main() {
 
     await tester.pump(const Duration(seconds: 6));
     await tester.pump(const Duration(milliseconds: 300));
+  });
+
+  testWidgets('mode Lengkap menampilkan field pelafalan', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    FlutterSecureStorage.setMockInitialValues({});
+    tallSurface(tester);
+    final dio = Dio()..httpClientAdapter = _ReferenceAdapter();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dioProvider.overrideWithValue(dio),
+          submitAnonWordUseCaseProvider.overrideWithValue(_CapturingSubmit()),
+        ],
+        child: MaterialApp(
+          theme: foruiPalettes['zinc']!.light.touch.toApproximateMaterialTheme(),
+          localizationsDelegates: [
+            ...AppLocalizations.localizationsDelegates,
+            ...FLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: const [Locale('id')],
+          locale: const Locale('id'),
+          home: FTheme(
+            data: foruiPalettes['zinc']!.light.touch,
+            child: const FToaster(child: ContributePage()),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('Pelafalan (opsional)'), findsNothing);
+    await tester.tap(find.text('Lengkap'));
+    // Swap mode ditunda Future.delayed(Duration.zero).
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.scrollUntilVisible(
+      find.text('Pelafalan (opsional)'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Pelafalan (opsional)'), findsOneWidget);
   });
 
   testWidgets('submit sukses menghapus cache L1 + invalidate detail (issue #28)', (
@@ -399,9 +442,9 @@ void main() {
     expect(store.peek(byLemmaKey), isNotNull);
 
     final fields = find.byType(EditableText);
-    expect(fields, findsAtLeastNWidgets(3));
+    expect(fields, findsAtLeastNWidgets(2));
     await tester.enterText(fields.at(0), lemma);
-    await tester.enterText(fields.at(2), 'makan');
+    await tester.enterText(fields.at(1), 'makan');
     await tester.tap(find.text('Kirim Usulan'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));

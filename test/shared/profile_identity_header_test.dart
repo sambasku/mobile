@@ -202,4 +202,30 @@ void main() {
       expect(taps, 1);
     },
   );
+
+  testWidgets(
+    'hero + overlay: avatar tetap center horizontal di layar sempit',
+    (tester) async {
+      const surfaceWidth = 390.0;
+      await _pump(
+        tester,
+        const SizedBox(
+          width: surfaceWidth,
+          child: ProfileIdentityHeader(
+            variant: ProfileHeaderVariant.hero,
+            displayName: 'Budi',
+            avatarOverlay: SizedBox(
+              width: 180,
+              height: 36,
+              child: Text('bubble-preview'),
+            ),
+          ),
+        ),
+      );
+
+      final headerBox = tester.getRect(find.byType(ProfileIdentityHeader));
+      final avatarCenter = tester.getCenter(find.byType(UserAvatar));
+      expect(avatarCenter.dx, closeTo(headerBox.center.dx, 0.5));
+    },
+  );
 }

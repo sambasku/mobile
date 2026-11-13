@@ -96,9 +96,13 @@ class _LemmaSearchPickerSheetBodyState
 
   double _sheetHeight(BuildContext context) {
     final media = MediaQuery.of(context);
+    // Ruang di atas keyboard; Padding viewInsets di LUAR SizedBox yang
+    // mengangkat sheet (bukan di dalam - itu menyusutkan Column → overflow).
     final available = media.size.height - media.viewInsets.bottom;
+    if (available <= 0) return 0;
     final target = available * 0.7;
-    return target.clamp(320.0, available);
+    final minH = available < 320 ? available : 320.0;
+    return target.clamp(minH, available);
   }
 
   Future<void> _search() async {
@@ -174,10 +178,13 @@ class _LemmaSearchPickerSheetBodyState
         !widget.excludeLemmas.contains(q.toLowerCase()) &&
         !exactHit;
 
-    return SizedBox(
-      height: _sheetHeight(context),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+    // Padding di luar: angkat seluruh sheet di atas keyboard.
+    // (Pola sama option_picker_sheet - Padding di dalam SizedBox = overflow.)
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: SizedBox(
+        height: _sheetHeight(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

@@ -11108,7 +11108,7 @@ abstract class AppLocalizations {
   /// No description provided for @layananAmbulance.
   ///
   /// In id, this message translates to:
-  /// **'Ambulans'**
+  /// **'Ambulan'**
   String get layananAmbulance;
 
   /// No description provided for @layananFire.
@@ -17170,6 +17170,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Bingkai profil diperbarui'**
   String get achievementBorderUpdated;
+
+  /// Subtitle sheet ubah bingkai profil
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bingkai yang sudah kamu miliki'**
+  String get achievementBorderPickerSubtitle;
+
+  /// Empty state grid bingkai di sheet picker
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu belum punya bingkai. Ikuti program berikutnya untuk mendapatkannya.'**
+  String get achievementBorderEmpty;
+
+  /// No description provided for @achievementBorderLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat bingkai'**
+  String get achievementBorderLoadFailed;
 
   /// No description provided for @achievementLoadFailed.
   ///
