@@ -70,7 +70,7 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
-    // Form + IPA opsional: viewport pendek melepas field terjemahan.
+    // Viewport pendek melepas field terjemahan di ListView lazy.
     tester.view.physicalSize = const Size(800, 1600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -98,10 +98,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     // Isi terjemahan dulu supaya isi form menyerupai laporan user.
-    // 0=lemma, 1=IPA opsional, 2=terjemahan.
+    // Mode sederhana: 0=lemma, 1=terjemahan (pelafalan hanya di Lengkap).
     final fields = find.byType(EditableText);
-    expect(fields, findsAtLeastNWidgets(3));
-    await tester.enterText(fields.at(2), 'makan');
+    expect(fields, findsAtLeastNWidgets(2));
+    await tester.enterText(fields.at(1), 'makan');
     await tester.pump();
     // Fokuskan field terjemahan seperti user asli (keyboard terbuka saat tap
     // chip).
