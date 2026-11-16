@@ -19191,6 +19191,12 @@ abstract class AppLocalizations {
   /// **'Pilih lemma'**
   String get jinyeLemmaPickWordTitle;
 
+  /// Intro sheet cari lemma Jinye (pola KBBI compact)
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.'**
+  String get jinyeLemmaPickWordIntro;
+
   /// Hint pencarian lemma
   ///
   /// In id, this message translates to:
@@ -19208,6 +19214,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak ada kata terverifikasi yang cocok'**
   String get jinyeLemmaPickWordNoResult;
+
+  /// Jumlah hasil cari lemma di sheet Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hasil'**
+  String jinyeLemmaPickWordCount(int count);
 
   /// Toast sukses buat lemma link
   ///

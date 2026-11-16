@@ -10897,6 +10897,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get jinyeLemmaPickWordTitle => 'Pilih lemma';
 
   @override
+  String get jinyeLemmaPickWordIntro =>
+      'Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.';
+
+  @override
   String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
 
   @override
@@ -10905,6 +10909,11 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get jinyeLemmaPickWordNoResult =>
       'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String jinyeLemmaPickWordCount(int count) {
+    return '$count hasil';
+  }
 
   @override
   String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';
@@ -22023,6 +22032,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get jinyeLemmaPickWordTitle => 'Pilih lemma';
 
   @override
+  String get jinyeLemmaPickWordIntro =>
+      'Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.';
+
+  @override
   String get jinyeLemmaPickWordHint => 'Cari kata Sambas…';
 
   @override
@@ -22031,6 +22044,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get jinyeLemmaPickWordNoResult =>
       'Tidak ada kata terverifikasi yang cocok';
+
+  @override
+  String jinyeLemmaPickWordCount(int count) {
+    return '$count hasil';
+  }
 
   @override
   String get jinyeLemmaLinkSuccess => 'Lemma ditautkan';

@@ -7642,12 +7642,23 @@
   "@jinyeLemmaSelectSpanContinue": {"description": "Lanjut ke pencarian kata"},
   "jinyeLemmaPickWordTitle": "Pilih lemma",
   "@jinyeLemmaPickWordTitle": {"description": "Judul sheet cari kata"},
+  "jinyeLemmaPickWordIntro": "Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.",
+  "@jinyeLemmaPickWordIntro": {
+    "description": "Intro sheet cari lemma Jinye (pola KBBI compact)"
+  },
   "jinyeLemmaPickWordHint": "Cari kata Sambas…",
   "@jinyeLemmaPickWordHint": {"description": "Hint pencarian lemma"},
   "jinyeLemmaPickWordEmptyHint": "Ketik lemma untuk mencari",
   "@jinyeLemmaPickWordEmptyHint": {"description": "Empty sebelum ketik query"},
   "jinyeLemmaPickWordNoResult": "Tidak ada kata terverifikasi yang cocok",
   "@jinyeLemmaPickWordNoResult": {"description": "Hasil search kosong"},
+  "jinyeLemmaPickWordCount": "{count} hasil",
+  "@jinyeLemmaPickWordCount": {
+    "description": "Jumlah hasil cari lemma di sheet Jinye",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "jinyeLemmaLinkSuccess": "Lemma ditautkan",
   "@jinyeLemmaLinkSuccess": {"description": "Toast sukses buat lemma link"},
   "jinyeLemmaLinkFailed": "Gagal menautkan lemma",
