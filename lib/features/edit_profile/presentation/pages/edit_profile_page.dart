@@ -8,6 +8,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../core/models/speaker_status.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../explore/domain/entities/region.dart';
 import '../../../explore/presentation/providers/regions_providers.dart';
@@ -26,6 +27,7 @@ class EditProfilePage extends HookConsumerWidget {
     final bio = useTextEditingController();
     final regionId = useState<String?>(null);
     final villageId = useState<String?>(null);
+    final speakerStatus = useState<SpeakerStatus?>(null);
     useListenable(username);
     useListenable(displayName);
     useListenable(bio);
@@ -42,6 +44,7 @@ class EditProfilePage extends HookConsumerWidget {
         username.text = loaded.username;
         displayName.text = loaded.displayName;
         bio.text = loaded.bio;
+        speakerStatus.value = SpeakerStatus.tryParse(loaded.speakerStatus);
         regionId.value = loaded.regionId;
         villageId.value = loaded.villageId;
       });
@@ -91,6 +94,7 @@ class EditProfilePage extends HookConsumerWidget {
           username: username.text.trim(),
           displayName: displayName.text,
           bio: bio.text,
+          speakerStatus: speakerStatus.value?.wire,
           regionId: regionId.value,
           villageId: villageId.value,
         );
@@ -198,6 +202,32 @@ class EditProfilePage extends HookConsumerWidget {
                   maxLines: 4,
                   textInputAction: .done,
                   onSubmit: canSubmit ? (_) => submit() : null,
+                ),
+                const Gap(12),
+                FTileGroup(
+                  label: Text(l10n.profileSpeakerLabel),
+                  children: [
+                    FTile(
+                      title: Text(l10n.profileSpeakerNative),
+                      enabled: !state.isSubmitting,
+                      suffix: speakerStatus.value == SpeakerStatus.native
+                          ? const Icon(FLucideIcons.check, size: 16)
+                          : null,
+                      onPress: state.isSubmitting
+                          ? null
+                          : () => speakerStatus.value = SpeakerStatus.native,
+                    ),
+                    FTile(
+                      title: Text(l10n.profileSpeakerLearner),
+                      enabled: !state.isSubmitting,
+                      suffix: speakerStatus.value == SpeakerStatus.learner
+                          ? const Icon(FLucideIcons.check, size: 16)
+                          : null,
+                      onPress: state.isSubmitting
+                          ? null
+                          : () => speakerStatus.value = SpeakerStatus.learner,
+                    ),
+                  ],
                 ),
                 const Gap(12),
                 FTileGroup(

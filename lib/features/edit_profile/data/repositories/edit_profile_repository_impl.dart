@@ -9,6 +9,7 @@ import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
 import '../models/my_profile_dto.dart';
 import '../../../../core/i18n/l10n.dart';
+import '../../../../core/models/speaker_status.dart';
 
 class EditProfileRepositoryImpl implements EditProfileRepository {
   EditProfileRepositoryImpl(this._remote);
@@ -99,6 +100,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
@@ -111,6 +113,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
           username: username,
           displayName: displayName,
           bio: bio,
+          speakerStatus: speakerStatus,
           regionId: regionId,
           villageId: villageId,
           hasReadContributionGuide: hasReadContributionGuide,
@@ -138,6 +141,7 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     username: dto.username,
     displayName: dto.displayName,
     bio: dto.bio,
+    speakerStatus: SpeakerStatus.tryParse(dto.speakerStatus),
     regionId: dto.regionId,
     villageId: dto.villageId,
     avatarUrl: dto.avatarUrl,

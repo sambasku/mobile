@@ -1,8 +1,11 @@
+import '../../../../core/models/speaker_status.dart';
+
 class MyProfile {
   const MyProfile({
     required this.username,
     required this.displayName,
     this.bio,
+    this.speakerStatus,
     this.regionId,
     this.villageId,
     this.avatarUrl,
@@ -18,6 +21,7 @@ class MyProfile {
   final String username;
   final String displayName;
   final String? bio;
+  final SpeakerStatus? speakerStatus;
   final String? regionId;
   final String? villageId;
   final String? avatarUrl;

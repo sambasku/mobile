@@ -8,6 +8,7 @@ import '../../domain/entities/username_availability.dart';
 import '../../domain/providers/edit_profile_domain_providers.dart';
 import '../models/edit_profile_state.dart';
 import '../../../../core/i18n/l10n.dart';
+import '../../../onboarding/data/speaker_status_prefs.dart';
 
 part 'edit_profile_providers.g.dart';
 
@@ -29,6 +30,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
         String username,
         String displayName,
         String bio,
+        String? speakerStatus,
         String? regionId,
         String? villageId,
       })?> load() async {
@@ -69,6 +71,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           username: profile.username,
           displayName: profile.displayName,
           bio: profile.bio ?? '',
+          speakerStatus: profile.speakerStatus?.wire,
           regionId: profile.regionId,
           villageId: profile.villageId,
         );
@@ -165,6 +168,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     required String username,
     required String displayName,
     required String bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
   }) async {
@@ -181,6 +185,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           username: username.trim(),
           displayName: displayName.trim(),
           bio: bio.trim().isEmpty ? null : bio.trim(),
+          speakerStatus: speakerStatus,
           regionId: regionId,
           villageId: villageId,
         );
@@ -199,6 +204,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     }
 
     final profile = outcome.profile!;
+    await SpeakerStatusPrefs.mirrorFromServer(profile.speakerStatus);
     await ref.read(authStatusProvider.notifier).applySessionIdentity(
           username: profile.username,
           displayName: profile.displayName,

@@ -431,6 +431,7 @@ class _IdentitySection extends ConsumerWidget {
           avatarUrl: status.avatarUrl,
           borderUrl: isAuth ? border : null,
           bio: profile?.bio,
+          speakerStatus: profile?.speakerStatus,
           isVerifier:
               profile?.isVerifier ?? (isAuth && isVerifierRole(status.role)),
           leveling: profile?.leveling == null

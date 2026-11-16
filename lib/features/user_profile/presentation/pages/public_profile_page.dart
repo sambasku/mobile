@@ -272,6 +272,7 @@ class _ProfileBody extends HookConsumerWidget {
                         avatarUrl: avatarSrc,
                         borderUrl: borderUrl,
                         bio: profile.bio,
+                        speakerStatus: profile.speakerStatus,
                         isVerifier: profile.isVerifier,
                         leveling: profile.leveling == null
                             ? null

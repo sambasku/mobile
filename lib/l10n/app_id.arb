@@ -20,6 +20,38 @@
   "onboardingNotifBody": "Kamu dapat kabar saat usulanmu disetujui. Izinkan notifikasi biar tidak ketinggalan.",
   "onboardingAllowNotif": "Izinkan notifikasi",
   "onboardingLater": "Nanti",
+  "onboardingSpeakerTitle": "Kamu penutur Sambas?",
+  "@onboardingSpeakerTitle": {
+    "description": "Judul slide onboarding status penutur/pembelajar (#258)"
+  },
+  "onboardingSpeakerBody": "Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.",
+  "@onboardingSpeakerBody": {
+    "description": "Body slide onboarding speaker status"
+  },
+  "onboardingSpeakerNative": "Penutur asli",
+  "@onboardingSpeakerNative": {
+    "description": "Pilihan onboarding: penutur asli"
+  },
+  "onboardingSpeakerLearner": "Sedang belajar",
+  "@onboardingSpeakerLearner": {
+    "description": "Pilihan onboarding: pembelajar"
+  },
+  "profileSpeakerNative": "Penutur Sambas",
+  "@profileSpeakerNative": {
+    "description": "Chip profil: penutur asli"
+  },
+  "profileSpeakerLearner": "Belajar Sambas",
+  "@profileSpeakerLearner": {
+    "description": "Chip profil: pembelajar"
+  },
+  "profileSpeakerLabel": "Status bahasa",
+  "@profileSpeakerLabel": {
+    "description": "Label field edit profil speaker status"
+  },
+  "profileSpeakerUnset": "Belum dipilih",
+  "@profileSpeakerUnset": {
+    "description": "Opsi kosong speaker status di edit profil"
+  },
   "settingsTitle": "Pengaturan",
   "settingsGroupLanguage": "Bahasa",
   "settingsLanguageTile": "Bahasa aplikasi",

@@ -46,6 +46,31 @@ class AppLocalizationsId extends AppLocalizations {
   String get onboardingLater => 'Nanti';
 
   @override
+  String get onboardingSpeakerTitle => 'Kamu penutur Sambas?';
+
+  @override
+  String get onboardingSpeakerBody =>
+      'Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.';
+
+  @override
+  String get onboardingSpeakerNative => 'Penutur asli';
+
+  @override
+  String get onboardingSpeakerLearner => 'Sedang belajar';
+
+  @override
+  String get profileSpeakerNative => 'Penutur Sambas';
+
+  @override
+  String get profileSpeakerLearner => 'Belajar Sambas';
+
+  @override
+  String get profileSpeakerLabel => 'Status bahasa';
+
+  @override
+  String get profileSpeakerUnset => 'Belum dipilih';
+
+  @override
   String get settingsTitle => 'Pengaturan';
 
   @override
@@ -11145,6 +11170,31 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get onboardingLater => 'Nanti';
+
+  @override
+  String get onboardingSpeakerTitle => 'Kamu penutur Sambas?';
+
+  @override
+  String get onboardingSpeakerBody =>
+      'Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.';
+
+  @override
+  String get onboardingSpeakerNative => 'Penutur asli';
+
+  @override
+  String get onboardingSpeakerLearner => 'Sedang belajar';
+
+  @override
+  String get profileSpeakerNative => 'Penutur Sambas';
+
+  @override
+  String get profileSpeakerLearner => 'Belajar Sambas';
+
+  @override
+  String get profileSpeakerLabel => 'Status bahasa';
+
+  @override
+  String get profileSpeakerUnset => 'Belum dipilih';
 
   @override
   String get settingsTitle => 'Pengaturan';

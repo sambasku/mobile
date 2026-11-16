@@ -6,6 +6,7 @@ import '../../domain/repositories/user_profile_repository.dart';
 import '../datasources/user_profile_remote_datasource.dart';
 import '../models/public_profile_dto.dart';
 import '../../../../core/i18n/l10n.dart';
+import '../../../../core/models/speaker_status.dart';
 
 class UserProfileRepositoryImpl implements UserProfileRepository {
   UserProfileRepositoryImpl(this._remoteDatasource);
@@ -80,6 +81,7 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
         ? dto.username
         : dto.displayName!,
     bio: dto.bio,
+    speakerStatus: SpeakerStatus.tryParse(dto.speakerStatus),
     role: dto.role,
     isVerifier: dto.isVerifier,
     joinedAt: dto.joinedAt,

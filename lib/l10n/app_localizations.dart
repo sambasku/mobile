@@ -163,6 +163,54 @@ abstract class AppLocalizations {
   /// **'Nanti'**
   String get onboardingLater;
 
+  /// Judul slide onboarding status penutur/pembelajar (#258)
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu penutur Sambas?'**
+  String get onboardingSpeakerTitle;
+
+  /// Body slide onboarding speaker status
+  ///
+  /// In id, this message translates to:
+  /// **'Biar sesama pengguna tahu: kamu penutur asli atau sedang belajar bahasa Sambas.'**
+  String get onboardingSpeakerBody;
+
+  /// Pilihan onboarding: penutur asli
+  ///
+  /// In id, this message translates to:
+  /// **'Penutur asli'**
+  String get onboardingSpeakerNative;
+
+  /// Pilihan onboarding: pembelajar
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang belajar'**
+  String get onboardingSpeakerLearner;
+
+  /// Chip profil: penutur asli
+  ///
+  /// In id, this message translates to:
+  /// **'Penutur Sambas'**
+  String get profileSpeakerNative;
+
+  /// Chip profil: pembelajar
+  ///
+  /// In id, this message translates to:
+  /// **'Belajar Sambas'**
+  String get profileSpeakerLearner;
+
+  /// Label field edit profil speaker status
+  ///
+  /// In id, this message translates to:
+  /// **'Status bahasa'**
+  String get profileSpeakerLabel;
+
+  /// Opsi kosong speaker status di edit profil
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dipilih'**
+  String get profileSpeakerUnset;
+
   /// No description provided for @settingsTitle.
   ///
   /// In id, this message translates to:

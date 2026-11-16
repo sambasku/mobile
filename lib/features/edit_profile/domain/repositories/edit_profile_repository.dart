@@ -18,6 +18,7 @@ abstract interface class EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,
