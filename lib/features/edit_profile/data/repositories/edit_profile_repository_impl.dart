@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../domain/entities/my_profile.dart';
 import '../../domain/entities/username_availability.dart';
+import '../../domain/entities/username_history_item.dart';
 import '../../domain/failures/edit_profile_failure.dart';
 import '../../domain/repositories/edit_profile_repository.dart';
 import '../datasources/edit_profile_remote_datasource.dart';
@@ -62,6 +63,38 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   }
 
   @override
+  Future<Either<EditProfileFailure, List<UsernameHistoryItem>>>
+      getUsernameHistory() async {
+    try {
+      final response = await _remote.getUsernameHistory();
+      if (response.success == false || response.data == null) {
+        return Either.left(
+          EditProfileFailure(
+            response.message ?? l10n.profileUsernameHistoryLoadFailed,
+            errorCode: response.errorCode,
+          ),
+        );
+      }
+      final items = response.data!.items
+          .map(
+            (item) => UsernameHistoryItem(
+              oldUsername: item.oldUsername,
+              newUsername: item.newUsername,
+              changedAt: DateTime.tryParse(item.changedAt) ?? DateTime.fromMillisecondsSinceEpoch(0),
+              holdUntil: DateTime.tryParse(item.holdUntil) ?? DateTime.fromMillisecondsSinceEpoch(0),
+              canReclaim: item.canReclaim,
+            ),
+          )
+          .toList();
+      return Either.right(items);
+    } on DioException catch (error) {
+      return Either.left(_mapDio(error));
+    } catch (error) {
+      return Either.left(EditProfileFailure(error.toString()));
+    }
+  }
+
+  @override
   Future<Either<EditProfileFailure, MyProfile>> updateMyProfile({
     String? username,
     String? displayName,
@@ -112,7 +145,15 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     requiresConsent: dto.requiresConsent,
     notifyStreakReminder: dto.notifyStreakReminder,
     notifyLevelUp: dto.notifyLevelUp,
+    usernameChangedAt: _parseIso(dto.usernameChangedAt),
+    usernameChangeAllowedAt: _parseIso(dto.usernameChangeAllowedAt),
+    usernameChangeCooldownDays: dto.usernameChangeCooldownDays,
   );
+
+  DateTime? _parseIso(String? raw) {
+    if (raw == null || raw.isEmpty) return null;
+    return DateTime.tryParse(raw);
+  }
 
   EditProfileFailure _mapDio(DioException error) {
     final data = error.response?.data;

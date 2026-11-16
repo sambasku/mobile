@@ -72,9 +72,38 @@ class _EditProfileRemoteDatasource implements EditProfileRemoteDatasource {
     try {
       _value = ApiResponse<UsernameAvailabilityDto>.fromJson(
         _result.data!,
-        (json) => UsernameAvailabilityDto.fromJson(
-          json as Map<String, dynamic>,
-        ),
+        (json) =>
+            UsernameAvailabilityDto.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<UsernameHistoryDto>> getUsernameHistory() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<UsernameHistoryDto>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v1/users/me/username-history',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<UsernameHistoryDto> _value;
+    try {
+      _value = ApiResponse<UsernameHistoryDto>.fromJson(
+        _result.data!,
+        (json) => UsernameHistoryDto.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

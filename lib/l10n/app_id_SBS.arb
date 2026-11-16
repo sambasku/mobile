@@ -1,4 +1,51 @@
 {
+  "profileUsernameReclaimable": "Username lama masih bisa dikembalikan",
+  "@profileUsernameReclaimable": {
+    "description": "Label status reclaimable"
+  },
+  "profileUsernameCooldown": "Username baru bisa diganti lagi setelah {when}",
+  "@profileUsernameCooldown": {
+    "description": "Pesan cooldown ganti username; when = tanggal",
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "profileUsernameHistoryAction": "Riwayat username",
+  "@profileUsernameHistoryAction": {
+    "description": "Tombol buka sheet riwayat"
+  },
+  "profileUsernameHistoryTitle": "Riwayat username",
+  "@profileUsernameHistoryTitle": {
+    "description": "Judul sheet riwayat"
+  },
+  "profileUsernameHistorySubtitle": "Hanya kamu yang melihat daftar ini",
+  "@profileUsernameHistorySubtitle": {
+    "description": "Subtitle sheet riwayat"
+  },
+  "profileUsernameHistoryEmpty": "Belum ada perubahan username",
+  "@profileUsernameHistoryEmpty": {
+    "description": "Empty state riwayat"
+  },
+  "profileUsernameHistoryRow": "{oldUsername} jadi {newUsername}",
+  "@profileUsernameHistoryRow": {
+    "description": "Baris riwayat old jadi new",
+    "placeholders": {
+      "oldUsername": { "type": "String" },
+      "newUsername": { "type": "String" }
+    }
+  },
+  "profileUsernameHistoryCanReclaim": "Masih bisa dikembalikan",
+  "@profileUsernameHistoryCanReclaim": {
+    "description": "Subtitle baris reclaimable"
+  },
+  "profileUsernameReclaimAction": "Kembalikan",
+  "@profileUsernameReclaimAction": {
+    "description": "Tombol reclaim"
+  },
+  "profileUsernameHistoryLoadFailed": "Gagal memuat riwayat username",
+  "@profileUsernameHistoryLoadFailed": {
+    "description": "Error load history"
+  },
   "@@locale": "id_SBS",
   "onboardingLanguageTitle": "Pilih bahasa",
   "onboardingLanguageBody": "Pilih bahasa antarmuka aplikasi. Kamu bisa mengubahnya kapan saja di Pengaturan.",

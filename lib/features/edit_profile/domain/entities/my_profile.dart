@@ -10,6 +10,9 @@ class MyProfile {
     this.requiresConsent = false,
     this.notifyStreakReminder = true,
     this.notifyLevelUp = true,
+    this.usernameChangedAt,
+    this.usernameChangeAllowedAt,
+    this.usernameChangeCooldownDays = 7,
   });
 
   final String username;
@@ -31,4 +34,18 @@ class MyProfile {
 
   /// Opt-in notifikasi naik level.
   final bool notifyLevelUp;
+
+  /// Terakhir ganti ke username baru (bukan reclaim).
+  final DateTime? usernameChangedAt;
+
+  /// Null = boleh ganti username sekarang (#257).
+  final DateTime? usernameChangeAllowedAt;
+
+  final int usernameChangeCooldownDays;
+
+  bool get isUsernameLocked {
+    final at = usernameChangeAllowedAt;
+    if (at == null) return false;
+    return at.isAfter(DateTime.now());
+  }
 }

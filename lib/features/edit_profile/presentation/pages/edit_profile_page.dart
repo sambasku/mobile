@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
@@ -138,16 +139,45 @@ class EditProfilePage extends HookConsumerWidget {
               children: [
                 FTextField(
                   control: .managed(controller: username),
-                  enabled: !state.isSubmitting,
+                  enabled: !state.isSubmitting && !state.isUsernameLocked,
                   label: Text(l10n.profileUsernameLabel),
                   hint: l10n.profileUsernameHint,
                   maxLength: 30,
                   textInputAction: .next,
                 ),
                 const Gap(6),
+                if (state.isUsernameLocked &&
+                    state.usernameChangeAllowedAt != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
+                      l10n.profileUsernameCooldown(
+                        _formatAllowedAt(state.usernameChangeAllowedAt!),
+                      ),
+                      style: context.theme.typography.body.sm.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ),
                 _UsernameStatusLabel(
                   status: state.usernameStatus,
                   l10n: l10n,
+                ),
+                const Gap(8),
+                FButton(
+                  variant: .outline,
+                  onPress: state.isSubmitting
+                      ? null
+                      : () => _showUsernameHistorySheet(
+                            context: context,
+                            ref: ref,
+                            usernameController: username,
+                            displayName: displayName.text,
+                            bio: bio.text,
+                            regionId: regionId.value,
+                            villageId: villageId.value,
+                          ),
+                  child: Text(l10n.profileUsernameHistoryAction),
                 ),
                 const Gap(12),
                 FTextField(
@@ -250,6 +280,10 @@ class _UsernameStatusLabel extends StatelessWidget {
           l10n.profileUsernameAvailable,
           colors.primary,
         ),
+      UsernameAvailabilityStatus.reclaimable => (
+          l10n.profileUsernameReclaimable,
+          colors.primary,
+        ),
       UsernameAvailabilityStatus.taken => (
           l10n.profileUsernameTaken,
           colors.destructive,
@@ -270,6 +304,102 @@ class _UsernameStatusLabel extends StatelessWidget {
       style: context.theme.typography.body.sm.copyWith(color: color),
     );
   }
+}
+
+String _formatAllowedAt(DateTime at) {
+  final local = at.toLocal();
+  final d = local.day.toString().padLeft(2, '0');
+  final m = local.month.toString().padLeft(2, '0');
+  final y = local.year.toString();
+  final h = local.hour.toString().padLeft(2, '0');
+  final min = local.minute.toString().padLeft(2, '0');
+  return '$d/$m/$y $h:$min';
+}
+
+Future<void> _showUsernameHistorySheet({
+  required BuildContext context,
+  required WidgetRef ref,
+  required TextEditingController usernameController,
+  required String displayName,
+  required String bio,
+  required String? regionId,
+  required String? villageId,
+}) async {
+  final notifier = ref.read(editProfileProvider.notifier);
+  await notifier.loadUsernameHistory();
+  if (!context.mounted) return;
+  final l10n = AppLocalizations.of(context);
+  final state = ref.read(editProfileProvider);
+
+  await showModalBottomSheet<void>(
+    context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
+    builder: (sheetContext) {
+      final items = state.usernameHistory;
+      return Padding(
+        padding: MediaQuery.viewInsetsOf(sheetContext),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: .min,
+            children: [
+              FTileGroup(
+                children: [
+                  FTile(
+                    title: Text(l10n.profileUsernameHistoryTitle),
+                    subtitle: Text(l10n.profileUsernameHistorySubtitle),
+                  ),
+                  if (state.isHistoryLoading)
+                    FTile(
+                      title: Text(l10n.profileUsernameHistoryAction),
+                      suffix: const FCircularProgress(size: .sm),
+                    )
+                  else if (items.isEmpty)
+                    FTile(title: Text(l10n.profileUsernameHistoryEmpty))
+                  else
+                    for (final item in items)
+                      FTile(
+                        title: Text(
+                          l10n.profileUsernameHistoryRow(
+                            item.oldUsername,
+                            item.newUsername,
+                          ),
+                        ),
+                        subtitle: item.canReclaim
+                            ? Text(l10n.profileUsernameHistoryCanReclaim)
+                            : null,
+                        suffix: item.canReclaim
+                            ? FButton(
+                                variant: .outline,
+                                onPress: () {
+                                  Navigator.of(sheetContext).pop();
+                                  usernameController.text = item.oldUsername;
+                                  ref
+                                      .read(editProfileProvider.notifier)
+                                      .onUsernameChanged(item.oldUsername);
+                                  unawaited(
+                                    ref.read(editProfileProvider.notifier).submit(
+                                          username: item.oldUsername,
+                                          displayName: displayName,
+                                          bio: bio,
+                                          regionId: regionId,
+                                          villageId: villageId,
+                                        ),
+                                  );
+                                },
+                                child: Text(l10n.profileUsernameReclaimAction),
+                              )
+                            : null,
+                      ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 int _byName(Region a, Region b) =>

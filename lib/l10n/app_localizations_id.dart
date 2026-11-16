@@ -4890,6 +4890,43 @@ class AppLocalizationsId extends AppLocalizations {
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
 
   @override
+  String get profileUsernameReclaimable =>
+      'Username lama masih bisa dikembalikan';
+
+  @override
+  String profileUsernameCooldown(String when) {
+    return 'Username baru bisa diganti lagi setelah $when';
+  }
+
+  @override
+  String get profileUsernameHistoryAction => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistoryTitle => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistorySubtitle =>
+      'Hanya kamu yang melihat daftar ini';
+
+  @override
+  String get profileUsernameHistoryEmpty => 'Belum ada perubahan username';
+
+  @override
+  String profileUsernameHistoryRow(String oldUsername, String newUsername) {
+    return '$oldUsername jadi $newUsername';
+  }
+
+  @override
+  String get profileUsernameHistoryCanReclaim => 'Masih bisa dikembalikan';
+
+  @override
+  String get profileUsernameReclaimAction => 'Kembalikan';
+
+  @override
+  String get profileUsernameHistoryLoadFailed =>
+      'Gagal memuat riwayat username';
+
+  @override
   String get profileDisplayNameLabel => 'Nama tampilan';
 
   @override
@@ -15710,6 +15747,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get profileUsernameCheckFailed => 'Gagal memeriksa username';
+
+  @override
+  String get profileUsernameReclaimable =>
+      'Username lama masih bisa dikembalikan';
+
+  @override
+  String profileUsernameCooldown(String when) {
+    return 'Username baru bisa diganti lagi setelah $when';
+  }
+
+  @override
+  String get profileUsernameHistoryAction => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistoryTitle => 'Riwayat username';
+
+  @override
+  String get profileUsernameHistorySubtitle =>
+      'Hanya kamu yang melihat daftar ini';
+
+  @override
+  String get profileUsernameHistoryEmpty => 'Belum ada perubahan username';
+
+  @override
+  String profileUsernameHistoryRow(String oldUsername, String newUsername) {
+    return '$oldUsername jadi $newUsername';
+  }
+
+  @override
+  String get profileUsernameHistoryCanReclaim => 'Masih bisa dikembalikan';
+
+  @override
+  String get profileUsernameReclaimAction => 'Kembalikan';
+
+  @override
+  String get profileUsernameHistoryLoadFailed =>
+      'Gagal memuat riwayat username';
 
   @override
   String get profileDisplayNameLabel => 'Nama tampilan';

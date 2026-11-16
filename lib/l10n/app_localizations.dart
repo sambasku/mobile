@@ -8621,6 +8621,66 @@ abstract class AppLocalizations {
   /// **'Gagal memeriksa username'**
   String get profileUsernameCheckFailed;
 
+  /// Label status reclaimable
+  ///
+  /// In id, this message translates to:
+  /// **'Username lama masih bisa dikembalikan'**
+  String get profileUsernameReclaimable;
+
+  /// Pesan cooldown ganti username; when = tanggal
+  ///
+  /// In id, this message translates to:
+  /// **'Username baru bisa diganti lagi setelah {when}'**
+  String profileUsernameCooldown(String when);
+
+  /// Tombol buka sheet riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat username'**
+  String get profileUsernameHistoryAction;
+
+  /// Judul sheet riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat username'**
+  String get profileUsernameHistoryTitle;
+
+  /// Subtitle sheet riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya kamu yang melihat daftar ini'**
+  String get profileUsernameHistorySubtitle;
+
+  /// Empty state riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada perubahan username'**
+  String get profileUsernameHistoryEmpty;
+
+  /// Baris riwayat old jadi new
+  ///
+  /// In id, this message translates to:
+  /// **'{oldUsername} jadi {newUsername}'**
+  String profileUsernameHistoryRow(String oldUsername, String newUsername);
+
+  /// Subtitle baris reclaimable
+  ///
+  /// In id, this message translates to:
+  /// **'Masih bisa dikembalikan'**
+  String get profileUsernameHistoryCanReclaim;
+
+  /// Tombol reclaim
+  ///
+  /// In id, this message translates to:
+  /// **'Kembalikan'**
+  String get profileUsernameReclaimAction;
+
+  /// Error load history
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat username'**
+  String get profileUsernameHistoryLoadFailed;
+
   /// Label kolom nama tampilan
   ///
   /// In id, this message translates to:

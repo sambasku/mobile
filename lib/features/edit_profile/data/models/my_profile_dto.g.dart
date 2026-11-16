@@ -19,6 +19,10 @@ _MyProfileDto _$MyProfileDtoFromJson(Map<String, dynamic> json) =>
       requiresConsent: json['requires_consent'] as bool? ?? false,
       notifyStreakReminder: json['notify_streak_reminder'] as bool? ?? true,
       notifyLevelUp: json['notify_level_up'] as bool? ?? true,
+      usernameChangedAt: json['username_changed_at'] as String?,
+      usernameChangeAllowedAt: json['username_change_allowed_at'] as String?,
+      usernameChangeCooldownDays:
+          (json['username_change_cooldown_days'] as num?)?.toInt() ?? 7,
     );
 
 Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
@@ -33,6 +37,9 @@ Map<String, dynamic> _$MyProfileDtoToJson(_MyProfileDto instance) =>
       'requires_consent': instance.requiresConsent,
       'notify_streak_reminder': instance.notifyStreakReminder,
       'notify_level_up': instance.notifyLevelUp,
+      'username_changed_at': instance.usernameChangedAt,
+      'username_change_allowed_at': instance.usernameChangeAllowedAt,
+      'username_change_cooldown_days': instance.usernameChangeCooldownDays,
     };
 
 _UpdateMyProfileRequestDto _$UpdateMyProfileRequestDtoFromJson(

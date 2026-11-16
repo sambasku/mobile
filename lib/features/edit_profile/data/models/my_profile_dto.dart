@@ -19,6 +19,11 @@ abstract class MyProfileDto with _$MyProfileDto {
     @Default(true)
     bool notifyStreakReminder,
     @JsonKey(name: 'notify_level_up') @Default(true) bool notifyLevelUp,
+    @JsonKey(name: 'username_changed_at') String? usernameChangedAt,
+    @JsonKey(name: 'username_change_allowed_at') String? usernameChangeAllowedAt,
+    @JsonKey(name: 'username_change_cooldown_days')
+    @Default(7)
+    int usernameChangeCooldownDays,
   }) = _MyProfileDto;
 
   factory MyProfileDto.fromJson(Map<String, dynamic> json) =>

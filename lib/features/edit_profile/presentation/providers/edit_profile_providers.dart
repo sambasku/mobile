@@ -52,6 +52,8 @@ class EditProfileNotifier extends _$EditProfileNotifier {
           isLoading: false,
           username: profile.username,
           usernameStatus: UsernameAvailabilityStatus.current,
+          usernameChangeAllowedAt: profile.usernameChangeAllowedAt,
+          clearUsernameChangeAllowedAt: profile.usernameChangeAllowedAt == null,
           clearErrorMessage: true,
         );
         // Sync handle ke sesi lokal (bisa stale setelah migrate slug).
@@ -62,6 +64,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
                 avatarUrl: profile.avatarUrl,
               ),
         );
+        unawaited(loadUsernameHistory());
         return (
           username: profile.username,
           displayName: profile.displayName,
@@ -73,8 +76,35 @@ class EditProfileNotifier extends _$EditProfileNotifier {
     );
   }
 
+  Future<void> loadUsernameHistory() async {
+    state = state.copyWith(isHistoryLoading: true);
+    final result = await ref.read(getUsernameHistoryUseCaseProvider).call();
+    if (!ref.mounted) return;
+    result.match(
+      (_) {
+        state = state.copyWith(
+          isHistoryLoading: false,
+          usernameHistory: const [],
+        );
+      },
+      (items) {
+        state = state.copyWith(
+          isHistoryLoading: false,
+          usernameHistory: items,
+        );
+      },
+    );
+  }
+
   /// Debounce cek format lokal + availability server.
   void onUsernameChanged(String raw) {
+    if (state.isUsernameLocked) {
+      state = state.copyWith(
+        usernameStatus: UsernameAvailabilityStatus.current,
+      );
+      return;
+    }
+
     final trimmed = raw.trim();
     final initial = state.username?.trim() ?? '';
 
@@ -120,7 +150,7 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       (_) {
         // Jaringan gagal: jangan kunci submit selamanya; biarkan PATCH
         // yang jadi sumber kebenaran, tapi status tetap invalid supaya
-        // user sadar cek belum selesai bersih. Ponytail: treat as invalid.
+        // user sadar cek belum selesai bersih.
         state = state.copyWith(
           usernameStatus: UsernameAvailabilityStatus.invalid,
         );
@@ -190,9 +220,12 @@ class EditProfileNotifier extends _$EditProfileNotifier {
       isSubmitting: false,
       username: profile.username,
       usernameStatus: UsernameAvailabilityStatus.current,
+      usernameChangeAllowedAt: profile.usernameChangeAllowedAt,
+      clearUsernameChangeAllowedAt: profile.usernameChangeAllowedAt == null,
       successMessage: l10n.editProfileSaveSuccess,
       clearErrorMessage: true,
     );
+    unawaited(loadUsernameHistory());
   }
 
   void clearError() {

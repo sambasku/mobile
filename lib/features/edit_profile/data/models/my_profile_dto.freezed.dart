@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MyProfileDto {
 
  String get username;@JsonKey(name: 'display_name') String get displayName; String? get bio;@JsonKey(name: 'region_id') String? get regionId;@JsonKey(name: 'village_id') String? get villageId;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'has_read_contribution_guide') bool get hasReadContributionGuide;/// True bila user belum menyetujui terms/privacy versi aktif.
-@JsonKey(name: 'requires_consent') bool get requiresConsent;@JsonKey(name: 'notify_streak_reminder') bool get notifyStreakReminder;@JsonKey(name: 'notify_level_up') bool get notifyLevelUp;
+@JsonKey(name: 'requires_consent') bool get requiresConsent;@JsonKey(name: 'notify_streak_reminder') bool get notifyStreakReminder;@JsonKey(name: 'notify_level_up') bool get notifyLevelUp;@JsonKey(name: 'username_changed_at') String? get usernameChangedAt;@JsonKey(name: 'username_change_allowed_at') String? get usernameChangeAllowedAt;@JsonKey(name: 'username_change_cooldown_days') int get usernameChangeCooldownDays;
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,20 +31,20 @@ $MyProfileDtoCopyWith<MyProfileDto> get copyWith => _$MyProfileDtoCopyWithImpl<M
 @override
 bool operator ==(Object other) {
   final _this = this as MyProfileDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.regionId, _this.regionId) || other.regionId == _this.regionId)&&(identical(other.villageId, _this.villageId) || other.villageId == _this.villageId)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.hasReadContributionGuide, _this.hasReadContributionGuide) || other.hasReadContributionGuide == _this.hasReadContributionGuide)&&(identical(other.requiresConsent, _this.requiresConsent) || other.requiresConsent == _this.requiresConsent)&&(identical(other.notifyStreakReminder, _this.notifyStreakReminder) || other.notifyStreakReminder == _this.notifyStreakReminder)&&(identical(other.notifyLevelUp, _this.notifyLevelUp) || other.notifyLevelUp == _this.notifyLevelUp));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyProfileDto&&(identical(other.username, _this.username) || other.username == _this.username)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.bio, _this.bio) || other.bio == _this.bio)&&(identical(other.regionId, _this.regionId) || other.regionId == _this.regionId)&&(identical(other.villageId, _this.villageId) || other.villageId == _this.villageId)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.hasReadContributionGuide, _this.hasReadContributionGuide) || other.hasReadContributionGuide == _this.hasReadContributionGuide)&&(identical(other.requiresConsent, _this.requiresConsent) || other.requiresConsent == _this.requiresConsent)&&(identical(other.notifyStreakReminder, _this.notifyStreakReminder) || other.notifyStreakReminder == _this.notifyStreakReminder)&&(identical(other.notifyLevelUp, _this.notifyLevelUp) || other.notifyLevelUp == _this.notifyLevelUp)&&(identical(other.usernameChangedAt, _this.usernameChangedAt) || other.usernameChangedAt == _this.usernameChangedAt)&&(identical(other.usernameChangeAllowedAt, _this.usernameChangeAllowedAt) || other.usernameChangeAllowedAt == _this.usernameChangeAllowedAt)&&(identical(other.usernameChangeCooldownDays, _this.usernameChangeCooldownDays) || other.usernameChangeCooldownDays == _this.usernameChangeCooldownDays));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as MyProfileDto;
-  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.regionId,_this.villageId,_this.avatarUrl,_this.hasReadContributionGuide,_this.requiresConsent,_this.notifyStreakReminder,_this.notifyLevelUp);
+  return Object.hash(runtimeType,_this.username,_this.displayName,_this.bio,_this.regionId,_this.villageId,_this.avatarUrl,_this.hasReadContributionGuide,_this.requiresConsent,_this.notifyStreakReminder,_this.notifyLevelUp,_this.usernameChangedAt,_this.usernameChangeAllowedAt,_this.usernameChangeCooldownDays);
 }
 
 @override
 String toString() {
   final _this = this as MyProfileDto;
-  return 'MyProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, regionId: ${_this.regionId}, villageId: ${_this.villageId}, avatarUrl: ${_this.avatarUrl}, hasReadContributionGuide: ${_this.hasReadContributionGuide}, requiresConsent: ${_this.requiresConsent}, notifyStreakReminder: ${_this.notifyStreakReminder}, notifyLevelUp: ${_this.notifyLevelUp})';
+  return 'MyProfileDto(username: ${_this.username}, displayName: ${_this.displayName}, bio: ${_this.bio}, regionId: ${_this.regionId}, villageId: ${_this.villageId}, avatarUrl: ${_this.avatarUrl}, hasReadContributionGuide: ${_this.hasReadContributionGuide}, requiresConsent: ${_this.requiresConsent}, notifyStreakReminder: ${_this.notifyStreakReminder}, notifyLevelUp: ${_this.notifyLevelUp}, usernameChangedAt: ${_this.usernameChangedAt}, usernameChangeAllowedAt: ${_this.usernameChangeAllowedAt}, usernameChangeCooldownDays: ${_this.usernameChangeCooldownDays})';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $MyProfileDtoCopyWith<$Res>  {
   factory $MyProfileDtoCopyWith(MyProfileDto value, $Res Function(MyProfileDto) _then) = _$MyProfileDtoCopyWithImpl;
 @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent,@JsonKey(name: 'notify_streak_reminder') bool notifyStreakReminder,@JsonKey(name: 'notify_level_up') bool notifyLevelUp
+ String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent,@JsonKey(name: 'notify_streak_reminder') bool notifyStreakReminder,@JsonKey(name: 'notify_level_up') bool notifyLevelUp,@JsonKey(name: 'username_changed_at') String? usernameChangedAt,@JsonKey(name: 'username_change_allowed_at') String? usernameChangeAllowedAt,@JsonKey(name: 'username_change_cooldown_days') int usernameChangeCooldownDays
 });
 
 
@@ -72,7 +72,7 @@ class _$MyProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,Object? notifyStreakReminder = null,Object? notifyLevelUp = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,Object? notifyStreakReminder = null,Object? notifyLevelUp = null,Object? usernameChangedAt = freezed,Object? usernameChangeAllowedAt = freezed,Object? usernameChangeCooldownDays = null,}) {
   return _then(MyProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -84,7 +84,10 @@ as String?,hasReadContributionGuide: null == hasReadContributionGuide ? _self.ha
 as bool,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
 as bool,notifyStreakReminder: null == notifyStreakReminder ? _self.notifyStreakReminder : notifyStreakReminder // ignore: cast_nullable_to_non_nullable
 as bool,notifyLevelUp: null == notifyLevelUp ? _self.notifyLevelUp : notifyLevelUp // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,usernameChangedAt: freezed == usernameChangedAt ? _self.usernameChangedAt : usernameChangedAt // ignore: cast_nullable_to_non_nullable
+as String?,usernameChangeAllowedAt: freezed == usernameChangeAllowedAt ? _self.usernameChangeAllowedAt : usernameChangeAllowedAt // ignore: cast_nullable_to_non_nullable
+as String?,usernameChangeCooldownDays: null == usernameChangeCooldownDays ? _self.usernameChangeCooldownDays : usernameChangeCooldownDays // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -169,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp, @JsonKey(name: 'username_changed_at')  String? usernameChangedAt, @JsonKey(name: 'username_change_allowed_at')  String? usernameChangeAllowedAt, @JsonKey(name: 'username_change_cooldown_days')  int usernameChangeCooldownDays)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp,_that.usernameChangedAt,_that.usernameChangeAllowedAt,_that.usernameChangeCooldownDays);case _:
   return orElse();
 
 }
@@ -190,10 +193,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp, @JsonKey(name: 'username_changed_at')  String? usernameChangedAt, @JsonKey(name: 'username_change_allowed_at')  String? usernameChangeAllowedAt, @JsonKey(name: 'username_change_cooldown_days')  int usernameChangeCooldownDays)  $default,) {final _that = this;
 switch (_that) {
 case _MyProfileDto():
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp,_that.usernameChangedAt,_that.usernameChangeAllowedAt,_that.usernameChangeCooldownDays);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +213,10 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username, @JsonKey(name: 'display_name')  String displayName,  String? bio, @JsonKey(name: 'region_id')  String? regionId, @JsonKey(name: 'village_id')  String? villageId, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'has_read_contribution_guide')  bool hasReadContributionGuide, @JsonKey(name: 'requires_consent')  bool requiresConsent, @JsonKey(name: 'notify_streak_reminder')  bool notifyStreakReminder, @JsonKey(name: 'notify_level_up')  bool notifyLevelUp, @JsonKey(name: 'username_changed_at')  String? usernameChangedAt, @JsonKey(name: 'username_change_allowed_at')  String? usernameChangeAllowedAt, @JsonKey(name: 'username_change_cooldown_days')  int usernameChangeCooldownDays)?  $default,) {final _that = this;
 switch (_that) {
 case _MyProfileDto() when $default != null:
-return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp);case _:
+return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.villageId,_that.avatarUrl,_that.hasReadContributionGuide,_that.requiresConsent,_that.notifyStreakReminder,_that.notifyLevelUp,_that.usernameChangedAt,_that.usernameChangeAllowedAt,_that.usernameChangeCooldownDays);case _:
   return null;
 
 }
@@ -225,7 +228,7 @@ return $default(_that.username,_that.displayName,_that.bio,_that.regionId,_that.
 @JsonSerializable()
 
 class _MyProfileDto implements MyProfileDto {
-  const _MyProfileDto({required this.username, @JsonKey(name: 'display_name') required this.displayName, this.bio, @JsonKey(name: 'region_id') this.regionId, @JsonKey(name: 'village_id') this.villageId, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'has_read_contribution_guide') this.hasReadContributionGuide = false, @JsonKey(name: 'requires_consent') this.requiresConsent = false, @JsonKey(name: 'notify_streak_reminder') this.notifyStreakReminder = true, @JsonKey(name: 'notify_level_up') this.notifyLevelUp = true});
+  const _MyProfileDto({required this.username, @JsonKey(name: 'display_name') required this.displayName, this.bio, @JsonKey(name: 'region_id') this.regionId, @JsonKey(name: 'village_id') this.villageId, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'has_read_contribution_guide') this.hasReadContributionGuide = false, @JsonKey(name: 'requires_consent') this.requiresConsent = false, @JsonKey(name: 'notify_streak_reminder') this.notifyStreakReminder = true, @JsonKey(name: 'notify_level_up') this.notifyLevelUp = true, @JsonKey(name: 'username_changed_at') this.usernameChangedAt, @JsonKey(name: 'username_change_allowed_at') this.usernameChangeAllowedAt, @JsonKey(name: 'username_change_cooldown_days') this.usernameChangeCooldownDays = 7});
   factory _MyProfileDto.fromJson(Map<String, dynamic> json) => _$MyProfileDtoFromJson(json);
 
 @override final  String username;
@@ -239,6 +242,9 @@ class _MyProfileDto implements MyProfileDto {
 @override@JsonKey(name: 'requires_consent') final  bool requiresConsent;
 @override@JsonKey(name: 'notify_streak_reminder') final  bool notifyStreakReminder;
 @override@JsonKey(name: 'notify_level_up') final  bool notifyLevelUp;
+@override@JsonKey(name: 'username_changed_at') final  String? usernameChangedAt;
+@override@JsonKey(name: 'username_change_allowed_at') final  String? usernameChangeAllowedAt;
+@override@JsonKey(name: 'username_change_cooldown_days') final  int usernameChangeCooldownDays;
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
@@ -253,18 +259,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide)&&(identical(other.requiresConsent, requiresConsent) || other.requiresConsent == requiresConsent)&&(identical(other.notifyStreakReminder, notifyStreakReminder) || other.notifyStreakReminder == notifyStreakReminder)&&(identical(other.notifyLevelUp, notifyLevelUp) || other.notifyLevelUp == notifyLevelUp));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyProfileDto&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.regionId, regionId) || other.regionId == regionId)&&(identical(other.villageId, villageId) || other.villageId == villageId)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.hasReadContributionGuide, hasReadContributionGuide) || other.hasReadContributionGuide == hasReadContributionGuide)&&(identical(other.requiresConsent, requiresConsent) || other.requiresConsent == requiresConsent)&&(identical(other.notifyStreakReminder, notifyStreakReminder) || other.notifyStreakReminder == notifyStreakReminder)&&(identical(other.notifyLevelUp, notifyLevelUp) || other.notifyLevelUp == notifyLevelUp)&&(identical(other.usernameChangedAt, usernameChangedAt) || other.usernameChangedAt == usernameChangedAt)&&(identical(other.usernameChangeAllowedAt, usernameChangeAllowedAt) || other.usernameChangeAllowedAt == usernameChangeAllowedAt)&&(identical(other.usernameChangeCooldownDays, usernameChangeCooldownDays) || other.usernameChangeCooldownDays == usernameChangeCooldownDays));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,username,displayName,bio,regionId,villageId,avatarUrl,hasReadContributionGuide,requiresConsent,notifyStreakReminder,notifyLevelUp);
+    return Object.hash(runtimeType,username,displayName,bio,regionId,villageId,avatarUrl,hasReadContributionGuide,requiresConsent,notifyStreakReminder,notifyLevelUp,usernameChangedAt,usernameChangeAllowedAt,usernameChangeCooldownDays);
 }
 
 @override
 String toString() {
-    return 'MyProfileDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, avatarUrl: $avatarUrl, hasReadContributionGuide: $hasReadContributionGuide, requiresConsent: $requiresConsent, notifyStreakReminder: $notifyStreakReminder, notifyLevelUp: $notifyLevelUp)';
+    return 'MyProfileDto(username: $username, displayName: $displayName, bio: $bio, regionId: $regionId, villageId: $villageId, avatarUrl: $avatarUrl, hasReadContributionGuide: $hasReadContributionGuide, requiresConsent: $requiresConsent, notifyStreakReminder: $notifyStreakReminder, notifyLevelUp: $notifyLevelUp, usernameChangedAt: $usernameChangedAt, usernameChangeAllowedAt: $usernameChangeAllowedAt, usernameChangeCooldownDays: $usernameChangeCooldownDays)';
 }
 
 
@@ -275,7 +281,7 @@ abstract mixin class _$MyProfileDtoCopyWith<$Res> implements $MyProfileDtoCopyWi
   factory _$MyProfileDtoCopyWith(_MyProfileDto value, $Res Function(_MyProfileDto) _then) = __$MyProfileDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent,@JsonKey(name: 'notify_streak_reminder') bool notifyStreakReminder,@JsonKey(name: 'notify_level_up') bool notifyLevelUp
+ String username,@JsonKey(name: 'display_name') String displayName, String? bio,@JsonKey(name: 'region_id') String? regionId,@JsonKey(name: 'village_id') String? villageId,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'has_read_contribution_guide') bool hasReadContributionGuide,@JsonKey(name: 'requires_consent') bool requiresConsent,@JsonKey(name: 'notify_streak_reminder') bool notifyStreakReminder,@JsonKey(name: 'notify_level_up') bool notifyLevelUp,@JsonKey(name: 'username_changed_at') String? usernameChangedAt,@JsonKey(name: 'username_change_allowed_at') String? usernameChangeAllowedAt,@JsonKey(name: 'username_change_cooldown_days') int usernameChangeCooldownDays
 });
 
 
@@ -292,7 +298,7 @@ class __$MyProfileDtoCopyWithImpl<$Res>
 
 /// Create a copy of MyProfileDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,Object? notifyStreakReminder = null,Object? notifyLevelUp = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? displayName = null,Object? bio = freezed,Object? regionId = freezed,Object? villageId = freezed,Object? avatarUrl = freezed,Object? hasReadContributionGuide = null,Object? requiresConsent = null,Object? notifyStreakReminder = null,Object? notifyLevelUp = null,Object? usernameChangedAt = freezed,Object? usernameChangeAllowedAt = freezed,Object? usernameChangeCooldownDays = null,}) {
   return _then(_MyProfileDto(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -304,7 +310,10 @@ as String?,hasReadContributionGuide: null == hasReadContributionGuide ? _self.ha
 as bool,requiresConsent: null == requiresConsent ? _self.requiresConsent : requiresConsent // ignore: cast_nullable_to_non_nullable
 as bool,notifyStreakReminder: null == notifyStreakReminder ? _self.notifyStreakReminder : notifyStreakReminder // ignore: cast_nullable_to_non_nullable
 as bool,notifyLevelUp: null == notifyLevelUp ? _self.notifyLevelUp : notifyLevelUp // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,usernameChangedAt: freezed == usernameChangedAt ? _self.usernameChangedAt : usernameChangedAt // ignore: cast_nullable_to_non_nullable
+as String?,usernameChangeAllowedAt: freezed == usernameChangeAllowedAt ? _self.usernameChangeAllowedAt : usernameChangeAllowedAt // ignore: cast_nullable_to_non_nullable
+as String?,usernameChangeCooldownDays: null == usernameChangeCooldownDays ? _self.usernameChangeCooldownDays : usernameChangeCooldownDays // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
