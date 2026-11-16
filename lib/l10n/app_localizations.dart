@@ -11375,6 +11375,480 @@ abstract class AppLocalizations {
   /// **'Ditolak'**
   String get layananStatusRejected;
 
+  /// Judul kategori Karya di hub Eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get exploreCategoryKarya;
+
+  /// Subjudul kategori Karya di hub Eksplorasi
+  ///
+  /// In id, this message translates to:
+  /// **'Musik dan film berbau Sambas'**
+  String get exploreCategoryKaryaSubtitle;
+
+  /// No description provided for @karyaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get karyaTitle;
+
+  /// No description provided for @karyaLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat karya'**
+  String get karyaLoadFailed;
+
+  /// No description provided for @karyaNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya tidak ditemukan'**
+  String get karyaNotFound;
+
+  /// No description provided for @karyaEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada karya'**
+  String get karyaEmpty;
+
+  /// No description provided for @karyaEmptyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahu lagu atau film Sambas? Kamu bisa usulkan.'**
+  String get karyaEmptyHint;
+
+  /// No description provided for @karyaEmptyFilter.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada karya yang cocok'**
+  String get karyaEmptyFilter;
+
+  /// No description provided for @karyaEmptyFilterHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba ubah filter atau cari dengan kata lain ya.'**
+  String get karyaEmptyFilterHint;
+
+  /// No description provided for @karyaSearchPlaceholder.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari judul karya...'**
+  String get karyaSearchPlaceholder;
+
+  /// No description provided for @karyaKindMusic.
+  ///
+  /// In id, this message translates to:
+  /// **'Musik'**
+  String get karyaKindMusic;
+
+  /// No description provided for @karyaKindFilm.
+  ///
+  /// In id, this message translates to:
+  /// **'Film'**
+  String get karyaKindFilm;
+
+  /// No description provided for @karyaYear.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahun'**
+  String get karyaYear;
+
+  /// No description provided for @karyaYearLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahun {year}'**
+  String karyaYearLabel(int year);
+
+  /// No description provided for @karyaCredits.
+  ///
+  /// In id, this message translates to:
+  /// **'Kredit'**
+  String get karyaCredits;
+
+  /// No description provided for @karyaAccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Akses karya'**
+  String get karyaAccess;
+
+  /// No description provided for @karyaAccessEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tautan akses'**
+  String get karyaAccessEmpty;
+
+  /// No description provided for @karyaAccessKindListen.
+  ///
+  /// In id, this message translates to:
+  /// **'Dengarkan'**
+  String get karyaAccessKindListen;
+
+  /// No description provided for @karyaAccessKindWatch.
+  ///
+  /// In id, this message translates to:
+  /// **'Tonton'**
+  String get karyaAccessKindWatch;
+
+  /// No description provided for @karyaAccessKindBuy.
+  ///
+  /// In id, this message translates to:
+  /// **'Beli'**
+  String get karyaAccessKindBuy;
+
+  /// No description provided for @karyaAccessKindRead.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca'**
+  String get karyaAccessKindRead;
+
+  /// No description provided for @karyaAccessKindStream.
+  ///
+  /// In id, this message translates to:
+  /// **'Streaming'**
+  String get karyaAccessKindStream;
+
+  /// No description provided for @karyaAccessKindOfficial.
+  ///
+  /// In id, this message translates to:
+  /// **'Situs resmi'**
+  String get karyaAccessKindOfficial;
+
+  /// No description provided for @karyaAccessKindOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaAccessKindOther;
+
+  /// No description provided for @karyaContribute.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan karya'**
+  String get karyaContribute;
+
+  /// No description provided for @karyaContributeSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim usulan'**
+  String get karyaContributeSubmit;
+
+  /// No description provided for @karyaContributeBusy.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get karyaContributeBusy;
+
+  /// No description provided for @karyaProposeSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan karya kamu sudah dikirim'**
+  String get karyaProposeSuccess;
+
+  /// No description provided for @karyaProposeEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan perbaikan'**
+  String get karyaProposeEdit;
+
+  /// No description provided for @karyaProposeAccessLink.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan tautan akses'**
+  String get karyaProposeAccessLink;
+
+  /// No description provided for @karyaProposalsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan karya saya'**
+  String get karyaProposalsTitle;
+
+  /// No description provided for @karyaProposalsEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu belum punya usulan karya'**
+  String get karyaProposalsEmpty;
+
+  /// No description provided for @karyaProposalKindNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan karya baru'**
+  String get karyaProposalKindNew;
+
+  /// No description provided for @karyaProposalKindEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaikan data karya'**
+  String get karyaProposalKindEdit;
+
+  /// No description provided for @karyaProposalKindExcerpt.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulan cuplikan'**
+  String get karyaProposalKindExcerpt;
+
+  /// No description provided for @karyaStatusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu tinjauan'**
+  String get karyaStatusPending;
+
+  /// No description provided for @karyaStatusRevision.
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu perbaikan'**
+  String get karyaStatusRevision;
+
+  /// No description provided for @karyaStatusApproved.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah tayang'**
+  String get karyaStatusApproved;
+
+  /// No description provided for @karyaStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get karyaStatusRejected;
+
+  /// No description provided for @karyaSambasSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Kaitan dengan Sambas'**
+  String get karyaSambasSection;
+
+  /// No description provided for @karyaSambasEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan kaitan'**
+  String get karyaSambasEmpty;
+
+  /// No description provided for @karyaSambasType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis kaitan'**
+  String get karyaSambasType;
+
+  /// No description provided for @karyaSambasNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan kaitan'**
+  String get karyaSambasNote;
+
+  /// No description provided for @karyaSambasNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Singkat saja, misal asal kreator atau temanya'**
+  String get karyaSambasNoteHint;
+
+  /// No description provided for @karyaSambasTypeCreatorOrigin.
+  ///
+  /// In id, this message translates to:
+  /// **'Asal kreator'**
+  String get karyaSambasTypeCreatorOrigin;
+
+  /// No description provided for @karyaSambasTypeLanguage.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get karyaSambasTypeLanguage;
+
+  /// No description provided for @karyaSambasTypeLocation.
+  ///
+  /// In id, this message translates to:
+  /// **'Lokasi'**
+  String get karyaSambasTypeLocation;
+
+  /// No description provided for @karyaSambasTypeTheme.
+  ///
+  /// In id, this message translates to:
+  /// **'Tema'**
+  String get karyaSambasTypeTheme;
+
+  /// No description provided for @karyaSambasTypeOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaSambasTypeOther;
+
+  /// No description provided for @karyaExcerptSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan'**
+  String get karyaExcerptSection;
+
+  /// No description provided for @karyaFormInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi'**
+  String get karyaFormInvalid;
+
+  /// No description provided for @karyaFormKind.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis karya'**
+  String get karyaFormKind;
+
+  /// No description provided for @karyaFormPickKind.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jenis'**
+  String get karyaFormPickKind;
+
+  /// No description provided for @karyaFormTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul'**
+  String get karyaFormTitle;
+
+  /// No description provided for @karyaFormTitleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul lagu atau film'**
+  String get karyaFormTitleHint;
+
+  /// No description provided for @karyaFormYearHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh 2019'**
+  String get karyaFormYearHint;
+
+  /// No description provided for @karyaFormAddSambas.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kaitan Sambas'**
+  String get karyaFormAddSambas;
+
+  /// No description provided for @karyaFormCreditRole.
+  ///
+  /// In id, this message translates to:
+  /// **'Peran'**
+  String get karyaFormCreditRole;
+
+  /// No description provided for @karyaFormCreditName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama'**
+  String get karyaFormCreditName;
+
+  /// No description provided for @karyaFormCreditNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama orang atau grup'**
+  String get karyaFormCreditNameHint;
+
+  /// No description provided for @karyaFormAddCredit.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah kredit'**
+  String get karyaFormAddCredit;
+
+  /// No description provided for @karyaFormAccessKind.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis tautan'**
+  String get karyaFormAccessKind;
+
+  /// No description provided for @karyaFormAccessLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Label tombol'**
+  String get karyaFormAccessLabel;
+
+  /// No description provided for @karyaFormAccessLabelHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal Dengarkan di Spotify'**
+  String get karyaFormAccessLabelHint;
+
+  /// No description provided for @karyaFormAccessUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'URL'**
+  String get karyaFormAccessUrl;
+
+  /// No description provided for @karyaFormAccessUrlHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan sumber asli (https)'**
+  String get karyaFormAccessUrlHint;
+
+  /// No description provided for @karyaFormAddAccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah tautan akses'**
+  String get karyaFormAddAccess;
+
+  /// No description provided for @karyaCreditRoleVocal.
+  ///
+  /// In id, this message translates to:
+  /// **'Vokal'**
+  String get karyaCreditRoleVocal;
+
+  /// No description provided for @karyaCreditRoleFeat.
+  ///
+  /// In id, this message translates to:
+  /// **'Feat'**
+  String get karyaCreditRoleFeat;
+
+  /// No description provided for @karyaCreditRoleSongwriter.
+  ///
+  /// In id, this message translates to:
+  /// **'Penulis lagu'**
+  String get karyaCreditRoleSongwriter;
+
+  /// No description provided for @karyaCreditRoleComposer.
+  ///
+  /// In id, this message translates to:
+  /// **'Komposer'**
+  String get karyaCreditRoleComposer;
+
+  /// No description provided for @karyaCreditRoleProducer.
+  ///
+  /// In id, this message translates to:
+  /// **'Produser'**
+  String get karyaCreditRoleProducer;
+
+  /// No description provided for @karyaCreditRoleArranger.
+  ///
+  /// In id, this message translates to:
+  /// **'Aransemen'**
+  String get karyaCreditRoleArranger;
+
+  /// No description provided for @karyaCreditRoleBandMember.
+  ///
+  /// In id, this message translates to:
+  /// **'Anggota band'**
+  String get karyaCreditRoleBandMember;
+
+  /// No description provided for @karyaCreditRoleDirector.
+  ///
+  /// In id, this message translates to:
+  /// **'Sutradara'**
+  String get karyaCreditRoleDirector;
+
+  /// No description provided for @karyaCreditRoleCast.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemeran'**
+  String get karyaCreditRoleCast;
+
+  /// No description provided for @karyaCreditRoleWriter.
+  ///
+  /// In id, this message translates to:
+  /// **'Penulis skenario'**
+  String get karyaCreditRoleWriter;
+
+  /// No description provided for @karyaCreditRoleCinematographer.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinema'**
+  String get karyaCreditRoleCinematographer;
+
+  /// No description provided for @karyaCreditRoleOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaCreditRoleOther;
+
   /// No description provided for @exploreCategoryAcara.
   ///
   /// In id, this message translates to:

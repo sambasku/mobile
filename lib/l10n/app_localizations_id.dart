@@ -6342,6 +6342,248 @@ class AppLocalizationsId extends AppLocalizations {
   String get layananStatusRejected => 'Ditolak';
 
   @override
+  String get exploreCategoryKarya => 'Karya';
+
+  @override
+  String get exploreCategoryKaryaSubtitle => 'Musik dan film berbau Sambas';
+
+  @override
+  String get karyaTitle => 'Karya';
+
+  @override
+  String get karyaLoadFailed => 'Gagal memuat karya';
+
+  @override
+  String get karyaNotFound => 'Karya tidak ditemukan';
+
+  @override
+  String get karyaEmpty => 'Belum ada karya';
+
+  @override
+  String get karyaEmptyHint => 'Tahu lagu atau film Sambas? Kamu bisa usulkan.';
+
+  @override
+  String get karyaEmptyFilter => 'Belum ada karya yang cocok';
+
+  @override
+  String get karyaEmptyFilterHint =>
+      'Coba ubah filter atau cari dengan kata lain ya.';
+
+  @override
+  String get karyaSearchPlaceholder => 'Cari judul karya...';
+
+  @override
+  String get karyaKindMusic => 'Musik';
+
+  @override
+  String get karyaKindFilm => 'Film';
+
+  @override
+  String get karyaYear => 'Tahun';
+
+  @override
+  String karyaYearLabel(int year) {
+    return 'Tahun $year';
+  }
+
+  @override
+  String get karyaCredits => 'Kredit';
+
+  @override
+  String get karyaAccess => 'Akses karya';
+
+  @override
+  String get karyaAccessEmpty => 'Belum ada tautan akses';
+
+  @override
+  String get karyaAccessKindListen => 'Dengarkan';
+
+  @override
+  String get karyaAccessKindWatch => 'Tonton';
+
+  @override
+  String get karyaAccessKindBuy => 'Beli';
+
+  @override
+  String get karyaAccessKindRead => 'Baca';
+
+  @override
+  String get karyaAccessKindStream => 'Streaming';
+
+  @override
+  String get karyaAccessKindOfficial => 'Situs resmi';
+
+  @override
+  String get karyaAccessKindOther => 'Lainnya';
+
+  @override
+  String get karyaContribute => 'Usulkan karya';
+
+  @override
+  String get karyaContributeSubmit => 'Kirim usulan';
+
+  @override
+  String get karyaContributeBusy => 'Mengirim...';
+
+  @override
+  String get karyaProposeSuccess => 'Usulan karya kamu sudah dikirim';
+
+  @override
+  String get karyaProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get karyaProposeAccessLink => 'Usulkan tautan akses';
+
+  @override
+  String get karyaProposalsTitle => 'Usulan karya saya';
+
+  @override
+  String get karyaProposalsEmpty => 'Kamu belum punya usulan karya';
+
+  @override
+  String get karyaProposalKindNew => 'Usulan karya baru';
+
+  @override
+  String get karyaProposalKindEdit => 'Perbaikan data karya';
+
+  @override
+  String get karyaProposalKindExcerpt => 'Usulan cuplikan';
+
+  @override
+  String get karyaStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get karyaStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get karyaStatusApproved => 'Sudah tayang';
+
+  @override
+  String get karyaStatusRejected => 'Ditolak';
+
+  @override
+  String get karyaSambasSection => 'Kaitan dengan Sambas';
+
+  @override
+  String get karyaSambasEmpty => 'Belum ada catatan kaitan';
+
+  @override
+  String get karyaSambasType => 'Jenis kaitan';
+
+  @override
+  String get karyaSambasNote => 'Catatan kaitan';
+
+  @override
+  String get karyaSambasNoteHint =>
+      'Singkat saja, misal asal kreator atau temanya';
+
+  @override
+  String get karyaSambasTypeCreatorOrigin => 'Asal kreator';
+
+  @override
+  String get karyaSambasTypeLanguage => 'Bahasa';
+
+  @override
+  String get karyaSambasTypeLocation => 'Lokasi';
+
+  @override
+  String get karyaSambasTypeTheme => 'Tema';
+
+  @override
+  String get karyaSambasTypeOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptSection => 'Cuplikan';
+
+  @override
+  String get karyaFormInvalid =>
+      'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
+
+  @override
+  String get karyaFormKind => 'Jenis karya';
+
+  @override
+  String get karyaFormPickKind => 'Pilih jenis';
+
+  @override
+  String get karyaFormTitle => 'Judul';
+
+  @override
+  String get karyaFormTitleHint => 'Judul lagu atau film';
+
+  @override
+  String get karyaFormYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFormAddSambas => 'Tambah kaitan Sambas';
+
+  @override
+  String get karyaFormCreditRole => 'Peran';
+
+  @override
+  String get karyaFormCreditName => 'Nama';
+
+  @override
+  String get karyaFormCreditNameHint => 'Nama orang atau grup';
+
+  @override
+  String get karyaFormAddCredit => 'Tambah kredit';
+
+  @override
+  String get karyaFormAccessKind => 'Jenis tautan';
+
+  @override
+  String get karyaFormAccessLabel => 'Label tombol';
+
+  @override
+  String get karyaFormAccessLabelHint => 'Misal Dengarkan di Spotify';
+
+  @override
+  String get karyaFormAccessUrl => 'URL';
+
+  @override
+  String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormAddAccess => 'Tambah tautan akses';
+
+  @override
+  String get karyaCreditRoleVocal => 'Vokal';
+
+  @override
+  String get karyaCreditRoleFeat => 'Feat';
+
+  @override
+  String get karyaCreditRoleSongwriter => 'Penulis lagu';
+
+  @override
+  String get karyaCreditRoleComposer => 'Komposer';
+
+  @override
+  String get karyaCreditRoleProducer => 'Produser';
+
+  @override
+  String get karyaCreditRoleArranger => 'Aransemen';
+
+  @override
+  String get karyaCreditRoleBandMember => 'Anggota band';
+
+  @override
+  String get karyaCreditRoleDirector => 'Sutradara';
+
+  @override
+  String get karyaCreditRoleCast => 'Pemeran';
+
+  @override
+  String get karyaCreditRoleWriter => 'Penulis skenario';
+
+  @override
+  String get karyaCreditRoleCinematographer => 'Sinema';
+
+  @override
+  String get karyaCreditRoleOther => 'Lainnya';
+
+  @override
   String get exploreCategoryAcara => 'Acara';
 
   @override
@@ -17199,6 +17441,248 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get layananStatusRejected => 'Ditolak';
+
+  @override
+  String get exploreCategoryKarya => 'Karya';
+
+  @override
+  String get exploreCategoryKaryaSubtitle => 'Musik dan film berbau Sambas';
+
+  @override
+  String get karyaTitle => 'Karya';
+
+  @override
+  String get karyaLoadFailed => 'Gagal memuat karya';
+
+  @override
+  String get karyaNotFound => 'Karya tidak ditemukan';
+
+  @override
+  String get karyaEmpty => 'Belum ada karya';
+
+  @override
+  String get karyaEmptyHint => 'Tahu lagu atau film Sambas? Kamu bisa usulkan.';
+
+  @override
+  String get karyaEmptyFilter => 'Belum ada karya yang cocok';
+
+  @override
+  String get karyaEmptyFilterHint =>
+      'Coba ubah filter atau cari dengan kata lain ya.';
+
+  @override
+  String get karyaSearchPlaceholder => 'Cari judul karya...';
+
+  @override
+  String get karyaKindMusic => 'Musik';
+
+  @override
+  String get karyaKindFilm => 'Film';
+
+  @override
+  String get karyaYear => 'Tahun';
+
+  @override
+  String karyaYearLabel(int year) {
+    return 'Tahun $year';
+  }
+
+  @override
+  String get karyaCredits => 'Kredit';
+
+  @override
+  String get karyaAccess => 'Akses karya';
+
+  @override
+  String get karyaAccessEmpty => 'Belum ada tautan akses';
+
+  @override
+  String get karyaAccessKindListen => 'Dengarkan';
+
+  @override
+  String get karyaAccessKindWatch => 'Tonton';
+
+  @override
+  String get karyaAccessKindBuy => 'Beli';
+
+  @override
+  String get karyaAccessKindRead => 'Baca';
+
+  @override
+  String get karyaAccessKindStream => 'Streaming';
+
+  @override
+  String get karyaAccessKindOfficial => 'Situs resmi';
+
+  @override
+  String get karyaAccessKindOther => 'Lainnya';
+
+  @override
+  String get karyaContribute => 'Usulkan karya';
+
+  @override
+  String get karyaContributeSubmit => 'Kirim usulan';
+
+  @override
+  String get karyaContributeBusy => 'Mengirim...';
+
+  @override
+  String get karyaProposeSuccess => 'Usulan karya kamu sudah dikirim';
+
+  @override
+  String get karyaProposeEdit => 'Usulkan perbaikan';
+
+  @override
+  String get karyaProposeAccessLink => 'Usulkan tautan akses';
+
+  @override
+  String get karyaProposalsTitle => 'Usulan karya saya';
+
+  @override
+  String get karyaProposalsEmpty => 'Kamu belum punya usulan karya';
+
+  @override
+  String get karyaProposalKindNew => 'Usulan karya baru';
+
+  @override
+  String get karyaProposalKindEdit => 'Perbaikan data karya';
+
+  @override
+  String get karyaProposalKindExcerpt => 'Usulan cuplikan';
+
+  @override
+  String get karyaStatusPending => 'Menunggu tinjauan';
+
+  @override
+  String get karyaStatusRevision => 'Perlu perbaikan';
+
+  @override
+  String get karyaStatusApproved => 'Sudah tayang';
+
+  @override
+  String get karyaStatusRejected => 'Ditolak';
+
+  @override
+  String get karyaSambasSection => 'Kaitan dengan Sambas';
+
+  @override
+  String get karyaSambasEmpty => 'Belum ada catatan kaitan';
+
+  @override
+  String get karyaSambasType => 'Jenis kaitan';
+
+  @override
+  String get karyaSambasNote => 'Catatan kaitan';
+
+  @override
+  String get karyaSambasNoteHint =>
+      'Singkat saja, misal asal kreator atau temanya';
+
+  @override
+  String get karyaSambasTypeCreatorOrigin => 'Asal kreator';
+
+  @override
+  String get karyaSambasTypeLanguage => 'Bahasa';
+
+  @override
+  String get karyaSambasTypeLocation => 'Lokasi';
+
+  @override
+  String get karyaSambasTypeTheme => 'Tema';
+
+  @override
+  String get karyaSambasTypeOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptSection => 'Cuplikan';
+
+  @override
+  String get karyaFormInvalid =>
+      'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
+
+  @override
+  String get karyaFormKind => 'Jenis karya';
+
+  @override
+  String get karyaFormPickKind => 'Pilih jenis';
+
+  @override
+  String get karyaFormTitle => 'Judul';
+
+  @override
+  String get karyaFormTitleHint => 'Judul lagu atau film';
+
+  @override
+  String get karyaFormYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFormAddSambas => 'Tambah kaitan Sambas';
+
+  @override
+  String get karyaFormCreditRole => 'Peran';
+
+  @override
+  String get karyaFormCreditName => 'Nama';
+
+  @override
+  String get karyaFormCreditNameHint => 'Nama orang atau grup';
+
+  @override
+  String get karyaFormAddCredit => 'Tambah kredit';
+
+  @override
+  String get karyaFormAccessKind => 'Jenis tautan';
+
+  @override
+  String get karyaFormAccessLabel => 'Label tombol';
+
+  @override
+  String get karyaFormAccessLabelHint => 'Misal Dengarkan di Spotify';
+
+  @override
+  String get karyaFormAccessUrl => 'URL';
+
+  @override
+  String get karyaFormAccessUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaFormAddAccess => 'Tambah tautan akses';
+
+  @override
+  String get karyaCreditRoleVocal => 'Vokal';
+
+  @override
+  String get karyaCreditRoleFeat => 'Feat';
+
+  @override
+  String get karyaCreditRoleSongwriter => 'Penulis lagu';
+
+  @override
+  String get karyaCreditRoleComposer => 'Komposer';
+
+  @override
+  String get karyaCreditRoleProducer => 'Produser';
+
+  @override
+  String get karyaCreditRoleArranger => 'Aransemen';
+
+  @override
+  String get karyaCreditRoleBandMember => 'Anggota band';
+
+  @override
+  String get karyaCreditRoleDirector => 'Sutradara';
+
+  @override
+  String get karyaCreditRoleCast => 'Pemeran';
+
+  @override
+  String get karyaCreditRoleWriter => 'Penulis skenario';
+
+  @override
+  String get karyaCreditRoleCinematographer => 'Sinema';
+
+  @override
+  String get karyaCreditRoleOther => 'Lainnya';
 
   @override
   String get exploreCategoryAcara => 'Acara';

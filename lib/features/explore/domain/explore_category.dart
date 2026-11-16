@@ -30,6 +30,7 @@ class ExploreCategory {
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
     'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     'layanan' => 'assets/images/explore_covers/layanan.webp',
+    'karya' => null,
     _ => null,
   };
 
@@ -40,6 +41,7 @@ class ExploreCategory {
     'kuliner' => l10n.exploreCategoryKuliner,
     'usaha' => l10n.usahaTitle,
     'layanan' => l10n.exploreCategoryLayanan,
+    'karya' => l10n.exploreCategoryKarya,
     'acara' => l10n.exploreCategoryAcara,
     'hiburan' => l10n.exploreCategoryPermainan,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopedia,
@@ -54,6 +56,7 @@ class ExploreCategory {
     'kuliner' => l10n.exploreCategoryKulinerSubtitle,
     'usaha' => l10n.exploreCategoryUsahaSubtitle,
     'layanan' => l10n.exploreCategoryLayananSubtitle,
+    'karya' => l10n.exploreCategoryKaryaSubtitle,
     'acara' => l10n.exploreCategoryAcaraSubtitle,
     'hiburan' => l10n.exploreCategoryPermainanSubtitle,
     'ensiklopedia' => l10n.exploreCategoryEnsiklopediaSubtitle,
@@ -103,8 +106,12 @@ class ExploreCategory {
       icon: FLucideIcons.phone,
       comingSoon: false,
     ),
-    // Segera
-    // Gabungan Sejarah + Kisah + Karya + Tradisi + Permainan.
+    ExploreCategory(
+      id: 'karya',
+      icon: FLucideIcons.clapperboard,
+      comingSoon: false,
+    ),
+    // Segera - gabungan Sejarah + Kisah + Tradisi + Permainan.
     ExploreCategory(id: 'komunitas', icon: FLucideIcons.users),
   ];
 

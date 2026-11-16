@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/explore_category.dart';
 import '../../../event/presentation/pages/event_list_page.dart';
 import '../../../layanan/presentation/layanan_page.dart';
+import '../../../karya/presentation/pages/karya_list_page.dart';
 import '../../../usaha/presentation/pages/usaha_list_page.dart';
 import '../pages/cuisine_list_page.dart';
 import '../pages/place_list_page.dart';
@@ -38,6 +39,8 @@ class ExploreCategoryPage extends StatelessWidget {
  ? const UsahaListPage()
         : categoryId == 'layanan'
         ? const LayananPage()
+        : categoryId == 'karya'
+        ? const KaryaListPage()
         : categoryId == 'hiburan'
         ? const PermainanListPage()
         : categoryId == 'ensiklopedia'
