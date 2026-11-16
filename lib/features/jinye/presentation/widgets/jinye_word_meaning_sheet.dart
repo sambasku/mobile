@@ -32,6 +32,7 @@ Future<String?> showJinyeWordMeaningSheet(
   JinyeLemmaLink? link,
   required bool isAuth,
   VoidCallback? onLinked,
+  String? commentId,
 }) {
   return showModalBottomSheet<String>(
     context: context,
@@ -43,6 +44,7 @@ Future<String?> showJinyeWordMeaningSheet(
       link: link,
       isAuth: isAuth,
       onLinked: onLinked,
+      commentId: commentId,
     ),
   );
 }
@@ -54,6 +56,7 @@ class _JinyeWordMeaningSheet extends ConsumerStatefulWidget {
     required this.link,
     required this.isAuth,
     this.onLinked,
+    this.commentId,
   });
 
   final String jinyeId;
@@ -61,6 +64,7 @@ class _JinyeWordMeaningSheet extends ConsumerStatefulWidget {
   final JinyeLemmaLink? link;
   final bool isAuth;
   final VoidCallback? onLinked;
+  final String? commentId;
 
   @override
   ConsumerState<_JinyeWordMeaningSheet> createState() =>
@@ -124,16 +128,20 @@ class _JinyeWordMeaningSheetState
       return;
     }
 
-    // Hanya exact lemma. Fuzzy hit disembunyikan - kalau belum ada, user
-    // boleh usul kata baru (bukan arti lemma mirip).
+    // Exact lemma ATAU matched_variant (ejaan alternatif / abbreviation).
+    // Fuzzy hit lain disembunyikan - kalau belum ada, user boleh usul kata
+    // baru (bukan arti lemma mirip).
     final search = await ref.read(searchWordsUseCaseProvider)(
       SearchWordsParams(query: q, limit: 10, searchIn: 'lemma'),
     );
     if (!mounted) return;
     final page = search.fold((_) => null, (p) => p);
-    final exact = page?.items
-        .where((i) => i.lemma.toLowerCase() == q.toLowerCase())
-        .toList();
+    final qLower = q.toLowerCase();
+    final exact = page?.items.where((i) {
+          if (i.lemma.toLowerCase() == qLower) return true;
+          final mv = i.matchedVariant?.toLowerCase();
+          return mv != null && mv == qLower;
+        }).toList();
     if (exact == null || exact.isEmpty) {
       setState(() {
         _loading = false;
@@ -190,6 +198,7 @@ class _JinyeWordMeaningSheetState
             start: widget.span.start,
             end: widget.span.end,
             wordId: word.id,
+            commentId: widget.commentId,
           );
       if (!mounted) return;
       widget.onLinked?.call();

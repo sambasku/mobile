@@ -228,7 +228,9 @@ class JinyeDetailPage extends ConsumerWidget {
                 ] else if (item.body.trim().isNotEmpty) ...[
                   JinyeLemmaBody(
                     body: item.body,
-                    links: item.lemmaLinks,
+                    links: item.lemmaLinks
+                        .where((l) => l.commentId == null)
+                        .toList(),
                     style: theme.typography.body.md,
                     onLinkLongPress: (link) => _showLemmaLinkActions(
                       context,
@@ -395,9 +397,10 @@ Future<void> _promoteExampleFromUi(
   required JinyeItem item,
 }) async {
   final l10n = AppLocalizations.of(context);
-  final initial = item.lemmaLinks.isNotEmpty
-      ? (item.lemmaLinks.first.lemma ?? '')
-      : '';
+  final opLinks =
+      item.lemmaLinks.where((l) => l.commentId == null).toList();
+  final initial =
+      opLinks.isNotEmpty ? (opLinks.first.lemma ?? '') : '';
   final word = await showJinyeWordPickerSheet(
     context,
     initialQuery: initial,

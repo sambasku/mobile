@@ -413,6 +413,8 @@ class JinyeComment {
     this.username,
     this.displayName,
     this.avatarUrl,
+    this.status = 'published',
+    this.isEdited = false,
     this.images = const [],
     this.replies = const [],
     this.upvotes = 0,
@@ -428,10 +430,17 @@ class JinyeComment {
   final String? username;
   final String? displayName;
   final String? avatarUrl;
+  final String status;
+  final bool isEdited;
   final List<JinyeImage> images;
   final List<JinyeComment> replies;
   final int upvotes;
   final int downvotes;
+
+  bool get isPublished => status == 'published';
+
+  bool isOwner(String? authUserId) =>
+      authUserId != null && userId != null && userId == authUserId;
 
   factory JinyeComment.fromJson(Map<String, dynamic> json) {
     final imagesRaw = json['images'];
@@ -446,6 +455,8 @@ class JinyeComment {
       username: json['username'] as String?,
       displayName: json['display_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      status: json['status'] as String? ?? 'published',
+      isEdited: json['is_edited'] == true,
       images: imagesRaw is List
           ? imagesRaw
               .whereType<Map>()

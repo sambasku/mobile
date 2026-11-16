@@ -43,6 +43,7 @@ class ThreadMessageRow extends StatelessWidget {
     this.editedLabel,
     this.onShowEditHistory,
     this.media,
+    this.bodyWidget,
     this.footer,
     this.highlighted = false,
   });
@@ -86,6 +87,9 @@ class ThreadMessageRow extends StatelessWidget {
 
   /// Konten di bawah body (mis. player audio balasan).
   final Widget? media;
+
+  /// Ganti [MentionBodyText] bila body non-empty (mis. [JinyeLemmaBody]).
+  final Widget? bodyWidget;
 
   /// Konten di bawah body (mis. [VoteButtons]).
   final Widget? footer;
@@ -176,18 +180,20 @@ class ThreadMessageRow extends StatelessWidget {
               ],
               const Gap(3),
               if (body.trim().isNotEmpty)
-                MentionBodyText(
-                  body: body,
-                  isRedacted: isRedacted,
-                  onMentionTap: onMentionTap,
-                  style: theme.typography.body.sm.copyWith(
-                    height: 1.35,
-                    fontStyle: isRedacted ? FontStyle.italic : FontStyle.normal,
-                    color: isRedacted
-                        ? theme.colors.mutedForeground
-                        : theme.colors.foreground,
-                  ),
-                ),
+                bodyWidget ??
+                    MentionBodyText(
+                      body: body,
+                      isRedacted: isRedacted,
+                      onMentionTap: onMentionTap,
+                      style: theme.typography.body.sm.copyWith(
+                        height: 1.35,
+                        fontStyle:
+                            isRedacted ? FontStyle.italic : FontStyle.normal,
+                        color: isRedacted
+                            ? theme.colors.mutedForeground
+                            : theme.colors.foreground,
+                      ),
+                    ),
               if (media != null) ...[
                 if (body.trim().isNotEmpty) const Gap(6),
                 media!,
