@@ -266,6 +266,16 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                 context.push(BalehoRouter.history.path);
               },
             ),
+            FHeaderAction(
+              icon: const Icon(
+                FLucideIcons.refreshCw,
+                size: kHeaderActionIconSize,
+              ),
+              onPress: () {
+                ref.invalidate(balehoBoardProvider(1));
+                ref.invalidate(balehoBoardProvider(2));
+              },
+            ),
             const ThemeToggleHeaderAction(),
           ],
         ),
@@ -484,50 +494,75 @@ class _SlideBody extends ConsumerWidget {
   final BalehoSelectionChanged? onSelectionChanged;
   final BalehoCellTap onPlacementTap;
 
+  Future<void> _refresh(WidgetRef ref) async {
+    ref.invalidate(balehoBoardProvider(slide));
+    await ref.read(balehoBoardProvider(slide).future);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(balehoBoardProvider(slide));
     final l10n = AppLocalizations.of(context);
 
-    return async.when(
-      loading: () => const Center(child: FCircularProgress()),
-      error: (_, _) => Center(child: Text(l10n.balehoLoadFailed)),
-      data: (raw) {
-        final board = slide == 2
-            ? balehoBoardWithSlide2Fixed(
-                raw,
-                labels: BalehoSlide2Labels(
-                  weeklyTitle: l10n.balehoWeeklyLeaderboardTitle,
-                  weeklyCta: l10n.balehoWeeklyLeaderboardCta,
-                  usahaTitle: l10n.balehoSlide2UsahaTitle,
-                  usahaCta: l10n.balehoSlide2UsahaCta,
-                  acaraTitle: l10n.balehoSlide2AcaraTitle,
-                  acaraCta: l10n.balehoSlide2AcaraCta,
-                  wisataTitle: l10n.balehoSlide2WisataTitle,
-                  wisataCta: l10n.balehoSlide2WisataCta,
-                  karyaTitle: l10n.balehoSlide2KaryaTitle,
-                  karyaCta: l10n.balehoSlide2KaryaCta,
-                  ensiklopediaTitle: l10n.balehoSlide2EnsiklopediaTitle,
-                  ensiklopediaCta: l10n.balehoSlide2EnsiklopediaCta,
-                  kamusTitle: l10n.balehoSlide2KamusTitle,
-                  kamusCta: l10n.balehoSlide2KamusCta,
-                ),
-              )
-            : raw;
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: BalehoGrid(
-              board: board,
-              sellable: sellable,
-              selection: selection,
-              onSelectionChanged: onSelectionChanged,
-              onPlacementTap: onPlacementTap,
+    return RefreshIndicator(
+      onRefresh: () => _refresh(ref),
+      child: async.when(
+        skipLoadingOnReload: true,
+        loading: () => ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            SizedBox(height: 160, child: Center(child: FCircularProgress())),
+          ],
+        ),
+        error: (_, _) => ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            SizedBox(
+              height: 160,
+              child: Center(child: Text(l10n.balehoLoadFailed)),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+        data: (raw) {
+          final board = slide == 2
+              ? balehoBoardWithSlide2Fixed(
+                  raw,
+                  labels: BalehoSlide2Labels(
+                    weeklyTitle: l10n.balehoWeeklyLeaderboardTitle,
+                    weeklyCta: l10n.balehoWeeklyLeaderboardCta,
+                    usahaTitle: l10n.balehoSlide2UsahaTitle,
+                    usahaCta: l10n.balehoSlide2UsahaCta,
+                    acaraTitle: l10n.balehoSlide2AcaraTitle,
+                    acaraCta: l10n.balehoSlide2AcaraCta,
+                    wisataTitle: l10n.balehoSlide2WisataTitle,
+                    wisataCta: l10n.balehoSlide2WisataCta,
+                    karyaTitle: l10n.balehoSlide2KaryaTitle,
+                    karyaCta: l10n.balehoSlide2KaryaCta,
+                    ensiklopediaTitle: l10n.balehoSlide2EnsiklopediaTitle,
+                    ensiklopediaCta: l10n.balehoSlide2EnsiklopediaCta,
+                    kamusTitle: l10n.balehoSlide2KamusTitle,
+                    kamusCta: l10n.balehoSlide2KamusCta,
+                  ),
+                )
+              : raw;
+          return ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: BalehoGrid(
+                  board: board,
+                  sellable: sellable,
+                  selection: selection,
+                  onSelectionChanged: onSelectionChanged,
+                  onPlacementTap: onPlacementTap,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

@@ -120,91 +120,113 @@ class _HistoryList extends ConsumerWidget {
     final theme = context.theme;
     final async = ref.watch(_balehoHistoryProvider);
 
+    Future<void> refresh() async {
+      ref.invalidate(_balehoHistoryProvider);
+      await ref.read(_balehoHistoryProvider.future);
+    }
+
     return async.when(
+      skipLoadingOnReload: true,
       loading: () => const Center(child: FCircularProgress()),
-      error: (_, _) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.balehoHistoryLoadFailed,
-                textAlign: TextAlign.center,
-                style: theme.typography.body.sm,
+      error: (_, _) => RefreshIndicator(
+        onRefresh: refresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.balehoHistoryLoadFailed,
+                    textAlign: TextAlign.center,
+                    style: theme.typography.body.sm,
+                  ),
+                  const Gap(12),
+                  FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: () => ref.invalidate(_balehoHistoryProvider),
+                    child: Text(l10n.commonRetry),
+                  ),
+                ],
               ),
-              const Gap(12),
-              FButton(
-                variant: FButtonVariant.outline,
-                onPress: () => ref.invalidate(_balehoHistoryProvider),
-                child: Text(l10n.commonRetry),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       data: (items) {
         if (items.isEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                l10n.balehoHistoryEmpty,
-                textAlign: TextAlign.center,
-                style: theme.typography.body.sm.copyWith(
-                  color: theme.colors.mutedForeground,
-                ),
-              ),
-            ),
-          );
-        }
-        return ListView.separated(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
-          itemCount: items.length,
-          separatorBuilder: (_, _) => const Gap(8),
-          itemBuilder: (context, index) {
-            final item = items[index];
-            final title = (item.title?.trim().isNotEmpty ?? false)
-                ? item.title!.trim()
-                : l10n.balehoHistoryUntitled;
-            final size = '${item.w}x${item.h}';
-            final pos = l10n.balehoHistoryPosition(
-              size,
-              item.col + 1,
-              item.row + 1,
-            );
-            return FTileGroup(
+          return RefreshIndicator(
+            onRefresh: refresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                FTile(
-                  prefix: item.mediaUrl != null && item.mediaUrl!.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.network(
-                            item.mediaUrl!,
-                            width: 40,
-                            height: 40,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Icon(
-                              FLucideIcons.image,
-                              size: 20,
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        )
-                      : Icon(
-                          FLucideIcons.layoutGrid,
-                          size: 20,
-                          color: theme.colors.primary,
-                        ),
-                  title: Text(title),
-                  subtitle: Text(
-                    '${_statusLabel(l10n, item.status)} · $pos\n'
-                    '${formatDateTime(item.createdAt)}',
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    l10n.balehoHistoryEmpty,
+                    textAlign: TextAlign.center,
+                    style: theme.typography.body.sm.copyWith(
+                      color: theme.colors.mutedForeground,
+                    ),
                   ),
                 ),
               ],
-            );
-          },
+            ),
+          );
+        }
+        return RefreshIndicator(
+          onRefresh: refresh,
+          child: ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+            itemCount: items.length,
+            separatorBuilder: (_, _) => const Gap(8),
+            itemBuilder: (context, index) {
+              final item = items[index];
+              final title = (item.title?.trim().isNotEmpty ?? false)
+                  ? item.title!.trim()
+                  : l10n.balehoHistoryUntitled;
+              final size = '${item.w}x${item.h}';
+              final pos = l10n.balehoHistoryPosition(
+                size,
+                item.col + 1,
+                item.row + 1,
+              );
+              return FTileGroup(
+                children: [
+                  FTile(
+                    prefix: item.mediaUrl != null && item.mediaUrl!.isNotEmpty
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Image.network(
+                              item.mediaUrl!,
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => Icon(
+                                FLucideIcons.image,
+                                size: 20,
+                                color: theme.colors.mutedForeground,
+                              ),
+                            ),
+                          )
+                        : Icon(
+                            FLucideIcons.layoutGrid,
+                            size: 20,
+                            color: theme.colors.primary,
+                          ),
+                    title: Text(title),
+                    subtitle: Text(
+                      '${_statusLabel(l10n, item.status)} · $pos\n'
+                      '${formatDateTime(item.createdAt)}',
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         );
       },
     );
