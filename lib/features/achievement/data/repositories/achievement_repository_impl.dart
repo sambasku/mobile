@@ -107,6 +107,7 @@ class AchievementRepositoryImpl implements AchievementRepository {
             current: dto.progress!.current,
             target: dto.progress!.target,
           ),
+    repeatCount: dto.repeatCount,
   );
 
   AchievementFailure _mapDio(DioException error) {

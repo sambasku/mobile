@@ -325,11 +325,23 @@ abstract class AppLocalizations {
   /// **'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.'**
   String get balehoSlidePromoBody;
 
-  /// Baris tarif di bottom sheet promo Baleho
+  /// Baris tarif di bottom sheet promo Baleho (qty x slide)
   ///
   /// In id, this message translates to:
-  /// **'Tarif: 1x1 / hari = Rp {amount}'**
+  /// **'Tarif: 1x1 / hari / slide = Rp {amount}'**
   String balehoPricingUnitLine(String amount);
+
+  /// Estimasi biaya pesan Baleho di form book
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)'**
+  String balehoQuoteEstimate(String amount, int cells, int days, int slides);
+
+  /// Placeholder saat tarif Baleho masih di-fetch
+  ///
+  /// In id, this message translates to:
+  /// **'Menghitung estimasi…'**
+  String get balehoQuoteEstimateLoading;
 
   /// Label aksesibilitas tombol info caption promo Baleho
   ///
@@ -360,6 +372,102 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.'**
   String get balehoWeeklyLeaderboardComingSoonBody;
+
+  /// Tab papan peringkat minggu berjalan
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini'**
+  String get balehoLeaderboardTabCurrent;
+
+  /// Tab riwayat snapshot minggu lalu
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat'**
+  String get balehoLeaderboardTabHistory;
+
+  /// Label pemilih week_id riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minggu'**
+  String get balehoLeaderboardPickWeek;
+
+  /// Label minggu ISO di header daftar
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu {weekId}'**
+  String balehoLeaderboardWeekLabel(String weekId);
+
+  /// Reset minggu pada tanggal tetap (sudah lewat / fallback)
+  ///
+  /// In id, this message translates to:
+  /// **'Reset {datetime}'**
+  String balehoLeaderboardResetsAt(String datetime);
+
+  /// Countdown reset kurang dari satu menit
+  ///
+  /// In id, this message translates to:
+  /// **'Reset sebentar lagi'**
+  String get balehoLeaderboardResetsSoon;
+
+  /// No description provided for @balehoLeaderboardResetsInDaysHours.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset dalam {days} hari {hours} jam'**
+  String balehoLeaderboardResetsInDaysHours(int days, int hours);
+
+  /// No description provided for @balehoLeaderboardResetsInHoursMinutes.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset dalam {hours} jam {minutes} menit'**
+  String balehoLeaderboardResetsInHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @balehoLeaderboardResetsInMinutes.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset dalam {minutes} menit'**
+  String balehoLeaderboardResetsInMinutes(int minutes);
+
+  /// No description provided for @balehoLeaderboardRank.
+  ///
+  /// In id, this message translates to:
+  /// **'#{rank}'**
+  String balehoLeaderboardRank(int rank);
+
+  /// No description provided for @balehoLeaderboardScoreCombined.
+  ///
+  /// In id, this message translates to:
+  /// **'{score} poin'**
+  String balehoLeaderboardScoreCombined(int score);
+
+  /// No description provided for @balehoLeaderboardScoreBreakdown.
+  ///
+  /// In id, this message translates to:
+  /// **'+{contrib} kontrib · +{verif} verif'**
+  String balehoLeaderboardScoreBreakdown(int contrib, int verif);
+
+  /// Badge kecil pada entry verifikator
+  ///
+  /// In id, this message translates to:
+  /// **'Verifikator'**
+  String get balehoLeaderboardVerifierBadge;
+
+  /// Empty state minggu berjalan
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada peringkat minggu ini.'**
+  String get balehoLeaderboardEmpty;
+
+  /// Riwayat CDN 404 atau daftar kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Snapshot minggu ini belum ada.'**
+  String get balehoLeaderboardHistoryEmpty;
+
+  /// Error muat papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat peringkat.'**
+  String get balehoLeaderboardLoadFailed;
 
   /// No description provided for @balehoSlotAvailable.
   ///
@@ -13497,6 +13605,54 @@ abstract class AppLocalizations {
   /// **'sejarah, istana, budaya'**
   String get encyclopediaFieldTagsPlaceholder;
 
+  /// Label field opsional link sumber usulan artikel
+  ///
+  /// In id, this message translates to:
+  /// **'Link sumber'**
+  String get encyclopediaFieldSourceUrl;
+
+  /// Hint field link sumber usulan artikel
+  ///
+  /// In id, this message translates to:
+  /// **'https:// (opsional)'**
+  String get encyclopediaFieldSourceUrlHint;
+
+  /// Validasi link sumber usulan artikel harus https
+  ///
+  /// In id, this message translates to:
+  /// **'Link sumber harus diawali https://'**
+  String get encyclopediaFieldSourceUrlHttpsRequired;
+
+  /// Badge status usulan ensiklopedia needs_revision
+  ///
+  /// In id, this message translates to:
+  /// **'Perlu revisi'**
+  String get encyclopediaStatusNeedsRevision;
+
+  /// Judul form saat mengedit usulan yang belum diverifikasi
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah Usulan'**
+  String get encyclopediaContributeUpdateTitle;
+
+  /// CTA footer saat mengedit usulan pending
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan Perubahan'**
+  String get encyclopediaUpdateButton;
+
+  /// Toast/sheet gagal PATCH usulan ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan perubahan usulan'**
+  String get encyclopediaUpdateFailed;
+
+  /// Error buka form edit usulan tanpa payload
+  ///
+  /// In id, this message translates to:
+  /// **'Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.'**
+  String get encyclopediaEditContributionMissing;
+
   /// No description provided for @encyclopediaFieldBody.
   ///
   /// In id, this message translates to:
@@ -19130,6 +19286,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat lainnya'**
   String get achievementSeeMore;
+
+  /// Pengulangan lencana peringkat mingguan (juara ×3)
+  ///
+  /// In id, this message translates to:
+  /// **'×{count}'**
+  String achievementRepeatCount(int count);
 
   /// No description provided for @achievementBorderUpdated.
   ///

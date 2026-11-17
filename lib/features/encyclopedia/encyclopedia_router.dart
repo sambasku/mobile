@@ -70,7 +70,11 @@ class EncyclopediaRouter {
       name: contribute.name,
       builder: (context, state) {
         final articleSlug = state.uri.queryParameters['article_slug'];
-        return EncyclopediaContributionPage(articleSlug: articleSlug);
+        final contributionId = state.uri.queryParameters['contribution_id'];
+        return EncyclopediaContributionPage(
+          articleSlug: articleSlug,
+          contributionId: contributionId,
+        );
       },
     ),
     GoRoute(

@@ -31,6 +31,7 @@ class BalehoCreativeSummary {
     required this.fingerprint,
     this.title,
     this.mediaUrl,
+    this.frameCount = 1,
     this.lastReferralUsername,
   });
 
@@ -38,6 +39,7 @@ class BalehoCreativeSummary {
   final String fingerprint;
   final String? title;
   final String? mediaUrl;
+  final int frameCount;
   final String? lastReferralUsername;
 
   factory BalehoCreativeSummary.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class BalehoCreativeSummary {
       fingerprint: '${json['fingerprint'] ?? ''}',
       title: json['title'] as String?,
       mediaUrl: json['media_url'] as String?,
+      frameCount: (json['frame_count'] as num?)?.toInt() ?? 1,
       lastReferralUsername: json['last_referral_username'] as String?,
     );
   }

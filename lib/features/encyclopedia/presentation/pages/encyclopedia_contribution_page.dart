@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/state/local_form_draft_store.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
 import '../../data/encyclopedia_providers.dart';
 import '../../domain/encyclopedia.entity.dart';
@@ -17,8 +18,17 @@ import '../utils/encyclopedia_auth.dart';
 import '../utils/encyclopedia_back.dart';
 
 class EncyclopediaContributionPage extends ConsumerStatefulWidget {
-  const EncyclopediaContributionPage({super.key, this.articleSlug});
+  const EncyclopediaContributionPage({
+    super.key,
+    this.articleSlug,
+    this.contributionId,
+  });
+
+  /// Mode usul perbaikan artikel published (query `article_slug`).
   final String? articleSlug;
+
+  /// Mode ubah usulan yang belum diverifikasi (query `contribution_id`).
+  final String? contributionId;
 
   @override
   ConsumerState<EncyclopediaContributionPage> createState() =>
@@ -30,17 +40,23 @@ class _EncyclopediaContributionPageState
     with LocalDraftKeeper<_EncyclopediaDraft> {
   final _titleController = TextEditingController();
   final _tagsController = TextEditingController();
+  final _sourceUrlController = TextEditingController();
   String _bodyMd = '';
   String? _categoryId;
 
-  /// ULID artikel target (mode edit). Jangan kirim slug di article_id.
+  /// ULID artikel target (mode edit artikel published).
   String? _articleId;
+
   bool _prefilled = false;
   bool _submitting = false;
   bool _authChecked = false;
 
+  bool get _isEditingContribution =>
+      widget.contributionId != null && widget.contributionId!.isNotEmpty;
+
   @override
-  String get draftKey => 'ensiklopedia:${widget.articleSlug ?? 'new'}';
+  String get draftKey =>
+      'ensiklopedia:${widget.contributionId ?? widget.articleSlug ?? 'new'}';
 
   @override
   bool get draftHasContent => captureDraft().hasContent;
@@ -50,6 +66,7 @@ class _EncyclopediaContributionPageState
     _articleId,
     _titleController.text,
     _tagsController.text,
+    _sourceUrlController.text,
     _bodyMd,
     _categoryId,
   ].join('\u0001');
@@ -59,6 +76,7 @@ class _EncyclopediaContributionPageState
     articleId: _articleId,
     title: _titleController.text,
     tags: _tagsController.text,
+    sourceUrl: _sourceUrlController.text,
     bodyMd: _bodyMd,
     categoryId: _categoryId,
   );
@@ -68,6 +86,7 @@ class _EncyclopediaContributionPageState
     _articleId = draft.articleId;
     _titleController.text = draft.title;
     _tagsController.text = draft.tags;
+    _sourceUrlController.text = draft.sourceUrl;
     _bodyMd = draft.bodyMd;
     _categoryId = draft.categoryId;
     if (draft.articleId != null || draft.hasContent) {
@@ -101,6 +120,7 @@ class _EncyclopediaContributionPageState
     flushLocalDraft();
     _titleController.dispose();
     _tagsController.dispose();
+    _sourceUrlController.dispose();
     super.dispose();
   }
 
@@ -149,7 +169,38 @@ class _EncyclopediaContributionPageState
     _bodyMd = article.bodyMd;
     _categoryId = article.category.id;
     _tagsController.text = article.tags.join(', ');
+    _sourceUrlController.text = article.sourceUrl ?? '';
     sealDraftBaseline();
+  }
+
+  void _applyContribution(MyContributionItem item) {
+    _prefilled = true;
+    _articleId = item.articleId;
+    final p = item.payload;
+    if (p != null) {
+      _titleController.text = p.title;
+      _bodyMd = p.bodyMd;
+      _categoryId = p.categoryId;
+      _tagsController.text = p.tags.join(', ');
+      _sourceUrlController.text = p.sourceUrl ?? '';
+    }
+    sealDraftBaseline();
+  }
+
+  Map<String, dynamic> _payloadBody() {
+    final source = _sourceUrlController.text.trim();
+    return {
+      'title': _titleController.text.trim(),
+      'excerpt': '',
+      'body_md': _bodyMd.trim(),
+      'category_id': _categoryId!,
+      'tags': _tagsController.text
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList(),
+      if (source.isNotEmpty) 'source_url': source,
+    };
   }
 
   Future<void> _submit() async {
@@ -163,8 +214,40 @@ class _EncyclopediaContributionPageState
       showFToast(context: context, title: Text(l10n.encyclopediaFieldRequired));
       return;
     }
-    final isEdit = widget.articleSlug != null;
-    if (isEdit && (_articleId == null || _articleId!.isEmpty)) {
+    final source = _sourceUrlController.text.trim();
+    if (source.isNotEmpty && !source.startsWith('https://')) {
+      showFToast(
+        context: context,
+        title: Text(l10n.encyclopediaFieldSourceUrlHttpsRequired),
+      );
+      return;
+    }
+
+    if (_isEditingContribution) {
+      final id = widget.contributionId!;
+      setState(() => _submitting = true);
+      try {
+        await ref
+            .read(encyclopediaRepositoryProvider)
+            .updateContribution(id, _payloadBody());
+        commitLocalDraft();
+        if (!mounted) return;
+        ref.invalidate(myEncyclopediaContributionsProvider);
+        context.pushReplacement(EncyclopediaRouter.myContributions.path);
+      } catch (_) {
+        if (!mounted) return;
+        await showAppErrorSheet(
+          context,
+          message: l10n.encyclopediaUpdateFailed,
+        );
+      } finally {
+        if (mounted) setState(() => _submitting = false);
+      }
+      return;
+    }
+
+    final isEditArticle = widget.articleSlug != null;
+    if (isEditArticle && (_articleId == null || _articleId!.isEmpty)) {
       showFToast(
         context: context,
         title: Text(l10n.encyclopediaEditArticleMissing),
@@ -172,9 +255,8 @@ class _EncyclopediaContributionPageState
       return;
     }
     final payload = SubmitEncyclopediaContributionPayload(
-      kind: isEdit ? 'edit' : 'new',
+      kind: isEditArticle ? 'edit' : 'new',
       title: _titleController.text.trim(),
-      // API boleh kosong; ringkasan tidak ditampilkan di form usulan.
       excerpt: '',
       bodyMd: _bodyMd.trim(),
       categoryId: _categoryId!,
@@ -183,7 +265,8 @@ class _EncyclopediaContributionPageState
           .map((e) => e.trim())
           .where((e) => e.isNotEmpty)
           .toList(),
-      articleId: isEdit ? _articleId : null,
+      articleId: isEditArticle ? _articleId : null,
+      sourceUrl: source.isEmpty ? null : source,
     );
     setState(() => _submitting = true);
     try {
@@ -196,7 +279,10 @@ class _EncyclopediaContributionPageState
       context.pushReplacement(EncyclopediaRouter.myContributions.path);
     } catch (_) {
       if (!mounted) return;
-      showFToast(context: context, title: Text(l10n.encyclopediaSubmitFailed));
+      await showAppErrorSheet(
+        context,
+        message: l10n.encyclopediaSubmitFailed,
+      );
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -212,8 +298,33 @@ class _EncyclopediaContributionPageState
     final bodyPreview = bodyEmpty
         ? null
         : _bodyMd.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    final contributionId = widget.contributionId;
+    if (contributionId != null &&
+        contributionId.isNotEmpty &&
+        !_prefilled) {
+      final items =
+          ref.watch(myEncyclopediaContributionsProvider).asData?.value;
+      if (items != null) {
+        MyContributionItem? match;
+        for (final item in items) {
+          if (item.id == contributionId) {
+            match = item;
+            break;
+          }
+        }
+        if (match != null) {
+          final found = match;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || _prefilled) return;
+            setState(() => _applyContribution(found));
+          });
+        }
+      }
+    }
+
     final slug = widget.articleSlug;
-    if (slug != null && !_prefilled) {
+    if (slug != null && !_prefilled && !_isEditingContribution) {
       final article = ref.watch(encyclopediaArticleProvider(slug)).asData?.value;
       if (article != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -223,13 +334,19 @@ class _EncyclopediaContributionPageState
       }
     }
 
-    return FScaffold(
-      header: FHeader.nested(
-        title: Text(
-          widget.articleSlug == null
+    final titleText = _isEditingContribution
+        ? l10n.encyclopediaContributeUpdateTitle
+        : (widget.articleSlug == null
               ? l10n.encyclopediaContributeTitle
-              : l10n.encyclopediaContributeEditTitle,
-        ),
+              : l10n.encyclopediaContributeEditTitle);
+    final ctaText = _isEditingContribution
+        ? l10n.encyclopediaUpdateButton
+        : l10n.encyclopediaSubmitButton;
+
+    return FScaffold(
+      childPad: true,
+      header: FHeader.nested(
+        title: Text(titleText),
         prefixes: [
           FHeaderAction.back(
             onPress: () => encyclopediaPopOrGoExplore(context),
@@ -243,13 +360,13 @@ class _EncyclopediaContributionPageState
           child: FButton(
             onPress: _submitting ? null : _submit,
             prefix: _submitting ? const FCircularProgress() : null,
-            child: Text(l10n.encyclopediaSubmitButton),
+            child: Text(ctaText),
           ),
         ),
       ),
-      // childPad FScaffold sudah memberi gutter horizontal - jangan pad lagi.
+      // Horizontal dari childPad FScaffold - jangan dobel padding scroll.
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+        padding: const EdgeInsets.only(top: 8, bottom: 40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -306,6 +423,16 @@ class _EncyclopediaContributionPageState
               hint: l10n.encyclopediaFieldTagsPlaceholder,
             ),
             const Gap(12),
+            FTextField(
+              control: FTextFieldControl.managed(
+                controller: _sourceUrlController,
+              ),
+              label: Text(l10n.encyclopediaFieldSourceUrl),
+              hint: l10n.encyclopediaFieldSourceUrlHint,
+              keyboardType: TextInputType.url,
+              textInputAction: TextInputAction.next,
+            ),
+            const Gap(12),
             Text(
               l10n.encyclopediaFieldBody,
               style: theme.typography.body.sm.copyWith(
@@ -354,6 +481,7 @@ class _EncyclopediaDraft {
     required this.articleId,
     required this.title,
     required this.tags,
+    required this.sourceUrl,
     required this.bodyMd,
     required this.categoryId,
   });
@@ -361,6 +489,7 @@ class _EncyclopediaDraft {
   final String? articleId;
   final String title;
   final String tags;
+  final String sourceUrl;
   final String bodyMd;
   final String? categoryId;
 
@@ -368,6 +497,7 @@ class _EncyclopediaDraft {
       (articleId != null && articleId!.isNotEmpty) ||
       title.trim().isNotEmpty ||
       tags.trim().isNotEmpty ||
+      sourceUrl.trim().isNotEmpty ||
       bodyMd.trim().isNotEmpty ||
       (categoryId != null && categoryId!.isNotEmpty);
 }

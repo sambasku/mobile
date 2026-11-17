@@ -297,6 +297,39 @@ class SubmitEncyclopediaContributionPayload {
   final String? referencesMd;
 }
 
+/// Payload tersimpan di usulan (wire `toContributionWire.payload`).
+@JsonSerializable(fieldRename: FieldRename.snake)
+class EncyclopediaContributionPayload {
+  const EncyclopediaContributionPayload({
+    required this.title,
+    required this.excerpt,
+    required this.bodyMd,
+    required this.categoryId,
+    this.tags = const [],
+    this.coverUrl,
+    this.sourceUrl,
+    this.referencesMd,
+  });
+  factory EncyclopediaContributionPayload.fromJson(Map<String, dynamic> json) =>
+      _$EncyclopediaContributionPayloadFromJson(json);
+  Map<String, dynamic> toJson() =>
+      _$EncyclopediaContributionPayloadToJson(this);
+
+  final String title;
+  final String excerpt;
+  @JsonKey(name: 'body_md')
+  final String bodyMd;
+  @JsonKey(name: 'category_id')
+  final String categoryId;
+  final List<String> tags;
+  @JsonKey(name: 'cover_url')
+  final String? coverUrl;
+  @JsonKey(name: 'source_url')
+  final String? sourceUrl;
+  @JsonKey(name: 'references_md')
+  final String? referencesMd;
+}
+
 /// Riwayat usulan milik user (wire `toContributionWire`).
 @JsonSerializable(fieldRename: FieldRename.snake)
 class MyContributionItem {
@@ -306,6 +339,8 @@ class MyContributionItem {
     required this.status,
     this.articleId,
     this.article,
+    this.payload,
+    this.revisionNote,
     this.rejectReasonCode,
     this.rejectReasonText,
     this.resultArticleId,
@@ -322,6 +357,9 @@ class MyContributionItem {
   @JsonKey(name: 'article_id')
   final String? articleId;
   final Map<String, dynamic>? article;
+  final EncyclopediaContributionPayload? payload;
+  @JsonKey(name: 'revision_note')
+  final String? revisionNote;
   @JsonKey(name: 'reject_reason_code')
   final String? rejectReasonCode;
   @JsonKey(name: 'reject_reason_text')
@@ -332,4 +370,16 @@ class MyContributionItem {
   final String? createdAt;
   @JsonKey(name: 'reviewed_at')
   final String? reviewedAt;
+
+  bool get canEdit => status == 'pending' || status == 'needs_revision';
+
+  String get displayTitle {
+    final fromPayload = payload?.title.trim();
+    if (fromPayload != null && fromPayload.isNotEmpty) return fromPayload;
+    final fromArticle = article?['title'];
+    if (fromArticle is String && fromArticle.trim().isNotEmpty) {
+      return fromArticle.trim();
+    }
+    return '';
+  }
 }

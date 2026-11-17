@@ -23,6 +23,7 @@ class Achievement {
     this.awardedAt,
     this.isActiveBorder = false,
     this.progress,
+    this.repeatCount,
   });
 
   final String id;
@@ -49,6 +50,9 @@ class Achievement {
 
   /// Locked agregat: current/target. Owned/kohort/manual = null.
   final AchievementProgress? progress;
+
+  /// Owned leaderboard_top: berapa kali masuk rentang rank. Null = N/A.
+  final int? repeatCount;
 
   bool get isOwned => userAchievementId != null;
   bool get isBorder => rewardType == 'profile_border';

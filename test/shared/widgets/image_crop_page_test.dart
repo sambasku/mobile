@@ -163,5 +163,25 @@ void main() {
       expect(src.width, 900);
       expect(src.height, 450);
     });
+
+    // #283: crop ketat harus menghasilkan src lebih kecil dari foto penuh.
+    test('tight free crop yields subset of source image', () {
+      const display = Rect.fromLTWH(0, 0, 400, 400);
+      const norm = Rect.fromLTWH(0.25, 0.25, 0.5, 0.5);
+      final crop = freeCropToDisplay(norm, display);
+      final src = freeCropToSource(
+        cropDisplay: crop,
+        imageDisplay: display,
+        imageWidth: 2000,
+        imageHeight: 2000,
+      );
+      expect(src.width, 1000);
+      expect(src.height, 1000);
+      expect(src.left, 500);
+      expect(src.top, 500);
+      final out = cropOutputSize(src, maxSide: 1600);
+      expect(out.width, lessThan(2000));
+      expect(out.height, lessThan(2000));
+    });
   });
 }

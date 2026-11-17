@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$AchievementDto {
 
  String get id; String get code; String get title; String get description; String get category;@JsonKey(name: 'reward_type') String get rewardType;@JsonKey(name: 'badge_url') String? get badgeUrl; String? get family; int? get level;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'user_achievement_id') String? get userAchievementId;/// Unix epoch detik (format waktu wire backend).
-@JsonKey(name: 'awarded_at') int? get awardedAt;@JsonKey(name: 'is_active_border') bool get isActiveBorder; AchievementProgressDto? get progress;
+@JsonKey(name: 'awarded_at') int? get awardedAt;@JsonKey(name: 'is_active_border') bool get isActiveBorder; AchievementProgressDto? get progress;@JsonKey(name: 'repeat_count') int? get repeatCount;
 /// Create a copy of AchievementDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,20 +31,20 @@ $AchievementDtoCopyWith<AchievementDto> get copyWith => _$AchievementDtoCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as AchievementDto;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.rewardType, _this.rewardType) || other.rewardType == _this.rewardType)&&(identical(other.badgeUrl, _this.badgeUrl) || other.badgeUrl == _this.badgeUrl)&&(identical(other.family, _this.family) || other.family == _this.family)&&(identical(other.level, _this.level) || other.level == _this.level)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.userAchievementId, _this.userAchievementId) || other.userAchievementId == _this.userAchievementId)&&(identical(other.awardedAt, _this.awardedAt) || other.awardedAt == _this.awardedAt)&&(identical(other.isActiveBorder, _this.isActiveBorder) || other.isActiveBorder == _this.isActiveBorder)&&(identical(other.progress, _this.progress) || other.progress == _this.progress));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.rewardType, _this.rewardType) || other.rewardType == _this.rewardType)&&(identical(other.badgeUrl, _this.badgeUrl) || other.badgeUrl == _this.badgeUrl)&&(identical(other.family, _this.family) || other.family == _this.family)&&(identical(other.level, _this.level) || other.level == _this.level)&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.userAchievementId, _this.userAchievementId) || other.userAchievementId == _this.userAchievementId)&&(identical(other.awardedAt, _this.awardedAt) || other.awardedAt == _this.awardedAt)&&(identical(other.isActiveBorder, _this.isActiveBorder) || other.isActiveBorder == _this.isActiveBorder)&&(identical(other.progress, _this.progress) || other.progress == _this.progress)&&(identical(other.repeatCount, _this.repeatCount) || other.repeatCount == _this.repeatCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as AchievementDto;
-  return Object.hash(runtimeType,_this.id,_this.code,_this.title,_this.description,_this.category,_this.rewardType,_this.badgeUrl,_this.family,_this.level,_this.isActive,_this.userAchievementId,_this.awardedAt,_this.isActiveBorder,_this.progress);
+  return Object.hash(runtimeType,_this.id,_this.code,_this.title,_this.description,_this.category,_this.rewardType,_this.badgeUrl,_this.family,_this.level,_this.isActive,_this.userAchievementId,_this.awardedAt,_this.isActiveBorder,_this.progress,_this.repeatCount);
 }
 
 @override
 String toString() {
   final _this = this as AchievementDto;
-  return 'AchievementDto(id: ${_this.id}, code: ${_this.code}, title: ${_this.title}, description: ${_this.description}, category: ${_this.category}, rewardType: ${_this.rewardType}, badgeUrl: ${_this.badgeUrl}, family: ${_this.family}, level: ${_this.level}, isActive: ${_this.isActive}, userAchievementId: ${_this.userAchievementId}, awardedAt: ${_this.awardedAt}, isActiveBorder: ${_this.isActiveBorder}, progress: ${_this.progress})';
+  return 'AchievementDto(id: ${_this.id}, code: ${_this.code}, title: ${_this.title}, description: ${_this.description}, category: ${_this.category}, rewardType: ${_this.rewardType}, badgeUrl: ${_this.badgeUrl}, family: ${_this.family}, level: ${_this.level}, isActive: ${_this.isActive}, userAchievementId: ${_this.userAchievementId}, awardedAt: ${_this.awardedAt}, isActiveBorder: ${_this.isActiveBorder}, progress: ${_this.progress}, repeatCount: ${_this.repeatCount})';
 }
 
 
@@ -55,7 +55,7 @@ abstract mixin class $AchievementDtoCopyWith<$Res>  {
   factory $AchievementDtoCopyWith(AchievementDto value, $Res Function(AchievementDto) _then) = _$AchievementDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String code, String title, String description, String category,@JsonKey(name: 'reward_type') String rewardType,@JsonKey(name: 'badge_url') String? badgeUrl, String? family, int? level,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'user_achievement_id') String? userAchievementId,@JsonKey(name: 'awarded_at') int? awardedAt,@JsonKey(name: 'is_active_border') bool isActiveBorder, AchievementProgressDto? progress
+ String id, String code, String title, String description, String category,@JsonKey(name: 'reward_type') String rewardType,@JsonKey(name: 'badge_url') String? badgeUrl, String? family, int? level,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'user_achievement_id') String? userAchievementId,@JsonKey(name: 'awarded_at') int? awardedAt,@JsonKey(name: 'is_active_border') bool isActiveBorder, AchievementProgressDto? progress,@JsonKey(name: 'repeat_count') int? repeatCount
 });
 
 
@@ -72,7 +72,7 @@ class _$AchievementDtoCopyWithImpl<$Res>
 
 /// Create a copy of AchievementDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? code = null,Object? title = null,Object? description = null,Object? category = null,Object? rewardType = null,Object? badgeUrl = freezed,Object? family = freezed,Object? level = freezed,Object? isActive = null,Object? userAchievementId = freezed,Object? awardedAt = freezed,Object? isActiveBorder = null,Object? progress = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? code = null,Object? title = null,Object? description = null,Object? category = null,Object? rewardType = null,Object? badgeUrl = freezed,Object? family = freezed,Object? level = freezed,Object? isActive = null,Object? userAchievementId = freezed,Object? awardedAt = freezed,Object? isActiveBorder = null,Object? progress = freezed,Object? repeatCount = freezed,}) {
   return _then(AchievementDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,8 @@ as bool,userAchievementId: freezed == userAchievementId ? _self.userAchievementI
 as String?,awardedAt: freezed == awardedAt ? _self.awardedAt : awardedAt // ignore: cast_nullable_to_non_nullable
 as int?,isActiveBorder: null == isActiveBorder ? _self.isActiveBorder : isActiveBorder // ignore: cast_nullable_to_non_nullable
 as bool,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as AchievementProgressDto?,
+as AchievementProgressDto?,repeatCount: freezed == repeatCount ? _self.repeatCount : repeatCount // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 /// Create a copy of AchievementDto
@@ -185,10 +186,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress, @JsonKey(name: 'repeat_count')  int? repeatCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AchievementDto() when $default != null:
-return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress);case _:
+return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress,_that.repeatCount);case _:
   return orElse();
 
 }
@@ -206,10 +207,10 @@ return $default(_that.id,_that.code,_that.title,_that.description,_that.category
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress, @JsonKey(name: 'repeat_count')  int? repeatCount)  $default,) {final _that = this;
 switch (_that) {
 case _AchievementDto():
-return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress);case _:
+return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress,_that.repeatCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +227,10 @@ return $default(_that.id,_that.code,_that.title,_that.description,_that.category
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String code,  String title,  String description,  String category, @JsonKey(name: 'reward_type')  String rewardType, @JsonKey(name: 'badge_url')  String? badgeUrl,  String? family,  int? level, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'user_achievement_id')  String? userAchievementId, @JsonKey(name: 'awarded_at')  int? awardedAt, @JsonKey(name: 'is_active_border')  bool isActiveBorder,  AchievementProgressDto? progress, @JsonKey(name: 'repeat_count')  int? repeatCount)?  $default,) {final _that = this;
 switch (_that) {
 case _AchievementDto() when $default != null:
-return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress);case _:
+return $default(_that.id,_that.code,_that.title,_that.description,_that.category,_that.rewardType,_that.badgeUrl,_that.family,_that.level,_that.isActive,_that.userAchievementId,_that.awardedAt,_that.isActiveBorder,_that.progress,_that.repeatCount);case _:
   return null;
 
 }
@@ -241,7 +242,7 @@ return $default(_that.id,_that.code,_that.title,_that.description,_that.category
 @JsonSerializable()
 
 class _AchievementDto implements AchievementDto {
-  const _AchievementDto({required this.id, required this.code, required this.title, required this.description, required this.category, @JsonKey(name: 'reward_type') required this.rewardType, @JsonKey(name: 'badge_url') this.badgeUrl, this.family, this.level, @JsonKey(name: 'is_active') this.isActive = true, @JsonKey(name: 'user_achievement_id') this.userAchievementId, @JsonKey(name: 'awarded_at') this.awardedAt, @JsonKey(name: 'is_active_border') this.isActiveBorder = false, this.progress});
+  const _AchievementDto({required this.id, required this.code, required this.title, required this.description, required this.category, @JsonKey(name: 'reward_type') required this.rewardType, @JsonKey(name: 'badge_url') this.badgeUrl, this.family, this.level, @JsonKey(name: 'is_active') this.isActive = true, @JsonKey(name: 'user_achievement_id') this.userAchievementId, @JsonKey(name: 'awarded_at') this.awardedAt, @JsonKey(name: 'is_active_border') this.isActiveBorder = false, this.progress, @JsonKey(name: 'repeat_count') this.repeatCount});
   factory _AchievementDto.fromJson(Map<String, dynamic> json) => _$AchievementDtoFromJson(json);
 
 @override final  String id;
@@ -259,6 +260,7 @@ class _AchievementDto implements AchievementDto {
 @override@JsonKey(name: 'awarded_at') final  int? awardedAt;
 @override@JsonKey(name: 'is_active_border') final  bool isActiveBorder;
 @override final  AchievementProgressDto? progress;
+@override@JsonKey(name: 'repeat_count') final  int? repeatCount;
 
 /// Create a copy of AchievementDto
 /// with the given fields replaced by the non-null parameter values.
@@ -273,18 +275,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementDto&&(identical(other.id, id) || other.id == id)&&(identical(other.code, code) || other.code == code)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.rewardType, rewardType) || other.rewardType == rewardType)&&(identical(other.badgeUrl, badgeUrl) || other.badgeUrl == badgeUrl)&&(identical(other.family, family) || other.family == family)&&(identical(other.level, level) || other.level == level)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userAchievementId, userAchievementId) || other.userAchievementId == userAchievementId)&&(identical(other.awardedAt, awardedAt) || other.awardedAt == awardedAt)&&(identical(other.isActiveBorder, isActiveBorder) || other.isActiveBorder == isActiveBorder)&&(identical(other.progress, progress) || other.progress == progress));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementDto&&(identical(other.id, id) || other.id == id)&&(identical(other.code, code) || other.code == code)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.rewardType, rewardType) || other.rewardType == rewardType)&&(identical(other.badgeUrl, badgeUrl) || other.badgeUrl == badgeUrl)&&(identical(other.family, family) || other.family == family)&&(identical(other.level, level) || other.level == level)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.userAchievementId, userAchievementId) || other.userAchievementId == userAchievementId)&&(identical(other.awardedAt, awardedAt) || other.awardedAt == awardedAt)&&(identical(other.isActiveBorder, isActiveBorder) || other.isActiveBorder == isActiveBorder)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.repeatCount, repeatCount) || other.repeatCount == repeatCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,code,title,description,category,rewardType,badgeUrl,family,level,isActive,userAchievementId,awardedAt,isActiveBorder,progress);
+    return Object.hash(runtimeType,id,code,title,description,category,rewardType,badgeUrl,family,level,isActive,userAchievementId,awardedAt,isActiveBorder,progress,repeatCount);
 }
 
 @override
 String toString() {
-    return 'AchievementDto(id: $id, code: $code, title: $title, description: $description, category: $category, rewardType: $rewardType, badgeUrl: $badgeUrl, family: $family, level: $level, isActive: $isActive, userAchievementId: $userAchievementId, awardedAt: $awardedAt, isActiveBorder: $isActiveBorder, progress: $progress)';
+    return 'AchievementDto(id: $id, code: $code, title: $title, description: $description, category: $category, rewardType: $rewardType, badgeUrl: $badgeUrl, family: $family, level: $level, isActive: $isActive, userAchievementId: $userAchievementId, awardedAt: $awardedAt, isActiveBorder: $isActiveBorder, progress: $progress, repeatCount: $repeatCount)';
 }
 
 
@@ -295,7 +297,7 @@ abstract mixin class _$AchievementDtoCopyWith<$Res> implements $AchievementDtoCo
   factory _$AchievementDtoCopyWith(_AchievementDto value, $Res Function(_AchievementDto) _then) = __$AchievementDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String code, String title, String description, String category,@JsonKey(name: 'reward_type') String rewardType,@JsonKey(name: 'badge_url') String? badgeUrl, String? family, int? level,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'user_achievement_id') String? userAchievementId,@JsonKey(name: 'awarded_at') int? awardedAt,@JsonKey(name: 'is_active_border') bool isActiveBorder, AchievementProgressDto? progress
+ String id, String code, String title, String description, String category,@JsonKey(name: 'reward_type') String rewardType,@JsonKey(name: 'badge_url') String? badgeUrl, String? family, int? level,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'user_achievement_id') String? userAchievementId,@JsonKey(name: 'awarded_at') int? awardedAt,@JsonKey(name: 'is_active_border') bool isActiveBorder, AchievementProgressDto? progress,@JsonKey(name: 'repeat_count') int? repeatCount
 });
 
 
@@ -312,7 +314,7 @@ class __$AchievementDtoCopyWithImpl<$Res>
 
 /// Create a copy of AchievementDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? code = null,Object? title = null,Object? description = null,Object? category = null,Object? rewardType = null,Object? badgeUrl = freezed,Object? family = freezed,Object? level = freezed,Object? isActive = null,Object? userAchievementId = freezed,Object? awardedAt = freezed,Object? isActiveBorder = null,Object? progress = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? code = null,Object? title = null,Object? description = null,Object? category = null,Object? rewardType = null,Object? badgeUrl = freezed,Object? family = freezed,Object? level = freezed,Object? isActive = null,Object? userAchievementId = freezed,Object? awardedAt = freezed,Object? isActiveBorder = null,Object? progress = freezed,Object? repeatCount = freezed,}) {
   return _then(_AchievementDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -328,7 +330,8 @@ as bool,userAchievementId: freezed == userAchievementId ? _self.userAchievementI
 as String?,awardedAt: freezed == awardedAt ? _self.awardedAt : awardedAt // ignore: cast_nullable_to_non_nullable
 as int?,isActiveBorder: null == isActiveBorder ? _self.isActiveBorder : isActiveBorder // ignore: cast_nullable_to_non_nullable
 as bool,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as AchievementProgressDto?,
+as AchievementProgressDto?,repeatCount: freezed == repeatCount ? _self.repeatCount : repeatCount // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

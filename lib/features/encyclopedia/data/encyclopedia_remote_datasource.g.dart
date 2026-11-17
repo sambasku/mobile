@@ -377,7 +377,7 @@ class _EncyclopediaRemoteDatasource implements EncyclopediaRemoteDatasource {
   }
 
   @override
-  Future<ApiResponse<MyContributionItem>> resubmitContribution(
+  Future<ApiResponse<MyContributionItem>> updateContribution(
     String id,
     Map<String, dynamic> body,
   ) async {

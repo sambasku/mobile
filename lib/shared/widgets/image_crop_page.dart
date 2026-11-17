@@ -347,13 +347,18 @@ class _ImageCropPageState extends State<ImageCropPage> {
         '${Directory.systemTemp.path}/crop_${DateTime.now().microsecondsSinceEpoch}.png',
       );
       await png.writeAsBytes(data.buffer.asUint8List(), flush: true);
+      // Kompres dengan batas = ukuran crop (bukan max picker). Kalau pakai
+      // kPhotoPickMaxWidth sebagai minWidth, flutter_image_compress bisa
+      // mengabaikan hasil crop / mengembalikan frame penuh (#283).
       final file = await compressImageForUpload(
         png,
-        maxWidth: kPhotoPickMaxWidth,
-        maxHeight: kPhotoPickMaxHeight,
+        maxWidth: out.width.clamp(1, kPhotoPickMaxWidth),
+        maxHeight: out.height.clamp(1, kPhotoPickMaxHeight),
       );
       if (!mounted) return;
-      Navigator.of(context).pop(file);
+      // Pastikan yang dikembalikan bukan berkas sumber pra-crop.
+      final outFile = file.path == widget.sourcePath ? png : file;
+      Navigator.of(context).pop(outFile);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

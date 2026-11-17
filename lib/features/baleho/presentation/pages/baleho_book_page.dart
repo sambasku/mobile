@@ -2,6 +2,7 @@ import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -65,6 +66,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   var _days = 30;
   String? _reactivateCreativeId;
   String? _reactivateLabel;
+  var _reactivateFrameCount = 1;
   List<BalehoCreativeSummary>? _creatives;
 
   @override
@@ -212,6 +214,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       setState(() {
         _reactivateCreativeId = null;
         _reactivateLabel = null;
+        _reactivateFrameCount = 1;
       });
       return;
     }
@@ -221,11 +224,20 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       _reactivateLabel = (picked?.title?.trim().isNotEmpty ?? false)
           ? picked!.title!.trim()
           : l10n.balehoReactivateUntitled;
+      final n = picked?.frameCount ?? 1;
+      _reactivateFrameCount = n < 1 ? 1 : n;
       if (picked?.lastReferralUsername != null &&
           picked!.lastReferralUsername!.isNotEmpty) {
         _referral.text = picked.lastReferralUsername!;
       }
     });
+  }
+
+  int get _slideCount {
+    if (_reactivateCreativeId != null) {
+      return _reactivateFrameCount < 1 ? 1 : _reactivateFrameCount;
+    }
+    return _frames.isEmpty ? 1 : _frames.length;
   }
 
   String? _validate(AppLocalizations l10n) {
@@ -446,6 +458,36 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                 ),
             ],
           ),
+          const Gap(8),
+          ref.watch(balehoPricePerCellPerDayProvider).when(
+                data: (price) {
+                  final slides = _slideCount;
+                  final cells = sel.w * sel.h;
+                  final days = _days < 1 ? 0 : _days;
+                  final total = cells * days * price * slides;
+                  final amountFmt = NumberFormat.decimalPattern('id');
+                  return Text(
+                    l10n.balehoQuoteEstimate(
+                      amountFmt.format(total),
+                      cells,
+                      days,
+                      slides,
+                    ),
+                    softWrap: true,
+                    style: theme.typography.body.sm.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colors.foreground,
+                    ),
+                  );
+                },
+                loading: () => Text(
+                  l10n.balehoQuoteEstimateLoading,
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+                error: (_, _) => const SizedBox.shrink(),
+              ),
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _referral),

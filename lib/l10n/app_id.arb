@@ -89,12 +89,26 @@
   "@balehoSlidePromoBody": {
     "description": "Isi bottom sheet info ajakan promo Baleho"
   },
-  "balehoPricingUnitLine": "Tarif: 1x1 / hari = Rp {amount}",
+  "balehoPricingUnitLine": "Tarif: 1x1 / hari / slide = Rp {amount}",
   "@balehoPricingUnitLine": {
-    "description": "Baris tarif di bottom sheet promo Baleho",
+    "description": "Baris tarif di bottom sheet promo Baleho (qty x slide)",
     "placeholders": {
       "amount": { "type": "String" }
     }
+  },
+  "balehoQuoteEstimate": "Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)",
+  "@balehoQuoteEstimate": {
+    "description": "Estimasi biaya pesan Baleho di form book",
+    "placeholders": {
+      "amount": { "type": "String" },
+      "cells": { "type": "int" },
+      "days": { "type": "int" },
+      "slides": { "type": "int" }
+    }
+  },
+  "balehoQuoteEstimateLoading": "Menghitung estimasi…",
+  "@balehoQuoteEstimateLoading": {
+    "description": "Placeholder saat tarif Baleho masih di-fetch"
   },
   "balehoSlidePromoInfoSemantics": "Info ingin tampil di sini",
   "@balehoSlidePromoInfoSemantics": {
@@ -115,6 +129,97 @@
   "balehoWeeklyLeaderboardComingSoonBody": "Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.",
   "@balehoWeeklyLeaderboardComingSoonBody": {
     "description": "Body halaman coming soon papan peringkat"
+  },
+  "balehoLeaderboardTabCurrent": "Minggu ini",
+  "@balehoLeaderboardTabCurrent": {
+    "description": "Tab papan peringkat minggu berjalan"
+  },
+  "balehoLeaderboardTabHistory": "Riwayat",
+  "@balehoLeaderboardTabHistory": {
+    "description": "Tab riwayat snapshot minggu lalu"
+  },
+  "balehoLeaderboardPickWeek": "Pilih minggu",
+  "@balehoLeaderboardPickWeek": {
+    "description": "Label pemilih week_id riwayat"
+  },
+  "balehoLeaderboardWeekLabel": "Minggu {weekId}",
+  "@balehoLeaderboardWeekLabel": {
+    "description": "Label minggu ISO di header daftar",
+    "placeholders": {
+      "weekId": {
+        "type": "String",
+        "example": "2026-W40"
+      }
+    }
+  },
+  "balehoLeaderboardResetsAt": "Reset {datetime}",
+  "@balehoLeaderboardResetsAt": {
+    "description": "Reset minggu pada tanggal tetap (sudah lewat / fallback)",
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "17 Nov 2026 21:00"
+      }
+    }
+  },
+  "balehoLeaderboardResetsSoon": "Reset sebentar lagi",
+  "@balehoLeaderboardResetsSoon": {
+    "description": "Countdown reset kurang dari satu menit"
+  },
+  "balehoLeaderboardResetsInDaysHours": "Reset dalam {days} hari {hours} jam",
+  "@balehoLeaderboardResetsInDaysHours": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "hours": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardResetsInHoursMinutes": "Reset dalam {hours} jam {minutes} menit",
+  "@balehoLeaderboardResetsInHoursMinutes": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "minutes": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardResetsInMinutes": "Reset dalam {minutes} menit",
+  "@balehoLeaderboardResetsInMinutes": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardRank": "#{rank}",
+  "@balehoLeaderboardRank": {
+    "placeholders": {
+      "rank": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardScoreCombined": "{score} poin",
+  "@balehoLeaderboardScoreCombined": {
+    "placeholders": {
+      "score": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardScoreBreakdown": "+{contrib} kontrib · +{verif} verif",
+  "@balehoLeaderboardScoreBreakdown": {
+    "placeholders": {
+      "contrib": { "type": "int" },
+      "verif": { "type": "int" }
+    }
+  },
+  "balehoLeaderboardVerifierBadge": "Verifikator",
+  "@balehoLeaderboardVerifierBadge": {
+    "description": "Badge kecil pada entry verifikator"
+  },
+  "balehoLeaderboardEmpty": "Belum ada peringkat minggu ini.",
+  "@balehoLeaderboardEmpty": {
+    "description": "Empty state minggu berjalan"
+  },
+  "balehoLeaderboardHistoryEmpty": "Snapshot minggu ini belum ada.",
+  "@balehoLeaderboardHistoryEmpty": {
+    "description": "Riwayat CDN 404 atau daftar kosong"
+  },
+  "balehoLeaderboardLoadFailed": "Gagal memuat peringkat.",
+  "@balehoLeaderboardLoadFailed": {
+    "description": "Error muat papan peringkat"
   },
   "balehoSlotAvailable": "Tersedia",
   "balehoSlotHeld": "Dipesan",
@@ -5115,6 +5220,39 @@
   "encyclopediaFieldExcerptPlaceholder": "Tulis 1-2 kalimat ringkasan artikel...",
   "encyclopediaFieldTags": "Tag (pisahkan koma)",
   "encyclopediaFieldTagsPlaceholder": "sejarah, istana, budaya",
+  "encyclopediaFieldSourceUrl": "Link sumber",
+  "@encyclopediaFieldSourceUrl": {
+    "description": "Label field opsional link sumber usulan artikel"
+  },
+  "encyclopediaFieldSourceUrlHint": "https:// (opsional)",
+  "@encyclopediaFieldSourceUrlHint": {
+    "description": "Hint field link sumber usulan artikel"
+  },
+  "encyclopediaFieldSourceUrlHttpsRequired": "Link sumber harus diawali https://",
+  "@encyclopediaFieldSourceUrlHttpsRequired": {
+    "description": "Validasi link sumber usulan artikel harus https"
+  },
+  "encyclopediaStatusNeedsRevision": "Perlu revisi",
+  "@encyclopediaStatusNeedsRevision": {
+    "description": "Badge status usulan ensiklopedia needs_revision"
+  },
+  "encyclopediaContributeUpdateTitle": "Ubah Usulan",
+  "@encyclopediaContributeUpdateTitle": {
+    "description": "Judul form saat mengedit usulan yang belum diverifikasi"
+  },
+  "encyclopediaUpdateButton": "Simpan Perubahan",
+  "@encyclopediaUpdateButton": {
+    "description": "CTA footer saat mengedit usulan pending"
+  },
+  "encyclopediaUpdateFailed": "Gagal menyimpan perubahan usulan",
+  "@encyclopediaUpdateFailed": {
+    "description": "Toast/sheet gagal PATCH usulan ensiklopedia"
+  },
+  "encyclopediaEditContributionMissing": "Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.",
+  "@encyclopediaEditContributionMissing": {
+    "description": "Error buka form edit usulan tanpa payload"
+  },
+
   "encyclopediaFieldBody": "Isi Artikel (Markdown)",
   "encyclopediaFieldBodyPlaceholder": "Tulis isi artikel kamu di sini...",
   "encyclopediaFieldChangeNote": "Catatan Perubahan",
@@ -7335,6 +7473,13 @@
   "achievementSeeMore": "Lihat lainnya",
   "@achievementSeeMore": {
     "description": "Overlay sel ujung saat lencana profil lebih dari satu baris"
+  },
+  "achievementRepeatCount": "×{count}",
+  "@achievementRepeatCount": {
+    "description": "Pengulangan lencana peringkat mingguan (juara ×3)",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
   },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
   "@achievementBorderUpdated": {},

@@ -131,8 +131,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String balehoPricingUnitLine(String amount) {
-    return 'Tarif: 1x1 / hari = Rp $amount';
+    return 'Tarif: 1x1 / hari / slide = Rp $amount';
   }
+
+  @override
+  String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
+    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+  }
+
+  @override
+  String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
 
   @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
@@ -150,6 +158,70 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoLeaderboardTabCurrent => 'Minggu ini';
+
+  @override
+  String get balehoLeaderboardTabHistory => 'Riwayat';
+
+  @override
+  String get balehoLeaderboardPickWeek => 'Pilih minggu';
+
+  @override
+  String balehoLeaderboardWeekLabel(String weekId) {
+    return 'Minggu $weekId';
+  }
+
+  @override
+  String balehoLeaderboardResetsAt(String datetime) {
+    return 'Reset $datetime';
+  }
+
+  @override
+  String get balehoLeaderboardResetsSoon => 'Reset sebentar lagi';
+
+  @override
+  String balehoLeaderboardResetsInDaysHours(int days, int hours) {
+    return 'Reset dalam $days hari $hours jam';
+  }
+
+  @override
+  String balehoLeaderboardResetsInHoursMinutes(int hours, int minutes) {
+    return 'Reset dalam $hours jam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardResetsInMinutes(int minutes) {
+    return 'Reset dalam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardRank(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String balehoLeaderboardScoreCombined(int score) {
+    return '$score poin';
+  }
+
+  @override
+  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
+    return '+$contrib kontrib · +$verif verif';
+  }
+
+  @override
+  String get balehoLeaderboardVerifierBadge => 'Verifikator';
+
+  @override
+  String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty => 'Snapshot minggu ini belum ada.';
+
+  @override
+  String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -7486,6 +7558,32 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
 
   @override
+  String get encyclopediaFieldSourceUrl => 'Link sumber';
+
+  @override
+  String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaFieldSourceUrlHttpsRequired =>
+      'Link sumber harus diawali https://';
+
+  @override
+  String get encyclopediaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get encyclopediaContributeUpdateTitle => 'Ubah Usulan';
+
+  @override
+  String get encyclopediaUpdateButton => 'Simpan Perubahan';
+
+  @override
+  String get encyclopediaUpdateFailed => 'Gagal menyimpan perubahan usulan';
+
+  @override
+  String get encyclopediaEditContributionMissing =>
+      'Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.';
+
+  @override
   String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
 
   @override
@@ -10808,6 +10906,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get achievementSeeMore => 'Lihat lainnya';
 
   @override
+  String achievementRepeatCount(int count) {
+    return '×$count';
+  }
+
+  @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';
 
   @override
@@ -12100,8 +12203,16 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String balehoPricingUnitLine(String amount) {
-    return 'Tarif: 1x1 / hari = Rp $amount';
+    return 'Tarif: 1x1 / hari / slide = Rp $amount';
   }
+
+  @override
+  String balehoQuoteEstimate(String amount, int cells, int days, int slides) {
+    return 'Estimasi: Rp $amount ($cells sel x $days hari x $slides slide)';
+  }
+
+  @override
+  String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
 
   @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
@@ -12119,6 +12230,70 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get balehoWeeklyLeaderboardComingSoonBody =>
       'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoLeaderboardTabCurrent => 'Minggu ini';
+
+  @override
+  String get balehoLeaderboardTabHistory => 'Riwayat';
+
+  @override
+  String get balehoLeaderboardPickWeek => 'Pilih minggu';
+
+  @override
+  String balehoLeaderboardWeekLabel(String weekId) {
+    return 'Minggu $weekId';
+  }
+
+  @override
+  String balehoLeaderboardResetsAt(String datetime) {
+    return 'Reset $datetime';
+  }
+
+  @override
+  String get balehoLeaderboardResetsSoon => 'Reset sebentar lagi';
+
+  @override
+  String balehoLeaderboardResetsInDaysHours(int days, int hours) {
+    return 'Reset dalam $days hari $hours jam';
+  }
+
+  @override
+  String balehoLeaderboardResetsInHoursMinutes(int hours, int minutes) {
+    return 'Reset dalam $hours jam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardResetsInMinutes(int minutes) {
+    return 'Reset dalam $minutes menit';
+  }
+
+  @override
+  String balehoLeaderboardRank(int rank) {
+    return '#$rank';
+  }
+
+  @override
+  String balehoLeaderboardScoreCombined(int score) {
+    return '$score poin';
+  }
+
+  @override
+  String balehoLeaderboardScoreBreakdown(int contrib, int verif) {
+    return '+$contrib kontrib · +$verif verif';
+  }
+
+  @override
+  String get balehoLeaderboardVerifierBadge => 'Verifikator';
+
+  @override
+  String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty => 'Snapshot minggu ini belum ada.';
+
+  @override
+  String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
@@ -19455,6 +19630,32 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaFieldTagsPlaceholder => 'sejarah, istana, budaya';
 
   @override
+  String get encyclopediaFieldSourceUrl => 'Link sumber';
+
+  @override
+  String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaFieldSourceUrlHttpsRequired =>
+      'Link sumber harus diawali https://';
+
+  @override
+  String get encyclopediaStatusNeedsRevision => 'Perlu revisi';
+
+  @override
+  String get encyclopediaContributeUpdateTitle => 'Ubah Usulan';
+
+  @override
+  String get encyclopediaUpdateButton => 'Simpan Perubahan';
+
+  @override
+  String get encyclopediaUpdateFailed => 'Gagal menyimpan perubahan usulan';
+
+  @override
+  String get encyclopediaEditContributionMissing =>
+      'Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.';
+
+  @override
   String get encyclopediaFieldBody => 'Isi Artikel (Markdown)';
 
   @override
@@ -22775,6 +22976,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get achievementSeeMore => 'Lihat lainnya';
+
+  @override
+  String achievementRepeatCount(int count) {
+    return '×$count';
+  }
 
   @override
   String get achievementBorderUpdated => 'Bingkai profil diperbarui';

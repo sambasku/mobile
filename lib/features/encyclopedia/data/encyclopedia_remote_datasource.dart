@@ -79,9 +79,9 @@ abstract interface class EncyclopediaRemoteDatasource {
     @Body() SubmitEncyclopediaContributionPayload body,
   );
 
-  /// Kirim ulang usulan needs_revision - PATCH /api/v1/encyclopedia/contributions/:id.
+  /// Ubah usulan pending / needs_revision - PATCH /api/v1/encyclopedia/contributions/:id.
   @PATCH('/api/v1/encyclopedia/contributions/{id}')
-  Future<ApiResponse<MyContributionItem>> resubmitContribution(
+  Future<ApiResponse<MyContributionItem>> updateContribution(
     @Path('id') String id,
     @Body() Map<String, dynamic> body,
   );

@@ -58,7 +58,12 @@ void showImageSheetDrawer(
         file.path,
         lockedAspectRatio: lockedAspectRatio,
       );
-      if (cropped != null) emit(cropped);
+      // null = batal (back). Lewati / simpan → File non-null.
+      // Salin ke path unik supaya upload tidak membaca berkas sumber
+      // yang bisa tertimpa (#283 preview pra-crop).
+      if (cropped == null) return;
+      final persisted = await copyToUniqueTempPath(cropped);
+      emit(persisted);
     });
   }
 

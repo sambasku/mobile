@@ -266,6 +266,34 @@ Map<String, dynamic> _$SubmitEncyclopediaContributionPayloadToJson(
   'references_md': instance.referencesMd,
 };
 
+EncyclopediaContributionPayload _$EncyclopediaContributionPayloadFromJson(
+  Map<String, dynamic> json,
+) => EncyclopediaContributionPayload(
+  title: json['title'] as String,
+  excerpt: json['excerpt'] as String,
+  bodyMd: json['body_md'] as String,
+  categoryId: json['category_id'] as String,
+  tags:
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  coverUrl: json['cover_url'] as String?,
+  sourceUrl: json['source_url'] as String?,
+  referencesMd: json['references_md'] as String?,
+);
+
+Map<String, dynamic> _$EncyclopediaContributionPayloadToJson(
+  EncyclopediaContributionPayload instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'excerpt': instance.excerpt,
+  'body_md': instance.bodyMd,
+  'category_id': instance.categoryId,
+  'tags': instance.tags,
+  'cover_url': instance.coverUrl,
+  'source_url': instance.sourceUrl,
+  'references_md': instance.referencesMd,
+};
+
 MyContributionItem _$MyContributionItemFromJson(Map<String, dynamic> json) =>
     MyContributionItem(
       id: json['id'] as String,
@@ -273,6 +301,12 @@ MyContributionItem _$MyContributionItemFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String,
       articleId: json['article_id'] as String?,
       article: json['article'] as Map<String, dynamic>?,
+      payload: json['payload'] == null
+          ? null
+          : EncyclopediaContributionPayload.fromJson(
+              json['payload'] as Map<String, dynamic>,
+            ),
+      revisionNote: json['revision_note'] as String?,
       rejectReasonCode: json['reject_reason_code'] as String?,
       rejectReasonText: json['reject_reason_text'] as String?,
       resultArticleId: json['result_article_id'] as String?,
@@ -287,6 +321,8 @@ Map<String, dynamic> _$MyContributionItemToJson(MyContributionItem instance) =>
       'status': instance.status,
       'article_id': instance.articleId,
       'article': instance.article,
+      'payload': instance.payload,
+      'revision_note': instance.revisionNote,
       'reject_reason_code': instance.rejectReasonCode,
       'reject_reason_text': instance.rejectReasonText,
       'result_article_id': instance.resultArticleId,

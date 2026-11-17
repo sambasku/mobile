@@ -30,7 +30,7 @@ abstract interface class EncyclopediaRepository {
   Future<ApiResponse<MyContributionItem>> submitContribution(
     SubmitEncyclopediaContributionPayload body,
   );
-  Future<ApiResponse<MyContributionItem>> resubmitContribution(
+  Future<ApiResponse<MyContributionItem>> updateContribution(
     String id,
     Map<String, dynamic> body,
   );
@@ -97,10 +97,10 @@ class EncyclopediaRepositoryImpl implements EncyclopediaRepository {
   ) => _remote.submitContribution(body);
 
   @override
-  Future<ApiResponse<MyContributionItem>> resubmitContribution(
+  Future<ApiResponse<MyContributionItem>> updateContribution(
     String id,
     Map<String, dynamic> body,
-  ) => _remote.resubmitContribution(id, body);
+  ) => _remote.updateContribution(id, body);
 
   @override
   Future<ApiResponse<MyContributionPage>> getMyContributions(
