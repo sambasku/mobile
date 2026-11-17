@@ -14,6 +14,7 @@ import '../../features/explore/explore_router.dart';
 import '../../features/event/event_router.dart';
 import '../../features/jinye/jinye_router.dart';
 import '../../features/usaha/usaha_router.dart';
+import '../../features/baleho/baleho_router.dart';
 import '../../features/review/review_router.dart';
 import '../../features/verifier_application/verifier_application_router.dart';
 import '../../shared/utils/error_bottom_sheet.dart';
@@ -72,6 +73,11 @@ return;
 
 if (actionKind == 'usaha_claim' || type.startsWith('usaha_claim')) {
 _go(router, UsahaRouter.saya.path);
+return;
+}
+
+if (actionKind == 'baleho_placement' || type.startsWith('baleho_placement')) {
+_go(router, BalehoRouter.history.path);
 return;
 }
 
@@ -168,6 +174,11 @@ return;
   if (targetKind == 'verifier_application' ||
       type.startsWith('verifier_application')) {
     _go(router, VerifierApplicationRouter.apply.path);
+    return;
+  }
+
+  if (targetKind == 'baleho_placement' || type.startsWith('baleho_placement')) {
+    _go(router, BalehoRouter.history.path);
     return;
   }
 

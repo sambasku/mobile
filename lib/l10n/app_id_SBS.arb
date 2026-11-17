@@ -343,17 +343,12 @@
     "placeholders": { "username": { "type": "String" } }
   },
   "balehoSlide2UsahaTitle": "Usaha",
-  "balehoSlide2UsahaCta": "Jelajahi usaha Sambas",
   "balehoSlide2AcaraTitle": "Acara",
-  "balehoSlide2AcaraCta": "Lihat acara terdekat",
   "balehoSlide2WisataTitle": "Wisata",
-  "balehoSlide2WisataCta": "Jelajahi tempat wisata",
   "balehoSlide2KaryaTitle": "Karya",
-  "balehoSlide2KaryaCta": "Musik dan film Sambas",
   "balehoSlide2EnsiklopediaTitle": "Ensiklopedia",
-  "balehoSlide2EnsiklopediaCta": "Baca artikel lokal",
   "balehoSlide2KamusTitle": "Kamus",
-  "balehoSlide2KamusCta": "Cari kata Sambas",
+  "balehoSlide2ComingSoonCta": "Segera hadir",
   "balehoActionFailToast": "Tautan tidak bisa dibuka. Coba lagi nanti ya.",
   "@balehoActionFailToast": {
     "description": "Toast saat action Baleho gagal (action_fail)"
@@ -2056,6 +2051,8 @@
   "notificationTypeEventApproved": "Acara disetujui",
   "notificationTypeEventRejected": "Acara ditolak",
   "notificationTypeEventNeedsRevision": "Acara perlu revisi",
+  "notificationTypeBalehoApproved": "Baleho disetujui",
+  "notificationTypeBalehoRejected": "Baleho ditolak",
   "notificationTypeUpdate": "Pembaruan",
   "notificationSkeletonTitle": "Usulan disetujui contoh",
   "notificationSkeletonMeta": "Disetujui · 21 Sep 2026 00:00 · Usulan kata Anda",

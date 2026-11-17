@@ -863,23 +863,11 @@ abstract class AppLocalizations {
   /// **'Usaha'**
   String get balehoSlide2UsahaTitle;
 
-  /// No description provided for @balehoSlide2UsahaCta.
-  ///
-  /// In id, this message translates to:
-  /// **'Jelajahi usaha Sambas'**
-  String get balehoSlide2UsahaCta;
-
   /// No description provided for @balehoSlide2AcaraTitle.
   ///
   /// In id, this message translates to:
   /// **'Acara'**
   String get balehoSlide2AcaraTitle;
-
-  /// No description provided for @balehoSlide2AcaraCta.
-  ///
-  /// In id, this message translates to:
-  /// **'Lihat acara terdekat'**
-  String get balehoSlide2AcaraCta;
 
   /// No description provided for @balehoSlide2WisataTitle.
   ///
@@ -887,23 +875,11 @@ abstract class AppLocalizations {
   /// **'Wisata'**
   String get balehoSlide2WisataTitle;
 
-  /// No description provided for @balehoSlide2WisataCta.
-  ///
-  /// In id, this message translates to:
-  /// **'Jelajahi tempat wisata'**
-  String get balehoSlide2WisataCta;
-
   /// No description provided for @balehoSlide2KaryaTitle.
   ///
   /// In id, this message translates to:
   /// **'Karya'**
   String get balehoSlide2KaryaTitle;
-
-  /// No description provided for @balehoSlide2KaryaCta.
-  ///
-  /// In id, this message translates to:
-  /// **'Musik dan film Sambas'**
-  String get balehoSlide2KaryaCta;
 
   /// No description provided for @balehoSlide2EnsiklopediaTitle.
   ///
@@ -911,23 +887,17 @@ abstract class AppLocalizations {
   /// **'Ensiklopedia'**
   String get balehoSlide2EnsiklopediaTitle;
 
-  /// No description provided for @balehoSlide2EnsiklopediaCta.
-  ///
-  /// In id, this message translates to:
-  /// **'Baca artikel lokal'**
-  String get balehoSlide2EnsiklopediaCta;
-
   /// No description provided for @balehoSlide2KamusTitle.
   ///
   /// In id, this message translates to:
   /// **'Kamus'**
   String get balehoSlide2KamusTitle;
 
-  /// No description provided for @balehoSlide2KamusCta.
+  /// CTA placeholder tile Ruang komunitas selain Peringkat Mingguan
   ///
   /// In id, this message translates to:
-  /// **'Cari kata Sambas'**
-  String get balehoSlide2KamusCta;
+  /// **'Segera hadir'**
+  String get balehoSlide2ComingSoonCta;
 
   /// Toast saat action Baleho gagal (action_fail)
   ///
@@ -10328,6 +10298,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Acara perlu revisi'**
   String get notificationTypeEventNeedsRevision;
+
+  /// Label jenis notifikasi: pesanan Baleho disetujui
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho disetujui'**
+  String get notificationTypeBalehoApproved;
+
+  /// Label jenis notifikasi: pesanan Baleho ditolak
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho ditolak'**
+  String get notificationTypeBalehoRejected;
 
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///

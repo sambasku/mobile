@@ -9,39 +9,30 @@ final balehoApiProvider = Provider<BalehoApi>(
   (ref) => BalehoApi(ref.watch(dioProvider)),
 );
 
-/// Slot tetap slide 2: curated deep link internal (tidak dijual).
+/// Slot tetap slide 2: curated (tidak dijual).
+/// Hanya Peringkat Mingguan punya deep link aktif; sisanya placeholder.
 class BalehoSlide2Labels {
   const BalehoSlide2Labels({
     required this.weeklyTitle,
     required this.weeklyCta,
     required this.usahaTitle,
-    required this.usahaCta,
     required this.acaraTitle,
-    required this.acaraCta,
     required this.wisataTitle,
-    required this.wisataCta,
     required this.karyaTitle,
-    required this.karyaCta,
     required this.ensiklopediaTitle,
-    required this.ensiklopediaCta,
     required this.kamusTitle,
-    required this.kamusCta,
+    required this.comingSoonCta,
   });
 
   final String weeklyTitle;
   final String weeklyCta;
   final String usahaTitle;
-  final String usahaCta;
   final String acaraTitle;
-  final String acaraCta;
   final String wisataTitle;
-  final String wisataCta;
   final String karyaTitle;
-  final String karyaCta;
   final String ensiklopediaTitle;
-  final String ensiklopediaCta;
   final String kamusTitle;
-  final String kamusCta;
+  final String comingSoonCta;
 }
 
 BalehoPlacement _fixedTile({
@@ -52,8 +43,10 @@ BalehoPlacement _fixedTile({
   required int h,
   required String title,
   required String ctaLabel,
-  required String path,
+  /// Null/kosong = belum aktif (sheet tanpa tombol buka).
+  String? path,
 }) {
+  final payload = path?.trim() ?? '';
   return BalehoPlacement(
     id: id,
     col: col,
@@ -68,7 +61,7 @@ BalehoPlacement _fixedTile({
         title: title,
         ctaLabel: ctaLabel,
         actionType: 'in_app',
-        actionPayload: path,
+        actionPayload: payload,
       ),
     ],
   );
@@ -93,8 +86,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.usahaTitle,
-      ctaLabel: labels.usahaCta,
-      path: '/usaha',
+      ctaLabel: labels.comingSoonCta,
     ),
     _fixedTile(
       id: 'baleho_fixed_acara',
@@ -103,8 +95,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.acaraTitle,
-      ctaLabel: labels.acaraCta,
-      path: '/acara',
+      ctaLabel: labels.comingSoonCta,
     ),
     _fixedTile(
       id: 'baleho_fixed_wisata',
@@ -113,8 +104,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.wisataTitle,
-      ctaLabel: labels.wisataCta,
-      path: '/explore/wisata',
+      ctaLabel: labels.comingSoonCta,
     ),
     _fixedTile(
       id: 'baleho_fixed_karya',
@@ -123,8 +113,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.karyaTitle,
-      ctaLabel: labels.karyaCta,
-      path: '/explore/karya',
+      ctaLabel: labels.comingSoonCta,
     ),
     _fixedTile(
       id: 'baleho_fixed_ensiklopedia',
@@ -133,8 +122,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.ensiklopediaTitle,
-      ctaLabel: labels.ensiklopediaCta,
-      path: '/explore/ensiklopedia',
+      ctaLabel: labels.comingSoonCta,
     ),
     _fixedTile(
       id: 'baleho_fixed_kamus',
@@ -143,8 +131,7 @@ List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
       w: 2,
       h: 1,
       title: labels.kamusTitle,
-      ctaLabel: labels.kamusCta,
-      path: '/words',
+      ctaLabel: labels.comingSoonCta,
     ),
   ];
 }

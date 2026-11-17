@@ -425,37 +425,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoSlide2UsahaTitle => 'Usaha';
 
   @override
-  String get balehoSlide2UsahaCta => 'Jelajahi usaha Sambas';
-
-  @override
   String get balehoSlide2AcaraTitle => 'Acara';
-
-  @override
-  String get balehoSlide2AcaraCta => 'Lihat acara terdekat';
 
   @override
   String get balehoSlide2WisataTitle => 'Wisata';
 
   @override
-  String get balehoSlide2WisataCta => 'Jelajahi tempat wisata';
-
-  @override
   String get balehoSlide2KaryaTitle => 'Karya';
-
-  @override
-  String get balehoSlide2KaryaCta => 'Musik dan film Sambas';
 
   @override
   String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
 
   @override
-  String get balehoSlide2EnsiklopediaCta => 'Baca artikel lokal';
-
-  @override
   String get balehoSlide2KamusTitle => 'Kamus';
 
   @override
-  String get balehoSlide2KamusCta => 'Cari kata Sambas';
+  String get balehoSlide2ComingSoonCta => 'Segera hadir';
 
   @override
   String get balehoActionFailToast =>
@@ -5809,6 +5794,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeBalehoApproved => 'Baleho disetujui';
+
+  @override
+  String get notificationTypeBalehoRejected => 'Baleho ditolak';
 
   @override
   String get notificationTypeUpdate => 'Pembaruan';
@@ -12122,37 +12113,22 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoSlide2UsahaTitle => 'Usaha';
 
   @override
-  String get balehoSlide2UsahaCta => 'Jelajahi usaha Sambas';
-
-  @override
   String get balehoSlide2AcaraTitle => 'Acara';
-
-  @override
-  String get balehoSlide2AcaraCta => 'Lihat acara terdekat';
 
   @override
   String get balehoSlide2WisataTitle => 'Wisata';
 
   @override
-  String get balehoSlide2WisataCta => 'Jelajahi tempat wisata';
-
-  @override
   String get balehoSlide2KaryaTitle => 'Karya';
-
-  @override
-  String get balehoSlide2KaryaCta => 'Musik dan film Sambas';
 
   @override
   String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
 
   @override
-  String get balehoSlide2EnsiklopediaCta => 'Baca artikel lokal';
-
-  @override
   String get balehoSlide2KamusTitle => 'Kamus';
 
   @override
-  String get balehoSlide2KamusCta => 'Cari kata Sambas';
+  String get balehoSlide2ComingSoonCta => 'Segera hadir';
 
   @override
   String get balehoActionFailToast =>
@@ -17506,6 +17482,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get notificationTypeEventNeedsRevision => 'Acara perlu revisi';
+
+  @override
+  String get notificationTypeBalehoApproved => 'Baleho disetujui';
+
+  @override
+  String get notificationTypeBalehoRejected => 'Baleho ditolak';
 
   @override
   String get notificationTypeUpdate => 'Pembaruan';

@@ -120,8 +120,10 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
         }
         await launchExternalUrl(uri);
       } else {
+        final path = frame.actionPayload.trim();
+        if (path.isEmpty) return;
         if (!mounted) return;
-        context.push(frame.actionPayload);
+        context.push(path);
       }
       _track('action_success', placementId: placement.id, frameId: frame.id);
     } catch (_) {
@@ -531,17 +533,12 @@ class _SlideBody extends ConsumerWidget {
                     weeklyTitle: l10n.balehoWeeklyLeaderboardTitle,
                     weeklyCta: l10n.balehoWeeklyLeaderboardCta,
                     usahaTitle: l10n.balehoSlide2UsahaTitle,
-                    usahaCta: l10n.balehoSlide2UsahaCta,
                     acaraTitle: l10n.balehoSlide2AcaraTitle,
-                    acaraCta: l10n.balehoSlide2AcaraCta,
                     wisataTitle: l10n.balehoSlide2WisataTitle,
-                    wisataCta: l10n.balehoSlide2WisataCta,
                     karyaTitle: l10n.balehoSlide2KaryaTitle,
-                    karyaCta: l10n.balehoSlide2KaryaCta,
                     ensiklopediaTitle: l10n.balehoSlide2EnsiklopediaTitle,
-                    ensiklopediaCta: l10n.balehoSlide2EnsiklopediaCta,
                     kamusTitle: l10n.balehoSlide2KamusTitle,
-                    kamusCta: l10n.balehoSlide2KamusCta,
+                    comingSoonCta: l10n.balehoSlide2ComingSoonCta,
                   ),
                 )
               : raw;
