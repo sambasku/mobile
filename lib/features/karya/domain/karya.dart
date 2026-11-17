@@ -77,6 +77,22 @@ class KaryaAccessLink {
   final bool isPrimary;
 }
 
+class KaryaRelatedItem {
+  const KaryaRelatedItem({
+    required this.kind,
+    required this.id,
+    required this.title,
+    this.slug,
+    this.hrefKind,
+  });
+
+  final String kind;
+  final String? slug;
+  final String id;
+  final String title;
+  final String? hrefKind;
+}
+
 class KaryaSambasConnection {
   const KaryaSambasConnection({
     required this.type,
@@ -164,6 +180,7 @@ class KaryaEntry {
     this.musicIsCover = false,
     this.filmType,
     this.filmRuntimeMin,
+    this.related = const [],
   });
 
   final String id;
@@ -183,6 +200,7 @@ class KaryaEntry {
   final bool musicIsCover;
   final String? filmType;
   final int? filmRuntimeMin;
+  final List<KaryaRelatedItem> related;
   final DateTime updatedAt;
 
   bool get isMusic => kind == 'music';

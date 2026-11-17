@@ -9,6 +9,10 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../../dictionary/dictionary_router.dart';
+import '../../../encyclopedia/encyclopedia_router.dart';
+import '../../../event/event_router.dart';
+import '../../../explore/explore_router.dart';
+import '../../../usaha/usaha_router.dart';
 import '../../../jinye/presentation/widgets/jinye_word_picker_sheet.dart';
 import '../../data/karya_api.dart';
 import '../../domain/karya.dart';
@@ -146,6 +150,29 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
                   ),
               ],
             ),
+          if (item.related.isNotEmpty) ...[
+            const Gap(18),
+            Text(
+              l10n.karyaRelatedSection,
+              style: theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const Gap(8),
+            FTileGroup(
+              children: [
+                for (final row in item.related)
+                  FTile(
+                    title: Text(row.title),
+                    subtitle: Text(_relatedKindLabel(l10n, row.kind)),
+                    suffix: Icon(
+                      FLucideIcons.chevronRight,
+                      size: 16,
+                      color: theme.colors.mutedForeground,
+                    ),
+                    onPress: () => _openRelated(context, row),
+                  ),
+              ],
+            ),
+          ],
           const Gap(18),
           Text(
             l10n.karyaCredits,
@@ -436,6 +463,60 @@ class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
         'stream' => l10n.karyaAccessKindStream,
         'official' => l10n.karyaAccessKindOfficial,
         'other' => l10n.karyaAccessKindOther,
+        _ => kind,
+      };
+
+  void _openRelated(BuildContext context, KaryaRelatedItem row) {
+    final slug = row.slug;
+    switch (row.kind) {
+      case 'karya':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(KaryaRouter.detailPath(slug));
+        }
+        return;
+      case 'kreator':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(KaryaRouter.kreatorPath(slug));
+        }
+        return;
+      case 'word':
+        context.push(
+          DictionaryRouter.detail.path.replaceFirst(':id', row.id),
+        );
+        return;
+      case 'place':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(
+            ExploreRouter.place.path.replaceFirst(':slug', slug),
+          );
+        }
+        return;
+      case 'event':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(EventRouter.detailPath(slug));
+        }
+        return;
+      case 'article':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(EncyclopediaRouter.detailPath(slug));
+        }
+        return;
+      case 'usaha':
+        if (slug != null && slug.isNotEmpty) {
+          context.push(UsahaRouter.detailPath(slug));
+        }
+        return;
+    }
+  }
+
+  String _relatedKindLabel(AppLocalizations l10n, String kind) => switch (kind) {
+        'place' => l10n.karyaRelatedKindPlace,
+        'word' => l10n.karyaRelatedKindWord,
+        'article' => l10n.karyaRelatedKindArticle,
+        'event' => l10n.karyaRelatedKindEvent,
+        'usaha' => l10n.karyaRelatedKindUsaha,
+        'kreator' => l10n.karyaRelatedKindKreator,
+        'karya' => l10n.karyaRelatedKindKarya,
         _ => kind,
       };
 

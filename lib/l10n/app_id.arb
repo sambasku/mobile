@@ -4918,6 +4918,29 @@
   "karyaSambasTypeLocation": "Lokasi",
   "karyaSambasTypeTheme": "Tema",
   "karyaSambasTypeOther": "Lainnya",
+  "karyaFilterTitle": "Filter karya",
+  "@karyaFilterTitle": {
+    "description": "Judul bottom sheet filter daftar karya"
+  },
+  "karyaFilterApply": "Terapkan",
+  "karyaFilterReset": "Atur ulang",
+  "karyaFilterYear": "Tahun",
+  "karyaFilterYearHint": "Contoh 2019",
+  "karyaFilterLanguage": "Bahasa",
+  "karyaFilterLanguageHint": "Contoh sbs atau id",
+  "karyaFilterSambasType": "Jenis kaitan Sambas",
+  "karyaFilterSambasAll": "Semua kaitan",
+  "karyaRelatedSection": "Terkait",
+  "@karyaRelatedSection": {
+    "description": "Judul blok relasi di detail karya"
+  },
+  "karyaRelatedKindPlace": "Tempat",
+  "karyaRelatedKindWord": "Kata",
+  "karyaRelatedKindArticle": "Artikel",
+  "karyaRelatedKindEvent": "Acara",
+  "karyaRelatedKindUsaha": "Usaha",
+  "karyaRelatedKindKreator": "Kreator",
+  "karyaRelatedKindKarya": "Karya",
   "karyaExcerptSection": "Cuplikan",
   "karyaExcerptEmpty": "Belum ada cuplikan yang tayang",
   "@karyaExcerptEmpty": {

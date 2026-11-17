@@ -12603,6 +12603,108 @@ abstract class AppLocalizations {
   /// **'Lainnya'**
   String get karyaSambasTypeOther;
 
+  /// Judul bottom sheet filter daftar karya
+  ///
+  /// In id, this message translates to:
+  /// **'Filter karya'**
+  String get karyaFilterTitle;
+
+  /// No description provided for @karyaFilterApply.
+  ///
+  /// In id, this message translates to:
+  /// **'Terapkan'**
+  String get karyaFilterApply;
+
+  /// No description provided for @karyaFilterReset.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur ulang'**
+  String get karyaFilterReset;
+
+  /// No description provided for @karyaFilterYear.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahun'**
+  String get karyaFilterYear;
+
+  /// No description provided for @karyaFilterYearHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh 2019'**
+  String get karyaFilterYearHint;
+
+  /// No description provided for @karyaFilterLanguage.
+  ///
+  /// In id, this message translates to:
+  /// **'Bahasa'**
+  String get karyaFilterLanguage;
+
+  /// No description provided for @karyaFilterLanguageHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh sbs atau id'**
+  String get karyaFilterLanguageHint;
+
+  /// No description provided for @karyaFilterSambasType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis kaitan Sambas'**
+  String get karyaFilterSambasType;
+
+  /// No description provided for @karyaFilterSambasAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kaitan'**
+  String get karyaFilterSambasAll;
+
+  /// Judul blok relasi di detail karya
+  ///
+  /// In id, this message translates to:
+  /// **'Terkait'**
+  String get karyaRelatedSection;
+
+  /// No description provided for @karyaRelatedKindPlace.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempat'**
+  String get karyaRelatedKindPlace;
+
+  /// No description provided for @karyaRelatedKindWord.
+  ///
+  /// In id, this message translates to:
+  /// **'Kata'**
+  String get karyaRelatedKindWord;
+
+  /// No description provided for @karyaRelatedKindArticle.
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel'**
+  String get karyaRelatedKindArticle;
+
+  /// No description provided for @karyaRelatedKindEvent.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get karyaRelatedKindEvent;
+
+  /// No description provided for @karyaRelatedKindUsaha.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha'**
+  String get karyaRelatedKindUsaha;
+
+  /// No description provided for @karyaRelatedKindKreator.
+  ///
+  /// In id, this message translates to:
+  /// **'Kreator'**
+  String get karyaRelatedKindKreator;
+
+  /// No description provided for @karyaRelatedKindKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get karyaRelatedKindKarya;
+
   /// No description provided for @karyaExcerptSection.
   ///
   /// In id, this message translates to:

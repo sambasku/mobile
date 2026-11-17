@@ -7012,6 +7012,57 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaSambasTypeOther => 'Lainnya';
 
   @override
+  String get karyaFilterTitle => 'Filter karya';
+
+  @override
+  String get karyaFilterApply => 'Terapkan';
+
+  @override
+  String get karyaFilterReset => 'Atur ulang';
+
+  @override
+  String get karyaFilterYear => 'Tahun';
+
+  @override
+  String get karyaFilterYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFilterLanguage => 'Bahasa';
+
+  @override
+  String get karyaFilterLanguageHint => 'Contoh sbs atau id';
+
+  @override
+  String get karyaFilterSambasType => 'Jenis kaitan Sambas';
+
+  @override
+  String get karyaFilterSambasAll => 'Semua kaitan';
+
+  @override
+  String get karyaRelatedSection => 'Terkait';
+
+  @override
+  String get karyaRelatedKindPlace => 'Tempat';
+
+  @override
+  String get karyaRelatedKindWord => 'Kata';
+
+  @override
+  String get karyaRelatedKindArticle => 'Artikel';
+
+  @override
+  String get karyaRelatedKindEvent => 'Acara';
+
+  @override
+  String get karyaRelatedKindUsaha => 'Usaha';
+
+  @override
+  String get karyaRelatedKindKreator => 'Kreator';
+
+  @override
+  String get karyaRelatedKindKarya => 'Karya';
+
+  @override
   String get karyaExcerptSection => 'Cuplikan';
 
   @override
@@ -18918,6 +18969,57 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaSambasTypeOther => 'Lainnya';
+
+  @override
+  String get karyaFilterTitle => 'Filter karya';
+
+  @override
+  String get karyaFilterApply => 'Terapkan';
+
+  @override
+  String get karyaFilterReset => 'Atur ulang';
+
+  @override
+  String get karyaFilterYear => 'Tahun';
+
+  @override
+  String get karyaFilterYearHint => 'Contoh 2019';
+
+  @override
+  String get karyaFilterLanguage => 'Bahasa';
+
+  @override
+  String get karyaFilterLanguageHint => 'Contoh sbs atau id';
+
+  @override
+  String get karyaFilterSambasType => 'Jenis kaitan Sambas';
+
+  @override
+  String get karyaFilterSambasAll => 'Semua kaitan';
+
+  @override
+  String get karyaRelatedSection => 'Terkait';
+
+  @override
+  String get karyaRelatedKindPlace => 'Tempat';
+
+  @override
+  String get karyaRelatedKindWord => 'Kata';
+
+  @override
+  String get karyaRelatedKindArticle => 'Artikel';
+
+  @override
+  String get karyaRelatedKindEvent => 'Acara';
+
+  @override
+  String get karyaRelatedKindUsaha => 'Usaha';
+
+  @override
+  String get karyaRelatedKindKreator => 'Kreator';
+
+  @override
+  String get karyaRelatedKindKarya => 'Karya';
 
   @override
   String get karyaExcerptSection => 'Cuplikan';

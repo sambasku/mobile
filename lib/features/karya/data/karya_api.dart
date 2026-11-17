@@ -21,11 +21,19 @@ class KaryaApi {
     String? kind,
     int? year,
     String? q,
+    String? language,
+    String? sambasType,
   }) async {
     final params = <String, dynamic>{};
     if (kind != null && kind.isNotEmpty) params['kind'] = kind;
     if (year != null) params['year'] = year;
     if (q != null && q.trim().isNotEmpty) params['q'] = q.trim();
+    if (language != null && language.trim().isNotEmpty) {
+      params['language'] = language.trim();
+    }
+    if (sambasType != null && sambasType.isNotEmpty) {
+      params['sambas_type'] = sambasType;
+    }
     final res = await _dio.get<dynamic>(
       '/api/v1/karya',
       queryParameters: params.isEmpty ? null : params,
@@ -99,8 +107,24 @@ class KaryaApi {
       musicIsCover: raw['music_is_cover'] == true,
       filmType: raw['film_type'] as String?,
       filmRuntimeMin: (raw['film_runtime_min'] as num?)?.toInt(),
+      related: _related(raw['related']),
       updatedAt: updated.toLocal(),
     );
+  }
+
+  List<KaryaRelatedItem> _related(Object? raw) {
+    if (raw is! List) return const [];
+    return raw
+        .whereType<Map>()
+        .map((row) => KaryaRelatedItem(
+              kind: '${row['kind'] ?? ''}',
+              slug: row['slug'] as String?,
+              id: '${row['id'] ?? ''}',
+              title: '${row['title'] ?? ''}',
+              hrefKind: row['href_kind'] as String?,
+            ))
+        .where((r) => r.kind.isNotEmpty && r.id.isNotEmpty && r.title.isNotEmpty)
+        .toList();
   }
 
   List<KaryaSambasConnection> _sambas(Object? raw) {

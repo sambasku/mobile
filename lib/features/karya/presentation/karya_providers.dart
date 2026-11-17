@@ -9,17 +9,31 @@ final karyaApiProvider = Provider<KaryaApi>(
 );
 
 class KaryaBrowseQuery {
-  const KaryaBrowseQuery({this.kind, this.q});
+  const KaryaBrowseQuery({
+    this.kind,
+    this.q,
+    this.year,
+    this.language,
+    this.sambasType,
+  });
 
   final String? kind;
   final String? q;
+  final int? year;
+  final String? language;
+  final String? sambasType;
 
   @override
   bool operator ==(Object other) =>
-      other is KaryaBrowseQuery && other.kind == kind && other.q == q;
+      other is KaryaBrowseQuery &&
+      other.kind == kind &&
+      other.q == q &&
+      other.year == year &&
+      other.language == language &&
+      other.sambasType == sambasType;
 
   @override
-  int get hashCode => Object.hash(kind, q);
+  int get hashCode => Object.hash(kind, q, year, language, sambasType);
 }
 
 final karyaBrowseProvider = FutureProvider.autoDispose
@@ -27,6 +41,9 @@ final karyaBrowseProvider = FutureProvider.autoDispose
   return ref.watch(karyaApiProvider).list(
         kind: query.kind,
         q: query.q,
+        year: query.year,
+        language: query.language,
+        sambasType: query.sambasType,
       );
 });
 
