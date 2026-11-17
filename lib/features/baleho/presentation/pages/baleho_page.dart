@@ -33,6 +33,8 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
   BalehoSelection? _selection;
   /// Mode pilih/drag slot - harus dinyalakan dulu supaya tidak bentrok swipe slide.
   var _pickMode = false;
+  /// Guard anti double-open CTA setelah sheet konfirmasi.
+  var _actionBusy = false;
   final _impressedIds = <String>{};
 
   @override
@@ -89,7 +91,7 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     BalehoPlacement placement,
     BalehoFrame frame,
   ) async {
-    if (!mounted) return;
+    if (!mounted || _actionBusy) return;
     _track('tap', placementId: placement.id, frameId: frame.id);
     // Tap grid → preview dulu; aksi hanya setelah user konfirmasi di sheet.
     final open = await showBalehoPlacementSheet(
@@ -97,7 +99,8 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       placement: placement,
       frame: frame,
     );
-    if (open != true || !mounted) return;
+    if (open != true || !mounted || _actionBusy) return;
+    _actionBusy = true;
     _track('action', placementId: placement.id, frameId: frame.id);
     try {
       if (frame.actionType == 'external') {
@@ -114,6 +117,8 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       _track('action_success', placementId: placement.id, frameId: frame.id);
     } catch (_) {
       _track('action_fail', placementId: placement.id, frameId: frame.id);
+    } finally {
+      _actionBusy = false;
     }
   }
 

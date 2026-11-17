@@ -335,6 +335,10 @@
   "balehoSubmitOk": "Pesanan masuk antrean cek",
   "balehoErrorSlotTaken": "Area ini baru saja terisi. Pilih yang lain ya.",
   "balehoErrorActiveLimit": "Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.",
+  "balehoErrorFingerprintDup": "Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.",
+  "@balehoErrorFingerprintDup": {
+    "description": "409 BALEHO_FINGERPRINT_DUP saat submit pesanan Baleho"
+  },
   "balehoErrorUpload": "Gagal mengunggah gambar. Coba lagi ya.",
   "balehoErrorCreate": "Gagal mengirim pesanan. Coba lagi ya.",
   "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",

@@ -797,6 +797,12 @@ abstract class AppLocalizations {
   /// **'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.'**
   String get balehoErrorActiveLimit;
 
+  /// 409 BALEHO_FINGERPRINT_DUP saat submit pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.'**
+  String get balehoErrorFingerprintDup;
+
   /// No description provided for @balehoErrorUpload.
   ///
   /// In id, this message translates to:

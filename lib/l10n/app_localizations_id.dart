@@ -391,6 +391,10 @@ class AppLocalizationsId extends AppLocalizations {
       'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
 
   @override
+  String get balehoErrorFingerprintDup =>
+      'Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.';
+
+  @override
   String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';
 
   @override
@@ -11936,6 +11940,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get balehoErrorActiveLimit =>
       'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
+
+  @override
+  String get balehoErrorFingerprintDup =>
+      'Konten dan aksi ini sama dengan pesanan aktifmu. Ubah dulu ya.';
 
   @override
   String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';

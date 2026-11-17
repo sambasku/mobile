@@ -123,6 +123,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     return switch (e.code) {
       'SLOT_TAKEN' => l10n.balehoErrorSlotTaken,
       'BALEHO_ACTIVE_LIMIT' => l10n.balehoErrorActiveLimit,
+      'BALEHO_FINGERPRINT_DUP' => l10n.balehoErrorFingerprintDup,
       'BALEHO_UPLOAD_FAILED' => l10n.balehoErrorUpload,
       'BALEHO_CREATE_FAILED' => l10n.balehoErrorCreate,
       _ => e.message.isNotEmpty && !e.message.startsWith('BALEHO_')
@@ -206,6 +207,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   }
 
   Future<void> _submit() async {
+    if (_busy || _anyUploading) return;
     final l10n = AppLocalizations.of(context);
     final err = _validate(l10n);
     if (err != null) {
