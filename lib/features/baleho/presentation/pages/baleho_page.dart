@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,6 +33,7 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
   BalehoSelection? _selection;
   /// Mode pilih/drag slot - harus dinyalakan dulu supaya tidak bentrok swipe slide.
   var _pickMode = false;
+  final _impressedIds = <String>{};
 
   @override
   void initState() {
@@ -52,11 +55,42 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     });
   }
 
+  void _track(
+    String eventType, {
+    required String placementId,
+    String? frameId,
+  }) {
+    unawaited(
+      ref.read(balehoApiProvider).recordEvent(
+            placementId: placementId,
+            frameId: frameId,
+            eventType: eventType,
+          ),
+    );
+  }
+
+  void _recordImpressions(BalehoBoard board) {
+    final api = ref.read(balehoApiProvider);
+    for (final p in board.placements) {
+      if (p.frames.isEmpty) continue;
+      if (p.status != 'live') continue;
+      if (!_impressedIds.add(p.id)) continue;
+      unawaited(
+        api.recordEvent(
+          placementId: p.id,
+          frameId: p.frames.first.id,
+          eventType: 'impression',
+        ),
+      );
+    }
+  }
+
   Future<void> _onPlacementTap(
     BalehoPlacement placement,
     BalehoFrame frame,
   ) async {
     if (!mounted) return;
+    _track('tap', placementId: placement.id, frameId: frame.id);
     // Tap grid → preview dulu; aksi hanya setelah user konfirmasi di sheet.
     final open = await showBalehoPlacementSheet(
       context,
@@ -64,14 +98,23 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       frame: frame,
     );
     if (open != true || !mounted) return;
-    if (frame.actionType == 'external') {
-      final uri = Uri.tryParse(frame.actionPayload);
-      if (uri == null) return;
-      await launchExternalUrl(uri);
-      return;
+    _track('action', placementId: placement.id, frameId: frame.id);
+    try {
+      if (frame.actionType == 'external') {
+        final uri = Uri.tryParse(frame.actionPayload);
+        if (uri == null) {
+          _track('action_fail', placementId: placement.id, frameId: frame.id);
+          return;
+        }
+        await launchExternalUrl(uri);
+      } else {
+        if (!mounted) return;
+        context.push(frame.actionPayload);
+      }
+      _track('action_success', placementId: placement.id, frameId: frame.id);
+    } catch (_) {
+      _track('action_fail', placementId: placement.id, frameId: frame.id);
     }
-    if (!mounted) return;
-    context.push(frame.actionPayload);
   }
 
   Future<void> _continueBooking() async {
@@ -175,6 +218,13 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     final l10n = AppLocalizations.of(context);
     final theme = FTheme.of(context);
     final slideLabels = [l10n.balehoPromoSlide, l10n.balehoInternalSlide];
+
+    ref.listen(balehoBoardProvider(1), (_, next) {
+      next.whenData(_recordImpressions);
+    });
+    ref.listen(balehoBoardProvider(2), (_, next) {
+      next.whenData(_recordImpressions);
+    });
 
     return Column(
       children: [

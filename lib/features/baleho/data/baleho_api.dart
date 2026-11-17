@@ -100,6 +100,28 @@ class BalehoApi {
     }
   }
 
+  /// Fire-and-forget aman: gagal jaringan tidak dilempar ke UI.
+  Future<void> recordEvent({
+    required String placementId,
+    String? frameId,
+    required String eventType,
+  }) async {
+    // Placement client-only (slide 2 fixed) tidak ada di DB.
+    if (placementId == BalehoBoard.weeklyLeaderboardPlacementId) return;
+    try {
+      await _dio.post<dynamic>(
+        '/api/v1/baleho/events',
+        data: {
+          'placement_id': placementId,
+          if (frameId != null && frameId.isNotEmpty) 'frame_id': frameId,
+          'event_type': eventType,
+        },
+      );
+    } catch (_) {
+      // Telemetri - jangan ganggu UX.
+    }
+  }
+
   Future<String> uploadImage(File file) async {
     final form = FormData.fromMap({
       'file': await MultipartFile.fromFile(
