@@ -831,6 +831,19 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
           ),
         )
         .toList(),
+    appearsInKarya: dto.appearsInKarya
+        .map(
+          (r) => WordAppearsInKarya(
+            karyaSlug: r.karyaSlug,
+            karyaTitle: r.karyaTitle,
+            excerptId: r.excerptId,
+            excerptKind: r.excerptKind,
+            start: r.start,
+            end: r.end,
+            snippet: r.snippet,
+          ),
+        )
+        .toList(),
     // PRD relasi-lemma: kelompok makna published. Grup tanpa anggota lain
     // tidak berguna di UI (kata ini satu-satunya anggota) -> dibuang.
     meaningGroups: dto.meaningGroups

@@ -6,7 +6,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/external_link.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/error_bottom_sheet.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../dictionary/dictionary_router.dart';
+import '../../../jinye/presentation/widgets/jinye_word_picker_sheet.dart';
+import '../../data/karya_api.dart';
 import '../../domain/karya.dart';
 import '../../karya_router.dart';
 import '../karya_providers.dart';
@@ -45,19 +49,29 @@ class KaryaDetailPage extends ConsumerWidget {
             child: Center(child: Text(l10n.karyaNotFound)),
           );
         }
-        return _KaryaDetailBody(item: item);
+        return _KaryaDetailBody(item: item, slug: slug);
       },
     );
   }
 }
 
-class _KaryaDetailBody extends ConsumerWidget {
-  const _KaryaDetailBody({required this.item});
+class _KaryaDetailBody extends ConsumerStatefulWidget {
+  const _KaryaDetailBody({required this.item, required this.slug});
 
   final KaryaEntry item;
+  final String slug;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_KaryaDetailBody> createState() => _KaryaDetailBodyState();
+}
+
+class _KaryaDetailBodyState extends ConsumerState<_KaryaDetailBody> {
+  String? _linkingExcerptId;
+
+  KaryaEntry get item => widget.item;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
     final kindLabel =
@@ -204,7 +218,7 @@ class _KaryaDetailBody extends ConsumerWidget {
                   size: 16,
                   color: theme.colors.mutedForeground,
                 ),
-                onPress: () => _openContribute(context, ref),
+                onPress: () => _openContribute(context),
               ),
             ],
           ),
@@ -223,14 +237,71 @@ class _KaryaDetailBody extends ConsumerWidget {
               ),
             )
           else
-            FTileGroup(
-              children: [
-                for (final excerpt in item.excerpts)
-                  FTile(
-                    title: Text(excerpt.text, maxLines: 4),
-                    subtitle: Text(_excerptKindLabel(l10n, excerpt.kind)),
-                  ),
-              ],
+            ...item.excerpts.map(
+              (excerpt) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FTileGroup(
+                      children: [
+                        FTile(
+                          title: Text(excerpt.text, maxLines: 6),
+                          subtitle: Text(_excerptKindLabel(l10n, excerpt.kind)),
+                        ),
+                      ],
+                    ),
+                    if (excerpt.activeLemmaLinks.isNotEmpty) ...[
+                      const Gap(8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          for (final link in excerpt.activeLemmaLinks)
+                            GestureDetector(
+                              onTap: () => context.push(
+                                DictionaryRouter.detail.path.replaceFirst(
+                                  ':id',
+                                  Uri.encodeComponent(link.wordId),
+                                ),
+                              ),
+                              child: FBadge(
+                                child: Text(
+                                  (link.lemma ?? '').trim().isNotEmpty
+                                      ? link.lemma!
+                                      : '-',
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                    const Gap(8),
+                    FTileGroup(
+                      children: [
+                        FTile(
+                          prefix: _linkingExcerptId == excerpt.id
+                              ? const FCircularProgress(size: .sm)
+                              : Icon(
+                                  FLucideIcons.link2,
+                                  size: 18,
+                                  color: theme.colors.primary,
+                                ),
+                          title: Text(l10n.karyaLemmaLinkAction),
+                          suffix: Icon(
+                            FLucideIcons.chevronRight,
+                            size: 16,
+                            color: theme.colors.mutedForeground,
+                          ),
+                          onPress: _linkingExcerptId == excerpt.id
+                              ? null
+                              : () => _linkLemma(context, excerpt),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           const Gap(8),
           FTileGroup(
@@ -247,7 +318,7 @@ class _KaryaDetailBody extends ConsumerWidget {
                   size: 16,
                   color: theme.colors.mutedForeground,
                 ),
-                onPress: () => _openExcerpt(context, ref),
+                onPress: () => _openExcerpt(context),
               ),
               FTile(
                 prefix: Icon(
@@ -261,7 +332,7 @@ class _KaryaDetailBody extends ConsumerWidget {
                   size: 16,
                   color: theme.colors.mutedForeground,
                 ),
-                onPress: () => _openContribute(context, ref),
+                onPress: () => _openContribute(context),
               ),
             ],
           ),
@@ -270,7 +341,46 @@ class _KaryaDetailBody extends ConsumerWidget {
     );
   }
 
-  void _openContribute(BuildContext context, WidgetRef ref) {
+  Future<void> _linkLemma(BuildContext context, KaryaExcerpt excerpt) async {
+    final l10n = AppLocalizations.of(context);
+    final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
+    if (!authed) {
+      await showAppErrorSheet(context, message: l10n.karyaLemmaLinkLoginFirst);
+      return;
+    }
+    final picked = await showJinyeWordPickerSheet(context);
+    if (!context.mounted || picked == null) return;
+
+    final span = _firstLemmaSpan(excerpt.text, picked.lemma);
+    if (span == null) {
+      await showAppErrorSheet(context, message: l10n.karyaLemmaLinkNotFoundInText);
+      return;
+    }
+
+    setState(() => _linkingExcerptId = excerpt.id);
+    try {
+      await ref.read(karyaApiProvider).createLemmaLink(
+            excerptId: excerpt.id,
+            start: span.$1,
+            end: span.$2,
+            wordId: picked.id,
+          );
+      if (!context.mounted) return;
+      ref.invalidate(karyaBySlugProvider(widget.slug));
+      showFToast(context: context, title: Text(l10n.karyaLemmaLinkSuccess));
+    } catch (e) {
+      if (!context.mounted) return;
+      final msg = karyaErrorMessage(e);
+      await showAppErrorSheet(
+        context,
+        message: msg.isNotEmpty ? msg : l10n.karyaLemmaLinkFailed,
+      );
+    } finally {
+      if (context.mounted) setState(() => _linkingExcerptId = null);
+    }
+  }
+
+  void _openContribute(BuildContext context) {
     final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
     if (!authed) {
       context.push('/login');
@@ -284,7 +394,7 @@ class _KaryaDetailBody extends ConsumerWidget {
     );
   }
 
-  void _openExcerpt(BuildContext context, WidgetRef ref) {
+  void _openExcerpt(BuildContext context) {
     final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
     if (!authed) {
       context.push('/login');
@@ -354,4 +464,12 @@ class _KaryaDetailBody extends ConsumerWidget {
       _ => role,
     };
   }
+}
+
+(int, int)? _firstLemmaSpan(String haystack, String lemma) {
+  final needle = lemma.trim();
+  if (needle.isEmpty) return null;
+  final idx = haystack.toLowerCase().indexOf(needle.toLowerCase());
+  if (idx < 0) return null;
+  return (idx, idx + needle.length);
 }

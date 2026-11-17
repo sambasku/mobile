@@ -23,6 +23,7 @@ import '../../../bookmark/presentation/widgets/bookmark_button.dart';
 import '../../../comment/presentation/widgets/word_comments_section.dart';
 import '../../../comment/presentation/providers/comment_providers.dart';
 import '../../../jinye/presentation/widgets/jinye_used_in_word_section.dart';
+import '../../../karya/presentation/widgets/karya_used_in_word_section.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/in_app_review_service.dart';
 import '../../../../core/utils/format_datetime.dart';
@@ -882,6 +883,10 @@ class _DetailBody extends HookConsumerWidget {
                       ..._appearsInSections(
                         detail.appearsIn,
                         AppLocalizations.of(context),
+                      ),
+
+                      KaryaUsedInWordSection(
+                        appearances: detail.appearsInKarya,
                       ),
 
                       if (!_lemmaUsesLocalCorpus(ref))

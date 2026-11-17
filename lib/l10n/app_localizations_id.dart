@@ -7109,6 +7109,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaProposeExcerpt => 'Usulkan cuplikan';
 
   @override
+  String get karyaAppearsInWordTitle => 'Muncul di karya';
+
+  @override
+  String get karyaLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get karyaLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get karyaLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get karyaLemmaLinkNotFoundInText =>
+      'Lemma tidak ditemukan di teks cuplikan';
+
+  @override
+  String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
+
+  @override
   String get karyaFormInvalid =>
       'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
 
@@ -18996,6 +19015,25 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaProposeExcerpt => 'Usulkan cuplikan';
+
+  @override
+  String get karyaAppearsInWordTitle => 'Muncul di karya';
+
+  @override
+  String get karyaLemmaLinkAction => 'Tautkan lemma';
+
+  @override
+  String get karyaLemmaLinkSuccess => 'Lemma ditautkan';
+
+  @override
+  String get karyaLemmaLinkFailed => 'Gagal menautkan lemma';
+
+  @override
+  String get karyaLemmaLinkNotFoundInText =>
+      'Lemma tidak ditemukan di teks cuplikan';
+
+  @override
+  String get karyaLemmaLinkLoginFirst => 'Masuk dulu untuk menautkan lemma';
 
   @override
   String get karyaFormInvalid =>

@@ -87,6 +87,36 @@ class KaryaSambasConnection {
   final String note;
 }
 
+class KaryaLemmaLink {
+  const KaryaLemmaLink({
+    required this.id,
+    required this.excerptId,
+    required this.start,
+    required this.end,
+    required this.wordId,
+    required this.status,
+    this.lemma,
+    this.source = 'author',
+    this.proposedWordId,
+    this.proposedLemma,
+    this.proposedBy,
+  });
+
+  final String id;
+  final String excerptId;
+  final int start;
+  final int end;
+  final String wordId;
+  final String? lemma;
+  final String status;
+  final String source;
+  final String? proposedWordId;
+  final String? proposedLemma;
+  final String? proposedBy;
+
+  bool get isActive => status == 'active';
+}
+
 class KaryaExcerpt {
   const KaryaExcerpt({
     required this.id,
@@ -97,6 +127,7 @@ class KaryaExcerpt {
     this.endLabel,
     required this.rightsStatus,
     this.sourceUrl,
+    this.lemmaLinks = const [],
   });
 
   final String id;
@@ -107,6 +138,10 @@ class KaryaExcerpt {
   final String? endLabel;
   final String rightsStatus;
   final String? sourceUrl;
+  final List<KaryaLemmaLink> lemmaLinks;
+
+  List<KaryaLemmaLink> get activeLemmaLinks =>
+      lemmaLinks.where((l) => l.isActive).toList();
 }
 
 class KaryaEntry {

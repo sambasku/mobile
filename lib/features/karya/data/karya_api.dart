@@ -206,6 +206,51 @@ class KaryaApi {
     );
   }
 
+  Future<void> createLemmaLink({
+    required String excerptId,
+    required int start,
+    required int end,
+    required String wordId,
+  }) async {
+    await _dio.post<dynamic>(
+      '/api/v1/karya-excerpts/${Uri.encodeComponent(excerptId)}/lemma-links',
+      data: {
+        'start': start,
+        'end': end,
+        'word_id': wordId,
+      },
+    );
+  }
+
+  Future<void> deleteLemmaLink(String id) async {
+    await _dio.delete<dynamic>(
+      '/api/v1/karya-lemma-links/${Uri.encodeComponent(id)}',
+    );
+  }
+
+  List<KaryaLemmaLink> _lemmaLinks(Object? raw) {
+    if (raw is! List) return const [];
+    return raw
+        .whereType<Map>()
+        .map(
+          (row) => KaryaLemmaLink(
+            id: '${row['id']}',
+            excerptId: '${row['excerpt_id'] ?? ''}',
+            start: (row['start'] as num?)?.toInt() ?? 0,
+            end: (row['end'] as num?)?.toInt() ?? 0,
+            wordId: '${row['word_id'] ?? ''}',
+            lemma: row['lemma'] as String?,
+            status: '${row['status'] ?? 'active'}',
+            source: row['source'] as String? ?? 'author',
+            proposedWordId: row['proposed_word_id'] as String?,
+            proposedLemma: row['proposed_lemma'] as String?,
+            proposedBy: row['proposed_by'] as String?,
+          ),
+        )
+        .where((l) => l.id.isNotEmpty && l.wordId.isNotEmpty)
+        .toList();
+  }
+
   List<KaryaExcerpt> _excerpts(Object? raw) {
     if (raw is! List) return const [];
     return raw
@@ -219,6 +264,7 @@ class KaryaApi {
               endLabel: row['end_label'] as String?,
               rightsStatus: '${row['rights_status'] ?? ''}',
               sourceUrl: row['source_url'] as String?,
+              lemmaLinks: _lemmaLinks(row['lemma_links']),
             ))
         .where((e) => e.text.isNotEmpty)
         .toList();

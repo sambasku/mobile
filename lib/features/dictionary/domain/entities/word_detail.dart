@@ -71,6 +71,7 @@ class WordDetail {
     this.images = const [],
     this.relatedWords = const [],
     this.appearsIn = const [],
+    this.appearsInKarya = const [],
     this.meaningGroups = const [],
     this.variants = const [],
   });
@@ -97,6 +98,7 @@ class WordDetail {
   final List<WordImage> images;
   final List<RelatedWord> relatedWords;
   final List<RelatedWord> appearsIn;
+  final List<WordAppearsInKarya> appearsInKarya;
 
   /// PRD relasi-lemma: kelompok makna published yang memuat kata ini.
   /// Kosong = kata tidak punya kelompok (bagian UI tidak dirender).
@@ -319,6 +321,27 @@ class RelatedWord {
   final String lemma;
   final String relationType;
 
+}
+
+/// Cuplikan karya yang menaut lemma ini (wire `appears_in_karya`).
+class WordAppearsInKarya {
+  const WordAppearsInKarya({
+    required this.karyaSlug,
+    required this.karyaTitle,
+    required this.excerptId,
+    required this.excerptKind,
+    required this.start,
+    required this.end,
+    required this.snippet,
+  });
+
+  final String karyaSlug;
+  final String karyaTitle;
+  final String excerptId;
+  final String excerptKind;
+  final int start;
+  final int end;
+  final String snippet;
 }
 
 /// PRD relasi-lemma: kelompok lema bermakna sama/berdekatan.

@@ -12783,6 +12783,42 @@ abstract class AppLocalizations {
   /// **'Usulkan cuplikan'**
   String get karyaProposeExcerpt;
 
+  /// Judul section di detail lemma untuk cuplikan karya
+  ///
+  /// In id, this message translates to:
+  /// **'Muncul di karya'**
+  String get karyaAppearsInWordTitle;
+
+  /// Tile di detail karya untuk menaut lemma ke cuplikan
+  ///
+  /// In id, this message translates to:
+  /// **'Tautkan lemma'**
+  String get karyaLemmaLinkAction;
+
+  /// Toast sukses taut lemma karya
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma ditautkan'**
+  String get karyaLemmaLinkSuccess;
+
+  /// Error umum saat taut lemma karya
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menautkan lemma'**
+  String get karyaLemmaLinkFailed;
+
+  /// Lemma dipilih tapi tidak ada di cuplikan (case-insensitive)
+  ///
+  /// In id, this message translates to:
+  /// **'Lemma tidak ditemukan di teks cuplikan'**
+  String get karyaLemmaLinkNotFoundInText;
+
+  /// Sheet saat guest mengetuk taut lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk menautkan lemma'**
+  String get karyaLemmaLinkLoginFirst;
+
   /// No description provided for @karyaFormInvalid.
   ///
   /// In id, this message translates to:

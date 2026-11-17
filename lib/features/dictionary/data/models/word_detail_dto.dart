@@ -31,6 +31,9 @@ abstract class WordDetailDto with _$WordDetailDto {
     @Default([])
     List<RelatedWordDto> relatedWords,
     @JsonKey(name: 'appears_in') @Default([]) List<RelatedWordDto> appearsIn,
+    @JsonKey(name: 'appears_in_karya')
+    @Default([])
+    List<WordAppearsInKaryaDto> appearsInKarya,
 
     /// PRD relasi-lemma: kelompok makna (published saja).
     @JsonKey(name: 'meaning_groups') @Default([]) List<MeaningGroupDto> meaningGroups,
@@ -180,6 +183,22 @@ abstract class RelatedWordDto with _$RelatedWordDto {
 
   factory RelatedWordDto.fromJson(Map<String, dynamic> json) =>
       _$RelatedWordDtoFromJson(json);
+}
+
+@freezed
+abstract class WordAppearsInKaryaDto with _$WordAppearsInKaryaDto {
+  const factory WordAppearsInKaryaDto({
+    @JsonKey(name: 'karya_slug') required String karyaSlug,
+    @JsonKey(name: 'karya_title') required String karyaTitle,
+    @JsonKey(name: 'excerpt_id') required String excerptId,
+    @JsonKey(name: 'excerpt_kind') required String excerptKind,
+    required int start,
+    required int end,
+    required String snippet,
+  }) = _WordAppearsInKaryaDto;
+
+  factory WordAppearsInKaryaDto.fromJson(Map<String, dynamic> json) =>
+      _$WordAppearsInKaryaDtoFromJson(json);
 }
 
 /// PRD relasi-lemma: anggota satu kelompok makna.

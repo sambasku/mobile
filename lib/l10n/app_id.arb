@@ -4957,6 +4957,30 @@
   "@karyaProposeExcerpt": {
     "description": "CTA usul lirik/dialog dari detail karya"
   },
+  "karyaAppearsInWordTitle": "Muncul di karya",
+  "@karyaAppearsInWordTitle": {
+    "description": "Judul section di detail lemma untuk cuplikan karya"
+  },
+  "karyaLemmaLinkAction": "Tautkan lemma",
+  "@karyaLemmaLinkAction": {
+    "description": "Tile di detail karya untuk menaut lemma ke cuplikan"
+  },
+  "karyaLemmaLinkSuccess": "Lemma ditautkan",
+  "@karyaLemmaLinkSuccess": {
+    "description": "Toast sukses taut lemma karya"
+  },
+  "karyaLemmaLinkFailed": "Gagal menautkan lemma",
+  "@karyaLemmaLinkFailed": {
+    "description": "Error umum saat taut lemma karya"
+  },
+  "karyaLemmaLinkNotFoundInText": "Lemma tidak ditemukan di teks cuplikan",
+  "@karyaLemmaLinkNotFoundInText": {
+    "description": "Lemma dipilih tapi tidak ada di cuplikan (case-insensitive)"
+  },
+  "karyaLemmaLinkLoginFirst": "Masuk dulu untuk menautkan lemma",
+  "@karyaLemmaLinkLoginFirst": {
+    "description": "Sheet saat guest mengetuk taut lemma"
+  },
   "karyaFormInvalid": "Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi",
   "karyaFormKindRequired": "Pilih jenis karya dulu",
   "karyaFormTitleRequired": "Judul karya minimal 2 karakter",

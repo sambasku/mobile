@@ -65,6 +65,13 @@ _WordDetailDto _$WordDetailDtoFromJson(
           ?.map((e) => RelatedWordDto.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  appearsInKarya:
+      (json['appears_in_karya'] as List<dynamic>?)
+          ?.map(
+            (e) => WordAppearsInKaryaDto.fromJson(e as Map<String, dynamic>),
+          )
+          .toList() ??
+      const [],
   meaningGroups:
       (json['meaning_groups'] as List<dynamic>?)
           ?.map((e) => MeaningGroupDto.fromJson(e as Map<String, dynamic>))
@@ -101,6 +108,7 @@ Map<String, dynamic> _$WordDetailDtoToJson(_WordDetailDto instance) =>
       'images': instance.images,
       'related_words': instance.relatedWords,
       'appears_in': instance.appearsIn,
+      'appears_in_karya': instance.appearsInKarya,
       'meaning_groups': instance.meaningGroups,
       'variants': instance.variants,
       'date': instance.date,
@@ -276,6 +284,30 @@ Map<String, dynamic> _$RelatedWordDtoToJson(_RelatedWordDto instance) =>
       'lemma': instance.lemma,
       'relation_type': instance.relationType,
     };
+
+_WordAppearsInKaryaDto _$WordAppearsInKaryaDtoFromJson(
+  Map<String, dynamic> json,
+) => _WordAppearsInKaryaDto(
+  karyaSlug: json['karya_slug'] as String,
+  karyaTitle: json['karya_title'] as String,
+  excerptId: json['excerpt_id'] as String,
+  excerptKind: json['excerpt_kind'] as String,
+  start: (json['start'] as num).toInt(),
+  end: (json['end'] as num).toInt(),
+  snippet: json['snippet'] as String,
+);
+
+Map<String, dynamic> _$WordAppearsInKaryaDtoToJson(
+  _WordAppearsInKaryaDto instance,
+) => <String, dynamic>{
+  'karya_slug': instance.karyaSlug,
+  'karya_title': instance.karyaTitle,
+  'excerpt_id': instance.excerptId,
+  'excerpt_kind': instance.excerptKind,
+  'start': instance.start,
+  'end': instance.end,
+  'snippet': instance.snippet,
+};
 
 _MeaningGroupMemberDto _$MeaningGroupMemberDtoFromJson(
   Map<String, dynamic> json,
