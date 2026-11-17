@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/about/about_router.dart';
 import '../../features/achievement/achievement_router.dart';
 import '../../features/activity/presentation/pages/activity_page.dart';
+import '../../features/baleho/baleho_router.dart';
+import '../../features/baleho/presentation/pages/baleho_page.dart';
 import '../../features/admin_analytics/admin_analytics_router.dart';
 import '../../features/auth/auth_router.dart';
 import '../../features/auth/presentation/providers/auth_status_providers.dart';
@@ -104,6 +106,7 @@ class AppRouter {
       ...ExploreRouter.routes,
       ...EventRouter.routes,
       ...UsahaRouter.routes,
+      ...BalehoRouter.routes,
       ...LayananRouter.routes,
       ...KaryaRouter.routes,
       ...ActivityRouter.routes,
@@ -132,6 +135,25 @@ class AppRouter {
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: ExplorePage(),
                 ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/baleho',
+                name: 'BalehoRouter.hub',
+                builder: (context, state) {
+                  final slide = int.tryParse(
+                        state.uri.queryParameters['slide'] ?? '',
+                      ) ??
+                      1;
+                  final refName = state.uri.queryParameters['ref'];
+                  return BalehoPage(
+                    initialSlide: slide == 2 ? 1 : 0,
+                    referralUsername: refName,
+                  );
+                },
               ),
             ],
           ),
@@ -316,10 +338,10 @@ Future<void> _openProfileBranch(
     context.push(AuthRouter.login.path);
     return;
   }
-  navigationShell.goBranch(3);
+  navigationShell.goBranch(4);
 }
 
-/// Shell 4 tab bottom navigation (Forui).
+/// Shell 5 tab bottom navigation (Forui) - Baleho di posisi ke-3.
 class _HomeShell extends ConsumerWidget {
   const _HomeShell({required this.navigationShell});
 
@@ -375,11 +397,11 @@ class _HomeShell extends ConsumerWidget {
               FocusManager.instance.primaryFocus?.unfocus();
               // Tamu ketuk Profil → login. Jangan andalkan authStatus.value saja:
               // saat AsyncLoading value bisa null → salah kirim ke login / tab macet.
-              if (index == 3) {
+              if (index == 4) {
                 final authed =
                     ref.read(authStatusProvider).value?.isAuth ?? false;
                 if (authed) {
-                  navigationShell.goBranch(3);
+                  navigationShell.goBranch(4);
                   return;
                 }
                 unawaited(_openProfileBranch(context, navigationShell));
@@ -405,6 +427,10 @@ class _HomeShell extends ConsumerWidget {
               FBottomNavigationBarItem(
                 icon: const Icon(FLucideIcons.compass),
                 label: Text(l10n.navExplore),
+              ),
+              FBottomNavigationBarItem(
+                icon: const Icon(FLucideIcons.layoutGrid),
+                label: Text(l10n.navBaleho),
               ),
               FBottomNavigationBarItem(
                 icon: const Icon(FLucideIcons.circlePlus),

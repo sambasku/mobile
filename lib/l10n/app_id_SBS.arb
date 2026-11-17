@@ -103,6 +103,258 @@
   "languagePickerNote": "Mengubah bahasa antarmuka. Arah pencarian kamus tidak ikut berubah.",
   "navHome": "Home",
   "navExplore": "Eksplorasi",
+  "navBaleho": "Baleho",
+  "@navBaleho": {
+    "description": "Label tab Baleho di bottom navigation"
+  },
+  "balehoHeaderTitle": "Baleho SambasKu",
+  "@balehoHeaderTitle": {
+    "description": "Judul FHeader tab Baleho"
+  },
+  "balehoPromoSlide": "Promosi",
+  "balehoInternalSlide": "Di aplikasi",
+  "balehoSlidePromoCaption": "Ingin tampil di sini?",
+  "@balehoSlidePromoCaption": {
+    "description": "Judul ajakan di atas grid slide promo Baleho"
+  },
+  "balehoSlidePromoBody": "Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.",
+  "@balehoSlidePromoBody": {
+    "description": "Isi bottom sheet info ajakan promo Baleho"
+  },
+  "balehoSlidePromoInfoSemantics": "Info ingin tampil di sini",
+  "@balehoSlidePromoInfoSemantics": {
+    "description": "Label aksesibilitas tombol info caption promo Baleho"
+  },
+  "balehoSlideInternalCaption": "Ruang komunitas",
+  "@balehoSlideInternalCaption": {
+    "description": "Keterangan singkat di atas grid slide 2 Baleho"
+  },
+  "balehoWeeklyLeaderboardTitle": "Peringkat Mingguan",
+  "@balehoWeeklyLeaderboardTitle": {
+    "description": "Judul slot tetap 4x1 di slide 2 Baleho"
+  },
+  "balehoWeeklyLeaderboardCta": "Siapa kontributor teratas minggu ini?",
+  "@balehoWeeklyLeaderboardCta": {
+    "description": "Subtitle kompetitif tile peringkat mingguan Baleho"
+  },
+  "balehoWeeklyLeaderboardComingSoonBody": "Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.",
+  "@balehoWeeklyLeaderboardComingSoonBody": {
+    "description": "Body halaman coming soon papan peringkat"
+  },
+  "balehoSlotAvailable": "Tersedia",
+  "balehoPendingBadge": "Menunggu",
+  "balehoPlacementSheetTitle": "Konten Baleho",
+  "@balehoPlacementSheetTitle": {
+    "description": "Judul fallback bottom sheet saat tap placement tanpa title"
+  },
+  "balehoPlacementOpen": "Buka",
+  "@balehoPlacementOpen": {
+    "description": "CTA buka aksi placement dari bottom sheet"
+  },
+  "balehoPlacementPendingHint": "Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.",
+  "@balehoPlacementPendingHint": {
+    "description": "Info di sheet bila owner mengetuk placement pending"
+  },
+  "balehoContinueBook": "Lanjut pesan",
+  "balehoCancelSelection": "Batalkan",
+  "@balehoCancelSelection": {
+    "description": "Batalkan seleksi area di papan Baleho"
+  },
+  "balehoEnterPickMode": "Mulai Promosi",
+  "@balehoEnterPickMode": {
+    "description": "CTA di bottom sheet info - aktifkan mode pilih area Baleho"
+  },
+  "balehoSelectionHint": "Ketuk atau seret sel kosong",
+  "@balehoSelectionHint": {
+    "description": "Petunjuk singkat satu baris saat mode pilih area aktif"
+  },
+  "balehoSizePickLabel": "Ukuran area",
+  "@balehoSizePickLabel": {
+    "description": "Caption chip ukuran seleksi Baleho"
+  },
+  "balehoSizeChip": "{w}x{h}",
+  "@balehoSizeChip": {
+    "description": "Chip ukuran w x h",
+    "placeholders": {
+      "w": { "type": "int" },
+      "h": { "type": "int" }
+    }
+  },
+  "balehoSelectionSummary": "{size} · kolom {col}, baris {row}",
+  "@balehoSelectionSummary": {
+    "description": "Ringkas area yang sedang dipilih",
+    "placeholders": {
+      "size": { "type": "String" },
+      "col": { "type": "int" },
+      "row": { "type": "int" }
+    }
+  },
+  "balehoBookConfirmTitle": "Pesanan Baleho",
+  "balehoBookConfirmSubtitle": "Ukuran {size} di posisi {position}. Referral: {referral}",
+  "@balehoBookConfirmSubtitle": {
+    "description": "Ringkas ukuran, posisi, referral",
+    "placeholders": {
+      "size": { "type": "String" },
+      "position": { "type": "String" },
+      "referral": { "type": "String" }
+    }
+  },
+  "balehoBookConfirmBody": "Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.",
+  "balehoBookClose": "Tutup",
+  "balehoLoadFailed": "Gagal memuat papan Baleho",
+  "balehoBookPageTitle": "Pesan area",
+  "balehoSlotSummary": "Ukuran {size} · kolom {col}, baris {row}",
+  "@balehoSlotSummary": {
+    "description": "Ringkas area yang dipilih di form pesan",
+    "placeholders": {
+      "size": { "type": "String" },
+      "col": { "type": "int" },
+      "row": { "type": "int" }
+    }
+  },
+  "balehoReferralLabel": "Kode teman (opsional)",
+  "balehoReferralHint": "Username yang mengajakmu",
+  "balehoDaysLabel": "Berapa hari tayang?",
+  "@balehoDaysLabel": {
+    "description": "Label field durasi tayang"
+  },
+  "balehoDaysHint": "1 sampai 30",
+  "@balehoDaysHint": {
+    "description": "Hint input durasi hari"
+  },
+  "balehoDaysChip": "{days} hari",
+  "@balehoDaysChip": {
+    "description": "Chip pilihan durasi cepat",
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "balehoDaysUnit": "hari",
+  "@balehoDaysUnit": {
+    "description": "Satuan di samping input durasi"
+  },
+  "balehoContentSection": "Baleho",
+  "@balehoContentSection": {
+    "description": "Judul bagian isi kreatif Baleho"
+  },
+  "balehoFrameLabel": "Slide {n}",
+  "@balehoFrameLabel": {
+    "description": "Judul satu slide/frame Baleho dalam stack",
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "balehoAddFrame": "Tambah slide",
+  "balehoRemoveFrame": "Hapus",
+  "balehoMediaKindLabel": "Jenis tampilan",
+  "@balehoMediaKindLabel": {
+    "description": "Caption chip jenis media"
+  },
+  "balehoMediaTextCta": "Teks + tombol",
+  "balehoMediaImage": "Gambar",
+  "balehoMediaVideo": "Video",
+  "balehoMediaUrlLabel": "Alamat media",
+  "balehoMediaUrlHint": "https://…",
+  "balehoUploadImage": "Pilih gambar",
+  "balehoUploading": "Mengunggah…",
+  "balehoUploadOk": "Gambar terunggah",
+  "balehoTitleLabel": "Judul (opsional)",
+  "balehoCtaLabel": "Teks tombol (opsional)",
+  "balehoActionKindLabel": "Saat diketuk buka",
+  "@balehoActionKindLabel": {
+    "description": "Caption chip jenis aksi"
+  },
+  "balehoActionInApp": "Halaman di SambasKu",
+  "balehoActionExternal": "Website luar",
+  "balehoActionPathLabel": "Tujuan di app",
+  "balehoActionPathHint": "/usaha/nama-slug atau /explore",
+  "balehoActionUrlLabel": "Alamat website",
+  "balehoActionUrlHint": "https://…",
+  "balehoDeeplinkPickerTitle": "Pilih halaman tujuan",
+  "@balehoDeeplinkPickerTitle": {
+    "description": "Judul bottom sheet picker deeplink Baleho"
+  },
+  "balehoDeeplinkPickerSubtitle": "Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.",
+  "@balehoDeeplinkPickerSubtitle": {
+    "description": "Subjudul picker deeplink"
+  },
+  "balehoDeeplinkPickCta": "Pilih halaman",
+  "@balehoDeeplinkPickCta": {
+    "description": "Tombol buka picker deeplink"
+  },
+  "balehoDeeplinkEmpty": "Belum dipilih",
+  "balehoEntitySearchUsahaTitle": "Cari usaha",
+  "@balehoEntitySearchUsahaTitle": {
+    "description": "Judul sheet cari usaha untuk deeplink Baleho"
+  },
+  "balehoEntitySearchAcaraTitle": "Cari acara",
+  "@balehoEntitySearchAcaraTitle": {
+    "description": "Judul sheet cari acara untuk deeplink Baleho"
+  },
+  "balehoEntitySearchWisataTitle": "Cari wisata",
+  "@balehoEntitySearchWisataTitle": {
+    "description": "Judul sheet cari wisata untuk deeplink Baleho"
+  },
+  "balehoEntitySearchHint": "Ketik nama…",
+  "@balehoEntitySearchHint": {
+    "description": "Hint field cari entity Baleho"
+  },
+  "balehoEntitySearchPrompt": "Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.",
+  "@balehoEntitySearchPrompt": {
+    "description": "Prompt awal sheet cari entity"
+  },
+  "balehoEntitySearchEmpty": "Tidak ketemu. Coba kata lain ya.",
+  "@balehoEntitySearchEmpty": {
+    "description": "Empty state sheet cari entity"
+  },
+  "balehoEntitySearchFailed": "Gagal memuat daftar. Coba lagi ya.",
+  "@balehoEntitySearchFailed": {
+    "description": "Error state sheet cari entity"
+  },
+  "balehoDeeplinkPickUsaha": "Pilih usaha (cari)",
+  "balehoDeeplinkPickAcara": "Pilih acara (cari)",
+  "balehoDeeplinkPickWisata": "Pilih wisata (cari)",
+  "balehoDeeplinkPickUsahaDetail": "Cari lalu pilih satu usaha",
+  "balehoDeeplinkPickAcaraDetail": "Cari lalu pilih satu acara",
+  "balehoDeeplinkPickWisataDetail": "Cari lalu pilih satu tempat wisata",
+  "balehoSlideContentTitle": "Tampilan slide {n}",
+  "@balehoSlideContentTitle": {
+    "description": "Judul bottom sheet kelola konten slide",
+    "placeholders": { "n": { "type": "int" } }
+  },
+  "balehoSlideContentCta": "Atur tampilan",
+  "@balehoSlideContentCta": {
+    "description": "Tile buka sheet kelola konten slide"
+  },
+  "balehoSlideContentEmpty": "Belum diisi - ketuk untuk atur",
+  "@balehoSlideContentEmpty": {
+    "description": "Subtitle tile jika slide belum punya judul/media"
+  },
+  "balehoSlideContentDone": "Selesai",
+  "@balehoSlideContentDone": {
+    "description": "Tutup sheet konten slide"
+  },
+  "balehoSubmit": "Kirim pesanan",
+  "balehoSubmitting": "Mengirim…",
+  "balehoSubmitOk": "Pesanan masuk antrean cek",
+  "balehoErrorSlotTaken": "Area ini baru saja terisi. Pilih yang lain ya.",
+  "balehoErrorActiveLimit": "Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.",
+  "balehoErrorUpload": "Gagal mengunggah gambar. Coba lagi ya.",
+  "balehoErrorCreate": "Gagal mengirim pesanan. Coba lagi ya.",
+  "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
+  "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2",
+  "balehoValidationVideoMax": "Maksimal satu video per pesanan",
+  "balehoValidationMediaUrl": "Alamat media wajib diisi",
+  "balehoValidationAction": "Isi tujuan saat Baleho diketuk",
+  "balehoValidationExternalUrl": "Alamat website tidak valid (pakai http/https)",
+  "balehoValidationDays": "Durasi harus 1 sampai 30 hari",
+  "@balehoValidationDays": {
+    "description": "Error durasi di luar 1-30"
+  },
+  "balehoTosTitle": "Tanggung jawab konten",
+  "@balehoTosTitle": {
+    "description": "Judul cuplikan ToS di form pesan Baleho"
+  },
+  "balehoTosBody": "Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.",
+  "@balehoTosBody": {
+    "description": "Cuplikan ToS Baleho di form pesan"
+  },
   "navContribute": "Kontribusi",
   "navProfile": "Profil",
   "profileSettingsTile": "Pengaturan",
@@ -1489,6 +1741,7 @@
   "feedCategorySearchMiss": "Pencarian warga",
   "feedCategoryCorrection": "Perbaikan",
   "feedCategoryExplore": "Eksplorasi",
+  "feedCategoryJinye": "Jinye",
   "feedCategoryAnnouncement": "Pengumuman",
   "feedCategoryJoined": "Warga",
   "feedKindWord": "Kata",

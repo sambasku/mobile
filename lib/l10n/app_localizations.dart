@@ -289,6 +289,580 @@ abstract class AppLocalizations {
   /// **'Eksplorasi'**
   String get navExplore;
 
+  /// Label tab Baleho di bottom navigation
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho'**
+  String get navBaleho;
+
+  /// Judul FHeader tab Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho SambasKu'**
+  String get balehoHeaderTitle;
+
+  /// No description provided for @balehoPromoSlide.
+  ///
+  /// In id, this message translates to:
+  /// **'Promosi'**
+  String get balehoPromoSlide;
+
+  /// No description provided for @balehoInternalSlide.
+  ///
+  /// In id, this message translates to:
+  /// **'Di aplikasi'**
+  String get balehoInternalSlide;
+
+  /// Judul ajakan di atas grid slide promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Ingin tampil di sini?'**
+  String get balehoSlidePromoCaption;
+
+  /// Isi bottom sheet info ajakan promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.'**
+  String get balehoSlidePromoBody;
+
+  /// Label aksesibilitas tombol info caption promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Info ingin tampil di sini'**
+  String get balehoSlidePromoInfoSemantics;
+
+  /// Keterangan singkat di atas grid slide 2 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang komunitas'**
+  String get balehoSlideInternalCaption;
+
+  /// Judul slot tetap 4x1 di slide 2 Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat Mingguan'**
+  String get balehoWeeklyLeaderboardTitle;
+
+  /// Subtitle kompetitif tile peringkat mingguan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Siapa kontributor teratas minggu ini?'**
+  String get balehoWeeklyLeaderboardCta;
+
+  /// Body halaman coming soon papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.'**
+  String get balehoWeeklyLeaderboardComingSoonBody;
+
+  /// No description provided for @balehoSlotAvailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersedia'**
+  String get balehoSlotAvailable;
+
+  /// No description provided for @balehoPendingBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get balehoPendingBadge;
+
+  /// Judul fallback bottom sheet saat tap placement tanpa title
+  ///
+  /// In id, this message translates to:
+  /// **'Konten Baleho'**
+  String get balehoPlacementSheetTitle;
+
+  /// CTA buka aksi placement dari bottom sheet
+  ///
+  /// In id, this message translates to:
+  /// **'Buka'**
+  String get balehoPlacementOpen;
+
+  /// Info di sheet bila owner mengetuk placement pending
+  ///
+  /// In id, this message translates to:
+  /// **'Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.'**
+  String get balehoPlacementPendingHint;
+
+  /// No description provided for @balehoContinueBook.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut pesan'**
+  String get balehoContinueBook;
+
+  /// Batalkan seleksi area di papan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get balehoCancelSelection;
+
+  /// CTA di bottom sheet info - aktifkan mode pilih area Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Mulai Promosi'**
+  String get balehoEnterPickMode;
+
+  /// Petunjuk singkat satu baris saat mode pilih area aktif
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk atau seret sel kosong'**
+  String get balehoSelectionHint;
+
+  /// Caption chip ukuran seleksi Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran area'**
+  String get balehoSizePickLabel;
+
+  /// Chip ukuran w x h
+  ///
+  /// In id, this message translates to:
+  /// **'{w}x{h}'**
+  String balehoSizeChip(int w, int h);
+
+  /// Ringkas area yang sedang dipilih
+  ///
+  /// In id, this message translates to:
+  /// **'{size} · kolom {col}, baris {row}'**
+  String balehoSelectionSummary(String size, int col, int row);
+
+  /// No description provided for @balehoBookConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pesanan Baleho'**
+  String get balehoBookConfirmTitle;
+
+  /// Ringkas ukuran, posisi, referral
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran {size} di posisi {position}. Referral: {referral}'**
+  String balehoBookConfirmSubtitle(
+    String size,
+    String position,
+    String referral,
+  );
+
+  /// No description provided for @balehoBookConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.'**
+  String get balehoBookConfirmBody;
+
+  /// No description provided for @balehoBookClose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get balehoBookClose;
+
+  /// No description provided for @balehoLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat papan Baleho'**
+  String get balehoLoadFailed;
+
+  /// No description provided for @balehoBookPageTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan area'**
+  String get balehoBookPageTitle;
+
+  /// Ringkas area yang dipilih di form pesan
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran {size} · kolom {col}, baris {row}'**
+  String balehoSlotSummary(String size, int col, int row);
+
+  /// No description provided for @balehoReferralLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode teman (opsional)'**
+  String get balehoReferralLabel;
+
+  /// No description provided for @balehoReferralHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Username yang mengajakmu'**
+  String get balehoReferralHint;
+
+  /// Label field durasi tayang
+  ///
+  /// In id, this message translates to:
+  /// **'Berapa hari tayang?'**
+  String get balehoDaysLabel;
+
+  /// Hint input durasi hari
+  ///
+  /// In id, this message translates to:
+  /// **'1 sampai 30'**
+  String get balehoDaysHint;
+
+  /// Chip pilihan durasi cepat
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari'**
+  String balehoDaysChip(int days);
+
+  /// Satuan di samping input durasi
+  ///
+  /// In id, this message translates to:
+  /// **'hari'**
+  String get balehoDaysUnit;
+
+  /// Judul bagian isi kreatif Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho'**
+  String get balehoContentSection;
+
+  /// Judul satu slide/frame Baleho dalam stack
+  ///
+  /// In id, this message translates to:
+  /// **'Slide {n}'**
+  String balehoFrameLabel(int n);
+
+  /// No description provided for @balehoAddFrame.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah slide'**
+  String get balehoAddFrame;
+
+  /// No description provided for @balehoRemoveFrame.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get balehoRemoveFrame;
+
+  /// Caption chip jenis media
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis tampilan'**
+  String get balehoMediaKindLabel;
+
+  /// No description provided for @balehoMediaTextCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks + tombol'**
+  String get balehoMediaTextCta;
+
+  /// No description provided for @balehoMediaImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar'**
+  String get balehoMediaImage;
+
+  /// No description provided for @balehoMediaVideo.
+  ///
+  /// In id, this message translates to:
+  /// **'Video'**
+  String get balehoMediaVideo;
+
+  /// No description provided for @balehoMediaUrlLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat media'**
+  String get balehoMediaUrlLabel;
+
+  /// No description provided for @balehoMediaUrlHint.
+  ///
+  /// In id, this message translates to:
+  /// **'https://…'**
+  String get balehoMediaUrlHint;
+
+  /// No description provided for @balehoUploadImage.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih gambar'**
+  String get balehoUploadImage;
+
+  /// No description provided for @balehoUploading.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengunggah…'**
+  String get balehoUploading;
+
+  /// No description provided for @balehoUploadOk.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar terunggah'**
+  String get balehoUploadOk;
+
+  /// No description provided for @balehoTitleLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul (opsional)'**
+  String get balehoTitleLabel;
+
+  /// No description provided for @balehoCtaLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks tombol (opsional)'**
+  String get balehoCtaLabel;
+
+  /// Caption chip jenis aksi
+  ///
+  /// In id, this message translates to:
+  /// **'Saat diketuk buka'**
+  String get balehoActionKindLabel;
+
+  /// No description provided for @balehoActionInApp.
+  ///
+  /// In id, this message translates to:
+  /// **'Halaman di SambasKu'**
+  String get balehoActionInApp;
+
+  /// No description provided for @balehoActionExternal.
+  ///
+  /// In id, this message translates to:
+  /// **'Website luar'**
+  String get balehoActionExternal;
+
+  /// No description provided for @balehoActionPathLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tujuan di app'**
+  String get balehoActionPathLabel;
+
+  /// No description provided for @balehoActionPathHint.
+  ///
+  /// In id, this message translates to:
+  /// **'/usaha/nama-slug atau /explore'**
+  String get balehoActionPathHint;
+
+  /// No description provided for @balehoActionUrlLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat website'**
+  String get balehoActionUrlLabel;
+
+  /// No description provided for @balehoActionUrlHint.
+  ///
+  /// In id, this message translates to:
+  /// **'https://…'**
+  String get balehoActionUrlHint;
+
+  /// Judul bottom sheet picker deeplink Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih halaman tujuan'**
+  String get balehoDeeplinkPickerTitle;
+
+  /// Subjudul picker deeplink
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.'**
+  String get balehoDeeplinkPickerSubtitle;
+
+  /// Tombol buka picker deeplink
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih halaman'**
+  String get balehoDeeplinkPickCta;
+
+  /// No description provided for @balehoDeeplinkEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dipilih'**
+  String get balehoDeeplinkEmpty;
+
+  /// Judul sheet cari usaha untuk deeplink Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari usaha'**
+  String get balehoEntitySearchUsahaTitle;
+
+  /// Judul sheet cari acara untuk deeplink Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari acara'**
+  String get balehoEntitySearchAcaraTitle;
+
+  /// Judul sheet cari wisata untuk deeplink Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari wisata'**
+  String get balehoEntitySearchWisataTitle;
+
+  /// Hint field cari entity Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik nama…'**
+  String get balehoEntitySearchHint;
+
+  /// Prompt awal sheet cari entity
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.'**
+  String get balehoEntitySearchPrompt;
+
+  /// Empty state sheet cari entity
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ketemu. Coba kata lain ya.'**
+  String get balehoEntitySearchEmpty;
+
+  /// Error state sheet cari entity
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat daftar. Coba lagi ya.'**
+  String get balehoEntitySearchFailed;
+
+  /// No description provided for @balehoDeeplinkPickUsaha.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih usaha (cari)'**
+  String get balehoDeeplinkPickUsaha;
+
+  /// No description provided for @balehoDeeplinkPickAcara.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih acara (cari)'**
+  String get balehoDeeplinkPickAcara;
+
+  /// No description provided for @balehoDeeplinkPickWisata.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih wisata (cari)'**
+  String get balehoDeeplinkPickWisata;
+
+  /// No description provided for @balehoDeeplinkPickUsahaDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lalu pilih satu usaha'**
+  String get balehoDeeplinkPickUsahaDetail;
+
+  /// No description provided for @balehoDeeplinkPickAcaraDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lalu pilih satu acara'**
+  String get balehoDeeplinkPickAcaraDetail;
+
+  /// No description provided for @balehoDeeplinkPickWisataDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lalu pilih satu tempat wisata'**
+  String get balehoDeeplinkPickWisataDetail;
+
+  /// Judul bottom sheet kelola konten slide
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilan slide {n}'**
+  String balehoSlideContentTitle(int n);
+
+  /// Tile buka sheet kelola konten slide
+  ///
+  /// In id, this message translates to:
+  /// **'Atur tampilan'**
+  String get balehoSlideContentCta;
+
+  /// Subtitle tile jika slide belum punya judul/media
+  ///
+  /// In id, this message translates to:
+  /// **'Belum diisi - ketuk untuk atur'**
+  String get balehoSlideContentEmpty;
+
+  /// Tutup sheet konten slide
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get balehoSlideContentDone;
+
+  /// No description provided for @balehoSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim pesanan'**
+  String get balehoSubmit;
+
+  /// No description provided for @balehoSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim…'**
+  String get balehoSubmitting;
+
+  /// No description provided for @balehoSubmitOk.
+  ///
+  /// In id, this message translates to:
+  /// **'Pesanan masuk antrean cek'**
+  String get balehoSubmitOk;
+
+  /// No description provided for @balehoErrorSlotTaken.
+  ///
+  /// In id, this message translates to:
+  /// **'Area ini baru saja terisi. Pilih yang lain ya.'**
+  String get balehoErrorSlotTaken;
+
+  /// No description provided for @balehoErrorActiveLimit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.'**
+  String get balehoErrorActiveLimit;
+
+  /// No description provided for @balehoErrorUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunggah gambar. Coba lagi ya.'**
+  String get balehoErrorUpload;
+
+  /// No description provided for @balehoErrorCreate.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim pesanan. Coba lagi ya.'**
+  String get balehoErrorCreate;
+
+  /// No description provided for @balehoValidationNeedFrame.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi minimal satu slide Baleho'**
+  String get balehoValidationNeedFrame;
+
+  /// No description provided for @balehoValidationVideoSize.
+  ///
+  /// In id, this message translates to:
+  /// **'Video hanya untuk ukuran 4x2'**
+  String get balehoValidationVideoSize;
+
+  /// No description provided for @balehoValidationVideoMax.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal satu video per pesanan'**
+  String get balehoValidationVideoMax;
+
+  /// No description provided for @balehoValidationMediaUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat media wajib diisi'**
+  String get balehoValidationMediaUrl;
+
+  /// No description provided for @balehoValidationAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi tujuan saat Baleho diketuk'**
+  String get balehoValidationAction;
+
+  /// No description provided for @balehoValidationExternalUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat website tidak valid (pakai http/https)'**
+  String get balehoValidationExternalUrl;
+
+  /// Error durasi di luar 1-30
+  ///
+  /// In id, this message translates to:
+  /// **'Durasi harus 1 sampai 30 hari'**
+  String get balehoValidationDays;
+
+  /// Judul cuplikan ToS di form pesan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggung jawab konten'**
+  String get balehoTosTitle;
+
+  /// Cuplikan ToS Baleho di form pesan
+  ///
+  /// In id, this message translates to:
+  /// **'Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.'**
+  String get balehoTosBody;
+
   /// No description provided for @navContribute.
   ///
   /// In id, this message translates to:
@@ -7984,6 +8558,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Eksplorasi'**
   String get feedCategoryExplore;
+
+  /// Chip kategori feed: status Jinye
+  ///
+  /// In id, this message translates to:
+  /// **'Jinye'**
+  String get feedCategoryJinye;
 
   /// Chip kategori feed: pengumuman admin
   ///

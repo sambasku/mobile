@@ -111,6 +111,321 @@ class AppLocalizationsId extends AppLocalizations {
   String get navExplore => 'Eksplorasi';
 
   @override
+  String get navBaleho => 'Baleho';
+
+  @override
+  String get balehoHeaderTitle => 'Baleho SambasKu';
+
+  @override
+  String get balehoPromoSlide => 'Promosi';
+
+  @override
+  String get balehoInternalSlide => 'Di aplikasi';
+
+  @override
+  String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
+
+  @override
+  String get balehoSlidePromoBody =>
+      'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
+
+  @override
+  String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
+
+  @override
+  String get balehoSlideInternalCaption => 'Ruang komunitas';
+
+  @override
+  String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
+
+  @override
+  String get balehoWeeklyLeaderboardCta =>
+      'Siapa kontributor teratas minggu ini?';
+
+  @override
+  String get balehoWeeklyLeaderboardComingSoonBody =>
+      'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoSlotAvailable => 'Tersedia';
+
+  @override
+  String get balehoPendingBadge => 'Menunggu';
+
+  @override
+  String get balehoPlacementSheetTitle => 'Konten Baleho';
+
+  @override
+  String get balehoPlacementOpen => 'Buka';
+
+  @override
+  String get balehoPlacementPendingHint =>
+      'Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.';
+
+  @override
+  String get balehoContinueBook => 'Lanjut pesan';
+
+  @override
+  String get balehoCancelSelection => 'Batalkan';
+
+  @override
+  String get balehoEnterPickMode => 'Mulai Promosi';
+
+  @override
+  String get balehoSelectionHint => 'Ketuk atau seret sel kosong';
+
+  @override
+  String get balehoSizePickLabel => 'Ukuran area';
+
+  @override
+  String balehoSizeChip(int w, int h) {
+    return '${w}x$h';
+  }
+
+  @override
+  String balehoSelectionSummary(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoBookConfirmTitle => 'Pesanan Baleho';
+
+  @override
+  String balehoBookConfirmSubtitle(
+    String size,
+    String position,
+    String referral,
+  ) {
+    return 'Ukuran $size di posisi $position. Referral: $referral';
+  }
+
+  @override
+  String get balehoBookConfirmBody =>
+      'Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.';
+
+  @override
+  String get balehoBookClose => 'Tutup';
+
+  @override
+  String get balehoLoadFailed => 'Gagal memuat papan Baleho';
+
+  @override
+  String get balehoBookPageTitle => 'Pesan area';
+
+  @override
+  String balehoSlotSummary(String size, int col, int row) {
+    return 'Ukuran $size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoReferralLabel => 'Kode teman (opsional)';
+
+  @override
+  String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoDaysLabel => 'Berapa hari tayang?';
+
+  @override
+  String get balehoDaysHint => '1 sampai 30';
+
+  @override
+  String balehoDaysChip(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoDaysUnit => 'hari';
+
+  @override
+  String get balehoContentSection => 'Baleho';
+
+  @override
+  String balehoFrameLabel(int n) {
+    return 'Slide $n';
+  }
+
+  @override
+  String get balehoAddFrame => 'Tambah slide';
+
+  @override
+  String get balehoRemoveFrame => 'Hapus';
+
+  @override
+  String get balehoMediaKindLabel => 'Jenis tampilan';
+
+  @override
+  String get balehoMediaTextCta => 'Teks + tombol';
+
+  @override
+  String get balehoMediaImage => 'Gambar';
+
+  @override
+  String get balehoMediaVideo => 'Video';
+
+  @override
+  String get balehoMediaUrlLabel => 'Alamat media';
+
+  @override
+  String get balehoMediaUrlHint => 'https://…';
+
+  @override
+  String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoUploading => 'Mengunggah…';
+
+  @override
+  String get balehoUploadOk => 'Gambar terunggah';
+
+  @override
+  String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoCtaLabel => 'Teks tombol (opsional)';
+
+  @override
+  String get balehoActionKindLabel => 'Saat diketuk buka';
+
+  @override
+  String get balehoActionInApp => 'Halaman di SambasKu';
+
+  @override
+  String get balehoActionExternal => 'Website luar';
+
+  @override
+  String get balehoActionPathLabel => 'Tujuan di app';
+
+  @override
+  String get balehoActionPathHint => '/usaha/nama-slug atau /explore';
+
+  @override
+  String get balehoActionUrlLabel => 'Alamat website';
+
+  @override
+  String get balehoActionUrlHint => 'https://…';
+
+  @override
+  String get balehoDeeplinkPickerTitle => 'Pilih halaman tujuan';
+
+  @override
+  String get balehoDeeplinkPickerSubtitle =>
+      'Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.';
+
+  @override
+  String get balehoDeeplinkPickCta => 'Pilih halaman';
+
+  @override
+  String get balehoDeeplinkEmpty => 'Belum dipilih';
+
+  @override
+  String get balehoEntitySearchUsahaTitle => 'Cari usaha';
+
+  @override
+  String get balehoEntitySearchAcaraTitle => 'Cari acara';
+
+  @override
+  String get balehoEntitySearchWisataTitle => 'Cari wisata';
+
+  @override
+  String get balehoEntitySearchHint => 'Ketik nama…';
+
+  @override
+  String get balehoEntitySearchPrompt =>
+      'Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.';
+
+  @override
+  String get balehoEntitySearchEmpty => 'Tidak ketemu. Coba kata lain ya.';
+
+  @override
+  String get balehoEntitySearchFailed => 'Gagal memuat daftar. Coba lagi ya.';
+
+  @override
+  String get balehoDeeplinkPickUsaha => 'Pilih usaha (cari)';
+
+  @override
+  String get balehoDeeplinkPickAcara => 'Pilih acara (cari)';
+
+  @override
+  String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
+
+  @override
+  String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
+
+  @override
+  String get balehoDeeplinkPickAcaraDetail => 'Cari lalu pilih satu acara';
+
+  @override
+  String get balehoDeeplinkPickWisataDetail =>
+      'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String balehoSlideContentTitle(int n) {
+    return 'Tampilan slide $n';
+  }
+
+  @override
+  String get balehoSlideContentCta => 'Atur tampilan';
+
+  @override
+  String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
+
+  @override
+  String get balehoSlideContentDone => 'Selesai';
+
+  @override
+  String get balehoSubmit => 'Kirim pesanan';
+
+  @override
+  String get balehoSubmitting => 'Mengirim…';
+
+  @override
+  String get balehoSubmitOk => 'Pesanan masuk antrean cek';
+
+  @override
+  String get balehoErrorSlotTaken =>
+      'Area ini baru saja terisi. Pilih yang lain ya.';
+
+  @override
+  String get balehoErrorActiveLimit =>
+      'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
+
+  @override
+  String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';
+
+  @override
+  String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
+
+  @override
+  String get balehoValidationVideoSize => 'Video hanya untuk ukuran 4x2';
+
+  @override
+  String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
+
+  @override
+  String get balehoValidationMediaUrl => 'Alamat media wajib diisi';
+
+  @override
+  String get balehoValidationAction => 'Isi tujuan saat Baleho diketuk';
+
+  @override
+  String get balehoValidationExternalUrl =>
+      'Alamat website tidak valid (pakai http/https)';
+
+  @override
+  String get balehoValidationDays => 'Durasi harus 1 sampai 30 hari';
+
+  @override
+  String get balehoTosTitle => 'Tanggung jawab konten';
+
+  @override
+  String get balehoTosBody =>
+      'Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.';
+
+  @override
   String get navContribute => 'Kontribusi';
 
   @override
@@ -4551,6 +4866,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedCategoryExplore => 'Eksplorasi';
+
+  @override
+  String get feedCategoryJinye => 'Jinye';
 
   @override
   String get feedCategoryAnnouncement => 'Pengumuman';
@@ -11340,6 +11658,321 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get navExplore => 'Eksplorasi';
 
   @override
+  String get navBaleho => 'Baleho';
+
+  @override
+  String get balehoHeaderTitle => 'Baleho SambasKu';
+
+  @override
+  String get balehoPromoSlide => 'Promosi';
+
+  @override
+  String get balehoInternalSlide => 'Di aplikasi';
+
+  @override
+  String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
+
+  @override
+  String get balehoSlidePromoBody =>
+      'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
+
+  @override
+  String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
+
+  @override
+  String get balehoSlideInternalCaption => 'Ruang komunitas';
+
+  @override
+  String get balehoWeeklyLeaderboardTitle => 'Peringkat Mingguan';
+
+  @override
+  String get balehoWeeklyLeaderboardCta =>
+      'Siapa kontributor teratas minggu ini?';
+
+  @override
+  String get balehoWeeklyLeaderboardComingSoonBody =>
+      'Fitur ini sedang disiapkan. Nanti kamu bisa lihat peringkat kontributor minggu ini di sini.';
+
+  @override
+  String get balehoSlotAvailable => 'Tersedia';
+
+  @override
+  String get balehoPendingBadge => 'Menunggu';
+
+  @override
+  String get balehoPlacementSheetTitle => 'Konten Baleho';
+
+  @override
+  String get balehoPlacementOpen => 'Buka';
+
+  @override
+  String get balehoPlacementPendingHint =>
+      'Pesananmu masih menunggu pengecekan. Belum bisa dibuka publik.';
+
+  @override
+  String get balehoContinueBook => 'Lanjut pesan';
+
+  @override
+  String get balehoCancelSelection => 'Batalkan';
+
+  @override
+  String get balehoEnterPickMode => 'Mulai Promosi';
+
+  @override
+  String get balehoSelectionHint => 'Ketuk atau seret sel kosong';
+
+  @override
+  String get balehoSizePickLabel => 'Ukuran area';
+
+  @override
+  String balehoSizeChip(int w, int h) {
+    return '${w}x$h';
+  }
+
+  @override
+  String balehoSelectionSummary(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoBookConfirmTitle => 'Pesanan Baleho';
+
+  @override
+  String balehoBookConfirmSubtitle(
+    String size,
+    String position,
+    String referral,
+  ) {
+    return 'Ukuran $size di posisi $position. Referral: $referral';
+  }
+
+  @override
+  String get balehoBookConfirmBody =>
+      'Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.';
+
+  @override
+  String get balehoBookClose => 'Tutup';
+
+  @override
+  String get balehoLoadFailed => 'Gagal memuat papan Baleho';
+
+  @override
+  String get balehoBookPageTitle => 'Pesan area';
+
+  @override
+  String balehoSlotSummary(String size, int col, int row) {
+    return 'Ukuran $size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoReferralLabel => 'Kode teman (opsional)';
+
+  @override
+  String get balehoReferralHint => 'Username yang mengajakmu';
+
+  @override
+  String get balehoDaysLabel => 'Berapa hari tayang?';
+
+  @override
+  String get balehoDaysHint => '1 sampai 30';
+
+  @override
+  String balehoDaysChip(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoDaysUnit => 'hari';
+
+  @override
+  String get balehoContentSection => 'Baleho';
+
+  @override
+  String balehoFrameLabel(int n) {
+    return 'Slide $n';
+  }
+
+  @override
+  String get balehoAddFrame => 'Tambah slide';
+
+  @override
+  String get balehoRemoveFrame => 'Hapus';
+
+  @override
+  String get balehoMediaKindLabel => 'Jenis tampilan';
+
+  @override
+  String get balehoMediaTextCta => 'Teks + tombol';
+
+  @override
+  String get balehoMediaImage => 'Gambar';
+
+  @override
+  String get balehoMediaVideo => 'Video';
+
+  @override
+  String get balehoMediaUrlLabel => 'Alamat media';
+
+  @override
+  String get balehoMediaUrlHint => 'https://…';
+
+  @override
+  String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoUploading => 'Mengunggah…';
+
+  @override
+  String get balehoUploadOk => 'Gambar terunggah';
+
+  @override
+  String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoCtaLabel => 'Teks tombol (opsional)';
+
+  @override
+  String get balehoActionKindLabel => 'Saat diketuk buka';
+
+  @override
+  String get balehoActionInApp => 'Halaman di SambasKu';
+
+  @override
+  String get balehoActionExternal => 'Website luar';
+
+  @override
+  String get balehoActionPathLabel => 'Tujuan di app';
+
+  @override
+  String get balehoActionPathHint => '/usaha/nama-slug atau /explore';
+
+  @override
+  String get balehoActionUrlLabel => 'Alamat website';
+
+  @override
+  String get balehoActionUrlHint => 'https://…';
+
+  @override
+  String get balehoDeeplinkPickerTitle => 'Pilih halaman tujuan';
+
+  @override
+  String get balehoDeeplinkPickerSubtitle =>
+      'Pilih dulu, lalu boleh dilengkapi slug di kolom bawah.';
+
+  @override
+  String get balehoDeeplinkPickCta => 'Pilih halaman';
+
+  @override
+  String get balehoDeeplinkEmpty => 'Belum dipilih';
+
+  @override
+  String get balehoEntitySearchUsahaTitle => 'Cari usaha';
+
+  @override
+  String get balehoEntitySearchAcaraTitle => 'Cari acara';
+
+  @override
+  String get balehoEntitySearchWisataTitle => 'Cari wisata';
+
+  @override
+  String get balehoEntitySearchHint => 'Ketik nama…';
+
+  @override
+  String get balehoEntitySearchPrompt =>
+      'Ketik minimal 2 huruf untuk mencari, atau biarkan kosong untuk melihat daftar.';
+
+  @override
+  String get balehoEntitySearchEmpty => 'Tidak ketemu. Coba kata lain ya.';
+
+  @override
+  String get balehoEntitySearchFailed => 'Gagal memuat daftar. Coba lagi ya.';
+
+  @override
+  String get balehoDeeplinkPickUsaha => 'Pilih usaha (cari)';
+
+  @override
+  String get balehoDeeplinkPickAcara => 'Pilih acara (cari)';
+
+  @override
+  String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
+
+  @override
+  String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
+
+  @override
+  String get balehoDeeplinkPickAcaraDetail => 'Cari lalu pilih satu acara';
+
+  @override
+  String get balehoDeeplinkPickWisataDetail =>
+      'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String balehoSlideContentTitle(int n) {
+    return 'Tampilan slide $n';
+  }
+
+  @override
+  String get balehoSlideContentCta => 'Atur tampilan';
+
+  @override
+  String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
+
+  @override
+  String get balehoSlideContentDone => 'Selesai';
+
+  @override
+  String get balehoSubmit => 'Kirim pesanan';
+
+  @override
+  String get balehoSubmitting => 'Mengirim…';
+
+  @override
+  String get balehoSubmitOk => 'Pesanan masuk antrean cek';
+
+  @override
+  String get balehoErrorSlotTaken =>
+      'Area ini baru saja terisi. Pilih yang lain ya.';
+
+  @override
+  String get balehoErrorActiveLimit =>
+      'Kamu sudah punya 2 pesanan aktif. Tunggu selesai dulu ya.';
+
+  @override
+  String get balehoErrorUpload => 'Gagal mengunggah gambar. Coba lagi ya.';
+
+  @override
+  String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
+
+  @override
+  String get balehoValidationVideoSize => 'Video hanya untuk ukuran 4x2';
+
+  @override
+  String get balehoValidationVideoMax => 'Maksimal satu video per pesanan';
+
+  @override
+  String get balehoValidationMediaUrl => 'Alamat media wajib diisi';
+
+  @override
+  String get balehoValidationAction => 'Isi tujuan saat Baleho diketuk';
+
+  @override
+  String get balehoValidationExternalUrl =>
+      'Alamat website tidak valid (pakai http/https)';
+
+  @override
+  String get balehoValidationDays => 'Durasi harus 1 sampai 30 hari';
+
+  @override
+  String get balehoTosTitle => 'Tanggung jawab konten';
+
+  @override
+  String get balehoTosBody =>
+      'Isi Baleho dan halaman tujuan tanggung jawabmu. SambasKu boleh menolak atau menurunkan tayangan. Ubah besar setelah lolos cek = ajukan ulang.';
+
+  @override
   String get navContribute => 'Kontribusi';
 
   @override
@@ -15780,6 +16413,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get feedCategoryExplore => 'Eksplorasi';
+
+  @override
+  String get feedCategoryJinye => 'Jinye';
 
   @override
   String get feedCategoryAnnouncement => 'Pengumuman';

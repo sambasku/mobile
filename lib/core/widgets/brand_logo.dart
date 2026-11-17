@@ -96,9 +96,16 @@ class BrandLogo extends StatelessWidget {
 /// Wordmark landscape adaptif (putih di gelap / navy-gold di terang).
 /// App bar tab Home.
 class BrandWordmark extends StatelessWidget {
-  const BrandWordmark({super.key, this.height = 28});
+  const BrandWordmark({
+    super.key,
+    this.height = 28,
+    this.showBetaBadge = true,
+  });
 
   final double height;
+
+  /// Set false untuk halaman yang tidak ingin badge Beta (mis. Baleho).
+  final bool showBetaBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +117,7 @@ class BrandWordmark extends StatelessWidget {
       alignment: Alignment.centerLeft,
       semanticsLabel: 'SambasKu',
     );
-    if (!F.isBeta) return wordmark;
+    if (!showBetaBadge || !F.isBeta) return wordmark;
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
