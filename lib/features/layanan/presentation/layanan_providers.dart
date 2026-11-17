@@ -10,30 +10,34 @@ final layananApiProvider = Provider<LayananApi>(
 
 /// Kunci daftar: ganti chip/filter = fetch baru.
 class LayananBrowseQuery {
-  const LayananBrowseQuery({this.regionId, this.category});
+  const LayananBrowseQuery({this.regionId, this.category, this.q});
 
   final String? regionId;
 
   /// `ambulance` | `fire` | null = semua.
   final String? category;
 
+  final String? q;
+
   @override
   bool operator ==(Object other) =>
       other is LayananBrowseQuery &&
       other.regionId == regionId &&
-      other.category == category;
+      other.category == category &&
+      other.q == q;
 
   @override
-  int get hashCode => Object.hash(regionId, category);
+  int get hashCode => Object.hash(regionId, category, q);
 }
 
 final layananBrowseProvider = FutureProvider.autoDispose
     .family<List<LayananEntry>, LayananBrowseQuery>((ref, query) {
-  return ref.watch(layananApiProvider).list(
-        regionId: query.regionId,
-        category: query.category,
-      );
-});
+      return ref.watch(layananApiProvider).list(
+            regionId: query.regionId,
+            category: query.category,
+            q: query.q,
+          );
+    });
 
 final layananBySlugProvider = FutureProvider.autoDispose
     .family<LayananEntry?, String>((ref, slug) {

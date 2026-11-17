@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 
 import '../../domain/entities/event.dart';
 import '../../domain/entities/event_contribution.dart';
+import '../../domain/entities/event_image.dart';
 import '../models/event_contribution_dto.dart';
 import '../models/event_dto.dart';
+import '../models/event_image_dto.dart';
 import '../../../../core/i18n/l10n.dart';
 
 /// Ukuran halaman daftar acara. Batas API 500; 50 cukup untuk layar
@@ -101,11 +103,40 @@ class EventRemoteDatasource {
     return EventContributionDto.categoriesFromJson(items);
   }
 
+  /// Halaman galeri foto acara (`next_offset` null = habis).
+  Future<({List<EventImage> items, int total, int? nextOffset})>
+      fetchImagePage(String slug, {int offset = 0}) async {    final res = await _dio.get<dynamic>(
+      '/api/v1/events/${Uri.encodeComponent(slug)}/images',
+      queryParameters: {'offset': offset},
+      options: Options(receiveTimeout: const Duration(seconds: 8)),
+    );
+    final body = res.data;
+    final data = body is Map ? body['data'] : null;
+    if (data is! Map) {
+      return (items: const <EventImage>[], total: 0, nextOffset: null);
+    }
+    return EventImagePageDto.fromJson(
+      Map<String, dynamic>.from(data),
+    ).toEntity();
+  }
+
   static String? _nextCursor(Object? data) {
     if (data is! Map) return null;
     final cursor = data['next_cursor'];
     if (cursor is! String || cursor.trim().isEmpty) return null;
     return cursor;
+  }
+}
+
+extension EventGoingApi on EventRemoteDatasource {
+  /// Tandai "Aku hadir" (login). Error dilempar ke caller.
+  Future<void> markGoing(String eventId) async {
+    await _dio.post<dynamic>('/api/v1/events/$eventId/going');
+  }
+
+  /// Batalkan "Aku hadir".
+  Future<void> unmarkGoing(String eventId) async {
+    await _dio.delete<dynamic>('/api/v1/events/$eventId/going');
   }
 }
 
@@ -192,6 +223,62 @@ class EventContributionApi {
       }
       throw EventContributionException(l10n.eventSaveFailed);
     }
+  }
+}
+
+/// Unggah + kirim foto galeri acara (pola PlaceContributionApi).
+class EventImageUploadApi {
+  EventImageUploadApi(this._dio);
+
+  final Dio _dio;
+
+  /// Unggah satu berkas ke `POST /api/v1/images?purpose=event`.
+  Future<String> uploadImage(File file) async {
+    final form = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        file.path,
+        filename: file.uri.pathSegments.last,
+      ),
+    });
+    try {
+      final res = await _dio.post<dynamic>(
+        '/api/v1/images',
+        queryParameters: const {'purpose': 'event'},
+        data: form,
+        options: Options(
+          contentType: Headers.multipartFormDataContentType,
+          headers: {Headers.contentTypeHeader: null},
+        ),
+      );
+      final url = _dataMap(res.data)['url'];
+      if (url is! String || url.isEmpty) {
+        throw EventContributionException(l10n.eventPhotoUploadFailed);
+      }
+      return url;
+    } on DioException catch (e) {
+      throw EventContributionException(_message(e, l10n.eventPhotoUploadFailed));
+    }
+  }
+
+  /// Kirim URL yang sudah diunggah (max 4 per kiriman, 5/hari).
+  Future<void> append(String slug, List<String> urls) async {
+    try {
+      await _dio.post<dynamic>(
+        '/api/v1/events/${Uri.encodeComponent(slug)}/images',
+        data: {'urls': urls},
+      );
+    } on DioException catch (e) {
+      throw EventContributionException(_message(e, l10n.eventSaveFailed));
+    }
+  }
+
+  String _message(DioException e, String fallback) {
+    final data = e.response?.data;
+    if (data is Map) {
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) return message;
+    }
+    return fallback;
   }
 }
 

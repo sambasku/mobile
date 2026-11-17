@@ -4,6 +4,8 @@ import '../../core/router/route_definer.dart';
 import 'presentation/pages/event_contribute_page.dart';
 import 'presentation/pages/event_detail_page.dart';
 import 'presentation/pages/event_list_page.dart';
+import 'presentation/pages/event_photos_add_page.dart';
+import 'presentation/pages/event_photos_page.dart';
 import 'presentation/pages/event_proposals_page.dart';
 
 class EventRouter {
@@ -30,8 +32,26 @@ class EventRouter {
     name: 'EventRouter.proposals',
   );
 
+  /// Galeri foto acara (mirip `/explore/place/:slug/foto`).
+  static const photos = RouteDefiner(
+    path: '/acara/:slug/foto',
+    name: 'EventRouter.photos',
+  );
+
+  /// Unggah foto acara (login, max 4 per submit).
+  static const photoAdd = RouteDefiner(
+    path: '/acara/:slug/foto/tambah',
+    name: 'EventRouter.photoAdd',
+  );
+
   static String detailPath(String slug) =>
       detail.path.replaceFirst(':slug', Uri.encodeComponent(slug));
+
+  static String photosPath(String slug) =>
+      photos.path.replaceFirst(':slug', Uri.encodeComponent(slug));
+
+  static String photoAddPath(String slug) =>
+      photoAdd.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
   /// Route detail di luar shell (push penuh).
   ///
@@ -47,6 +67,20 @@ class EventRouter {
       path: proposals.path,
       name: proposals.name,
       builder: (context, state) => const EventProposalsPage(),
+    ),
+    GoRoute(
+      path: photoAdd.path,
+      name: photoAdd.name,
+      builder: (context, state) => EventPhotosAddPage(
+        slug: state.pathParameters['slug'] ?? '',
+      ),
+    ),
+    GoRoute(
+      path: photos.path,
+      name: photos.name,
+      builder: (context, state) => EventPhotosPage(
+        slug: state.pathParameters['slug'] ?? '',
+      ),
     ),
     GoRoute(
       path: list.path,

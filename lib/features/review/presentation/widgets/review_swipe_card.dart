@@ -51,9 +51,10 @@ class ReviewSwipeCard extends StatelessWidget {
       negativeLabel: AppLocalizations.of(context).reviewSwipeReject,
       skipLabel: AppLocalizations.of(context).reviewSwipeSkip,
       allowNegative: allowReject,
-      overlayStyle: allowReject
-          ? SwipeDecisionOverlayStyle.icon
-          : SwipeDecisionOverlayStyle.label,
+      // Selalu icon (check/x), termasuk mode tutup antrean. Label pill
+      // beda visual dari kartu biasa; gesture kiri tetap di-blok via
+      // allowNegative.
+      overlayStyle: SwipeDecisionOverlayStyle.icon,
       // Beda dari deck vote (↑↓): tinjau = setuju/tolak, bukan vote.
       positiveIcon: FLucideIcons.check,
       negativeIcon: FLucideIcons.x,

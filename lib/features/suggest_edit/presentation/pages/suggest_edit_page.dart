@@ -1219,12 +1219,15 @@ class _SuggestEditPageState extends ConsumerState<SuggestEditPage> {
           _l10n.suggestDefinitionLabel,
           info: _l10n.suggestDefinitionHint,
         ),
-        FTextField.multiline(
+        // #271: mulai 1 baris, tumbuh sampai 4 (pola terjemahan).
+        FTextField(
           control: FTextFieldControl.managed(controller: ctrl),
           hint: _l10n.suggestDefinitionPlaceholder,
           error: _errorText('definition'),
-          minLines: 4,
-          maxLines: 8,
+          minLines: 1,
+          maxLines: 4,
+          keyboardType: TextInputType.text,
+          textAlignVertical: TextAlignVertical.top,
         ),
       ],
     );

@@ -13,11 +13,13 @@ import '../../../../core/utils/format_datetime.dart';
 import '../../../../core/widgets/image_preview.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
 import '../../../../shared/widgets/contributor_appreciation.dart';
+import '../../../auth/auth_router.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/event.dart';
 import '../../event_router.dart';
 import '../providers/event_providers.dart';
 import '../widgets/event_ui.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Rasio poster hero detail acara (sama dengan hero wisata).
 const _heroAspect = 16 / 10;
@@ -57,16 +59,18 @@ class EventDetailPage extends ConsumerWidget {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends ConsumerStatefulWidget {
   const _Body({required this.event});
 
   final Event event;
 
   @override
-  State<_Body> createState() => _BodyState();
+  ConsumerState<_Body> createState() => _BodyState();
 }
 
-class _BodyState extends State<_Body> {
+class _BodyState extends ConsumerState<_Body> {
+  bool _goingBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +80,30 @@ class _BodyState extends State<_Body> {
         AnalyticsService.instance.logEventOpen(slug: widget.event.slug),
       );
     });
+  }
+
+  /// Toggle presensi "Aku hadir". Guest diarahkan login dulu.
+  Future<void> _toggleGoing() async {
+    if (_goingBusy) return;
+    final authed = ref.read(authStatusProvider).value?.isAuth == true;
+    if (!authed) {
+      context.push('/login');
+      return;
+    }
+    final event = widget.event;
+    setState(() => _goingBusy = true);
+    final going = !event.viewerGoing;
+    try {
+      await (going
+          ? ref.read(eventRepositoryProvider).markGoing(event.id)
+          : ref.read(eventRepositoryProvider).unmarkGoing(event.id));
+      // Refresh detail biar going_count + viewer_going baru dari server.
+      ref.invalidate(eventBySlugProvider(event.slug));
+    } catch (_) {
+      // Biarkan state server yang menang; toggle presensi bukan aksi kritikal.
+    } finally {
+      if (mounted) setState(() => _goingBusy = false);
+    }
   }
 
   @override
@@ -90,9 +118,14 @@ class _BodyState extends State<_Body> {
     );
     final attribution = event.sourceAttribution;
 
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 32),
-      children: [
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(eventBySlugProvider(event.slug));
+        ref.invalidate(eventImagePreviewProvider(event.slug));
+      },
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 32),
+        children: [
         _PosterCarousel(event: event),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -127,11 +160,17 @@ class _BodyState extends State<_Body> {
                     ),
                 ],
               ),
+            const Gap(16),
+            _InfoGroup(
+              event: event,
+              goingBusy: _goingBusy,
+              onGoingToggle: _toggleGoing,
+            ),
+            const Gap(12),
+            _PhotoGrid(slug: event.slug),
+            if (event.description.isNotEmpty) ...[
               const Gap(16),
-              _InfoGroup(event: event),
-              if (event.description.isNotEmpty) ...[
-                const Gap(16),
-                Text(
+              Text(
                   event.description,
                   style: theme.typography.body.sm.copyWith(height: 1.5),
                 ),
@@ -203,6 +242,7 @@ class _BodyState extends State<_Body> {
           ),
         ),
       ],
+      ),
     );
   }
 
@@ -319,16 +359,23 @@ class _PosterCarouselState extends State<_PosterCarousel> {
   }
 }
 
-/// Info utama acara (jadwal, lokasi, desa, penyelenggara) dalam satu
-/// FTileGroup - selaras pola detail wisata.
-class _InfoGroup extends StatelessWidget {
-  const _InfoGroup({required this.event});
+/// Info utama acara (jadwal, lokasi, desa, penyelenggara, presensi,
+/// tambah foto) dalam satu FTileGroup - selaras pola detail wisata.
+class _InfoGroup extends ConsumerWidget {
+  const _InfoGroup({
+    required this.event,
+    required this.goingBusy,
+    required this.onGoingToggle,
+  });
 
   final Event event;
+  final bool goingBusy;
+  final VoidCallback onGoingToggle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final auth = ref.watch(authStatusProvider).value;
     final villageSlug = event.village?.slug;
     // Mulai & selesai dipisah - FTile title 1 baris memotong
     // "17 Nov 2026 21:00 - 18 Nov 2026 23:00".
@@ -355,7 +402,12 @@ class _InfoGroup extends StatelessWidget {
         if (event.locationText.isNotEmpty)
           FTile(
             prefix: const Icon(FLucideIcons.mapPin, size: 18),
-            title: Text(event.locationText),
+            title: Text(l10n.eventDetailAddressLabel),
+            subtitle: Text(
+              event.locationText,
+              maxLines: 4,
+              softWrap: true,
+            ),
           ),
         // Desa opsional; tap = detail desa (slug = kode BPS).
         if (event.village != null)
@@ -371,13 +423,147 @@ class _InfoGroup extends StatelessWidget {
                     '/explore/desa/${Uri.encodeComponent(villageSlug)}',
                   ),
           ),
-        // Penyelenggara opsional - label kosong di-skip (PRD 6.2).
-        if (event.organizer != null && event.organizer!.isNotEmpty)
+          // Penyelenggara opsional - label kosong di-skip (PRD 6.2).
+          if (event.organizer != null && event.organizer!.isNotEmpty)
+            FTile(
+              prefix: const Icon(FLucideIcons.users, size: 18),
+              title: Text(l10n.eventDetailOrganizerLabel),
+              subtitle: Text(
+                event.organizer!,
+                maxLines: 4,
+                softWrap: true,
+              ),
+            ),
+          // Presensi "Aku hadir" - tile toggle (pola tile kontribusi).
           FTile(
-            prefix: const Icon(FLucideIcons.users, size: 18),
-            title: Text(l10n.eventDetailOrganizer(event.organizer!)),
+            prefix: goingBusy
+                ? const FCircularProgress(size: .sm)
+                : Icon(
+                    event.viewerGoing
+                        ? FLucideIcons.circleCheck
+                        : FLucideIcons.userCheck,
+                    size: 18,
+                  ),
+            title: Text(
+              event.viewerGoing
+                  ? l10n.eventGoingCancel
+                  : l10n.eventGoingAction,
+            ),
+            subtitle: Text(l10n.eventGoingCount(event.goingCount)),
+            onPress: goingBusy ? null : onGoingToggle,
+          ),
+          // Tambah foto acara - pola wisata: tile aksi + login gate.
+          FTile(
+            prefix: const Icon(FLucideIcons.image, size: 18),
+            title: Text(l10n.eventPhotosUpload),
+            subtitle: auth?.isAuth == true
+                ? null
+                : Text(l10n.placeAddPhotoLoginGate),
+            suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+            onPress: () => context.push(
+              auth?.isAuth == true
+                  ? EventRouter.photoAddPath(event.slug)
+                  : AuthRouter.login.path,
+            ),
           ),
       ],
+    );
+  }
+}
+
+/// Pratinjau 3 foto teratas acara (pola _PhotoGrid wisata).
+/// Menampilkan link "Lihat lainnya" bila total foto > 3.
+class _PhotoGrid extends ConsumerWidget {
+  const _PhotoGrid({required this.slug});
+
+  final String slug;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imagesAsync = ref.watch(eventImagePreviewProvider(slug));
+    return imagesAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+      data: (page) {
+        final images = page.items;
+        final theme = context.theme;
+        final l10n = AppLocalizations.of(context);
+        // Tanpa foto: section disembunyikan - upload lewat tile aksi
+        // di _InfoGroup (pola wisata).
+        if (images.isEmpty) return const SizedBox.shrink();
+        final shown = images.length <= 3 ? images : images.sublist(0, 3);
+        final hidden = page.total - shown.length;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Gap(8),
+            Text(
+              l10n.eventPhotoSection,
+              style: theme.typography.body.md
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            const Gap(4),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
+              itemCount: shown.length,
+              itemBuilder: (context, i) {
+                final img = shown[i];
+                return GestureDetector(
+                  onTap: () => showImagePreview(
+                    context,
+                    urls: [for (final im in images) im.url],
+                    credits: [
+                      for (final im in images) im.attribution,
+                    ],
+                    initialIndex: i,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImageWithFallback(
+                      imageUrl: displayImageUrl(img.url, width: 360) ?? img.url,
+                      fallbackUrl: img.url,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
+            if (hidden > 0) ...[
+              const Gap(8),
+              GestureDetector(
+                onTap: () => context.push(EventRouter.photosPath(slug)),
+                child: Text(
+                  l10n.eventMorePhotos(hidden),
+                  style: theme.typography.body.sm.copyWith(
+                    color: theme.colors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+            // Jalan masuk galeri + upload selalu ada (1-3 foto pun),
+            // pola wisata: link "Lihat semua foto".
+            const Gap(8),
+            GestureDetector(
+              onTap: () => context.push(EventRouter.photosPath(slug)),
+              child: Text(
+                l10n.eventAllPhotos,
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

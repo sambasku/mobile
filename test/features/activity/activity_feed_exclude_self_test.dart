@@ -360,6 +360,8 @@ void main() {
       expect(FeedCategory.all.wire, 'all');
       expect(FeedCategory.searchMiss.wire, 'search_miss');
       expect(FeedCategory.correction.wire, 'correction');
+      expect(FeedCategory.explore.wire, 'explore');
+      expect(FeedCategory.jinye.wire, 'jinye');
       expect(FeedCategory.announcement.wire, 'announcement');
       expect(FeedCategory.joined.wire, 'joined');
     });

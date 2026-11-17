@@ -415,3 +415,92 @@ final class EventsForVillageFamily extends $Family
   @override
   String toString() => r'eventsForVillageProvider';
 }
+
+/// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+/// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+
+@ProviderFor(eventImagePreview)
+final eventImagePreviewProvider = EventImagePreviewFamily._();
+
+/// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+/// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+
+final class EventImagePreviewProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<EventImagePage>,
+          EventImagePage,
+          FutureOr<EventImagePage>
+        >
+    with $FutureModifier<EventImagePage>, $FutureProvider<EventImagePage> {
+  /// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+  /// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+  EventImagePreviewProvider._({
+    required EventImagePreviewFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'eventImagePreviewProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$eventImagePreviewHash();
+
+  @override
+  String toString() {
+    return r'eventImagePreviewProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<EventImagePage> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<EventImagePage> create(Ref ref) {
+    final argument = this.argument as String;
+    return eventImagePreview(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EventImagePreviewProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$eventImagePreviewHash() => r'07ca48c05d2c44c9304a921d1e95e4af5d5ac315';
+
+/// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+/// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+
+final class EventImagePreviewFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<EventImagePage>, String> {
+  EventImagePreviewFamily._()
+    : super(
+        retry: null,
+        name: r'eventImagePreviewProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+  /// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+
+  EventImagePreviewProvider call(String slug) =>
+      EventImagePreviewProvider._(argument: slug, from: this);
+
+  @override
+  String toString() => r'eventImagePreviewProvider';
+}

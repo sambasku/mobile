@@ -61,10 +61,12 @@ void main() {
     final repo = RecordingRepository();
     await pumpHome(tester, repo);
 
-    // Kelima chip ada (viewport test 560px → semua muat).
+    // Semua chip ada (viewport test 1000px → semua muat).
     expect(find.text('Semua'), findsOneWidget);
     expect(find.text('Pencarian warga'), findsOneWidget);
     expect(find.text('Perbaikan'), findsOneWidget);
+    expect(find.text('Eksplorasi'), findsOneWidget);
+    expect(find.text('Jinye'), findsOneWidget);
     expect(find.text('Pengumuman'), findsOneWidget);
     expect(find.text('Warga'), findsOneWidget);
 

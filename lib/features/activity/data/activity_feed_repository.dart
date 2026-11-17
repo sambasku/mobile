@@ -12,6 +12,7 @@ enum FeedCategory {
   searchMiss('search_miss'),
   correction('correction'),
   explore('explore'),
+  jinye('jinye'),
   announcement('announcement'),
   joined('joined');
 

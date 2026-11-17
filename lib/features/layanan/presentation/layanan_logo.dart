@@ -32,20 +32,19 @@ class LayananLogo extends StatelessWidget {
       ),
     );
     final url = (logoUrl ?? '').trim();
-    final child = ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: url.isEmpty
-            ? fallback
-            : CachedNetworkImageWithFallback(
-                imageUrl: url,
-                expand: true,
-                fallback: fallback,
-              ),
-      ),
-    );
+final child = ClipOval(
+child: SizedBox(
+width: size,
+height: size,
+child: url.isEmpty
+? fallback
+: CachedNetworkImageWithFallback(
+imageUrl: url,
+expand: true,
+fallback: fallback,
+),
+),
+);
     if (onTap == null) return child;
     return GestureDetector(onTap: onTap, child: child);
   }

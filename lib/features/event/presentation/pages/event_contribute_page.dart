@@ -544,6 +544,8 @@ class _EventContributePageState extends ConsumerState<EventContributePage>
             control: FTextFieldControl.managed(controller: _location),
             label: Text(AppLocalizations.of(context).eventFormLocationLabel),
             hint: AppLocalizations.of(context).eventFormLocationHint,
+            minLines: 1,
+            maxLines: 4,
           ),
           const Gap(12),
           Text(

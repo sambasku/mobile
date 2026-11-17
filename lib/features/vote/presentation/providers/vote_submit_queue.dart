@@ -193,6 +193,13 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
           await ref.read(voteRepositoryProvider).skipMeaning(job.meaningId);
       result.match(
         (failure) {
+          // #275: makna sudah dihapus - kartu tetap didrop senyap,
+          // tanpa toast/reinsert. Job dianggap selesai.
+          if (failure.isNotFound) {
+            job.status = VoteSubmitJobStatus.done;
+            _publishCounts();
+            return;
+          }
           job.status = VoteSubmitJobStatus.failed;
           _publishCounts(
             errorMessage: failure.message,
@@ -216,6 +223,13 @@ class VoteSubmitQueue extends Notifier<VoteSubmitQueueState> {
 
     result.match(
       (failure) {
+        // #275: makna sudah dihapus - kartu tetap didrop senyap,
+        // tanpa toast/reinsert. Job dianggap selesai.
+        if (failure.isNotFound) {
+          job.status = VoteSubmitJobStatus.done;
+          _publishCounts();
+          return;
+        }
         job.status = VoteSubmitJobStatus.failed;
         // Caller (UI) listen errorSeq → toast + reinsertFront.
         _publishCounts(

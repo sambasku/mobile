@@ -35,7 +35,7 @@ Future<void> openVoteDeckWrittenPronunciation({
   if (!context.mounted || saved == null || saved.isEmpty) return;
   ref
       .read(voteDeckControllerProvider.notifier)
-      .patchPronunciation(item.id, pronunciationValue: saved);
+      .patchPronunciation(item.wordId, pronunciationValue: saved);
 }
 
 /// Rekam audio lemma untuk kata di kartu deck (#260). Toast sukses dari sheet.
@@ -66,7 +66,7 @@ Future<void> openVoteDeckRecordPronunciation({
   if (!context.mounted || sent != true) return;
   ref
       .read(voteDeckControllerProvider.notifier)
-      .patchPronunciation(item.id, hasAudio: true);
+      .patchPronunciation(item.wordId, hasAudio: true);
 }
 
 /// Menu kontribusi: tanpa kartu aktif → toast + pintasan Lengkapi kata.

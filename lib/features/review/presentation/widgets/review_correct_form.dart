@@ -874,12 +874,15 @@ class _ReviewCorrectFormState extends ConsumerState<ReviewCorrectForm> {
       ];
     }
     return [
-      FTextField.multiline(
+      // #271: mulai 1 baris, tumbuh sampai 4 (pola terjemahan).
+      FTextField(
         control: FTextFieldControl.managed(controller: meaning.definitionCtrl),
         enabled: !_busy,
         label: Text(AppLocalizations.of(context).suggestDefinitionLabel),
-        minLines: 4,
-        maxLines: 8,
+        minLines: 1,
+        maxLines: 4,
+        keyboardType: TextInputType.text,
+        textAlignVertical: TextAlignVertical.top,
       ),
       const Gap(8),
       KbbiTranslationField(

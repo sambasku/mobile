@@ -53,6 +53,8 @@ class EventDto {
       createdAt: DateTime.tryParse('${json['created_at'] ?? ''}'),
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),
       author: PublicAuthorRef.fromJson(json['author']),
+      goingCount: (json['going_count'] as num?)?.toInt() ?? 0,
+      viewerGoing: json['viewer_going'] == true,
     );
   }
 

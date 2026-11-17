@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/external_link.dart';
 import '../../../core/widgets/image_preview.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shared/widgets/contributor_appreciation.dart';
 import '../../../shared/widgets/profile_hero_shell.dart';
 import '../../../shared/widgets/profile_identity_header.dart';
 import '../../auth/presentation/providers/auth_status_providers.dart';
@@ -133,10 +134,21 @@ class _LayananDetailBody extends ConsumerWidget {
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _ContactSection(phones: item.phones),
-                    const Gap(18),
-                    FTileGroup(
+children: [
+_ContactSection(phones: item.phones),
+const Gap(18),
+if (item.author case final author?)
+ContributorAppreciationSection(
+label: l10n.usahaContributorProposedBy,
+contributors: [
+ContributorCredit(
+username: author.username,
+displayName: author.displayName,
+),
+],
+),
+const Gap(18),
+FTileGroup(
                       children: [
                         if (mapUrl != null)
                           FTile(

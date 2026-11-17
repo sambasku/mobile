@@ -113,21 +113,32 @@ class VoteDeckController extends _$VoteDeckController {
     state = AsyncData(current.copyWith(items: items));
   }
 
-  /// Patch pelafalan kartu aktif setelah tulis/rekam dari deck (#260).
+  /// Patch pelafalan semua kartu lemma yang sama setelah tulis/rekam (#260 / #274).
+  /// Pelafalan milik kata induk (`wordId`), bukan per makna - jangan patch
+  /// satu meaning id saja, atau kartu makna berikutnya masih "Tambah pelafalan".
   void patchPronunciation(
-    String meaningId, {
+    String wordId, {
     String? pronunciationValue,
     bool? hasAudio,
   }) {
     final current = state.value;
     if (current == null) return;
-    final index = current.items.indexWhere((item) => item.id == meaningId);
-    if (index < 0) return;
-    final items = [...current.items];
-    items[index] = items[index].copyWith(
-      pronunciationValue: pronunciationValue,
-      hasAudio: hasAudio,
-    );
+    var changed = false;
+    final items = <VoteDeckItem>[];
+    for (final item in current.items) {
+      if (item.wordId != wordId) {
+        items.add(item);
+        continue;
+      }
+      changed = true;
+      items.add(
+        item.copyWith(
+          pronunciationValue: pronunciationValue,
+          hasAudio: hasAudio,
+        ),
+      );
+    }
+    if (!changed) return;
     state = AsyncData(current.copyWith(items: items));
   }
 

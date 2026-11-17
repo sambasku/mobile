@@ -5,6 +5,8 @@ import '../../data/datasources/event_remote_datasource.dart';
 import '../../data/repositories/event_repository_impl.dart';
 import '../../domain/entities/event.dart';
 
+import '../../domain/entities/event_image.dart';
+
 part 'event_providers.g.dart';
 
 @riverpod
@@ -46,3 +48,9 @@ Future<List<Event>> eventsForVillage(Ref ref, String villageId) async {
       .listPage(villageId: villageId, notEnded: true, order: 'desc', limit: 10);
   return page.events;
 }
+
+/// Galeri foto acara: halaman pertama (3 foto pratinjau di detail).
+/// Detail page memuat lebih banyak via [EventRepositoryImpl.imagePage].
+@riverpod
+Future<EventImagePage> eventImagePreview(Ref ref, String slug) =>
+    ref.watch(eventRepositoryProvider).imagePage(slug, offset: 0);

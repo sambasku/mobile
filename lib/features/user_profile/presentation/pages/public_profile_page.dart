@@ -35,7 +35,8 @@ import '../../../profile/presentation/crop_profile_photo.dart';
 import '../../domain/entities/public_profile.dart';
 import '../../domain/failures/user_profile_failure.dart';
 import '../../../jinye/data/jinye_providers.dart';
-import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
+// TEMP: bubble Jinye disembunyikan (timpa border avatar).
+// import '../../../jinye/presentation/widgets/jinye_profile_preview.dart';
 import '../providers/user_profile_providers.dart';
 import '../widgets/profile_activity_section.dart';
 
@@ -297,10 +298,11 @@ class _ProfileBody extends HookConsumerWidget {
                             ? () =>
                                   showImagePreview(context, urls: [avatarSrc])
                             : null,
-                        avatarOverlay: JinyeProfilePreview(
-                          username: profile.username,
-                          isOwnProfile: isOwnProfile,
-                        ),
+                        // TEMP: sembunyikan preview Jinye dulu (overlap border).
+                        // avatarOverlay: JinyeProfilePreview(
+                        //   username: profile.username,
+                        //   isOwnProfile: isOwnProfile,
+                        // ),
                         actions: [
                           if (isOwnProfile)
                             SmallButton(

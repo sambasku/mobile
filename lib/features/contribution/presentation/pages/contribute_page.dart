@@ -1533,11 +1533,14 @@ class _MeaningBlock extends StatelessWidget {
                   l10n.contributeDefinitionFieldLabel,
                   info: l10n.contributeDefinitionGuide,
                 ),
-                FTextField.multiline(
+                // #271: mulai 1 baris, tumbuh sampai 4 (pola terjemahan).
+                FTextField(
                   control: FTextFieldControl.managed(controller: draft.defCtrl),
                   hint: l10n.contributeDefinitionHintField,
-                  minLines: 4,
-                  maxLines: 8,
+                  minLines: 1,
+                  maxLines: 4,
+                  keyboardType: TextInputType.text,
+                  textAlignVertical: TextAlignVertical.top,
                 ),
                 _MeaningInlineError(definitionError),
               ],

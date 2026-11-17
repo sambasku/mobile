@@ -30,7 +30,7 @@ class ExploreCategory {
     'hiburan' => 'assets/images/explore_covers/permainan.webp',
     'ensiklopedia' => 'assets/images/explore_covers/ensiklopedia.webp',
     'layanan' => 'assets/images/explore_covers/layanan.webp',
-    'karya' => null,
+    'karya' => 'assets/images/explore_covers/karya.webp',
     _ => null,
   };
 
@@ -111,7 +111,7 @@ class ExploreCategory {
       icon: FLucideIcons.clapperboard,
       comingSoon: false,
     ),
-    // Segera - gabungan Sejarah + Kisah + Tradisi + Permainan.
+    // Segera: grup warga & kegiatan bersama (konten API belakangan).
     ExploreCategory(id: 'komunitas', icon: FLucideIcons.users),
   ];
 

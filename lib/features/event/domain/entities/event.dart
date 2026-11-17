@@ -84,6 +84,8 @@ class Event {
     this.createdAt,
     this.updatedAt,
     this.author,
+    this.goingCount = 0,
+    this.viewerGoing = false,
   });
 
   final String id;
@@ -130,6 +132,8 @@ class Event {
 
   /// Pengusul live dari API.
   final PublicAuthorRef? author;
+  final int goingCount;
+  final bool viewerGoing;
 
   bool get hasCoordinates => lat != null && lng != null;
 
