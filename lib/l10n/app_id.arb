@@ -144,17 +144,27 @@
   "@balehoSizeChip": {
     "description": "Chip ukuran w x h",
     "placeholders": {
-      "w": { "type": "int" },
-      "h": { "type": "int" }
+      "w": {
+        "type": "int"
+      },
+      "h": {
+        "type": "int"
+      }
     }
   },
   "balehoSelectionSummary": "{size} · kolom {col}, baris {row}",
   "@balehoSelectionSummary": {
     "description": "Ringkas area yang sedang dipilih",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoBookConfirmTitle": "Pesanan Baleho",
@@ -162,9 +172,15 @@
   "@balehoBookConfirmSubtitle": {
     "description": "Ringkas ukuran, posisi, referral",
     "placeholders": {
-      "size": { "type": "String" },
-      "position": { "type": "String" },
-      "referral": { "type": "String" }
+      "size": {
+        "type": "String"
+      },
+      "position": {
+        "type": "String"
+      },
+      "referral": {
+        "type": "String"
+      }
     }
   },
   "balehoBookConfirmBody": "Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.",
@@ -175,9 +191,15 @@
   "@balehoSlotSummary": {
     "description": "Ringkas area yang dipilih di form pesan",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoReferralLabel": "Kode teman (opsional)",
@@ -193,7 +215,11 @@
   "balehoDaysChip": "{days} hari",
   "@balehoDaysChip": {
     "description": "Chip pilihan durasi cepat",
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "balehoDaysUnit": "hari",
   "@balehoDaysUnit": {
@@ -206,7 +232,11 @@
   "balehoFrameLabel": "Slide {n}",
   "@balehoFrameLabel": {
     "description": "Judul satu slide/frame Baleho dalam stack",
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "balehoAddFrame": "Tambah slide",
   "balehoRemoveFrame": "Hapus",
@@ -308,17 +338,11 @@
   "balehoReactivateRefHint": "Referral: @{username}",
   "@balehoReactivateRefHint": {
     "description": "Subtitle creative dengan referral lama",
-    "placeholders": { "username": { "type": "String" } }
-  },
-  "balehoSlide2UsahaTitle": "Usaha",
-  "balehoSlide2AcaraTitle": "Acara",
-  "balehoSlide2WisataTitle": "Wisata",
-  "balehoSlide2KaryaTitle": "Karya",
-  "balehoSlide2EnsiklopediaTitle": "Ensiklopedia",
-  "balehoSlide2KamusTitle": "Kamus",
-  "balehoSlide2ComingSoonCta": "Segera hadir",
-  "@balehoSlide2ComingSoonCta": {
-    "description": "CTA placeholder tile Ruang komunitas selain Peringkat Mingguan"
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
   },
   "balehoActionFailToast": "Tautan tidak bisa dibuka. Coba lagi nanti ya.",
   "@balehoActionFailToast": {
@@ -327,7 +351,11 @@
   "balehoSlideContentTitle": "Tampilan slide {n}",
   "@balehoSlideContentTitle": {
     "description": "Judul bottom sheet kelola konten slide",
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "balehoSlideContentCta": "Atur tampilan",
   "@balehoSlideContentCta": {
@@ -368,9 +396,15 @@
   "@balehoHistoryPosition": {
     "description": "Ringkas ukuran dan posisi slot di riwayat",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoStatusPendingReview": "Menunggu cek",
@@ -947,7 +981,6 @@
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
   "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
-
   "suggestCategoryChangePronunciation": "Ubah pelafalan",
   "@suggestCategoryChangePronunciation": {
     "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
@@ -973,7 +1006,9 @@
   "@dictChangePronunciationSemantics": {
     "description": "Semantics label baris IPA yang bisa di-tap",
     "placeholders": {
-      "value": {"type": "String"}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "suggestPickExample": "Pilih contoh yang mau diperbaiki",
@@ -2451,7 +2486,6 @@
   "reviewMeaningReportDismiss": "Tolak laporan",
   "reviewMeaningReportRemovedToast": "Makna dihapus, laporan ditutup",
   "reviewMeaningReportDismissedToast": "Laporan ditolak",
-
   "dictSkeletonLemma": "lemma contoh kata",
   "dictSkeletonWordClass": "Nomina",
   "dictSkeletonComment": "isi komentar skeleton beberapa kata di sini",
@@ -3567,7 +3601,9 @@
   "@profileUsernameCooldown": {
     "description": "Pesan cooldown ganti username; when = tanggal",
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "profileUsernameHistoryAction": "Riwayat username",
@@ -3590,8 +3626,12 @@
   "@profileUsernameHistoryRow": {
     "description": "Baris riwayat old jadi new",
     "placeholders": {
-      "oldUsername": { "type": "String" },
-      "newUsername": { "type": "String" }
+      "oldUsername": {
+        "type": "String"
+      },
+      "newUsername": {
+        "type": "String"
+      }
     }
   },
   "profileUsernameHistoryCanReclaim": "Masih bisa dikembalikan",
@@ -5192,14 +5232,14 @@
   "placeNoCoordinatesBody": "Kami belum punya koordinatnya, jadi belum bisa dibuka di peta.",
   "placeBookmarkSoonTitle": "Bookmark tempat belum bisa dipakai",
   "placeBookmarkSoonBody": "Kami sedang berusaha membuatnya jadi lebih baik.",
-"placeTypeSejarah": "Sejarah",
-"placeTypeAlam": "Alam",
-"placeTypeReligi": "Religi",
-"placeTypeTirta": "Tirta",
-"placeTypeAgro": "Agro",
-"placeTypeBahari": "Bahari",
-"placeTypeBudaya": "Budaya",
-"placeTypeWisata": "Wisata",
+  "placeTypeSejarah": "Sejarah",
+  "placeTypeAlam": "Alam",
+  "placeTypeReligi": "Religi",
+  "placeTypeTirta": "Tirta",
+  "placeTypeAgro": "Agro",
+  "placeTypeBahari": "Bahari",
+  "placeTypeBudaya": "Budaya",
+  "placeTypeWisata": "Wisata",
   "@placeTypeWisata": {
     "description": "Label generik destinasi wisata"
   },
@@ -7981,88 +8021,162 @@
     "description": "Error generik submit laporan Jinye"
   },
   "jinyeArchivedTitle": "Arsip Jinye",
-  "@jinyeArchivedTitle": {"description": "Judul halaman arsip Jinye"},
+  "@jinyeArchivedTitle": {
+    "description": "Judul halaman arsip Jinye"
+  },
   "jinyeArchivedEmpty": "Belum ada Jinye di arsip",
-  "@jinyeArchivedEmpty": {"description": "Empty state arsip Jinye"},
+  "@jinyeArchivedEmpty": {
+    "description": "Empty state arsip Jinye"
+  },
   "jinyeArchivedLoadFailed": "Gagal memuat arsip Jinye",
-  "@jinyeArchivedLoadFailed": {"description": "Error load arsip Jinye"},
+  "@jinyeArchivedLoadFailed": {
+    "description": "Error load arsip Jinye"
+  },
   "jinyePinAction": "Sematkan di profil",
-  "@jinyePinAction": {"description": "CTA pin Jinye ke profil"},
+  "@jinyePinAction": {
+    "description": "CTA pin Jinye ke profil"
+  },
   "jinyeUnpinAction": "Lepas dari profil",
-  "@jinyeUnpinAction": {"description": "CTA unpin Jinye"},
+  "@jinyeUnpinAction": {
+    "description": "CTA unpin Jinye"
+  },
   "jinyeArchiveAction": "Arsipkan",
-  "@jinyeArchiveAction": {"description": "CTA arsipkan Jinye"},
+  "@jinyeArchiveAction": {
+    "description": "CTA arsipkan Jinye"
+  },
   "jinyeUnarchiveAction": "Pulihkan",
-  "@jinyeUnarchiveAction": {"description": "CTA unarchive Jinye"},
+  "@jinyeUnarchiveAction": {
+    "description": "CTA unarchive Jinye"
+  },
   "jinyePinSuccess": "Jinye disematkan di profil",
-  "@jinyePinSuccess": {"description": "Toast sukses pin Jinye"},
+  "@jinyePinSuccess": {
+    "description": "Toast sukses pin Jinye"
+  },
   "jinyeUnpinSuccess": "Pin Jinye dilepas",
-  "@jinyeUnpinSuccess": {"description": "Toast sukses unpin Jinye"},
+  "@jinyeUnpinSuccess": {
+    "description": "Toast sukses unpin Jinye"
+  },
   "jinyeArchiveSuccess": "Jinye diarsipkan",
-  "@jinyeArchiveSuccess": {"description": "Toast sukses archive Jinye"},
+  "@jinyeArchiveSuccess": {
+    "description": "Toast sukses archive Jinye"
+  },
   "jinyeUnarchiveSuccess": "Jinye dipulihkan",
-  "@jinyeUnarchiveSuccess": {"description": "Toast sukses unarchive Jinye"},
+  "@jinyeUnarchiveSuccess": {
+    "description": "Toast sukses unarchive Jinye"
+  },
   "jinyeUnarchiveFailed": "Gagal memulihkan Jinye",
-  "@jinyeUnarchiveFailed": {"description": "Error unarchive Jinye"},
+  "@jinyeUnarchiveFailed": {
+    "description": "Error unarchive Jinye"
+  },
   "jinyeOwnerActionFailed": "Gagal mengubah Jinye",
-  "@jinyeOwnerActionFailed": {"description": "Error generik aksi owner Jinye"},
+  "@jinyeOwnerActionFailed": {
+    "description": "Error generik aksi owner Jinye"
+  },
   "jinyeLemmaLinkAction": "Tautkan lemma",
-  "@jinyeLemmaLinkAction": {"description": "CTA owner tautkan span ke lemma"},
+  "@jinyeLemmaLinkAction": {
+    "description": "CTA owner tautkan span ke lemma"
+  },
   "jinyeLemmaSelectSpanTitle": "Pilih teks",
-  "@jinyeLemmaSelectSpanTitle": {"description": "Judul sheet pilih span lemma"},
+  "@jinyeLemmaSelectSpanTitle": {
+    "description": "Judul sheet pilih span lemma"
+  },
   "jinyeLemmaSelectSpanHint": "Ketuk kata. Ketuk lagi di kata lain untuk rentang.",
-  "@jinyeLemmaSelectSpanHint": {"description": "Petunjuk pilih token span"},
+  "@jinyeLemmaSelectSpanHint": {
+    "description": "Petunjuk pilih token span"
+  },
   "jinyeLemmaSelectSpanEmpty": "Tidak ada teks yang bisa ditautkan",
-  "@jinyeLemmaSelectSpanEmpty": {"description": "Body kosong untuk span"},
+  "@jinyeLemmaSelectSpanEmpty": {
+    "description": "Body kosong untuk span"
+  },
   "jinyeLemmaSelectSpanContinue": "Pilih lemma",
-  "@jinyeLemmaSelectSpanContinue": {"description": "Lanjut ke pencarian kata"},
+  "@jinyeLemmaSelectSpanContinue": {
+    "description": "Lanjut ke pencarian kata"
+  },
   "jinyeLemmaPickWordTitle": "Pilih lemma",
-  "@jinyeLemmaPickWordTitle": {"description": "Judul sheet cari kata"},
+  "@jinyeLemmaPickWordTitle": {
+    "description": "Judul sheet cari kata"
+  },
   "jinyeLemmaPickWordIntro": "Ketik kata Sambas yang sudah terverifikasi - hasil muncul otomatis.",
   "@jinyeLemmaPickWordIntro": {
     "description": "Intro sheet cari lemma Jinye (pola KBBI compact)"
   },
   "jinyeLemmaPickWordHint": "Cari kata Sambas…",
-  "@jinyeLemmaPickWordHint": {"description": "Hint pencarian lemma"},
+  "@jinyeLemmaPickWordHint": {
+    "description": "Hint pencarian lemma"
+  },
   "jinyeLemmaPickWordEmptyHint": "Ketik lemma untuk mencari",
-  "@jinyeLemmaPickWordEmptyHint": {"description": "Empty sebelum ketik query"},
+  "@jinyeLemmaPickWordEmptyHint": {
+    "description": "Empty sebelum ketik query"
+  },
   "jinyeLemmaPickWordNoResult": "Tidak ada kata terverifikasi yang cocok",
-  "@jinyeLemmaPickWordNoResult": {"description": "Hasil search kosong"},
+  "@jinyeLemmaPickWordNoResult": {
+    "description": "Hasil search kosong"
+  },
   "jinyeLemmaPickWordCount": "{count} hasil",
   "@jinyeLemmaPickWordCount": {
     "description": "Jumlah hasil cari lemma di sheet Jinye",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "jinyeLemmaLinkSuccess": "Lemma ditautkan",
-  "@jinyeLemmaLinkSuccess": {"description": "Toast sukses buat lemma link"},
+  "@jinyeLemmaLinkSuccess": {
+    "description": "Toast sukses buat lemma link"
+  },
   "jinyeLemmaLinkFailed": "Gagal menautkan lemma",
-  "@jinyeLemmaLinkFailed": {"description": "Error buat lemma link"},
+  "@jinyeLemmaLinkFailed": {
+    "description": "Error buat lemma link"
+  },
   "jinyeLemmaOpenWord": "Buka arti",
-  "@jinyeLemmaOpenWord": {"description": "Aksi buka detail kata dari span"},
+  "@jinyeLemmaOpenWord": {
+    "description": "Aksi buka detail kata dari span"
+  },
   "jinyeLemmaProposeCorrection": "Usulkan koreksi",
-  "@jinyeLemmaProposeCorrection": {"description": "Aksi usul koreksi lemma"},
+  "@jinyeLemmaProposeCorrection": {
+    "description": "Aksi usul koreksi lemma"
+  },
   "jinyeLemmaDeleteLink": "Hapus tautan",
-  "@jinyeLemmaDeleteLink": {"description": "Aksi hapus lemma link"},
+  "@jinyeLemmaDeleteLink": {
+    "description": "Aksi hapus lemma link"
+  },
   "jinyeLemmaApproveCorrection": "Setujui koreksi",
-  "@jinyeLemmaApproveCorrection": {"description": "Verifikator approve koreksi"},
+  "@jinyeLemmaApproveCorrection": {
+    "description": "Verifikator approve koreksi"
+  },
   "jinyeLemmaRejectCorrection": "Tolak koreksi",
-  "@jinyeLemmaRejectCorrection": {"description": "Verifikator reject koreksi"},
+  "@jinyeLemmaRejectCorrection": {
+    "description": "Verifikator reject koreksi"
+  },
   "jinyeLemmaPendingCorrection": "Koreksi menunggu tinjauan",
-  "@jinyeLemmaPendingCorrection": {"description": "Status pending_correction"},
+  "@jinyeLemmaPendingCorrection": {
+    "description": "Status pending_correction"
+  },
   "jinyeLemmaCorrectionSuccess": "Usulan koreksi terkirim",
-  "@jinyeLemmaCorrectionSuccess": {"description": "Toast sukses propose"},
+  "@jinyeLemmaCorrectionSuccess": {
+    "description": "Toast sukses propose"
+  },
   "jinyeLemmaCorrectionFailed": "Gagal mengusulkan koreksi",
-  "@jinyeLemmaCorrectionFailed": {"description": "Error propose koreksi"},
+  "@jinyeLemmaCorrectionFailed": {
+    "description": "Error propose koreksi"
+  },
   "jinyeLemmaResolveSuccess": "Koreksi diproses",
-  "@jinyeLemmaResolveSuccess": {"description": "Toast sukses resolve"},
+  "@jinyeLemmaResolveSuccess": {
+    "description": "Toast sukses resolve"
+  },
   "jinyeLemmaResolveFailed": "Gagal memproses koreksi",
-  "@jinyeLemmaResolveFailed": {"description": "Error resolve koreksi"},
+  "@jinyeLemmaResolveFailed": {
+    "description": "Error resolve koreksi"
+  },
   "jinyeLemmaDeleteSuccess": "Tautan lemma dihapus",
-  "@jinyeLemmaDeleteSuccess": {"description": "Toast sukses hapus link"},
+  "@jinyeLemmaDeleteSuccess": {
+    "description": "Toast sukses hapus link"
+  },
   "jinyeLemmaDeleteFailed": "Gagal menghapus tautan",
-  "@jinyeLemmaDeleteFailed": {"description": "Error hapus lemma link"},
+  "@jinyeLemmaDeleteFailed": {
+    "description": "Error hapus lemma link"
+  },
   "jinyeWordMeaningLookupLabel": "Arti (Sambas → Indonesia)",
   "@jinyeWordMeaningLookupLabel": {
     "description": "Label arah makna di sheet tap kata Jinye"
@@ -8088,27 +8202,49 @@
     "description": "Toast guest saat usul/hubungkan lemma dari sheet tap kata Jinye"
   },
   "jinyePromoteExampleAction": "Jadikan contoh lemma",
-  "@jinyePromoteExampleAction": {"description": "CTA owner promote Jinye ke contoh"},
+  "@jinyePromoteExampleAction": {
+    "description": "CTA owner promote Jinye ke contoh"
+  },
   "jinyePromoteWithAudio": "Sertakan rekaman suara",
-  "@jinyePromoteWithAudio": {"description": "Pilihan promote + audio"},
+  "@jinyePromoteWithAudio": {
+    "description": "Pilihan promote + audio"
+  },
   "jinyePromoteTextOnly": "Teks saja",
-  "@jinyePromoteTextOnly": {"description": "Pilihan promote tanpa audio"},
+  "@jinyePromoteTextOnly": {
+    "description": "Pilihan promote tanpa audio"
+  },
   "jinyePromoteSuccess": "Usulan contoh terkirim",
-  "@jinyePromoteSuccess": {"description": "Toast sukses promote example"},
+  "@jinyePromoteSuccess": {
+    "description": "Toast sukses promote example"
+  },
   "jinyePromoteFailed": "Gagal mengajukan jadi contoh",
-  "@jinyePromoteFailed": {"description": "Error promote example"},
+  "@jinyePromoteFailed": {
+    "description": "Error promote example"
+  },
   "jinyeTranslateAction": "Usul terjemahan",
-  "@jinyeTranslateAction": {"description": "CTA usul terjemahan Jinye"},
+  "@jinyeTranslateAction": {
+    "description": "CTA usul terjemahan Jinye"
+  },
   "jinyeTranslateTitle": "Terjemahan Indonesia",
-  "@jinyeTranslateTitle": {"description": "Judul sheet terjemahan Jinye"},
+  "@jinyeTranslateTitle": {
+    "description": "Judul sheet terjemahan Jinye"
+  },
   "jinyeTranslateHint": "Tulis arti dalam bahasa Indonesia…",
-  "@jinyeTranslateHint": {"description": "Hint field terjemahan Jinye"},
+  "@jinyeTranslateHint": {
+    "description": "Hint field terjemahan Jinye"
+  },
   "jinyeTranslateSubmit": "Kirim usulan",
-  "@jinyeTranslateSubmit": {"description": "CTA submit terjemahan Jinye"},
+  "@jinyeTranslateSubmit": {
+    "description": "CTA submit terjemahan Jinye"
+  },
   "jinyeTranslateSuccess": "Usulan terjemahan terkirim",
-  "@jinyeTranslateSuccess": {"description": "Toast sukses terjemahan"},
+  "@jinyeTranslateSuccess": {
+    "description": "Toast sukses terjemahan"
+  },
   "jinyeTranslateFailed": "Gagal mengusulkan terjemahan",
-  "@jinyeTranslateFailed": {"description": "Error terjemahan Jinye"},
+  "@jinyeTranslateFailed": {
+    "description": "Error terjemahan Jinye"
+  },
   "jinyeTranslateReviewAction": "Tinjau usulan terjemahan",
   "@jinyeTranslateReviewAction": {
     "description": "Menu verifikator buka antrian terjemahan Jinye"
@@ -8129,7 +8265,9 @@
   "@jinyeTranslateReviewSourceId": {
     "description": "Fallback label bila snapshot sumber kosong",
     "placeholders": {
-      "id": { "type": "String" }
+      "id": {
+        "type": "String"
+      }
     }
   },
   "jinyeTranslateReviewSourceLabel": "Teks sumber",
@@ -8168,63 +8306,169 @@
   "jinyeTranslateStatusAccepted": "Diterima",
   "jinyeTranslateStatusRejected": "Ditolak",
   "jinyeEditAction": "Sunting",
-  "@jinyeEditAction": {"description": "CTA owner edit body Jinye"},
+  "@jinyeEditAction": {
+    "description": "CTA owner edit body Jinye"
+  },
   "jinyeEditTitle": "Sunting Jinye",
-  "@jinyeEditTitle": {"description": "Judul sheet edit Jinye"},
+  "@jinyeEditTitle": {
+    "description": "Judul sheet edit Jinye"
+  },
   "jinyeEditSave": "Simpan",
-  "@jinyeEditSave": {"description": "CTA simpan edit Jinye"},
+  "@jinyeEditSave": {
+    "description": "CTA simpan edit Jinye"
+  },
   "jinyeEditSuccess": "Jinye diperbarui",
-  "@jinyeEditSuccess": {"description": "Toast sukses edit Jinye"},
+  "@jinyeEditSuccess": {
+    "description": "Toast sukses edit Jinye"
+  },
   "jinyeEditFailed": "Gagal menyunting Jinye",
-  "@jinyeEditFailed": {"description": "Error edit Jinye"},
+  "@jinyeEditFailed": {
+    "description": "Error edit Jinye"
+  },
   "jinyeEditHistoryTitle": "Riwayat sunting",
-  "@jinyeEditHistoryTitle": {"description": "Judul sheet riwayat edit Jinye"},
+  "@jinyeEditHistoryTitle": {
+    "description": "Judul sheet riwayat edit Jinye"
+  },
   "jinyeEditHistoryFailed": "Gagal memuat riwayat sunting",
-  "@jinyeEditHistoryFailed": {"description": "Error load edit history Jinye"},
+  "@jinyeEditHistoryFailed": {
+    "description": "Error load edit history Jinye"
+  },
   "jinyeRepostAction": "Bagikan ulang",
-  "@jinyeRepostAction": {"description": "CTA repost polos Jinye"},
+  "@jinyeRepostAction": {
+    "description": "CTA repost polos Jinye"
+  },
   "jinyeUnrepostAction": "Batalkan bagikan ulang",
-  "@jinyeUnrepostAction": {"description": "CTA unrepost Jinye"},
+  "@jinyeUnrepostAction": {
+    "description": "CTA unrepost Jinye"
+  },
   "jinyeRepostSuccess": "Jinye dibagikan ulang",
-  "@jinyeRepostSuccess": {"description": "Toast sukses repost"},
+  "@jinyeRepostSuccess": {
+    "description": "Toast sukses repost"
+  },
   "jinyeUnrepostSuccess": "Bagikan ulang dibatalkan",
-  "@jinyeUnrepostSuccess": {"description": "Toast sukses unrepost"},
+  "@jinyeUnrepostSuccess": {
+    "description": "Toast sukses unrepost"
+  },
   "jinyeRepostFailed": "Gagal membagikan ulang",
-  "@jinyeRepostFailed": {"description": "Error repost/unrepost Jinye"},
+  "@jinyeRepostFailed": {
+    "description": "Error repost/unrepost Jinye"
+  },
   "jinyeQuoteAction": "Kutip",
-  "@jinyeQuoteAction": {"description": "CTA quote-repost Jinye"},
+  "@jinyeQuoteAction": {
+    "description": "CTA quote-repost Jinye"
+  },
   "jinyeQuoteTitle": "Kutip Jinye",
-  "@jinyeQuoteTitle": {"description": "Judul sheet quote Jinye"},
+  "@jinyeQuoteTitle": {
+    "description": "Judul sheet quote Jinye"
+  },
   "jinyeQuoteHint": "Tulis kutipanmu…",
-  "@jinyeQuoteHint": {"description": "Hint field quote Jinye"},
+  "@jinyeQuoteHint": {
+    "description": "Hint field quote Jinye"
+  },
   "jinyeQuoteSubmit": "Kirim kutipan",
-  "@jinyeQuoteSubmit": {"description": "CTA submit quote Jinye"},
+  "@jinyeQuoteSubmit": {
+    "description": "CTA submit quote Jinye"
+  },
   "jinyeQuoteSuccess": "Kutipan terkirim",
-  "@jinyeQuoteSuccess": {"description": "Toast sukses quote"},
+  "@jinyeQuoteSuccess": {
+    "description": "Toast sukses quote"
+  },
   "jinyeQuoteFailed": "Gagal mengutip Jinye",
-  "@jinyeQuoteFailed": {"description": "Error quote Jinye"},
+  "@jinyeQuoteFailed": {
+    "description": "Error quote Jinye"
+  },
   "jinyeRepostLabel": "Membagikan ulang",
-  "@jinyeRepostLabel": {"description": "Label kartu repost polos"},
+  "@jinyeRepostLabel": {
+    "description": "Label kartu repost polos"
+  },
   "jinyeOpenOriginal": "Buka Jinye asli",
-  "@jinyeOpenOriginal": {"description": "CTA buka original dari repost/quote"},
+  "@jinyeOpenOriginal": {
+    "description": "CTA buka original dari repost/quote"
+  },
   "jinyeUsedInWordTitle": "Dipakai di Jinye",
-  "@jinyeUsedInWordTitle": {"description": "Section title di detail lemma"},
+  "@jinyeUsedInWordTitle": {
+    "description": "Section title di detail lemma"
+  },
   "jinyeCreateChipAudio": "Suara",
-  "@jinyeCreateChipAudio": {"description": "Chip compact attach voice Jinye"},
+  "@jinyeCreateChipAudio": {
+    "description": "Chip compact attach voice Jinye"
+  },
   "jinyeCreateChipAudioReady": "Suara · {seconds} dtk",
   "@jinyeCreateChipAudioReady": {
     "description": "Chip voice sudah terrekam",
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "jinyeCreateChipPhoto": "Foto",
-  "@jinyeCreateChipPhoto": {"description": "Chip compact attach foto Jinye"},
+  "@jinyeCreateChipPhoto": {
+    "description": "Chip compact attach foto Jinye"
+  },
   "jinyeCreateChipPhotoCount": "Foto · {count}",
   "@jinyeCreateChipPhotoCount": {
     "description": "Chip foto dengan jumlah slot",
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventAllPhotos": "Lihat semua foto & unggah",
+  "@eventAllPhotos": {},
+  "eventDetailAddressLabel": "Alamat",
+  "@eventDetailAddressLabel": {
+    "description": "Label tile alamat di detail acara"
+  },
+  "eventDetailOrganizerLabel": "Penyelenggara",
+  "@eventDetailOrganizerLabel": {
+    "description": "Label tile penyelenggara di detail acara"
+  },
+  "eventGoingAction": "Aku hadir",
+  "@eventGoingAction": {},
+  "eventGoingCancel": "Batal hadir",
+  "@eventGoingCancel": {},
+  "eventGoingCount": "{count} orang hadir",
+  "@eventGoingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventMorePhotos": "Lihat lainnya ({count} foto)",
+  "@eventMorePhotos": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventPhotoSection": "Foto",
+  "@eventPhotoSection": {},
+  "eventPhotoUploadFailed": "Unggah foto gagal. Coba lagi.",
+  "eventPhotosAddTitle": "Tambah Foto Acara",
+  "eventPhotosEmpty": "Belum ada foto untuk acara ini.",
+  "eventPhotosMaxInfo": "Maksimal {count} foto per kiriman.",
+  "eventPhotosSubmit": "Kirim",
+  "eventPhotosSubmitting": "Mengirim...",
+  "eventPhotosTitle": "Foto Acara",
+  "eventPhotosUpload": "Unggah foto",
+  "layananSearchPlaceholder": "Cari nama layanan atau kecamatan",
+  "@layananSearchPlaceholder": {
+    "description": "Placeholder field pencarian daftar layanan publik"
+  },
+  "eventPhotosSuccess": "Foto acara berhasil ditambahkan.",
+  "@eventPhotosMaxInfo": {
+    "description": "Info batas jumlah foto per submit galeri acara",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
     }
   }
 }

@@ -532,13 +532,6 @@ class _SlideBody extends ConsumerWidget {
                   labels: BalehoSlide2Labels(
                     weeklyTitle: l10n.balehoWeeklyLeaderboardTitle,
                     weeklyCta: l10n.balehoWeeklyLeaderboardCta,
-                    usahaTitle: l10n.balehoSlide2UsahaTitle,
-                    acaraTitle: l10n.balehoSlide2AcaraTitle,
-                    wisataTitle: l10n.balehoSlide2WisataTitle,
-                    karyaTitle: l10n.balehoSlide2KaryaTitle,
-                    ensiklopediaTitle: l10n.balehoSlide2EnsiklopediaTitle,
-                    kamusTitle: l10n.balehoSlide2KamusTitle,
-                    comingSoonCta: l10n.balehoSlide2ComingSoonCta,
                   ),
                 )
               : raw;

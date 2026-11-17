@@ -9,142 +9,46 @@ final balehoApiProvider = Provider<BalehoApi>(
   (ref) => BalehoApi(ref.watch(dioProvider)),
 );
 
-/// Slot tetap slide 2: curated (tidak dijual).
-/// Hanya Peringkat Mingguan punya deep link aktif; sisanya placeholder.
+/// Slot tetap slide 2 (Ruang komunitas): hanya Peringkat Mingguan.
 class BalehoSlide2Labels {
   const BalehoSlide2Labels({
     required this.weeklyTitle,
     required this.weeklyCta,
-    required this.usahaTitle,
-    required this.acaraTitle,
-    required this.wisataTitle,
-    required this.karyaTitle,
-    required this.ensiklopediaTitle,
-    required this.kamusTitle,
-    required this.comingSoonCta,
   });
 
   final String weeklyTitle;
   final String weeklyCta;
-  final String usahaTitle;
-  final String acaraTitle;
-  final String wisataTitle;
-  final String karyaTitle;
-  final String ensiklopediaTitle;
-  final String kamusTitle;
-  final String comingSoonCta;
 }
 
-BalehoPlacement _fixedTile({
-  required String id,
-  required int col,
-  required int row,
-  required int w,
-  required int h,
-  required String title,
-  required String ctaLabel,
-  /// Null/kosong = belum aktif (sheet tanpa tombol buka).
-  String? path,
-}) {
-  final payload = path?.trim() ?? '';
+BalehoPlacement _weeklyLeaderboardTile(BalehoSlide2Labels labels) {
+  const id = BalehoBoard.weeklyLeaderboardPlacementId;
   return BalehoPlacement(
     id: id,
-    col: col,
-    row: row,
-    w: w,
-    h: h,
+    col: 0,
+    row: 0,
+    w: 4,
+    h: 1,
     status: 'live',
     frames: [
       BalehoFrame(
         id: '${id}_f0',
         mediaType: 'text_cta',
-        title: title,
-        ctaLabel: ctaLabel,
+        title: labels.weeklyTitle,
+        ctaLabel: labels.weeklyCta,
         actionType: 'in_app',
-        actionPayload: payload,
+        actionPayload: BalehoBoard.weeklyLeaderboardPath,
       ),
     ],
   );
 }
 
 List<BalehoPlacement> balehoSlide2Curated(BalehoSlide2Labels labels) {
-  return [
-    _fixedTile(
-      id: BalehoBoard.weeklyLeaderboardPlacementId,
-      col: 0,
-      row: 0,
-      w: 4,
-      h: 1,
-      title: labels.weeklyTitle,
-      ctaLabel: labels.weeklyCta,
-      path: BalehoBoard.weeklyLeaderboardPath,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_usaha',
-      col: 0,
-      row: 1,
-      w: 2,
-      h: 1,
-      title: labels.usahaTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_acara',
-      col: 2,
-      row: 1,
-      w: 2,
-      h: 1,
-      title: labels.acaraTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_wisata',
-      col: 0,
-      row: 2,
-      w: 2,
-      h: 1,
-      title: labels.wisataTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_karya',
-      col: 2,
-      row: 2,
-      w: 2,
-      h: 1,
-      title: labels.karyaTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_ensiklopedia',
-      col: 0,
-      row: 3,
-      w: 2,
-      h: 1,
-      title: labels.ensiklopediaTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-    _fixedTile(
-      id: 'baleho_fixed_kamus',
-      col: 2,
-      row: 3,
-      w: 2,
-      h: 1,
-      title: labels.kamusTitle,
-      ctaLabel: labels.comingSoonCta,
-    ),
-  ];
+  return [_weeklyLeaderboardTile(labels)];
 }
 
-/// Rect curated slide 2 (tanpa label) - untuk filter overlap API.
+/// Rect curated slide 2 - filter overlap API (hanya banner 4x1 atas).
 const _kSlide2Rects = <(int col, int row, int w, int h)>[
   (0, 0, 4, 1),
-  (0, 1, 2, 1),
-  (2, 1, 2, 1),
-  (0, 2, 2, 1),
-  (2, 2, 2, 1),
-  (0, 3, 2, 1),
-  (2, 3, 2, 1),
 ];
 
 bool balehoOverlapsSlide2Curated(BalehoPlacement p) {

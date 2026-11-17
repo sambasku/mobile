@@ -857,48 +857,6 @@ abstract class AppLocalizations {
   /// **'Referral: @{username}'**
   String balehoReactivateRefHint(String username);
 
-  /// No description provided for @balehoSlide2UsahaTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Usaha'**
-  String get balehoSlide2UsahaTitle;
-
-  /// No description provided for @balehoSlide2AcaraTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Acara'**
-  String get balehoSlide2AcaraTitle;
-
-  /// No description provided for @balehoSlide2WisataTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Wisata'**
-  String get balehoSlide2WisataTitle;
-
-  /// No description provided for @balehoSlide2KaryaTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Karya'**
-  String get balehoSlide2KaryaTitle;
-
-  /// No description provided for @balehoSlide2EnsiklopediaTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Ensiklopedia'**
-  String get balehoSlide2EnsiklopediaTitle;
-
-  /// No description provided for @balehoSlide2KamusTitle.
-  ///
-  /// In id, this message translates to:
-  /// **'Kamus'**
-  String get balehoSlide2KamusTitle;
-
-  /// CTA placeholder tile Ruang komunitas selain Peringkat Mingguan
-  ///
-  /// In id, this message translates to:
-  /// **'Segera hadir'**
-  String get balehoSlide2ComingSoonCta;
-
   /// Toast saat action Baleho gagal (action_fail)
   ///
   /// In id, this message translates to:
@@ -20664,6 +20622,114 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Foto · {count}'**
   String jinyeCreateChipPhotoCount(int count);
+
+  /// No description provided for @eventAllPhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat semua foto & unggah'**
+  String get eventAllPhotos;
+
+  /// Label tile alamat di detail acara
+  ///
+  /// In id, this message translates to:
+  /// **'Alamat'**
+  String get eventDetailAddressLabel;
+
+  /// Label tile penyelenggara di detail acara
+  ///
+  /// In id, this message translates to:
+  /// **'Penyelenggara'**
+  String get eventDetailOrganizerLabel;
+
+  /// No description provided for @eventGoingAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Aku hadir'**
+  String get eventGoingAction;
+
+  /// No description provided for @eventGoingCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal hadir'**
+  String get eventGoingCancel;
+
+  /// No description provided for @eventGoingCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang hadir'**
+  String eventGoingCount(int count);
+
+  /// No description provided for @eventMorePhotos.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat lainnya ({count} foto)'**
+  String eventMorePhotos(int count);
+
+  /// No description provided for @eventPhotoSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get eventPhotoSection;
+
+  /// No description provided for @eventPhotoUploadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah foto gagal. Coba lagi.'**
+  String get eventPhotoUploadFailed;
+
+  /// No description provided for @eventPhotosAddTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah Foto Acara'**
+  String get eventPhotosAddTitle;
+
+  /// No description provided for @eventPhotosEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada foto untuk acara ini.'**
+  String get eventPhotosEmpty;
+
+  /// Info batas jumlah foto per submit galeri acara
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal {count} foto per kiriman.'**
+  String eventPhotosMaxInfo(int count);
+
+  /// No description provided for @eventPhotosSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get eventPhotosSubmit;
+
+  /// No description provided for @eventPhotosSubmitting.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim...'**
+  String get eventPhotosSubmitting;
+
+  /// No description provided for @eventPhotosTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto Acara'**
+  String get eventPhotosTitle;
+
+  /// No description provided for @eventPhotosUpload.
+  ///
+  /// In id, this message translates to:
+  /// **'Unggah foto'**
+  String get eventPhotosUpload;
+
+  /// Placeholder field pencarian daftar layanan publik
+  ///
+  /// In id, this message translates to:
+  /// **'Cari nama layanan atau kecamatan'**
+  String get layananSearchPlaceholder;
+
+  /// No description provided for @eventPhotosSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto acara berhasil ditambahkan.'**
+  String get eventPhotosSuccess;
 }
 
 class _AppLocalizationsDelegate

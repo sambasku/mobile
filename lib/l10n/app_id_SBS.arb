@@ -7,7 +7,9 @@
   "@profileUsernameCooldown": {
     "description": "Pesan cooldown ganti username; when = tanggal",
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "profileUsernameHistoryAction": "Riwayat username",
@@ -30,8 +32,12 @@
   "@profileUsernameHistoryRow": {
     "description": "Baris riwayat old jadi new",
     "placeholders": {
-      "oldUsername": { "type": "String" },
-      "newUsername": { "type": "String" }
+      "oldUsername": {
+        "type": "String"
+      },
+      "newUsername": {
+        "type": "String"
+      }
     }
   },
   "profileUsernameHistoryCanReclaim": "Masih bisa dikembalikan",
@@ -176,17 +182,27 @@
   "@balehoSizeChip": {
     "description": "Chip ukuran w x h",
     "placeholders": {
-      "w": { "type": "int" },
-      "h": { "type": "int" }
+      "w": {
+        "type": "int"
+      },
+      "h": {
+        "type": "int"
+      }
     }
   },
   "balehoSelectionSummary": "{size} · kolom {col}, baris {row}",
   "@balehoSelectionSummary": {
     "description": "Ringkas area yang sedang dipilih",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoBookConfirmTitle": "Pesanan Baleho",
@@ -194,9 +210,15 @@
   "@balehoBookConfirmSubtitle": {
     "description": "Ringkas ukuran, posisi, referral",
     "placeholders": {
-      "size": { "type": "String" },
-      "position": { "type": "String" },
-      "referral": { "type": "String" }
+      "size": {
+        "type": "String"
+      },
+      "position": {
+        "type": "String"
+      },
+      "referral": {
+        "type": "String"
+      }
     }
   },
   "balehoBookConfirmBody": "Form unggah media dan aksi frame menyusul. Pesanan masuk antrean moderasi dulu ya.",
@@ -207,9 +229,15 @@
   "@balehoSlotSummary": {
     "description": "Ringkas area yang dipilih di form pesan",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoReferralLabel": "Kode teman (opsional)",
@@ -225,7 +253,11 @@
   "balehoDaysChip": "{days} hari",
   "@balehoDaysChip": {
     "description": "Chip pilihan durasi cepat",
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "balehoDaysUnit": "hari",
   "@balehoDaysUnit": {
@@ -238,7 +270,11 @@
   "balehoFrameLabel": "Slide {n}",
   "@balehoFrameLabel": {
     "description": "Judul satu slide/frame Baleho dalam stack",
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "balehoAddFrame": "Tambah slide",
   "balehoRemoveFrame": "Hapus",
@@ -340,15 +376,12 @@
   "balehoReactivateRefHint": "Referral: @{username}",
   "@balehoReactivateRefHint": {
     "description": "Subtitle creative dengan referral lama",
-    "placeholders": { "username": { "type": "String" } }
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
   },
-  "balehoSlide2UsahaTitle": "Usaha",
-  "balehoSlide2AcaraTitle": "Acara",
-  "balehoSlide2WisataTitle": "Wisata",
-  "balehoSlide2KaryaTitle": "Karya",
-  "balehoSlide2EnsiklopediaTitle": "Ensiklopedia",
-  "balehoSlide2KamusTitle": "Kamus",
-  "balehoSlide2ComingSoonCta": "Segera hadir",
   "balehoActionFailToast": "Tautan tidak bisa dibuka. Coba lagi nanti ya.",
   "@balehoActionFailToast": {
     "description": "Toast saat action Baleho gagal (action_fail)"
@@ -356,7 +389,11 @@
   "balehoSlideContentTitle": "Tampilan slide {n}",
   "@balehoSlideContentTitle": {
     "description": "Judul bottom sheet kelola konten slide",
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "balehoSlideContentCta": "Atur tampilan",
   "@balehoSlideContentCta": {
@@ -397,9 +434,15 @@
   "@balehoHistoryPosition": {
     "description": "Ringkas ukuran dan posisi slot di riwayat",
     "placeholders": {
-      "size": { "type": "String" },
-      "col": { "type": "int" },
-      "row": { "type": "int" }
+      "size": {
+        "type": "String"
+      },
+      "col": {
+        "type": "int"
+      },
+      "row": {
+        "type": "int"
+      }
     }
   },
   "balehoStatusPendingReview": "Menunggu cek",
@@ -776,7 +819,6 @@
     "description": "Kategori usulan #244: perbaiki contoh kalimat yang sudah tayang"
   },
   "suggestCategoryChangeExampleDesc": "Perbaiki typo atau arti contoh yang sudah ada",
-
   "suggestCategoryChangePronunciation": "Ubah pelafalan",
   "@suggestCategoryChangePronunciation": {
     "description": "Kategori usulan: perbaiki notasi pelafalan yang sudah tayang"
@@ -802,7 +844,9 @@
   "@dictChangePronunciationSemantics": {
     "description": "Semantics label baris IPA yang bisa di-tap",
     "placeholders": {
-      "value": {"type": "String"}
+      "value": {
+        "type": "String"
+      }
     }
   },
   "suggestPickExample": "Pilih contoh yang mau diperbaiki",
@@ -5212,14 +5256,74 @@
   "jinyeCreateChipAudioReady": "Suara · {seconds} dtk",
   "@jinyeCreateChipAudioReady": {
     "placeholders": {
-      "seconds": {"type": "int"}
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "jinyeCreateChipPhoto": "Foto",
   "jinyeCreateChipPhotoCount": "Foto · {count}",
   "@jinyeCreateChipPhotoCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventAllPhotos": "Lihat semua foto & unggah",
+  "@eventAllPhotos": {},
+  "eventDetailAddressLabel": "Alamat",
+  "@eventDetailAddressLabel": {
+    "description": "Label tile alamat di detail acara"
+  },
+  "eventDetailOrganizerLabel": "Penyelenggara",
+  "@eventDetailOrganizerLabel": {
+    "description": "Label tile penyelenggara di detail acara"
+  },
+  "eventGoingAction": "Aku hadir",
+  "@eventGoingAction": {},
+  "eventGoingCancel": "Batal hadir",
+  "@eventGoingCancel": {},
+  "eventGoingCount": "{count} orang hadir",
+  "@eventGoingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventMorePhotos": "Lihat lainnya ({count} foto)",
+  "@eventMorePhotos": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "eventPhotoSection": "Foto",
+  "@eventPhotoSection": {},
+  "eventPhotoUploadFailed": "Unggah foto gagal. Coba lagi.",
+  "eventPhotosAddTitle": "Tambah Foto Acara",
+  "eventPhotosEmpty": "Belum ada foto untuk acara ini.",
+  "eventPhotosMaxInfo": "Maksimal {count} foto per kiriman.",
+  "eventPhotosSubmit": "Kirim",
+  "eventPhotosSubmitting": "Mengirim...",
+  "eventPhotosTitle": "Foto Acara",
+  "eventPhotosUpload": "Unggah foto",
+  "layananSearchPlaceholder": "Cari nama layanan atau kecamatan",
+  "@layananSearchPlaceholder": {
+    "description": "Placeholder field pencarian daftar layanan publik"
+  },
+  "eventPhotosSuccess": "Foto acara berhasil ditambahkan.",
+  "@eventPhotosMaxInfo": {
+    "description": "Info batas jumlah foto per submit galeri acara",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
     }
   }
 }

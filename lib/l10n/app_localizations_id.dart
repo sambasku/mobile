@@ -422,27 +422,6 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get balehoSlide2UsahaTitle => 'Usaha';
-
-  @override
-  String get balehoSlide2AcaraTitle => 'Acara';
-
-  @override
-  String get balehoSlide2WisataTitle => 'Wisata';
-
-  @override
-  String get balehoSlide2KaryaTitle => 'Karya';
-
-  @override
-  String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
-
-  @override
-  String get balehoSlide2KamusTitle => 'Kamus';
-
-  @override
-  String get balehoSlide2ComingSoonCta => 'Segera hadir';
-
-  @override
   String get balehoActionFailToast =>
       'Tautan tidak bisa dibuka. Coba lagi nanti ya.';
 
@@ -11690,6 +11669,78 @@ class AppLocalizationsId extends AppLocalizations {
   String jinyeCreateChipPhotoCount(int count) {
     return 'Foto · $count';
   }
+
+  @override
+  String get eventAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
+  String get eventDetailAddressLabel => 'Alamat';
+
+  @override
+  String get eventDetailOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventGoingAction => 'Aku hadir';
+
+  @override
+  String get eventGoingCancel => 'Batal hadir';
+
+  @override
+  String eventGoingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang hadir';
+  }
+
+  @override
+  String eventMorePhotos(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lihat lainnya ($countString foto)';
+  }
+
+  @override
+  String get eventPhotoSection => 'Foto';
+
+  @override
+  String get eventPhotoUploadFailed => 'Unggah foto gagal. Coba lagi.';
+
+  @override
+  String get eventPhotosAddTitle => 'Tambah Foto Acara';
+
+  @override
+  String get eventPhotosEmpty => 'Belum ada foto untuk acara ini.';
+
+  @override
+  String eventPhotosMaxInfo(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString foto per kiriman.';
+  }
+
+  @override
+  String get eventPhotosSubmit => 'Kirim';
+
+  @override
+  String get eventPhotosSubmitting => 'Mengirim...';
+
+  @override
+  String get eventPhotosTitle => 'Foto Acara';
+
+  @override
+  String get eventPhotosUpload => 'Unggah foto';
+
+  @override
+  String get layananSearchPlaceholder => 'Cari nama layanan atau kecamatan';
+
+  @override
+  String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -12108,27 +12159,6 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String balehoReactivateRefHint(String username) {
     return 'Referral: @$username';
   }
-
-  @override
-  String get balehoSlide2UsahaTitle => 'Usaha';
-
-  @override
-  String get balehoSlide2AcaraTitle => 'Acara';
-
-  @override
-  String get balehoSlide2WisataTitle => 'Wisata';
-
-  @override
-  String get balehoSlide2KaryaTitle => 'Karya';
-
-  @override
-  String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
-
-  @override
-  String get balehoSlide2KamusTitle => 'Kamus';
-
-  @override
-  String get balehoSlide2ComingSoonCta => 'Segera hadir';
 
   @override
   String get balehoActionFailToast =>
@@ -23378,4 +23408,76 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String jinyeCreateChipPhotoCount(int count) {
     return 'Foto · $count';
   }
+
+  @override
+  String get eventAllPhotos => 'Lihat semua foto & unggah';
+
+  @override
+  String get eventDetailAddressLabel => 'Alamat';
+
+  @override
+  String get eventDetailOrganizerLabel => 'Penyelenggara';
+
+  @override
+  String get eventGoingAction => 'Aku hadir';
+
+  @override
+  String get eventGoingCancel => 'Batal hadir';
+
+  @override
+  String eventGoingCount(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return '$countString orang hadir';
+  }
+
+  @override
+  String eventMorePhotos(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Lihat lainnya ($countString foto)';
+  }
+
+  @override
+  String get eventPhotoSection => 'Foto';
+
+  @override
+  String get eventPhotoUploadFailed => 'Unggah foto gagal. Coba lagi.';
+
+  @override
+  String get eventPhotosAddTitle => 'Tambah Foto Acara';
+
+  @override
+  String get eventPhotosEmpty => 'Belum ada foto untuk acara ini.';
+
+  @override
+  String eventPhotosMaxInfo(int count) {
+    final intl.NumberFormat countNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String countString = countNumberFormat.format(count);
+
+    return 'Maksimal $countString foto per kiriman.';
+  }
+
+  @override
+  String get eventPhotosSubmit => 'Kirim';
+
+  @override
+  String get eventPhotosSubmitting => 'Mengirim...';
+
+  @override
+  String get eventPhotosTitle => 'Foto Acara';
+
+  @override
+  String get eventPhotosUpload => 'Unggah foto';
+
+  @override
+  String get layananSearchPlaceholder => 'Cari nama layanan atau kecamatan';
+
+  @override
+  String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
 }
