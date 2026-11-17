@@ -96,13 +96,30 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
   ) async {
     if (!mounted || _actionBusy) return;
     _track('tap', placementId: placement.id, frameId: frame.id);
-    // Tap grid → preview dulu; aksi hanya setelah user konfirmasi di sheet.
+
+    // Tile curated Peringkat Mingguan: langsung ke halaman, tanpa sheet.
+    if (placement.id == BalehoBoard.weeklyLeaderboardPlacementId) {
+      await _runPlacementAction(placement, frame);
+      return;
+    }
+
+    // Iklan biasa: preview dulu. Copy + aksi dari frame parent (pertama),
+    // bukan frame child yang sedang tampil di carousel.
+    final parent = balehoParentFrame(placement) ?? frame;
     final open = await showBalehoPlacementSheet(
       context,
       placement: placement,
       frame: frame,
     );
     if (open != true || !mounted || _actionBusy) return;
+    await _runPlacementAction(placement, parent);
+  }
+
+  Future<void> _runPlacementAction(
+    BalehoPlacement placement,
+    BalehoFrame frame,
+  ) async {
+    if (!mounted || _actionBusy) return;
     _actionBusy = true;
     _track('action', placementId: placement.id, frameId: frame.id);
     final l10n = AppLocalizations.of(context);

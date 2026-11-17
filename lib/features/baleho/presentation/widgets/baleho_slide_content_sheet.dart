@@ -5,14 +5,12 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
-/// Bottom sheet kelola tampilan satu slide (v1: hanya gambar).
+/// Bottom sheet kelola gambar satu slide. Judul/CTA/aksi = parent form, bukan di sini.
 Future<void> showBalehoSlideContentSheet(
   BuildContext context, {
   required int slideIndex,
   required String mediaType,
   required ValueChanged<String> onMediaTypeChanged,
-  required TextEditingController title,
-  required TextEditingController cta,
   required TextEditingController mediaUrl,
   required bool busy,
   required ValueListenable<bool> uploading,
@@ -30,8 +28,6 @@ Future<void> showBalehoSlideContentSheet(
           slideIndex: slideIndex,
           mediaType: mediaType,
           onMediaTypeChanged: onMediaTypeChanged,
-          title: title,
-          cta: cta,
           mediaUrl: mediaUrl,
           busy: busy,
           uploading: uploading,
@@ -48,8 +44,6 @@ class _BalehoSlideContentBody extends StatefulWidget {
     required this.slideIndex,
     required this.mediaType,
     required this.onMediaTypeChanged,
-    required this.title,
-    required this.cta,
     required this.mediaUrl,
     required this.busy,
     required this.uploading,
@@ -60,8 +54,6 @@ class _BalehoSlideContentBody extends StatefulWidget {
   final int slideIndex;
   final String mediaType;
   final ValueChanged<String> onMediaTypeChanged;
-  final TextEditingController title;
-  final TextEditingController cta;
   final TextEditingController mediaUrl;
   final bool busy;
   final ValueListenable<bool> uploading;
@@ -77,7 +69,6 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
   @override
   void initState() {
     super.initState();
-    // v1: kunci ke gambar.
     if (widget.mediaType != 'image') {
       widget.onMediaTypeChanged('image');
     }
@@ -154,24 +145,6 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
                               ? l10n.balehoUploading
                               : l10n.balehoUploadImage,
                         ),
-                      ),
-                      const Gap(10),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: widget.title,
-                        ),
-                        label: Text(l10n.balehoTitleLabel),
-                        enabled: !locked,
-                        maxLines: 2,
-                      ),
-                      const Gap(8),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: widget.cta,
-                        ),
-                        label: Text(l10n.balehoCtaLabel),
-                        enabled: !locked,
-                        maxLines: 2,
                       ),
                     ],
                   ),

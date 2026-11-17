@@ -117,6 +117,10 @@
     "description": "Body halaman coming soon papan peringkat"
   },
   "balehoSlotAvailable": "Tersedia",
+  "balehoSlotHeld": "Dipesan",
+  "@balehoSlotHeld": {
+    "description": "Label sel Baleho yang terkunci (pending/awaiting) bagi viewer lain - bukan konten iklan"
+  },
   "balehoPendingBadge": "Menunggu",
   "balehoPlacementSheetTitle": "Konten Baleho",
   "@balehoPlacementSheetTitle": {
@@ -260,6 +264,14 @@
   "balehoUploading": "Mengunggah…",
   "balehoUploadOk": "Gambar terunggah",
   "balehoTitleLabel": "Judul (opsional)",
+  "balehoBodyLabel": "Teks body (opsional)",
+  "@balehoBodyLabel": {
+    "description": "Label field body di form pesan Baleho (tampil di sheet di bawah judul)"
+  },
+  "balehoBodyHint": "Maksimal 320 karakter. Tampil di bawah judul di sheet.",
+  "@balehoBodyHint": {
+    "description": "Hint field body Baleho"
+  },
   "balehoCtaLabel": "Teks tombol (opsional)",
   "balehoActionKindLabel": "Saat diketuk buka",
   "@balehoActionKindLabel": {

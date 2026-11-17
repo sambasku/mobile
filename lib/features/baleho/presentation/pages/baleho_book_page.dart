@@ -33,33 +33,32 @@ class BalehoBookPage extends ConsumerStatefulWidget {
   ConsumerState<BalehoBookPage> createState() => _BalehoBookPageState();
 }
 
+/// Satu slide child: hanya media. Judul/CTA/aksi di parent form.
 class _FrameForm {
   _FrameForm();
 
-  /// v1: hanya gambar.
   String mediaType = 'image';
-  String actionType = 'in_app';
-  final title = TextEditingController();
-  final cta = TextEditingController();
   final mediaUrl = TextEditingController();
-  final actionPayload = TextEditingController();
   String? uploadedUrl;
-  String? entityType;
-  String? entityId;
   /// Notifier supaya sheet konten tetap rebuild saat upload (drawer return dulu).
   final uploading = ValueNotifier<bool>(false);
 
   void dispose() {
     uploading.dispose();
-    title.dispose();
-    cta.dispose();
     mediaUrl.dispose();
-    actionPayload.dispose();
   }
 }
 
 class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   final _frames = <_FrameForm>[_FrameForm()];
+  /// Parent copy: dipakai semua slide di sheet + wire API.
+  final _title = TextEditingController();
+  final _body = TextEditingController();
+  final _cta = TextEditingController();
+  final _actionPayload = TextEditingController();
+  var _actionType = 'in_app';
+  String? _entityType;
+  String? _entityId;
   late final TextEditingController _referral;
   late final TextEditingController _daysCtrl;
   var _busy = false;
@@ -83,6 +82,10 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     _daysCtrl.removeListener(_syncDaysFromCtrl);
     _referral.dispose();
     _daysCtrl.dispose();
+    _title.dispose();
+    _body.dispose();
+    _cta.dispose();
+    _actionPayload.dispose();
     for (final f in _frames) {
       f.dispose();
     }
@@ -234,20 +237,18 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       return null;
     }
     if (_frames.isEmpty) return l10n.balehoValidationNeedFrame;
+    final payload = _actionPayload.text.trim();
+    if (payload.isEmpty) return l10n.balehoValidationAction;
+    if (_actionType == 'external') {
+      final u = Uri.tryParse(payload);
+      if (u == null || (u.scheme != 'http' && u.scheme != 'https')) {
+        return l10n.balehoValidationExternalUrl;
+      }
+    }
     for (final f in _frames) {
-      // v1: hanya gambar.
       f.mediaType = 'image';
       final url = (f.uploadedUrl ?? f.mediaUrl.text).trim();
       if (url.isEmpty) return l10n.balehoValidationMediaUrl;
-      final payload = f.actionPayload.text.trim();
-      if (payload.isEmpty) return l10n.balehoValidationAction;
-      if (f.actionType == 'external') {
-        final u = Uri.tryParse(payload);
-        if (u == null ||
-            (u.scheme != 'http' && u.scheme != 'https')) {
-          return l10n.balehoValidationExternalUrl;
-        }
-      }
     }
     return null;
   }
@@ -313,6 +314,12 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
     }
     setState(() => _busy = true);
     try {
+      final title = _title.text.trim();
+      final body = _body.text.trim();
+      final cta = _cta.text.trim();
+      final payload = _actionPayload.text.trim();
+      // Parent copy di-stamp ke tiap frame (wire API per-frame); sheet &
+      // aksi baca frame pertama sebagai parent.
       final drafts = [
         for (final f in _frames)
           BalehoFrameDraft(
@@ -320,16 +327,13 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             mediaUrl: (f.uploadedUrl ?? f.mediaUrl.text).trim().isEmpty
                 ? null
                 : (f.uploadedUrl ?? f.mediaUrl.text).trim(),
-            title: f.title.text.trim().isEmpty ? null : f.title.text.trim(),
-            ctaLabel: f.cta.text.trim().isEmpty ? null : f.cta.text.trim(),
-            actionType: f.actionType,
-            actionPayload: f.actionPayload.text.trim(),
+            title: title.isEmpty ? null : title,
+            body: body.isEmpty ? null : body,
+            ctaLabel: cta.isEmpty ? null : cta,
+            actionType: _actionType,
+            actionPayload: payload,
           ),
       ];
-      final entityFrame = _frames.cast<_FrameForm?>().firstWhere(
-            (f) => f?.entityType != null && f?.entityId != null,
-            orElse: () => null,
-          );
       await ref.read(balehoApiProvider).createPlacement(
             col: widget.selection.col,
             row: widget.selection.row,
@@ -340,8 +344,8 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                 ? null
                 : _referral.text.trim(),
             creativeId: _reactivateCreativeId,
-            entityType: entityFrame?.entityType,
-            entityId: entityFrame?.entityId,
+            entityType: _entityType,
+            entityId: _entityId,
             days: _days,
           );
       if (!mounted) return;
@@ -486,6 +490,93 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             const Gap(8),
           ],
           if (_reactivateCreativeId == null) ...[
+            // Parent: judul + body + teks tombol + aksi (satu untuk semua slide).
+            FTextField(
+              control: FTextFieldControl.managed(controller: _title),
+              label: Text(l10n.balehoTitleLabel),
+              enabled: !_busy,
+              maxLines: 2,
+            ),
+            const Gap(8),
+            FTextField(
+              control: FTextFieldControl.managed(controller: _body),
+              label: Text(l10n.balehoBodyLabel),
+              description: Text(l10n.balehoBodyHint),
+              enabled: !_busy,
+              maxLines: 4,
+              maxLength: 320,
+            ),
+            const Gap(8),
+            FTextField(
+              control: FTextFieldControl.managed(controller: _cta),
+              label: Text(l10n.balehoCtaLabel),
+              enabled: !_busy,
+              maxLines: 1,
+              maxLength: 40,
+            ),
+            const Gap(12),
+            Text(
+              l10n.balehoActionKindLabel,
+              style: theme.typography.body.sm.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Gap(6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final a in ['in_app', 'external'])
+                  GestureDetector(
+                    onTap: _busy
+                        ? null
+                        : () => _setParentActionType(context, a),
+                    child: FBadge(
+                      variant: _actionType == a
+                          ? FBadgeVariant.primary
+                          : FBadgeVariant.secondary,
+                      child: Text(
+                        a == 'in_app'
+                            ? l10n.balehoActionInApp
+                            : l10n.balehoActionExternal,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const Gap(8),
+            if (_actionType == 'in_app') ...[
+              FTileGroup(
+                children: [
+                  FTile(
+                    prefix: const Icon(FLucideIcons.link, size: 18),
+                    title: Text(l10n.balehoDeeplinkPickCta),
+                    subtitle: Text(
+                      _actionPayload.text.trim().isEmpty
+                          ? l10n.balehoDeeplinkEmpty
+                          : _actionPayload.text.trim(),
+                    ),
+                    suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                    onPress: _busy ? null : () => _pickParentDeeplink(context),
+                  ),
+                ],
+              ),
+              const Gap(8),
+            ],
+            FTextField(
+              control: FTextFieldControl.managed(controller: _actionPayload),
+              label: Text(
+                _actionType == 'external'
+                    ? l10n.balehoActionUrlLabel
+                    : l10n.balehoActionPathLabel,
+              ),
+              hint: _actionType == 'external'
+                  ? l10n.balehoActionUrlHint
+                  : l10n.balehoActionPathHint,
+              enabled: !_busy,
+              maxLines: 4,
+            ),
+            const Gap(16),
             for (var i = 0; i < _frames.length; i++) ...[
               if (i > 0) const Gap(12),
               _FrameEditor(
@@ -516,6 +607,29 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       ),
     );
   }
+
+  Future<void> _pickParentDeeplink(BuildContext context) async {
+    final pick = await showBalehoDeeplinkPickerSheet(
+      context,
+      selectedPath: _actionPayload.text,
+    );
+    if (pick == null) return;
+    setState(() {
+      _actionPayload.text = pick.path;
+      _actionPayload.selection = TextSelection.collapsed(
+        offset: pick.path.length,
+      );
+      _entityType = pick.entityType;
+      _entityId = pick.entityId;
+    });
+  }
+
+  Future<void> _setParentActionType(BuildContext context, String a) async {
+    setState(() => _actionType = a);
+    if (a == 'in_app' && !_busy) {
+      await _pickParentDeeplink(context);
+    }
+  }
 }
 
 class _FrameEditor extends StatelessWidget {
@@ -535,14 +649,9 @@ class _FrameEditor extends StatelessWidget {
   final Future<void> Function() onPickImage;
   final VoidCallback? onRemove;
 
-  String get _contentSummary {
-    final title = frame.title.text.trim();
-    if (title.isNotEmpty) return title;
+  String get _mediaSummary {
     final media = (frame.uploadedUrl ?? frame.mediaUrl.text).trim();
-    if (media.isNotEmpty) return media;
-    final cta = frame.cta.text.trim();
-    if (cta.isNotEmpty) return cta;
-    return '';
+    return media;
   }
 
   Future<void> _openContentSheet(BuildContext context) async {
@@ -551,8 +660,6 @@ class _FrameEditor extends StatelessWidget {
       slideIndex: index + 1,
       mediaType: frame.mediaType,
       onMediaTypeChanged: (t) => frame.mediaType = t,
-      title: frame.title,
-      cta: frame.cta,
       mediaUrl: frame.mediaUrl,
       busy: busy,
       uploading: frame.uploading,
@@ -562,34 +669,11 @@ class _FrameEditor extends StatelessWidget {
     onChanged();
   }
 
-  Future<void> _pickDeeplink(BuildContext context) async {
-    final pick = await showBalehoDeeplinkPickerSheet(
-      context,
-      selectedPath: frame.actionPayload.text,
-    );
-    if (pick == null) return;
-    frame.actionPayload.text = pick.path;
-    frame.actionPayload.selection = TextSelection.collapsed(
-      offset: pick.path.length,
-    );
-    frame.entityType = pick.entityType;
-    frame.entityId = pick.entityId;
-    onChanged();
-  }
-
-  Future<void> _setActionType(BuildContext context, String a) async {
-    frame.actionType = a;
-    onChanged();
-    if (a == 'in_app' && !busy) {
-      await _pickDeeplink(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final summary = _contentSummary;
+    final summary = _mediaSummary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -620,7 +704,7 @@ class _FrameEditor extends StatelessWidget {
               children: [
                 FTile(
                   prefix: Icon(
-                    FLucideIcons.panelTop,
+                    FLucideIcons.image,
                     size: 18,
                     color: theme.colors.primary,
                   ),
@@ -642,66 +726,6 @@ class _FrameEditor extends StatelessWidget {
               ],
             );
           },
-        ),
-        const Gap(10),
-        Text(
-          l10n.balehoActionKindLabel,
-          style: theme.typography.body.sm.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const Gap(6),
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: [
-            for (final a in ['in_app', 'external'])
-              GestureDetector(
-                onTap: busy ? null : () => _setActionType(context, a),
-                child: FBadge(
-                  variant: frame.actionType == a
-                      ? FBadgeVariant.primary
-                      : FBadgeVariant.secondary,
-                  child: Text(
-                    a == 'in_app'
-                        ? l10n.balehoActionInApp
-                        : l10n.balehoActionExternal,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const Gap(8),
-        if (frame.actionType == 'in_app') ...[
-          FTileGroup(
-            children: [
-              FTile(
-                prefix: const Icon(FLucideIcons.link, size: 18),
-                title: Text(l10n.balehoDeeplinkPickCta),
-                subtitle: Text(
-                  frame.actionPayload.text.trim().isEmpty
-                      ? l10n.balehoDeeplinkEmpty
-                      : frame.actionPayload.text.trim(),
-                ),
-                suffix: const Icon(FLucideIcons.chevronRight, size: 16),
-                onPress: busy ? null : () => _pickDeeplink(context),
-              ),
-            ],
-          ),
-          const Gap(8),
-        ],
-        FTextField(
-          control: FTextFieldControl.managed(controller: frame.actionPayload),
-          label: Text(
-            frame.actionType == 'external'
-                ? l10n.balehoActionUrlLabel
-                : l10n.balehoActionPathLabel,
-          ),
-          hint: frame.actionType == 'external'
-              ? l10n.balehoActionUrlHint
-              : l10n.balehoActionPathHint,
-          enabled: !busy,
-          maxLines: 4,
         ),
       ],
     );

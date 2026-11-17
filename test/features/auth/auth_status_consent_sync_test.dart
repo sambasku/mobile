@@ -113,6 +113,7 @@ class _FakeEditProfileRepository implements EditProfileRepository {
     String? username,
     String? displayName,
     String? bio,
+    String? speakerStatus,
     String? regionId,
     String? villageId,
     bool? hasReadContributionGuide,

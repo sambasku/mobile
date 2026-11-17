@@ -299,11 +299,15 @@ class _BalehoGridState extends State<BalehoGrid> {
                               widget.onPlacementTap?.call(p, p.frames.first);
                             },
                           )
-                        : _PlacementCell(
-                            placement: p,
-                            enabled: !widget.sellable,
-                            onPlacementTap: widget.onPlacementTap,
-                          ),
+                        // Pending/awaiting tanpa frame = hold slot untuk orang
+                        // lain. Jangan render seperti iklan "Promosi".
+                        : p.frames.isEmpty
+                            ? const _HeldSlotCell()
+                            : _PlacementCell(
+                                placement: p,
+                                enabled: !widget.sellable,
+                                onPlacementTap: widget.onPlacementTap,
+                              ),
                   ),
                 if (sel != null)
                   Positioned(
@@ -426,6 +430,39 @@ class _WeeklyLeaderboardTile extends StatelessWidget {
   }
 }
 
+/// Sel terkunci tanpa konten (pending_review / awaiting_payment bagi viewer
+/// lain). Harus beda visual dari iklan live supaya tidak dikira sudah tayang.
+class _HeldSlotCell extends StatelessWidget {
+  const _HeldSlotCell();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      margin: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: theme.colors.border.withValues(alpha: 0.7),
+        ),
+        color: theme.colors.secondary.withValues(alpha: 0.18),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        l10n.balehoSlotHeld,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: theme.typography.body.xs.copyWith(
+          color: theme.colors.mutedForeground,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
 class _PlacementCell extends StatefulWidget {
   const _PlacementCell({
     required this.placement,
@@ -482,7 +519,11 @@ class _PlacementCellState extends State<_PlacementCell> {
     final l10n = AppLocalizations.of(context);
     final frames = widget.placement.frames;
     final frame = frames.isEmpty ? null : frames[_frameIndex % frames.length];
+    final parent = frames.isNotEmpty ? frames.first : frame;
     final pending = widget.placement.isOwnerPending;
+    // Judul/CTA dari parent; child hanya media carousel.
+    final copyText =
+        parent?.title ?? parent?.ctaLabel ?? l10n.balehoPromoSlide;
 
     return GestureDetector(
       onTap: widget.enabled && frame != null
@@ -512,7 +553,7 @@ class _PlacementCellState extends State<_PlacementCell> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    frame?.title ?? frame?.ctaLabel ?? l10n.balehoPromoSlide,
+                    copyText,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: theme.typography.body.sm.copyWith(
@@ -523,11 +564,32 @@ class _PlacementCellState extends State<_PlacementCell> {
               ),
             if (pending)
               Positioned(
-                right: 4,
-                top: 4,
-                child: FBadge(
-                  variant: FBadgeVariant.secondary,
-                  child: Text(l10n.balehoPendingBadge),
+                right: 2,
+                top: 2,
+                // Chip compact: FBadge default terlalu besar untuk sel 1x1
+                // (terpotong Clip.antiAlias).
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 1,
+                    ),
+                    child: Text(
+                      l10n.balehoPendingBadge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body.xs.copyWith(
+                        color: theme.colors.secondaryForeground,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 9,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
                 ),
               ),
           ],

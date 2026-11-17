@@ -105,12 +105,14 @@ class BalehoFrameDraft {
     required this.actionPayload,
     this.mediaUrl,
     this.title,
+    this.body,
     this.ctaLabel,
   });
 
   final String mediaType;
   final String? mediaUrl;
   final String? title;
+  final String? body;
   final String? ctaLabel;
   final String actionType;
   final String actionPayload;
@@ -119,6 +121,7 @@ class BalehoFrameDraft {
         'media_type': mediaType,
         if (mediaUrl != null && mediaUrl!.isNotEmpty) 'media_url': mediaUrl,
         if (title != null && title!.isNotEmpty) 'title': title,
+        if (body != null && body!.isNotEmpty) 'body': body,
         if (ctaLabel != null && ctaLabel!.isNotEmpty) 'cta_label': ctaLabel,
         'action_type': actionType,
         'action_payload': actionPayload,
@@ -257,10 +260,20 @@ class BalehoApi {
   }
 
   Future<String> uploadImage(File file) async {
+    final name = file.uri.pathSegments.isNotEmpty
+        ? file.uri.pathSegments.last
+        : 'baleho.webp';
+    final lower = name.toLowerCase();
+    final mediaType = lower.endsWith('.png')
+        ? DioMediaType('image', 'png')
+        : lower.endsWith('.webp')
+            ? DioMediaType('image', 'webp')
+            : DioMediaType('image', 'jpeg');
     final form = FormData.fromMap({
       'file': await MultipartFile.fromFile(
         file.path,
-        filename: file.uri.pathSegments.last,
+        filename: name,
+        contentType: mediaType,
       ),
     });
     try {

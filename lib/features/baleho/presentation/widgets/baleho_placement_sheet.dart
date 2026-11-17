@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:forui/forui.dart';
 import 'package:gap/gap.dart';
 import 'package:material_ui/material_ui.dart';
@@ -5,14 +7,31 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/baleho_models.dart';
 
-/// Preview placement sebelum aksi (in-app / eksternal).
+/// Frame "parent" = rujukan judul / body / tombol (frame pertama).
+BalehoFrame? balehoParentFrame(BalehoPlacement placement) {
+  if (placement.frames.isEmpty) return null;
+  return placement.frames.first;
+}
+
+/// Frame yang punya media gambar/video (carousel child).
+List<BalehoFrame> balehoMediaFrames(BalehoPlacement placement) {
+  return [
+    for (final f in placement.frames)
+      if (f.mediaUrl != null &&
+          f.mediaUrl!.trim().isNotEmpty &&
+          (f.mediaType == 'image' || f.mediaType == 'video'))
+        f,
+  ];
+}
+
+/// Preview placement sebelum aksi.
 ///
-/// Rasio gambar = ukuran grid yang dipesan (`w:h`). Landscape: media + teks
-/// berdampingan supaya sheet tidak menelan tinggi layar.
+/// Judul, teks, dan label tombol selalu dari frame parent (pertama).
+/// Child frame hanya menyumbang gambar di carousel.
 Future<bool?> showBalehoPlacementSheet(
   BuildContext context, {
   required BalehoPlacement placement,
-  required BalehoFrame frame,
+  BalehoFrame? frame,
 }) {
   return showModalBottomSheet<bool>(
     context: context,
@@ -23,27 +42,68 @@ Future<bool?> showBalehoPlacementSheet(
         padding: MediaQuery.viewInsetsOf(sheetContext),
         child: _BalehoPlacementSheetBody(
           placement: placement,
-          frame: frame,
+          // frame arg diabaikan untuk copy - tetap diterima demi call-site lama.
+          initialFrame: frame,
         ),
       );
     },
   );
 }
 
-class _BalehoPlacementSheetBody extends StatelessWidget {
+class _BalehoPlacementSheetBody extends StatefulWidget {
   const _BalehoPlacementSheetBody({
     required this.placement,
-    required this.frame,
+    this.initialFrame,
   });
 
   final BalehoPlacement placement;
-  final BalehoFrame frame;
+  final BalehoFrame? initialFrame;
 
-  /// Sel papan kotak → rasio media = w/h slot.
+  @override
+  State<_BalehoPlacementSheetBody> createState() =>
+      _BalehoPlacementSheetBodyState();
+}
+
+class _BalehoPlacementSheetBodyState extends State<_BalehoPlacementSheetBody> {
+  var _mediaIndex = 0;
+  Timer? _timer;
+
+  BalehoPlacement get _placement => widget.placement;
+
+  BalehoFrame? get _parent => balehoParentFrame(_placement);
+
+  List<BalehoFrame> get _media => balehoMediaFrames(_placement);
+
   double get _slotAspect {
-    final w = placement.w < 1 ? 1 : placement.w;
-    final h = placement.h < 1 ? 1 : placement.h;
+    final w = _placement.w < 1 ? 1 : _placement.w;
+    final h = _placement.h < 1 ? 1 : _placement.h;
     return w / h;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final media = _media;
+    if (widget.initialFrame != null && media.isNotEmpty) {
+      final i = media.indexWhere((f) => f.id == widget.initialFrame!.id);
+      if (i >= 0) _mediaIndex = i;
+    }
+    _armTimer();
+  }
+
+  void _armTimer() {
+    _timer?.cancel();
+    if (_media.length < 2) return;
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (!mounted) return;
+      setState(() => _mediaIndex = (_mediaIndex + 1) % _media.length);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -53,20 +113,22 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
     final size = MediaQuery.sizeOf(context);
     final landscape =
         MediaQuery.orientationOf(context) == Orientation.landscape;
-    final title = (frame.title?.trim().isNotEmpty ?? false)
-        ? frame.title!.trim()
+    final parent = _parent;
+    final title = (parent?.title?.trim().isNotEmpty ?? false)
+        ? parent!.title!.trim()
         : l10n.balehoPlacementSheetTitle;
-    final subtitle = (frame.ctaLabel?.trim().isNotEmpty ?? false)
-        ? frame.ctaLabel!.trim()
+    final body = (parent?.body?.trim().isNotEmpty ?? false)
+        ? parent!.body!.trim()
         : null;
-    final openLabel = (frame.ctaLabel?.trim().isNotEmpty ?? false)
-        ? frame.ctaLabel!.trim()
+    final openLabel = (parent?.ctaLabel?.trim().isNotEmpty ?? false)
+        ? parent!.ctaLabel!.trim()
         : l10n.balehoPlacementOpen;
-    final hasMedia = frame.mediaUrl != null &&
-        frame.mediaUrl!.trim().isNotEmpty &&
-        (frame.mediaType == 'image' || frame.mediaType == 'video');
-    final canOpen = frame.actionPayload.trim().isNotEmpty &&
-        !placement.isOwnerPending;
+    final media = _media;
+    final hasMedia = media.isNotEmpty;
+    final currentMedia =
+        hasMedia ? media[_mediaIndex % media.length] : null;
+    final canOpen = (parent?.actionPayload.trim().isNotEmpty ?? false) &&
+        !_placement.isOwnerPending;
 
     final info = Column(
       mainAxisSize: MainAxisSize.min,
@@ -80,17 +142,17 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
             color: theme.colors.foreground,
           ),
         ),
-        if (subtitle != null) ...[
+        if (body != null) ...[
           const Gap(4),
           Text(
-            subtitle,
+            body,
             softWrap: true,
             style: theme.typography.body.sm.copyWith(
               color: theme.colors.foreground.withValues(alpha: 0.8),
             ),
           ),
         ],
-        if (placement.isOwnerPending) ...[
+        if (_placement.isOwnerPending) ...[
           const Gap(8),
           Text(
             l10n.balehoPlacementPendingHint,
@@ -115,6 +177,19 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
       ],
     );
 
+    final mediaPreview = hasMedia
+        ? _SlotMediaPreview(
+            url: currentMedia!.mediaUrl!,
+            aspect: _slotAspect,
+            maxHeight: size.height * (landscape ? 0.55 : 0.42),
+            gridW: _placement.w,
+            gridH: _placement.h,
+            pageHint: media.length > 1
+                ? '${_mediaIndex % media.length + 1}/${media.length}'
+                : null,
+          )
+        : null;
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -122,20 +197,11 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
           constraints: BoxConstraints(
             maxHeight: size.height * (landscape ? 0.72 : 0.85),
           ),
-          child: landscape && hasMedia
+          child: landscape && mediaPreview != null
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 5,
-                      child: _SlotMediaPreview(
-                        url: frame.mediaUrl!,
-                        aspect: _slotAspect,
-                        maxHeight: size.height * 0.55,
-                        gridW: placement.w,
-                        gridH: placement.h,
-                      ),
-                    ),
+                    Expanded(flex: 5, child: mediaPreview),
                     const SizedBox(width: 16),
                     Expanded(
                       flex: 4,
@@ -148,14 +214,8 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      if (hasMedia) ...[
-                        _SlotMediaPreview(
-                          url: frame.mediaUrl!,
-                          aspect: _slotAspect,
-                          maxHeight: size.height * (landscape ? 0.4 : 0.42),
-                          gridW: placement.w,
-                          gridH: placement.h,
-                        ),
+                      if (mediaPreview != null) ...[
+                        mediaPreview,
                         const Gap(12),
                       ],
                       info,
@@ -168,8 +228,7 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
   }
 }
 
-/// Preview media di skala sel papan: lebar penuh = [BalehoBoard.prototypeCols]
-/// sel (kotak). Slot 1×1 = 1/4 lebar; 4×2 = full width × 2 sel.
+/// Preview media di skala sel papan.
 class _SlotMediaPreview extends StatelessWidget {
   const _SlotMediaPreview({
     required this.url,
@@ -177,6 +236,7 @@ class _SlotMediaPreview extends StatelessWidget {
     required this.maxHeight,
     required this.gridW,
     required this.gridH,
+    this.pageHint,
   });
 
   final String url;
@@ -184,6 +244,7 @@ class _SlotMediaPreview extends StatelessWidget {
   final double maxHeight;
   final int gridW;
   final int gridH;
+  final String? pageHint;
 
   @override
   Widget build(BuildContext context) {
@@ -197,8 +258,6 @@ class _SlotMediaPreview extends StatelessWidget {
         final maxW = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width - 32;
-        // Sel kotak seperti di grid: lebar penuh sheet = 4 sel.
-        // Kalau tinggi overflow maxHeight, kecilkan sel seragam.
         var cell = maxW / cols;
         if (cell * gh > maxHeight && gh > 0) {
           cell = maxHeight / gh;
@@ -214,20 +273,48 @@ class _SlotMediaPreview extends StatelessWidget {
             child: SizedBox(
               width: width,
               height: height,
-              child: Image.network(
-                url,
-                fit: BoxFit.cover,
-                width: width,
-                height: height,
-                errorBuilder: (_, _, _) => ColoredBox(
-                  color: theme.colors.secondary,
-                  child: Center(
-                    child: Icon(
-                      FLucideIcons.image,
-                      color: theme.colors.mutedForeground,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    width: width,
+                    height: height,
+                    errorBuilder: (_, _, _) => ColoredBox(
+                      color: theme.colors.secondary,
+                      child: Center(
+                        child: Icon(
+                          FLucideIcons.image,
+                          color: theme.colors.mutedForeground,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  if (pageHint != null)
+                    Positioned(
+                      right: 6,
+                      bottom: 6,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: theme.colors.background.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          child: Text(
+                            pageHint!,
+                            style: theme.typography.body.xs.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

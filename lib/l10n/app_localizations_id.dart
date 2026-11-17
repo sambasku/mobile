@@ -155,6 +155,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoSlotAvailable => 'Tersedia';
 
   @override
+  String get balehoSlotHeld => 'Dipesan';
+
+  @override
   String get balehoPendingBadge => 'Menunggu';
 
   @override
@@ -285,6 +288,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoBodyLabel => 'Teks body (opsional)';
+
+  @override
+  String get balehoBodyHint =>
+      'Maksimal 320 karakter. Tampil di bawah judul di sheet.';
 
   @override
   String get balehoCtaLabel => 'Teks tombol (opsional)';
@@ -12114,6 +12124,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoSlotAvailable => 'Tersedia';
 
   @override
+  String get balehoSlotHeld => 'Dipesan';
+
+  @override
   String get balehoPendingBadge => 'Menunggu';
 
   @override
@@ -12244,6 +12257,13 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoTitleLabel => 'Judul (opsional)';
+
+  @override
+  String get balehoBodyLabel => 'Teks body (opsional)';
+
+  @override
+  String get balehoBodyHint =>
+      'Maksimal 320 karakter. Tampil di bawah judul di sheet.';
 
   @override
   String get balehoCtaLabel => 'Teks tombol (opsional)';

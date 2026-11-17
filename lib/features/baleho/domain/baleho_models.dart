@@ -93,6 +93,7 @@ class BalehoFrame {
     required this.actionPayload,
     this.mediaUrl,
     this.title,
+    this.body,
     this.ctaLabel,
   });
 
@@ -100,6 +101,7 @@ class BalehoFrame {
   final String mediaType;
   final String? mediaUrl;
   final String? title;
+  final String? body;
   final String? ctaLabel;
   final String actionType;
   final String actionPayload;
@@ -110,6 +112,7 @@ class BalehoFrame {
       mediaType: '${json['media_type'] ?? 'text_cta'}',
       mediaUrl: json['media_url'] as String?,
       title: json['title'] as String?,
+      body: json['body'] as String?,
       ctaLabel: json['cta_label'] as String?,
       actionType: '${json['action_type'] ?? 'in_app'}',
       actionPayload: '${json['action_payload'] ?? ''}',

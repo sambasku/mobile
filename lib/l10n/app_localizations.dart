@@ -367,6 +367,12 @@ abstract class AppLocalizations {
   /// **'Tersedia'**
   String get balehoSlotAvailable;
 
+  /// Label sel Baleho yang terkunci (pending/awaiting) bagi viewer lain - bukan konten iklan
+  ///
+  /// In id, this message translates to:
+  /// **'Dipesan'**
+  String get balehoSlotHeld;
+
   /// No description provided for @balehoPendingBadge.
   ///
   /// In id, this message translates to:
@@ -598,6 +604,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Judul (opsional)'**
   String get balehoTitleLabel;
+
+  /// Label field body di form pesan Baleho (tampil di sheet di bawah judul)
+  ///
+  /// In id, this message translates to:
+  /// **'Teks body (opsional)'**
+  String get balehoBodyLabel;
+
+  /// Hint field body Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 320 karakter. Tampil di bawah judul di sheet.'**
+  String get balehoBodyHint;
 
   /// No description provided for @balehoCtaLabel.
   ///
