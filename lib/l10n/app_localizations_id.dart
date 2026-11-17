@@ -7113,6 +7113,100 @@ class AppLocalizationsId extends AppLocalizations {
       'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
 
   @override
+  String get karyaFormKindRequired => 'Pilih jenis karya dulu';
+
+  @override
+  String get karyaFormTitleRequired => 'Judul karya minimal 2 karakter';
+
+  @override
+  String get karyaFormYearInvalid => 'Isi tahun rilis yang valid (1800-2100)';
+
+  @override
+  String get karyaFormSambasRequired =>
+      'Minimal satu kaitan dengan Sambas wajib diisi';
+
+  @override
+  String get karyaFormCreditRequired =>
+      'Minimal satu kredit (nama + peran) wajib diisi';
+
+  @override
+  String get karyaFormCreditVocalRequired =>
+      'Untuk musik, minimal satu kredit dengan peran Vokal';
+
+  @override
+  String get karyaFormCreditFilmRequired =>
+      'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran';
+
+  @override
+  String get karyaFormCreditHintMusic =>
+      'Musik wajib punya minimal satu peran Vokal';
+
+  @override
+  String get karyaFormCreditHintFilm =>
+      'Film wajib punya minimal satu peran Sutradara atau Pemeran';
+
+  @override
+  String get kreatorTitle => 'Kreator';
+
+  @override
+  String get kreatorLoadFailed => 'Gagal memuat profil kreator';
+
+  @override
+  String get kreatorNotFound => 'Profil kreator tidak ditemukan';
+
+  @override
+  String get kreatorKindPerson => 'Orang';
+
+  @override
+  String get kreatorKindGroup => 'Grup';
+
+  @override
+  String get kreatorBioEmpty => 'Bio belum diisi. Data bisa dilengkapi nanti.';
+
+  @override
+  String get kreatorLinks => 'Tautan';
+
+  @override
+  String get kreatorKaryaSection => 'Karya';
+
+  @override
+  String get kreatorKaryaEmpty =>
+      'Belum ada karya yang terhubung ke profil ini';
+
+  @override
+  String get kreatorProposeKarya => 'Usulkan karya';
+
+  @override
+  String get kreatorClaimAction => 'Klaim profil ini';
+
+  @override
+  String get kreatorClaimActionHint =>
+      'Kalau ini kamu atau grupmu, kirim bukti singkat';
+
+  @override
+  String get kreatorClaimTitle => 'Klaim profil kreator';
+
+  @override
+  String get kreatorClaimSubtitle =>
+      'Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.';
+
+  @override
+  String get kreatorClaimProof => 'Catatan bukti';
+
+  @override
+  String get kreatorClaimProofHint =>
+      'Misal akun resmi, tautan, atau penjelasan singkat';
+
+  @override
+  String get kreatorClaimProofShort => 'Catatan bukti minimal 8 karakter';
+
+  @override
+  String get kreatorClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get kreatorClaimSuccess => 'Klaim kamu sudah dikirim';
+
+  @override
   String get karyaFormKind => 'Jenis karya';
 
   @override
@@ -18906,6 +19000,100 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get karyaFormInvalid =>
       'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
+
+  @override
+  String get karyaFormKindRequired => 'Pilih jenis karya dulu';
+
+  @override
+  String get karyaFormTitleRequired => 'Judul karya minimal 2 karakter';
+
+  @override
+  String get karyaFormYearInvalid => 'Isi tahun rilis yang valid (1800-2100)';
+
+  @override
+  String get karyaFormSambasRequired =>
+      'Minimal satu kaitan dengan Sambas wajib diisi';
+
+  @override
+  String get karyaFormCreditRequired =>
+      'Minimal satu kredit (nama + peran) wajib diisi';
+
+  @override
+  String get karyaFormCreditVocalRequired =>
+      'Untuk musik, minimal satu kredit dengan peran Vokal';
+
+  @override
+  String get karyaFormCreditFilmRequired =>
+      'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran';
+
+  @override
+  String get karyaFormCreditHintMusic =>
+      'Musik wajib punya minimal satu peran Vokal';
+
+  @override
+  String get karyaFormCreditHintFilm =>
+      'Film wajib punya minimal satu peran Sutradara atau Pemeran';
+
+  @override
+  String get kreatorTitle => 'Kreator';
+
+  @override
+  String get kreatorLoadFailed => 'Gagal memuat profil kreator';
+
+  @override
+  String get kreatorNotFound => 'Profil kreator tidak ditemukan';
+
+  @override
+  String get kreatorKindPerson => 'Orang';
+
+  @override
+  String get kreatorKindGroup => 'Grup';
+
+  @override
+  String get kreatorBioEmpty => 'Bio belum diisi. Data bisa dilengkapi nanti.';
+
+  @override
+  String get kreatorLinks => 'Tautan';
+
+  @override
+  String get kreatorKaryaSection => 'Karya';
+
+  @override
+  String get kreatorKaryaEmpty =>
+      'Belum ada karya yang terhubung ke profil ini';
+
+  @override
+  String get kreatorProposeKarya => 'Usulkan karya';
+
+  @override
+  String get kreatorClaimAction => 'Klaim profil ini';
+
+  @override
+  String get kreatorClaimActionHint =>
+      'Kalau ini kamu atau grupmu, kirim bukti singkat';
+
+  @override
+  String get kreatorClaimTitle => 'Klaim profil kreator';
+
+  @override
+  String get kreatorClaimSubtitle =>
+      'Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.';
+
+  @override
+  String get kreatorClaimProof => 'Catatan bukti';
+
+  @override
+  String get kreatorClaimProofHint =>
+      'Misal akun resmi, tautan, atau penjelasan singkat';
+
+  @override
+  String get kreatorClaimProofShort => 'Catatan bukti minimal 8 karakter';
+
+  @override
+  String get kreatorClaimSubmit => 'Kirim klaim';
+
+  @override
+  String get kreatorClaimSuccess => 'Klaim kamu sudah dikirim';
 
   @override
   String get karyaFormKind => 'Jenis karya';

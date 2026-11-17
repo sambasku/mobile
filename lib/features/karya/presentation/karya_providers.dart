@@ -39,3 +39,8 @@ final karyaMineProvider =
     FutureProvider.autoDispose<List<KaryaProposal>>((ref) {
   return ref.watch(karyaApiProvider).mine();
 });
+
+final kreatorBySlugProvider = FutureProvider.autoDispose
+    .family<KreatorProfile?, String>((ref, slug) {
+  return ref.watch(karyaApiProvider).kreatorBySlug(slug);
+});

@@ -12789,6 +12789,174 @@ abstract class AppLocalizations {
   /// **'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi'**
   String get karyaFormInvalid;
 
+  /// No description provided for @karyaFormKindRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jenis karya dulu'**
+  String get karyaFormKindRequired;
+
+  /// No description provided for @karyaFormTitleRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul karya minimal 2 karakter'**
+  String get karyaFormTitleRequired;
+
+  /// No description provided for @karyaFormYearInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi tahun rilis yang valid (1800-2100)'**
+  String get karyaFormYearInvalid;
+
+  /// No description provided for @karyaFormSambasRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal satu kaitan dengan Sambas wajib diisi'**
+  String get karyaFormSambasRequired;
+
+  /// No description provided for @karyaFormCreditRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Minimal satu kredit (nama + peran) wajib diisi'**
+  String get karyaFormCreditRequired;
+
+  /// No description provided for @karyaFormCreditVocalRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk musik, minimal satu kredit dengan peran Vokal'**
+  String get karyaFormCreditVocalRequired;
+
+  /// No description provided for @karyaFormCreditFilmRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk film, minimal satu kredit dengan peran Sutradara atau Pemeran'**
+  String get karyaFormCreditFilmRequired;
+
+  /// No description provided for @karyaFormCreditHintMusic.
+  ///
+  /// In id, this message translates to:
+  /// **'Musik wajib punya minimal satu peran Vokal'**
+  String get karyaFormCreditHintMusic;
+
+  /// No description provided for @karyaFormCreditHintFilm.
+  ///
+  /// In id, this message translates to:
+  /// **'Film wajib punya minimal satu peran Sutradara atau Pemeran'**
+  String get karyaFormCreditHintFilm;
+
+  /// Judul fallback halaman profil kreator
+  ///
+  /// In id, this message translates to:
+  /// **'Kreator'**
+  String get kreatorTitle;
+
+  /// No description provided for @kreatorLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat profil kreator'**
+  String get kreatorLoadFailed;
+
+  /// No description provided for @kreatorNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil kreator tidak ditemukan'**
+  String get kreatorNotFound;
+
+  /// No description provided for @kreatorKindPerson.
+  ///
+  /// In id, this message translates to:
+  /// **'Orang'**
+  String get kreatorKindPerson;
+
+  /// No description provided for @kreatorKindGroup.
+  ///
+  /// In id, this message translates to:
+  /// **'Grup'**
+  String get kreatorKindGroup;
+
+  /// No description provided for @kreatorBioEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Bio belum diisi. Data bisa dilengkapi nanti.'**
+  String get kreatorBioEmpty;
+
+  /// No description provided for @kreatorLinks.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan'**
+  String get kreatorLinks;
+
+  /// No description provided for @kreatorKaryaSection.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get kreatorKaryaSection;
+
+  /// No description provided for @kreatorKaryaEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada karya yang terhubung ke profil ini'**
+  String get kreatorKaryaEmpty;
+
+  /// No description provided for @kreatorProposeKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan karya'**
+  String get kreatorProposeKarya;
+
+  /// No description provided for @kreatorClaimAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim profil ini'**
+  String get kreatorClaimAction;
+
+  /// No description provided for @kreatorClaimActionHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau ini kamu atau grupmu, kirim bukti singkat'**
+  String get kreatorClaimActionHint;
+
+  /// No description provided for @kreatorClaimTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim profil kreator'**
+  String get kreatorClaimTitle;
+
+  /// No description provided for @kreatorClaimSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tim akan meninjau dulu. Bukti tidak ditampilkan ke publik.'**
+  String get kreatorClaimSubtitle;
+
+  /// No description provided for @kreatorClaimProof.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan bukti'**
+  String get kreatorClaimProof;
+
+  /// No description provided for @kreatorClaimProofHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal akun resmi, tautan, atau penjelasan singkat'**
+  String get kreatorClaimProofHint;
+
+  /// No description provided for @kreatorClaimProofShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan bukti minimal 8 karakter'**
+  String get kreatorClaimProofShort;
+
+  /// No description provided for @kreatorClaimSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim klaim'**
+  String get kreatorClaimSubmit;
+
+  /// No description provided for @kreatorClaimSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Klaim kamu sudah dikirim'**
+  String get kreatorClaimSuccess;
+
   /// No description provided for @karyaFormKind.
   ///
   /// In id, this message translates to:

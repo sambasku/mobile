@@ -4,6 +4,7 @@ class KaryaCredit {
     required this.nameText,
     this.id,
     this.kreatorId,
+    this.kreatorSlug,
     this.sortOrder = 0,
   });
 
@@ -11,7 +12,55 @@ class KaryaCredit {
   final String role;
   final String nameText;
   final String? kreatorId;
+  final String? kreatorSlug;
   final int sortOrder;
+}
+
+class KreatorLink {
+  const KreatorLink({required this.label, required this.url});
+
+  final String label;
+  final String url;
+}
+
+class KreatorProfile {
+  const KreatorProfile({
+    required this.id,
+    required this.slug,
+    required this.displayName,
+    required this.kind,
+    required this.karyas,
+    this.bio,
+    this.originRegion,
+    this.links = const [],
+  });
+
+  final String id;
+  final String slug;
+  final String displayName;
+  final String kind;
+  final String? bio;
+  final String? originRegion;
+  final List<KreatorLink> links;
+  final List<KreatorKaryaSummary> karyas;
+}
+
+class KreatorKaryaSummary {
+  const KreatorKaryaSummary({
+    required this.id,
+    required this.slug,
+    required this.title,
+    required this.kind,
+    required this.year,
+    required this.role,
+  });
+
+  final String id;
+  final String slug;
+  final String title;
+  final String kind;
+  final int year;
+  final String role;
 }
 
 class KaryaAccessLink {

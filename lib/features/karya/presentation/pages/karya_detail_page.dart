@@ -144,6 +144,18 @@ class _KaryaDetailBody extends ConsumerWidget {
                 FTile(
                   title: Text(credit.nameText),
                   subtitle: Text(_creditRoleLabel(l10n, item.kind, credit.role)),
+                  suffix: (credit.kreatorSlug ?? '').isEmpty
+                      ? null
+                      : Icon(
+                          FLucideIcons.chevronRight,
+                          size: 16,
+                          color: theme.colors.mutedForeground,
+                        ),
+                  onPress: (credit.kreatorSlug ?? '').isEmpty
+                      ? null
+                      : () => context.push(
+                            KaryaRouter.kreatorPath(credit.kreatorSlug!),
+                          ),
                 ),
             ],
           ),

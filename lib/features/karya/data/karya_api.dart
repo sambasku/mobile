@@ -138,10 +138,72 @@ class KaryaApi {
               role: '${row['role'] ?? ''}',
               nameText: '${row['name_text'] ?? ''}',
               kreatorId: row['kreator_id'] as String?,
+              kreatorSlug: row['kreator_slug'] as String?,
               sortOrder: (row['sort_order'] as num?)?.toInt() ?? 0,
             ))
         .where((c) => c.role.isNotEmpty && c.nameText.isNotEmpty)
         .toList();
+  }
+
+  Future<KreatorProfile?> kreatorBySlug(String slug) async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/kreators/${Uri.encodeComponent(slug)}',
+      );
+      final data = _map(res.data);
+      final kreator = data['kreator'];
+      if (kreator is! Map) return null;
+      final karyasRaw = data['karyas'];
+      final karyas = karyasRaw is List
+          ? karyasRaw
+              .whereType<Map>()
+              .map(
+                (row) => KreatorKaryaSummary(
+                  id: '${row['id']}',
+                  slug: '${row['slug']}',
+                  title: '${row['title']}',
+                  kind: '${row['kind']}',
+                  year: (row['year'] as num?)?.toInt() ?? 0,
+                  role: '${row['role'] ?? ''}',
+                ),
+              )
+              .where((k) => k.slug.isNotEmpty && k.title.isNotEmpty)
+              .toList()
+          : const <KreatorKaryaSummary>[];
+      final linksRaw = kreator['links'];
+      final links = linksRaw is List
+          ? linksRaw
+              .whereType<Map>()
+              .map(
+                (row) => KreatorLink(
+                  label: '${row['label'] ?? ''}',
+                  url: '${row['url'] ?? ''}',
+                ),
+              )
+              .where((l) => l.url.isNotEmpty)
+              .toList()
+          : const <KreatorLink>[];
+      return KreatorProfile(
+        id: '${kreator['id']}',
+        slug: '${kreator['slug']}',
+        displayName: '${kreator['display_name']}',
+        kind: '${kreator['kind'] ?? 'person'}',
+        bio: kreator['bio'] as String?,
+        originRegion: kreator['origin_region'] as String?,
+        links: links,
+        karyas: karyas,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
+      rethrow;
+    }
+  }
+
+  Future<void> claimKreator(String slug, {required String proofNote}) async {
+    await _dio.post<dynamic>(
+      '/api/v1/kreators/${Uri.encodeComponent(slug)}/claim',
+      data: {'proof_note': proofNote},
+    );
   }
 
   List<KaryaExcerpt> _excerpts(Object? raw) {
@@ -167,8 +229,23 @@ String karyaErrorMessage(Object error) {
   if (error is KaryaException) return error.message;
   if (error is DioException) {
     final data = error.response?.data;
-    if (data is Map && data['message'] is String) {
-      return data['message'] as String;
+    if (data is Map) {
+      final errors = data['errors'];
+      if (errors is List && errors.isNotEmpty) {
+        final parts = <String>[];
+        for (final row in errors) {
+          if (row is! Map) continue;
+          final message = row['message'];
+          if (message is String && message.trim().isNotEmpty) {
+            parts.add(message.trim());
+          }
+        }
+        if (parts.isNotEmpty) return parts.join('\n');
+      }
+      final message = data['message'];
+      if (message is String && message.trim().isNotEmpty) {
+        return message.trim();
+      }
     }
   }
   return '';

@@ -5,6 +5,7 @@ import 'presentation/pages/karya_contribute_page.dart';
 import 'presentation/pages/karya_detail_page.dart';
 import 'presentation/pages/karya_excerpt_page.dart';
 import 'presentation/pages/karya_proposals_page.dart';
+import 'presentation/pages/kreator_profile_page.dart';
 
 class KaryaRouter {
   KaryaRouter._();
@@ -29,13 +30,28 @@ class KaryaRouter {
     name: 'KaryaRouter.detail',
   );
 
+  static const kreator = RouteDefiner(
+    path: '/kreator/:slug',
+    name: 'KaryaRouter.kreator',
+  );
+
   static String detailPath(String slug) =>
       detail.path.replaceFirst(':slug', Uri.encodeComponent(slug));
 
-  static String contributePath({String? karyaId, String? slug}) {
+  static String kreatorPath(String slug) =>
+      kreator.path.replaceFirst(':slug', Uri.encodeComponent(slug));
+
+  static String contributePath({
+    String? karyaId,
+    String? slug,
+    String? creditName,
+    String? kind,
+  }) {
     final q = <String, String>{
       if (karyaId != null && karyaId.isNotEmpty) 'id': karyaId,
       if (slug != null && slug.isNotEmpty) 'slug': slug,
+      if (creditName != null && creditName.isNotEmpty) 'credit': creditName,
+      if (kind != null && kind.isNotEmpty) 'kind': kind,
     };
     if (q.isEmpty) return contribute.path;
     return '${contribute.path}?${Uri(queryParameters: q).query}';
@@ -61,6 +77,8 @@ class KaryaRouter {
       builder: (context, state) => KaryaContributePage(
         karyaId: state.uri.queryParameters['id'],
         slug: state.uri.queryParameters['slug'],
+        prefillCreditName: state.uri.queryParameters['credit'],
+        prefillKind: state.uri.queryParameters['kind'],
       ),
     ),
     GoRoute(
@@ -82,6 +100,12 @@ class KaryaRouter {
       name: detail.name,
       builder: (context, state) =>
           KaryaDetailPage(slug: state.pathParameters['slug'] ?? ''),
+    ),
+    GoRoute(
+      path: kreator.path,
+      name: kreator.name,
+      builder: (context, state) =>
+          KreatorProfilePage(slug: state.pathParameters['slug'] ?? ''),
     ),
   ];
 }

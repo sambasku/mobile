@@ -56,10 +56,16 @@ class KaryaContributePage extends ConsumerStatefulWidget {
     super.key,
     this.karyaId,
     this.slug,
+    this.prefillCreditName,
+    this.prefillKind,
   });
 
   final String? karyaId;
   final String? slug;
+
+  /// Prefill dari profil kreator (usul karya baru).
+  final String? prefillCreditName;
+  final String? prefillKind;
 
   @override
   ConsumerState<KaryaContributePage> createState() =>
@@ -82,9 +88,14 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
   @override
   void initState() {
     super.initState();
-    _kind = 'music';
+    final prefillKind = widget.prefillKind;
+    _kind = prefillKind == 'film' ? 'film' : 'music';
     final credit = _credits.first;
-    credit.role = 'vocal';
+    credit.role = _kind == 'film' ? 'director' : 'vocal';
+    final prefillName = (widget.prefillCreditName ?? '').trim();
+    if (prefillName.isNotEmpty) {
+      credit.name.text = prefillName;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
@@ -175,6 +186,33 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
 
   void _addAccess() => setState(() => _access.add(_AccessDraft()));
 
+  String? _clientValidate({
+    required AppLocalizations l10n,
+    required String? kind,
+    required String title,
+    required int? year,
+    required List<Map<String, String>> sambasRows,
+    required List<Map<String, String>> creditRows,
+  }) {
+    if (kind == null) return l10n.karyaFormKindRequired;
+    if (title.length < 2) return l10n.karyaFormTitleRequired;
+    if (year == null || year < 1800 || year > 2100) {
+      return l10n.karyaFormYearInvalid;
+    }
+    if (sambasRows.isEmpty) return l10n.karyaFormSambasRequired;
+    if (creditRows.isEmpty) return l10n.karyaFormCreditRequired;
+    final roles = creditRows.map((c) => c['role']).whereType<String>().toSet();
+    if (kind == 'music' && !roles.contains('vocal')) {
+      return l10n.karyaFormCreditVocalRequired;
+    }
+    if (kind == 'film' &&
+        !roles.contains('director') &&
+        !roles.contains('cast')) {
+      return l10n.karyaFormCreditFilmRequired;
+    }
+    return null;
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final kind = _kind;
@@ -205,21 +243,26 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
         if (accessRows.isEmpty) 'is_primary': true,
       });
     }
-    if (kind == null ||
-        title.length < 2 ||
-        year == null ||
-        year < 1800 ||
-        sambasRows.isEmpty ||
-        creditRows.isEmpty) {
-      await showAppErrorSheet(context, message: l10n.karyaFormInvalid);
+    final clientError = _clientValidate(
+      l10n: l10n,
+      kind: kind,
+      title: title,
+      year: year,
+      sambasRows: sambasRows,
+      creditRows: creditRows,
+    );
+    if (clientError != null) {
+      await showAppErrorSheet(context, message: clientError);
       return;
     }
+    final safeKind = kind!;
+    final safeYear = year!;
     setState(() => _busy = true);
     try {
       final payload = karyaPayloadWire(
         title: title,
-        year: year,
-        kind: kind,
+        year: safeYear,
+        kind: safeKind,
         sambasConnections: sambasRows,
         credits: creditRows,
         accessLinks: accessRows,
@@ -454,6 +497,15 @@ class _KaryaContributePageState extends ConsumerState<KaryaContributePage> {
             l10n.karyaCredits,
             style: context.theme.typography.body.md.copyWith(
               fontWeight: FontWeight.w700,
+            ),
+          ),
+          const Gap(4),
+          Text(
+            _kind == 'film'
+                ? l10n.karyaFormCreditHintFilm
+                : l10n.karyaFormCreditHintMusic,
+            style: context.theme.typography.body.sm.copyWith(
+              color: context.theme.colors.mutedForeground,
             ),
           ),
           const Gap(8),
