@@ -130,6 +130,11 @@ class AppLocalizationsId extends AppLocalizations {
       'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
 
   @override
+  String balehoPricingUnitLine(String amount) {
+    return 'Tarif: 1x1 / hari = Rp $amount';
+  }
+
+  @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
 
   @override
@@ -711,7 +716,58 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {
@@ -11869,6 +11925,11 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
       'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.';
 
   @override
+  String balehoPricingUnitLine(String amount) {
+    return 'Tarif: 1x1 / hari = Rp $amount';
+  }
+
+  @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
 
   @override
@@ -12450,7 +12511,58 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get errorSheetRetry => 'Coba lagi';
 
   @override
-  String get offlineBanner => 'Kamu lagi offline. Nampilin data tersimpan.';
+  String get offlineBanner =>
+      'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.';
+
+  @override
+  String get lemmaLocalModeChip => 'Mode offline';
+
+  @override
+  String get lemmaDatasetGroup => 'Kamus lokal';
+
+  @override
+  String lemmaDatasetVersion(int version) {
+    return 'Versi kamus lokal v$version';
+  }
+
+  @override
+  String get lemmaDatasetVersionUnknown => 'Versi kamus lokal belum terpasang';
+
+  @override
+  String get lemmaDatasetUpdate => 'Perbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdating => 'Memperbarui…';
+
+  @override
+  String get lemmaDatasetUpdated => 'Kamus lokal diperbarui';
+
+  @override
+  String get lemmaDatasetAlreadyLatest => 'Kamus lokal sudah versi terbaru';
+
+  @override
+  String get lemmaDatasetNeedInternet =>
+      'Butuh internet untuk memperbarui kamus';
+
+  @override
+  String get lemmaDatasetUpdateFailed =>
+      'Gagal memperbarui kamus. Coba lagi nanti.';
+
+  @override
+  String get lemmaDatasetHashFailed =>
+      'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.';
+
+  @override
+  String get lemmaDatasetAppUpdateRequired =>
+      'Perbarui aplikasi dulu supaya bisa pakai kamus ini';
+
+  @override
+  String get lemmaDatasetIncompatible =>
+      'Skema kamus tidak didukung aplikasi ini';
+
+  @override
+  String get lemmaSocialNeedsInternet =>
+      'Komentar tidak tersedia di mode offline';
 
   @override
   String routerNotFound(String error) {

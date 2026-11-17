@@ -139,6 +139,23 @@ class BalehoApi {
     return BalehoBoard.fromJson(data);
   }
 
+  /// Tarif IDR per sel 1x1 per hari. Default 3000 bila API gagal.
+  Future<int> fetchPricePerCellPerDay() async {
+    try {
+      final res = await _dio.get<dynamic>(
+        '/api/v1/baleho/pricing',
+        options: Options(receiveTimeout: const Duration(seconds: 8)),
+      );
+      final data = _dataMap(res.data);
+      final n = data['price_per_cell_per_day'];
+      if (n is int && n >= 0) return n;
+      if (n is num && n >= 0) return n.toInt();
+      return 3000;
+    } catch (_) {
+      return 3000;
+    }
+  }
+
   Future<BalehoCreateResult> createPlacement({
     required int col,
     required int row,

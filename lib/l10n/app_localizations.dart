@@ -325,6 +325,12 @@ abstract class AppLocalizations {
   /// **'Jadikan SambasKu ruang untuk memperkenalkan usaha, produk, acara, dan informasi kamu kepada masyarakat.'**
   String get balehoSlidePromoBody;
 
+  /// Baris tarif di bottom sheet promo Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Tarif: 1x1 / hari = Rp {amount}'**
+  String balehoPricingUnitLine(String amount);
+
   /// Label aksesibilitas tombol info caption promo Baleho
   ///
   /// In id, this message translates to:
@@ -1406,8 +1412,92 @@ abstract class AppLocalizations {
   /// No description provided for @offlineBanner.
   ///
   /// In id, this message translates to:
-  /// **'Kamu lagi offline. Nampilin data tersimpan.'**
+  /// **'Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.'**
   String get offlineBanner;
+
+  /// Chip saat korpus lemma dari SQLite / offline
+  ///
+  /// In id, this message translates to:
+  /// **'Mode offline'**
+  String get lemmaLocalModeChip;
+
+  /// Label grup Settings untuk dataset lemma offline
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal'**
+  String get lemmaDatasetGroup;
+
+  /// Subtitle tile OTA; {version} = release_version integer
+  ///
+  /// In id, this message translates to:
+  /// **'Versi kamus lokal v{version}'**
+  String lemmaDatasetVersion(int version);
+
+  /// No description provided for @lemmaDatasetVersionUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi kamus lokal belum terpasang'**
+  String get lemmaDatasetVersionUnknown;
+
+  /// Tombol manual OTA dataset lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui kamus'**
+  String get lemmaDatasetUpdate;
+
+  /// No description provided for @lemmaDatasetUpdating.
+  ///
+  /// In id, this message translates to:
+  /// **'Memperbarui…'**
+  String get lemmaDatasetUpdating;
+
+  /// No description provided for @lemmaDatasetUpdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal diperbarui'**
+  String get lemmaDatasetUpdated;
+
+  /// No description provided for @lemmaDatasetAlreadyLatest.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus lokal sudah versi terbaru'**
+  String get lemmaDatasetAlreadyLatest;
+
+  /// No description provided for @lemmaDatasetNeedInternet.
+  ///
+  /// In id, this message translates to:
+  /// **'Butuh internet untuk memperbarui kamus'**
+  String get lemmaDatasetNeedInternet;
+
+  /// No description provided for @lemmaDatasetUpdateFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memperbarui kamus. Coba lagi nanti.'**
+  String get lemmaDatasetUpdateFailed;
+
+  /// No description provided for @lemmaDatasetHashFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'File kamus rusak atau tidak cocok. Versi lama tetap dipakai.'**
+  String get lemmaDatasetHashFailed;
+
+  /// No description provided for @lemmaDatasetAppUpdateRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui aplikasi dulu supaya bisa pakai kamus ini'**
+  String get lemmaDatasetAppUpdateRequired;
+
+  /// No description provided for @lemmaDatasetIncompatible.
+  ///
+  /// In id, this message translates to:
+  /// **'Skema kamus tidak didukung aplikasi ini'**
+  String get lemmaDatasetIncompatible;
+
+  /// Hint di container komentar saat mode offline / sumber lokal
+  ///
+  /// In id, this message translates to:
+  /// **'Komentar tidak tersedia di mode offline'**
+  String get lemmaSocialNeedsInternet;
 
   /// Halaman error router; {error} = path/uri yang gagal
   ///

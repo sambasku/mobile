@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/models/external_link.dart';
@@ -172,6 +173,7 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
   }
 
   Future<void> _showPromoInfoSheet() async {
+    final priceAsync = ref.read(balehoPricePerCellPerDayProvider.future);
     final startPick = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -180,6 +182,7 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
         final theme = sheetContext.theme;
         final sheetL10n = AppLocalizations.of(sheetContext);
         final maxBodyH = MediaQuery.sizeOf(sheetContext).height * 0.45;
+        final amountFmt = NumberFormat.decimalPattern('id');
         return Padding(
           padding: MediaQuery.viewInsetsOf(sheetContext),
           child: SafeArea(
@@ -212,6 +215,24 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                         ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  FutureBuilder<int>(
+                    future: priceAsync,
+                    initialData: 3000,
+                    builder: (context, snap) {
+                      final price = snap.data ?? 3000;
+                      return Text(
+                        sheetL10n.balehoPricingUnitLine(
+                          amountFmt.format(price),
+                        ),
+                        softWrap: true,
+                        style: theme.typography.body.sm.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colors.foreground,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   FButton(

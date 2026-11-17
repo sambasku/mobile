@@ -91,3 +91,9 @@ final balehoBoardProvider =
     return BalehoBoard.empty(slide);
   }
 });
+
+/// Tarif IDR per sel 1x1 per hari (app_settings, default 3000).
+final balehoPricePerCellPerDayProvider =
+    FutureProvider.autoDispose<int>((ref) async {
+  return ref.watch(balehoApiProvider).fetchPricePerCellPerDay();
+});

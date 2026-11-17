@@ -89,6 +89,13 @@
   "@balehoSlidePromoBody": {
     "description": "Isi bottom sheet info ajakan promo Baleho"
   },
+  "balehoPricingUnitLine": "Tarif: 1x1 / hari = Rp {amount}",
+  "@balehoPricingUnitLine": {
+    "description": "Baris tarif di bottom sheet promo Baleho",
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
   "balehoSlidePromoInfoSemantics": "Info ingin tampil di sini",
   "@balehoSlidePromoInfoSemantics": {
     "description": "Label aksesibilitas tombol info caption promo Baleho"
@@ -490,7 +497,39 @@
   "errorSheetOk": "Mengerti",
   "errorSheetClose": "Tutup",
   "errorSheetRetry": "Coba lagi",
-  "offlineBanner": "Kamu lagi offline. Nampilin data tersimpan.",
+  "offlineBanner": "Kamu lagi offline. Kamus tetap bisa dipakai dari data lokal.",
+  "lemmaLocalModeChip": "Mode offline",
+  "@lemmaLocalModeChip": {
+    "description": "Chip saat korpus lemma dari SQLite / offline"
+  },
+  "lemmaDatasetGroup": "Kamus lokal",
+  "@lemmaDatasetGroup": {
+    "description": "Label grup Settings untuk dataset lemma offline"
+  },
+  "lemmaDatasetVersion": "Versi kamus lokal v{version}",
+  "@lemmaDatasetVersion": {
+    "description": "Subtitle tile OTA; {version} = release_version integer",
+    "placeholders": {
+      "version": {"type": "int"}
+    }
+  },
+  "lemmaDatasetVersionUnknown": "Versi kamus lokal belum terpasang",
+  "lemmaDatasetUpdate": "Perbarui kamus",
+  "@lemmaDatasetUpdate": {
+    "description": "Tombol manual OTA dataset lemma"
+  },
+  "lemmaDatasetUpdating": "Memperbarui…",
+  "lemmaDatasetUpdated": "Kamus lokal diperbarui",
+  "lemmaDatasetAlreadyLatest": "Kamus lokal sudah versi terbaru",
+  "lemmaDatasetNeedInternet": "Butuh internet untuk memperbarui kamus",
+  "lemmaDatasetUpdateFailed": "Gagal memperbarui kamus. Coba lagi nanti.",
+  "lemmaDatasetHashFailed": "File kamus rusak atau tidak cocok. Versi lama tetap dipakai.",
+  "lemmaDatasetAppUpdateRequired": "Perbarui aplikasi dulu supaya bisa pakai kamus ini",
+  "lemmaDatasetIncompatible": "Skema kamus tidak didukung aplikasi ini",
+  "lemmaSocialNeedsInternet": "Komentar tidak tersedia di mode offline",
+  "@lemmaSocialNeedsInternet": {
+    "description": "Hint di container komentar saat mode offline / sumber lokal"
+  },
   "routerNotFound": "Halaman tidak ditemukan: {error}",
   "@routerNotFound": {
     "description": "Halaman error router; {error} = path/uri yang gagal",
