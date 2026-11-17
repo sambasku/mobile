@@ -73,9 +73,10 @@ dependencies:
   flutter_markdown_plus: ^1.0.12
   markdown: ^7.3.1
   app_links: ^7.2.2
-  crypto: ^3.0.7
+  crypto: ^3.0.8
   firebase_crashlytics: ^6.0.1
   flutter_native_splash: ^2.4.8
+  sqflite: ^2.4.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -89,6 +90,7 @@ dev_dependencies:
   envied_generator: ^1.3.5
   flutter_flavorizr: ^2.5.0
   flutter_launcher_icons: ^0.14.4
+  sqflite_common_ffi: ^2.4.5
 
 # riverpod: fork lokal (3.4.3) menambal resume TickerMode yang invalidate
 # saudara di graph saat flush - upstream 3.4.3 belum cover kasus diamond.

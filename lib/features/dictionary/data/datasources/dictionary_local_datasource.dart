@@ -387,6 +387,7 @@ class DictionaryLocalDatasource {
     return [
       for (final r in rows)
         WordPronunciation(
+          id: r['id']!.toString(),
           notation: r['notation']?.toString() ?? 'ipa',
           value: r['value']!.toString(),
         ),
