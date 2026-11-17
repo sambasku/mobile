@@ -196,27 +196,47 @@ class _KaryaDetailBody extends ConsumerWidget {
               ),
             ],
           ),
-          if (item.excerpts.isNotEmpty) ...[
-            const Gap(18),
+          const Gap(18),
+          Text(
+            l10n.karyaExcerptSection,
+            style:
+                theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const Gap(8),
+          if (item.excerpts.isEmpty)
             Text(
-              l10n.karyaExcerptSection,
-              style:
-                  theme.typography.body.md.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const Gap(8),
+              l10n.karyaExcerptEmpty,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.mutedForeground,
+              ),
+            )
+          else
             FTileGroup(
               children: [
                 for (final excerpt in item.excerpts)
                   FTile(
                     title: Text(excerpt.text, maxLines: 4),
-                    subtitle: Text(excerpt.kind),
+                    subtitle: Text(_excerptKindLabel(l10n, excerpt.kind)),
                   ),
               ],
             ),
-          ],
-          const Gap(12),
+          const Gap(8),
           FTileGroup(
             children: [
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.quote,
+                  size: 18,
+                  color: theme.colors.primary,
+                ),
+                title: Text(l10n.karyaProposeExcerpt),
+                suffix: Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
+                onPress: () => _openExcerpt(context, ref),
+              ),
               FTile(
                 prefix: Icon(
                   FLucideIcons.pencil,
@@ -251,6 +271,30 @@ class _KaryaDetailBody extends ConsumerWidget {
       ),
     );
   }
+
+  void _openExcerpt(BuildContext context, WidgetRef ref) {
+    final authed = ref.read(authStatusProvider).value?.isAuth ?? false;
+    if (!authed) {
+      context.push('/login');
+      return;
+    }
+    context.push(
+      KaryaRouter.excerptPath(
+        karyaId: item.id,
+        slug: item.slug,
+        karyaKind: item.kind,
+      ),
+    );
+  }
+
+  String _excerptKindLabel(AppLocalizations l10n, String kind) =>
+      switch (kind) {
+        'lyrics' => l10n.karyaExcerptKindLyrics,
+        'dialogue' => l10n.karyaExcerptKindDialogue,
+        'book_quote' => l10n.karyaExcerptKindBookQuote,
+        'other' => l10n.karyaExcerptKindOther,
+        _ => kind,
+      };
 
   String _sambasTypeLabel(AppLocalizations l10n, String type) =>
       switch (type) {

@@ -6521,6 +6521,100 @@ class AppLocalizationsId extends AppLocalizations {
   String get karyaExcerptSection => 'Cuplikan';
 
   @override
+  String get karyaExcerptEmpty => 'Belum ada cuplikan yang tayang';
+
+  @override
+  String get karyaExcerptEndLabel => 'Label akhir (opsional)';
+
+  @override
+  String get karyaExcerptEndLabelHint => 'Misal bait 2 atau menit 01:35';
+
+  @override
+  String get karyaExcerptFairQuoteTooLong =>
+      'Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.';
+
+  @override
+  String get karyaExcerptFullRequiresA2 =>
+      'Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik';
+
+  @override
+  String get karyaExcerptHint =>
+      'Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.';
+
+  @override
+  String get karyaExcerptKind => 'Jenis cuplikan';
+
+  @override
+  String get karyaExcerptKindBookQuote => 'Kutipan buku';
+
+  @override
+  String get karyaExcerptKindDialogue => 'Dialog';
+
+  @override
+  String get karyaExcerptKindLyrics => 'Lirik';
+
+  @override
+  String get karyaExcerptKindOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptRights => 'Status hak';
+
+  @override
+  String get karyaExcerptRightsFairQuote => 'Cuplikan wajar';
+
+  @override
+  String get karyaExcerptRightsLicensed => 'Berlisensi';
+
+  @override
+  String get karyaExcerptRightsNote => 'Catatan hak';
+
+  @override
+  String get karyaExcerptRightsNoteHint =>
+      'Jelaskan izin atau sumber lisensinya';
+
+  @override
+  String get karyaExcerptRightsNoteRequired =>
+      'Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik';
+
+  @override
+  String get karyaExcerptRightsPermission => 'Ada izin';
+
+  @override
+  String get karyaExcerptRightsPublicDomain => 'Domain publik';
+
+  @override
+  String get karyaExcerptRightsUnknown => 'Pilih status hak yang jelas dulu';
+
+  @override
+  String get karyaExcerptSourceUrl => 'URL sumber (opsional)';
+
+  @override
+  String get karyaExcerptSourceUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaExcerptSourceUrlInvalid =>
+      'URL sumber tidak valid. Pakai https yang lengkap ya.';
+
+  @override
+  String get karyaExcerptStartLabel => 'Label awal (opsional)';
+
+  @override
+  String get karyaExcerptStartLabelHint => 'Misal bait 1 atau menit 01:20';
+
+  @override
+  String get karyaExcerptText => 'Teks cuplikan';
+
+  @override
+  String get karyaExcerptTextHint =>
+      'Tempel lirik atau dialog yang mau diusulkan';
+
+  @override
+  String get karyaExcerptTextRequired => 'Teks cuplikan wajib diisi';
+
+  @override
+  String get karyaProposeExcerpt => 'Usulkan cuplikan';
+
+  @override
   String get karyaFormInvalid =>
       'Judul, tahun, minimal satu kaitan Sambas, dan satu kredit wajib diisi';
 
@@ -17654,6 +17748,100 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get karyaExcerptSection => 'Cuplikan';
+
+  @override
+  String get karyaExcerptEmpty => 'Belum ada cuplikan yang tayang';
+
+  @override
+  String get karyaExcerptEndLabel => 'Label akhir (opsional)';
+
+  @override
+  String get karyaExcerptEndLabelHint => 'Misal bait 2 atau menit 01:35';
+
+  @override
+  String get karyaExcerptFairQuoteTooLong =>
+      'Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.';
+
+  @override
+  String get karyaExcerptFullRequiresA2 =>
+      'Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik';
+
+  @override
+  String get karyaExcerptHint =>
+      'Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.';
+
+  @override
+  String get karyaExcerptKind => 'Jenis cuplikan';
+
+  @override
+  String get karyaExcerptKindBookQuote => 'Kutipan buku';
+
+  @override
+  String get karyaExcerptKindDialogue => 'Dialog';
+
+  @override
+  String get karyaExcerptKindLyrics => 'Lirik';
+
+  @override
+  String get karyaExcerptKindOther => 'Lainnya';
+
+  @override
+  String get karyaExcerptRights => 'Status hak';
+
+  @override
+  String get karyaExcerptRightsFairQuote => 'Cuplikan wajar';
+
+  @override
+  String get karyaExcerptRightsLicensed => 'Berlisensi';
+
+  @override
+  String get karyaExcerptRightsNote => 'Catatan hak';
+
+  @override
+  String get karyaExcerptRightsNoteHint =>
+      'Jelaskan izin atau sumber lisensinya';
+
+  @override
+  String get karyaExcerptRightsNoteRequired =>
+      'Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik';
+
+  @override
+  String get karyaExcerptRightsPermission => 'Ada izin';
+
+  @override
+  String get karyaExcerptRightsPublicDomain => 'Domain publik';
+
+  @override
+  String get karyaExcerptRightsUnknown => 'Pilih status hak yang jelas dulu';
+
+  @override
+  String get karyaExcerptSourceUrl => 'URL sumber (opsional)';
+
+  @override
+  String get karyaExcerptSourceUrlHint => 'Tautan sumber asli (https)';
+
+  @override
+  String get karyaExcerptSourceUrlInvalid =>
+      'URL sumber tidak valid. Pakai https yang lengkap ya.';
+
+  @override
+  String get karyaExcerptStartLabel => 'Label awal (opsional)';
+
+  @override
+  String get karyaExcerptStartLabelHint => 'Misal bait 1 atau menit 01:20';
+
+  @override
+  String get karyaExcerptText => 'Teks cuplikan';
+
+  @override
+  String get karyaExcerptTextHint =>
+      'Tempel lirik atau dialog yang mau diusulkan';
+
+  @override
+  String get karyaExcerptTextRequired => 'Teks cuplikan wajib diisi';
+
+  @override
+  String get karyaProposeExcerpt => 'Usulkan cuplikan';
 
   @override
   String get karyaFormInvalid =>

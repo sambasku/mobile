@@ -11723,6 +11723,180 @@ abstract class AppLocalizations {
   /// **'Cuplikan'**
   String get karyaExcerptSection;
 
+  /// Empty state blok cuplikan di detail karya
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada cuplikan yang tayang'**
+  String get karyaExcerptEmpty;
+
+  /// No description provided for @karyaExcerptEndLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Label akhir (opsional)'**
+  String get karyaExcerptEndLabel;
+
+  /// No description provided for @karyaExcerptEndLabelHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal bait 2 atau menit 01:35'**
+  String get karyaExcerptEndLabelHint;
+
+  /// No description provided for @karyaExcerptFairQuoteTooLong.
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan wajar maksimal 4 baris atau 500 karakter. Kurangi teks atau pilih status hak yang cocok.'**
+  String get karyaExcerptFairQuoteTooLong;
+
+  /// No description provided for @karyaExcerptFullRequiresA2.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks sepanjang ini hanya boleh dengan status ada izin, berlisensi, atau domain publik'**
+  String get karyaExcerptFullRequiresA2;
+
+  /// Petunjuk batas fair quote vs A2 di form cuplikan
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan fair quote maksimal 4 baris atau 500 karakter. Teks lebih panjang hanya kalau haknya jelas (izin, lisensi, atau domain publik) plus catatan hak.'**
+  String get karyaExcerptHint;
+
+  /// No description provided for @karyaExcerptKind.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis cuplikan'**
+  String get karyaExcerptKind;
+
+  /// No description provided for @karyaExcerptKindBookQuote.
+  ///
+  /// In id, this message translates to:
+  /// **'Kutipan buku'**
+  String get karyaExcerptKindBookQuote;
+
+  /// No description provided for @karyaExcerptKindDialogue.
+  ///
+  /// In id, this message translates to:
+  /// **'Dialog'**
+  String get karyaExcerptKindDialogue;
+
+  /// No description provided for @karyaExcerptKindLyrics.
+  ///
+  /// In id, this message translates to:
+  /// **'Lirik'**
+  String get karyaExcerptKindLyrics;
+
+  /// No description provided for @karyaExcerptKindOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get karyaExcerptKindOther;
+
+  /// No description provided for @karyaExcerptRights.
+  ///
+  /// In id, this message translates to:
+  /// **'Status hak'**
+  String get karyaExcerptRights;
+
+  /// No description provided for @karyaExcerptRightsFairQuote.
+  ///
+  /// In id, this message translates to:
+  /// **'Cuplikan wajar'**
+  String get karyaExcerptRightsFairQuote;
+
+  /// No description provided for @karyaExcerptRightsLicensed.
+  ///
+  /// In id, this message translates to:
+  /// **'Berlisensi'**
+  String get karyaExcerptRightsLicensed;
+
+  /// No description provided for @karyaExcerptRightsNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan hak'**
+  String get karyaExcerptRightsNote;
+
+  /// No description provided for @karyaExcerptRightsNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelaskan izin atau sumber lisensinya'**
+  String get karyaExcerptRightsNoteHint;
+
+  /// No description provided for @karyaExcerptRightsNoteRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan hak wajib diisi untuk teks berizin/lisensi/domain publik'**
+  String get karyaExcerptRightsNoteRequired;
+
+  /// No description provided for @karyaExcerptRightsPermission.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada izin'**
+  String get karyaExcerptRightsPermission;
+
+  /// No description provided for @karyaExcerptRightsPublicDomain.
+  ///
+  /// In id, this message translates to:
+  /// **'Domain publik'**
+  String get karyaExcerptRightsPublicDomain;
+
+  /// No description provided for @karyaExcerptRightsUnknown.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih status hak yang jelas dulu'**
+  String get karyaExcerptRightsUnknown;
+
+  /// No description provided for @karyaExcerptSourceUrl.
+  ///
+  /// In id, this message translates to:
+  /// **'URL sumber (opsional)'**
+  String get karyaExcerptSourceUrl;
+
+  /// No description provided for @karyaExcerptSourceUrlHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan sumber asli (https)'**
+  String get karyaExcerptSourceUrlHint;
+
+  /// No description provided for @karyaExcerptSourceUrlInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'URL sumber tidak valid. Pakai https yang lengkap ya.'**
+  String get karyaExcerptSourceUrlInvalid;
+
+  /// No description provided for @karyaExcerptStartLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Label awal (opsional)'**
+  String get karyaExcerptStartLabel;
+
+  /// No description provided for @karyaExcerptStartLabelHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Misal bait 1 atau menit 01:20'**
+  String get karyaExcerptStartLabelHint;
+
+  /// No description provided for @karyaExcerptText.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks cuplikan'**
+  String get karyaExcerptText;
+
+  /// No description provided for @karyaExcerptTextHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel lirik atau dialog yang mau diusulkan'**
+  String get karyaExcerptTextHint;
+
+  /// No description provided for @karyaExcerptTextRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Teks cuplikan wajib diisi'**
+  String get karyaExcerptTextRequired;
+
+  /// CTA usul lirik/dialog dari detail karya
+  ///
+  /// In id, this message translates to:
+  /// **'Usulkan cuplikan'**
+  String get karyaProposeExcerpt;
+
   /// No description provided for @karyaFormInvalid.
   ///
   /// In id, this message translates to:

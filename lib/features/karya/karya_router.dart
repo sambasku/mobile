@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/route_definer.dart';
 import 'presentation/pages/karya_contribute_page.dart';
 import 'presentation/pages/karya_detail_page.dart';
+import 'presentation/pages/karya_excerpt_page.dart';
 import 'presentation/pages/karya_proposals_page.dart';
 
 class KaryaRouter {
@@ -11,6 +12,11 @@ class KaryaRouter {
   static const contribute = RouteDefiner(
     path: '/karya/kontribusi',
     name: 'KaryaRouter.contribute',
+  );
+
+  static const excerpt = RouteDefiner(
+    path: '/karya/cuplikan',
+    name: 'KaryaRouter.excerpt',
   );
 
   static const proposals = RouteDefiner(
@@ -35,6 +41,19 @@ class KaryaRouter {
     return '${contribute.path}?${Uri(queryParameters: q).query}';
   }
 
+  static String excerptPath({
+    required String karyaId,
+    String? slug,
+    String? karyaKind,
+  }) {
+    final q = <String, String>{
+      'id': karyaId,
+      if (slug != null && slug.isNotEmpty) 'slug': slug,
+      if (karyaKind != null && karyaKind.isNotEmpty) 'kind': karyaKind,
+    };
+    return '${excerpt.path}?${Uri(queryParameters: q).query}';
+  }
+
   static final List<GoRoute> routes = [
     GoRoute(
       path: contribute.path,
@@ -42,6 +61,15 @@ class KaryaRouter {
       builder: (context, state) => KaryaContributePage(
         karyaId: state.uri.queryParameters['id'],
         slug: state.uri.queryParameters['slug'],
+      ),
+    ),
+    GoRoute(
+      path: excerpt.path,
+      name: excerpt.name,
+      builder: (context, state) => KaryaExcerptPage(
+        karyaId: state.uri.queryParameters['id'] ?? '',
+        slug: state.uri.queryParameters['slug'],
+        karyaKind: state.uri.queryParameters['kind'],
       ),
     ),
     GoRoute(
