@@ -313,6 +313,12 @@ abstract class AppLocalizations {
   /// **'Di aplikasi'**
   String get balehoInternalSlide;
 
+  /// Catatan kecil di bawah dot indicator Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Area Media Promosi · Ruang publikasi dan promosi SambasKu.'**
+  String get balehoFooterPromoNote;
+
   /// Judul ajakan di atas grid slide promo Baleho
   ///
   /// In id, this message translates to:
@@ -331,7 +337,7 @@ abstract class AppLocalizations {
   /// **'Tarif: 1x1 / hari / slide = Rp {amount}'**
   String balehoPricingUnitLine(String amount);
 
-  /// Estimasi biaya pesan Baleho di form book
+  /// Estimasi satu baris (legacy); UI book pakai rincian
   ///
   /// In id, this message translates to:
   /// **'Estimasi: Rp {amount} ({cells} sel x {days} hari x {slides} slide)'**
@@ -342,6 +348,90 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Menghitung estimasi…'**
   String get balehoQuoteEstimateLoading;
+
+  /// Judul blok rincian estimasi di form pesan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi biaya'**
+  String get balehoQuoteSectionTitle;
+
+  /// No description provided for @balehoQuoteUnitLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tarif dasar'**
+  String get balehoQuoteUnitLabel;
+
+  /// Nilai tarif dasar Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Rp {amount} / sel / hari / slide'**
+  String balehoQuoteUnitValue(String amount);
+
+  /// No description provided for @balehoQuoteSizeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ukuran'**
+  String get balehoQuoteSizeLabel;
+
+  /// Baris ukuran slot di rincian estimasi
+  ///
+  /// In id, this message translates to:
+  /// **'{size} ({cells} sel)'**
+  String balehoQuoteSizeValue(String size, int cells);
+
+  /// No description provided for @balehoQuoteDaysRowLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Durasi'**
+  String get balehoQuoteDaysRowLabel;
+
+  /// Baris durasi di rincian estimasi
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari'**
+  String balehoQuoteDaysRowValue(int days);
+
+  /// No description provided for @balehoQuoteSlidesLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Slide'**
+  String get balehoQuoteSlidesLabel;
+
+  /// Baris jumlah slide di rincian estimasi
+  ///
+  /// In id, this message translates to:
+  /// **'{slides} slide'**
+  String balehoQuoteSlidesValue(int slides);
+
+  /// No description provided for @balehoQuoteTotalLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Total estimasi'**
+  String get balehoQuoteTotalLabel;
+
+  /// Total biaya estimasi Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Rp {amount}'**
+  String balehoQuoteTotalValue(String amount);
+
+  /// Penjelasan singkat rumus quote Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Hitungan: jumlah sel x hari x tarif x slide'**
+  String get balehoQuoteFormulaHint;
+
+  /// Total estimasi di atas tombol kirim form Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Estimasi Rp {amount}'**
+  String balehoQuoteFooterTotal(String amount);
+
+  /// Ringkas faktor hitungan di atas tombol submit Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'{cells} sel x {days} hari x {slides} slide'**
+  String balehoQuoteFooterBreakdown(int cells, int days, int slides);
 
   /// Label aksesibilitas tombol info caption promo Baleho
   ///
@@ -457,10 +547,28 @@ abstract class AppLocalizations {
   /// **'Belum ada peringkat minggu ini.'**
   String get balehoLeaderboardEmpty;
 
+  /// Judul preview juara minggu sebelumnya di tab Minggu ini
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat minggu lalu'**
+  String get balehoLeaderboardLastWeekTitle;
+
+  /// Penjelasan kenapa preview minggu lalu muncul
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.'**
+  String get balehoLeaderboardLastWeekHint;
+
+  /// CTA buka snapshot minggu dari preview
+  ///
+  /// In id, this message translates to:
+  /// **'Buka detail minggu'**
+  String get balehoLeaderboardOpenWeek;
+
   /// Riwayat CDN 404 atau daftar kosong
   ///
   /// In id, this message translates to:
-  /// **'Snapshot minggu ini belum ada.'**
+  /// **'Data peringkat minggu ini belum tersimpan.'**
   String get balehoLeaderboardHistoryEmpty;
 
   /// Error muat papan peringkat
@@ -468,6 +576,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal memuat peringkat.'**
   String get balehoLeaderboardLoadFailed;
+
+  /// Empty state Riwayat sebelum finalize pertama
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.'**
+  String get balehoLeaderboardHistoryNoWeeks;
+
+  /// Label kecil di atas angka skor gabungan
+  ///
+  /// In id, this message translates to:
+  /// **'Skor'**
+  String get balehoLeaderboardScoreLabel;
+
+  /// Judul section juara 1-3 di papan peringkat
+  ///
+  /// In id, this message translates to:
+  /// **'Podium minggu ini'**
+  String get balehoLeaderboardPodiumTitle;
+
+  /// Label peringkat podium (1, 2, atau 3)
+  ///
+  /// In id, this message translates to:
+  /// **'Peringkat {place}'**
+  String balehoLeaderboardPodiumPlace(int place);
+
+  /// Subtitle tile minggu di daftar riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minggu untuk lihat peringkatnya'**
+  String get balehoLeaderboardHistoryWeekHint;
+
+  /// Tombol paginasi daftar minggu riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat minggu sebelumnya'**
+  String get balehoLeaderboardHistoryLoadMore;
 
   /// No description provided for @balehoSlotAvailable.
   ///
@@ -480,6 +624,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Dipesan'**
   String get balehoSlotHeld;
+
+  /// Judul sheet saat ketuk sel Dipesan
+  ///
+  /// In id, this message translates to:
+  /// **'Area sedang dipesan'**
+  String get balehoSlotHeldInfoTitle;
+
+  /// Isi sheet saat ketuk sel Dipesan
+  ///
+  /// In id, this message translates to:
+  /// **'Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.'**
+  String get balehoSlotHeldInfoBody;
+
+  /// Judul sheet saat semua sel slide promo sudah terisi
+  ///
+  /// In id, this message translates to:
+  /// **'Area Baleho penuh'**
+  String get balehoBoardFullTitle;
+
+  /// Isi sheet saat board Baleho penuh
+  ///
+  /// In id, this message translates to:
+  /// **'Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.'**
+  String get balehoBoardFullBody;
 
   /// No description provided for @balehoPendingBadge.
   ///
@@ -694,6 +862,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pilih gambar'**
   String get balehoUploadImage;
+
+  /// Tombol ganti gambar slide Baleho setelah sudah ada preview
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti gambar'**
+  String get balehoReplaceImage;
 
   /// No description provided for @balehoUploading.
   ///
@@ -1007,6 +1181,12 @@ abstract class AppLocalizations {
   /// **'Atur tampilan'**
   String get balehoSlideContentCta;
 
+  /// Subtitle tile slide Baleho setelah gambar terunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar siap - ketuk untuk ganti'**
+  String get balehoSlideContentFilled;
+
   /// Subtitle tile jika slide belum punya judul/media
   ///
   /// In id, this message translates to:
@@ -1144,6 +1324,24 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Selesai'**
   String get balehoStatusExpired;
+
+  /// Hint di riwayat untuk placement live yang H-1
+  ///
+  /// In id, this message translates to:
+  /// **'Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.'**
+  String get balehoHistoryEndingSoonHint;
+
+  /// CTA reaktivasi setelah placement expired
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan lagi'**
+  String get balehoHistoryRebookCta;
+
+  /// Hint singkat CTA pesan lagi di riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih area kosong di papan, lalu aktifkan ulang creative lama.'**
+  String get balehoHistoryRebookHint;
 
   /// No description provided for @balehoValidationNeedFrame.
   ///
@@ -10485,6 +10683,12 @@ abstract class AppLocalizations {
   /// **'Baleho ditolak'**
   String get notificationTypeBalehoRejected;
 
+  /// Label jenis notifikasi: Baleho H-1 akan berakhir
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho hampir berakhir'**
+  String get notificationTypeBalehoEndingSoon;
+
   /// Label UI M3 (notification/komentar/usulan/vote)
   ///
   /// In id, this message translates to:
@@ -13503,6 +13707,72 @@ abstract class AppLocalizations {
   /// **'Referensi & Sumber'**
   String get encyclopediaReferencesTitle;
 
+  /// Judul section tautan lintas fitur (content_links)
+  ///
+  /// In id, this message translates to:
+  /// **'Terkait'**
+  String get contentRelatedSection;
+
+  /// Judul section artikel terkait di detail lemma
+  ///
+  /// In id, this message translates to:
+  /// **'Artikel terkait'**
+  String get contentRelatedArticlesSection;
+
+  /// Hint picker terkait di form usulan ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tautkan lemma, artikel, atau konten lain (maks 12)'**
+  String get contentRelatedFormHint;
+
+  /// Tombol tambah tautan terkait di form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah tautan'**
+  String get contentRelatedAdd;
+
+  /// Judul sheet pilih jenis content_links
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis tautan'**
+  String get contentRelatedPickKindTitle;
+
+  /// No description provided for @contentRelatedPickKindSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jenis konten yang mau ditautkan'**
+  String get contentRelatedPickKindSubtitle;
+
+  /// Judul sheet cari target tautan
+  ///
+  /// In id, this message translates to:
+  /// **'Cari {kind}'**
+  String contentRelatedSearchTitle(String kind);
+
+  /// No description provided for @contentRelatedSearchHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik minimal 2 huruf…'**
+  String get contentRelatedSearchHint;
+
+  /// No description provided for @contentRelatedSearchEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada hasil. Coba kata lain.'**
+  String get contentRelatedSearchEmpty;
+
+  /// No description provided for @contentRelatedKindCuisine.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuliner'**
+  String get contentRelatedKindCuisine;
+
+  /// No description provided for @contentRelatedKindLayanan.
+  ///
+  /// In id, this message translates to:
+  /// **'Layanan'**
+  String get contentRelatedKindLayanan;
+
   /// No description provided for @encyclopediaCommentsTitle.
   ///
   /// In id, this message translates to:
@@ -13616,6 +13886,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'https:// (opsional)'**
   String get encyclopediaFieldSourceUrlHint;
+
+  /// Tombol tempel clipboard di samping field link sumber usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Tempel'**
+  String get encyclopediaSourceUrlPaste;
+
+  /// Toast bila tempel link sumber ditekan tapi clipboard kosong
+  ///
+  /// In id, this message translates to:
+  /// **'Clipboard kosong'**
+  String get encyclopediaSourceUrlClipboardEmpty;
 
   /// Validasi link sumber usulan artikel harus https
   ///
@@ -13772,6 +14054,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Belum ada isi.'**
   String get encyclopediaBodyEmpty;
+
+  /// Semantics label hero cover di detail artikel ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar sampul artikel'**
+  String get encyclopediaCoverSemantics;
+
+  /// Label field sampul opsional di form usulan ensiklopedia
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar sampul'**
+  String get encyclopediaFieldCover;
+
+  /// Hint field sampul opsional di form usulan
+  ///
+  /// In id, this message translates to:
+  /// **'Opsional - tampil sebagai hero di detail artikel'**
+  String get encyclopediaFieldCoverHint;
+
+  /// Toast saat submit usulan sementara sampul masih diunggah
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu upload sampul selesai'**
+  String get encyclopediaCoverWaitUpload;
+
+  /// Toast saat submit usulan dengan sampul gagal upload
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus sampul yang gagal diunggah dulu'**
+  String get encyclopediaCoverRemoveFailed;
+
+  /// Label chip pengganti URL panjang di body markdown
+  ///
+  /// In id, this message translates to:
+  /// **'<link>'**
+  String get markdownLinkChip;
+
+  /// Semantics label chip tautan markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Buka tautan'**
+  String get markdownLinkChipSemantics;
+
+  /// Judul bottomsheet pratinjau tautan markdown
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan'**
+  String get markdownLinkSheetTitle;
+
+  /// Tombol buka tautan markdown di browser eksternal
+  ///
+  /// In id, this message translates to:
+  /// **'Buka di browser'**
+  String get markdownLinkOpenBrowser;
 
   /// Judul sheet wajib login sebelum aksi ensiklopedia
   ///

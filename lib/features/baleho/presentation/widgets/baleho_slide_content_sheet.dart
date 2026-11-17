@@ -12,6 +12,7 @@ Future<void> showBalehoSlideContentSheet(
   required String mediaType,
   required ValueChanged<String> onMediaTypeChanged,
   required TextEditingController mediaUrl,
+  required double aspectRatio,
   required bool busy,
   required ValueListenable<bool> uploading,
   required Future<void> Function() onPickImage,
@@ -29,6 +30,7 @@ Future<void> showBalehoSlideContentSheet(
           mediaType: mediaType,
           onMediaTypeChanged: onMediaTypeChanged,
           mediaUrl: mediaUrl,
+          aspectRatio: aspectRatio,
           busy: busy,
           uploading: uploading,
           onPickImage: onPickImage,
@@ -45,6 +47,7 @@ class _BalehoSlideContentBody extends StatefulWidget {
     required this.mediaType,
     required this.onMediaTypeChanged,
     required this.mediaUrl,
+    required this.aspectRatio,
     required this.busy,
     required this.uploading,
     required this.onPickImage,
@@ -55,6 +58,7 @@ class _BalehoSlideContentBody extends StatefulWidget {
   final String mediaType;
   final ValueChanged<String> onMediaTypeChanged;
   final TextEditingController mediaUrl;
+  final double aspectRatio;
   final bool busy;
   final ValueListenable<bool> uploading;
   final Future<void> Function() onPickImage;
@@ -72,6 +76,17 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
     if (widget.mediaType != 'image') {
       widget.onMediaTypeChanged('image');
     }
+    widget.mediaUrl.addListener(_onUrlChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.mediaUrl.removeListener(_onUrlChanged);
+    super.dispose();
+  }
+
+  void _onUrlChanged() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _pick() async {
@@ -83,6 +98,9 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = FTheme.of(context);
+    final url = widget.mediaUrl.text.trim();
+    final hasImage = url.isNotEmpty;
+    final ratio = widget.aspectRatio <= 0 ? 1.0 : widget.aspectRatio;
 
     return SafeArea(
       top: false,
@@ -124,16 +142,46 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
                     shrinkWrap: true,
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
                     children: [
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: widget.mediaUrl,
+                      AspectRatio(
+                        aspectRatio: ratio,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: theme.colors.secondary,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: theme.colors.border,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: uploading
+                                ? const Center(
+                                    child: FCircularProgress(),
+                                  )
+                                : hasImage
+                                    ? Image.network(
+                                        url,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        errorBuilder: (_, _, _) => Center(
+                                          child: Icon(
+                                            FLucideIcons.imageOff,
+                                            color: theme.colors.mutedForeground,
+                                          ),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: Icon(
+                                          FLucideIcons.image,
+                                          size: 36,
+                                          color: theme.colors.mutedForeground,
+                                        ),
+                                      ),
+                          ),
                         ),
-                        label: Text(l10n.balehoMediaUrlLabel),
-                        hint: l10n.balehoMediaUrlHint,
-                        enabled: !locked,
-                        maxLines: 3,
                       ),
-                      const Gap(6),
+                      const Gap(12),
                       FButton(
                         variant: FButtonVariant.outline,
                         onPress: locked ? null : _pick,
@@ -143,7 +191,9 @@ class _BalehoSlideContentBodyState extends State<_BalehoSlideContentBody> {
                         child: Text(
                           uploading
                               ? l10n.balehoUploading
-                              : l10n.balehoUploadImage,
+                              : hasImage
+                                  ? l10n.balehoReplaceImage
+                                  : l10n.balehoUploadImage,
                         ),
                       ),
                     ],

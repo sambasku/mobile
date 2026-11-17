@@ -34,5 +34,6 @@ String notificationTypeLabel(AppLocalizations l10n, String type) =>
         l10n.notificationTypeEventNeedsRevision,
       'baleho_placement_approved' => l10n.notificationTypeBalehoApproved,
       'baleho_placement_rejected' => l10n.notificationTypeBalehoRejected,
+      'baleho_placement_ending_soon' => l10n.notificationTypeBalehoEndingSoon,
       _ => l10n.notificationTypeUpdate,
     };

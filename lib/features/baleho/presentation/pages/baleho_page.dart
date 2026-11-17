@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/models/external_link.dart';
 import '../../../../core/widgets/brand_logo.dart';
@@ -189,7 +190,83 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     );
   }
 
-  Future<void> _showPromoInfoSheet() async {
+  Future<void> _onVacantCellTap(int col, int row) {
+    return _showPromoInfoSheet(
+      seedSelection: BalehoSelection(col: col, row: row, w: 1, h: 1),
+    );
+  }
+
+  Future<void> _onHeldSlotTap() {
+    final l10n = AppLocalizations.of(context);
+    return _showBalehoInfoSheet(
+      title: l10n.balehoSlotHeldInfoTitle,
+      body: l10n.balehoSlotHeldInfoBody,
+    );
+  }
+
+  Future<void> _showBalehoInfoSheet({
+    required String title,
+    required String body,
+  }) async {
+    if (!mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final theme = sheetContext.theme;
+        final sheetL10n = AppLocalizations.of(sheetContext);
+        return Padding(
+          padding: MediaQuery.viewInsetsOf(sheetContext),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    title,
+                    softWrap: true,
+                    style: theme.typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: theme.colors.foreground,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    body,
+                    softWrap: true,
+                    style: theme.typography.body.sm.copyWith(
+                      color: theme.colors.foreground.withValues(alpha: 0.85),
+                      height: 1.35,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FButton(
+                    onPress: () => Navigator.pop(sheetContext),
+                    child: Text(sheetL10n.commonClose),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showPromoInfoSheet({BalehoSelection? seedSelection}) async {
+    final board = ref.read(balehoBoardProvider(1)).asData?.value;
+    if (board != null && board.isFullyOccupied) {
+      final l10n = AppLocalizations.of(context);
+      await _showBalehoInfoSheet(
+        title: l10n.balehoBoardFullTitle,
+        body: l10n.balehoBoardFullBody,
+      );
+      return;
+    }
+
     final priceAsync = ref.read(balehoPricePerCellPerDayProvider.future);
     final startPick = await showModalBottomSheet<bool>(
       context: context,
@@ -239,15 +316,30 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                     initialData: 3000,
                     builder: (context, snap) {
                       final price = snap.data ?? 3000;
-                      return Text(
-                        sheetL10n.balehoPricingUnitLine(
-                          amountFmt.format(price),
-                        ),
-                        softWrap: true,
-                        style: theme.typography.body.sm.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colors.foreground,
-                        ),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            sheetL10n.balehoPricingUnitLine(
+                              amountFmt.format(price),
+                            ),
+                            softWrap: true,
+                            style: theme.typography.body.sm.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: theme.colors.foreground,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            sheetL10n.balehoQuoteFormulaHint,
+                            softWrap: true,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.foreground.withValues(
+                                alpha: 0.75,
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -270,7 +362,13 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       },
     );
     if (!mounted || startPick != true) return;
-    setState(() => _pickMode = true);
+    setState(() {
+      _pickMode = true;
+      // Tap dari grid kosong: langsung pilih sel itu (1x1) sebagai jangkar.
+      if (seedSelection != null) {
+        _selection = seedSelection;
+      }
+    });
   }
 
   @override
@@ -422,6 +520,8 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                 selection: _selection,
                 onSelectionChanged: (s) => setState(() => _selection = s),
                 onPlacementTap: _onPlacementTap,
+                onVacantTap: _onVacantCellTap,
+                onHeldTap: _onHeldSlotTap,
               ),
               _SlideBody(
                 slide: 2,
@@ -510,6 +610,34 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
                     );
                   }),
                 ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: Icon(
+                        FLucideIcons.info,
+                        size: 11,
+                        color: theme.colors.mutedForeground,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        l10n.balehoFooterPromoNote,
+                        textAlign: TextAlign.center,
+                        softWrap: true,
+                        style: theme.typography.body.xs.copyWith(
+                          color: theme.colors.mutedForeground,
+                          fontSize: 10,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -526,6 +654,8 @@ class _SlideBody extends ConsumerWidget {
     required this.onPlacementTap,
     this.selection,
     this.onSelectionChanged,
+    this.onVacantTap,
+    this.onHeldTap,
   });
 
   final int slide;
@@ -533,6 +663,8 @@ class _SlideBody extends ConsumerWidget {
   final BalehoSelection? selection;
   final BalehoSelectionChanged? onSelectionChanged;
   final BalehoCellTap onPlacementTap;
+  final BalehoVacantTap? onVacantTap;
+  final VoidCallback? onHeldTap;
 
   Future<void> _refresh(WidgetRef ref) async {
     ref.invalidate(balehoBoardProvider(slide));
@@ -550,8 +682,12 @@ class _SlideBody extends ConsumerWidget {
         skipLoadingOnReload: true,
         loading: () => ListView(
           physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           children: const [
-            SizedBox(height: 160, child: Center(child: FCircularProgress())),
+            Align(
+              alignment: Alignment.topCenter,
+              child: _BalehoGridSkeleton(),
+            ),
           ],
         ),
         error: (_, _) => ListView(
@@ -585,11 +721,74 @@ class _SlideBody extends ConsumerWidget {
                   selection: selection,
                   onSelectionChanged: onSelectionChanged,
                   onPlacementTap: onPlacementTap,
+                  onVacantTap: onVacantTap,
+                  onHeldTap: onHeldTap,
                 ),
               ),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// Skeleton grid 4x6 - bentuk sama dengan [BalehoGrid] saat board load.
+class _BalehoGridSkeleton extends StatelessWidget {
+  const _BalehoGridSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final muted = context.theme.colors.muted;
+    PaintingEffect shimmerResolver(Brightness brightness) => ShimmerEffect(
+      baseColor: isDark
+          ? muted.withValues(alpha: 0.35)
+          : const Color(0xFFE7E7EA),
+      highlightColor: isDark
+          ? muted.withValues(alpha: 0.55)
+          : const Color(0xFFF4F4F5),
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    return SkeletonizerConfig(
+      data: SkeletonizerConfigData(effectResolver: shimmerResolver),
+      child: IgnorePointer(
+        child: Skeletonizer(
+          enabled: true,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              final cols = BalehoBoard.prototypeCols;
+              final rows = BalehoBoard.prototypeRows;
+              final cell = width / cols;
+              return SizedBox(
+                width: width,
+                height: cell * rows,
+                child: Column(
+                  children: [
+                    for (var r = 0; r < rows; r++)
+                      Expanded(
+                        child: Row(
+                          children: [
+                            for (var c = 0; c < cols; c++)
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: Bone(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

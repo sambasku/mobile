@@ -4,6 +4,7 @@ import '../../core/router/route_definer.dart';
 import 'domain/baleho_models.dart';
 import 'presentation/pages/baleho_book_page.dart';
 import 'presentation/pages/baleho_history_page.dart';
+import 'presentation/pages/baleho_weekly_leaderboard_history_page.dart';
 import 'presentation/pages/baleho_weekly_leaderboard_page.dart';
 
 class BalehoRouter {
@@ -22,6 +23,11 @@ class BalehoRouter {
   static const weeklyLeaderboard = RouteDefiner(
     path: BalehoBoard.weeklyLeaderboardPath,
     name: 'BalehoRouter.weeklyLeaderboard',
+  );
+
+  static const weeklyLeaderboardHistoryWeek = RouteDefiner(
+    path: '${BalehoBoard.weeklyLeaderboardPath}/riwayat/:weekId',
+    name: 'BalehoRouter.weeklyLeaderboardHistoryWeek',
   );
 
   static List<RouteBase> get routes => [
@@ -51,6 +57,16 @@ class BalehoRouter {
           path: weeklyLeaderboard.path,
           name: weeklyLeaderboard.name,
           builder: (context, state) => const BalehoWeeklyLeaderboardPage(),
+          routes: [
+            GoRoute(
+              path: 'riwayat/:weekId',
+              name: weeklyLeaderboardHistoryWeek.name,
+              builder: (context, state) {
+                final weekId = state.pathParameters['weekId'] ?? '';
+                return BalehoWeeklyLeaderboardHistoryPage(weekId: weekId);
+              },
+            ),
+          ],
         ),
       ];
 }

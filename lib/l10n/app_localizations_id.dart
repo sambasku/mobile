@@ -123,6 +123,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
+  String get balehoFooterPromoNote =>
+      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+
+  @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
 
   @override
@@ -141,6 +145,63 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
+
+  @override
+  String get balehoQuoteSectionTitle => 'Estimasi biaya';
+
+  @override
+  String get balehoQuoteUnitLabel => 'Tarif dasar';
+
+  @override
+  String balehoQuoteUnitValue(String amount) {
+    return 'Rp $amount / sel / hari / slide';
+  }
+
+  @override
+  String get balehoQuoteSizeLabel => 'Ukuran';
+
+  @override
+  String balehoQuoteSizeValue(String size, int cells) {
+    return '$size ($cells sel)';
+  }
+
+  @override
+  String get balehoQuoteDaysRowLabel => 'Durasi';
+
+  @override
+  String balehoQuoteDaysRowValue(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoQuoteSlidesLabel => 'Slide';
+
+  @override
+  String balehoQuoteSlidesValue(int slides) {
+    return '$slides slide';
+  }
+
+  @override
+  String get balehoQuoteTotalLabel => 'Total estimasi';
+
+  @override
+  String balehoQuoteTotalValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoQuoteFormulaHint =>
+      'Hitungan: jumlah sel x hari x tarif x slide';
+
+  @override
+  String balehoQuoteFooterTotal(String amount) {
+    return 'Estimasi Rp $amount';
+  }
+
+  @override
+  String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
+    return '$cells sel x $days hari x $slides slide';
+  }
 
   @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
@@ -218,16 +279,63 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
 
   @override
-  String get balehoLeaderboardHistoryEmpty => 'Snapshot minggu ini belum ada.';
+  String get balehoLeaderboardLastWeekTitle => 'Peringkat minggu lalu';
+
+  @override
+  String get balehoLeaderboardLastWeekHint =>
+      'Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.';
+
+  @override
+  String get balehoLeaderboardOpenWeek => 'Buka detail minggu';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty =>
+      'Data peringkat minggu ini belum tersimpan.';
 
   @override
   String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
+
+  @override
+  String get balehoLeaderboardHistoryNoWeeks =>
+      'Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.';
+
+  @override
+  String get balehoLeaderboardScoreLabel => 'Skor';
+
+  @override
+  String get balehoLeaderboardPodiumTitle => 'Podium minggu ini';
+
+  @override
+  String balehoLeaderboardPodiumPlace(int place) {
+    return 'Peringkat $place';
+  }
+
+  @override
+  String get balehoLeaderboardHistoryWeekHint =>
+      'Pilih minggu untuk lihat peringkatnya';
+
+  @override
+  String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
 
   @override
   String get balehoSlotHeld => 'Dipesan';
+
+  @override
+  String get balehoSlotHeldInfoTitle => 'Area sedang dipesan';
+
+  @override
+  String get balehoSlotHeldInfoBody =>
+      'Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.';
+
+  @override
+  String get balehoBoardFullTitle => 'Area Baleho penuh';
+
+  @override
+  String get balehoBoardFullBody =>
+      'Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.';
 
   @override
   String get balehoPendingBadge => 'Menunggu';
@@ -351,6 +459,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoReplaceImage => 'Ganti gambar';
 
   @override
   String get balehoUploading => 'Mengunggah…';
@@ -521,6 +632,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoSlideContentCta => 'Atur tampilan';
 
   @override
+  String get balehoSlideContentFilled => 'Gambar siap - ketuk untuk ganti';
+
+  @override
   String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
 
   @override
@@ -596,6 +710,17 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoStatusExpired => 'Selesai';
+
+  @override
+  String get balehoHistoryEndingSoonHint =>
+      'Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.';
+
+  @override
+  String get balehoHistoryRebookCta => 'Pesan lagi';
+
+  @override
+  String get balehoHistoryRebookHint =>
+      'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
@@ -5919,6 +6044,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get notificationTypeBalehoRejected => 'Baleho ditolak';
 
   @override
+  String get notificationTypeBalehoEndingSoon => 'Baleho hampir berakhir';
+
+  @override
   String get notificationTypeUpdate => 'Pembaruan';
 
   @override
@@ -7503,6 +7631,43 @@ class AppLocalizationsId extends AppLocalizations {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get contentRelatedSection => 'Terkait';
+
+  @override
+  String get contentRelatedArticlesSection => 'Artikel terkait';
+
+  @override
+  String get contentRelatedFormHint =>
+      'Opsional - tautkan lemma, artikel, atau konten lain (maks 12)';
+
+  @override
+  String get contentRelatedAdd => 'Tambah tautan';
+
+  @override
+  String get contentRelatedPickKindTitle => 'Jenis tautan';
+
+  @override
+  String get contentRelatedPickKindSubtitle =>
+      'Pilih jenis konten yang mau ditautkan';
+
+  @override
+  String contentRelatedSearchTitle(String kind) {
+    return 'Cari $kind';
+  }
+
+  @override
+  String get contentRelatedSearchHint => 'Ketik minimal 2 huruf…';
+
+  @override
+  String get contentRelatedSearchEmpty => 'Tidak ada hasil. Coba kata lain.';
+
+  @override
+  String get contentRelatedKindCuisine => 'Kuliner';
+
+  @override
+  String get contentRelatedKindLayanan => 'Layanan';
+
+  @override
   String get encyclopediaCommentsTitle => 'Komentar';
 
   @override
@@ -7562,6 +7727,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaSourceUrlPaste => 'Tempel';
+
+  @override
+  String get encyclopediaSourceUrlClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get encyclopediaFieldSourceUrlHttpsRequired =>
@@ -7647,6 +7818,35 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
+
+  @override
+  String get encyclopediaFieldCover => 'Gambar sampul';
+
+  @override
+  String get encyclopediaFieldCoverHint =>
+      'Opsional - tampil sebagai hero di detail artikel';
+
+  @override
+  String get encyclopediaCoverWaitUpload => 'Tunggu upload sampul selesai';
+
+  @override
+  String get encyclopediaCoverRemoveFailed =>
+      'Hapus sampul yang gagal diunggah dulu';
+
+  @override
+  String get markdownLinkChip => '<link>';
+
+  @override
+  String get markdownLinkChipSemantics => 'Buka tautan';
+
+  @override
+  String get markdownLinkSheetTitle => 'Tautan';
+
+  @override
+  String get markdownLinkOpenBrowser => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';
@@ -12195,6 +12395,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoInternalSlide => 'Di aplikasi';
 
   @override
+  String get balehoFooterPromoNote =>
+      'Area Media Promosi · Ruang publikasi dan promosi SambasKu.';
+
+  @override
   String get balehoSlidePromoCaption => 'Ingin tampil di sini?';
 
   @override
@@ -12213,6 +12417,63 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoQuoteEstimateLoading => 'Menghitung estimasi…';
+
+  @override
+  String get balehoQuoteSectionTitle => 'Estimasi biaya';
+
+  @override
+  String get balehoQuoteUnitLabel => 'Tarif dasar';
+
+  @override
+  String balehoQuoteUnitValue(String amount) {
+    return 'Rp $amount / sel / hari / slide';
+  }
+
+  @override
+  String get balehoQuoteSizeLabel => 'Ukuran';
+
+  @override
+  String balehoQuoteSizeValue(String size, int cells) {
+    return '$size ($cells sel)';
+  }
+
+  @override
+  String get balehoQuoteDaysRowLabel => 'Durasi';
+
+  @override
+  String balehoQuoteDaysRowValue(int days) {
+    return '$days hari';
+  }
+
+  @override
+  String get balehoQuoteSlidesLabel => 'Slide';
+
+  @override
+  String balehoQuoteSlidesValue(int slides) {
+    return '$slides slide';
+  }
+
+  @override
+  String get balehoQuoteTotalLabel => 'Total estimasi';
+
+  @override
+  String balehoQuoteTotalValue(String amount) {
+    return 'Rp $amount';
+  }
+
+  @override
+  String get balehoQuoteFormulaHint =>
+      'Hitungan: jumlah sel x hari x tarif x slide';
+
+  @override
+  String balehoQuoteFooterTotal(String amount) {
+    return 'Estimasi Rp $amount';
+  }
+
+  @override
+  String balehoQuoteFooterBreakdown(int cells, int days, int slides) {
+    return '$cells sel x $days hari x $slides slide';
+  }
 
   @override
   String get balehoSlidePromoInfoSemantics => 'Info ingin tampil di sini';
@@ -12290,16 +12551,63 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoLeaderboardEmpty => 'Belum ada peringkat minggu ini.';
 
   @override
-  String get balehoLeaderboardHistoryEmpty => 'Snapshot minggu ini belum ada.';
+  String get balehoLeaderboardLastWeekTitle => 'Peringkat minggu lalu';
+
+  @override
+  String get balehoLeaderboardLastWeekHint =>
+      'Minggu ini masih jalan. Di bawah ini peringkat minggu sebelumnya.';
+
+  @override
+  String get balehoLeaderboardOpenWeek => 'Buka detail minggu';
+
+  @override
+  String get balehoLeaderboardHistoryEmpty =>
+      'Data peringkat minggu ini belum tersimpan.';
 
   @override
   String get balehoLeaderboardLoadFailed => 'Gagal memuat peringkat.';
+
+  @override
+  String get balehoLeaderboardHistoryNoWeeks =>
+      'Minggu ini masih berjalan, jadi riwayatnya masih kosong. Kembali lagi Senin depan ya.';
+
+  @override
+  String get balehoLeaderboardScoreLabel => 'Skor';
+
+  @override
+  String get balehoLeaderboardPodiumTitle => 'Podium minggu ini';
+
+  @override
+  String balehoLeaderboardPodiumPlace(int place) {
+    return 'Peringkat $place';
+  }
+
+  @override
+  String get balehoLeaderboardHistoryWeekHint =>
+      'Pilih minggu untuk lihat peringkatnya';
+
+  @override
+  String get balehoLeaderboardHistoryLoadMore => 'Lihat minggu sebelumnya';
 
   @override
   String get balehoSlotAvailable => 'Tersedia';
 
   @override
   String get balehoSlotHeld => 'Dipesan';
+
+  @override
+  String get balehoSlotHeldInfoTitle => 'Area sedang dipesan';
+
+  @override
+  String get balehoSlotHeldInfoBody =>
+      'Area ini sedang dipesan dan sedang dalam pengecekan. Pilih area lain yang masih kosong ya.';
+
+  @override
+  String get balehoBoardFullTitle => 'Area Baleho penuh';
+
+  @override
+  String get balehoBoardFullBody =>
+      'Semua area sudah terisi. Coba lagi nanti jika ada yang kosong ya.';
 
   @override
   String get balehoPendingBadge => 'Menunggu';
@@ -12423,6 +12731,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoUploadImage => 'Pilih gambar';
+
+  @override
+  String get balehoReplaceImage => 'Ganti gambar';
 
   @override
   String get balehoUploading => 'Mengunggah…';
@@ -12593,6 +12904,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoSlideContentCta => 'Atur tampilan';
 
   @override
+  String get balehoSlideContentFilled => 'Gambar siap - ketuk untuk ganti';
+
+  @override
   String get balehoSlideContentEmpty => 'Belum diisi - ketuk untuk atur';
 
   @override
@@ -12668,6 +12982,17 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoStatusExpired => 'Selesai';
+
+  @override
+  String get balehoHistoryEndingSoonHint =>
+      'Berakhir dalam 24 jam. Setelah selesai, pesan lagi dari sini ya.';
+
+  @override
+  String get balehoHistoryRebookCta => 'Pesan lagi';
+
+  @override
+  String get balehoHistoryRebookHint =>
+      'Pilih area kosong di papan, lalu aktifkan ulang creative lama.';
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
@@ -17991,6 +18316,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get notificationTypeBalehoRejected => 'Baleho ditolak';
 
   @override
+  String get notificationTypeBalehoEndingSoon => 'Baleho hampir berakhir';
+
+  @override
   String get notificationTypeUpdate => 'Pembaruan';
 
   @override
@@ -19575,6 +19903,43 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get encyclopediaReferencesTitle => 'Referensi & Sumber';
 
   @override
+  String get contentRelatedSection => 'Terkait';
+
+  @override
+  String get contentRelatedArticlesSection => 'Artikel terkait';
+
+  @override
+  String get contentRelatedFormHint =>
+      'Opsional - tautkan lemma, artikel, atau konten lain (maks 12)';
+
+  @override
+  String get contentRelatedAdd => 'Tambah tautan';
+
+  @override
+  String get contentRelatedPickKindTitle => 'Jenis tautan';
+
+  @override
+  String get contentRelatedPickKindSubtitle =>
+      'Pilih jenis konten yang mau ditautkan';
+
+  @override
+  String contentRelatedSearchTitle(String kind) {
+    return 'Cari $kind';
+  }
+
+  @override
+  String get contentRelatedSearchHint => 'Ketik minimal 2 huruf…';
+
+  @override
+  String get contentRelatedSearchEmpty => 'Tidak ada hasil. Coba kata lain.';
+
+  @override
+  String get contentRelatedKindCuisine => 'Kuliner';
+
+  @override
+  String get contentRelatedKindLayanan => 'Layanan';
+
+  @override
   String get encyclopediaCommentsTitle => 'Komentar';
 
   @override
@@ -19634,6 +19999,12 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaFieldSourceUrlHint => 'https:// (opsional)';
+
+  @override
+  String get encyclopediaSourceUrlPaste => 'Tempel';
+
+  @override
+  String get encyclopediaSourceUrlClipboardEmpty => 'Clipboard kosong';
 
   @override
   String get encyclopediaFieldSourceUrlHttpsRequired =>
@@ -19719,6 +20090,35 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get encyclopediaBodyEmpty => 'Belum ada isi.';
+
+  @override
+  String get encyclopediaCoverSemantics => 'Gambar sampul artikel';
+
+  @override
+  String get encyclopediaFieldCover => 'Gambar sampul';
+
+  @override
+  String get encyclopediaFieldCoverHint =>
+      'Opsional - tampil sebagai hero di detail artikel';
+
+  @override
+  String get encyclopediaCoverWaitUpload => 'Tunggu upload sampul selesai';
+
+  @override
+  String get encyclopediaCoverRemoveFailed =>
+      'Hapus sampul yang gagal diunggah dulu';
+
+  @override
+  String get markdownLinkChip => '<link>';
+
+  @override
+  String get markdownLinkChipSemantics => 'Buka tautan';
+
+  @override
+  String get markdownLinkSheetTitle => 'Tautan';
+
+  @override
+  String get markdownLinkOpenBrowser => 'Buka di browser';
 
   @override
   String get encyclopediaLoginFirstTitle => 'Masuk dulu ya';

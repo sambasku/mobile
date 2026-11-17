@@ -8,6 +8,7 @@ import '../../domain/baleho_models.dart';
 
 typedef BalehoCellTap = void Function(BalehoPlacement placement, BalehoFrame frame);
 typedef BalehoSelectionChanged = void Function(BalehoSelection? selection);
+typedef BalehoVacantTap = void Function(int col, int row);
 
 /// Ukuran (w,h) yang muat dari sudut kiri-atas [col],[row] tanpa bentrok.
 List<(int, int)> balehoValidSizes({
@@ -44,6 +45,8 @@ class BalehoGrid extends StatefulWidget {
     this.selection,
     this.onSelectionChanged,
     this.onPlacementTap,
+    this.onVacantTap,
+    this.onHeldTap,
   });
 
   final BalehoBoard board;
@@ -51,6 +54,10 @@ class BalehoGrid extends StatefulWidget {
   final BalehoSelection? selection;
   final BalehoSelectionChanged? onSelectionChanged;
   final BalehoCellTap? onPlacementTap;
+  /// Mode lihat: ketuk area kosong = aksi sama dengan "Ingin tampil di sini?".
+  final BalehoVacantTap? onVacantTap;
+  /// Ketuk sel "Dipesan" (pending/awaiting tanpa konten publik).
+  final VoidCallback? onHeldTap;
 
   @override
   State<BalehoGrid> createState() => _BalehoGridState();
@@ -165,7 +172,11 @@ class _BalehoGridState extends State<BalehoGrid> {
               // Mode pilih: abaikan. Mode lihat: tap ditangani _PlacementCell.
               return;
             }
-            if (!widget.sellable) return;
+            if (!widget.sellable) {
+              // Mode lihat: area kosong = sama dengan "Ingin tampil di sini?".
+              widget.onVacantTap?.call(col, row);
+              return;
+            }
 
             // Belum ada jangkar → tap 1 = pilih 1x1.
             if (_anchorCol == null || _anchorRow == null) {
@@ -302,7 +313,7 @@ class _BalehoGridState extends State<BalehoGrid> {
                         // Pending/awaiting tanpa frame = hold slot untuk orang
                         // lain. Jangan render seperti iklan "Promosi".
                         : p.frames.isEmpty
-                            ? const _HeldSlotCell()
+                            ? _HeldSlotCell(onTap: widget.onHeldTap)
                             : _PlacementCell(
                                 placement: p,
                                 enabled: !widget.sellable,
@@ -433,30 +444,36 @@ class _WeeklyLeaderboardTile extends StatelessWidget {
 /// Sel terkunci tanpa konten (pending_review / awaiting_payment bagi viewer
 /// lain). Harus beda visual dari iklan live supaya tidak dikira sudah tayang.
 class _HeldSlotCell extends StatelessWidget {
-  const _HeldSlotCell();
+  const _HeldSlotCell({this.onTap});
+
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
     final l10n = AppLocalizations.of(context);
-    return Container(
-      margin: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.colors.border.withValues(alpha: 0.7),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: theme.colors.border.withValues(alpha: 0.7),
+          ),
+          color: theme.colors.secondary.withValues(alpha: 0.18),
         ),
-        color: theme.colors.secondary.withValues(alpha: 0.18),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        l10n.balehoSlotHeld,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: theme.typography.body.xs.copyWith(
-          color: theme.colors.mutedForeground,
-          fontWeight: FontWeight.w600,
+        alignment: Alignment.center,
+        child: Text(
+          l10n.balehoSlotHeld,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.typography.body.xs.copyWith(
+            color: theme.colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

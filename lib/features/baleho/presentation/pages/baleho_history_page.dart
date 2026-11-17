@@ -114,6 +114,13 @@ class _HistoryList extends ConsumerWidget {
         _ => status,
       };
 
+  bool _isEndingSoon(BalehoPlacementHistoryItem item) {
+    if (item.status != 'live' || item.endsAt == null) return false;
+    final now = DateTime.now();
+    final until = now.add(const Duration(hours: 24));
+    return item.endsAt!.isAfter(now) && !item.endsAt!.isAfter(until);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -194,6 +201,14 @@ class _HistoryList extends ConsumerWidget {
                 item.col + 1,
                 item.row + 1,
               );
+              final endingSoon = _isEndingSoon(item);
+              final expired = item.status == 'expired';
+              final subtitleLines = <String>[
+                '${_statusLabel(l10n, item.status)} · $pos',
+                formatDateTime(item.createdAt),
+                if (endingSoon) l10n.balehoHistoryEndingSoonHint,
+                if (expired) l10n.balehoHistoryRebookHint,
+              ];
               return FTileGroup(
                 children: [
                   FTile(
@@ -218,10 +233,14 @@ class _HistoryList extends ConsumerWidget {
                             color: theme.colors.primary,
                           ),
                     title: Text(title),
-                    subtitle: Text(
-                      '${_statusLabel(l10n, item.status)} · $pos\n'
-                      '${formatDateTime(item.createdAt)}',
-                    ),
+                    subtitle: Text(subtitleLines.join('\n')),
+                    suffix: expired
+                        ? FButton(
+                            variant: FButtonVariant.outline,
+                            onPress: () => context.go('/baleho'),
+                            child: Text(l10n.balehoHistoryRebookCta),
+                          )
+                        : null,
                   ),
                 ],
               );

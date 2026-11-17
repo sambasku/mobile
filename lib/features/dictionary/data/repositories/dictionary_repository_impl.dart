@@ -6,6 +6,7 @@ import '../../../../core/cache/cache_key.dart';
 import '../../../../core/cache/cached_json_client.dart';
 import '../../../../core/models/api_response.dart';
 import '../../../../core/models/image_attribution.dart';
+import '../../../../shared/models/content_related_link.dart';
 import '../../domain/entities/word_detail.dart';
 import '../../domain/entities/word_of_day.dart';
 import '../../domain/entities/word_summary.dart';
@@ -407,6 +408,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorCode;
       var success = true;
 
+      var relatedRaw = const <ContentRelatedLink>[];
       if (cache != null && dio != null) {
         final key = buildCacheKey(method: 'GET', path: '/api/v1/words/$id');
         final envelope = await cache.getOrFetch(
@@ -427,7 +429,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         errorCode = envelope['error_code'] as String?;
         final raw = envelope['data'];
         if (raw is Map) {
-          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+          final map = Map<String, dynamic>.from(raw);
+          dto = WordDetailDto.fromJson(map);
+          relatedRaw = ContentRelatedLink.listFromJson(map['related']);
         }
       } else {
         final response = await _remoteDatasource.getWordById(id);
@@ -455,7 +459,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto));
+      return Either.right(_mapDetail(dto, related: relatedRaw));
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -499,6 +503,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       String? errorMessage;
       String? errorCode;
       var success = true;
+      var relatedRaw = const <ContentRelatedLink>[];
 
       if (cache != null && dio != null) {
         final key = buildCacheKey(
@@ -523,7 +528,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         errorCode = envelope['error_code'] as String?;
         final raw = envelope['data'];
         if (raw is Map) {
-          dto = WordDetailDto.fromJson(Map<String, dynamic>.from(raw));
+          final map = Map<String, dynamic>.from(raw);
+          dto = WordDetailDto.fromJson(map);
+          relatedRaw = ContentRelatedLink.listFromJson(map['related']);
         }
       } else {
         final response = await _remoteDatasource.getWordByLemma(lemma);
@@ -551,7 +558,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         );
       }
 
-      return Either.right(_mapDetail(dto));
+      return Either.right(_mapDetail(dto, related: relatedRaw));
     } on DioException catch (error) {
       return Either.left(
         _mapDio(
@@ -708,7 +715,10 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
     }
   }
 
-  WordDetail _mapDetail(WordDetailDto dto) => WordDetail(
+  WordDetail _mapDetail(
+    WordDetailDto dto, {
+    List<ContentRelatedLink> related = const [],
+  }) => WordDetail(
     id: dto.id,
     lemma: dto.lemma,
     languageId: dto.languageId,
@@ -876,6 +886,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
           ),
         )
         .toList(),
+    related: related,
   );
 
   WordAudio _mapAudio(WordAudioDto dto) => WordAudio(

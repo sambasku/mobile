@@ -397,18 +397,30 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: FButton(
-            onPress: (_busy || _anyUploading) ? null : _submit,
-            prefix: (_busy || _anyUploading)
-                ? const FCircularProgress()
-                : null,
-            child: Text(
-              _anyUploading
-                  ? l10n.balehoUploading
-                  : _busy
-                      ? l10n.balehoSubmitting
-                      : l10n.balehoSubmit,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _BalehoQuoteFooterTotal(
+                cells: sel.w * sel.h,
+                days: _days < 1 ? 0 : _days,
+                slides: _slideCount,
+              ),
+              const Gap(8),
+              FButton(
+                onPress: (_busy || _anyUploading) ? null : _submit,
+                prefix: (_busy || _anyUploading)
+                    ? const FCircularProgress()
+                    : null,
+                child: Text(
+                  _anyUploading
+                      ? l10n.balehoUploading
+                      : _busy
+                          ? l10n.balehoSubmitting
+                          : l10n.balehoSubmit,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -458,36 +470,6 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                 ),
             ],
           ),
-          const Gap(8),
-          ref.watch(balehoPricePerCellPerDayProvider).when(
-                data: (price) {
-                  final slides = _slideCount;
-                  final cells = sel.w * sel.h;
-                  final days = _days < 1 ? 0 : _days;
-                  final total = cells * days * price * slides;
-                  final amountFmt = NumberFormat.decimalPattern('id');
-                  return Text(
-                    l10n.balehoQuoteEstimate(
-                      amountFmt.format(total),
-                      cells,
-                      days,
-                      slides,
-                    ),
-                    softWrap: true,
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colors.foreground,
-                    ),
-                  );
-                },
-                loading: () => Text(
-                  l10n.balehoQuoteEstimateLoading,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.mutedForeground,
-                  ),
-                ),
-                error: (_, _) => const SizedBox.shrink(),
-              ),
           const Gap(12),
           FTextField(
             control: FTextFieldControl.managed(controller: _referral),
@@ -625,6 +607,7 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
                 index: i,
                 frame: _frames[i],
                 busy: _busy || _anyUploading,
+                aspectRatio: sel.w / sel.h,
                 onChanged: () => setState(() {}),
                 onPickImage: () => _pickImage(_frames[i]),
                 onRemove: _frames.length <= 1
@@ -645,6 +628,13 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
               ),
             ],
           ],
+          const Gap(20),
+          _BalehoQuoteBreakdown(
+            sizeLabel: '${sel.w}x${sel.h}',
+            cells: sel.w * sel.h,
+            days: _days < 1 ? 0 : _days,
+            slides: _slideCount,
+          ),
         ],
       ),
     );
@@ -674,11 +664,184 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   }
 }
 
+class _BalehoQuoteBreakdown extends ConsumerWidget {
+  const _BalehoQuoteBreakdown({
+    required this.sizeLabel,
+    required this.cells,
+    required this.days,
+    required this.slides,
+  });
+
+  final String sizeLabel;
+  final int cells;
+  final int days;
+  final int slides;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final amountFmt = NumberFormat.decimalPattern('id');
+
+    return ref.watch(balehoPricePerCellPerDayProvider).when(
+          loading: () => Text(
+            l10n.balehoQuoteEstimateLoading,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          error: (_, _) => const SizedBox.shrink(),
+          data: (price) {
+            final total = cells * days * price * slides;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.balehoQuoteSectionTitle,
+                  style: theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Gap(8),
+                FTileGroup(
+                  children: [
+                    FTile(
+                      title: Text(l10n.balehoQuoteUnitLabel),
+                      subtitle: Text(
+                        l10n.balehoQuoteUnitValue(amountFmt.format(price)),
+                      ),
+                    ),
+                    FTile(
+                      title: Text(l10n.balehoQuoteSizeLabel),
+                      subtitle: Text(
+                        l10n.balehoQuoteSizeValue(sizeLabel, cells),
+                      ),
+                    ),
+                    FTile(
+                      title: Text(l10n.balehoQuoteDaysRowLabel),
+                      subtitle: Text(l10n.balehoQuoteDaysRowValue(days)),
+                    ),
+                    FTile(
+                      title: Text(l10n.balehoQuoteSlidesLabel),
+                      subtitle: Text(l10n.balehoQuoteSlidesValue(slides)),
+                    ),
+                    FTile(
+                      title: Text(l10n.balehoQuoteTotalLabel),
+                      subtitle: Text(
+                        l10n.balehoQuoteTotalValue(amountFmt.format(total)),
+                        style: theme.typography.body.md.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: theme.colors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(6),
+                Text(
+                  l10n.balehoQuoteFormulaHint,
+                  softWrap: true,
+                  style: theme.typography.body.xs.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+  }
+}
+
+class _BalehoQuoteFooterTotal extends ConsumerWidget {
+  const _BalehoQuoteFooterTotal({
+    required this.cells,
+    required this.days,
+    required this.slides,
+  });
+
+  final int cells;
+  final int days;
+  final int slides;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final amountFmt = NumberFormat.decimalPattern('id');
+
+    return ref.watch(balehoPricePerCellPerDayProvider).when(
+          loading: () => Text(
+            l10n.balehoQuoteEstimateLoading,
+            textAlign: TextAlign.center,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+          error: (_, _) => const SizedBox.shrink(),
+          data: (price) {
+            final total = cells * days * price * slides;
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colors.secondary,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: theme.colors.border),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            l10n.balehoQuoteTotalLabel,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.1,
+                            ),
+                          ),
+                          Text(
+                            l10n.balehoQuoteFooterBreakdown(
+                              cells,
+                              days,
+                              slides,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.body.xs.copyWith(
+                              color: theme.colors.mutedForeground,
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(8),
+                    Text(
+                      l10n.balehoQuoteTotalValue(amountFmt.format(total)),
+                      style: theme.typography.body.md.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: theme.colors.primary,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+  }
+}
+
 class _FrameEditor extends StatelessWidget {
   const _FrameEditor({
     required this.index,
     required this.frame,
     required this.busy,
+    required this.aspectRatio,
     required this.onChanged,
     required this.onPickImage,
     this.onRemove,
@@ -687,13 +850,13 @@ class _FrameEditor extends StatelessWidget {
   final int index;
   final _FrameForm frame;
   final bool busy;
+  final double aspectRatio;
   final VoidCallback onChanged;
   final Future<void> Function() onPickImage;
   final VoidCallback? onRemove;
 
-  String get _mediaSummary {
-    final media = (frame.uploadedUrl ?? frame.mediaUrl.text).trim();
-    return media;
+  String get _mediaUrl {
+    return (frame.uploadedUrl ?? frame.mediaUrl.text).trim();
   }
 
   Future<void> _openContentSheet(BuildContext context) async {
@@ -703,6 +866,7 @@ class _FrameEditor extends StatelessWidget {
       mediaType: frame.mediaType,
       onMediaTypeChanged: (t) => frame.mediaType = t,
       mediaUrl: frame.mediaUrl,
+      aspectRatio: aspectRatio,
       busy: busy,
       uploading: frame.uploading,
       onPickImage: onPickImage,
@@ -715,7 +879,12 @@ class _FrameEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final summary = _mediaSummary;
+    final url = _mediaUrl;
+    final hasImage = url.isNotEmpty;
+    final ratio = aspectRatio <= 0 ? 1.0 : aspectRatio;
+    // Thumb kecil di tile; lebar tetap, tinggi ikut rasio slot.
+    const thumbW = 44.0;
+    final thumbH = thumbW / ratio;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -745,18 +914,38 @@ class _FrameEditor extends StatelessWidget {
             return FTileGroup(
               children: [
                 FTile(
-                  prefix: Icon(
-                    FLucideIcons.image,
-                    size: 18,
-                    color: theme.colors.primary,
-                  ),
+                  prefix: hasImage
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: SizedBox(
+                            width: thumbW,
+                            height: thumbH.clamp(28, 56),
+                            child: Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => ColoredBox(
+                                color: theme.colors.secondary,
+                                child: Icon(
+                                  FLucideIcons.imageOff,
+                                  size: 16,
+                                  color: theme.colors.mutedForeground,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          FLucideIcons.image,
+                          size: 18,
+                          color: theme.colors.primary,
+                        ),
                   title: Text(l10n.balehoSlideContentCta),
                   subtitle: Text(
                     uploading
                         ? l10n.balehoUploading
-                        : summary.isEmpty
-                            ? l10n.balehoSlideContentEmpty
-                            : summary,
+                        : hasImage
+                            ? l10n.balehoSlideContentFilled
+                            : l10n.balehoSlideContentEmpty,
                   ),
                   suffix: uploading
                       ? const FCircularProgress(size: .sm)

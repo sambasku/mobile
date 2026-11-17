@@ -10,12 +10,14 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/error_bottom_sheet.dart';
+import '../../domain/baleho_models.dart';
 import '../../domain/leaderboard_models.dart';
 import '../providers/weekly_leaderboard_provider.dart';
-import '../widgets/weekly_leaderboard_entry_tile.dart';
+import '../widgets/weekly_leaderboard_list.dart';
 
-enum _LeaderboardTab { current, history }
+const _kHistoryPageSize = 10;
 
+/// Papan Peringkat Mingguan (Baleho).
 class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
   const BalehoWeeklyLeaderboardPage({super.key});
 
@@ -23,29 +25,10 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = context.theme;
-    final tab = useState(_LeaderboardTab.current);
     final weekOptions = ref.watch(weeklyLeaderboardHistoryWeekOptionsProvider);
-    final selectedWeek = useState<String?>(
-      weekOptions.isNotEmpty ? weekOptions.first : null,
-    );
-
     final currentAsync = ref.watch(weeklyLeaderboardCurrentProvider);
-  final historyWeekId = selectedWeek.value ?? '';
-    final historyAsync = ref.watch(
-      weeklyLeaderboardHistoryProvider(historyWeekId),
-    );
 
     ref.listen(weeklyLeaderboardCurrentProvider, (prev, next) {
-      if (next.hasError && context.mounted) {
-        final err = next.error;
-        final message = err is Exception
-            ? err.toString()
-            : l10n.balehoLeaderboardLoadFailed;
-        showAppErrorSheet(context, message: message);
-      }
-    });
-
-    ref.listen(weeklyLeaderboardHistoryProvider(historyWeekId), (prev, next) {
       if (next.hasError && context.mounted) {
         final err = next.error;
         final message = err is Exception
@@ -66,86 +49,59 @@ class BalehoWeeklyLeaderboardPage extends HookConsumerWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: FTabs(
+        expands: true,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: FButton(
-                  variant: tab.value == _LeaderboardTab.current
-                      ? FButtonVariant.primary
-                      : FButtonVariant.ghost,
-                  onPress: () => tab.value = _LeaderboardTab.current,
-                  child: Text(l10n.balehoLeaderboardTabCurrent),
-                ),
-              ),
-              const Gap(8),
-              Expanded(
-                child: FButton(
-                  variant: tab.value == _LeaderboardTab.history
-                      ? FButtonVariant.primary
-                      : FButtonVariant.ghost,
-                  onPress: () => tab.value = _LeaderboardTab.history,
-                  child: Text(l10n.balehoLeaderboardTabHistory),
-                ),
-              ),
-            ],
-          ),
-          const Gap(12),
-          if (tab.value == _LeaderboardTab.current)
-            Expanded(
-              child: _CurrentTabBody(
-                async: currentAsync,
-                l10n: l10n,
-                theme: theme,
-                onRefresh: () async {
-                  ref.invalidate(weeklyLeaderboardCurrentProvider);
-                  await ref.read(weeklyLeaderboardCurrentProvider.future);
-                },
-              ),
-            )
-          else
-            Expanded(
-              child: _HistoryTabBody(
-                weekOptions: weekOptions,
-                selectedWeekId: selectedWeek.value,
-                onWeekChanged: (id) => selectedWeek.value = id,
-                async: historyAsync,
-                l10n: l10n,
-                theme: theme,
-                onRefresh: () async {
-                  if (historyWeekId.isEmpty) return;
-                  ref.invalidate(weeklyLeaderboardHistoryProvider(historyWeekId));
-                  await ref.read(
-                    weeklyLeaderboardHistoryProvider(historyWeekId).future,
-                  );
-                },
-              ),
+          FTabEntry.entry(
+            label: Text(l10n.balehoLeaderboardTabCurrent),
+            child: _CurrentTabBody(
+              async: currentAsync,
+              weekOptions: weekOptions,
+              l10n: l10n,
+              theme: theme,
+              onRefresh: () async {
+                ref.invalidate(weeklyLeaderboardCurrentProvider);
+                await ref.read(weeklyLeaderboardCurrentProvider.future);
+              },
             ),
+          ),
+          FTabEntry.entry(
+            label: Text(l10n.balehoLeaderboardTabHistory),
+            child: _HistoryWeekListTab(
+              weekOptions: weekOptions,
+              l10n: l10n,
+              theme: theme,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _CurrentTabBody extends HookWidget {
+class _CurrentTabBody extends HookConsumerWidget {
   const _CurrentTabBody({
     required this.async,
+    required this.weekOptions,
     required this.l10n,
     required this.theme,
     required this.onRefresh,
   });
 
   final AsyncValue<WeeklyLeaderboardViewData> async;
+  final List<String> weekOptions;
   final AppLocalizations l10n;
   final FThemeData theme;
   final Future<void> Function() onRefresh;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final resetsAt = async.asData?.value.resetsAt;
     final tick = useState(0);
+    final lastWeekId = weekOptions.isNotEmpty ? weekOptions.first : null;
+    final lastWeekAsync = lastWeekId == null
+        ? null
+        : ref.watch(weeklyLeaderboardHistoryProvider(lastWeekId));
 
     useEffect(() {
       if (resetsAt == null) return null;
@@ -166,45 +122,76 @@ class _CurrentTabBody extends HookWidget {
       data: (view) {
         final _ = tick.value;
         final countdown = _formatCountdown(l10n, view.resetsAt);
+        final showLastWeek =
+            view.entries.isEmpty && lastWeekId != null && lastWeekAsync != null;
+        final lastSnap = lastWeekAsync?.asData?.value;
+        final lastEntries = lastSnap?.entries ?? const <LeaderboardEntry>[];
+        final lastWeekReady = showLastWeek && lastEntries.isNotEmpty;
+
         return RefreshIndicator(
-          onRefresh: onRefresh,
-          child: _EntryList(
+          onRefresh: () async {
+            await onRefresh();
+            if (lastWeekId != null) {
+              ref.invalidate(weeklyLeaderboardHistoryProvider(lastWeekId));
+              await ref.read(
+                weeklyLeaderboardHistoryProvider(lastWeekId).future,
+              );
+            }
+          },
+          child: WeeklyLeaderboardEntryList(
             entries: view.entries,
             l10n: l10n,
             theme: theme,
-            header: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (view.weekId != null && view.weekId!.isNotEmpty)
-                  Text(
-                    l10n.balehoLeaderboardWeekLabel(view.weekId!),
-                    style: theme.typography.body.sm.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                if (countdown != null) ...[
-                  const Gap(4),
-                  Text(
-                    countdown,
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ] else if (view.resetsAt != null) ...[
-                  const Gap(4),
-                  Text(
-                    l10n.balehoLeaderboardResetsAt(
-                      formatDateTime(view.resetsAt),
-                    ),
-                    style: theme.typography.body.sm.copyWith(
-                      color: theme.colors.mutedForeground,
-                    ),
-                  ),
-                ],
-                const Gap(8),
-              ],
+            header: WeeklyLeaderboardMetaCard(
+              theme: theme,
+              weekLabel: view.weekId != null && view.weekId!.isNotEmpty
+                  ? l10n.balehoLeaderboardWeekLabel(view.weekId!)
+                  : null,
+              subtitle: countdown ??
+                  (view.resetsAt != null
+                      ? l10n.balehoLeaderboardResetsAt(
+                          formatDateTime(view.resetsAt),
+                        )
+                      : null),
+              icon: FLucideIcons.timer,
             ),
-            emptyMessage: l10n.balehoLeaderboardEmpty,
+            emptyMessage: lastWeekReady
+                ? l10n.balehoLeaderboardLastWeekHint
+                : l10n.balehoLeaderboardEmpty,
+            trailing: lastWeekReady
+                ? [
+                    const Gap(8),
+                    WeeklyLeaderboardMetaCard(
+                      theme: theme,
+                      icon: FLucideIcons.history,
+                      weekLabel: l10n.balehoLeaderboardLastWeekTitle,
+                      subtitle: l10n.balehoLeaderboardWeekLabel(lastWeekId),
+                      onPress: () => context.push(
+                        BalehoBoard.weeklyLeaderboardHistoryWeekPath(
+                          lastWeekId,
+                        ),
+                      ),
+                    ),
+                    const Gap(12),
+                    ...weeklyLeaderboardEntryChildren(
+                      context: context,
+                      entries: lastEntries,
+                      l10n: l10n,
+                      theme: theme,
+                      emptyMessage: l10n.balehoLeaderboardHistoryEmpty,
+                    ),
+                    const Gap(12),
+                    FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () => context.push(
+                        BalehoBoard.weeklyLeaderboardHistoryWeekPath(
+                          lastWeekId,
+                        ),
+                      ),
+                      child: Text(l10n.balehoLeaderboardOpenWeek),
+                    ),
+                  ]
+                : null,
           ),
         );
       },
@@ -236,165 +223,100 @@ class _CurrentTabBody extends HookWidget {
   }
 }
 
-class _HistoryTabBody extends StatelessWidget {
-  const _HistoryTabBody({
+/// Daftar minggu riwayat (data saja) + paginasi; tap membuka detail.
+class _HistoryWeekListTab extends HookWidget {
+  const _HistoryWeekListTab({
     required this.weekOptions,
-    required this.selectedWeekId,
-    required this.onWeekChanged,
-    required this.async,
     required this.l10n,
     required this.theme,
-    required this.onRefresh,
   });
 
   final List<String> weekOptions;
-  final String? selectedWeekId;
-  final ValueChanged<String> onWeekChanged;
-  final AsyncValue<LeaderboardWeekSnapshot?> async;
   final AppLocalizations l10n;
   final FThemeData theme;
-  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    final weekId = selectedWeekId ?? '';
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (weekOptions.isNotEmpty)
-          FSelectMenuTile<String>(
-            title: Text(l10n.balehoLeaderboardPickWeek),
-            details: Text(weekId.isEmpty ? l10n.profileNotFilled : weekId),
-            selectControl: FMultiValueControl.managedRadio(
-              initial: weekId,
-              onChange: (values) {
-                if (values.length != 1) return;
-                onWeekChanged(values.first);
-              },
-            ),
-            menu: [
-              for (final id in weekOptions)
-                FSelectTile(value: id, title: Text(id)),
-            ],
-          ),
-        const Gap(8),
-        Expanded(
-          child: async.when(
-            skipLoadingOnReload: true,
-            loading: () => const Center(child: FCircularProgress(size: .md)),
-            error: (_, _) => _ErrorScroll(
-              message: l10n.balehoLeaderboardLoadFailed,
-              retryLabel: l10n.commonRetry,
-              onRetry: onRefresh,
-            ),
-            data: (snap) {
-              if (snap == null || snap.entries.isEmpty) {
-                return RefreshIndicator(
-                  onRefresh: onRefresh,
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          l10n.balehoLeaderboardHistoryEmpty,
-                          textAlign: TextAlign.center,
-                          style: theme.typography.body.sm.copyWith(
-                            color: theme.colors.mutedForeground,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return RefreshIndicator(
-                onRefresh: onRefresh,
-                child: _EntryList(
-                  entries: snap.entries,
-                  l10n: l10n,
-                  theme: theme,
-                  header: snap.weekId.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            l10n.balehoLeaderboardWeekLabel(snap.weekId),
-                            style: theme.typography.body.sm.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        )
-                      : null,
-                  emptyMessage: l10n.balehoLeaderboardHistoryEmpty,
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+    final visibleCount = useState(
+      weekOptions.isEmpty
+          ? 0
+          : weekOptions.length.clamp(0, _kHistoryPageSize),
     );
-  }
-}
 
-class _EntryList extends StatelessWidget {
-  const _EntryList({
-    required this.entries,
-    required this.l10n,
-    required this.theme,
-    this.header,
-    required this.emptyMessage,
-  });
+    useEffect(() {
+      if (weekOptions.isEmpty) {
+        visibleCount.value = 0;
+      } else if (visibleCount.value == 0) {
+        visibleCount.value = weekOptions.length.clamp(0, _kHistoryPageSize);
+      } else if (visibleCount.value > weekOptions.length) {
+        visibleCount.value = weekOptions.length;
+      }
+      return null;
+    }, [weekOptions.length]);
 
-  final List<LeaderboardEntry> entries;
-  final AppLocalizations l10n;
-  final FThemeData theme;
-  final Widget? header;
-  final String emptyMessage;
-
-  @override
-  Widget build(BuildContext context) {
-    if (entries.isEmpty) {
+    if (weekOptions.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
         children: [
-          ?header,
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              emptyMessage,
-              textAlign: TextAlign.center,
-              style: theme.typography.body.sm.copyWith(
-                color: theme.colors.mutedForeground,
-              ),
-            ),
+          WeeklyLeaderboardMetaCard(
+            theme: theme,
+            weekLabel: l10n.balehoLeaderboardTabHistory,
+            subtitle: l10n.balehoLeaderboardHistoryNoWeeks,
+            icon: FLucideIcons.history,
           ),
         ],
       );
     }
 
-    return ListView.separated(
+    final shown = weekOptions.take(visibleCount.value).toList();
+    final hasMore = visibleCount.value < weekOptions.length;
+
+    return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.only(bottom: 24),
-      itemCount: entries.length + (header != null ? 1 : 0),
-      separatorBuilder: (_, index) {
-        if (header != null && index == 0) return const Gap(8);
-        return const Gap(8);
-      },
-      itemBuilder: (context, index) {
-        if (header != null && index == 0) return header!;
-        final entryIndex = header != null ? index - 1 : index;
-        final entry = entries[entryIndex];
-        return FTileGroup(
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
+      children: [
+        WeeklyLeaderboardMetaCard(
+          theme: theme,
+          weekLabel: l10n.balehoLeaderboardTabHistory,
+          subtitle: l10n.balehoLeaderboardHistoryWeekHint,
+          icon: FLucideIcons.history,
+        ),
+        const Gap(12),
+        FTileGroup(
           children: [
-            leaderboardEntryTile(
-              context: context,
-              entry: entry,
-              l10n: l10n,
-            ),
+            for (final weekId in shown)
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.calendarDays,
+                  size: 18,
+                  color: theme.colors.mutedForeground,
+                ),
+                title: Text(l10n.balehoLeaderboardWeekLabel(weekId)),
+                subtitle: Text(l10n.balehoLeaderboardHistoryWeekHint),
+                suffix: Icon(
+                  FLucideIcons.chevronRight,
+                  size: 16,
+                  color: theme.colors.mutedForeground,
+                ),
+                onPress: () => context.push(
+                  BalehoBoard.weeklyLeaderboardHistoryWeekPath(weekId),
+                ),
+              ),
           ],
-        );
-      },
+        ),
+        if (hasMore) ...[
+          const Gap(12),
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: () {
+              final next = visibleCount.value + _kHistoryPageSize;
+              visibleCount.value = next.clamp(0, weekOptions.length);
+            },
+            child: Text(l10n.balehoLeaderboardHistoryLoadMore),
+          ),
+        ],
+      ],
     );
   }
 }

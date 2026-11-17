@@ -128,4 +128,25 @@ paragraf akhir
     expect(find.textContaining('coret'), findsWidgets);
     expect(find.textContaining('paragraf akhir'), findsWidgets);
   });
+
+  testWidgets('link https ditampilkan sebagai chip <link>, bukan URL panjang', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _host(
+        const SambaskuMarkdown(
+          selectable: false,
+          data:
+              'Baca [sumber panjang](https://contoh.example/path/sangat/panjang/artikel).',
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.text('<link>'), findsOneWidget);
+    expect(
+      find.textContaining('https://contoh.example'),
+      findsNothing,
+      reason: 'URL panjang diganti chip',
+    );
+  });
 }

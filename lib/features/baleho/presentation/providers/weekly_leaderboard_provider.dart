@@ -27,7 +27,8 @@ final weeklyLeaderboardHistoryProvider = FutureProvider.autoDispose
 });
 
 /// Opsi minggu riwayat (tanpa minggu berjalan).
+/// Mulai dari [kLeaderboardHistoryEarliestWeekId] (2026-W47) - tidak 24 minggu kosong.
 final weeklyLeaderboardHistoryWeekOptionsProvider =
     Provider.autoDispose<List<String>>((ref) {
-  return listPastIsoWeekIds(count: 24);
+  return listPastIsoWeekIds(count: 52);
 });

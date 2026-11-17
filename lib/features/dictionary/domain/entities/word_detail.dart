@@ -1,4 +1,5 @@
 import '../../../../core/models/image_attribution.dart';
+import '../../../../shared/models/content_related_link.dart';
 
 /// Closed enum `usage_labels` (sinkron API / console).
 const kUsageLabels = <String>[
@@ -74,6 +75,7 @@ class WordDetail {
     this.appearsInKarya = const [],
     this.meaningGroups = const [],
     this.variants = const [],
+    this.related = const [],
   });
 
   final String id;
@@ -104,6 +106,9 @@ class WordDetail {
   /// Kosong = kata tidak punya kelompok (bagian UI tidak dirender).
   final List<MeaningGroup> meaningGroups;
   final List<WordVariant> variants;
+
+  /// Kartu lintas fitur dari `content_links` (artikel, eksplorasi, dll.).
+  final List<ContentRelatedLink> related;
 
   /// Satu kalimat kalau orangnya sama, supaya nama tidak tertulis dua kali.
   bool get authoredAndVerifiedBySamePerson {

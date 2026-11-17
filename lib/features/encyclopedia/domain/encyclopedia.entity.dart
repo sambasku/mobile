@@ -1,6 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../shared/models/content_related_link.dart';
+
 part 'encyclopedia.entity.g.dart';
+
+List<ContentRelatedLink> _relatedFromJson(Object? json) =>
+    ContentRelatedLink.listFromJson(json);
+
+List<Map<String, dynamic>>? _relatedToJson(List<ContentRelatedLink>? related) =>
+    related?.map((e) => e.toRefJson()).toList();
 
 /// Kategori = katalog `encyclopedia_categories` (slug, bukan ULID).
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -107,6 +115,7 @@ class EncyclopediaArticle {
     this.referencesMd,
     this.publishedAt,
     this.bookmarked,
+    this.related = const [],
   });
   factory EncyclopediaArticle.fromJson(Map<String, dynamic> json) =>
       _$EncyclopediaArticleFromJson(json);
@@ -132,6 +141,8 @@ class EncyclopediaArticle {
   final String? publishedAt;
   /// null = tamu / tidak dicek; true/false = status bookmark user login.
   final bool? bookmarked;
+  @JsonKey(fromJson: _relatedFromJson)
+  final List<ContentRelatedLink> related;
 }
 
 /// Response toggle bookmark - `POST /articles/:id/bookmark`.
@@ -272,6 +283,7 @@ class SubmitEncyclopediaContributionPayload {
     this.coverUrl,
     this.sourceUrl,
     this.referencesMd,
+    this.related,
   });
   factory SubmitEncyclopediaContributionPayload.fromJson(
     Map<String, dynamic> json,
@@ -295,6 +307,8 @@ class SubmitEncyclopediaContributionPayload {
   final String? sourceUrl;
   @JsonKey(name: 'references_md')
   final String? referencesMd;
+  @JsonKey(toJson: _relatedToJson, includeIfNull: false)
+  final List<ContentRelatedLink>? related;
 }
 
 /// Payload tersimpan di usulan (wire `toContributionWire.payload`).
@@ -309,6 +323,7 @@ class EncyclopediaContributionPayload {
     this.coverUrl,
     this.sourceUrl,
     this.referencesMd,
+    this.related = const [],
   });
   factory EncyclopediaContributionPayload.fromJson(Map<String, dynamic> json) =>
       _$EncyclopediaContributionPayloadFromJson(json);
@@ -328,6 +343,8 @@ class EncyclopediaContributionPayload {
   final String? sourceUrl;
   @JsonKey(name: 'references_md')
   final String? referencesMd;
+  @JsonKey(fromJson: _relatedFromJson)
+  final List<ContentRelatedLink> related;
 }
 
 /// Riwayat usulan milik user (wire `toContributionWire`).

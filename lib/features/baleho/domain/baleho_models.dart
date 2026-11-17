@@ -21,6 +21,10 @@ class BalehoBoard {
   static const weeklyLeaderboardPath = '/baleho/peringkat-mingguan';
   static const weeklyLeaderboardPlacementId = 'baleho_fixed_weekly_leaderboard';
 
+  /// Detail snapshot riwayat satu minggu ISO (`YYYY-Www`).
+  static String weeklyLeaderboardHistoryWeekPath(String weekId) =>
+      '$weeklyLeaderboardPath/riwayat/$weekId';
+
   factory BalehoBoard.fromJson(Map<String, dynamic> json) {
     final items = json['placements'];
     // Ukuran papan = konstanta klien (4x6). Jangan ikut `rows`/`cols` API
@@ -44,6 +48,26 @@ class BalehoBoard {
         rows: prototypeRows,
         placements: const [],
       );
+
+  /// True jika setiap sel tertutup placement (tidak ada ruang pesan).
+  bool get isFullyOccupied {
+    final taken = List.generate(rows, (_) => List<bool>.filled(cols, false));
+    for (final p in placements) {
+      for (var r = p.row; r < p.row + p.h; r++) {
+        for (var c = p.col; c < p.col + p.w; c++) {
+          if (r >= 0 && r < rows && c >= 0 && c < cols) {
+            taken[r][c] = true;
+          }
+        }
+      }
+    }
+    for (final row in taken) {
+      for (final cell in row) {
+        if (!cell) return false;
+      }
+    }
+    return true;
+  }
 }
 
 class BalehoPlacement {

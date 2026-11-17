@@ -18,17 +18,25 @@ String formatIsoWeekId(DateTime date) {
   return '$year-W${week.toString().padLeft(2, '0')}';
 }
 
+/// Minggu ISO pertama fitur papan live (riwayat tidak menampilkan sebelum ini).
+/// Staging seed mulai W46 supaya preview minggu lalu tersedia saat W47 masih jalan.
+const kLeaderboardHistoryEarliestWeekId = '2026-W46';
+
 /// Daftar [count] minggu sebelum minggu [anchor] (default: sekarang).
+/// Hanya week_id >= [earliestWeekId] (default: [kLeaderboardHistoryEarliestWeekId]).
 List<String> listPastIsoWeekIds({
   int count = 20,
   DateTime? anchor,
+  String earliestWeekId = kLeaderboardHistoryEarliestWeekId,
 }) {
   if (count < 1) return const [];
   final base = (anchor ?? DateTime.now()).toLocal();
   final ids = <String>[];
   var cursor = base.subtract(const Duration(days: 7));
   for (var i = 0; i < count; i++) {
-    ids.add(formatIsoWeekId(cursor));
+    final id = formatIsoWeekId(cursor);
+    if (id.compareTo(earliestWeekId) < 0) break;
+    ids.add(id);
     cursor = cursor.subtract(const Duration(days: 7));
   }
   return ids;

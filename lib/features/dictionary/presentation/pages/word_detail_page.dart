@@ -31,6 +31,7 @@ import '../../../../core/widgets/image_preview.dart';
 import '../../../../core/widgets/pending_review_badge_icon.dart';
 import '../../../../core/widgets/verified_badge_icon.dart';
 import '../../../../core/widgets/word_approved_badge_icon.dart';
+import '../../../../shared/widgets/content_related_section.dart';
 import '../../../../shared/widgets/image_credit.dart';
 import '../../../../shared/widgets/word_image_view.dart';
 import '../../../vote/presentation/providers/meaning_vote_providers.dart';
@@ -883,6 +884,19 @@ class _DetailBody extends HookConsumerWidget {
                       ..._appearsInSections(
                         detail.appearsIn,
                         AppLocalizations.of(context),
+                      ),
+
+                      ContentRelatedSection(
+                        items: detail.related,
+                        title: AppLocalizations.of(
+                          context,
+                        ).contentRelatedArticlesSection,
+                        filterKinds: const {'article'},
+                      ),
+                      ContentRelatedSection(
+                        items: detail.related
+                            .where((e) => e.kind != 'article')
+                            .toList(),
                       ),
 
                       KaryaUsedInWordSection(
