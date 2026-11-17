@@ -132,6 +132,8 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
                         url: frame.mediaUrl!,
                         aspect: _slotAspect,
                         maxHeight: size.height * 0.55,
+                        gridW: placement.w,
+                        gridH: placement.h,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -151,6 +153,8 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
                           url: frame.mediaUrl!,
                           aspect: _slotAspect,
                           maxHeight: size.height * (landscape ? 0.4 : 0.42),
+                          gridW: placement.w,
+                          gridH: placement.h,
                         ),
                         const Gap(12),
                       ],
@@ -164,37 +168,44 @@ class _BalehoPlacementSheetBody extends StatelessWidget {
   }
 }
 
-/// Preview media dengan rasio slot, muat di dalam [maxHeight] × lebar parent.
+/// Preview media di skala sel papan: lebar penuh = [BalehoBoard.prototypeCols]
+/// sel (kotak). Slot 1×1 = 1/4 lebar; 4×2 = full width × 2 sel.
 class _SlotMediaPreview extends StatelessWidget {
   const _SlotMediaPreview({
     required this.url,
     required this.aspect,
     required this.maxHeight,
+    required this.gridW,
+    required this.gridH,
   });
 
   final String url;
   final double aspect;
   final double maxHeight;
+  final int gridW;
+  final int gridH;
 
   @override
   Widget build(BuildContext context) {
     final theme = FTheme.of(context);
+    final cols = BalehoBoard.prototypeCols;
+    final gw = gridW < 1 ? 1 : gridW;
+    final gh = gridH < 1 ? 1 : gridH;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxW = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width - 32;
-        var width = maxW;
-        var height = width / aspect;
-        if (height > maxHeight) {
-          height = maxHeight;
-          width = height * aspect;
-          if (width > maxW) {
-            width = maxW;
-            height = width / aspect;
-          }
+        // Sel kotak seperti di grid: lebar penuh sheet = 4 sel.
+        // Kalau tinggi overflow maxHeight, kecilkan sel seragam.
+        var cell = maxW / cols;
+        if (cell * gh > maxHeight && gh > 0) {
+          cell = maxHeight / gh;
         }
+        final width = cell * gw;
+        final height = cell * gh;
+        assert((width / height - aspect).abs() < 0.02);
 
         return Align(
           alignment: Alignment.center,
