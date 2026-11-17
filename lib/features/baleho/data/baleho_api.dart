@@ -25,6 +25,32 @@ class BalehoCreateResult {
   final String creativeId;
 }
 
+class BalehoCreativeSummary {
+  const BalehoCreativeSummary({
+    required this.id,
+    required this.fingerprint,
+    this.title,
+    this.mediaUrl,
+    this.lastReferralUsername,
+  });
+
+  final String id;
+  final String fingerprint;
+  final String? title;
+  final String? mediaUrl;
+  final String? lastReferralUsername;
+
+  factory BalehoCreativeSummary.fromJson(Map<String, dynamic> json) {
+    return BalehoCreativeSummary(
+      id: '${json['id']}',
+      fingerprint: '${json['fingerprint'] ?? ''}',
+      title: json['title'] as String?,
+      mediaUrl: json['media_url'] as String?,
+      lastReferralUsername: json['last_referral_username'] as String?,
+    );
+  }
+}
+
 class BalehoFrameDraft {
   const BalehoFrameDraft({
     required this.mediaType,
@@ -73,6 +99,9 @@ class BalehoApi {
     required int h,
     required List<BalehoFrameDraft> frames,
     String? referralUsername,
+    String? creativeId,
+    String? entityType,
+    String? entityId,
     int days = 30,
   }) async {
     try {
@@ -87,7 +116,14 @@ class BalehoApi {
           'days': days,
           if (referralUsername != null && referralUsername.trim().isNotEmpty)
             'referral_username': referralUsername.trim(),
-          'frames': [for (final f in frames) f.toJson()],
+          if (creativeId != null && creativeId.isNotEmpty)
+            'creative_id': creativeId,
+          if (entityType != null && entityType.isNotEmpty)
+            'entity_type': entityType,
+          if (entityId != null && entityId.isNotEmpty) 'entity_id': entityId,
+          'frames': creativeId != null && creativeId.isNotEmpty
+              ? <Map<String, dynamic>>[]
+              : [for (final f in frames) f.toJson()],
         },
       );
       final data = _dataMap(res.data);
@@ -100,14 +136,30 @@ class BalehoApi {
     }
   }
 
+  Future<List<BalehoCreativeSummary>> listMyCreatives() async {
+    try {
+      final res = await _dio.get<dynamic>('/api/v1/baleho/creatives');
+      final data = _dataMap(res.data);
+      final items = data['items'];
+      if (items is! List) return const [];
+      return [
+        for (final raw in items)
+          if (raw is Map)
+            BalehoCreativeSummary.fromJson(Map<String, dynamic>.from(raw)),
+      ];
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_CREATE_FAILED');
+    }
+  }
+
   /// Fire-and-forget aman: gagal jaringan tidak dilempar ke UI.
   Future<void> recordEvent({
     required String placementId,
     String? frameId,
     required String eventType,
   }) async {
-    // Placement client-only (slide 2 fixed) tidak ada di DB.
-    if (placementId == BalehoBoard.weeklyLeaderboardPlacementId) return;
+    // Placement client-only (slide 2 curated) tidak ada di DB.
+    if (placementId.startsWith('baleho_fixed_')) return;
     try {
       await _dio.post<dynamic>(
         '/api/v1/baleho/events',

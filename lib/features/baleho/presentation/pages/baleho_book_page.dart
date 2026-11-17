@@ -44,6 +44,8 @@ class _FrameForm {
   final mediaUrl = TextEditingController();
   final actionPayload = TextEditingController();
   String? uploadedUrl;
+  String? entityType;
+  String? entityId;
   /// Notifier supaya sheet konten tetap rebuild saat upload (drawer return dulu).
   final uploading = ValueNotifier<bool>(false);
 
@@ -62,6 +64,9 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
   late final TextEditingController _daysCtrl;
   var _busy = false;
   var _days = 30;
+  String? _reactivateCreativeId;
+  String? _reactivateLabel;
+  List<BalehoCreativeSummary>? _creatives;
 
   @override
   void initState() {
@@ -126,15 +131,107 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
       'BALEHO_FINGERPRINT_DUP' => l10n.balehoErrorFingerprintDup,
       'BALEHO_UPLOAD_FAILED' => l10n.balehoErrorUpload,
       'BALEHO_CREATE_FAILED' => l10n.balehoErrorCreate,
+      'RATE_LIMITED' => l10n.balehoErrorRateLimited,
       _ => e.message.isNotEmpty && !e.message.startsWith('BALEHO_')
           ? e.message
           : l10n.balehoErrorCreate,
     };
   }
 
+  Future<void> _loadCreatives() async {
+    try {
+      final list = await ref.read(balehoApiProvider).listMyCreatives();
+      if (!mounted) return;
+      setState(() => _creatives = list);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _creatives = const []);
+    }
+  }
+
+  Future<void> _pickReactivate() async {
+    final l10n = AppLocalizations.of(context);
+    if (_creatives == null) await _loadCreatives();
+    if (!mounted) return;
+    final items = _creatives ?? const <BalehoCreativeSummary>[];
+    if (items.isEmpty) {
+      await showAppErrorSheet(context, message: l10n.balehoReactivateEmpty);
+      return;
+    }
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FTileGroup(
+                  children: [
+                    FTile(
+                      title: Text(l10n.balehoReactivateTitle),
+                      subtitle: Text(l10n.balehoReactivateSubtitle),
+                    ),
+                    for (final c in items)
+                      FTile(
+                        title: Text(
+                          (c.title?.trim().isNotEmpty ?? false)
+                              ? c.title!.trim()
+                              : l10n.balehoReactivateUntitled,
+                        ),
+                        subtitle: Text(
+                          c.lastReferralUsername == null ||
+                                  c.lastReferralUsername!.isEmpty
+                              ? c.id
+                              : l10n.balehoReactivateRefHint(
+                                  c.lastReferralUsername!,
+                                ),
+                        ),
+                        onPress: () => Navigator.pop(ctx, c.id),
+                      ),
+                    FTile(
+                      title: Text(l10n.balehoReactivateClear),
+                      onPress: () => Navigator.pop(ctx, ''),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (!mounted || choice == null) return;
+    if (choice.isEmpty) {
+      setState(() {
+        _reactivateCreativeId = null;
+        _reactivateLabel = null;
+      });
+      return;
+    }
+    final picked = items.where((c) => c.id == choice).firstOrNull;
+    setState(() {
+      _reactivateCreativeId = choice;
+      _reactivateLabel = (picked?.title?.trim().isNotEmpty ?? false)
+          ? picked!.title!.trim()
+          : l10n.balehoReactivateUntitled;
+      if (picked?.lastReferralUsername != null &&
+          picked!.lastReferralUsername!.isNotEmpty) {
+        _referral.text = picked.lastReferralUsername!;
+      }
+    });
+  }
+
   String? _validate(AppLocalizations l10n) {
     if (_days < _kMinDays || _days > _kMaxDays) {
       return l10n.balehoValidationDays;
+    }
+    // Reaktivasi: konten dari creative lama - skip validasi frame.
+    if (_reactivateCreativeId != null && _reactivateCreativeId!.isNotEmpty) {
+      return null;
     }
     if (_frames.isEmpty) return l10n.balehoValidationNeedFrame;
     for (final f in _frames) {
@@ -229,6 +326,10 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             actionPayload: f.actionPayload.text.trim(),
           ),
       ];
+      final entityFrame = _frames.cast<_FrameForm?>().firstWhere(
+            (f) => f?.entityType != null && f?.entityId != null,
+            orElse: () => null,
+          );
       await ref.read(balehoApiProvider).createPlacement(
             col: widget.selection.col,
             row: widget.selection.row,
@@ -238,6 +339,9 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             referralUsername: _referral.text.trim().isEmpty
                 ? null
                 : _referral.text.trim(),
+            creativeId: _reactivateCreativeId,
+            entityType: entityFrame?.entityType,
+            entityId: entityFrame?.entityId,
             days: _days,
           );
       if (!mounted) return;
@@ -343,7 +447,25 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             control: FTextFieldControl.managed(controller: _referral),
             label: Text(l10n.balehoReferralLabel),
             hint: l10n.balehoReferralHint,
-            enabled: !_busy,
+            enabled: !_busy && _reactivateCreativeId == null,
+          ),
+          const Gap(12),
+          FTileGroup(
+            children: [
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.refreshCw,
+                  size: 18,
+                  color: theme.colors.primary,
+                ),
+                title: Text(l10n.balehoReactivateCta),
+                subtitle: Text(
+                  _reactivateLabel ?? l10n.balehoReactivateHint,
+                ),
+                suffix: const Icon(FLucideIcons.chevronRight, size: 16),
+                onPress: _busy ? null : _pickReactivate,
+              ),
+            ],
           ),
           const Gap(16),
           Text(
@@ -353,30 +475,42 @@ class _BalehoBookPageState extends ConsumerState<BalehoBookPage> {
             ),
           ),
           const Gap(8),
-          for (var i = 0; i < _frames.length; i++) ...[
-            if (i > 0) const Gap(12),
-            _FrameEditor(
-              index: i,
-              frame: _frames[i],
-              busy: _busy || _anyUploading,
-              onChanged: () => setState(() {}),
-              onPickImage: () => _pickImage(_frames[i]),
-              onRemove: _frames.length <= 1
-                  ? null
-                  : () => setState(() {
-                        _frames.removeAt(i).dispose();
-                      }),
+          if (_reactivateCreativeId != null) ...[
+            Text(
+              l10n.balehoReactivateUsingOld,
+              softWrap: true,
+              style: theme.typography.body.sm.copyWith(
+                color: theme.colors.foreground.withValues(alpha: 0.75),
+              ),
             ),
+            const Gap(8),
           ],
-          if (_frames.length < 10) ...[
-            const Gap(12),
-            FButton(
-              variant: FButtonVariant.outline,
-              onPress: (_busy || _anyUploading)
-                  ? null
-                  : () => setState(() => _frames.add(_FrameForm())),
-              child: Text(l10n.balehoAddFrame),
-            ),
+          if (_reactivateCreativeId == null) ...[
+            for (var i = 0; i < _frames.length; i++) ...[
+              if (i > 0) const Gap(12),
+              _FrameEditor(
+                index: i,
+                frame: _frames[i],
+                busy: _busy || _anyUploading,
+                onChanged: () => setState(() {}),
+                onPickImage: () => _pickImage(_frames[i]),
+                onRemove: _frames.length <= 1
+                    ? null
+                    : () => setState(() {
+                          _frames.removeAt(i).dispose();
+                        }),
+              ),
+            ],
+            if (_frames.length < 10) ...[
+              const Gap(12),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: (_busy || _anyUploading)
+                    ? null
+                    : () => setState(() => _frames.add(_FrameForm())),
+                child: Text(l10n.balehoAddFrame),
+              ),
+            ],
           ],
         ],
       ),
@@ -429,15 +563,17 @@ class _FrameEditor extends StatelessWidget {
   }
 
   Future<void> _pickDeeplink(BuildContext context) async {
-    final path = await showBalehoDeeplinkPickerSheet(
+    final pick = await showBalehoDeeplinkPickerSheet(
       context,
       selectedPath: frame.actionPayload.text,
     );
-    if (path == null) return;
-    frame.actionPayload.text = path;
+    if (pick == null) return;
+    frame.actionPayload.text = pick.path;
     frame.actionPayload.selection = TextSelection.collapsed(
-      offset: path.length,
+      offset: pick.path.length,
     );
+    frame.entityType = pick.entityType;
+    frame.entityId = pick.entityId;
     onChanged();
   }
 

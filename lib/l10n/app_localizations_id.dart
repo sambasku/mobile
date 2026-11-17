@@ -328,6 +328,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoEntitySearchWisataTitle => 'Cari wisata';
 
   @override
+  String get balehoEntitySearchKaryaTitle => 'Cari karya';
+
+  @override
   String get balehoEntitySearchHint => 'Ketik nama…';
 
   @override
@@ -350,6 +353,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
 
   @override
+  String get balehoDeeplinkPickKarya => 'Pilih karya (cari)';
+
+  @override
   String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
 
   @override
@@ -358,6 +364,102 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get balehoDeeplinkPickWisataDetail =>
       'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String get balehoDeeplinkPickKaryaDetail => 'Cari lalu pilih satu karya';
+
+  @override
+  String get balehoDeeplinkHome => 'Beranda';
+
+  @override
+  String get balehoDeeplinkExplore => 'Eksplorasi';
+
+  @override
+  String get balehoDeeplinkUsahaList => 'Daftar usaha';
+
+  @override
+  String get balehoDeeplinkAcaraList => 'Daftar acara';
+
+  @override
+  String get balehoDeeplinkEncyclopedia => 'Ensiklopedia';
+
+  @override
+  String get balehoDeeplinkWords => 'Kamus';
+
+  @override
+  String get balehoDeeplinkBaleho => 'Baleho';
+
+  @override
+  String get balehoReactivateCta => 'Pakai konten lama';
+
+  @override
+  String get balehoReactivateHint => 'Lewati unggah - skip cek konten';
+
+  @override
+  String get balehoReactivateTitle => 'Pilih konten lama';
+
+  @override
+  String get balehoReactivateSubtitle =>
+      'Yang sudah lolos cek bisa dipakai ulang di slot baru.';
+
+  @override
+  String get balehoReactivateEmpty =>
+      'Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.';
+
+  @override
+  String get balehoReactivateUntitled => 'Konten tanpa judul';
+
+  @override
+  String get balehoReactivateClear => 'Batalkan - unggah baru';
+
+  @override
+  String get balehoReactivateUsingOld =>
+      'Konten lama dipakai. Atur posisi dan hari tayang saja.';
+
+  @override
+  String balehoReactivateRefHint(String username) {
+    return 'Referral: @$username';
+  }
+
+  @override
+  String get balehoSlide2UsahaTitle => 'Usaha';
+
+  @override
+  String get balehoSlide2UsahaCta => 'Jelajahi usaha Sambas';
+
+  @override
+  String get balehoSlide2AcaraTitle => 'Acara';
+
+  @override
+  String get balehoSlide2AcaraCta => 'Lihat acara terdekat';
+
+  @override
+  String get balehoSlide2WisataTitle => 'Wisata';
+
+  @override
+  String get balehoSlide2WisataCta => 'Jelajahi tempat wisata';
+
+  @override
+  String get balehoSlide2KaryaTitle => 'Karya';
+
+  @override
+  String get balehoSlide2KaryaCta => 'Musik dan film Sambas';
+
+  @override
+  String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
+
+  @override
+  String get balehoSlide2EnsiklopediaCta => 'Baca artikel lokal';
+
+  @override
+  String get balehoSlide2KamusTitle => 'Kamus';
+
+  @override
+  String get balehoSlide2KamusCta => 'Cari kata Sambas';
+
+  @override
+  String get balehoActionFailToast =>
+      'Tautan tidak bisa dibuka. Coba lagi nanti ya.';
 
   @override
   String balehoSlideContentTitle(int n) {
@@ -399,6 +501,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoErrorRateLimited =>
+      'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
@@ -11879,6 +11985,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoEntitySearchWisataTitle => 'Cari wisata';
 
   @override
+  String get balehoEntitySearchKaryaTitle => 'Cari karya';
+
+  @override
   String get balehoEntitySearchHint => 'Ketik nama…';
 
   @override
@@ -11901,6 +12010,9 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get balehoDeeplinkPickWisata => 'Pilih wisata (cari)';
 
   @override
+  String get balehoDeeplinkPickKarya => 'Pilih karya (cari)';
+
+  @override
   String get balehoDeeplinkPickUsahaDetail => 'Cari lalu pilih satu usaha';
 
   @override
@@ -11909,6 +12021,102 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get balehoDeeplinkPickWisataDetail =>
       'Cari lalu pilih satu tempat wisata';
+
+  @override
+  String get balehoDeeplinkPickKaryaDetail => 'Cari lalu pilih satu karya';
+
+  @override
+  String get balehoDeeplinkHome => 'Beranda';
+
+  @override
+  String get balehoDeeplinkExplore => 'Eksplorasi';
+
+  @override
+  String get balehoDeeplinkUsahaList => 'Daftar usaha';
+
+  @override
+  String get balehoDeeplinkAcaraList => 'Daftar acara';
+
+  @override
+  String get balehoDeeplinkEncyclopedia => 'Ensiklopedia';
+
+  @override
+  String get balehoDeeplinkWords => 'Kamus';
+
+  @override
+  String get balehoDeeplinkBaleho => 'Baleho';
+
+  @override
+  String get balehoReactivateCta => 'Pakai konten lama';
+
+  @override
+  String get balehoReactivateHint => 'Lewati unggah - skip cek konten';
+
+  @override
+  String get balehoReactivateTitle => 'Pilih konten lama';
+
+  @override
+  String get balehoReactivateSubtitle =>
+      'Yang sudah lolos cek bisa dipakai ulang di slot baru.';
+
+  @override
+  String get balehoReactivateEmpty =>
+      'Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.';
+
+  @override
+  String get balehoReactivateUntitled => 'Konten tanpa judul';
+
+  @override
+  String get balehoReactivateClear => 'Batalkan - unggah baru';
+
+  @override
+  String get balehoReactivateUsingOld =>
+      'Konten lama dipakai. Atur posisi dan hari tayang saja.';
+
+  @override
+  String balehoReactivateRefHint(String username) {
+    return 'Referral: @$username';
+  }
+
+  @override
+  String get balehoSlide2UsahaTitle => 'Usaha';
+
+  @override
+  String get balehoSlide2UsahaCta => 'Jelajahi usaha Sambas';
+
+  @override
+  String get balehoSlide2AcaraTitle => 'Acara';
+
+  @override
+  String get balehoSlide2AcaraCta => 'Lihat acara terdekat';
+
+  @override
+  String get balehoSlide2WisataTitle => 'Wisata';
+
+  @override
+  String get balehoSlide2WisataCta => 'Jelajahi tempat wisata';
+
+  @override
+  String get balehoSlide2KaryaTitle => 'Karya';
+
+  @override
+  String get balehoSlide2KaryaCta => 'Musik dan film Sambas';
+
+  @override
+  String get balehoSlide2EnsiklopediaTitle => 'Ensiklopedia';
+
+  @override
+  String get balehoSlide2EnsiklopediaCta => 'Baca artikel lokal';
+
+  @override
+  String get balehoSlide2KamusTitle => 'Kamus';
+
+  @override
+  String get balehoSlide2KamusCta => 'Cari kata Sambas';
+
+  @override
+  String get balehoActionFailToast =>
+      'Tautan tidak bisa dibuka. Coba lagi nanti ya.';
 
   @override
   String balehoSlideContentTitle(int n) {
@@ -11950,6 +12158,10 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get balehoErrorCreate => 'Gagal mengirim pesanan. Coba lagi ya.';
+
+  @override
+  String get balehoErrorRateLimited =>
+      'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';

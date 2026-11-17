@@ -11,30 +11,37 @@ import '../../../event/event_router.dart';
 import '../../../event/presentation/providers/event_providers.dart';
 import '../../../explore/domain/entities/place.dart';
 import '../../../explore/presentation/providers/places_providers.dart';
+import '../../../karya/karya_router.dart';
+import '../../../karya/presentation/karya_providers.dart';
 import '../../../usaha/presentation/providers/usaha_providers.dart';
 import '../../../usaha/usaha_router.dart';
+import '../../domain/baleho_deeplink_pick.dart';
 
-enum BalehoEntitySearchKind { usaha, acara, wisata }
+enum BalehoEntitySearchKind { usaha, acara, wisata, karya }
 
 class _EntityHit {
   const _EntityHit({
     required this.title,
     required this.path,
+    required this.entityType,
+    required this.entityId,
     this.subtitle,
   });
 
   final String title;
   final String path;
+  final String entityType;
+  final String entityId;
   final String? subtitle;
 }
 
 /// Bottom sheet cari + pilih entity untuk deeplink Baleho yang tertarget.
-Future<String?> showBalehoEntitySearchSheet(
+Future<BalehoDeeplinkPick?> showBalehoEntitySearchSheet(
   BuildContext context, {
   required BalehoEntitySearchKind kind,
 }) {
   final container = ProviderScope.containerOf(context);
-  return showModalBottomSheet<String>(
+  return showModalBottomSheet<BalehoDeeplinkPick>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -101,6 +108,7 @@ class _BalehoEntitySearchBodyState
         .usaha => l10n.balehoEntitySearchUsahaTitle,
         .acara => l10n.balehoEntitySearchAcaraTitle,
         .wisata => l10n.balehoEntitySearchWisataTitle,
+        .karya => l10n.balehoEntitySearchKaryaTitle,
       };
 
   Future<void> _search() async {
@@ -146,6 +154,8 @@ class _BalehoEntitySearchBodyState
               title: u.name,
               path: UsahaRouter.detailPath(u.slug),
               subtitle: '/usaha/${u.slug}',
+              entityType: 'usaha',
+              entityId: u.id,
             ),
         ];
       case .acara:
@@ -160,6 +170,8 @@ class _BalehoEntitySearchBodyState
               title: e.name,
               path: EventRouter.detailPath(e.slug),
               subtitle: '/acara/${e.slug}',
+              entityType: 'event',
+              entityId: e.id,
             ),
         ];
       case .wisata:
@@ -172,9 +184,22 @@ class _BalehoEntitySearchBodyState
           for (final p in page.items)
             _EntityHit(
               title: p.name,
-              path:
-                  '/explore/place/${Uri.encodeComponent(p.slug)}',
+              path: '/explore/place/${Uri.encodeComponent(p.slug)}',
               subtitle: '/explore/place/${p.slug}',
+              entityType: 'place',
+              entityId: p.id,
+            ),
+        ];
+      case .karya:
+        final items = await ref.read(karyaApiProvider).list(q: q);
+        return [
+          for (final k in items.take(24))
+            _EntityHit(
+              title: k.title,
+              path: KaryaRouter.detailPath(k.slug),
+              subtitle: '/karya/${k.slug}',
+              entityType: 'karya',
+              entityId: k.id,
             ),
         ];
     }
@@ -284,8 +309,13 @@ class _BalehoEntitySearchBodyState
                                   title: hit.title,
                                   subtitle: hit.subtitle,
                                   titleBold: true,
-                                  onTap: () =>
-                                      Navigator.of(context).pop(hit.path),
+                                  onTap: () => Navigator.of(context).pop(
+                                    BalehoDeeplinkPick(
+                                      path: hit.path,
+                                      entityType: hit.entityType,
+                                      entityId: hit.entityId,
+                                    ),
+                                  ),
                                 );
                               },
                             ),

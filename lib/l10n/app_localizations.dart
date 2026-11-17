@@ -683,6 +683,12 @@ abstract class AppLocalizations {
   /// **'Cari wisata'**
   String get balehoEntitySearchWisataTitle;
 
+  /// Judul sheet cari karya untuk deeplink Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Cari karya'**
+  String get balehoEntitySearchKaryaTitle;
+
   /// Hint field cari entity Baleho
   ///
   /// In id, this message translates to:
@@ -725,6 +731,12 @@ abstract class AppLocalizations {
   /// **'Pilih wisata (cari)'**
   String get balehoDeeplinkPickWisata;
 
+  /// No description provided for @balehoDeeplinkPickKarya.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih karya (cari)'**
+  String get balehoDeeplinkPickKarya;
+
   /// No description provided for @balehoDeeplinkPickUsahaDetail.
   ///
   /// In id, this message translates to:
@@ -742,6 +754,186 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Cari lalu pilih satu tempat wisata'**
   String get balehoDeeplinkPickWisataDetail;
+
+  /// No description provided for @balehoDeeplinkPickKaryaDetail.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari lalu pilih satu karya'**
+  String get balehoDeeplinkPickKaryaDetail;
+
+  /// No description provided for @balehoDeeplinkHome.
+  ///
+  /// In id, this message translates to:
+  /// **'Beranda'**
+  String get balehoDeeplinkHome;
+
+  /// No description provided for @balehoDeeplinkExplore.
+  ///
+  /// In id, this message translates to:
+  /// **'Eksplorasi'**
+  String get balehoDeeplinkExplore;
+
+  /// No description provided for @balehoDeeplinkUsahaList.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar usaha'**
+  String get balehoDeeplinkUsahaList;
+
+  /// No description provided for @balehoDeeplinkAcaraList.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar acara'**
+  String get balehoDeeplinkAcaraList;
+
+  /// No description provided for @balehoDeeplinkEncyclopedia.
+  ///
+  /// In id, this message translates to:
+  /// **'Ensiklopedia'**
+  String get balehoDeeplinkEncyclopedia;
+
+  /// No description provided for @balehoDeeplinkWords.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus'**
+  String get balehoDeeplinkWords;
+
+  /// No description provided for @balehoDeeplinkBaleho.
+  ///
+  /// In id, this message translates to:
+  /// **'Baleho'**
+  String get balehoDeeplinkBaleho;
+
+  /// Tile buka daftar creative approved untuk reaktivasi
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai konten lama'**
+  String get balehoReactivateCta;
+
+  /// No description provided for @balehoReactivateHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Lewati unggah - skip cek konten'**
+  String get balehoReactivateHint;
+
+  /// No description provided for @balehoReactivateTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih konten lama'**
+  String get balehoReactivateTitle;
+
+  /// No description provided for @balehoReactivateSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang sudah lolos cek bisa dipakai ulang di slot baru.'**
+  String get balehoReactivateSubtitle;
+
+  /// No description provided for @balehoReactivateEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.'**
+  String get balehoReactivateEmpty;
+
+  /// No description provided for @balehoReactivateUntitled.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten tanpa judul'**
+  String get balehoReactivateUntitled;
+
+  /// No description provided for @balehoReactivateClear.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan - unggah baru'**
+  String get balehoReactivateClear;
+
+  /// No description provided for @balehoReactivateUsingOld.
+  ///
+  /// In id, this message translates to:
+  /// **'Konten lama dipakai. Atur posisi dan hari tayang saja.'**
+  String get balehoReactivateUsingOld;
+
+  /// Subtitle creative dengan referral lama
+  ///
+  /// In id, this message translates to:
+  /// **'Referral: @{username}'**
+  String balehoReactivateRefHint(String username);
+
+  /// No description provided for @balehoSlide2UsahaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Usaha'**
+  String get balehoSlide2UsahaTitle;
+
+  /// No description provided for @balehoSlide2UsahaCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelajahi usaha Sambas'**
+  String get balehoSlide2UsahaCta;
+
+  /// No description provided for @balehoSlide2AcaraTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get balehoSlide2AcaraTitle;
+
+  /// No description provided for @balehoSlide2AcaraCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat acara terdekat'**
+  String get balehoSlide2AcaraCta;
+
+  /// No description provided for @balehoSlide2WisataTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Wisata'**
+  String get balehoSlide2WisataTitle;
+
+  /// No description provided for @balehoSlide2WisataCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Jelajahi tempat wisata'**
+  String get balehoSlide2WisataCta;
+
+  /// No description provided for @balehoSlide2KaryaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Karya'**
+  String get balehoSlide2KaryaTitle;
+
+  /// No description provided for @balehoSlide2KaryaCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Musik dan film Sambas'**
+  String get balehoSlide2KaryaCta;
+
+  /// No description provided for @balehoSlide2EnsiklopediaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ensiklopedia'**
+  String get balehoSlide2EnsiklopediaTitle;
+
+  /// No description provided for @balehoSlide2EnsiklopediaCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca artikel lokal'**
+  String get balehoSlide2EnsiklopediaCta;
+
+  /// No description provided for @balehoSlide2KamusTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamus'**
+  String get balehoSlide2KamusTitle;
+
+  /// No description provided for @balehoSlide2KamusCta.
+  ///
+  /// In id, this message translates to:
+  /// **'Cari kata Sambas'**
+  String get balehoSlide2KamusCta;
+
+  /// Toast saat action Baleho gagal (action_fail)
+  ///
+  /// In id, this message translates to:
+  /// **'Tautan tidak bisa dibuka. Coba lagi nanti ya.'**
+  String get balehoActionFailToast;
 
   /// Judul bottom sheet kelola konten slide
   ///
@@ -814,6 +1006,12 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal mengirim pesanan. Coba lagi ya.'**
   String get balehoErrorCreate;
+
+  /// 429 RATE_LIMITED pada submit/upload Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu sering. Tunggu sebentar lalu coba lagi ya.'**
+  String get balehoErrorRateLimited;
 
   /// No description provided for @balehoValidationNeedFrame.
   ///

@@ -102,11 +102,18 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
     if (open != true || !mounted || _actionBusy) return;
     _actionBusy = true;
     _track('action', placementId: placement.id, frameId: frame.id);
+    final l10n = AppLocalizations.of(context);
     try {
       if (frame.actionType == 'external') {
         final uri = Uri.tryParse(frame.actionPayload);
         if (uri == null) {
           _track('action_fail', placementId: placement.id, frameId: frame.id);
+          if (mounted) {
+            showFToast(
+              context: context,
+              title: Text(l10n.balehoActionFailToast),
+            );
+          }
           return;
         }
         await launchExternalUrl(uri);
@@ -117,6 +124,12 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
       _track('action_success', placementId: placement.id, frameId: frame.id);
     } catch (_) {
       _track('action_fail', placementId: placement.id, frameId: frame.id);
+      if (mounted) {
+        showFToast(
+          context: context,
+          title: Text(l10n.balehoActionFailToast),
+        );
+      }
     } finally {
       _actionBusy = false;
     }
@@ -464,8 +477,22 @@ class _SlideBody extends ConsumerWidget {
         final board = slide == 2
             ? balehoBoardWithSlide2Fixed(
                 raw,
-                title: l10n.balehoWeeklyLeaderboardTitle,
-                ctaLabel: l10n.balehoWeeklyLeaderboardCta,
+                labels: BalehoSlide2Labels(
+                  weeklyTitle: l10n.balehoWeeklyLeaderboardTitle,
+                  weeklyCta: l10n.balehoWeeklyLeaderboardCta,
+                  usahaTitle: l10n.balehoSlide2UsahaTitle,
+                  usahaCta: l10n.balehoSlide2UsahaCta,
+                  acaraTitle: l10n.balehoSlide2AcaraTitle,
+                  acaraCta: l10n.balehoSlide2AcaraCta,
+                  wisataTitle: l10n.balehoSlide2WisataTitle,
+                  wisataCta: l10n.balehoSlide2WisataCta,
+                  karyaTitle: l10n.balehoSlide2KaryaTitle,
+                  karyaCta: l10n.balehoSlide2KaryaCta,
+                  ensiklopediaTitle: l10n.balehoSlide2EnsiklopediaTitle,
+                  ensiklopediaCta: l10n.balehoSlide2EnsiklopediaCta,
+                  kamusTitle: l10n.balehoSlide2KamusTitle,
+                  kamusCta: l10n.balehoSlide2KamusCta,
+                ),
               )
             : raw;
         return Padding(

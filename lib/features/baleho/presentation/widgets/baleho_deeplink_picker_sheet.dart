@@ -3,14 +3,16 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/option_picker_sheet.dart';
+import '../../domain/baleho_deeplink_pick.dart';
 import 'baleho_entity_search_sheet.dart';
 
 const _kSearchUsaha = '__baleho_search_usaha__';
 const _kSearchAcara = '__baleho_search_acara__';
 const _kSearchWisata = '__baleho_search_wisata__';
+const _kSearchKarya = '__baleho_search_karya__';
 
-/// Pilihan deeplink awam. Untuk usaha/acara/wisata → sheet pencarian entity.
-Future<String?> showBalehoDeeplinkPickerSheet(
+/// Pilihan deeplink awam. Entity tertarget → sheet pencarian.
+Future<BalehoDeeplinkPick?> showBalehoDeeplinkPickerSheet(
   BuildContext context, {
   String? selectedPath,
 }) async {
@@ -19,19 +21,19 @@ Future<String?> showBalehoDeeplinkPickerSheet(
   final items = <OptionPickerItem<String>>[
     OptionPickerItem(
       value: '/',
-      label: 'Beranda',
+      label: l10n.balehoDeeplinkHome,
       detail: '/',
       selected: selected == '/',
     ),
     OptionPickerItem(
       value: '/explore',
-      label: 'Eksplorasi',
+      label: l10n.balehoDeeplinkExplore,
       detail: '/explore',
       selected: selected == '/explore',
     ),
     OptionPickerItem(
       value: '/usaha',
-      label: 'Daftar usaha',
+      label: l10n.balehoDeeplinkUsahaList,
       detail: '/usaha',
       selected: selected == '/usaha',
     ),
@@ -49,7 +51,7 @@ Future<String?> showBalehoDeeplinkPickerSheet(
     ),
     OptionPickerItem(
       value: '/acara',
-      label: 'Daftar acara',
+      label: l10n.balehoDeeplinkAcaraList,
       detail: '/acara',
       selected: selected == '/acara',
     ),
@@ -60,39 +62,26 @@ Future<String?> showBalehoDeeplinkPickerSheet(
       selected: selected.startsWith('/acara/') && selected != '/acara/',
     ),
     OptionPickerItem(
-      value: '/karya/',
-      label: 'Detail karya',
-      detail: 'Lengkapi slug: /karya/nama-karya',
-      selected: selected.startsWith('/karya/'),
+      value: _kSearchKarya,
+      label: l10n.balehoDeeplinkPickKarya,
+      detail: l10n.balehoDeeplinkPickKaryaDetail,
+      selected: selected.startsWith('/karya/') && selected != '/karya/',
     ),
     OptionPickerItem(
-      value: '/layanan/',
-      label: 'Detail layanan',
-      detail: 'Lengkapi slug: /layanan/nama-layanan',
-      selected: selected.startsWith('/layanan/'),
-    ),
-    OptionPickerItem(
-      value: '/encyclopedia',
-      label: 'Ensiklopedia',
-      detail: '/encyclopedia',
-      selected: selected == '/encyclopedia',
-    ),
-    OptionPickerItem(
-      value: '/encyclopedia/',
-      label: 'Artikel ensiklopedia',
-      detail: 'Lengkapi slug: /encyclopedia/judul',
-      selected: selected.startsWith('/encyclopedia/') &&
-          selected != '/encyclopedia/',
+      value: '/explore/ensiklopedia',
+      label: l10n.balehoDeeplinkEncyclopedia,
+      detail: '/explore/ensiklopedia',
+      selected: selected == '/explore/ensiklopedia',
     ),
     OptionPickerItem(
       value: '/words',
-      label: 'Kamus',
+      label: l10n.balehoDeeplinkWords,
       detail: '/words',
       selected: selected == '/words',
     ),
     OptionPickerItem(
       value: '/baleho',
-      label: 'Baleho',
+      label: l10n.balehoDeeplinkBaleho,
       detail: '/baleho',
       selected: selected == '/baleho',
     ),
@@ -113,10 +102,11 @@ Future<String?> showBalehoDeeplinkPickerSheet(
     _kSearchUsaha => BalehoEntitySearchKind.usaha,
     _kSearchAcara => BalehoEntitySearchKind.acara,
     _kSearchWisata => BalehoEntitySearchKind.wisata,
+    _kSearchKarya => BalehoEntitySearchKind.karya,
     _ => null,
   };
   if (kind != null) {
     return showBalehoEntitySearchSheet(context, kind: kind);
   }
-  return choice;
+  return BalehoDeeplinkPick(path: choice);
 }

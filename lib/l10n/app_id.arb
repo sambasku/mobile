@@ -259,6 +259,10 @@
   "@balehoEntitySearchWisataTitle": {
     "description": "Judul sheet cari wisata untuk deeplink Baleho"
   },
+  "balehoEntitySearchKaryaTitle": "Cari karya",
+  "@balehoEntitySearchKaryaTitle": {
+    "description": "Judul sheet cari karya untuk deeplink Baleho"
+  },
   "balehoEntitySearchHint": "Ketik nama…",
   "@balehoEntitySearchHint": {
     "description": "Hint field cari entity Baleho"
@@ -278,9 +282,50 @@
   "balehoDeeplinkPickUsaha": "Pilih usaha (cari)",
   "balehoDeeplinkPickAcara": "Pilih acara (cari)",
   "balehoDeeplinkPickWisata": "Pilih wisata (cari)",
+  "balehoDeeplinkPickKarya": "Pilih karya (cari)",
   "balehoDeeplinkPickUsahaDetail": "Cari lalu pilih satu usaha",
   "balehoDeeplinkPickAcaraDetail": "Cari lalu pilih satu acara",
   "balehoDeeplinkPickWisataDetail": "Cari lalu pilih satu tempat wisata",
+  "balehoDeeplinkPickKaryaDetail": "Cari lalu pilih satu karya",
+  "balehoDeeplinkHome": "Beranda",
+  "balehoDeeplinkExplore": "Eksplorasi",
+  "balehoDeeplinkUsahaList": "Daftar usaha",
+  "balehoDeeplinkAcaraList": "Daftar acara",
+  "balehoDeeplinkEncyclopedia": "Ensiklopedia",
+  "balehoDeeplinkWords": "Kamus",
+  "balehoDeeplinkBaleho": "Baleho",
+  "balehoReactivateCta": "Pakai konten lama",
+  "@balehoReactivateCta": {
+    "description": "Tile buka daftar creative approved untuk reaktivasi"
+  },
+  "balehoReactivateHint": "Lewati unggah - skip cek konten",
+  "balehoReactivateTitle": "Pilih konten lama",
+  "balehoReactivateSubtitle": "Yang sudah lolos cek bisa dipakai ulang di slot baru.",
+  "balehoReactivateEmpty": "Belum ada konten yang lolos cek. Kirim pesanan baru dulu ya.",
+  "balehoReactivateUntitled": "Konten tanpa judul",
+  "balehoReactivateClear": "Batalkan - unggah baru",
+  "balehoReactivateUsingOld": "Konten lama dipakai. Atur posisi dan hari tayang saja.",
+  "balehoReactivateRefHint": "Referral: @{username}",
+  "@balehoReactivateRefHint": {
+    "description": "Subtitle creative dengan referral lama",
+    "placeholders": { "username": { "type": "String" } }
+  },
+  "balehoSlide2UsahaTitle": "Usaha",
+  "balehoSlide2UsahaCta": "Jelajahi usaha Sambas",
+  "balehoSlide2AcaraTitle": "Acara",
+  "balehoSlide2AcaraCta": "Lihat acara terdekat",
+  "balehoSlide2WisataTitle": "Wisata",
+  "balehoSlide2WisataCta": "Jelajahi tempat wisata",
+  "balehoSlide2KaryaTitle": "Karya",
+  "balehoSlide2KaryaCta": "Musik dan film Sambas",
+  "balehoSlide2EnsiklopediaTitle": "Ensiklopedia",
+  "balehoSlide2EnsiklopediaCta": "Baca artikel lokal",
+  "balehoSlide2KamusTitle": "Kamus",
+  "balehoSlide2KamusCta": "Cari kata Sambas",
+  "balehoActionFailToast": "Tautan tidak bisa dibuka. Coba lagi nanti ya.",
+  "@balehoActionFailToast": {
+    "description": "Toast saat action Baleho gagal (action_fail)"
+  },
   "balehoSlideContentTitle": "Tampilan slide {n}",
   "@balehoSlideContentTitle": {
     "description": "Judul bottom sheet kelola konten slide",
@@ -309,6 +354,10 @@
   },
   "balehoErrorUpload": "Gagal mengunggah gambar. Coba lagi ya.",
   "balehoErrorCreate": "Gagal mengirim pesanan. Coba lagi ya.",
+  "balehoErrorRateLimited": "Terlalu sering. Tunggu sebentar lalu coba lagi ya.",
+  "@balehoErrorRateLimited": {
+    "description": "429 RATE_LIMITED pada submit/upload Baleho"
+  },
   "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
   "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2",
   "balehoValidationVideoMax": "Maksimal satu video per pesanan",
