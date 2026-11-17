@@ -242,6 +242,57 @@ class DiscussionReplyEditRevision {
   final String createdAt;
 }
 
+
+/// Span lemma di OP / balasan diskusi (mirror wire `lemma_links`).
+class DiscussionLemmaLink {
+  const DiscussionLemmaLink({
+    required this.id,
+    required this.start,
+    required this.end,
+    required this.wordId,
+    required this.status,
+    this.discussionId,
+    this.replyId,
+    this.lemma,
+    this.source = 'author',
+    this.proposedWordId,
+    this.proposedLemma,
+    this.proposedBy,
+  });
+
+  final String id;
+  final String? discussionId;
+  final String? replyId;
+  final int start;
+  final int end;
+  final String wordId;
+  final String? lemma;
+  final String status;
+  final String source;
+  final String? proposedWordId;
+  final String? proposedLemma;
+  final String? proposedBy;
+
+  bool get isPendingCorrection => status == 'pending_correction';
+
+  factory DiscussionLemmaLink.fromJson(Map<String, dynamic> json) {
+    return DiscussionLemmaLink(
+      id: json['id'] as String,
+      discussionId: json['discussion_id'] as String?,
+      replyId: json['reply_id'] as String?,
+      start: (json['start'] as num).toInt(),
+      end: (json['end'] as num).toInt(),
+      wordId: json['word_id'] as String,
+      lemma: json['lemma'] as String?,
+      status: json['status'] as String? ?? 'active',
+      source: json['source'] as String? ?? 'author',
+      proposedWordId: json['proposed_word_id'] as String?,
+      proposedLemma: json['proposed_lemma'] as String?,
+      proposedBy: json['proposed_by'] as String?,
+    );
+  }
+}
+
 class DiscussionItem {
   const DiscussionItem({
     required this.id,
@@ -263,6 +314,7 @@ class DiscussionItem {
     this.reviewedAt,
     this.updatedAt,
     this.replies = const [],
+    this.lemmaLinks = const [],
     this.upvotes = 0,
     this.replyCount = 0,
     this.myVote,
@@ -288,6 +340,7 @@ class DiscussionItem {
   final String? reviewedAt;
   final String? updatedAt;
   final List<DiscussionReply> replies;
+  final List<DiscussionLemmaLink> lemmaLinks;
   final int upvotes;
   /// Jumlah balasan published (dari list wire `reply_count`; detail bisa pakai replies).
   final int replyCount;
@@ -333,6 +386,7 @@ class DiscussionItem {
   factory DiscussionItem.fromJson(Map<String, dynamic> json) {
     final imagesRaw = json['images'];
     final repliesRaw = json['replies'];
+    final lemmaRaw = json['lemma_links'];
     return DiscussionItem(
       id: json['id']?.toString() ?? '',
       userId: json['user_id']?.toString() ?? '',
@@ -366,11 +420,18 @@ class DiscussionItem {
                 DiscussionReply.fromJson(Map<String, dynamic>.from(raw)),
             ]
           : const [],
+      lemmaLinks: lemmaRaw is List
+          ? [
+              for (final raw in lemmaRaw.whereType<Map>())
+                DiscussionLemmaLink.fromJson(Map<String, dynamic>.from(raw)),
+            ]
+          : const [],
     );
   }
 
   DiscussionItem copyWith({
     List<DiscussionReply>? replies,
+    List<DiscussionLemmaLink>? lemmaLinks,
     String? pinnedReplyId,
     int? upvotes,
     int? replyCount,
@@ -403,6 +464,7 @@ class DiscussionItem {
           ? this.updatedAt
           : updatedAt as String?,
       replies: replies ?? this.replies,
+      lemmaLinks: lemmaLinks ?? this.lemmaLinks,
       upvotes: upvotes ?? this.upvotes,
       replyCount: replyCount ?? this.replyCount,
       myVote: identical(myVote, _unset) ? this.myVote : myVote as int?,

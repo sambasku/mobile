@@ -582,6 +582,80 @@ class DiscussionRepository {
     }
   }
 
+
+  Future<DiscussionLemmaLink> createLemmaLink({
+    required String discussionId,
+    required int start,
+    required int end,
+    required String wordId,
+    String? replyId,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$discussionId/lemma-links',
+      data: {
+        'start': start,
+        'end': end,
+        'word_id': wordId,
+        'reply_id': ?replyId,
+      },
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.discussionResponseIncomplete,
+      );
+    }
+    return DiscussionLemmaLink.fromJson(data);
+  }
+
+  Future<DiscussionLemmaLink> proposeLemmaCorrection({
+    required String discussionId,
+    required String linkId,
+    required String wordId,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$discussionId/lemma-links/$linkId/corrections',
+      data: {'word_id': wordId},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.discussionResponseIncomplete,
+      );
+    }
+    return DiscussionLemmaLink.fromJson(data);
+  }
+
+  Future<DiscussionLemmaLink> resolveLemmaCorrection({
+    required String discussionId,
+    required String linkId,
+    required String action,
+  }) async {
+    final res = await _dio.post<Map<String, dynamic>>(
+      '$_base/$discussionId/lemma-links/$linkId/resolve',
+      data: {'action': action},
+    );
+    final data = res.data?['data'];
+    if (data is! Map<String, dynamic>) {
+      throw DioException(
+        requestOptions: res.requestOptions,
+        message: l10n.discussionResponseIncomplete,
+      );
+    }
+    return DiscussionLemmaLink.fromJson(data);
+  }
+
+  Future<void> deleteLemmaLink({
+    required String discussionId,
+    required String linkId,
+  }) async {
+    await _dio.delete<Map<String, dynamic>>(
+      '$_base/$discussionId/lemma-links/$linkId',
+    );
+  }
+
   DiscussionPage _parsePage(Map<String, dynamic>? body) {
     final data = body?['data'];
     final meta = body?['meta'];

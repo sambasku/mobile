@@ -25,6 +25,9 @@ String jinyeLookupToken(String raw) {
 }
 
 /// Hasil sheet makna: `login` = arahkan login; selain itu = wordId buka lemma.
+///
+/// [onCreateLink] bila diisi menggantikan [jinyeRepository.createLemmaLink]
+/// (dipakai diskusi / target non-jinye).
 Future<String?> showJinyeWordMeaningSheet(
   BuildContext context, {
   required String jinyeId,
@@ -33,6 +36,12 @@ Future<String?> showJinyeWordMeaningSheet(
   required bool isAuth,
   VoidCallback? onLinked,
   String? commentId,
+  Future<void> Function({
+    required int start,
+    required int end,
+    required String wordId,
+  })?
+  onCreateLink,
 }) {
   return showModalBottomSheet<String>(
     context: context,
@@ -45,6 +54,7 @@ Future<String?> showJinyeWordMeaningSheet(
       isAuth: isAuth,
       onLinked: onLinked,
       commentId: commentId,
+      onCreateLink: onCreateLink,
     ),
   );
 }
@@ -57,6 +67,7 @@ class _JinyeWordMeaningSheet extends ConsumerStatefulWidget {
     required this.isAuth,
     this.onLinked,
     this.commentId,
+    this.onCreateLink,
   });
 
   final String jinyeId;
@@ -65,6 +76,12 @@ class _JinyeWordMeaningSheet extends ConsumerStatefulWidget {
   final bool isAuth;
   final VoidCallback? onLinked;
   final String? commentId;
+  final Future<void> Function({
+    required int start,
+    required int end,
+    required String wordId,
+  })?
+  onCreateLink;
 
   @override
   ConsumerState<_JinyeWordMeaningSheet> createState() =>
@@ -193,13 +210,22 @@ class _JinyeWordMeaningSheetState
 
     setState(() => _linking = true);
     try {
-      await ref.read(jinyeRepositoryProvider).createLemmaLink(
-            jinyeId: widget.jinyeId,
-            start: widget.span.start,
-            end: widget.span.end,
-            wordId: word.id,
-            commentId: widget.commentId,
-          );
+      final create = widget.onCreateLink;
+      if (create != null) {
+        await create(
+          start: widget.span.start,
+          end: widget.span.end,
+          wordId: word.id,
+        );
+      } else {
+        await ref.read(jinyeRepositoryProvider).createLemmaLink(
+              jinyeId: widget.jinyeId,
+              start: widget.span.start,
+              end: widget.span.end,
+              wordId: word.id,
+              commentId: widget.commentId,
+            );
+      }
       if (!mounted) return;
       widget.onLinked?.call();
       showFToast(context: context, title: Text(l10n.jinyeLemmaLinkSuccess));
