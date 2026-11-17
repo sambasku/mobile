@@ -1,0 +1,212 @@
+import 'package:forui/forui.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../../../../core/utils/format_datetime.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../auth/auth_router.dart';
+import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../data/baleho_api.dart';
+import '../providers/baleho_board_provider.dart';
+
+/// Riwayat pesanan Baleho milik user login.
+class BalehoHistoryPage extends ConsumerWidget {
+  const BalehoHistoryPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final auth = ref.watch(authStatusProvider);
+
+    return FScaffold(
+      childPad: true,
+      header: FHeader.nested(
+        title: Text(l10n.balehoHistoryTitle),
+        prefixes: [
+          FHeaderAction.back(
+            onPress: () =>
+                context.canPop() ? context.pop() : context.go('/baleho'),
+          ),
+        ],
+      ),
+      child: auth.when(
+        loading: () => const Center(child: FCircularProgress()),
+        error: (_, _) => _GuestBody(
+          message: l10n.balehoHistoryLoginRequired,
+          onLogin: () => context.push(AuthRouter.login.path),
+          loginLabel: l10n.commonLoginRequiredShort,
+        ),
+        data: (status) => status.isAuth
+            ? const _HistoryList()
+            : _GuestBody(
+                message: l10n.balehoHistoryLoginRequired,
+                onLogin: () => context.push(AuthRouter.login.path),
+                loginLabel: l10n.commonLoginRequiredShort,
+              ),
+      ),
+    );
+  }
+}
+
+class _GuestBody extends StatelessWidget {
+  const _GuestBody({
+    required this.message,
+    required this.onLogin,
+    required this.loginLabel,
+  });
+
+  final String message;
+  final VoidCallback onLogin;
+  final String loginLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              FLucideIcons.history,
+              size: 40,
+              color: theme.colors.mutedForeground,
+            ),
+            const Gap(10),
+            Text(
+              message,
+              style: theme.typography.body.md.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const Gap(16),
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: onLogin,
+              child: Text(loginLabel),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+final _balehoHistoryProvider =
+    FutureProvider.autoDispose<List<BalehoPlacementHistoryItem>>((ref) {
+  return ref.watch(balehoApiProvider).listMyPlacements();
+});
+
+class _HistoryList extends ConsumerWidget {
+  const _HistoryList();
+
+  String _statusLabel(AppLocalizations l10n, String status) => switch (status) {
+        'pending_review' => l10n.balehoStatusPendingReview,
+        'awaiting_payment' => l10n.balehoStatusAwaitingPayment,
+        'live' => l10n.balehoStatusLive,
+        'rejected' => l10n.balehoStatusRejected,
+        'cancelled' => l10n.balehoStatusCancelled,
+        'expired' => l10n.balehoStatusExpired,
+        _ => status,
+      };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final async = ref.watch(_balehoHistoryProvider);
+
+    return async.when(
+      loading: () => const Center(child: FCircularProgress()),
+      error: (_, _) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.balehoHistoryLoadFailed,
+                textAlign: TextAlign.center,
+                style: theme.typography.body.sm,
+              ),
+              const Gap(12),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: () => ref.invalidate(_balehoHistoryProvider),
+                child: Text(l10n.commonRetry),
+              ),
+            ],
+          ),
+        ),
+      ),
+      data: (items) {
+        if (items.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                l10n.balehoHistoryEmpty,
+                textAlign: TextAlign.center,
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.mutedForeground,
+                ),
+              ),
+            ),
+          );
+        }
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+          itemCount: items.length,
+          separatorBuilder: (_, _) => const Gap(8),
+          itemBuilder: (context, index) {
+            final item = items[index];
+            final title = (item.title?.trim().isNotEmpty ?? false)
+                ? item.title!.trim()
+                : l10n.balehoHistoryUntitled;
+            final size = '${item.w}x${item.h}';
+            final pos = l10n.balehoHistoryPosition(
+              size,
+              item.col + 1,
+              item.row + 1,
+            );
+            return FTileGroup(
+              children: [
+                FTile(
+                  prefix: item.mediaUrl != null && item.mediaUrl!.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Image.network(
+                            item.mediaUrl!,
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Icon(
+                              FLucideIcons.image,
+                              size: 20,
+                              color: theme.colors.mutedForeground,
+                            ),
+                          ),
+                        )
+                      : Icon(
+                          FLucideIcons.layoutGrid,
+                          size: 20,
+                          color: theme.colors.primary,
+                        ),
+                  title: Text(title),
+                  subtitle: Text(
+                    '${_statusLabel(l10n, item.status)} · $pos\n'
+                    '${formatDateTime(item.createdAt)}',
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}

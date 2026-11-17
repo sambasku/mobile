@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/router/route_definer.dart';
 import 'domain/baleho_models.dart';
 import 'presentation/pages/baleho_book_page.dart';
+import 'presentation/pages/baleho_history_page.dart';
 import 'presentation/pages/baleho_weekly_leaderboard_page.dart';
 
 class BalehoRouter {
@@ -11,6 +12,11 @@ class BalehoRouter {
   static const book = RouteDefiner(
     path: '/baleho/pesan',
     name: 'BalehoRouter.book',
+  );
+
+  static const history = RouteDefiner(
+    path: '/baleho/riwayat',
+    name: 'BalehoRouter.history',
   );
 
   static const weeklyLeaderboard = RouteDefiner(
@@ -35,6 +41,11 @@ class BalehoRouter {
               referralUsername: q['ref'],
             );
           },
+        ),
+        GoRoute(
+          path: history.path,
+          name: history.name,
+          builder: (context, state) => const BalehoHistoryPage(),
         ),
         GoRoute(
           path: weeklyLeaderboard.path,

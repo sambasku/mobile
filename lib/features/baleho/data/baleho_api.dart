@@ -51,6 +51,53 @@ class BalehoCreativeSummary {
   }
 }
 
+class BalehoPlacementHistoryItem {
+  const BalehoPlacementHistoryItem({
+    required this.id,
+    required this.slide,
+    required this.col,
+    required this.row,
+    required this.w,
+    required this.h,
+    required this.status,
+    required this.createdAt,
+    this.title,
+    this.mediaUrl,
+    this.endsAt,
+  });
+
+  final String id;
+  final int slide;
+  final int col;
+  final int row;
+  final int w;
+  final int h;
+  final String status;
+  final String? title;
+  final String? mediaUrl;
+  final DateTime createdAt;
+  final DateTime? endsAt;
+
+  factory BalehoPlacementHistoryItem.fromJson(Map<String, dynamic> json) {
+    return BalehoPlacementHistoryItem(
+      id: '${json['id']}',
+      slide: (json['slide'] as num?)?.toInt() ?? 1,
+      col: (json['col'] as num?)?.toInt() ?? 0,
+      row: (json['row'] as num?)?.toInt() ?? 0,
+      w: (json['w'] as num?)?.toInt() ?? 1,
+      h: (json['h'] as num?)?.toInt() ?? 1,
+      status: '${json['status'] ?? ''}',
+      title: json['title'] as String?,
+      mediaUrl: json['media_url'] as String?,
+      createdAt: DateTime.tryParse('${json['created_at'] ?? ''}') ??
+          DateTime.fromMillisecondsSinceEpoch(0),
+      endsAt: json['ends_at'] == null
+          ? null
+          : DateTime.tryParse('${json['ends_at']}'),
+    );
+  }
+}
+
 class BalehoFrameDraft {
   const BalehoFrameDraft({
     required this.mediaType,
@@ -149,6 +196,24 @@ class BalehoApi {
       ];
     } on DioException catch (e) {
       throw _fromDio(e, codeFallback: 'BALEHO_CREATE_FAILED');
+    }
+  }
+
+  Future<List<BalehoPlacementHistoryItem>> listMyPlacements() async {
+    try {
+      final res = await _dio.get<dynamic>('/api/v1/baleho/placements/mine');
+      final data = _dataMap(res.data);
+      final items = data['items'];
+      if (items is! List) return const [];
+      return [
+        for (final raw in items)
+          if (raw is Map)
+            BalehoPlacementHistoryItem.fromJson(
+              Map<String, dynamic>.from(raw),
+            ),
+      ];
+    } on DioException catch (e) {
+      throw _fromDio(e, codeFallback: 'BALEHO_HISTORY_FAILED');
     }
   }
 

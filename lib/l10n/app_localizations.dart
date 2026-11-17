@@ -1013,6 +1013,78 @@ abstract class AppLocalizations {
   /// **'Terlalu sering. Tunggu sebentar lalu coba lagi ya.'**
   String get balehoErrorRateLimited;
 
+  /// Judul halaman riwayat pesanan Baleho
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat Baleho'**
+  String get balehoHistoryTitle;
+
+  /// No description provided for @balehoHistoryLoginRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk melihat riwayat pesananmu.'**
+  String get balehoHistoryLoginRequired;
+
+  /// No description provided for @balehoHistoryEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pesanan. Mulai promosi di papan Baleho ya.'**
+  String get balehoHistoryEmpty;
+
+  /// No description provided for @balehoHistoryLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat riwayat. Coba lagi ya.'**
+  String get balehoHistoryLoadFailed;
+
+  /// No description provided for @balehoHistoryUntitled.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa judul'**
+  String get balehoHistoryUntitled;
+
+  /// Ringkas ukuran dan posisi slot di riwayat
+  ///
+  /// In id, this message translates to:
+  /// **'{size} · kolom {col}, baris {row}'**
+  String balehoHistoryPosition(String size, int col, int row);
+
+  /// No description provided for @balehoStatusPendingReview.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu cek'**
+  String get balehoStatusPendingReview;
+
+  /// No description provided for @balehoStatusAwaitingPayment.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu bayar'**
+  String get balehoStatusAwaitingPayment;
+
+  /// No description provided for @balehoStatusLive.
+  ///
+  /// In id, this message translates to:
+  /// **'Tayang'**
+  String get balehoStatusLive;
+
+  /// No description provided for @balehoStatusRejected.
+  ///
+  /// In id, this message translates to:
+  /// **'Ditolak'**
+  String get balehoStatusRejected;
+
+  /// No description provided for @balehoStatusCancelled.
+  ///
+  /// In id, this message translates to:
+  /// **'Dibatalkan'**
+  String get balehoStatusCancelled;
+
+  /// No description provided for @balehoStatusExpired.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get balehoStatusExpired;
+
   /// No description provided for @balehoValidationNeedFrame.
   ///
   /// In id, this message translates to:

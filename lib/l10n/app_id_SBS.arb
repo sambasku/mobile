@@ -390,6 +390,29 @@
   "@balehoErrorRateLimited": {
     "description": "429 RATE_LIMITED pada submit/upload Baleho"
   },
+  "balehoHistoryTitle": "Riwayat Baleho",
+  "@balehoHistoryTitle": {
+    "description": "Judul halaman riwayat pesanan Baleho"
+  },
+  "balehoHistoryLoginRequired": "Masuk dulu untuk melihat riwayat pesananmu.",
+  "balehoHistoryEmpty": "Belum ada pesanan. Mulai promosi di papan Baleho ya.",
+  "balehoHistoryLoadFailed": "Gagal memuat riwayat. Coba lagi ya.",
+  "balehoHistoryUntitled": "Tanpa judul",
+  "balehoHistoryPosition": "{size} · kolom {col}, baris {row}",
+  "@balehoHistoryPosition": {
+    "description": "Ringkas ukuran dan posisi slot di riwayat",
+    "placeholders": {
+      "size": { "type": "String" },
+      "col": { "type": "int" },
+      "row": { "type": "int" }
+    }
+  },
+  "balehoStatusPendingReview": "Menunggu cek",
+  "balehoStatusAwaitingPayment": "Menunggu bayar",
+  "balehoStatusLive": "Tayang",
+  "balehoStatusRejected": "Ditolak",
+  "balehoStatusCancelled": "Dibatalkan",
+  "balehoStatusExpired": "Selesai",
   "balehoValidationNeedFrame": "Isi minimal satu slide Baleho",
   "balehoValidationVideoSize": "Video hanya untuk ukuran 4x2",
   "balehoValidationVideoMax": "Maksimal satu video per pesanan",

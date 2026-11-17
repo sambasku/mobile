@@ -7,10 +7,12 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/models/external_link.dart';
 import '../../../../core/widgets/brand_logo.dart';
+import '../../../../core/widgets/header_action_icon.dart';
 import '../../../../core/widgets/theme_toggle_header_action.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/auth_router.dart';
 import '../../../auth/presentation/providers/auth_status_providers.dart';
+import '../../baleho_router.dart';
 import '../../domain/baleho_models.dart';
 import '../providers/baleho_board_provider.dart';
 import '../widgets/baleho_grid.dart';
@@ -246,9 +248,26 @@ class _BalehoPageState extends ConsumerState<BalehoPage> {
 
     return Column(
       children: [
-        const FHeader(
-          title: BrandWordmark(),
-          suffixes: [ThemeToggleHeaderAction()],
+        FHeader(
+          title: const BrandWordmark(),
+          suffixes: [
+            FHeaderAction(
+              icon: const Icon(
+                FLucideIcons.history,
+                size: kHeaderActionIconSize,
+              ),
+              onPress: () {
+                final authed =
+                    ref.read(authStatusProvider).value?.isAuth ?? false;
+                if (!authed) {
+                  context.push(AuthRouter.login.path);
+                  return;
+                }
+                context.push(BalehoRouter.history.path);
+              },
+            ),
+            const ThemeToggleHeaderAction(),
+          ],
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),

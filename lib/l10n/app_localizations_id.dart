@@ -507,6 +507,46 @@ class AppLocalizationsId extends AppLocalizations {
       'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
 
   @override
+  String get balehoHistoryTitle => 'Riwayat Baleho';
+
+  @override
+  String get balehoHistoryLoginRequired =>
+      'Masuk dulu untuk melihat riwayat pesananmu.';
+
+  @override
+  String get balehoHistoryEmpty =>
+      'Belum ada pesanan. Mulai promosi di papan Baleho ya.';
+
+  @override
+  String get balehoHistoryLoadFailed => 'Gagal memuat riwayat. Coba lagi ya.';
+
+  @override
+  String get balehoHistoryUntitled => 'Tanpa judul';
+
+  @override
+  String balehoHistoryPosition(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoStatusPendingReview => 'Menunggu cek';
+
+  @override
+  String get balehoStatusAwaitingPayment => 'Menunggu bayar';
+
+  @override
+  String get balehoStatusLive => 'Tayang';
+
+  @override
+  String get balehoStatusRejected => 'Ditolak';
+
+  @override
+  String get balehoStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoStatusExpired => 'Selesai';
+
+  @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
 
   @override
@@ -12162,6 +12202,46 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get balehoErrorRateLimited =>
       'Terlalu sering. Tunggu sebentar lalu coba lagi ya.';
+
+  @override
+  String get balehoHistoryTitle => 'Riwayat Baleho';
+
+  @override
+  String get balehoHistoryLoginRequired =>
+      'Masuk dulu untuk melihat riwayat pesananmu.';
+
+  @override
+  String get balehoHistoryEmpty =>
+      'Belum ada pesanan. Mulai promosi di papan Baleho ya.';
+
+  @override
+  String get balehoHistoryLoadFailed => 'Gagal memuat riwayat. Coba lagi ya.';
+
+  @override
+  String get balehoHistoryUntitled => 'Tanpa judul';
+
+  @override
+  String balehoHistoryPosition(String size, int col, int row) {
+    return '$size · kolom $col, baris $row';
+  }
+
+  @override
+  String get balehoStatusPendingReview => 'Menunggu cek';
+
+  @override
+  String get balehoStatusAwaitingPayment => 'Menunggu bayar';
+
+  @override
+  String get balehoStatusLive => 'Tayang';
+
+  @override
+  String get balehoStatusRejected => 'Ditolak';
+
+  @override
+  String get balehoStatusCancelled => 'Dibatalkan';
+
+  @override
+  String get balehoStatusExpired => 'Selesai';
 
   @override
   String get balehoValidationNeedFrame => 'Isi minimal satu slide Baleho';
