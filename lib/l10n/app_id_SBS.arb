@@ -5748,5 +5748,32 @@
   "chatLongPressReply": "Balas",
   "chatLongPressDelete": "Hapus",
   "chatConnectionFailed": "Koneksi terputus. Coba lagi ya.",
-  "chatServerTimeout": "Server lambat merespons. Coba lagi ya."
+  "chatServerTimeout": "Server lambat merespons. Coba lagi ya.",
+  "settingsGroupExperiments": "Eksperimen",
+  "settingsVoiceRoomOptIn": "Voice room",
+  "@settingsVoiceRoomOptIn": {
+    "description": "Toggle opt-in LiveKit voice room di Pengaturan"
+  },
+  "settingsVoiceRoomOptInSubtitle": "Gabung obrolan suara di tab Chat (experimental).",
+  "voiceStripTitle": "Voice room",
+  "voiceStripOptInHint": "Voice room tersedia. Aktifkan di Pengaturan dulu.",
+  "voiceStripOpenSettings": "Pengaturan",
+  "voiceStripInRoom": "{count} di room",
+  "@voiceStripInRoom": {
+    "description": "Jumlah peserta voice room saat terhubung",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceJoin": "Gabung",
+  "voiceJoining": "Menghubungkan…",
+  "voiceLeave": "Keluar",
+  "voiceMute": "Bisukan",
+  "voiceUnmute": "Bunyikan",
+  "voiceJoinFailed": "Gagal masuk voice room",
+  "voiceRoomDisabled": "Voice room sedang dimatikan.",
+  "voiceUnavailable": "Voice room belum siap. Coba lagi nanti ya.",
+  "voiceMicDenied": "Izin mikrofon dibutuhkan untuk voice room."
 }

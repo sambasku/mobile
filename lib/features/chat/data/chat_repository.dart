@@ -8,10 +8,8 @@ import '../domain/chat_models.dart';
 
 /// API chat publik.
 ///
-/// F2: histori + mutasi lewat REST saja. Supabase realtime
-/// (`supabase_flutter` + subscribe `chat_messages`) ditunda - belum ada
-/// bootstrap env di flavor mobile. Refresh: load awal, optimistic append
-/// saat kirim, pull-to-refresh, dan resume lifecycle.
+/// Histori + mutasi lewat REST (Turso SoT). Realtime: subscribe Supabase
+/// `chat_messages` di [ChatRealtime] (F3) - gagal/kosong env → REST saja.
 class ChatRepository {
   ChatRepository(this._dio);
 

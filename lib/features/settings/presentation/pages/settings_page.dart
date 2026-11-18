@@ -13,6 +13,7 @@ import '../../../profile/presentation/widgets/appearance_tiles.dart';
 import '../../../report_bug/report_bug_router.dart';
 import '../../settings_router.dart';
 import 'notification_prefs_section.dart';
+import 'voice_opt_in_section.dart';
 
 /// Pengaturan aplikasi: preferensi non-identitas (bahasa, tampilan,
 /// dukungan, tentang). Guest dan user login sama-sama boleh masuk
@@ -65,6 +66,7 @@ class SettingsPage extends ConsumerWidget {
           const Gap(8),
           const NotificationPrefsSection(),
           const LemmaDatasetSettingsSection(),
+          const VoiceOptInSection(),
           FTileGroup(
             label: Text(l10n.settingsGroupSupport),
             children: [

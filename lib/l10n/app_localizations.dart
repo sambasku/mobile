@@ -21882,6 +21882,102 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Server lambat merespons. Coba lagi ya.'**
   String get chatServerTimeout;
+
+  /// No description provided for @settingsGroupExperiments.
+  ///
+  /// In id, this message translates to:
+  /// **'Eksperimen'**
+  String get settingsGroupExperiments;
+
+  /// Toggle opt-in LiveKit voice room di Pengaturan
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room'**
+  String get settingsVoiceRoomOptIn;
+
+  /// No description provided for @settingsVoiceRoomOptInSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gabung obrolan suara di tab Chat (experimental).'**
+  String get settingsVoiceRoomOptInSubtitle;
+
+  /// No description provided for @voiceStripTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room'**
+  String get voiceStripTitle;
+
+  /// No description provided for @voiceStripOptInHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room tersedia. Aktifkan di Pengaturan dulu.'**
+  String get voiceStripOptInHint;
+
+  /// No description provided for @voiceStripOpenSettings.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengaturan'**
+  String get voiceStripOpenSettings;
+
+  /// Jumlah peserta voice room saat terhubung
+  ///
+  /// In id, this message translates to:
+  /// **'{count} di room'**
+  String voiceStripInRoom(int count);
+
+  /// No description provided for @voiceJoin.
+  ///
+  /// In id, this message translates to:
+  /// **'Gabung'**
+  String get voiceJoin;
+
+  /// No description provided for @voiceJoining.
+  ///
+  /// In id, this message translates to:
+  /// **'Menghubungkan…'**
+  String get voiceJoining;
+
+  /// No description provided for @voiceLeave.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar'**
+  String get voiceLeave;
+
+  /// No description provided for @voiceMute.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisukan'**
+  String get voiceMute;
+
+  /// No description provided for @voiceUnmute.
+  ///
+  /// In id, this message translates to:
+  /// **'Bunyikan'**
+  String get voiceUnmute;
+
+  /// No description provided for @voiceJoinFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal masuk voice room'**
+  String get voiceJoinFailed;
+
+  /// No description provided for @voiceRoomDisabled.
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room sedang dimatikan.'**
+  String get voiceRoomDisabled;
+
+  /// No description provided for @voiceUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Voice room belum siap. Coba lagi nanti ya.'**
+  String get voiceUnavailable;
+
+  /// No description provided for @voiceMicDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon dibutuhkan untuk voice room.'**
+  String get voiceMicDenied;
 }
 
 class _AppLocalizationsDelegate

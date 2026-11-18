@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../data/chat_providers.dart';
+import '../../data/chat_realtime.dart';
 import '../../domain/chat_models.dart';
 
 class ChatMessagesState {
@@ -55,7 +56,56 @@ class ChatMessagesController extends AsyncNotifier<ChatMessagesState> {
         .watch(chatRepositoryProvider)
         .listMessages(limit: _pageSize);
     final value = page.match((failure) => throw failure, (v) => v);
+
+    final realtime = ref.watch(chatRealtimeProvider);
+    if (realtime != null) {
+      realtime.start(_onRealtime);
+      ref.onDispose(() {
+        realtime.stop();
+      });
+    }
+
     return ChatMessagesState(items: value.items, hasMoreOlder: value.hasMore);
+  }
+
+  void _onRealtime(ChatRealtimeEvent event) {
+    if (!ref.mounted) return;
+    switch (event.type) {
+      case ChatRealtimeEventType.upsert:
+        applyRealtimeUpsert(event.message);
+      case ChatRealtimeEventType.delete:
+        _removeById(event.message.id);
+    }
+  }
+
+  /// Merge INSERT/UPDATE dari Supabase Realtime ke list lokal.
+  void applyRealtimeUpsert(ChatMessage message) {
+    final current = state.value;
+    if (current == null) return;
+
+    final idx = current.items.indexWhere((m) => m.id == message.id);
+    if (idx >= 0) {
+      final next = [...current.items];
+      next[idx] = message;
+      state = AsyncData(current.copyWith(items: next));
+      return;
+    }
+
+    final withoutPending = current.items.where((m) {
+      if (!m.pending) return true;
+      if (m.userId != message.userId) return true;
+      if (m.kind != message.kind) return true;
+      return switch (m.kind) {
+        ChatMessageKind.text => m.body != message.body,
+        ChatMessageKind.sticker => m.stickerId != message.stickerId,
+        // VN: biarkan REST replace local-*; realtime bisa datang belakangan.
+        ChatMessageKind.voiceNote => true,
+      };
+    }).toList();
+
+    state = AsyncData(
+      current.copyWith(items: [...withoutPending, message]),
+    );
   }
 
   Future<void> refresh() async {

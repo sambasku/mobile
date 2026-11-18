@@ -17,6 +17,7 @@ import '../widgets/chat_composer.dart';
 import '../widgets/chat_new_messages_chip.dart';
 import '../widgets/chat_sticker_sheet.dart';
 import '../widgets/discussion_hub_segment.dart';
+import '../../../voice/presentation/widgets/voice_room_strip.dart';
 
 /// Stream chat publik (satu channel). Dipakai dari tab hub Diskusi.
 class ChatPage extends HookConsumerWidget {
@@ -350,6 +351,7 @@ class ChatPage extends HookConsumerWidget {
                 if (i == 0) onSelectRoomsTab();
               },
             ),
+            const VoiceRoomStrip(),
             Expanded(
               child: Stack(
                 children: [

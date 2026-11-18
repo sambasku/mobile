@@ -12401,6 +12401,58 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
+
+  @override
+  String get settingsGroupExperiments => 'Eksperimen';
+
+  @override
+  String get settingsVoiceRoomOptIn => 'Voice room';
+
+  @override
+  String get settingsVoiceRoomOptInSubtitle =>
+      'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String get voiceStripTitle => 'Voice room';
+
+  @override
+  String get voiceStripOptInHint =>
+      'Voice room tersedia. Aktifkan di Pengaturan dulu.';
+
+  @override
+  String get voiceStripOpenSettings => 'Pengaturan';
+
+  @override
+  String voiceStripInRoom(int count) {
+    return '$count di room';
+  }
+
+  @override
+  String get voiceJoin => 'Gabung';
+
+  @override
+  String get voiceJoining => 'Menghubungkan…';
+
+  @override
+  String get voiceLeave => 'Keluar';
+
+  @override
+  String get voiceMute => 'Bisukan';
+
+  @override
+  String get voiceUnmute => 'Bunyikan';
+
+  @override
+  String get voiceJoinFailed => 'Gagal masuk voice room';
+
+  @override
+  String get voiceRoomDisabled => 'Voice room sedang dimatikan.';
+
+  @override
+  String get voiceUnavailable => 'Voice room belum siap. Coba lagi nanti ya.';
+
+  @override
+  String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -24800,4 +24852,56 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
+
+  @override
+  String get settingsGroupExperiments => 'Eksperimen';
+
+  @override
+  String get settingsVoiceRoomOptIn => 'Voice room';
+
+  @override
+  String get settingsVoiceRoomOptInSubtitle =>
+      'Gabung obrolan suara di tab Chat (experimental).';
+
+  @override
+  String get voiceStripTitle => 'Voice room';
+
+  @override
+  String get voiceStripOptInHint =>
+      'Voice room tersedia. Aktifkan di Pengaturan dulu.';
+
+  @override
+  String get voiceStripOpenSettings => 'Pengaturan';
+
+  @override
+  String voiceStripInRoom(int count) {
+    return '$count di room';
+  }
+
+  @override
+  String get voiceJoin => 'Gabung';
+
+  @override
+  String get voiceJoining => 'Menghubungkan…';
+
+  @override
+  String get voiceLeave => 'Keluar';
+
+  @override
+  String get voiceMute => 'Bisukan';
+
+  @override
+  String get voiceUnmute => 'Bunyikan';
+
+  @override
+  String get voiceJoinFailed => 'Gagal masuk voice room';
+
+  @override
+  String get voiceRoomDisabled => 'Voice room sedang dimatikan.';
+
+  @override
+  String get voiceUnavailable => 'Voice room belum siap. Coba lagi nanti ya.';
+
+  @override
+  String get voiceMicDenied => 'Izin mikrofon dibutuhkan untuk voice room.';
 }
