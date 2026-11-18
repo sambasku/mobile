@@ -207,40 +207,58 @@
   "balehoLeaderboardResetsInDaysHours": "Reset dalam {days} hari {hours} jam",
   "@balehoLeaderboardResetsInDaysHours": {
     "placeholders": {
-      "days": { "type": "int" },
-      "hours": { "type": "int" }
+      "days": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardResetsInHoursMinutes": "Reset dalam {hours} jam {minutes} menit",
   "@balehoLeaderboardResetsInHoursMinutes": {
     "placeholders": {
-      "hours": { "type": "int" },
-      "minutes": { "type": "int" }
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardResetsInMinutes": "Reset dalam {minutes} menit",
   "@balehoLeaderboardResetsInMinutes": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardRank": "#{rank}",
   "@balehoLeaderboardRank": {
     "placeholders": {
-      "rank": { "type": "int" }
+      "rank": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardScoreCombined": "{score} poin",
   "@balehoLeaderboardScoreCombined": {
     "placeholders": {
-      "score": { "type": "int" }
+      "score": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardScoreBreakdown": "+{contrib} kontrib · +{verif} verif",
   "@balehoLeaderboardScoreBreakdown": {
     "placeholders": {
-      "contrib": { "type": "int" },
-      "verif": { "type": "int" }
+      "contrib": {
+        "type": "int"
+      },
+      "verif": {
+        "type": "int"
+      }
     }
   },
   "balehoLeaderboardVerifierBadge": "Verifikator",
@@ -718,7 +736,9 @@
   "@lemmaDatasetVersion": {
     "description": "Subtitle tile OTA; {version} = release_version integer",
     "placeholders": {
-      "version": {"type": "int"}
+      "version": {
+        "type": "int"
+      }
     }
   },
   "lemmaDatasetVersionUnknown": "Versi kamus lokal belum terpasang",
@@ -2870,7 +2890,9 @@
   "@contentRelatedSearchTitle": {
     "description": "Judul sheet cari target tautan",
     "placeholders": {
-      "kind": { "type": "String" }
+      "kind": {
+        "type": "String"
+      }
     }
   },
   "contentRelatedSearchHint": "Ketik minimal 2 huruf…",
@@ -2904,7 +2926,6 @@
   "encyclopediaUpdateButton": "Simpan Perubahan",
   "encyclopediaUpdateFailed": "Gagal menyimpan perubahan usulan",
   "encyclopediaEditContributionMissing": "Data usulan belum termuat. Tarik untuk refresh lalu coba lagi.",
-
   "encyclopediaFieldBody": "Isi Artikel (Markdown)",
   "encyclopediaFieldBodyPlaceholder": "Tulis isi artikel kamu di sini...",
   "encyclopediaFieldChangeNote": "Catatan Perubahan",
@@ -3115,6 +3136,21 @@
   "cuisineDetailHelpTitle": "Bantu lengkapi",
   "cuisineDetailSuggestEditBody": "Salah nama, deskripsi, atau bahan?",
   "cuisineDetailReportBody": "Data menyesatkan atau duplikat",
+  "cuisineActionAddPhoto": "Tambah foto",
+  "@cuisineActionAddPhoto": {
+    "description": "CTA tambah foto di detail kuliner (#281)"
+  },
+  "cuisineAddPhotoBody": "Kirim foto kuliner yang sudah terbit",
+  "@cuisineAddPhotoBody": {
+    "description": "Subtitle tile tambah foto di detail kuliner"
+  },
+  "cuisineAddPhotoIntro": "Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.",
+  "@cuisineAddPhotoIntro": {
+    "description": "Intro form tambah foto kuliner"
+  },
+  "cuisineAddPhotoRequired": "Pilih minimal satu foto dulu ya.",
+  "cuisineAddPhotoSentTitle": "Foto terkirim",
+  "cuisineAddPhotoSentBody": "Terima kasih. Foto kuliner sudah ditambahkan.",
   "placePhotosNotFoundTitle": "Foto tidak ditemukan",
   "placePhotosNotFoundBody": "Tempat ini belum punya foto, atau datanya gagal dimuat.",
   "placePhotosEmpty": "Belum ada foto untuk tempat ini.",
@@ -4854,7 +4890,9 @@
   "@achievementRepeatCount": {
     "description": "Pengulangan lencana peringkat mingguan (juara ×3)",
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "achievementBorderUpdated": "Bingkai profil diperbarui",
@@ -5648,5 +5686,67 @@
         "format": "decimalPattern"
       }
     }
-  }
+  },
+  "discussionHubTitle": "Diskusi",
+  "@discussionHubTitle": {
+    "description": "Judul header hub Diskusi (tab Ruang Diskusi + Chat)"
+  },
+  "discussionTabRooms": "Ruang Diskusi",
+  "@discussionTabRooms": {
+    "description": "Label tab feed ruang diskusi"
+  },
+  "discussionTabChat": "Chat",
+  "@discussionTabChat": {
+    "description": "Label tab chat publik"
+  },
+  "chatLoadFailed": "Gagal memuat chat",
+  "chatRetry": "Coba lagi",
+  "chatEmpty": "Belum ada pesan",
+  "chatEmptyBody": "Jadi yang pertama menyapa warga di sini.",
+  "chatComposerHint": "Tulis pesan…",
+  "chatSend": "Kirim",
+  "chatLoginToSend": "Masuk dulu untuk ikut chat ya.",
+  "chatTombstone": "Pesan dihapus",
+  "chatEdited": "disunting",
+  "@chatEdited": {
+    "description": "Label kecil di bubble teks yang sudah diedit"
+  },
+  "chatNewMessages": "{count} chat baru",
+  "@chatNewMessages": {
+    "description": "Chip loncat ke pesan baru saat scroll naik",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chatReplyBar": "Membalas @{username}",
+  "@chatReplyBar": {
+    "description": "Pita reply di atas composer",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "chatReplyCancelSemantics": "Batalkan balasan",
+  "chatDeleteConfirmTitle": "Hapus pesan?",
+  "chatDeleteConfirmBody": "Pesan akan diganti jadi \"Pesan dihapus\".",
+  "chatDeleteAction": "Hapus",
+  "chatDeleteFailed": "Gagal menghapus pesan",
+  "chatSendFailed": "Gagal mengirim pesan",
+  "chatVoiceSendFailed": "Gagal mengirim voice note",
+  "chatRecordSheetTitle": "Rekam voice note",
+  "chatRecordSheetSubtitle": "Maksimal 60 detik.",
+  "chatRecordSheetSubmit": "Kirim voice note",
+  "chatStickerSheetTitle": "Pilih stiker",
+  "chatStickerSemantics": "Stiker",
+  "chatMicSemantics": "Rekam suara",
+  "chatSending": "Mengirim…",
+  "chatReplySnippetSticker": "[stiker]",
+  "chatReplySnippetVoice": "[voice note]",
+  "chatLongPressReply": "Balas",
+  "chatLongPressDelete": "Hapus",
+  "chatConnectionFailed": "Koneksi terputus. Coba lagi ya.",
+  "chatServerTimeout": "Server lambat merespons. Coba lagi ya."
 }

@@ -8429,6 +8429,26 @@ class AppLocalizationsId extends AppLocalizations {
   String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
 
   @override
+  String get cuisineActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get cuisineAddPhotoBody => 'Kirim foto kuliner yang sudah terbit';
+
+  @override
+  String get cuisineAddPhotoIntro =>
+      'Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.';
+
+  @override
+  String get cuisineAddPhotoRequired => 'Pilih minimal satu foto dulu ya.';
+
+  @override
+  String get cuisineAddPhotoSentTitle => 'Foto terkirim';
+
+  @override
+  String get cuisineAddPhotoSentBody =>
+      'Terima kasih. Foto kuliner sudah ditambahkan.';
+
+  @override
   String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
 
   @override
@@ -12274,6 +12294,113 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
+
+  @override
+  String get discussionHubTitle => 'Diskusi';
+
+  @override
+  String get discussionTabRooms => 'Ruang Diskusi';
+
+  @override
+  String get discussionTabChat => 'Chat';
+
+  @override
+  String get chatLoadFailed => 'Gagal memuat chat';
+
+  @override
+  String get chatRetry => 'Coba lagi';
+
+  @override
+  String get chatEmpty => 'Belum ada pesan';
+
+  @override
+  String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
+
+  @override
+  String get chatComposerHint => 'Tulis pesan…';
+
+  @override
+  String get chatSend => 'Kirim';
+
+  @override
+  String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
+
+  @override
+  String get chatTombstone => 'Pesan dihapus';
+
+  @override
+  String get chatEdited => 'disunting';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count chat baru';
+  }
+
+  @override
+  String chatReplyBar(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatDeleteConfirmTitle => 'Hapus pesan?';
+
+  @override
+  String get chatDeleteConfirmBody =>
+      'Pesan akan diganti jadi \"Pesan dihapus\".';
+
+  @override
+  String get chatDeleteAction => 'Hapus';
+
+  @override
+  String get chatDeleteFailed => 'Gagal menghapus pesan';
+
+  @override
+  String get chatSendFailed => 'Gagal mengirim pesan';
+
+  @override
+  String get chatVoiceSendFailed => 'Gagal mengirim voice note';
+
+  @override
+  String get chatRecordSheetTitle => 'Rekam voice note';
+
+  @override
+  String get chatRecordSheetSubtitle => 'Maksimal 60 detik.';
+
+  @override
+  String get chatRecordSheetSubmit => 'Kirim voice note';
+
+  @override
+  String get chatStickerSheetTitle => 'Pilih stiker';
+
+  @override
+  String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get chatMicSemantics => 'Rekam suara';
+
+  @override
+  String get chatSending => 'Mengirim…';
+
+  @override
+  String get chatReplySnippetSticker => '[stiker]';
+
+  @override
+  String get chatReplySnippetVoice => '[voice note]';
+
+  @override
+  String get chatLongPressReply => 'Balas';
+
+  @override
+  String get chatLongPressDelete => 'Hapus';
+
+  @override
+  String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
+
+  @override
+  String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -20701,6 +20828,26 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   String get cuisineDetailReportBody => 'Data menyesatkan atau duplikat';
 
   @override
+  String get cuisineActionAddPhoto => 'Tambah foto';
+
+  @override
+  String get cuisineAddPhotoBody => 'Kirim foto kuliner yang sudah terbit';
+
+  @override
+  String get cuisineAddPhotoIntro =>
+      'Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.';
+
+  @override
+  String get cuisineAddPhotoRequired => 'Pilih minimal satu foto dulu ya.';
+
+  @override
+  String get cuisineAddPhotoSentTitle => 'Foto terkirim';
+
+  @override
+  String get cuisineAddPhotoSentBody =>
+      'Terima kasih. Foto kuliner sudah ditambahkan.';
+
+  @override
   String get placePhotosNotFoundTitle => 'Foto tidak ditemukan';
 
   @override
@@ -24546,4 +24693,111 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
 
   @override
   String get eventPhotosSuccess => 'Foto acara berhasil ditambahkan.';
+
+  @override
+  String get discussionHubTitle => 'Diskusi';
+
+  @override
+  String get discussionTabRooms => 'Ruang Diskusi';
+
+  @override
+  String get discussionTabChat => 'Chat';
+
+  @override
+  String get chatLoadFailed => 'Gagal memuat chat';
+
+  @override
+  String get chatRetry => 'Coba lagi';
+
+  @override
+  String get chatEmpty => 'Belum ada pesan';
+
+  @override
+  String get chatEmptyBody => 'Jadi yang pertama menyapa warga di sini.';
+
+  @override
+  String get chatComposerHint => 'Tulis pesan…';
+
+  @override
+  String get chatSend => 'Kirim';
+
+  @override
+  String get chatLoginToSend => 'Masuk dulu untuk ikut chat ya.';
+
+  @override
+  String get chatTombstone => 'Pesan dihapus';
+
+  @override
+  String get chatEdited => 'disunting';
+
+  @override
+  String chatNewMessages(int count) {
+    return '$count chat baru';
+  }
+
+  @override
+  String chatReplyBar(String username) {
+    return 'Membalas @$username';
+  }
+
+  @override
+  String get chatReplyCancelSemantics => 'Batalkan balasan';
+
+  @override
+  String get chatDeleteConfirmTitle => 'Hapus pesan?';
+
+  @override
+  String get chatDeleteConfirmBody =>
+      'Pesan akan diganti jadi \"Pesan dihapus\".';
+
+  @override
+  String get chatDeleteAction => 'Hapus';
+
+  @override
+  String get chatDeleteFailed => 'Gagal menghapus pesan';
+
+  @override
+  String get chatSendFailed => 'Gagal mengirim pesan';
+
+  @override
+  String get chatVoiceSendFailed => 'Gagal mengirim voice note';
+
+  @override
+  String get chatRecordSheetTitle => 'Rekam voice note';
+
+  @override
+  String get chatRecordSheetSubtitle => 'Maksimal 60 detik.';
+
+  @override
+  String get chatRecordSheetSubmit => 'Kirim voice note';
+
+  @override
+  String get chatStickerSheetTitle => 'Pilih stiker';
+
+  @override
+  String get chatStickerSemantics => 'Stiker';
+
+  @override
+  String get chatMicSemantics => 'Rekam suara';
+
+  @override
+  String get chatSending => 'Mengirim…';
+
+  @override
+  String get chatReplySnippetSticker => '[stiker]';
+
+  @override
+  String get chatReplySnippetVoice => '[voice note]';
+
+  @override
+  String get chatLongPressReply => 'Balas';
+
+  @override
+  String get chatLongPressDelete => 'Hapus';
+
+  @override
+  String get chatConnectionFailed => 'Koneksi terputus. Coba lagi ya.';
+
+  @override
+  String get chatServerTimeout => 'Server lambat merespons. Coba lagi ya.';
 }

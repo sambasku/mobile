@@ -15177,6 +15177,42 @@ abstract class AppLocalizations {
   /// **'Data menyesatkan atau duplikat'**
   String get cuisineDetailReportBody;
 
+  /// CTA tambah foto di detail kuliner (#281)
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah foto'**
+  String get cuisineActionAddPhoto;
+
+  /// Subtitle tile tambah foto di detail kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim foto kuliner yang sudah terbit'**
+  String get cuisineAddPhotoBody;
+
+  /// Intro form tambah foto kuliner
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih hingga 5 foto. Foto langsung tayang setelah terkirim.'**
+  String get cuisineAddPhotoIntro;
+
+  /// No description provided for @cuisineAddPhotoRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih minimal satu foto dulu ya.'**
+  String get cuisineAddPhotoRequired;
+
+  /// No description provided for @cuisineAddPhotoSentTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto terkirim'**
+  String get cuisineAddPhotoSentTitle;
+
+  /// No description provided for @cuisineAddPhotoSentBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Terima kasih. Foto kuliner sudah ditambahkan.'**
+  String get cuisineAddPhotoSentBody;
+
   /// No description provided for @placePhotosNotFoundTitle.
   ///
   /// In id, this message translates to:
@@ -21642,6 +21678,210 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Foto acara berhasil ditambahkan.'**
   String get eventPhotosSuccess;
+
+  /// Judul header hub Diskusi (tab Ruang Diskusi + Chat)
+  ///
+  /// In id, this message translates to:
+  /// **'Diskusi'**
+  String get discussionHubTitle;
+
+  /// Label tab feed ruang diskusi
+  ///
+  /// In id, this message translates to:
+  /// **'Ruang Diskusi'**
+  String get discussionTabRooms;
+
+  /// Label tab chat publik
+  ///
+  /// In id, this message translates to:
+  /// **'Chat'**
+  String get discussionTabChat;
+
+  /// No description provided for @chatLoadFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat chat'**
+  String get chatLoadFailed;
+
+  /// No description provided for @chatRetry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get chatRetry;
+
+  /// No description provided for @chatEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pesan'**
+  String get chatEmpty;
+
+  /// No description provided for @chatEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadi yang pertama menyapa warga di sini.'**
+  String get chatEmptyBody;
+
+  /// No description provided for @chatComposerHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis pesan…'**
+  String get chatComposerHint;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get chatSend;
+
+  /// No description provided for @chatLoginToSend.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dulu untuk ikut chat ya.'**
+  String get chatLoginToSend;
+
+  /// No description provided for @chatTombstone.
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan dihapus'**
+  String get chatTombstone;
+
+  /// Label kecil di bubble teks yang sudah diedit
+  ///
+  /// In id, this message translates to:
+  /// **'disunting'**
+  String get chatEdited;
+
+  /// Chip loncat ke pesan baru saat scroll naik
+  ///
+  /// In id, this message translates to:
+  /// **'{count} chat baru'**
+  String chatNewMessages(int count);
+
+  /// Pita reply di atas composer
+  ///
+  /// In id, this message translates to:
+  /// **'Membalas @{username}'**
+  String chatReplyBar(String username);
+
+  /// No description provided for @chatReplyCancelSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan balasan'**
+  String get chatReplyCancelSemantics;
+
+  /// No description provided for @chatDeleteConfirmTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pesan?'**
+  String get chatDeleteConfirmTitle;
+
+  /// No description provided for @chatDeleteConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pesan akan diganti jadi \"Pesan dihapus\".'**
+  String get chatDeleteConfirmBody;
+
+  /// No description provided for @chatDeleteAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get chatDeleteAction;
+
+  /// No description provided for @chatDeleteFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus pesan'**
+  String get chatDeleteFailed;
+
+  /// No description provided for @chatSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim pesan'**
+  String get chatSendFailed;
+
+  /// No description provided for @chatVoiceSendFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengirim voice note'**
+  String get chatVoiceSendFailed;
+
+  /// No description provided for @chatRecordSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam voice note'**
+  String get chatRecordSheetTitle;
+
+  /// No description provided for @chatRecordSheetSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 60 detik.'**
+  String get chatRecordSheetSubtitle;
+
+  /// No description provided for @chatRecordSheetSubmit.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim voice note'**
+  String get chatRecordSheetSubmit;
+
+  /// No description provided for @chatStickerSheetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih stiker'**
+  String get chatStickerSheetTitle;
+
+  /// No description provided for @chatStickerSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Stiker'**
+  String get chatStickerSemantics;
+
+  /// No description provided for @chatMicSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get chatMicSemantics;
+
+  /// No description provided for @chatSending.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengirim…'**
+  String get chatSending;
+
+  /// No description provided for @chatReplySnippetSticker.
+  ///
+  /// In id, this message translates to:
+  /// **'[stiker]'**
+  String get chatReplySnippetSticker;
+
+  /// No description provided for @chatReplySnippetVoice.
+  ///
+  /// In id, this message translates to:
+  /// **'[voice note]'**
+  String get chatReplySnippetVoice;
+
+  /// No description provided for @chatLongPressReply.
+  ///
+  /// In id, this message translates to:
+  /// **'Balas'**
+  String get chatLongPressReply;
+
+  /// No description provided for @chatLongPressDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get chatLongPressDelete;
+
+  /// No description provided for @chatConnectionFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Koneksi terputus. Coba lagi ya.'**
+  String get chatConnectionFailed;
+
+  /// No description provided for @chatServerTimeout.
+  ///
+  /// In id, this message translates to:
+  /// **'Server lambat merespons. Coba lagi ya.'**
+  String get chatServerTimeout;
 }
 
 class _AppLocalizationsDelegate
