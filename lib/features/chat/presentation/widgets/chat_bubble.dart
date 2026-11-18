@@ -249,8 +249,9 @@ class _BubbleBody extends StatelessWidget {
       case ChatMessageKind.text:
         return Text(
           message.body ?? '',
-          style: theme.typography.body.sm.copyWith(
+          style: theme.typography.body.xs.copyWith(
             color: theme.colors.foreground,
+            height: 1.35,
           ),
         );
     }
