@@ -65,17 +65,21 @@ class ArticleCommentListController
     );
   }
 
-  Future<String?> create(String body) async {
+  Future<String?> create(String body, {String? stickerId}) async {
     final current = state.value;
     if (current == null || current.isSubmitting) return null;
     final trimmed = body.trim();
-    if (trimmed.isEmpty) return 'empty';
+    final sid = stickerId?.trim();
+    final hasSticker = sid != null && sid.isNotEmpty;
+    if (trimmed.isEmpty && !hasSticker) return 'empty';
 
     state = AsyncData(current.copyWith(isSubmitting: true));
     try {
+      final payload = <String, dynamic>{'body': trimmed};
+      if (hasSticker) payload['sticker_id'] = sid;
       final resp = await ref
           .read(encyclopediaRepositoryProvider)
-          .postComment(articleId, {'body': trimmed});
+          .postComment(articleId, payload);
       if (!ref.mounted) return null;
       if (resp.data == null) {
         state = AsyncData(current.copyWith(isSubmitting: false));

@@ -6,6 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../core/utils/format_datetime.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/stickers/sticker_providers.dart';
+import '../../../../shared/stickers/sticker_sheet.dart';
+import '../../../../shared/stickers/sticker_view.dart';
 import '../../../../shared/utils/public_account_name.dart';
 import '../../../../shared/utils/thread_reply_draft.dart';
 import '../../../../shared/widgets/cached_network_image_with_fallback.dart';
@@ -113,6 +116,7 @@ class _EncyclopediaCommentsSectionState
   final _composerFocus = FocusNode();
   ThreadReplyDraft? _replyDraft;
   String? _replyChipHandle;
+  String? _stagingStickerId;
 
   @override
   void initState() {
@@ -194,15 +198,95 @@ class _EncyclopediaCommentsSectionState
     }
   }
 
+  void _clearStagingSticker() {
+    setState(() => _stagingStickerId = null);
+  }
+
+  Future<void> _pickCommentSticker() async {
+    if (!_isAuth()) {
+      _promptLogin();
+      return;
+    }
+    final stickerId = await showCatalogStickerSheet(context);
+    if (!mounted || stickerId == null) return;
+    setState(() => _stagingStickerId = stickerId);
+  }
+
+  Widget? _buildStickerPreview(BuildContext context) {
+    final stickerId = _stagingStickerId;
+    if (stickerId == null) return null;
+    final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final sticker =
+        ref.watch(stickerLookupProvider(stickerId)).asData?.value;
+    return Row(
+      children: [
+        StickerIdView(
+          stickerId: stickerId,
+          sticker: sticker,
+          size: 56,
+        ),
+        const Gap(8),
+        Expanded(
+          child: Text(
+            l10n.commentAddSticker,
+            style: theme.typography.body.sm.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+          ),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: _clearStagingSticker,
+          child: Text(l10n.commentRemoveSticker),
+        ),
+      ],
+    );
+  }
+
   Widget? _commentMedia(ArticleComment comment) {
+    if (!comment.isPublished) return null;
+    final parts = <Widget>[];
+    if (comment.hasSticker) {
+      final sticker = ref
+          .watch(stickerLookupProvider(comment.stickerId!))
+          .asData
+          ?.value;
+      parts.add(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: StickerIdView(
+            stickerId: comment.stickerId!,
+            sticker: sticker,
+            size: 96,
+          ),
+        ),
+      );
+    }
     final url = comment.imageUrl?.trim();
-    if (url == null || url.isEmpty || !comment.isPublished) return null;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: CachedNetworkImageWithFallback(imageUrl: url, fit: BoxFit.cover),
-      ),
+    if (url != null && url.isNotEmpty) {
+      parts.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: CachedNetworkImageWithFallback(
+              imageUrl: url,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    }
+    if (parts.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          if (i > 0) const Gap(6),
+          parts[i],
+        ],
+      ],
     );
   }
 
@@ -212,12 +296,14 @@ class _EncyclopediaCommentsSectionState
       return;
     }
     final l10n = AppLocalizations.of(context);
+    final stickerId = _stagingStickerId;
     final code = await ref
         .read(articleCommentListControllerProvider(widget.articleId).notifier)
-        .create(_bodyCtrl.text);
+        .create(_bodyCtrl.text, stickerId: stickerId);
     if (!mounted) return;
     if (code == null) {
       _bodyCtrl.clear();
+      _clearStagingSticker();
       _dismissReply(clearComposerPrefix: false);
       showFToast(
         context: context,
@@ -467,6 +553,8 @@ class _EncyclopediaCommentsSectionState
                   focusNode: _composerFocus,
                   isSubmitting: listState?.isSubmitting ?? false,
                   onSubmit: _submitText,
+                  onPickSticker: _pickCommentSticker,
+                  attachmentPreview: _buildStickerPreview(context),
                   hint: l10n.encyclopediaCommentPlaceholder,
                   replyBanner: _replyDraft == null
                       ? null

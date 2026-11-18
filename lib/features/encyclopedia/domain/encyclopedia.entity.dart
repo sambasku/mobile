@@ -141,7 +141,7 @@ class EncyclopediaArticle {
   final String? publishedAt;
   /// null = tamu / tidak dicek; true/false = status bookmark user login.
   final bool? bookmarked;
-  @JsonKey(fromJson: _relatedFromJson)
+  @JsonKey(fromJson: _relatedFromJson, toJson: _relatedToJson)
   final List<ContentRelatedLink> related;
 }
 
@@ -239,6 +239,7 @@ class ArticleComment {
     required this.body,
     required this.status,
     this.imageUrl,
+    this.stickerId,
     this.isEdited = false,
     this.createdAt,
     this.updatedAt,
@@ -255,6 +256,8 @@ class ArticleComment {
   final String status;
   @JsonKey(name: 'image_url')
   final String? imageUrl;
+  @JsonKey(name: 'sticker_id')
+  final String? stickerId;
   @JsonKey(name: 'is_edited')
   final bool isEdited;
   @JsonKey(name: 'created_at')
@@ -265,6 +268,8 @@ class ArticleComment {
   bool get isPublished => status == 'published';
   bool get isTakenDown => status == 'taken_down';
   bool get isDeletedByAuthor => status == 'deleted_by_author';
+  bool get hasSticker =>
+      stickerId != null && stickerId!.trim().isNotEmpty;
   bool isOwner(String? actorId) =>
       actorId != null && actorId.isNotEmpty && actorId == user.userId;
 }
@@ -343,7 +348,7 @@ class EncyclopediaContributionPayload {
   final String? sourceUrl;
   @JsonKey(name: 'references_md')
   final String? referencesMd;
-  @JsonKey(fromJson: _relatedFromJson)
+  @JsonKey(fromJson: _relatedFromJson, toJson: _relatedToJson)
   final List<ContentRelatedLink> related;
 }
 
