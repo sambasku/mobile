@@ -12507,6 +12507,25 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get voiceConnectTimeout =>
       'Gagal terhubung ke voice server. Coba lagi nanti ya.';
+
+  @override
+  String get voiceWsFailed =>
+      'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String chatTypingOne(String name) {
+    return '$name sedang mengetik…';
+  }
+
+  @override
+  String chatTypingTwo(String a, String b) {
+    return '$a dan $b sedang mengetik…';
+  }
+
+  @override
+  String chatTypingMany(int count) {
+    return '$count orang sedang mengetik…';
+  }
 }
 
 /// The translations for Indonesian (`id_SBS`).
@@ -25012,4 +25031,23 @@ class AppLocalizationsIdSbs extends AppLocalizationsId {
   @override
   String get voiceConnectTimeout =>
       'Gagal terhubung ke voice server. Coba lagi nanti ya.';
+
+  @override
+  String get voiceWsFailed =>
+      'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.';
+
+  @override
+  String chatTypingOne(String name) {
+    return '$name sedang mengetik…';
+  }
+
+  @override
+  String chatTypingTwo(String a, String b) {
+    return '$a dan $b sedang mengetik…';
+  }
+
+  @override
+  String chatTypingMany(int count) {
+    return '$count orang sedang mengetik…';
+  }
 }

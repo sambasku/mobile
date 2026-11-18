@@ -22068,6 +22068,30 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Gagal terhubung ke voice server. Coba lagi nanti ya.'**
   String get voiceConnectTimeout;
+
+  /// WebSocketException / upgrade gagal ke LIVEKIT_URL
+  ///
+  /// In id, this message translates to:
+  /// **'Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.'**
+  String get voiceWsFailed;
+
+  /// Satu orang sedang mengetik di chat
+  ///
+  /// In id, this message translates to:
+  /// **'{name} sedang mengetik…'**
+  String chatTypingOne(String name);
+
+  /// Dua orang sedang mengetik di chat
+  ///
+  /// In id, this message translates to:
+  /// **'{a} dan {b} sedang mengetik…'**
+  String chatTypingTwo(String a, String b);
+
+  /// Tiga atau lebih orang sedang mengetik di chat
+  ///
+  /// In id, this message translates to:
+  /// **'{count} orang sedang mengetik…'**
+  String chatTypingMany(int count);
 }
 
 class _AppLocalizationsDelegate

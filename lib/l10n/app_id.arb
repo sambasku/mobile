@@ -9190,5 +9190,39 @@
   "voiceConnectTimeout": "Gagal terhubung ke voice server. Coba lagi nanti ya.",
   "@voiceConnectTimeout": {
     "description": "Timeout 20s saat connect ke LiveKit"
+  },
+  "voiceWsFailed": "Voice server tidak menerima koneksi WebSocket. Cek proxy/Cloudflare (Upgrade) di homelab.",
+  "@voiceWsFailed": {
+    "description": "WebSocketException / upgrade gagal ke LIVEKIT_URL"
+  },
+  "chatTypingOne": "{name} sedang mengetik…",
+  "@chatTypingOne": {
+    "description": "Satu orang sedang mengetik di chat",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chatTypingTwo": "{a} dan {b} sedang mengetik…",
+  "@chatTypingTwo": {
+    "description": "Dua orang sedang mengetik di chat",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "chatTypingMany": "{count} orang sedang mengetik…",
+  "@chatTypingMany": {
+    "description": "Tiga atau lebih orang sedang mengetik di chat",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

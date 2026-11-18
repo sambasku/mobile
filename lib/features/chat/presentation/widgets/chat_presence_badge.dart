@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/chat_presence_provider.dart';
 
-/// Indikator berapa orang sedang stay di layar Chat.
+/// Indikator berapa orang sedang stay di layar Chat (satu baris tipis).
 class ChatPresenceBadge extends ConsumerWidget {
   const ChatPresenceBadge({super.key});
 
@@ -19,22 +19,22 @@ class ChatPresenceBadge extends ConsumerWidget {
     final theme = FTheme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
           Container(
-            width: 8,
-            height: 8,
+            width: 6,
+            height: 6,
             decoration: BoxDecoration(
               color: theme.colors.primary,
               shape: BoxShape.circle,
             ),
           ),
-          const Gap(8),
+          const Gap(6),
           Expanded(
             child: Text(
               l10n.chatPresenceCount(count),
-              style: theme.typography.body.xs.copyWith(
+              style: theme.typography.body.xs2.copyWith(
                 color: theme.colors.mutedForeground,
               ),
             ),

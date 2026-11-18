@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,11 +15,13 @@ import '../../../auth/presentation/providers/auth_status_providers.dart';
 import '../../domain/chat_models.dart';
 import '../providers/chat_messages_provider.dart';
 import '../providers/chat_presence_provider.dart';
+import '../providers/chat_typing_provider.dart';
 import '../widgets/chat_bubble.dart';
 import '../widgets/chat_composer.dart';
 import '../widgets/chat_new_messages_chip.dart';
 import '../widgets/chat_presence_badge.dart';
 import '../widgets/chat_sticker_sheet.dart';
+import '../widgets/chat_typing_indicator.dart';
 import '../widgets/discussion_hub_segment.dart';
 import '../../../voice/presentation/widgets/voice_room_strip.dart';
 
@@ -53,7 +57,11 @@ class ChatPage extends HookConsumerWidget {
 
     Future<void> scrollToBottom({bool animate = true}) async {
       if (!scroll.hasClients) return;
-      final target = scroll.position.maxScrollExtent;
+      final position = scroll.position;
+      // Geometry sliver belum siap → jump memicu crash semantics
+      // (viewport.dart visitChildrenForSemantics geometry!).
+      if (!position.hasContentDimensions) return;
+      final target = position.maxScrollExtent;
       if (animate) {
         await scroll.animateTo(
           target,
@@ -101,6 +109,35 @@ class ChatPage extends HookConsumerWidget {
     }, [presenceKey]);
 
     useEffect(() {
+      ref
+          .read(chatTypingProvider.notifier)
+          .startListening(selfUserId: myUserId);
+      return () {
+        unawaited(ref.read(chatTypingProvider.notifier).stopListening());
+      };
+    }, [myUserId]);
+
+    useEffect(() {
+      void onText() {
+        if (!isAuth || myUserId == null) return;
+        final auth = ref.read(authStatusProvider).value;
+        final name = (auth?.displayName?.trim().isNotEmpty == true)
+            ? auth!.displayName!.trim()
+            : (auth?.username?.trim().isNotEmpty == true)
+                ? auth!.username!.trim()
+                : l10n.chatPresenceGuestName;
+        ref.read(chatTypingProvider.notifier).onLocalTextChanged(
+              userId: myUserId,
+              name: name,
+              text: textController.text,
+            );
+      }
+
+      textController.addListener(onText);
+      return () => textController.removeListener(onText);
+    }, [isAuth, myUserId, textController]);
+
+    useEffect(() {
       void listener() => updateNearBottom();
       scroll.addListener(listener);
       return () => scroll.removeListener(listener);
@@ -112,8 +149,11 @@ class ChatPage extends HookConsumerWidget {
       if (didInitialScroll.value) return null;
       if (items == null || items.isEmpty) return null;
       didInitialScroll.value = true;
+      // Dua frame: tunggu ListView selesai layout sebelum jump.
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        scrollToBottom(animate: false);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          scrollToBottom(animate: false);
+        });
       });
       return null;
     }, [async.asData?.value.items.length]);
@@ -234,6 +274,20 @@ class ChatPage extends HookConsumerWidget {
       final reply = replyTarget.value;
       textController.clear();
       replyTarget.value = null;
+      if (myUserId != null) {
+        final auth = ref.read(authStatusProvider).value;
+        final name = (auth?.displayName?.trim().isNotEmpty == true)
+            ? auth!.displayName!.trim()
+            : (auth?.username?.trim().isNotEmpty == true)
+                ? auth!.username!.trim()
+                : l10n.chatPresenceGuestName;
+        unawaited(
+          ref.read(chatTypingProvider.notifier).stopLocalTyping(
+                userId: myUserId,
+                name: name,
+              ),
+        );
+      }
       final failure = await ref
           .read(chatMessagesProvider.notifier)
           .sendText(
@@ -376,8 +430,17 @@ class ChatPage extends HookConsumerWidget {
                 if (i == 0) onSelectRoomsTab();
               },
             ),
-            const ChatPresenceBadge(),
-            const VoiceRoomStrip(),
+            // Jarak dari chrome tab supaya strip voice tidak nempel.
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ChatPresenceBadge(),
+                  VoiceRoomStrip(),
+                ],
+              ),
+            ),
             Expanded(
               child: Stack(
                 children: [
@@ -465,7 +528,7 @@ class ChatPage extends HookConsumerWidget {
                         child: ListView.builder(
                           controller: scroll,
                           physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 12),
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
                           itemCount:
                               state.items.length +
                               (state.isLoadingOlder ? 1 : 0),
@@ -540,6 +603,7 @@ class ChatPage extends HookConsumerWidget {
               ],
             ),
           ),
+            const ChatTypingIndicator(),
             ChatComposer(
               controller: textController,
               enabled: isAuth,

@@ -13,7 +13,7 @@ import '../providers/voice_opt_in_provider.dart';
 import '../providers/voice_room_provider.dart';
 import 'voice_participants_sheet.dart';
 
-/// Strip compact di atas stream chat (bukan floating overlay).
+/// Strip 1 baris di atas stream chat - minimal, bukan kartu tebal.
 ///
 /// Gate: `voice_room_enabled` (API) ∧ opt-in SharedPreferences.
 class VoiceRoomStrip extends ConsumerWidget {
@@ -42,15 +42,16 @@ class VoiceRoomStrip extends ConsumerWidget {
     final colors = FTheme.of(context).colors;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+      // Jarak ke list chat; jarak ke tab ditangani parent (padding top).
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: colors.secondary,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: colors.border),
+          color: colors.secondary.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: colors.border.withValues(alpha: 0.7)),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          padding: const EdgeInsets.fromLTRB(8, 4, 6, 4),
           child: optIn
               ? _ActiveStrip(
                   l10n: l10n,
@@ -83,26 +84,38 @@ class _OptInHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final theme = FTheme.of(context);
+    return Row(
       children: [
-        Row(
-          children: [
-            const Icon(FLucideIcons.audioLines, size: 16),
-            const Gap(8),
-            Expanded(
-              child: Text(
-                l10n.voiceStripOptInHint,
-                style: FTheme.of(context).typography.body.xs,
+        Icon(
+          FLucideIcons.audioLines,
+          size: 14,
+          color: theme.colors.mutedForeground,
+        ),
+        const Gap(6),
+        Expanded(
+          child: Text(
+            l10n.voiceStripOptInHint,
+            style: theme.typography.body.xs2.copyWith(
+              color: theme.colors.mutedForeground,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onOpenSettings,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            child: Text(
+              l10n.voiceStripOpenSettings,
+              style: theme.typography.body.xs2.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colors.primary,
               ),
             ),
-          ],
-        ),
-        const Gap(8),
-        FButton(
-          variant: FButtonVariant.outline,
-          onPress: onOpenSettings,
-          child: Text(l10n.voiceStripOpenSettings),
+          ),
         ),
       ],
     );
@@ -136,85 +149,58 @@ class _ActiveStrip extends StatelessWidget {
     final inSession = room.isInSession;
     final reconnecting = room.phase == VoiceRoomPhase.reconnecting;
     final theme = FTheme.of(context);
+    final mutedFg = theme.colors.mutedForeground;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final title = reconnecting
+        ? l10n.voiceReconnecting
+        : inSession
+            ? l10n.voiceStripInRoom(room.participantCount)
+            : l10n.voiceStripTitle;
+
+    return Row(
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: inSession ? onShowParticipants : null,
-          child: Row(
-            children: [
-              Icon(
-                inSession ? FLucideIcons.radio : FLucideIcons.audioLines,
-                size: 16,
+        Icon(
+          inSession ? FLucideIcons.radio : FLucideIcons.audioLines,
+          size: 14,
+          color: inSession ? theme.colors.primary : mutedFg,
+        ),
+        const Gap(6),
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: inSession ? onShowParticipants : null,
+            child: Text(
+              title,
+              style: theme.typography.body.xs.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              const Gap(8),
-              Expanded(
-                child: Text(
-                  reconnecting
-                      ? l10n.voiceReconnecting
-                      : inSession
-                          ? l10n.voiceStripInRoom(room.participantCount)
-                          : l10n.voiceStripTitle,
-                  style: theme.typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              if (inSession)
-                Icon(
-                  FLucideIcons.users,
-                  size: 14,
-                  color: theme.colors.mutedForeground,
-                ),
-            ],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
-        if (inSession && room.participants.isNotEmpty) ...[
-          const Gap(6),
-          Text(
-            room.participants
-                .take(3)
-                .map((p) => p.isLocal ? l10n.voiceParticipantYou(p.name) : p.name)
-                .join(', '),
-            style: theme.typography.body.xs2.copyWith(
-              color: theme.colors.mutedForeground,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        if (inSession) ...[
+          _IconAction(
+            icon: FLucideIcons.users,
+            semanticsLabel: l10n.voiceShowParticipants,
+            onTap: onShowParticipants,
           ),
-        ],
-        const Gap(8),
-        if (inSession)
-          Row(
-            children: [
-              Expanded(
-                child: FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: busy || reconnecting ? null : onMute,
-                  prefix: Icon(
-                    room.muted ? FLucideIcons.micOff : FLucideIcons.mic,
-                    size: 14,
-                  ),
-                  child: Text(
-                    room.muted ? l10n.voiceUnmute : l10n.voiceMute,
-                  ),
-                ),
-              ),
-              const Gap(8),
-              Expanded(
-                child: FButton(
-                  variant: FButtonVariant.destructive,
-                  onPress: busy ? null : onLeave,
-                  child: Text(l10n.voiceLeave),
-                ),
-              ),
-            ],
-          )
-        else
-          FButton(
-            onPress: busy
+          _IconAction(
+            icon: room.muted ? FLucideIcons.micOff : FLucideIcons.mic,
+            semanticsLabel:
+                room.muted ? l10n.voiceUnmute : l10n.voiceMute,
+            onTap: busy || reconnecting ? null : onMute,
+          ),
+          _IconAction(
+            icon: FLucideIcons.phoneOff,
+            semanticsLabel: l10n.voiceLeave,
+            color: theme.colors.destructive,
+            onTap: busy ? null : onLeave,
+          ),
+        ] else
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: busy
                 ? null
                 : () {
                     if (!isAuth) {
@@ -223,10 +209,57 @@ class _ActiveStrip extends StatelessWidget {
                     }
                     onJoin();
                   },
-            prefix: busy ? const FCircularProgress(size: .sm) : null,
-            child: Text(busy ? l10n.voiceJoining : l10n.voiceJoin),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: busy
+                  ? const FCircularProgress(size: .xs)
+                  : Text(
+                      l10n.voiceJoin,
+                      style: theme.typography.body.xs2.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colors.primary,
+                      ),
+                    ),
+            ),
           ),
       ],
+    );
+  }
+}
+
+class _IconAction extends StatelessWidget {
+  const _IconAction({
+    required this.icon,
+    required this.semanticsLabel,
+    required this.onTap,
+    this.color,
+  });
+
+  final IconData icon;
+  final String semanticsLabel;
+  final VoidCallback? onTap;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FTheme.of(context);
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+          child: Icon(
+            icon,
+            size: 15,
+            color: onTap == null
+                ? theme.colors.mutedForeground.withValues(alpha: 0.4)
+                : (color ?? theme.colors.foreground),
+          ),
+        ),
+      ),
     );
   }
 }

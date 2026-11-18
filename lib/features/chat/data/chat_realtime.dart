@@ -17,12 +17,20 @@ class ChatRealtimeEvent {
 ///
 /// Kosong URL/key → null (chat tetap REST). Gagal subscribe → diam; REST
 /// tetap jalur utama histori + mutasi.
+typedef ChatTypingBroadcastHandler =
+    void Function({
+      required String userId,
+      required String name,
+      required bool typing,
+    });
+
 class ChatRealtime {
   ChatRealtime._(this._client);
 
   final SupabaseClient _client;
   RealtimeChannel? _channel;
   RealtimeChannel? _presenceChannel;
+  RealtimeChannel? _typingChannel;
 
   static ChatRealtime? tryCreate() {
     final url = Env.supabaseUrl;
@@ -82,6 +90,72 @@ class ChatRealtime {
       await _client.removeChannel(ch);
     } catch (e, st) {
       debugPrint('ChatRealtime stopPresence failed: $e\n$st');
+    }
+  }
+
+  /// Broadcast ephemeral "sedang mengetik" (tidak nulis DB).
+  void startTyping(ChatTypingBroadcastHandler onEvent) {
+    stopTyping();
+    final ch = _client.channel(
+      'chat-public-typing',
+      // self: false = jangan echo ke pengirim.
+      opts: const RealtimeChannelConfig(),
+    );
+    _typingChannel = ch;
+    ch
+        .onBroadcast(
+          event: 'typing',
+          callback: (payload) {
+            try {
+              final raw = payload['payload'] is Map
+                  ? Map<String, dynamic>.from(payload['payload'] as Map)
+                  : Map<String, dynamic>.from(payload);
+              final userId = raw['user_id']?.toString() ?? '';
+              if (userId.isEmpty) return;
+              final name = (raw['name']?.toString() ?? '').trim();
+              final typing = raw['typing'] == true || raw['typing'] == 'true';
+              onEvent(
+                userId: userId,
+                name: name.isEmpty ? userId : name,
+                typing: typing,
+              );
+            } catch (e, st) {
+              debugPrint('ChatRealtime typing parse failed: $e\n$st');
+            }
+          },
+        )
+        .subscribe();
+  }
+
+  Future<void> sendTyping({
+    required String userId,
+    required String name,
+    required bool typing,
+  }) async {
+    final ch = _typingChannel;
+    if (ch == null) return;
+    try {
+      await ch.sendBroadcastMessage(
+        event: 'typing',
+        payload: {
+          'user_id': userId,
+          'name': name,
+          'typing': typing,
+        },
+      );
+    } catch (e, st) {
+      debugPrint('ChatRealtime sendTyping failed: $e\n$st');
+    }
+  }
+
+  Future<void> stopTyping() async {
+    final ch = _typingChannel;
+    _typingChannel = null;
+    if (ch == null) return;
+    try {
+      await _client.removeChannel(ch);
+    } catch (e, st) {
+      debugPrint('ChatRealtime stopTyping failed: $e\n$st');
     }
   }
 
@@ -153,14 +227,16 @@ class ChatRealtime {
         .subscribe();
   }
 
+  /// Hanya channel postgres messages - presence/typing channel terpisah.
   Future<void> stop() async {
-    await stopPresence();
     final ch = _channel;
     _channel = null;
     if (ch != null) await _client.removeChannel(ch);
   }
 
   Future<void> dispose() async {
+    await stopTyping();
+    await stopPresence();
     await stop();
     await _client.dispose();
   }

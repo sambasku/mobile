@@ -338,10 +338,18 @@ class VoiceRoomController extends Notifier<VoiceRoomState> {
       return l10n.voiceConnectTimeout;
     }
     final raw = e.toString();
+    final lower = raw.toLowerCase();
     if (raw.contains('VOICE_ROOM_FULL') ||
-        raw.toLowerCase().contains('room is full') ||
-        raw.toLowerCase().contains('max participants')) {
+        lower.contains('room is full') ||
+        lower.contains('max participants')) {
       return l10n.voiceRoomFull;
+    }
+    // Homelab/proxy sering balas HTTP 200 ke upgrade → WebSocketException.
+    if (lower.contains('websocket') ||
+        lower.contains('socketexception') ||
+        lower.contains('connection refused') ||
+        lower.contains('failed host lookup')) {
+      return l10n.voiceWsFailed;
     }
     final detail = raw.length > 160 ? '${raw.substring(0, 160)}…' : raw;
     return '${l10n.voiceJoinFailed}\n$detail';

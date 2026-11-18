@@ -63,7 +63,13 @@ class ChatBubble extends StatelessWidget {
         child: GestureDetector(
           onLongPress: () => _showActions(context),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(4, clustered ? 1 : 3, 4, clustered ? 1 : 2),
+            padding: EdgeInsets.fromLTRB(
+              2,
+              // clustered = run beruntun: rapat tapi masih ada napas
+              clustered ? 2 : 5,
+              2,
+              clustered ? 2 : 4,
+            ),
             child: Column(
               crossAxisAlignment: align,
               children: [
@@ -72,7 +78,7 @@ class ChatBubble extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 2, bottom: 1),
                     child: Text(
                       name,
-                      style: theme.typography.body.xs2.copyWith(
+                      style: theme.typography.body.xs3.copyWith(
                         fontWeight: FontWeight.w600,
                         color: theme.colors.mutedForeground,
                       ),
@@ -83,58 +89,69 @@ class ChatBubble extends StatelessWidget {
                     username: message.replyUsername,
                     snippet: message.replySnippet,
                   ),
-                  const Gap(2),
+                  const Gap(1),
                 ],
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: bubbleColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    child: _BubbleBody(message: message, mine: mine),
-                  ),
-                ),
-                if (showMeta) ...[
-                  const Gap(1),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (message.pending) ...[
-                        Text(
-                          l10n.chatSending,
-                          style: theme.typography.body.xs3.copyWith(
-                            color: theme.colors.mutedForeground,
-                            fontStyle: FontStyle.italic,
-                          ),
+                    padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
+                    // ponytail: jangan IntrinsicWidth di ListView - race
+                    // sliver.geometry! null di visitChildrenForSemantics.
+                    // Column min + end: bubble ikut konten, jam kanan.
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: 1,
+                          child: _BubbleBody(message: message, mine: mine),
                         ),
-                        const Gap(4),
-                        const FCircularProgress(size: .xs),
-                      ] else ...[
-                        if (showTime && timeLabel.isNotEmpty)
-                          Text(
-                            timeLabel,
-                            style: theme.typography.body.xs3.copyWith(
-                              color: theme.colors.mutedForeground,
-                            ),
-                          ),
-                        if (showEdited) ...[
-                          if (showTime && timeLabel.isNotEmpty) const Gap(4),
-                          Text(
-                            l10n.chatEdited,
-                            style: theme.typography.body.xs3.copyWith(
-                              color: theme.colors.mutedForeground,
-                              fontStyle: FontStyle.italic,
-                            ),
+                        if (showMeta) ...[
+                          const Gap(2),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (message.pending) ...[
+                                Text(
+                                  l10n.chatSending,
+                                  style: theme.typography.body.xs3.copyWith(
+                                    color: theme.colors.mutedForeground,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const Gap(4),
+                                const FCircularProgress(size: .xs),
+                              ] else ...[
+                                if (showEdited) ...[
+                                  Text(
+                                    l10n.chatEdited,
+                                    style: theme.typography.body.xs3.copyWith(
+                                      color: theme.colors.mutedForeground,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                  if (showTime && timeLabel.isNotEmpty)
+                                    const Gap(4),
+                                ],
+                                if (showTime && timeLabel.isNotEmpty)
+                                  Text(
+                                    timeLabel,
+                                    style: theme.typography.body.xs3.copyWith(
+                                      color: theme.colors.mutedForeground,
+                                    ),
+                                  ),
+                              ],
+                            ],
                           ),
                         ],
                       ],
-                    ],
+                    ),
                   ),
-                ],
+                ),
               ],
             ),
           ),
@@ -201,15 +218,15 @@ class _ReplyQuote extends StatelessWidget {
         : snippet!.trim();
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+      padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
       decoration: BoxDecoration(
         border: Border(left: BorderSide(color: theme.colors.primary, width: 2)),
         color: theme.colors.secondary.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         '@$handle: $text',
-        style: theme.typography.body.xs2.copyWith(
+        style: theme.typography.body.xs3.copyWith(
           color: theme.colors.mutedForeground,
         ),
         maxLines: 2,
@@ -233,7 +250,7 @@ class _BubbleBody extends StatelessWidget {
     if (message.isDeleted) {
       return Text(
         l10n.chatTombstone,
-        style: theme.typography.body.xs.copyWith(
+        style: theme.typography.body.xs2.copyWith(
           fontStyle: FontStyle.italic,
           color: theme.colors.mutedForeground,
         ),
@@ -244,7 +261,7 @@ class _BubbleBody extends StatelessWidget {
       case ChatMessageKind.sticker:
         return ChatStickerView(
           stickerId: message.stickerId ?? '',
-          size: 56,
+          size: 48,
         );
       case ChatMessageKind.voiceNote:
         final url = message.audioUrl?.trim() ?? '';
@@ -266,9 +283,9 @@ class _BubbleBody extends StatelessWidget {
       case ChatMessageKind.text:
         return Text(
           message.body ?? '',
-          style: theme.typography.body.sm.copyWith(
+          style: theme.typography.body.xs.copyWith(
             color: theme.colors.foreground,
-            height: 1.3,
+            height: 1.25,
           ),
         );
     }
